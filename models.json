@@ -1,0 +1,301 @@
+[
+    {
+        "models": [
+            "MacBook5,1",
+            "MacBook5,2"
+        ],
+        "patches": [
+            "bcm4322",
+            "applehda",
+            "sse4.1",
+            "mcp79",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacBook6,1",
+            "MacBook7,1"
+        ],
+        "patches": [
+            "bcm43224",
+            "applehda",
+            "sse4.1",
+            "mcp79",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacBookAir2,1",
+            "MacBookAir3,1",
+            "MacBookAir3,2"
+        ],
+        "patches": [
+            "bcm4322",
+            "applehda",
+            "sse4.1",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacBookAir4,1",
+            "MacBookAir4,2"
+        ],
+        "patches": [
+            "bcm4322",
+            "applehda",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacBookAir5,1",
+            "MacBookAir5,2"
+        ],
+        "patches": [
+            "bcm4322"
+        ]
+    },
+    {
+        "models": [
+            "MacBookPro3,1"
+        ],
+        "patches": [
+            "ar5418",
+            "marvell",
+            "applehda",
+            "sse4.1",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacBookPro4,1"
+        ],
+        "patches": [
+            "bcm4328",
+            "marvell",
+            "applehda",
+            "sse4.1",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacBookPro5,1",
+            "MacBookPro5,2",
+            "MacBookPro5,3",
+            "MacBookPro5,4",
+            "MacBookPro5,5"
+        ],
+        "patches": [
+            "bcm4322",
+            "nvidia",
+            "applehda",
+            "sse4.1",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacBookPro6,1",
+            "MacBookPro6,2"
+        ],
+        "patches": [
+            "bcm43224",
+            "broadcom",
+            "applehda",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacBookPro7,1"
+        ],
+        "patches": [
+            "bcm4322",
+            "nvidia",
+            "applehda",
+            "sse4.1",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacBookPro8,1",
+            "MacBookPro8,2",
+            "MacBookPro8,3"
+        ],
+        "patches": [
+            "bcm4331",
+            "broadcom",
+            "applehda",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacBookPro9,1",
+            "MacBookPro9,2",
+            "MacBookPro10,1",
+            "MacBookPro10,2"
+        ],
+        "patches": [
+            "bcm4331"
+        ]
+    },
+    {
+        "models": [
+            "MacMini3,1",
+            "MacMini4,1"
+        ],
+        "patches": [
+            "bcm43224",
+            "nvidia",
+            "applehda",
+            "sse4.1",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "Macmini5,1",
+            "Macmini5,2",
+            "Macmini5,3"
+        ],
+        "patches": [
+            "bcm4331",
+            "broadcom",
+            "applehda",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "MacMini6,1",
+            "MacMini6,2"
+        ],
+        "patches": [
+            "bcm4331"
+        ]
+    },
+    {
+        "models": [
+            "iMac7,1",
+            "iMac8,1"
+        ],
+        "patches": [
+            "bcm4328",
+            "nvidia",
+            "applehda",
+            "sse4.1",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "iMac9,1"
+        ],
+        "patches": [
+            "bcm4322",
+            "nvidia",
+            "applehda",
+            "sse4.1",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "iMac10,1"
+        ],
+        "patches": [
+            "atheros",
+            "nvidia",
+            "applehda",
+            "sse4.1",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "iMac11,1",
+            "iMac11,2",
+            "iMac11,3"
+        ],
+        "patches": [
+            "atheros",
+            "broadcom",
+            "applehda",
+            "gpu",
+            "cpbg"
+        ]
+    },
+    {
+        "models": [
+            "iMac12,1",
+            "iMac12,2"
+        ],
+        "patches": [
+            "atheros",
+            "broadcom",
+            "applehda",
+            "gpu"
+        ]
+    },
+    {
+        "models": [
+            "iMac13,1",
+            "iMac13,2"
+        ],
+        "patches": [
+            "bcm4331"
+        ]
+    },
+    {
+        "models": [
+            "iMac14,1",
+            "iMac14,2",
+            "iMac14,3"
+        ],
+        "patches": []
+    },
+    {
+        "models": [
+            "MacPro3,1"
+        ],
+        "patches": [
+            "atheros",
+            "applehda",
+            "sse4.1",
+            "mcedisabler"
+        ]
+    },
+    {
+        "models": [
+            "MacPro4,1"
+        ],
+        "patches": [
+            "atheros",
+            "mcedisabler"
+        ]
+    },
+    {
+        "models": [
+            "MacPro5,1"
+        ],
+        "patches": [
+            "bcm4322",
+            "mcedisabler"
+        ]
+    },
+    {
+        "models": [
+            "Xserve3,1"
+        ],
+        "patches": [
+            "mcedisabler"
+        ]
+    }
+]
