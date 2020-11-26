@@ -5,11 +5,11 @@
             "MacBook5,2"
         ],
         "patches": [
-            "bcm4322",
-            "applehda",
-            "sse4.1",
-            "mcp79",
-            "gpu"
+            "WifiBCM94322",
+            "LegacyAudio",
+            "MissingSSE42",
+            "EthernetNvidia",
+            "LegacyGPU"
         ]
     },
     {
@@ -18,11 +18,11 @@
             "MacBook7,1"
         ],
         "patches": [
-            "bcm43224",
-            "applehda",
-            "sse4.1",
-            "mcp79",
-            "gpu"
+            "WifiBCM943224",
+            "LegacyAudio",
+            "MissingSSE42",
+            "EthernetNvidia",
+            "LegacyGPU"
         ]
     },
     {
@@ -32,10 +32,10 @@
             "MacBookAir3,2"
         ],
         "patches": [
-            "bcm4322",
-            "applehda",
-            "sse4.1",
-            "gpu"
+            "WifiBCM94322",
+            "LegacyAudio",
+            "MissingSSE42",
+            "LegacyGPU"
         ]
     },
     {
@@ -44,9 +44,9 @@
             "MacBookAir4,2"
         ],
         "patches": [
-            "bcm4322",
-            "applehda",
-            "gpu"
+            "WifiBCM94322",
+            "LegacyAudio",
+            "LegacyGPU"
         ]
     },
     {
@@ -55,7 +55,7 @@
             "MacBookAir5,2"
         ],
         "patches": [
-            "bcm4322"
+            "WifiBCM94322"
         ]
     },
     {
@@ -63,11 +63,11 @@
             "MacBookPro3,1"
         ],
         "patches": [
-            "ar5418",
-            "marvell",
-            "applehda",
-            "sse4.1",
-            "gpu"
+            "WifiAtheros",
+            "EthernetMarvell",
+            "LegacyAudio",
+            "MissingSSE42",
+            "LegacyGPU"
         ]
     },
     {
@@ -75,11 +75,11 @@
             "MacBookPro4,1"
         ],
         "patches": [
-            "bcm4328",
-            "marvell",
-            "applehda",
-            "sse4.1",
-            "gpu"
+            "WifiBCM94328",
+            "EthernetMarvell",
+            "LegacyAudio",
+            "MissingSSE42",
+            "LegacyGPU"
         ]
     },
     {
@@ -91,11 +91,11 @@
             "MacBookPro5,5"
         ],
         "patches": [
-            "bcm4322",
-            "nvidia",
-            "applehda",
-            "sse4.1",
-            "gpu"
+            "WifiBCM94322",
+            "EthernetNvidia",
+            "LegacyAudio",
+            "MissingSSE42",
+            "LegacyGPU"
         ]
     },
     {
@@ -104,10 +104,11 @@
             "MacBookPro6,2"
         ],
         "patches": [
-            "bcm43224",
-            "broadcom",
-            "applehda",
-            "gpu"
+            "WifiBCM943224",
+            "EthernetBroadcom",
+            "LegacyAudio",
+            "LegacyGPU",
+            "PCIBridge"
         ]
     },
     {
@@ -115,11 +116,11 @@
             "MacBookPro7,1"
         ],
         "patches": [
-            "bcm4322",
-            "nvidia",
-            "applehda",
-            "sse4.1",
-            "gpu"
+            "WifiBCM94322",
+            "EthernetNvidia",
+            "LegacyAudio",
+            "MissingSSE42",
+            "LegacyGPU"
         ]
     },
     {
@@ -129,10 +130,10 @@
             "MacBookPro8,3"
         ],
         "patches": [
-            "bcm4331",
-            "broadcom",
-            "applehda",
-            "gpu"
+            "WifiBCM94331",
+            "EthernetBroadcom",
+            "LegacyAudio",
+            "LegacyGPU"
         ]
     },
     {
@@ -143,7 +144,7 @@
             "MacBookPro10,2"
         ],
         "patches": [
-            "bcm4331"
+            "WifiBCM94331"
         ]
     },
     {
@@ -152,11 +153,11 @@
             "MacMini4,1"
         ],
         "patches": [
-            "bcm43224",
-            "nvidia",
-            "applehda",
-            "sse4.1",
-            "gpu"
+            "WifiBCM943224",
+            "EthernetNvidia",
+            "LegacyAudio",
+            "MissingSSE42",
+            "LegacyGPU"
         ]
     },
     {
@@ -166,10 +167,10 @@
             "Macmini5,3"
         ],
         "patches": [
-            "bcm4331",
-            "broadcom",
-            "applehda",
-            "gpu"
+            "WifiBCM94331",
+            "EthernetBroadcom",
+            "LegacyAudio",
+            "LegacyGPU"
         ]
     },
     {
@@ -178,7 +179,7 @@
             "MacMini6,2"
         ],
         "patches": [
-            "bcm4331"
+            "WifiBCM94331"
         ]
     },
     {
@@ -187,11 +188,11 @@
             "iMac8,1"
         ],
         "patches": [
-            "bcm4328",
-            "nvidia",
-            "applehda",
-            "sse4.1",
-            "gpu"
+            "WifiBCM94328",
+            "EthernetNvidia",
+            "LegacyAudio",
+            "MissingSSE42",
+            "LegacyGPU"
         ]
     },
     {
@@ -199,11 +200,11 @@
             "iMac9,1"
         ],
         "patches": [
-            "bcm4322",
-            "nvidia",
-            "applehda",
-            "sse4.1",
-            "gpu"
+            "WifiBCM94322",
+            "EthernetNvidia",
+            "LegacyAudio",
+            "MissingSSE42",
+            "LegacyGPU"
         ]
     },
     {
@@ -211,11 +212,11 @@
             "iMac10,1"
         ],
         "patches": [
-            "atheros",
-            "nvidia",
-            "applehda",
-            "sse4.1",
-            "gpu"
+            "WifiAtheros",
+            "EthernetNvidia",
+            "LegacyAudio",
+            "MissingSSE42",
+            "LegacyGPU"
         ]
     },
     {
@@ -225,11 +226,11 @@
             "iMac11,3"
         ],
         "patches": [
-            "atheros",
-            "broadcom",
-            "applehda",
-            "gpu",
-            "cpbg"
+            "WifiAtheros",
+            "EthernetBroadcom",
+            "LegacyAudio",
+            "LegacyGPU",
+            "PCIBridge"
         ]
     },
     {
@@ -238,10 +239,10 @@
             "iMac12,2"
         ],
         "patches": [
-            "atheros",
-            "broadcom",
-            "applehda",
-            "gpu"
+            "WifiAtheros",
+            "EthernetBroadcom",
+            "LegacyAudio",
+            "LegacyGPU"
         ]
     },
     {
@@ -250,7 +251,7 @@
             "iMac13,2"
         ],
         "patches": [
-            "bcm4331"
+            "WifiBCM94331"
         ]
     },
     {
@@ -266,10 +267,11 @@
             "MacPro3,1"
         ],
         "patches": [
-            "atheros",
-            "applehda",
-            "sse4.1",
-            "mcedisabler"
+            "WifiAtheros",
+            "LegacyAudio",
+            "MissingSSE42",
+            "SSEEmulator",
+            "DualSocket"
         ]
     },
     {
@@ -277,8 +279,8 @@
             "MacPro4,1"
         ],
         "patches": [
-            "atheros",
-            "mcedisabler"
+            "WifiAtheros",
+            "DualSocket"
         ]
     },
     {
@@ -286,8 +288,8 @@
             "MacPro5,1"
         ],
         "patches": [
-            "bcm4322",
-            "mcedisabler"
+            "WifiBCM94322",
+            "DualSocket"
         ]
     },
     {
@@ -295,7 +297,7 @@
             "Xserve3,1"
         ],
         "patches": [
-            "mcedisabler"
+            "DualSocket"
         ]
     }
 ]
