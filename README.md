@@ -9,17 +9,10 @@ Current TO-DO's with this patcher:
 * [ ] Create macOS Installer
 * [ ] Install OpenCore to USB
 * [ ] Install OpenCore to internal drive
-* [ ] USB mapping
-  * [x] MacBook
-  * [x] MacBook Air
-  * [ ] MacBook Pro
-  * [x] Man Mini
-  * [x] iMac
-  * [x] Mac Pro
-  * [x] Xserve
-* [ ] Legacy GPU patches
+* [x] USB mapping
+* [ ] Legacy GPU Patches
   * ie. 2011 and older
-* [ ] Audio patches
+* [ ] Legacy Audio Patches
   * ie. 2011 and older
 
 ## Supported SMBIOS
