@@ -5,6 +5,7 @@ A python script for building and booting OpenCore on legacy Macs, see [Supported
 Current TO-DO's with this patcher:
 
 * [x] Create OpenCore EFI
+* [ ] Generate new serials
 * [ ] Create macOS Installer
 * [ ] Install OpenCore to USB
 * [ ] Install OpenCore to internal drive

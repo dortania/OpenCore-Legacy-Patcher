@@ -336,6 +336,94 @@ NVMePatch = [
     "Xserve3,1"
 ]
 
+# 11" Air
+MacBookAir61 = [
+    "MacBookAir3,1",
+    "MacBookAir4,1",
+    "MacBookAir5,1"
+]
+
+# MacBook and 13" Air
+MacBookAir62 = [
+    "MacBook5,1",
+    "MacBook5,2",
+    "MacBook6,1",
+    "MacBook7,1",
+    "MacBookAir2,1",
+    "MacBookAir3,2",
+    "MacBookAir4,2",
+    "MacBookAir5,2"
+]
+
+# MacBook Pro 13"
+
+MacBookPro111 = [
+    "MacBookPro5,5",
+    "MacBookPro7,1",
+    "MacBookPro8,1",
+    "MacBookPro9,2",
+    "MacBookPro10,2",
+]
+
+# MacBook Pro 15" and 17"
+
+MacBookPro112 = [
+    "MacBookPro3,1",
+    "MacBookPro4,1",
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro6,1",
+    "MacBookPro6,2",
+    "MacBookPro8,2",
+    "MacBookPro8,3",
+    "MacBookPro9,1",
+    "MacBookPro10,1",
+]
+
+# Mac Mini
+
+Macmini71 = [
+    "Macmini3,1",
+    "Macmini4,1",
+    "Macmini5,1",
+    "Macmini5,2",
+    "Macmini5,3",
+    "Macmini6,1",
+    "Macmini6,2"
+]
+
+# iMac = AMD and Nvidia GPU
+iMac151 = [
+    "iMac7,1",
+    "iMac8,1",
+    "iMac9,1",
+    "iMac10,1",
+    "iMac11,1",
+    "iMac11,2",
+    "iMac11,3",
+    "iMac12,1",
+    "iMac12,2",
+    "iMac13,2",
+    "iMac14,2",
+    "iMac14,3"
+]
+# iMac = Intel iGPU
+iMac144 = [
+    "iMac13,1",
+    "iMac14,1"
+]
+
+# Mac Pro and Xserve
+
+MacPro71 = [
+    "MacPro3,1",
+    "MacPro4,1",
+    "MacPro5,1",
+    "Xserve3,1"
+]
+
 # List build versions
 patcher_version = "0.0.1"
 opencore_version = "0.6.3"
@@ -386,6 +474,9 @@ acpi_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/O
 drivers_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/Drivers" % opencore_version)
 kext_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/Kexts" % opencore_version)
 opencore_path_done = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s" % opencore_version)
+
+# Tools
+macserial_path = os.path.join(current_path, "payloads/" "Tools")
 
 # Load models.json
 #models = json.load(open("models.json"))
@@ -629,6 +720,159 @@ while MainMenu:
                             "<string>NvmExpressDxe.efi</string>"
                         )
                     
+                    # Add new SMBIOS data
+                    if current_model in MacBookAir61:
+                        print("- Spoofing to MacBookAir6,1")
+                        # Patch SMBIOS
+                        
+                        plist_data = plist_data.replace(
+                            "iMac19,1",
+                            "MacBookAir6,1"
+                        )
+                        # Patch Number Serial
+                        plist_data = plist_data.replace(
+                            "W00000000001",
+                            "Dortania-SN"
+                        )
+                        # Patch MLB
+                        plist_data = plist_data.replace(
+                            "M0000000000000001",
+                            "Dortania-MLB"
+                        )
+                    if current_model in MacBookAir62:
+                        print("- Spoofing to MacBookAir6,2")
+                        # Patch SMBIOS
+                        
+                        plist_data = plist_data.replace(
+                            "iMac19,1",
+                            "MacBookAir6,2"
+                        )
+                        # Patch Number Serial
+                        plist_data = plist_data.replace(
+                            "W00000000001",
+                            "Dortania-SN"
+                        )
+                        # Patch MLB
+                        plist_data = plist_data.replace(
+                            "M0000000000000001",
+                            "Dortania-MLB"
+                        )
+                    if current_model in MacBookPro111:
+                        print("- Spoofing to MacBookPro11,1")
+                        # Patch SMBIOS
+                        
+                        plist_data = plist_data.replace(
+                            "iMac19,1",
+                            "MacBookPro11,1"
+                        )
+                        # Patch Number Serial
+                        plist_data = plist_data.replace(
+                            "W00000000001",
+                            "Dortania-SN"
+                        )
+                        # Patch MLB
+                        plist_data = plist_data.replace(
+                            "M0000000000000001",
+                            "Dortania-MLB"
+                        )
+                    if current_model in MacBookPro112:
+                        print("- Spoofing to MacBookPro11,2")
+                        # Patch SMBIOS
+                        
+                        plist_data = plist_data.replace(
+                            "iMac19,1",
+                            "MacBookPro11,2"
+                        )
+                        # Patch Number Serial
+                        plist_data = plist_data.replace(
+                            "W00000000001",
+                            "Dortania-SN"
+                        )
+                        # Patch MLB
+                        plist_data = plist_data.replace(
+                            "M0000000000000001",
+                            "Dortania-MLB"
+                        )
+                    if current_model in Macmini71:
+                        print("- Spoofing to Macmini7,1")
+                        # Patch SMBIOS
+                        
+                        plist_data = plist_data.replace(
+                            "iMac19,1",
+                            " Macmini7,1"
+                        )
+                        # Patch Number Serial
+                        plist_data = plist_data.replace(
+                            "W00000000001",
+                            "Dortania-SN"
+                        )
+                        # Patch MLB
+                        plist_data = plist_data.replace(
+                            "M0000000000000001",
+                            "Dortania-MLB"
+                        )
+                    if current_model in iMac151:
+                        print("- Spoofing to iMac15,1")
+                        # Patch SMBIOS
+                        
+                        plist_data = plist_data.replace(
+                            "iMac19,1",
+                            "iMac15,1"
+                        )
+                        # Patch Number Serial
+                        plist_data = plist_data.replace(
+                            "W00000000001",
+                            "Dortania-SN"
+                        )
+                        # Patch MLB
+                        plist_data = plist_data.replace(
+                            "M0000000000000001",
+                            "Dortania-MLB"
+                        )
+                    if current_model in iMac144:
+                        print("- Spoofing to iMac14,4")
+                        # Patch SMBIOS
+                        
+                        plist_data = plist_data.replace(
+                            "iMac19,1",
+                            "iMac14,4"
+                        )
+                        # Patch Number Serial
+                        plist_data = plist_data.replace(
+                            "W00000000001",
+                            "Dortania-SN"
+                        )
+                        # Patch MLB
+                        plist_data = plist_data.replace(
+                            "M0000000000000001",
+                            "Dortania-MLB"
+                        )
+                    if current_model in MacPro71:
+                        print("- Spoofing to MacPro7,1")
+                        # Patch SMBIOS
+                        
+                        plist_data = plist_data.replace(
+                            "iMac19,1",
+                            "MacPro7,1"
+                        )
+                        # Patch Number Serial
+                        plist_data = plist_data.replace(
+                            "W00000000001",
+                            "Dortania-SN"
+                        )
+                        # Patch MLB
+                        plist_data = plist_data.replace(
+                            "M0000000000000001",
+                            "Dortania-MLB"
+                        )
+                        
+                    # Patch UUID
+                    uuidGen = subprocess.Popen(["uuidgen"], stdout=subprocess.PIPE).communicate()[0]
+                    plist_data = plist_data.replace(
+                        "00000000-0000-0000-0000-000000000000",
+                        uuidGen
+                    )
+
                     # Save config.plist changes in memory
                     with open(plist_path_build_full, 'w') as file:
                         file.write(plist_data)
