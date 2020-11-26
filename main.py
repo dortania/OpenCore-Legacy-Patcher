@@ -691,6 +691,18 @@ while MainMenu:
                                 "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
                                 "PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)"
                             )
+                    
+                    
+                    usb_map_path = os.path.join(current_path, "payloads/Kexts/Maps/Zip/" "USB-Map-%s.zip" % current_model)
+                    if os.path.exists(usb_map_path):
+                        print("- Adding USB Map for %s" % current_model)
+                        copy(usb_map_path, kext_path_build)
+                        map_name = ("USB-Map-%s.kext" % current_model)
+                        plist_data = plist_data.replace(
+                            "USB-Map-SMBIOS.kext",
+                            map_name
+                        )
+                    
 
                     # Checks for ACPI
                     # Add SSDTs
