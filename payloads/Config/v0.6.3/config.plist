@@ -8,7 +8,7 @@
 		<array>
 			<dict>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--SSDT-CPBG-->
 				<key>Comment</key>
 				<string>Patch CPBG for Arrendale, Lynnfield and Clarkdale</string>
 				<key>Path</key>
@@ -21,11 +21,11 @@
 		<array>
 			<dict>
 				<key>Comment</key>
-				<string>XHC1 to SHCI</string>
+				<string>XHC1 to SHC1</string>
 				<key>Count</key>
 				<integer>0</integer>
 				<key>Enabled</key>
-				<false/>
+				<true/>
 				<key>Find</key>
 				<data>WEhDMQ==</data>
 				<key>Limit</key>
@@ -35,7 +35,7 @@
 				<key>OemTableId</key>
 				<data></data>
 				<key>Replace</key>
-				<data>U0hDSQ==</data>
+				<data>U0hDMQ==</data>
 				<key>ReplaceMask</key>
 				<data></data>
 				<key>Skip</key>
@@ -51,7 +51,7 @@
 				<key>Count</key>
 				<integer>0</integer>
 				<key>Enabled</key>
-				<false/>
+				<true/>
 				<key>Find</key>
 				<data>RUhDMQ==</data>
 				<key>Limit</key>
@@ -77,7 +77,7 @@
 				<key>Count</key>
 				<integer>0</integer>
 				<key>Enabled</key>
-				<false/>
+				<true/>
 				<key>Find</key>
 				<data>RUhDMg==</data>
 				<key>Limit</key>
@@ -158,10 +158,12 @@
 	<dict>
 		<key>Add</key>
 		<dict>
-			<key>PciRoot(0x0)/Pci(0x1b,0x0)</key>
+			<key>#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)</key>
 			<dict>
-				<key>layout-id</key>
-				<data>AQAAAA==</data>
+				<key>device-id</key>
+				<data>ukMAAA==</data>
+				<key>compatible</key>
+				<string>pci14e4,43ba</string>
 			</dict>
 		</dict>
 		<key>Delete</key>
@@ -175,7 +177,7 @@
 				<key>Comment</key>
 				<string>Patching Engine</string>
 				<key>Enabled</key>
-				<true/>
+				<true/><!--Lilu-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -191,7 +193,7 @@
 				<key>Comment</key>
 				<string>GPU Patching</string>
 				<key>Enabled</key>
-				<true/>
+				<true/><!--WEG-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -207,7 +209,7 @@
 				<key>Comment</key>
 				<string>SSE Emulator</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--AAAMouSSE-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -223,7 +225,7 @@
 				<key>Comment</key>
 				<string>SSE Patcher</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--telemetrap-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -239,7 +241,7 @@
 				<key>Comment</key>
 				<string>4331 Wifi Patch</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--AirportBrcmFixup-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -255,7 +257,7 @@
 				<key>Comment</key>
 				<string>4331 Wifi Patch</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--AirPortBrcmNIC_Injector-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -271,7 +273,7 @@
 				<key>Comment</key>
 				<string>Dual Socket Patch</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--AppleMCEReporterDisabler-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -287,7 +289,7 @@
 				<key>Comment</key>
 				<string>BCM Ethernet patch</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--CatalinaBCM5701Ethernet-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -303,7 +305,7 @@
 				<key>Comment</key>
 				<string>Atheros Wifi Patch</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--IO80211HighSierra-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -319,7 +321,7 @@
 				<key>Comment</key>
 				<string>Atheros Wifi Patch</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--AirPortAtheros40-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -335,7 +337,7 @@
 				<key>Comment</key>
 				<string>Broadcom Wifi Patch</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--IO80211Mojave-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -351,7 +353,7 @@
 				<key>Comment</key>
 				<string>Broadcom Wifi Patch</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--AirPortBrcm4331-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -367,7 +369,7 @@
 				<key>Comment</key>
 				<string>Marvel Ethernet Patch</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--MarvelYukonEthernet-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -383,7 +385,7 @@
 				<key>Comment</key>
 				<string>Nvidia Ethernet Patch</string>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--nForceEthernet-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -425,7 +427,7 @@
 				<key>Count</key>
 				<integer>1</integer>
 				<key>Enabled</key>
-				<false/>
+				<false/><!--IOHIDFamily-->
 				<key>Find</key>
 				<data></data>
 				<key>Identifier</key>
@@ -757,7 +759,7 @@
 		<true/>
 		<key>Drivers</key>
 		<array>
-			<string>NvmExpressDxe.efi</string>
+			<string>#NvmExpressDxe.efi</string>
 			<string>OpenCanopy.efi</string>
 			<string>OpenRuntime.efi</string>
 		</array>

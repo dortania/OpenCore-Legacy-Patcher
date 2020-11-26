@@ -307,12 +307,41 @@ LegacyGPU = [
     "iMac12,2"
 ]
 
+LegacyHID = [
+    "MacBook5,1",
+    "MacBook5,2",
+    "MacBook6,1",
+    "MacBook7,1",
+    "MacBookAir2,1",
+    "MacBookAir3,1",
+    "MacBookPro3,1",
+    "MacBookPro4,1",
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro5,5",
+    "MacBookPro7,1",
+    "Macmini3,1",
+    "Macmini4,1",
+    "iMac7,1",
+    "iMac8,1",
+    "iMac9,1",
+    "iMac10,1",
+]
+
+NVMePatch = [
+    "MacPro3,1"
+    "MacPro4,1"
+    "Xserve3,1"
+]
+
 # List build versions
 patcher_version = "0.0.1"
 opencore_version = "0.6.3"
 lilu_version = "1.4.9"
 whatevergreen_version = "1.4.4"
-airportbcrmfixup_path = "2.1.1"
+airportbcrmfixup_version = "2.1.1"
 bcm570_version = "1.0.0"
 marvel_version = "1.0.0"
 nforce_version = "1.0.0"
@@ -328,6 +357,13 @@ current_path = os.getcwd()
 # Payload Location
 # OpenCore
 opencore_path = os.path.join(current_path, "payloads/OpenCore/" "OpenCore-v%s.zip" % opencore_version)
+plist_path = os.path.join(current_path, "payloads/Config/v%s/" "config.plist" % opencore_version)
+
+# ACPI
+pci_ssdt_path = os.path.join(current_path, "payloads/ACPI/" "SSDT-CPBG.aml")
+
+# Drivers
+nvme_driver_path = os.path.join(current_path, "payloads/Drivers/" "NvmExpressDxe.efi")
 
 # Kexts
 lilu_path = os.path.join(current_path, "payloads/Kexts/Acidanthera/" "Lilu-v%s.zip" % lilu_version)
@@ -342,12 +378,12 @@ telemetrap_path = os.path.join(current_path, "payloads/Kexts/SSE/" "telemetrap-v
 io80211high_sierra_path = os.path.join(current_path, "payloads/Kexts/Wifi/" "IO80211HighSierra-v%s.zip" % io80211high_sierra_version)
 io80211mojave_path = os.path.join(current_path, "payloads/Kexts/Wifi/" "IO80211Mojave-v%s.zip" % io80211mojave_version)
 
-# ACPI
-pci_ssdt_path = os.path.join(current_path, "payloads/ACPI/" "SSDT-CPBG.aml")
-
 # Build Location
 opencore_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s.zip" % opencore_version)
+plist_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/" % opencore_version)
+plist_path_build_full = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/config.plist" % opencore_version)
 acpi_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/ACPI" % opencore_version)
+drivers_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/Drivers" % opencore_version)
 kext_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/Kexts" % opencore_version)
 opencore_path_done = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s" % opencore_version)
 
@@ -365,22 +401,27 @@ MainMenu=True
 while MainMenu:
     os.system('clear')
 
-    print("#######################################################")
+    print("###################################################")
     print("        OpenCore Legacy patcher v%s" % patcher_version)
     print("           Current Model: %s" % current_model)
-    print("#######################################################")
+    print("###################################################")
     print("")
     if current_model not in SupportedSMBIOS:
         print("   Your model is not supported by this patcher!")
         print("")
-        print("   If you plan to create the USB for another machine,")
-        print("   please select option 5")
-        print("-------------------------------------------------------")
+        print(" If you plan to create the USB for another machine,")
+        print("            please select option 5")
+        print("---------------------------------------------------")
+        print("")
+    elif current_model in ("MacPro3,1", "iMac7,1"):
+        print("           This model is supported")
+        print(" However please ensure the CPU have been upgraded")
+        print("             to support SSE4.1+")
+        print("---------------------------------------------------")
         print("")
     else:
-        pass
         print("            This model is supported")
-        print("-------------------------------------------------------")
+        print("---------------------------------------------------")
         print("")
     print("    1.  Build OpenCore")
     print("    2.  Create macOS Installer              - Not yet implemented")
@@ -436,9 +477,16 @@ while MainMenu:
                         print("Deleting old copy of OpenCore folder")
                         rmtree(opencore_path_done)
                     print("")
-                    print("- Adding OpenCore to build folder")
+                    print("- Adding OpenCore v%s" % opencore_version)
                     copy(opencore_path, build_path)
                     zipfile.ZipFile(opencore_path_build).extractall(build_path)
+
+                    print("- Adding config.plist v%s" % opencore_version)
+                    # Setup config.plist for editing
+                    copy(plist_path, plist_path_build)
+                    with open(plist_path_build_full, 'r') as file :
+                        plist_data = file.read()
+
                     print("- Adding Lilu %s" % lilu_version)
                     copy(lilu_path, kext_path_build)
                     print("- Adding WhateverGreen %s" % whatevergreen_version)
@@ -449,50 +497,141 @@ while MainMenu:
                     if current_model in DualSocket:
                         print("- Adding AppleMCEReporterDisabler v%s" % mce_version)
                         copy(mce_path, kext_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--AppleMCEReporterDisabler-->",
+                            "<true/><!--AppleMCEReporterDisabler-->"
+                        )
+                    
                     if current_model in SSEEmulator:
                         print("- Adding AAAMouSSE v%s" % mousse_version)
                         copy(mousse_version, kext_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--AAAMouSSE-->",
+                            "<true/><!--AAAMouSSE-->"
+                        )
                     if current_model in MissingSSE42:
-                        print("- Adding Teletrap %s" % telemetrap_version)
+                        print("- Adding telemetrap %s" % telemetrap_version)
                         copy(telemetrap_path, kext_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--telemetrap-->",
+                            "<true/><!--telemetrap-->"
+                        )
                     
                     # Ethernet Patches
 
                     if current_model in EthernetNvidia:
                         print("- Adding nForceEthernet v%s" % nforce_version)
                         copy(nforce_path, kext_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--nForceEthernet-->",
+                            "<true/><!--nForceEthernet-->"
+                        )
                     if current_model in EthernetMarvell:
                         print("- Adding MarvelYukonEthernet v%s" % marvel_version)
                         copy(marvel_path, kext_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--MarvelYukonEthernet-->",
+                            "<true/><!--MarvelYukonEthernet-->"
+                        )
                     if current_model in EthernetBroadcom:
                         print("- Adding CatalinaBCM5701Ethernet %s" % bcm570_version)
                         copy(bcm570_path, kext_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--CatalinaBCM5701Ethernet-->",
+                            "<true/><!--CatalinaBCM5701Ethernet-->"
+                        )
                     
                     # Wifi Patches
 
                     if current_model in WifiAtheros:
                         print("- Adding IO80211HighSierra v%s" % io80211high_sierra_version)
                         copy(io80211high_sierra_path, kext_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--IO80211HighSierra-->",
+                            "<true/><!--IO80211HighSierra-->"
+                        )
+                        plist_data = plist_data.replace(
+                            "<false/><!--AirPortAtheros40-->",
+                            "<true/><!--AirPortAtheros40-->"
+                        )
                     if current_model in WifiBCM94328:
                         print("- Wifi patches currently unsupported")
                         # TO-DO: Add El Capitan's IO80211
                     if current_model in WifiBCM94322:
                         print("- Adding IO80211Mojave %s" % io80211mojave_version)
                         copy(io80211mojave_path, kext_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--IO80211Mojave-->",
+                            "<true/><!--IO80211Mojave-->"
+                        )
+                        plist_data = plist_data.replace(
+                            "<false/><!--AirPortBrcm4331-->",
+                            "<true/><!--AirPortBrcm4331-->"
+                        )
                     if current_model in WifiBCM943224:
                         print("- Adding IO80211Mojave %s" % io80211mojave_version)
                         copy(io80211mojave_path, kext_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--IO80211Mojave-->",
+                            "<true/><!--IO80211Mojave-->"
+                        )
+                        plist_data = plist_data.replace(
+                            "<false/><!--AirPortBrcm4331-->",
+                            "<true/><!--AirPortBrcm4331-->"
+                        )
                     if current_model in WifiBCM94331:
-                        print("- Wifi patches currently unsupported")
-                        # TO-DO: Add Fake ID and AirportBrcmFixup for native support
+                        print("- Adding AirportBrcmFixup and appling fake ID")
+                        copy(airportbcrmfixup_path, kext_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--AirportBrcmFixup-->",
+                            "<true/><!--AirportBrcmFixup-->"
+                        )
+                        plist_data = plist_data.replace(
+                            "<false/><!--AirPortBrcmNIC_Injector-->",
+                            "<true/><!--AirPortBrcmNIC_Injector-->"
+                        )
+                        if current_model in ("iMac13,1", "iMac13,2"):
+                            plist_data = plist_data.replace(
+                                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
+                                "PciRoot(0x0)/Pci(0x1C,0x3)Pci(0x0,0x0)"
+                            )
+                        else:
+                            plist_data = plist_data.replace(
+                                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
+                                "PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)"
+                            )
 
                     # Checks for ACPI
                     # Add SSDTs
                     if current_model in pciSSDT:
-                        print("- SSDT-CPBG.aml")
+                        print("- Adding SSDT-CPBG.aml")
                         copy(pci_ssdt_path, acpi_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--SSDT-CPBG-->",
+                            "<true/><!--SSDT-CPBG-->"
+                        )
 
-                    # Add Config.plist
+                    # Check for Kernel Patches
+                    if current_model in LegacyHID:
+                        print("- Adding IOHIDFamily Patch")
+                        copy(pci_ssdt_path, acpi_path_build)
+                        plist_data = plist_data.replace(
+                            "<false/><!--IOHIDFamily-->",
+                            "<true/><!--IOHIDFamily-->"
+                        )
+
+                    # Check for EFI Drivers
+                    if current_model in NVMePatch:
+                        print("- Adding NVMe support")
+                        copy(nvme_driver_path, drivers_path_build)
+                        plist_data = plist_data.replace(
+                            "<string>#NvmExpressDxe.efi</string>",
+                            "<string>NvmExpressDxe.efi</string>"
+                        )
+                    
+                    # Save config.plist changes in memory
+                    with open(plist_path_build_full, 'w') as file:
+                        file.write(plist_data)
                     
                     # Clean up Build Folder
                     print("")
@@ -514,6 +653,7 @@ while MainMenu:
                     print("")
                     print("Your OpenCore EFI has been built at:")
                     print("    %s" % opencore_path_done)
+                    print("")
                     AutoBuilderMenu = raw_input("Press any key to return to previous menu: ")
                     if AutoBuilderMenu=="1":
                         print("Returning to previous menu...")
