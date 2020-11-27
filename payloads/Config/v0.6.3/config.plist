@@ -832,9 +832,9 @@
 			<key>AppleAudio</key>
 			<false/>
 			<key>AppleBootPolicy</key>
-			<false/>
+			<true/>
 			<key>AppleDebugLog</key>
-			<false/>
+			<true/>
 			<key>AppleEvent</key>
 			<false/>
 			<key>AppleFramebufferInfo</key>
