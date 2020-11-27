@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 from __future__ import print_function
+
 from shutil import copy
 from shutil import rmtree
-from ModelArray import *
 
 import os
 import json
 import subprocess
 import sys
 import zipfile
+
+from Resources import *
 
 # List build versions
 patcher_version = "0.0.1"
@@ -64,15 +66,11 @@ opencore_path_done = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s" %
 # Tools
 macserial_path = os.path.join(current_path, "payloads/" "Tools")
 
-# Load models.json
-#models = json.load(open("models.json"))
-
 # Find SMBIOS of machine
 current_model = subprocess.Popen("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE)
 current_model = [line.strip().split(": ", 1)[1] for line in current_model.stdout.read().split("\n")  if line.strip().startswith("Model Identifier")][0]
 
 CustomSMBIOS=False
-patches = None
 MainMenu=True
 
 while MainMenu:
@@ -83,7 +81,7 @@ while MainMenu:
     print("           Current Model: %s" % current_model)
     print("###################################################")
     print("")
-    if current_model not in SupportedSMBIOS:
+    if current_model not in ModelArray.SupportedSMBIOS:
         print("   Your model is not supported by this patcher!")
         print("")
         print(" If you plan to create the USB for another machine,")
@@ -170,7 +168,7 @@ while MainMenu:
                     
                     # Checks for kexts
                     # CPU Kext Patches
-                    if current_model in DualSocket:
+                    if current_model in ModelArray.DualSocket:
                         print("- Adding AppleMCEReporterDisabler v%s" % mce_version)
                         copy(mce_path, kext_path_build)
                         plist_data = plist_data.replace(
@@ -178,14 +176,14 @@ while MainMenu:
                             "<true/><!--AppleMCEReporterDisabler-->"
                         )
                     
-                    if current_model in SSEEmulator:
+                    if current_model in ModelArray.SSEEmulator:
                         print("- Adding AAAMouSSE v%s" % mousse_version)
                         copy(mousse_version, kext_path_build)
                         plist_data = plist_data.replace(
                             "<false/><!--AAAMouSSE-->",
                             "<true/><!--AAAMouSSE-->"
                         )
-                    if current_model in MissingSSE42:
+                    if current_model in ModelArray.MissingSSE42:
                         print("- Adding telemetrap %s" % telemetrap_version)
                         copy(telemetrap_path, kext_path_build)
                         plist_data = plist_data.replace(
@@ -195,21 +193,21 @@ while MainMenu:
                     
                     # Ethernet Patches
 
-                    if current_model in EthernetNvidia:
+                    if current_model in ModelArray.EthernetNvidia:
                         print("- Adding nForceEthernet v%s" % nforce_version)
                         copy(nforce_path, kext_path_build)
                         plist_data = plist_data.replace(
                             "<false/><!--nForceEthernet-->",
                             "<true/><!--nForceEthernet-->"
                         )
-                    if current_model in EthernetMarvell:
+                    if current_model in ModelArray.EthernetMarvell:
                         print("- Adding MarvelYukonEthernet v%s" % marvel_version)
                         copy(marvel_path, kext_path_build)
                         plist_data = plist_data.replace(
                             "<false/><!--MarvelYukonEthernet-->",
                             "<true/><!--MarvelYukonEthernet-->"
                         )
-                    if current_model in EthernetBroadcom:
+                    if current_model in ModelArray.EthernetBroadcom:
                         print("- Adding CatalinaBCM5701Ethernet %s" % bcm570_version)
                         copy(bcm570_path, kext_path_build)
                         plist_data = plist_data.replace(
@@ -219,7 +217,7 @@ while MainMenu:
                     
                     # Wifi Patches
 
-                    if current_model in WifiAtheros:
+                    if current_model in ModelArray.WifiAtheros:
                         print("- Adding IO80211HighSierra v%s" % io80211high_sierra_version)
                         copy(io80211high_sierra_path, kext_path_build)
                         plist_data = plist_data.replace(
@@ -230,10 +228,10 @@ while MainMenu:
                             "<false/><!--AirPortAtheros40-->",
                             "<true/><!--AirPortAtheros40-->"
                         )
-                    if current_model in WifiBCM94328:
+                    if current_model in ModelArray.WifiBCM94328:
                         print("- Wifi patches currently unsupported")
                         # TO-DO: Add El Capitan's IO80211
-                    if current_model in WifiBCM94322:
+                    if current_model in ModelArray.WifiBCM94322:
                         print("- Adding IO80211Mojave %s" % io80211mojave_version)
                         copy(io80211mojave_path, kext_path_build)
                         plist_data = plist_data.replace(
@@ -244,7 +242,7 @@ while MainMenu:
                             "<false/><!--AirPortBrcm4331-->",
                             "<true/><!--AirPortBrcm4331-->"
                         )
-                    if current_model in WifiBCM943224:
+                    if current_model in ModelArray.WifiBCM943224:
                         print("- Adding IO80211Mojave %s" % io80211mojave_version)
                         copy(io80211mojave_path, kext_path_build)
                         plist_data = plist_data.replace(
@@ -255,7 +253,7 @@ while MainMenu:
                             "<false/><!--AirPortBrcm4331-->",
                             "<true/><!--AirPortBrcm4331-->"
                         )
-                    if current_model in WifiBCM94331:
+                    if current_model in ModelArray.WifiBCM94331:
                         print("- Adding AirportBrcmFixup and appling fake ID")
                         copy(airportbcrmfixup_path, kext_path_build)
                         plist_data = plist_data.replace(
@@ -291,7 +289,7 @@ while MainMenu:
 
                     # Checks for ACPI
                     # Add SSDTs
-                    if current_model in pciSSDT:
+                    if current_model in ModelArray.pciSSDT:
                         print("- Adding SSDT-CPBG.aml")
                         copy(pci_ssdt_path, acpi_path_build)
                         plist_data = plist_data.replace(
@@ -300,7 +298,7 @@ while MainMenu:
                         )
 
                     # Check for Kernel Patches
-                    if current_model in LegacyHID:
+                    if current_model in ModelArray.LegacyHID:
                         print("- Adding IOHIDFamily Patch")
                         copy(pci_ssdt_path, acpi_path_build)
                         plist_data = plist_data.replace(
@@ -309,7 +307,7 @@ while MainMenu:
                         )
 
                     # Check for EFI Drivers
-                    if current_model in NVMePatch:
+                    if current_model in ModelArray.NVMePatch:
                         print("- Adding NVMe support")
                         copy(nvme_driver_path, drivers_path_build)
                         plist_data = plist_data.replace(
@@ -318,7 +316,7 @@ while MainMenu:
                         )
                     
                     # Add new SMBIOS data
-                    if current_model in MacBookAir61:
+                    if current_model in ModelArray.MacBookAir61:
                         print("- Spoofing to MacBookAir6,1")
                         # Patch SMBIOS
                         
@@ -336,7 +334,7 @@ while MainMenu:
                             "M0000000000000001",
                             "Dortania-MLB"
                         )
-                    if current_model in MacBookAir62:
+                    if current_model in ModelArray.MacBookAir62:
                         print("- Spoofing to MacBookAir6,2")
                         # Patch SMBIOS
                         
@@ -354,7 +352,7 @@ while MainMenu:
                             "M0000000000000001",
                             "Dortania-MLB"
                         )
-                    if current_model in MacBookPro111:
+                    if current_model in ModelArray.MacBookPro111:
                         print("- Spoofing to MacBookPro11,1")
                         # Patch SMBIOS
                         
@@ -372,7 +370,7 @@ while MainMenu:
                             "M0000000000000001",
                             "Dortania-MLB"
                         )
-                    if current_model in MacBookPro112:
+                    if current_model in ModelArray.MacBookPro112:
                         print("- Spoofing to MacBookPro11,2")
                         # Patch SMBIOS
                         
@@ -390,7 +388,7 @@ while MainMenu:
                             "M0000000000000001",
                             "Dortania-MLB"
                         )
-                    if current_model in Macmini71:
+                    if current_model in ModelArray.Macmini71:
                         print("- Spoofing to Macmini7,1")
                         # Patch SMBIOS
                         
@@ -408,7 +406,7 @@ while MainMenu:
                             "M0000000000000001",
                             "Dortania-MLB"
                         )
-                    if current_model in iMac151:
+                    if current_model in ModelArray.iMac151:
                         print("- Spoofing to iMac15,1")
                         # Patch SMBIOS
                         
@@ -426,7 +424,7 @@ while MainMenu:
                             "M0000000000000001",
                             "Dortania-MLB"
                         )
-                    if current_model in iMac144:
+                    if current_model in ModelArray.iMac144:
                         print("- Spoofing to iMac14,4")
                         # Patch SMBIOS
                         
@@ -444,7 +442,7 @@ while MainMenu:
                             "M0000000000000001",
                             "Dortania-MLB"
                         )
-                    if current_model in MacPro71:
+                    if current_model in ModelArray.MacPro71:
                         print("- Spoofing to MacPro7,1")
                         # Patch SMBIOS
                         

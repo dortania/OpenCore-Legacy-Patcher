@@ -1,4 +1,5 @@
 # Lists all models and required patches
+
 SupportedSMBIOS = [
     # MacBook
     "MacBook5,1",
