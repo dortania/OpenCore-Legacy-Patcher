@@ -1,2 +1,4 @@
 .DS_Store
 /Build-Folder
+/.vscode
+.pyc
