@@ -515,12 +515,11 @@ while MainMenu:
         print("---------------------------------------------------")
         print("")
     print("    1.  Build OpenCore")
-    print("    2.  Create macOS Installer              - Not yet implemented")
-    print("    3.  Install OpenCore to USB drive       - Not yet implemented")
-    print("    4.  Install OpenCore to internal drive  - Not yet implemented")
-    print("    5.  Change model")
-    print("    6.  Credits")
-    print("    7.  Exit")
+    print("    2.  Create macOS Installer                  - Not yet implemented")
+    print("    3.  Install OpenCore to USB/internal drive  - Not yet implemented")
+    print("    4.  Change model")
+    print("    5.  Credits")
+    print("    6.  Exit")
     print("")
 
     MainMenu = raw_input('Please select an option: ')
@@ -951,10 +950,46 @@ while MainMenu:
                 print("\n Not Valid Choice Try again")
             
     elif MainMenu=="3":
-        print("\n Not yet implemented") 
-    elif MainMenu=="4":
         print("\n Not yet implemented")
-    elif MainMenu=="5":
+        OpenCoreInstallerMenu=True
+        while OpenCoreInstallerMenu:
+            os.system('clear')
+
+            print("#######################################################")
+            print("        Install OpenCore to drive")
+            print("#######################################################")
+            print("")
+            print("   1.  Install to USB/internal drive            - Not yet implemented")
+            print("   2.  Mount OpenCore drive                     - Not yet implemented")
+            print("   3.  Move OpenCore from USB to internal drive - Not yet implemented")
+            print("   4.  Return to main menu")
+            print("")
+
+            OpenCoreInstallerMenu = raw_input('Please select an option: ')
+
+            if OpenCoreInstallerMenu=="1":
+                print("\n Not yet implemented")
+                # List all disks with GPT
+                # Mount user selected drive's EFI
+                # Copy OpenCore to EFI
+            elif OpenCoreInstallerMenu=="2":
+                print("\n Not yet implemented")
+                # Mount OpenCore boot drive
+                # sudo diskutil mount $(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed 's/.*GPT,\([^,]*\),.*/\1/')
+            elif OpenCoreInstallerMenu=="3":
+                print("\n Not yet implemented")
+                # Mount OpenCore Boot drive
+                # Copy EFI to Backup folder
+                # Ask user for internal drive
+                # sudo diskutil mount $(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed 's/.*GPT,\([^,]*\),.*/\1/')
+            elif OpenCoreInstallerMenu=="4":
+                print("\n Returning to main menu...")
+                OpenCoreInstallerMenu=False
+                MainMenu=True
+            else:
+                print("\n Not Valid Choice Try again")
+
+    elif MainMenu=="4":
         SMBIOSMenu=True
         while SMBIOSMenu:
             os.system('clear')
@@ -979,7 +1014,7 @@ while MainMenu:
                 # Set variabel to show we're not patching the system
                 # Ensures we don't use logic for determining the Wifi card model
                 CustomSMBIOS=True
-    elif MainMenu=="6":
+    elif MainMenu=="5":
         CreditMenu=True
         while CreditMenu:
             os.system('clear')
@@ -1001,7 +1036,7 @@ while MainMenu:
                 CreditMenu=False
                 MainMenu=True
 
-    elif MainMenu=="7":
+    elif MainMenu=="6":
         print("\n Closing program...")
         sys.exit(1) 
     else:
