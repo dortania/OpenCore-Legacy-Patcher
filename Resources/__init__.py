@@ -1,4 +1,4 @@
-# Source: CorpNewt
+# Credit: CorpNewt
 from os.path import dirname, basename, isfile
 import glob
 modules = glob.glob(dirname(__file__)+"/*.py")

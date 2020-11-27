@@ -1,0 +1,346 @@
+# Commands for building the EFI and SMBIOS
+
+from __future__ import print_function
+
+from shutil import copy
+from shutil import rmtree
+
+import os
+import json
+import subprocess
+import sys
+import zipfile
+
+import Versions
+import ModelArray
+
+#print(Versions.opencore_version)
+
+# Find SMBIOS of machine
+current_model = subprocess.Popen("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE)
+current_model = [line.strip().split(": ", 1)[1] for line in current_model.stdout.read().split("\n")  if line.strip().startswith("Model Identifier")][0]
+
+def BuildEFI():
+    
+    if not os.path.exists(Versions.build_path):
+        os.makedirs(Versions.build_path)
+        print("Created Build Folder")
+    else:
+        print("Build Folder already present, skipping")
+    # Copy OpenCore into Build Folder
+    
+    if os.path.exists(Versions.opencore_path_build):
+        print("Deleting old copy of OpenCore zip")
+        os.remove(Versions.opencore_path_build)
+    if os.path.exists(Versions.opencore_path_done):
+        print("Deleting old copy of OpenCore folder")
+        rmtree(Versions.opencore_path_done)
+    print("")
+    print("- Adding OpenCore v%s" % Versions.opencore_version)
+    copy(Versions.opencore_path, Versions.build_path)
+    zipfile.ZipFile(Versions.opencore_path_build).extractall(Versions.build_path)
+
+    print("- Adding config.plist v%s" % Versions.opencore_version)
+    # Setup config.plist for editing
+    copy(Versions.plist_path, Versions.plist_path_build)
+    with open(Versions.plist_path_build_full, 'r') as file :
+        Versions.plist_data = file.read()
+
+    print("- Adding Lilu %s" % Versions.lilu_version)
+    copy(Versions.lilu_path, Versions.kext_path_build)
+    
+    print("- Adding WhateverGreen %s" % Versions.whatevergreen_version)
+    copy(Versions.whatevergreen_path, Versions.kext_path_build)
+    
+    # Checks for kexts
+    # CPU Kext Patches
+    if current_model in ModelArray.DualSocket:
+        print("- Adding AppleMCEReporterDisabler v%s" % Versions.mce_version)
+        copy(Versions.mce_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--AppleMCEReporterDisabler-->",
+            "<true/><!--AppleMCEReporterDisabler-->"
+        )
+    
+    if current_model in ModelArray.SSEEmulator:
+        print("- Adding AAAMouSSE v%s" % Versions.mousse_version)
+        copy(Versions.mousse_version, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--AAAMouSSE-->",
+            "<true/><!--AAAMouSSE-->"
+        )
+    if current_model in ModelArray.MissingSSE42:
+        print("- Adding telemetrap %s" % Versions.telemetrap_version)
+        copy(Versions.telemetrap_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--telemetrap-->",
+            "<true/><!--telemetrap-->"
+        )
+    
+    # Ethernet Patches
+
+    if current_model in ModelArray.EthernetNvidia:
+        print("- Adding nForceEthernet v%s" % Versions.nforce_version)
+        copy(Versions.nforce_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--nForceEthernet-->",
+            "<true/><!--nForceEthernet-->"
+        )
+    if current_model in ModelArray.EthernetMarvell:
+        print("- Adding MarvelYukonEthernet v%s" % Versions.marvel_version)
+        copy(Versions.marvel_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--MarvelYukonEthernet-->",
+            "<true/><!--MarvelYukonEthernet-->"
+        )
+    if current_model in ModelArray.EthernetBroadcom:
+        print("- Adding CatalinaBCM5701Ethernet %s" % Versions.bcm570_version)
+        copy(Versions.bcm570_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--CatalinaBCM5701Ethernet-->",
+            "<true/><!--CatalinaBCM5701Ethernet-->"
+        )
+    
+    # Wifi Patches
+
+    if current_model in ModelArray.WifiAtheros:
+        print("- Adding IO80211HighSierra v%s" % Versions.io80211high_sierra_version)
+        copy(Versions.io80211high_sierra_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--IO80211HighSierra-->",
+            "<true/><!--IO80211HighSierra-->"
+        )
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--AirPortAtheros40-->",
+            "<true/><!--AirPortAtheros40-->"
+        )
+    if current_model in ModelArray.WifiBCM94328:
+        print("- Wifi patches currently unsupported")
+        # TO-DO: Add El Capitan's IO80211
+    if current_model in ModelArray.WifiBCM94322:
+        print("- Adding IO80211Mojave %s" % Versions.io80211mojave_version)
+        copy(Versions.io80211mojave_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--IO80211Mojave-->",
+            "<true/><!--IO80211Mojave-->"
+        )
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--AirPortBrcm4331-->",
+            "<true/><!--AirPortBrcm4331-->"
+        )
+    if current_model in ModelArray.WifiBCM943224:
+        print("- Adding IO80211Mojave %s" % Versions.io80211mojave_version)
+        copy(Versions.io80211mojave_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--IO80211Mojave-->",
+            "<true/><!--IO80211Mojave-->"
+        )
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--AirPortBrcm4331-->",
+            "<true/><!--AirPortBrcm4331-->"
+        )
+    if current_model in ModelArray.WifiBCM94331:
+        print("- Adding AirportBrcmFixup and appling fake ID")
+        copy(Versions.airportbcrmfixup_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--AirportBrcmFixup-->",
+            "<true/><!--AirportBrcmFixup-->"
+        )
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--AirPortBrcmNIC_Injector-->",
+            "<true/><!--AirPortBrcmNIC_Injector-->"
+        )
+        if current_model in ("iMac13,1", "iMac13,2"):
+            Versions.plist_data = Versions.plist_data.replace(
+                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x1C,0x3)Pci(0x0,0x0)"
+            )
+        else:
+            Versions.plist_data = Versions.plist_data.replace(
+                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)"
+            )
+    usb_map_path = os.path.join(Versions.current_path, "payloads/Kexts/Maps/Zip/" "USB-Map-%s.zip" % current_model)
+    if os.path.exists(usb_map_path):
+        print("- Adding USB Map for %s" % current_model)
+        copy(usb_map_path, Versions.kext_path_build)
+        map_name = ("USB-Map-%s.kext" % current_model)
+        Versions.plist_data = Versions.plist_data.replace(
+            "USB-Map-SMBIOS.kext",
+            map_name
+        )
+
+def BuildSMBIOS():
+     # Add new SMBIOS data
+    if current_model in ModelArray.MacBookAir61:
+        print("- Spoofing to MacBookAir6,1")
+        # Patch SMBIOS
+        
+        Versions.plist_data = Versions.plist_data.replace(
+            "iMac19,1",
+            "MacBookAir6,1"
+        )
+        # Patch Number Serial
+        Versions.plist_data = Versions.plist_data.replace(
+            "W00000000001",
+            "Dortania-SN"
+        )
+        # Patch MLB
+        Versions.plist_data = Versions.plist_data.replace(
+            "M0000000000000001",
+            "Dortania-MLB"
+        )
+    if current_model in ModelArray.MacBookAir62:
+        print("- Spoofing to MacBookAir6,2")
+        # Patch SMBIOS
+        
+        Versions.plist_data = Versions.plist_data.replace(
+            "iMac19,1",
+            "MacBookAir6,2"
+        )
+        # Patch Number Serial
+        Versions.plist_data = Versions.plist_data.replace(
+            "W00000000001",
+            "Dortania-SN"
+        )
+        # Patch MLB
+        Versions.plist_data = Versions.plist_data.replace(
+            "M0000000000000001",
+            "Dortania-MLB"
+        )
+    if current_model in ModelArray.MacBookPro111:
+        print("- Spoofing to MacBookPro11,1")
+        # Patch SMBIOS
+        
+        Versions.plist_data = Versions.plist_data.replace(
+            "iMac19,1",
+            "MacBookPro11,1"
+        )
+        # Patch Number Serial
+        Versions.plist_data = Versions.plist_data.replace(
+            "W00000000001",
+            "Dortania-SN"
+        )
+        # Patch MLB
+        Versions.plist_data = Versions.plist_data.replace(
+            "M0000000000000001",
+            "Dortania-MLB"
+        )
+    if current_model in ModelArray.MacBookPro112:
+        print("- Spoofing to MacBookPro11,2")
+        # Patch SMBIOS
+        
+        Versions.plist_data = Versions.plist_data.replace(
+            "iMac19,1",
+            "MacBookPro11,2"
+        )
+        # Patch Number Serial
+        Versions.plist_data = Versions.plist_data.replace(
+            "W00000000001",
+            "Dortania-SN"
+        )
+        # Patch MLB
+        Versions.plist_data = Versions.plist_data.replace(
+            "M0000000000000001",
+            "Dortania-MLB"
+        )
+    if current_model in ModelArray.Macmini71:
+        print("- Spoofing to Macmini7,1")
+        # Patch SMBIOS
+        
+        Versions.plist_data = Versions.plist_data.replace(
+            "iMac19,1",
+            " Macmini7,1"
+        )
+        # Patch Number Serial
+        Versions.plist_data = Versions.plist_data.replace(
+            "W00000000001",
+            "Dortania-SN"
+        )
+        # Patch MLB
+        Versions.plist_data = Versions.plist_data.replace(
+            "M0000000000000001",
+            "Dortania-MLB"
+        )
+    if current_model in ModelArray.iMac151:
+        print("- Spoofing to iMac15,1")
+        # Patch SMBIOS
+        
+        Versions.plist_data = Versions.plist_data.replace(
+            "iMac19,1",
+            "iMac15,1"
+        )
+        # Patch Number Serial
+        Versions.plist_data = Versions.plist_data.replace(
+            "W00000000001",
+            "Dortania-SN"
+        )
+        # Patch MLB
+        Versions.plist_data = Versions.plist_data.replace(
+            "M0000000000000001",
+            "Dortania-MLB"
+        )
+    if current_model in ModelArray.iMac144:
+        print("- Spoofing to iMac14,4")
+        # Patch SMBIOS
+        
+        Versions.plist_data = Versions.plist_data.replace(
+            "iMac19,1",
+            "iMac14,4"
+        )
+        # Patch Number Serial
+        Versions.plist_data = Versions.plist_data.replace(
+            "W00000000001",
+            "Dortania-SN"
+        )
+        # Patch MLB
+        Versions.plist_data = Versions.plist_data.replace(
+            "M0000000000000001",
+            "Dortania-MLB"
+        )
+    if current_model in ModelArray.MacPro71:
+        print("- Spoofing to MacPro7,1")
+        # Patch SMBIOS
+        
+        Versions.plist_data = Versions.plist_data.replace(
+            "iMac19,1",
+            "MacPro7,1"
+        )
+        # Patch Number Serial
+        Versions.plist_data = Versions.plist_data.replace(
+            "W00000000001",
+            "Dortania-SN"
+        )
+        # Patch MLB
+        Versions.plist_data = Versions.plist_data.replace(
+            "M0000000000000001",
+            "Dortania-MLB"
+        )
+        
+    # Patch UUID
+    uuidGen = subprocess.Popen(["uuidgen"], stdout=subprocess.PIPE).communicate()[0]
+    Versions.plist_data = Versions.plist_data.replace(
+        "00000000-0000-0000-0000-000000000000",
+        uuidGen
+    )
+
+def CleanBuildFolder():
+    # Clean up Build Folder
+    print("")
+    print("Cleaning build folder")
+    os.chdir(Versions.kext_path_build)
+    for item in os.listdir(Versions.kext_path_build):
+        if item.endswith(".zip"):
+            file_name = os.path.abspath(item)
+            zip_ref = zipfile.ZipFile(file_name)
+            zip_ref.extractall(Versions.kext_path_build)
+            zip_ref.close()
+            os.remove(file_name)
+    # Clean up Python's unzip
+    if os.path.exists("__MACOSX"):
+        rmtree("__MACOSX")
+    os.chdir(Versions.build_path)
+    if os.path.exists("__MACOSX"):
+        rmtree("__MACOSX")
+    os.remove(Versions.opencore_path_build)
+    os.chdir(Versions.current_path)
