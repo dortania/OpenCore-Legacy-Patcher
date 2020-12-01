@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
+<!--OpenCore 0.6.3 config-->
 <dict>
 	<key>ACPI</key>
 	<dict>
@@ -174,6 +175,8 @@
 		<key>Add</key>
 		<array>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>Patching Engine</string>
 				<key>Enabled</key>
@@ -190,6 +193,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>GPU Patching</string>
 				<key>Enabled</key>
@@ -206,6 +211,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>SSE Emulator</string>
 				<key>Enabled</key>
@@ -222,6 +229,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>SSE Patcher</string>
 				<key>Enabled</key>
@@ -238,6 +247,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>4331 Wifi Patch</string>
 				<key>Enabled</key>
@@ -254,6 +265,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>4331 Wifi Patch</string>
 				<key>Enabled</key>
@@ -270,6 +283,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>Dual Socket Patch</string>
 				<key>Enabled</key>
@@ -286,6 +301,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>BCM Ethernet patch</string>
 				<key>Enabled</key>
@@ -302,6 +319,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>Atheros Wifi Patch</string>
 				<key>Enabled</key>
@@ -318,6 +337,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>Atheros Wifi Patch</string>
 				<key>Enabled</key>
@@ -334,6 +355,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>Broadcom Wifi Patch</string>
 				<key>Enabled</key>
@@ -366,6 +389,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>Marvel Ethernet Patch</string>
 				<key>Enabled</key>
@@ -382,6 +407,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>Nvidia Ethernet Patch</string>
 				<key>Enabled</key>
@@ -398,6 +425,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>USB Map</string>
 				<key>Enabled</key>
@@ -612,7 +641,7 @@
 				<key>Arguments</key>
 				<string></string>
 				<key>Auxiliary</key>
-				<true/>
+				<false/>
 				<key>Name</key>
 				<string>OpenShell.efi</string>
 				<key>Comment</key>
@@ -645,7 +674,7 @@
 				<key>SystemAudioVolume</key>
 				<data>Rg==</data>
 				<key>boot-args</key>
-				<string>-v keepsyms=1</string>
+				<string>-v keepsyms=1 debug=0x100</string>
 				<key>run-efi-updater</key>
 				<string>No</string>
 				<key>csr-active-config</key>
