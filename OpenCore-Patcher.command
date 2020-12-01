@@ -84,6 +84,7 @@ while MainMenu:
                     print ("    %s" % Versions.current_path)
                     print("")
                     BuildOpenCore.BuildEFI()
+                    BuildOpenCore.BuildGUI()
                     BuildOpenCore.BuildSMBIOS()
                     BuildOpenCore.SavePlist()
                     BuildOpenCore.CleanBuildFolder()

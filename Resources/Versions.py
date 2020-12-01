@@ -62,10 +62,11 @@ drivers_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EF
 kext_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/Kexts" % opencore_version)
 opencore_path_done = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s" % opencore_version)
 build_path = os.path.join(current_path, r'Build-Folder/')
+gui_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/Resources" % opencore_version)
 
 # Tools
 macserial_path = os.path.join(current_path, "payloads/" "Tools")
 
 # Icons
-
 icon_path = os.path.join(current_path, "payloads/Icon/" ".VolumeIcon.icns")
+gui_path = os.path.join(current_path, "payloads/Icon/" "Resources.zip")

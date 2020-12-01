@@ -171,6 +171,15 @@ def BuildEFI():
             map_name
         )
 
+def BuildGUI():
+    print("- Adding OpenCanopy GUI")
+    rmtree(Versions.gui_path_build)
+    copy(Versions.gui_path, Versions.plist_path_build)
+    Versions.plist_data = Versions.plist_data.replace(
+        "#OpenCanopy.efi",
+        "OpenCanopy.efi"
+    )
+
 def BuildSMBIOS():
     # Set new SMBIOS
     new_model = current_model
@@ -251,6 +260,17 @@ def CleanBuildFolder():
             zip_ref.close()
             os.remove(file_name)
     # Clean up Python's unzip
+    if os.path.exists("__MACOSX"):
+        rmtree("__MACOSX")
+    os.chdir(Versions.plist_path_build)
+    os.chdir(Versions.plist_path_build)
+    for item in os.listdir(Versions.plist_path_build):
+        if item.endswith(".zip"):
+            file_name = os.path.abspath(item)
+            zip_ref = zipfile.ZipFile(file_name)
+            zip_ref.extractall(Versions.plist_path_build)
+            zip_ref.close()
+            os.remove(file_name)
     if os.path.exists("__MACOSX"):
         rmtree("__MACOSX")
     os.chdir(Versions.build_path)

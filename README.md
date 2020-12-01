@@ -88,8 +88,16 @@ Xserve3,1
 
 ## How to run
 
+Prerequists:
+
+* Supported Mac(see above)
+* macOS Installer installed to USB
+  * Blank USB drives formatted as GUID Partition Table are also supported
+
 1. [Download the release](https://github.com/dortania/Opencore-Legacy-Patcher/releases)
 2. Run the `OpenCore-Patcher.command` file
 3. Once opened, select option 1 and build your EFI
   * if poatching for a different patching, selectect option 3 first
 4. Once finished, run option 2 a the main menu and install onto your desired drive
+
+Once you're done making your OpenCore installer, you can simply reboot holding the Option key. In the picker, you should see a new EFI Boot Option. Boot it and from there you'll be in the OpenCore picker.

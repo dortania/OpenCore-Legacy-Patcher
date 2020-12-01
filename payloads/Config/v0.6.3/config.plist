@@ -776,7 +776,7 @@
 		<key>Drivers</key>
 		<array>
 			<string>#NvmExpressDxe.efi</string>
-			<string>OpenCanopy.efi</string>
+			<string>#OpenCanopy.efi</string>
 			<string>OpenRuntime.efi</string>
 		</array>
 		<key>Input</key>
