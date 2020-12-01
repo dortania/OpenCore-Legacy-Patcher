@@ -172,151 +172,60 @@ def BuildEFI():
         )
 
 def BuildSMBIOS():
-    # Add new SMBIOS data
+    # Set new SMBIOS
+    new_model = current_model
     if current_model in ModelArray.MacBookAir61:
         print("- Spoofing to MacBookAir6,1")
-        # Patch SMBIOS
-        
-        Versions.plist_data = Versions.plist_data.replace(
-            "iMac19,1",
-            "MacBookAir6,1"
-        )
-        # Patch Number Serial
-        Versions.plist_data = Versions.plist_data.replace(
-            "W00000000001",
-            "Dortania-SN"
-        )
-        # Patch MLB
-        Versions.plist_data = Versions.plist_data.replace(
-            "M0000000000000001",
-            "Dortania-MLB"
-        )
+        new_model = "MacBookAir6,1"
+    
     if current_model in ModelArray.MacBookAir62:
         print("- Spoofing to MacBookAir6,2")
-        # Patch SMBIOS
-        
-        Versions.plist_data = Versions.plist_data.replace(
-            "iMac19,1",
-            "MacBookAir6,2"
-        )
-        # Patch Number Serial
-        Versions.plist_data = Versions.plist_data.replace(
-            "W00000000001",
-            "Dortania-SN"
-        )
-        # Patch MLB
-        Versions.plist_data = Versions.plist_data.replace(
-            "M0000000000000001",
-            "Dortania-MLB"
-        )
+        new_model = "MacBookAir6,2"
+    
     if current_model in ModelArray.MacBookPro111:
         print("- Spoofing to MacBookPro11,1")
-        # Patch SMBIOS
-        
-        Versions.plist_data = Versions.plist_data.replace(
-            "iMac19,1",
-            "MacBookPro11,1"
-        )
-        # Patch Number Serial
-        Versions.plist_data = Versions.plist_data.replace(
-            "W00000000001",
-            "Dortania-SN"
-        )
-        # Patch MLB
-        Versions.plist_data = Versions.plist_data.replace(
-            "M0000000000000001",
-            "Dortania-MLB"
-        )
+        new_model = "MacBookPro11,1"
+    
     if current_model in ModelArray.MacBookPro112:
         print("- Spoofing to MacBookPro11,2")
-        # Patch SMBIOS
-        
-        Versions.plist_data = Versions.plist_data.replace(
-            "iMac19,1",
-            "MacBookPro11,2"
-        )
-        # Patch Number Serial
-        Versions.plist_data = Versions.plist_data.replace(
-            "W00000000001",
-            "Dortania-SN"
-        )
-        # Patch MLB
-        Versions.plist_data = Versions.plist_data.replace(
-            "M0000000000000001",
-            "Dortania-MLB"
-        )
+        new_model = "MacBookPro11,2"
+    
     if current_model in ModelArray.Macmini71:
         print("- Spoofing to Macmini7,1")
-        # Patch SMBIOS
-        
-        Versions.plist_data = Versions.plist_data.replace(
-            "iMac19,1",
-            " Macmini7,1"
-        )
-        # Patch Number Serial
-        Versions.plist_data = Versions.plist_data.replace(
-            "W00000000001",
-            "Dortania-SN"
-        )
-        # Patch MLB
-        Versions.plist_data = Versions.plist_data.replace(
-            "M0000000000000001",
-            "Dortania-MLB"
-        )
+        new_model = "Macmini7,1"
+    
     if current_model in ModelArray.iMac151:
         print("- Spoofing to iMac15,1")
-        # Patch SMBIOS
-        
-        Versions.plist_data = Versions.plist_data.replace(
-            "iMac19,1",
-            "iMac15,1"
-        )
-        # Patch Number Serial
-        Versions.plist_data = Versions.plist_data.replace(
-            "W00000000001",
-            "Dortania-SN"
-        )
-        # Patch MLB
-        Versions.plist_data = Versions.plist_data.replace(
-            "M0000000000000001",
-            "Dortania-MLB"
-        )
+        new_model = "iMac15,1"
+    
     if current_model in ModelArray.iMac144:
         print("- Spoofing to iMac14,4")
-        # Patch SMBIOS
-        
-        Versions.plist_data = Versions.plist_data.replace(
-            "iMac19,1",
-            "iMac14,4"
-        )
-        # Patch Number Serial
-        Versions.plist_data = Versions.plist_data.replace(
-            "W00000000001",
-            "Dortania-SN"
-        )
-        # Patch MLB
-        Versions.plist_data = Versions.plist_data.replace(
-            "M0000000000000001",
-            "Dortania-MLB"
-        )
+        new_model = "iMac14,4"
+    
     if current_model in ModelArray.MacPro71:
         print("- Spoofing to MacPro7,1")
-        # Patch SMBIOS
-        
-        Versions.plist_data = Versions.plist_data.replace(
-            "iMac19,1",
-            "MacPro7,1"
-        )
-        # Patch Number Serial
-        Versions.plist_data = Versions.plist_data.replace(
-            "W00000000001",
-            "Dortania-SN"
-        )
-        # Patch MLB
-        Versions.plist_data = Versions.plist_data.replace(
-            "M0000000000000001",
-            "Dortania-MLB"
-        )
+        new_model = "MacPro7,1"
+
+    # Grab serials from macserial
+    serialData = subprocess.Popen((r"./payloads/tools/macserial -g -m " + new_model + " -n 1").split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    serialData = serialData.stdout.read().strip().split(" | ")
+
+    # Patch SMBIOS
+    Versions.plist_data = Versions.plist_data.replace(
+        "iMac19,1",
+        new_model
+    )
+
+    # Patch Number Serial
+    Versions.plist_data = Versions.plist_data.replace(
+        "W00000000001",
+        serialData[0]
+    )
+    # Patch MLB
+    Versions.plist_data = Versions.plist_data.replace(
+        "M0000000000000001",
+        serialData[1]
+    )
         
     # Patch UUID
     uuidGen = subprocess.Popen(["uuidgen"], stdout=subprocess.PIPE).communicate()[0]

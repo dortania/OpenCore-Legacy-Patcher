@@ -4,17 +4,18 @@ A python script for building and booting OpenCore on legacy Macs, see [Supported
 
 Current TO-DO's with this patcher:
 
-* [x] Create OpenCore EFI
-* [ ] Generate new serials
 * [ ] Create macOS Installer
-* [x] Install OpenCore to drive
-* [x] USB mapping
 * [ ] Legacy GPU Patches
   * ie. 2011 and older
 * [ ] Legacy Audio Patches
   * ie. 2011 and older
 
 ## Supported SMBIOS
+
+Any hardware supporting SSE4.1 CPU and 64-Bit firmware work on this patcher. See below for exact support:
+
+<details>
+<summary>SBIOS Support Table</summary>
 
 ```
 MacBook5,1
@@ -78,4 +79,6 @@ MacPro5,1
 Xserve3,1
 ```
 
+</details>
+<br>
 

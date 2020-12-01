@@ -48,8 +48,10 @@ while MainMenu:
     print("    3.  Change model")
     print("    4.  Credits")
     print("    5.  Exit")
+
     macserialoutput = subprocess.Popen(["./payloads/tools/macserial", "-m", "MacBookAir6,1"], stdout=subprocess.PIPE).communicate()[0]
     print(macserialoutput)
+    
     print("")
 
     MainMenu = raw_input('Please select an option: ')
