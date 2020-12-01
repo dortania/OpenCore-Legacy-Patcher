@@ -92,6 +92,7 @@ Prerequists:
 
 * Supported Mac(see above)
 * macOS Installer installed to USB
+  * See here on how to download and create an installer: [Creating a macOS Installer](https://dortania.github.io/OpenCore-Install-Guide/installer-guide/mac-install.html)
   * Blank USB drives formatted as GUID Partition Table are also supported
 
 1. [Download the release](https://github.com/dortania/Opencore-Legacy-Patcher/releases)
