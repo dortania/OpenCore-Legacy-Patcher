@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.0.3
+- Fix Wireless patch logic
 
 ## 0.0.2
 - Expand IOHIDFamily Patch to all Nvidia chipsets
