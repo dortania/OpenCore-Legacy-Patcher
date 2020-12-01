@@ -63,3 +63,7 @@ build_path = os.path.join(current_path, r'Build-Folder/')
 
 # Tools
 macserial_path = os.path.join(current_path, "payloads/" "Tools")
+
+# Icons
+
+icon_path = os.path.join(current_path, "payloads/Icon/" ".VolumeIcon.icns")

@@ -86,3 +86,10 @@ Xserve3,1
 </details>
 <br>
 
+## How to run
+
+1. [Download the release](https://github.com/dortania/Opencore-Legacy-Patcher/releases)
+2. Run the `OpenCore-Patcher.command` file
+3. Once opened, select option 1 and build your EFI
+  * if poatching for a different patching, selectect option 3 first
+4. Once finished, run option 2 a the main menu and install onto your desired drive

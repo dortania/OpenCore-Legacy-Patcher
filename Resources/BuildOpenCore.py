@@ -263,6 +263,7 @@ def ListDiskutil():
     DiskMenu = True
     while DiskMenu:
         os.system('clear')
+        print("Loading diskutil...(This may take some time)")
         diskList = subprocess.Popen(["diskutil", "list"], stdout=subprocess.PIPE).communicate()[0]
         print(diskList)
         ChosenDisk = raw_input('Please select the disk you want to install OpenCore to(ie. disk1): ')
@@ -281,5 +282,9 @@ def MoveOpenCore():
         rmtree("/Volumes/EFI/EFI")
     if os.path.exists(Versions.opencore_path_done):
         copy_tree(Versions.opencore_path_done, efiVol)
+        copy(Versions.icon_path, efiVol)
         print("OpenCore transfer complete")
         print("")
+
+def MountOpenCore():
+    subprocess.Popen((r"sudo diskutil mount $(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed 's/.*GPT,\([^,]*\),.*/\1/')").split())

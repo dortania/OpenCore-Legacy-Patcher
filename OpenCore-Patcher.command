@@ -48,10 +48,6 @@ while MainMenu:
     print("    3.  Change model")
     print("    4.  Credits")
     print("    5.  Exit")
-
-    macserialoutput = subprocess.Popen(["./payloads/tools/macserial", "-m", "MacBookAir6,1"], stdout=subprocess.PIPE).communicate()[0]
-    print(macserialoutput)
-    
     print("")
 
     MainMenu = raw_input('Please select an option: ')
@@ -104,6 +100,7 @@ while MainMenu:
                 MainMenu=True
             else:
                 print("\n Not Valid Choice Try again")
+                OpenCoreBuilderMenu = True
 
             
     elif MainMenu=="2":
@@ -128,6 +125,7 @@ while MainMenu:
                     print("Found OpenCore in Build Folder")
                     BuildOpenCore.ListDiskutil()
                     BuildOpenCore.MoveOpenCore()
+
                 else:
                     print("OpenCore folder missing!")
                     print("Please build OpenCore first")
@@ -142,6 +140,7 @@ while MainMenu:
                 MainMenu=True
             else:
                 print("\n Not Valid Choice Try again")
+                OpenCoreInstallerMenu = True
 
     elif MainMenu=="3":
         SMBIOSMenu=True
@@ -185,13 +184,14 @@ while MainMenu:
             print("  - Syncretic:    AAAMouSSE and telemetrap")
             print("")
             CreditMenu = raw_input(" Press any key to exit: ")
-            if CreditMenu=="1":
-                print("Returning to main menu...")
-                CreditMenu=False
-                MainMenu=True
+            print("Returning to main menu...")
+            CreditMenu=False
+            MainMenu=True
 
     elif MainMenu=="5":
         print("\n Closing program...")
         sys.exit(1) 
     else:
-        print("\n Not Valid Choice Try again") 
+        print("\n Not Valid Choice Try again")
+        MainMenu=True
+
