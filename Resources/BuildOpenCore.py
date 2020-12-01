@@ -150,13 +150,13 @@ def BuildEFI():
             "<false/><!--AirPortBrcmNIC_Injector-->",
             "<true/><!--AirPortBrcmNIC_Injector-->"
         )
-        if current_model in ModelArray.EthernetNvidia
+        if current_model in ModelArray.EthernetNvidia:
             # Nvidia chipsets all have the same path to ARPT
             Versions.plist_data = Versions.plist_data.replace(
                 "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
                 "PciRoot(0x0)/Pci(0x15,0x0)Pci(0x0,0x0)"
             )
-        if current_model in ("MacBookAir2,1", "MacBookAir3,1", "MacBookAir3,2" )
+        if current_model in ("MacBookAir2,1", "MacBookAir3,1", "MacBookAir3,2" ):
             Versions.plist_data = Versions.plist_data.replace(
                 "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
                 "PciRoot(0x0)/Pci(0x15,0x0)Pci(0x0,0x0)"
