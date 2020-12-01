@@ -161,6 +161,12 @@ def BuildEFI():
                 "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
                 "PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)"
             )
+    if current_model in ModelArray.LegacyHID:
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--IOHIDFamily-->",
+            "<true/><!--IOHIDFamily-->"
+        )
+    
     usb_map_path = os.path.join(Versions.current_path, "payloads/Kexts/Maps/Zip/" "USB-Map-%s.zip" % current_model)
     if os.path.exists(usb_map_path):
         print("- Adding USB Map for %s" % current_model)
