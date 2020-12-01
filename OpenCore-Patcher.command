@@ -18,31 +18,33 @@ patcher_version = "0.0.1"
 CustomSMBIOS=False
 MainMenu=True
 MenuWidth = 52
+header = '#' * MenuWidth
+subheader = '-' * MenuWidth
 
 while MainMenu:
     os.system('clear')
 
-    print('#' * MenuWidth)
+    print(header)
     print("          OpenCore Legacy patcher v%s" % patcher_version)
     print("             Current Model: %s" % BuildOpenCore.current_model)
-    print('#' * MenuWidth)
+    print(header)
     print("")
     if BuildOpenCore.current_model not in ModelArray.SupportedSMBIOS:
         print("   Your model is not supported by this patcher!")
         print("")
         print(" If you plan to create the USB for another machine,")
         print("            please select option 5")
-        print('-' * MenuWidth)
+        print(subheader)
         print("")
     elif BuildOpenCore.current_model in ("MacPro3,1", "iMac7,1"):
         print("           This model is supported")
         print(" However please ensure the CPU have been upgraded")
         print("             to support SSE4.1+")
-        print('-' * MenuWidth)
+        print(subheader)
         print("")
     else:
         print("            This model is supported")
-        print('-' * MenuWidth)
+        print(subheader)
         print("")
     print("    1.  Build OpenCore")
     print("    2.  Install OpenCore to USB/internal drive")
@@ -58,9 +60,9 @@ while MainMenu:
         while OpenCoreBuilderMenu:
             os.system('clear')
 
-            print('#' * MenuWidth)
+            print(header)
             print("        Build OpenCore for model: %s" % BuildOpenCore.current_model)
-            print('#' * MenuWidth)
+            print(header)
             print("")
             print("   1.  Auto build OpenCore")
             print("      - This script determines what patches you require")
@@ -74,9 +76,9 @@ while MainMenu:
                 AutoBuilderMenu=True
                 while AutoBuilderMenu:
                     os.system('clear')
-                    print('#' * MenuWidth)
+                    print(header)
                     print("      Building OpenCore for model: %s" % BuildOpenCore.current_model)
-                    print('#' * MenuWidth)
+                    print(header)
                     print("")
                     print("The current working directory:")
                     print ("    %s" % Versions.current_path)
@@ -110,9 +112,9 @@ while MainMenu:
         while OpenCoreInstallerMenu:
             os.system('clear')
 
-            print('#' * MenuWidth)
+            print(header)
             print("        Install OpenCore to drive")
-            print('#' * MenuWidth)
+            print(header)
             print("")
             print("   1.  Install to USB/internal drive")
             print("   2.  Return to main menu")
@@ -148,9 +150,9 @@ while MainMenu:
         while SMBIOSMenu:
             os.system('clear')
 
-            print('#' * MenuWidth)
+            print(header)
             print("        Enter a new SMBIOS")
-            print('#' * MenuWidth)
+            print(header)
             print("")
             print("  Tip: Run this command on the machine to find the SMBIOS")
             print("")
@@ -176,9 +178,9 @@ while MainMenu:
         while CreditMenu:
             os.system('clear')
 
-            print('#' * MenuWidth)
+            print(header)
             print("                    Credits")
-            print('#' * MenuWidth)
+            print(header)
             print("")
             print(" Many thanks to the following:")
             print("")
