@@ -277,14 +277,15 @@ def MoveOpenCore():
     print("")
     print("Coping OpenCore onto Volumes/EFI")
     efiVol = "/Volumes/EFI"
-    if os.path.exists("/Volumes/EFI/EFI"):
-        print("Cleaning EFI folder")
-        rmtree("/Volumes/EFI/EFI")
-    if os.path.exists(Versions.opencore_path_done):
-        copy_tree(Versions.opencore_path_done, efiVol)
-        copy(Versions.icon_path, efiVol)
-        print("OpenCore transfer complete")
-        print("")
+    if os.path.exists(efiVol):
+        if os.path.exists("/Volumes/EFI/EFI"):
+            print("Cleaning EFI folder")
+            rmtree("/Volumes/EFI/EFI")
+        if os.path.exists(Versions.opencore_path_done):
+            copy_tree(Versions.opencore_path_done, efiVol)
+            copy(Versions.icon_path, efiVol)
+            print("OpenCore transfer complete")
+            print("")
 
 def MountOpenCore():
     subprocess.Popen((r"sudo diskutil mount $(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed 's/.*GPT,\([^,]*\),.*/\1/')").split())
