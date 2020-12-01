@@ -115,31 +115,30 @@ def BuildEFI():
             "<false/><!--AirPortAtheros40-->",
             "<true/><!--AirPortAtheros40-->"
         )
-    if current_model in ModelArray.WifiBCM94328:
-        print("- Wifi patches currently unsupported")
-        # TO-DO: Add El Capitan's IO80211
-    if current_model in ModelArray.WifiBCM94322:
-        print("- Adding IO80211Mojave %s" % Versions.io80211mojave_version)
-        copy(Versions.io80211mojave_path, Versions.kext_path_build)
-        Versions.plist_data = Versions.plist_data.replace(
-            "<false/><!--IO80211Mojave-->",
-            "<true/><!--IO80211Mojave-->"
-        )
-        Versions.plist_data = Versions.plist_data.replace(
-            "<false/><!--AirPortBrcm4331-->",
-            "<true/><!--AirPortBrcm4331-->"
-        )
-    if current_model in ModelArray.WifiBCM943224:
-        print("- Adding IO80211Mojave %s" % Versions.io80211mojave_version)
-        copy(Versions.io80211mojave_path, Versions.kext_path_build)
-        Versions.plist_data = Versions.plist_data.replace(
-            "<false/><!--IO80211Mojave-->",
-            "<true/><!--IO80211Mojave-->"
-        )
-        Versions.plist_data = Versions.plist_data.replace(
-            "<false/><!--AirPortBrcm4331-->",
-            "<true/><!--AirPortBrcm4331-->"
-        )
+    #if current_model in ModelArray.WifiBCM94328:
+    #    print("- Wifi patches currently unsupported")
+    #if current_model in ModelArray.WifiBCM94322:
+    #    print("- Adding IO80211Mojave %s" % Versions.io80211mojave_version)
+    #    copy(Versions.io80211mojave_path, Versions.kext_path_build)
+    #    Versions.plist_data = Versions.plist_data.replace(
+    #        "<false/><!--IO80211Mojave-->",
+    #        "<true/><!--IO80211Mojave-->"
+    #    )
+    #    Versions.plist_data = Versions.plist_data.replace(
+    #        "<false/><!--AirPortBrcm4331-->",
+    #        "<true/><!--AirPortBrcm4331-->"
+    #    )
+    #if current_model in ModelArray.WifiBCM943224:
+    #    print("- Adding IO80211Mojave %s" % Versions.io80211mojave_version)
+    #    copy(Versions.io80211mojave_path, Versions.kext_path_build)
+    #    Versions.plist_data = Versions.plist_data.replace(
+    #        "<false/><!--IO80211Mojave-->",
+    #        "<true/><!--IO80211Mojave-->"
+    #    )
+    #    Versions.plist_data = Versions.plist_data.replace(
+    #        "<false/><!--AirPortBrcm4331-->",
+    #        "<true/><!--AirPortBrcm4331-->"
+    #    )
     if current_model in ModelArray.WifiBCM94331:
         print("- Adding AirportBrcmFixup and appling fake ID")
         copy(Versions.airportbcrmfixup_path, Versions.kext_path_build)
@@ -151,12 +150,34 @@ def BuildEFI():
             "<false/><!--AirPortBrcmNIC_Injector-->",
             "<true/><!--AirPortBrcmNIC_Injector-->"
         )
-        if current_model in ("iMac13,1", "iMac13,2"):
+        if current_model in ModelArray.EthernetNvidia
+            # Nvidia chipsets all have the same path to ARPT
+            Versions.plist_data = Versions.plist_data.replace(
+                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x15,0x0)Pci(0x0,0x0)"
+            )
+        if current_model in ("MacBookAir2,1", "MacBookAir3,1", "MacBookAir3,2" )
+            Versions.plist_data = Versions.plist_data.replace(
+                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x15,0x0)Pci(0x0,0x0)"
+            )
+        elif current_model in ("iMac7,1", "iMac8,1" ):
+            Versions.plist_data = Versions.plist_data.replace(
+                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x1C,0x4)Pci(0x0,0x0)"
+            )
+        elif current_model in ("iMac13,1", "iMac13,2"):
             Versions.plist_data = Versions.plist_data.replace(
                 "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
                 "PciRoot(0x0)/Pci(0x1C,0x3)Pci(0x0,0x0)"
             )
+        elif current_model in ("MacPro5,1"):
+            Versions.plist_data = Versions.plist_data.replace(
+                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x1C,0x5)Pci(0x0,0x0)"
+            )
         else:
+            # Assumes we have a laptop with Intel chipset
             Versions.plist_data = Versions.plist_data.replace(
                 "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
                 "PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)"
@@ -192,32 +213,25 @@ def BuildSMBIOS():
     if current_model in ModelArray.MacBookAir61:
         print("- Spoofing to MacBookAir6,1")
         new_model = "MacBookAir6,1"
-    
-    if current_model in ModelArray.MacBookAir62:
+    elif current_model in ModelArray.MacBookAir62:
         print("- Spoofing to MacBookAir6,2")
         new_model = "MacBookAir6,2"
-    
-    if current_model in ModelArray.MacBookPro111:
+    elif current_model in ModelArray.MacBookPro111:
         print("- Spoofing to MacBookPro11,1")
         new_model = "MacBookPro11,1"
-    
-    if current_model in ModelArray.MacBookPro112:
+    elif current_model in ModelArray.MacBookPro112:
         print("- Spoofing to MacBookPro11,2")
         new_model = "MacBookPro11,2"
-    
-    if current_model in ModelArray.Macmini71:
+    elif current_model in ModelArray.Macmini71:
         print("- Spoofing to Macmini7,1")
         new_model = "Macmini7,1"
-    
-    if current_model in ModelArray.iMac151:
+    elif current_model in ModelArray.iMac151:
         print("- Spoofing to iMac15,1")
         new_model = "iMac15,1"
-    
-    if current_model in ModelArray.iMac144:
+    elif current_model in ModelArray.iMac144:
         print("- Spoofing to iMac14,4")
         new_model = "iMac14,4"
-    
-    if current_model in ModelArray.MacPro71:
+    elif current_model in ModelArray.MacPro71:
         print("- Spoofing to MacPro7,1")
         new_model = "MacPro7,1"
 
