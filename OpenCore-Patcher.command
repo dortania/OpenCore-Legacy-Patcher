@@ -61,13 +61,12 @@ while MainMenu:
             os.system('clear')
 
             print(header)
-            print("        Build OpenCore for model: %s" % BuildOpenCore.current_model)
+            print("     Build OpenCore v%s for model: %s" % (Versions.opencore_version, BuildOpenCore.current_model))
             print(header)
             print("")
             print("   1.  Auto build OpenCore")
-            print("      - This script determines what patches you require")
-            print("      - Recommended for novices")
-            print("   2.  Return to main menu")
+            print("   2.  Change OpenCore version")
+            print("   3.  Return to main menu")
             print("")
 
             OpenCoreBuilderMenu = raw_input('Please select an option: ')
@@ -97,8 +96,31 @@ while MainMenu:
                         print("Returning to previous menu...")
                         AutoBuilderMenu=False
                         OpenCoreBuilderMenu=False
-
             elif OpenCoreBuilderMenu=="2":
+                ChangeOCversion=True
+                while ChangeOCversion:
+                    os.system('clear')
+                    print(header)
+                    print("    Current OpenCore version: %s" % Versions.opencore_version)
+                    print(header)
+                    print("")
+                    print("  Supported versions: 0.6.3, 0.6.4")
+                    print("")
+                    OpenCoreOption = raw_input('Please enter the OpenCore you want (Press enter to exit): ')
+                    if OpenCoreOption == "":
+                        print("Exiting...")
+                        ChangeOCversion=False
+                        MainMenu=True
+                    else:
+                        print("")
+                        print("  New SMBIOS: %s" % OpenCoreOption)
+                        print("")
+                        ChangeOCversionYN = raw_input("Is this correcy? (y/n)")
+                        if ChangeOCversionYN in {"y", "Y", "yes", "Yes"}:
+                            ChangeOCversion=False
+                            Versions.opencore_version = OpenCoreOption
+                            MainMenu=True
+            elif OpenCoreBuilderMenu=="3":
                 print("\n Returning to main menu...")
                 OpenCoreBuilderMenu=False
                 MainMenu=True

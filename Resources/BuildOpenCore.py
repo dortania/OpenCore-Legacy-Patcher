@@ -308,6 +308,7 @@ def MoveOpenCore():
             print("")
     else:
         print("Couldn't find EFI partition")
+        print("Please ensure your drive is formatted as GUID Partition Table")
         print("")
 
 def MountOpenCore():

@@ -11,7 +11,7 @@ import subprocess
 import sys
 
 # List build versions
-opencore_version = "0.6.3"
+opencore_version = "0.6.4"
 lilu_version = "1.4.9"
 whatevergreen_version = "1.4.4"
 airportbcrmfixup_version = "2.1.1"
