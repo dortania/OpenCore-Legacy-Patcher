@@ -865,7 +865,7 @@
 			<key>AppleDebugLog</key>
 			<true/>
 			<key>AppleEvent</key>
-			<false/>
+			<true/>
 			<key>AppleFramebufferInfo</key>
 			<false/>
 			<key>AppleImageConversion</key>
