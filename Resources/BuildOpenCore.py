@@ -275,7 +275,6 @@ def ListDiskutil():
 
 def MoveOpenCore():
     print("")
-    
     efiVol = "/Volumes/EFI"
     if os.path.exists(efiVol):
         print("Coping OpenCore onto Volumes/EFI")
