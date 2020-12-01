@@ -12,10 +12,14 @@ Current TO-DO's with this patcher:
 
 ## Supported SMBIOS
 
-Any hardware supporting SSE4.1 CPU and 64-Bit firmware work on this patcher. See below for exact support:
+Any hardware supporting SSE4.1 CPU and 64-Bit firmware work on this patcher. To check your hardware model, run the below command on the applicable machine:
+
+```bash
+system_profiler SPHardwareDataType | grep 'Model Identifier'
+```
 
 <details>
-<summary>SBIOS Support Table</summary>
+<summary>SMBIOS Support Table</summary>
 
 ```
 MacBook5,1
