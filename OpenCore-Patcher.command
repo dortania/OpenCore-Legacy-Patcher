@@ -17,31 +17,32 @@ patcher_version = "0.0.1"
 
 CustomSMBIOS=False
 MainMenu=True
+MenuWidth = 52
 
 while MainMenu:
     os.system('clear')
 
-    print("###################################################")
-    print("        OpenCore Legacy patcher v%s" % patcher_version)
-    print("           Current Model: %s" % BuildOpenCore.current_model)
-    print("###################################################")
+    print('#' * MenuWidth)
+    print("          OpenCore Legacy patcher v%s" % patcher_version)
+    print("             Current Model: %s" % BuildOpenCore.current_model)
+    print('#' * MenuWidth)
     print("")
     if BuildOpenCore.current_model not in ModelArray.SupportedSMBIOS:
         print("   Your model is not supported by this patcher!")
         print("")
         print(" If you plan to create the USB for another machine,")
         print("            please select option 5")
-        print("---------------------------------------------------")
+        print('-' * MenuWidth)
         print("")
     elif BuildOpenCore.current_model in ("MacPro3,1", "iMac7,1"):
         print("           This model is supported")
         print(" However please ensure the CPU have been upgraded")
         print("             to support SSE4.1+")
-        print("---------------------------------------------------")
+        print('-' * MenuWidth)
         print("")
     else:
         print("            This model is supported")
-        print("---------------------------------------------------")
+        print('-' * MenuWidth)
         print("")
     print("    1.  Build OpenCore")
     print("    2.  Install OpenCore to USB/internal drive")
@@ -57,9 +58,9 @@ while MainMenu:
         while OpenCoreBuilderMenu:
             os.system('clear')
 
-            print("#######################################################")
+            print('#' * MenuWidth)
             print("        Build OpenCore for model: %s" % BuildOpenCore.current_model)
-            print("#######################################################")
+            print('#' * MenuWidth)
             print("")
             print("   1.  Auto build OpenCore")
             print("      - This script determines what patches you require")
@@ -73,9 +74,9 @@ while MainMenu:
                 AutoBuilderMenu=True
                 while AutoBuilderMenu:
                     os.system('clear')
-                    print("#######################################################")
+                    print('#' * MenuWidth)
                     print("      Building OpenCore for model: %s" % BuildOpenCore.current_model)
-                    print("#######################################################")
+                    print('#' * MenuWidth)
                     print("")
                     print("The current working directory:")
                     print ("    %s" % Versions.current_path)
@@ -109,9 +110,9 @@ while MainMenu:
         while OpenCoreInstallerMenu:
             os.system('clear')
 
-            print("#######################################################")
+            print('#' * MenuWidth)
             print("        Install OpenCore to drive")
-            print("#######################################################")
+            print('#' * MenuWidth)
             print("")
             print("   1.  Install to USB/internal drive")
             print("   2.  Return to main menu")
@@ -147,34 +148,37 @@ while MainMenu:
         while SMBIOSMenu:
             os.system('clear')
 
-            print("#######################################################")
+            print('#' * MenuWidth)
             print("        Enter a new SMBIOS")
-            print("#######################################################")
+            print('#' * MenuWidth)
             print("")
             print("  Tip: Run this command on the machine to find the SMBIOS")
             print("")
             print("  system_profiler SPHardwareDataType | grep 'Model Identifier'")
             print("")
-            SMBIOSOption = raw_input('Please enter the SMBIOS of your machine: ')
-            print("")
-            print("  New SMBIOS: %s" % SMBIOSOption)
-            print("")
-            SMBIOSMenuYN = raw_input("Is this correcy?(y/n)")
-            if SMBIOSMenuYN in {"y", "Y", "yes", "Yes"}:
+            SMBIOSOption = raw_input('Please enter the SMBIOS of your machine (Press enter to exit): ')
+            if SMBIOSOption == "":
+                print("Exiting...")
                 SMBIOSMenu=False
-                BuildOpenCore.current_model = SMBIOSOption
                 MainMenu=True
-                # Set variabel to show we're not patching the system
-                # Ensures we don't use logic for determining the Wifi card model
-                CustomSMBIOS=True
+            else:
+                print("")
+                print("  New SMBIOS: %s" % SMBIOSOption)
+                print("")
+                SMBIOSMenuYN = raw_input("Is this correcy? (y/n)")
+                if SMBIOSMenuYN in {"y", "Y", "yes", "Yes"}:
+                    SMBIOSMenu=False
+                    BuildOpenCore.current_model = SMBIOSOption
+                    MainMenu=True
+                    CustomSMBIOS=True
     elif MainMenu=="4":
         CreditMenu=True
         while CreditMenu:
             os.system('clear')
 
-            print("#######################################################")
+            print('#' * MenuWidth)
             print("                    Credits")
-            print("#######################################################")
+            print('#' * MenuWidth)
             print("")
             print(" Many thanks to the following:")
             print("")
