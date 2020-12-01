@@ -7,8 +7,7 @@ Current TO-DO's with this patcher:
 * [x] Create OpenCore EFI
 * [ ] Generate new serials
 * [ ] Create macOS Installer
-* [ ] Install OpenCore to USB
-* [ ] Install OpenCore to internal drive
+* [x] Install OpenCore to drive
 * [x] USB mapping
 * [ ] Legacy GPU Patches
   * ie. 2011 and older

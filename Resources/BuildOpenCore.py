@@ -4,6 +4,7 @@ from __future__ import print_function
 
 from shutil import copy
 from shutil import rmtree
+from distutils.dir_util import copy_tree
 
 import os
 import json
@@ -14,11 +15,11 @@ import zipfile
 import Versions
 import ModelArray
 
-#print(Versions.opencore_version)
-
 # Find SMBIOS of machine
 current_model = subprocess.Popen("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE)
 current_model = [line.strip().split(": ", 1)[1] for line in current_model.stdout.read().split("\n")  if line.strip().startswith("Model Identifier")][0]
+
+OCExist = False
 
 def BuildEFI():
     
@@ -171,7 +172,7 @@ def BuildEFI():
         )
 
 def BuildSMBIOS():
-     # Add new SMBIOS data
+    # Add new SMBIOS data
     if current_model in ModelArray.MacBookAir61:
         print("- Spoofing to MacBookAir6,1")
         # Patch SMBIOS
@@ -324,6 +325,10 @@ def BuildSMBIOS():
         uuidGen
     )
 
+def SavePlist():
+    with open(Versions.plist_path_build_full, 'w') as file:
+        file.write(Versions.plist_data)
+
 def CleanBuildFolder():
     # Clean up Build Folder
     print("")
@@ -344,3 +349,28 @@ def CleanBuildFolder():
         rmtree("__MACOSX")
     os.remove(Versions.opencore_path_build)
     os.chdir(Versions.current_path)
+
+def ListDiskutil():
+    DiskMenu = True
+    while DiskMenu:
+        os.system('clear')
+        diskList = subprocess.Popen(["diskutil", "list"], stdout=subprocess.PIPE).communicate()[0]
+        print(diskList)
+        ChosenDisk = raw_input('Please select the disk you want to install OpenCore to(ie. disk1): ')
+        ChosenDisk = ChosenDisk + "s1"
+        print("Trying to mount %s" % ChosenDisk)
+        diskMount = subprocess.Popen(["sudo", "diskutil", "mount", ChosenDisk], stdout=subprocess.PIPE).communicate()[0]
+        print(diskMount)
+        DiskMenu = raw_input("Press any key to continue: ")
+
+def MoveOpenCore():
+    print("")
+    print("Coping OpenCore onto Volumes/EFI")
+    efiVol = "/Volumes/EFI"
+    if os.path.exists("/Volumes/EFI/EFI"):
+        print("Cleaning EFI folder")
+        rmtree("/Volumes/EFI/EFI")
+    if os.path.exists(Versions.opencore_path_done):
+        copy_tree(Versions.opencore_path_done, efiVol)
+        print("OpenCore transfer complete")
+        print("")

@@ -15,10 +15,6 @@ from Resources import *
 # List build versions
 patcher_version = "0.0.1"
 
-# Find SMBIOS of machine
-#current_model = subprocess.Popen("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE)
-#current_model = [line.strip().split(": ", 1)[1] for line in current_model.stdout.read().split("\n")  if line.strip().startswith("Model Identifier")][0]
-
 CustomSMBIOS=False
 MainMenu=True
 
@@ -48,11 +44,12 @@ while MainMenu:
         print("---------------------------------------------------")
         print("")
     print("    1.  Build OpenCore")
-    print("    2.  Create macOS Installer                  - Not yet implemented")
-    print("    3.  Install OpenCore to USB/internal drive  - Not yet implemented")
-    print("    4.  Change model")
-    print("    5.  Credits")
-    print("    6.  Exit")
+    print("    2.  Install OpenCore to USB/internal drive")
+    print("    3.  Change model")
+    print("    4.  Credits")
+    print("    5.  Exit")
+    macserialoutput = subprocess.Popen(["./payloads/tools/macserial", "-m", "MacBookAir6,1"], stdout=subprocess.PIPE).communicate()[0]
+    print(macserialoutput)
     print("")
 
     MainMenu = raw_input('Please select an option: ')
@@ -87,12 +84,8 @@ while MainMenu:
                     print("")
                     BuildOpenCore.BuildEFI()
                     BuildOpenCore.BuildSMBIOS()
-                    # Save config.plist changes in memory
-                    with open(Versions.plist_path_build_full, 'w') as file:
-                        file.write(Versions.plist_data)
-                    
+                    BuildOpenCore.SavePlist()
                     BuildOpenCore.CleanBuildFolder()
-
                     print("")
                     print("Your OpenCore EFI has been built at:")
                     print("    %s" % Versions.opencore_path_done)
@@ -110,34 +103,8 @@ while MainMenu:
             else:
                 print("\n Not Valid Choice Try again")
 
-
-    if MainMenu=="2":
-        macOSInstallerMenu=True
-        while macOSInstallerMenu:
-            os.system('clear')
-
-            print("#######################################################")
-            print("        Create macOS Installer")
-            print("#######################################################")
-            print("")
-            print("  Supported OSes:")
-            print("")
-            print("   1.  macOS 11, Big Sur     - Not yet implemented")
-            print("   2.  Return to main menu")
-            print("")
-
-            macOSInstallerMenu = raw_input('Please select an option: ')
-
-            if macOSInstallerMenu=="1":
-                print("\n Not yet implemented")
-            elif macOSInstallerMenu=="2":
-                print("\n Returning to main menu...")
-                macOSInstallerMenu=False
-                MainMenu=True
-            else:
-                print("\n Not Valid Choice Try again")
             
-    elif MainMenu=="3":
+    elif MainMenu=="2":
         print("\n Not yet implemented")
         OpenCoreInstallerMenu=True
         while OpenCoreInstallerMenu:
@@ -147,37 +114,34 @@ while MainMenu:
             print("        Install OpenCore to drive")
             print("#######################################################")
             print("")
-            print("   1.  Install to USB/internal drive            - Not yet implemented")
-            print("   2.  Mount OpenCore drive                     - Not yet implemented")
-            print("   3.  Move OpenCore from USB to internal drive - Not yet implemented")
-            print("   4.  Return to main menu")
+            print("   1.  Install to USB/internal drive")
+            print("   2.  Return to main menu")
             print("")
 
             OpenCoreInstallerMenu = raw_input('Please select an option: ')
 
             if OpenCoreInstallerMenu=="1":
-                print("\n Not yet implemented")
-                # List all disks with GPT
-                # Mount user selected drive's EFI
-                # Copy OpenCore to EFI
+                os.system('clear')
+                if os.path.exists(Versions.opencore_path_done):
+                    print("Found OpenCore in Build Folder")
+                    BuildOpenCore.ListDiskutil()
+                    BuildOpenCore.MoveOpenCore()
+                else:
+                    print("OpenCore folder missing!")
+                    print("Please build OpenCore first")
+                    print("")
+                OpenCoreInstallerMenu = raw_input("Press any key to exit: ")
+                if OpenCoreInstallerMenu=="1":
+                    print("Returning to main menu...")
+                    OpenCoreInstallerMenu=False
             elif OpenCoreInstallerMenu=="2":
-                print("\n Not yet implemented")
-                # Mount OpenCore boot drive
-                # sudo diskutil mount $(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed 's/.*GPT,\([^,]*\),.*/\1/')
-            elif OpenCoreInstallerMenu=="3":
-                print("\n Not yet implemented")
-                # Mount OpenCore Boot drive
-                # Copy EFI to Backup folder
-                # Ask user for internal drive
-                # sudo diskutil mount $(nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:boot-path | sed 's/.*GPT,\([^,]*\),.*/\1/')
-            elif OpenCoreInstallerMenu=="4":
                 print("\n Returning to main menu...")
                 OpenCoreInstallerMenu=False
                 MainMenu=True
             else:
                 print("\n Not Valid Choice Try again")
 
-    elif MainMenu=="4":
+    elif MainMenu=="3":
         SMBIOSMenu=True
         while SMBIOSMenu:
             os.system('clear')
@@ -202,7 +166,7 @@ while MainMenu:
                 # Set variabel to show we're not patching the system
                 # Ensures we don't use logic for determining the Wifi card model
                 CustomSMBIOS=True
-    elif MainMenu=="5":
+    elif MainMenu=="4":
         CreditMenu=True
         while CreditMenu:
             os.system('clear')
@@ -224,7 +188,7 @@ while MainMenu:
                 CreditMenu=False
                 MainMenu=True
 
-    elif MainMenu=="6":
+    elif MainMenu=="5":
         print("\n Closing program...")
         sys.exit(1) 
     else:
