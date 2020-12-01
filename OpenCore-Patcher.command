@@ -13,7 +13,7 @@ import zipfile
 from Resources import *
 
 # List build versions
-patcher_version = "0.0.2"
+patcher_version = "0.0.3"
 
 CustomSMBIOS=False
 MainMenu=True

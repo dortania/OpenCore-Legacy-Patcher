@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.3
+
 ## 0.0.2
 - Expand IOHIDFamily Patch to all Nvidia chipsets
 - Fix Airdrop 1.0 support
