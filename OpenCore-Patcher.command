@@ -24,6 +24,7 @@ while MainMenu:
     print("###################################################")
     print("        OpenCore Legacy patcher v%s" % patcher_version)
     print("           Current Model: %s" % BuildOpenCore.current_model)
+    print(Versions.current_path)
     print("###################################################")
     print("")
     if BuildOpenCore.current_model not in ModelArray.SupportedSMBIOS:

@@ -25,6 +25,8 @@ io80211high_sierra_version = "1.0.0"
 io80211mojave_version = "1.0.0"
 
 # List current location
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
+os.chdir("..")
 current_path = os.getcwd()
 
 # Payload Location
