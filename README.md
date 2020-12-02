@@ -1,6 +1,6 @@
 # OpenCore Legacy Patcher
 
-![](./OC-Patcher.png)
+<img src="OC-Patcher.png" width="256">
 
 A python script for building and booting OpenCore on legacy Macs, see [Supported SMBIOS](#supported-smbios) on whether your model is supported.
 
