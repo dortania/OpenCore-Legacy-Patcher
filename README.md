@@ -4,13 +4,7 @@
 
 A python script for building and booting OpenCore on legacy Macs, see [Supported SMBIOS](#supported-smbios) on whether your model is supported.
 
-Current TO-DO's with this patcher:
-
-* [ ] Create macOS Installer
-* [ ] Legacy GPU Patches
-  * ie. 2011 and older
-* [ ] Legacy Audio Patches
-  * ie. 2011 and older
+See [here](https://github.com/dortania/Opencore-Legacy-Patcher/issues/1) for current TO-DOs on this patcher.
 
 ## Supported SMBIOS
 
