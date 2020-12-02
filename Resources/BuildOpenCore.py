@@ -12,8 +12,8 @@ import subprocess
 import sys
 import zipfile
 
-import Versions
-import ModelArray
+from Resources import Versions
+from Resources import ModelArray
 
 # Find SMBIOS of machine
 current_model = subprocess.Popen("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE)
