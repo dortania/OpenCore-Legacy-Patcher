@@ -15,6 +15,12 @@ import zipfile
 from Resources import Versions
 from Resources import ModelArray
 
+# Allow py2 and 3 support
+try:
+    input = raw_input
+except NameError:
+    pass
+
 # Find SMBIOS of machine
 current_model = subprocess.Popen("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE)
 current_model = [line.strip().split(": ", 1)[1] for line in current_model.stdout.read().split("\n")  if line.strip().startswith("Model Identifier")][0]
@@ -306,12 +312,12 @@ def ListDiskutil():
         print("Loading diskutil...(This may take some time)")
         diskList = subprocess.Popen(["diskutil", "list"], stdout=subprocess.PIPE).communicate()[0]
         print(diskList)
-        ChosenDisk = raw_input('Please select the disk you want to install OpenCore to(ie. disk1): ')
+        ChosenDisk = input('Please select the disk you want to install OpenCore to(ie. disk1): ')
         ChosenDisk = ChosenDisk + "s1"
         print("Trying to mount %s" % ChosenDisk)
         diskMount = subprocess.Popen(["sudo", "diskutil", "mount", ChosenDisk], stdout=subprocess.PIPE).communicate()[0]
         print(diskMount)
-        DiskMenu = raw_input("Press any key to continue: ")
+        DiskMenu = input("Press any key to continue: ")
 
 def MoveOpenCore():
     print("")
