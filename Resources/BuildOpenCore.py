@@ -153,34 +153,34 @@ def BuildEFI():
         if current_model in ModelArray.EthernetNvidia:
             # Nvidia chipsets all have the same path to ARPT
             Versions.plist_data = Versions.plist_data.replace(
-                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
-                "PciRoot(0x0)/Pci(0x15,0x0)Pci(0x0,0x0)"
+                "#PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
             )
         if current_model in ("MacBookAir2,1", "MacBookAir3,1", "MacBookAir3,2" ):
             Versions.plist_data = Versions.plist_data.replace(
-                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
-                "PciRoot(0x0)/Pci(0x15,0x0)Pci(0x0,0x0)"
+                "#PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
             )
         elif current_model in ("iMac7,1", "iMac8,1" ):
             Versions.plist_data = Versions.plist_data.replace(
-                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
-                "PciRoot(0x0)/Pci(0x1C,0x4)Pci(0x0,0x0)"
+                "#PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
             )
         elif current_model in ("iMac13,1", "iMac13,2"):
             Versions.plist_data = Versions.plist_data.replace(
-                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
-                "PciRoot(0x0)/Pci(0x1C,0x3)Pci(0x0,0x0)"
+                "#PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
             )
         elif current_model in ("MacPro5,1"):
             Versions.plist_data = Versions.plist_data.replace(
-                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
-                "PciRoot(0x0)/Pci(0x1C,0x5)Pci(0x0,0x0)"
+                "#PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
             )
         else:
             # Assumes we have a laptop with Intel chipset
             Versions.plist_data = Versions.plist_data.replace(
-                "#PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)",
-                "PciRoot(0x0)/Pci(0x1C,0x1)Pci(0x0,0x0)"
+                "#PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)",
+                "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
             )
     if current_model in ModelArray.LegacyHID:
         Versions.plist_data = Versions.plist_data.replace(
