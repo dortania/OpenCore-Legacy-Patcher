@@ -20,7 +20,7 @@ except NameError:
     pass
 
 # List build versions
-patcher_version = "0.0.4"
+patcher_version = "0.0.5"
 
 CustomSMBIOS=False
 MainMenu=True
@@ -218,6 +218,7 @@ while MainMenu:
             print("  - DhinakG:      Writing and maintaining this Patcher")
             print("  - Khronokernel: Writing and maintaining this Patcher")
             print("  - Syncretic:    AAAMouSSE and telemetrap")
+            print("  - Slice:        VoodooHDA")
             print("")
             CreditMenu = input(" Press any key to exit: ")
             print("Returning to main menu...")
