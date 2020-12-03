@@ -367,6 +367,26 @@ SidecarPatch = [
     "iMac14,3"
 ]
 
+DualGPUPatch = [
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro5,5",
+    "MacBookPro6,1",
+    "MacBookPro6,2",
+    "MacBookPro8,2",
+    "MacBookPro8,3",
+    "MacBookPro9,1",
+    "MacBookPro10,1",
+    "Macmini5,2",
+    "iMac12,1",
+    "iMac12,2",
+    "iMac13,2",
+    "iMac14,2",
+    "iMac14,3",
+]
+
 # 11" Air
 MacBookAir61 = [
     "MacBookAir3,1",

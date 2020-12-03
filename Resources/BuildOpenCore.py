@@ -212,6 +212,14 @@ def BuildEFI():
             "USB-Map-SMBIOS.kext",
             map_name
         )
+    
+    if current_model in ModelArray.DualGPUPatch:
+        print("- Adding dual GPU patch")
+        Versions.plist_data = Versions.plist_data.replace(
+            "debug=0x100",
+            "debug=0x100 agdpmod=pikera"
+        )
+
 
 def BuildGUI():
     print("- Adding OpenCanopy GUI")
