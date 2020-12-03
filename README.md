@@ -98,3 +98,22 @@ Prerequists:
 4. Once finished, run option 2 a the main menu and install onto your desired drive
 
 Once you're done making your OpenCore installer, you can simply reboot holding the Option key. In the picker, you should see a new EFI Boot Option. Boot it and from there you'll be in the OpenCore picker.
+
+## Troubleshooting
+
+Here are some common errors users may experience while using this patcher:
+
+* [Stuck on `This version of Mac OS X is not supported on this platform`](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform)
+* [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
+
+### Stuck on `This version of Mac OS X is not supported on this platform`
+
+This means macOS has detected a SMBIOS it does not support, to resolve this ensure you're booting OpenCore **before** the macOS installer in the boot picker. Reminder the option will be called `EFI Boot`
+
+Once you've booted OpenCore at least once, your hardware should now auto boot it until either NVRAM reset or you remove the drive with OpenCore installed.
+
+### Cannot boot macOS without the USB
+
+At this time, the OpenCore Patcher won't install macOS onto the internal drive itself during installs. Instead, you'll need to either [manually transfer](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html) OpenCore to the internal drive's EFI or run this patcher's Option 2 again but select your internal drive.
+
+Reminder that once this is done, you'll need to select OpenCore in the boot picker again for your hardware to remenber this entry and auto boot from then on.
