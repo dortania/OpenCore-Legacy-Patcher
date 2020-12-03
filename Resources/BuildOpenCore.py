@@ -189,6 +189,7 @@ def BuildEFI():
                 "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
             )
     if current_model in ModelArray.LegacyHID:
+        print("- Adding legacy IOHIDFamily Patch")
         Versions.plist_data = Versions.plist_data.replace(
             "<false/><!--IOHIDFamily-->",
             "<true/><!--IOHIDFamily-->"
