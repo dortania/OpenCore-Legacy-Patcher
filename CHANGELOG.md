@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.0.4
+- Add basic audio support for legacy chipsets
+- Add patch for dual GPU machines
 
 ## 0.0.3
 - Fix Wireless patch logic

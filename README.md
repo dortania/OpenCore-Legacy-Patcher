@@ -99,6 +99,16 @@ Prerequists:
 
 Once you're done making your OpenCore installer, you can simply reboot holding the Option key. In the picker, you should see a new EFI Boot Option. Boot it and from there you'll be in the OpenCore picker.
 
+## How to uninstall OpenCore?
+
+To remve OpenCore is actually quite simply:
+
+1. Remove OpenCore either from the USB or internal drive
+  * You'll need to mount the drive's EFI partition, and delete the EFI folder
+  * [See here for example how to mount](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html)
+2. Reset NVRAM
+  * [Reset NVRAM or PRAM on your Mac](https://support.apple.com/HT204063)
+
 ## Troubleshooting
 
 Here are some common errors users may experience while using this patcher:
