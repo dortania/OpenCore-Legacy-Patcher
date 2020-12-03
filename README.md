@@ -127,3 +127,13 @@ Once you've booted OpenCore at least once, your hardware should now auto boot it
 At this time, the OpenCore Patcher won't install macOS onto the internal drive itself during installs. Instead, you'll need to either [manually transfer](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html) OpenCore to the internal drive's EFI or run this patcher's Option 2 again but select your internal drive.
 
 Reminder that once this is done, you'll need to select OpenCore in the boot picker again for your hardware to remenber this entry and auto boot from then on.
+
+### OpenCore won't show up in the boot picker
+
+If OpenCore refuses to show up in the boot picker even with the above troubleshooting step, you can try to disable SIP and run this command(With your EFI drive mounted):
+
+```sh
+sudo bless --verbose --file /Volumes/EFI/EFI/OC/Bootstrap/Bootstrap.efi --folder /Volumes/EFI/EFI/OC/Bootstrap --setBoot
+```
+
+* Note: NVRAM write is disabled with SIP, so disables SIP first before running

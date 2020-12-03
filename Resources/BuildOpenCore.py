@@ -22,8 +22,17 @@ except NameError:
     pass
 
 # Find SMBIOS of machine
-current_model = subprocess.Popen("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE)
-current_model = [line.strip().split(": ", 1)[1] for line in current_model.stdout.read().split("\n")  if line.strip().startswith("Model Identifier")][0]
+opencore_model = subprocess.Popen(["NVRAM", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product"], stdout=subprocess.PIPE).communicate()[0]
+if opencore_model not in ("NVRAM: Error getting variable - '4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product': (iokit/common) data was not found"):
+    print("Detected OpenCore machine")
+    opencore_model = subprocess.Popen("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product".split(), stdout=subprocess.PIPE)
+    opencore_model = [line.strip().split(":oem-product	", 1)[1] for line in opencore_model.stdout.read().split("\n")  if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
+    current_model = opencore_model
+else:
+    print("No OpenCore detected")
+    current_model = subprocess.Popen("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE)
+    current_model = [line.strip().split(": ", 1)[1] for line in current_model.stdout.read().split("\n")  if line.strip().startswith("Model Identifier")][0]
+    print("Current Model: %s" % current_model)
 
 OCExist = False
 
@@ -71,7 +80,7 @@ def BuildEFI():
     
     if current_model in ModelArray.SSEEmulator:
         print("- Adding AAAMouSSE v%s" % Versions.mousse_version)
-        copy(Versions.mousse_version, Versions.kext_path_build)
+        copy(Versions.mousse_path, Versions.kext_path_build)
         Versions.plist_data = Versions.plist_data.replace(
             "<false/><!--AAAMouSSE-->",
             "<true/><!--AAAMouSSE-->"
@@ -208,6 +217,10 @@ def BuildEFI():
         print("- Adding USB Map for %s" % current_model)
         copy(usb_map_path, Versions.kext_path_build)
         map_name = ("USB-Map-%s.kext" % current_model)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<<false/><!--USBmap-->",
+            "<true/><!--USBmap-->"
+        )
         Versions.plist_data = Versions.plist_data.replace(
             "USB-Map-SMBIOS.kext",
             map_name

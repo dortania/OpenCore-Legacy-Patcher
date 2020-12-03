@@ -2,6 +2,9 @@
 
 ## 0.0.5
 - Enable hibernation support
+- Work around USB Map failing
+- Add checks whether booting with OpenCore
+- Fix MouSSE injection
 
 ## 0.0.4
 - Add basic audio support for legacy chipsets
