@@ -195,6 +195,14 @@ def BuildEFI():
             "<true/><!--IOHIDFamily-->"
         )
     
+    if current_model in ModelArray.LegacyAudio:
+        print("- Adding VoodooHDA v%s" % Versions.voodoohda_version)
+        copy(Versions.voodoohda_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--VoodooHDA-->",
+            "<true/><!--VoodooHDA-->"
+        )
+    
     usb_map_path = os.path.join(Versions.current_path, "payloads/Kexts/Maps/Zip/" "USB-Map-%s.zip" % current_model)
     if os.path.exists(usb_map_path):
         print("- Adding USB Map for %s" % current_model)

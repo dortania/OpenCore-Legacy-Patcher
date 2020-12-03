@@ -430,6 +430,24 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
+				<string>VoodooHDA</string>
+				<key>Enabled</key>
+				<false/><!--VoodooHDA-->
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>18.0.0</string>
+				<key>BundlePath</key>
+				<string>VoodooHDA.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/VoodooHDA</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
 				<string>USB Map</string>
 				<key>Enabled</key>
 				<true/>

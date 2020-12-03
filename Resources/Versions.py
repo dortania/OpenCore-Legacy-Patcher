@@ -23,6 +23,7 @@ mousse_version = "0.93"
 telemetrap_version = "1.0.0"
 io80211high_sierra_version = "1.0.0"
 io80211mojave_version = "1.0.0"
+voodoohda_version = "296"
 
 # List current location
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -52,6 +53,7 @@ mousse_path = os.path.join(current_path, "payloads/Kexts/SSE/" "AAAMouSSE-v%s.zi
 telemetrap_path = os.path.join(current_path, "payloads/Kexts/SSE/" "telemetrap-v%s.zip" % telemetrap_version)
 io80211high_sierra_path = os.path.join(current_path, "payloads/Kexts/Wifi/" "IO80211HighSierra-v%s.zip" % io80211high_sierra_version)
 io80211mojave_path = os.path.join(current_path, "payloads/Kexts/Wifi/" "IO80211Mojave-v%s.zip" % io80211mojave_version)
+voodoohda_path = os.path.join(current_path, "payloads/Kexts/Audio/" "VoodooHDA-v%s.zip" % voodoohda_version)
 
 # Build Location
 opencore_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s.zip" % opencore_version)
