@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.0.5
+- Enable hibernation support
 
 ## 0.0.4
 - Add basic audio support for legacy chipsets
