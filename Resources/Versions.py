@@ -68,5 +68,6 @@ gui_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC
 macserial_path = os.path.join(current_path, "payloads/" "Tools")
 
 # Icons
+app_icon_path = os.path.join(current_path, "OC-Patcher.icns")
 icon_path = os.path.join(current_path, "payloads/Icon/" ".VolumeIcon.icns")
 gui_path = os.path.join(current_path, "payloads/Icon/" "Resources.zip")

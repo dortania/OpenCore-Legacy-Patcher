@@ -122,7 +122,7 @@ while MainMenu:
                         print("")
                         print("  New SMBIOS: %s" % OpenCoreOption)
                         print("")
-                        ChangeOCversionYN = input("Is this correcy? (y/n)")
+                        ChangeOCversionYN = input("Is this correct? (y/n)")
                         if ChangeOCversionYN in {"y", "Y", "yes", "Yes"}:
                             ChangeOCversion=False
                             Versions.opencore_version = OpenCoreOption
@@ -197,7 +197,7 @@ while MainMenu:
                 print("")
                 print("  New SMBIOS: %s" % SMBIOSOption)
                 print("")
-                SMBIOSMenuYN = input("Is this correcy? (y/n)")
+                SMBIOSMenuYN = input("Is this correct? (y/n)")
                 if SMBIOSMenuYN in {"y", "Y", "yes", "Yes"}:
                     SMBIOSMenu=False
                     BuildOpenCore.current_model = SMBIOSOption

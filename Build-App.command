@@ -31,6 +31,7 @@ app_macos_payload_path = os.path.join(current_path, "App/OpenCore-Patcher.app/Co
 app_macos_resources_path = os.path.join(current_path, "App/OpenCore-Patcher.app/Contents/MacOS/Resources")
 app_resources_path = os.path.join(current_path, "App/OpenCore-Patcher.app/Contents/Resources/")
 
+
 if os.path.exists(app_path):
     print("Cleaning App folder")
     rmtree(app_path)
@@ -47,5 +48,5 @@ copy_tree(resources_path, app_macos_resources_path)
 copy_tree(payloads_path, app_macos_payload_path)
 copy(icns_path, app_resources_path)
 copy(plist_path, contents_path)
-
+copy(icns_path, app_macos_path)
 
