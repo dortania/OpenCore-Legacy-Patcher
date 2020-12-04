@@ -272,6 +272,8 @@ def BuildSMBIOS():
         new_model = "MacPro7,1"
 
     # Grab serials from macserial
+    serialPatch = subprocess.Popen(["xattr", "-cr", "./payloads/tools/macserial"], stdout=subprocess.PIPE).communicate()[0]
+    print(serialPatch)
     serialData = subprocess.Popen((r"./payloads/tools/macserial -g -m " + new_model + " -n 1").split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     serialData = serialData.stdout.read().strip().split(" | ")
 
