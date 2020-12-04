@@ -128,24 +128,3 @@ At this time, the OpenCore Patcher won't install macOS onto the internal drive i
 
 Reminder that once this is done, you'll need to select OpenCore in the boot picker again for your hardware to remenber this entry and auto boot from then on.
 
-### OpenCore won't show up in the boot picker
-
-If OpenCore refuses to show up in the boot picker even with the above troubleshooting step, you can try to disable SIP and run this command(With your EFI drive mounted):
-
-```sh
-sudo bless --verbose --file /Volumes/EFI/EFI/OC/Bootstrap/Bootstrap.efi --folder /Volumes/EFI/EFI/OC/Bootstrap --setBoot
-```
-
-* Note: NVRAM write is disabled with SIP, so disables SIP first before running
-
-### Downloaded patcher is corrpted
-
-Currently unknown where the cause is, however cd'ing into the folder and calling the command works:
-
-```sh
-# CD into your folder(Change to what yours is)
-~/Downloads/OpenCore-Legacy-Patcher/
-#  Call the file
-python OpenCore-Patcher.command
-```
-

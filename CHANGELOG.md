@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.6
+- Fix macserial crashing
+
 ## 0.0.5
 - Enable hibernation support
 - Work around USB Map failing
