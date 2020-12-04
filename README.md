@@ -142,7 +142,7 @@ sudo bless --verbose --file /Volumes/EFI/EFI/OC/Bootstrap/Bootstrap.efi --folder
 
 Currently unknown where the cause is, however cd'ing into the folder and calling the command works:
 
-```
+```sh
 # CD into your folder(Change to what yours is)
 ~/Downloads/OpenCore-Legacy-Patcher/
 #  Call the file
