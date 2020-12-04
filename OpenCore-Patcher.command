@@ -20,7 +20,7 @@ except NameError:
     pass
 
 # List build versions
-patcher_version = "0.0.6"
+patcher_version = "0.0.7"
 
 CustomSMBIOS=False
 MainMenu=True

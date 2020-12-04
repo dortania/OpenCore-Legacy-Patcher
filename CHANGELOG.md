@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.7
+
 ## 0.0.6
 - Fix macserial crashing
 
