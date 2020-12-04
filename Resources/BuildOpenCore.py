@@ -283,16 +283,20 @@ def BuildSMBIOS():
         new_model
     )
 
-    # Patch Number Serial
-    Versions.plist_data = Versions.plist_data.replace(
-        "W00000000001",
-        serialData[0]
-    )
-    # Patch MLB
-    Versions.plist_data = Versions.plist_data.replace(
-        "M0000000000000001",
-        serialData[1]
-    )
+    if serialData == "['']":
+        # Used as a backup for when macserial fails
+        print("Failed to load macserial")
+    else:
+        # Patch Number Serial
+        Versions.plist_data = Versions.plist_data.replace(
+            "W00000000001",
+            serialData[0]
+        )
+        # Patch MLB
+        Versions.plist_data = Versions.plist_data.replace(
+            "M0000000000000001",
+            serialData[1]
+        )
         
     # Patch UUID
     uuidGen = subprocess.Popen(["uuidgen"], stdout=subprocess.PIPE).communicate()[0]
