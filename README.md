@@ -137,3 +137,15 @@ sudo bless --verbose --file /Volumes/EFI/EFI/OC/Bootstrap/Bootstrap.efi --folder
 ```
 
 * Note: NVRAM write is disabled with SIP, so disables SIP first before running
+
+### Downloaded patcher is corrpted
+
+Currently unknown where the cause is, however cd'ing into the folder and calling the command works:
+
+```
+# CD into your folder(Change to what yours is)
+~/Downloads/OpenCore-Legacy-Patcher/
+#  Call the file
+python OpenCore-Patcher.command
+```
+
