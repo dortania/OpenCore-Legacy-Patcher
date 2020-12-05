@@ -343,6 +343,7 @@ LegacyHID = [
     "iMac8,1",
     "iMac9,1",
     "iMac10,1",
+    "MacPro3,1"
 ]
 
 NVMePatch = [
