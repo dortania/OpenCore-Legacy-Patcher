@@ -2,6 +2,7 @@
 
 ## 0.0.7
 - Add MacPro3,1 to HID patch
+- Fix missing SSDT-CPBG patch
 
 ## 0.0.6
 - Fix macserial crashing

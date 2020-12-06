@@ -212,6 +212,14 @@ def BuildEFI():
             "<true/><!--VoodooHDA-->"
         )
     
+    if current_model in ModelArray.pciSSDT:
+        print("- Adding SSDT-CPBG")
+        copy(Versions.pci_ssdt_path, Versions.acpi_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--SSDT-CPBG-->",
+            "<true/><!--SSDT-CPBG-->"
+        )
+    
     usb_map_path = os.path.join(Versions.current_path, "payloads/Kexts/Maps/Zip/" "USB-Map-%s.zip" % current_model)
     if os.path.exists(usb_map_path):
         print("- Adding USB Map for %s" % current_model)
