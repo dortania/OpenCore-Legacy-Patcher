@@ -623,7 +623,7 @@
 			<key>BootProtect</key>
 			<string>Bootstrap</string>
 			<key>BlacklistAppleUpdate</key>
-			<false/>
+			<true/>
 			<key>DmgLoading</key>
 			<string>Signed</string>
 			<key>EnablePassword</key>
