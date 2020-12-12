@@ -24,6 +24,7 @@ telemetrap_version = "1.0.0"
 io80211high_sierra_version = "1.0.0"
 io80211mojave_version = "1.0.0"
 voodoohda_version = "296"
+restrictevents_version = "1.0.0"
 
 # List current location
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -45,6 +46,7 @@ nvme_driver_path = os.path.join(current_path, "payloads/Drivers/" "NvmExpressDxe
 lilu_path = os.path.join(current_path, "payloads/Kexts/Acidanthera/" "Lilu-v%s.zip" % lilu_version)
 whatevergreen_path = os.path.join(current_path, "payloads/Kexts/Acidanthera/" "WhateverGreen-v%s.zip" % whatevergreen_version)
 airportbcrmfixup_path = os.path.join(current_path, "payloads/Kexts/Acidanthera/" "AirportBrcmFixup-v%s.zip" % airportbcrmfixup_version)
+restrictevents_path = os.path.join(current_path, "payloads/Kexts/Acidanthera/" "RestrictEvents-v%s.zip" % restrictevents_version)
 bcm570_path = os.path.join(current_path, "payloads/Kexts/Ethernet/" "CatalinaBCM5701Ethernet-v%s.zip" % bcm570_version)
 marvel_path = os.path.join(current_path, "payloads/Kexts/Ethernet/" "MarvelYukonEthernet-v%s.zip" % marvel_version)
 nforce_path = os.path.join(current_path, "payloads/Kexts/Ethernet/" "nForceEthernet-v%s.zip" % nforce_version)

@@ -128,3 +128,6 @@ At this time, the OpenCore Patcher won't install macOS onto the internal drive i
 
 Reminder that once this is done, you'll need to select OpenCore in the boot picker again for your hardware to remenber this entry and auto boot from then on.
 
+### Cannot run OpenCore Legacy Patcher
+
+If the release tab has permissions/Gatekeeper issues, please [download the main repo](https://github.com/dortania/Opencore-Legacy-Patcher/archive/main.zip) and run that instead.

@@ -61,12 +61,15 @@ def BuildEFI():
     copy(Versions.plist_path, Versions.plist_path_build)
     with open(Versions.plist_path_build_full, 'r') as file :
         Versions.plist_data = file.read()
-
-    print("- Adding Lilu %s" % Versions.lilu_version)
+    # Adding must have kexts
+    print("- Adding Lilu v%s" % Versions.lilu_version)
     copy(Versions.lilu_path, Versions.kext_path_build)
     
-    print("- Adding WhateverGreen %s" % Versions.whatevergreen_version)
+    print("- Adding WhateverGreen v%s" % Versions.whatevergreen_version)
     copy(Versions.whatevergreen_path, Versions.kext_path_build)
+
+    print("- Adding RestrictEvents v%s" % Versions.restrictevents_version)
+    copy(Versions.restrictevents_path, Versions.kext_path_build)
     
     # Checks for kexts
     # CPU Kext Patches
@@ -86,7 +89,7 @@ def BuildEFI():
             "<true/><!--AAAMouSSE-->"
         )
     if current_model in ModelArray.MissingSSE42:
-        print("- Adding telemetrap %s" % Versions.telemetrap_version)
+        print("- Adding telemetrap v%s" % Versions.telemetrap_version)
         copy(Versions.telemetrap_path, Versions.kext_path_build)
         Versions.plist_data = Versions.plist_data.replace(
             "<false/><!--telemetrap-->",
@@ -110,7 +113,7 @@ def BuildEFI():
             "<true/><!--MarvelYukonEthernet-->"
         )
     if current_model in ModelArray.EthernetBroadcom:
-        print("- Adding CatalinaBCM5701Ethernet %s" % Versions.bcm570_version)
+        print("- Adding CatalinaBCM5701Ethernet v%s" % Versions.bcm570_version)
         copy(Versions.bcm570_path, Versions.kext_path_build)
         Versions.plist_data = Versions.plist_data.replace(
             "<false/><!--CatalinaBCM5701Ethernet-->",

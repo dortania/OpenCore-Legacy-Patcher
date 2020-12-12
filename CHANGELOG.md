@@ -4,6 +4,7 @@
 - Add MacPro3,1 to HID patch
 - Fix missing SSDT-CPBG patch
 - Fix BlacklistAppleUpdate
+- Add RestrictEvents kext
 
 ## 0.0.6
 - Fix macserial crashing

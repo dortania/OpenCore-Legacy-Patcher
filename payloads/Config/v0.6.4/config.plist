@@ -216,6 +216,24 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
+				<string>Process Blocker</string>
+				<key>Enabled</key>
+				<true/><!--RestrictEvents-->
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string></string>
+				<key>BundlePath</key>
+				<string>RestrictEvents.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/RestrictEvents</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
 				<string>SSE Emulator</string>
 				<key>Enabled</key>
 				<false/><!--AAAMouSSE-->
