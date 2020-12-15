@@ -1,6 +1,8 @@
 .DS_Store
 /App
 /Build-Folder
+/build
+/dist
 /.vscode
 __pycache__/
 *.py[cod]

@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.8
+- Fix USB Map
+
 ## 0.0.7
 - Add MacPro3,1 to HID patch
 - Fix missing SSDT-CPBG patch

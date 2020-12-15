@@ -229,7 +229,7 @@ def BuildEFI():
         copy(usb_map_path, Versions.kext_path_build)
         map_name = ("USB-Map-%s.kext" % current_model)
         Versions.plist_data = Versions.plist_data.replace(
-            "<<false/><!--USBmap-->",
+            "<false/><!--USBmap-->",
             "<true/><!--USBmap-->"
         )
         Versions.plist_data = Versions.plist_data.replace(
