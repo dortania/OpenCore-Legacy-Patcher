@@ -243,6 +243,12 @@ def BuildEFI():
             "debug=0x100",
             "debug=0x100 agdpmod=pikera"
         )
+    if current_model in ModelArray.HiDPIpicker:
+        print("- Setting HiDPI picker")
+        Versions.plist_data = Versions.plist_data.replace(
+            "<data>AQ==</data>",
+            "<data>Ag==</data>"
+        )
 
 
 def BuildGUI():

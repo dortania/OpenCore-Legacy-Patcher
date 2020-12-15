@@ -2,6 +2,7 @@
 
 ## 0.0.8
 - Fix USB Map
+- Add HiDPI patch
 
 ## 0.0.7
 - Add MacPro3,1 to HID patch

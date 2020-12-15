@@ -388,6 +388,11 @@ DualGPUPatch = [
     "iMac14,3",
 ]
 
+HiDPIpicker = [
+    "MacBookPro10,1",
+    "MacBookPro10,2",
+]
+
 # 11" Air
 MacBookAir61 = [
     "MacBookAir3,1",
