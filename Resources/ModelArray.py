@@ -52,9 +52,10 @@ SupportedSMBIOS = [
     "iMac12,2",
     "iMac13,1",
     "iMac13,2",
-    "iMac14,1",
-    "iMac14,2",
-    "iMac14,3",
+    #Remove due to pottential bricking with 11.0.1 and 11.1
+    #"iMac14,1",
+    #"iMac14,2",
+    #"iMac14,3",
     # Mac Pro
     "MacPro3,1",
     "MacPro4,1",
