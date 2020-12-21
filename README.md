@@ -80,9 +80,9 @@ iMac12,1
 iMac12,2
 iMac13,1
 iMac13,2
-iMac14,1
-iMac14,2
-iMac14,3
+iMac14,1 # Due to issues with 11.1, currently not supported
+iMac14,2 # Due to issues with 11.1, currently not supported
+iMac14,3 # Due to issues with 11.1, currently not supported
 
 MacPro3,1
 MacPro4,1
