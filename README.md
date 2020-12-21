@@ -4,7 +4,19 @@
 
 A python script for building and booting OpenCore on legacy Macs, see [Supported SMBIOS](#supported-smbios) on whether your model is supported.
 
-See [here](https://github.com/dortania/Opencore-Legacy-Patcher/issues/1) for current TO-DOs on this patcher.
+### Ivy Bridge and Haswell Notes
+
+Currently in Big Sur 11.0.1 and 11.1, there are partial firmware brickings happening during the install stage. The exact issue depends on the CPU model generation:
+
+
+* **Ivy Bridge**:
+  * Simply power cycling the machine will resolve this issue
+    * Laptops will need to unplug the battery for a bit
+  * To avoid this issue outright, simply shutdown the machine after Big Sur has installed macOS instread of having the installer auto reboot
+
+* **Haswell**:
+  * Power cycling *may* work however some iMac14,x users have reported needing a firmware reflash
+    * Patcher currently has removed support for these machines till macOS 11.2's release to avoid any unnessary headaches for users
 
 ## Supported SMBIOS
 
