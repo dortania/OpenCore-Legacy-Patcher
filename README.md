@@ -16,7 +16,7 @@ Currently in Big Sur 11.0.1 and 11.1, there are partial firmware brickings happe
 
 * **Haswell**:
   * Power cycling *may* work however some iMac14,x users have reported needing a firmware reflash
-    * Patcher currently has removed support for these machines till macOS 11.2's release to avoid any unnessary headaches for users
+    * Patcher currently has removed support for these machines till macOS 11.2's release to avoid any unnecessary headaches for users
 
 ## Supported SMBIOS
 
