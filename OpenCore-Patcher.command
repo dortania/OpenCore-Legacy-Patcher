@@ -135,7 +135,7 @@ while MainMenu:
                 print("\n Not Valid Choice Try again")
                 OpenCoreBuilderMenu = True
 
-            
+
     elif MainMenu=="2":
         print("\n Not yet implemented")
         OpenCoreInstallerMenu=True
@@ -197,12 +197,32 @@ while MainMenu:
                 print("")
                 print("  New SMBIOS: %s" % SMBIOSOption)
                 print("")
-                SMBIOSMenuYN = input("Is this correct? (y/n)")
-                if SMBIOSMenuYN in {"y", "Y", "yes", "Yes"}:
-                    SMBIOSMenu=False
-                    BuildOpenCore.current_model = SMBIOSOption
-                    MainMenu=True
-                    CustomSMBIOS=True
+                serialsForAllModels = subprocess.Popen([r"./payloads/tools/macserial", "-a"],
+                                                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[
+                    0]
+                generatedSerialEntries = serialsForAllModels.split("\n")
+                validSMBIOSList = []
+                # last value is an empty string, so we discard that.
+                for i in range(len(generatedSerialEntries) - 1):
+                    validSMBIOSList.append(generatedSerialEntries[i].split(" | ")[0].replace(" ", ""))
+
+                # remove duplicates
+                validSMBIOSList = sorted(list(set(validSMBIOSList)))
+                if SMBIOSOption in validSMBIOSList:
+                    SMBIOSMenuYN = input("Is this correct? (y/n)")
+                    if SMBIOSMenuYN in {"y", "Y", "yes", "Yes"}:
+                        SMBIOSMenu = False
+                        BuildOpenCore.current_model = SMBIOSOption
+                        MainMenu = True
+                        CustomSMBIOS = True
+                else:
+                    print(SMBIOSOption + " is not a valid SMBIOS Identifier!")
+                    printListOfValidSMBIOS = input("Print list of valid options? (y/n)")
+                    if printListOfValidSMBIOS in {"y", "Y", "yes", "Yes"}:
+                        print("\n".join(validSMBIOSList))
+                    input("Press any key to continue...")
+                    SMBIOSMenu = False
+                    MainMenu = True
     elif MainMenu=="4":
         CreditMenu=True
         while CreditMenu:
@@ -227,7 +247,7 @@ while MainMenu:
 
     elif MainMenu=="5":
         print("\n Closing program...")
-        sys.exit(1) 
+        sys.exit(1)
     else:
         print("\n Not Valid Choice Try again")
         MainMenu=True
