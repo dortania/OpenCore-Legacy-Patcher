@@ -4,6 +4,10 @@
 
 A python script for building and booting OpenCore on legacy Macs, see [Supported SMBIOS](#supported-smbios) on whether your model is supported.
 
+# DO NOT USE, RISKS OF BRICKING YOUR MAC
+
+Currently this patcher implementation can apply a firmware update that breaks your machine. To avoid this, we highly recommend users do not use this patcher until we've resolved this.
+
 ### Ivy Bridge and Haswell Notes
 
 Currently in Big Sur 11.0.1 and 11.1, there are partial firmware brickings happening during the install stage. The exact issue depends on the CPU model generation:
