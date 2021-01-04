@@ -117,7 +117,7 @@ Once you're done making your OpenCore installer, you can simply reboot holding t
 
 ## How to uninstall OpenCore?
 
-To remve OpenCore is actually quite simply:
+To remove OpenCore is actually quite simply:
 
 1. Remove OpenCore either from the USB or internal drive
   * You'll need to mount the drive's EFI partition, and delete the EFI folder
