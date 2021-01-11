@@ -218,7 +218,7 @@
 				<key>Comment</key>
 				<string>Process Blocker</string>
 				<key>Enabled</key>
-				<true/><!--RestrictEvents-->
+				<false/><!--RestrictEvents-->
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>

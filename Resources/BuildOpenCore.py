@@ -68,8 +68,13 @@ def BuildEFI():
     print("- Adding WhateverGreen v%s" % Versions.whatevergreen_version)
     copy(Versions.whatevergreen_path, Versions.kext_path_build)
 
-    print("- Adding RestrictEvents v%s" % Versions.restrictevents_version)
-    copy(Versions.restrictevents_path, Versions.kext_path_build)
+    if current_model in ModelArray.MacPro71:
+        print("- Adding RestrictEvents v%s" % Versions.restrictevents_version)
+        copy(Versions.restrictevents_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--RestrictEvents-->",
+            "<true/><!--RestrictEvents-->"
+        )
     
     # Checks for kexts
     # CPU Kext Patches

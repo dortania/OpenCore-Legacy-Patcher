@@ -11,10 +11,10 @@ import subprocess
 import sys
 
 # List build versions
-opencore_version = "0.6.4"
-lilu_version = "1.4.9"
-whatevergreen_version = "1.4.4"
-airportbcrmfixup_version = "2.1.1"
+opencore_version = "0.6.6"
+lilu_version = "1.5.0"
+whatevergreen_version = "1.4.6"
+airportbcrmfixup_version = "2.1.2"
 bcm570_version = "1.0.0"
 marvel_version = "1.0.0"
 nforce_version = "1.0.0"

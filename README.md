@@ -4,24 +4,6 @@
 
 A python script for building and booting OpenCore on legacy Macs, see [Supported SMBIOS](#supported-smbios) on whether your model is supported.
 
-# DO NOT USE, RISKS OF BRICKING YOUR MAC
-
-Currently this patcher implementation can apply a firmware update that breaks your machine. To avoid this, we highly recommend users do not use this patcher until we've resolved this.
-
-### Ivy Bridge and Haswell Notes
-
-Currently in Big Sur 11.0.1 and 11.1, there are partial firmware brickings happening during the install stage. The exact issue depends on the CPU model generation:
-
-
-* **Ivy Bridge**:
-  * Simply power cycling the machine will resolve this issue
-    * Laptops will need to unplug the battery for a bit
-  * To avoid this issue outright, simply shutdown the machine after Big Sur has installed macOS instread of having the installer auto reboot
-
-* **Haswell**:
-  * Power cycling *may* work however some iMac14,x users have reported needing a firmware reflash
-    * Patcher currently has removed support for these machines till macOS 11.2's release to avoid any unnecessary headaches for users
-
 ## Supported SMBIOS
 
 Any hardware supporting SSE4.1 CPU and 64-Bit firmware work on this patcher. To check your hardware model, run the below command on the applicable machine:
@@ -117,7 +99,7 @@ Once you're done making your OpenCore installer, you can simply reboot holding t
 
 ## How to uninstall OpenCore?
 
-To remve OpenCore is actually quite simply:
+To remove OpenCore is actually quite simply:
 
 1. Remove OpenCore either from the USB or internal drive
   * You'll need to mount the drive's EFI partition, and delete the EFI folder
@@ -142,7 +124,7 @@ Once you've booted OpenCore at least once, your hardware should now auto boot it
 
 At this time, the OpenCore Patcher won't install macOS onto the internal drive itself during installs. Instead, you'll need to either [manually transfer](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html) OpenCore to the internal drive's EFI or run this patcher's Option 2 again but select your internal drive.
 
-Reminder that once this is done, you'll need to select OpenCore in the boot picker again for your hardware to remenber this entry and auto boot from then on.
+Reminder that once this is done, you'll need to select OpenCore in the boot picker again for your hardware to remember this entry and auto boot from then on.
 
 ### Cannot run OpenCore Legacy Patcher
 

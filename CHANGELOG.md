@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.9
+- Resolve firmware install issues bricking Macs
+
 ## 0.0.8
 - Fix USB Map
 - Add HiDPI patch
