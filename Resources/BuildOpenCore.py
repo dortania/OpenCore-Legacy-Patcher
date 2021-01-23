@@ -382,7 +382,7 @@ def ListDiskutil():
             diskMedia = plistlib.readPlistFromString(subprocess.Popen(["diskutil", "info", "-plist", disk], stdout=subprocess.PIPE).communicate()[0])
             if diskMedia["WholeDisk"] :
                 print ("\n" + diskMedia["DeviceNode"] + ": " + diskMedia["MediaName"])
-                print ("                TYPE                NAME      SIZE   IDENTIFIER"    )
+                print ("TYPE".rjust(20) + "NAME".rjust(20) + "SIZE".rjust(10) + "IDENTIFIER".rjust(13))
             else:
                 print (diskMedia["Content"][0:20].rjust(20) + diskMedia["VolumeName"].rjust(20) + human_fmt(diskMedia["TotalSize"]).rjust(10) + diskMedia["DeviceIdentifier"].rjust(13), end='')
                 if (diskMedia["Content"] == "EFI") :
