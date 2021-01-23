@@ -381,16 +381,16 @@ def ListDiskutil():
         for disk in diskPList["AllDisks"]:
             diskMedia = plistlib.readPlistFromString(subprocess.Popen(["diskutil", "info", "-plist", disk], stdout=subprocess.PIPE).communicate()[0])
             if diskMedia["WholeDisk"] :
-                print ("\n" + diskMedia["DeviceNode"] + ": " + diskMedia["MediaName"])
-                print ("TYPE".rjust(20) + "NAME".rjust(20) + "SIZE".rjust(10) + "IDENTIFIER".rjust(13))
+                print("\n" + diskMedia["DeviceNode"] + ": " + diskMedia["MediaName"])
+                print("TYPE".rjust(20) + "NAME".rjust(20) + "SIZE".rjust(10) + "IDENTIFIER".rjust(13))
             else:
-                print (diskMedia["Content"][0:20].rjust(20) + diskMedia["VolumeName"].rjust(20) + human_fmt(diskMedia["TotalSize"]).rjust(10) + diskMedia["DeviceIdentifier"].rjust(13), end='')
+                print(diskMedia["Content"][0:20].rjust(20) + diskMedia["VolumeName"].rjust(20) + human_fmt(diskMedia["TotalSize"]).rjust(10) + diskMedia["DeviceIdentifier"].rjust(13), end='')
                 if (diskMedia["Content"] == "EFI") :
-                    print (" (*)") 
+                    print(" (*)") 
                 else :
-                    print ("")
+                    print("")
 
-        print ("\n(*) Likely Candidate\n")
+        print("\n(*) Likely Candidate\n")
 
         while True:
             ChosenDisk = input('Please select the disk IDENTIFIER you want to install OpenCore to (ie. disk1s1): ')
@@ -407,7 +407,7 @@ def MoveOpenCore():
     print("")
     efiVol = "/Volumes/OCLP-EFI"
     if os.path.exists(efiVol):
-        print("Coping OpenCore onto "+efiVol)
+        print("Copying OpenCore onto "+efiVol)
         if os.path.exists(efiVol+"/EFI"):
             print("Cleaning EFI folder")
             rmtree(efiVol+"/EFI")
