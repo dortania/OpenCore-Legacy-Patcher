@@ -11,6 +11,7 @@ import json
 import subprocess
 import sys
 import zipfile
+import plistlib
 
 from Resources import Versions
 from Resources import ModelArray
@@ -363,28 +364,53 @@ def CleanBuildFolder():
     os.remove(Versions.opencore_path_build)
     os.chdir(Versions.current_path)
 
+def human_fmt(num):
+    for unit in ['B','KB','MB','GB','TB','PB']:
+        if abs(num) < 1000.0:
+            return "%3.1f %s" % (num, unit)
+        num /= 1000.0
+    return "%.1f %s" % (num, 'EB')
+
 def ListDiskutil():
     DiskMenu = True
     while DiskMenu:
         os.system('clear')
         print("Loading diskutil...(This may take some time)")
-        diskList = subprocess.Popen(["diskutil", "list"], stdout=subprocess.PIPE).communicate()[0]
-        print(diskList)
-        ChosenDisk = input('Please select the disk you want to install OpenCore to(ie. disk1): ')
-        ChosenDisk = ChosenDisk + "s1"
+        diskPList = plistlib.readPlistFromString(subprocess.Popen(["diskutil", "list", "-plist", "physical"], stdout=subprocess.PIPE).communicate()[0])
+
+        for disk in diskPList["AllDisks"]:
+            diskMedia = plistlib.readPlistFromString(subprocess.Popen(["diskutil", "info", "-plist", disk], stdout=subprocess.PIPE).communicate()[0])
+            if diskMedia["WholeDisk"] :
+                print ("\n" + diskMedia["DeviceNode"] + ": " + diskMedia["MediaName"])
+                print ("                TYPE                NAME      SIZE   IDENTIFIER"    )
+            else:
+                print (diskMedia["Content"][0:20].rjust(20) + diskMedia["VolumeName"].rjust(20) + human_fmt(diskMedia["TotalSize"]).rjust(10) + diskMedia["DeviceIdentifier"].rjust(13), end='')
+                if (diskMedia["Content"] == "EFI") :
+                    print (" (*)") 
+                else :
+                    print ("")
+
+        print ("\n(*) Likely Candidate\n")
+
+        while True:
+            ChosenDisk = input('Please select the disk IDENTIFIER you want to install OpenCore to (ie. disk1s1): ')
+            if (ChosenDisk.count("s") > 1) :
+                break;
+
         print("Trying to mount %s" % ChosenDisk)
-        diskMount = subprocess.Popen(["sudo", "diskutil", "mount", ChosenDisk], stdout=subprocess.PIPE).communicate()[0]
+        createMountPoint = subprocess.Popen(["sudo", "mkdir", "/Volumes/OCLP-EFI"], stdout=subprocess.PIPE).communicate()[0]
+        diskMount = subprocess.Popen(["sudo", "diskutil", "mount", "-mountPoint", "/Volumes/OCLP-EFI", ChosenDisk], stdout=subprocess.PIPE).communicate()[0]
         print(diskMount)
         DiskMenu = input("Press any key to continue: ")
 
 def MoveOpenCore():
     print("")
-    efiVol = "/Volumes/EFI"
+    efiVol = "/Volumes/OCLP-EFI"
     if os.path.exists(efiVol):
-        print("Coping OpenCore onto Volumes/EFI")
-        if os.path.exists("/Volumes/EFI/EFI"):
+        print("Coping OpenCore onto "+efiVol)
+        if os.path.exists(efiVol+"/EFI"):
             print("Cleaning EFI folder")
-            rmtree("/Volumes/EFI/EFI")
+            rmtree(efiVol+"/EFI")
         if os.path.exists(Versions.opencore_path_done):
             copy_tree(Versions.opencore_path_done, efiVol)
             copy(Versions.icon_path, efiVol)
