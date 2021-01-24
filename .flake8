@@ -1,2 +1,4 @@
 [flake8]
 ignore = E501
+per-file-ignores =
+    Resources/Versions.py:E704
