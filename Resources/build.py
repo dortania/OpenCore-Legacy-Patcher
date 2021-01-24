@@ -248,10 +248,18 @@ class OpenCoreMenus():
     def change_opencore_version(self):
         utilities.cls()
         utilities.header(["Change OpenCore Version"])
-        print(f"\nCurrent OpenCore version: {self.versions.opencore_version}\nSupported versions: 0.6.6 (recommended), 0.6.5, 0.6.4, 0.6.3")
-        version = input("Please enter the desired OpenCore version: ").strip()
-        if version:
-            self.versions.opencore_version = version
+        print(f"\nCurrent OpenCore version: {self.versions.opencore_version}\nSupported versions: 0.6.6 (recommended)")
+        version = input("Please enter the desired OpenCore version (or press Enter to cancel): ").strip()
+        if not version:
+            return
+        while version not in self.versions.available_opencore_versions:
+            utilities.cls()
+            utilities.header(["Change OpenCore Version"])
+            print(f"\nCurrent OpenCore version: {self.versions.opencore_version}\nSupported versions: 0.6.6 (recommended)")
+            version = input(f"Invalid OpenCore version {version}!\nPlease enter the desired OpenCore version (or press Enter to cancel): ").strip()
+            if not version:
+                return
+        self.versions.opencore_version = version
 
     def build_opencore_menu(self, model):
         response = None

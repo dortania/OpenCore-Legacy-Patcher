@@ -16,6 +16,7 @@ class Versions:
     def __init__(self):
         self.default_opencore_version = "0.6.6"
         self.opencore_version = "0.6.6"
+        self.available_opencore_versions = ["0.6.6"]
         self.lilu_version = "1.5.0"
         self.whatevergreen_version = "1.4.6"
         self.airportbcrmfixup_version = "2.1.2"
