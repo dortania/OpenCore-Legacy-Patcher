@@ -11,69 +11,100 @@ import subprocess
 import sys
 from pathlib import Path
 
-# List build versions
-opencore_version = "0.6.6"
-lilu_version = "1.5.0"
-whatevergreen_version = "1.4.6"
-airportbcrmfixup_version = "2.1.2"
-bcm570_version = "1.0.0"
-marvel_version = "1.0.0"
-nforce_version = "1.0.0"
-mce_version = "1.0.0"
-mousse_version = "0.93"
-telemetrap_version = "1.0.0"
-io80211high_sierra_version = "1.0.0"
-io80211mojave_version = "1.0.0"
-voodoohda_version = "296"
-restrictevents_version = "1.0.0"
 
-# List current location
-os.chdir(os.path.dirname(os.path.realpath(__file__)))
-os.chdir("..")
-resource_path = os.getcwd()
-current_path = Path(sys.executable).parent
+class Versions:
+    def __init__(self):
+        self.default_opencore_version = "0.6.6"
+        self.opencore_version = "0.6.6"
+        self.lilu_version = "1.5.0"
+        self.whatevergreen_version = "1.4.6"
+        self.airportbcrmfixup_version = "2.1.2"
+        self.bcm570_version = "1.0.0"
+        self.marvel_version = "1.0.0"
+        self.nforce_version = "1.0.0"
+        self.mce_version = "1.0.0"
+        self.mousse_version = "0.93"
+        self.telemetrap_version = "1.0.0"
+        self.io80211high_sierra_version = "1.0.0"
+        self.io80211mojave_version = "1.0.0"
+        self.voodoohda_version = "296"
+        self.restrictevents_version = "1.0.0"
 
-# Payload Location
-# OpenCore
-opencore_path = os.path.join(resource_path, "payloads/OpenCore/" "OpenCore-v%s.zip" % opencore_version)
-plist_path = os.path.join(resource_path, "payloads/Config/v%s/" "config.plist" % opencore_version)
+        # Get resource path
+        self.current_path = Path(__file__).parent.parent.resolve()
+        self.payload_path = self.current_path / Path("payloads")
 
-# ACPI
-pci_ssdt_path = os.path.join(resource_path, "payloads/ACPI/" "SSDT-CPBG.aml")
+    # Payload Location
+    # OpenCore
+    @property
+    def opencore_path(self): return self.current_path / Path(f"payloads/OpenCore/OpenCore-v{self.opencore_version}.zip")
+    @property
+    def plist_path(self): return self.current_path / Path(f"payloads/Config/v{self.opencore_version}/config.plist")
 
-# Drivers
-nvme_driver_path = os.path.join(resource_path, "payloads/Drivers/" "NvmExpressDxe.efi")
+    # ACPI
+    @property
+    def pci_ssdt_path(self): return self.current_path / Path("payloads/ACPI/SSDT-CPBG.aml")
 
-# Kexts
-lilu_path = os.path.join(resource_path, "payloads/Kexts/Acidanthera/" "Lilu-v%s.zip" % lilu_version)
-whatevergreen_path = os.path.join(resource_path, "payloads/Kexts/Acidanthera/" "WhateverGreen-v%s.zip" % whatevergreen_version)
-airportbcrmfixup_path = os.path.join(resource_path, "payloads/Kexts/Acidanthera/" "AirportBrcmFixup-v%s.zip" % airportbcrmfixup_version)
-restrictevents_path = os.path.join(resource_path, "payloads/Kexts/Acidanthera/" "RestrictEvents-v%s.zip" % restrictevents_version)
-bcm570_path = os.path.join(resource_path, "payloads/Kexts/Ethernet/" "CatalinaBCM5701Ethernet-v%s.zip" % bcm570_version)
-marvel_path = os.path.join(resource_path, "payloads/Kexts/Ethernet/" "MarvelYukonEthernet-v%s.zip" % marvel_version)
-nforce_path = os.path.join(resource_path, "payloads/Kexts/Ethernet/" "nForceEthernet-v%s.zip" % nforce_version)
-mce_path = os.path.join(resource_path, "payloads/Kexts/Misc/" "AppleMCEReporterDisabler-v%s.zip" % mce_version)
-mousse_path = os.path.join(resource_path, "payloads/Kexts/SSE/" "AAAMouSSE-v%s.zip" % mousse_version)
-telemetrap_path = os.path.join(resource_path, "payloads/Kexts/SSE/" "telemetrap-v%s.zip" % telemetrap_version)
-io80211high_sierra_path = os.path.join(resource_path, "payloads/Kexts/Wifi/" "IO80211HighSierra-v%s.zip" % io80211high_sierra_version)
-io80211mojave_path = os.path.join(resource_path, "payloads/Kexts/Wifi/" "IO80211Mojave-v%s.zip" % io80211mojave_version)
-voodoohda_path = os.path.join(resource_path, "payloads/Kexts/Audio/" "VoodooHDA-v%s.zip" % voodoohda_version)
+    # Drivers
+    @property
+    def nvme_driver_path(self): return self.current_path / Path("payloads/Drivers/NvmExpressDxe.efi")
 
-# Build Location
-opencore_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s.zip" % opencore_version)
-plist_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/" % opencore_version)
-plist_path_build_full = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/config.plist" % opencore_version)
-acpi_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/ACPI" % opencore_version)
-drivers_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/Drivers" % opencore_version)
-kext_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/Kexts" % opencore_version)
-opencore_path_done = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s" % opencore_version)
-build_path = os.path.join(current_path, "Build-Folder/")
-gui_path_build = os.path.join(current_path, "Build-Folder/" "OpenCore-v%s/EFI/OC/Resources" % opencore_version)
+    # Kexts
+    @property
+    def lilu_path(self): return self.current_path / Path(f"payloads/Kexts/Acidanthera/Lilu-v{self.lilu_version}.zip")
+    @property
+    def whatevergreen_path(self): return self.current_path / Path(f"payloads/Kexts/Acidanthera/WhateverGreen-v{self.whatevergreen_version}.zip")
+    @property
+    def airportbcrmfixup_path(self): return self.current_path / Path(f"payloads/Kexts/Acidanthera/AirportBrcmFixup-v{self.airportbcrmfixup_version}.zip")
+    @property
+    def restrictevents_path(self): return self.current_path / Path(f"payloads/Kexts/Acidanthera/RestrictEvents-v{self.restrictevents_version}.zip")
+    @property
+    def bcm570_path(self): return self.current_path / Path(f"payloads/Kexts/Ethernet/CatalinaBCM5701Ethernet-v{self.bcm570_version}.zip")
+    @property
+    def marvel_path(self): return self.current_path / Path(f"payloads/Kexts/Ethernet/MarvelYukonEthernet-v{self.marvel_version}.zip")
+    @property
+    def nforce_path(self): return self.current_path / Path(f"payloads/Kexts/Ethernet/nForceEthernet-v{self.nforce_version}.zip")
+    @property
+    def mce_path(self): return self.current_path / Path(f"payloads/Kexts/Misc/AppleMCEReporterDisabler-v{self.mce_version}.zip")
+    @property
+    def mousse_path(self): return self.current_path / Path(f"payloads/Kexts/SSE/AAAMouSSE-v{self.mousse_version}.zip")
+    @property
+    def telemetrap_path(self): return self.current_path / Path(f"payloads/Kexts/SSE/telemetrap-v{self.telemetrap_version}.zip")
+    @property
+    def io80211high_sierra_path(self): return self.current_path / Path(f"payloads/Kexts/Wifi/IO80211HighSierra-v{self.io80211high_sierra_version}.zip")
+    @property
+    def io80211mojave_path(self): return self.current_path / Path(f"payloads/Kexts/Wifi/IO80211Mojave-v{self.io80211mojave_version}.zip")
+    @property
+    def voodoohda_path(self): return self.current_path / Path(f"payloads/Kexts/Audio/VoodooHDA-v{self.voodoohda_version}.zip")
 
-# Tools
-macserial_path = os.path.join(resource_path, "payloads/" "Tools")
+    # Build Location
+    @property
+    def opencore_path_build(self): return self.current_path / Path(f"Build-Folder/OpenCore-v{self.opencore_version}.zip")
+    @property
+    def plist_path_build(self): return self.current_path / Path(f"Build-Folder/OpenCore-v{self.opencore_version}/EFI/OC/")
+    @property
+    def plist_path_build_full(self): return self.current_path / Path(f"Build-Folder/OpenCore-v{self.opencore_version}/EFI/OC/config.plist")
+    @property
+    def acpi_path_build(self): return self.current_path / Path(f"Build-Folder/OpenCore-v{self.opencore_version}/EFI/OC/ACPI")
+    @property
+    def drivers_path_build(self): return self.current_path / Path(f"Build-Folder/OpenCore-v{self.opencore_version}/EFI/OC/Drivers")
+    @property
+    def kext_path_build(self): return self.current_path / Path(f"Build-Folder/OpenCore-v{self.opencore_version}/EFI/OC/Kexts")
+    @property
+    def opencore_path_done(self): return self.current_path / Path(f"Build-Folder/OpenCore-v{self.opencore_version}")
+    @property
+    def build_path(self): return self.current_path / Path("Build-Folder/")
+    @property
+    def gui_path_build(self): return self.current_path / Path(f"Build-Folder/OpenCore-v{self.opencore_version}/EFI/OC/Resources")
 
-# Icons
-app_icon_path = os.path.join(resource_path, "OC-Patcher.icns")
-icon_path = os.path.join(resource_path, "payloads/Icon/" ".VolumeIcon.icns")
-gui_path = os.path.join(resource_path, "payloads/Icon/" "Resources.zip")
+    # Tools
+    @property
+    def macserial_path(self): return self.current_path / Path("payloads/Tools")
+
+    # Icons
+    @property
+    def app_icon_path(self): return self.current_path / Path("OC-Patcher.icns")
+    @property
+    def icon_path(self): return self.current_path / Path(f"payloads/Icon/.VolumeIcon.icns")
+    @property
+    def gui_path(self): return self.current_path / Path(f"payloads/Icon/Resources.zip")
