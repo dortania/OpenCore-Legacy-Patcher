@@ -11,7 +11,7 @@ PATCHER_VERSION = "0.0.9"
 
 class OpenCoreLegacyPatcher():
     def __init__(self):
-        self.versions = Versions.Versions()
+        self.constants = Constants.Constants()
         self.custom_model: str = None
         self.current_model: str = None
         opencore_model: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
@@ -23,15 +23,15 @@ class OpenCoreLegacyPatcher():
             self.current_model = [line.strip().split(": ", 1)[1] for line in self.current_model.stdout.decode().split("\n") if line.strip().startswith("Model Identifier")][0]
 
     def build_opencore(self):
-        build.OpenCoreMenus(self.versions).build_opencore_menu(self.custom_model or self.current_model)
+        build.OpenCoreMenus(self.constants).build_opencore_menu(self.custom_model or self.current_model)
 
     def install_opencore(self):
         utilities.cls()
         utilities.header(["Installing OpenCore to Drive"])
 
-        if self.versions.opencore_path_done.exists():
+        if self.constants.opencore_release_folder.exists():
             print("\nFound OpenCore in Build Folder")
-            build.BuildOpenCore(self.custom_model or self.current_model, self.versions).copy_efi()
+            build.BuildOpenCore(self.custom_model or self.current_model, self.constants).copy_efi()
             input("Press [Enter] to go back.")
 
         else:

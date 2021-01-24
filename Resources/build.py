@@ -18,59 +18,59 @@ class BuildOpenCore():
     def __init__(self, model, versions):
         self.model = model
         self.config = None
-        self.versions: Versions.Versions = versions
+        self.constants: Constants.Constants = versions
 
     def build_efi(self):
         utilities.cls()
-        if not Path(self.versions.build_path).exists():
-            Path(self.versions.build_path).mkdir()
+        if not Path(self.constants.build_path).exists():
+            Path(self.constants.build_path).mkdir()
             print("Created build folder")
         else:
             print("Build folder already present, skipping")
 
-        if Path(self.versions.opencore_path_build).exists():
+        if Path(self.constants.opencore_zip_copied).exists():
             print("Deleting old copy of OpenCore zip")
-            Path(self.versions.opencore_path_build).unlink()
-        if Path(self.versions.opencore_path_done).exists():
+            Path(self.constants.opencore_zip_copied).unlink()
+        if Path(self.constants.opencore_release_folder).exists():
             print("Deleting old copy of OpenCore folder")
-            shutil.rmtree(self.versions.opencore_path_done)
+            shutil.rmtree(self.constants.opencore_release_folder)
 
         print()
-        print("- Adding OpenCore v" + self.versions.opencore_version)
-        shutil.copy(self.versions.opencore_path, self.versions.build_path)
-        zipfile.ZipFile(self.versions.opencore_path_build).extractall(self.versions.build_path)
+        print("- Adding OpenCore v" + self.constants.opencore_version)
+        shutil.copy(self.constants.opencore_zip_source, self.constants.build_path)
+        zipfile.ZipFile(self.constants.opencore_zip_copied).extractall(self.constants.build_path)
 
         print("- Adding config.plist for OpenCore")
         # Setup config.plist for editing
-        shutil.copy(self.versions.plist_path, self.versions.plist_path_build)
-        self.config = plistlib.load(Path(self.versions.plist_path_build_full).open("rb"))
+        shutil.copy(self.constants.plist_template, self.constants.oc_folder)
+        self.config = plistlib.load(Path(self.constants.plist_path).open("rb"))
 
         for name, version, path, check in [
             # Essential kexts
-            ("Lilu.kext", self.versions.lilu_version, self.versions.lilu_path, lambda: True),
-            ("WhateverGreen.kext", self.versions.whatevergreen_version, self.versions.whatevergreen_path, lambda: True),
-            ("RestrictEvents.kext", self.versions.restrictevents_version, self.versions.restrictevents_path, lambda: self.model in ModelArray.MacPro71),
+            ("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path, lambda: True),
+            ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: True),
+            ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in ModelArray.MacPro71),
             # CPU patches
-            ("AppleMCEReporterDisabler.kext", self.versions.mce_version, self.versions.mce_path, lambda: self.model in ModelArray.DualSocket),
-            ("AAAMouSSE.kext", self.versions.mousse_version, self.versions.mousse_path, lambda: self.model in ModelArray.SSEEmulator),
-            ("telemetrap.kext", self.versions.telemetrap_version, self.versions.telemetrap_path, lambda: self.model in ModelArray.MissingSSE42),
+            ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model in ModelArray.DualSocket),
+            ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: self.model in ModelArray.SSEEmulator),
+            ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: self.model in ModelArray.MissingSSE42),
             # Ethernet patches
-            ("nForceEthernet.kext", self.versions.nforce_version, self.versions.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
-            ("MarvelYukonEthernet.kext", self.versions.marvel_version, self.versions.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
-            ("CatalinaBCM5701Ethernet.kext", self.versions.bcm570_version, self.versions.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
+            ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
+            ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
+            ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
             # Legacy audio
-            ("VoodooHDA.kext", self.versions.voodoohda_version, self.versions.voodoohda_path, lambda: self.model in ModelArray.LegacyAudio)
+            ("VoodooHDA.kext", self.constants.voodoohda_version, self.constants.voodoohda_path, lambda: self.model in ModelArray.LegacyAudio)
         ]:
             self.enable_kext(name, version, path, check)
 
         # WiFi patches
 
         if self.model in ModelArray.WifiAtheros:
-            self.enable_kext("IO80211HighSierra.kext", self.versions.io80211high_sierra_version, self.versions.io80211high_sierra_path)
+            self.enable_kext("IO80211HighSierra.kext", self.constants.io80211high_sierra_version, self.constants.io80211high_sierra_path)
             self.get_kext_by_bundle_path("IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
 
         if self.model in ModelArray.WifiBCM94331:
-            self.enable_kext("AirportBrcmFixup.kext", self.versions.airportbcrmfixup_version, self.versions.airportbcrmfixup_path)
+            self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
             self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
 
             if self.model in ModelArray.EthernetNvidia:
@@ -106,10 +106,10 @@ class BuildOpenCore():
         # USB map
         map_name = f"USB-Map-{self.model}.zip"
         map_entry = f"USB-Map-{self.model}.kext"
-        usb_map_path = Path(self.versions.current_path) / Path(f"payloads/Kexts/Maps/Zip/{map_name}")
+        usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Maps/Zip/{map_name}")
         if usb_map_path.exists():
             print(f"- Adding {map_entry}")
-            shutil.copy(usb_map_path, self.versions.kext_path_build)
+            shutil.copy(usb_map_path, self.constants.kexts_path)
             self.get_kext_by_bundle_path("USB-Map-SMBIOS.kext")["Enabled"] = True
             self.get_kext_by_bundle_path("USB-Map-SMBIOS.kext")["BundlePath"] = map_entry
 
@@ -123,11 +123,11 @@ class BuildOpenCore():
 
         # Add OpenCanopy
         print("- Adding OpenCanopy GUI")
-        shutil.rmtree(self.versions.gui_path_build)
-        shutil.copy(self.versions.gui_path, self.versions.plist_path_build)
+        shutil.rmtree(self.constants.resources_path)
+        shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
 
-        plistlib.dump(self.config, Path(self.versions.plist_path_build_full).open("wb"), sort_keys=True)
+        plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
 
     def set_smbios(self):
         spoofed_model = self.model
@@ -155,7 +155,7 @@ class BuildOpenCore():
         elif self.model in ModelArray.MacPro71:
             print("- Spoofing to MacPro7,1")
             spoofed_model = "MacPro7,1"
-        macserial_output = subprocess.run((f"./payloads/tools/macserial -g -m {spoofed_model} -n 1").split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        macserial_output = subprocess.run(([self.constants.macserial_path] + f"-g -m {spoofed_model} -n 1").split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         macserial_output = macserial_output.stdout.decode().strip().split(" | ")
         self.config["PlatformInfo"]["Generic"]["SystemProductName"] = spoofed_model
         self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
@@ -186,23 +186,23 @@ class BuildOpenCore():
             return
 
         print(f"- Adding {kext_name} {kext_version}")
-        shutil.copy(kext_path, self.versions.kext_path_build)
+        shutil.copy(kext_path, self.constants.kexts_path)
         kext["Enabled"] = True
 
     def cleanup(self):
         print("- Cleaning up files")
-        for kext in Path(self.versions.kext_path_build).glob("*.zip"):
+        for kext in Path(self.constants.kexts_path).rglob("*.zip"):
             with zipfile.ZipFile(kext) as zip_file:
-                zip_file.extractall(self.versions.kext_path_build)
+                zip_file.extractall(self.constants.kexts_path)
             kext.unlink()
-        shutil.rmtree((Path(self.versions.kext_path_build) / Path("__MACOSX")), ignore_errors=True)
+        shutil.rmtree((Path(self.constants.kexts_path) / Path("__MACOSX")), ignore_errors=True)
 
-        for item in Path(self.versions.plist_path_build).glob("*.zip"):
+        for item in Path(self.constants.oc_folder).glob("*.zip"):
             with zipfile.ZipFile(item) as zip_file:
-                zip_file.extractall(self.versions.plist_path_build)
+                zip_file.extractall(self.constants.oc_folder)
             item.unlink()
-        shutil.rmtree((Path(self.versions.build_path) / Path("__MACOSX")), ignore_errors=True)
-        Path(self.versions.opencore_path_build).unlink()
+        shutil.rmtree((Path(self.constants.build_path) / Path("__MACOSX")), ignore_errors=True)
+        Path(self.constants.opencore_zip_copied).unlink()
 
     def build_opencore(self):
         self.build_efi()
@@ -210,7 +210,7 @@ class BuildOpenCore():
         self.cleanup()
         print("")
         print("Your OpenCore EFI has been built at:")
-        print(f"    {self.versions.opencore_path_done}")
+        print(f"    {self.constants.opencore_release_folder}")
         print("")
         input("Press enter to go back")
 
@@ -230,9 +230,9 @@ class BuildOpenCore():
             if (efi_dir / Path("EFI")).exists():
                 print("Removing preexisting EFI folder")
                 shutil.rmtree(efi_dir / Path("EFI"))
-            if Path(self.versions.opencore_path_done).exists():
-                shutil.copytree(self.versions.opencore_path_done, efi_dir)
-                shutil.copy(self.versions.icon_path, efi_dir)
+            if Path(self.constants.opencore_release_folder).exists():
+                shutil.copytree(self.constants.opencore_release_folder, efi_dir)
+                shutil.copy(self.constants.icon_path, efi_dir)
                 print("OpenCore transfer complete")
                 print("")
         else:
@@ -243,35 +243,35 @@ class BuildOpenCore():
 
 class OpenCoreMenus():
     def __init__(self, versions):
-        self.versions: Versions.Versions = versions
+        self.constants: Constants.Constants = versions
 
     def change_opencore_version(self):
         utilities.cls()
         utilities.header(["Change OpenCore Version"])
-        print(f"\nCurrent OpenCore version: {self.versions.opencore_version}\nSupported versions: 0.6.6 (recommended)")
+        print(f"\nCurrent OpenCore version: {self.constants.opencore_version}\nSupported versions: 0.6.6 (recommended)")
         version = input("Please enter the desired OpenCore version (or press Enter to cancel): ").strip()
         if not version:
             return
-        while version not in self.versions.available_opencore_versions:
+        while version not in self.constants.available_opencore_versions:
             utilities.cls()
             utilities.header(["Change OpenCore Version"])
-            print(f"\nCurrent OpenCore version: {self.versions.opencore_version}\nSupported versions: 0.6.6 (recommended)")
+            print(f"\nCurrent OpenCore version: {self.constants.opencore_version}\nSupported versions: 0.6.6 (recommended)")
             version = input(f"Invalid OpenCore version {version}!\nPlease enter the desired OpenCore version (or press Enter to cancel): ").strip()
             if not version:
                 return
-        self.versions.opencore_version = version
+        self.constants.opencore_version = version
 
     def build_opencore_menu(self, model):
         response = None
         while not (response and response == -1):
             title = [
-                f"Build OpenCore v{self.versions.opencore_version} EFI",
+                f"Build OpenCore v{self.constants.opencore_version} EFI",
                 "Selected Model: " + model
             ]
             menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True)
 
             options = [
-                ["Build OpenCore", lambda: BuildOpenCore(model, self.versions).build_opencore()],
+                ["Build OpenCore", lambda: BuildOpenCore(model, self.constants).build_opencore()],
                 ["Change OpenCore Version", self.change_opencore_version],
             ]
 
