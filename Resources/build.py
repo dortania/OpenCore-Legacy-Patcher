@@ -11,10 +11,18 @@ import uuid
 import zipfile
 from pathlib import Path
 
-from Resources import ModelArray, Versions, utilities
+from Resources import Constants, ModelArray, utilities
 
 
-class BuildOpenCore():
+def human_fmt(num):
+    for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
+        if abs(num) < 1000.0:
+            return "%3.1f %s" % (num, unit)
+        num /= 1000.0
+    return "%.1f %s" % (num, "EB")
+
+
+class BuildOpenCore:
     def __init__(self, model, versions):
         self.model = model
         self.config = None
@@ -59,7 +67,7 @@ class BuildOpenCore():
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
             ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
             # Legacy audio
-            ("VoodooHDA.kext", self.constants.voodoohda_version, self.constants.voodoohda_path, lambda: self.model in ModelArray.LegacyAudio)
+            ("VoodooHDA.kext", self.constants.voodoohda_version, self.constants.voodoohda_path, lambda: self.model in ModelArray.LegacyAudio),
         ]:
             self.enable_kext(name, version, path, check)
 
@@ -88,10 +96,7 @@ class BuildOpenCore():
                 # Assumes we have a laptop with Intel chipset
                 property_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
             print("- Applying fake ID for WiFi")
-            self.config["DeviceProperties"]["Add"][property_path] = {
-                "device-id": binascii.unhexlify("ba430000"),
-                "compatible": "pci14e4,43ba"
-            }
+            self.config["DeviceProperties"]["Add"][property_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
 
         # HID patches
         if self.model in ModelArray.LegacyHID:
@@ -155,7 +160,7 @@ class BuildOpenCore():
         elif self.model in ModelArray.MacPro71:
             print("- Spoofing to MacPro7,1")
             spoofed_model = "MacPro7,1"
-        macserial_output = subprocess.run(([self.constants.macserial_path] + f"-g -m {spoofed_model} -n 1").split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         macserial_output = macserial_output.stdout.decode().strip().split(" | ")
         self.config["PlatformInfo"]["Generic"]["SystemProductName"] = spoofed_model
         self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
@@ -215,33 +220,108 @@ class BuildOpenCore():
         input("Press enter to go back")
 
     def copy_efi(self):
-        diskutil = [subprocess.run("diskutil list".split(), stdout=subprocess.PIPE).stdout.decode().strip()]
-        menu = utilities.TUIMenu(["Select Disk"], "Please select the disk you want to install OpenCore to: ", in_between=diskutil, return_number_instead_of_direct_call=True, add_quit=False)
-        for disk in [i for i in Path("/dev").iterdir() if re.fullmatch("disk[0-9]+", i.stem)]:
-            menu.add_menu_option(disk.stem, key=disk.stem[4:])
-        disk_num = menu.start()
-        print(subprocess.run(("sudo diskutil mount disk" + disk_num).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
+        utilities.cls()
+        utilities.header(["Installing OpenCore to Drive"])
+
+        if not self.constants.opencore_release_folder.exists():
+            utilities.TUIOnlyPrint(
+                ["Installing OpenCore to Drive"],
+                "Press [Enter] to go back.\n",
+                [
+                    """OpenCore folder missing!
+Please build OpenCore first!"""
+                ],
+            ).start()
+            return
+
+        print("\nDisk picker is loading...")
+
+        all_disks = {}
+        disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        for disk in disks["AllDisksAndPartitions"]:
+            disk_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+
+            all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info['DeviceNode'], "name": disk_info['MediaName'], "size": disk_info['Size'], "partitions": {}}
+
+            for partition in disk["Partitions"]:
+                partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {partition['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+                all_disks[disk["DeviceIdentifier"]]["partitions"][partition["DeviceIdentifier"]] = {
+                    "fs": partition_info.get("FilesystemType", partition_info["Content"]),
+                    "type": partition_info["Content"],
+                    "name": partition_info.get("VolumeName", ""),
+                    "size": partition_info["Size"],
+                }
+        # TODO: Advanced mode
+        menu = utilities.TUIMenu(["Select Disk"], "Please select the disk you would like to install OpenCore to: ", in_between=["Missing disks? Ensure they have an EFI or FAT32 partition."], return_number_instead_of_direct_call=True, loop=True)
+        for disk in all_disks:
+            if not any(all_disks[disk]["partitions"][partition]["fs"] == "msdos" for partition in all_disks[disk]["partitions"]):
+                continue
+            menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({human_fmt(all_disks[disk]['size'])})", key=disk[4:])
+
+        response = menu.start()
+
+        if response == -1:
+            return
+
+        disk_identifier = "disk" + response
+        selected_disk = all_disks[disk_identifier]
+
+        menu = utilities.TUIMenu(["Select Partition"], "Please select the partition you would like to install OpenCore to: ", return_number_instead_of_direct_call=True, loop=True, in_between=["Missing partitions? Ensure they are formatted as an EFI or FAT32.", "", "* denotes likely candidate."])
+        for partition in selected_disk["partitions"]:
+            if selected_disk["partitions"][partition]["fs"] != "msdos":
+                continue
+            text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({human_fmt(selected_disk['partitions'][partition]['size'])})"
+            if selected_disk["partitions"][partition]["type"] == "EFI" or (selected_disk["partitions"][partition]["type"] == "Microsoft Basic Data" and selected_disk["partitions"][partition]["size"] < 1024 * 1024 * 512):  # 512 megabytes:
+                text += " *"
+            menu.add_menu_option(text, key=partition[len(disk_identifier) + 1:])
+
+        response = menu.start()
+
+        if response == -1:
+            return
+
+        args = [
+            "osascript",
+            "-e",
+            f'''do shell script "diskutil mount {disk_identifier}s{response}"'''
+            ' with prompt "OpenCore Legacy Patcher needs administrator privileges to mount your EFI."'
+            " with administrator privileges"
+            " without altering line endings"
+        ]
+
+        result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        if result.returncode != 0:
+            if "execution error" in result.stderr.decode() and result.stderr.decode()[-5:-1] == "-128":
+                # cancelled prompt
+                return
+            else:
+                utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to continue", ["An error occurred!"] + result.stderr.decode().split("\n") + ["", "Please report this to the devs at GitHub."]).start()
+                return
+
+        # TODO: Remount if readonly
+        partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk_identifier}s{response}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        mount_path = Path(partition_info["MountPoint"])
 
         utilities.cls()
         utilities.header(["Copying OpenCore"])
-        efi_dir = Path("/Volumes/EFI")
-        if efi_dir.exists():
+
+        if mount_path.exists():
             print("- Coping OpenCore onto EFI partition")
-            if (efi_dir / Path("EFI")).exists():
+            if (mount_path / Path("EFI")).exists():
                 print("Removing preexisting EFI folder")
-                shutil.rmtree(efi_dir / Path("EFI"))
-            if Path(self.constants.opencore_release_folder).exists():
-                shutil.copytree(self.constants.opencore_release_folder, efi_dir)
-                shutil.copy(self.constants.icon_path, efi_dir)
-                print("OpenCore transfer complete")
-                print("")
+                shutil.rmtree(mount_path / Path("EFI"))
+
+            shutil.copytree(self.constants.opencore_release_folder, mount_path / Path("EFI"))
+            shutil.copy(self.constants.icon_path, mount_path)
+            print("OpenCore transfer complete")
+            print("\nPress [Enter] to continue")
+            input()
         else:
-            print("Couldn't find EFI partition")
-            print("Please ensure your drive is formatted as GUID Partition Table")
-            print("")
+            utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to continue", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()
 
 
-class OpenCoreMenus():
+class OpenCoreMenus:
     def __init__(self, versions):
         self.constants: Constants.Constants = versions
 
@@ -264,10 +344,7 @@ class OpenCoreMenus():
     def build_opencore_menu(self, model):
         response = None
         while not (response and response == -1):
-            title = [
-                f"Build OpenCore v{self.constants.opencore_version} EFI",
-                "Selected Model: " + model
-            ]
+            title = [f"Build OpenCore v{self.constants.opencore_version} EFI", "Selected Model: " + model]
             menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True)
 
             options = [

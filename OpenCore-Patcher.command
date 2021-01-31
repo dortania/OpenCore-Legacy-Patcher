@@ -4,7 +4,7 @@ from __future__ import print_function
 
 import subprocess
 
-from Resources import build, ModelArray, Versions, utilities
+from Resources import build, ModelArray, Constants, utilities
 
 PATCHER_VERSION = "0.0.9"
 
@@ -26,19 +26,7 @@ class OpenCoreLegacyPatcher():
         build.OpenCoreMenus(self.constants).build_opencore_menu(self.custom_model or self.current_model)
 
     def install_opencore(self):
-        utilities.cls()
-        utilities.header(["Installing OpenCore to Drive"])
-
-        if self.constants.opencore_release_folder.exists():
-            print("\nFound OpenCore in Build Folder")
-            build.BuildOpenCore(self.custom_model or self.current_model, self.constants).copy_efi()
-            input("Press [Enter] to go back.")
-
-        else:
-            utilities.TUIOnlyPrint(["Installing OpenCore to Drive"],
-                                   "Press [Enter] to go back.\n",
-                                   ["""OpenCore folder missing!
-Please build OpenCore first!"""]).start()
+        build.BuildOpenCore(self.custom_model or self.current_model, self.constants).copy_efi()
 
     def change_model(self):
         utilities.cls()
