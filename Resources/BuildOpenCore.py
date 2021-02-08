@@ -228,6 +228,14 @@ def BuildEFI():
             "<true/><!--SSDT-CPBG-->"
         )
     
+    if current_model in ModelArray.IDEPatch:
+        print("- Adding AppleIntelPIIXATA v%s" % Versions.piixata_version)
+        copy(Versions.piixata_path, Versions.kext_path_build)
+        Versions.plist_data = Versions.plist_data.replace(
+            "<false/><!--AppleIntelPIIXATA-->",
+            "<true/><!--AppleIntelPIIXATA-->"
+        )
+    
     usb_map_path = os.path.join(Versions.current_path, "payloads/Kexts/Maps/Zip/" "USB-Map-%s.zip" % current_model)
     if os.path.exists(usb_map_path):
         print("- Adding USB Map for %s" % current_model)
@@ -277,9 +285,9 @@ def BuildSMBIOS():
     elif current_model in ModelArray.MacBookPro111:
         print("- Spoofing to MacBookPro11,1")
         new_model = "MacBookPro11,1"
-    elif current_model in ModelArray.MacBookPro112:
-        print("- Spoofing to MacBookPro11,2")
-        new_model = "MacBookPro11,2"
+    elif current_model in ModelArray.MacBookPro113:
+        print("- Spoofing to MacBookPro11,3")
+        new_model = "MacBookPro11,3"
     elif current_model in ModelArray.Macmini71:
         print("- Spoofing to Macmini7,1")
         new_model = "Macmini7,1"
