@@ -620,13 +620,13 @@
 			<key>LauncherOption</key>
 			<string>Default</string>
 			<key>PickerAttributes</key>
-			<integer>1</integer>
+			<integer>17</integer>
 			<key>PickerAudioAssist</key>
 			<false/>
 			<key>PickerMode</key>
 			<string>External</string>
 			<key>PickerVariant</key>
-			<string>Auto</string>
+			<string>Modern</string>
 			<key>PollAppleHotKeys</key>
 			<false/>
 			<key>ShowPicker</key>

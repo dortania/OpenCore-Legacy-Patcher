@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.11
+- Re-add OpenCore GUI
+
 ## 0.0.10
 - Increment binaries
     - OpenCore 43f5339(0.6.6 release)
