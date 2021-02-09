@@ -616,9 +616,9 @@
 			<key>HideAuxiliary</key>
 			<true/>
 			<key>LauncherPath</key>
-			<string>Full</string>
-			<key>LauncherOption</key>
 			<string>Default</string>
+			<key>LauncherOption</key>
+			<string>Full</string>
 			<key>PickerAttributes</key>
 			<integer>17</integer>
 			<key>PickerAudioAssist</key>
