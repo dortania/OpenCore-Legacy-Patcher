@@ -37,14 +37,14 @@ else:
 OCExist = False
 
 def BuildEFI():
-    
+
     if not os.path.exists(Versions.build_path):
         os.makedirs(Versions.build_path)
         print("Created Build Folder")
     else:
         print("Build Folder already present, skipping")
     # Copy OpenCore into Build Folder
-    
+
     if os.path.exists(Versions.opencore_path_build):
         print("Deleting old copy of OpenCore zip")
         os.remove(Versions.opencore_path_build)
@@ -64,7 +64,7 @@ def BuildEFI():
     # Adding must have kexts
     print("- Adding Lilu v%s" % Versions.lilu_version)
     copy(Versions.lilu_path, Versions.kext_path_build)
-    
+
     print("- Adding WhateverGreen v%s" % Versions.whatevergreen_version)
     copy(Versions.whatevergreen_path, Versions.kext_path_build)
 
@@ -75,7 +75,7 @@ def BuildEFI():
             "<false/><!--RestrictEvents-->",
             "<true/><!--RestrictEvents-->"
         )
-    
+
     # Checks for kexts
     # CPU Kext Patches
     if current_model in ModelArray.DualSocket:
@@ -85,7 +85,7 @@ def BuildEFI():
             "<false/><!--AppleMCEReporterDisabler-->",
             "<true/><!--AppleMCEReporterDisabler-->"
         )
-    
+
     if current_model in ModelArray.SSEEmulator:
         print("- Adding AAAMouSSE v%s" % Versions.mousse_version)
         copy(Versions.mousse_path, Versions.kext_path_build)
@@ -100,7 +100,7 @@ def BuildEFI():
             "<false/><!--telemetrap-->",
             "<true/><!--telemetrap-->"
         )
-    
+
     # Ethernet Patches
 
     if current_model in ModelArray.EthernetNvidia:
@@ -124,7 +124,7 @@ def BuildEFI():
             "<false/><!--CatalinaBCM5701Ethernet-->",
             "<true/><!--CatalinaBCM5701Ethernet-->"
         )
-    
+
     # Wifi Patches
 
     if current_model in ModelArray.WifiAtheros:
@@ -211,7 +211,7 @@ def BuildEFI():
             "<false/><!--IOHIDFamily-->",
             "<true/><!--IOHIDFamily-->"
         )
-    
+
     if current_model in ModelArray.LegacyAudio:
         print("- Adding VoodooHDA v%s" % Versions.voodoohda_version)
         copy(Versions.voodoohda_path, Versions.kext_path_build)
@@ -219,7 +219,7 @@ def BuildEFI():
             "<false/><!--VoodooHDA-->",
             "<true/><!--VoodooHDA-->"
         )
-    
+
     if current_model in ModelArray.pciSSDT:
         print("- Adding SSDT-CPBG")
         copy(Versions.pci_ssdt_path, Versions.acpi_path_build)
@@ -227,7 +227,7 @@ def BuildEFI():
             "<false/><!--SSDT-CPBG-->",
             "<true/><!--SSDT-CPBG-->"
         )
-    
+
     if current_model in ModelArray.IDEPatch:
         print("- Adding AppleIntelPIIXATA v%s" % Versions.piixata_version)
         copy(Versions.piixata_path, Versions.kext_path_build)
@@ -235,7 +235,7 @@ def BuildEFI():
             "<false/><!--AppleIntelPIIXATA-->",
             "<true/><!--AppleIntelPIIXATA-->"
         )
-    
+
     usb_map_path = os.path.join(Versions.current_path, "payloads/Kexts/Maps/Zip/" "USB-Map-%s.zip" % current_model)
     if os.path.exists(usb_map_path):
         print("- Adding USB Map for %s" % current_model)
@@ -249,7 +249,7 @@ def BuildEFI():
             "USB-Map-SMBIOS.kext",
             map_name
         )
-    
+
     if current_model in ModelArray.DualGPUPatch:
         print("- Adding dual GPU patch")
         Versions.plist_data = Versions.plist_data.replace(
@@ -327,7 +327,7 @@ def BuildSMBIOS():
             "M0000000000000001",
             serialData[1]
         )
-        
+
     # Patch UUID
     uuidGen = subprocess.Popen(["uuidgen"], stdout=subprocess.PIPE).communicate()[0]
     Versions.plist_data = Versions.plist_data.replace(
@@ -389,7 +389,7 @@ def MoveOpenCore():
     print("")
     efiVol = "/Volumes/EFI"
     if os.path.exists(efiVol):
-        print("Coping OpenCore onto Volumes/EFI")
+        print("Copying OpenCore onto Volumes/EFI")
         if os.path.exists("/Volumes/EFI/EFI"):
             print("Cleaning EFI folder")
             rmtree("/Volumes/EFI/EFI")
