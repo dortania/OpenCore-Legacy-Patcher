@@ -40,7 +40,7 @@ while MainMenu:
         print("   Your model is not supported by this patcher!")
         print("")
         print(" If you plan to create the USB for another machine,")
-        print("            please select option 5")
+        print("            please select option 3")
         print(subheader)
         print("")
     elif BuildOpenCore.current_model in ("MacPro3,1", "iMac7,1"):
@@ -110,7 +110,7 @@ while MainMenu:
                 print("\n Not Valid Choice Try again")
                 OpenCoreBuilderMenu = True
 
-            
+
     elif MainMenu=="2":
         print("\n Not yet implemented")
         OpenCoreInstallerMenu=True
@@ -202,8 +202,7 @@ while MainMenu:
 
     elif MainMenu=="5":
         print("\n Closing program...")
-        sys.exit(1) 
+        sys.exit(1)
     else:
         print("\n Not Valid Choice Try again")
         MainMenu=True
-
