@@ -24,7 +24,10 @@ jobs:
           pip3 install pyinstaller
 
       - run: pyinstaller Opencore-Patcher.spec
-
+      - run: |
+          ls -lsal dist
+          chmod +x dist/OpenCore-Patcher
+          ls -lsal dist
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v2
         with:
