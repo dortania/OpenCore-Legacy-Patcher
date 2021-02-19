@@ -24,20 +24,17 @@ jobs:
           pip3 install pyinstaller
 
       - run: pyinstaller Opencore-Patcher.spec
-      - run: |
-          ls -lsal dist
-          chmod +x dist/OpenCore-Patcher
-          ls -lsal dist
+      - run: zip OpenCore-Patcher.zip dist/OpenCore-Patcher
+
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Opencore-Patcher-${{ github.sha }}
-          path: dist/OpenCore-Patcher
+          path: OpenCore-Patcher.zip
       - name: Upload to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/OpenCore-Patcher
+          file: OpenCore-Patcher.zip
           tag: ${{ github.ref }}
           file_glob: true

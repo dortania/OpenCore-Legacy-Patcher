@@ -21,6 +21,12 @@ def human_fmt(num):
     return "%.1f %s" % (num, "EB")
 
 
+def rmtree_handler(func, path, exc_info):
+    if exc_info[0] == FileNotFoundError:
+        return
+    raise
+
+
 class BuildOpenCore:
     def __init__(self, model, versions):
         self.model = model
@@ -40,7 +46,7 @@ class BuildOpenCore:
             Path(self.constants.opencore_zip_copied).unlink()
         if Path(self.constants.opencore_release_folder).exists():
             print("Deleting old copy of OpenCore folder")
-            shutil.rmtree(self.constants.opencore_release_folder)
+            shutil.rmtree(self.constants.opencore_release_folder, onerror=rmtree_handler)
 
         print()
         print("- Adding OpenCore v" + self.constants.opencore_version)
@@ -129,7 +135,7 @@ class BuildOpenCore:
 
         # Add OpenCanopy
         print("- Adding OpenCanopy GUI")
-        shutil.rmtree(self.constants.resources_path)
+        shutil.rmtree(self.constants.resources_path, onerror=rmtree_handler)
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
 
@@ -197,17 +203,19 @@ class BuildOpenCore:
 
     def cleanup(self):
         print("- Cleaning up files")
-        for kext in Path(self.constants.kexts_path).rglob("*.zip"):
+        for kext in self.constants.kexts_path.rglob("*.zip"):
             with zipfile.ZipFile(kext) as zip_file:
                 zip_file.extractall(self.constants.kexts_path)
             kext.unlink()
-        shutil.rmtree((Path(self.constants.kexts_path) / Path("__MACOSX")), ignore_errors=True)
 
-        for item in Path(self.constants.oc_folder).glob("*.zip"):
+        for item in self.constants.oc_folder.rglob("*.zip"):
             with zipfile.ZipFile(item) as zip_file:
                 zip_file.extractall(self.constants.oc_folder)
             item.unlink()
-        shutil.rmtree((Path(self.constants.build_path) / Path("__MACOSX")), ignore_errors=True)
+
+        for i in self.constants.build_path.rglob("__MACOSX"):
+            shutil.rmtree(i)
+
         Path(self.constants.opencore_zip_copied).unlink()
 
     def build_opencore(self):
@@ -218,7 +226,7 @@ class BuildOpenCore:
         print("Your OpenCore EFI has been built at:")
         print(f"    {self.constants.opencore_release_folder}")
         print("")
-        input("Press enter to go back")
+        input("Press [Enter] to go back.\n")
 
     def copy_efi(self):
         utilities.cls()
@@ -242,7 +250,7 @@ Please build OpenCore first!"""
         for disk in disks["AllDisksAndPartitions"]:
             disk_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
 
-            all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info['DeviceNode'], "name": disk_info['MediaName'], "size": disk_info['Size'], "partitions": {}}
+            all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info["MediaName"], "size": disk_info["Size"], "partitions": {}}
 
             for partition in disk["Partitions"]:
                 partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {partition['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -253,7 +261,13 @@ Please build OpenCore first!"""
                     "size": partition_info["Size"],
                 }
         # TODO: Advanced mode
-        menu = utilities.TUIMenu(["Select Disk"], "Please select the disk you would like to install OpenCore to: ", in_between=["Missing disks? Ensure they have an EFI or FAT32 partition."], return_number_instead_of_direct_call=True, loop=True)
+        menu = utilities.TUIMenu(
+            ["Select Disk"],
+            "Please select the disk you would like to install OpenCore to: ",
+            in_between=["Missing disks? Ensure they have an EFI or FAT32 partition."],
+            return_number_instead_of_direct_call=True,
+            loop=True,
+        )
         for disk in all_disks:
             if not any(all_disks[disk]["partitions"][partition]["fs"] == "msdos" for partition in all_disks[disk]["partitions"]):
                 continue
@@ -267,14 +281,22 @@ Please build OpenCore first!"""
         disk_identifier = "disk" + response
         selected_disk = all_disks[disk_identifier]
 
-        menu = utilities.TUIMenu(["Select Partition"], "Please select the partition you would like to install OpenCore to: ", return_number_instead_of_direct_call=True, loop=True, in_between=["Missing partitions? Ensure they are formatted as an EFI or FAT32.", "", "* denotes likely candidate."])
+        menu = utilities.TUIMenu(
+            ["Select Partition"],
+            "Please select the partition you would like to install OpenCore to: ",
+            return_number_instead_of_direct_call=True,
+            loop=True,
+            in_between=["Missing partitions? Ensure they are formatted as an EFI or FAT32.", "", "* denotes likely candidate."],
+        )
         for partition in selected_disk["partitions"]:
             if selected_disk["partitions"][partition]["fs"] != "msdos":
                 continue
             text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({human_fmt(selected_disk['partitions'][partition]['size'])})"
-            if selected_disk["partitions"][partition]["type"] == "EFI" or (selected_disk["partitions"][partition]["type"] == "Microsoft Basic Data" and selected_disk["partitions"][partition]["size"] < 1024 * 1024 * 512):  # 512 megabytes:
+            if selected_disk["partitions"][partition]["type"] == "EFI" or (
+                selected_disk["partitions"][partition]["type"] == "Microsoft Basic Data" and selected_disk["partitions"][partition]["size"] < 1024 * 1024 * 512
+            ):  # 512 megabytes:
                 text += " *"
-            menu.add_menu_option(text, key=partition[len(disk_identifier) + 1:])
+            menu.add_menu_option(text, key=partition[len(disk_identifier) + 1 :])
 
         response = menu.start()
 
@@ -287,7 +309,7 @@ Please build OpenCore first!"""
             f'''do shell script "diskutil mount {disk_identifier}s{response}"'''
             ' with prompt "OpenCore Legacy Patcher needs administrator privileges to mount your EFI."'
             " with administrator privileges"
-            " without altering line endings"
+            " without altering line endings",
         ]
 
         result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -297,7 +319,9 @@ Please build OpenCore first!"""
                 # cancelled prompt
                 return
             else:
-                utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to continue", ["An error occurred!"] + result.stderr.decode().split("\n") + ["", "Please report this to the devs at GitHub."]).start()
+                utilities.TUIOnlyPrint(
+                    ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + ["", "Please report this to the devs at GitHub."]
+                ).start()
                 return
 
         # TODO: Remount if readonly
@@ -311,12 +335,12 @@ Please build OpenCore first!"""
             print("- Coping OpenCore onto EFI partition")
             if (mount_path / Path("EFI")).exists():
                 print("Removing preexisting EFI folder")
-                shutil.rmtree(mount_path / Path("EFI"))
+                shutil.rmtree(mount_path / Path("EFI"), onerror=rmtree_handler)
 
-            shutil.copytree(self.constants.opencore_release_folder, mount_path / Path("EFI"))
+            shutil.copytree(self.constants.opencore_release_folder / Path("EFI"), mount_path / Path("EFI"))
             shutil.copy(self.constants.icon_path, mount_path)
             print("OpenCore transfer complete")
-            print("\nPress [Enter] to continue")
+            print("\nPress [Enter] to continue.\n")
             input()
         else:
-            utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to continue", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()
+            utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()
