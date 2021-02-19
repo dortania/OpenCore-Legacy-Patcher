@@ -11,9 +11,9 @@ import subprocess
 import sys
 
 # List build versions
-opencore_version = "0.6.6"
-lilu_version = "1.5.0"
-whatevergreen_version = "1.4.6"
+opencore_version = "0.6.7"
+lilu_version = "1.5.1"
+whatevergreen_version = "1.4.7"
 airportbcrmfixup_version = "2.1.2"
 bcm570_version = "1.0.0"
 marvel_version = "1.0.0"
@@ -25,6 +25,7 @@ io80211high_sierra_version = "1.0.0"
 io80211mojave_version = "1.0.0"
 voodoohda_version = "296"
 restrictevents_version = "1.0.0"
+piixata_version = "1.0.0"
 
 # List current location
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
@@ -51,6 +52,7 @@ bcm570_path = os.path.join(current_path, "payloads/Kexts/Ethernet/" "CatalinaBCM
 marvel_path = os.path.join(current_path, "payloads/Kexts/Ethernet/" "MarvelYukonEthernet-v%s.zip" % marvel_version)
 nforce_path = os.path.join(current_path, "payloads/Kexts/Ethernet/" "nForceEthernet-v%s.zip" % nforce_version)
 mce_path = os.path.join(current_path, "payloads/Kexts/Misc/" "AppleMCEReporterDisabler-v%s.zip" % mce_version)
+piixata_path = os.path.join(current_path, "payloads/Kexts/Misc/" "AppleIntelPIIXATA-v%s.zip" % piixata_version)
 mousse_path = os.path.join(current_path, "payloads/Kexts/SSE/" "AAAMouSSE-v%s.zip" % mousse_version)
 telemetrap_path = os.path.join(current_path, "payloads/Kexts/SSE/" "telemetrap-v%s.zip" % telemetrap_version)
 io80211high_sierra_path = os.path.join(current_path, "payloads/Kexts/Wifi/" "IO80211HighSierra-v%s.zip" % io80211high_sierra_version)

@@ -20,7 +20,7 @@ except NameError:
     pass
 
 # List build versions
-patcher_version = "0.0.9"
+patcher_version = "0.0.11"
 
 CustomSMBIOS=False
 MainMenu=True
@@ -40,7 +40,7 @@ while MainMenu:
         print("   Your model is not supported by this patcher!")
         print("")
         print(" If you plan to create the USB for another machine,")
-        print("            please select option 5")
+        print("            please select option 3")
         print(subheader)
         print("")
     elif BuildOpenCore.current_model in ("MacPro3,1", "iMac7,1"):
@@ -72,8 +72,7 @@ while MainMenu:
             print(header)
             print("")
             print("   1.  Auto build OpenCore")
-            print("   2.  Change OpenCore version")
-            print("   3.  Return to main menu")
+            print("   2.  Return to main menu")
             print("")
 
             OpenCoreBuilderMenu = input('Please select an option: ')
@@ -90,7 +89,7 @@ while MainMenu:
                     print ("    %s" % Versions.current_path)
                     print("")
                     BuildOpenCore.BuildEFI()
-                    #BuildOpenCore.BuildGUI()
+                    BuildOpenCore.BuildGUI()
                     BuildOpenCore.BuildSMBIOS()
                     BuildOpenCore.SavePlist()
                     BuildOpenCore.CleanBuildFolder()
@@ -104,30 +103,6 @@ while MainMenu:
                         AutoBuilderMenu=False
                         OpenCoreBuilderMenu=False
             elif OpenCoreBuilderMenu=="2":
-                ChangeOCversion=True
-                while ChangeOCversion:
-                    os.system('clear')
-                    print(header)
-                    print("    Current OpenCore version: %s" % Versions.opencore_version)
-                    print(header)
-                    print("")
-                    print("  Supported versions: 0.6.3, 0.6.4")
-                    print("")
-                    OpenCoreOption = input('Please enter the OpenCore you want (Press enter to exit): ')
-                    if OpenCoreOption == "":
-                        print("Exiting...")
-                        ChangeOCversion=False
-                        MainMenu=True
-                    else:
-                        print("")
-                        print("  New SMBIOS: %s" % OpenCoreOption)
-                        print("")
-                        ChangeOCversionYN = input("Is this correct? (y/n)")
-                        if ChangeOCversionYN in {"y", "Y", "yes", "Yes"}:
-                            ChangeOCversion=False
-                            Versions.opencore_version = OpenCoreOption
-                            MainMenu=True
-            elif OpenCoreBuilderMenu=="3":
                 print("\n Returning to main menu...")
                 OpenCoreBuilderMenu=False
                 MainMenu=True
@@ -135,7 +110,7 @@ while MainMenu:
                 print("\n Not Valid Choice Try again")
                 OpenCoreBuilderMenu = True
 
-            
+
     elif MainMenu=="2":
         print("\n Not yet implemented")
         OpenCoreInstallerMenu=True
@@ -227,8 +202,7 @@ while MainMenu:
 
     elif MainMenu=="5":
         print("\n Closing program...")
-        sys.exit(1) 
+        sys.exit(1)
     else:
         print("\n Not Valid Choice Try again")
         MainMenu=True
-
