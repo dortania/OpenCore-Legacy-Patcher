@@ -4,7 +4,6 @@ from __future__ import print_function
 
 import binascii
 import plistlib
-import re
 import shutil
 import subprocess
 import uuid
