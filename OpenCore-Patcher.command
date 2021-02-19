@@ -39,7 +39,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         self.custom_model = input("Please enter the model identifier of the target machine: ").strip()
 
     def credits(self):
-        utilities.TUIOnlyPrint(["Credits"], "Press enter to go back\n",
+        utilities.TUIOnlyPrint(["Credits"], "Press [Enter] to go back.\n",
                                ["""Many thanks to the following:
 
   - Acidanthera:\tOpenCore, kexts and other tools
