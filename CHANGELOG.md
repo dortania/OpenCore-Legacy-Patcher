@@ -2,12 +2,16 @@
 
 ## 0.0.11
 - Re-add OpenCore GUI
+- Increment binaries
+  - OpenCore b4449f4 (0.6.7 release)
+- Fix providing `Resources` for `OpenCanopy.efi`
+- Fix requirements and conventions in `config.plist`
 
 ## 0.0.10
 - Increment binaries
-    - OpenCore 43f5339(0.6.6 release)
-    - Lilu d107554(1.5.1 release)
-    - WhateverGreen 9e53d8a(1.4.7 release)
+  - OpenCore 43f5339 (0.6.6 release)
+  - Lilu d107554 (1.5.1 release)
+  - WhateverGreen 9e53d8a (1.4.7 release)
 - Add IDE support to MacPro3,1
 - Set SecureBootModel to iMac Pro(should aid in booting older OSes with OpenCore)
 - Update MacBookPro SMBIOS

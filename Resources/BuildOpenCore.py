@@ -241,6 +241,10 @@ def BuildEFI():
         print("- Adding USB Map for %s" % current_model)
         copy(usb_map_path, Versions.kext_path_build)
         map_name = ("USB-Map-%s.kext" % current_model)
+        map_name = map_name.replace(
+            ",",
+            "_"
+        )
         Versions.plist_data = Versions.plist_data.replace(
             "<false/><!--USBmap-->",
             "<true/><!--USBmap-->"

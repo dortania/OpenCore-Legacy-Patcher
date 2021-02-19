@@ -391,6 +391,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>Broadcom Wifi Patch</string>
 				<key>Enabled</key>

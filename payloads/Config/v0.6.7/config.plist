@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<!--OpenCore 0.6.6 config-->
+<!--OpenCore 0.6.7 config-->
 <dict>
 	<key>ACPI</key>
 	<dict>
@@ -396,6 +396,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>Broadcom Wifi Patch</string>
 				<key>Enabled</key>
