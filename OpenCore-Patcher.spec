@@ -4,7 +4,6 @@ block_cipher = None
 
 
 a = Analysis(['OpenCore-Patcher.command'],
-             pathex=['/Users/dhinak/Documents/GitHub/Opencore-Legacy-Patcher'],
              binaries=[],
              datas=[('payloads', 'payloads'), ('Resources', 'Resources')],
              hiddenimports=[],
