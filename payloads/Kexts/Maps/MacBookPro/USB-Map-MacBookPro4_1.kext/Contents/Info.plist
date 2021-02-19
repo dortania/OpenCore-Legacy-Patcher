@@ -16,7 +16,7 @@
 	<string>1.0</string>
 	<key>IOKitPersonalities_x86_64</key>
 	<dict>
-		<key>MacBookPro11,2</key>
+		<key>MacBookPro11,3</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
@@ -36,9 +36,9 @@
 				<integer>2000</integer>
 			</dict>
 			<key>model</key>
-			<string>MacBookPro11,2</string>
+			<string>MacBookPro11,3</string>
 		</dict>
-		<key>MacBookPro11,2-EH01</key>
+		<key>MacBookPro11,3-EH01</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
@@ -113,9 +113,9 @@
 				</dict>
 			</dict>
 			<key>model</key>
-			<string>MacBookPro11,2</string>
+			<string>MacBookPro11,3</string>
 		</dict>
-		<key>MacBookPro11,2-EH02</key>
+		<key>MacBookPro11,3-EH02</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
@@ -172,7 +172,7 @@
 				</dict>
 			</dict>
 			<key>model</key>
-			<string>MacBookPro11,2</string>
+			<string>MacBookPro11,3</string>
 		</dict>
 	</dict>
 	<key>OSBundleRequired</key>
