@@ -8,11 +8,9 @@ from pathlib import Path
 
 class Constants:
     def __init__(self):
-        self.default_opencore_version = "0.6.6"
-        self.opencore_version = "0.6.6"
-        self.available_opencore_versions = ["0.6.6"]
-        self.lilu_version = "1.5.0"
-        self.whatevergreen_version = "1.4.6"
+        self.opencore_version = "0.6.7"
+        self.lilu_version = "1.5.1"
+        self.whatevergreen_version = "1.4.7"
         self.airportbcrmfixup_version = "2.1.2"
         self.bcm570_version = "1.0.0"
         self.marvel_version = "1.0.0"
@@ -24,6 +22,7 @@ class Constants:
         self.io80211mojave_version = "1.0.0"
         self.voodoohda_version = "296"
         self.restrictevents_version = "1.0.0"
+        self.piixata_version = "1.0.0"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -73,6 +72,8 @@ class Constants:
     def io80211mojave_path(self): return self.payload_kexts_path / Path(f"Wifi/IO80211Mojave-v{self.io80211mojave_version}.zip")
     @property
     def voodoohda_path(self): return self.payload_kexts_path / Path(f"Audio/VoodooHDA-v{self.voodoohda_version}.zip")
+    @property
+    def piixata_path(self): return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-v{self.piixata_version}.zip")
 
     # Build Location
     @property

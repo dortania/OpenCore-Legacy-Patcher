@@ -106,6 +106,8 @@ To remove OpenCore is actually quite simply:
   * [See here for example how to mount](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html)
 2. Reset NVRAM
   * [Reset NVRAM or PRAM on your Mac](https://support.apple.com/HT204063)
+  
+Know that if you are on Big Sur when you remove the EFI folder, your Mac will no longer boot and show the prohibited symbol. Be ready to install an older version of macOS before you uninstall Open Core.
 
 ## Troubleshooting
 

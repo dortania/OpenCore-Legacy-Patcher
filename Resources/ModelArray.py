@@ -393,6 +393,10 @@ HiDPIpicker = [
     "MacBookPro10,2",
 ]
 
+IDEPatch = [
+    "MacPro3,1"
+]
+
 # 11" Air
 MacBookAir61 = [
     "MacBookAir3,1",
@@ -424,7 +428,7 @@ MacBookPro111 = [
 
 # MacBook Pro 15" and 17"
 
-MacBookPro112 = [
+MacBookPro113 = [
     "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",

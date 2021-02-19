@@ -68,6 +68,8 @@ class BuildOpenCore:
             ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
             # Legacy audio
             ("VoodooHDA.kext", self.constants.voodoohda_version, self.constants.voodoohda_path, lambda: self.model in ModelArray.LegacyAudio),
+            # IDE patch
+            ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
         ]:
             self.enable_kext(name, version, path, check)
 
@@ -145,9 +147,9 @@ class BuildOpenCore:
         elif self.model in ModelArray.MacBookPro111:
             print("- Spoofing to MacBookPro11,1")
             spoofed_model = "MacBookPro11,1"
-        elif self.model in ModelArray.MacBookPro112:
-            print("- Spoofing to MacBookPro11,2")
-            spoofed_model = "MacBookPro11,2"
+        elif self.model in ModelArray.MacBookPro113:
+            print("- Spoofing to MacBookPro11,3")
+            spoofed_model = "MacBookPro11,3"
         elif self.model in ModelArray.Macmini71:
             print("- Spoofing to Macmini7,1")
             spoofed_model = "Macmini7,1"
@@ -319,41 +321,3 @@ Please build OpenCore first!"""
             input()
         else:
             utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to continue", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()
-
-
-class OpenCoreMenus:
-    def __init__(self, versions):
-        self.constants: Constants.Constants = versions
-
-    def change_opencore_version(self):
-        utilities.cls()
-        utilities.header(["Change OpenCore Version"])
-        print(f"\nCurrent OpenCore version: {self.constants.opencore_version}\nSupported versions: 0.6.6 (recommended)")
-        version = input("Please enter the desired OpenCore version (or press Enter to cancel): ").strip()
-        if not version:
-            return
-        while version not in self.constants.available_opencore_versions:
-            utilities.cls()
-            utilities.header(["Change OpenCore Version"])
-            print(f"\nCurrent OpenCore version: {self.constants.opencore_version}\nSupported versions: 0.6.6 (recommended)")
-            version = input(f"Invalid OpenCore version {version}!\nPlease enter the desired OpenCore version (or press Enter to cancel): ").strip()
-            if not version:
-                return
-        self.constants.opencore_version = version
-
-    def build_opencore_menu(self, model):
-        response = None
-        while not (response and response == -1):
-            title = [f"Build OpenCore v{self.constants.opencore_version} EFI", "Selected Model: " + model]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True)
-
-            options = [
-                ["Build OpenCore", lambda: BuildOpenCore(model, self.constants).build_opencore()],
-                ["Change OpenCore Version", self.change_opencore_version],
-            ]
-
-            for option in options:
-                menu.add_menu_option(option[0], function=option[1])
-
-            response = menu.start()
-            # response = utilities.menu(title, "zoomer, Please select an option: ", options, auto_number=True, top_level=True)

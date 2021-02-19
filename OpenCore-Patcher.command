@@ -6,7 +6,7 @@ import subprocess
 
 from Resources import build, ModelArray, Constants, utilities
 
-PATCHER_VERSION = "0.0.9"
+PATCHER_VERSION = "0.0.11"
 
 
 class OpenCoreLegacyPatcher():
@@ -23,7 +23,7 @@ class OpenCoreLegacyPatcher():
             self.current_model = [line.strip().split(": ", 1)[1] for line in self.current_model.stdout.decode().split("\n") if line.strip().startswith("Model Identifier")][0]
 
     def build_opencore(self):
-        build.OpenCoreMenus(self.constants).build_opencore_menu(self.custom_model or self.current_model)
+        build.BuildOpenCore(self.custom_model or self.current_model, self.constants).build_opencore()
 
     def install_opencore(self):
         build.BuildOpenCore(self.custom_model or self.current_model, self.constants).copy_efi()
@@ -43,8 +43,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                                ["""Many thanks to the following:
 
   - Acidanthera:\tOpenCore, kexts and other tools
-  - DhinakG:\t\tWriting and maintaining this patcher
   - Khronokernel:\tWriting and maintaining this patcher
+  - DhinakG:\t\tWriting and maintaining this patcher
   - Syncretic:\t\tAAAMouSSE and telemetrap
   - Slice:\t\tVoodooHDA"""]).start()
 
@@ -67,7 +67,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 in_between = [
                     'Your model requires a CPU upgrade to a CPU supporting SSE4.1+ to be supported by this patcher!',
                     '',
-                    'If you plan to create the USB for another machine, please select option 5'
+                    f'If you plan to create the USB for another {self.current_model} with SSE4.1+, please select the "Change Model" option in the menu.'
                 ]
             elif self.custom_model in ("MacPro3,1", "iMac7,1"):
                 in_between = ["This model is supported",
