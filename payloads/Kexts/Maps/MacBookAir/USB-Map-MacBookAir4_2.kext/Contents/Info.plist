@@ -7,7 +7,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>USBmap-MacBookAir6,2</string>
+	<string>USB-Map-MacBookAir4,2</string>
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
 	<key>CFBundleSignature</key>
@@ -53,7 +53,9 @@
 				<key>kUSBCompanion</key>
 				<false/>
 				<key>port-count</key>
-				<data>AgAAAA==</data>
+				<data>
+				AgAAAA==
+				</data>
 				<key>ports</key>
 				<dict>
 					<key>PRT1</key>
@@ -61,14 +63,18 @@
 						<key>UsbConnector</key>
 						<integer>255</integer>
 						<key>port</key>
-						<data>AQAAAA==</data>
+						<data>
+						AQAAAA==
+						</data>
 					</dict>
 					<key>PRT2</key>
 					<dict>
 						<key>UsbConnector</key>
 						<integer>0</integer>
 						<key>port</key>
-						<data>AgAAAA==</data>
+						<data>
+						AgAAAA==
+						</data>
 					</dict>
 				</dict>
 			</dict>
@@ -90,7 +96,9 @@
 				<key>kUSBCompanion</key>
 				<false/>
 				<key>port-count</key>
-				<data>AgAAAA==</data>
+				<data>
+				AgAAAA==
+				</data>
 				<key>ports</key>
 				<dict>
 					<key>PRT1</key>
@@ -98,14 +106,18 @@
 						<key>UsbConnector</key>
 						<integer>255</integer>
 						<key>port</key>
-						<data>AQAAAA==</data>
+						<data>
+						AQAAAA==
+						</data>
 					</dict>
 					<key>PRT2</key>
 					<dict>
 						<key>UsbConnector</key>
 						<integer>255</integer>
 						<key>port</key>
-						<data>AgAAAA==</data>
+						<data>
+						AgAAAA==
+						</data>
 					</dict>
 				</dict>
 			</dict>
