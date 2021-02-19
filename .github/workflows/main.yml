@@ -28,7 +28,7 @@ jobs:
       - name: Upload to Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Opencore-Patcher-${{ github.ref }}
+          name: Opencore-Patcher-${{ github.sha }}
           path: dist/OpenCore-Patcher
       - name: Upload to Release
         if: github.event_name == 'release'
