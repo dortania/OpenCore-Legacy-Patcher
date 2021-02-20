@@ -14,7 +14,6 @@ class OpenCoreLegacyPatcher():
         self.constants = Constants.Constants()
         self.custom_model: str = None
         self.current_model: str = None
-        self.boot_verbose: str = "yes"
         opencore_model: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         if not opencore_model.startswith("nvram: Error getting variable"):
             opencore_model = [line.strip().split(":oem-product	", 1)[1] for line in opencore_model.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
@@ -24,7 +23,7 @@ class OpenCoreLegacyPatcher():
             self.current_model = [line.strip().split(": ", 1)[1] for line in self.current_model.stdout.decode().split("\n") if line.strip().startswith("Model Identifier")][0]
 
     def build_opencore(self):
-        build.BuildOpenCore(self.custom_model or self.current_model, self.constants, self.boot_verbose).build_opencore()
+        build.BuildOpenCore(self.custom_model or self.current_model, self.constants).build_opencore()
 
     def install_opencore(self):
         build.BuildOpenCore(self.custom_model or self.current_model, self.constants).copy_efi()
@@ -39,12 +38,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
     """)
         self.custom_model = input("Please enter the model identifier of the target machine: ").strip()
 
-    def toggle_verbose(self):
-        if (self.boot_verbose == 'yes'): 
-            self.boot_verbose = 'no'
-        else:
-            self.boot_verbose = 'yes'
-
     def credits(self):
         utilities.TUIOnlyPrint(["Credits"], "Press [Enter] to go back.\n",
                                ["""Many thanks to the following:
@@ -54,7 +47,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
   - DhinakG:\t\tWriting and maintaining this patcher
   - Syncretic:\t\tAAAMouSSE and telemetrap
   - Slice:\t\tVoodooHDA"""]).start()
-
 
     def main_menu(self):
         response = None
@@ -89,7 +81,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             options = ([["Build OpenCore", self.build_opencore]] if ((self.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) else []) + [
                 ["Install OpenCore to USB/internal drive", self.install_opencore],
                 ["Change Model", self.change_model],
-                ["Toggle Verbose Logging ("+self.boot_verbose+")", self.toggle_verbose],
                 ["Credits", self.credits]
             ]
 
