@@ -28,10 +28,11 @@ def rmtree_handler(func, path, exc_info):
 
 
 class BuildOpenCore:
-    def __init__(self, model, versions):
+    def __init__(self, model, versions, verbose):
         self.model = model
         self.config = None
         self.constants: Constants.Constants = versions
+        self.boot_verbose = verbose
 
     def build_efi(self):
         utilities.cls()
@@ -125,9 +126,19 @@ class BuildOpenCore:
             self.get_kext_by_bundle_path("USB-Map-SMBIOS.kext")["Enabled"] = True
             self.get_kext_by_bundle_path("USB-Map-SMBIOS.kext")["BundlePath"] = map_entry
 
+	# Boot Args
+        boot_args = []
+        if self.boot_verbose == 'yes':
+            print("- Booting verbose")
+            boot_args.append("-v")
+            boot_args.append("keepsyms=1")
+            boot_args.append("debug=0x100")
+
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera"
+            boot_args.append("agdpmod=pikera")
+       
+        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] = ' '.join([str(arg) for arg in boot_args])
 
         if self.model in ModelArray.HiDPIpicker:
             print("- Setting HiDPI picker")
