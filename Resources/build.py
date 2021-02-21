@@ -150,8 +150,6 @@ class BuildOpenCore:
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
 
-        self.set_smbios()
-
         plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
 
     def set_smbios(self):
@@ -233,6 +231,7 @@ class BuildOpenCore:
 
     def build_opencore(self):
         self.build_efi()
+        self.set_smbios()
         self.cleanup()
         print("")
         print("Your OpenCore EFI has been built at:")
