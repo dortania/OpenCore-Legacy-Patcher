@@ -59,9 +59,9 @@ class BuildOpenCore:
         self.config = plistlib.load(Path(self.constants.plist_path).open("rb"))
 
         # Set revision in config
-        self.config["#Revision"]["Patcher-Version"] = self.constants.patcher_version
-        self.config["#Revision"]["OpenCore-Version"] = self.constants.opencore_version
+        self.config["#Revision"]["OpenCore-Version"] = f"{self.constants.opencore_version} {self.constants.opencore_commit}"
         self.config["#Revision"]["Original-Model"] = self.model
+        self.config["#Revision"]["Patcher-Version"] = self.constants.patcher_version
 
         for name, version, path, check in [
             # Essential kexts

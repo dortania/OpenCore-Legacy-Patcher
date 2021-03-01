@@ -4,11 +4,11 @@
 <dict>
 	<key>#Revision</key>
 	<dict>
-		<key>Patcher-Version</key>
-		<string></string>
 		<key>OpenCore-Version</key>
 		<string></string>
 		<key>Original-Model</key>
+		<string></string>
+		<key>Patcher-Version</key>
 		<string></string>
 	</dict>
 	<key>ACPI</key>
