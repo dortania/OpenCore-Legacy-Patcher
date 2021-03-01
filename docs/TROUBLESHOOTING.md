@@ -20,4 +20,4 @@ Reminder that once this is done, you'll need to select OpenCore in the boot pick
 
 ## Infinite Recovery OS Booting
 
-With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates work correctly and reliably with Big Sur. However this installs NVRAM variables that will confuse your Mac if not running with openCore. To resolve, simply uninstall OpenCore and [reset NVRAM](https://support.apple.com/en-mide/HT201255).
+With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates work correctly and reliably with Big Sur. However this installs NVRAM variables that will confuse your Mac if not running with OpenCore. To resolve, simply uninstall OpenCore and [reset NVRAM](https://support.apple.com/en-mide/HT201255).
