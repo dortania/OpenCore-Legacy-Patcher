@@ -9,6 +9,7 @@ import subprocess
 import uuid
 import zipfile
 from pathlib import Path
+from datetime import date
 
 from Resources import Constants, ModelArray, utilities
 
@@ -59,6 +60,7 @@ class BuildOpenCore:
         self.config = plistlib.load(Path(self.constants.plist_path).open("rb"))
 
         # Set revision in config
+        self.config["#Revision"]["Build-Date"] = f"{date.today()}"
         self.config["#Revision"]["OpenCore-Version"] = f"{self.constants.opencore_version} {self.constants.opencore_commit}"
         self.config["#Revision"]["Original-Model"] = self.model
         self.config["#Revision"]["Patcher-Version"] = self.constants.patcher_version
