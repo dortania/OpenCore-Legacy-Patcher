@@ -122,15 +122,12 @@ class BuildOpenCore:
             print("- Adding SSDT-CPBG.aml")
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
 
-        # USB map
-        map_name = f"USB-Map-{self.model}.zip"
-        map_entry = f"USB-Map-{self.model}.kext"
-        usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Maps/Zip/{map_name}")
+        usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Maps/Universal/Info.plist")
         if usb_map_path.exists():
-            print(f"- Adding {map_entry}")
-            shutil.copy(usb_map_path, self.constants.kexts_path)
-            self.get_kext_by_bundle_path("USB-Map-SMBIOS.kext")["Enabled"] = True
-            self.get_kext_by_bundle_path("USB-Map-SMBIOS.kext")["BundlePath"] = map_entry
+            print(f"- Adding USB-Map.kext")
+            Path(self.constants.map_kext_folder).mkdir()
+            Path(self.constants.map_contents_folder).mkdir()
+            shutil.copy(usb_map_path, self.constants.map_contents_folder)
 
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")

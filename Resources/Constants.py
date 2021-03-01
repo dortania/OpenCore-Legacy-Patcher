@@ -97,6 +97,10 @@ class Constants:
     def kexts_path(self): return self.oc_folder / Path("Kexts")
     @property
     def resources_path(self): return self.oc_folder / Path("Resources")
+    @property
+    def map_kext_folder(self): return self.kexts_path / Path("USB-Map.kext")
+    @property
+    def map_contents_folder(self): return self.map_kext_folder / Path("Contents")
 
     # Tools
     @property
