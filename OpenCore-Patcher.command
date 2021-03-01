@@ -52,7 +52,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = [
-                f"OpenCore Legacy Patcher v{PATCHER_VERSION}",
+                f"OpenCore Legacy Patcher v{self.constants.patcher_version}",
                 f"Selected Model: {self.custom_model or self.current_model}"
             ]
 

@@ -58,6 +58,11 @@ class BuildOpenCore:
         shutil.copy(self.constants.plist_template, self.constants.oc_folder)
         self.config = plistlib.load(Path(self.constants.plist_path).open("rb"))
 
+        # Set revision in config
+        self.config["#Revision"]["Patcher-Version"] = self.constants.patcher_version
+        self.config["#Revision"]["OpenCore-Version"] = self.constants.opencore_version
+        self.config["#Revision"]["Original-Model"] = self.model
+
         for name, version, path, check in [
             # Essential kexts
             ("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path, lambda: True),
