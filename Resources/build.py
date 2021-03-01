@@ -24,7 +24,7 @@ def human_fmt(num):
 def rmtree_handler(func, path, exc_info):
     if exc_info[0] == FileNotFoundError:
         return
-    raise
+    raise  # pylint: disable=misplaced-bare-raise
 
 
 class BuildOpenCore:
@@ -139,8 +139,6 @@ class BuildOpenCore:
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
 
-        plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
-
     def set_smbios(self):
         spoofed_model = self.model
         if self.model in ModelArray.MacBookAir61:
@@ -203,6 +201,7 @@ class BuildOpenCore:
 
     def cleanup(self):
         print("- Cleaning up files")
+        plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
         for kext in self.constants.kexts_path.rglob("*.zip"):
             with zipfile.ZipFile(kext) as zip_file:
                 zip_file.extractall(self.constants.kexts_path)
@@ -296,7 +295,7 @@ Please build OpenCore first!"""
                 selected_disk["partitions"][partition]["type"] == "Microsoft Basic Data" and selected_disk["partitions"][partition]["size"] < 1024 * 1024 * 512
             ):  # 512 megabytes:
                 text += " *"
-            menu.add_menu_option(text, key=partition[len(disk_identifier) + 1 :])
+            menu.add_menu_option(text, key=partition[len(disk_identifier) + 1:])
 
         response = menu.start()
 
