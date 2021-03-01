@@ -2,6 +2,11 @@
 
 ## 0.0.11
 - Re-add OpenCore GUI
+- Rewrite in py3
+- Add OpenCore-Patcher binary for releases avoiding local python requirement
+- Increment binaries
+    - OpenCore cbd2fa3(0.6.7 release)
+    - WhateverGreen 2e19d1b(1.4.8 release)
 
 ## 0.0.10
 - Increment binaries

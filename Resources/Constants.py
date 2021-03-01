@@ -10,7 +10,7 @@ class Constants:
     def __init__(self):
         self.opencore_version = "0.6.7"
         self.lilu_version = "1.5.1"
-        self.whatevergreen_version = "1.4.7"
+        self.whatevergreen_version = "1.4.8"
         self.airportbcrmfixup_version = "2.1.2"
         self.bcm570_version = "1.0.0"
         self.marvel_version = "1.0.0"

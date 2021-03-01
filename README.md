@@ -32,7 +32,7 @@ To use, simply:
 
 6. Run `Install OpenCore to USB/internal drive`
 
-| #1 | #2 |
+| Select Drive | Select EFI/FAT32 Partition |
 | :--- | :--- |
 | ![](images/disk-start.png) | ![](images/disk-efi.png) |
 
