@@ -7724,8 +7724,8 @@
 					</dict>
 				</dict>
 			</dict>
-			<key>board-id</key>
-			<string>Mac-F60DEB81FF30ACF6</string>
+			<key>model</key>
+			<string>XacPro6,1</string>
 			<key>locationID</key>
 			<integer>487587840</integer>
 		</dict>
@@ -10341,8 +10341,8 @@
 					</dict>
 				</dict>
 			</dict>
-			<key>board-id</key>
-			<string>Mac-7BA5B2D9E42DDD94</string>
+			<key>model</key>
+			<string>iXacPro1,1</string>
 		</dict>
 	</dict>
 	<key>OSBundleRequired</key>
