@@ -96,7 +96,7 @@ class BuildOpenCore:
         wifi_devices = plistlib.loads(subprocess.run(f"ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
         wifi_devices = wifi_devices[0]
-        if (self.constants.custom_model) == "None" & (self.hexswap(binascii.hexlify(wifi_devices["vendor-id"]).decode()[:4]) in ModelArray.nativeWifi):
+        if (self.constants.custom_model == "None") & (self.hexswap(binascii.hexlify(wifi_devices["vendor-id"]).decode()[:4]) in ModelArray.nativeWifi):
             print("- Skipping wifi patches")
         else:
             if self.model in ModelArray.WifiAtheros:
