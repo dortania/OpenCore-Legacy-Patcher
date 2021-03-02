@@ -743,7 +743,6 @@ NVIDIAMXMGPUs = [
     "0x1392",#GTX 860M
     "0x1199",#GTX 870M
     "0x11a9",#GTX 870M
-    "0x731f",
 ]
 
 AMDMXMGPUs = [
@@ -751,11 +750,10 @@ AMDMXMGPUs = [
     "0x67e8",#AMD WX 4130/WX 4150 
     "0x67e0",#AMD WX 4170 
     "0x67c0",#AMD WX 7100
-    "0x731f",
 ]
 
 nativeWifi = [
-    "0x43ba",#BCM43602
-    "0x43a3",#BCM4350
-    "0x43a0",#BCM4360
+    "ba430000",#BCM43602
+    "a3430000",#BCM4350
+    "a0430000",#BCM4360
 ]

@@ -34,6 +34,12 @@ class BuildOpenCore:
         self.config = None
         self.constants: Constants.Constants = versions
 
+    def hexswap(self, input_hex: str):
+        hex_pairs = [input_hex[i:i + 2] for i in range(0, len(input_hex), 2)]
+        hex_rev = hex_pairs[::-1]
+        hex_str = "".join(["".join(x) for x in hex_rev])
+        return hex_str.upper()
+
     def build_efi(self):
         utilities.cls()
         if not Path(self.constants.build_path).exists():
@@ -87,30 +93,36 @@ class BuildOpenCore:
 
         # WiFi patches
 
-        if self.model in ModelArray.WifiAtheros:
-            self.enable_kext("IO80211HighSierra.kext", self.constants.io80211high_sierra_version, self.constants.io80211high_sierra_path)
-            self.get_kext_by_bundle_path("IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
+        wifi_devices = plistlib.loads(subprocess.run(f"ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
+        wifi_devices = wifi_devices[0]
+        if (self.constants.custom_model) == "None" & (self.hexswap(binascii.hexlify(wifi_devices["vendor-id"]).decode()[:4]) in ModelArray.nativeWifi):
+            print("- Skipping wifi patches")
+        else:
+            if self.model in ModelArray.WifiAtheros:
+                self.enable_kext("IO80211HighSierra.kext", self.constants.io80211high_sierra_version, self.constants.io80211high_sierra_path)
+                self.get_kext_by_bundle_path("IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
 
-        if self.model in ModelArray.WifiBCM94331:
-            self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-            self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
+            if self.model in ModelArray.WifiBCM94331:
+                self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
+                self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
 
-            if self.model in ModelArray.EthernetNvidia:
-                # Nvidia chipsets all have the same path to ARPT
-                property_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
-            if self.model in ("MacBookAir2,1", "MacBookAir3,1", "MacBookAir3,2"):
-                property_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
-            elif self.model in ("iMac7,1", "iMac8,1"):
-                property_path = "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
-            elif self.model in ("iMac13,1", "iMac13,2"):
-                property_path = "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
-            elif self.model == "MacPro5,1":
-                property_path = "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
-            else:
-                # Assumes we have a laptop with Intel chipset
-                property_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
-            print("- Applying fake ID for WiFi")
-            self.config["DeviceProperties"]["Add"][property_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
+                if self.model in ModelArray.EthernetNvidia:
+                    # Nvidia chipsets all have the same path to ARPT
+                    property_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
+                if self.model in ("MacBookAir2,1", "MacBookAir3,1", "MacBookAir3,2"):
+                    property_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
+                elif self.model in ("iMac7,1", "iMac8,1"):
+                    property_path = "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
+                elif self.model in ("iMac13,1", "iMac13,2"):
+                    property_path = "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
+                elif self.model == "MacPro5,1":
+                    property_path = "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
+                else:
+                    # Assumes we have a laptop with Intel chipset
+                    property_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
+                print("- Applying fake ID for WiFi")
+                self.config["DeviceProperties"]["Add"][property_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
 
         # HID patches
         if self.model in ModelArray.LegacyHID:
@@ -139,12 +151,10 @@ class BuildOpenCore:
             self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["UIScale"] = binascii.unhexlify("02")
         
         # Check GPU Vendor
-        if self.constants.custom_model != "None":
-            #current_gpu: str = subprocess.run("system_profiler SPDisplaysDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-            #current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
-            #current_gpud = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Device ID"))][0]
-            current_gpuv = "NVIDIA (0x10de)"
-            current_gpud = "0x11a9"
+        if self.constants.custom_model == "None":
+            current_gpu: str = subprocess.run("system_profiler SPDisplaysDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+            current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
+            current_gpud = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Device ID"))][0]
             print(f"- Detected GPU: {current_gpuv} {current_gpud}")
             if (current_gpuv == "AMD (0x1002)") & (current_gpud in ModelArray.AMDMXMGPUs):
                 self.constants.custom_mxm_gpu = True
