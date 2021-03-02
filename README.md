@@ -1,101 +1,54 @@
 # OpenCore Legacy Patcher
 
-<img src="OC-Patcher.png" width="256">
+<img src="images/OC-Patcher.png" width="256">
 
-A python script for building and booting OpenCore on legacy Macs, see [Supported SMBIOS](#supported-smbios) on whether your model is supported.
+A python script for building and booting OpenCore on legacy Macs, see [Supported SMBIOS](/docs/MODELS.md) on whether your model is supported.
 
-## Supported SMBIOS
+Supported features:
 
-Any hardware supporting SSE4.1 CPU and 64-Bit firmware work on this patcher. To check your hardware model, run the below command on the applicable machine:
+* System Integrity Protection, FileVault 2 and .im4m Secure Boot
+* Native OTA OS updates
+* Recovery OS, Safe Mode and Single-user Mode booting
+* Zero firmware patching required(ie. APFS ROM patching)
+* GPU Switching on MacBook Pro models(2012 and newer)
 
-```bash
-system_profiler SPHardwareDataType | grep 'Model Identifier'
-```
+Note: Only clean-installs and upgrades are supported, installs already patched with [Patched-Sur](https://github.com/BenSova/Patched-Sur) or [bigmac](https://github.com/StarPlayrX/bigmac) cannot be used due to broken file integrity with APFS snapshots and SIP.
 
-<details>
-<summary>SMBIOS Support Table</summary>
+* You can however reinstall macOS with this patcher and retain your original data
 
-```
-MacBook5,1
-MacBook5,2
-MacBook6,1
-MacBook7,1
+## How to use
 
-MacBookAir2,1
-MacBookAir3,1
-MacBookAir3,2
-MacBookAir4,1
-MacBookAir4,2
-MacBookAir5,1
-MacBookAir5,2
+To use, simply:
 
-MacBookPro3,1
-MacBookPro4,1
-MacBookPro5,1
-MacBookPro5,2
-MacBookPro5,3
-MacBookPro5,4
-MacBookPro5,5
-MacBookPro6,1
-MacBookPro6,2
-MacBookPro7,1
-MacBookPro8,1
-MacBookPro8,2
-MacBookPro8,3
-MacBookPro9,1
-MacBookPro9,2
-MacBookPro10,1
-MacBookPro10,2
+1. Ensure your hardware is compatible(See [Supported SMBIOS](/docs/MODELS.md))
+2. Download and build macOS Installer
+3. Download the latest release: [OpenCore Legacy Patcher Releases](https://github.com/dortania/Opencore-Legacy-Patcher/releases)
+4. Run the `OpenCore-Patcher` binary
+5. Run `Build OpenCore`(if building for another machine, please select `Change Model`)
 
-Macmini3,1
-Macmini4,1
-Macmini5,1
-Macmini5,2
-Macmini5,3
-Macmini6,1
-Macmini6,2
+| First Run | Build EFI |
+| :--- | :--- |
+| ![](images/first-run.png) | ![](images/build-efi.png) |
 
-iMac7,1
-iMac8,1
-iMac9,1
-iMac10,1
-iMac11,1
-iMac11,2
-iMac11,3
-iMac12,1
-iMac12,2
-iMac13,1
-iMac13,2
-iMac14,1
-iMac14,2
-iMac14,3
+  * Note: When the patcher ask you to if you want to use original serials, we recommend doing so. To determine yourself if you want:
+    * Original: Mac is nearly identical to pre-patcher, with only minor changes in SMBIOS. Ideal configuration for iServices to work correctly
+	* Custom: Rebuilds SMBIOS table to Mac you're spoofing, generally recommended when troubleshooting such as APFS support missing in the installer
 
-MacPro3,1
-MacPro4,1
-MacPro5,1
+6. Run `Install OpenCore to USB/internal drive`
 
-Xserve3,1
-```
+| Select Drive | Select EFI/FAT32 Partition |
+| :--- | :--- |
+| ![](images/disk-start.png) | ![](images/disk-efi.png) |
 
-</details>
-<br>
+  * Ensure you install OpenCore onto a FAT32 partition to ensure your Mac is able to boot it, you may need to format your drive as GUID/GPT in Disk Utility
+  
+7. Reboot machine while holding `Option` to select OpenCore, then boot the macOS Installer
 
-## How to run
+| Mac Boot Picker | OpenCore Picker |
+| :--- | :--- |
+| ![](images/efi-boot.png) | ![](images/oc-boot.png) |
 
-Prerequists:
-
-* Supported Mac(see above)
-* macOS Installer installed to USB
-  * See here on how to download and create an installer: [Creating a macOS Installer](https://dortania.github.io/OpenCore-Install-Guide/installer-guide/mac-install.html)
-  * Blank USB drives formatted as GUID Partition Table are also supported
-
-1. [Download the release](https://github.com/dortania/Opencore-Legacy-Patcher/releases)
-2. Run the `OpenCore-Patcher.command` file
-3. Once opened, select option 1 and build your EFI
-  * if patching for a different machine, select option 3 first
-4. Once finished, run option 2 at the main menu and install onto your desired drive
-
-Once you're done making your OpenCore installer, you can simply reboot holding the Option key. In the picker, you should see a new EFI Boot Option. Boot it and from there you'll be in the OpenCore picker.
+For nightly builds, you can either run `OpenCore-Patcher.command` from [main](https://github.com/dortania/Opencore-Legacy-Patcher/archive/main.zip) or grab the binary from  [Github Actions](https://github.com/dortania/Opencore-Legacy-Patcher/actions). Note the latter does not require a py3 install.
 
 ## How to uninstall OpenCore?
 
@@ -109,25 +62,4 @@ To remove OpenCore is actually quite simply:
   
 Know that if you are on Big Sur when you remove the EFI folder, your Mac will no longer boot and show the prohibited symbol. Be ready to install an older version of macOS before you uninstall Open Core.
 
-## Troubleshooting
-
-Here are some common errors users may experience while using this patcher:
-
-* [Stuck on `This version of Mac OS X is not supported on this platform`](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform)
-* [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
-
-### Stuck on `This version of Mac OS X is not supported on this platform`
-
-This means macOS has detected a SMBIOS it does not support, to resolve this ensure you're booting OpenCore **before** the macOS installer in the boot picker. Reminder the option will be called `EFI Boot`
-
-Once you've booted OpenCore at least once, your hardware should now auto boot it until either NVRAM reset or you remove the drive with OpenCore installed.
-
-### Cannot boot macOS without the USB
-
-At this time, the OpenCore Patcher won't install macOS onto the internal drive itself during installs. Instead, you'll need to either [manually transfer](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html) OpenCore to the internal drive's EFI or run this patcher's Option 2 again but select your internal drive.
-
-Reminder that once this is done, you'll need to select OpenCore in the boot picker again for your hardware to remember this entry and auto boot from then on.
-
-### Cannot run OpenCore Legacy Patcher
-
-If the release tab has permissions/Gatekeeper issues, please [download the main repo](https://github.com/dortania/Opencore-Legacy-Patcher/archive/main.zip) and run that instead.
+## [Troubleshooting](/docs/TROUBLESHOOTING.md)

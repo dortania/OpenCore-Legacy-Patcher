@@ -483,3 +483,277 @@ MacPro71 = [
     "MacPro5,1",
     "Xserve3,1"
 ]
+
+# Maps
+
+XXerve = [
+    "Xserve3,1",
+]
+
+iXac = [
+    "iMac7,1",
+    "iMac8,1",
+    "iMac9,1",
+    "iMac10,1",
+    "iMac11,1",
+    "iMac11,2",
+    "iMac11,3",
+    "iMac12,1",
+    "iMac12,2",
+    "iMac13,1",
+    "iMac13,2",
+    "iMac14,1",
+    "iMac14,2",
+    "iMac14,3",
+]
+
+XacBookNormal = [
+    "MacBook5,1",
+    "MacBook5,2",
+    "MacBook6,1",
+    "MacBook7,1",
+]
+
+XacBookAir = [
+    "MacBookAir2,1",
+    "MacBookAir3,1",
+    "MacBookAir3,2",
+    "MacBookAir4,1",
+    "MacBookAir4,2",
+    "MacBookAir5,1",
+    "MacBookAir5,2",
+]
+
+XacBookPro = [
+    "MacBookPro3,1",
+    "MacBookPro4,1",
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro5,5",
+    "MacBookPro6,1",
+    "MacBookPro6,2",
+    "MacBookPro7,1",
+    "MacBookPro8,1",
+    "MacBookPro8,2",
+    "MacBookPro8,3",
+    "MacBookPro9,1",
+    "MacBookPro9,2",
+    "MacBookPro10,1",
+    "MacBookPro10,2",
+]
+
+XacPro = [
+    "MacPro3,1",
+    "MacPro4,1",
+    "MacPro5,1",
+]
+
+Xacmini = [
+    "Macmini3,1",
+    "Macmini4,1",
+    "Macmini5,1",
+    "Macmini5,2",
+    "Macmini5,3",
+    "Macmini6,1",
+    "Macmini6,2",
+]
+
+EHCI = [
+    "MacPro3,1"
+]
+
+EHC1 = [
+    "MacBook5,1",
+    "MacBook5,2",
+    "MacBook6,1",
+    "MacBook7,1",
+    "MacBookAir2,1",
+    "MacBookAir3,1",
+    "MacBookAir3,2",
+    "MacBookAir4,1",
+    "MacBookAir4,2",
+    "MacBookAir5,1",
+    "MacBookAir5,2",
+    "MacBookPro3,1",
+    "MacBookPro4,1",
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro5,5",
+    "MacBookPro6,1",
+    "MacBookPro6,2",
+    "MacBookPro7,1",
+    "MacBookPro8,1",
+    "MacBookPro8,2",
+    "MacBookPro8,3",
+    "MacBookPro9,1",
+    "MacBookPro9,2",
+    "MacBookPro10,1",
+    "MacBookPro10,2",
+    "Macmini3,1",
+    "Macmini4,1",
+    "Macmini5,1",
+    "Macmini5,2",
+    "Macmini5,3",
+    "Macmini6,1",
+    "Macmini6,2",
+    "iMac7,1",
+    "iMac8,1",
+    "iMac9,1",
+    "iMac10,1",
+    "iMac11,1",
+    "iMac11,2",
+    "iMac11,3",
+    "iMac12,1",
+    "iMac12,2",
+    "iMac13,1",
+    "iMac13,2",
+    "iMac14,1",
+    "iMac14,2",
+    "iMac14,3",
+    "MacPro4,1",
+    "MacPro5,1",
+]
+
+EHC2 = [
+    "MacBook5,1",
+    "MacBook5,2",
+    "MacBook6,1",
+    "MacBook7,1",
+    "MacBookAir2,1",
+    "MacBookAir3,1",
+    "MacBookAir3,2",
+    "MacBookAir4,1",
+    "MacBookAir4,2",
+    "MacBookAir5,1",
+    "MacBookAir5,2",
+    "MacBookPro3,1",
+    "MacBookPro4,1",
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro5,5",
+    "MacBookPro6,1",
+    "MacBookPro6,2",
+    "MacBookPro7,1",
+    "MacBookPro8,1",
+    "MacBookPro8,2",
+    "MacBookPro8,3",
+    "MacBookPro9,1",
+    "MacBookPro9,2",
+    "MacBookPro10,1",
+    "MacBookPro10,2",
+    "Macmini3,1",
+    "Macmini4,1",
+    "Macmini5,1",
+    "Macmini5,2",
+    "Macmini5,3",
+    "Macmini6,1",
+    "Macmini6,2",
+    "iMac7,1",
+    "iMac8,1",
+    "iMac9,1",
+    "iMac10,1",
+    "iMac11,1",
+    "iMac11,2",
+    "iMac11,3",
+    "iMac12,1",
+    "iMac12,2",
+    "iMac13,1",
+    "iMac13,2",
+    "iMac14,1",
+    "iMac14,2",
+    "iMac14,3",
+    "MacPro4,1",
+    "MacPro5,1",
+]
+
+OHC1 = [
+    "MacBook5,1",
+    "MacBook5,2",
+    "MacBook6,1",
+    "MacBook7,1",
+    "MacBookAir2,1",
+    "MacBookAir3,1",
+    "MacBookAir3,2",
+    "MacBookAir5,1",
+    "MacBookAir5,2",
+    "MacBookPro3,1",
+    "MacBookPro4,1",
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro5,5",
+    "MacBookPro7,1",
+    "Macmini3,1",
+    "Macmini4,1",
+    "iMac7,1",
+    "iMac8,1",
+    "iMac9,1",
+    "iMac10,1",
+]
+
+IHEHC1 = [
+    "iMac13,1",
+    "iMac13,2",
+    "iMac13,3"
+]
+
+IHEHC2 = [
+    "MacBookPro9,1"
+]
+
+IH = [
+    "MacPro6,1"
+]
+
+upgradableMXMGPUs = [
+    "iMac10,1"
+    "iMac11,1",
+    "iMac11,2",
+    "iMac11,3",
+    "iMac12,1",
+    "iMac12,2",
+    "Xserve3,1",
+]
+
+# Reference: https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/
+NVIDIAMXMGPUs = [
+    "0x12b9",#Quadro K610M
+    "0x0ff6",#Quadro K1100M
+    "0x11fc",#Quadro K2100M 
+    "0x0ffc",#Quadro K1000M 
+    "0x0ffb",#Quadro K2000M 
+    "0x11b6",#Quadro K3100M 
+    "0x11b7",#Quadro K4100M 
+    "0x11bc",#Quadro K5000M 
+    "0x11b8",#Quadro K5100M 
+    "0x11e1",#GTX 765M
+    "0x11e2",#GTX 765M 
+    "0x11e0",#GTX 770M
+    "0x119e",#GTX 780M Mac Edition
+    "0x119e",#GTX 780M
+    "0x119f",#GTX 880M
+    "0x119a",#GTX 860M
+    "0x1392",#GTX 860M
+    "0x1199",#GTX 870M
+    "0x11a9",#GTX 870M
+]
+
+AMDMXMGPUs = [
+    "0x67EF",#AMD RX 460
+    "0x67e8",#AMD WX 4130/WX 4150 
+    "0x67e0",#AMD WX 4170 
+    "0x67c0",#AMD WX 7100
+]
+
+nativeWifi = [
+    "ba430000",#BCM43602
+    "a3430000",#BCM4350
+    "a0430000",#BCM4360
+]

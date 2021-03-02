@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+      - name: Install Python Dependencies
+        run: |
+          python3 -m pip install -U pip
+          pip3 install pyinstaller
+
+      - run: pyinstaller Opencore-Patcher.spec
+      - run: cd dist; zip ../OpenCore-Patcher.zip OpenCore-Patcher
+
+      - name: Upload to Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: OpenCore-Patcher.zip
+      - name: Upload to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: OpenCore-Patcher.zip
+          tag: ${{ github.ref }}
+          file_glob: true

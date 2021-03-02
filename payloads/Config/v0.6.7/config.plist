@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<!--OpenCore 0.6.7 config-->
 <dict>
+	<key>#Revision</key>
+	<dict>
+		<key>Build-Date</key>
+		<string></string>
+		<key>OpenCore-Version</key>
+		<string></string>
+		<key>Original-Model</key>
+		<string></string>
+		<key>Patcher-Version</key>
+		<string></string>
+	</dict>
 	<key>ACPI</key>
 	<dict>
 		<key>Add</key>
 		<array>
 			<dict>
 				<key>Enabled</key>
-				<false/><!--SSDT-CPBG-->
+				<false/>
 				<key>Comment</key>
 				<string>Patch CPBG for Arrendale, Lynnfield and Clarkdale</string>
 				<key>Path</key>
@@ -118,8 +128,7 @@
 		<key>MmioWhitelist</key>
 		<array/>
 		<key>Patch</key>
-		<array>
-		</array>
+		<array/>
 		<key>Quirks</key>
 		<dict>
 			<key>AllowRelocationBlock</key>
@@ -185,7 +194,7 @@
 				<key>Comment</key>
 				<string>Patching Engine</string>
 				<key>Enabled</key>
-				<true/><!--Lilu-->
+				<true/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -203,7 +212,7 @@
 				<key>Comment</key>
 				<string>GPU Patching</string>
 				<key>Enabled</key>
-				<true/><!--WEG-->
+				<true/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -221,7 +230,7 @@
 				<key>Comment</key>
 				<string>Process Blocker</string>
 				<key>Enabled</key>
-				<false/><!--RestrictEvents-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -239,7 +248,7 @@
 				<key>Comment</key>
 				<string>SSE Emulator</string>
 				<key>Enabled</key>
-				<false/><!--AAAMouSSE-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -257,7 +266,7 @@
 				<key>Comment</key>
 				<string>SSE Patcher</string>
 				<key>Enabled</key>
-				<false/><!--telemetrap-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -275,7 +284,7 @@
 				<key>Comment</key>
 				<string>4331 Wifi Patch</string>
 				<key>Enabled</key>
-				<false/><!--AirportBrcmFixup-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -293,7 +302,7 @@
 				<key>Comment</key>
 				<string>4331 Wifi Patch</string>
 				<key>Enabled</key>
-				<false/><!--AirPortBrcmNIC_Injector-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -311,7 +320,7 @@
 				<key>Comment</key>
 				<string>Dual Socket Patch</string>
 				<key>Enabled</key>
-				<false/><!--AppleMCEReporterDisabler-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -329,7 +338,7 @@
 				<key>Comment</key>
 				<string>BCM Ethernet patch</string>
 				<key>Enabled</key>
-				<false/><!--CatalinaBCM5701Ethernet-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -347,7 +356,7 @@
 				<key>Comment</key>
 				<string>Atheros Wifi Patch</string>
 				<key>Enabled</key>
-				<false/><!--IO80211HighSierra-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -365,7 +374,7 @@
 				<key>Comment</key>
 				<string>Atheros Wifi Patch</string>
 				<key>Enabled</key>
-				<false/><!--AirPortAtheros40-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -383,7 +392,7 @@
 				<key>Comment</key>
 				<string>Broadcom Wifi Patch</string>
 				<key>Enabled</key>
-				<false/><!--IO80211Mojave-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -396,10 +405,12 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>Comment</key>
 				<string>Broadcom Wifi Patch</string>
 				<key>Enabled</key>
-				<false/><!--AirPortBrcm4331-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -417,7 +428,7 @@
 				<key>Comment</key>
 				<string>Marvel Ethernet Patch</string>
 				<key>Enabled</key>
-				<false/><!--MarvelYukonEthernet-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -435,7 +446,7 @@
 				<key>Comment</key>
 				<string>Nvidia Ethernet Patch</string>
 				<key>Enabled</key>
-				<false/><!--nForceEthernet-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -453,7 +464,7 @@
 				<key>Comment</key>
 				<string>VoodooHDA</string>
 				<key>Enabled</key>
-				<false/><!--VoodooHDA-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -471,7 +482,7 @@
 				<key>Comment</key>
 				<string>AppleIntelPIIXATA</string>
 				<key>Enabled</key>
-				<false/><!--AppleIntelPIIXATA-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -489,13 +500,13 @@
 				<key>Comment</key>
 				<string>USB Map</string>
 				<key>Enabled</key>
-				<false/><!--USBmap-->
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
 				<string></string>
 				<key>BundlePath</key>
-				<string>USB-Map-SMBIOS.kext</string>
+				<string>USB-Map.kext</string>
 				<key>ExecutablePath</key>
 				<string></string>
 				<key>PlistPath</key>
@@ -531,7 +542,7 @@
 				<key>Count</key>
 				<integer>1</integer>
 				<key>Enabled</key>
-				<false/><!--IOHIDFamily-->
+				<false/>
 				<key>Find</key>
 				<data></data>
 				<key>Identifier</key>
@@ -808,9 +819,40 @@
 	<key>PlatformInfo</key>
 	<dict>
 		<key>Automatic</key>
-		<true/>
+		<false/>
 		<key>CustomMemory</key>
 		<false/>
+		<key>DataHub</key>
+		<dict>
+			<key>ARTFrequency</key>
+			<integer>0</integer>
+			<key>BoardProduct</key>
+			<string></string>
+			<key>BoardRevision</key>
+			<data></data>
+			<key>DevicePathsSupported</key>
+			<integer>0</integer>
+			<key>FSBFrequency</key>
+			<integer>0</integer>
+			<key>InitialTSC</key>
+			<integer>0</integer>
+			<key>PlatformName</key>
+			<string></string>
+			<key>SmcBranch</key>
+			<data></data>
+			<key>SmcPlatform</key>
+			<data></data>
+			<key>SmcRevision</key>
+			<data></data>
+			<key>StartupPowerEvents</key>
+			<integer>0</integer>
+			<key>SystemProductName</key>
+			<string></string>
+			<key>SystemSerialNumber</key>
+			<string></string>
+			<key>SystemUUID</key>
+			<string></string>
+		</dict>
 		<key>Generic</key>
 		<dict>
 			<key>AdviseWindows</key>
@@ -834,10 +876,84 @@
 			<key>SystemUUID</key>
 			<string>00000000-0000-0000-0000-000000000000</string>
 		</dict>
+		<key>PlatformNVRAM</key>
+		<dict>
+			<key>BID</key>
+			<string></string>
+			<key>FirmwareFeatures</key>
+			<data></data>
+			<key>FirmwareFeaturesMask</key>
+			<data></data>
+			<key>MLB</key>
+			<string></string>
+			<key>ROM</key>
+			<data></data>
+			<key>SystemSerialNumber</key>
+			<string></string>
+			<key>SystemUUID</key>
+			<string></string>
+		</dict>
+		<key>SMBIOS</key>
+		<dict>
+			<key>BIOSReleaseDate</key>
+			<string></string>
+			<key>BIOSVendor</key>
+			<string></string>
+			<key>BIOSVersion</key>
+			<string>9999.999.999.999.999</string>
+			<key>BoardAssetTag</key>
+			<string></string>
+			<key>BoardLocationInChassis</key>
+			<string></string>
+			<key>BoardManufacturer</key>
+			<string></string>
+			<key>BoardProduct</key>
+			<string>Mac-AA95B1DDAB278B95</string>
+			<key>BoardSerialNumber</key>
+			<string></string>
+			<key>BoardType</key>
+			<integer>0</integer>
+			<key>BoardVersion</key>
+			<string></string>
+			<key>ChassisAssetTag</key>
+			<string></string>
+			<key>ChassisManufacturer</key>
+			<string></string>
+			<key>ChassisSerialNumber</key>
+			<string></string>
+			<key>ChassisType</key>
+			<integer>0</integer>
+			<key>ChassisVersion</key>
+			<string></string>
+			<key>FirmwareFeatures</key>
+			<data></data>
+			<key>FirmwareFeaturesMask</key>
+			<data></data>
+			<key>PlatformFeature</key>
+			<integer>0</integer>
+			<key>ProcessorType</key>
+			<integer>0</integer>
+			<key>SmcVersion</key>
+			<data></data>
+			<key>SystemFamily</key>
+			<string></string>
+			<key>SystemManufacturer</key>
+			<string></string>
+			<key>SystemProductName</key>
+			<string></string>
+			<key>SystemSKUNumber</key>
+			<string></string>
+			<key>SystemSerialNumber</key>
+			<string></string>
+			<key>SystemUUID</key>
+			<string></string>
+			<key>SystemVersion</key>
+			<string></string>
+		</dict>
 		<key>UpdateDataHub</key>
-		<true/>
+		<false/>
 		<key>UpdateNVRAM</key>
-		<true/>
+		<false/>
 		<key>UpdateSMBIOS</key>
 		<true/>
 		<key>UpdateSMBIOSMode</key>
@@ -876,6 +992,8 @@
 			<integer>20</integer>
 			<key>PlayChime</key>
 			<string>Disabled</string>
+			<key>ResetTrafficClass</key>
+			<false/>
 			<key>SetupDelay</key>
 			<integer>0</integer>
 			<key>VolumeAmplifier</key>
@@ -895,8 +1013,6 @@
 			<false/>
 			<key>KeyForgetThreshold</key>
 			<integer>5</integer>
-			<key>KeyMergeThreshold</key>
-			<integer>2</integer>
 			<key>KeySupport</key>
 			<false/>
 			<key>KeySupportMode</key>
@@ -919,6 +1035,8 @@
 			<key>DirectGopRendering</key>
 			<false/>
 			<key>ForceResolution</key>
+			<false/>
+			<key>GopPassThrough</key>
 			<false/>
 			<key>IgnoreTextInGraphics</key>
 			<false/>
@@ -978,6 +1096,8 @@
 		</dict>
 		<key>Quirks</key>
 		<dict>
+			<key>ActivateHpetSupport</key>
+			<false/>
 			<key>DisableSecurityPolicy</key>
 			<false/>
 			<key>ExitBootServicesDelay</key>

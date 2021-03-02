@@ -1,208 +1,94 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 from __future__ import print_function
 
-from shutil import copy
-from shutil import rmtree
-
-import os
-import json
 import subprocess
-import sys
-import zipfile
 
-from Resources import *
+from Resources import build, ModelArray, Constants, utilities
+
+PATCHER_VERSION = "0.0.11"
 
 
-# Allow py2 and 3 support
-try:
-    input = raw_input
-except NameError:
-    pass
+class OpenCoreLegacyPatcher():
+    def __init__(self):
+        self.constants = Constants.Constants()
+        self.current_model: str = None
+        opencore_model: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        if not opencore_model.startswith("nvram: Error getting variable"):
+            opencore_model = [line.strip().split(":oem-product	", 1)[1] for line in opencore_model.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
+            self.current_model = opencore_model
+        else:
+            self.current_model = subprocess.run("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            self.current_model = [line.strip().split(": ", 1)[1] for line in self.current_model.stdout.decode().split("\n") if line.strip().startswith("Model Identifier")][0]
 
-# List build versions
-patcher_version = "0.0.11"
+    def build_opencore(self):
+        build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
 
-CustomSMBIOS=False
-MainMenu=True
-MenuWidth = 52
-header = '#' * MenuWidth
-subheader = '-' * MenuWidth
+    def install_opencore(self):
+        build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).copy_efi()
 
-while MainMenu:
-    os.system('clear')
+    def change_model(self):
+        utilities.cls()
+        utilities.header(["Select Different Model"])
+        print("""
+Tip: Run the following command on the target machine to find the model identifier:
 
-    print(header)
-    print("          OpenCore Legacy patcher v%s" % patcher_version)
-    print("             Current Model: %s" % BuildOpenCore.current_model)
-    print(header)
-    print("")
-    if BuildOpenCore.current_model not in ModelArray.SupportedSMBIOS:
-        print("   Your model is not supported by this patcher!")
-        print("")
-        print(" If you plan to create the USB for another machine,")
-        print("            please select option 3")
-        print(subheader)
-        print("")
-    elif BuildOpenCore.current_model in ("MacPro3,1", "iMac7,1"):
-        print("           This model is supported")
-        print(" However please ensure the CPU have been upgraded")
-        print("             to support SSE4.1+")
-        print(subheader)
-        print("")
-    else:
-        print("            This model is supported")
-        print(subheader)
-        print("")
-    print("    1.  Build OpenCore")
-    print("    2.  Install OpenCore to USB/internal drive")
-    print("    3.  Change model")
-    print("    4.  Credits")
-    print("    5.  Exit")
-    print("")
+system_profiler SPHardwareDataType | grep 'Model Identifier'
+    """)
+        self.constants.custom_model = input("Please enter the model identifier of the target machine: ").strip()
 
-    MainMenu = input('Please select an option: ')
+    def credits(self):
+        utilities.TUIOnlyPrint(["Credits"], "Press [Enter] to go back.\n",
+                               ["""Many thanks to the following:
 
-    if MainMenu=="1":
-        OpenCoreBuilderMenu=True
-        while OpenCoreBuilderMenu:
-            os.system('clear')
+  - Acidanthera:\tOpenCore, kexts and other tools
+  - Khronokernel:\tWriting and maintaining this patcher
+  - DhinakG:\t\tWriting and maintaining this patcher
+  - Syncretic:\t\tAAAMouSSE and telemetrap
+  - Slice:\t\tVoodooHDA"""]).start()
 
-            print(header)
-            print("     Build OpenCore v%s for model: %s" % (Versions.opencore_version, BuildOpenCore.current_model))
-            print(header)
-            print("")
-            print("   1.  Auto build OpenCore")
-            print("   2.  Return to main menu")
-            print("")
+    def main_menu(self):
+        response = None
+        while not (response and response == -1):
+            title = [
+                f"OpenCore Legacy Patcher v{self.constants.patcher_version}",
+                f"Selected Model: {self.constants.custom_model or self.current_model}"
+            ]
 
-            OpenCoreBuilderMenu = input('Please select an option: ')
-
-            if OpenCoreBuilderMenu=="1":
-                AutoBuilderMenu=True
-                while AutoBuilderMenu:
-                    os.system('clear')
-                    print(header)
-                    print("      Building OpenCore for model: %s" % BuildOpenCore.current_model)
-                    print(header)
-                    print("")
-                    print("The current working directory:")
-                    print ("    %s" % Versions.current_path)
-                    print("")
-                    BuildOpenCore.BuildEFI()
-                    BuildOpenCore.BuildGUI()
-                    BuildOpenCore.BuildSMBIOS()
-                    BuildOpenCore.SavePlist()
-                    BuildOpenCore.CleanBuildFolder()
-                    print("")
-                    print("Your OpenCore EFI has been built at:")
-                    print("    %s" % Versions.opencore_path_done)
-                    print("")
-                    AutoBuilderMenu = input("Press any key to return to previous menu: ")
-                    if AutoBuilderMenu=="1":
-                        print("Returning to previous menu...")
-                        AutoBuilderMenu=False
-                        OpenCoreBuilderMenu=False
-            elif OpenCoreBuilderMenu=="2":
-                print("\n Returning to main menu...")
-                OpenCoreBuilderMenu=False
-                MainMenu=True
+            if (self.constants.custom_model or self.current_model) not in ModelArray.SupportedSMBIOS:
+                in_between = [
+                    'Your model is not supported by this patcher!',
+                    '',
+                    'If you plan to create the USB for another machine, please select the "Change Model" option in the menu.'
+                ]
+            elif not self.constants.custom_model and self.current_model in ("MacPro3,1", "iMac7,1") and \
+                    "SSE4.1" not in subprocess.run("sysctl machdep.cpu.features".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode():
+                in_between = [
+                    'Your model requires a CPU upgrade to a CPU supporting SSE4.1+ to be supported by this patcher!',
+                    '',
+                    f'If you plan to create the USB for another {self.current_model} with SSE4.1+, please select the "Change Model" option in the menu.'
+                ]
+            elif self.constants.custom_model in ("MacPro3,1", "iMac7,1"):
+                in_between = ["This model is supported",
+                              "However please ensure the CPU has been upgraded to support SSE4.1+"
+                              ]
             else:
-                print("\n Not Valid Choice Try again")
-                OpenCoreBuilderMenu = True
+                in_between = ["This model is supported"]
+
+            menu = utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
+
+            options = ([["Build OpenCore", self.build_opencore]] if ((self.constants.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) else []) + [
+                ["Install OpenCore to USB/internal drive", self.install_opencore],
+                ["Change Model", self.change_model],
+                ["Credits", self.credits]
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+        print("Bye")
 
 
-    elif MainMenu=="2":
-        print("\n Not yet implemented")
-        OpenCoreInstallerMenu=True
-        while OpenCoreInstallerMenu:
-            os.system('clear')
-
-            print(header)
-            print("        Install OpenCore to drive")
-            print(header)
-            print("")
-            print("   1.  Install to USB/internal drive")
-            print("   2.  Return to main menu")
-            print("")
-
-            OpenCoreInstallerMenu = input('Please select an option: ')
-
-            if OpenCoreInstallerMenu=="1":
-                os.system('clear')
-                if os.path.exists(Versions.opencore_path_done):
-                    print("Found OpenCore in Build Folder")
-                    BuildOpenCore.ListDiskutil()
-                    BuildOpenCore.MoveOpenCore()
-
-                else:
-                    print("OpenCore folder missing!")
-                    print("Please build OpenCore first")
-                    print("")
-                OpenCoreInstallerMenu = input("Press any key to exit: ")
-                if OpenCoreInstallerMenu=="1":
-                    print("Returning to main menu...")
-                    OpenCoreInstallerMenu=False
-            elif OpenCoreInstallerMenu=="2":
-                print("\n Returning to main menu...")
-                OpenCoreInstallerMenu=False
-                MainMenu=True
-            else:
-                print("\n Not Valid Choice Try again")
-                OpenCoreInstallerMenu = True
-
-    elif MainMenu=="3":
-        SMBIOSMenu=True
-        while SMBIOSMenu:
-            os.system('clear')
-
-            print(header)
-            print("        Enter a new SMBIOS")
-            print(header)
-            print("")
-            print("  Tip: Run this command on the machine to find the SMBIOS")
-            print("")
-            print("  system_profiler SPHardwareDataType | grep 'Model Identifier'")
-            print("")
-            SMBIOSOption = input('Please enter the SMBIOS of your machine (Press enter to exit): ')
-            if SMBIOSOption == "":
-                print("Exiting...")
-                SMBIOSMenu=False
-                MainMenu=True
-            else:
-                print("")
-                print("  New SMBIOS: %s" % SMBIOSOption)
-                print("")
-                SMBIOSMenuYN = input("Is this correct? (y/n)")
-                if SMBIOSMenuYN in {"y", "Y", "yes", "Yes"}:
-                    SMBIOSMenu=False
-                    BuildOpenCore.current_model = SMBIOSOption
-                    MainMenu=True
-                    CustomSMBIOS=True
-    elif MainMenu=="4":
-        CreditMenu=True
-        while CreditMenu:
-            os.system('clear')
-
-            print(header)
-            print("                    Credits")
-            print(header)
-            print("")
-            print(" Many thanks to the following:")
-            print("")
-            print("  - Acidanthera:  OpenCore, kexts and other tools")
-            print("  - DhinakG:      Writing and maintaining this Patcher")
-            print("  - Khronokernel: Writing and maintaining this Patcher")
-            print("  - Syncretic:    AAAMouSSE and telemetrap")
-            print("  - Slice:        VoodooHDA")
-            print("")
-            CreditMenu = input(" Press any key to exit: ")
-            print("Returning to main menu...")
-            CreditMenu=False
-            MainMenu=True
-
-    elif MainMenu=="5":
-        print("\n Closing program...")
-        sys.exit(1)
-    else:
-        print("\n Not Valid Choice Try again")
-        MainMenu=True
+OpenCoreLegacyPatcher().main_menu()
