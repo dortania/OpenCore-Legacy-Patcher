@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 
-import subprocess
+import subprocess, sys, time
 
 from Resources import build, ModelArray, Constants, utilities
 
@@ -88,7 +88,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
 
             response = menu.start()
 
-        print("Bye")
+        if getattr(sys, "frozen", False):
+            subprocess.run("""osascript -e 'tell application "Terminal" to close first window' & exit""", shell=True)
 
 
 OpenCoreLegacyPatcher().main_menu()

@@ -30,3 +30,10 @@ exe = EXE(pyz,
           upx_exclude=[],
           runtime_tmpdir=None,
           console=True )
+app = BUNDLE(exe,
+         name='OpenCore-Patcher.app',
+         icon="OC-Patcher.icns",
+         bundle_identifier=None,
+         info_plist={
+             "CFBundleExecutable": "MacOS/Launcher"
+         })
