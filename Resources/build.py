@@ -129,62 +129,7 @@ class BuildOpenCore:
             Path(self.constants.map_contents_folder).mkdir()
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
-            self.new_map_ls = Path(self.constants.map_contents_folder) / Path(f"Info.plist")
-            self.map_config = plistlib.load(Path(self.new_map_ls).open("rb"))
-
-            # TODO: Set check as global variable
-            if self.model in ModelArray.MacBookAir61:
-                print("- Spoofing to MacBookAir6,1")
-                spoofed_map = "MacBookAir6,1"
-            elif self.model in ModelArray.MacBookAir62:
-                print("- Spoofing to MacBookAir6,2")
-                spoofed_map = "MacBookAir6,2"
-            elif self.model in ModelArray.MacBookPro111:
-                print("- Spoofing to MacBookPro11,1")
-                spoofed_map = "MacBookPro11,1"
-            elif self.model in ModelArray.MacBookPro113:
-                print("- Spoofing to MacBookPro11,3")
-                spoofed_map = "MacBookPro11,3"
-            elif self.model in ModelArray.Macmini71:
-                print("- Spoofing to Macmini7,1")
-                spoofed_map = "Macmini7,1"
-            elif self.model in ModelArray.iMac151:
-                print("- Spoofing to iMac15,1")
-                spoofed_map = "iMac15,1"
-            elif self.model in ModelArray.iMac144:
-                print("- Spoofing to iMac14,4")
-                spoofed_map = "iMac14,4"
-            elif self.model in ModelArray.MacPro71:
-                print("- Spoofing to MacPro7,1")
-                spoofed_map = "MacPro7,1"
-            self.map_config["IOKitPersonalities_x86_64"][self.model]["model"] = spoofed_map
-            if self.model in ModelArray.EHCI:
-                model_EHCI = f"{self.model}-EHCI"
-                self.map_config["IOKitPersonalities_x86_64"][model_EHCI]["model"] = spoofed_map
-            if self.model in ModelArray.EHC1:
-                model_EHC1 = f"{self.model}-EHC1"
-                self.map_config["IOKitPersonalities_x86_64"][model_EHC1]["model"] = spoofed_map
-            if self.model in ModelArray.EHC2:
-                model_EHC2 = f"{self.model}-EHC2"
-                self.map_config["IOKitPersonalities_x86_64"][model_EHC2]["model"] = spoofed_map
-            if self.model in ModelArray.OHC1:
-                model_OHC1 = f"{self.model}-OHC1"
-                model_OHC2 = f"{self.model}-OHC2"
-                self.map_config["IOKitPersonalities_x86_64"][model_OHC1]["model"] = spoofed_map
-                self.map_config["IOKitPersonalities_x86_64"][model_OHC2]["model"] = spoofed_map
-            if self.model in ModelArray.IHEHC1:
-                model_IHEHC1 = f"{self.model}-InternalHub-EHC1"
-                model_IHEHC1IH = f"{self.model}-InternalHub-EHC1-InternalHub"
-                self.map_config["IOKitPersonalities_x86_64"][model_IHEHC1]["model"] = spoofed_map
-                self.map_config["IOKitPersonalities_x86_64"][model_IHEHC1IH]["model"] = spoofed_map
-            if self.model in ModelArray.IHEHC2:
-                model_IHEHC2 = f"{self.model}-InternalHub-EHC2"
-                self.map_config["IOKitPersonalities_x86_64"][model_IHEHC2]["model"] = spoofed_map
-            if self.model in ModelArray.IH:
-                model_IH = f"{self.model}-InternalHub"
-                self.map_config["IOKitPersonalities_x86_64"][model_IH]["model"] = spoofed_map
-            plistlib.dump(self.map_config, Path(self.new_map_ls).open("wb"), sort_keys=True)
-
+        
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera"
@@ -205,33 +150,93 @@ class BuildOpenCore:
         if self.model in ModelArray.MacBookAir61:
             print("- Spoofing to MacBookAir6,1")
             spoofed_model = "MacBookAir6,1"
+            spoofed_board = "Mac-35C1E88140C3E6CF"
         elif self.model in ModelArray.MacBookAir62:
             print("- Spoofing to MacBookAir6,2")
             spoofed_model = "MacBookAir6,2"
+            spoofed_board = "Mac-7DF21CB3ED6977E5"
         elif self.model in ModelArray.MacBookPro111:
             print("- Spoofing to MacBookPro11,1")
             spoofed_model = "MacBookPro11,1"
+            spoofed_board = "Mac-189A3D4F975D5FFC"
         elif self.model in ModelArray.MacBookPro113:
             print("- Spoofing to MacBookPro11,3")
             spoofed_model = "MacBookPro11,3"
+            spoofed_board = "Mac-2BD1B31983FE1663"
         elif self.model in ModelArray.Macmini71:
             print("- Spoofing to Macmini7,1")
             spoofed_model = "Macmini7,1"
+            spoofed_board = "Mac-35C5E08120C7EEAF"
         elif self.model in ModelArray.iMac151:
             print("- Spoofing to iMac15,1")
             spoofed_model = "iMac15,1"
+            spoofed_board = "Mac-42FD25EABCABB274"
         elif self.model in ModelArray.iMac144:
             print("- Spoofing to iMac14,4")
             spoofed_model = "iMac14,4"
+            spoofed_board = "Mac-81E3E92DD6088272"
         elif self.model in ModelArray.MacPro71:
             print("- Spoofing to MacPro7,1")
             spoofed_model = "MacPro7,1"
+            spoofed_board = "Mac-27AD2F918AE68F61"
         macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         macserial_output = macserial_output.stdout.decode().strip().split(" | ")
-        self.config["PlatformInfo"]["Generic"]["SystemProductName"] = spoofed_model
-        self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
-        self.config["PlatformInfo"]["Generic"]["MLB"] = macserial_output[1]
-        self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
+
+        
+
+        # Setup menu
+        smbios_mod = True
+        while smbios_mod == True:
+            print("Use original or generate new serials")
+            print("For new users, we recommend use originals(ie. y)")
+            smbios_mod = input("Use original serials?(y, n): ")
+
+            if smbios_mod in {"y", "Y", "yes", "Yes"}:
+                spoofed_model = self.model
+                self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = spoofed_board
+            elif smbios_mod in {"n", "N", "no", "No"}:
+                self.config["PlatformInfo"]["Automatic"] = True
+                self.config["PlatformInfo"]["UpdateDataHub"] = True
+                self.config["PlatformInfo"]["UpdateNVRAM"] = True
+                self.config["PlatformInfo"]["Generic"]["SystemProductName"] = spoofed_model
+                self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
+                self.config["PlatformInfo"]["Generic"]["MLB"] = macserial_output[1]
+                self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
+            else:
+                smbios_mod = True
+
+        # USB Map
+        usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Maps/Universal/Info.plist")
+        self.new_map_ls = Path(self.constants.map_contents_folder) / Path(f"Info.plist")
+        self.map_config = plistlib.load(Path(self.new_map_ls).open("rb"))
+
+        self.map_config["IOKitPersonalities_x86_64"][self.model]["model"] = spoofed_model
+        if self.model in ModelArray.EHCI:
+            model_EHCI = f"{self.model}-EHCI"
+            self.map_config["IOKitPersonalities_x86_64"][model_EHCI]["model"] = spoofed_model
+        if self.model in ModelArray.EHC1:
+            model_EHC1 = f"{self.model}-EHC1"
+            self.map_config["IOKitPersonalities_x86_64"][model_EHC1]["model"] = spoofed_model
+        if self.model in ModelArray.EHC2:
+            model_EHC2 = f"{self.model}-EHC2"
+            self.map_config["IOKitPersonalities_x86_64"][model_EHC2]["model"] = spoofed_model
+        if self.model in ModelArray.OHC1:
+            model_OHC1 = f"{self.model}-OHC1"
+            model_OHC2 = f"{self.model}-OHC2"
+            self.map_config["IOKitPersonalities_x86_64"][model_OHC1]["model"] = spoofed_model
+            self.map_config["IOKitPersonalities_x86_64"][model_OHC2]["model"] = spoofed_model
+        if self.model in ModelArray.IHEHC1:
+            model_IHEHC1 = f"{self.model}-InternalHub-EHC1"
+            model_IHEHC1IH = f"{self.model}-InternalHub-EHC1-InternalHub"
+            self.map_config["IOKitPersonalities_x86_64"][model_IHEHC1]["model"] = spoofed_model
+            self.map_config["IOKitPersonalities_x86_64"][model_IHEHC1IH]["model"] = spoofed_model
+        if self.model in ModelArray.IHEHC2:
+            model_IHEHC2 = f"{self.model}-InternalHub-EHC2"
+            self.map_config["IOKitPersonalities_x86_64"][model_IHEHC2]["model"] = spoofed_model
+        if self.model in ModelArray.IH:
+            model_IH = f"{self.model}-InternalHub"
+            self.map_config["IOKitPersonalities_x86_64"][model_IH]["model"] = spoofed_model
+        plistlib.dump(self.map_config, Path(self.new_map_ls).open("wb"), sort_keys=True)
 
     @staticmethod
     def get_item_by_kv(iterable, key, value):
