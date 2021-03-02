@@ -30,6 +30,8 @@ class Constants:
         self.current_path = Path(__file__).parent.parent.resolve()
         self.payload_path = self.current_path / Path("payloads")
 
+        self.custom_model: str = None
+        self.custom_mxm_gpu: str = None
     # Payload Location
     # OpenCore
     @property

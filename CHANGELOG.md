@@ -7,6 +7,8 @@
 - Increment binaries
     - OpenCore cbd2fa3(0.6.7 release)
     - WhateverGreen 2e19d1b(1.4.8 release)
+- Rework SMBIOS allowing both original and custom serials(Should resolve all iMessage issues)
+- Support upgraded GPU detection in iMac10,x-12,x
 
 ## 0.0.10
 - Increment binaries

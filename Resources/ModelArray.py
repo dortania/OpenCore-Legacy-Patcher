@@ -711,3 +711,51 @@ IHEHC2 = [
 IH = [
     "MacPro6,1"
 ]
+
+upgradableMXMGPUs = [
+    "iMac10,1"
+    "iMac11,1",
+    "iMac11,2",
+    "iMac11,3",
+    "iMac12,1",
+    "iMac12,2",
+    "Xserve3,1",
+]
+
+# Reference: https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/
+NVIDIAMXMGPUs = [
+    "0x12b9",#Quadro K610M
+    "0x0ff6",#Quadro K1100M
+    "0x11fc",#Quadro K2100M 
+    "0x0ffc",#Quadro K1000M 
+    "0x0ffb",#Quadro K2000M 
+    "0x11b6",#Quadro K3100M 
+    "0x11b7",#Quadro K4100M 
+    "0x11bc",#Quadro K5000M 
+    "0x11b8",#Quadro K5100M 
+    "0x11e1",#GTX 765M
+    "0x11e2",#GTX 765M 
+    "0x11e0",#GTX 770M
+    "0x119e",#GTX 780M Mac Edition
+    "0x119e",#GTX 780M
+    "0x119f",#GTX 880M
+    "0x119a",#GTX 860M
+    "0x1392",#GTX 860M
+    "0x1199",#GTX 870M
+    "0x11a9",#GTX 870M
+    "0x731f",
+]
+
+AMDMXMGPUs = [
+    "0x67EF",#AMD RX 460
+    "0x67e8",#AMD WX 4130/WX 4150 
+    "0x67e0",#AMD WX 4170 
+    "0x67c0",#AMD WX 7100
+    "0x731f",
+]
+
+nativeWifi = [
+    "0x43ba",#BCM43602
+    "0x43a3",#BCM4350
+    "0x43a0",#BCM4360
+]

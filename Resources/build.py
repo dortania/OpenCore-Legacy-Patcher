@@ -137,6 +137,28 @@ class BuildOpenCore:
         if self.model in ModelArray.HiDPIpicker:
             print("- Setting HiDPI picker")
             self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["UIScale"] = binascii.unhexlify("02")
+        
+        # Check GPU Vendor
+        if self.constants.custom_model != "None":
+            #current_gpu: str = subprocess.run("system_profiler SPDisplaysDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+            #current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
+            #current_gpud = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Device ID"))][0]
+            current_gpuv = "NVIDIA (0x10de)"
+            current_gpud = "0x11a9"
+            print(f"- Detected GPU: {current_gpuv} {current_gpud}")
+            if (current_gpuv == "AMD (0x1002)") & (current_gpud in ModelArray.AMDMXMGPUs):
+                self.constants.custom_mxm_gpu = True
+                print("- Adding AMD DRM patches")
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=80 unfairgva=1"
+            elif (current_gpuv == "NVIDIA (0x10de)") & (current_gpud in ModelArray.NVIDIAMXMGPUs):
+                self.constants.custom_mxm_gpu = True
+                print("- Adding Brightness Control patches")
+                if self.model in ["iMac11,1", "iMac11,2", "iMac11,3"]:
+                    backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
+                    self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
+                elif self.model in ["iMac12,1", "iMac12,2"]:
+                    backlight_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
+                    self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
 
         # Add OpenCanopy
         print("- Adding OpenCanopy GUI")
@@ -168,9 +190,14 @@ class BuildOpenCore:
             spoofed_model = "Macmini7,1"
             spoofed_board = "Mac-35C5E08120C7EEAF"
         elif self.model in ModelArray.iMac151:
-            print("- Spoofing to iMac15,1")
-            spoofed_model = "iMac15,1"
-            spoofed_board = "Mac-42FD25EABCABB274"
+            if self.constants.custom_mxm_gpu == True:
+                print("- Spoofing to iMacPro1,1")
+                spoofed_model = "iMacPro1,1"
+                spoofed_board = "Mac-7BA5B2D9E42DDD94"
+            else:
+                print("- Spoofing to iMac15,1")
+                spoofed_model = "iMac15,1"
+                spoofed_board = "Mac-42FD25EABCABB274"
         elif self.model in ModelArray.iMac144:
             print("- Spoofing to iMac14,4")
             spoofed_model = "iMac14,4"
@@ -198,6 +225,7 @@ class BuildOpenCore:
                 self.config["PlatformInfo"]["Automatic"] = True
                 self.config["PlatformInfo"]["UpdateDataHub"] = True
                 self.config["PlatformInfo"]["UpdateNVRAM"] = True
+                self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
                 self.config["PlatformInfo"]["Generic"]["SystemProductName"] = spoofed_model
                 self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
                 self.config["PlatformInfo"]["Generic"]["MLB"] = macserial_output[1]
