@@ -160,6 +160,9 @@ class BuildOpenCore:
                 self.constants.custom_mxm_gpu = True
                 print("- Adding AMD DRM patches")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=80 unfairgva=1"
+                if self.model in ["iMac12,1", "iMac12,2"]:
+                    print("- Disabling unsupported iGPU")
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
             elif (self.constants.current_gpuv == "NVIDIA (0x10de)") & (self.constants.current_gpud in ModelArray.NVIDIAMXMGPUs):
                 self.constants.custom_mxm_gpu = True
                 print("- Adding Brightness Control patches")
@@ -171,6 +174,8 @@ class BuildOpenCore:
                 elif self.model in ["iMac12,1", "iMac12,2"]:
                     backlight_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
                     self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
+                    print("- Disabling unsupported iGPU")
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
 
         # Add OpenCanopy
         print("- Adding OpenCanopy GUI")

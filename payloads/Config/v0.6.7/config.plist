@@ -172,15 +172,7 @@
 	<key>DeviceProperties</key>
 	<dict>
 		<key>Add</key>
-		<dict>
-			<key>#PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)</key>
-			<dict>
-				<key>device-id</key>
-				<data>ukMAAA==</data>
-				<key>compatible</key>
-				<string>pci14e4,43ba</string>
-			</dict>
-		</dict>
+		<dict/>
 		<key>Delete</key>
 		<dict/>
 	</dict>
