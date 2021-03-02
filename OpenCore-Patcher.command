@@ -6,8 +6,6 @@ import subprocess, sys, time
 
 from Resources import build, ModelArray, Constants, utilities
 
-PATCHER_VERSION = "0.0.11"
-
 
 class OpenCoreLegacyPatcher():
     def __init__(self):

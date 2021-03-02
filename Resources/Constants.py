@@ -25,6 +25,7 @@ class Constants:
         self.voodoohda_version = "296"
         self.restrictevents_version = "1.0.0"
         self.piixata_version = "1.0.0"
+        self.backlight_version = "1.0.0"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -32,6 +33,8 @@ class Constants:
 
         self.custom_model: str = None
         self.custom_mxm_gpu: str = None
+        self.current_gpuv: str = None
+        self.current_gpud: str = None
     # Payload Location
     # OpenCore
     @property
@@ -78,6 +81,8 @@ class Constants:
     def voodoohda_path(self): return self.payload_kexts_path / Path(f"Audio/VoodooHDA-v{self.voodoohda_version}.zip")
     @property
     def piixata_path(self): return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-v{self.piixata_version}.zip")
+    @property
+    def backlight_path(self): return self.payload_kexts_path / Path(f"Misc/AppleBacklightFixup-v{self.backlight_version}.zip")
 
     # Build Location
     @property

@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.0.12
+- Convert OpenCore-Patcher binary to OpenCore-Patcher.app
+- Add Backlight patches for modded Nvidia GPUs in iMac10,x-12,x
 
 ## 0.0.11
 - Re-add OpenCore GUI

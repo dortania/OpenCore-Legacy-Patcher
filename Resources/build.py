@@ -153,19 +153,21 @@ class BuildOpenCore:
         # Check GPU Vendor
         if self.constants.custom_model == "None":
             current_gpu: str = subprocess.run("system_profiler SPDisplaysDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-            current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
-            current_gpud = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Device ID"))][0]
-            print(f"- Detected GPU: {current_gpuv} {current_gpud}")
-            if (current_gpuv == "AMD (0x1002)") & (current_gpud in ModelArray.AMDMXMGPUs):
+            self.constants.current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
+            self.constants.current_gpud = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Device ID"))][0]
+            print(f"- Detected GPU: {self.constants.current_gpuv} {self.constants.current_gpud}")
+            if (self.constants.current_gpuv == "AMD (0x1002)") & (self.constants.current_gpud in ModelArray.AMDMXMGPUs):
                 self.constants.custom_mxm_gpu = True
                 print("- Adding AMD DRM patches")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=80 unfairgva=1"
-            elif (current_gpuv == "NVIDIA (0x10de)") & (current_gpud in ModelArray.NVIDIAMXMGPUs):
+            elif (self.constants.current_gpuv == "NVIDIA (0x10de)") & (self.constants.current_gpud in ModelArray.NVIDIAMXMGPUs):
                 self.constants.custom_mxm_gpu = True
                 print("- Adding Brightness Control patches")
                 if self.model in ["iMac11,1", "iMac11,2", "iMac11,3"]:
                     backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
                     self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
+                    shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
+                    self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
                 elif self.model in ["iMac12,1", "iMac12,2"]:
                     backlight_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
                     self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
@@ -200,7 +202,12 @@ class BuildOpenCore:
             spoofed_model = "Macmini7,1"
             spoofed_board = "Mac-35C5E08120C7EEAF"
         elif self.model in ModelArray.iMac151:
-            if self.constants.custom_mxm_gpu == True:
+            # Check for upgraded GPUs on iMacs
+            if (self.constants.current_gpuv == "AMD (0x1002)") & (self.constants.current_gpud in ModelArray.AMDMXMGPUs) & (self.constants.custom_model == "None"):
+                print("- Spoofing to iMacPro1,1")
+                spoofed_model = "iMacPro1,1"
+                spoofed_board = "Mac-7BA5B2D9E42DDD94"
+            elif (self.constants.current_gpuv == "NVIDIA (0x10de)") & (self.constants.current_gpud in ModelArray.NVIDIAMXMGPUs) & (self.constants.custom_model == "None"):
                 print("- Spoofing to iMacPro1,1")
                 spoofed_model = "iMacPro1,1"
                 spoofed_board = "Mac-7BA5B2D9E42DDD94"
@@ -244,7 +251,6 @@ class BuildOpenCore:
                 smbios_mod = True
 
         # USB Map
-        usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Maps/Universal/Info.plist")
         self.new_map_ls = Path(self.constants.map_contents_folder) / Path(f"Info.plist")
         self.map_config = plistlib.load(Path(self.new_map_ls).open("rb"))
 
