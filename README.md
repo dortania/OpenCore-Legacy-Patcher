@@ -30,6 +30,10 @@ To use, simply:
 | :--- | :--- |
 | ![](images/first-run.png) | ![](images/build-efi.png) |
 
+  * Note: When the patcher ask you to if you want to use original serials, we recommend doing so. To determine yourself if you want:
+    * Original: Mac is nearly identical to pre-patcher, with only minor changes in SMBIOS. Ideal configuration for iServices to work correctly
+	* Custom: Rebuilds SMBIOS table to Mac you're spoofing, generally recommended when troubleshooting such as APFS support missing in the installer
+
 6. Run `Install OpenCore to USB/internal drive`
 
 | Select Drive | Select EFI/FAT32 Partition |
