@@ -5,6 +5,7 @@ Here are some common errors users may experience while using this patcher:
 * [Stuck on `This version of Mac OS X is not supported on this platform`](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
+* [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
@@ -21,3 +22,14 @@ Reminder that once this is done, you'll need to select OpenCore in the boot pick
 ## Infinite Recovery OS Booting
 
 With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates work correctly and reliably with Big Sur. However this installs NVRAM variables that will confuse your Mac if not running with OpenCore. To resolve, simply uninstall OpenCore and [reset NVRAM](https://support.apple.com/en-mide/HT201255).
+
+* Note: Machines with modded root volumes will also result in infinite recovery until integrity is restored
+
+## Reboot when entering Hibernation (`Sleep Wake Failure`)
+
+Currently the patcher does not support hibernation for many machines, we recommend disabling hibernation for now:
+
+```sh
+sudo pmset -a hibernatemode 0
+```
+

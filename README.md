@@ -16,6 +16,8 @@ Note: Only clean-installs and upgrades are supported, installs already patched w
 
 * You can however reinstall macOS with this patcher and retain your original data
 
+Note 2: Currently OpenCore Legacy Patcher only supports macOS 11, Big Sur installs. For older OSes, please use [Dosdude1's patchers](http://dosdude1.com)
+
 ## How to use
 
 To use, simply:
@@ -23,7 +25,7 @@ To use, simply:
 1. Ensure your hardware is compatible(See [Supported SMBIOS](/docs/MODELS.md))
 2. Download and build macOS Installer
 3. Download the latest release: [OpenCore Legacy Patcher Releases](https://github.com/dortania/Opencore-Legacy-Patcher/releases)
-4. Run the `OpenCore-Patcher` binary
+4. Run the `OpenCore-Patcher.app`
 5. Run `Build OpenCore`(if building for another machine, please select `Change Model`)
 
 | First Run | Build EFI |
@@ -60,6 +62,15 @@ To remove OpenCore is actually quite simply:
 2. Reset NVRAM
   * [Reset NVRAM or PRAM on your Mac](https://support.apple.com/HT204063)
   
-Know that if you are on Big Sur when you remove the EFI folder, your Mac will no longer boot and show the prohibited symbol. Be ready to install an older version of macOS before you uninstall Open Core.
+Know that if you are on Big Sur when you remove the EFI folder, your Mac will no longer boot and show the prohibited symbol. Be ready to install an older version of macOS before you uninstall OpenCore.
+
+## Patcher Warnings
+
+Since this patcher tricks macOS into thinking you're running a newer Mac, certain functionality may be broken:
+
+* Boot Camp Assistant.app
+  * We recommend running the assistant on a natively supported OS
+* Legacy Windows Booting
+  * Currently OpenCore cannot boot MBR-based installs, so Ivy Bridge and older Machines may not be able to see Windows in OpenCore's Boot Picker
 
 ## [Troubleshooting](/docs/TROUBLESHOOTING.md)
