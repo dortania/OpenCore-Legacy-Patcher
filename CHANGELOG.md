@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.12
+
 ## 0.0.11
 - Re-add OpenCore GUI
 - Rewrite in py3
