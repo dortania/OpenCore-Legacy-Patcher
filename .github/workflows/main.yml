@@ -26,7 +26,7 @@ jobs:
       - run: pyinstaller Opencore-Patcher.spec
       - run: ./after_pyinstaller.sh
 
-      - run: cd dist; zip ../OpenCore-Patcher.zip OpenCore-Patcher; zip  -r../OpenCore-Patcher.app.zip OpenCore-Patcher.app
+      - run: cd dist; zip ../OpenCore-Patcher.zip OpenCore-Patcher; zip -r ../OpenCore-Patcher.app.zip OpenCore-Patcher.app
 
       - name: Upload Binary to Artifacts
         uses: actions/upload-artifact@v2
