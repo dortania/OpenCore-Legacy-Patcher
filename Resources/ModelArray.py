@@ -15,7 +15,6 @@ SupportedSMBIOS = [
     "MacBookAir5,1",
     "MacBookAir5,2",
     # MacBook Pro
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -73,7 +72,6 @@ MissingSSE42 = [
     "MacBookAir2,1",
     "MacBookAir3,1",
     "MacBookAir3,2",
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -128,7 +126,6 @@ EthernetNvidia = [
     "iMac10,1"
 ]
 EthernetMarvell = [
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "iMac7,1",
     "iMac8,1"
@@ -152,7 +149,6 @@ EthernetBroadcom = [
 ## Wifi patches
 
 WifiAtheros = [
-    "MacBookPro3,1",
     "iMac10,1",
     "iMac11,1",
     "iMac11,2",
@@ -251,7 +247,6 @@ LegacyAudio = [
     "MacBookAir3,2",
     "MacBookAir4,1",
     "MacBookAir4,2",
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -293,7 +288,6 @@ LegacyGPU = [
     "MacBookAir3,2",
     "MacBookAir4,1",
     "MacBookAir4,2",
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -329,7 +323,6 @@ LegacyHID = [
     "MacBook7,1",
     "MacBookAir2,1",
     "MacBookAir3,1",
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -429,7 +422,6 @@ MacBookPro111 = [
 # MacBook Pro 15" and 17"
 
 MacBookPro113 = [
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -525,7 +517,6 @@ XacBookAir = [
 ]
 
 XacBookPro = [
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -576,7 +567,6 @@ EHC1 = [
     "MacBookAir4,2",
     "MacBookAir5,1",
     "MacBookAir5,2",
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -630,7 +620,6 @@ EHC2 = [
     "MacBookAir4,2",
     "MacBookAir5,1",
     "MacBookAir5,2",
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -682,7 +671,6 @@ OHC1 = [
     "MacBookAir3,2",
     "MacBookAir5,1",
     "MacBookAir5,2",
-    "MacBookPro3,1",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -756,4 +744,8 @@ nativeWifi = [
     "ba430000",#BCM43602
     "a3430000",#BCM4350
     "a0430000",#BCM4360
+]
+
+nvidiaHDEF = [
+    "MacBook6,1",#PciRoot(0x0)/Pci(0x8,0x0)
 ]

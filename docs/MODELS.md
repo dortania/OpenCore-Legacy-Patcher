@@ -50,8 +50,8 @@ The below table will list all supported and unsupported functions of the patcher
 | MacBookPro1,2 | ^^ | ^^ | ^^ |
 | MacBookPro2,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | MacBookPro2,2 | Late 2006 | ^^ | ^^ |
-| MacBookPro3,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented(yet) |
-| MacBookPro4,1 | Early 2008 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented(yet)<br/>- No Wifi Patches implemented(yet) |
+| MacBookPro3,1 | Mid-2007 | ^^ | - Requires SSE4.1 CPU |
+| MacBookPro4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented(yet)<br/>- No Wifi Patches implemented(yet) |
 | MacBookPro5,1 | Late 2008 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented(yet) |
 | MacBookPro5,2 | Early 2009 | ^^ | ^^ |
 | MacBookPro5,3 | Mid-2009 | ^^ | ^^ |
