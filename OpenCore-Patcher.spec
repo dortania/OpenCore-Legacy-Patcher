@@ -35,5 +35,7 @@ app = BUNDLE(exe,
          icon="OC-Patcher.icns",
          bundle_identifier=None,
          info_plist={
-             "CFBundleExecutable": "MacOS/Launcher"
+             "CFBundleShortVersionString": "0.0.12",
+             "CFBundleExecutable": "MacOS/Launcher",
+             "NSHumanReadableCopyright": "Copyright 2020-2021 Dortania"
          })

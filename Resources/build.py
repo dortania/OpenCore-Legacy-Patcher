@@ -66,10 +66,10 @@ class BuildOpenCore:
         self.config = plistlib.load(Path(self.constants.plist_path).open("rb"))
 
         # Set revision in config
-        self.config["#Revision"]["Build-Date"] = f"{date.today()}"
-        self.config["#Revision"]["OpenCore-Version"] = f"{self.constants.opencore_version} {self.constants.opencore_commit}"
+        self.config["#Revision"]["Build-Version"] = f"{self.constants.patcher_version} - {date.today()}"
+        self.config["#Revision"]["OpenCore-Version"] = f"{self.constants.opencore_version} - {self.constants.opencore_commit}"
         self.config["#Revision"]["Original-Model"] = self.model
-        self.config["#Revision"]["Patcher-Version"] = self.constants.patcher_version
+        #self.config["#Revision"]["Patcher-Version"] = self.constants.patcher_version
 
         for name, version, path, check in [
             # Essential kexts
@@ -228,10 +228,9 @@ class BuildOpenCore:
             print("- Spoofing to MacPro7,1")
             spoofed_model = "MacPro7,1"
             spoofed_board = "Mac-27AD2F918AE68F61"
+        self.config["#Revision"]["Spoofed-Model"] = spoofed_model
         macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         macserial_output = macserial_output.stdout.decode().strip().split(" | ")
-
-        
 
         # Setup menu
         smbios_mod = True
