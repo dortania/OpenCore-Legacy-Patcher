@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.14
+
 ## 0.0.13
 - Add CPUFriend support to resolve X86PlatformPlugin clashes
     - (1.2.3 c388a62 release)
