@@ -1046,11 +1046,7 @@
 		<key>ConnectDrivers</key>
 		<true/>
 		<key>Drivers</key>
-		<array>
-			<string>#NvmExpressDxe.efi</string>
-			<string>#OpenCanopy.efi</string>
-			<string>OpenRuntime.efi</string>
-		</array>
+		<array/>
 		<key>Input</key>
 		<dict>
 			<key>KeyFiltering</key>
