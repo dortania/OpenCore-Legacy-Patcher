@@ -669,8 +669,6 @@ OHC1 = [
     "MacBookAir2,1",
     "MacBookAir3,1",
     "MacBookAir3,2",
-    "MacBookAir5,1",
-    "MacBookAir5,2",
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -746,6 +744,18 @@ nativeWifi = [
     "a0430000",#BCM4360
 ]
 
-nvidiaHDEF = [
-    "MacBook6,1",#PciRoot(0x0)/Pci(0x8,0x0)
+X86PP = [
+    "MacBookAir5,1",
+    "MacBookAir5,2",
+    "MacBookPro9,1",
+    "MacBookPro9,2",
+    "MacBookPro10,1",
+    "MacBookPro10,2",
+    "Macmini6,1",
+    "Macmini6,2",
+    "iMac13,1",
+    "iMac13,2",
+    "iMac14,1",
+    "iMac14,2",
+    "iMac14,3",
 ]

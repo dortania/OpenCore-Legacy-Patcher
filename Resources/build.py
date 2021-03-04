@@ -69,7 +69,6 @@ class BuildOpenCore:
         self.config["#Revision"]["Build-Version"] = f"{self.constants.patcher_version} - {date.today()}"
         self.config["#Revision"]["OpenCore-Version"] = f"{self.constants.opencore_version} - {self.constants.opencore_commit}"
         self.config["#Revision"]["Original-Model"] = self.model
-        #self.config["#Revision"]["Patcher-Version"] = self.constants.patcher_version
 
         for name, version, path, check in [
             # Essential kexts
@@ -80,6 +79,7 @@ class BuildOpenCore:
             ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model in ModelArray.DualSocket),
             ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: self.model in ModelArray.SSEEmulator),
             ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: self.model in ModelArray.MissingSSE42),
+            ("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path, lambda: self.model in ModelArray.X86PP),
             # Ethernet patches
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
@@ -92,7 +92,6 @@ class BuildOpenCore:
             self.enable_kext(name, version, path, check)
 
         # WiFi patches
-
         wifi_devices = plistlib.loads(subprocess.run(f"ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
         wifi_devices = wifi_devices[0]
@@ -123,6 +122,14 @@ class BuildOpenCore:
                     property_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
                 print("- Applying fake ID for WiFi")
                 self.config["DeviceProperties"]["Add"][property_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
+        
+        # CPUFriend
+        pp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/PlatformPlugin/{self.model}/Info.plist")
+        if self.model in ModelArray.X86PP:
+            Path(self.constants.pp_kext_folder).mkdir()
+            Path(self.constants.pp_contents_folder).mkdir()
+            shutil.copy(pp_map_path, self.constants.pp_contents_folder)
+            self.get_kext_by_bundle_path("CPUFriendDataProvider.kext")["Enabled"] = True
 
         # HID patches
         if self.model in ModelArray.LegacyHID:
@@ -134,6 +141,7 @@ class BuildOpenCore:
             print("- Adding SSDT-CPBG.aml")
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
 
+        # USB Map
         usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Maps/Universal/Info.plist")
         if usb_map_path.exists():
             print(f"- Adding USB-Map.kext")
@@ -142,10 +150,12 @@ class BuildOpenCore:
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
         
+        # AGPM Patch
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera"
 
+        # HiDPI OpenCanopy and FileVault
         if self.model in ModelArray.HiDPIpicker:
             print("- Setting HiDPI picker")
             self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["UIScale"] = binascii.unhexlify("02")
@@ -254,7 +264,7 @@ class BuildOpenCore:
             else:
                 smbios_mod = True
 
-        # USB Map
+        # USB Map Patching
         self.new_map_ls = Path(self.constants.map_contents_folder) / Path(f"Info.plist")
         self.map_config = plistlib.load(Path(self.new_map_ls).open("rb"))
 

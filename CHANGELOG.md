@@ -1,5 +1,10 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.13
+- Add CPUFriend support to resolve X86PlatformPlugin clashes
+    - (1.2.3 c388a62 release)
+- Fix crash with MacBookAir5,x
+
 ## 0.0.12
 - Convert OpenCore-Patcher binary to OpenCore-Patcher.app
 - Add Backlight patches for modded Nvidia GPUs in iMac10,x-12,x
@@ -10,17 +15,17 @@
 - Rewrite in py3
 - Add OpenCore-Patcher binary for releases avoiding local python requirement
 - Increment binaries
-    - OpenCore cbd2fa3(0.6.7 release)
-    - WhateverGreen 2e19d1b(1.4.8 release)
+    - OpenCore cbd2fa3 (0.6.7 release)
+    - WhateverGreen 2e19d1b (1.4.8 release)
 - Rework SMBIOS allowing both original and custom serials(Should resolve all iMessage issues)
 - Support upgraded GPU detection in iMac10,x-12,x
 - Add Wifi card upgrade detection
 
 ## 0.0.10
 - Increment binaries
-    - OpenCore 43f5339(0.6.6 release)
-    - Lilu d107554(1.5.1 release)
-    - WhateverGreen 9e53d8a(1.4.7 release)
+    - OpenCore 43f5339 (0.6.6 release)
+    - Lilu d107554 (1.5.1 release)
+    - WhateverGreen 9e53d8a (1.4.7 release)
 - Add IDE support to MacPro3,1
 - Set SecureBootModel to iMac Pro(should aid in booting older OSes with OpenCore)
 - Update MacBookPro SMBIOS

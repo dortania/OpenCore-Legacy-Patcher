@@ -26,6 +26,7 @@ class Constants:
         self.restrictevents_version = "1.0.0"
         self.piixata_version = "1.0.0"
         self.backlight_version = "1.0.0"
+        self.cpufriend_version = "1.2.3"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -83,6 +84,8 @@ class Constants:
     def piixata_path(self): return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-v{self.piixata_version}.zip")
     @property
     def backlight_path(self): return self.payload_kexts_path / Path(f"Misc/AppleBacklightFixup-v{self.backlight_version}.zip")
+    @property
+    def cpufriend_path(self): return self.payload_kexts_path / Path(f"Acidanthera/CPUFriend-v{self.cpufriend_version}.zip")
 
     # Build Location
     @property
@@ -108,6 +111,10 @@ class Constants:
     def map_kext_folder(self): return self.kexts_path / Path("USB-Map.kext")
     @property
     def map_contents_folder(self): return self.map_kext_folder / Path("Contents")
+    @property
+    def pp_kext_folder(self): return self.kexts_path / Path("CPUFriendDataProvider.kext")
+    @property
+    def pp_contents_folder(self): return self.pp_kext_folder / Path("Contents")
 
     # Tools
     @property
