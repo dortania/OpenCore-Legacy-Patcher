@@ -192,6 +192,8 @@ class BuildOpenCore:
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         #self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi"]
+        self.config["UEFI"]["Quirks"]["RequestBootVarRouting"] = False
+
 
     def set_smbios(self):
         spoofed_model = self.model
