@@ -92,11 +92,10 @@ class BuildOpenCore:
             self.enable_kext(name, version, path, check)
 
         # WiFi patches
-        wifi_devices = plistlib.loads(subprocess.run(f"ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
-        wifi_devices = wifi_devices[0]
-        if (self.constants.custom_model == "None") & (self.hexswap(binascii.hexlify(wifi_devices["vendor-id"]).decode()[:4]) in ModelArray.nativeWifi):
-            print("- Skipping wifi patches")
+        if not self.constants.custom_model and wifi_devices and self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4]) in ModelArray.nativeWifi:
+            print("- Found supported WiFi card, skipping wifi patches")
         else:
             if self.model in ModelArray.WifiAtheros:
                 self.enable_kext("IO80211HighSierra.kext", self.constants.io80211high_sierra_version, self.constants.io80211high_sierra_path)
