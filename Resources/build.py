@@ -211,6 +211,7 @@ class BuildOpenCore:
             self.config["DeviceProperties"]["Delete"][hdef_path] = ["layout-id"]
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" alcid={alcid}"
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -liludbgall"
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " msgbuf=1048576"
 
 
         # HID patches
