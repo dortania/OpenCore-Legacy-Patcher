@@ -4,6 +4,7 @@
 - Add CPUFriend support to resolve X86PlatformPlugin clashes
     - (1.2.3 c388a62 release)
 - Fix crash with MacBookAir5,x
+- Fix hibernation support
 
 ## 0.0.12
 - Convert OpenCore-Patcher binary to OpenCore-Patcher.app

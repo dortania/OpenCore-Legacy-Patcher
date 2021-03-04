@@ -191,10 +191,8 @@ class BuildOpenCore:
         shutil.rmtree(self.constants.resources_path, onerror=rmtree_handler)
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
-        #self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi"]
-        #self.config["UEFI"]["Quirks"]["RequestBootVarRouting"] = False
+        # Hibernation Patch
         self.config["Booter"]["Quirks"]["DiscardHibernateMap"] = True
-
 
     def set_smbios(self):
         spoofed_model = self.model
