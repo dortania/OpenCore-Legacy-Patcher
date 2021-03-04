@@ -84,8 +84,6 @@ class BuildOpenCore:
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
             ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
-            # Legacy audio
-            ("VoodooHDA.kext", self.constants.voodoohda_version, self.constants.voodoohda_path, lambda: self.model in ModelArray.LegacyAudio),
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
         ]:
@@ -130,6 +128,90 @@ class BuildOpenCore:
             Path(self.constants.pp_contents_folder).mkdir()
             shutil.copy(pp_map_path, self.constants.pp_contents_folder)
             self.get_kext_by_bundle_path("CPUFriendDataProvider.kext")["Enabled"] = True
+        
+        # AppleALC
+        if self.model in ModelArray.LegacyAudio:
+            self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
+            if self.model in ModelArray.nvidiaHDEF:
+                hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)"
+            else:
+                hdef_path = "PciRoot(0x0)/Pci(0x1b,0x0)"
+            
+            # Assign layout IDs, please end me
+            #CS4206
+            if self.model == "MacBook6,1":
+                alcid = 1
+            elif self.model == "MacBook7,1":
+                alcid = 31
+            elif self.model == "MacBookAir3,1":
+                alcid = 99
+            elif self.model == "MacBookAir3,1":
+                alcid = 61
+            elif self.model == "MacBookAir4,1":
+                alcid = 98
+            elif self.model == "MacBookAir4,2":
+                alcid = 91
+            elif self.model == "MacBookPro5,3":
+                alcid = 75
+            elif self.model == "MacBookPro5,4":
+                alcid = 76
+            elif self.model == "MacBookPro5,5":
+                alcid = 77
+            elif self.model == "MacBookPro6,1":
+                alcid = 71
+            elif self.model == "MacBookPro6,2":
+                alcid = 11
+            elif self.model == "MacBookPro7,1":
+                alcid = 13
+            elif self.model == "MacBookPro8,1":
+                alcid = 28
+            elif self.model == "MacBookPro8,2":
+                alcid = 29
+            elif self.model == "MacBookPro8,3":
+                alcid = 39
+            elif self.model == "iMac9,1":# 20"
+                alcid = 67
+            elif self.model == "iMac10,1":# 21.5"
+                alcid = 78 # TODO: Add check for 27" (alcid=79)
+            elif self.model == "iMac11,1":
+                alcid = 81
+            elif self.model == "iMac11,2":
+                alcid = 18
+            elif self.model == "iMac11,3":
+                alcid = 24
+            elif self.model == "iMac12,1":
+                alcid = 9
+            elif self.model == "iMac12,2":
+                alcid = 32
+            elif self.model == "Macmini5,1":
+                alcid = 33
+            elif self.model == "Macmini5,2":
+                alcid = 35
+            #ALC885
+            elif self.model == "MacBook5,1":
+                alcid = 63
+            elif self.model == "MacBook5,2":
+                alcid = 74
+            elif self.model == "MacBookAir2,1":
+                alcid = 53
+            elif self.model == "MacBookPro5,1":
+                alcid = 64
+            elif self.model == "MacBookPro5,2":
+                alcid = 70
+            elif self.model == "Macmini3,1":
+                alcid = 65
+            elif self.model == "iMac7,1":
+                alcid = 48
+            elif self.model == "iMac8,1":
+                alcid = 62
+            elif self.model == "MacPro3,1":
+                alcid = 13
+            else:
+                alcid = 1
+            self.config["DeviceProperties"]["Delete"][hdef_path] = ["layout-id"]
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" alcid={alcid}"
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -liludbgall"
+
 
         # HID patches
         if self.model in ModelArray.LegacyHID:
