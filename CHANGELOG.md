@@ -5,6 +5,7 @@
     - (1.2.3 c388a62 release)
 - Fix crash with MacBookAir5,x
 - Fix hibernation support
+- Remove Wireless patches for BCM4328/4321(14e4:4328) due to boot issues
 
 ## 0.0.12
 - Convert OpenCore-Patcher binary to OpenCore-Patcher.app
