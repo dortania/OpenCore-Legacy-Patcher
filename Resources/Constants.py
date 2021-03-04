@@ -36,6 +36,11 @@ class Constants:
         self.custom_mxm_gpu: str = None
         self.current_gpuv: str = None
         self.current_gpud: str = None
+
+        # Debug Settings
+        self.opencore_debug = False
+        self.kext_debug = False
+        self.verbose_debug = True
     # Payload Location
     # OpenCore
     @property

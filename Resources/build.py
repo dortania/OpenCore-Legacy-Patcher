@@ -193,6 +193,14 @@ class BuildOpenCore:
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
         # Hibernation Patch
         self.config["Booter"]["Quirks"]["DiscardHibernateMap"] = True
+        #DEBUG Settings
+        if self.constants.verbose_debug == True:
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -v"
+        if self.constants.kext_debug == True:
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -liludbgall"
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " msgbuf=1048576"
+        if self.constants.opencore_debug == True:
+            self.config["Misc"]["Debug"]["Target"] = 67
 
     def set_smbios(self):
         spoofed_model = self.model
