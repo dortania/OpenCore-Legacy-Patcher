@@ -192,7 +192,7 @@ class BuildOpenCore:
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
         # Hibernation Patch
-        self.config["Booter"]["Quirks"]["DiscardHibernateMap"] = True
+        #self.config["Booter"]["Quirks"]["DiscardHibernateMap"] = True
         self.config["Booter"]["Quirks"]["AvoidRuntimeDefrag"] = True
         #DEBUG Settings
         if self.constants.verbose_debug == True:
