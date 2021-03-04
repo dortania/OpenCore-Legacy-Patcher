@@ -34,6 +34,12 @@ Tip: Run the following command on the target machine to find the model identifie
 system_profiler SPHardwareDataType | grep 'Model Identifier'
     """)
         self.constants.custom_model = input("Please enter the model identifier of the target machine: ").strip()
+        if self.constants.custom_model not in ModelArray.SupportedSMBIOS:
+            print(f"{self.constants.custom_model} is not a valid SMBIOS Identifier!")
+            print_models = input("Print list of valid options? (y/n)")
+            if print_models in {"y", "Y", "yes", "Yes"}:
+                print("\n".join(ModelArray.SupportedSMBIOS))
+                input("Press any key to continue...")
 
     def credits(self):
         utilities.TUIOnlyPrint(["Credits"], "Press [Enter] to go back.\n",
