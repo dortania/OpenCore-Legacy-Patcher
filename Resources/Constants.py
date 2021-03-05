@@ -10,7 +10,7 @@ class Constants:
     def __init__(self):
         self.patcher_version = "0.0.14"
         self.opencore_commit = "cbd2fa3"
-        self.opencore_version = "0.6.7"
+        self.opencore_version = "0.6.8"
         self.lilu_version = "1.5.1"
         self.whatevergreen_version = "1.4.8"
         self.airportbcrmfixup_version = "2.1.2"
