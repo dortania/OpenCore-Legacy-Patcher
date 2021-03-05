@@ -193,7 +193,7 @@ class BuildOpenCore:
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
         # Hibernation Patch
         #self.config["Booter"]["Quirks"]["DiscardHibernateMap"] = True
-        self.config["Booter"]["Quirks"]["AvoidRuntimeDefrag"] = True
+        #self.config["Booter"]["Quirks"]["AvoidRuntimeDefrag"] = True
         #DEBUG Settings
         if self.constants.verbose_debug == True:
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -v"
