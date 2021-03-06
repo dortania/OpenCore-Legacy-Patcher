@@ -27,6 +27,7 @@ class Constants:
         self.piixata_version = "1.0.0"
         self.backlight_version = "1.0.0"
         self.cpufriend_version = "1.2.3"
+        self.nightshift_version = "1.1.0"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -91,6 +92,8 @@ class Constants:
     def backlight_path(self): return self.payload_kexts_path / Path(f"Misc/AppleBacklightFixup-v{self.backlight_version}.zip")
     @property
     def cpufriend_path(self): return self.payload_kexts_path / Path(f"Acidanthera/CPUFriend-v{self.cpufriend_version}.zip")
+    @property
+    def nightshift_path(self): return self.payload_kexts_path / Path(f"Misc/NightShiftEnabler-v{self.nightshift_version}.zip")
 
     # Build Location
     @property

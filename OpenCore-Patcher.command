@@ -49,7 +49,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
   - Khronokernel:\tWriting and maintaining this patcher
   - DhinakG:\t\tWriting and maintaining this patcher
   - Syncretic:\t\tAAAMouSSE and telemetrap
-  - Slice:\t\tVoodooHDA"""]).start()
+  - Slice:\t\tVoodooHDA
+  - cdf:\t\tNightShiftEnabler"""]).start()
 
     def main_menu(self):
         response = None
