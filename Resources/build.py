@@ -205,6 +205,7 @@ class BuildOpenCore:
         #DEBUG Settings
         if self.constants.verbose_debug == True:
             print("- Enabling Verbose boot")
+            self.config["Kernel"]["Quirks"]["PanicNoKextDump"] = True
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -v"
         if self.constants.kext_debug == True:
             print("- Enabling DEBUG Kexts")

@@ -6,6 +6,7 @@ Here are some common errors users may experience while using this patcher:
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
 * [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
+* [Booting with a non-flashed GPU](#booting-with-a-non-flashed-gpu)
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
@@ -27,9 +28,16 @@ With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates 
 
 ## Reboot when entering Hibernation (`Sleep Wake Failure`)
 
-Currently the patcher does not support hibernation for many machines, we recommend disabling hibernation for now:
+Resolved in OpenCore-Legacy-Patcher v0.0.14
+
+## Booting with a non-flashed GPU
+
+For Mac Pro, Xserve and iMac users with non-flashed GPUs, you can still easily boot OpenCore and view the entire boot process. To do so, make sure SIP is disabled and run the following:
 
 ```sh
-sudo pmset -a hibernatemode 0
+sudo bless --verbose --file /Volumes/VOLNAME/EFI/OC/OpenCore.efi --folder /Volumes/VOLNAME/EFI/OC --setBoot
 ```
 
+* Note you will need to replace `VOLNAME` with the Volume name of your USB or hard drive with OpenCore
+
+Once you boot OpenCore for the first time, LauncherOption will install itself as the top boot priority making OpenCore always launch. Combined with `RequestBootVar`, all boot options must go through OpenCore ensuring seamless usage even with OS installation and updates.
