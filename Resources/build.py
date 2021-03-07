@@ -95,7 +95,9 @@ class BuildOpenCore:
         # WiFi patches
         wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
-        if not self.constants.custom_model and wifi_devices and self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4]) in ModelArray.nativeWifi:
+        if self.constants.wifi_build == True:
+            print("- Skipping Wifi patches on request")
+        elif not self.constants.custom_model and wifi_devices and self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4]) in ModelArray.nativeWifi:
             print("- Found supported WiFi card, skipping wifi patches")
         else:
             if self.model in ModelArray.WifiAtheros:
@@ -161,7 +163,9 @@ class BuildOpenCore:
             self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["UIScale"] = binascii.unhexlify("02")
         
         # Check GPU Vendor
-        if self.constants.custom_model == "None":
+        if self.constants.metal_build == True:
+            print("- Adding Metal GPU patches on request")
+        elif self.constants.custom_model == "None":
             current_gpu: str = subprocess.run("system_profiler SPDisplaysDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
             self.constants.current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
             self.constants.current_gpud = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Device ID"))][0]
@@ -235,7 +239,11 @@ class BuildOpenCore:
             spoofed_board = "Mac-35C5E08120C7EEAF"
         elif self.model in ModelArray.iMac151:
             # Check for upgraded GPUs on iMacs
-            if (self.constants.current_gpuv == "AMD (0x1002)") & (self.constants.current_gpud in ModelArray.AMDMXMGPUs) & (self.constants.custom_model == "None"):
+            if self.constants.metal_build == True:
+                print("- Spoofing to iMacPro1,1")
+                spoofed_model = "iMacPro1,1"
+                spoofed_board = "Mac-7BA5B2D9E42DDD94"
+            elif (self.constants.current_gpuv == "AMD (0x1002)") & (self.constants.current_gpud in ModelArray.AMDMXMGPUs) & (self.constants.custom_model == "None"):
                 print("- Spoofing to iMacPro1,1")
                 spoofed_model = "iMacPro1,1"
                 spoofed_board = "Mac-7BA5B2D9E42DDD94"

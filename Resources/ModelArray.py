@@ -1,6 +1,6 @@
 # Lists all models and required patches
 
-SupportedSMBIOS = [
+SupportedSMBIOS11 = [
     # MacBook
     "MacBook5,1",
     "MacBook5,2",
@@ -60,7 +60,11 @@ SupportedSMBIOS = [
     "MacPro5,1",
     # Xserve
     "Xserve3,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
+]
+
+SupportedSMBIOS12 = [
+
 ]
 
 ## CPU patches
@@ -87,12 +91,12 @@ MissingSSE42 = [
     "iMac9,1",
     "iMac10,1",
     "MacPro3,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 SSEEmulator = [
     "MacPro3,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 DualSocket = [
@@ -100,7 +104,7 @@ DualSocket = [
     "MacPro4,1",
     "MacPro5,1",
     "Xserve3,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 pciSSDT = [
@@ -109,7 +113,7 @@ pciSSDT = [
     "iMac11,1",
     "iMac11,2",
     "iMac11,3",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 ## Ethernet patches
@@ -129,13 +133,13 @@ EthernetNvidia = [
     "Macmini4,1",
     "iMac9,1",
     "iMac10,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 EthernetMarvell = [
     "MacBookPro4,1",
     "iMac7,1",
     "iMac8,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 EthernetBroadcom = [
     "MacBookPro6,1",
@@ -151,7 +155,7 @@ EthernetBroadcom = [
     "iMac11,3",
     "iMac12,1",
     "iMac12,2",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 ## Wifi patches
@@ -165,7 +169,7 @@ WifiAtheros = [
     "iMac12,2",
     "MacPro3,1",
     "MacPro4,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 WifiBCM94328 = [
@@ -173,7 +177,7 @@ WifiBCM94328 = [
     "MacBookPro4,1",
     "iMac7,1",
     "iMac8,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 WifiBCM94322 = [
@@ -191,7 +195,7 @@ WifiBCM94322 = [
     "MacBookPro5,4",
     "MacBookPro5,5",
     "MacBookPro7,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 WifiBCM943224 = [
@@ -201,7 +205,7 @@ WifiBCM943224 = [
     "MacBookPro6,2",
     "Macmini3,1",
     "Macmini4,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 WifiBCM94331 = [
@@ -241,7 +245,7 @@ WifiBCM94331 = [
     "iMac13,1",      # PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)
     "iMac13,2",      # PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)
     "MacPro5,1",     # PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 ## Audio
@@ -283,7 +287,7 @@ LegacyAudio = [
     "iMac12,1",
     "iMac12,2",
     "MacPro3,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 ## GPU
@@ -324,7 +328,7 @@ LegacyGPU = [
     "iMac11,3",
     "iMac12,1",
     "iMac12,2",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 LegacyHID = [
@@ -348,14 +352,14 @@ LegacyHID = [
     "iMac9,1",
     "iMac10,1",
     "MacPro3,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 NVMePatch = [
     "MacPro3,1",
     "MacPro4,1",
     "Xserve3,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 SidecarPatch = [
@@ -372,7 +376,7 @@ SidecarPatch = [
     "iMac14,1",
     "iMac14,2",
     "iMac14,3",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 DualGPUPatch = [
@@ -393,18 +397,18 @@ DualGPUPatch = [
     "iMac13,2",
     "iMac14,2",
     "iMac14,3",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 HiDPIpicker = [
     "MacBookPro10,1",
     "MacBookPro10,2",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 IDEPatch = [
     "MacPro3,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 # 11" Air
@@ -491,7 +495,7 @@ MacPro71 = [
     "MacPro4,1",
     "MacPro5,1",
     "Xserve3,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 # Maps
@@ -724,7 +728,7 @@ upgradableMXMGPUs = [
     "iMac12,1",
     "iMac12,2",
     "Xserve3,1",
-    "iMacProMax1,1"
+    "Dortania1,1"
 ]
 
 # Reference: https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/

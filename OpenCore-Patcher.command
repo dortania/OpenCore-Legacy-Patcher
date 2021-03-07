@@ -35,8 +35,10 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
     """)
         self.constants.custom_model = input("Please enter the model identifier of the target machine: ").strip()
         if self.constants.custom_model not in ModelArray.SupportedSMBIOS:
-            print(f"{self.constants.custom_model} is not a valid SMBIOS Identifier!")
-            print_models = input("Print list of valid options? (y/n)")
+            print(f"""
+        {self.constants.custom_model} is not a valid SMBIOS Identifier for macOS {self.constants.os_support}!
+            """)
+            print_models = input(f"Print list of valid options for macOS {self.constants.os_support}? (y/n)")
             if print_models in {"y", "Y", "yes", "Yes"}:
                 print("\n".join(ModelArray.SupportedSMBIOS))
                 input("Press any key to continue...")
@@ -54,6 +56,10 @@ Current target:\t{self.constants.os_support}
             print("Unsupported entry")
         else:
             self.constants.os_support = temp_os_support
+        if temp_os_support == 11.0:
+            ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS11
+        elif temp_os_support == 12.0:
+            ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS12
     
     def change_verbose(self):
         utilities.cls()
@@ -88,6 +94,39 @@ Current target:\t{self.constants.os_support}
             self.constants.kext_debug = False
         else:
             print("Invalid option")
+    
+    def change_metal(self):
+        utilities.cls()
+        utilities.header(["Assume Metal GPU Always in iMac"])
+        print("""This is for iMacs that have upgraded Metal GPUs, otherwise
+Patcher assumes based on stock configuration (ie. iMac10,x-12,x)
+
+Note: Patcher will detect whether hardware has been upgraded regardless, this
+option is for those patching on a different machine.
+        """)
+        change_kext_menu = input("Enable Metal GPU build algorithm?(y/n): ")
+        if change_kext_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.metal_build = True
+        elif change_kext_menu in {"n", "N", "no", "No"}:
+            self.constants.metal_build = False
+        else:
+            print("Invalid option")
+    
+    def change_wifi(self):
+        utilities.cls()
+        utilities.header(["Assume Upgraded Wifi Always"])
+        print("""This is for Macs with upgraded wifi cards(ie. BCM94360/2)
+
+Note: Patcher will detect whether hardware has been upgraded regardless, this
+option is for those patching on a different machine.
+        """)
+        change_kext_menu = input("Enable Upgraded Wifi build algorithm?(y/n): ")
+        if change_kext_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.wifi_build = True
+        elif change_kext_menu in {"n", "N", "no", "No"}:
+            self.constants.wifi_build = False
+        else:
+            print("Invalid option")
 
     def patcher_settings(self):
         response = None
@@ -98,10 +137,12 @@ Current target:\t{self.constants.os_support}
             menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 # TODO: Enable setting OS target when more OSes become supported by the patcher
-                #[f"Change OS version:\t\tCurrently macOS {self.constants.os_support}", self.change_os],
-                [f"Enable Verbose Mode:\tCurrently {self.constants.verbose_debug}", self.change_verbose],
-                [f"Enable OpenCore DEBUG:\tCurrently {self.constants.opencore_debug}", self.change_oc],
-                [f"Enable Kext DEBUG:\t\tCurrently {self.constants.kext_debug}", self.change_kext]
+                #[f"Change OS version:\t\t\tCurrently macOS {self.constants.os_support}", self.change_os],
+                [f"Enable Verbose Mode:\t\tCurrently {self.constants.verbose_debug}", self.change_verbose],
+                [f"Enable OpenCore DEBUG:\t\tCurrently {self.constants.opencore_debug}", self.change_oc],
+                [f"Enable Kext DEBUG:\t\t\tCurrently {self.constants.kext_debug}", self.change_kext],
+                [f"Assume Metal GPU Always:\t\tCurrently {self.constants.kext_debug}", self.change_metal],
+                [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.kext_debug}", self.change_wifi],
             ]
 
             for option in options:
@@ -125,10 +166,12 @@ Current target:\t{self.constants.os_support}
 
     def main_menu(self):
         response = None
+        ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS11
         while not (response and response == -1):
             title = [
                 f"OpenCore Legacy Patcher v{self.constants.patcher_version}",
-                f"Selected Model: {self.constants.custom_model or self.current_model}"
+                f"Selected Model: {self.constants.custom_model or self.current_model}",
+                f"Target OS: macOS {self.constants.os_support}"
             ]
 
             if (self.constants.custom_model or self.current_model) not in ModelArray.SupportedSMBIOS:
