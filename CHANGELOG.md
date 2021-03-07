@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.15
+
 ## 0.0.14
 - Enable ThirdPartyDrives to aid with hibernation on 3rd party SATA drives
 - Increment OpenCore 7bb41aa (0.6.8 rolling, 2021-03-06)
