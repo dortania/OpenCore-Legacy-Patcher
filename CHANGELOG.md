@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.0.15
+- Add user-configurable OpenCore DEBUG builds
 
 ## 0.0.14
 - Enable ThirdPartyDrives to aid with hibernation on 3rd party SATA drives

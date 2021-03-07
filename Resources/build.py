@@ -56,7 +56,7 @@ class BuildOpenCore:
             shutil.rmtree(self.constants.opencore_release_folder, onerror=rmtree_handler)
 
         print()
-        print("- Adding OpenCore v" + self.constants.opencore_version)
+        print(f"- Adding OpenCore v{self.constants.opencore_version} {self.constants.opencore_build}")
         shutil.copy(self.constants.opencore_zip_source, self.constants.build_path)
         zipfile.ZipFile(self.constants.opencore_zip_copied).extractall(self.constants.build_path)
 
@@ -67,7 +67,7 @@ class BuildOpenCore:
 
         # Set revision in config
         self.config["#Revision"]["Build-Version"] = f"{self.constants.patcher_version} - {date.today()}"
-        self.config["#Revision"]["OpenCore-Version"] = f"{self.constants.opencore_version} - {self.constants.opencore_commit}"
+        self.config["#Revision"]["OpenCore-Version"] = f"{self.constants.opencore_version} - {self.constants.opencore_build} - {self.constants.opencore_commit}"
         self.config["#Revision"]["Original-Model"] = self.model
 
         for name, version, path, check in [

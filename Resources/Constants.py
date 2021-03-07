@@ -40,6 +40,7 @@ class Constants:
 
         # Patcher Settings
         self.opencore_debug = False
+        self.opencore_build = "RELEASE"
         self.kext_debug = False
         self.verbose_debug = True
         self.os_support = 11.0
@@ -49,7 +50,7 @@ class Constants:
     # Payload Location
     # OpenCore
     @property
-    def opencore_zip_source(self): return self.payload_path / Path(f"OpenCore/OpenCore-v{self.opencore_version}.zip")
+    def opencore_zip_source(self): return self.payload_path / Path(f"OpenCore/OpenCore-{self.opencore_build}-v{self.opencore_version}.zip")
     @property
     def plist_template(self): return self.payload_path / Path(f"Config/v{self.opencore_version}/config.plist")
 
@@ -103,9 +104,9 @@ class Constants:
     @property
     def build_path(self): return self.current_path / Path("Build-Folder/")
     @property
-    def opencore_release_folder(self): return self.build_path / Path(f"OpenCore-v{self.opencore_version}")
+    def opencore_release_folder(self): return self.build_path / Path(f"OpenCore-{self.opencore_build}-v{self.opencore_version}")
     @property
-    def opencore_zip_copied(self): return self.build_path / Path(f"OpenCore-v{self.opencore_version}.zip")
+    def opencore_zip_copied(self): return self.build_path / Path(f"OpenCore-{self.opencore_build}-v{self.opencore_version}.zip")
 
     @property
     def oc_folder(self): return self.opencore_release_folder / Path("EFI/OC/")

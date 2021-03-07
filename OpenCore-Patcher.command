@@ -72,8 +72,10 @@ Current target:\t{self.constants.os_support}
         change_oc_menu = input("Enable OpenCore DEBUG mode(y/n): ")
         if change_oc_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.opencore_debug = True
+            self.constants.opencore_build = "DEBUG"
         elif change_oc_menu in {"n", "N", "no", "No"}:
             self.constants.opencore_debug = False
+            self.constants.opencore_build = "RELEASE"
         else:
             print("Invalid option")
     def change_kext(self):
@@ -98,8 +100,7 @@ Current target:\t{self.constants.os_support}
                 # TODO: Enable setting OS target when more OSes become supported by the patcher
                 #[f"Change OS version:\t\tCurrently macOS {self.constants.os_support}", self.change_os],
                 [f"Enable Verbose Mode:\tCurrently {self.constants.verbose_debug}", self.change_verbose],
-                # TODO: Enable setting OC DEBUG when path handling for DEBUg files is resolved
-                #[f"Enable OpenCore DEBUG:\tCurrently {self.constants.opencore_debug}", self.change_oc],
+                [f"Enable OpenCore DEBUG:\tCurrently {self.constants.opencore_debug}", self.change_oc],
                 [f"Enable Kext DEBUG:\t\tCurrently {self.constants.kext_debug}", self.change_kext]
             ]
 
