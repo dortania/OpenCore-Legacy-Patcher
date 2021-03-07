@@ -32,12 +32,13 @@ Resolved in OpenCore-Legacy-Patcher v0.0.14
 
 ## Booting with a non-flashed GPU
 
-For Mac Pro, Xserve and iMac users with non-flashed GPUs, you can still easily boot OpenCore and view the entire boot process. To do so, make sure SIP is disabled and run the following:
+For Mac Pro, Xserve and iMac users with non-flashed GPUs, you can still easily boot OpenCore and view the entire boot process. To do so, make sure SIP is disabled(to allow NVRAM write access) and run the following:
 
 ```sh
 sudo bless --verbose --file /Volumes/VOLNAME/EFI/OC/OpenCore.efi --folder /Volumes/VOLNAME/EFI/OC --setBoot
 ```
 
 * Note you will need to replace `VOLNAME` with the Volume name of your USB or hard drive with OpenCore
+* Note 2: Once done, you can re-enable SIP
 
 Once you boot OpenCore for the first time, LauncherOption will install itself as the top boot priority making OpenCore always launch. Combined with `RequestBootVar`, all boot options must go through OpenCore ensuring seamless usage even with OS installation and updates.
