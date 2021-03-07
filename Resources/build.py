@@ -202,6 +202,11 @@ class BuildOpenCore:
             print("- Adding UGA to GOP Patch")
             self.config["UEFI"]["ProtocolOverrides"]["GopPassThrough"] = True
 
+        # ThridPartDrives Check
+        if self.model not in ModelArray.NoSATAPatch:
+            print("- Adding SATA Hibernation Patch")
+            self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
+
         #DEBUG Settings
         if self.constants.verbose_debug == True:
             print("- Enabling Verbose boot")

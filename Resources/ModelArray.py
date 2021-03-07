@@ -802,3 +802,15 @@ NightShiftExclude = [
 UGAtoGOP = [
     "MacPro3,1"
 ]
+
+NoSATAPatch = [
+    "MacBookAir5,1",
+    "MacBookAir5,2",
+    "MacBookPro10,1",
+    "MacBookPro10,2",
+    "iMac13,1",
+    "iMac13,2",
+    "iMac14,1",
+    "iMac14,2",
+    "iMac14,3",
+]
