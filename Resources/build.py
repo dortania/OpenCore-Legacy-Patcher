@@ -192,13 +192,22 @@ class BuildOpenCore:
         shutil.rmtree(self.constants.resources_path, onerror=rmtree_handler)
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
+
+        # Add UGA to GOP layer
+        if self.model in ModelArray.UGAtoGOP:
+            print("- Adding UGA to GOP Patch")
+            self.config["UEFI"]["ProtocolOverrides"]["GopPassThrough"] = True
+
         #DEBUG Settings
         if self.constants.verbose_debug == True:
+            print("- Enabling Verbose boot")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -v"
         if self.constants.kext_debug == True:
+            print("- Enabling DEBUG Kexts")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -liludbgall"
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " msgbuf=1048576"
         if self.constants.opencore_debug == True:
+            print("- Enabling DEBUG OpenCore")
             self.config["Misc"]["Debug"]["Target"] = 67
 
     def set_smbios(self):

@@ -5,6 +5,8 @@
 - Increment OpenCore 7bb41aa (0.6.8 rolling, 2021-03-06)
 - Add ForceBooterSignature to resolve hibernation issues
 - Add NightShiftEnabler (1.1.0 release e1639f9)
+- Add user-configurable verbose and debug settings
+- Add GopPassThrough quirk for UGA-based systems
 
 ## 0.0.13
 - Add CPUFriend support to resolve X86PlatformPlugin clashes

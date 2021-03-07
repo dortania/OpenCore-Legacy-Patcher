@@ -794,3 +794,7 @@ NightShiftExclude = [
     "iMac14,2",
     "iMac14,3",
 ]
+
+UGAtoGOP = [
+    "MacPro3,1"
+]

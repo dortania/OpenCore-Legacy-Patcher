@@ -41,6 +41,76 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 print("\n".join(ModelArray.SupportedSMBIOS))
                 input("Press any key to continue...")
 
+    def change_os(self):
+        utilities.cls()
+        utilities.header(["Select Patcher's Target OS"])
+        print(f"""
+Minimum Target:\t{self.constants.min_os_support}
+Maximum Target:\t{self.constants.max_os_support}
+Current target:\t{self.constants.os_support}
+        """)
+        temp_os_support = float(input("Please enter OS target: "))
+        if (self.constants.max_os_support < temp_os_support) or (temp_os_support < self.constants.min_os_support):
+            print("Unsupported entry")
+        else:
+            self.constants.os_support = temp_os_support
+    
+    def change_verbose(self):
+        utilities.cls()
+        utilities.header(["Set Verbose mode"])
+        verbose_menu = input("Enable Verbose mode(y/n): ")
+        if verbose_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.verbose_debug = True
+        elif verbose_menu in {"n", "N", "no", "No"}:
+            self.constants.verbose_debug = False
+        else:
+            print("Invalid option")
+
+    def change_oc(self):
+        utilities.cls()
+        utilities.header(["Set OpenCore DEBUG mode"])
+        change_oc_menu = input("Enable OpenCore DEBUG mode(y/n): ")
+        if change_oc_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.opencore_debug = True
+        elif change_oc_menu in {"n", "N", "no", "No"}:
+            self.constants.opencore_debug = False
+        else:
+            print("Invalid option")
+    def change_kext(self):
+        utilities.cls()
+        utilities.header(["Set Kext DEBUG mode"])
+        change_kext_menu = input("Enable Kext DEBUG mode(y/n): ")
+        if change_kext_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.kext_debug = True
+        elif change_kext_menu in {"n", "N", "no", "No"}:
+            self.constants.kext_debug = False
+        else:
+            print("Invalid option")
+
+    def patcher_settings(self):
+        response = None
+        while not (response and response == -1):
+            title = [
+                "Adjust Patcher Settings"
+            ]
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                # TODO: Enable setting OS target when more OSes become supported by the patcher
+                #[f"Change OS version:\t\tCurrently macOS {self.constants.os_support}", self.change_os],
+                [f"Enable Verbose Mode:\tCurrently {self.constants.verbose_debug}", self.change_verbose],
+                # TODO: Enable setting OC DEBUG when path handling for DEBUg files is resolved
+                #[f"Enable OpenCore DEBUG:\tCurrently {self.constants.opencore_debug}", self.change_oc],
+                [f"Enable Kext DEBUG:\t\tCurrently {self.constants.kext_debug}", self.change_kext]
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+        
+            response = menu.start()
+
+
+            input("Press any key to continue...")
+
     def credits(self):
         utilities.TUIOnlyPrint(["Credits"], "Press [Enter] to go back.\n",
                                ["""Many thanks to the following:
@@ -85,6 +155,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             options = ([["Build OpenCore", self.build_opencore]] if ((self.constants.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) else []) + [
                 ["Install OpenCore to USB/internal drive", self.install_opencore],
                 ["Change Model", self.change_model],
+                ["Patcher Settings", self.patcher_settings],
                 ["Credits", self.credits]
             ]
 

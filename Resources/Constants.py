@@ -38,10 +38,14 @@ class Constants:
         self.current_gpuv: str = None
         self.current_gpud: str = None
 
-        # Debug Settings
+        # Patcher Settings
         self.opencore_debug = False
         self.kext_debug = False
         self.verbose_debug = True
+        self.os_support = 11.0
+        self.min_os_support = 11.0
+        self.max_os_support = 11.0
+
     # Payload Location
     # OpenCore
     @property
