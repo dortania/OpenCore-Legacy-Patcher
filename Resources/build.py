@@ -282,7 +282,9 @@ class BuildOpenCore:
 
             if smbios_mod in {"y", "Y", "yes", "Yes"}:
                 spoofed_model = self.model
+                self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = spoofed_board
                 self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = spoofed_board
+                self.config["PlatformInfo"]["UpdateNVRAM"] = True
             elif smbios_mod in {"n", "N", "no", "No"}:
                 self.config["PlatformInfo"]["Automatic"] = True
                 self.config["PlatformInfo"]["UpdateDataHub"] = True

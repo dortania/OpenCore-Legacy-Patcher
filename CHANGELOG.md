@@ -4,6 +4,7 @@
 - Add user-configurable OpenCore DEBUG builds
 - Add user-configurable Wifi and GPU patches
 - Fix ThirdPartyDrives model detection
+- Add HW_BID injection to fix boot.efi error
 
 ## 0.0.14
 - Enable ThirdPartyDrives to aid with hibernation on 3rd party SATA drives
