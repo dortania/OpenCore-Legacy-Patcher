@@ -8,7 +8,7 @@ from pathlib import Path
 
 class Constants:
     def __init__(self):
-        self.patcher_version = "0.0.15"
+        self.patcher_version = "0.0.16"
         self.opencore_commit = "7bb41aa - 2021-03-06"
         self.opencore_version = "0.6.8"
         self.lilu_version = "1.5.1"
