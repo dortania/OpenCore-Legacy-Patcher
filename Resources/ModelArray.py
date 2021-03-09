@@ -390,7 +390,6 @@ DualGPUPatch = [
     "MacBookPro8,2",
     "MacBookPro8,3",
     "MacBookPro9,1",
-    "MacBookPro10,1",
     "Macmini5,2",
     "iMac12,1",
     "iMac12,2",
@@ -398,6 +397,10 @@ DualGPUPatch = [
     "iMac14,2",
     "iMac14,3",
     "Dortania1,1"
+]
+
+DualGPUPatchRetina = [
+    "MacBookPro10,1",
 ]
 
 HiDPIpicker = [

@@ -7,6 +7,8 @@
   - Moderate: Update entire SMBIOS, keep original serials
   - Advanced: Update entire SMBIOS, generate new serials
 - Fix crash on MacBookPro4,1
+- Fix External Display Support on MacBookPro10,1
+- Inject Patcher version into NVRAM for easier debugging
 
 ## 0.0.15
 - Add user-configurable OpenCore DEBUG builds

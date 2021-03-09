@@ -23,7 +23,7 @@ Note 2: Currently OpenCore Legacy Patcher only supports macOS 11, Big Sur instal
 To use, simply:
 
 1. Ensure your hardware is compatible(See [Supported SMBIOS](/docs/MODELS.md))
-2. Download and build macOS Installer
+2. [Download and build macOS Installer](./docs/INSTALLER.md)
 3. Download the latest release: [OpenCore Legacy Patcher Releases](https://github.com/dortania/Opencore-Legacy-Patcher/releases)
 4. Run the `OpenCore-Patcher.app`
 5. Run `Build OpenCore`(if building for another machine, please select `Change Model`)

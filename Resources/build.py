@@ -69,6 +69,7 @@ class BuildOpenCore:
         self.config["#Revision"]["Build-Version"] = f"{self.constants.patcher_version} - {date.today()}"
         self.config["#Revision"]["OpenCore-Version"] = f"{self.constants.opencore_version} - {self.constants.opencore_build} - {self.constants.opencore_commit}"
         self.config["#Revision"]["Original-Model"] = self.model
+        self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Version"] = f"{self.constants.patcher_version}"
 
         for name, version, path, check in [
             # Essential kexts
@@ -272,9 +273,7 @@ class BuildOpenCore:
         self.spoofed_model = spoofed_model
         self.spoofed_board = spoofed_board
         self.config["#Revision"]["Spoofed-Model"] = self.spoofed_model
-        macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        self.macserial_output = macserial_output.stdout.decode().strip().split(" | ")
-
+        
         # Setup menu
         def minimal_serial_patch(self):
             self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
@@ -287,14 +286,16 @@ class BuildOpenCore:
             self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
             self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
         def adanced_serial_patch(self):
+            macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            macserial_output = macserial_output.stdout.decode().strip().split(" | ")
             self.config["PlatformInfo"]["Automatic"] = True
             self.config["PlatformInfo"]["UpdateDataHub"] = True
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
             self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
             self.config["PlatformInfo"]["Generic"]["ROM"] = binascii.unhexlify("112233445566")
             self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
-            self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = self.macserial_output[0]
-            self.config["PlatformInfo"]["Generic"]["MLB"] = self.macserial_output[1]
+            self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
+            self.config["PlatformInfo"]["Generic"]["MLB"] = macserial_output[1]
             self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
         
         if self.constants.serial_settings == "Moderate":
