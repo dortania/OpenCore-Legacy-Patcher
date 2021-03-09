@@ -48,6 +48,6 @@ sudo /Applications/Install\ macOS\ Big\ Sur.app/Contents/Resources/createinstall
 
 * Note: You can also replace the `createinstallmedia` path with that of where your installer's located (same idea with the drive name).
 
-* ![](../images/createinstallmedia.png)
+![](../images/createinstallmedia.png)
 
 # Once finished, [return to the README to finish up](../README.md)
