@@ -128,6 +128,30 @@ option is for those patching on a different machine.
         else:
             print("Invalid option")
 
+    def change_serial(self):
+        utilities.cls()
+        utilities.header(["Set SMBIOS Mode"])
+        print("""This section is for setting how OpenCore generates the SMBIOS
+Recommended for adanced users who want control how serials are handled
+
+Valid options:
+
+1. Minimal:\tUse original serials and minimally update SMBIOS
+2. Moderate:\tReplave entire SMBIOS but keep original serials
+3. Advanced:\tReplace entire SMBIOS and generate new serials
+
+Note: For new users we recommend leaving as default(1. Minimal)
+        """)
+        change_serial_menu = input("Set SMBIOS Mode(ie. 1): ")
+        if change_serial_menu == "1":
+            self.constants.serial_settings = "Minimal"
+        elif change_serial_menu == "2":
+            self.constants.serial_settings = "Moderate"
+        elif change_serial_menu == "3":
+            self.constants.serial_settings = "Advanced"
+        else:
+            print("Invalid option")
+
     def patcher_settings(self):
         response = None
         while not (response and response == -1):
@@ -143,15 +167,13 @@ option is for those patching on a different machine.
                 [f"Enable Kext DEBUG:\t\t\tCurrently {self.constants.kext_debug}", self.change_kext],
                 [f"Assume Metal GPU Always:\t\tCurrently {self.constants.kext_debug}", self.change_metal],
                 [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.kext_debug}", self.change_wifi],
+                [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", self.change_serial],
             ]
 
             for option in options:
                 menu.add_menu_option(option[0], function=option[1])
         
             response = menu.start()
-
-
-            input("Press any key to continue...")
 
     def credits(self):
         utilities.TUIOnlyPrint(["Credits"], "Press [Enter] to go back.\n",

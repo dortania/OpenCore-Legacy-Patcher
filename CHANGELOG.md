@@ -1,5 +1,12 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.16
+- Move Serial selection to Patcher Settings
+- Add new SMBIOS patching options:
+  - Minimal:  Only update board ID and BIOSVersion, keep original serials
+  - Moderate: Update entire SMBIOS, keep original serials
+  - Advanced: Update entire SMBIOS, generate new serials
+
 ## 0.0.15
 - Add user-configurable OpenCore DEBUG builds
 - Add user-configurable Wifi and GPU patches

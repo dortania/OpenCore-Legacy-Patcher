@@ -269,36 +269,44 @@ class BuildOpenCore:
             print("- Spoofing to MacPro7,1")
             spoofed_model = "MacPro7,1"
             spoofed_board = "Mac-27AD2F918AE68F61"
-        self.config["#Revision"]["Spoofed-Model"] = spoofed_model
-        macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        macserial_output = macserial_output.stdout.decode().strip().split(" | ")
+        self.spoofed_model = spoofed_model
+        self.spoofed_board = spoofed_board
+        self.config["#Revision"]["Spoofed-Model"] = self.spoofed_model
+        macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.macserial_output = macserial_output.stdout.decode().strip().split(" | ")
 
         # Setup menu
-        smbios_mod = True
-        while smbios_mod == True:
-            print("Use original or generate new serials")
-            print("For new users, we recommend use originals(ie. y)")
-            smbios_mod = input("Use original serials?(y, n): ")
-
-            if smbios_mod in {"y", "Y", "yes", "Yes"}:
-                spoofed_model = self.model
-                self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = spoofed_board
-                self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = spoofed_board
-                self.config["PlatformInfo"]["UpdateNVRAM"] = True
-            elif smbios_mod in {"n", "N", "no", "No"}:
-                self.config["PlatformInfo"]["Automatic"] = True
-                self.config["PlatformInfo"]["UpdateDataHub"] = True
-                self.config["PlatformInfo"]["UpdateNVRAM"] = True
-                self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
-                self.config["PlatformInfo"]["Generic"]["SystemProductName"] = spoofed_model
-                self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
-                self.config["PlatformInfo"]["Generic"]["MLB"] = macserial_output[1]
-                self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
-            else:
-                smbios_mod = True
-
+        def minimal_serial_patch(self):
+            self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
+            self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
+            self.config["PlatformInfo"]["UpdateNVRAM"] = True
+        def moderate_serial_patch(self):
+            self.config["PlatformInfo"]["Automatic"] = True
+            self.config["PlatformInfo"]["UpdateDataHub"] = True
+            self.config["PlatformInfo"]["UpdateNVRAM"] = True
+            self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
+            self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
+        def adanced_serial_patch(self):
+            self.config["PlatformInfo"]["Automatic"] = True
+            self.config["PlatformInfo"]["UpdateDataHub"] = True
+            self.config["PlatformInfo"]["UpdateNVRAM"] = True
+            self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
+            self.config["PlatformInfo"]["Generic"]["ROM"] = binascii.unhexlify("112233445566")
+            self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
+            self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = self.macserial_output[0]
+            self.config["PlatformInfo"]["Generic"]["MLB"] = self.macserial_output[1]
+            self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
+        
+        if self.constants.serial_settings == "Moderate":
+            moderate_serial_patch(self)
+        elif self.constants.serial_settings == "Advanced":
+            adanced_serial_patch(self)
+        else:
+            self.spoofed_model = self.model
+            minimal_serial_patch(self)
+        
         # USB Map Patching
-        self.new_map_ls = Path(self.constants.map_contents_folder) / Path(f"Info.plist")
+        self.new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
         self.map_config = plistlib.load(Path(self.new_map_ls).open("rb"))
 
         self.map_config["IOKitPersonalities_x86_64"][self.model]["model"] = spoofed_model
@@ -382,7 +390,8 @@ class BuildOpenCore:
         print("Your OpenCore EFI has been built at:")
         print(f"    {self.constants.opencore_release_folder}")
         print("")
-        input("Press [Enter] to go back.\n")
+        if self.constants.gui_mode == False:
+            input("Press [Enter] to go back.\n")
 
     def copy_efi(self):
         utilities.cls()

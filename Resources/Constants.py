@@ -48,6 +48,8 @@ class Constants:
         self.max_os_support = 11.0
         self.metal_build = False
         self.wifi_build = False
+        self.gui_mode = False
+        self.serial_settings = "Minimal"
 
     # Payload Location
     # OpenCore
