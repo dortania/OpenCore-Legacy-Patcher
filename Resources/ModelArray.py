@@ -691,7 +691,6 @@ OHC1 = [
     "MacBookAir2,1",
     "MacBookAir3,1",
     "MacBookAir3,2",
-    "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
     "MacBookPro5,3",
