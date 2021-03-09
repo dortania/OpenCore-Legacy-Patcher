@@ -9,6 +9,7 @@
 - Fix crash on MacBookPro4,1
 - Fix External Display Support on MacBookPro10,1
 - Inject Patcher version into NVRAM for easier debugging
+- Add user-configurable ShowPicker
 
 ## 0.0.15
 - Add user-configurable OpenCore DEBUG builds

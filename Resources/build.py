@@ -220,6 +220,13 @@ class BuildOpenCore:
         if self.constants.opencore_debug == True:
             print("- Enabling DEBUG OpenCore")
             self.config["Misc"]["Debug"]["Target"] = 67
+        if self.constants.showpicker == True:
+            print("- Enabling ShowPicker")
+            self.config["Misc"]["Boot"]["ShowPicker"] = True
+        else:
+            print("- Hiding picker and enabling PollAppleHotKeys")
+            self.config["Misc"]["Boot"]["ShowPicker"] = False
+            self.config["Misc"]["Boot"]["PollAppleHotKeys"] = True
 
     def set_smbios(self):
         spoofed_model = self.model

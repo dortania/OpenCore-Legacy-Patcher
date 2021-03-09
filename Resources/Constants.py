@@ -50,6 +50,7 @@ class Constants:
         self.wifi_build = False
         self.gui_mode = False
         self.serial_settings = "Minimal"
+        self.showpicker = True
 
     # Payload Location
     # OpenCore

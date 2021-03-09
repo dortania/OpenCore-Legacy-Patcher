@@ -151,6 +151,20 @@ Note: For new users we recommend leaving as default(1. Minimal)
             self.constants.serial_settings = "Advanced"
         else:
             print("Invalid option")
+    def change_showpicker(self):
+        utilities.cls()
+        utilities.header(["Set OpenCore Picker mode"])
+        print("""By default, OpenCore will show it's boot picker each time on boot up,
+however this can be disabled by default and be shown on command by repeatedly 
+pressing the "Esc" key
+        """)
+        change_kext_menu = input("Show OpenCore Picker by default(y/n): ")
+        if change_kext_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.showpicker = True
+        elif change_kext_menu in {"n", "N", "no", "No"}:
+            self.constants.showpicker = False
+        else:
+            print("Invalid option")
 
     def patcher_settings(self):
         response = None
@@ -168,6 +182,7 @@ Note: For new users we recommend leaving as default(1. Minimal)
                 [f"Assume Metal GPU Always:\t\tCurrently {self.constants.kext_debug}", self.change_metal],
                 [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.kext_debug}", self.change_wifi],
                 [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", self.change_serial],
+                [f"Set Picker Mode:\t\t\tCurrently {self.constants.showpicker}", self.change_showpicker],
             ]
 
             for option in options:
