@@ -6,6 +6,7 @@
   - Minimal:  Only update board ID and BIOSVersion, keep original serials
   - Moderate: Update entire SMBIOS, keep original serials
   - Advanced: Update entire SMBIOS, generate new serials
+- Fix crash on MacBookPro4,1
 
 ## 0.0.15
 - Add user-configurable OpenCore DEBUG builds
