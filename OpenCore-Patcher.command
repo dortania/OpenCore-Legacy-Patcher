@@ -154,7 +154,7 @@ Note: For new users we recommend leaving as default(1. Minimal)
     def change_showpicker(self):
         utilities.cls()
         utilities.header(["Set OpenCore Picker mode"])
-        print("""By default, OpenCore will show it's boot picker each time on boot up,
+        print("""By default, OpenCore will show its boot picker each time on boot up,
 however this can be disabled by default and be shown on command by repeatedly 
 pressing the "Esc" key
         """)
