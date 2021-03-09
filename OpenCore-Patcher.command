@@ -181,8 +181,8 @@ pressing the "Esc" key
                 [f"Enable Kext DEBUG:\t\t\tCurrently {self.constants.kext_debug}", self.change_kext],
                 [f"Assume Metal GPU Always:\t\tCurrently {self.constants.kext_debug}", self.change_metal],
                 [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.kext_debug}", self.change_wifi],
-                [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", self.change_serial],
-                [f"Set Picker Mode:\t\t\tCurrently {self.constants.showpicker}", self.change_showpicker],
+                [f"Set ShowPicker Mode:\t\tCurrently {self.constants.showpicker}", self.change_showpicker],
+                [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", self.change_serial], 
             ]
 
             for option in options:
