@@ -183,6 +183,39 @@ Note: For secuirty reasons, OpenShell will be disabled when Vault is set.
             self.constants.vault = False
         else:
             print("Invalid option")
+    
+    def change_sip(self):
+        utilities.cls()
+        utilities.header(["Set SIP and SecureBootModel"])
+        print("""SIP and SecureBootModel are used to ensure proper OTA functionality, 
+however to patch the root volume both of these must be disabled.
+Only disable is absolutely necessary.
+
+Note: for minor changes, SIP can be adjusted in recovery like normal.
+
+Valid options:
+
+1. Enable Both
+2. Disable SIP only
+3. Disable SecureBootModel Only
+4. Disable Both
+
+        """)
+        change_kext_menu = input("Set SIP and SecureBootModel(ie. 1): ")
+        if change_kext_menu == "1":
+            self.constants.sip_status = True
+            self.constants.secure_status = True
+        elif change_kext_menu == "2":
+            self.constants.sip_status = False
+            self.constants.secure_status = True
+        elif change_kext_menu == "3":
+            self.constants.sip_status = True
+            self.constants.secure_status = False
+        elif change_kext_menu == "4":
+            self.constants.sip_status = False
+            self.constants.secure_status = False
+        else:
+            print("Invalid option")
 
     def patcher_settings(self):
         response = None
@@ -201,6 +234,7 @@ Note: For secuirty reasons, OpenShell will be disabled when Vault is set.
                 [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.kext_debug}", self.change_wifi],
                 [f"Set ShowPicker Mode:\t\tCurrently {self.constants.showpicker}", self.change_showpicker],
                 [f"Set Vault Mode:\t\t\tCurrently {self.constants.vault}", self.change_vault],
+                [f"Set SIP and SecureBootModel:\tSIP: {self.constants.sip_status} SBM: {self.constants.secure_status}", self.change_sip],
                 [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", self.change_serial], 
             ]
 

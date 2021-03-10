@@ -96,7 +96,7 @@ class BuildOpenCore:
         # WiFi patches
         wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
-        if self.constants.wifi_build == True:
+        if self.constants.wifi_build is True:
             print("- Skipping Wifi patches on request")
         elif not self.constants.custom_model and wifi_devices and self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4]) in ModelArray.nativeWifi:
             print("- Found supported WiFi card, skipping wifi patches")
@@ -164,7 +164,7 @@ class BuildOpenCore:
             self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["UIScale"] = binascii.unhexlify("02")
         
         # Check GPU Vendor
-        if self.constants.metal_build == True:
+        if self.constants.metal_build is True:
             print("- Adding Metal GPU patches on request")
         elif self.constants.custom_model == "None":
             current_gpu: str = subprocess.run("system_profiler SPDisplaysDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
@@ -209,29 +209,36 @@ class BuildOpenCore:
             self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
 
         #DEBUG Settings
-        if self.constants.verbose_debug == True:
+        if self.constants.verbose_debug is True:
             print("- Enabling Verbose boot")
             self.config["Kernel"]["Quirks"]["PanicNoKextDump"] = True
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -v"
-        if self.constants.kext_debug == True:
+        if self.constants.kext_debug is True:
             print("- Enabling DEBUG Kexts")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -liludbgall"
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " msgbuf=1048576"
-        if self.constants.opencore_debug == True:
+        if self.constants.opencore_debug is True:
             print("- Enabling DEBUG OpenCore")
             self.config["Misc"]["Debug"]["Target"] = 67
-        if self.constants.showpicker == True:
+        if self.constants.showpicker is True:
             print("- Enabling ShowPicker")
             self.config["Misc"]["Boot"]["ShowPicker"] = True
         else:
             print("- Hiding picker and enabling PollAppleHotKeys")
             self.config["Misc"]["Boot"]["ShowPicker"] = False
             self.config["Misc"]["Boot"]["PollAppleHotKeys"] = True
-        if self.constants.vault == True:
+        if self.constants.vault is True:
             print("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
             self.get_tool_by__path("OpenShell.efi")["Enabled"] = False
-
+        if self.constants.sip_status is False:
+            print("- Disabling SIP")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("FF0F0000")
+            self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"] += ["csr-active-config"]
+        if self.constants.secure_status is False:
+            print("- Disabling SecureBootModel")
+            self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
+        
     def set_smbios(self):
         spoofed_model = self.model
         # TODO: Set check as global variable
@@ -257,7 +264,7 @@ class BuildOpenCore:
             spoofed_board = "Mac-35C5E08120C7EEAF"
         elif self.model in ModelArray.iMac151:
             # Check for upgraded GPUs on iMacs
-            if self.constants.metal_build == True:
+            if self.constants.metal_build is True:
                 print("- Spoofing to iMacPro1,1")
                 spoofed_model = "iMacPro1,1"
                 spoofed_board = "Mac-7BA5B2D9E42DDD94"
@@ -321,32 +328,32 @@ class BuildOpenCore:
         self.new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
         self.map_config = plistlib.load(Path(self.new_map_ls).open("rb"))
 
-        self.map_config["IOKitPersonalities_x86_64"][self.model]["model"] = spoofed_model
+        self.map_config["IOKitPersonalities_x86_64"][self.model]["model"] = self.spoofed_model
         if self.model in ModelArray.EHCI:
-            model_EHCI = f"{self.model}-EHCI"
-            self.map_config["IOKitPersonalities_x86_64"][model_EHCI]["model"] = spoofed_model
+            model_ehci = f"{self.model}-EHCI"
+            self.map_config["IOKitPersonalities_x86_64"][model_ehci]["model"] = self.spoofed_model
         if self.model in ModelArray.EHC1:
-            model_EHC1 = f"{self.model}-EHC1"
-            self.map_config["IOKitPersonalities_x86_64"][model_EHC1]["model"] = spoofed_model
+            model_ehc1 = f"{self.model}-EHC1"
+            self.map_config["IOKitPersonalities_x86_64"][model_ehc1]["model"] = self.spoofed_model
         if self.model in ModelArray.EHC2:
-            model_EHC2 = f"{self.model}-EHC2"
-            self.map_config["IOKitPersonalities_x86_64"][model_EHC2]["model"] = spoofed_model
+            model_ehc2 = f"{self.model}-EHC2"
+            self.map_config["IOKitPersonalities_x86_64"][model_ehc2]["model"] = self.spoofed_model
         if self.model in ModelArray.OHC1:
-            model_OHC1 = f"{self.model}-OHC1"
-            model_OHC2 = f"{self.model}-OHC2"
-            self.map_config["IOKitPersonalities_x86_64"][model_OHC1]["model"] = spoofed_model
-            self.map_config["IOKitPersonalities_x86_64"][model_OHC2]["model"] = spoofed_model
+            model_ohc1 = f"{self.model}-OHC1"
+            model_ohc2 = f"{self.model}-OHC2"
+            self.map_config["IOKitPersonalities_x86_64"][model_ohc1]["model"] = self.spoofed_model
+            self.map_config["IOKitPersonalities_x86_64"][model_ohc2]["model"] = self.spoofed_model
         if self.model in ModelArray.IHEHC1:
-            model_IHEHC1 = f"{self.model}-InternalHub-EHC1"
-            model_IHEHC1IH = f"{self.model}-InternalHub-EHC1-InternalHub"
-            self.map_config["IOKitPersonalities_x86_64"][model_IHEHC1]["model"] = spoofed_model
-            self.map_config["IOKitPersonalities_x86_64"][model_IHEHC1IH]["model"] = spoofed_model
+            model_ihehc1 = f"{self.model}-InternalHub-EHC1"
+            model_ihehc1ih = f"{self.model}-InternalHub-EHC1-InternalHub"
+            self.map_config["IOKitPersonalities_x86_64"][model_ihehc1]["model"] = self.spoofed_model
+            self.map_config["IOKitPersonalities_x86_64"][model_ihehc1ih]["model"] = self.spoofed_model
         if self.model in ModelArray.IHEHC2:
-            model_IHEHC2 = f"{self.model}-InternalHub-EHC2"
-            self.map_config["IOKitPersonalities_x86_64"][model_IHEHC2]["model"] = spoofed_model
+            model_ihehc2 = f"{self.model}-InternalHub-EHC2"
+            self.map_config["IOKitPersonalities_x86_64"][model_ihehc2]["model"] = self.spoofed_model
         if self.model in ModelArray.IH:
-            model_IH = f"{self.model}-InternalHub"
-            self.map_config["IOKitPersonalities_x86_64"][model_IH]["model"] = spoofed_model
+            model_ih = f"{self.model}-InternalHub"
+            self.map_config["IOKitPersonalities_x86_64"][model_ih]["model"] = self.spoofed_model
         plistlib.dump(self.map_config, Path(self.new_map_ls).open("wb"), sort_keys=True)
 
     @staticmethod
@@ -402,7 +409,7 @@ class BuildOpenCore:
         Path(self.constants.opencore_zip_copied).unlink()
     
     def sign_files(self):
-        if self.constants.vault == True:
+        if self.constants.vault is True:
             print("- Vaulting EFI")
             subprocess.run([self.constants.vault_path] + f"{self.constants.oc_folder}/".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
@@ -415,7 +422,7 @@ class BuildOpenCore:
         print("Your OpenCore EFI has been built at:")
         print(f"    {self.constants.opencore_release_folder}")
         print("")
-        if self.constants.gui_mode == False:
+        if self.constants.gui_mode is False:
             input("Press [Enter] to go back.\n")
 
     def copy_efi(self):

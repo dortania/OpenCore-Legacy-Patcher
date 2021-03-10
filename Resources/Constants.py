@@ -52,6 +52,8 @@ class Constants:
         self.serial_settings = "Minimal"
         self.showpicker = True
         self.vault = True
+        self.sip_status = True
+        self.secure_status = True
 
     # Payload Location
     # OpenCore
