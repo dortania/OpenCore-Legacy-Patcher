@@ -802,6 +802,7 @@ NightShiftExclude = [
 ]
 
 UGAtoGOP = [
+    "MacBookPro4,1",
     "MacPro3,1"
 ]
 
