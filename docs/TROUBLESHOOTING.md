@@ -7,6 +7,7 @@ Here are some common errors users may experience while using this patcher:
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
 * [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
 * [Booting with a non-flashed GPU](#booting-with-a-non-flashed-gpu)
+* [How to Boot Big Sur Recovery](#how-to-boot-big-sur-recovery)
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
@@ -46,3 +47,7 @@ sudo bless --verbose --file /Volumes/VOLNAME/EFI/OC/OpenCore.efi --folder /Volum
 * Note 2: Once done, you can re-enable SIP
 
 Once you boot OpenCore for the first time, LauncherOption will install itself as the top boot priority making OpenCore always launch. Combined with `RequestBootVar`, all boot options must go through OpenCore ensuring seamless usage even with OS installation and updates.
+
+## How to Boot Big Sur Recovery
+
+By default, the patcher will try to hide extra boot options such as recovery from the user. To make them appear, simply press the "Spacebar" inside OpenCore's Picker to list all boot options.

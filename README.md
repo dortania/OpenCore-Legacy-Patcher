@@ -2,12 +2,12 @@
 
 <img src="images/OC-Patcher.png" width="256">
 
-A python script for building and booting OpenCore on legacy Macs, see [Supported SMBIOS](/docs/MODELS.md) on whether your model is supported.
+A python program for building and booting OpenCore on legacy Macs, see [Supported SMBIOS](/docs/MODELS.md) on whether your model is supported.
 
 Supported features:
 
-* System Integrity Protection, FileVault 2 and .im4m Secure Boot
-* Native OTA OS updates
+* System Integrity Protection, FileVault 2, .im4m Secure Boot and Vaulting
+* Native OTA OS DELTA updates on all Macs
 * Recovery OS, Safe Mode and Single-user Mode booting
 * Zero firmware patching required(ie. APFS ROM patching)
 * GPU Switching on MacBook Pro models(2012 and newer)
@@ -56,7 +56,7 @@ For nightly builds, you can either run `OpenCore-Patcher.command` from [main](ht
 
 Once finished, see below for common post-installation steps:
 
-* [Post-Installation](./POST-INSTALL.md)
+* [Post-Installation](./docs/POST-INSTALL.md)
 
 ## How to uninstall OpenCore?
 
