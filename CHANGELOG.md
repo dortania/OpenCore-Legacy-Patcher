@@ -14,6 +14,7 @@
 - Add user-configurable SIP and SecureBootModel
 - Fix USB Maps not working on "Minimal" SMBIOS
 - Fix GPU vendor user-configuration
+- Add black background to work-around Macs not respecting DefaultBackgroundColor
 
 ## 0.0.15
 - Add user-configurable OpenCore DEBUG builds
