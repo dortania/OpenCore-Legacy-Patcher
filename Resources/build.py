@@ -227,6 +227,10 @@ class BuildOpenCore:
             print("- Hiding picker and enabling PollAppleHotKeys")
             self.config["Misc"]["Boot"]["ShowPicker"] = False
             self.config["Misc"]["Boot"]["PollAppleHotKeys"] = True
+        if self.constants.vault == True:
+            print("- Setting Vault configuration")
+            self.config["Misc"]["Security"]["Vault"] = "Secure"
+            self.get_tool_by__path("OpenShell.efi")["Enabled"] = False
 
     def set_smbios(self):
         spoofed_model = self.model
@@ -360,6 +364,13 @@ class BuildOpenCore:
             print(f"- Could not find kext {bundle_path}!")
             raise IndexError
         return kext
+    
+    def get_tool_by__path(self, bundle_path):
+        tool = self.get_item_by_kv(self.config["Misc"]["Tools"], "Path", bundle_path)
+        if not tool:
+            print(f"- Could not find Tool {bundle_path}!")
+            raise IndexError
+        return tool
 
     def enable_kext(self, kext_name, kext_version, kext_path, check=False):
         kext = self.get_kext_by_bundle_path(kext_name)
@@ -389,11 +400,17 @@ class BuildOpenCore:
             shutil.rmtree(i)
 
         Path(self.constants.opencore_zip_copied).unlink()
+    
+    def sign_files(self):
+        if self.constants.vault == True:
+            print("- Vaulting EFI")
+            subprocess.run([self.constants.vault_path] + f"{self.constants.oc_folder}/".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def build_opencore(self):
         self.build_efi()
         self.set_smbios()
         self.cleanup()
+        self.sign_files()
         print("")
         print("Your OpenCore EFI has been built at:")
         print(f"    {self.constants.opencore_release_folder}")

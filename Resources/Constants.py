@@ -51,6 +51,7 @@ class Constants:
         self.gui_mode = False
         self.serial_settings = "Minimal"
         self.showpicker = True
+        self.vault = True
 
     # Payload Location
     # OpenCore
@@ -137,6 +138,8 @@ class Constants:
     # Tools
     @property
     def macserial_path(self): return self.payload_path / Path("Tools/macserial")
+    @property
+    def vault_path(self): return self.payload_path / Path("Tools/CreateVault/sign.command")
 
     # Icons
     @property

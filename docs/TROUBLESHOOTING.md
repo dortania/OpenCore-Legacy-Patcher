@@ -28,7 +28,11 @@ With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates 
 
 ## Reboot when entering Hibernation (`Sleep Wake Failure`)
 
-Resolved in OpenCore-Legacy-Patcher v0.0.14
+[Known issue on some models](https://github.com/dortania/Opencore-Legacy-Patcher/issues/72), temporary fix is to disable Hibernation:
+
+```
+sudo pmset -a hibernatemode 0
+```
 
 ## Booting with a non-flashed GPU
 

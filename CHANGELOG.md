@@ -10,6 +10,7 @@
 - Fix External Display Support on MacBookPro10,1
 - Inject Patcher version into NVRAM for easier debugging
 - Add user-configurable ShowPicker
+- Add user-configurable Vaulting, enabled by default
 
 ## 0.0.15
 - Add user-configurable OpenCore DEBUG builds

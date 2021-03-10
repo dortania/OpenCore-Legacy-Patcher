@@ -52,6 +52,12 @@ To use, simply:
 
 For nightly builds, you can either run `OpenCore-Patcher.command` from [main](https://github.com/dortania/Opencore-Legacy-Patcher/archive/main.zip) or grab the binary from  [Github Actions](https://github.com/dortania/Opencore-Legacy-Patcher/actions). Note the latter does not require a py3 install.
 
+## Post-Installation
+
+Once finished, see below for common post-installation steps:
+
+* [Post-Installation](./POST-INSTALL.md)
+
 ## How to uninstall OpenCore?
 
 To remove OpenCore is actually quite simply:

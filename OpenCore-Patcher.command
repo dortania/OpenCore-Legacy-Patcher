@@ -165,6 +165,24 @@ pressing the "Esc" key
             self.constants.showpicker = False
         else:
             print("Invalid option")
+        
+    def change_vault(self):
+        utilities.cls()
+        utilities.header(["Set OpenCore Vaulting"])
+        print("""By default, this patcher will sign all your files and ensure none of the 
+contents can be tampered with. However for more advanced users, you may
+want to be able to freely edit the config.plist and files.
+
+Note: For secuirty reasons, OpenShell will be disabled when Vault is set.
+
+        """)
+        change_kext_menu = input("Enable Vault(y/n): ")
+        if change_kext_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.vault = True
+        elif change_kext_menu in {"n", "N", "no", "No"}:
+            self.constants.vault = False
+        else:
+            print("Invalid option")
 
     def patcher_settings(self):
         response = None
@@ -182,6 +200,7 @@ pressing the "Esc" key
                 [f"Assume Metal GPU Always:\t\tCurrently {self.constants.kext_debug}", self.change_metal],
                 [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.kext_debug}", self.change_wifi],
                 [f"Set ShowPicker Mode:\t\tCurrently {self.constants.showpicker}", self.change_showpicker],
+                [f"Set Vault Mode:\t\t\tCurrently {self.constants.vault}", self.change_vault],
                 [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", self.change_serial], 
             ]
 
