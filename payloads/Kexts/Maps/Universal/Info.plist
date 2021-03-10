@@ -10470,7 +10470,7 @@
 			<key>board-id</key>
 			<string>Mac-7BA5B2D9E42DDD94</string>
 		</dict>
-		<key>iMacProMax1,1</key>
+		<key>Dortania1,1</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
@@ -10600,7 +10600,7 @@
 				</dict>
 			</dict>
 			<key>model</key>
-			<string>iXacProMax1,1</string>
+			<string>Xortania1,1</string>
 		</dict>
 	</dict>
 	<key>OSBundleRequired</key>

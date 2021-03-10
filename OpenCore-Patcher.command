@@ -60,7 +60,7 @@ Current target:\t{self.constants.os_support}
             ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS11
         elif temp_os_support == 12.0:
             ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS12
-    
+
     def change_verbose(self):
         utilities.cls()
         utilities.header(["Set Verbose mode"])
@@ -94,7 +94,7 @@ Current target:\t{self.constants.os_support}
             self.constants.kext_debug = False
         else:
             print("Invalid option")
-    
+
     def change_metal(self):
         utilities.cls()
         utilities.header(["Assume Metal GPU Always in iMac"])
@@ -122,7 +122,7 @@ option is for those patching on a different machine or OCLP cannot detect.
             self.constants.imac_vendor = "AMD"
         else:
             print("Invalid option")
-    
+
     def change_wifi(self):
         utilities.cls()
         utilities.header(["Assume Upgraded Wifi Always"])
@@ -166,7 +166,7 @@ Note: For new users we recommend leaving as default(1. Minimal)
         utilities.cls()
         utilities.header(["Set OpenCore Picker mode"])
         print("""By default, OpenCore will show its boot picker each time on boot up,
-however this can be disabled by default and be shown on command by repeatedly 
+however this can be disabled by default and be shown on command by repeatedly
 pressing the "Esc" key
         """)
         change_kext_menu = input("Show OpenCore Picker by default(y/n): ")
@@ -176,11 +176,11 @@ pressing the "Esc" key
             self.constants.showpicker = False
         else:
             print("Invalid option")
-        
+
     def change_vault(self):
         utilities.cls()
         utilities.header(["Set OpenCore Vaulting"])
-        print("""By default, this patcher will sign all your files and ensure none of the 
+        print("""By default, this patcher will sign all your files and ensure none of the
 contents can be tampered with. However for more advanced users, you may
 want to be able to freely edit the config.plist and files.
 
@@ -194,11 +194,11 @@ Note: For secuirty reasons, OpenShell will be disabled when Vault is set.
             self.constants.vault = False
         else:
             print("Invalid option")
-    
+
     def change_sip(self):
         utilities.cls()
         utilities.header(["Set SIP and SecureBootModel"])
-        print("""SIP and SecureBootModel are used to ensure proper OTA functionality, 
+        print("""SIP and SecureBootModel are used to ensure proper OTA functionality,
 however to patch the root volume both of these must be disabled.
 Only disable is absolutely necessary.
 
@@ -227,12 +227,12 @@ Valid options:
             self.constants.secure_status = False
         else:
             print("Invalid option")
-    
+
     def change_imac_nvidia(self):
         utilities.cls()
         utilities.header(["Force iMac Nvidia Patches"])
         print("""Specifically for iMac10,x-12,x with Metal Nvidia GPU upgrades
-By default the patcher will try to detect what hardware is 
+By default the patcher will try to detect what hardware is
 running, however this will enforce iMac Nvidia Build Patches.
         """)
         change_kext_menu = input("Assume iMac Nvidia patches(y/n): ")
@@ -261,12 +261,12 @@ running, however this will enforce iMac Nvidia Build Patches.
                 [f"Set ShowPicker Mode:\t\tCurrently {self.constants.showpicker}", self.change_showpicker],
                 [f"Set Vault Mode:\t\t\tCurrently {self.constants.vault}", self.change_vault],
                 [f"Set SIP and SecureBootModel:\tSIP: {self.constants.sip_status} SBM: {self.constants.secure_status}", self.change_sip],
-                [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", self.change_serial], 
+                [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", self.change_serial],
             ]
 
             for option in options:
                 menu.add_menu_option(option[0], function=option[1])
-        
+
             response = menu.start()
 
     def credits(self):

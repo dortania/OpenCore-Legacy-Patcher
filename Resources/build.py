@@ -125,7 +125,7 @@ class BuildOpenCore:
                     property_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
                 print("- Applying fake ID for WiFi")
                 self.config["DeviceProperties"]["Add"][property_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
-        
+
         # CPUFriend
         pp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/PlatformPlugin/{self.model}/Info.plist")
         if self.model in ModelArray.X86PP:
@@ -152,7 +152,7 @@ class BuildOpenCore:
             Path(self.constants.map_contents_folder).mkdir()
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
-        
+
         # AGPM Patch
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
@@ -179,7 +179,7 @@ class BuildOpenCore:
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
             else:
                 print("- Failed to determine model")
-        
+
         def amd_patch(self):
             self.constants.custom_mxm_gpu = True
             print("- Adding AMD DRM patches")
@@ -188,7 +188,7 @@ class BuildOpenCore:
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
 
-        
+
         # Check GPU Vendor
         if self.constants.metal_build is True:
             print("- Adding Metal GPU patches on request")
@@ -207,7 +207,7 @@ class BuildOpenCore:
                 amd_patch(self)
             elif (self.constants.current_gpuv == "NVIDIA (0x10de)") & (self.constants.current_gpud in ModelArray.NVIDIAMXMGPUs):
                 nvidia_patch(self)
-        
+
         # Add OpenCanopy
         print("- Adding OpenCanopy GUI")
         shutil.rmtree(self.constants.resources_path, onerror=rmtree_handler)
@@ -254,7 +254,7 @@ class BuildOpenCore:
         if self.constants.secure_status is False:
             print("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
-        
+
     def set_smbios(self):
         spoofed_model = self.model
         # TODO: Set check as global variable
@@ -307,7 +307,7 @@ class BuildOpenCore:
         self.spoofed_model = spoofed_model
         self.spoofed_board = spoofed_board
         self.config["#Revision"]["Spoofed-Model"] = self.spoofed_model
-        
+
         # Setup menu
         def minimal_serial_patch(self):
             self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
@@ -331,7 +331,7 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
             self.config["PlatformInfo"]["Generic"]["MLB"] = macserial_output[1]
             self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
-        
+
         if self.constants.serial_settings == "Moderate":
             moderate_serial_patch(self)
         elif self.constants.serial_settings == "Advanced":
@@ -339,7 +339,7 @@ class BuildOpenCore:
         else:
             self.spoofed_model = self.model
             minimal_serial_patch(self)
-        
+
         # USB Map Patching
         self.new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
         self.map_config = plistlib.load(Path(self.new_map_ls).open("rb"))
@@ -387,7 +387,7 @@ class BuildOpenCore:
             print(f"- Could not find kext {bundle_path}!")
             raise IndexError
         return kext
-    
+
     def get_tool_by__path(self, bundle_path):
         tool = self.get_item_by_kv(self.config["Misc"]["Tools"], "Path", bundle_path)
         if not tool:
@@ -423,7 +423,7 @@ class BuildOpenCore:
             shutil.rmtree(i)
 
         Path(self.constants.opencore_zip_copied).unlink()
-    
+
     def sign_files(self):
         if self.constants.vault is True:
             print("- Vaulting EFI")

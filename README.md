@@ -43,7 +43,7 @@ To use, simply:
 | ![](images/disk-start.png) | ![](images/disk-efi.png) |
 
   * Ensure you install OpenCore onto a FAT32 partition to ensure your Mac is able to boot it, you may need to format your drive as GUID/GPT in Disk Utility
-  
+
 7. Reboot machine while holding `Option` to select OpenCore, then boot the macOS Installer
 
 | Mac Boot Picker | OpenCore Picker |
@@ -67,7 +67,7 @@ To remove OpenCore is actually quite simply:
   * [See here for example how to mount](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html)
 2. Reset NVRAM
   * [Reset NVRAM or PRAM on your Mac](https://support.apple.com/HT204063)
-  
+
 Know that if you are on Big Sur when you remove the EFI folder, your Mac will no longer boot and show the prohibited symbol. Be ready to install an older version of macOS before you uninstall OpenCore.
 
 ## Patcher Warnings
