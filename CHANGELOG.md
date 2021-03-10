@@ -13,6 +13,7 @@
 - Add user-configurable Vaulting, enabled by default
 - Add user-configurable SIP and SecureBootModel
 - Fix USB Maps not working on "Minimal" SMBIOS
+- Fix GPU vendor user-configuration
 
 ## 0.0.15
 - Add user-configurable OpenCore DEBUG builds

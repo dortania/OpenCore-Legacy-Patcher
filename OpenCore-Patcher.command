@@ -101,14 +101,25 @@ Current target:\t{self.constants.os_support}
         print("""This is for iMacs that have upgraded Metal GPUs, otherwise
 Patcher assumes based on stock configuration (ie. iMac10,x-12,x)
 
+Valid Options:
+
+1. None(stock GPU)
+2. Nvidia GPU
+3. AMD GPU
+
 Note: Patcher will detect whether hardware has been upgraded regardless, this
-option is for those patching on a different machine.
+option is for those patching on a different machine or OCLP cannot detect.
         """)
-        change_kext_menu = input("Enable Metal GPU build algorithm?(y/n): ")
-        if change_kext_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.metal_build = True
-        elif change_kext_menu in {"n", "N", "no", "No"}:
+        change_kext_menu = input("Set GPU Patch type(ie. 1): ")
+        if change_kext_menu == "1":
             self.constants.metal_build = False
+            self.constants.imac_vendor = "None"
+        elif change_kext_menu == "2":
+            self.constants.metal_build = True
+            self.constants.imac_vendor = "Nvidia"
+        elif change_kext_menu == "3":
+            self.constants.metal_build = True
+            self.constants.imac_vendor = "AMD"
         else:
             print("Invalid option")
     
@@ -118,7 +129,7 @@ option is for those patching on a different machine.
         print("""This is for Macs with upgraded wifi cards(ie. BCM94360/2)
 
 Note: Patcher will detect whether hardware has been upgraded regardless, this
-option is for those patching on a different machine.
+option is for those patching on a different machine or cannot detect.
         """)
         change_kext_menu = input("Enable Upgraded Wifi build algorithm?(y/n): ")
         if change_kext_menu in {"y", "Y", "yes", "Yes"}:
@@ -216,6 +227,21 @@ Valid options:
             self.constants.secure_status = False
         else:
             print("Invalid option")
+    
+    def change_imac_nvidia(self):
+        utilities.cls()
+        utilities.header(["Force iMac Nvidia Patches"])
+        print("""Specifically for iMac10,x-12,x with Metal Nvidia GPU upgrades
+By default the patcher will try to detect what hardware is 
+running, however this will enforce iMac Nvidia Build Patches.
+        """)
+        change_kext_menu = input("Assume iMac Nvidia patches(y/n): ")
+        if change_kext_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.imac_nvidia_build = True
+        elif change_kext_menu in {"n", "N", "no", "No"}:
+            self.constants.imac_nvidia_build = False
+        else:
+            print("Invalid option")
 
     def patcher_settings(self):
         response = None
@@ -230,8 +256,8 @@ Valid options:
                 [f"Enable Verbose Mode:\t\tCurrently {self.constants.verbose_debug}", self.change_verbose],
                 [f"Enable OpenCore DEBUG:\t\tCurrently {self.constants.opencore_debug}", self.change_oc],
                 [f"Enable Kext DEBUG:\t\t\tCurrently {self.constants.kext_debug}", self.change_kext],
-                [f"Assume Metal GPU Always:\t\tCurrently {self.constants.kext_debug}", self.change_metal],
-                [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.kext_debug}", self.change_wifi],
+                [f"Force iMac Metal Patch:\t\tCurrently {self.constants.imac_vendor}", self.change_metal],
+                [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.wifi_build}", self.change_wifi],
                 [f"Set ShowPicker Mode:\t\tCurrently {self.constants.showpicker}", self.change_showpicker],
                 [f"Set Vault Mode:\t\t\tCurrently {self.constants.vault}", self.change_vault],
                 [f"Set SIP and SecureBootModel:\tSIP: {self.constants.sip_status} SBM: {self.constants.secure_status}", self.change_sip],

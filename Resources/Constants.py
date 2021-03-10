@@ -47,6 +47,7 @@ class Constants:
         self.min_os_support = 11.0
         self.max_os_support = 11.0
         self.metal_build = False
+        self.imac_vendor = "None"
         self.wifi_build = False
         self.gui_mode = False
         self.serial_settings = "Minimal"
