@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.17
+- Fix build detection breaking on older OS
+
 ## 0.0.16
 - Move Serial selection to Patcher Settings
 - Add new SMBIOS patching options:
