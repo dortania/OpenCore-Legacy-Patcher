@@ -1,9 +1,9 @@
-# How to download and build macOS Installers
+# Download and build macOS Installers
 
 * [Downloading](#downloading)
 * [Building](#building)
 
-This doc is centered around downloading and writting the macOS installer to a USB. If you're already familair with how to do this, you can skip.
+This doc is centered around downloading and writing the macOS installer to a USB. If you're already familiar with how to do this, you can skip.
 
 * Note: 16GB+ USB will be required for the installer
 
@@ -28,7 +28,7 @@ Once finished, you'll find in your `~/macOS-Installer/` folder a DMG containing 
 * Note: We recommend to move the Install macOS.app into the `/Applications` folder, as we'll be executing commands from there.
 * Note 2: Running Cmd+Shift+G in Finder will allow you to easily jump to `~/macOS-installer`
 
-![](../images/munki-done.png)
+![](../images/munki-done-2.png)
 
 ![](../images/munki-dmg.png)
 
@@ -50,4 +50,4 @@ sudo /Applications/Install\ macOS\ Big\ Sur.app/Contents/Resources/createinstall
 
 ![](../images/createinstallmedia.png)
 
-# Once finished, [return to the README to finish up](../README.md)
+# Once finished, head to [Building and installing OpenCore](./BUILD.md)

@@ -1,0 +1,51 @@
+{
+   "name": "OpenCore-Legacy-Patcher",
+   "version": "0.0.1",
+   "description": "Guide to put macOS on unsupported devices",
+   "main": "",
+   "author": {
+      "name": "Dortania",
+      "url": "https://github.com/dortania"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/dortania/OpenCore-Legacy-Patcher.git"
+   },
+   "scripts": {
+      "dev": "vuepress dev",
+      "build": "vuepress build",
+      "fix-lint": "run-script-os",
+      "fix-lint:default": "(echo Attempting to fix lint... && markdownlint -c .markdownlint.json -p .markdownlintignore '**/*.md' -f && echo Fixed successfully, please commit.) || (echo Fix failed! && exit 1)",
+      "fix-lint:win32": "(echo Attempting to fix lint... && markdownlint -c .markdownlint.json -p .markdownlintignore **/*.md -f && echo Fixed successfully, please commit.) || (echo Fix failed! && exit 1)",
+      "lint": "run-script-os",
+      "lint:default": "(echo Linting... && markdownlint -c .markdownlint.json -p .markdownlintignore '**/*.md' && echo Lint passed.) || (echo Lint failed! Please review and fix errors. && exit 1)",
+      "lint:win32": "(echo Linting... && markdownlint -c .markdownlint.json -p .markdownlintignore **/*.md && echo Lint passed.) || (echo Lint failed! Please review and fix errors. && exit 1)",
+      "lint-ci": "run-script-os",
+      "lint-ci:default": "(echo Linting... && markdownlint -c .markdownlint.json -p .markdownlintignore '**/*.md' && echo Lint passed.) || ((echo Lint failed, attempting fix... && markdownlint -c .markdownlint.json -p .markdownlintignore '**/*.md' -f && echo Fix generated successfully. Please apply the following diff using git apply && git diff) || echo Fix failed! && exit 1)",
+      "lint-ci:win32": "(echo Linting... && markdownlint -c .markdownlint.json -p .markdownlintignore **/*.md && echo Lint passed.) || ((echo Lint failed, attempting fix... && markdownlint -c .markdownlint.json -p .markdownlintignore **/*.md -f && echo Fix generated successfully. Please apply the following diff using git apply && git diff) || echo Fix failed! && exit 1)",
+      "sort-dict": "node ./scripts/sortDict.js",
+      "spellcheck": "run-script-os",
+      "spellcheck:default": "(spellchecker --plugins spell indefinite-article repeated-words syntax-urls --dictionaries dictionary/dictionary.txt dictionary/opencorekeys.txt --files '**/*.md'  && echo Spellcheck passed.) || (echo Spellcheck failed! Please review and fix errors/add words to dictionary as needed. && exit 1)",
+      "spellcheck:win32": "(spellchecker --plugins spell indefinite-article repeated-words syntax-urls --dictionaries dictionary/dictionary.txt dictionary/opencorekeys.txt --files **/*.md  && echo Spellcheck passed.) || (echo Spellcheck failed! Please review and fix errors/add words to dictionary as needed. && exit 1)",
+      "test": "run-script-os",
+      "test:default": "npm run lint --silent; npm run spellcheck --silent",
+      "test:win32": "npm run lint --silent & npm run spellcheck --silent"
+   },
+   "license": "CC-BY-NC-SA-4.0",
+   "devDependencies": {
+      "@vuepress/plugin-back-to-top": "^1.7.1",
+      "markdown-it-multimd-table": "^4.0.3",
+      "markdown-link-check": "^3.8.5",
+      "markdownlint-cli": "^0.26.0",
+      "run-script-os": "^1.1.4",
+      "spellchecker-cli": "^4.4.0",
+      "vuepress": "^1.7.1",
+      "vuepress-plugin-medium-zoom": "^1.1.9",
+      "vuepress-plugin-zooming": "^1.1.8",
+      "vuepress-theme-book": "0.0.5",
+      "vuepress-theme-dark-new": "^0.1.2",
+      "vuepress-theme-succinct": "^1.6.4",
+      "vuepress-theme-yuu": "^2.3.0"
+   },
+   "homepage": "https://dortania.github.io/OpenCore-Legacy-Patcher/"
+}

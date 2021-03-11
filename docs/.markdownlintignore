@@ -1,0 +1,10 @@
+/node_modules/
+/_book/
+*.json
+/extra-files/
+/.git/
+/icons/
+/images/
+/styles/
+/.github/
+/.vuepress/
