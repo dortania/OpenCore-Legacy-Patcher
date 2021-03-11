@@ -7,7 +7,7 @@ on:
   pull_request:
 jobs:
   build:
-    name: Build and Deploy
+    name: Build Site and Deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v2-beta
@@ -19,6 +19,8 @@ jobs:
           fetch-depth: '0'
           persist-credentials: false
           submodules: 'recursive'
+      - name: Directory
+        run: cd docs/
       - name: Install
         run: npm install
       - name: Build
@@ -29,5 +31,5 @@ jobs:
         with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: /docs/.vuepress/dist/
+          FOLDER: .vuepress/dist/
           CLEAN: true
