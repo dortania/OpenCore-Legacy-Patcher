@@ -22,7 +22,7 @@ module.exports = {
             href: "/styles/website.css"
         },]
     ],
-    base: '/Opencore-Legacy-Patcher/',
+    base: '/OpenCore-Legacy-Patcher/',
 
 	watch: {
 	    $page(newPage, oldPage) {
