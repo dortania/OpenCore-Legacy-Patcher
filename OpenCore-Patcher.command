@@ -317,7 +317,8 @@ running, however this will enforce iMac Nvidia Build Patches.
             menu = utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
 
             options = (
-                [["Build OpenCore", self.build_opencore]] if ((self.constants.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) else []) + ([["Install OpenCore to USB/internal drive", self.install_opencore]] if (self.constants.detected_os > 10.12) else []) + [
+                [["Build OpenCore", self.build_opencore]] if ((self.constants.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) else []) + [
+                ["Install OpenCore to USB/internal drive", self.install_opencore],
                 ["Change Model", self.change_model],
                 ["Patcher Settings", self.patcher_settings],
                 ["Credits", self.credits]
