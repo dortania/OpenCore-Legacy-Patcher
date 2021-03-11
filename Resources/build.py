@@ -95,12 +95,8 @@ class BuildOpenCore:
 
         # WiFi patches
         # TODO: -a is not supported in Lion and older, need to add proper fix
-        if self.constants.detected_os < 10.8:
-            print(f"- Unable to run Wifi detection on {self.constants.detected_os}")
-            wifi_devices = ["NULL", "NULL"]
-        else:
-            wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
+        wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
         if self.constants.wifi_build is True:
             print("- Skipping Wifi patches on request")
         elif not self.constants.custom_model and wifi_devices and self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4]) in ModelArray.nativeWifi:
