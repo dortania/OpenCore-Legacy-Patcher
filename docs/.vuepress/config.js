@@ -96,6 +96,7 @@ module.exports = {
             sidebarDepth: 1,
             children: [
 				'TROUBLESHOOTING',
+				'UNINSTALL',
             ]
 
         },
