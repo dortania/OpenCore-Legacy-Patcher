@@ -14,7 +14,8 @@
 - Add user-configurable SIP and SecureBootModel
 - Fix USB Maps not working on "Minimal" SMBIOS
 - Fix GPU vendor user-configuration
-- Add black background to work-around Macs not respecting DefaultBackgroundColor
+- Fix custom EFI Boot icon in Mac Boot Picker
+- Enable UserInterfaceTheme to ensure DefaultBackgroundColor is respected
 
 ## 0.0.15
 - Add user-configurable OpenCore DEBUG builds

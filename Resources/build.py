@@ -545,11 +545,10 @@ Please build OpenCore first!"""
         utilities.header(["Copying OpenCore"])
 
         if mount_path.exists():
-            print("- Coping OpenCore onto EFI partition")
             if (mount_path / Path("EFI")).exists():
-                print("Removing preexisting EFI folder")
+                print("- Removing preexisting EFI folder")
                 shutil.rmtree(mount_path / Path("EFI"), onerror=rmtree_handler)
-
+            print("- Coping OpenCore onto EFI partition")
             shutil.copytree(self.constants.opencore_release_folder / Path("EFI"), mount_path / Path("EFI"))
             shutil.copy(self.constants.icon_path, mount_path)
             print("OpenCore transfer complete")
