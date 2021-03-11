@@ -33,9 +33,3 @@ jobs:
           BRANCH: gh-pages
           FOLDER: docs/.vuepress/dist/
           CLEAN: true
-
-        with:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: .vuepress/dist/
-          CLEAN: true
