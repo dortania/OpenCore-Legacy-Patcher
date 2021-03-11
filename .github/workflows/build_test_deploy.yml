@@ -19,15 +19,21 @@ jobs:
           fetch-depth: '0'
           persist-credentials: false
           submodules: 'recursive'
-      - name: Directory
-        run: cd docs/
       - name: Install
         run: npm install
+        working-directory: 'docs'
       - name: Build
         run: npm run build
+        working-directory: 'docs'
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@3.7.1
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master'}}
+        with:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: docs/.vuepress/dist/
+          CLEAN: true
+
         with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: gh-pages
