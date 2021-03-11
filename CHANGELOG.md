@@ -16,6 +16,7 @@
 - Fix GPU vendor user-configuration
 - Fix custom EFI Boot icon in Mac Boot Picker
 - Enable UserInterfaceTheme to ensure DefaultBackgroundColor is respected
+- Enable `amfi_get_out_of_my_way=1` when SIP is disabled
 
 ## 0.0.15
 - Add user-configurable OpenCore DEBUG builds

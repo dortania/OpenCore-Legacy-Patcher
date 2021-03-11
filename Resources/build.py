@@ -94,8 +94,13 @@ class BuildOpenCore:
             self.enable_kext(name, version, path, check)
 
         # WiFi patches
-        wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-        wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
+        # TODO: -a is not supported in Lion and older, need to add proper fix
+        if self.constants.detected_os < 10.8:
+            print(f"- Unable to run Wifi detection on {self.constants.detected_os}")
+            wifi_devices = ["NULL", "NULL"]
+        else:
+            wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
         if self.constants.wifi_build is True:
             print("- Skipping Wifi patches on request")
         elif not self.constants.custom_model and wifi_devices and self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4]) in ModelArray.nativeWifi:
@@ -251,6 +256,7 @@ class BuildOpenCore:
             print("- Disabling SIP")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("FF0F0000")
             self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"] += ["csr-active-config"]
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi_get_out_of_my_way=1"
         if self.constants.secure_status is False:
             print("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
@@ -459,6 +465,8 @@ Please build OpenCore first!"""
         print("\nDisk picker is loading...")
 
         all_disks = {}
+        # TODO: physical is not supported in Sierra and older
+        # AllDisksAndPartitions is not supported in Yosemite(?) and older
         disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         for disk in disks["AllDisksAndPartitions"]:
             disk_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())

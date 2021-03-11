@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 
-import subprocess, sys, time
+import subprocess, sys, time, platform
 
 from Resources import build, ModelArray, Constants, utilities
 
@@ -18,6 +18,8 @@ class OpenCoreLegacyPatcher():
         else:
             self.current_model = subprocess.run("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             self.current_model = [line.strip().split(": ", 1)[1] for line in self.current_model.stdout.decode().split("\n") if line.strip().startswith("Model Identifier")][0]
+        self.constants.detected_os, _, _ = platform.mac_ver()
+        self.constants.detected_os = float('.'.join(self.constants.detected_os.split('.')[:2]))
 
     def build_opencore(self):
         build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
@@ -203,6 +205,8 @@ however to patch the root volume both of these must be disabled.
 Only disable is absolutely necessary.
 
 Note: for minor changes, SIP can be adjusted in recovery like normal.
+Additionally, when disabling SIP via the patcher amfi_get_out_of_my_way=1
+will be added to boot-args.
 
 Valid options:
 
@@ -287,7 +291,7 @@ running, however this will enforce iMac Nvidia Build Patches.
             title = [
                 f"OpenCore Legacy Patcher v{self.constants.patcher_version}",
                 f"Selected Model: {self.constants.custom_model or self.current_model}",
-                f"Target OS: macOS {self.constants.os_support}"
+                f"Target OS: macOS {self.constants.os_support}",
             ]
 
             if (self.constants.custom_model or self.current_model) not in ModelArray.SupportedSMBIOS:
@@ -312,8 +316,8 @@ running, however this will enforce iMac Nvidia Build Patches.
 
             menu = utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
 
-            options = ([["Build OpenCore", self.build_opencore]] if ((self.constants.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) else []) + [
-                ["Install OpenCore to USB/internal drive", self.install_opencore],
+            options = (
+                [["Build OpenCore", self.build_opencore]] if ((self.constants.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) else []) + ([["Install OpenCore to USB/internal drive", self.install_opencore]] if (self.constants.detected_os > 10.12) else []) + [
                 ["Change Model", self.change_model],
                 ["Patcher Settings", self.patcher_settings],
                 ["Credits", self.credits]
