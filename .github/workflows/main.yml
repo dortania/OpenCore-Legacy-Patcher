@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Build App
-    runs-on: macos-latest
+    runs-on: macos-10.13
     steps:
       - uses: actions/checkout@v2
 
