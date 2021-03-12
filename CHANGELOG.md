@@ -2,6 +2,7 @@
 
 ## 0.0.18
 - Disable Vault by default due to breaking installations
+- Move BOOTx64.efi to System/Library/CoreServices/ to support GPT BootCamp installs
 
 ## 0.0.17
 - Fix build detection breaking on older OS
