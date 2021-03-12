@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.18
+- Disable Vault by default due to breaking installations
+
 ## 0.0.17
 - Fix build detection breaking on older OS
 

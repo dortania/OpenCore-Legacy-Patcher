@@ -8,7 +8,7 @@ from pathlib import Path
 
 class Constants:
     def __init__(self):
-        self.patcher_version = "0.0.17"
+        self.patcher_version = "0.0.18"
         self.opencore_commit = "7bb41aa - 2021-03-06"
         self.opencore_version = "0.6.8"
         self.lilu_version = "1.5.1"
@@ -52,7 +52,7 @@ class Constants:
         self.gui_mode = False
         self.serial_settings = "Minimal"
         self.showpicker = True
-        self.vault = True
+        self.vault = False
         self.sip_status = True
         self.secure_status = True
         self.detected_os = 0.0
