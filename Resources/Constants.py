@@ -42,7 +42,7 @@ class Constants:
         self.opencore_debug = False
         self.opencore_build = "RELEASE"
         self.kext_debug = False
-        self.verbose_debug = True
+        self.verbose_debug = False
         self.os_support = 11.0
         self.min_os_support = 11.0
         self.max_os_support = 11.0
@@ -149,6 +149,8 @@ class Constants:
     @property
     def app_icon_path(self): return self.current_path / Path("OC-Patcher.icns")
     @property
-    def icon_path(self): return self.payload_path / Path("Icon/.VolumeIcon.icns")
+    def icon_path_external(self): return self.payload_path / Path("Icon/External/.VolumeIcon.icns")
+    @property
+    def icon_path_internal(self): return self.payload_path / Path("Icon/Internal/.VolumeIcon.icns")
     @property
     def gui_path(self): return self.payload_path / Path("Icon/Resources.zip")

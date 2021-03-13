@@ -208,6 +208,10 @@ class BuildOpenCore:
                 amd_patch(self)
             elif (self.constants.current_gpuv == "NVIDIA (0x10de)") & (self.constants.current_gpud in ModelArray.NVIDIAMXMGPUs):
                 nvidia_patch(self)
+        elif self.model in ModelArray.MacPro71:
+            print("- Adding Mac Pro, Xserve DRM patches")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
+
 
         # Add OpenCanopy
         print("- Adding OpenCanopy GUI")
@@ -250,7 +254,7 @@ class BuildOpenCore:
             self.get_tool_by__path("OpenShell.efi")["Enabled"] = False
         if self.constants.sip_status is False:
             print("- Disabling SIP")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("FF0F0000")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("EF0F0000")
             self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"] += ["csr-active-config"]
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi_get_out_of_my_way=1"
         if self.constants.secure_status is False:
@@ -335,10 +339,13 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
 
         if self.constants.serial_settings == "Moderate":
+            print("- Using Moderate SMBIOS patching")
             moderate_serial_patch(self)
         elif self.constants.serial_settings == "Advanced":
+            print("- Using Advanced SMBIOS patching")
             adanced_serial_patch(self)
         else:
+            print("- Using Minimal SMBIOS patching")
             self.spoofed_model = self.model
             minimal_serial_patch(self)
 
@@ -544,7 +551,6 @@ Please build OpenCore first!"""
         # TODO: Remount if readonly
         partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk_identifier}s{response}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         mount_path = Path(partition_info["MountPoint"])
-
         utilities.cls()
         utilities.header(["Copying OpenCore"])
 
@@ -558,7 +564,8 @@ Please build OpenCore first!"""
             print("- Coping OpenCore onto EFI partition")
             shutil.copytree(self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC"))
             shutil.copytree(self.constants.opencore_release_folder / Path("System"), mount_path / Path("System"))
-            shutil.copy(self.constants.icon_path, mount_path)
+            # TODO: Add drive detection for custom icons (ie. USB, etc)
+            shutil.copy(self.constants.icon_path_internal, mount_path)
             print("- OpenCore transfer complete")
             print("\nPress [Enter] to continue.\n")
             input()

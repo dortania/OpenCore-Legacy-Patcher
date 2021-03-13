@@ -20,6 +20,8 @@ class OpenCoreLegacyPatcher():
             self.current_model = [line.strip().split(": ", 1)[1] for line in self.current_model.stdout.decode().split("\n") if line.strip().startswith("Model Identifier")][0]
         self.constants.detected_os, _, _ = platform.mac_ver()
         self.constants.detected_os = float('.'.join(self.constants.detected_os.split('.')[:2]))
+        if self.current_model in ModelArray.NoAPFSsupport:
+            self.constants.serial_settings = "Moderate"
 
     def build_opencore(self):
         build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
@@ -44,6 +46,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             if print_models in {"y", "Y", "yes", "Yes"}:
                 print("\n".join(ModelArray.SupportedSMBIOS))
                 input("Press any key to continue...")
+        if self.constants.custom_model in ModelArray.NoAPFSsupport:
+            self.constants.serial_settings = "Moderate"
 
     def change_os(self):
         utilities.cls()
@@ -150,7 +154,7 @@ Recommended for adanced users who want control how serials are handled
 Valid options:
 
 1. Minimal:\tUse original serials and minimally update SMBIOS
-2. Moderate:\tReplave entire SMBIOS but keep original serials
+2. Moderate:\tReplace entire SMBIOS but keep original serials
 3. Advanced:\tReplace entire SMBIOS and generate new serials
 
 Note: For new users we recommend leaving as default(1. Minimal)
@@ -202,7 +206,7 @@ Note: For secuirty reasons, OpenShell will be disabled when Vault is set.
         utilities.header(["Set SIP and SecureBootModel"])
         print("""SIP and SecureBootModel are used to ensure proper OTA functionality,
 however to patch the root volume both of these must be disabled.
-Only disable is absolutely necessary.
+Only disable is absolutely necessary. SIP value = 0xFEF
 
 Note: for minor changes, SIP can be adjusted in recovery like normal.
 Additionally, when disabling SIP via the patcher amfi_get_out_of_my_way=1

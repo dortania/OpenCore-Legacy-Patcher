@@ -3,6 +3,10 @@
 ## 0.0.18
 - Disable Vault by default due to breaking installations
 - Move BOOTx64.efi to System/Library/CoreServices/ to support GPT BootCamp installs
+- Disable verbose by default, still configurable by end-user
+- Remove `AppleInternal`(0x10) from SIP value
+- Add Mac Pro DRM patches for Metal GPUs
+- Force `Moderate` SMBIOS replacement for models without native APFS support
 
 ## 0.0.17
 - Fix build detection breaking on older OS

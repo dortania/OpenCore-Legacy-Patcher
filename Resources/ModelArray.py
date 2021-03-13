@@ -817,3 +817,23 @@ NoSATAPatch = [
     "iMac14,2",
     "iMac14,3",
 ]
+
+NoAPFSsupport = [
+    "MacBook5,1",
+    "MacBook5,2",
+    "MacBookAir2,1",
+    "MacBookPro4,1",
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro5,5",
+    "Macmini3,1",
+    "iMac7,1",
+    "iMac8,1",
+    "iMac9,1",
+    "MacPro3,1",
+    "MacPro4,1",
+    "Xserve3,1",
+    "Dortania1,1"
+]
