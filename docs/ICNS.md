@@ -55,9 +55,9 @@ To generate legacy icons, you'll need the following:
 * A machine running macOS 10.4 through 10.11
 * Icon Composer.app (Requires Apple Developer Account for official download)
   * Users without the developer account can find a mirrors here: 
-    * [Icon Composer 10.6](./Icon-Composer-10.6.zip)
-    * [Icon Composer 10.11](./Icon-Composer-10.6.zip)
-* PMG Image you wish to convert
+    * [Icon Composer 10.6](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/docs/Icon-Composer-10.6.zip)
+    * [Icon Composer 10.11](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/docs/Icon-Composer-10.11.zip)
+* PNG Image you wish to convert
 
 Head to [developer.apple's More Downloads page](https://developer.apple.com/download/more/) and search for `Graphics Tools` that is supported by your OS(note for 10.6 and older, the app is hidden inside `Developer Tools`):
 
@@ -98,7 +98,7 @@ Now reboot and you should see your updated icon(s)!
 
 ### Updating Mac Boot Picker icons
 
-To update the Mac Boo Picker icons is actually quite simple, on the root of your drive simply drop the icon onto the root of the drive with the name `.VolumeIcon.icns`
+To update the Mac Boot Picker icons is actually quite simple, on the root of your drive simply drop the icon onto the root of the drive with the name `.VolumeIcon.icns`
 
 ![](../images/mac-icns-drive.png)
 
