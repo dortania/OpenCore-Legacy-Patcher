@@ -97,6 +97,7 @@ module.exports = {
             children: [
 				'TROUBLESHOOTING',
 				'UNINSTALL',
+				'ICNS',
             ]
 
         },
