@@ -551,6 +551,7 @@ Please build OpenCore first!"""
         # TODO: Remount if readonly
         partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk_identifier}s{response}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         mount_path = Path(partition_info["MountPoint"])
+        disk_type = partition_info["BusProtocol"]
         utilities.cls()
         utilities.header(["Copying OpenCore"])
 
@@ -564,8 +565,12 @@ Please build OpenCore first!"""
             print("- Coping OpenCore onto EFI partition")
             shutil.copytree(self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC"))
             shutil.copytree(self.constants.opencore_release_folder / Path("System"), mount_path / Path("System"))
-            # TODO: Add drive detection for custom icons (ie. USB, etc)
-            shutil.copy(self.constants.icon_path_internal, mount_path)
+            if disk_type == "USB":
+                print("- Adding External USB Drive icon")
+                shutil.copy(self.constants.icon_path_external, mount_path)
+            else:
+                print("- Adding Internal Drive icon")
+                shutil.copy(self.constants.icon_path_internal, mount_path)
             print("- OpenCore transfer complete")
             print("\nPress [Enter] to continue.\n")
             input()
