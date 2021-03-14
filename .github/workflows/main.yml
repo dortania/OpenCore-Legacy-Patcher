@@ -17,7 +17,7 @@ jobs:
       - name: Set up Python 3
         uses: actions/setup-python@v2
         with:
-          python-version: "3.x"
+          python-version: "3.6"
       - name: Install Python Dependencies
         run: |
           python3 -m pip install -U pip
