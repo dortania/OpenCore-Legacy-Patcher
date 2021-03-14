@@ -126,6 +126,9 @@ class BuildOpenCore:
                     property_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
                 print("- Applying fake ID for WiFi")
                 self.config["DeviceProperties"]["Add"][property_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
+            if self.model in ModelArray.WifiBCM94322:
+                self.enable_kext("IO80211Mojave.kext", self.constants.io80211mojave_version, self.constants.io80211mojave_path)
+                self.get_kext_by_bundle_path("IO80211Mojave.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
 
         # CPUFriend
         pp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/PlatformPlugin/{self.model}/Info.plist")

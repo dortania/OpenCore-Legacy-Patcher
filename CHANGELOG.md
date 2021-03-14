@@ -7,6 +7,7 @@
 - Remove `AppleInternal`(0x10) from SIP value
 - Add Mac Pro DRM patches for Metal GPUs
 - Force `Moderate` SMBIOS replacement for models without native APFS support
+- Re-enable legacy BCM94322 networking patches
 
 ## 0.0.17
 - Fix build detection breaking on older OS
