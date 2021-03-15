@@ -16,7 +16,7 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          python3.6 -m pip install -U pip
+          python3 -m pip install -U pip
           pip3 install pyinstaller
 
       - run: pyinstaller Opencore-Patcher.spec
