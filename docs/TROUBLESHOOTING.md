@@ -8,6 +8,7 @@ Here are some common errors users may experience while using this patcher:
 * [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
 * [Booting with a non-flashed GPU](#booting-with-a-non-flashed-gpu)
 * [How to Boot Big Sur Recovery](#how-to-boot-big-sur-recovery)
+* [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
@@ -51,3 +52,10 @@ Once you boot OpenCore for the first time, LauncherOption will install itself as
 ## How to Boot Big Sur Recovery
 
 By default, the patcher will try to hide extra boot options such as recovery from the user. To make them appear, simply press the "Spacebar" inside OpenCore's Picker to list all boot options.
+
+## Stuck on "Your Mac needs a firmware update"
+
+Full error: "Your Mac needs a firmware update in order to install to this Volume. Please select a Mac OS Extended (Journaled) volume instead."
+
+
+This error occurs when macOS determines the firmware to not have full APFS support. To resolve is quite simple, when building OpenCore head to "Patcher Settings" and enable "Moderate SMBIOS Patching" or higher. This will ensure that the firmware reported will show as supporting full APFS capabilities.

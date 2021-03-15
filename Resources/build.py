@@ -236,7 +236,7 @@ class BuildOpenCore:
         if self.constants.verbose_debug is True:
             print("- Enabling Verbose boot")
             self.config["Kernel"]["Quirks"]["PanicNoKextDump"] = True
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -v"
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -v debug=0x100"
         if self.constants.kext_debug is True:
             print("- Enabling DEBUG Kexts")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -liludbgall"
@@ -244,6 +244,7 @@ class BuildOpenCore:
         if self.constants.opencore_debug is True:
             print("- Enabling DEBUG OpenCore")
             self.config["Misc"]["Debug"]["Target"] = 67
+            self.config["Misc"]["Debug"]["DisplayLevel"] = 672151678018
         if self.constants.showpicker is True:
             print("- Enabling ShowPicker")
             self.config["Misc"]["Boot"]["ShowPicker"] = True

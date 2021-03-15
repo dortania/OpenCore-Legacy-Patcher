@@ -26,4 +26,4 @@ Here you can change different patcher settings, however the main 2 of interest a
 * Enable Verbose Mode
 * Set ShowPicker Mode
 
-Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show OpenCore picker, you can simply press "Esc" key repeatedly.
+Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show OpenCore picker, you can simply hold the "Esc" key.
