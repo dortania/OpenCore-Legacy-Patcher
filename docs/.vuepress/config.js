@@ -99,6 +99,8 @@ module.exports = {
 				'DEBUG',
 				'UNINSTALL',
 				'ICNS',
+				'TERMS',
+				'PATCH-EXPLAIN',
             ]
 
         },
