@@ -100,7 +100,7 @@ module.exports = {
 				'UNINSTALL',
 				'ICNS',
 				'TERMS',
-				'PATCH-EXPLAIN',
+				'PATCHEXPLAIN',
             ]
 
         },
