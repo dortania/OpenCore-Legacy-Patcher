@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.19
+- Add SMC-Spoof.kext to avoid triggering `smcupdater`
+
 ## 0.0.18
 - Disable Vault by default due to breaking installations
 - Move BOOTx64.efi to System/Library/CoreServices/ to support GPT BootCamp installs

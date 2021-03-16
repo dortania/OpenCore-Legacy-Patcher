@@ -576,6 +576,24 @@
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
+				<string>SMC Spoof</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string></string>
+				<key>BundlePath</key>
+				<string>SMC-Spoof.kext</string>
+				<key>ExecutablePath</key>
+				<string></string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
 		</array>
 		<key>Block</key>
 		<array/>
@@ -621,6 +639,36 @@
 				<string>20.0.0</string>
 				<key>Replace</key>
 				<data>uAEAAADD</data>
+				<key>ReplaceMask</key>
+				<data></data>
+				<key>Skip</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Base</key>
+				<string></string>
+				<key>Comment</key>
+				<string>Patch AppleSMC</string>
+				<key>Count</key>
+				<integer>1</integer>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>c21jLXZlcnNpb24=</data>
+				<key>Identifier</key>
+				<string>com.apple.driver.AppleSMC</string>
+				<key>Limit</key>
+				<integer>0</integer>
+				<key>Mask</key>
+				<data></data>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string></string>
+				<key>Replace</key>
+				<data>b2xkLXZlcnNpb24=</data>
 				<key>ReplaceMask</key>
 				<data></data>
 				<key>Skip</key>
