@@ -55,7 +55,9 @@ module.exports = {
 
     themeConfig: {
         lastUpdated: true,
-        repo: 'https://github.com/dortania/OpenCore-Legacy-Patcher/tree/main/',
+        repo: 'https://github.com/dortania/OpenCore-Legacy-Patcher/',
+		docsDir: 'docs',
+		docsBranch: 'main',
 		editLinks: true,
 		editLinkText: 'Help us improve this page!',
         logo: 'homepage.png',
