@@ -26,7 +26,7 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | MacBook2,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | MacBook3,1 | Late 2007 | ^^ | ^^ |
 | MacBook4,1 | Early 2008 | ^^ | ^^ |
-| MacBook5,1 | Late 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented<br/>- No Wifi Patches implemented |
+| MacBook5,1 | Late 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented<br/> |
 | MacBook5,2 | Early 2009 | ^^ | ^^ |
 | MacBook6,1 | Late 2009 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented<br/> |
 | MacBook7,1 | Mid-2010 | ^^ | ^^ |
@@ -67,8 +67,8 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | MacBookPro8,3 | ^^ | ^^ | ^^ |
 | MacBookPro9,1 | Mid-2012 | ^^ | <span style="color:green"> Everything is supported</span> |
 | MacBookPro9,2 | ^^ | ^^ | ^^ |  
-| MacBookPro10,1 | ^^ | ^^ | ^^ |
-| MacBookPro10,2 | Late 2012 | ^^ | ^^ |
+| MacBookPro10,1 | Mid-2012, Early 2013 | ^^ | ^^ |
+| MacBookPro10,2 | Late 2012, Early 2013 | ^^ | ^^ |
 
 ### Mac mini
 
@@ -93,8 +93,8 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | iMac5,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | iMac5,2 | ^^ | ^^ | ^^ |
 | iMac6,1 | ^^ | ^^ | ^^ |
-| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented<br/>- No Wifi Patches implemented  |
-| iMac8,1 | Early 2008 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented<br/>- No Wifi Patches implemented  |
+| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented<br/>  |
+| iMac8,1 | Early 2008 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented<br/> |
 | iMac9,1 | Early 2009 | ^^ | ^^ |
 | iMac10,1 | Late 2009 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented |
 | iMac11,1 | ^^ | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented<br/>- Ethernet Connection Issues |
@@ -116,7 +116,7 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | MacPro2,1 | Mid-2007 | ^^ | ^^ |
 | MacPro3,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No AppleHDA(Audio) Patching implemented |
 | MacPro4,1 | Early 2009 | ^^ | <span style="color:green"> Everything is supported as long as GPU is Metal capable </span> |
-| MacPro5,1 | Mid-2010 | ^^ | ^^ |
+| MacPro5,1 | Mid-2010, Mid-2012 | ^^ | ^^ |
 
 ### Xserve
 
