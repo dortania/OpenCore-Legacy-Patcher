@@ -997,7 +997,7 @@
 			<key>FirmwareFeaturesMask</key>
 			<data></data>
 			<key>PlatformFeature</key>
-			<integer>0</integer>
+			<integer>-1</integer>
 			<key>ProcessorType</key>
 			<integer>0</integer>
 			<key>SmcVersion</key>
