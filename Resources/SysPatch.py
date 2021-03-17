@@ -143,7 +143,7 @@ class PatchSysVolume:
             rebuild_required = True
 
         if self.model in ModelArray.LegacyGPU:
-            print("- Attemping Legacy GPU Patches")
+            #print("- Attemping Legacy GPU Patches")
             #TODO: Re-enable when GPU patches are public
             #self.gpu_accel_patches()
             #rebuild_required = True
