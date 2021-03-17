@@ -142,7 +142,7 @@ class PatchSysVolume:
             subprocess.run(f"sudo cp -R {self.constants.applebcm_path} {self.mount_extensions}/IONetworkingFamily.kext/Contents/PlugIns/".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             rebuild_required = True
 
-        if self.model in ModelArray.LegacyGPU:
+        #if self.model in ModelArray.LegacyGPU:
             #print("- Attemping Legacy GPU Patches")
             #TODO: Re-enable when GPU patches are public
             #self.gpu_accel_patches()
