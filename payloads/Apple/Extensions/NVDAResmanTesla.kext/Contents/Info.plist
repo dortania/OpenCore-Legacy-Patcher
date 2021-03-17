@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>NVDAResmanTesla</string>
+	<key>CFBundleGetInfoString</key>
+	<string>NVDAResmanTesla 10.4.14 310.90.30.05b27</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.nvidia.classic.NVDAResmanTesla</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>NVIDIA Resman Kernel Extension</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>10.4.14</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>10.0.4</string>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>NVRM</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.nvidia.classic.NVDAResmanTesla</string>
+			<key>IOClass</key>
+			<string>NVDATesla</string>
+			<key>IOMatchCategory</key>
+			<string>IOFramebuffer</string>
+			<key>IONameMatch</key>
+			<array>
+				<string>NVDA,NVMac</string>
+			</array>
+			<key>IOParentMatch</key>
+			<dict>
+				<key>IOPropertyMatch</key>
+				<dict>
+					<key>NVCLASS</key>
+					<string>NVDATesla</string>
+					<key>NVDAType</key>
+					<string>Official</string>
+				</dict>
+				<key>IOProviderClass</key>
+				<string>IOPCIDevice</string>
+			</dict>
+			<key>IOProbeScore</key>
+			<integer>70000</integer>
+			<key>IOProviderClass</key>
+			<string>IONDRVDevice</string>
+		</dict>
+	</dict>
+	<key>OSBundleCompatibleVersion</key>
+	<string>1.2.0</string>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IOGraphicsFamily</key>
+		<string>1.5</string>
+		<key>com.apple.iokit.IONDRVSupport</key>
+		<string>1.5</string>
+		<key>com.apple.iokit.IOPCIFamily</key>
+		<string>2.4</string>
+		<key>com.apple.kpi.bsd</key>
+		<string>9.0.0</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>9.0.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>9.0.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>9.0.0</string>
+	</dict>
+	<key>OSBundleRequired</key>
+	<string>Safe Boot</string>
+</dict>
+</plist>

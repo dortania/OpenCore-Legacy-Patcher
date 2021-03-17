@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>GeForceTesla</string>
+	<key>CFBundleGetInfoString</key>
+	<string>GeForceTesla 10.4.14 310.90.30.05b27</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.GeForceTesla</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>NVIDIA GeForce Tesla Kernel Extension</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>10.4.14</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>10.0.4</string>
+	<key>GPUCompanionBundles</key>
+	<array>
+		<string>GeForceGA.bundle</string>
+		<string>GeForceTeslaGLDriver.bundle</string>
+		<string>GeForceTeslaVADriver.bundle</string>
+	</array>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>GeForceTesla</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.GeForceTesla</string>
+			<key>IOCFPlugInTypes</key>
+			<dict>
+				<key>ACCF0000-0000-0000-0000-000a2789904e</key>
+				<string>GeForceGA.bundle</string>
+			</dict>
+			<key>IOClass</key>
+			<string>NVKernel</string>
+			<key>IOMatchCategory</key>
+			<string>IOAccelerator</string>
+			<key>IOProbeScore</key>
+			<integer>50</integer>
+			<key>IOPropertyMatch</key>
+			<array>
+				<dict>
+					<key>NVArch</key>
+					<string>NV50</string>
+					<key>NVDAType</key>
+					<string>Official</string>
+					<key>nubType</key>
+					<string>NVDAgl</string>
+					<key>unmatched</key>
+					<string>yes</string>
+				</dict>
+			</array>
+			<key>IOProviderClass</key>
+			<string>IOService</string>
+			<key>IOSourceVersion</key>
+			<string>10.4.14</string>
+		</dict>
+	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2000-2012 Apple Inc. All rights reserved.</string>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IOGraphicsFamily</key>
+		<string>1.0.0b1</string>
+		<key>com.apple.iokit.IONDRVSupport</key>
+		<string>1.0.0b1</string>
+		<key>com.apple.iokit.IOPCIFamily</key>
+		<string>1.0.0b1</string>
+		<key>com.apple.kpi.bsd</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.private</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.unsupported</key>
+		<string>8.0.0</string>
+		<key>com.apple.nvidia.classic.NVDAResmanTesla</key>
+		<string>1.2.0</string>
+	</dict>
+</dict>
+</plist>

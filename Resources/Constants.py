@@ -157,3 +157,51 @@ class Constants:
     def icon_path_internal(self): return self.payload_path / Path("Icon/Internal/.VolumeIcon.icns")
     @property
     def gui_path(self): return self.payload_path / Path("Icon/Resources.zip")
+
+    # Apple Paylods Paths
+    @property
+    def payload_apple_kexts_path(self): return self.payload_path / Path("Apple/Extensions")
+    @property
+    def payload_apple_frameworks_path(self): return self.payload_path / Path("Apple/Frameworks")
+    @property
+    def payload_apple_lauchd_path(self): return self.payload_path / Path("Apple/LaunchDaemons")
+    @property
+    def payload_apple_private_frameworks_path(self): return self.payload_path / Path("Apple/PrivateFrameworks")
+
+    # Apple Extensions
+    @property
+    def applebcm_path(self): return self.payload_apple_kexts_path / Path("AppleBCM5701Ethernet.kext")
+    @property
+    def applehda_path(self): return self.payload_apple_kexts_path / Path("AppleHDA.kext")
+    @property
+    def geforcega_path(self): return self.payload_apple_kexts_path / Path("GeForceGA.bundle")
+    @property
+    def geforcetesla_path(self): return self.payload_apple_kexts_path / Path("GeForceTesla.kext")
+    @property
+    def geforceteslagl_path(self): return self.payload_apple_kexts_path / Path("GeForceTeslaGLDriver.bundle")
+    @property
+    def geforceteslava_path(self): return self.payload_apple_kexts_path / Path("GeForceTeslaVADriver.bundle")
+    @property
+    def iosurface_path(self): return self.payload_apple_kexts_path / Path("IOSurface.kext")
+    @property
+    def nvdanv50haltesla_path(self): return self.payload_apple_kexts_path / Path("NVDANV50HalTesla.kext")
+    @property
+    def nvdaresmantesla_path(self): return self.payload_apple_kexts_path / Path("NVDAResmanTesla.kext")
+
+    # Apple Frameworks
+    @property
+    def coredisplay_path(self): return self.payload_apple_frameworks_path / Path("CoreDisplay.framework")
+    @property
+    def iosurface_f_path(self): return self.payload_apple_frameworks_path / Path("IOSurface.framework")
+    @property
+    def opengl_path(self): return self.payload_apple_frameworks_path / Path("OpenGL.framework")
+
+    # Apple LaunchDaemons
+    @property
+    def hiddhack_path(self): return self.payload_apple_lauchd_path / Path("HiddHack.plist")
+
+    # Apple PrivateFrameworks
+    @property
+    def gpusupport_path(self): return self.payload_apple_private_frameworks_path / Path("GPUSupport.framework")
+    @property
+    def skylight_path(self): return self.payload_apple_private_frameworks_path / Path("SkyLight.framework")

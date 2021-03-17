@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>NVDANV50HalTesla</string>
+	<key>CFBundleGetInfoString</key>
+	<string>NVDANV50HalTesla 10.4.14 310.90.30.05b27</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.nvidia.classic.NVDANV50HalTesla</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>NVIDIA NV50 Resman Kernel Extension</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>10.4.14</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>10.0.4</string>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>NVidiaRM</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.nvidia.classic.NVDANV50HalTesla</string>
+			<key>IOClass</key>
+			<string>NVDANV50HAL</string>
+			<key>IOMatchCategory</key>
+			<string>IOService</string>
+			<key>IOProbeScore</key>
+			<integer>70000</integer>
+			<key>IOPropertyMatch</key>
+			<dict>
+				<key>NVArch</key>
+				<string>NV50</string>
+				<key>NVDAType</key>
+				<string>Official</string>
+				<key>nubType</key>
+				<string>NVDAHal</string>
+				<key>unmatched</key>
+				<string>yes</string>
+			</dict>
+			<key>IOProviderClass</key>
+			<string>IOService</string>
+		</dict>
+	</dict>
+	<key>OSBundleCompatibleVersion</key>
+	<string>1.2.0</string>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IOPCIFamily</key>
+		<string>2.4</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>9.0.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>9.0.0</string>
+		<key>com.apple.nvidia.classic.NVDAResmanTesla</key>
+		<string>1.2.0</string>
+	</dict>
+	<key>OSBundleRequired</key>
+	<string>Safe Boot</string>
+</dict>
+</plist>

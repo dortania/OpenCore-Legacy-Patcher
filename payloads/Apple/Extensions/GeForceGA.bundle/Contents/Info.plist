@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>GeForceGA</string>
+	<key>CFBundleGetInfoString</key>
+	<string>GeForceGA 10.4.14 310.90.30.05b27</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.GeForceGA</string>
+	<key>CFBundleName</key>
+	<string>NVIDIA GeForce Graphics Driver</string>
+	<key>CFBundleShortVersionString</key>
+	<string>10.4.14</string>
+	<key>CFBundleVersion</key>
+	<string>10.0.4</string>
+	<key>CFPlugInDynamicRegistration</key>
+	<string>NO</string>
+	<key>CFPlugInFactories</key>
+	<dict>
+		<key>10de0100-0000-0000-0000-000a27898d3e</key>
+		<string>GeForceGAFactory</string>
+	</dict>
+	<key>CFPlugInTypes</key>
+	<dict>
+		<key>ACCF0000-0000-0000-0000-000a2789904e</key>
+		<array>
+			<string>10de0100-0000-0000-0000-000a27898d3e</string>
+		</array>
+	</dict>
+	<key>NSExecutable</key>
+	<string>GeForceGA</string>
+	<key>Personality</key>
+	<dict>
+		<key>IOProviderClass</key>
+		<string>IOFramebuffer</string>
+	</dict>
+</dict>
+</plist>

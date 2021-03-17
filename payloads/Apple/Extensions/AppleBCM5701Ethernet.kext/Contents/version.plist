@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildAliasOf</key>
+	<string>AppleBroadcom570X</string>
+	<key>BuildVersion</key>
+	<string>113</string>
+	<key>CFBundleShortVersionString</key>
+	<string>10.3.5</string>
+	<key>CFBundleVersion</key>
+	<string>10.3.5</string>
+	<key>ProjectName</key>
+	<string>AppleBroadcom570X</string>
+	<key>SourceVersion</key>
+	<string>1067120002000000</string>
+</dict>
+</plist>
