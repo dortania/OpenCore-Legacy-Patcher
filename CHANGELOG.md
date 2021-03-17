@@ -2,6 +2,9 @@
 
 ## 0.0.19
 - Add SMC-Spoof.kext to avoid triggering `smcupdater`
+- Add Root Volume patching for older machines
+  - AppleHDA Patch for 2011 and older (Excluding MacPro4,1+)
+  - AppleBCM5701Ethernet patch for certian 2009-2011 Macs
 
 ## 0.0.18
 - Disable Vault by default due to breaking installations

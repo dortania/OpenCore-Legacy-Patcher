@@ -293,12 +293,15 @@ running, however this will enforce iMac Nvidia Build Patches.
         utilities.header(["Patching System Volume"])
         print("""Patches Root volume to fix misc issues such as:
 
-- Audio
-- Ethernet
+- Audio (AppleHDA) Patch for 2011 and older (Excluding MacPro4,1+)
+- Ethernet (AppleBCM5701Ethernet) patch for certian 2009-2011 Macs
 
 Note: When the system volume is patched, you can no longer have Delta
 updates or have FileVault enabled. Please think carefully if this is
 desired.
+
+Root Volume patches can be reverted by booting Recovery and selecting
+older OS snapshots under Time Machine System Restore.
         """)
         change_kext_menu = input("Patch System Volume?(y/n): ")
         if change_kext_menu in {"y", "Y", "yes", "Yes"}:
@@ -342,9 +345,9 @@ desired.
             options = (
                 [["Build OpenCore", self.build_opencore]] if ((self.constants.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) else []) + [
                 ["Install OpenCore to USB/internal drive", self.install_opencore],
+                ["Post-Install Volume Patch", self.PatchVolume],
                 ["Change Model", self.change_model],
                 ["Patcher Settings", self.patcher_settings],
-                #["Patch Volume", self.PatchVolume],
                 ["Credits", self.credits]
             ]
 
