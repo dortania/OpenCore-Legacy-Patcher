@@ -294,7 +294,7 @@ running, however this will enforce iMac Nvidia Build Patches.
         print("""Patches Root volume to fix misc issues such as:
 
 - Audio (AppleHDA) Patch for 2011 and older (Excluding MacPro4,1+)
-- Ethernet (AppleBCM5701Ethernet) patch for certian 2009-2011 Macs
+- Ethernet (AppleBCM5701Ethernet) Patch for certain 2009-2011 Macs
 
 Note: When the system volume is patched, you can no longer have Delta
 updates or have FileVault enabled. Please think carefully if this is
