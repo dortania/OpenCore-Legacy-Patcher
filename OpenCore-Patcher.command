@@ -4,7 +4,7 @@ from __future__ import print_function
 
 import subprocess, sys, time, platform
 
-from Resources import build, ModelArray, Constants, utilities
+from Resources import build, ModelArray, Constants, SysPatch, utilities
 
 
 class OpenCoreLegacyPatcher():
@@ -288,6 +288,25 @@ running, however this will enforce iMac Nvidia Build Patches.
   - Slice:\t\tVoodooHDA
   - cdf:\t\tNightShiftEnabler"""]).start()
 
+    def PatchVolume(self):
+        utilities.cls()
+        utilities.header(["Patching System Volume"])
+        print("""Patches Root volume to fix misc issues such as:
+
+- Audio
+- Ethernet
+
+Note: When the system volume is patched, you can no longer have Delta
+updates or have FileVault enabled. Please think carefully if this is
+desired.
+        """)
+        change_kext_menu = input("Patch System Volume?(y/n): ")
+        if change_kext_menu in {"y", "Y", "yes", "Yes"}:
+            SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_patch()
+        else:
+            print("Returning to main menu")
+
+
     def main_menu(self):
         response = None
         ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS11
@@ -325,6 +344,7 @@ running, however this will enforce iMac Nvidia Build Patches.
                 ["Install OpenCore to USB/internal drive", self.install_opencore],
                 ["Change Model", self.change_model],
                 ["Patcher Settings", self.patcher_settings],
+                #["Patch Volume", self.PatchVolume],
                 ["Credits", self.credits]
             ]
 

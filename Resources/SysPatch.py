@@ -126,6 +126,8 @@ class PatchSysVolume:
 
     def patch_root_vol(self):
         print(f"- Detecting patches for {self.model}")
+        print("- Creating backup snapshot")
+        subprocess.run("tmutil snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # Start Patch engine
         if self.model in ModelArray.LegacyAudio:
@@ -137,13 +139,14 @@ class PatchSysVolume:
         if self.model in ModelArray.EthernetBroadcom:
             print("- Attempting AppleBCM5701Ethernet Patch")
             subprocess.run(f"sudo rm -R {self.mount_extensions}/IONetworkingFamily.kext/Contents/PlugIns/AppleBCM5701Ethernet.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(f"sudo cp -R {self.constants.applebcm_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo cp -R {self.constants.applebcm_path} {self.mount_extensions}/IONetworkingFamily.kext/Contents/PlugIns/".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             rebuild_required = True
 
         if self.model in ModelArray.LegacyGPU:
             print("- Attemping Legacy GPU Patches")
             #TODO: Re-enable when GPU patches are public
             #self.gpu_accel_patches()
+            #rebuild_required = True
 
         if rebuild_required is True:
             self.rebuild_snapshot()
@@ -158,7 +161,9 @@ class PatchSysVolume:
     def start_patch(self):
         # Check SIP
         if self.constants.custom_model != None:
-            print("Cannot patch for another machine!")
+            print("Root Patching must be done on target machine!")
+        elif self.model in ModelArray.NoRootPatch11:
+            print("Root Patching not required for this machine!")
         elif self.model not in ModelArray.SupportedSMBIOS:
             print("Cannot run on this machine!")
         elif self.constants.detected_os < 10.16:
@@ -169,13 +174,26 @@ class PatchSysVolume:
                 sip_status = nvram_dump["csr-active-config"]
             except KeyError:
                 print("- csr-active-config var is missing")
-                sip_status = "00000000"
-            print(sip_status)
-            if sip_status != "EF0F0000":
+                sip_status = b'\x00\x00\x00\x00'
+
+            smb_model: str = subprocess.run("nvram 94B73556-2197-4702-82A8-3E1337DAFBFB:HardwareModel	".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+            if not smb_model.startswith("nvram: Error getting variable"):
+                smb_model = [line.strip().split(":HardwareModel	", 1)[1] for line in smb_model.split("\n") if line.strip().startswith("94B73556-2197-4702-82A8-3E1337DAFBFB:")][0]
+                if smb_model.startswith("j137"):
+                    smb_status = "Enabled"
+                else:
+                    smb_status = "Disabled"
+            else:
+                smb_status = "Disabled"
+
+            if (sip_status == b'\xef\x0f\x00\x00') and (smb_status == "Disabled"):
+                print("- Detected SIP is disabled, continuing")
+                input("\nPress [ENTER] to continue")
                 self.find_mount_root_vol()
                 print("- Patching complete")
                 print("\nPlease reboot the machine for patches to take effect")
             else:
-                print("- SIP enabled, unable to patch")
-                print("\nPlease disable SIP in Patcher Settings, build OpenCore again and reinstall OpenCore")
+                print("- SIP and SecureBootModel set incorrectly, unable to patch")
+                print("\nPlease disable SIP and SecureBootModel in Patcher Settings")
+                print("Then build OpenCore again, reinstall OpenCore to your drive and reboot.")
         input("Press [Enter] to go exit.")

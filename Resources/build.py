@@ -86,9 +86,9 @@ class BuildOpenCore:
             # Ethernet patches
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
-            ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
+            #("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
             # Legacy audio
-            ("VoodooHDA.kext", self.constants.voodoohda_version, self.constants.voodoohda_path, lambda: self.model in ModelArray.LegacyAudio),
+            #("VoodooHDA.kext", self.constants.voodoohda_version, self.constants.voodoohda_path, lambda: self.model in ModelArray.LegacyAudio),
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
         ]:

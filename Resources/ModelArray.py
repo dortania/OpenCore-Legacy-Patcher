@@ -813,3 +813,22 @@ NoAPFSsupport = [
     "Xserve3,1",
     "Dortania1,1"
 ]
+
+NoRootPatch11 = [
+    "MacBookAir5,1",
+    "MacBookAir5,2",
+    "MacBookPro9,1",
+    "MacBookPro9,2",
+    "MacBookPro10,1",
+    "MacBookPro10,2",
+    "Macmini6,1",
+    "Macmini6,2",
+    "iMac13,1",
+    "iMac13,2",
+    "iMac14,1",
+    "iMac14,2",
+    "iMac14,3",
+    "MacPro4,1",
+    "MacPro5,1",
+    "Xserve3,1",
+]
