@@ -26,9 +26,9 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | MacBook2,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | MacBook3,1 | Late 2007 | ^^ | ^^ |
 | MacBook4,1 | Early 2008 | ^^ | ^^ |
-| MacBook5,1 | Late 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/> |
+| MacBook5,1 | Late 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Trackpad Issues |
 | MacBook5,2 | Early 2009 | ^^ | ^^ |
-| MacBook6,1 | Late 2009 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/> |
+| MacBook6,1 | Late 2009 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/> |
 | MacBook7,1 | Mid-2010 | ^^ | ^^ |
 
 ### MacBook Air
@@ -36,8 +36,8 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | SMBIOS | Year | Supported | Comment |
 | :--- | :--- | :--- | :--- |
 | MacBookAir1,1 | Early 2008 | <span style="color:red"> NO </span> | Requires SSE4.1 CPU |
-| MacBookAir2,1 | Late 2008 |<span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- No Wifi Patches implemented([#102](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/102)) |
-| MacBookAir3,1 | Late 2010 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76)) |
+| MacBookAir2,1 | Late 2008 |<span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- No Wifi Patches implemented([#102](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/102)) |
+| MacBookAir3,1 | Late 2010 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76)) |
 | MacBookAir3,2 | ^^ | ^^ | ^^ |
 | MacBookAir4,1 | Mid-2011 | ^^ | ^^ |
 | MacBookAir4,2 | ^^ | ^^ | ^^ |
@@ -53,15 +53,15 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | MacBookPro2,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | MacBookPro2,2 | Late 2006 | ^^ | ^^ |
 | MacBookPro3,1 | Mid-2007 | ^^ | - Requires SSE4.1 CPU |
-| MacBookPro4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- No Wifi Patches implemented([#102](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/102)) |
-| MacBookPro5,1 | Late 2008 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76)) |
+| MacBookPro4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- No Wifi Patches implemented([#102](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/102)) |
+| MacBookPro5,1 | Late 2008 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76)) |
 | MacBookPro5,2 | Early 2009 | ^^ | ^^ |
 | MacBookPro5,3 | Mid-2009 | ^^ | ^^ |
 | MacBookPro5,4 | ^^ | ^^ | ^^ |
 | MacBookPro5,5 | ^^ | ^^ | ^^ |
 | MacBookPro6,1 | Mid-2010 | ^^ | ^^ |
 | MacBookPro6,2 | ^^ | ^^ | ^^ |
-| MacBookPro7,1 | ^^ | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Ethernet Connection Issues([#45](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/45)) |
+| MacBookPro7,1 | ^^ | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Ethernet Connection Issues([#45](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/45)) |
 | MacBookPro8,1 | Early 2011 | ^^ | ^^ |
 | MacBookPro8,2 | ^^ | ^^ | ^^ |
 | MacBookPro8,3 | ^^ | ^^ | ^^ |
@@ -76,9 +76,9 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | :--- | :--- | :--- | :--- |
 | Macmini1,1 | Early 2006 | <span style="color:red"> NO </span> | 32-Bit CPU limitation |
 | Macmini2,1 | Mid-2007 | ^^ | 32-Bit Firmware limitation |
-| Macmini3,1 | Early 2009 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76)) |
+| Macmini3,1 | Early 2009 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76)) |
 | Macmini4,1 | Mid-2010 | ^^ | ^^ |
-| Macmini5,1 | Mid-2011 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Ethernet Connection Issues([#45](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/45)) |
+| Macmini5,1 | Mid-2011 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Ethernet Connection Issues([#45](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/45)) |
 | Macmini5,2 | ^^ | ^^ | ^^ |
 | Macmini5,3 | ^^ | ^^ | ^^ |
 | Macmini6,1 | Late 2012 | ^^ | <span style="color:green"> Everything is supported</span> |
@@ -93,11 +93,11 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | iMac5,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | iMac5,2 | ^^ | ^^ | ^^ |
 | iMac6,1 | ^^ | ^^ | ^^ |
-| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>  |
-| iMac8,1 | Early 2008 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- No Wifi Patches implemented([#102](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/102)) |
-| iMac9,1 | Early 2009 | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/> |
+| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>  |
+| iMac8,1 | Early 2008 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- No Wifi Patches implemented([#102](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/102)) |
+| iMac9,1 | Early 2009 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/> |
 | iMac10,1 | Late 2009 | ^^ | ^^ |
-| iMac11,1 | ^^ | ^^ | - No GPU Acceleration in Big Sur<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Ethernet Connection Issues([#45](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/45)) |
+| iMac11,1 | ^^ | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Ethernet Connection Issues([#45](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/45)) |
 | iMac11,2 | Mid-2010 | ^^ | ^^ |
 | iMac11,3 | ^^ | ^^ | ^^ |
 | iMac12,1 | Mid-2011 | ^^ | ^^ |
