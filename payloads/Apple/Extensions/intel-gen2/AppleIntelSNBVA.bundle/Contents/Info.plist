@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildMachineOSBuild</key>
+	<string>16B2657</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>AppleIntelSNBFBVA</string>
+	<key>CFBundleGetInfoString</key>
+	<string>AppleIntelSNBFBVA 10.4.14</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.AppleIntelSNBFBVA</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>com.apple.AppleIntelSNBFBVA</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>10.4.14</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>10.0.4</string>
+	<key>CSResourcesFileMapped</key>
+	<string>yes</string>
+	<key>DTCompiler</key>
+	<string>com.apple.compilers.llvm.clang.1_0</string>
+	<key>DTPlatformBuild</key>
+	<string>9P107g</string>
+	<key>DTPlatformVersion</key>
+	<string>GM</string>
+	<key>DTSDKBuild</key>
+	<string>17F68</string>
+	<key>DTSDKName</key>
+	<string>macosx10.13internal</string>
+	<key>DTXcode</key>
+	<string>0930</string>
+	<key>DTXcodeBuild</key>
+	<string>9P107g</string>
+	<key>System Support</key>
+	<dict>
+		<key>TSNBCRB1,1</key>
+		<dict>
+			<key>boostIG</key>
+			<true/>
+			<key>preferredBGRA</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>

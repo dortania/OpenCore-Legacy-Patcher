@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BuildMachineOSBuild</key>
+	<string>16B2657</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>AMDRadeonX4000HWServices</string>
+	<key>CFBundleGetInfoString</key>
+	<string>AMDRadeonX4000HWServices 1.66.42 19699</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.kext.AMDRadeonX4000HWServices</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>AMDRadeonX4000HWServices</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.66.42</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>1.6.6</string>
+	<key>DTCompiler</key>
+	<string>com.apple.compilers.llvm.clang.1_0</string>
+	<key>DTPlatformBuild</key>
+	<string>9P107g</string>
+	<key>DTPlatformVersion</key>
+	<string>GM</string>
+	<key>DTSDKBuild</key>
+	<string>17F68</string>
+	<key>DTSDKName</key>
+	<string>macosx10.13internal</string>
+	<key>DTXcode</key>
+	<string>0930</string>
+	<key>DTXcodeBuild</key>
+	<string>9P107g</string>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>AMD Radeon X4000 CI Services</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.kext.AMDRadeonX4000HWServices</string>
+			<key>IOClass</key>
+			<string>AMDRadeonX4000_AMDRadeonHWServicesCI</string>
+			<key>IOMatchCategory</key>
+			<string>AMDRadeonX4000HWServices</string>
+			<key>IOPCIMatch</key>
+			<string>0x66401002 0x66411002 0x66461002 0x66471002 0x66501002 0x66511002 0x665C1002 0x665D1002 0x67B01002</string>
+			<key>IOPCITunnelCompatible</key>
+			<true/>
+			<key>IOProbeScore</key>
+			<integer>65051</integer>
+			<key>IOPropertyMatch</key>
+			<dict>
+				<key>LoadHWServices</key>
+				<true/>
+			</dict>
+			<key>IOProviderClass</key>
+			<string>IOPCIDevice</string>
+		</dict>
+		<key>AMD Radeon X4000 Fiji Services</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.kext.AMDRadeonX4000HWServices</string>
+			<key>IOClass</key>
+			<string>AMDRadeonX4000_AMDRadeonHWServicesFiji</string>
+			<key>IOMatchCategory</key>
+			<string>AMDRadeonX4000HWServices</string>
+			<key>IOPCIMatch</key>
+			<string>0x73001002 0x73011002</string>
+			<key>IOPCITunnelCompatible</key>
+			<true/>
+			<key>IOProbeScore</key>
+			<integer>65051</integer>
+			<key>IOPropertyMatch</key>
+			<dict>
+				<key>LoadHWServices</key>
+				<true/>
+			</dict>
+			<key>IOProviderClass</key>
+			<string>IOPCIDevice</string>
+		</dict>
+		<key>AMD Radeon X4000 Polaris Services</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.kext.AMDRadeonX4000HWServices</string>
+			<key>IOClass</key>
+			<string>AMDRadeonX4000_AMDRadeonHWServicesPolaris</string>
+			<key>IOMatchCategory</key>
+			<string>AMDRadeonX4000HWServices</string>
+			<key>IOPCIMatch</key>
+			<string>0x67C01002 0x67C11002 0x67C21002 0x67C41002 0x67C71002 0x67DF1002 0x67D01002 0x67C81002 0x67C91002 0x67CA1002 0x67CC1002 0x67CF1002 0x67E01002 0x67E31002 0x67E81002 0x67EB1002 0x67EF1002 0x67FF1002 0x67E11002 0x67E71002 0x67E91002</string>
+			<key>IOPCITunnelCompatible</key>
+			<true/>
+			<key>IOProbeScore</key>
+			<integer>65051</integer>
+			<key>IOPropertyMatch</key>
+			<dict>
+				<key>LoadHWServices</key>
+				<true/>
+			</dict>
+			<key>IOProviderClass</key>
+			<string>IOPCIDevice</string>
+		</dict>
+		<key>AMD Radeon X4000 SI Services</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.kext.AMDRadeonX4000HWServices</string>
+			<key>IOClass</key>
+			<string>AMDRadeonX4000_AMDRadeonHWServicesSI</string>
+			<key>IOMatchCategory</key>
+			<string>AMDRadeonX4000HWServices</string>
+			<key>IOPCIMatch</key>
+			<string>0x67901002 0x67981002 0x679A1002 0x679E1002 0x67801002 0x68201002 0x68211002 0x68231002 0x68251002 0x68271002 0x682B1002 0x682D1002 0x682F1002 0x68351002 0x68391002 0x683B1002 0x683D1002 0x683F1002 0x68001002 0x68011002 0x68061002 0x68081002 0x68101002 0x68181002 0x68191002</string>
+			<key>IOPCITunnelCompatible</key>
+			<true/>
+			<key>IOProbeScore</key>
+			<integer>65051</integer>
+			<key>IOPropertyMatch</key>
+			<dict>
+				<key>LoadHWServices</key>
+				<true/>
+			</dict>
+			<key>IOProviderClass</key>
+			<string>IOPCIDevice</string>
+		</dict>
+		<key>AMD Radeon X4000 VI Services</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.kext.AMDRadeonX4000HWServices</string>
+			<key>IOClass</key>
+			<string>AMDRadeonX4000_AMDRadeonHWServicesVI</string>
+			<key>IOMatchCategory</key>
+			<string>AMDRadeonX4000HWServices</string>
+			<key>IOPCIMatch</key>
+			<string>0x69201002 0x69211002 0x69301002 0x69381002 0x69391002</string>
+			<key>IOPCITunnelCompatible</key>
+			<true/>
+			<key>IOProbeScore</key>
+			<integer>65051</integer>
+			<key>IOPropertyMatch</key>
+			<dict>
+				<key>LoadHWServices</key>
+				<true/>
+			</dict>
+			<key>IOProviderClass</key>
+			<string>IOPCIDevice</string>
+		</dict>
+	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2017 AMD. All rights reserved.</string>
+	<key>OSBundleCompatibleVersion</key>
+	<string>1.6.6</string>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IOACPIFamily</key>
+		<string>1.4</string>
+		<key>com.apple.iokit.IOGraphicsFamily</key>
+		<string>2.4.1</string>
+		<key>com.apple.iokit.IOPCIFamily</key>
+		<string>2.9</string>
+		<key>com.apple.kpi.bsd</key>
+		<string>15.0.0</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>15.0.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>15.0.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>15.0.0</string>
+		<key>com.apple.kpi.unsupported</key>
+		<string>15.0.0</string>
+	</dict>
+	<key>OSBundleRequired</key>
+	<string>Safe Boot</string>
+</dict>
+</plist>

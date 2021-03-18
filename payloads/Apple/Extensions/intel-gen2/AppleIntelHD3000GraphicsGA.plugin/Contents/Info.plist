@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>AppleIntelHD3000GraphicsGA</string>
+	<key>CFBundleGetInfoString</key>
+	<string>AppleIntelHD3000GraphicsGA 10.4.14</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.driver.AppleIntelHD3000GraphicsGA</string>
+	<key>CFBundleName</key>
+	<string>Apple Gen6 Graphics Driver</string>
+	<key>CFBundleShortVersionString</key>
+	<string>10.4.14</string>
+	<key>CFBundleVersion</key>
+	<string>10.0.4</string>
+	<key>CFPlugInDynamicRegistration</key>
+	<string>NO</string>
+	<key>CFPlugInFactories</key>
+	<dict>
+		<key>80862582-0000-0000-0000-ffffffffffff</key>
+		<string>Gen6GAFactory</string>
+	</dict>
+	<key>CFPlugInTypes</key>
+	<dict>
+		<key>ACCF0000-0000-0000-0000-000a2789904e</key>
+		<array>
+			<string>80862582-0000-0000-0000-ffffffffffff</string>
+		</array>
+	</dict>
+	<key>NSExecutable</key>
+	<string>AppleIntelHD3000GraphicsGA</string>
+	<key>Personality</key>
+	<dict>
+		<key>IOProviderClass</key>
+		<string>IOFramebuffer</string>
+	</dict>
+</dict>
+</plist>

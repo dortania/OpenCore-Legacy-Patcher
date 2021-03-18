@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>AppleIntelHDGraphics</string>
+	<key>CFBundleGetInfoString</key>
+	<string>AppleIntelHDGraphics 10.4.14</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.driver.AppleIntelHDGraphics</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Apple Embedded Graphics Kernel Extension</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>10.4.14</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>10.0.4</string>
+	<key>GPUCompanionBundles</key>
+	<array>
+		<string>AppleIntelHDGraphicsGA.plugin</string>
+		<string>AppleIntelHDGraphicsGLDriver.bundle</string>
+		<string>AppleIntelHDGraphicsVADriver.bundle</string>
+	</array>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>Gen575</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.driver.AppleIntelHDGraphics</string>
+			<key>IOCFPlugInTypes</key>
+			<dict>
+				<key>ACCF0000-0000-0000-0000-000a2789904e</key>
+				<string>AppleIntelHDGraphicsGA.plugin</string>
+			</dict>
+			<key>IOClass</key>
+			<string>Gen575</string>
+			<key>IODVDBundleName</key>
+			<string>AppleIntelHDGraphicsVADriver</string>
+			<key>IOGLBundleName</key>
+			<string>AppleIntelHDGraphicsGLDriver</string>
+			<key>IOMatchCategory</key>
+			<string>IOAccelerator</string>
+			<key>IOPCIClassMatch</key>
+			<string>0x03000000&amp;0xff000000 0x04000000&amp;0xff000000</string>
+			<key>IOPCIPrimaryMatch</key>
+			<string>0x00448086 0x00468086</string>
+			<key>IOProbeScore</key>
+			<integer>100</integer>
+			<key>IOProviderClass</key>
+			<string>IOPCIDevice</string>
+			<key>IOSourceVersion</key>
+			<string>0.0.0.0.0</string>
+			<key>IOVARendererID</key>
+			<integer>17301504</integer>
+		</dict>
+	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 1999-2012 Apple Inc. All rights reserved.</string>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IOGraphicsFamily</key>
+		<string>1.0.0b1</string>
+		<key>com.apple.iokit.IOPCIFamily</key>
+		<string>1.0.0b1</string>
+		<key>com.apple.kpi.bsd</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.unsupported</key>
+		<string>8.0.0</string>
+	</dict>
+</dict>
+</plist>

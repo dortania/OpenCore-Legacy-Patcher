@@ -269,42 +269,94 @@ LegacyAudio = [
 ## GPU
 
 LegacyGPU = [
-    "MacBook5,1",
-    "MacBook5,2",
-    "MacBook6,1",
-    "MacBook7,1",
-    "MacBookAir2,1",
-    "MacBookAir3,1",
-    "MacBookAir3,2",
-    "MacBookAir4,1",
-    "MacBookAir4,2",
-    "MacBookPro4,1",
-    "MacBookPro5,1",
-    "MacBookPro5,2",
-    "MacBookPro5,3",
-    "MacBookPro5,4",
-    "MacBookPro5,5",
-    "MacBookPro6,1",
-    "MacBookPro6,2",
-    "MacBookPro7,1",
-    "MacBookPro8,1",
-    "MacBookPro8,2",
-    "MacBookPro8,3",
-    "Macmini3,1",
-    "Macmini4,1",
-    "Macmini5,1",
-    "Macmini5,2",
-    "Macmini5,3",
-    "iMac7,1",
-    "iMac8,1",
-    "iMac9,1",
-    "iMac10,1",
-    "iMac11,1",
-    "iMac11,2",
-    "iMac11,3",
-    "iMac12,1",
-    "iMac12,2",
-    "Dortania1,1"
+    "MacBook5,1", # Nvidia 9000
+    "MacBook5,2", # Nvidia 9000
+    "MacBook6,1", # Nvidia 9000
+    "MacBook7,1", # Nvidia 300
+    "MacBookAir2,1", # Nvidia 9000
+    "MacBookAir3,1", # Nvidia 300
+    "MacBookAir3,2", # Nvidia 300
+    "MacBookAir4,1", # Intel 3000
+    "MacBookAir4,2", # Intel 3000
+    "MacBookPro4,1", # Nvidia 8000
+    "MacBookPro5,1", # Nvidia 9000
+    "MacBookPro5,2", # Nvidia 9000
+    "MacBookPro5,3", # Nvidia 9000
+    "MacBookPro5,4", # Nvidia 9000
+    "MacBookPro5,5", # Nvidia 9000
+    "MacBookPro6,1", # Intel 100 + Nvidia 300
+    "MacBookPro6,2", # Intel 100 + Nvidia 300
+    "MacBookPro7,1", # Nvidia 300
+    "MacBookPro8,1", # Intel 3000
+    "MacBookPro8,2", # Intel 3000 + AMD 6000
+    "MacBookPro8,3", # Intel 3000 + AMD 6000
+    "Macmini3,1", # Nvidia 9000
+    "Macmini4,1", # Nvidia 300
+    "Macmini5,1", # Intel 3000
+    "Macmini5,2", # AMD 6000
+    "Macmini5,3", # Intel 3000
+    "iMac7,1", # AMD 2000
+    "iMac8,1", # AMD 2000
+    "iMac9,1", # Nvidia 9000
+    #"iMac10,1", # Nvidia 9000 and AMD 4000
+    "iMac11,1", # AMD 4000
+    "iMac11,2", # AMD 4000 and 5000
+    "iMac11,3", # AMD 5000
+    "iMac12,1", # AMD 6000
+    "iMac12,2", # AMD 6000
+    "Dortania1,1" # RTX 3080
+]
+
+LegacyGPUNvidia = [
+    "MacBook5,1", # Nvidia 9000
+    "MacBook5,2", # Nvidia 9000
+    "MacBook6,1", # Nvidia 9000
+    "MacBook7,1", # Nvidia 300
+    "MacBookAir2,1", # Nvidia 9000
+    "MacBookAir3,1", # Nvidia 300
+    "MacBookAir3,2", # Nvidia 300
+    "MacBookPro4,1", # Nvidia 8000
+    "MacBookPro5,1", # Nvidia 9000
+    "MacBookPro5,2", # Nvidia 9000
+    "MacBookPro5,3", # Nvidia 9000
+    "MacBookPro5,4", # Nvidia 9000
+    "MacBookPro5,5", # Nvidia 9000
+    "MacBookPro6,1", # Intel 100 + Nvidia 300
+    "MacBookPro6,2", # Intel 100 + Nvidia 300
+    "MacBookPro7,1", # Nvidia 300
+    "Macmini3,1", # Nvidia 9000
+    "Macmini4,1", # Nvidia 300
+    "iMac9,1", # Nvidia 9000
+    #"iMac10,1", # Nvidia 9000 and AMD 4000
+]
+
+LegacyGPUAMD = [
+    "MacBookPro8,2", # Intel 3000 + AMD 6000
+    "MacBookPro8,3", # Intel 3000 + AMD 6000
+    "Macmini5,2", # AMD 6000
+    "iMac7,1", # AMD 2000
+    "iMac8,1", # AMD 2000
+    #"iMac10,1", # Nvidia 9000 and AMD 4000
+    "iMac11,1", # AMD 4000
+    "iMac11,2", # AMD 4000 and 5000
+    "iMac11,3", # AMD 5000
+    "iMac12,1", # AMD 6000
+    "iMac12,2", # AMD 6000
+]
+
+LegacyGPUIntelGen1 = [
+    "MacBookPro6,1", # Intel 100 + Nvidia 300
+    "MacBookPro6,2", # Intel 100 + Nvidia 300
+]
+
+LegacyGPUIntelGen2 = [
+    "MacBookAir4,1", # Intel 3000
+    "MacBookAir4,2", # Intel 3000
+    "MacBookPro8,1", # Intel 3000
+    "MacBookPro8,2", # Intel 3000 + AMD 6000
+    "MacBookPro8,3", # Intel 3000 + AMD 6000
+    "Macmini5,1", # Intel 3000
+    "Macmini5,3", # Intel 3000
 ]
 
 LegacyHID = [

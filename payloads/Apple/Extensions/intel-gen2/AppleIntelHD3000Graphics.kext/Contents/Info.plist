@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>AppleIntelHD3000Graphics</string>
+	<key>CFBundleGetInfoString</key>
+	<string>AppleIntelHD3000Graphics 10.4.14</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.driver.AppleIntelHD3000Graphics</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Apple Embedded Graphics Kernel Extension</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>10.4.14</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>10.0.4</string>
+	<key>GPUCompanionBundles</key>
+	<array>
+		<string>AppleIntelHD3000GraphicsGA.plugin</string>
+		<string>AppleIntelHD3000GraphicsGLDriver.bundle</string>
+		<string>AppleIntelHD3000GraphicsVADriver.bundle</string>
+	</array>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>Gen6</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.driver.AppleIntelHD3000Graphics</string>
+			<key>IOCFPlugInTypes</key>
+			<dict>
+				<key>ACCF0000-0000-0000-0000-000a2789904e</key>
+				<string>AppleIntelHD3000GraphicsGA.plugin</string>
+			</dict>
+			<key>IOClass</key>
+			<string>Gen6Accelerator</string>
+			<key>IODVDBundleName</key>
+			<string>AppleIntelHD3000GraphicsVADriver</string>
+			<key>IOGLBundleName</key>
+			<string>AppleIntelHD3000GraphicsGLDriver</string>
+			<key>IOGVACodec</key>
+			<string>Gen6</string>
+			<key>IOGVAScaler</key>
+			<string>Gen6</string>
+			<key>IOMatchCategory</key>
+			<string>IOAccelerator</string>
+			<key>IOPCIClassMatch</key>
+			<string>0x03000000&amp;0xff000000</string>
+			<key>IOPCIPrimaryMatch</key>
+			<string>0x01068086 0x06018086 0x01168086 0x01028086 0x01268086</string>
+			<key>IOProbeScore</key>
+			<integer>100</integer>
+			<key>IOProviderClass</key>
+			<string>IOPCIDevice</string>
+			<key>IOSourceVersion</key>
+			<string>0.0.0.0.0</string>
+			<key>IOVARendererID</key>
+			<integer>17301505</integer>
+			<key>VRAMMethod</key>
+			<integer>0</integer>
+			<key>VRAMOverride</key>
+			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 1999-2012 Apple Inc. All rights reserved.</string>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IOGraphicsFamily</key>
+		<string>1.0.0b1</string>
+		<key>com.apple.iokit.IOPCIFamily</key>
+		<string>1.0.0b1</string>
+		<key>com.apple.kpi.bsd</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.unsupported</key>
+		<string>8.0.0</string>
+	</dict>
+</dict>
+</plist>

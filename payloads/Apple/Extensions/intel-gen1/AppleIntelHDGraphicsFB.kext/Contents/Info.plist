@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>AppleIntelHDGraphicsFB</string>
+	<key>CFBundleGetInfoString</key>
+	<string>AppleIntelHDGraphicsFB 10.4.14</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.apple.driver.AppleIntelHDGraphicsFB</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>com.apple.driver.AppleIntelHDGraphicsFB</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>10.4.14</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>10.0.4</string>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>AppleIntelHDGraphicsFB</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.driver.AppleIntelHDGraphicsFB</string>
+			<key>FBCControl</key>
+			<dict>
+				<key>Compression</key>
+				<integer>1</integer>
+			</dict>
+			<key>FeatureControl</key>
+			<dict>
+				<key>FBC</key>
+				<integer>1</integer>
+				<key>GPUInterruptHandling</key>
+				<integer>0</integer>
+				<key>Gamma</key>
+				<integer>1</integer>
+				<key>MaximumSelfRefreshLevel</key>
+				<integer>1</integer>
+				<key>PowerStates</key>
+				<integer>1</integer>
+				<key>RSTimerTest</key>
+				<integer>1</integer>
+				<key>RenderStandby</key>
+				<integer>1</integer>
+				<key>Watermarks</key>
+				<integer>1</integer>
+			</dict>
+			<key>IOClass</key>
+			<string>AppleIntelHDGraphicsFB</string>
+			<key>IOMatchCategory</key>
+			<string>IOFramebuffer</string>
+			<key>IOPCIClassMatch</key>
+			<string>0x03000000&amp;0xff000000</string>
+			<key>IOPCIPrimaryMatch</key>
+			<string>0x468086 0x428086</string>
+			<key>IOProbeScore</key>
+			<integer>80000</integer>
+			<key>IOProviderClass</key>
+			<string>IOPCIDevice</string>
+			<key>IOSourceVersion</key>
+			<string>10.4.14</string>
+		</dict>
+	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 1999-2012 Apple Inc. All rights reserved.</string>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IOACPIFamily</key>
+		<string>1.2</string>
+		<key>com.apple.iokit.IOGraphicsFamily</key>
+		<string>1.3</string>
+		<key>com.apple.iokit.IOPCIFamily</key>
+		<string>1.1</string>
+		<key>com.apple.kpi.bsd</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.unsupported</key>
+		<string>8.0.0</string>
+	</dict>
+	<key>OSBundleRequired</key>
+	<string>Safe Boot</string>
+</dict>
+</plist>

@@ -170,23 +170,22 @@ class Constants:
 
     # Apple Extensions
     @property
-    def applebcm_path(self): return self.payload_apple_kexts_path / Path("AppleBCM5701Ethernet.kext")
+    def applebcm_path(self): return self.payload_apple_kexts_path / Path("misc-kexts/AppleBCM5701Ethernet.kext")
     @property
-    def applehda_path(self): return self.payload_apple_kexts_path / Path("AppleHDA.kext")
+    def applehda_path(self): return self.payload_apple_kexts_path / Path("misc-kexts/AppleHDA.kext")
     @property
-    def geforcega_path(self): return self.payload_apple_kexts_path / Path("GeForceGA.bundle")
+    def iosurface_path(self): return self.payload_apple_kexts_path / Path("misc-kexts/IOSurface.kext")
+
+
+    # GPU Kexts and Bundles
     @property
-    def geforcetesla_path(self): return self.payload_apple_kexts_path / Path("GeForceTesla.kext")
+    def legacy_nvidia_path(self): return self.payload_apple_kexts_path / Path("legacy-nvidia")
     @property
-    def geforceteslagl_path(self): return self.payload_apple_kexts_path / Path("GeForceTeslaGLDriver.bundle")
+    def legacy_amd_path(self): return self.payload_apple_kexts_path / Path("legacy-amd")
     @property
-    def geforceteslava_path(self): return self.payload_apple_kexts_path / Path("GeForceTeslaVADriver.bundle")
+    def legacy_intel_gen1_path(self): return self.payload_apple_kexts_path / Path("intel-gen1")
     @property
-    def iosurface_path(self): return self.payload_apple_kexts_path / Path("IOSurface.kext")
-    @property
-    def nvdanv50haltesla_path(self): return self.payload_apple_kexts_path / Path("NVDANV50HalTesla.kext")
-    @property
-    def nvdaresmantesla_path(self): return self.payload_apple_kexts_path / Path("NVDAResmanTesla.kext")
+    def legacy_intel_gen2_path(self): return self.payload_apple_kexts_path / Path("intel-gen2")
 
     # Apple Frameworks
     @property
