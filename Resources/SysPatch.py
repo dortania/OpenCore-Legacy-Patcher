@@ -88,29 +88,29 @@ class PatchSysVolume:
 
         if self.model in ModelArray.LegacyGPUNvidia:
             print("- Adding legacy Nvidia Kexts and Bundles")
-            subprocess.run(f"sudo ditto {self.constants.legacy_nvidia_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo ditto {self.constants.legacy_nvidia_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         if self.model in ModelArray.LegacyGPUAMD:
             print("- Adding legacy AMD Kexts and Bundles")
-            subprocess.run(f"sudo ditto {self.constants.legacy_amd_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo ditto {self.constants.legacy_amd_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         if self.model in ModelArray.LegacyGPUIntelGen1:
             print("- Adding legacy Intel 1st Gen Kexts and Bundles")
-            subprocess.run(f"sudo ditto {self.constants.legacy_intel_gen1_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo ditto {self.constants.legacy_intel_gen1_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         if self.model in ModelArray.LegacyGPUIntelGen2:
             print("- Adding legacy Intel 2nd Gen Kexts and Bundles")
-            subprocess.run(f"sudo ditto {self.constants.legacy_intel_gen2_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo ditto {self.constants.legacy_intel_gen2_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         if self.model == "iMac10,1":
             current_gpu: str = subprocess.run("system_profiler SPDisplaysDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
             self.constants.current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
             if self.constants.current_gpuv == "AMD (0x1002)":
                 print("- Adding legacy AMD Kexts and Bundles")
-                subprocess.run(f"sudo ditto {self.constants.legacy_amd_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo ditto {self.constants.legacy_amd_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             else:
                 print("- Adding legacy Nvidia Kexts and Bundles")
-                subprocess.run(f"sudo ditto {self.constants.legacy_nvidia_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo ditto {self.constants.legacy_nvidia_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         print("- Adding Catalina's IOSurface.kext")
         subprocess.run(f"sudo cp -R {self.constants.iosurface_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
