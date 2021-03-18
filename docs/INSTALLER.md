@@ -34,7 +34,7 @@ Once finished, you'll find in your `~/macOS-Installer/` folder a DMG containing 
 
 ## Building
 
-Now we'll be formatting the USB to prep for both the macOS installer and OpenCore. We'll want to use macOS Extended (HFS+) with a GUID partition map(Using GUID is important for the patcher). This will create two partitions: the main `MyVolume` and a second called `EFI` which is used as a boot partition where your Mac's firmware will check for boot files.
+Now we'll be formatting the USB to prep for both the macOS installer and OpenCore. We'll want to use macOS Extended (HFS+) with a GUID partition map(Using GUID is important for the patcher). This will create two partitions: the main `MyVolume` and a second called `EFI` which is used as a boot partition where your Mac's firmware will check for boot files. `EFI` partitions will be hidden by default, so don't worry if you don't immediately see them.
 
 * Note: By default, Disk Utility only shows partitions – press Cmd/Win+2 to show all devices (alternatively you can press the View button)
 

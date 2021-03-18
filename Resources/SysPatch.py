@@ -82,19 +82,10 @@ class PatchSysVolume:
         subprocess.run(f"sudo rm -R {self.mount_extensions}/IOGPUFamily.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/IOSurface.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-        # Frameworks
-        subprocess.run(f"sudo rm -R {self.mount_frameworks}/CoreDisplay.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_frameworks}/IOSurface.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_frameworks}/OpenGL.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
-        # Private Framworks
-        subprocess.run(f"sudo rm -R {self.mount_private_frameworks}/GPUSupport.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_private_frameworks}/SkyLight.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
-
-        # Now add our trash
+        # Now add our patches
         # Kexts
-        print("- Adding supported Binaries")
+        print("- Adding supported Binaries for GPU Accleration")
+        print("- Adding legacy Nvidia Kexts and Bundles")
         subprocess.run(f"sudo cp -R {self.constants.geforcega_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo cp -R {self.constants.geforcetesla_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo cp -R {self.constants.geforceteslagl_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
@@ -102,23 +93,20 @@ class PatchSysVolume:
         subprocess.run(f"sudo cp -R {self.constants.iosurface_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo cp -R {self.constants.nvdanv50haltesla_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo cp -R {self.constants.nvdaresmantesla_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo cp -R {self.constants.geforcega_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo cp -R {self.constants.geforcega_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo cp -R {self.constants.geforcega_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo cp -R {self.constants.geforcega_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo cp -R {self.constants.geforcega_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # Frameworks
-        subprocess.run(f"sudo cp -R {self.constants.coredisplay_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo cp -R {self.constants.iosurface_f_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo cp -R {self.constants.opengl_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        print("- Merging legacy Frameworks")
+        subprocess.run(f"sudo ditto {self.constants.payload_apple_frameworks_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # LaunchDaemons
-        subprocess.run(f"sudo cp -R {self.constants.hiddhack_path} {self.mount_lauchd}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        print("- Adding HiddHack.plist")
+        subprocess.run(f"sudo ditto {self.constants.payload_apple_lauchd_path} {self.mount_lauchd}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo chmod 755 {self.mount_lauchd}/HiddHack.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo chown root:wheel {self.mount_lauchd}/HiddHack.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # PrivateFrameworks
-        subprocess.run(f"sudo cp -R {self.constants.gpusupport_path} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo cp -R {self.constants.skylight_path} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        print("- Merging legacy PrivateFrameworks")
+        subprocess.run(f"sudo ditto {self.constants.payload_apple_private_frameworks_path} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         print("- Disabling NSDefenestratorModeEnabled")
         subprocess.run("defaults write -g NSDefenestratorModeEnabled -bool false".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
@@ -126,7 +114,7 @@ class PatchSysVolume:
 
     def patch_root_vol(self):
         print(f"- Detecting patches for {self.model}")
-        print("- Creating backup snapshot")
+        print("- Creating backup snapshot (This may take some time)")
         subprocess.run("tmutil snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # Start Patch engine
@@ -142,11 +130,10 @@ class PatchSysVolume:
             subprocess.run(f"sudo cp -R {self.constants.applebcm_path} {self.mount_extensions}/IONetworkingFamily.kext/Contents/PlugIns/".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             rebuild_required = True
 
-        #if self.model in ModelArray.LegacyGPU:
-            #print("- Attemping Legacy GPU Patches")
-            #TODO: Re-enable when GPU patches are public
-            #self.gpu_accel_patches()
-            #rebuild_required = True
+        if (self.model in ModelArray.LegacyGPU) and (Path(self.constants.hiddhack_path).exists()):
+            print("- Attemping Legacy GPU Patches")
+            self.gpu_accel_patches()
+            rebuild_required = True
 
         if rebuild_required is True:
             self.rebuild_snapshot()
@@ -157,6 +144,10 @@ class PatchSysVolume:
         subprocess.run(f"sudo kmutil install --volume-root {self.mount_location} --update-all".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         print("- Creating new APFS snapshot")
         subprocess.run(f"sudo bless --folder {self.mount_location}/System/Library/CoreServices --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+
+    def unmount_drive(self):
+        print("- Unmounting Root Volume")
+        subprocess.run(f"sudo diskutil unmount {self.root_mount_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def start_patch(self):
         # Check SIP
@@ -187,9 +178,10 @@ class PatchSysVolume:
                 smb_status = "Disabled"
 
             if (sip_status == b'\xef\x0f\x00\x00') and (smb_status == "Disabled"):
-                print("- Detected SIP is disabled, continuing")
+                print("- Detected SIP and SecureBootModel are disabled, continuing")
                 input("\nPress [ENTER] to continue")
                 self.find_mount_root_vol()
+                self.unmount_drive()
                 print("- Patching complete")
                 print("\nPlease reboot the machine for patches to take effect")
             else:
