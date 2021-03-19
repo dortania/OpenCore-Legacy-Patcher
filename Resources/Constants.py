@@ -160,13 +160,15 @@ class Constants:
 
     # Apple Paylods Paths
     @property
-    def payload_apple_kexts_path(self): return self.payload_path / Path("Apple/Extensions")
+    def payload_apple_root_path(self): return self.payload_path / Path("Apple")
     @property
-    def payload_apple_frameworks_path(self): return self.payload_path / Path("Apple/Frameworks")
+    def payload_apple_kexts_path(self): return self.payload_apple_root_path / Path("Extensions")
     @property
-    def payload_apple_lauchd_path(self): return self.payload_path / Path("Apple/LaunchDaemons")
+    def payload_apple_frameworks_path(self): return self.payload_apple_root_path / Path("Frameworks")
     @property
-    def payload_apple_private_frameworks_path(self): return self.payload_path / Path("Apple/PrivateFrameworks")
+    def payload_apple_lauchd_path(self): return self.payload_apple_root_path / Path("LaunchDaemons")
+    @property
+    def payload_apple_private_frameworks_path(self): return self.payload_apple_root_path / Path("PrivateFrameworks")
 
     # Apple Extensions
     @property

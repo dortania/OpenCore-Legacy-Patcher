@@ -28,7 +28,7 @@ class PatchSysVolume:
         self.mount_private_frameworks = f"{self.mount_location}/System/Library/PrivateFrameworks"
 
         if self.root_mount_path.startswith("disk"):
-            self.root_mount_path = self.root_mount_path.replace("s1", "", 1)
+            self.root_mount_path = self.root_mount_path[:-2] if self.root_mount_path.endswith('s1') else self.root_mount_path
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
@@ -44,10 +44,7 @@ class PatchSysVolume:
         else:
             print("- Could not find root volume")
 
-    def gpu_accel_patches(self):
-        # Remove a *lot* of garbage
-        # Remove AMD Drivers
-        print("- Deleting unsupported Binaries")
+    def delete_old_binaries(self):
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX4000.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX4000HWServices.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX5000.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
@@ -55,8 +52,6 @@ class PatchSysVolume:
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX6000.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX6000Framebuffer.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX6000HWServices.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
-        # Remove Intel
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelBDWGraphics.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelBDWGraphicsFramebuffer.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelCFLGraphicsFramebuffer.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
@@ -70,41 +65,37 @@ class PatchSysVolume:
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSKLGraphicsFramebuffer.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelFramebufferAzul.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelFramebufferCapri.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
-        # Paravirtualized GPU
         subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleParavirtGPU.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
-        # Nvidia
         subprocess.run(f"sudo rm -R {self.mount_extensions}/GeForce.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
-        # Misc
         subprocess.run(f"sudo rm -R {self.mount_extensions}/IOAcceleratorFamily2.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/IOGPUFamily.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo rm -R {self.mount_extensions}/IOSurface.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-        # Now add our patches
-        # Kexts
+    def gpu_accel_patches(self):
+        print("- Deleting unsupported Binaries")
+        self.delete_old_binaries()
         print("- Adding supported Binaries for GPU Accleration")
 
+        # TODO: Add proper hardware checks
+        # Due to MUX-based laptops and headless iGPUs, it's difficult to determine what GPU is present
+        # Fix would be to parse IOReg for both IGPU and GFX0
         if self.model in ModelArray.LegacyGPUNvidia:
             print("- Adding legacy Nvidia Kexts and Bundles")
             subprocess.run(f"sudo ditto {self.constants.legacy_nvidia_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-        if self.model in ModelArray.LegacyGPUAMD:
+        elif self.model in ModelArray.LegacyGPUAMD:
             print("- Adding legacy AMD Kexts and Bundles")
             subprocess.run(f"sudo ditto {self.constants.legacy_amd_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
         if self.model in ModelArray.LegacyGPUIntelGen1:
             print("- Adding legacy Intel 1st Gen Kexts and Bundles")
             subprocess.run(f"sudo ditto {self.constants.legacy_intel_gen1_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-        if self.model in ModelArray.LegacyGPUIntelGen2:
+        elif self.model in ModelArray.LegacyGPUIntelGen2:
             print("- Adding legacy Intel 2nd Gen Kexts and Bundles")
             subprocess.run(f"sudo ditto {self.constants.legacy_intel_gen2_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
+        # iMac10,1 came in both AMD and Nvidia GPU models, so we must do hardware detection
         if self.model == "iMac10,1":
-            current_gpu: str = subprocess.run("system_profiler SPDisplaysDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-            self.constants.current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
             if self.constants.current_gpuv == "AMD (0x1002)":
                 print("- Adding legacy AMD Kexts and Bundles")
                 subprocess.run(f"sudo ditto {self.constants.legacy_amd_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
@@ -129,6 +120,7 @@ class PatchSysVolume:
         print("- Merging legacy PrivateFrameworks")
         subprocess.run(f"sudo ditto {self.constants.payload_apple_private_frameworks_path} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
+        # Sets AppKit to Catalina Window Drawing codepath
         print("- Disabling NSDefenestratorModeEnabled")
         subprocess.run("defaults write -g NSDefenestratorModeEnabled -bool false".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
@@ -137,6 +129,13 @@ class PatchSysVolume:
         print(f"- Detecting patches for {self.model}")
         print("- Creating backup snapshot (This may take some time)")
         subprocess.run("tmutil snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        # Ensures no .DS_Stores got in
+        print("- Preparing Files")
+        subprocess.run(f"sudo find {self.constants.payload_apple_root_path} -name '.DS_Store' -delete".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+
+        current_gpu: str = subprocess.run("system_profiler SPDisplaysDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        self.constants.current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
+        self.constants.current_gpud = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Device ID"))][0]
 
         # Start Patch engine
         if self.model in ModelArray.LegacyAudio:
@@ -152,9 +151,15 @@ class PatchSysVolume:
             rebuild_required = True
 
         if (self.model in ModelArray.LegacyGPU) and (Path(self.constants.hiddhack_path).exists()):
-            print("- Attemping Legacy GPU Patches")
-            self.gpu_accel_patches()
-            rebuild_required = True
+            print(f"- Detected GPU: {self.constants.current_gpuv} {self.constants.current_gpud}")
+            if (self.constants.current_gpuv == "AMD (0x1002)") & (self.constants.current_gpud in ModelArray.AMDMXMGPUs):
+                print("- Detected Metal-based AMD GPU, skipping legacy patches")
+            elif (self.constants.current_gpuv == "NVIDIA (0x10de)") & (self.constants.current_gpud in ModelArray.NVIDIAMXMGPUs):
+                print("- Detected Metal-based Nvidia GPU, skipping legacy patches")
+            else:
+                print("- Detected legacy GPU, attempting legacy acceleration patches")
+                self.gpu_accel_patches()
+                rebuild_required = True
 
         if rebuild_required is True:
             self.rebuild_snapshot()
