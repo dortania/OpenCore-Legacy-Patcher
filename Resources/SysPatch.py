@@ -86,10 +86,6 @@ class PatchSysVolume:
                 subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_patches_11(self):
-        print("- Deleting unsupported Binaries")
-
-        print("- Adding supported Binaries for GPU Accleration")
-
         # TODO: Add proper hardware checks
         # Due to MUX-based laptops and headless iGPUs, it's difficult to determine what GPU is present
         # Fix would be to parse IOReg for both IGPU and GFX0
