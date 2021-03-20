@@ -1,4 +1,9 @@
 # Framework for mounting and patching macOS root volume
+# Missing Features:
+# - Full System/Library Snapshotting (need to research how Apple achieves this)
+# - Work-around battery throttling on laptops with no battery (IOPlatformPluginFamily.kext/Contents/PlugIns/ACPI_SMC_PlatformPlugin.kext/Contents/Resources/)
+# - csr-active-config parsing
+# - Add kmutil error checking
 from __future__ import print_function
 
 import binascii
@@ -17,6 +22,21 @@ class PatchSysVolume:
     def __init__(self, model, versions):
         self.model = model
         self.constants: Constants.Constants = versions
+
+    def csr_decode(self, sip_raw, print_status):
+        sip_int = int.from_bytes(sip_raw, byteorder='little')
+        i = 0
+        for current_sip_bit in self.constants.csr_values:
+            if sip_int & (1 << i):
+                temp = True
+                # The below array are values that don't affect the ability to patch
+                if current_sip_bit not in ["CSR_ALLOW_TASK_FOR_PID              ", "CSR_ALLOW_KERNEL_DEBUGGER           ", "CSR_ALLOW_APPLE_INTERNAL            ", "CSR_ALLOW_ANY_RECOVERY_OS           ",]:
+                    self.sip_patch_status = False
+            else:
+                temp = False
+            if print_status is True:
+                print(f"- {current_sip_bit}\t {temp}")
+            i = i + 1
 
     def find_mount_root_vol(self):
         root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -175,8 +195,8 @@ class PatchSysVolume:
             print("Root Patching must be done on target machine!")
         elif self.model in ModelArray.NoRootPatch11:
             print("Root Patching not required for this machine!")
-        elif self.model not in ModelArray.SupportedSMBIOS:
-            print("Cannot run on this machine!")
+        elif self.model in ModelArray.SupportedSMBIOS:
+            print("Cannot run on this machine, model is unsupported!")
         elif self.constants.detected_os < 10.16:
             print(f"Cannot run on this OS: {self.constants.detected_os}")
         else:
@@ -184,28 +204,46 @@ class PatchSysVolume:
             try:
                 sip_status = nvram_dump["csr-active-config"]
             except KeyError:
-                print("- csr-active-config var is missing")
                 sip_status = b'\x00\x00\x00\x00'
 
             smb_model: str = subprocess.run("nvram 94B73556-2197-4702-82A8-3E1337DAFBFB:HardwareModel	".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
             if not smb_model.startswith("nvram: Error getting variable"):
                 smb_model = [line.strip().split(":HardwareModel	", 1)[1] for line in smb_model.split("\n") if line.strip().startswith("94B73556-2197-4702-82A8-3E1337DAFBFB:")][0]
                 if smb_model.startswith("j137"):
-                    smb_status = "Enabled"
+                    smb_status = True
                 else:
-                    smb_status = "Disabled"
+                    smb_status = False
             else:
-                smb_status = "Disabled"
+                smb_status = False
+            fv_status = True
+            fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+            if fv_status.startswith("FileVault is Off"):
+                fv_status = False
+            else:
+                fv_status = True
 
-            if (sip_status == b'\xef\x0f\x00\x00') and (smb_status == "Disabled"):
+
+            self.sip_patch_status = True
+            self.csr_decode(sip_status, False)
+            utilities.cls()
+            if (self.sip_patch_status is False) and (smb_status is False):
                 print("- Detected SIP and SecureBootModel are disabled, continuing")
                 input("\nPress [ENTER] to continue")
                 self.find_mount_root_vol()
                 self.unmount_drive()
                 print("- Patching complete")
                 print("\nPlease reboot the machine for patches to take effect")
-            else:
-                print("- SIP and SecureBootModel set incorrectly, unable to patch")
-                print("\nPlease disable SIP and SecureBootModel in Patcher Settings")
-                print("Then build OpenCore again, reinstall OpenCore to your drive and reboot.")
+            if self.sip_patch_status is True:
+                print("SIP set incorrectly, cannot patch on this machine!")
+                print("Please disable SIP and SecureBootModel in Patcher Settings")
+                self.csr_decode(sip_status, True)
+                print("")
+            if smb_status is True:
+                print("SecureBootModel set incorrectly, unable to patch!")
+                print("Please disable SecureBootModel in Patcher Settings")
+                print("")
+            if fv_status is True:
+                print("FileVault enabled, unable to patch!")
+                print("Please disable FileVault in System Preferences")
+                print("")
         input("Press [Enter] to go exit.")
