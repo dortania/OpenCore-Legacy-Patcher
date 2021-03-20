@@ -195,7 +195,7 @@ class PatchSysVolume:
             print("Root Patching must be done on target machine!")
         elif self.model in ModelArray.NoRootPatch11:
             print("Root Patching not required for this machine!")
-        elif self.model in ModelArray.SupportedSMBIOS:
+        elif self.model not in ModelArray.SupportedSMBIOS:
             print("Cannot run on this machine, model is unsupported!")
         elif self.constants.detected_os < 10.16:
             print(f"Cannot run on this OS: {self.constants.detected_os}")
