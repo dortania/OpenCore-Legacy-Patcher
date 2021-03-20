@@ -45,33 +45,27 @@ class PatchSysVolume:
             print("- Could not find root volume")
 
     def delete_old_binaries(self):
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX4000.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX4000HWServices.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX5000.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX5000HWServices.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX6000.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX6000Framebuffer.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AMDRadeonX6000HWServices.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelBDWGraphics.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelBDWGraphicsFramebuffer.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelCFLGraphicsFramebuffer.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelHD4000Graphics.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelHD5000Graphics.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelICLGraphics.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelICLLPGraphicsFramebuffer.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelKBLGraphics.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelKBLGraphicsFramebuffer.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSKLGraphics.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSKLGraphicsFramebuffer.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelFramebufferAzul.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelFramebufferCapri.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleParavirtGPU.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/GeForce.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/IOAcceleratorFamily2.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/IOGPUFamily.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo rm -R {self.mount_extensions}/IOSurface.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        for delete_current_kext in ModelArray.DeleteAccel11:
+            delete_path = Path(self.mount_extensions) / Path(delete_current_kext)
+            if Path(delete_path).exists():
+                print(f"- Deleting {delete_current_kext}")
+                subprocess.run(f"sudo rm -R {delete_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            else:
+                print(f"- Couldn't find {delete_current_kext}, skipping")
 
-    def gpu_accel_patches(self):
+    def add_new_binaries(self, vendor_patch, vendor_location):
+        for add_current_kext in vendor_patch:
+            existing_path = Path(self.mount_extensions) / Path(add_current_kext)
+            if Path(existing_path).exists():
+                print(f"- Found conflicting kext, Deleting Root Volume's {add_current_kext}")
+                subprocess.run(f"sudo rm -R {existing_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                print(f"- Adding {add_current_kext}")
+                subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            else:
+                print(f"- Adding {add_current_kext}")
+                subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+
+    def gpu_accel_patches_11(self):
         print("- Deleting unsupported Binaries")
         self.delete_old_binaries()
         print("- Adding supported Binaries for GPU Accleration")
@@ -81,27 +75,24 @@ class PatchSysVolume:
         # Fix would be to parse IOReg for both IGPU and GFX0
         if self.model in ModelArray.LegacyGPUNvidia:
             print("- Adding legacy Nvidia Kexts and Bundles")
-            subprocess.run(f"sudo ditto {self.constants.legacy_nvidia_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
+            self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
         elif self.model in ModelArray.LegacyGPUAMD:
             print("- Adding legacy AMD Kexts and Bundles")
-            subprocess.run(f"sudo ditto {self.constants.legacy_amd_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
         if self.model in ModelArray.LegacyGPUIntelGen1:
             print("- Adding legacy Intel 1st Gen Kexts and Bundles")
-            subprocess.run(f"sudo ditto {self.constants.legacy_intel_gen1_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
+            self.add_new_binaries(ModelArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
         elif self.model in ModelArray.LegacyGPUIntelGen2:
             print("- Adding legacy Intel 2nd Gen Kexts and Bundles")
-            subprocess.run(f"sudo ditto {self.constants.legacy_intel_gen2_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
+            self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
         # iMac10,1 came in both AMD and Nvidia GPU models, so we must do hardware detection
         if self.model == "iMac10,1":
             if self.constants.current_gpuv == "AMD (0x1002)":
                 print("- Adding legacy AMD Kexts and Bundles")
-                subprocess.run(f"sudo ditto {self.constants.legacy_amd_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
             else:
                 print("- Adding legacy Nvidia Kexts and Bundles")
-                subprocess.run(f"sudo ditto {self.constants.legacy_nvidia_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
 
         print("- Adding Catalina's IOSurface.kext")
         subprocess.run(f"sudo cp -R {self.constants.iosurface_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
@@ -127,6 +118,9 @@ class PatchSysVolume:
 
     def patch_root_vol(self):
         print(f"- Detecting patches for {self.model}")
+        # TODO: Create Backup of S*/L*/Extensions, Frameworks and PrivateFramework to easily revert changes
+        # APFS snapshotting seems to ignore System Volume changes inconcistently, would like a backup to avoid total brick
+        # Perhaps a basic py2 script to run in recovery to restore
         print("- Creating backup snapshot (This may take some time)")
         subprocess.run("tmutil snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         # Ensures no .DS_Stores got in
@@ -158,7 +152,7 @@ class PatchSysVolume:
                 print("- Detected Metal-based Nvidia GPU, skipping legacy patches")
             else:
                 print("- Detected legacy GPU, attempting legacy acceleration patches")
-                self.gpu_accel_patches()
+                self.gpu_accel_patches_11()
                 rebuild_required = True
 
         if rebuild_required is True:
@@ -172,12 +166,12 @@ class PatchSysVolume:
         subprocess.run(f"sudo bless --folder {self.mount_location}/System/Library/CoreServices --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def unmount_drive(self):
-        print("- Unmounting Root Volume")
+        print("- Unmounting Root Volume (Don't worry if this fails)")
         subprocess.run(f"sudo diskutil unmount {self.root_mount_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def start_patch(self):
         # Check SIP
-        if self.constants.custom_model != None:
+        if self.constants.custom_model is not None:
             print("Root Patching must be done on target machine!")
         elif self.model in ModelArray.NoRootPatch11:
             print("Root Patching not required for this machine!")

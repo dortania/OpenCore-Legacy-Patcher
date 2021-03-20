@@ -1,5 +1,9 @@
 # Lists all models and required patches
 
+SupportedSMBIOS = [
+    # To be overwritten on program start
+]
+
 SupportedSMBIOS11 = [
     # MacBook
     "MacBook5,1",
@@ -883,4 +887,91 @@ NoRootPatch11 = [
     "MacPro4,1",
     "MacPro5,1",
     "Xserve3,1",
+]
+
+DeleteAccel11 = [
+    "AMDRadeonX4000.kext",
+	"AMDRadeonX4000HWServices.kext",
+	"AMDRadeonX5000.kext",
+	"AMDRadeonX5000HWServices.kext",
+	"AMDRadeonX6000.kext",
+	"AMDRadeonX6000Framebuffer.kext",
+	"AMDRadeonX6000HWServices.kext",
+	"AppleIntelBDWGraphics.kext",
+	"AppleIntelBDWGraphicsFramebuffer.kext",
+	"AppleIntelCFLGraphicsFramebuffer.kext",
+	"AppleIntelHD4000Graphics.kext",
+	"AppleIntelHD5000Graphics.kext",
+	"AppleIntelICLGraphics.kext",
+	"AppleIntelICLLPGraphicsFramebuffer.kext",
+	"AppleIntelKBLGraphics.kext",
+	"AppleIntelKBLGraphicsFramebuffer.kext",
+	"AppleIntelSKLGraphics.kext",
+	"AppleIntelSKLGraphicsFramebuffer.kext",
+	"AppleIntelFramebufferAzul.kext",
+	"AppleIntelFramebufferCapri.kext",
+	"AppleParavirtGPU.kext",
+	"GeForce.kext",
+	"IOAcceleratorFamily2.kext",
+	"IOGPUFamily.kext",
+	"IOSurface.kext",
+    # May need to delete for AMD GPU acceleration
+    #"AMD8000Controller.kext" # AMDSupport Dependancy
+    #"AMD9000Controller.kext" # AMDSupport Dependancy
+    #"AMD9500Controller.kext" # IOAccelertor Dependancy
+    #"AMD10000Controller.kext" # AMDSupport Dependancy
+]
+
+AddNvidiaAccel11 = [
+    "GeForceGA.bundle",
+	"GeForceTesla.kext",
+	"GeForceTeslaGLDriver.bundle",
+	"GeForceTeslaVADriver.bundle",
+	"NVDANV50HalTesla.kext",
+	"NVDAResmanTesla.kext",
+]
+
+AddAMDAccel11 = [
+    "AMD2400Controller.kext",
+	"AMD2600Controller.kext",
+	"AMD3800Controller.kext",
+	"AMD4600Controller.kext",
+	"AMD4800Controller.kext",
+	"AMD5000Controller.kext",
+	"AMD6000Controller.kext",
+	"AMDFramebuffer.kext",
+	"AMDLegacyFramebuffer.kext",
+	"AMDLegacySupport.kext",
+	"AMDRadeonVADriver.bundle",
+	"AMDRadeonVADriver2.bundle",
+	"AMDRadeonX3000.kext", #IOAccelertorFamily2 Dependancy
+	"AMDRadeonX3000GLDriver.bundle",
+	#"AMDRadeonX4000.kext",
+	#"AMDRadeonX4000GLDriver.bundle",
+	#"AMDRadeonX4000HWServices.kext",
+	"AMDShared.bundle",
+	"AMDSupport.kext",
+	"ATIRadeonX2000.kext",
+	"ATIRadeonX2000GA.plugin",
+	"ATIRadeonX2000GLDriver.bundle",
+	"ATIRadeonX2000VADriver.bundle",
+]
+
+AddIntelGen1Accel = [
+    "AppleIntelFramebufferAzul.kext",
+	"AppleIntelFramebufferCapri.kext",
+	"AppleIntelHDGraphics.kext",
+	"AppleIntelHDGraphicsFB.kext",
+	"AppleIntelHDGraphicsGA.plugin",
+	"AppleIntelHDGraphicsGLDriver.bundle",
+	"AppleIntelHDGraphicsVADriver.bundle",
+]
+
+AddIntelGen2Accel = [
+    "AppleIntelHD3000Graphics.kext",
+	"AppleIntelHD3000GraphicsGA.plugin",
+	"AppleIntelHD3000GraphicsGLDriver.bundle",
+	"AppleIntelHD3000GraphicsVADriver.bundle",
+	"AppleIntelSNBGraphicsFB.kext",
+	"AppleIntelSNBVA.bundle",
 ]
