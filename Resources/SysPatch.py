@@ -180,9 +180,10 @@ class PatchSysVolume:
             self.rebuild_snapshot()
 
     def rebuild_snapshot(self):
-        input("Press [ENTER] to continue with cache rebuild and snapshotting")
+        input("Press [ENTER] to continue with cache rebuild")
         print("- Rebuilding Kernel Cache (This may take some time)")
         subprocess.run(f"sudo kmutil install --volume-root {self.mount_location} --update-all".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        input("Press [ENTER] to continue with snapshotting")
         print("- Creating new APFS snapshot")
         subprocess.run(f"sudo bless --folder {self.mount_location}/System/Library/CoreServices --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 

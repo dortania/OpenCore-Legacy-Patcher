@@ -947,8 +947,8 @@ AddAMDAccel11 = [
 	"AMDLegacySupport.kext",
 	"AMDRadeonVADriver.bundle",
 	"AMDRadeonVADriver2.bundle",
-	"AMDRadeonX3000.kext", #IOAccelertorFamily2 Dependancy
-	"AMDRadeonX3000GLDriver.bundle",
+	#"AMDRadeonX3000.kext", # __ZN22IOAccelDisplayMachine210gMetaClassE link issues
+	#"AMDRadeonX3000GLDriver.bundle",
 	#"AMDRadeonX4000.kext",
 	#"AMDRadeonX4000GLDriver.bundle",
 	#"AMDRadeonX4000HWServices.kext",
