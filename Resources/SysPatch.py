@@ -75,7 +75,7 @@ class PatchSysVolume:
         # Fix would be to parse IOReg for both IGPU and GFX0
         if self.model in ModelArray.LegacyGPUNvidia:
             print("- Adding legacy Nvidia Kexts and Bundles")
-            self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
+            self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
         elif self.model in ModelArray.LegacyGPUAMD:
             print("- Adding legacy AMD Kexts and Bundles")
             self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
