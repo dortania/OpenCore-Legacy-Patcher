@@ -889,7 +889,7 @@ NoRootPatch11 = [
     "Xserve3,1",
 ]
 
-DeleteAccel11 = [
+DeleteNvidiaAccel11 = [
     "AMDRadeonX4000.kext",
 	"AMDRadeonX4000HWServices.kext",
 	"AMDRadeonX5000.kext",
@@ -914,12 +914,14 @@ DeleteAccel11 = [
 	"GeForce.kext",
 	"IOAcceleratorFamily2.kext",
 	"IOGPUFamily.kext",
-	"IOSurface.kext",
-    # May need to delete for AMD GPU acceleration
-    #"AMD8000Controller.kext" # AMDSupport Dependancy
-    #"AMD9000Controller.kext" # AMDSupport Dependancy
-    #"AMD9500Controller.kext" # IOAccelertor Dependancy
-    #"AMD10000Controller.kext" # AMDSupport Dependancy
+]
+
+DeleteAMDAccel11 = [
+    "AMD7000Controller.kext", # AMDSupport Dependancy
+    "AMD8000Controller.kext", # AMDSupport Dependancy
+    "AMD9000Controller.kext", # AMDSupport Dependancy
+    "AMD9500Controller.kext", # AMDSupport Dependancy
+    "AMD10000Controller.kext", # AMDSupport Dependancy
 ]
 
 AddNvidiaAccel11 = [
@@ -929,6 +931,7 @@ AddNvidiaAccel11 = [
 	"GeForceTeslaVADriver.bundle",
 	"NVDANV50HalTesla.kext",
 	"NVDAResmanTesla.kext",
+    "IOSurface.kext",
 ]
 
 AddAMDAccel11 = [

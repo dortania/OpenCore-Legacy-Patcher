@@ -64,8 +64,8 @@ class PatchSysVolume:
         else:
             print("- Could not find root volume")
 
-    def delete_old_binaries(self):
-        for delete_current_kext in ModelArray.DeleteAccel11:
+    def delete_old_binaries(self, vendor_patch):
+        for delete_current_kext in vendor_patch:
             delete_path = Path(self.mount_extensions) / Path(delete_current_kext)
             if Path(delete_path).exists():
                 print(f"- Deleting {delete_current_kext}")
@@ -87,35 +87,36 @@ class PatchSysVolume:
 
     def gpu_accel_patches_11(self):
         print("- Deleting unsupported Binaries")
-        self.delete_old_binaries()
+
         print("- Adding supported Binaries for GPU Accleration")
 
         # TODO: Add proper hardware checks
         # Due to MUX-based laptops and headless iGPUs, it's difficult to determine what GPU is present
         # Fix would be to parse IOReg for both IGPU and GFX0
         if self.model in ModelArray.LegacyGPUNvidia:
-            print("- Adding legacy Nvidia Kexts and Bundles")
+            print("- Merging legacy Nvidia Kexts and Bundles")
+            self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
             self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
         elif self.model in ModelArray.LegacyGPUAMD:
-            print("- Adding legacy AMD Kexts and Bundles")
+            print("- Merging legacy AMD Kexts and Bundles")
+            self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
             self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
         if self.model in ModelArray.LegacyGPUIntelGen1:
-            print("- Adding legacy Intel 1st Gen Kexts and Bundles")
+            print("- Merging legacy Intel 1st Gen Kexts and Bundles")
             self.add_new_binaries(ModelArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
         elif self.model in ModelArray.LegacyGPUIntelGen2:
-            print("- Adding legacy Intel 2nd Gen Kexts and Bundles")
+            print("- Merging legacy Intel 2nd Gen Kexts and Bundles")
             self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
         # iMac10,1 came in both AMD and Nvidia GPU models, so we must do hardware detection
         if self.model == "iMac10,1":
             if self.constants.current_gpuv == "AMD (0x1002)":
-                print("- Adding legacy AMD Kexts and Bundles")
+                print("- Merging legacy AMD Kexts and Bundles")
+                self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
                 self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
             else:
-                print("- Adding legacy Nvidia Kexts and Bundles")
+                print("- Merging legacy Nvidia Kexts and Bundles")
+                self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                 self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
-
-        print("- Adding Catalina's IOSurface.kext")
-        subprocess.run(f"sudo cp -R {self.constants.iosurface_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # Frameworks
         print("- Merging legacy Frameworks")
