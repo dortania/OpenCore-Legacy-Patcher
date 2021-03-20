@@ -4,7 +4,7 @@
 - Add SMC-Spoof.kext to avoid triggering `smcupdater`
 - Add Root Volume patching for older machines
   - AppleHDA Patch for 2011 and older (Excluding MacPro4,1+)
-  - AppleBCM5701Ethernet patch for certian 2009-2011 Macs
+  - AppleBCM5701Ethernet patch for certain 2009-2011 Macs
 - Fix CPU Speed reporting
 - Increment binaries
   - OpenCore c92bcb7 (0.6.8 rolling - 2021-03-20)
