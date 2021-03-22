@@ -489,7 +489,7 @@ Please build OpenCore first!"""
                     "fs": partition_info.get("FilesystemType", partition_info["Content"]),
                     "type": partition_info["Content"],
                     "name": partition_info.get("VolumeName", ""),
-                    "size": partition_info["Size"],
+                    "size": partition_info["TotalSize"],
                 }
         # TODO: Advanced mode
         menu = utilities.TUIMenu(
