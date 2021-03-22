@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 
 from __future__ import print_function
 

@@ -1,5 +1,5 @@
 # Commands for building the EFI and SMBIOS
-
+# Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 from __future__ import print_function
 
 import binascii

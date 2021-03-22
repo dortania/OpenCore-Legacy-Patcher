@@ -1,8 +1,8 @@
 # Framework for mounting and patching macOS root volume
+# Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 # Missing Features:
 # - Full System/Library Snapshotting (need to research how Apple achieves this)
 # - Work-around battery throttling on laptops with no battery (IOPlatformPluginFamily.kext/Contents/PlugIns/ACPI_SMC_PlatformPlugin.kext/Contents/Resources/)
-# - csr-active-config parsing
 # - Add kmutil error checking
 from __future__ import print_function
 

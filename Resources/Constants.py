@@ -1,5 +1,6 @@
 # pylint: disable=multiple-statements
 # Define Files
+# Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 
 from __future__ import print_function
 
