@@ -473,14 +473,16 @@ Please build OpenCore first!"""
         print("\nDisk picker is loading...")
 
         all_disks = {}
-        # TODO: physical is not supported in Sierra and older
-        # AllDisksAndPartitions is not supported in Yosemite(?) and older
-        disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        # TODO: AllDisksAndPartitions is not supported in Yosemite(?) and older
+        try:
+            # High Sierra and newer
+            disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        except ValueError:
+            # Sierra and older
+            disks = plistlib.loads(subprocess.run("diskutil list -plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         for disk in disks["AllDisksAndPartitions"]:
             disk_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-
-            all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info["MediaName"], "size": disk_info["Size"], "partitions": {}}
-
+            all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info["MediaName"], "size": disk_info["TotalSize"], "partitions": {}}
             for partition in disk["Partitions"]:
                 partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {partition['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
                 all_disks[disk["DeviceIdentifier"]]["partitions"][partition["DeviceIdentifier"]] = {
