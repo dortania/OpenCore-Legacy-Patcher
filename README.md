@@ -2,7 +2,7 @@
 
 <img src="images/OC-Patcher.png" width="256">
 
-A python program for building and booting OpenCore on legacy Macs, see [Supported SMBIOS](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) on whether your model is supported.
+A python program for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on legacy Macs, see [Supported SMBIOS](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) on whether your model is supported.
 
 Supported features:
 
@@ -32,6 +32,7 @@ Since this patcher tricks macOS into thinking you're running a newer Mac, certai
   * We recommend running the assistant on a natively supported OS, running via the patcher may result in unforeseen issues
 * Legacy Windows Booting
   * Currently OpenCore cannot boot MBR-based installs, so Ivy Bridge and older Machines may not be able to see Windows in OpenCore's Boot Picker
+  * [Add MBR loading tool to OpenCore #912](https://github.com/acidanthera/bugtracker/issues/912)
 * Boot Buddy support
   * Due to how OpenCore overwrites NVRAM , the usage of Boot Buddy and such tools are **highly** in-advised
   

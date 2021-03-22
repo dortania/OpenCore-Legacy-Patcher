@@ -15,13 +15,23 @@ Term | Description
 Term | Description
 --- | ---
 **OpenCore**   | The new hotness on the scene, made with security in mind by the [Acidanthera team](https://github.com/acidanthera), has faster booting and lighter weight than previous boot managers. Supports many native Mac features such as SIP, FileVault, Secure Boot, etc
-**XNU**   | Also known as **X** is **N**ot **U**nix, XNU is referred to as macOS's "kernel" and the heart of what makes macOS tick
+**ACPI**   | Tables defined in your firmware defining your hardware and different methods, tied directly to how IOKit/IOService handles device setup
+**NVRAM**   | Non-volitile storage, where many variables are stored including default boot options, Hibernation keys, Secure Boot information, etc
+---
+Term | Description
+--- | ---
+**XNU**    | Also known as **X** is **N**ot **U**nix, XNU is referred to as macOS's "kernel" and the heart of what makes macOS tick
 **Kexts**   | Also known as **K**ernel **Ext**ensions, are macOS's drivers. They're used to perform different tasks like device drivers or for a different purpose (in this patcher) like patching the OS, injecting information or running tasks.
 **KernelCollection**   | Also known as the ImmutableKernel and PrelinkedKernel, this is a bundle of the kernel(XNU) and kernel extensions(Kexts) that we use to boot macOS. This is also what OpenCore patches in memory to allow us to have a seamless experience <br/>- PrelinkedKernel: Default caching system since 10.7 <br/>- ImmutableKernel: Secure Boot based caching system since 10.13 <br/>- KernelCollection: Merge of both Prelinked and ImmutableKernel's since macOS 11, Big Sur
+**KernelCollection**   | Also known as the ImmutableKernel and PrelinkedKernel, this is a bundle of the kernel(XNU) and kernel extensions(Kexts) that we use to boot macOS. This is also what OpenCore patches in memory to allow us to have a seamless experience <br/>- PrelinkedKernel: Default caching system since 10.7 <br/>- ImmutableKernel: Secure Boot based caching system since 10.13 <br/>- KernelCollection: Merge of both Prelinked and ImmutableKernel's since macOS 11, Big Sur
+**IOKit**   | Backbone of how Kernel Extentions (Kexts) probe and attach onto hardware, starts quickly after kernel initates
+**WindowServer**   | Backbone of the GUI interface in macOS, one of the first userfacing userspace programs to kick-in
 ---
 Term | Description
 --- | ---
 **EFI**   | It can denote two things: <br/>- Mac's firmware, which is the same as UEFI, but pretty modified for Macs only, so not so "Universal" <br/>- The partition on your hard drive that stores software read by the UEFI to load OSes (like the Windows bootloader) or UEFI Applications (like OpenCore), it's FAT32 formatted and has an ID type of EF00 (in hex). It can be named ESP or SYSTEM, and it's usually from 100MB to 400MB in size but the size doesn't reflect upon anything.
+**HFS+**   | Also known as MacOS Journaled, this was the default macOS drive format up until macOS 10.13, format was designed around spinning disks
+**APFS**   | This was the default macOS drive from macOS 10.13 and onwards for SSDs, and standard for all drives in Mojave. Format was designed around SSDs primarily.
 **32 and 64-Bit CPU**   | The bit number of a CPU determines how much data a CPU can address. <br/>- 32-Bit CPUs were only supported up-to Mac OS X 10.6, Snow Leopard.
 **32-Bit Firmware**   | The bit number of a Firmware determines how much data the firmware can address. In some older Macs, it's common to have a 64-Bit CPU can have a 32-Bit firmware<br/>- 32-Bit Firmwares were only supported up-to Mac OS X 10.7, Lion.
 **SSE Instructions**   | Also known as **S**IMD **S**ingle-Precision Floating-Point **I**nstructions,  these are defined as instruction sets supported by your CPU. In macOS, there are a certain number of instruction sets required for normal operation: <br/>- SSE3: Required for all Intel CPUs since Mac OS X 10.4, Tiger <br/>- SSSE3: Required for all Intel 64-Bit CPUs since Mac OS X 10.6, Snow Leopard  <br/>- SSE4.1: Required for all Intel CPUs since macOS 10.12, Sierra

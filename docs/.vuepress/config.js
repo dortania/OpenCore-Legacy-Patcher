@@ -101,7 +101,15 @@ module.exports = {
 				'DEBUG',
 				'UNINSTALL',
 				'ICNS',
+            ]
+        },
+        {
+            title: 'Documentation',
+            collapsable: false,
+            sidebarDepth: 1,
+            children: [
 				'TERMS',
+				'HOW',
 				'PATCHEXPLAIN',
             ]
 
