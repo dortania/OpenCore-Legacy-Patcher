@@ -66,7 +66,7 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | MacBookPro8,2 | ^^ | ^^ | ^^ |
 | MacBookPro8,3 | ^^ | ^^ | ^^ |
 | MacBookPro9,1 | Mid-2012 | ^^ | <span style="color:green"> Everything is supported</span> |
-| MacBookPro9,2 | ^^ | ^^ | ^^ |  
+| MacBookPro9,2 | ^^ | ^^ | ^^ |
 | MacBookPro10,1 | Mid-2012, Early 2013 | ^^ | ^^ |
 | MacBookPro10,2 | Late 2012, Early 2013 | ^^ | ^^ |
 
@@ -114,7 +114,7 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | :--- | :--- | :--- | :--- |
 | MacPro1,1 | Mid-2006 | <span style="color:red"> NO </span> | 32-Bit Firmware limitation |
 | MacPro2,1 | Mid-2007 | ^^ | ^^ |
-| MacPro3,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76)) |
+| MacPro3,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - No AppleHDA(Audio) Patching implemented([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76)) |
 | MacPro4,1 | Early 2009 | ^^ | <span style="color:green"> Everything is supported as long as GPU is Metal capable </span> |
 | MacPro5,1 | Mid-2010, Mid-2012 | ^^ | ^^ |
 

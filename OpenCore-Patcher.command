@@ -126,14 +126,14 @@ older OS snapshots under Time Machine System Restore.
                     '',
                     'If you plan to create the USB for another machine, please select the "Change Model" option in the menu.'
                 ]
-            elif not self.constants.custom_model and self.current_model in ("MacPro3,1", "iMac7,1") and \
+            elif not self.constants.custom_model and self.current_model in ("iMac7,1") and \
                     "SSE4.1" not in subprocess.run("sysctl machdep.cpu.features".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode():
                 in_between = [
                     'Your model requires a CPU upgrade to a CPU supporting SSE4.1+ to be supported by this patcher!',
                     '',
                     f'If you plan to create the USB for another {self.current_model} with SSE4.1+, please select the "Change Model" option in the menu.'
                 ]
-            elif self.constants.custom_model in ("MacPro3,1", "iMac7,1"):
+            elif self.constants.custom_model in ("iMac7,1"):
                 in_between = ["This model is supported",
                               "However please ensure the CPU has been upgraded to support SSE4.1+"
                               ]
