@@ -5501,7 +5501,7 @@
 			<key>model</key>
 			<string>iXac9,1</string>
 		</dict>
-		<key>iMac8,1-OHC1 </key>
+		<key>iMac8,1-OHC1</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
