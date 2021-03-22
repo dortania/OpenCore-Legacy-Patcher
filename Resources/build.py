@@ -500,7 +500,7 @@ Please build OpenCore first!"""
             loop=True,
         )
         for disk in all_disks:
-            if not any(all_disks[disk]["partitions"][partition]["fs"] == "msdos" for partition in all_disks[disk]["partitions"]):
+            if not any(all_disks[disk]["partitions"][partition]["fs"] in ("msdos", "EFI") for partition in all_disks[disk]["partitions"]):
                 continue
             menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({human_fmt(all_disks[disk]['size'])})", key=disk[4:])
 
@@ -520,7 +520,7 @@ Please build OpenCore first!"""
             in_between=["Missing partitions? Ensure they are formatted as an EFI or FAT32.", "", "* denotes likely candidate."],
         )
         for partition in selected_disk["partitions"]:
-            if selected_disk["partitions"][partition]["fs"] != "msdos":
+            if selected_disk["partitions"][partition]["fs"] not in ("msdos", "EFI"):
                 continue
             text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({human_fmt(selected_disk['partitions'][partition]['size'])})"
             if selected_disk["partitions"][partition]["type"] == "EFI" or (
@@ -546,7 +546,7 @@ Please build OpenCore first!"""
         result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if result.returncode != 0:
-            if "execution error" in result.stderr.decode() and result.stderr.decode()[-5:-1] == "-128":
+            if "execution error" in result.stderr.decode() and result.stderr.decode().strip()[-5:-1] == "-128":
                 # cancelled prompt
                 return
             else:
