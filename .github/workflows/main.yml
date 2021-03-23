@@ -2,7 +2,6 @@ name: CI
 
 on:
   push:
-  pull_request:
   workflow_dispatch:
   release:
     types: [published]
@@ -14,10 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install Python Dependencies
-        run: |
-          python3 -m pip install -U pip
-          pip3 install pyinstaller
+      # - name: Install Python Dependencies
+      #   run: |
+      #     python3 -m pip install -U pip
+      #     pip3 install pyinstaller
 
       - run: pyinstaller Opencore-Patcher.spec
       - run: ./after_pyinstaller.sh
