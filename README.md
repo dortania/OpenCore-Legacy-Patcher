@@ -34,8 +34,8 @@ Since this patcher tricks macOS into thinking you're running a newer Mac, certai
   * Currently OpenCore cannot boot MBR-based installs, so Ivy Bridge and older Machines may not be able to see Windows in OpenCore's Boot Picker
   * [Add MBR loading tool to OpenCore #912](https://github.com/acidanthera/bugtracker/issues/912)
 * Boot Buddy support
-  * Due to how OpenCore overwrites NVRAM , the usage of Boot Buddy and such tools are **highly** in-advised
-  
+  * Due to how OpenCore overwrites NVRAM, the usage of Boot Buddy and such tools are **highly** in-advised
+
 ## Support
 
 To get aid with the patcher, we recommend joining the [Unsupported Mac Discord Server](https://discord.gg/XbbWAsE) and heading over to our `#opencore-patcher` channel. We're actively there and is the quickest way to receive help. For bigger issues such as patcher crashing on build and such, we recommend opening an issue right here on GitHub:

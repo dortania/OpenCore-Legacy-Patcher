@@ -2,6 +2,7 @@
 # Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 # Missing Features:
 # - Full System/Library Snapshotting (need to research how Apple achieves this)
+#   - Temorary Work-around: sudo bless --mount /System/Volumes/Update/mnt1 --bootefi --last-sealed-snapshot
 # - Work-around battery throttling on laptops with no battery (IOPlatformPluginFamily.kext/Contents/PlugIns/ACPI_SMC_PlatformPlugin.kext/Contents/Resources/)
 # - Add kmutil error checking
 from __future__ import print_function

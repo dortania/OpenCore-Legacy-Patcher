@@ -8,6 +8,7 @@
 - Fix CPU Speed reporting
 - Increment binaries
   - OpenCore c92bcb7 (0.6.8 rolling - 2021-03-20)
+- Add El Capitan and newer .app support
 
 ## 0.0.18
 - Disable Vault by default due to breaking installations
