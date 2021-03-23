@@ -104,6 +104,16 @@ module.exports = {
             ]
         },
         {
+            title: 'Credit',
+            collapsable: false,
+            sidebarDepth: 1,
+            children: [
+				'DONATE',
+				'LICENSE',
+            ]
+
+        },
+        {
             title: 'Documentation',
             collapsable: false,
             sidebarDepth: 1,

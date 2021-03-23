@@ -8,6 +8,10 @@ This is a sophisticated boot loader used to inject and patch data in memory, ins
 
 While many PC users from the Hackintosh community are familiar with OpenCore, OpenCore was designed as Mac and PC agnostic ensuring both platforms can use it easily. And with OpenCore Legacy Patcher, we help automate the process making running with OpenCore that much easier.
 
+For advanced troubleshooting, we highly recommend users check out the [Unsupported Mac Discord Server](https://discord.gg/XbbWAsE) as this is generally the quickest way to get a hold of us developers and get help from the community.
+
+For those who wish to support this patcher, please see the [Supporting the Patcher page](./DONATE.md) 
+
 ## How do I get started?
 
 1. The first step of ensuring whether your model is support is checking here:
