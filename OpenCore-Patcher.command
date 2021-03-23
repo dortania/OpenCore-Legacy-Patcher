@@ -98,15 +98,20 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
 - Ethernet (AppleBCM5701Ethernet) Patch for certain 2009-2011 Macs
 
 Note: When the system volume is patched, you can no longer have Delta
-updates or have FileVault enabled. Please think carefully if this is
-desired.
+updates or have FileVault enabled. Please ensure you have all important
+user data backed up.
 
-Root Volume patches can be reverted by booting Recovery and selecting
-older OS snapshots under Time Machine System Restore.
+Supported Options:
+
+1. Patch System Volume
+2. Unpatch System Volume
+B. Exit
         """)
-        change_menu = input("Patch System Volume?(y/n): ")
-        if change_menu in {"y", "Y", "yes", "Yes"}:
+        change_menu = input("Patch System Volume?: ")
+        if change_menu == "1":
             SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_patch()
+        elif change_menu == "2":
+            SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_unpatch()
         else:
             print("Returning to main menu")
 

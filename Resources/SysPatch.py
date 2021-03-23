@@ -39,7 +39,7 @@ class PatchSysVolume:
                 print(f"- {current_sip_bit}\t {temp}")
             i = i + 1
 
-    def find_mount_root_vol(self):
+    def find_mount_root_vol(self, patch):
         root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         self.root_mount_path = root_partition_info["DeviceIdentifier"]
         self.mount_location = "/System/Volumes/Update/mnt1"
@@ -53,13 +53,19 @@ class PatchSysVolume:
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
-                self.patch_root_vol()
+                if patch is True:
+                    self.patch_root_vol()
+                else:
+                    self.unpatch_root_vol()
             else:
                 print("- Mounting drive as writable")
                 subprocess.run(f"sudo mount -o nobrowse -t apfs /dev/{self.root_mount_path} {self.mount_location}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 if Path(self.mount_extensions).exists():
                     print("- Sucessfully mounted the Root Volume")
-                    self.patch_root_vol()
+                    if patch is True:
+                        self.patch_root_vol()
+                    else:
+                        self.unpatch_root_vol()
                 else:
                     print("- Failed to mount the Root Volume")
         else:
@@ -139,7 +145,7 @@ class PatchSysVolume:
         # TODO: Create Backup of S*/L*/Extensions, Frameworks and PrivateFramework to easily revert changes
         # APFS snapshotting seems to ignore System Volume changes inconcistently, would like a backup to avoid total brick
         # Perhaps a basic py2 script to run in recovery to restore
-        print("- Creating backup snapshot (This may take some time)")
+        print("- Creating backup snapshot of user data (This may take some time)")
         subprocess.run("tmutil snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         # Ensures no .DS_Stores got in
         print("- Preparing Files")
@@ -176,6 +182,12 @@ class PatchSysVolume:
         if rebuild_required is True:
             self.rebuild_snapshot()
 
+    def unpatch_root_vol(self):
+        print("- Creating backup snapshot of user data (This may take some time)")
+        subprocess.run("tmutil snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        print("- Reverting to last signed APFS snapshot")
+        subprocess.run(f"sudo bless --mount {self.mount_location} --bootefi --last-sealed-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+
     def rebuild_snapshot(self):
         input("Press [ENTER] to continue with cache rebuild")
         print("- Rebuilding Kernel Cache (This may take some time)")
@@ -188,6 +200,31 @@ class PatchSysVolume:
         print("- Unmounting Root Volume (Don't worry if this fails)")
         subprocess.run(f"sudo diskutil unmount {self.root_mount_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
+    def check_status(self):
+        nvram_dump = plistlib.loads(subprocess.run("nvram -x -p".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        try:
+            self.sip_status = nvram_dump["csr-active-config"]
+        except KeyError:
+            self.sip_status = b'\x00\x00\x00\x00'
+
+        self.smb_model: str = subprocess.run("nvram 94B73556-2197-4702-82A8-3E1337DAFBFB:HardwareModel	".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        if not self.smb_model.startswith("nvram: Error getting variable"):
+            self.smb_model = [line.strip().split(":HardwareModel	", 1)[1] for line in self.smb_model.split("\n") if line.strip().startswith("94B73556-2197-4702-82A8-3E1337DAFBFB:")][0]
+            if self.smb_model.startswith("j137"):
+                self.smb_status = True
+            else:
+                self.smb_status = False
+        else:
+            self.smb_status = False
+        self.fv_status = True
+        self.fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        if self.fv_status.startswith("FileVault is Off"):
+            self.fv_status = False
+        else:
+            self.fv_status = True
+        self.sip_patch_status = True
+        self.csr_decode(self.sip_status, False)
+
     def start_patch(self):
         # Check SIP
         if self.constants.custom_model is not None:
@@ -199,50 +236,56 @@ class PatchSysVolume:
         elif self.constants.detected_os < 10.16:
             print(f"Cannot run on this OS: {self.constants.detected_os}")
         else:
-            nvram_dump = plistlib.loads(subprocess.run("nvram -x -p".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            try:
-                sip_status = nvram_dump["csr-active-config"]
-            except KeyError:
-                sip_status = b'\x00\x00\x00\x00'
-
-            smb_model: str = subprocess.run("nvram 94B73556-2197-4702-82A8-3E1337DAFBFB:HardwareModel	".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-            if not smb_model.startswith("nvram: Error getting variable"):
-                smb_model = [line.strip().split(":HardwareModel	", 1)[1] for line in smb_model.split("\n") if line.strip().startswith("94B73556-2197-4702-82A8-3E1337DAFBFB:")][0]
-                if smb_model.startswith("j137"):
-                    smb_status = True
-                else:
-                    smb_status = False
-            else:
-                smb_status = False
-            fv_status = True
-            fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-            if fv_status.startswith("FileVault is Off"):
-                fv_status = False
-            else:
-                fv_status = True
-
-
-            self.sip_patch_status = True
-            self.csr_decode(sip_status, False)
+            self.check_status()
             utilities.cls()
-            if (self.sip_patch_status is False) and (smb_status is False):
+            if (self.sip_patch_status is False) and (self.smb_status is False):
                 print("- Detected SIP and SecureBootModel are disabled, continuing")
                 input("\nPress [ENTER] to continue")
-                self.find_mount_root_vol()
+                self.find_mount_root_vol(True)
                 self.unmount_drive()
                 print("- Patching complete")
                 print("\nPlease reboot the machine for patches to take effect")
             if self.sip_patch_status is True:
                 print("SIP set incorrectly, cannot patch on this machine!")
                 print("Please disable SIP and SecureBootModel in Patcher Settings")
-                self.csr_decode(sip_status, True)
+                self.csr_decode(self.sip_status, True)
                 print("")
-            if smb_status is True:
+            if self.smb_status is True:
                 print("SecureBootModel set incorrectly, unable to patch!")
                 print("Please disable SecureBootModel in Patcher Settings")
                 print("")
-            if fv_status is True:
+            if self.fv_status is True:
                 print("FileVault enabled, unable to patch!")
                 print("Please disable FileVault in System Preferences")
                 print("")
         input("Press [Enter] to go exit.")
+    def start_unpatch(self):
+        if self.constants.custom_model is not None:
+            print("Unpatching must be done on target machine!")
+        elif self.constants.detected_os < 10.16:
+            print(f"Cannot run on this OS: {self.constants.detected_os}")
+        else:
+            self.check_status()
+            utilities.cls()
+            if (self.sip_patch_status is False) and (self.smb_status is False):
+                print("- Detected SIP and SecureBootModel are disabled, continuing")
+                input("\nPress [ENTER] to continue")
+                self.find_mount_root_vol(False)
+                self.unmount_drive()
+                print("- Unpatching complete")
+                print("\nPlease reboot the machine for patches to take effect")
+            if self.sip_patch_status is True:
+                print("SIP set incorrectly, cannot unpatch on this machine!")
+                print("Please disable SIP and SecureBootModel in Patcher Settings")
+                self.csr_decode(self.sip_status, True)
+                print("")
+            if self.smb_status is True:
+                print("SecureBootModel set incorrectly, unable to unpatch!")
+                print("Please disable SecureBootModel in Patcher Settings")
+                print("")
+            if self.fv_status is True:
+                print("FileVault enabled, unable to unpatch!")
+                print("Please disable FileVault in System Preferences")
+                print("")
+        input("Press [Enter] to go exit.")
+
