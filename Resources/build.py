@@ -358,32 +358,14 @@ class BuildOpenCore:
         self.new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
         self.map_config = plistlib.load(Path(self.new_map_ls).open("rb"))
 
-        self.map_config["IOKitPersonalities_x86_64"][self.model]["model"] = self.spoofed_model
-        if self.model in ModelArray.EHCI:
-            model_ehci = f"{self.model}-EHCI"
-            self.map_config["IOKitPersonalities_x86_64"][model_ehci]["model"] = self.spoofed_model
-        if self.model in ModelArray.EHC1:
-            model_ehc1 = f"{self.model}-EHC1"
-            self.map_config["IOKitPersonalities_x86_64"][model_ehc1]["model"] = self.spoofed_model
-        if self.model in ModelArray.EHC2:
-            model_ehc2 = f"{self.model}-EHC2"
-            self.map_config["IOKitPersonalities_x86_64"][model_ehc2]["model"] = self.spoofed_model
-        if self.model in ModelArray.OHC1:
-            model_ohc1 = f"{self.model}-OHC1"
-            model_ohc2 = f"{self.model}-OHC2"
-            self.map_config["IOKitPersonalities_x86_64"][model_ohc1]["model"] = self.spoofed_model
-            self.map_config["IOKitPersonalities_x86_64"][model_ohc2]["model"] = self.spoofed_model
-        if self.model in ModelArray.IHEHC1:
-            model_ihehc1 = f"{self.model}-InternalHub-EHC1"
-            model_ihehc1ih = f"{self.model}-InternalHub-EHC1-InternalHub"
-            self.map_config["IOKitPersonalities_x86_64"][model_ihehc1]["model"] = self.spoofed_model
-            self.map_config["IOKitPersonalities_x86_64"][model_ihehc1ih]["model"] = self.spoofed_model
-        if self.model in ModelArray.IHEHC2:
-            model_ihehc2 = f"{self.model}-InternalHub-EHC2"
-            self.map_config["IOKitPersonalities_x86_64"][model_ihehc2]["model"] = self.spoofed_model
-        if self.model in ModelArray.IH:
-            model_ih = f"{self.model}-InternalHub"
-            self.map_config["IOKitPersonalities_x86_64"][model_ih]["model"] = self.spoofed_model
+        for model_controller in ModelArray.ControllerTypes:
+            model_patch = f"{self.model}{model_controller}"
+            try:
+                # Avoid erroring out when specific identity not found
+                self.map_config["IOKitPersonalities_x86_64"][model_patch]["model"] = self.spoofed_model
+            except KeyError:
+                continue
+
         plistlib.dump(self.map_config, Path(self.new_map_ls).open("wb"), sort_keys=True)
 
     @staticmethod

@@ -9,6 +9,7 @@
 - Increment binaries
   - OpenCore c92bcb7 (0.6.8 rolling - 2021-03-20)
 - Add El Capitan and newer .app support
+- Refactor USB map building, fixes USB 3.0 displaying as USB 2.0
 
 ## 0.0.18
 - Disable Vault by default due to breaking installations
