@@ -96,8 +96,12 @@ class BuildOpenCore:
 
         # WiFi patches
         # TODO: -a is not supported in Lion and older, need to add proper fix
-        wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-        wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
+        try:
+            wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
+        except ValueError:
+            wifi_devices = ""
+            print("- Couldn't run Wifi hardware detection")
         if self.constants.wifi_build is True:
             print("- Skipping Wifi patches on request")
         elif not self.constants.custom_model and wifi_devices and self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4]) in ModelArray.nativeWifi:
@@ -132,7 +136,7 @@ class BuildOpenCore:
                 self.get_kext_by_bundle_path("IO80211Mojave.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
 
         # CPUFriend
-        pp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/PlatformPlugin/{self.model}/Info.plist")
+        pp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/PlatformPlugin/{self.model}/Info.plist")
         if self.model in ModelArray.X86PP:
             Path(self.constants.pp_kext_folder).mkdir()
             Path(self.constants.pp_contents_folder).mkdir()
@@ -150,7 +154,7 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
 
         # USB Map
-        usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Maps/Universal/Info.plist")
+        usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleUSBMaps/Info.plist")
         if usb_map_path.exists():
             print(f"- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
@@ -162,6 +166,10 @@ class BuildOpenCore:
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera"
+
+        if self.model == "MacBookPro9,1":
+            print("- Adding dual GPU patch for MacBookPro9,1")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=vit9696"
 
         # HiDPI OpenCanopy and FileVault
         if self.model in ModelArray.HiDPIpicker:
@@ -337,7 +345,7 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["UpdateDataHub"] = True
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
             self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
-            self.config["PlatformInfo"]["Generic"]["ROM"] = binascii.unhexlify("112233445566")
+            self.config["PlatformInfo"]["Generic"]["ROM"] = binascii.unhexlify("0016CB445566")
             self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
             self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
             self.config["PlatformInfo"]["Generic"]["MLB"] = macserial_output[1]
@@ -455,7 +463,7 @@ Please build OpenCore first!"""
         print("\nDisk picker is loading...")
 
         all_disks = {}
-        # TODO: AllDisksAndPartitions is not supported in Yosemite(?) and older
+        # TODO: AllDisksAndPartitions is not supported in Mountain Lion(?) and older
         try:
             # High Sierra and newer
             disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -516,6 +524,7 @@ Please build OpenCore first!"""
         if response == -1:
             return
 
+        # TODO: Apple Script fails in Yosemite(?) and older
         args = [
             "osascript",
             "-e",
@@ -525,7 +534,10 @@ Please build OpenCore first!"""
             " without altering line endings",
         ]
 
-        result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if self.constants.detected_os > 14: # Yosemite's kernel
+            result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        else:
+            result = subprocess.run(f"diskutil mount {disk_identifier}s{response}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if result.returncode != 0:
             if "execution error" in result.stderr.decode() and result.stderr.decode().strip()[-5:-1] == "-128":

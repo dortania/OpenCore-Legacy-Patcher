@@ -2,9 +2,9 @@
 
 <img src="images/OC-Patcher.png" width="256">
 
-A python program for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on legacy Macs, see [Supported SMBIOS](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) on whether your model is supported. Designed around Big Sur support.
+A python program for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on legacy Macs, see [Supported SMBIOS](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) on whether your model is supported. Designed around Big Sur support, however can be used on older OSes.
 
-* Application supports running on macOS El Capitan and newer
+* Application supports running on macOS Mavericks (10.9) and newer
 
 Supported features:
 

@@ -19,8 +19,7 @@ class OpenCoreLegacyPatcher():
         else:
             self.current_model = subprocess.run("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             self.current_model = [line.strip().split(": ", 1)[1] for line in self.current_model.stdout.decode().split("\n") if line.strip().startswith("Model Identifier")][0]
-        self.constants.detected_os, _, _ = platform.mac_ver()
-        self.constants.detected_os = float('.'.join(self.constants.detected_os.split('.')[:2]))
+        self.constants.detected_os = int(platform.uname().release.partition(".")[0])
         if self.current_model in ModelArray.NoAPFSsupport:
             self.constants.serial_settings = "Moderate"
 

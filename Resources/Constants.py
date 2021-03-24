@@ -57,7 +57,7 @@ class Constants:
         self.vault = False
         self.sip_status = True
         self.secure_status = True
-        self.detected_os = 0.0
+        self.detected_os = 0
 
     # Payload Location
     # OpenCore
