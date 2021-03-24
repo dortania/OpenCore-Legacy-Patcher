@@ -162,14 +162,31 @@ class BuildOpenCore:
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
 
+        agdp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleGraphicsDevicePolicy/Info.plist")
+        agpm_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleGraphicsPowerManagement/Info.plist")
+        amc_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleMuxControl/Info.plist")
+
+        if self.model == "MacBookPro9,1":
+            print(f"- Adding Display Map Overrides")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=vit9696"
+            Path(self.constants.agdp_kext_folder).mkdir()
+            Path(self.constants.agdp_contents_folder).mkdir()
+            Path(self.constants.agpm_kext_folder).mkdir()
+            Path(self.constants.agpm_contents_folder).mkdir()
+            Path(self.constants.amc_kext_folder).mkdir()
+            Path(self.constants.amc_contents_folder).mkdir()
+
+            shutil.copy(agdp_map_path, self.constants.agdp_contents_folder)
+            shutil.copy(agpm_map_path, self.constants.agpm_contents_folder)
+            shutil.copy(amc_map_path, self.constants.amc_contents_folder)
+            self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
+            self.get_kext_by_bundle_path("AGPM-Override.kext")["Enabled"] = True
+            self.get_kext_by_bundle_path("AMC-Override.kext")["Enabled"] = True
+
         # AGPM Patch
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera"
-
-        if self.model == "MacBookPro9,1":
-            print("- Adding dual GPU patch for MacBookPro9,1")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=vit9696"
 
         # HiDPI OpenCanopy and FileVault
         if self.model in ModelArray.HiDPIpicker:
@@ -363,18 +380,35 @@ class BuildOpenCore:
             minimal_serial_patch(self)
 
         # USB Map Patching
-        self.new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
-        self.map_config = plistlib.load(Path(self.new_map_ls).open("rb"))
+        new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
+        map_config = plistlib.load(Path(new_map_ls).open("rb"))
 
         for model_controller in ModelArray.ControllerTypes:
             model_patch = f"{self.model}{model_controller}"
             try:
                 # Avoid erroring out when specific identity not found
-                self.map_config["IOKitPersonalities_x86_64"][model_patch]["model"] = self.spoofed_model
+                map_config["IOKitPersonalities_x86_64"][model_patch]["model"] = self.spoofed_model
             except KeyError:
                 continue
 
-        plistlib.dump(self.map_config, Path(self.new_map_ls).open("wb"), sort_keys=True)
+        plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
+
+        if self.model == "MacBookPro9,1":
+            new_agdp_ls = Path(self.constants.agdp_contents_folder) / Path("Info.plist")
+            new_agpm_ls = Path(self.constants.agpm_contents_folder) / Path("Info.plist")
+            new_amc_ls = Path(self.constants.amc_contents_folder) / Path("Info.plist")
+
+            agdp_config = plistlib.load(Path(new_agdp_ls).open("rb"))
+            agpm_config = plistlib.load(Path(new_agpm_ls).open("rb"))
+            amc_config = plistlib.load(Path(new_amc_ls).open("rb"))
+
+            agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_model] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(self.model)
+            agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_model] = agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(self.model)
+            amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"][self.spoofed_model] = amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"].pop(self.model)
+
+            plistlib.dump(agdp_config, Path(new_agdp_ls).open("wb"), sort_keys=True)
+            plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
+            plistlib.dump(amc_config, Path(new_amc_ls).open("wb"), sort_keys=True)
 
     @staticmethod
     def get_item_by_kv(iterable, key, value):

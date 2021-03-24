@@ -9,6 +9,7 @@ Here are some common errors users may experience while using this patcher:
 * [Booting with a non-flashed GPU](#booting-with-a-non-flashed-gpu)
 * [How to Boot Big Sur Recovery](#how-to-boot-big-sur-recovery)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
+* [GPU stuck on Nvidia with MacBookPro9,1](#gpu-stuck-on-nvidia-with-macbookpro9-1)
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
@@ -59,3 +60,17 @@ Full error: "Your Mac needs a firmware update in order to install to this Volume
 
 
 This error occurs when macOS determines the firmware to not have full APFS support. To resolve is quite simple, when building OpenCore head to "Patcher Settings" and enable "Moderate SMBIOS Patching" or higher. This will ensure that the firmware reported will show as supporting full APFS capabilities.
+
+## GPU stuck on Nvidia with MacBookPro9,1
+
+For some users, `displaypolicyd` will retain onto the Nvidia GPU on OS start and refuses to let go. The easiest way to resolve is to simply kill the process in macOS:
+
+```sh
+sudo pkill displaypolicyd
+```
+
+For a more permanat fix across reboots, you can run the following:
+
+```sh
+sudo launchctl disable system/com.apple.displaypolicyd
+```

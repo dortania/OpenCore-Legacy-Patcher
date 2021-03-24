@@ -142,6 +142,18 @@ class Constants:
     def pp_kext_folder(self): return self.kexts_path / Path("CPUFriendDataProvider.kext")
     @property
     def pp_contents_folder(self): return self.pp_kext_folder / Path("Contents")
+    @property
+    def agdp_kext_folder(self): return self.kexts_path / Path("AGDP-Override.kext")
+    @property
+    def agdp_contents_folder(self): return self.agdp_kext_folder / Path("Contents")
+    @property
+    def agpm_kext_folder(self): return self.kexts_path / Path("AGPM-Override.kext")
+    @property
+    def agpm_contents_folder(self): return self.agpm_kext_folder / Path("Contents")
+    @property
+    def amc_kext_folder(self): return self.kexts_path / Path("AMC-Override.kext")
+    @property
+    def amc_contents_folder(self): return self.amc_kext_folder / Path("Contents")
 
     # Tools
     @property

@@ -10,6 +10,9 @@
   - OpenCore c92bcb7 (0.6.8 rolling - 2021-03-20)
 - Add Mavericks and newer .app support
 - Refactor USB map building, fixes USB 3.0 displaying as USB 2.0
+- Fix blackscreen on MacBookPro9,1
+  - May require `sudo pkill displaypolicyd` to fix GPU switching
+  - Disable on every boot: `sudo launchctl disable system/com.apple.displaypolicyd`
 
 ## 0.0.18
 - Disable Vault by default due to breaking installations

@@ -421,7 +421,6 @@ DualGPUPatch = [
     "MacBookPro6,2",
     "MacBookPro8,2",
     "MacBookPro8,3",
-    "MacBookPro9,1",
     "Macmini5,2",
     "iMac12,1",
     "iMac12,2",
@@ -532,8 +531,6 @@ MacPro71 = [
     "Xserve3,1",
     "Dortania1,1"
 ]
-
-# Maps
 
 XXerve = [
     "Xserve3,1",
