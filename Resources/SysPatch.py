@@ -233,8 +233,8 @@ class PatchSysVolume:
             print("Root Patching not required for this machine!")
         elif self.model not in ModelArray.SupportedSMBIOS:
             print("Cannot run on this machine, model is unsupported!")
-        elif self.constants.detected_os < 20:
-            print(f"Cannot run on this OS! Kernel detected: {self.constants.detected_os}")
+        elif self.constants.detected_os < self.constants.big_sur:
+            print(f"Cannot run on this OS, requires macOS 11!")
         else:
             self.check_status()
             utilities.cls()
@@ -262,8 +262,8 @@ class PatchSysVolume:
     def start_unpatch(self):
         if self.constants.custom_model is not None:
             print("Unpatching must be done on target machine!")
-        elif self.constants.detected_os < 20:
-            print(f"Cannot run on this OS! Kernel detected: {self.constants.detected_os}")
+        elif self.constants.detected_os < self.constants.big_sur:
+            print(f"Cannot run on this OS, requires macOS 11!")
         else:
             self.check_status()
             utilities.cls()

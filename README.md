@@ -5,6 +5,7 @@
 A python program for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on legacy Macs, see [Supported SMBIOS](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) on whether your model is supported. Designed around Big Sur support, however can be used on older OSes.
 
 * Application supports running on macOS Mavericks (10.9) and newer
+  * Supports macOS Lion (10.7) and newer if [python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo
 
 Supported features:
 

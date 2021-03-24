@@ -59,6 +59,21 @@ class Constants:
         self.secure_status = True
         self.detected_os = 0
 
+        # OS Versions
+        self.tiger = 8
+        self.leopard = 9
+        self.snow_leopard = 10
+        self.lion = 11
+        self.mountain_lion = 12
+        self.mavericks = 13
+        self.yosemite = 14
+        self.el_capitan = 15
+        self.sierra = 16
+        self.high_sierra = 17
+        self.mojave = 18
+        self.catalina = 19
+        self.big_sur = 20
+
     # Payload Location
     # OpenCore
     @property

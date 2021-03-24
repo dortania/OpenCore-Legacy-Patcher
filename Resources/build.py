@@ -96,12 +96,12 @@ class BuildOpenCore:
 
         # WiFi patches
         # TODO: -a is not supported in Lion and older, need to add proper fix
-        try:
+        if self.constants.detected_os > self.constants.lion:
             wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
-        except ValueError:
+        else:
             wifi_devices = ""
-            print("- Couldn't run Wifi hardware detection")
+            print("- Can't run Wifi hardware detection on Snow Leopard and older")
         if self.constants.wifi_build is True:
             print("- Skipping Wifi patches on request")
         elif not self.constants.custom_model and wifi_devices and self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4]) in ModelArray.nativeWifi:
@@ -497,7 +497,7 @@ Please build OpenCore first!"""
         print("\nDisk picker is loading...")
 
         all_disks = {}
-        # TODO: AllDisksAndPartitions is not supported in Mountain Lion(?) and older
+        # TODO: AllDisksAndPartitions is not supported in Snow Leopard and older
         try:
             # High Sierra and newer
             disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -568,7 +568,7 @@ Please build OpenCore first!"""
             " without altering line endings",
         ]
 
-        if self.constants.detected_os > 14: # Yosemite's kernel
+        if self.constants.detected_os > self.constants.yosemite:
             result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
             result = subprocess.run(f"diskutil mount {disk_identifier}s{response}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
