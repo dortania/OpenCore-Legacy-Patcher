@@ -96,14 +96,15 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
 - Audio (AppleHDA) Patch for 2011 and older (Excluding MacPro4,1+)
 - Ethernet (AppleBCM5701Ethernet) Patch for certain 2009-2011 Macs
 
-Note: When the system volume is patched, you can no longer have Delta
-updates or have FileVault enabled. Please ensure you have all important
-user data backed up.
+WARNING: Root Volume Patching is still in active development, please
+have all important user data backed up. Note when the system volume
+is patched, you can no longer have Delta updates or have FileVault
+enabled.
 
 Supported Options:
 
 1. Patch System Volume
-2. Unpatch System Volume
+2. Unpatch System Volume (Experimental)
 B. Exit
         """)
         change_menu = input("Patch System Volume?: ")
