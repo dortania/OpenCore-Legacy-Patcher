@@ -24,7 +24,7 @@ class Constants:
         self.io80211high_sierra_version = "1.0.0"
         self.io80211mojave_version = "1.0.0"
         self.voodoohda_version = "296"
-        self.restrictevents_version = "1.0.0"
+        self.restrictevents_version = "1.0.1"
         self.piixata_version = "1.0.0"
         self.backlight_version = "1.0.0"
         self.cpufriend_version = "1.2.3"
