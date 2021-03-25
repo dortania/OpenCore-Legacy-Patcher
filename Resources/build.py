@@ -402,9 +402,9 @@ class BuildOpenCore:
             agpm_config = plistlib.load(Path(new_agpm_ls).open("rb"))
             amc_config = plistlib.load(Path(new_amc_ls).open("rb"))
 
-            agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_model] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(self.model)
-            agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_model] = agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(self.model)
-            amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"][self.spoofed_model] = amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"].pop(self.model)
+            agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_board] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(self.model)
+            agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board] = agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(self.model)
+            amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"][self.spoofed_board] = amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"].pop(self.model)
 
             plistlib.dump(agdp_config, Path(new_agdp_ls).open("wb"), sort_keys=True)
             plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
