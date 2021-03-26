@@ -584,7 +584,9 @@ Please build OpenCore first!"""
                 return
 
         # TODO: Remount if readonly
+        drive_host_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk_identifier}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk_identifier}s{response}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        sd_type = drive_host_info["MediaName"]
         mount_path = Path(partition_info["MountPoint"])
         disk_type = partition_info["BusProtocol"]
         utilities.cls()
@@ -600,14 +602,18 @@ Please build OpenCore first!"""
             print("- Coping OpenCore onto EFI partition")
             shutil.copytree(self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC"))
             shutil.copytree(self.constants.opencore_release_folder / Path("System"), mount_path / Path("System"))
-            # TODO: Add custom SD Card icon
-            # Apple only exposes this for Apple-branded card readers as MediaName: SD Card Reader under the root disk with 'diskutil info -plist diskX'
-            if disk_type == "USB":
-                print("- Adding External USB Drive icon")
-                shutil.copy(self.constants.icon_path_external, mount_path)
+            # Array filled with common SD Card names
+            # Note most USB-based SD Card readers generally report as "Storage Device", and no reliable way to detect further
+            if sd_type in ["SD Card Reader", "SD/MMC"]:
+                print("- Adding SD Card icon")
+                shutil.copy(self.constants.icon_path_sd, mount_path)
             else:
-                print("- Adding Internal Drive icon")
-                shutil.copy(self.constants.icon_path_internal, mount_path)
+                if disk_type == "USB":
+                    print("- Adding External USB Drive icon")
+                    shutil.copy(self.constants.icon_path_external, mount_path)
+                else:
+                    print("- Adding Internal Drive icon")
+                    shutil.copy(self.constants.icon_path_internal, mount_path)
             print("- Cleaning install location")
             subprocess.run(f"dot_clean '{mount_path}'".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             print("- OpenCore transfer complete")

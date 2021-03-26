@@ -13,6 +13,7 @@
 - Fix blackscreen on MacBookPro9,1
 - Update RestrictEvents with custom build (1.0.1)
   - Blocks `/usr/libexec/displaypolicyd` on MacBookPro9,1 to ensure smooth GPU switching
+- Add custom SD Card icon
 
 ## 0.0.18
 - Disable Vault by default due to breaking installations

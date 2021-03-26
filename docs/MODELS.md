@@ -104,6 +104,7 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | iMac12,2 | ^^ | ^^ | ^^ |
 | iMac13,1 | Late 2012 | ^^ | <span style="color:green"> Everything is supported</span> |
 | iMac13,2 | ^^ | ^^ | ^^ |
+| iMac13,2 | ^^ | ^^ | ^^ |
 | iMac14,1 | Late 2013 | ^^ | ^^ |
 | iMac14,2 | ^^ | ^^ | ^^ |
 | iMac14,3 | ^^ | ^^ | ^^ |
