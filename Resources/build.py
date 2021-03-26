@@ -600,6 +600,8 @@ Please build OpenCore first!"""
             print("- Coping OpenCore onto EFI partition")
             shutil.copytree(self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC"))
             shutil.copytree(self.constants.opencore_release_folder / Path("System"), mount_path / Path("System"))
+            # TODO: Add custom SD Card icon
+            # Apple only exposes this for Apple-branded card readers as MediaName: SD Card Reader under the root disk with 'diskutil info -plist diskX'
             if disk_type == "USB":
                 print("- Adding External USB Drive icon")
                 shutil.copy(self.constants.icon_path_external, mount_path)

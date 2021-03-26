@@ -76,7 +76,7 @@ class PatchSysVolume:
             delete_path = Path(self.mount_extensions) / Path(delete_current_kext)
             if Path(delete_path).exists():
                 print(f"- Deleting {delete_current_kext}")
-                subprocess.run(f"sudo rm -R {delete_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo rm -R '{delete_path}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             else:
                 print(f"- Couldn't find {delete_current_kext}, skipping")
 
@@ -85,12 +85,12 @@ class PatchSysVolume:
             existing_path = Path(self.mount_extensions) / Path(add_current_kext)
             if Path(existing_path).exists():
                 print(f"- Found conflicting kext, Deleting Root Volume's {add_current_kext}")
-                subprocess.run(f"sudo rm -R {existing_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo rm -R '{existing_path}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 print(f"- Adding {add_current_kext}")
-                subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo cp -R '{vendor_location}/{add_current_kext}' '{self.mount_extensions}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             else:
                 print(f"- Adding {add_current_kext}")
-                subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo cp -R '{vendor_location}/{add_current_kext}' '{self.mount_extensions}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_patches_11(self):
         # TODO: Add proper hardware checks
@@ -158,14 +158,14 @@ class PatchSysVolume:
         # Start Patch engine
         if self.model in ModelArray.LegacyAudio:
             print("- Attempting AppleHDA Patch")
-            subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleHDA.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(f"sudo cp -R {self.constants.applehda_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo rm -R '{self.mount_extensions}/AppleHDA.kext'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo cp -R '{self.constants.applehda_path}' '{self.mount_extensions}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             rebuild_required = True
 
         if self.model in ModelArray.EthernetBroadcom:
             print("- Attempting AppleBCM5701Ethernet Patch")
-            subprocess.run(f"sudo rm -R {self.mount_extensions}/IONetworkingFamily.kext/Contents/PlugIns/AppleBCM5701Ethernet.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(f"sudo cp -R {self.constants.applebcm_path} {self.mount_extensions}/IONetworkingFamily.kext/Contents/PlugIns/".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo rm -R '{self.mount_extensions}/IONetworkingFamily.kext/Contents/PlugIns/AppleBCM5701Ethernet.kext'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo cp -R '{self.constants.applebcm_path}' '{self.mount_extensions}/IONetworkingFamily.kext/Contents/PlugIns/'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             rebuild_required = True
 
         if (self.model in ModelArray.LegacyGPU) and (Path(self.constants.hiddhack_path).exists()):
@@ -186,15 +186,15 @@ class PatchSysVolume:
         print("- Creating backup snapshot of user data (This may take some time)")
         subprocess.run("tmutil snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         print("- Reverting to last signed APFS snapshot")
-        subprocess.run(f"sudo bless --mount {self.mount_location} --bootefi --last-sealed-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo bless --mount '{self.mount_location}' --bootefi --last-sealed-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def rebuild_snapshot(self):
         input("Press [ENTER] to continue with cache rebuild")
         print("- Rebuilding Kernel Cache (This may take some time)")
-        subprocess.run(f"sudo kmutil install --volume-root {self.mount_location} --update-all".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo kmutil install --volume-root '{self.mount_location}' --update-all".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         input("Press [ENTER] to continue with snapshotting")
         print("- Creating new APFS snapshot")
-        subprocess.run(f"sudo bless --folder {self.mount_location}/System/Library/CoreServices --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo bless --folder '{self.mount_location}/System/Library/CoreServices' --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
