@@ -606,6 +606,8 @@ Please build OpenCore first!"""
             else:
                 print("- Adding Internal Drive icon")
                 shutil.copy(self.constants.icon_path_internal, mount_path)
+            print("- Cleaning install location")
+            subprocess.run(f"dot_clean '{mount_path}'".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             print("- OpenCore transfer complete")
             print("\nPress [Enter] to continue.\n")
             input()
