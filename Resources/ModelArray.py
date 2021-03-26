@@ -55,6 +55,7 @@ SupportedSMBIOS11 = [
     "iMac12,2",
     "iMac13,1",
     "iMac13,2",
+    "iMac13,3",
     "iMac14,1",
     "iMac14,2",
     "iMac14,3",
@@ -224,6 +225,7 @@ WifiBCM94331 = [
     "Macmini6,2",    # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
     "iMac13,1",      # PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)
     "iMac13,2",      # PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)
+    "iMac13,3",      # PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)
     "MacPro5,1",     # PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)
     "Dortania1,1"
 ]
@@ -405,6 +407,7 @@ SidecarPatch = [
     "Macmini6,2",
     "iMac13,1",
     "iMac13,2",
+    "iMac13,3",
     "iMac14,1",
     "iMac14,2",
     "iMac14,3",
@@ -548,6 +551,7 @@ iXac = [
     "iMac12,2",
     "iMac13,1",
     "iMac13,2",
+    "iMac13,3",
     "iMac14,1",
     "iMac14,2",
     "iMac14,3",
@@ -677,6 +681,7 @@ X86PP = [
     "Macmini6,2",
     "iMac13,1",
     "iMac13,2",
+    "iMac13,3",
     "iMac14,1",
     "iMac14,2",
     "iMac14,3",
@@ -693,6 +698,7 @@ NightShiftExclude = [
     "Macmini6,2",
     "iMac13,1",
     "iMac13,2",
+    "iMac13,3",
     "iMac14,1",
     "iMac14,2",
     "iMac14,3",
@@ -710,6 +716,7 @@ NoSATAPatch = [
     "MacBookPro10,2",
     "iMac13,1",
     "iMac13,2",
+    "iMac13,3",
     "iMac14,1",
     "iMac14,2",
     "iMac14,3",
@@ -746,6 +753,7 @@ NoRootPatch11 = [
     "Macmini6,2",
     "iMac13,1",
     "iMac13,2",
+    "iMac13,3",
     "iMac14,1",
     "iMac14,2",
     "iMac14,3",
@@ -782,11 +790,35 @@ DeleteNvidiaAccel11 = [
 ]
 
 DeleteAMDAccel11 = [
+    "AMDRadeonX4000.kext",
+    "AMDRadeonX4000HWServices.kext",
+    "AMDRadeonX5000.kext",
+    "AMDRadeonX5000HWServices.kext",
+    "AMDRadeonX6000.kext",
+    "AMDRadeonX6000Framebuffer.kext",
+    "AMDRadeonX6000HWServices.kext",
     "AMD7000Controller.kext", # AMDSupport Dependancy
     "AMD8000Controller.kext", # AMDSupport Dependancy
     "AMD9000Controller.kext", # AMDSupport Dependancy
     "AMD9500Controller.kext", # AMDSupport Dependancy
     "AMD10000Controller.kext", # AMDSupport Dependancy
+    "AppleIntelBDWGraphics.kext",
+    "AppleIntelBDWGraphicsFramebuffer.kext",
+    "AppleIntelCFLGraphicsFramebuffer.kext",
+    "AppleIntelHD4000Graphics.kext",
+    "AppleIntelHD5000Graphics.kext",
+    "AppleIntelICLGraphics.kext",
+    "AppleIntelICLLPGraphicsFramebuffer.kext",
+    "AppleIntelKBLGraphics.kext",
+    "AppleIntelKBLGraphicsFramebuffer.kext",
+    "AppleIntelSKLGraphics.kext",
+    "AppleIntelSKLGraphicsFramebuffer.kext",
+    "AppleIntelFramebufferAzul.kext",
+    "AppleIntelFramebufferCapri.kext",
+    "AppleParavirtGPU.kext",
+    "GeForce.kext",
+    "IOAcceleratorFamily2.kext",
+    "IOGPUFamily.kext",
 ]
 
 AddNvidiaAccel11 = [
@@ -823,6 +855,7 @@ AddAMDAccel11 = [
 	"ATIRadeonX2000GA.plugin",
 	"ATIRadeonX2000GLDriver.bundle",
 	"ATIRadeonX2000VADriver.bundle",
+    "IOSurface.kext",
 ]
 
 AddIntelGen1Accel = [
