@@ -15,6 +15,7 @@
   - Blocks `/usr/libexec/displaypolicyd` on MacBookPro9,1 to ensure smooth GPU switching
 - Add custom SD Card icon
 - Add automatic codesiging and notarization
+- Fix crashing when CD is present
 
 ## 0.0.18
 - Disable Vault by default due to breaking installations

@@ -76,7 +76,7 @@ class PatchSysVolume:
             delete_path = Path(self.mount_extensions) / Path(delete_current_kext)
             if Path(delete_path).exists():
                 print(f"- Deleting {delete_current_kext}")
-                subprocess.run(f"sudo rm -R '{delete_path}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo rm -R {delete_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             else:
                 print(f"- Couldn't find {delete_current_kext}, skipping")
 
@@ -85,12 +85,12 @@ class PatchSysVolume:
             existing_path = Path(self.mount_extensions) / Path(add_current_kext)
             if Path(existing_path).exists():
                 print(f"- Found conflicting kext, Deleting Root Volume's {add_current_kext}")
-                subprocess.run(f"sudo rm -R '{existing_path}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo rm -R {existing_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 print(f"- Adding {add_current_kext}")
-                subprocess.run(f"sudo cp -R '{vendor_location}/{add_current_kext}' '{self.mount_extensions}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             else:
                 print(f"- Adding {add_current_kext}")
-                subprocess.run(f"sudo cp -R '{vendor_location}/{add_current_kext}' '{self.mount_extensions}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_patches_11(self):
         # TODO: Add proper hardware checks
