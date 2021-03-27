@@ -6,7 +6,7 @@
   - AppleHDA Patch for 2011 and older (Excluding MacPro4,1+)
 - Fix CPU Speed reporting
 - Increment binaries
-  - OpenCore c92bcb7 (0.6.8 rolling - 2021-03-20)
+  - OpenCore 9cd61bb (0.6.8 rolling - 2021-03-27)
 - Add Mavericks and newer .app support
 - Refactor USB map building, fixes USB 3.0 displaying as USB 2.0
 - Fix blackscreen on MacBookPro9,1

@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+# Simple script to delete unnessary files from OpenCore and move into place
+# To use, simply :
+# - Download an OpenCore build
+# - Place the X64 folder in the /payloads/OpenCore folder
+# - Rename to OpenCore-VERSION (ie. DEBUG or RELEASE)
+# - Run script
+# - Rename folders to appropriate versions (ie. OpenCore-v0.6.8)
+# - Zip folders
+# TODO:
+# - Import OC version from Constants.py
+# - Download latest builds from dortania.github.io
+# - Automatically rename and zip folders
+from __future__ import print_function
+
+import subprocess
+from pathlib import Path
+
+build_types = [
+    "DEBUG",
+    "RELEASE",
+]
+
+bad_drivers = [
+    "AudioDxe.efi",
+    "CrScreenshotDxe.efi",
+    "HiiDatabase.efi",
+    "NvmExpressDxe.efi",
+    "OpenHfsPlus.efi",
+    "OpenPartitionDxe.efi",
+    "OpenUsbKbDxe.efi",
+    "Ps2KeyboardDxe.efi",
+    "Ps2MouseDxe.efi",
+    "UsbMouseDxe.efi",
+    "XhciDxe.efi",
+]
+
+bad_tools = [
+    "ChipTune.efi",
+    "CleanNvram.efi",
+    "ControlMsrE2.efi",
+    "GopStop.efi",
+    "KeyTester.efi",
+    "MmapDump.efi",
+    "OpenControl.efi",
+    "ResetSystem.efi",
+    "RtcRw.efi",
+]
+
+for version in build_types:
+    print("- Creating S/L/C")
+    subprocess.run(f"mkdir -p ./OpenCore-{version}/System/Library/CoreServices".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+    print("- Creating boot.efi Bootstrap")
+    subprocess.run(f"cp ./OpenCore-{version}/EFI/BOOT/BOOTx64.efi ./OpenCore-{version}/System/Library/CoreServices/boot.efi".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+    print("- Deleting old BOOTx64.efi")
+    subprocess.run(f"rm -R ./OpenCore-{version}/EFI/BOOT/".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+    for delete_drivers in bad_drivers:
+        if Path(f"./OpenCore-{version}/EFI/OC/Drivers/{delete_drivers}").exists():
+            print(f"- Deleting {delete_drivers}")
+            subprocess.run(f"rm ./OpenCore-{version}/EFI/OC/Drivers/{delete_drivers}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            print(f"- Unable to find {delete_drivers}, skipping")
+    for delete_tools in bad_tools:
+        if Path(f".//OpenCore-{version}/EFI/OC/Tools/{delete_tools}").exists():
+            print(f"- Deleting {delete_tools}")
+            subprocess.run(f"rm ./OpenCore-{version}/EFI/OC/Tools/{delete_tools}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            print(f"- Unable to find {delete_tools}, skipping")
+    
+    
+
+
+    
+

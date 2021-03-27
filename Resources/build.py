@@ -152,6 +152,7 @@ class BuildOpenCore:
         if self.model in ModelArray.pciSSDT:
             print("- Adding SSDT-CPBG.aml")
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
+            shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
 
         # USB Map
         usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleUSBMaps/Info.plist")
