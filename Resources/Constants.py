@@ -186,6 +186,8 @@ class Constants:
     @property
     def icon_path_sd(self): return self.payload_path / Path("Icon/SD-Card/.VolumeIcon.icns")
     @property
+    def icon_path_ssd(self): return self.payload_path / Path("Icon/SSD/.VolumeIcon.icns")
+    @property
     def gui_path(self): return self.payload_path / Path("Icon/Resources.zip")
 
     # Apple Paylods Paths

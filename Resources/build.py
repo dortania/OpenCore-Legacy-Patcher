@@ -591,6 +591,10 @@ Please build OpenCore first!"""
         drive_host_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk_identifier}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk_identifier}s{response}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         sd_type = drive_host_info["MediaName"]
+        try:
+            ssd_type = drive_host_info["SolidState"]
+        except KeyError:
+            ssd_type = False
         mount_path = Path(partition_info["MountPoint"])
         disk_type = partition_info["BusProtocol"]
         utilities.cls()
@@ -611,13 +615,15 @@ Please build OpenCore first!"""
             if sd_type in ["SD Card Reader", "SD/MMC"]:
                 print("- Adding SD Card icon")
                 shutil.copy(self.constants.icon_path_sd, mount_path)
+            elif ssd_type is True:
+                print("- Adding SSD icon")
+                shutil.copy(self.constants.icon_path_ssd, mount_path)
+            elif disk_type == "USB":
+                print("- Adding External USB Drive icon")
+                shutil.copy(self.constants.icon_path_external, mount_path)
             else:
-                if disk_type == "USB":
-                    print("- Adding External USB Drive icon")
-                    shutil.copy(self.constants.icon_path_external, mount_path)
-                else:
-                    print("- Adding Internal Drive icon")
-                    shutil.copy(self.constants.icon_path_internal, mount_path)
+                print("- Adding Internal Drive icon")
+                shutil.copy(self.constants.icon_path_internal, mount_path)
             print("- Cleaning install location")
             subprocess.run(f"dot_clean '{mount_path}'".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             print("- OpenCore transfer complete")
