@@ -94,7 +94,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         print("""Patches Root volume to fix misc issues such as:
 
 - Audio (AppleHDA) Patch for 2011 and older (Excluding MacPro4,1+)
-- Ethernet (AppleBCM5701Ethernet) Patch for certain 2009-2011 Macs
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume

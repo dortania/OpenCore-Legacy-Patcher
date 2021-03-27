@@ -162,12 +162,6 @@ class PatchSysVolume:
             subprocess.run(f"sudo cp -R '{self.constants.applehda_path}' '{self.mount_extensions}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             rebuild_required = True
 
-        if self.model in ModelArray.EthernetBroadcom:
-            print("- Attempting AppleBCM5701Ethernet Patch")
-            subprocess.run(f"sudo rm -R '{self.mount_extensions}/IONetworkingFamily.kext/Contents/PlugIns/AppleBCM5701Ethernet.kext'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(f"sudo cp -R '{self.constants.applebcm_path}' '{self.mount_extensions}/IONetworkingFamily.kext/Contents/PlugIns/'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            rebuild_required = True
-
         if (self.model in ModelArray.LegacyGPU) and (Path(self.constants.hiddhack_path).exists()):
             print(f"- Detected GPU: {self.constants.current_gpuv} {self.constants.current_gpud}")
             if (self.constants.current_gpuv == "AMD (0x1002)") & (self.constants.current_gpud in ModelArray.AMDMXMGPUs):

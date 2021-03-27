@@ -15,7 +15,7 @@ class Constants:
         self.lilu_version = "1.5.1"
         self.whatevergreen_version = "1.4.8"
         self.airportbcrmfixup_version = "2.1.2"
-        self.bcm570_version = "1.0.0"
+        self.bcm570_version = "1.0.1"
         self.marvel_version = "1.0.0"
         self.nforce_version = "1.0.0"
         self.mce_version = "1.0.0"
