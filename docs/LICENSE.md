@@ -10,8 +10,6 @@ This patcher is made of multiple external applications from different people and
   * [CPUFriend](https://github.com/acidanthera/CPUFriend/blob/master/LICENSE)
   * [RestrictEvents](https://github.com/acidanthera/RestrictEvents/blob/master/LICENSE.txt)
   * [NightShiftEnabler](https://github.com/cdf/NightShiftEnabler/blob/master/LICENSE.txt)
-* Public Domain
-  * [VoodooHDA](https://sourceforge.net/projects/voodoohda/)
 * All rights reserved to respective authors
   * [AAAMouSSE](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/) - Syncretic
   * [telemetrap](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/post-28447707) - Syncretic

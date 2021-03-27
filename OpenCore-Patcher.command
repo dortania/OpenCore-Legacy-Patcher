@@ -3,7 +3,10 @@
 
 from __future__ import print_function
 
-import subprocess, sys, time, platform
+import subprocess
+import sys
+import time
+import platform
 
 from Resources import build, ModelArray, Constants, SysPatch, utilities, CliMenu
 
@@ -85,7 +88,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
   - Khronokernel:\tWriting and maintaining this patcher
   - DhinakG:\t\tWriting and maintaining this patcher
   - Syncretic:\t\tAAAMouSSE and telemetrap
-  - Slice:\t\tVoodooHDA
   - cdf:\t\tNightShiftEnabler"""]).start()
 
     def PatchVolume(self):

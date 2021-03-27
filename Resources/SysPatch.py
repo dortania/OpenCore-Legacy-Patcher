@@ -158,8 +158,8 @@ class PatchSysVolume:
         # Start Patch engine
         if self.model in ModelArray.LegacyAudio:
             print("- Attempting AppleHDA Patch")
-            subprocess.run(f"sudo rm -R '{self.mount_extensions}/AppleHDA.kext'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(f"sudo cp -R '{self.constants.applehda_path}' '{self.mount_extensions}'".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleHDA.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo cp -R {self.constants.applehda_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             rebuild_required = True
 
         if (self.model in ModelArray.LegacyGPU) and (Path(self.constants.hiddhack_path).exists()):
@@ -180,15 +180,15 @@ class PatchSysVolume:
         print("- Creating backup snapshot of user data (This may take some time)")
         subprocess.run("tmutil snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         print("- Reverting to last signed APFS snapshot")
-        subprocess.run(f"sudo bless --mount '{self.mount_location}' --bootefi --last-sealed-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo bless --mount {self.mount_location} --bootefi --last-sealed-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def rebuild_snapshot(self):
         input("Press [ENTER] to continue with cache rebuild")
         print("- Rebuilding Kernel Cache (This may take some time)")
-        subprocess.run(f"sudo kmutil install --volume-root '{self.mount_location}' --update-all".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo kmutil install --volume-root {self.mount_location} --update-all".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         input("Press [ENTER] to continue with snapshotting")
         print("- Creating new APFS snapshot")
-        subprocess.run(f"sudo bless --folder '{self.mount_location}/System/Library/CoreServices' --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo bless --folder {self.mount_location}/System/Library/CoreServices --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
