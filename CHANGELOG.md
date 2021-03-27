@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.20
+
 ## 0.0.19
 - Add SMC-Spoof.kext to avoid triggering `smcupdater`
 - Add Root Volume patching for older machines
