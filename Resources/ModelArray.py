@@ -705,7 +705,10 @@ NightShiftExclude = [
 ]
 
 UGAtoGOP = [
+    "MacBook4,1",
     "MacBookPro4,1",
+    "iMac7,1",
+    "iMac8,1",
     "MacPro3,1"
 ]
 

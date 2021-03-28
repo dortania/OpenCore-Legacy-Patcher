@@ -6,6 +6,7 @@
   - OpenCore a57d8df (0.6.8 rolling - 2021-03-28)
 - Move Apple binaries to dedicated repo and allow custom repos
   - Reduces App size 1/5th compared to 0.0.19
+- Fix OpenCanopy support on iMac7,1 and 8,1
 
 ## 0.0.19
 - Add SMC-Spoof.kext to avoid triggering `smcupdater`
