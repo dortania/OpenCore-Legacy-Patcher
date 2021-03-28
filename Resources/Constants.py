@@ -74,6 +74,10 @@ class Constants:
         self.catalina = 19
         self.big_sur = 20
 
+        # External Files
+        self.url_backup = ""
+        self.url_apple_binaries = "https://github.com/dortania/Apple-Binaries-OCLP/archive/refs/heads/main.zip"
+
     # Payload Location
     # OpenCore
     @property
@@ -192,7 +196,9 @@ class Constants:
 
     # Apple Paylods Paths
     @property
-    def payload_apple_root_path(self): return self.payload_path / Path("Apple")
+    def payload_apple_root_path(self): return self.payload_path / Path("Apple-Binaries-OCLP-main")
+    @property
+    def payload_apple_root_path_zip(self): return self.payload_path / Path("Apple.zip")
     @property
     def payload_apple_kexts_path(self): return self.payload_apple_root_path / Path("Extensions")
     @property
@@ -204,22 +210,20 @@ class Constants:
 
     # Apple Extensions
     @property
-    def applebcm_path(self): return self.payload_apple_kexts_path / Path("misc-kexts/AppleBCM5701Ethernet.kext")
-    @property
-    def applehda_path(self): return self.payload_apple_kexts_path / Path("misc-kexts/AppleHDA.kext")
-    @property
-    def iosurface_path(self): return self.payload_apple_kexts_path / Path("misc-kexts/IOSurface.kext")
+    def applehda_path(self): return self.payload_apple_kexts_path / Path("Audio/AppleHDA.kext")
 
 
     # GPU Kexts and Bundles
     @property
-    def legacy_nvidia_path(self): return self.payload_apple_kexts_path / Path("legacy-nvidia")
+    def legacy_graphics(self): return self.payload_apple_kexts_path / Path("Graphics-Acceleration")
     @property
-    def legacy_amd_path(self): return self.payload_apple_kexts_path / Path("legacy-amd")
+    def legacy_nvidia_path(self): return self.legacy_graphics / Path("Nvidia-Tesla-Fermi")
     @property
-    def legacy_intel_gen1_path(self): return self.payload_apple_kexts_path / Path("intel-gen1")
+    def legacy_amd_path(self): return self.legacy_graphics / Path("AMD-ATI")
     @property
-    def legacy_intel_gen2_path(self): return self.payload_apple_kexts_path / Path("intel-gen2")
+    def legacy_intel_gen1_path(self): return self.legacy_graphics / Path("Intel-Gen5-Iconlake")
+    @property
+    def legacy_intel_gen2_path(self): return self.legacy_graphics / Path("Intel-Gen6-SandyBridge")
 
     # Apple Frameworks
     @property

@@ -212,3 +212,28 @@ running, however this will enforce iMac Nvidia Build Patches.
             self.constants.imac_nvidia_build = False
         else:
             print("Invalid option")
+
+    def custom_repo(self):
+        utilities.cls()
+        utilities.header(["Swet custom patch repo"])
+        print(f"""For users participating in OpenCore Patcher betas, this is
+where you can add custom repos such as Google Drive links.
+
+Valid options:
+
+1. Set custom location
+2. Reset repo location
+3. Exit
+
+Current repo:
+{self.constants.url_apple_binaries}
+        """)
+        change_menu = input("Set custom location?: ")
+        if change_menu == "1":
+            self.constants.url_backup = self.constants.url_apple_binaries
+            self.constants.url_apple_binaries = input("Enter new URL: ")
+        elif change_menu == "2":
+            if self.constants.url_backup != "":
+                self.constants.url_apple_binaries = self.constants.url_backup
+        else:
+            print("Invalid option")

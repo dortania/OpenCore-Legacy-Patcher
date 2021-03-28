@@ -13,6 +13,8 @@ import shutil
 import subprocess
 import uuid
 import zipfile
+import os
+import urllib.request
 from pathlib import Path
 from datetime import date
 
@@ -219,6 +221,35 @@ class PatchSysVolume:
         self.sip_patch_status = True
         self.csr_decode(self.sip_status, False)
 
+    def check_files(self):
+        if Path(self.constants.payload_apple_root_path).exists():
+            print("- Found Apple Binaries")
+            patch_input = input("Would you like to redownload?(y/n): ")
+            if patch_input in {"y", "Y", "yes", "Yes"}:
+                shutil.rmtree(Path(self.constants.payload_apple_root_path))
+                self.download_files()
+        else:
+            print("- Apple binaries missing")
+            self.download_files()
+
+    def download_files(self):
+        print("- Downloading Apple binaries")
+        try:
+            urllib.request.urlretrieve(self.constants.url_apple_binaries, self.constants.payload_apple_root_path_zip)
+        except urllib.error.HTTPError:
+            print("- Link invalid")
+        if self.constants.payload_apple_root_path_zip.exists():
+            print("- Download completed")
+            print("- Unzipping download...")
+            try:
+                zipfile.ZipFile(self.constants.payload_apple_root_path_zip).extractall(self.constants.payload_path)
+            except zipfile.BadZipFile:
+                print("- Couldn't unzip")
+            os.remove(self.constants.payload_apple_root_path_zip)
+        else:
+            print("- Download failed, please verify the below link works:")
+            print(self.constants.url_apple_binaries)
+
     def start_patch(self):
         # Check SIP
         if self.constants.custom_model is not None:
@@ -235,10 +266,12 @@ class PatchSysVolume:
             if (self.sip_patch_status is False) and (self.smb_status is False):
                 print("- Detected SIP and SecureBootModel are disabled, continuing")
                 input("\nPress [ENTER] to continue")
-                self.find_mount_root_vol(True)
-                self.unmount_drive()
-                print("- Patching complete")
-                print("\nPlease reboot the machine for patches to take effect")
+                self.check_files()
+                if self.constants.payload_apple_root_path.exists():
+                    self.find_mount_root_vol(True)
+                    self.unmount_drive()
+                    print("- Patching complete")
+                    print("\nPlease reboot the machine for patches to take effect")
             if self.sip_patch_status is True:
                 print("SIP set incorrectly, cannot patch on this machine!")
                 print("Please disable SIP and SecureBootModel in Patcher Settings")
