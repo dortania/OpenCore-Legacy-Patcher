@@ -1,8 +1,7 @@
 .DS_Store
 OCLP-GUI.command
-/payloads/Apple/Frameworks
-/payloads/Apple/LaunchDaemons
-/payloads/Apple/PrivateFrameworks
+/payloads/Apple-Binaries-OCLP-main
+/payloads/__MACOSX
 /App
 /Build-Folder
 /build
