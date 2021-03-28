@@ -4,6 +4,8 @@
 - Fix CPU Calculation on early MCP79 chipsets (ie. iMac9,1, MacBook5,x)
 - Increment binaries
   - OpenCore a57d8df (0.6.8 rolling - 2021-03-28)
+- Move Apple binaries to dedicated repo and allow custom repos
+  - Reduces App size 1/5th compared to 0.0.19
 
 ## 0.0.19
 - Add SMC-Spoof.kext to avoid triggering `smcupdater`
