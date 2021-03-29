@@ -91,6 +91,9 @@ class BuildOpenCore:
             #("VoodooHDA.kext", self.constants.voodoohda_version, self.constants.voodoohda_path, lambda: self.model in ModelArray.LegacyAudio),
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
+            # Hibernation Tests
+            #("CpuTscSync.kext", self.constants.cputscsync, self.constants.cputscsync_path, lambda: True),
+            #("HibernationFixup.kext", self.constants.hibernationfixup, self.constants.hibernationfixup_path, lambda: True),
         ]:
             self.enable_kext(name, version, path, check)
 

@@ -243,6 +243,10 @@ class PatchSysVolume:
             print("- Unzipping download...")
             try:
                 zipfile.ZipFile(self.constants.payload_apple_root_path_zip).extractall(self.constants.payload_path)
+                print("- Renaming folder")
+                os.rename(self.constants.payload_apple_root_path_unzip, self.constants.payload_apple_root_path)
+                print("- Binaries downloaded to:")
+                print(self.constants.payload_path)
             except zipfile.BadZipFile:
                 print("- Couldn't unzip")
             os.remove(self.constants.payload_apple_root_path_zip)

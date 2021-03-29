@@ -30,6 +30,8 @@ class Constants:
         self.cpufriend_version = "1.2.3"
         self.nightshift_version = "1.1.0"
         self.smcspoof_version = "1.0.0"
+        self.cputscsync = "1.0.3"
+        self.hibernationfixup = "1.3.9"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -132,6 +134,10 @@ class Constants:
     def nightshift_path(self): return self.payload_kexts_path / Path(f"Misc/NightShiftEnabler-v{self.nightshift_version}.zip")
     @property
     def smcspoof_path(self): return self.payload_kexts_path / Path(f"Misc/SMC-Spoof-v{self.smcspoof_version}.zip")
+    @property
+    def cputscsync_path(self): return self.payload_kexts_path / Path(f"Acidanthera/CpuTscSync-v{self.cputscsync}.zip")
+    @property
+    def hibernationfixup_path(self): return self.payload_kexts_path / Path(f"Acidanthera/HibernationFixup-v{self.hibernationfixup}.zip")
 
     # Build Location
     @property
@@ -196,9 +202,11 @@ class Constants:
 
     # Apple Paylods Paths
     @property
-    def payload_apple_root_path(self): return self.payload_path / Path("Apple-Binaries-OCLP-main")
+    def payload_apple_root_path_unzip(self): return self.payload_path / Path("Apple-Binaries-OCLP-main")
     @property
     def payload_apple_root_path_zip(self): return self.payload_path / Path("Apple.zip")
+    @property
+    def payload_apple_root_path(self): return self.payload_path / Path("Apple")
     @property
     def payload_apple_kexts_path(self): return self.payload_apple_root_path / Path("Extensions")
     @property
