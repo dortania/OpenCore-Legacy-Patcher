@@ -7,6 +7,8 @@
 - Move Apple binaries to dedicated repo and allow custom repos
   - Reduces App size 1/5th compared to 0.0.19
 - Fix OpenCanopy support on iMac7,1 and 8,1
+- Set iGPU-less iMacs to iMacPro1,1
+  - Additionally fixes Bluetooth on older iMacs with BRCM2046 modules
 
 ## 0.0.19
 - Add SMC-Spoof.kext to avoid triggering `smcupdater`

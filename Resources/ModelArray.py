@@ -504,9 +504,8 @@ Macmini71 = [
     "Macmini6,1",
     "Macmini6,2"
 ]
-
-# iMac = AMD and Nvidia GPU
-iMac151 = [
+# iMacPro = dGPU only iMacs
+iMacPro11 = [
     "iMac7,1",
     "iMac8,1",
     "iMac9,1",
@@ -514,6 +513,10 @@ iMac151 = [
     "iMac11,1",
     "iMac11,2",
     "iMac11,3",
+]
+
+# iMac = AMD and Nvidia GPU with iGPU
+iMac151 = [
     "iMac12,1",
     "iMac12,2",
     "iMac13,2",

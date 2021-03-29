@@ -318,6 +318,10 @@ class BuildOpenCore:
             print("- Spoofing to Macmini7,1")
             spoofed_model = "Macmini7,1"
             spoofed_board = "Mac-35C5E08120C7EEAF"
+        elif self.model in ModelArray.iMacPro11:
+            print("- Spoofing to iMacPro1,1")
+            spoofed_model = "iMacPro1,1"
+            spoofed_board = "Mac-7BA5B2D9E42DDD94"
         elif self.model in ModelArray.iMac151:
             # Check for upgraded GPUs on iMacs
             if self.constants.metal_build is True:
