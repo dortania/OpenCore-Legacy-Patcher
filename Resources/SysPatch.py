@@ -14,7 +14,6 @@ import subprocess
 import uuid
 import zipfile
 import os
-import urllib.request
 from pathlib import Path
 from datetime import date
 
@@ -32,14 +31,17 @@ class PatchSysVolume:
         for current_sip_bit in self.constants.csr_values:
             if sip_int & (1 << i):
                 temp = True
-                # The below array are values that don't affect the ability to patch
-                if current_sip_bit not in ["CSR_ALLOW_TASK_FOR_PID              ", "CSR_ALLOW_KERNEL_DEBUGGER           ", "CSR_ALLOW_APPLE_INTERNAL            ", "CSR_ALLOW_ANY_RECOVERY_OS           ",]:
-                    self.sip_patch_status = False
+                self.constants.csr_values[current_sip_bit] = True
             else:
                 temp = False
             if print_status is True:
                 print(f"- {current_sip_bit}\t {temp}")
             i = i + 1
+        # TODO: Fix this garbage when I have more sanity
+        if ((self.constants.csr_values["CSR_ALLOW_UNTRUSTED_KEXTS           "] is True) and (self.constants.csr_values["CSR_ALLOW_UNRESTRICTED_FS           "] is True) and (self.constants.csr_values["CSR_ALLOW_TASK_FOR_PID              "] is True) and (self.constants.csr_values["CSR_ALLOW_KERNEL_DEBUGGER           "] is True) and (self.constants.csr_values["CSR_ALLOW_APPLE_INTERNAL            "] is True) and (self.constants.csr_values["CSR_ALLOW_UNRESTRICTED_DTRACE       "] is True) and (self.constants.csr_values["CSR_ALLOW_UNRESTRICTED_NVRAM        "] is True) and (self.constants.csr_values["CSR_ALLOW_DEVICE_CONFIGURATION      "] is True) and (self.constants.csr_values["CSR_ALLOW_ANY_RECOVERY_OS           "] is True) and (self.constants.csr_values["CSR_ALLOW_UNAPPROVED_KEXTS          "] is True) and (self.constants.csr_values["CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE"] is True) and (self.constants.csr_values["CSR_ALLOW_UNAUTHENTICATED_ROOT      "] is True)):
+            self.sip_patch_status = False
+        else:
+            self.sip_patch_status = True
 
     def find_mount_root_vol(self, patch):
         root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -234,10 +236,7 @@ class PatchSysVolume:
 
     def download_files(self):
         print("- Downloading Apple binaries")
-        try:
-            urllib.request.urlretrieve(self.constants.url_apple_binaries, self.constants.payload_apple_root_path_zip)
-        except urllib.error.HTTPError:
-            print("- Link invalid")
+        subprocess.run(f"curl -L {self.constants.url_apple_binaries} --output {self.constants.payload_apple_root_path_zip}".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         if self.constants.payload_apple_root_path_zip.exists():
             print("- Download completed")
             print("- Unzipping download...")
