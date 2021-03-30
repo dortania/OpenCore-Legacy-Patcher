@@ -365,6 +365,8 @@
 			<integer>1000</integer>
 		</dict>
 	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © Dortania</string>
 	<key>#OSBundleLibraries</key>
 	<dict>
 		<key>com.apple.driver.AppleMuxControl</key>

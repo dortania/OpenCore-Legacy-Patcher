@@ -10603,6 +10603,8 @@
 			<string>Xortania1,1</string>
 		</dict>
 	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © Dortania</string>
 	<key>OSBundleRequired</key>
 	<string>Root</string>
 </dict>

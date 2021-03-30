@@ -4254,6 +4254,8 @@
 	</dict>
 	<key>LSMinimumSystemVersion</key>
 	<string>11.3</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © Dortania</string>
 	<key>#OSBundleLibraries</key>
 	<dict>
 		<key>com.apple.AppleGraphicsDeviceControl</key>
