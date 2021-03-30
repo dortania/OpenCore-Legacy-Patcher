@@ -34,8 +34,8 @@ Since this patcher tricks macOS into thinking you're running a newer Mac, certai
 * Boot Camp Assistant.app
   * We recommend running the assistant on a natively supported OS, running via the patcher may result in unforeseen issues
 * Legacy Windows Booting
-  * Currently OpenCore cannot boot MBR-based installs, so Ivy Bridge and older Machines may not be able to see Windows in OpenCore's Boot Picker
-  * [Add MBR loading tool to OpenCore #912](https://github.com/acidanthera/bugtracker/issues/912)
+  * Currently OpenCore cannot boot MBR-based installs, so Ivy Bridge and older Machines may [not be able to see Windows in OpenCore's Boot Picker](https://github.com/acidanthera/bugtracker/issues/912)
+  * [Solution is to convert install to UEFI](https://docs.microsoft.com/en-us/mem/configmgr/osd/deploy-use/task-sequence-steps-to-manage-bios-to-uefi-conversion)
 * Boot Buddy support
   * Due to how OpenCore overwrites NVRAM, the usage of Boot Buddy and such tools are **highly** in-advised
 
