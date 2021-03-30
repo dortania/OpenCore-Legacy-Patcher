@@ -92,9 +92,13 @@ class PatchSysVolume:
                 subprocess.run(f"sudo rm -R {existing_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 print(f"- Adding {add_current_kext}")
                 subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo chmod -Rf 755 {self.mount_extensions}/{add_current_kext}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo chown -Rf root:wheel {self.mount_extensions}/{add_current_kext}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             else:
                 print(f"- Adding {add_current_kext}")
                 subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo chmod -Rf 755 {self.mount_extensions}/{add_current_kext}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo chown -Rf root:wheel {self.mount_extensions}/{add_current_kext}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_patches_11(self):
         # TODO: Add proper hardware checks
@@ -164,6 +168,8 @@ class PatchSysVolume:
             print("- Attempting AppleHDA Patch")
             subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleHDA.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             subprocess.run(f"sudo cp -R {self.constants.applehda_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo chmod -Rf 755 {self.mount_extensions}/AppleHDA.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo chown -Rf root:wheel {self.mount_extensions}/AppleHDA.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             rebuild_required = True
 
         if (self.model in ModelArray.LegacyGPU) and (Path(self.constants.hiddhack_path).exists()):
@@ -241,7 +247,7 @@ class PatchSysVolume:
             print("- Download completed")
             print("- Unzipping download...")
             try:
-                zipfile.ZipFile(self.constants.payload_apple_root_path_zip).extractall(self.constants.payload_path)
+                subprocess.run(f"unzip {self.constants.payload_apple_root_path_zip}".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.constants.payload_path).stdout.decode()
                 print("- Renaming folder")
                 os.rename(self.constants.payload_apple_root_path_unzip, self.constants.payload_apple_root_path)
                 print("- Binaries downloaded to:")
