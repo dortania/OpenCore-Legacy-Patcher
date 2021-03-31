@@ -202,6 +202,7 @@ WifiBCM94322 = [
     "MacBookPro7,1",
     "Macmini3,1",
     "iMac9,1",
+    "MacPro5,1",
     "Dortania1,1"
 ]
 
@@ -230,7 +231,6 @@ WifiBCM94331 = [
     "iMac13,1",      # PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)
     "iMac13,2",      # PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)
     "iMac13,3",      # PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)
-    "MacPro5,1",     # PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)
     "Dortania1,1"
 ]
 

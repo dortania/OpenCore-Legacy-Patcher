@@ -2,6 +2,8 @@
 
 In our patcher, there are numerous patches used to ensure a stable system. Here we're going to go over what patches are used and why we recommend or even require them.
 
+* [OpenCore Settings](#opencore-settings)
+
 ## OpenCore Settings
 
 ### ACPI -> Patch
@@ -27,7 +29,7 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
 * `PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)`
   * Reason: Required to ensure Wifi works with full, native support
   * Logic: Tricks AirPortBrcmNIC.kext into thinking our device is a BCM94360 (`14e4,43ba`)
-  * Models: [Machines with BCM943224 and BCM94331 chipsets](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/79ab028b0a039e97a528e0b99c876d95d9c2d41d/Resources/ModelArray.py#L199-L225)
+  * Models: Machines with BCM943224 and BCM94331 chipsets
 * `PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)`
 * `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)`
   * Reason: Required to ensure Brightness Control works on upgraded iMacs
@@ -95,7 +97,7 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
 * GopPassThrough
   * Reason: Used for proper output on machines with UGA firmware but GOP GPU
   * Logic: Provide GOP protocol instances on top of UGA protocol instances 
-  * Models: MacPro3,1
+  * Models: MacPro3,1, MacBook4,1 iMac7,1-8,1
 
 ## Injected Kext
 
@@ -122,11 +124,19 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
 * VoodooHDA
   * Reason: Attempts to add audio support for pre-2012 hardware
   * Models: 2011 and older
+
 ### Ethernet
 
 * nForceEthernet
+  * Reason: Inject old Nvidia Ethernet kext to resolve networking in Catalina and newer
+  * Models: 2010 and older Nvidia Ethernet require
 * MarvelYukonEthernet
+  * Reason: Inject old Marvel Ethernet kext to resolve networking in Catalina and newer
+  * Models: 2008 and older Marvel Ethernet require
 * CatalinaBCM5701Ethernet
+  * Reason: Inject old Broadcom Ethernet kext to resolve networking in Big Sur
+  * Logic: Patch out conflicting symbols to not colide existing BCM5701Ethernet
+  * Models: 2011 and older Broadcom Ethernet require
 
 ### Maps
 
@@ -147,10 +157,12 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
 
 * IO80211HighSierra
   * Reason: Re-inject Atheros wifi drivers from High Sierra
+  * Logic: Patch out conflicting symbols to not colide existing IO80211Family
   * Models: Atheros cards
 * IO80211Mojave
   * Reason: Re-inject Broadcom wifi drivers from Mojave
-  * Models: BCm94322
+  * Logic: Patch out conflicting symbols to not colide existing IO80211Family
+  * Models: BCM94322
 
 ### Misc
 
@@ -169,7 +181,3 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
 * SMC-Spoof
   * Reason: Spoofs SMC version to 9.9999
   * Models: All models require
-
-
-
-

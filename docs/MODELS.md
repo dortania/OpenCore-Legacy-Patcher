@@ -25,8 +25,8 @@ Note: In this patcher, Brightness Control is tied to GPU acceleration
 | MacBook1,1 | Mid-2006 | <span style="color:red"> NO </span>  | 32-Bit CPU limitation |
 | MacBook2,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | MacBook3,1 | Late 2007 | ^^ | ^^ |
-| MacBook4,1 | Early 2008 | ^^ | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Mavericks and newer<br/>- No [DELTA](./TERMS.md) updates when AppleHDA is patched([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Trackpad Issues<br/>- No Wifi Patches implemented([#102](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/102)) |
-| MacBook5,1 | Late 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No [DELTA](./TERMS.md) updates when AppleHDA is patched([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Trackpad Issues |
+| MacBook4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Mavericks and newer<br/>- No [DELTA](./TERMS.md) updates when AppleHDA is patched([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Trackpad Issues<br/>- No Wifi Patches implemented([#102](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/102)) |
+| MacBook5,1 | Late 2008 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No [DELTA](./TERMS.md) updates when AppleHDA is patched([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Trackpad Issues |
 | MacBook5,2 | Early 2009 | ^^ | ^^ |
 | MacBook6,1 | Late 2009 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- No [DELTA](./TERMS.md) updates when AppleHDA is patched([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/> |
 | MacBook7,1 | Mid-2010 | ^^ | ^^ |
