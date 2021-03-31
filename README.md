@@ -53,4 +53,4 @@ Regarding how to debug OpenCore Patcher, we recommend seeing the below:
 
 To help support this patcher, we recommend chancking this page:
 
-* [Supporting the patcher](https://github.com/dortania/OpenCore-Legacy-Patcher/DONATE.html)
+* [Supporting the patcher](https://dortania.github.io/OpenCore-Legacy-Patcher/DONATE.html)
