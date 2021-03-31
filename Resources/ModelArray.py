@@ -6,6 +6,7 @@ SupportedSMBIOS = [
 
 SupportedSMBIOS11 = [
     # MacBook
+    "MacBook4,1",
     "MacBook5,1",
     "MacBook5,2",
     "MacBook6,1",
@@ -75,6 +76,7 @@ SupportedSMBIOS12 = [
 ## CPU patches
 
 MissingSSE42 = [
+    "MacBook4,1",
     "MacBook5,1",
     "MacBook5,2",
     "MacBook6,1",
@@ -140,6 +142,7 @@ EthernetNvidia = [
     "Dortania1,1"
 ]
 EthernetMarvell = [
+    "MacBook4,1",
     "MacBookPro4,1",
     "iMac7,1",
     "iMac8,1",
@@ -178,6 +181,7 @@ WifiAtheros = [
 ]
 
 WifiBCM94328 = [
+    "MacBook4,1",
     "MacBookAir2,1",
     "MacBookPro4,1",
     "iMac7,1",
@@ -233,6 +237,7 @@ WifiBCM94331 = [
 ## Audio
 
 LegacyAudio = [
+    "MacBook4,1",
     "MacBook5,1",
     "MacBook5,2",
     "MacBook6,1",
@@ -275,6 +280,7 @@ LegacyAudio = [
 ## GPU
 
 LegacyGPU = [
+    "MacBook4,1", # GMA X3100
     "MacBook5,1", # Nvidia 9000
     "MacBook5,2", # Nvidia 9000
     "MacBook6,1", # Nvidia 9000
@@ -366,6 +372,7 @@ LegacyGPUIntelGen2 = [
 ]
 
 LegacyHID = [
+    "MacBook4,1",
     "MacBook5,1",
     "MacBook5,2",
     "MacBook6,1",
@@ -457,6 +464,7 @@ MacBookAir61 = [
 
 # MacBook and 13" Air
 MacBookAir62 = [
+    "MacBook4,1",
     "MacBook5,1",
     "MacBook5,2",
     "MacBook6,1",
@@ -561,6 +569,7 @@ iXac = [
 ]
 
 XacBookNormal = [
+    "MacBook4,1",
     "MacBook5,1",
     "MacBook5,2",
     "MacBook6,1",
@@ -729,6 +738,7 @@ NoSATAPatch = [
 ]
 
 NoAPFSsupport = [
+    "MacBook4,1",
     "MacBook5,1",
     "MacBook5,2",
     "MacBookAir2,1",
