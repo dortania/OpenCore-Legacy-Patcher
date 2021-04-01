@@ -246,21 +246,21 @@ class Constants:
 
     # Apple Frameworks
     @property
-    def coredisplay_path(self): return self.payload_apple_frameworks_path / Path("CoreDisplay.framework")
+    def coredisplay_path(self): return self.payload_apple_frameworks_path_accel / Path("CoreDisplay.framework")
     @property
-    def iosurface_f_path(self): return self.payload_apple_frameworks_path / Path("IOSurface.framework")
+    def iosurface_f_path(self): return self.payload_apple_frameworks_path_accel / Path("IOSurface.framework")
     @property
-    def opengl_path(self): return self.payload_apple_frameworks_path / Path("OpenGL.framework")
+    def opengl_path(self): return self.payload_apple_frameworks_path_accel / Path("OpenGL.framework")
 
     # Apple LaunchDaemons
     @property
-    def hiddhack_path(self): return self.payload_apple_lauchd_path / Path("HiddHack.plist")
+    def hiddhack_path(self): return self.payload_apple_lauchd_path_accel / Path("HiddHack.plist")
 
     # Apple PrivateFrameworks
     @property
-    def gpusupport_path(self): return self.payload_apple_private_frameworks_path / Path("GPUSupport.framework")
+    def gpusupport_path(self): return self.payload_apple_private_frameworks_path_accel / Path("GPUSupport.framework")
     @property
-    def skylight_path(self): return self.payload_apple_private_frameworks_path / Path("SkyLight.framework")
+    def skylight_path(self): return self.payload_apple_private_frameworks_path_accel / Path("SkyLight.framework")
 
     csr_values = {
         "CSR_ALLOW_UNTRUSTED_KEXTS           ": False, # 0x1   - Introduced in El Capitan
