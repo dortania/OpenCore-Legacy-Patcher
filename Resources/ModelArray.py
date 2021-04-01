@@ -879,6 +879,7 @@ AddIntelGen1Accel = [
 	"AppleIntelHDGraphicsGA.plugin",
 	"AppleIntelHDGraphicsGLDriver.bundle",
 	"AppleIntelHDGraphicsVADriver.bundle",
+    "IOSurface.kext",
 ]
 
 AddIntelGen2Accel = [
@@ -888,4 +889,5 @@ AddIntelGen2Accel = [
 	"AppleIntelHD3000GraphicsVADriver.bundle",
 	"AppleIntelSNBGraphicsFB.kext",
 	"AppleIntelSNBVA.bundle",
+    "IOSurface.kext",
 ]

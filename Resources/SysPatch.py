@@ -114,9 +114,11 @@ class PatchSysVolume:
             self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
         if self.model in ModelArray.LegacyGPUIntelGen1:
             print("- Merging legacy Intel 1st Gen Kexts and Bundles")
+            self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
             self.add_new_binaries(ModelArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
         elif self.model in ModelArray.LegacyGPUIntelGen2:
             print("- Merging legacy Intel 2nd Gen Kexts and Bundles")
+            self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
             self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
         # iMac10,1 came in both AMD and Nvidia GPU models, so we must do hardware detection
         if self.model == "iMac10,1":

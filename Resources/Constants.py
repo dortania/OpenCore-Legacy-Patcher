@@ -229,7 +229,7 @@ class Constants:
     @property
     def legacy_amd_path(self): return self.legacy_graphics / Path("AMD-ATI")
     @property
-    def legacy_intel_gen1_path(self): return self.legacy_graphics / Path("Intel-Gen5-Iconlake")
+    def legacy_intel_gen1_path(self): return self.legacy_graphics / Path("Intel-Gen5-Ironlake")
     @property
     def legacy_intel_gen2_path(self): return self.legacy_graphics / Path("Intel-Gen6-SandyBridge")
 
@@ -265,3 +265,22 @@ class Constants:
         "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE": False, # 0x400 - Introduced in Mojave
         "CSR_ALLOW_UNAUTHENTICATED_ROOT      ": False, # 0x800 - Introduced in Big Sur
     }
+
+    sbm_values = [
+        "j137",
+        "j680",
+        "j132",
+        "j174",
+        "j140k",
+        "j780",
+        "j213",
+        "j140a",
+        "j152f",
+        "j160",
+        "j230k",
+        "j214k",
+        "j223",
+        "j215",
+        "j185",
+        "j185f",
+    ]
