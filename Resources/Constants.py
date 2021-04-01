@@ -212,9 +212,17 @@ class Constants:
     @property
     def payload_apple_frameworks_path(self): return self.payload_apple_root_path / Path("Frameworks")
     @property
+    def payload_apple_frameworks_path_accel(self): return self.payload_apple_frameworks_path / Path("Graphics-Acceleration")
+    @property
     def payload_apple_lauchd_path(self): return self.payload_apple_root_path / Path("LaunchDaemons")
     @property
+    def payload_apple_lauchd_path_accel(self): return self.payload_apple_lauchd_path / Path("Graphics-Acceleration")
+    @property
     def payload_apple_private_frameworks_path(self): return self.payload_apple_root_path / Path("PrivateFrameworks")
+    @property
+    def payload_apple_private_frameworks_path_accel(self): return self.payload_apple_private_frameworks_path / Path("Graphics-Acceleration")
+    @property
+    def payload_apple_private_frameworks_path_brightness(self): return self.payload_apple_private_frameworks_path / Path("Brightness-Control")
 
     # Apple Extensions
     @property
@@ -232,6 +240,9 @@ class Constants:
     def legacy_intel_gen1_path(self): return self.legacy_graphics / Path("Intel-Gen5-Ironlake")
     @property
     def legacy_intel_gen2_path(self): return self.legacy_graphics / Path("Intel-Gen6-SandyBridge")
+
+    @property
+    def legacy_brightness(self): return self.payload_apple_kexts_path / Path("Brightness-Control")
 
     # Apple Frameworks
     @property

@@ -371,6 +371,13 @@ LegacyGPUIntelGen2 = [
     "Macmini5,3", # Intel 3000
 ]
 
+LegacyBrightness = [
+    "MacBook5,2",
+    "iMac7,1",
+    "iMac8,1",
+    "iMac9,1",
+]
+
 LegacyHID = [
     "MacBook4,1",
     "MacBook5,1",
@@ -890,4 +897,13 @@ AddIntelGen2Accel = [
 	"AppleIntelSNBGraphicsFB.kext",
 	"AppleIntelSNBVA.bundle",
     "IOSurface.kext",
+]
+
+DeleteBrightness = [
+    "AppleGraphicsControl.kext/Contents/PlugIns/AGDCBacklightControl.kext"
+]
+
+AddBrightness = [
+	"AppleBacklight.kext",
+	"AppleBacklightExpert.kext",
 ]

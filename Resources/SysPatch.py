@@ -133,17 +133,23 @@ class PatchSysVolume:
 
         # Frameworks
         print("- Merging legacy Frameworks")
-        subprocess.run(f"sudo ditto {self.constants.payload_apple_frameworks_path} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo ditto {self.constants.payload_apple_frameworks_path_accel} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+
+        if self.model in ModelArray.LegacyBrightness:
+            print("- Merging legacy Brightness Control Patches")
+            self.delete_old_binaries(ModelArray.DeleteBrightness)
+            self.add_new_binaries(ModelArray.AddBrightness, self.constants.legacy_brightness)
+            subprocess.run(f"sudo ditto {self.constants.payload_apple_private_frameworks_path_brightness} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # LaunchDaemons
         print("- Adding HiddHack.plist")
-        subprocess.run(f"sudo ditto {self.constants.payload_apple_lauchd_path} {self.mount_lauchd}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo ditto {self.constants.payload_apple_lauchd_path_accel} {self.mount_lauchd}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo chmod 755 {self.mount_lauchd}/HiddHack.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo chown root:wheel {self.mount_lauchd}/HiddHack.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # PrivateFrameworks
         print("- Merging legacy PrivateFrameworks")
-        subprocess.run(f"sudo ditto {self.constants.payload_apple_private_frameworks_path} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo ditto {self.constants.payload_apple_private_frameworks_path_accel} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # Sets AppKit to Catalina Window Drawing codepath
         print("- Disabling NSDefenestratorModeEnabled")
