@@ -140,6 +140,8 @@ class PatchSysVolume:
             self.delete_old_binaries(ModelArray.DeleteBrightness)
             self.add_new_binaries(ModelArray.AddBrightness, self.constants.legacy_brightness)
             subprocess.run(f"sudo ditto {self.constants.payload_apple_private_frameworks_path_brightness} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo chmod -R 755 {self.mount_private_frameworks}/DisplayServices.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(f"sudo chown -R root:wheel {self.mount_private_frameworks}/DisplayServices.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # LaunchDaemons
         print("- Adding HiddHack.plist")
