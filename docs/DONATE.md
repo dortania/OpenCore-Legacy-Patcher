@@ -23,6 +23,6 @@ Current hardware we own:
 | Model | CPU | GPU | Owner | Notes |
 | :--- | :--- | :--- | :--- | :--- |
 | MacBook7,1 | Penryn | GT320M | Mykola | N/A |
+| iMac11,2 | Clarksdale | HD4670 | Mykola | N/A |
 <!-- | MacBookPro5,3 | Penryn | 9400M + 9600M | Dhinak | Display's partially broken | -->
 <!-- | Macmini4,1 | Penryn | GT320M | Dhinak | N/A | -->
-| iMac11,2 | Clarksdale | HD4670 | Mykola | N/A |
