@@ -24,7 +24,8 @@ class Constants:
         self.io80211high_sierra_version = "1.0.0"
         self.io80211mojave_version = "1.0.0"
         self.voodoohda_version = "296"
-        self.restrictevents_version = "1.0.1"
+        self.restrictevents_version = "1.0.0"
+        self.restrictevents_mbp_version = "1.0.1"
         self.piixata_version = "1.0.0"
         self.backlight_version = "1.0.0"
         self.cpufriend_version = "1.2.3"
@@ -106,6 +107,8 @@ class Constants:
     def airportbcrmfixup_path(self): return self.payload_kexts_path / Path(f"Acidanthera/AirportBrcmFixup-v{self.airportbcrmfixup_version}.zip")
     @property
     def restrictevents_path(self): return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-v{self.restrictevents_version}.zip")
+    @property
+    def restrictevents_mbp_path(self): return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-MBP91-v{self.restrictevents_mbp_version}.zip")
     @property
     def bcm570_path(self): return self.payload_kexts_path / Path(f"Ethernet/CatalinaBCM5701Ethernet-v{self.bcm570_version}.zip")
     @property

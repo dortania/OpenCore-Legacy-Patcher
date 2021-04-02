@@ -10,6 +10,8 @@
 - Set iGPU-less iMacs to iMacPro1,1
   - Additionally fixes Bluetooth on older iMacs with BRCM2046 modules
 - Add MacBook4,1 support
+- Create dedicated RestrictEvents build for MacBookPro9,1
+- Fix Mac Pro and Xserve output issues
 
 ## 0.0.19
 - Add SMC-Spoof.kext to avoid triggering `smcupdater`
