@@ -10,7 +10,9 @@ from __future__ import print_function
 import binascii
 import plistlib
 import shutil
+import signal
 import subprocess
+import sys
 import uuid
 import zipfile
 import os
@@ -251,8 +253,12 @@ class PatchSysVolume:
             self.download_files()
 
     def download_files(self):
+        utilities.cls()
         print("- Downloading Apple binaries")
-        subprocess.run(f"curl -L {self.constants.url_apple_binaries} --output {self.constants.payload_apple_root_path_zip}".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        popen_oclp = subprocess.Popen(f"curl -S -L {self.constants.url_apple_binaries} --output {self.constants.payload_apple_root_path_zip}".split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+        for stdout_line in iter(popen_oclp.stdout.readline, ""):
+            print(stdout_line, end="")
+        popen_oclp.stdout.close()
         if self.constants.payload_apple_root_path_zip.exists():
             print("- Download completed")
             print("- Unzipping download...")
@@ -262,6 +268,7 @@ class PatchSysVolume:
                 os.rename(self.constants.payload_apple_root_path_unzip, self.constants.payload_apple_root_path)
                 print("- Binaries downloaded to:")
                 print(self.constants.payload_path)
+                input("Press [ENTER] to continue")
             except zipfile.BadZipFile:
                 print("- Couldn't unzip")
             os.remove(self.constants.payload_apple_root_path_zip)
