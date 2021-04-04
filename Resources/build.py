@@ -212,6 +212,8 @@ class BuildOpenCore:
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
+                shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
+                self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
             else:
                 print("- Failed to determine model")
 

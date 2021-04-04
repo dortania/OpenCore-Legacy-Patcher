@@ -3,8 +3,16 @@
 In our patcher, there are numerous patches used to ensure a stable system. Here we're going to go over what patches are used and why we recommend or even require them.
 
 * [OpenCore Settings](#opencore-settings)
+* [Injected Kexts](#injected-kexts)
+* [On-Disk Patches](#on-disk-patches)
 
 ## OpenCore Settings
+
+Below is a run down of the main logic OpenCore Legacy Patcher uses to gain native support in macOS. Note OpenCore's configuration is documented within [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) as well as an online version provided by us:
+
+* [OpenCorePkg Online Docs](https://dortania.github.io/docs/latest/Configuration.html)
+
+::: details Configuration Explanation
 
 ### ACPI -> Patch
 
@@ -98,8 +106,14 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
   * Reason: Used for proper output on machines with UGA firmware but GOP GPU
   * Logic: Provide GOP protocol instances on top of UGA protocol instances 
   * Models: MacPro3,1, MacBook4,1 iMac7,1-8,1
+  
+:::
 
 ## Injected Kext
+
+Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into memory on boot-up.
+
+::: details Injected Kext Explanation
 
 ### Acidanthera
 
@@ -118,12 +132,6 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
 * RestrictEvents
   * Reason: Disables memory errors on MacPro7,1
   * Models: Mac Pros and Xserves
-
-### Audio
-
-* VoodooHDA
-  * Reason: Attempts to add audio support for pre-2012 hardware
-  * Models: 2011 and older
 
 ### Ethernet
 
@@ -181,3 +189,105 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
 * SMC-Spoof
   * Reason: Spoofs SMC version to 9.9999
   * Models: All models require
+:::
+
+
+## On-Disk Patches
+
+Unfortunately certain on-disk patches are required to achieve full functionality. Below is a breakdown of patches supported
+
+Note, GPU Acceleration Patches are not public yet, the below section is simply documentation for easier research with new aids.
+
+::: details Audio Patches
+
+### Extensions
+
+* AppleHDA
+  * Reason: Re-add High Sierra's AppleHDA to achieve audio support
+  * Models: 2011 and older Macs (excluding MacPro4,1+)
+
+:::
+
+::: details Acceleration Patches
+
+### Extensions
+
+#### General Patches
+
+* IOSurface.kext
+  * Reason: Fixes immediate logout on login
+  * Logic: Downgrade to Catalina IOSurface
+  * Note: For AMD and Intel, additional `addMemoryRegion/removeMemoryRegion` patch added changing the first conditional jump to non conditional jump
+    * At Offset `0xdb52` and `0xdbc6`, replace following bytes with `0xeb`
+
+#### Dropped Acceleration Binaries
+
+* Nvidia Binaries
+  * GeForceGA.bundle
+  * GeForceTesla.kext
+  * GeForceTeslaGLDriver.bundle
+  * GeForceTeslaVADriver.bundle
+  * NVDANV50HalTesla.kext
+  * NVDAResmanTesla.kext
+
+* AMD/ATI Binaries
+  * AMD2400Controller.kext
+  * AMD2600Controller.kext
+  * AMD3800Controller.kext
+  * AMD4600Controller.kext
+  * AMD4800Controller.kext
+  * AMD5000Controller.kext
+  * AMD6000Controller.kext
+  * AMDFramebuffer.kext
+  * AMDLegacyFramebuffer.kext
+  * AMDLegacySupport.kext
+  * AMDRadeonVADriver.bundle
+  * AMDRadeonVADriver2.bundle
+  * AMDRadeonX3000.kext
+  * AMDRadeonX3000GLDriver.bundle
+  * AMDShared.bundle
+  * AMDSupport.kext
+  * ATIRadeonX2000.kext
+  * ATIRadeonX2000GA.plugin
+  * ATIRadeonX2000GLDriver.bundle
+  * ATIRadeonX2000VADriver.bundle
+
+* Intel 5th Gen Binaries
+  * AppleIntelFramebufferAzul.kext
+  * AppleIntelFramebufferCapri.kext
+  * AppleIntelHDGraphics.kext
+  * AppleIntelHDGraphicsFB.kext
+  * AppleIntelHDGraphicsGA.plugin
+  * AppleIntelHDGraphicsGLDriver.bundle
+  * AppleIntelHDGraphicsVADriver.bundle
+
+* Intel 6th Gen Binaries
+  * AppleIntelHD3000Graphics.kext
+  * AppleIntelHD3000GraphicsGA.plugin
+  * AppleIntelHD3000GraphicsGLDriver.bundle
+  * AppleIntelHD3000GraphicsVADriver.bundle
+  * AppleIntelSNBGraphicsFB.kext
+  * AppleIntelSNBVA.bundle
+
+### Frameworks
+
+* CoreDisplay.framework
+  * Logic: Copied from Mojave, heavy modifications/shims
+* IOSurface.framework
+* OpenGL.framework
+  * Logic: Copied from Mojave
+
+### PrivateFrameworks
+
+* GPUSupport.framework
+  * Logic: Copied from Mojave
+* SkyLight.framework
+  * Logic: Copied from Mojave, heavy modifications/shims
+
+### LaunchDaemons
+
+* HiddHack.plist
+  * Reason: Fixes unresponsive input when patching Skylight
+  * Logic: Forces `hidd` to register events, as Skylight handles them by default in Big Sur
+
+:::
