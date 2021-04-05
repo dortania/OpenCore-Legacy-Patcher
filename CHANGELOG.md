@@ -3,7 +3,9 @@
 ## 0.0.20
 - Fix CPU Calculation on early MCP79 chipsets (ie. iMac9,1, MacBook5,x)
 - Increment binaries
-  - OpenCore a57d8df (0.6.8 rolling - 2021-03-28)
+  - OpenCore c528597 (0.6.8 release - 2021-04-05)
+  - Lilu 3ef7ca1 (1.5.2 release - 2021-04-05)
+  - WhateverGreen afcd687 (1.4.9 release - 2021-04-05)
 - Move Apple binaries to dedicated repo and allow custom repos
   - Reduces App size 1/5th compared to 0.0.19
 - Fix OpenCanopy support on iMac7,1 and 8,1

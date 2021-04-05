@@ -284,7 +284,6 @@ class BuildOpenCore:
         else:
             print("- Hiding picker and enabling PollAppleHotKeys")
             self.config["Misc"]["Boot"]["ShowPicker"] = False
-            self.config["Misc"]["Boot"]["PollAppleHotKeys"] = True
         if self.constants.vault is True:
             print("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
