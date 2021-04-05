@@ -3,9 +3,11 @@
 <img src="images/OC-Patcher.png" width="256">
 
 A python program for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on legacy Macs, see [Supported SMBIOS](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) on whether your model is supported. Designed around Big Sur support, however can be used on older OSes.
-
-* Application supports running on macOS Mavericks (10.9) and newer
-  * Supports macOS Lion (10.7) and newer if [python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo
+  
+| Support Entry | Supported OSes | Description | Comment |
+| :--- | :--- | :--- | :--- |
+| HostOS | macOS 10.7-11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
+| TargetOS | macOS 11 | Refers to OSes that can be patched to run with OpenCore | Unofficially supports 10.4 and newer, no support provided via this patcher |
 
 Supported features:
 
@@ -19,7 +21,9 @@ Note: Only clean-installs and upgrades are supported, installs already patched w
 
 * You can however reinstall macOS with this patcher and retain your original data
 
-Note 2: Currently OpenCore Legacy Patcher only supports macOS 11, Big Sur installs. For older OSes, please use [dosdude1's patchers](http://dosdude1.com)
+Note 2: Currently OpenCore Legacy Patcher officially supports patching to run macOS 11, Big Sur installs. For older OSes, OpenCore may function however support is currently not provided from Dortania.
+
+For Mojave and Catalina support, we recommend the use of [dosdude1's patchers](http://dosdude1.com)
 
 ## How to use
 

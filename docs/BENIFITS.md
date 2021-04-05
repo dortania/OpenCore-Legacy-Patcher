@@ -18,3 +18,4 @@ With OpenCore Legacy Patcher we recommend users go through the below table to un
 | Brightness Control on Legacy GPUs | <span style="color:red">Coming soon</span> | <span style="color:#30BCD5">Supported</span> |
 | HEVC/H.265 Support for Mac Pros and iMacs with Polaris+ GPUs | <span style="color:#30BCD5">Supported</span> | <span style="color:red">Not supported</span> |
 | Big Sur-styled Boot Picker |  <span style="color:#30BCD5">Available</span> | <span style="color:red">Not available</span> |
+| Hibernation Support | <span style="color:red">Not available</span> (Partially broken for some) | <span style="color:#30BCD5">Supported</span> |

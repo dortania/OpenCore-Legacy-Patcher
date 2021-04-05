@@ -18,7 +18,14 @@ The below table will list all supported and unsupported functions of the patcher
 
 Note: In this patcher, Brightness Control is tied to GPU acceleration
 
-Note 2: For setups that require AppleHDA patching, we highly advise users instead opt of a USB Audio adapter to avoid root patching. This ensures that [DELTA](./TERMS.md) updates, FileVault, SIP and other security features can stay in-tact
+Note 2: For setups that require AppleHDA patching, we highly advise users instead opt of a USB Audio adapter to avoid root patching. This ensures that [DELTA](./TERMS.md) updates, FileVault, SIP and other security features can stay in-tact.
+
+Regarding OS support, see below:
+
+| Support Entry | Supported OSes | Description | Comment |
+| :--- | :--- | :--- | :--- |
+| HostOS | macOS 10.7-11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
+| TargetOS | macOS 11 | Refers to OSes that can be patched to run with OpenCore | Unofficially supports 10.4 and newer, no support provided via this patcher |
 
 ### MacBook
 
