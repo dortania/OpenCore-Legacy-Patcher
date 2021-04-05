@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.21
+
 ## 0.0.20
 - Fix CPU Calculation on early MCP79 chipsets (ie. iMac9,1, MacBook5,x)
 - Increment binaries
