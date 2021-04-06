@@ -156,8 +156,9 @@ class PatchSysVolume:
         subprocess.run(f"sudo ditto {self.constants.payload_apple_private_frameworks_path_accel} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # Sets AppKit to Catalina Window Drawing codepath
-        print("- Disabling NSDefenestratorModeEnabled")
-        subprocess.run("defaults write -g NSDefenestratorModeEnabled -bool false".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        # Disabled upon ASentientBot request
+        print("- Enabling NSDefenestratorModeEnabled")
+        subprocess.run("defaults write -g NSDefenestratorModeEnabled -bool true".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
 
     def patch_root_vol(self):
