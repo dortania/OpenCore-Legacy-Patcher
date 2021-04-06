@@ -257,10 +257,8 @@ class BuildOpenCore:
         # Exfat check
         if self.model in ModelArray.NoExFat:
             print("- Adding ExFatDxeLegacy.efi")
-            exfat = "ExFatDxeLegacy.efi"
             shutil.copy(self.constants.exfat_legacy_driver_path, self.constants.drivers_path)
             self.config["UEFI"]["Drivers"] += ["ExFatDxeLegacy.efi"]
-
 
         # Add UGA to GOP layer
         if self.model in ModelArray.UGAtoGOP:

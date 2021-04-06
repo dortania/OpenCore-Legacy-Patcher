@@ -1,6 +1,6 @@
 # Supported Models
 
-Any hardware supporting SSE4.1 CPU and 64-Bit firmware work on this patcher. To check your hardware model, run the below command on the applicable machine:
+Any hardware supporting SSE4.1 CPU and 64-Bit firmware work on this patcher. To check your hardware model, run the below command on the applicable machine in terminal:
 
 ```bash
 system_profiler SPHardwareDataType | grep 'Model Identifier'
@@ -24,7 +24,7 @@ Regarding OS support, see below:
 
 | Support Entry | Supported OSes | Description | Comment |
 | :--- | :--- | :--- | :--- |
-| HostOS | macOS 10.7-11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
+| HostOS | macOS 10.9-11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
 | TargetOS | macOS 11 | Refers to OSes that can be patched to run with OpenCore | Unofficially supports 10.4 and newer, no support provided via this patcher |
 
 ### MacBook
@@ -126,7 +126,7 @@ Regarding OS support, see below:
 | :--- | :--- | :--- | :--- |
 | MacPro1,1 | Mid-2006 | <span style="color:red"> NO </span> | 32-Bit Firmware limitation |
 | MacPro2,1 | Mid-2007 | ^^ | ^^ |
-| MacPro3,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - Pottential instability with built-in USB 1.1 ports (recommend using a USB 2.0 hub)<br/>- No [DELTA](./TERMS.md) updates or FileVault when AppleHDA is patched([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76)) |
+| MacPro3,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - Potential boot issues with built-in USB 1.1 ports (recommend using a USB 2.0 hub)<br/>- No [DELTA](./TERMS.md) updates or FileVault when AppleHDA is patched([#76](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/76))<br/>- Potential boot issues with stock Bluetooth card |
 | MacPro4,1 | Early 2009 | ^^ | <span style="color:green"> Everything is supported as long as GPU is Metal capable </span> |
 | MacPro5,1 | Mid-2010, Mid-2012 | ^^ | ^^ |
 

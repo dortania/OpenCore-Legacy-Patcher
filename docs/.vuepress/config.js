@@ -100,6 +100,7 @@ module.exports = {
             children: [
 				'TROUBLESHOOTING',
 				'DEBUG',
+				'UPDATE',
 				'UNINSTALL',
 				'ICNS',
             ]

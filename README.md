@@ -6,7 +6,7 @@ A python program for building and booting [OpenCore](https://github.com/acidanth
   
 | Support Entry | Supported OSes | Description | Comment |
 | :--- | :--- | :--- | :--- |
-| HostOS | macOS 10.7-11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
+| HostOS | macOS 10.9-11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
 | TargetOS | macOS 11 | Refers to OSes that can be patched to run with OpenCore | Unofficially supports 10.4 and newer, no support provided via this patcher |
 
 Supported features:
@@ -39,7 +39,7 @@ Since this patcher tricks macOS into thinking you're running a newer Mac, certai
   * We recommend running the assistant on a natively supported OS, running via the patcher may result in unforeseen issues
 * Legacy Windows Booting
   * Currently OpenCore cannot boot MBR-based installs, so Ivy Bridge and older Machines may [not be able to see Windows in OpenCore's Boot Picker](https://github.com/acidanthera/bugtracker/issues/912)
-  * [Solution is to convert install to UEFI](https://docs.microsoft.com/en-us/mem/configmgr/osd/deploy-use/task-sequence-steps-to-manage-bios-to-uefi-conversion)
+  * [Solution is to convert install to UEFI](https://docs.microsoft.com/en-us/mem/configmgr/osd/deploy-use/task-sequence-steps-to-manage-bios-to-uefi-conversion), see MacRumors thread for more examples: [Installing Windows 10](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/)
 * Boot Buddy support
   * Due to how OpenCore overwrites NVRAM, the usage of Boot Buddy and such tools are **highly** in-advised
 
