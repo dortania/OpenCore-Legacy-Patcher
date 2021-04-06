@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>IOPlatformThermalProfile</key>
+    <dict>
+      <key>CreationDate</key>
+      <string>Fri Mar 18 12:47:19 PDT 2011</string>
+      <key>ConfigArray</key>
+      <array>
+        <dict>
+          <key>model</key>
+          <string>Macmini5,3</string>
+          <key>enabler</key>
+          <true/>
+          <key>ringFreqTables</key>
+          <array>
+            <array>
+              <dict>
+                <key>gtFreq</key>
+                <integer>700</integer>
+                <key>ringFreq</key>
+                <integer>1100</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>750</integer>
+                <key>ringFreq</key>
+                <integer>1100</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>800</integer>
+                <key>ringFreq</key>
+                <integer>1200</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>850</integer>
+                <key>ringFreq</key>
+                <integer>1300</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>900</integer>
+                <key>ringFreq</key>
+                <integer>1600</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>950</integer>
+                <key>ringFreq</key>
+                <integer>1700</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>1000</integer>
+                <key>ringFreq</key>
+                <integer>1800</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>1050</integer>
+                <key>ringFreq</key>
+                <integer>1900</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>1100</integer>
+                <key>ringFreq</key>
+                <integer>2000</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>1150</integer>
+                <key>ringFreq</key>
+                <integer>2100</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>1200</integer>
+                <key>ringFreq</key>
+                <integer>2200</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>1250</integer>
+                <key>ringFreq</key>
+                <integer>2300</integer>
+              </dict>
+              <dict>
+                <key>gtFreq</key>
+                <integer>1300</integer>
+                <key>ringFreq</key>
+                <integer>2300</integer>
+              </dict>
+            </array>
+          </array>
+        </dict>
+      </array>
+      <key>ControlArray</key>
+      <array>
+        <dict>
+          <key>Desc-Key</key>
+          <string>CPU_PLIMIT</string>
+          <key>IOClass</key>
+          <string>AppleSMCControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>10</integer>
+          <key>location</key>
+          <string>cpu plimit</string>
+          <key>type</key>
+          <string>smc</string>
+        </dict>
+        <dict>
+          <key>Desc-Key</key>
+          <string>CPU_STATE</string>
+          <key>IOClass</key>
+          <string>AppleSMCControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>13</integer>
+          <key>location</key>
+          <string>cpu state</string>
+          <key>type</key>
+          <string>smc</string>
+        </dict>
+        <dict>
+          <key>Desc-Key</key>
+          <string>GPU_RANGE_CONTROL_INTERNAL</string>
+          <key>IOClass</key>
+          <string>IOPlatformControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>16</integer>
+          <key>location</key>
+          <string>gpu-internal</string>
+          <key>type</key>
+          <string>gpu-control</string>
+        </dict>
+      </array>
+      <key>CtrlLoopArray</key>
+      <array>
+        <dict>
+          <key>Description</key>
+          <string>SMC_CPU_Control_Loop</string>
+          <key>IOClass</key>
+          <string>ACPI_SMC_CtrlLoop</string>
+          <key>PLimitClass</key>
+          <array>
+            <string>CPU</string>
+          </array>
+          <key>MetaStateArray</key>
+          <array>
+            <dict>
+              <key>Description</key>
+              <string>Normal</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>Reduced Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User Low Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User High Power</string>
+            </dict>
+          </array>
+          <key>PLimitDict</key>
+          <dict>
+            <key>Macmini5,3</key>
+            <integer>0</integer>
+          </dict>
+          <key>StepContextDict</key>
+          <dict>
+            <key>Normal</key>
+            <data>
+EAoAAAAAAQIEAAACAgAAbgBvAHIAbQA1AG0AcwwAAAECAAf/BwAAPAAAAB0EAAACAIEAcABzAHQA
+YQB0AGUAcwoAAAYDAACAAG0AaQBuAHAAcwB0AGEAdABlDQAAgABtAG4AdABwAHMAdABhAHQAZQ0A
+AIAAbgBwAHMAdABhAHQAZQBz/wD/AP8A/wD/ALIAAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8A
+Cw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEA
+A/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA
+/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wAL
+DwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD
+/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/
+AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsP
+AAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/
+AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8B
+AAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8A
+AP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8A
+Cw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsKAAABCgAAZAAAAAUIAAAB
+AAAF/wABAAAAAQAAAAEGAABlAAAADggAAAIAAAX/AAEAAAACAAAAAgYAAGQAAAAFAAAAAgYAAAMA
+AAX/AAEAAAADAAAAAwYAAGQAAAADAAAAAgYAAAQAAAX/AAEAAAAEAAAABAYAAGkKAAAFAAAF/wAB
+AAAABQAAAAUGAABlAAAADgQAAAECAAAGAAAF/wABAAAABgAAAAYGAABkAAAAAwAAAAIGAAAHAAAF
+/wABAAAABwAAAAcGAABlAAAADgQAAAICAAAIAAAF/wABAAAACAAAAAgGAABkAAAABQAAAAQGAAAJ
+AAAF/wABAAAACQAAAAkGAABkAAAAAwAAAAIGAAAKAAAF/wABAAAACgAAAAoGAABkAAAAAwAAAAMG
+AAALAAAF/wABAAAACwAAAAsGAABnCgAADAAABf8AAQAAAAwAAAAMBgAAaQoAAA0AAAX/AAEAAAAN
+AAAADQYAAGQAAAADAAAAAgYAAA4AAAX/AAEAAAAOAAAADgYAAGYKAAAPAAAF/wABAAAADwAAAA8G
+AABlAAAADgQAAAMCAAAQAAAF/wABAAAAEAAAABAGAABkAAAABQAAAAIGAAARAAAF/wABAAAAEQAA
+ABEGAABkAAAAAwAAAAIGAAASAAAF/wABAAAAEgAAABIGAABkAAAAAwAAAAMGAAATAAAF/wABAAAA
+EwAAABMGAABnCgAAFAAABf8AAQAAABQAAAAUBgAAaQoAABUAAAX/AAEAAAAVAAAAFQYAAGQAAAAD
+AAAAAgYAABYAAAX/AAEAAAAWAAAAFgYAAGYKAAAXAAAF/wABAAAAFwAAABcGAABlAAAADgQAAAQC
+AAAYAAAF/wABAAAAGAAAABgGAABkAAAAAwAAAAEGAAAZAAAF/wABAAAAGQAAABkGAABlAAAADgQA
+AAUCAAAaAAAF/wABAAAAGgAAABoGAAAPACcJAAAbAAAF/wACAgAAGwYAAAEAAAAOBAAABQIAABwA
+AAX/AAIAAAABAAAAHAYAAAIAAAAEAQAAgADDALcALgA0AAsAAAAdAAAAHAAAABwAAAAdAAAAAwIA
+AB0GAAABAAAADgQAAAUCAAAeAAAF/wAEAgAAHgYAAAkAAAAEAAAAyAYAAB8AAAX/AAQAAAABAAAA
+HwQAAIAAAAAKCgAAIwAAACAAAAAjAAAAIAAAAAQAAAACAAAAIAYAAAcAAAABAAAA9QABBQAAIQAA
+Bf8ABAAAAAMAAAAhBgAAAgAAAAQAAACgAA8FAAAiAAAAGwAAABsAAAAiAAAABAAAAAQAAAAiBgAA
+CAoAAB4AAAX/AAUCAAAjBgAAAQAAAA4EAAAEAgAAJAAABf8ABgIAACQGAAACAAAABAAAAJgACAUA
+ACgAAAAlAAAAKAAAACUAAAAGAAAAAQAAACUGAAAHAAAAAQAAAPUAAQUAACYAAAX/AAYAAAACAAAA
+JgYAAAIAAAAEAAAAoAAPBQAAJwAAABsAAAAbAAAAJwAAAAYAAAADAAAAJwYAAAgKAAAkAAAF/wAH
+AgAAKAYAAAEAAAAOBAAAAwIAACkAAAX/AAgCAAApBgAAAgAAAAQAAAD2AAkFAAAtAAAAKgAAAC0A
+AAAqAAAACAAAAAEAAAAqBgAABwAAAAEAAAD1AAEFAAArAAAF/wAIAAAAAgAAACsGAAACAAAABAAA
+AKAADwUAACwAAAAbAAAAGwAAACwAAAAIAAAAAwAAACwGAAAICgAAKQAABf8ACQIAAC0GAAABAAAA
+DgQAAAICAAAuAAAF/wAKAgAALgYAAAIAAAAEAAAA6gALBQAAMgAAAC8AAAAyAAAALwAAAAoAAAAB
+AAAALwYAAAcAAAABAAAA9QABBQAAMAAABf8ACgAAAAIAAAAwBgAAAgAAAAQAAACgAA8FAAAxAAAA
+GwAAABsAAAAxAAAACgAAAAMAAAAxBgAACAoAAC4AAAX/AAsCAAAyBgAAAQAAAA4EAAABAgAAMwAA
+Bf8ADAIAADMGAAACAAAABAAAANQAFwUAADcAAAA0AAAANwAAADQAAAAMAAAAAQAAADQGAAAHAAAA
+AQAAAPUAAQUAADUAAAX/AAwAAAACAAAANQYAAAIAAAAEAAAAoAAPBQAANgAAABsAAAAbAAAANgAA
+AAwAAAADAAAANgYAAAgKAAAzAAAF/wANAgAANwYAAAEAAAAOCAAAOAAABf8ADgIAADgGAAACAAAA
+BAEAAIAAwwC3AC4ANAALAAAAOAAAADkAAAA4AAAAOQAAAA4AAAABAAAAOQYAAAcAAAABAAAA9QAB
+BQAAOgAABf8ADgAAAAIAAAA6BgAAAgAAAAQAAACgAA8FAAA7AAAAGwAAABsAAAA7AAAADgAAAAMA
+AAA7BgAACAoAADgAAAX/
+</data>
+            <key>Background</key>
+            <data>
+4gUAAAAAAQIEAAABAgAAYgBrAGcAcgBuAGQAcABlAWYAYwBpAGUAbgB0BAAAAgIAB/8HAAAYAAAA
+DQQAAAIAgQBiAGcAcABzAHQAYQB0AGUAcwgAAAIDAACAAG0AaQBuAHAAcwB0AGEAdABlDQAAgABt
+AG4AdABwAHMAdABhAHQAZQ0AAIAAbgBwAHMAdABhAHQAZQBz/wD/AP8A/wD/ALIAAP8BAAP/AAsP
+AAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/
+AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8B
+AAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8A
+AP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8A
+Cw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEA
+A/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA
+/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wAL
+DwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD
+/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/
+AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsP
+AAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/
+AAsKAAABCgAAZAAAAAUAAAACBgAAAQAABf8AAQAAAAEAAAABBgAAZAAAAAMAAAACBgAAAgAABf8A
+AQAAAAIAAAACBgAAZAAAAAMAAAADBgAAAwAABf8AAQAAAAMAAAADBgAAZwoAAAQAAAX/AAEAAAAE
+AAAABAYAAGkKAAAFAAAF/wABAAAABQAAAAUGAABkAAAAAwAAAAIGAAAGAAAF/wABAAAABgAAAAYG
+AABmCgAABwAABf8AAQAAAAcAAAAHBgAAZQAAAA4IAAAIAAAF/wABAAAACAAAAAgGAABkAAAAAwAA
+AAEGAAAJAAAF/wABAAAACQAAAAkGAABlAAAADgQAAAECAAAKAAAF/wABAAAACgAAAAoGAAAPACcJ
+AAALAAAF/wACAgAACwYAAAEAAAAOBAAAAQIAAAwAAAX/AAIAAAABAAAADAYAAAIAAAAEAQAAgADD
+ALcALgA0AAsAAAANAAAADAAAAAwAAAANAAAAAwIAAA0GAAABAAAADgQAAAECAAAOAAAF/wAEAgAA
+DgYAAAkAAAAEAAAAyAYAAA8AAAX/AAQAAAABAAAADwQAAIAAAAAKCgAAEwAAABAAAAATAAAAEAAA
+AAQAAAACAAAAEAYAAAcAAAABAAAA9QABBQAAEQAABf8ABAAAAAMAAAARBgAAAgAAAAQAAADIBgAA
+EgAAAAsAAAALAAAAEgAAAAQAAAAEAAAAEgYAAAgKAAAOAAAF/wAFAgAAEwYAAAEAAAAOCAAAFAAA
+Bf8ABgIAABQGAAACAAAABAEAAIAAwwC3AC4ANAALAAAAFAAAABUAAAAUAAAAFQAAAAYAAAABAAAA
+FQYAAAcAAAABAAAA9QABBQAAFgAABf8ABgAAAAIAAAAWBgAAAgAAAAQAAADIBgAAFwAAAAsAAAAL
+AAAAFwAAAAYAAAADAAAAFwYAAAgKAAAUAAAF/w==
+</data>
+            <key>RealTime</key>
+            <data>
+qgYAAAAAAQIEAAADAgAAcgB0ADMAcwB0AGEAdABlDwAP/wAfAAAADwQAAAIAgQByAHQAcABzAHQA
+YQB0AGUAcwgAAAMDAACAAG0AaQBuAHAAcwB0AGEAdABlDQAAgABtAG4AdABwAHMAdABhAHQAZQ0A
+AIAAbgBwAHMAdABhAHQAZQBz/wD/AP8A/wD/ALIAAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8A
+Cw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEA
+A/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA
+/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wAL
+DwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD
+/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/
+AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsP
+AAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/
+AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8B
+AAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8A
+AP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8A
+Cw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsKAAABCgAAZAAAAAMAAAAC
+BgAAAQAABf8AAQAAAAEAAAABBgAAZQAAAA4IAAACAAAF/wABAAAAAgAAAAIGAABkAAAABQAAAAIG
+AAADAAAF/wABAAAAAwAAAAMGAABkAAAAAwAAAAIGAAAEAAAF/wABAAAABAAAAAQGAABkAAAAAwAA
+AAMGAAAFAAAF/wABAAAABQAAAAUGAABnCgAABgAABf8AAQAAAAYAAAAGBgAAaQoAAAcAAAX/AAEA
+AAAHAAAABwYAAGQAAAADAAAAAgYAAAgAAAX/AAEAAAAIAAAACAYAAGYKAAAJAAAF/wABAAAACQAA
+AAkGAABlAAAADgQAAAECAAAKAAAF/wABAAAACgAAAAoGAABkAAAAAwAAAAEGAAALAAAF/wABAAAA
+CwAAAAsGAABlAAAADgQAAAICAAAMAAAF/wABAAAADAAAAAwGAAAPACcJAAANAAAF/wACAgAADQYA
+AAEAAAAOBAAAAgIAAA4AAAX/AAIAAAABAAAADgYAAAIAAAAEAQAAgADDALcALgA0AAsAAAAPAAAA
+DgAAAA4AAAAPAAAAAwIAAA8GAAABAAAADgQAAAICAAAQAAAF/wAEAgAAEAYAAAkAAAAEAAAAyAYA
+ABEAAAX/AAQAAAABAAAAEQQAAIAAAAAKCgAAFQAAABIAAAAVAAAAEgAAAAQAAAACAAAAEgYAAAcA
+AAABAAAA9QABBQAAEwAABf8ABAAAAAMAAAATBgAAAgAAAAQAAADIBgAAFAAAAA0AAAANAAAAFAAA
+AAQAAAAEAAAAFAYAAAgKAAAQAAAF/wAFAgAAFQYAAAEAAAAOBAAAAQIAABYAAAX/AAYCAAAWBgAA
+AgAAAAQAAACQAAEFAAAaAAAAFwAAABoAAAAXAAAABgAAAAEAAAAXBgAABwAAAAEAAAD1AAEFAAAY
+AAAF/wAGAAAAAgAAABgGAAACAAAABAAAAMgGAAAZAAAADQAAAA0AAAAZAAAABgAAAAMAAAAZBgAA
+CAoAABYAAAX/AAcCAAAaBgAAAQAAAA4IAAAbAAAF/wAIAgAAGwYAAAIAAAAEAQAAgADDALcALgA0
+AAsAAAAbAAAAHAAAABsAAAAcAAAACAAAAAEAAAAcBgAABwAAAAEAAAD1AAEFAAAdAAAF/wAIAAAA
+AgAAAB0GAAACAAAABAAAAMgGAAAeAAAADQAAAA0AAAAeAAAACAAAAAMAAAAeBgAACAoAABsAAAX/
+</data>
+          </dict>
+          <key>ctrlloop-id</key>
+          <integer>0</integer>
+          <key>is-state-driven</key>
+          <integer>1</integer>
+        </dict>
+        <dict>
+          <key>ControlIDArray</key>
+          <array>
+            <integer>16</integer>
+            <integer>17</integer>
+            <integer>18</integer>
+          </array>
+          <key>Description</key>
+          <string>SMC_GPU_Range_Control_Loop</string>
+          <key>GPUControlInfoDict</key>
+          <dict>
+            <key>Macmini5,3</key>
+            <string>CIA9</string>
+            <key>CIA9</key>
+            <array>
+              <integer>15</integer>
+              <integer>16</integer>
+              <integer>0</integer>
+            </array>
+          </dict>
+          <key>IOClass</key>
+          <string>ACPI_SMC_GPU_CtrlLoop</string>
+          <key>PLimitClass</key>
+          <array>
+            <string>GPU</string>
+          </array>
+          <key>MetaStateArray</key>
+          <array>
+            <dict>
+              <key>Description</key>
+              <string>Normal</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>Reduced Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User Low Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User High Power</string>
+            </dict>
+          </array>
+          <key>ctrlloop-id</key>
+          <integer>3</integer>
+        </dict>
+      </array>
+    </dict>
+  </dict>
+</plist>

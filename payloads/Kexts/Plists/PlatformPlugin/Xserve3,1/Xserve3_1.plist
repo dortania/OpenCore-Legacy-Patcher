@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>IOPlatformThermalProfile</key>
+    <dict>
+      <key>CreationDate</key>
+      <string>Tue May 12 15:35:42 PDT 2009</string>
+      <key>ConfigArray</key>
+      <array>
+        <dict>
+          <key>model</key>
+          <string>Xserve3,1</string>
+        </dict>
+      </array>
+      <key>CStateDemotionDict</key>
+      <dict>
+        <key>Xserve3,1</key>
+        <string>CSDD_std1</string>
+      </dict>
+      <key>ControlArray</key>
+      <array>
+        <dict>
+          <key>Desc-Key</key>
+          <string>CPU_PLIMIT</string>
+          <key>IOClass</key>
+          <string>AppleSMCControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>10</integer>
+          <key>location</key>
+          <string>cpu plimit</string>
+          <key>type</key>
+          <string>smc</string>
+        </dict>
+        <dict>
+          <key>Desc-Key</key>
+          <string>CPU_STATE</string>
+          <key>IOClass</key>
+          <string>AppleSMCControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>13</integer>
+          <key>location</key>
+          <string>cpu state</string>
+          <key>type</key>
+          <string>smc</string>
+        </dict>
+      </array>
+      <key>CtrlLoopArray</key>
+      <array>
+        <dict>
+          <key>Description</key>
+          <string>SMC_CPU_Control_Loop</string>
+          <key>IOClass</key>
+          <string>ACPI_SMC_CtrlLoop</string>
+          <key>PLimitClass</key>
+          <array>
+            <string>CPU</string>
+          </array>
+          <key>MetaStateArray</key>
+          <array>
+            <dict>
+              <key>Description</key>
+              <string>Normal</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>Reduced Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User Low Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User High Power</string>
+            </dict>
+          </array>
+          <key>ctrlloop-id</key>
+          <integer>0</integer>
+          <key>is-state-driven</key>
+          <integer>1</integer>
+        </dict>
+      </array>
+    </dict>
+  </dict>
+</plist>

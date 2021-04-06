@@ -1,9 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.0.22
-
 - Add ExFat support for models missing driver
   - Aids BootCamp support for EFI based installs on 2010 and older Macs
+- Fix CPU Boosting on 2011 and older Macs
 
 ## 0.0.21
 - Fix botched images in OpenCanopy

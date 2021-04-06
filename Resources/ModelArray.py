@@ -689,23 +689,6 @@ nativeWifi = [
     "a0430000",#BCM4360
 ]
 
-X86PP = [
-    "MacBookAir5,1",
-    "MacBookAir5,2",
-    "MacBookPro9,1",
-    "MacBookPro9,2",
-    "MacBookPro10,1",
-    "MacBookPro10,2",
-    "Macmini6,1",
-    "Macmini6,2",
-    "iMac13,1",
-    "iMac13,2",
-    "iMac13,3",
-    "iMac14,1",
-    "iMac14,2",
-    "iMac14,3",
-]
-
 NightShiftExclude = [
     "MacBookAir5,1",
     "MacBookAir5,2",
