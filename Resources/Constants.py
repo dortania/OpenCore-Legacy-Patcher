@@ -95,6 +95,8 @@ class Constants:
     # Drivers
     @property
     def nvme_driver_path(self): return self.payload_path / Path("Drivers/NvmExpressDxe.efi")
+    @property
+    def exfat_legacy_driver_path(self): return self.payload_path / Path("Drivers/ExFatDxeLegacy.efi")
 
     # Kexts
     @property

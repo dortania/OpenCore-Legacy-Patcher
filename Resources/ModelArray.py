@@ -785,6 +785,35 @@ NoRootPatch11 = [
     "Xserve3,1",
 ]
 
+NoExFat = [
+    "MacBook4,1",
+    "MacBook5,1",
+    "MacBook5,2",
+    "MacBook6,1",
+    "MacBook7,1",
+    "MacBookAir2,1",
+    "MacBookPro4,1",
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro5,5",
+    "MacBookPro6,1",
+    "MacBookPro6,2",
+    "MacBookPro7,1",
+    "Macmini3,1",
+    "iMac7,1",
+    "iMac8,1",
+    "iMac9,1",
+    "iMac10,1",
+    "iMac11,1",
+    "MacPro3,1",
+    "MacPro4,1",
+    "MacPro5,1",
+    "Xserve3,1",
+    "Dortania1,1"
+]
+
 DeleteNvidiaAccel11 = [
     "AMDRadeonX4000.kext",
 	"AMDRadeonX4000HWServices.kext",

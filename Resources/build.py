@@ -254,6 +254,13 @@ class BuildOpenCore:
         shutil.rmtree(self.constants.resources_path, onerror=rmtree_handler)
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
+        # Exfat check
+        if self.model in ModelArray.NoExFat:
+            print("- Adding ExFatDxeLegacy.efi")
+            exfat = "ExFatDxeLegacy.efi"
+            shutil.copy(self.constants.exfat_legacy_driver_path, self.constants.drivers_path)
+            self.config["UEFI"]["Drivers"] += ["ExFatDxeLegacy.efi"]
+
 
         # Add UGA to GOP layer
         if self.model in ModelArray.UGAtoGOP:
