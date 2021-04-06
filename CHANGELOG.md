@@ -1,6 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.0.21
+- Fix botched images in OpenCanopy
+- Add support for 3rd party OpenCore usage detection during building
+  - Mainly for users transtioning from Ausdauersportler's OpenCore configuration
 
 ## 0.0.20
 - Fix CPU Calculation on early MCP79 chipsets (ie. iMac9,1, MacBook5,x)

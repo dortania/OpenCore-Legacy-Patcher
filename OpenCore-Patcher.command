@@ -26,6 +26,20 @@ class OpenCoreLegacyPatcher():
         if self.current_model in ModelArray.NoAPFSsupport:
             self.constants.serial_settings = "Moderate"
 
+        # Logic for when user runs custom OpenCore build and do not expose it
+        # Note: This logic currently only applies for iMacPro1,1 users, see below threads on the culprits:
+        # - https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/post-17425857
+        # - https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/
+        # PLEASE FOR THE LOVE OF GOD JUST SET ExposeSensitiveData CORRECTLY!!!
+        if self.current_model == "iMacPro1,1":
+            serial: str = subprocess.run("system_profiler SPHardwareDataType | grep Serial".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+            serial = [line.strip().split("Number (system): ", 1)[1] for line in serial.split("\n") if line.strip().startswith("Serial")][0]
+            true_model = subprocess.run([str(self.constants.macserial_path), "--info", str(serial)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            true_model = [i.partition(" - ")[2] for i in true_model.stdout.decode().split("\n") if "Model: " in i][0]
+            print(f"True Model: {true_model}")
+            if not true_model.startswith("Unknown"):
+                self.current_model = true_model
+
     def build_opencore(self):
         build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
 
