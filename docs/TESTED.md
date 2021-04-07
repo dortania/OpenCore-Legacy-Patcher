@@ -12,7 +12,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBook5,2 | ^^ | Finder352 | ^^  |
 | MacBook6,1 | ^^ | Finder352 | ^^ |
 | MacBook7,1 | ^^ | MykolaG | ^^ |
-| MacBook7,1 | ^^ | Jazzzny | ^^ |
+| ^^ | ^^ | Jazzzny | ^^ |
 
 ### MacBook Air
 
@@ -26,7 +26,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookAir5,1 | <span style="color:#30BCD5"> YES </span> | Ausdauersportler | - Stock Model<br/>- Patcher version 0.0.9 |
 | ^^ | ^^ | webg3 | Stock Model |
 | MacBookAir5,2 | ^^ | Bab-droid | - Stock Model<br/>- Patcher version 0.0.19 |
-| ^^ | ^^ | K-Hobert | - Stock model <br/>- Patcher version unknown | 
+| ^^ | ^^ | K-Hobert | - Stock model <br/>- Patcher version unknown |
+| ^^ | ^^ | cboukouv |  - Stock model <br/>- Patcher version 0.0.21 |
 
 ### MacBook Pro
 
@@ -43,6 +44,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro7,1 | No reports | N/A | N/A |
 | MacBookPro8,1 | ^^ | ^^ | ^^ |
 | MacBookPro8,2 | <span style="color:#30BCD5"> YES </span> | air.man | - Stock model, dGPU disabled <br/>- Patcher version 0.0.22 |
+| ^^ | ^^ | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro8,3 | No reports | ^^ | ^^ |
 | MacBookPro9,1 | <span style="color:#30BCD5"> YES </span> | jbdamiano  | - Stock model <br/>- Patcher version 0.0.19 |
 | ^^ | ^^ | dennes544 | ^^|
