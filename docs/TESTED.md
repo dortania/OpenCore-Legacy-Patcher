@@ -57,7 +57,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | woefi | - BCM94331CAX upgrade<br/>- Patcher version 0.0.13 |
 | ^^ | ^^ | whgmkeller | - Stock model<br/>- Patcher version 0.0.11 |
 | MacBookPro10,1 | ^^ | traviswparker | - Stock model <br/>- Patcher version 0.0.14 |
-| ^^ | ^^ | il-rollino | - Upgraded BCM94360CSAX <br/>- Patcher version 0.0.16 |
+| ^^ | ^^ | il-rollino | - Upgraded BCM94360CSAX <br/>- Patcher version 0.0.21 |
 | MacBookPro10,2 | No reports | N/A | N/A |
 
 ### Mac mini
