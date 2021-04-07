@@ -6,7 +6,7 @@ A python program for building and booting [OpenCore](https://github.com/acidanth
   
 | Support Entry | Supported OSes | Description | Comment |
 | :--- | :--- | :--- | :--- |
-| HostOS | macOS 10.9-11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
+| HostOS | macOS 10.9 - macOS 11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [Python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
 | TargetOS | macOS 11 | Refers to OSes that can be patched to run with OpenCore | Unofficially supports 10.4 and newer, no support provided via this patcher |
 
 Supported features:
@@ -17,7 +17,7 @@ Supported features:
 * Zero firmware patching required (ie. APFS ROM patching)
 * GPU Switching on MacBook Pro models (2012 and newer)
 
-Note: Only clean-installs and upgrades are supported, installs already patched with [Patched-Sur](https://github.com/BenSova/Patched-Sur) or [bigmac](https://github.com/StarPlayrX/bigmac) cannot be used due to broken file integrity with APFS snapshots and SIP.
+Note: Only clean-installs and upgrades are supported, installs already patched with other patchers, such as [Patched Sur](https://github.com/BenSova/Patched-Sur) or [bigmac](https://github.com/StarPlayrX/bigmac), cannot be used due to broken file integrity with APFS snapshots and SIP.
 
 * You can however reinstall macOS with this patcher and retain your original data
 
@@ -55,6 +55,6 @@ Regarding how to debug OpenCore Patcher, we recommend seeing the below:
 
 ## Supporting us!
 
-To help support this patcher, we recommend chancking this page:
+To help support this patcher, we recommend checking this page:
 
 * [Supporting the patcher](https://dortania.github.io/OpenCore-Legacy-Patcher/DONATE.html)
