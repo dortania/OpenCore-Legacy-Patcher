@@ -69,7 +69,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | Macmini5,1 | ^^ | ^^ | ^^ |
 | Macmini5,2 | ^^ | ^^ | ^^ |
 | Macmini5,3 | ^^ | ^^ | ^^ |
-| Macmini6,1 | <span style="color:#30BCD5"> YES </span> | Stig124  | - Stock model <br/>- Patcher version 0.0.19  |
+| Macmini6,1 | <span style="color:#30BCD5"> YES </span> | cicofz  | - Stock model <br/>- Patcher version 0.0.21  |
+| ^^ | ^^ | Stig124  | - Stock model <br/>- Patcher version 0.0.19  |
 | ^^ | ^^ | mwidjaya | - Stock model <br/>- Patcher version 0.0.18 |
 | Macmini6,2 | ^^ | Shelbs | - Stock model <br/>- Patcher version 0.0.16 |
 
