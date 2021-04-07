@@ -46,7 +46,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro8,1 | <span style="color:#30BCD5"> YES </span> | AvaQueen | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro8,2 | ^^ | air.man | - Stock model, dGPU disabled <br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
-| MacBookPro8,3 | No reports | ^^ | ^^ |
+| MacBookPro8,3 | No reports | N/A | N/A |
 | MacBookPro9,1 | <span style="color:#30BCD5"> YES </span> | jbdamiano  | - Stock model <br/>- Patcher version 0.0.19 |
 | ^^ | ^^ | dennes544 | ^^|
 | ^^ | ^^ | cgrazy | ^^ |
@@ -57,7 +57,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | woefi | - BCM94331CAX upgrade<br/>- Patcher version 0.0.13 |
 | ^^ | ^^ | whgmkeller | - Stock model<br/>- Patcher version 0.0.11 |
 | MacBookPro10,1 | ^^ | traviswparker | - Stock model <br/>- Patcher version 0.0.14 |
-| ^^ | ^^ | il-rollino | - Stock model <br/>- Patcher version 0.0.16 |
+| ^^ | ^^ | il-rollino | - Upgraded BCM94360CSAX <br/>- Patcher version 0.0.16 |
 | MacBookPro10,2 | No reports | N/A | N/A |
 
 ### Mac mini
@@ -101,6 +101,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
 | MacPro3,1 | <span style="color:#30BCD5"> YES </span> | christiann | - Upgraded with RX 560 and BCM94322<br/>- Stock Bluetooth card removed<br/>- Patcher version 0.0.21 |
+| ^^ | ^^ | gw463 | - Upgraded GTX 680<br/>- Upgraded BCM94360<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | AlexSakha67 | - Upgraded R9 280<br/>- Patcher version 0.0.20 |
 | ^^ | ^^ | nekton1 | - Upgraded GTX 680<br/>- Patcher version 0.0.20 |
 | ^^ | ^^ | Pri-est | - Patcher version 0.0.9 |
