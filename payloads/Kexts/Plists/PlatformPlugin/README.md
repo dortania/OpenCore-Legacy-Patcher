@@ -5,3 +5,4 @@ This folder contains many profiles for CPU power management. These plist were or
 This allows for all Mac models in this patcher to support the correct power management regardless of the SMBIOS used.
 
 * Note: iMac7,1 and older did not support ACPI_SMC_PlatformPlugin so no CPUFriend support is required
+* Note 2: Models dropped in macOS Sierra seem to have throttling issues if CPUFriend with accompanying data is injected. For short term, we've disabled this data injection until resolved.
