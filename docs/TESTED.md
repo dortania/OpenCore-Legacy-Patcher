@@ -42,8 +42,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro6,1 | ^^ | ^^ | ^^ |
 | MacBookPro6,2 | <span style="color:#30BCD5"> YES </span> | Jakeluke | - Stock model, dGPU broken <br/>- Patcher version unknown |
 | MacBookPro7,1 | No reports | N/A | N/A |
-| MacBookPro8,1 | ^^ | ^^ | ^^ |
-| MacBookPro8,2 | <span style="color:#30BCD5"> YES </span> | air.man | - Stock model, dGPU disabled <br/>- Patcher version 0.0.22 |
+| MacBookPro8,1 | <span style="color:#30BCD5"> YES </span> | AvaQueen | - Stock model <br/>- Patcher version 0.0.19 |
+| MacBookPro8,2 | ^^ | air.man | - Stock model, dGPU disabled <br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro8,3 | No reports | ^^ | ^^ |
 | MacBookPro9,1 | <span style="color:#30BCD5"> YES </span> | jbdamiano  | - Stock model <br/>- Patcher version 0.0.19 |
@@ -78,12 +78,12 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | iMac7,1 | No reports | N/A | N/A |
 | iMac8,1 | <span style="color:#30BCD5"> YES </span> | EduCovas | - Stock Model<br/>- Patcher version 0.0.21 |
 | iMac9,1 | ^^ | Allanrfox | ^^ |
-| iMac9,1 | ^^ | Jakeluke | ^^ |
+| ^^ | ^^ | Jakeluke | ^^ |
 | iMac10,1 | No reports | N/A | N/A |
 | iMac11,1 | ^^ | ^^ | ^^ |
 | iMac11,2 | <span style="color:#30BCD5"> YES </span> | MykolaG | - Stock Model<br/>- Patcher version 0.0.21 |
 | iMac11,3 | ^^ | Ausdauersportler | - Upgraded with Polaris GPU<br/>- Upgraded BCM943602CDP<br/>- Patcher version 0.0.21 |
-| iMac12,1 | ^^ | shnockdu | - Upgraded with kepler GPU<br/>- Patcher version 0.0.21 |
+| iMac12,1 | ^^ | shnockdu | - Upgraded with Kepler GPU<br/>- Patcher version 0.0.21 |
 | iMac12,2 | ^^ | Ausdauersportler | - Upgraded with Polaris GPU<br/>- Upgraded BCM943602CDP<br/>- Patcher version 0.0.21 |
 | iMac13,1 | ^^ | alexx17xx | - Stock Model<br/>- Patcher version 0.0.19 |
 | iMac13,2 | No reports | N/A | N/A |
