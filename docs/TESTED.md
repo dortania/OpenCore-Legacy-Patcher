@@ -8,7 +8,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
 | MacBook4,1 | <span style="color:#30BCD5"> YES </span> | Mami | - Stock Model<br/>- Couldn't install due to broke USB support |
-| MacBook5,1 | ^^ | air.man#8874 | - Stock Model<br/>- Patcher version 0.0.19 |
+| MacBook5,1 | ^^ | air.man | - Stock Model<br/>- Patcher version 0.0.19 |
 | MacBook5,2 | ^^ | Finder352 | ^^  |
 | MacBook6,1 | ^^ | Finder352 | ^^ |
 | MacBook7,1 | ^^ | MykolaG | ^^ |
@@ -92,7 +92,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
-| MacPro3,1 | <span style="color:#30BCD5"> YES </span> | christiann | - Upgraded with RX 560 and BCM94322<br/>- Patcher version 0.0.21 |
+| MacPro3,1 | <span style="color:#30BCD5"> YES </span> | christiann | - Upgraded with RX 560 and BCM94322<br/>- Stock Bluetooth card removed<br/>- Patcher version 0.0.21 |
 | MacPro4,1 | No reports | N/A | N/A |
 | MacPro5,1 | <span style="color:#30BCD5"> YES </span> | woefi | - Upgraded with RX 580<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | Mabrouk Oscar | - Patcher version 0.0.21 |
