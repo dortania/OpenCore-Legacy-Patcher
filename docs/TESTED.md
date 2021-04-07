@@ -101,7 +101,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
 | MacPro3,1 | <span style="color:#30BCD5"> YES </span> | christiann | - Upgraded with RX 560 and BCM94322<br/>- Stock Bluetooth card removed<br/>- Patcher version 0.0.21 |
-| ^^ | ^^ | gw463 | - Upgraded GTX 680<br/>- Upgraded BCM94360<br/>- Patcher version 0.0.21 |
+| ^^ | ^^ | gw463 | - Upgraded GTX 680<br/>- Upgraded BCM94360<br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | AlexSakha67 | - Upgraded R9 280<br/>- Patcher version 0.0.20 |
 | ^^ | ^^ | nekton1 | - Upgraded GTX 680<br/>- Patcher version 0.0.20 |
 | ^^ | ^^ | Pri-est | - Patcher version 0.0.9 |
