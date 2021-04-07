@@ -13,6 +13,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBook6,1 | ^^ | Finder352 | ^^ |
 | MacBook7,1 | ^^ | MykolaG | ^^ |
 | ^^ | ^^ | Jazzzny | ^^ |
+| ^^ | ^^ | AlexSakha67 | - Stock Model<br/>- Patcher version 0.0.20 |
 
 ### MacBook Air
 
@@ -35,8 +36,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | :--- | :--- | :--- | :--- |
 | MacBookPro4,1 | <span style="color:#30BCD5"> YES </span> | cboukouv | - Stock model <br/>- Patcher version 0.0.19  |
 | MacBookPro5,1 | No reports | N/A | N/A |
-| MacBookPro5,2 | ^^ | ^^ | ^^ |
-| MacBookPro5,3 | ^^ | ^^ | ^^ |
+| MacBookPro5,2 |  <span style="color:#30BCD5"> YES </span> | hvds | - Stock model <br/>- Patcher version 0.0.21 |
+| MacBookPro5,3 | No reports | N/A | N/A |
 | MacBookPro5,4 | ^^ | ^^ | ^^ |
 | MacBookPro5,5 | ^^ | ^^ | ^^ |
 | MacBookPro6,1 | ^^ | ^^ | ^^ |
@@ -69,6 +70,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | Macmini5,2 | ^^ | ^^ | ^^ |
 | Macmini5,3 | ^^ | ^^ | ^^ |
 | Macmini6,1 | <span style="color:#30BCD5"> YES </span> | Stig124  | - Stock model <br/>- Patcher version 0.0.19  |
+| ^^ | ^^ | mwidjaya | - Stock model <br/>- Patcher version 0.0.18 |
 | Macmini6,2 | ^^ | Shelbs | - Stock model <br/>- Patcher version 0.0.16 |
 
 ### iMac
@@ -82,21 +84,25 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | iMac10,1 | No reports | N/A | N/A |
 | iMac11,1 | ^^ | ^^ | ^^ |
 | iMac11,2 | <span style="color:#30BCD5"> YES </span> | MykolaG | - Stock Model<br/>- Patcher version 0.0.21 |
+| ^^ | ^^ | iMac-iPad | - Stock Model<br/>- Patcher version 0.0.21 |
 | iMac11,3 | ^^ | Ausdauersportler | - Upgraded with Polaris GPU<br/>- Upgraded BCM943602CDP<br/>- Patcher version 0.0.21 |
 | iMac12,1 | ^^ | shnockdu | - Upgraded with Kepler GPU<br/>- Patcher version 0.0.21 |
+| ^^ | ^^ | StephN999 | - Upgraded WX4150 GPU<br/>- Upgraded BCM94360CD<br/>- Patcher version 0.0.21 |
 | iMac12,2 | ^^ | Ausdauersportler | - Upgraded with Polaris GPU<br/>- Upgraded BCM943602CDP<br/>- Patcher version 0.0.21 |
 | iMac13,1 | ^^ | alexx17xx | - Stock Model<br/>- Patcher version 0.0.19 |
-| iMac13,2 | No reports | N/A | N/A |
-| iMac13,3 | ^^ | ^^ | ^^ |
+| iMac13,2 | ^^ | Alain13 | ^^ |
+| iMac13,3 | No reports | N/A | N/A |
 | iMac14,1 | ^^ | ^^ | ^^ |
-| iMac14,2 | ^^ | ^^ | ^^ |
-| iMac14,3 | ^^ | ^^ | ^^ |
+| iMac14,2 | <span style="color:#30BCD5"> YES </span> | OKonnel | - Stock Model<br/>- Patcher version 0.0.22 |
+| iMac14,3 | No reports | N/A | N/A |
 
 ### Mac Pro
 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
 | MacPro3,1 | <span style="color:#30BCD5"> YES </span> | christiann | - Upgraded with RX 560 and BCM94322<br/>- Stock Bluetooth card removed<br/>- Patcher version 0.0.21 |
+| ^^ | ^^ | AlexSakha67 | - Upgraded R9 280<br/>- Patcher version 0.0.20 |
+| ^^ | ^^ | nekton1 | - Upgraded GTX 680<br/>- Patcher version 0.0.20 |
 | ^^ | ^^ | Pri-est | - Patcher version 0.0.9 |
 | MacPro4,1 | ^^ | ^^ | - Patcher version 0.0.9 |
 | MacPro5,1 | ^^ | woefi | - Upgraded with RX 580<br/>- Patcher version 0.0.21 |
