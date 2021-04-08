@@ -138,7 +138,7 @@ Regarding OS support, see below:
 | SMBIOS | Year | Supported | Comment |
 | :--- | :--- | :--- | :--- |
 | Xserve1,1 | Mid-2006 | <span style="color:red"> NO </span> | 32-Bit Firmware limitation |
-| Xserve2,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | <span style="color:#30BCD5"> YES </span> | <span style="color:green"> Everything is supported as long as GPU is Metal capable </span> |
+| Xserve2,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | <span style="color:green"> Everything is supported as long as GPU is Metal capable </span> |
 | Xserve3,1 | Early 2009 | ^^ | ^^ |
 
 # Once you've verified your hardware is supported, head to [Download and build macOS Installers](./INSTALLER.md)
