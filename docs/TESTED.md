@@ -35,8 +35,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
 | MacBookPro4,1 | <span style="color:#30BCD5"> YES </span> | cboukouv | - Stock model <br/>- Patcher version 0.0.19  |
-| MacBookPro5,1 | No reports | N/A | N/A |
-| MacBookPro5,2 |  <span style="color:#30BCD5"> YES </span> | hvds | - Stock model <br/>- Patcher version 0.0.21 |
+| MacBookPro5,1 | ^^ | GURU_Jasho#5736 | - Stock model <br/>- Patcher version 0.0.21 |
+| MacBookPro5,2 |  ^^ | hvds | ^^ |
 | MacBookPro5,3 | No reports | N/A | N/A |
 | MacBookPro5,4 | ^^ | ^^ | ^^ |
 | MacBookPro5,5 | ^^ | ^^ | ^^ |
@@ -86,12 +86,14 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | iMac11,1 | ^^ | ^^ | ^^ |
 | iMac11,2 | <span style="color:#30BCD5"> YES </span> | MykolaG | - Stock Model<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | iMac-iPad | - Stock Model<br/>- Patcher version 0.0.21 |
+| ^^ | ^^ | imax-book | ^^ |
 | iMac11,3 | ^^ | Ausdauersportler | - Upgraded with Polaris GPU<br/>- Upgraded BCM943602CDP<br/>- Patcher version 0.0.21 |
 | iMac12,1 | ^^ | shnockdu | - Upgraded with Kepler GPU<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | StephN999 | - Upgraded WX4150 GPU<br/>- Upgraded BCM94360CD<br/>- Patcher version 0.0.21 |
 | iMac12,2 | ^^ | Ausdauersportler | - Upgraded with Polaris GPU<br/>- Upgraded BCM943602CDP<br/>- Patcher version 0.0.21 |
 | iMac13,1 | ^^ | alexx17xx | - Stock Model<br/>- Patcher version 0.0.19 |
 | iMac13,2 | ^^ | Alain13 | ^^ |
+| ^^ | ^^ | algernonpule | - Stock Model<br/>- Patcher version 0.0.19 |
 | iMac13,3 | No reports | N/A | N/A |
 | iMac14,1 | ^^ | ^^ | ^^ |
 | iMac14,2 | <span style="color:#30BCD5"> YES </span> | OKonnel | - Stock Model<br/>- Patcher version 0.0.22 |
