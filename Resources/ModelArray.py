@@ -65,6 +65,7 @@ SupportedSMBIOS11 = [
     "MacPro4,1",
     "MacPro5,1",
     # Xserve
+    "Xserve2,1",
     "Xserve3,1",
     "Dortania1,1"
 ]
@@ -98,11 +99,13 @@ MissingSSE42 = [
     "iMac9,1",
     "iMac10,1",
     "MacPro3,1",
+    "Xserve2,1",
     "Dortania1,1"
 ]
 
 SSEEmulator = [
     "MacPro3,1",
+    "Xserve2,1",
     "Dortania1,1"
 ]
 
@@ -110,6 +113,7 @@ DualSocket = [
     "MacPro3,1",
     "MacPro4,1",
     "MacPro5,1",
+    "Xserve2,1",
     "Xserve3,1",
     "Dortania1,1"
 ]
@@ -549,6 +553,7 @@ MacPro71 = [
     "MacPro3,1",
     "MacPro4,1",
     "MacPro5,1",
+    "Xserve2,1",
     "Xserve3,1",
     "Dortania1,1"
 ]
@@ -711,7 +716,8 @@ UGAtoGOP = [
     "MacBookPro4,1",
     "iMac7,1",
     "iMac8,1",
-    "MacPro3,1"
+    "MacPro3,1",
+    "Xserve2,1",
 ]
 
 NoSATAPatch = [
@@ -744,6 +750,7 @@ NoAPFSsupport = [
     "iMac9,1",
     "MacPro3,1",
     "MacPro4,1",
+    "Xserve2,1",
     "Xserve3,1",
     "Dortania1,1"
 ]
@@ -793,6 +800,7 @@ NoExFat = [
     "MacPro3,1",
     "MacPro4,1",
     "MacPro5,1",
+    "Xserve2,1",
     "Xserve3,1",
     "Dortania1,1"
 ]

@@ -86,7 +86,6 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | iMac11,1 | ^^ | ^^ | ^^ |
 | iMac11,2 | <span style="color:#30BCD5"> YES </span> | MykolaG | - Stock Model<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | iMac-iPad | - Stock Model<br/>- Patcher version 0.0.21 |
-| ^^ | ^^ | imax-book | ^^ |
 | iMac11,3 | ^^ | Ausdauersportler | - Upgraded with Polaris GPU<br/>- Upgraded BCM943602CDP<br/>- Patcher version 0.0.21 |
 | iMac12,1 | ^^ | shnockdu | - Upgraded with Kepler GPU<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | StephN999 | - Upgraded WX4150 GPU<br/>- Upgraded BCM94360CD<br/>- Patcher version 0.0.21 |
@@ -95,8 +94,10 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | iMac13,2 | ^^ | Alain13 | ^^ |
 | ^^ | ^^ | algernonpule | - Stock Model<br/>- Patcher version 0.0.19 |
 | iMac13,3 | No reports | N/A | N/A |
-| iMac14,1 | ^^ | ^^ | ^^ |
-| iMac14,2 | <span style="color:#30BCD5"> YES </span> | OKonnel | - Stock Model<br/>- Patcher version 0.0.22 |
+| iMac14,1 | <span style="color:#30BCD5"> YES </span> | woefi | - Upgraded NVMe<br/>- Patcher version 0.0.21 |
+| ^^ | ^^ | mikeboss | - Stock Model<br/>- Patcher version 0.0.19 |
+| iMac14,2 | ^^ | OKonnel | - Stock Model<br/>- Patcher version 0.0.22 |
+| ^^ | ^^ | mibaxx | - Stock Model<br/>- Patcher version 0.0.21 |
 | iMac14,3 | No reports | N/A | N/A |
 
 ### Mac Pro
