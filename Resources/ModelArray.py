@@ -281,6 +281,26 @@ LegacyAudio = [
     "Dortania1,1"
 ]
 
+nvidiaHDEF = [
+    "MacBook5,1",
+    "MacBook5,2",
+    "MacBook6,1",
+    "MacBook7,1",
+    "MacBookAir2,1",
+    "MacBookAir3,1",
+    "MacBookAir3,2",
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro5,5",
+    "MacBookPro7,1",
+    "Macmini3,1",
+    "Macmini4,1",
+    "iMac9,1",
+    "iMac10,1"
+]
+
 ## GPU
 
 LegacyGPU = [

@@ -89,7 +89,7 @@ class BuildOpenCore:
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
             ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
             # Legacy audio
-            #("VoodooHDA.kext", self.constants.voodoohda_version, self.constants.voodoohda_path, lambda: self.model in ModelArray.LegacyAudio),
+            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: self.model in ModelArray.LegacyAudio),
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
             # Hibernation Tests
@@ -198,6 +198,18 @@ class BuildOpenCore:
             print("- Setting HiDPI picker")
             self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["UIScale"] = binascii.unhexlify("02")
 
+        # Audio Patch
+        if self.model in ModelArray.LegacyAudio:
+            print("- Adding audio properties")
+            if self.model in ModelArray.nvidiaHDEF:
+                hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)"
+            else:
+                hdef_path = "PciRoot(0x0)/Pci(0x1b,0x0)"
+            # In AppleALC, MacPro3,1's original layout is already in use, forcing layout 13 instead
+            if self.model != "MacPro3,1":
+                self.config["DeviceProperties"]["Add"][hdef_path] = {"apple-layout-id": 90, "use-apple-layout-id": 1, "alc-layout-id": 13,}
+            else:
+                self.config["DeviceProperties"]["Add"][hdef_path] = {"apple-layout-id": 90, "use-apple-layout-id": 1, "use-layout-id": 1,}
 
         def nvidia_patch(self):
             self.constants.custom_mxm_gpu = True

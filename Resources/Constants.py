@@ -23,7 +23,7 @@ class Constants:
         self.telemetrap_version = "1.0.0"
         self.io80211high_sierra_version = "1.0.0"
         self.io80211mojave_version = "1.0.0"
-        self.voodoohda_version = "296"
+        self.applealc_version = "1.6.0"
         self.restrictevents_version = "1.0.0"
         self.restrictevents_mbp_version = "1.0.1"
         self.piixata_version = "1.0.0"
@@ -128,7 +128,7 @@ class Constants:
     @property
     def io80211mojave_path(self): return self.payload_kexts_path / Path(f"Wifi/IO80211Mojave-v{self.io80211mojave_version}.zip")
     @property
-    def voodoohda_path(self): return self.payload_kexts_path / Path(f"Audio/VoodooHDA-v{self.voodoohda_version}.zip")
+    def applealc_path(self): return self.payload_kexts_path / Path(f"Acidanthera/AppleALC-v{self.applealc_version}.zip")
     @property
     def piixata_path(self): return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-v{self.piixata_version}.zip")
     @property

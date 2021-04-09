@@ -176,15 +176,6 @@ class PatchSysVolume:
         self.constants.current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
         self.constants.current_gpud = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Device ID"))][0]
 
-        # Start Patch engine
-        if self.model in ModelArray.LegacyAudio:
-            print("- Attempting AppleHDA Patch")
-            subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleHDA.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(f"sudo cp -R {self.constants.applehda_path} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(f"sudo chmod -Rf 755 {self.mount_extensions}/AppleHDA.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(f"sudo chown -Rf root:wheel {self.mount_extensions}/AppleHDA.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            rebuild_required = True
-
         if (self.model in ModelArray.LegacyGPU) and (Path(self.constants.hiddhack_path).exists()):
             print(f"- Detected GPU: {self.constants.current_gpuv} {self.constants.current_gpud}")
             if (self.constants.current_gpuv == "AMD (0x1002)") & (self.constants.current_gpud in ModelArray.AMDMXMGPUs):
