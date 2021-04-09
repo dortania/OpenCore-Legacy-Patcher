@@ -201,12 +201,9 @@ class BuildOpenCore:
         # Audio Patch
         if self.model in ModelArray.LegacyAudio:
             print("- Adding audio properties")
-            if self.model in ModelArray.nvidiaHDEF:
-                hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)"
-            else:
-                hdef_path = "PciRoot(0x0)/Pci(0x1b,0x0)"
+            hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)" if self.model in ModelArray.nvidiaHDEF else "PciRoot(0x0)/Pci(0x1b,0x0)"
             # In AppleALC, MacPro3,1's original layout is already in use, forcing layout 13 instead
-            if self.model != "MacPro3,1":
+            if self.model == "MacPro3,1":
                 self.config["DeviceProperties"]["Add"][hdef_path] = {"apple-layout-id": 90, "use-apple-layout-id": 1, "alc-layout-id": 13,}
             else:
                 self.config["DeviceProperties"]["Add"][hdef_path] = {"apple-layout-id": 90, "use-apple-layout-id": 1, "use-layout-id": 1,}
