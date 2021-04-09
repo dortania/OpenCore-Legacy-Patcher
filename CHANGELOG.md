@@ -5,7 +5,7 @@
   - Aids BootCamp support for EFI based installs on 2010 and older Macs
 - Fix CPU Boosting on 2011 and older Macs
 - Add basic support for Xserve2,1
-- Add AppleALC support(b24daa4 - 1.6.0 rolling - 04-09-2021), remove AppleHDA patching requirement
+- Add AppleALC support(be8eb57 - 1.6.0 rolling - 04-09-2021), remove AppleHDA patching requirement
 
 ## 0.0.21
 - Fix botched images in OpenCanopy
