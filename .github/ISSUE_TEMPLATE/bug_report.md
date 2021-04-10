@@ -27,5 +27,11 @@ If applicable, add the generated OpenCore Build to help explain your problem.
  - OS Patching (ie. macOS 11.2.3, Big Sur)
  - Model Patching (ie. MacPro5,1)
 
+For in-depth hardware logs, we highly encourage users to send the following files:
+```bash
+ioreg -lw0 > ~/Desktop/IOReg.txt
+ioreg -lw0 -a > ~/Desktop/IOReg.plist
+```
+
 **Additional context**
 Add any other context about the problem here.
