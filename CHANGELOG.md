@@ -6,6 +6,7 @@
 - Fix CPU Boosting on 2011 and older Macs
 - Add basic support for Xserve2,1
 - Add AppleALC support(be8eb57 - 1.6.0 rolling - 04-09-2021), remove AppleHDA patching requirement
+- Add BCM94322 and BCM94321 chipset support
 
 ## 0.0.21
 - Fix botched images in OpenCanopy
