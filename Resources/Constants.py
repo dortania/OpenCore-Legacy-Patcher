@@ -21,6 +21,8 @@ class Constants:
         self.mce_version = "1.0.0"
         self.mousse_version = "0.93"
         self.telemetrap_version = "1.0.0"
+        self.corecaptureelcap_version = "1.0.0"
+        self.io80211elcap_version = "1.0.0"
         self.io80211high_sierra_version = "1.0.0"
         self.io80211mojave_version = "1.0.0"
         self.applealc_version = "1.6.0"
@@ -123,6 +125,10 @@ class Constants:
     def mousse_path(self): return self.payload_kexts_path / Path(f"SSE/AAAMouSSE-v{self.mousse_version}.zip")
     @property
     def telemetrap_path(self): return self.payload_kexts_path / Path(f"SSE/telemetrap-v{self.telemetrap_version}.zip")
+    @property
+    def corecaptureelcap_path(self): return self.payload_kexts_path / Path(f"Wifi/corecaptureElCap-v{self.corecaptureelcap_version}.zip")
+    @property
+    def io80211elcap_path(self): return self.payload_kexts_path / Path(f"Wifi/IO80211ElCap-v{self.io80211elcap_version}.zip")
     @property
     def io80211high_sierra_path(self): return self.payload_kexts_path / Path(f"Wifi/IO80211HighSierra-v{self.io80211high_sierra_version}.zip")
     @property

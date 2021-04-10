@@ -138,6 +138,10 @@ class BuildOpenCore:
             if self.model in ModelArray.WifiBCM94322:
                 self.enable_kext("IO80211Mojave.kext", self.constants.io80211mojave_version, self.constants.io80211mojave_path)
                 self.get_kext_by_bundle_path("IO80211Mojave.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
+            if self.model in ModelArray.WifiBCM94328:
+                self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
+                self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
+                self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AppleAirPortBrcm43224.kext")["Enabled"] = True
 
         # CPUFriend
         pp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/PlatformPlugin/{self.model}/Info.plist")

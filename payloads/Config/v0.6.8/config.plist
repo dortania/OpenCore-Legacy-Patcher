@@ -376,6 +376,60 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
+				<string>BCM94328 Wifi Patch</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>16.0.0</string>
+				<key>BundlePath</key>
+				<string>corecaptureElCap.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/corecaptureElCap</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
+				<string>BCM94328 Wifi Patch</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>16.0.0</string>
+				<key>BundlePath</key>
+				<string>IO80211ElCap.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/IO80211ElCap</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
+				<string>BCM94328 Wifi Patch</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>16.0.0</string>
+				<key>BundlePath</key>
+				<string>IO80211ElCap.kext/Contents/PlugIns/AppleAirPortBrcm43224.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AppleAirPortBrcm43224</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
 				<string>Atheros Wifi Patch</string>
 				<key>Enabled</key>
 				<false/>
