@@ -9,7 +9,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | :--- | :--- | :--- | :--- |
 | MacBook4,1 | <span style="color:#30BCD5"> YES </span> | Mami | - Stock Model<br/>- Couldn't install due to broke USB support |
 | MacBook5,1 | ^^ | air.man | - Stock Model<br/>- Patcher version 0.0.19 |
-| MacBook5,2 | ^^ | Finder352 | ^^  |
+| MacBook5,2 | ^^ | Finder352 | ^^ |
 | MacBook6,1 | ^^ | Finder352 | ^^ |
 | MacBook7,1 | ^^ | MykolaG | ^^ |
 | ^^ | ^^ | Jazzzny | ^^ |
@@ -28,17 +28,17 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | webg3 | Stock Model |
 | MacBookAir5,2 | ^^ | Bab-droid | - Stock Model<br/>- Patcher version 0.0.19 |
 | ^^ | ^^ | K-Hobert | - Stock model <br/>- Patcher version unknown |
-| ^^ | ^^ | cboukouv |  - Stock model <br/>- Patcher version 0.0.21 |
+| ^^ | ^^ | cboukouv | - Stock model <br/>- Patcher version 0.0.21 |
 
 ### MacBook Pro
 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
-| MacBookPro4,1 | <span style="color:#30BCD5"> YES </span> | cboukouv | - Stock model <br/>- Patcher version 0.0.19  |
+| MacBookPro4,1 | <span style="color:#30BCD5"> YES </span> | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro5,1 | ^^ | GURU_Jasho#5736 | - Stock model <br/>- Patcher version 0.0.21 |
-| MacBookPro5,2 |  ^^ | hvds | ^^ |
-| MacBookPro5,3 | No reports | N/A | N/A |
-| MacBookPro5,4 | ^^ | ^^ | ^^ |
+| MacBookPro5,2 | ^^ | hvds | ^^ |
+| MacBookPro5,3 | <span style="color:#30BCD5"> YES </span> | kommtzeitkonrad | - Stock model <br/>- Patcher version 0.0.22 |
+| MacBookPro5,4 | No reports | N/A | N/A |
 | MacBookPro5,5 | ^^ | ^^ | ^^ |
 | MacBookPro6,1 | ^^ | ^^ | ^^ |
 | MacBookPro6,2 | <span style="color:#30BCD5"> YES </span> | Jakeluke | - Stock model, dGPU broken <br/>- Patcher version unknown |
@@ -47,7 +47,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro8,2 | ^^ | air.man | - Stock model, dGPU disabled <br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro8,3 | No reports | N/A | N/A |
-| MacBookPro9,1 | <span style="color:#30BCD5"> YES </span> | jbdamiano  | - Stock model <br/>- Patcher version 0.0.19 |
+| MacBookPro9,1 | <span style="color:#30BCD5"> YES </span> | jbdamiano | - Stock model <br/>- Patcher version 0.0.19 |
 | ^^ | ^^ | dennes544 | ^^|
 | ^^ | ^^ | cgrazy | ^^ |
 | ^^ | ^^ | LIPA85 | ^^ |
@@ -69,8 +69,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | Macmini5,1 | ^^ | ^^ | ^^ |
 | Macmini5,2 | ^^ | ^^ | ^^ |
 | Macmini5,3 | ^^ | ^^ | ^^ |
-| Macmini6,1 | <span style="color:#30BCD5"> YES </span> | cicofz  | - Stock model <br/>- Patcher version 0.0.21  |
-| ^^ | ^^ | Stig124  | - Stock model <br/>- Patcher version 0.0.19  |
+| Macmini6,1 | <span style="color:#30BCD5"> YES </span> | cicofz | - Stock model <br/>- Patcher version 0.0.21 |
+| ^^ | ^^ | Stig124 | - Stock model <br/>- Patcher version 0.0.19 |
 | ^^ | ^^ | mwidjaya | - Stock model <br/>- Patcher version 0.0.18 |
 | Macmini6,2 | ^^ | Shelbs | - Stock model <br/>- Patcher version 0.0.16 |
 
