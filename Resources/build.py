@@ -98,43 +98,68 @@ class BuildOpenCore:
         ]:
             self.enable_kext(name, version, path, check)
 
+        def wifi_fake_id(self):
+            self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
+            self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
+
+            if (self.model in ModelArray.EthernetNvidia) or self.model in ("MacBookAir2,1", "MacBookAir3,1", "MacBookAir3,2"):
+                # Nvidia chipsets all have the same path to ARPT
+                property_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
+            elif self.model in ("iMac7,1", "iMac8,1", "MacPro3,1", "MacBookPro4,1"):
+                property_path = "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
+            elif self.model in ("iMac13,1", "iMac13,2"):
+                property_path = "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
+            elif self.model in ("MacPro4,1", "MacPro5,1"):
+                property_path = "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
+            else:
+                # Assumes we have a laptop with Intel chipset
+                # iMac11,x-12,x also apply
+                property_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
+            print("- Applying fake ID for WiFi")
+            self.config["DeviceProperties"]["Add"][property_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
+
         # WiFi patches
         # TODO: -a is not supported in Lion and older, need to add proper fix
         if self.constants.detected_os > self.constants.lion:
-            wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            wifi_devices = [i for i in wifi_devices if i["vendor-id"] == binascii.unhexlify("E4140000") and i["class-code"] == binascii.unhexlify("00800200")]
+            try:
+                wifi_devices = plistlib.loads(subprocess.run("ioreg -r -n ARPT -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            except ValueError:
+                # Work-around Mac Pros where Wifi card is not named ARPT
+                wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            vendor_atheros = binascii.unhexlify("E4140000")
+            vendor_broadcom = binascii.unhexlify("8C160000")
+            wifi_devices = [i for i in wifi_devices if i["vendor-id"] == vendor_atheros or i["vendor-id"] == vendor_broadcom and i["class-code"] == binascii.unhexlify("00800200")]
+            wifi_vendor = self.hexswap(binascii.hexlify(wifi_devices[0]["vendor-id"]).decode()[:4])
+            wifi_device = self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4])
+            if not self.constants.custom_model:
+                print(f"- Detected Wifi Card: {wifi_vendor}:{wifi_device}")
+
         else:
             wifi_devices = ""
             print("- Can't run Wifi hardware detection on Snow Leopard and older")
         if self.constants.wifi_build is True:
             print("- Skipping Wifi patches on request")
-        elif not self.constants.custom_model and wifi_devices and self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4]) in ModelArray.nativeWifi:
+        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "E414" and wifi_device in ModelArray.BCM4360Wifi:
             print("- Found supported WiFi card, skipping wifi patches")
+        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "E414" and wifi_device in ModelArray.BCM94331Wifi:
+            wifi_fake_id(self)
+        elif not self.constants.custom_model and wifi_devices and wifi_vendor== "E414" and wifi_device in ModelArray.BCM94322Wifi:
+            self.enable_kext("IO80211Mojave.kext", self.constants.io80211mojave_version, self.constants.io80211mojave_path)
+            self.get_kext_by_bundle_path("IO80211Mojave.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
+        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "E414" and wifi_device in ModelArray.BCM94328Wifi:
+            self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
+            self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
+            self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AppleAirPortBrcm43224.kext")["Enabled"] = True
+        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "168C" and wifi_device in ModelArray.AtherosWifi:
+            self.enable_kext("IO80211HighSierra.kext", self.constants.io80211high_sierra_version, self.constants.io80211high_sierra_path)
+            self.get_kext_by_bundle_path("IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
         else:
             if self.model in ModelArray.WifiAtheros:
                 self.enable_kext("IO80211HighSierra.kext", self.constants.io80211high_sierra_version, self.constants.io80211high_sierra_path)
                 self.get_kext_by_bundle_path("IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
 
             if self.model in ModelArray.WifiBCM94331:
-                self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-                self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
-
-                if self.model in ModelArray.EthernetNvidia:
-                    # Nvidia chipsets all have the same path to ARPT
-                    property_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
-                if self.model in ("MacBookAir2,1", "MacBookAir3,1", "MacBookAir3,2"):
-                    property_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
-                elif self.model in ("iMac7,1", "iMac8,1"):
-                    property_path = "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
-                elif self.model in ("iMac13,1", "iMac13,2"):
-                    property_path = "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
-                elif self.model == "MacPro5,1":
-                    property_path = "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
-                else:
-                    # Assumes we have a laptop with Intel chipset
-                    property_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
-                print("- Applying fake ID for WiFi")
-                self.config["DeviceProperties"]["Add"][property_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
+                wifi_fake_id(self)
             if self.model in ModelArray.WifiBCM94322:
                 self.enable_kext("IO80211Mojave.kext", self.constants.io80211mojave_version, self.constants.io80211mojave_path)
                 self.get_kext_by_bundle_path("IO80211Mojave.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True

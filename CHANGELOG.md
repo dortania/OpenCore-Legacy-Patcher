@@ -2,8 +2,12 @@
 
 ## 0.0.23
 - Fix MacBookPro4,1 15" and 17" audio support
+- Fix iMac7,1 24" and iMac9,1 24" audio support
+- Fix Macmini4,1 audio support
 - Increment binaries
-  - AppleALC 2d096d6 (1.6.0 rolling - 04-10-2021)
+  - AppleALC 1a3e5cb (1.6.0 rolling - 04-10-2021)
+- Enhance Wifi model detection
+- Hide OpenShell.efi by default
 
 ## 0.0.22
 - Add ExFat support for models missing driver

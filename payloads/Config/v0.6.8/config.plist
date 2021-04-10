@@ -1009,7 +1009,7 @@
 				<key>Arguments</key>
 				<string></string>
 				<key>Auxiliary</key>
-				<false/>
+				<true/>
 				<key>Name</key>
 				<string>OpenShell.efi</string>
 				<key>Comment</key>
