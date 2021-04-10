@@ -105,7 +105,7 @@ Regarding OS support, see below:
 | iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>  |
 | iMac8,1 | Early 2008 | ^^ | No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))) |
 | iMac9,1 | Early 2009 | ^^ | ^^ |
-| iMac10,1 | Late 2009 | ^^ | ^^ |
+| iMac10,1 | Late 2009 | ^^ | GPU is socketed, [recommend upgrading to Metal GPU](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857)  |
 | iMac11,1 | ^^ | ^^ | ^^ |
 | iMac11,2 | Mid-2010 | ^^ | ^^ |
 | iMac11,3 | ^^ | ^^ | ^^ |

@@ -140,7 +140,6 @@ EthernetNvidia = [
     "MacBookPro5,4",
     "MacBookPro5,5",
     "Macmini3,1",
-    "Macmini4,1",
     "iMac9,1",
     "iMac10,1",
     "Dortania1,1"
@@ -159,6 +158,7 @@ EthernetBroadcom = [
     "MacBookPro8,1",
     "MacBookPro8,2",
     "MacBookPro8,3",
+    "Macmini4,1",
     "Macmini5,1",
     "Macmini5,2",
     "Macmini5,3",

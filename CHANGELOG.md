@@ -1,5 +1,10 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.0.23
+- Fix MacBookPro4,1 audio support
+- Increment binaries
+  - AppleALC 2a7312b (1.6.0 rolling - 04-10-2021)
+
 ## 0.0.22
 - Add ExFat support for models missing driver
   - Aids BootCamp support for EFI based installs on 2010 and older Macs
