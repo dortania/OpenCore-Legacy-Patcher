@@ -4,7 +4,7 @@ from __future__ import print_function
 
 import subprocess, sys, time, platform
 
-from Resources import build, ModelArray, Constants, SysPatch, utilities
+from Resources import Build, ModelArray, Constants, SysPatch, Utilities
 
 class MenuOptions:
     def __init__(self, model, versions):

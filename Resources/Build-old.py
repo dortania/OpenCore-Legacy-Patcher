@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 from datetime import date
 
-from Resources import Constants, ModelArray, utilities
+from Resources import Constants, ModelArray, Utilities
 
 
 def human_fmt(num):
@@ -103,7 +103,7 @@ class BuildOpenCore:
             self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
             self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
 
-            if (self.model in ModelArray.EthernetNvidia) or self.model in ("MacBookAir2,1", "MacBookAir3,1", "MacBookAir3,2"):
+            if self.model in ModelArray.nvidiaHDEF:
                 # Nvidia chipsets all have the same path to ARPT
                 property_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
             elif self.model in ("iMac7,1", "iMac8,1", "MacPro3,1", "MacBookPro4,1"):

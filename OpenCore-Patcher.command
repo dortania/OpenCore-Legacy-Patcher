@@ -8,7 +8,7 @@ import sys
 import time
 import platform
 
-from Resources import build, ModelArray, Constants, SysPatch, utilities, CliMenu
+from Resources import Build, ModelArray, Constants, SysPatch, Utilities, CliMenu
 
 
 class OpenCoreLegacyPatcher():
