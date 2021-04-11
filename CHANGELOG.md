@@ -10,6 +10,7 @@
 - Hide OpenShell.efi by default
 - Add Brightness Control patches for legacy Nvidia, AMD and Intel GPUs
 - Add user configurable Bootstrap setting
+- Enhance GPU Detection logic
 
 ## 0.0.22
 - Add ExFat support for models missing driver
