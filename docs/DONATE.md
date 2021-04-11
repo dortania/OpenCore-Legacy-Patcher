@@ -8,11 +8,6 @@ Main hardware we'd appreciate:
 
 * Any Mac you own
   * Does require SSE4,1 CPU to test on Sierra and newer however
-* Any legacy GPU supporting macOS
-  * Does not require to be Mac flashed
-  * Following generations would would be beneficial:
-    * Nvidia 8000 series through 500
-	* AMD/ATI 2000 series through 6000
 
 If you have any legacy hardware you're willing to donate, please contact us at the following email:
 
@@ -22,6 +17,7 @@ Current hardware we own:
 
 | Model | CPU | GPU | Owner | Notes |
 | :--- | :--- | :--- | :--- | :--- |
+| MacBook7,1 | Penryn | GT320M | Dhinak | N/A |
 | MacBook7,1 | Penryn | GT320M | Mykola | N/A |
 | iMac11,2 | Clarksdale | HD4670 | Mykola | N/A |
 
