@@ -122,6 +122,10 @@ class PatchSysVolume:
             print("- Merging legacy Intel 2nd Gen Kexts and Bundles")
             self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
             self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
+            if self.model in ModelArray.LegacyGPUAMDIntelGen2:
+                # Swap custom AppleIntelSNBGraphicsFB-AMD.kext, required to fix linking
+                subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         # iMac8,1 and iMac10,1 came in both AMD and Nvidia GPU models, so we must do hardware detection
         if self.model in ("iMac8,1", "iMac10,1"):
             if self.constants.current_gpuv == "AMD (0x1002)":
