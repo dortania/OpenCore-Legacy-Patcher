@@ -37,7 +37,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro4,1 | <span style="color:#30BCD5"> YES </span> | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro5,1 | ^^ | GURU_Jasho#5736 | - Stock model <br/>- Patcher version 0.0.21 |
 | MacBookPro5,2 | ^^ | hvds | ^^ |
-| MacBookPro5,3 | <span style="color:#30BCD5"> YES </span> | kommtzeitkonrad | - Stock model <br/>- Patcher version 0.0.22 |
+| MacBookPro5,3 | ^^ | kommtzeitkonrad | - Stock model <br/>- Patcher version 0.0.22 |
 | MacBookPro5,4 | No reports | N/A | N/A |
 | MacBookPro5,5 | ^^ | ^^ | ^^ |
 | MacBookPro6,1 | ^^ | ^^ | ^^ |
