@@ -16,7 +16,8 @@ The below table will list all supported and unsupported functions of the patcher
 * [Mac Pro](#mac-pro)
 * [Xserve](#xserve)
 
-Note: In this patcher, Brightness Control is tied to GPU acceleration
+Note: Brightness Control is currently unsupported on AMD GPUs as well as on iMac7,1, iMac8,1, iMac9,1 and MacBook5,2
+
 
 Note 2: For setups that require AppleHDA patching, we highly advise users instead opt of a USB Audio adapter to avoid root patching. This ensures that [DELTA](./TERMS.md) updates, FileVault, SIP and other security features can stay in-tact.
 

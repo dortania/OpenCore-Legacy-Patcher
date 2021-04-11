@@ -12,7 +12,7 @@ With OpenCore Legacy Patcher we recommend users go through the below table to un
 | Supported OSes | <span style="color:#30BCD5">10.7-11</span> | <span style="color:red">10.15-11</span> |
 | Firmware Patching | <span style="color:#30BCD5">None required</span> | <span style="color:red">Required for models without native APFS support</span> |
 | BootCamp Switching | <span style="color:red">Requires EFI Conversion for Start Disk support, otherwise still supported</span> | <span style="color:#30BCD5">Native</span> |
-| Brightness Control on Legacy GPUs | <span style="color:red">Not supported</span> | <span style="color:#30BCD5">Supported</span> |
+| Brightness Control on Legacy GPUs | <span style="color:#30BCD5">Supported</span> | <span style="color:#30BCD5">Supported</span> |
 | WPA Wifi Support | <span style="color:#30BCD5">Native, stable</span> | <span style="color:red">Unstable</span> |
 | Legacy GPU Acceleration | <span style="color:red">Coming soon</span> | <span style="color:red">Coming soon</span> |
 | Brightness Control on Legacy GPUs | <span style="color:red">Coming soon</span> | <span style="color:#30BCD5">Supported</span> |

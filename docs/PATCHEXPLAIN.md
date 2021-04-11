@@ -225,6 +225,10 @@ Note, GPU Acceleration Patches are not public yet, the below section is simply d
 * Nvidia Binaries
   * GeForceGA.bundle
   * GeForceTesla.kext
+    * Skip IOFree Panic - Mojave+
+	  * At Offset `0x5CF9A` replace following bytes with `0xEB`
+    * Avoids `addMemoryRegion/removeMemoryRegion` calls
+      * At Offset `0x5527` and `0x77993`, replace following bytes with `0x909090909090`
   * GeForceTeslaGLDriver.bundle
   * GeForceTeslaVADriver.bundle
   * NVDANV50HalTesla.kext

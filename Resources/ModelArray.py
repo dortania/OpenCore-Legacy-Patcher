@@ -928,6 +928,15 @@ AddNvidiaAccel11 = [
     "IOSurface.kext",
 ]
 
+AddNvidiaBrightness11 = [
+    "GeForceGA.bundle",
+	"GeForceTesla.kext",
+	"GeForceTeslaGLDriver.bundle",
+	"GeForceTeslaVADriver.bundle",
+	"NVDANV50HalTesla.kext",
+	"NVDAResmanTesla.kext",
+]
+
 AddAMDAccel11 = [
     "AMD2400Controller.kext",
 	"AMD2600Controller.kext",
@@ -963,6 +972,16 @@ AddIntelGen1Accel = [
     "IOSurface.kext",
 ]
 
+AddIntelGen1Brightness = [
+    "AppleIntelFramebufferAzul.kext",
+	"AppleIntelFramebufferCapri.kext",
+	"AppleIntelHDGraphics.kext",
+	"AppleIntelHDGraphicsFB.kext",
+	"AppleIntelHDGraphicsGA.plugin",
+	"AppleIntelHDGraphicsGLDriver.bundle",
+	"AppleIntelHDGraphicsVADriver.bundle",
+]
+
 AddIntelGen2Accel = [
     "AppleIntelHD3000Graphics.kext",
 	"AppleIntelHD3000GraphicsGA.plugin",
@@ -971,6 +990,15 @@ AddIntelGen2Accel = [
 	"AppleIntelSNBGraphicsFB.kext",
 	"AppleIntelSNBVA.bundle",
     "IOSurface.kext",
+]
+
+AddIntelGen2Brightness = [
+    "AppleIntelHD3000Graphics.kext",
+	"AppleIntelHD3000GraphicsGA.plugin",
+	"AppleIntelHD3000GraphicsGLDriver.bundle",
+	"AppleIntelHD3000GraphicsVADriver.bundle",
+	"AppleIntelSNBGraphicsFB.kext",
+	"AppleIntelSNBVA.bundle",
 ]
 
 DeleteBrightness = [

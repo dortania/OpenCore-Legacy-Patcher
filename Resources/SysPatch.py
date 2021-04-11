@@ -163,6 +163,7 @@ class PatchSysVolume:
 
     def patch_root_vol(self):
         print(f"- Detecting patches for {self.model}")
+        rebuild_required = False
         # TODO: Create Backup of S*/L*/Extensions, Frameworks and PrivateFramework to easily revert changes
         # APFS snapshotting seems to ignore System Volume changes inconcistently, would like a backup to avoid total brick
         # Perhaps a basic py2 script to run in recovery to restore
@@ -176,15 +177,27 @@ class PatchSysVolume:
         self.constants.current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
         self.constants.current_gpud = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Device ID"))][0]
 
-        if (self.model in ModelArray.LegacyGPU) and (Path(self.constants.hiddhack_path).exists()):
+        if self.model in ModelArray.LegacyGPU:
             print(f"- Detected GPU: {self.constants.current_gpuv} {self.constants.current_gpud}")
             if (self.constants.current_gpuv == "AMD (0x1002)") & (self.constants.current_gpud in ModelArray.AMDMXMGPUs):
                 print("- Detected Metal-based AMD GPU, skipping legacy patches")
             elif (self.constants.current_gpuv == "NVIDIA (0x10de)") & (self.constants.current_gpud in ModelArray.NVIDIAMXMGPUs):
                 print("- Detected Metal-based Nvidia GPU, skipping legacy patches")
             else:
-                print("- Detected legacy GPU, attempting legacy acceleration patches")
-                self.gpu_accel_patches_11()
+                if Path(self.constants.hiddhack_path).exists():
+                    print("- Detected legacy GPU, attempting legacy acceleration patches")
+                    self.gpu_accel_patches_11()
+                else:
+                    print("- Adding Brightness Control patches")
+                    if self.model in ModelArray.LegacyGPUNvidia:
+                        self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
+                    #elif self.model in ModelArray.LegacyGPUNvidia:
+                    #    self.add_new_binaries(ModelArray.AddAMDBrightness11, self.constants.legacy_amd_path)
+
+                    if self.model in ModelArray.LegacyGPUIntelGen1:
+                        self.add_new_binaries(ModelArray.AddIntelGen1Brightness, self.constants.legacy_intel_gen1_path)
+                    elif self.model in ModelArray.LegacyGPUIntelGen2:
+                        self.add_new_binaries(ModelArray.AddIntelGen2Brightness, self.constants.legacy_intel_gen2_path)
                 rebuild_required = True
 
         if rebuild_required is True:

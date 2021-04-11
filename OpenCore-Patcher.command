@@ -110,7 +110,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         utilities.header(["Patching System Volume"])
         print("""Patches Root volume to fix misc issues such as:
 
-- No patches currently avalible for any model
+- Brightness control for non-Metal Nvidia and Intel GPUs
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume
