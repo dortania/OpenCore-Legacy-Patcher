@@ -16,11 +16,6 @@ The below table will list all supported and unsupported functions of the patcher
 * [Mac Pro](#mac-pro)
 * [Xserve](#xserve)
 
-Note: Brightness Control is currently unsupported on AMD GPUs as well as on iMac7,1, iMac8,1, iMac9,1 and MacBook5,2
-
-
-Note 2: For setups that require AppleHDA patching, we highly advise users instead opt of a USB Audio adapter to avoid root patching. This ensures that [DELTA](./TERMS.md) updates, FileVault, SIP and other security features can stay in-tact.
-
 Regarding OS support, see below:
 
 | Support Entry | Supported OSes | Description | Comment |
@@ -37,7 +32,7 @@ Regarding OS support, see below:
 | MacBook3,1 | Late 2007 | ^^ | ^^ |
 | MacBook4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Mavericks and newer<br/>- No Keyboard and Trackpad<br/>- No USB<br/>- No Ethernet) |
 | MacBook5,1 | Late 2008 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Trackpad is recognized as mouse |
-| MacBook5,2 | Early 2009 | ^^ | ^^ |
+| MacBook5,2 | Early 2009 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Trackpad is recognized as mouse<br/>- Brightness control partially supported |
 | MacBook6,1 | Late 2009 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
 | MacBook7,1 | Mid-2010 | ^^ | ^^ |
 
@@ -103,8 +98,8 @@ Regarding OS support, see below:
 | iMac5,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | iMac5,2 | ^^ | ^^ | ^^ |
 | iMac6,1 | ^^ | ^^ | ^^ |
-| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>  |
-| iMac8,1 | Early 2008 | ^^ | No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))) |
+| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported  |
+| iMac8,1 | Early 2008 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported |
 | iMac9,1 | Early 2009 | ^^ | ^^ |
 | iMac10,1 | Late 2009 | ^^ | GPU is socketed, [recommend upgrading to Metal GPU](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857)  |
 | iMac11,1 | ^^ | ^^ | ^^ |

@@ -332,7 +332,7 @@ LegacyGPU = [
     "Macmini5,2", # AMD 6000
     "Macmini5,3", # Intel 3000
     "iMac7,1", # AMD 2000
-    #"iMac8,1", # AMD 2000 and AMD 2400
+    #"iMac8,1", # Nvidia and AMD 2400
     "iMac9,1", # Nvidia 9000
     #"iMac10,1", # Nvidia 9000 and AMD 4000
     "iMac11,1", # AMD 4000
@@ -371,11 +371,19 @@ LegacyGPUAMD = [
     "MacBookPro8,3", # Intel 3000 + AMD 6000
     "Macmini5,2", # AMD 6000
     "iMac7,1", # AMD 2000
-    "iMac8,1", # AMD 2000
+    #"iMac8,1", # Nvidia and AMD 2000
     #"iMac10,1", # Nvidia 9000 and AMD 4000
     "iMac11,1", # AMD 4000
     "iMac11,2", # AMD 4000 and 5000
     "iMac11,3", # AMD 5000
+    "iMac12,1", # AMD 6000
+    "iMac12,2", # AMD 6000
+]
+
+LegacyGPUAMDIntelGen2 = [
+    "MacBookPro8,2", # Intel 3000 + AMD 6000
+    "MacBookPro8,3", # Intel 3000 + AMD 6000
+    "Macmini5,2", # AMD 6000
     "iMac12,1", # AMD 6000
     "iMac12,2", # AMD 6000
 ]
@@ -959,6 +967,24 @@ AddAMDAccel11 = [
 	"ATIRadeonX2000GLDriver.bundle",
 	"ATIRadeonX2000VADriver.bundle",
     "IOSurface.kext",
+]
+
+AddAMDBrightness11 = [
+    "AMD2400Controller.kext",
+	"AMD2600Controller.kext",
+	"AMD3800Controller.kext",
+	"AMD4600Controller.kext",
+	"AMD4800Controller.kext",
+	"AMD5000Controller.kext",
+	"AMD6000Controller.kext",
+	"AMDLegacyFramebuffer.kext",
+	"AMDLegacySupport.kext",
+	"AMDRadeonX3000.kext",
+	"AMDRadeonX3000GLDriver.bundle",
+	"ATIRadeonX2000.kext",
+	"ATIRadeonX2000GA.plugin",
+	"ATIRadeonX2000GLDriver.bundle",
+	"ATIRadeonX2000VADriver.bundle",
 ]
 
 AddIntelGen1Accel = [

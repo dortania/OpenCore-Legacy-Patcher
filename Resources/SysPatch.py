@@ -125,7 +125,7 @@ class PatchSysVolume:
         # iMac8,1 and iMac10,1 came in both AMD and Nvidia GPU models, so we must do hardware detection
         if self.model in ("iMac8,1", "iMac10,1"):
             if self.constants.current_gpuv == "AMD (0x1002)":
-                print("- Merging legacy AMD Kexts and Bundles")
+                print("- Merging legacy AMD/ATI Kexts and Bundles")
                 self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
                 self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
             else:
@@ -191,19 +191,26 @@ class PatchSysVolume:
                     if self.model in ModelArray.LegacyGPUNvidia:
                         print("- Adding Nvidia Brightness Control patches")
                         self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
-                    #elif self.model in ModelArray.LegacyGPUAMD:
-                    #    self.add_new_binaries(ModelArray.AddAMDBrightness11, self.constants.legacy_amd_path)
-
+                    elif self.model in ModelArray.LegacyGPUAMD:
+                        print("- Adding AMD/ATI Brightness Control patches")
+                        self.add_new_binaries(ModelArray.AddAMDBrightness11, self.constants.legacy_amd_path)
                     if self.model in ModelArray.LegacyGPUIntelGen1:
                         print("- Adding Intel Ironlake Brightness Control patches")
                         self.add_new_binaries(ModelArray.AddIntelGen1Brightness, self.constants.legacy_intel_gen1_path)
                     elif self.model in ModelArray.LegacyGPUIntelGen2:
                         print("- Adding Intel Sandy Bridge Brightness Control patches")
                         self.add_new_binaries(ModelArray.AddIntelGen2Brightness, self.constants.legacy_intel_gen2_path)
+                        if self.model in ModelArray.LegacyGPUAMDIntelGen2:
+                            # Swap custom AppleIntelSNBGraphicsFB-AMD.kext, required to fix linking
+                            subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                            subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                     if self.model in ("iMac8,1", "iMac10,1"):
                         if self.constants.current_gpuv == "NVIDIA (0x10de)":
                             print("- Adding Nvidia Brightness Control patches")
                             self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
+                        else:
+                            print("- Adding AMD/ATI Brightness Control patches")
+                            self.add_new_binaries(ModelArray.AddAMDBrightness11, self.constants.legacy_amd_path)
                     if self.model in ModelArray.LegacyBrightness:
                         print("- Merging legacy Brightness Control Patches")
                         self.delete_old_binaries(ModelArray.DeleteBrightness)

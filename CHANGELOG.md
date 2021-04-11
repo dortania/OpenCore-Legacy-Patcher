@@ -8,7 +8,7 @@
   - AppleALC 1a3e5cb (1.6.0 rolling - 04-10-2021)
 - Enhance Wifi model detection
 - Hide OpenShell.efi by default
-- Add Brightness Control patches for legacy Nvidia and Intel GPUs
+- Add Brightness Control patches for legacy Nvidia, AMD and Intel GPUs
 - Add user configurable Bootstrap setting
 
 ## 0.0.22

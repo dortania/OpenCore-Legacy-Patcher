@@ -103,6 +103,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
   - Acidanthera:\tOpenCore, kexts and other tools
   - Khronokernel:\tWriting and maintaining this patcher
   - DhinakG:\t\tWriting and maintaining this patcher
+  - ASentientBot:\tLegacy Acceleration Patches
+  - Ausdauersportler:\tLinking fixes for SNBGraphicsFB and AMDX3000
   - Syncretic:\t\tAAAMouSSE and telemetrap
   - cdf:\t\tNightShiftEnabler"""]).start()
 
@@ -111,7 +113,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         utilities.header(["Patching System Volume"])
         print("""Patches Root volume to fix misc issues such as:
 
-- Brightness control for non-Metal Nvidia and Intel GPUs
+- Brightness control for non-Metal GPUs
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume
