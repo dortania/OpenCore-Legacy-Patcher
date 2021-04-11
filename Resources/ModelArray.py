@@ -332,7 +332,7 @@ LegacyGPU = [
     "Macmini5,2", # AMD 6000
     "Macmini5,3", # Intel 3000
     "iMac7,1", # AMD 2000
-    "iMac8,1", # AMD 2000
+    #"iMac8,1", # AMD 2000 and AMD 2400
     "iMac9,1", # Nvidia 9000
     #"iMac10,1", # Nvidia 9000 and AMD 4000
     "iMac11,1", # AMD 4000

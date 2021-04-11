@@ -122,8 +122,8 @@ class PatchSysVolume:
             print("- Merging legacy Intel 2nd Gen Kexts and Bundles")
             self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
             self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
-        # iMac10,1 came in both AMD and Nvidia GPU models, so we must do hardware detection
-        if self.model == "iMac10,1":
+        # iMac8,1 and iMac10,1 came in both AMD and Nvidia GPU models, so we must do hardware detection
+        if self.model in ("iMac8,1", "iMac10,1"):
             if self.constants.current_gpuv == "AMD (0x1002)":
                 print("- Merging legacy AMD Kexts and Bundles")
                 self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
@@ -188,16 +188,29 @@ class PatchSysVolume:
                     print("- Detected legacy GPU, attempting legacy acceleration patches")
                     self.gpu_accel_patches_11()
                 else:
-                    print("- Adding Brightness Control patches")
                     if self.model in ModelArray.LegacyGPUNvidia:
+                        print("- Adding Nvidia Brightness Control patches")
                         self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
-                    #elif self.model in ModelArray.LegacyGPUNvidia:
+                    #elif self.model in ModelArray.LegacyGPUAMD:
                     #    self.add_new_binaries(ModelArray.AddAMDBrightness11, self.constants.legacy_amd_path)
 
                     if self.model in ModelArray.LegacyGPUIntelGen1:
+                        print("- Adding Intel Ironlake Brightness Control patches")
                         self.add_new_binaries(ModelArray.AddIntelGen1Brightness, self.constants.legacy_intel_gen1_path)
                     elif self.model in ModelArray.LegacyGPUIntelGen2:
+                        print("- Adding Intel Sandy Bridge Brightness Control patches")
                         self.add_new_binaries(ModelArray.AddIntelGen2Brightness, self.constants.legacy_intel_gen2_path)
+                    if self.model in ("iMac8,1", "iMac10,1"):
+                        if self.constants.current_gpuv == "NVIDIA (0x10de)":
+                            print("- Adding Nvidia Brightness Control patches")
+                            self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
+                    if self.model in ModelArray.LegacyBrightness:
+                        print("- Merging legacy Brightness Control Patches")
+                        self.delete_old_binaries(ModelArray.DeleteBrightness)
+                        self.add_new_binaries(ModelArray.AddBrightness, self.constants.legacy_brightness)
+                        subprocess.run(f"sudo ditto {self.constants.payload_apple_private_frameworks_path_brightness} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                        subprocess.run(f"sudo chmod -R 755 {self.mount_private_frameworks}/DisplayServices.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                        subprocess.run(f"sudo chown -R root:wheel {self.mount_private_frameworks}/DisplayServices.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 rebuild_required = True
 
         if rebuild_required is True:

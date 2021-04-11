@@ -120,6 +120,7 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
+				'TESTED',
 				'TERMS',
 				'HOW',
 				'PATCHEXPLAIN',

@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import uuid
 import zipfile
+import os
 from pathlib import Path
 from datetime import date
 
@@ -663,6 +664,13 @@ Please build OpenCore first!"""
             print("- Coping OpenCore onto EFI partition")
             shutil.copytree(self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC"))
             shutil.copytree(self.constants.opencore_release_folder / Path("System"), mount_path / Path("System"))
+            if self.constants.boot_efi is True:
+                print("- Converting Bootstrap to BOOTx64.efi")
+                if (mount_path / Path("EFI/BOOT")).exists():
+                    shutil.rmtree(mount_path / Path("EFI/BOOT"), onerror=rmtree_handler)
+                Path(mount_path / Path("EFI/BOOT")).mkdir()
+                shutil.move(mount_path / Path("System/Library/CoreServices/boot.efi"), mount_path / Path("EFI/BOOT/BOOTx64.efi"))
+                shutil.rmtree(mount_path / Path("System"), onerror=rmtree_handler)
             # Array filled with common SD Card names
             # Note most USB-based SD Card readers generally report as "Storage Device", and no reliable way to detect further
             if sd_type in ["SD Card Reader", "SD/MMC"]:

@@ -215,7 +215,7 @@ running, however this will enforce iMac Nvidia Build Patches.
 
     def custom_repo(self):
         utilities.cls()
-        utilities.header(["Swet custom patch repo"])
+        utilities.header(["Set custom patch repo"])
         print(f"""For users participating in OpenCore Patcher betas, this is
 where you can add custom repos such as Google Drive links.
 
@@ -235,5 +235,32 @@ Current repo:
         elif change_menu == "2":
             if self.constants.url_backup != "":
                 self.constants.url_apple_binaries = self.constants.url_backup
+        else:
+            print("Invalid option")
+
+    def bootstrap_setting(self):
+        utilities.cls()
+        utilities.header(["Set Bootstrap method"])
+        print("""Sets OpenCore's bootstrap method, currently the patcher supports the
+following options.
+
+Valid options:
+
+1. System/Library/CoreServices/boot.efi (default)
+2. EFI/BOOT/BOOTx64.efi
+3. Exit
+
+Note: S*/L*/C*/boot.efi method is only installed to the EFI partition only
+and not to macOS itself.
+
+Recommended to set to BOOTx64.efi in situations where your Mac cannot
+see the EFI Boot entry in the boot picker.
+
+        """)
+        change_menu = input("Set Bootstrap method: ")
+        if change_menu == "1":
+            self.constants.boot_efi = False
+        elif change_menu == "2":
+            self.constants.boot_efi = True
         else:
             print("Invalid option")

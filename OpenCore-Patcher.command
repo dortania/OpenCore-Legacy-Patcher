@@ -87,7 +87,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set Vault Mode:\t\t\tCurrently {self.constants.vault}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_vault],
                 [f"Set SIP and SecureBootModel:\tSIP: {self.constants.sip_status} SBM: {self.constants.secure_status}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_sip],
                 [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_serial],
-                [f"Set Custom Patch Repo", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).custom_repo],
+                [f"Set Generic Bootstrap:\t\t{self.constants.boot_efi}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).bootstrap_setting],
+                ["Set Custom Patch Repo", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).custom_repo],
             ]
 
             for option in options:

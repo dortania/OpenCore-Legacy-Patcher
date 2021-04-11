@@ -9,6 +9,7 @@
 - Enhance Wifi model detection
 - Hide OpenShell.efi by default
 - Add Brightness Control patches for legacy Nvidia and Intel GPUs
+- Add user configurable Bootstrap setting
 
 ## 0.0.22
 - Add ExFat support for models missing driver

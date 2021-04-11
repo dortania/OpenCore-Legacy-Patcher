@@ -63,6 +63,7 @@ class Constants:
         self.sip_status = True
         self.secure_status = True
         self.detected_os = 0
+        self.boot_efi = False
 
         # OS Versions
         self.tiger = 8
