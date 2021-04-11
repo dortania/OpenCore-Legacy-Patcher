@@ -42,7 +42,7 @@ class BuildOpenCore:
         return hex_str.upper()
 
     def build_efi(self):
-        utilities.cls()
+        Utilities.cls()
         if not Path(self.constants.build_path).exists():
             Path(self.constants.build_path).mkdir()
             print("Created build folder")
@@ -144,7 +144,7 @@ class BuildOpenCore:
             print("- Found supported WiFi card, skipping wifi patches")
         elif not self.constants.custom_model and wifi_devices and wifi_vendor == "E414" and wifi_device in ModelArray.BCM94331Wifi:
             wifi_fake_id(self)
-        elif not self.constants.custom_model and wifi_devices and wifi_vendor== "E414" and wifi_device in ModelArray.BCM94322Wifi:
+        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "E414" and wifi_device in ModelArray.BCM94322Wifi:
             self.enable_kext("IO80211Mojave.kext", self.constants.io80211mojave_version, self.constants.io80211mojave_path)
             self.get_kext_by_bundle_path("IO80211Mojave.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
         elif not self.constants.custom_model and wifi_devices and wifi_vendor == "E414" and wifi_device in ModelArray.BCM94328Wifi:
@@ -234,9 +234,9 @@ class BuildOpenCore:
             hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)" if self.model in ModelArray.nvidiaHDEF else "PciRoot(0x0)/Pci(0x1b,0x0)"
             # In AppleALC, MacPro3,1's original layout is already in use, forcing layout 13 instead
             if self.model == "MacPro3,1":
-                self.config["DeviceProperties"]["Add"][hdef_path] = {"apple-layout-id": 90, "use-apple-layout-id": 1, "alc-layout-id": 13,}
+                self.config["DeviceProperties"]["Add"][hdef_path] = {"apple-layout-id": 90, "use-apple-layout-id": 1, "alc-layout-id": 13, }
             else:
-                self.config["DeviceProperties"]["Add"][hdef_path] = {"apple-layout-id": 90, "use-apple-layout-id": 1, "use-layout-id": 1,}
+                self.config["DeviceProperties"]["Add"][hdef_path] = {"apple-layout-id": 90, "use-apple-layout-id": 1, "use-layout-id": 1, }
 
         def nvidia_patch(self):
             self.constants.custom_mxm_gpu = True
@@ -264,7 +264,6 @@ class BuildOpenCore:
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
 
-
         # Check GPU Vendor
         if self.constants.metal_build is True:
             print("- Adding Metal GPU patches on request")
@@ -287,7 +286,6 @@ class BuildOpenCore:
             print("- Adding Mac Pro, Xserve DRM patches")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
 
-
         # Add OpenCanopy
         print("- Adding OpenCanopy GUI")
         shutil.rmtree(self.constants.resources_path, onerror=rmtree_handler)
@@ -309,7 +307,7 @@ class BuildOpenCore:
             print("- Adding SATA Hibernation Patch")
             self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
 
-        #DEBUG Settings
+        # DEBUG Settings
         if self.constants.verbose_debug is True:
             print("- Enabling Verbose boot")
             self.config["Kernel"]["Quirks"]["PanicNoKextDump"] = True
@@ -403,12 +401,14 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
             self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
+
         def moderate_serial_patch(self):
             self.config["PlatformInfo"]["Automatic"] = True
             self.config["PlatformInfo"]["UpdateDataHub"] = True
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
             self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
             self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
+
         def adanced_serial_patch(self):
             macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             macserial_output = macserial_output.stdout.decode().strip().split(" | ")
@@ -534,11 +534,11 @@ class BuildOpenCore:
             input("Press [Enter] to go back.\n")
 
     def copy_efi(self):
-        utilities.cls()
-        utilities.header(["Installing OpenCore to Drive"])
+        Utilities.cls()
+        Utilities.header(["Installing OpenCore to Drive"])
 
         if not self.constants.opencore_release_folder.exists():
-            utilities.TUIOnlyPrint(
+            Utilities.TUIOnlyPrint(
                 ["Installing OpenCore to Drive"],
                 "Press [Enter] to go back.\n",
                 [
@@ -574,7 +574,7 @@ Please build OpenCore first!"""
                 # Avoid crashing with CDs installed
                 continue
         # TODO: Advanced mode
-        menu = utilities.TUIMenu(
+        menu = Utilities.TUIMenu(
             ["Select Disk"],
             "Please select the disk you would like to install OpenCore to: ",
             in_between=["Missing disks? Ensure they have an EFI or FAT32 partition."],
@@ -594,7 +594,7 @@ Please build OpenCore first!"""
         disk_identifier = "disk" + response
         selected_disk = all_disks[disk_identifier]
 
-        menu = utilities.TUIMenu(
+        menu = Utilities.TUIMenu(
             ["Select Partition"],
             "Please select the partition you would like to install OpenCore to: ",
             return_number_instead_of_direct_call=True,
@@ -651,8 +651,8 @@ Please build OpenCore first!"""
             ssd_type = False
         mount_path = Path(partition_info["MountPoint"])
         disk_type = partition_info["BusProtocol"]
-        utilities.cls()
-        utilities.header(["Copying OpenCore"])
+        Utilities.cls()
+        Utilities.header(["Copying OpenCore"])
 
         if mount_path.exists():
             if (mount_path / Path("EFI/OC")).exists():

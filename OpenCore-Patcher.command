@@ -41,14 +41,14 @@ class OpenCoreLegacyPatcher():
                 self.current_model = true_model
 
     def build_opencore(self):
-        build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
+        Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
 
     def install_opencore(self):
-        build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).copy_efi()
+        Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).copy_efi()
 
     def change_model(self):
-        utilities.cls()
-        utilities.header(["Select Different Model"])
+        Utilities.cls()
+        Utilities.header(["Select Different Model"])
         print("""
 Tip: Run the following command on the target machine to find the model identifier:
 
@@ -66,15 +66,13 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         if self.constants.custom_model in ModelArray.NoAPFSsupport:
             self.constants.serial_settings = "Moderate"
 
-
-
     def patcher_settings(self):
         response = None
         while not (response and response == -1):
             title = [
                 "Adjust Patcher Settings"
             ]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 # TODO: Enable setting OS target when more OSes become supported by the patcher
                 #[f"Change OS version:\t\t\tCurrently macOS {self.constants.os_support}", self.change_os],
@@ -97,7 +95,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             response = menu.start()
 
     def credits(self):
-        utilities.TUIOnlyPrint(["Credits"], "Press [Enter] to go back.\n",
+        Utilities.TUIOnlyPrint(["Credits"], "Press [Enter] to go back.\n",
                                ["""Many thanks to the following:
 
   - Acidanthera:\tOpenCore, kexts and other tools
@@ -109,8 +107,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
   - cdf:\t\tNightShiftEnabler"""]).start()
 
     def PatchVolume(self):
-        utilities.cls()
-        utilities.header(["Patching System Volume"])
+        Utilities.cls()
+        Utilities.header(["Patching System Volume"])
         print("""Patches Root volume to fix misc issues such as:
 
 - Brightness control for non-Metal GPUs
@@ -133,7 +131,6 @@ B. Exit
             SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_unpatch()
         else:
             print("Returning to main menu")
-
 
     def main_menu(self):
         response = None
@@ -165,7 +162,7 @@ B. Exit
             else:
                 in_between = ["This model is supported"]
 
-            menu = utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
+            menu = Utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
 
             options = (
                 [["Build OpenCore", self.build_opencore]] if ((self.constants.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) else []) + [

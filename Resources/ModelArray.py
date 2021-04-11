@@ -74,7 +74,7 @@ SupportedSMBIOS12 = [
 
 ]
 
-## CPU patches
+# CPU patches
 
 MissingSSE42 = [
     "MacBook4,1",
@@ -127,7 +127,7 @@ pciSSDT = [
     "Dortania1,1"
 ]
 
-## Ethernet patches
+# Ethernet patches
 
 EthernetNvidia = [
     "MacBook5,1",
@@ -170,7 +170,7 @@ EthernetBroadcom = [
     "Dortania1,1"
 ]
 
-## Wifi patches
+# Wifi patches
 
 WifiAtheros = [
     "iMac10,1",
@@ -213,19 +213,19 @@ WifiBCM94322 = [
 WifiBCM94331 = [
     "MacBook6,1",    # PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)
     "MacBook7,1",    # PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)
-    "MacBookAir4,1", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookAir4,2", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookAir5,1", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookAir5,2", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookPro6,1", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookPro6,2", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookPro8,1", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookPro8,2", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookPro8,3", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookPro9,1", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookPro9,2", # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookPro10,1",# PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
-    "MacBookPro10,2",# PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookAir4,1",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookAir4,2",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookAir5,1",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookAir5,2",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookPro6,1",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookPro6,2",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookPro8,1",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookPro8,2",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookPro8,3",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookPro9,1",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookPro9,2",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookPro10,1",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
+    "MacBookPro10,2",  # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
     "Macmini4,1",    # PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)
     "Macmini5,1",    # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
     "Macmini5,2",    # PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)
@@ -238,7 +238,7 @@ WifiBCM94331 = [
     "Dortania1,1"
 ]
 
-## Audio
+# Audio
 
 LegacyAudio = [
     "MacBook4,1",
@@ -301,106 +301,106 @@ nvidiaHDEF = [
     "iMac10,1"
 ]
 
-## GPU
+# GPU
 
 LegacyGPU = [
-    "MacBook4,1", # GMA X3100
-    "MacBook5,1", # Nvidia 9000
-    "MacBook5,2", # Nvidia 9000
-    "MacBook6,1", # Nvidia 9000
-    "MacBook7,1", # Nvidia 300
-    "MacBookAir2,1", # Nvidia 9000
-    "MacBookAir3,1", # Nvidia 300
-    "MacBookAir3,2", # Nvidia 300
-    "MacBookAir4,1", # Intel 3000
-    "MacBookAir4,2", # Intel 3000
-    "MacBookPro4,1", # Nvidia 8000
-    "MacBookPro5,1", # Nvidia 9000
-    "MacBookPro5,2", # Nvidia 9000
-    "MacBookPro5,3", # Nvidia 9000
-    "MacBookPro5,4", # Nvidia 9000
-    "MacBookPro5,5", # Nvidia 9000
-    "MacBookPro6,1", # Intel 100 + Nvidia 300
-    "MacBookPro6,2", # Intel 100 + Nvidia 300
-    "MacBookPro7,1", # Nvidia 300
-    "MacBookPro8,1", # Intel 3000
-    "MacBookPro8,2", # Intel 3000 + AMD 6000
-    "MacBookPro8,3", # Intel 3000 + AMD 6000
-    "Macmini3,1", # Nvidia 9000
-    "Macmini4,1", # Nvidia 300
-    "Macmini5,1", # Intel 3000
-    "Macmini5,2", # AMD 6000
-    "Macmini5,3", # Intel 3000
-    "iMac7,1", # AMD 2000
-    #"iMac8,1", # Nvidia and AMD 2400
-    "iMac9,1", # Nvidia 9000
-    #"iMac10,1", # Nvidia 9000 and AMD 4000
-    "iMac11,1", # AMD 4000
-    "iMac11,2", # AMD 4000 and 5000
-    "iMac11,3", # AMD 5000
-    "iMac12,1", # AMD 6000
-    "iMac12,2", # AMD 6000
-    "Dortania1,1" # RTX 3080
+    "MacBook4,1",  # GMA X3100
+    "MacBook5,1",  # Nvidia 9000
+    "MacBook5,2",  # Nvidia 9000
+    "MacBook6,1",  # Nvidia 9000
+    "MacBook7,1",  # Nvidia 300
+    "MacBookAir2,1",  # Nvidia 9000
+    "MacBookAir3,1",  # Nvidia 300
+    "MacBookAir3,2",  # Nvidia 300
+    "MacBookAir4,1",  # Intel 3000
+    "MacBookAir4,2",  # Intel 3000
+    "MacBookPro4,1",  # Nvidia 8000
+    "MacBookPro5,1",  # Nvidia 9000
+    "MacBookPro5,2",  # Nvidia 9000
+    "MacBookPro5,3",  # Nvidia 9000
+    "MacBookPro5,4",  # Nvidia 9000
+    "MacBookPro5,5",  # Nvidia 9000
+    "MacBookPro6,1",  # Intel 100 + Nvidia 300
+    "MacBookPro6,2",  # Intel 100 + Nvidia 300
+    "MacBookPro7,1",  # Nvidia 300
+    "MacBookPro8,1",  # Intel 3000
+    "MacBookPro8,2",  # Intel 3000 + AMD 6000
+    "MacBookPro8,3",  # Intel 3000 + AMD 6000
+    "Macmini3,1",  # Nvidia 9000
+    "Macmini4,1",  # Nvidia 300
+    "Macmini5,1",  # Intel 3000
+    "Macmini5,2",  # AMD 6000
+    "Macmini5,3",  # Intel 3000
+    "iMac7,1",  # AMD 2000
+    # "iMac8,1", # Nvidia and AMD 2400
+    "iMac9,1",  # Nvidia 9000
+    # "iMac10,1", # Nvidia 9000 and AMD 4000
+    "iMac11,1",  # AMD 4000
+    "iMac11,2",  # AMD 4000 and 5000
+    "iMac11,3",  # AMD 5000
+    "iMac12,1",  # AMD 6000
+    "iMac12,2",  # AMD 6000
+    "Dortania1,1"  # RTX 3080
 ]
 
 LegacyGPUNvidia = [
-    "MacBook5,1", # Nvidia 9000
-    "MacBook5,2", # Nvidia 9000
-    "MacBook6,1", # Nvidia 9000
-    "MacBook7,1", # Nvidia 300
-    "MacBookAir2,1", # Nvidia 9000
-    "MacBookAir3,1", # Nvidia 300
-    "MacBookAir3,2", # Nvidia 300
-    "MacBookPro4,1", # Nvidia 8000
-    "MacBookPro5,1", # Nvidia 9000
-    "MacBookPro5,2", # Nvidia 9000
-    "MacBookPro5,3", # Nvidia 9000
-    "MacBookPro5,4", # Nvidia 9000
-    "MacBookPro5,5", # Nvidia 9000
-    "MacBookPro6,1", # Intel 100 + Nvidia 300
-    "MacBookPro6,2", # Intel 100 + Nvidia 300
-    "MacBookPro7,1", # Nvidia 300
-    "Macmini3,1", # Nvidia 9000
-    "Macmini4,1", # Nvidia 300
-    "iMac9,1", # Nvidia 9000
-    #"iMac10,1", # Nvidia 9000 and AMD 4000
+    "MacBook5,1",  # Nvidia 9000
+    "MacBook5,2",  # Nvidia 9000
+    "MacBook6,1",  # Nvidia 9000
+    "MacBook7,1",  # Nvidia 300
+    "MacBookAir2,1",  # Nvidia 9000
+    "MacBookAir3,1",  # Nvidia 300
+    "MacBookAir3,2",  # Nvidia 300
+    "MacBookPro4,1",  # Nvidia 8000
+    "MacBookPro5,1",  # Nvidia 9000
+    "MacBookPro5,2",  # Nvidia 9000
+    "MacBookPro5,3",  # Nvidia 9000
+    "MacBookPro5,4",  # Nvidia 9000
+    "MacBookPro5,5",  # Nvidia 9000
+    "MacBookPro6,1",  # Intel 100 + Nvidia 300
+    "MacBookPro6,2",  # Intel 100 + Nvidia 300
+    "MacBookPro7,1",  # Nvidia 300
+    "Macmini3,1",  # Nvidia 9000
+    "Macmini4,1",  # Nvidia 300
+    "iMac9,1",  # Nvidia 9000
+    # "iMac10,1", # Nvidia 9000 and AMD 4000
 ]
 
 LegacyGPUAMD = [
-    "MacBookPro8,2", # Intel 3000 + AMD 6000
-    "MacBookPro8,3", # Intel 3000 + AMD 6000
-    "Macmini5,2", # AMD 6000
-    "iMac7,1", # AMD 2000
-    #"iMac8,1", # Nvidia and AMD 2000
-    #"iMac10,1", # Nvidia 9000 and AMD 4000
-    "iMac11,1", # AMD 4000
-    "iMac11,2", # AMD 4000 and 5000
-    "iMac11,3", # AMD 5000
-    "iMac12,1", # AMD 6000
-    "iMac12,2", # AMD 6000
+    "MacBookPro8,2",  # Intel 3000 + AMD 6000
+    "MacBookPro8,3",  # Intel 3000 + AMD 6000
+    "Macmini5,2",  # AMD 6000
+    "iMac7,1",  # AMD 2000
+    # "iMac8,1", # Nvidia and AMD 2000
+    # "iMac10,1", # Nvidia 9000 and AMD 4000
+    "iMac11,1",  # AMD 4000
+    "iMac11,2",  # AMD 4000 and 5000
+    "iMac11,3",  # AMD 5000
+    "iMac12,1",  # AMD 6000
+    "iMac12,2",  # AMD 6000
 ]
 
 LegacyGPUAMDIntelGen2 = [
-    "MacBookPro8,2", # Intel 3000 + AMD 6000
-    "MacBookPro8,3", # Intel 3000 + AMD 6000
-    "Macmini5,2", # AMD 6000
-    "iMac12,1", # AMD 6000
-    "iMac12,2", # AMD 6000
+    "MacBookPro8,2",  # Intel 3000 + AMD 6000
+    "MacBookPro8,3",  # Intel 3000 + AMD 6000
+    "Macmini5,2",  # AMD 6000
+    "iMac12,1",  # AMD 6000
+    "iMac12,2",  # AMD 6000
 ]
 
 LegacyGPUIntelGen1 = [
-    "MacBookPro6,1", # Intel 100 + Nvidia 300
-    "MacBookPro6,2", # Intel 100 + Nvidia 300
+    "MacBookPro6,1",  # Intel 100 + Nvidia 300
+    "MacBookPro6,2",  # Intel 100 + Nvidia 300
 ]
 
 LegacyGPUIntelGen2 = [
-    "MacBookAir4,1", # Intel 3000
-    "MacBookAir4,2", # Intel 3000
-    "MacBookPro8,1", # Intel 3000
-    "MacBookPro8,2", # Intel 3000 + AMD 6000
-    "MacBookPro8,3", # Intel 3000 + AMD 6000
-    "Macmini5,1", # Intel 3000
-    "Macmini5,3", # Intel 3000
+    "MacBookAir4,1",  # Intel 3000
+    "MacBookAir4,2",  # Intel 3000
+    "MacBookPro8,1",  # Intel 3000
+    "MacBookPro8,2",  # Intel 3000 + AMD 6000
+    "MacBookPro8,3",  # Intel 3000 + AMD 6000
+    "Macmini5,1",  # Intel 3000
+    "Macmini5,3",  # Intel 3000
 ]
 
 LegacyBrightness = [
@@ -688,70 +688,70 @@ upgradableMXMGPUs = [
 
 # Reference: https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/
 NVIDIAMXMGPUs = [
-    "0x12b9",#Quadro K610M
-    "0x0ff6",#Quadro K1100M
-    "0x11fc",#Quadro K2100M
-    "0x0ffc",#Quadro K1000M
-    "0x0ffb",#Quadro K2000M
-    "0x11b6",#Quadro K3100M
-    "0x11b7",#Quadro K4100M
-    "0x11bc",#Quadro K5000M
-    "0x11b8",#Quadro K5100M
-    "0x11e1",#GTX 765M
-    "0x11e2",#GTX 765M
-    "0x11e0",#GTX 770M
-    "0x119e",#GTX 780M Mac Edition
-    "0x119e",#GTX 780M
-    "0x119f",#GTX 880M
-    "0x119a",#GTX 860M
-    "0x1392",#GTX 860M
-    "0x1199",#GTX 870M
-    "0x11a9",#GTX 870M
+    "0x12b9",  # Quadro K610M
+    "0x0ff6",  # Quadro K1100M
+    "0x11fc",  # Quadro K2100M
+    "0x0ffc",  # Quadro K1000M
+    "0x0ffb",  # Quadro K2000M
+    "0x11b6",  # Quadro K3100M
+    "0x11b7",  # Quadro K4100M
+    "0x11bc",  # Quadro K5000M
+    "0x11b8",  # Quadro K5100M
+    "0x11e1",  # GTX 765M
+    "0x11e2",  # GTX 765M
+    "0x11e0",  # GTX 770M
+    "0x119e",  # GTX 780M Mac Edition
+    "0x119e",  # GTX 780M
+    "0x119f",  # GTX 880M
+    "0x119a",  # GTX 860M
+    "0x1392",  # GTX 860M
+    "0x1199",  # GTX 870M
+    "0x11a9",  # GTX 870M
 ]
 
 AMDMXMGPUs = [
-    "0x67EF",#AMD RX 460
-    "0x67e8",#AMD WX 4130/WX 4150
-    "0x67e0",#AMD WX 4170
-    "0x67c0",#AMD WX 7100
+    "0x67EF",  # AMD RX 460
+    "0x67e8",  # AMD WX 4130/WX 4150
+    "0x67e0",  # AMD WX 4170
+    "0x67c0",  # AMD WX 7100
 ]
 
 BCM4360Wifi = [
-    "43BA",#BCM43602
-    "43A3",#BCM4350
-    "43A0",#BCM4360
+    "43BA",  # BCM43602
+    "43A3",  # BCM4350
+    "43A0",  # BCM4360
 ]
 
 BCM94331Wifi = [
-    "4331",#BCM94331
-    "4353",#BCM943224
+    "4331",  # BCM94331
+    "4353",  # BCM943224
 ]
 
 BCM94322Wifi = [
-	"432B",#BCM94322
+    "432B",  # BCM94322
 ]
 
 BCM94328Wifi = [
     "4311",
-	"4312",
-	"4313",
-	"4318",
-	"4319",
-	"431A",
-	"4320",
-	"4324",
-	"4325",
-	"4328",
-	"432C",
-	"432D",
+    "4312",
+    "4313",
+    "4318",
+    "4319",
+    "431A",
+    "4320",
+    "4324",
+    "4325",
+    "4328",
+    "432C",
+    "432D",
 ]
 
 AtherosWifi = [
-	"0030",
-	"002A",
-	"001C",
-	"0023",
-	"0024",
+    "0030",
+    "002A",
+    "001C",
+    "0023",
+    "0024",
 ]
 
 NightShiftExclude = [
@@ -867,29 +867,29 @@ NoExFat = [
 
 DeleteNvidiaAccel11 = [
     "AMDRadeonX4000.kext",
-	"AMDRadeonX4000HWServices.kext",
-	"AMDRadeonX5000.kext",
-	"AMDRadeonX5000HWServices.kext",
-	"AMDRadeonX6000.kext",
-	"AMDRadeonX6000Framebuffer.kext",
-	"AMDRadeonX6000HWServices.kext",
-	"AppleIntelBDWGraphics.kext",
-	"AppleIntelBDWGraphicsFramebuffer.kext",
-	"AppleIntelCFLGraphicsFramebuffer.kext",
-	"AppleIntelHD4000Graphics.kext",
-	"AppleIntelHD5000Graphics.kext",
-	"AppleIntelICLGraphics.kext",
-	"AppleIntelICLLPGraphicsFramebuffer.kext",
-	"AppleIntelKBLGraphics.kext",
-	"AppleIntelKBLGraphicsFramebuffer.kext",
-	"AppleIntelSKLGraphics.kext",
-	"AppleIntelSKLGraphicsFramebuffer.kext",
-	"AppleIntelFramebufferAzul.kext",
-	"AppleIntelFramebufferCapri.kext",
-	"AppleParavirtGPU.kext",
-	"GeForce.kext",
-	"IOAcceleratorFamily2.kext",
-	"IOGPUFamily.kext",
+    "AMDRadeonX4000HWServices.kext",
+    "AMDRadeonX5000.kext",
+    "AMDRadeonX5000HWServices.kext",
+    "AMDRadeonX6000.kext",
+    "AMDRadeonX6000Framebuffer.kext",
+    "AMDRadeonX6000HWServices.kext",
+    "AppleIntelBDWGraphics.kext",
+    "AppleIntelBDWGraphicsFramebuffer.kext",
+    "AppleIntelCFLGraphicsFramebuffer.kext",
+    "AppleIntelHD4000Graphics.kext",
+    "AppleIntelHD5000Graphics.kext",
+    "AppleIntelICLGraphics.kext",
+    "AppleIntelICLLPGraphicsFramebuffer.kext",
+    "AppleIntelKBLGraphics.kext",
+    "AppleIntelKBLGraphicsFramebuffer.kext",
+    "AppleIntelSKLGraphics.kext",
+    "AppleIntelSKLGraphicsFramebuffer.kext",
+    "AppleIntelFramebufferAzul.kext",
+    "AppleIntelFramebufferCapri.kext",
+    "AppleParavirtGPU.kext",
+    "GeForce.kext",
+    "IOAcceleratorFamily2.kext",
+    "IOGPUFamily.kext",
 ]
 
 DeleteAMDAccel11 = [
@@ -900,11 +900,11 @@ DeleteAMDAccel11 = [
     "AMDRadeonX6000.kext",
     "AMDRadeonX6000Framebuffer.kext",
     "AMDRadeonX6000HWServices.kext",
-    "AMD7000Controller.kext", # AMDSupport Dependancy
-    "AMD8000Controller.kext", # AMDSupport Dependancy
-    "AMD9000Controller.kext", # AMDSupport Dependancy
-    "AMD9500Controller.kext", # AMDSupport Dependancy
-    "AMD10000Controller.kext", # AMDSupport Dependancy
+    "AMD7000Controller.kext",  # AMDSupport Dependancy
+    "AMD8000Controller.kext",  # AMDSupport Dependancy
+    "AMD9000Controller.kext",  # AMDSupport Dependancy
+    "AMD9500Controller.kext",  # AMDSupport Dependancy
+    "AMD10000Controller.kext",  # AMDSupport Dependancy
     "AppleIntelBDWGraphics.kext",
     "AppleIntelBDWGraphicsFramebuffer.kext",
     "AppleIntelCFLGraphicsFramebuffer.kext",
@@ -926,103 +926,103 @@ DeleteAMDAccel11 = [
 
 AddNvidiaAccel11 = [
     "GeForceGA.bundle",
-	"GeForceTesla.kext",
-	"GeForceTeslaGLDriver.bundle",
-	"GeForceTeslaVADriver.bundle",
-	"NVDANV50HalTesla.kext",
-	"NVDAResmanTesla.kext",
+    "GeForceTesla.kext",
+    "GeForceTeslaGLDriver.bundle",
+    "GeForceTeslaVADriver.bundle",
+    "NVDANV50HalTesla.kext",
+    "NVDAResmanTesla.kext",
     "IOSurface.kext",
 ]
 
 AddNvidiaBrightness11 = [
     "GeForceGA.bundle",
-	"GeForceTesla.kext",
-	"GeForceTeslaGLDriver.bundle",
-	"GeForceTeslaVADriver.bundle",
-	"NVDANV50HalTesla.kext",
-	"NVDAResmanTesla.kext",
+    "GeForceTesla.kext",
+    "GeForceTeslaGLDriver.bundle",
+    "GeForceTeslaVADriver.bundle",
+    "NVDANV50HalTesla.kext",
+    "NVDAResmanTesla.kext",
 ]
 
 AddAMDAccel11 = [
     "AMD2400Controller.kext",
-	"AMD2600Controller.kext",
-	"AMD3800Controller.kext",
-	"AMD4600Controller.kext",
-	"AMD4800Controller.kext",
-	"AMD5000Controller.kext",
-	"AMD6000Controller.kext",
-	"AMDFramebuffer.kext",
-	"AMDLegacyFramebuffer.kext",
-	"AMDLegacySupport.kext",
-	"AMDRadeonVADriver.bundle",
-	"AMDRadeonVADriver2.bundle",
-	#"AMDRadeonX3000.kext", # __ZN22IOAccelDisplayMachine210gMetaClassE link issues
-	#"AMDRadeonX3000GLDriver.bundle",
-	"AMDShared.bundle",
-	"AMDSupport.kext",
-	"ATIRadeonX2000.kext",
-	"ATIRadeonX2000GA.plugin",
-	"ATIRadeonX2000GLDriver.bundle",
-	"ATIRadeonX2000VADriver.bundle",
+    "AMD2600Controller.kext",
+    "AMD3800Controller.kext",
+    "AMD4600Controller.kext",
+    "AMD4800Controller.kext",
+    "AMD5000Controller.kext",
+    "AMD6000Controller.kext",
+    "AMDFramebuffer.kext",
+    "AMDLegacyFramebuffer.kext",
+    "AMDLegacySupport.kext",
+    "AMDRadeonVADriver.bundle",
+    "AMDRadeonVADriver2.bundle",
+    # "AMDRadeonX3000.kext", # __ZN22IOAccelDisplayMachine210gMetaClassE link issues
+    # "AMDRadeonX3000GLDriver.bundle",
+    "AMDShared.bundle",
+    "AMDSupport.kext",
+    "ATIRadeonX2000.kext",
+    "ATIRadeonX2000GA.plugin",
+    "ATIRadeonX2000GLDriver.bundle",
+    "ATIRadeonX2000VADriver.bundle",
     "IOSurface.kext",
 ]
 
 AddAMDBrightness11 = [
     "AMD2400Controller.kext",
-	"AMD2600Controller.kext",
-	"AMD3800Controller.kext",
-	"AMD4600Controller.kext",
-	"AMD4800Controller.kext",
-	"AMD5000Controller.kext",
-	"AMD6000Controller.kext",
-	"AMDLegacyFramebuffer.kext",
-	"AMDLegacySupport.kext",
-	"AMDRadeonX3000.kext",
-	"AMDRadeonX3000GLDriver.bundle",
-	"ATIRadeonX2000.kext",
-	"ATIRadeonX2000GA.plugin",
-	"ATIRadeonX2000GLDriver.bundle",
-	"ATIRadeonX2000VADriver.bundle",
+    "AMD2600Controller.kext",
+    "AMD3800Controller.kext",
+    "AMD4600Controller.kext",
+    "AMD4800Controller.kext",
+    "AMD5000Controller.kext",
+    "AMD6000Controller.kext",
+    "AMDLegacyFramebuffer.kext",
+    "AMDLegacySupport.kext",
+    "AMDRadeonX3000.kext",
+    "AMDRadeonX3000GLDriver.bundle",
+    "ATIRadeonX2000.kext",
+    "ATIRadeonX2000GA.plugin",
+    "ATIRadeonX2000GLDriver.bundle",
+    "ATIRadeonX2000VADriver.bundle",
 ]
 
 AddIntelGen1Accel = [
     "AppleIntelFramebufferAzul.kext",
-	"AppleIntelFramebufferCapri.kext",
-	"AppleIntelHDGraphics.kext",
-	"AppleIntelHDGraphicsFB.kext",
-	"AppleIntelHDGraphicsGA.plugin",
-	"AppleIntelHDGraphicsGLDriver.bundle",
-	"AppleIntelHDGraphicsVADriver.bundle",
+    "AppleIntelFramebufferCapri.kext",
+    "AppleIntelHDGraphics.kext",
+    "AppleIntelHDGraphicsFB.kext",
+    "AppleIntelHDGraphicsGA.plugin",
+    "AppleIntelHDGraphicsGLDriver.bundle",
+    "AppleIntelHDGraphicsVADriver.bundle",
     "IOSurface.kext",
 ]
 
 AddIntelGen1Brightness = [
     "AppleIntelFramebufferAzul.kext",
-	"AppleIntelFramebufferCapri.kext",
-	"AppleIntelHDGraphics.kext",
-	"AppleIntelHDGraphicsFB.kext",
-	"AppleIntelHDGraphicsGA.plugin",
-	"AppleIntelHDGraphicsGLDriver.bundle",
-	"AppleIntelHDGraphicsVADriver.bundle",
+    "AppleIntelFramebufferCapri.kext",
+    "AppleIntelHDGraphics.kext",
+    "AppleIntelHDGraphicsFB.kext",
+    "AppleIntelHDGraphicsGA.plugin",
+    "AppleIntelHDGraphicsGLDriver.bundle",
+    "AppleIntelHDGraphicsVADriver.bundle",
 ]
 
 AddIntelGen2Accel = [
     "AppleIntelHD3000Graphics.kext",
-	"AppleIntelHD3000GraphicsGA.plugin",
-	"AppleIntelHD3000GraphicsGLDriver.bundle",
-	"AppleIntelHD3000GraphicsVADriver.bundle",
-	"AppleIntelSNBGraphicsFB.kext",
-	"AppleIntelSNBVA.bundle",
+    "AppleIntelHD3000GraphicsGA.plugin",
+    "AppleIntelHD3000GraphicsGLDriver.bundle",
+    "AppleIntelHD3000GraphicsVADriver.bundle",
+    "AppleIntelSNBGraphicsFB.kext",
+    "AppleIntelSNBVA.bundle",
     "IOSurface.kext",
 ]
 
 AddIntelGen2Brightness = [
     "AppleIntelHD3000Graphics.kext",
-	"AppleIntelHD3000GraphicsGA.plugin",
-	"AppleIntelHD3000GraphicsGLDriver.bundle",
-	"AppleIntelHD3000GraphicsVADriver.bundle",
-	"AppleIntelSNBGraphicsFB.kext",
-	"AppleIntelSNBVA.bundle",
+    "AppleIntelHD3000GraphicsGA.plugin",
+    "AppleIntelHD3000GraphicsGLDriver.bundle",
+    "AppleIntelHD3000GraphicsVADriver.bundle",
+    "AppleIntelSNBGraphicsFB.kext",
+    "AppleIntelSNBVA.bundle",
 ]
 
 DeleteBrightness = [
@@ -1030,6 +1030,6 @@ DeleteBrightness = [
 ]
 
 AddBrightness = [
-	"AppleBacklight.kext",
-	"AppleBacklightExpert.kext",
+    "AppleBacklight.kext",
+    "AppleBacklightExpert.kext",
 ]

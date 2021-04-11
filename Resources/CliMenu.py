@@ -2,9 +2,13 @@
 # Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 from __future__ import print_function
 
-import subprocess, sys, time, platform
+import subprocess
+import sys
+import time
+import platform
 
 from Resources import Build, ModelArray, Constants, SysPatch, Utilities
+
 
 class MenuOptions:
     def __init__(self, model, versions):
@@ -12,8 +16,8 @@ class MenuOptions:
         self.constants: Constants.Constants = versions
 
     def change_os(self):
-        utilities.cls()
-        utilities.header(["Select Patcher's Target OS"])
+        Utilities.cls()
+        Utilities.header(["Select Patcher's Target OS"])
         print(f"""
 Minimum Target:\t{self.constants.min_os_support}
 Maximum Target:\t{self.constants.max_os_support}
@@ -30,8 +34,8 @@ Current target:\t{self.constants.os_support}
             ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS12
 
     def change_verbose(self):
-        utilities.cls()
-        utilities.header(["Set Verbose mode"])
+        Utilities.cls()
+        Utilities.header(["Set Verbose mode"])
         change_menu = input("Enable Verbose mode(y/n): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.verbose_debug = True
@@ -41,8 +45,8 @@ Current target:\t{self.constants.os_support}
             print("Invalid option")
 
     def change_oc(self):
-        utilities.cls()
-        utilities.header(["Set OpenCore DEBUG mode"])
+        Utilities.cls()
+        Utilities.header(["Set OpenCore DEBUG mode"])
         change_menu = input("Enable OpenCore DEBUG mode(y/n): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.opencore_debug = True
@@ -52,9 +56,10 @@ Current target:\t{self.constants.os_support}
             self.constants.opencore_build = "RELEASE"
         else:
             print("Invalid option")
+
     def change_kext(self):
-        utilities.cls()
-        utilities.header(["Set Kext DEBUG mode"])
+        Utilities.cls()
+        Utilities.header(["Set Kext DEBUG mode"])
         change_menu = input("Enable Kext DEBUG mode(y/n): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.kext_debug = True
@@ -64,8 +69,8 @@ Current target:\t{self.constants.os_support}
             print("Invalid option")
 
     def change_metal(self):
-        utilities.cls()
-        utilities.header(["Assume Metal GPU Always in iMac"])
+        Utilities.cls()
+        Utilities.header(["Assume Metal GPU Always in iMac"])
         print("""This is for iMacs that have upgraded Metal GPUs, otherwise
 Patcher assumes based on stock configuration (ie. iMac10,x-12,x)
 
@@ -92,8 +97,8 @@ option is for those patching on a different machine or OCLP cannot detect.
             print("Invalid option")
 
     def change_wifi(self):
-        utilities.cls()
-        utilities.header(["Assume Upgraded Wifi Always"])
+        Utilities.cls()
+        Utilities.header(["Assume Upgraded Wifi Always"])
         print("""This is for Macs with upgraded wifi cards(ie. BCM94360/2)
 
 Note: Patcher will detect whether hardware has been upgraded regardless, this
@@ -108,8 +113,8 @@ option is for those patching on a different machine or cannot detect.
             print("Invalid option")
 
     def change_serial(self):
-        utilities.cls()
-        utilities.header(["Set SMBIOS Mode"])
+        Utilities.cls()
+        Utilities.header(["Set SMBIOS Mode"])
         print("""This section is for setting how OpenCore generates the SMBIOS
 Recommended for adanced users who want control how serials are handled
 
@@ -130,9 +135,10 @@ Note: For new users we recommend leaving as default(1. Minimal)
             self.constants.serial_settings = "Advanced"
         else:
             print("Invalid option")
+
     def change_showpicker(self):
-        utilities.cls()
-        utilities.header(["Set OpenCore Picker mode"])
+        Utilities.cls()
+        Utilities.header(["Set OpenCore Picker mode"])
         print("""By default, OpenCore will show its boot picker each time on boot up,
 however this can be disabled by default and be shown on command by repeatedly
 pressing the "Esc" key
@@ -146,8 +152,8 @@ pressing the "Esc" key
             print("Invalid option")
 
     def change_vault(self):
-        utilities.cls()
-        utilities.header(["Set OpenCore Vaulting"])
+        Utilities.cls()
+        Utilities.header(["Set OpenCore Vaulting"])
         print("""By default, this patcher will sign all your files and ensure none of the
 contents can be tampered with. However for more advanced users, you may
 want to be able to freely edit the config.plist and files.
@@ -164,8 +170,8 @@ Note: For secuirty reasons, OpenShell will be disabled when Vault is set.
             print("Invalid option")
 
     def change_sip(self):
-        utilities.cls()
-        utilities.header(["Set SIP and SecureBootModel"])
+        Utilities.cls()
+        Utilities.header(["Set SIP and SecureBootModel"])
         print("""SIP and SecureBootModel are used to ensure proper OTA functionality,
 however to patch the root volume both of these must be disabled.
 Only disable is absolutely necessary. SIP value = 0xFEF
@@ -199,8 +205,8 @@ Valid options:
             print("Invalid option")
 
     def change_imac_nvidia(self):
-        utilities.cls()
-        utilities.header(["Force iMac Nvidia Patches"])
+        Utilities.cls()
+        Utilities.header(["Force iMac Nvidia Patches"])
         print("""Specifically for iMac10,x-12,x with Metal Nvidia GPU upgrades
 By default the patcher will try to detect what hardware is
 running, however this will enforce iMac Nvidia Build Patches.
@@ -214,8 +220,8 @@ running, however this will enforce iMac Nvidia Build Patches.
             print("Invalid option")
 
     def custom_repo(self):
-        utilities.cls()
-        utilities.header(["Set custom patch repo"])
+        Utilities.cls()
+        Utilities.header(["Set custom patch repo"])
         print(f"""For users participating in OpenCore Patcher betas, this is
 where you can add custom repos such as Google Drive links.
 
@@ -239,8 +245,8 @@ Current repo:
             print("Invalid option")
 
     def bootstrap_setting(self):
-        utilities.cls()
-        utilities.header(["Set Bootstrap method"])
+        Utilities.cls()
+        Utilities.header(["Set Bootstrap method"])
         print("""Sets OpenCore's bootstrap method, currently the patcher supports the
 following options.
 

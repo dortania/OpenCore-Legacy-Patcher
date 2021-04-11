@@ -8,6 +8,12 @@ Main hardware we'd appreciate:
 
 * Any Mac you own
   * Does require SSE4,1 CPU to test on Sierra and newer however
+  
+Additionally, hardware info dumps are greatly beneficial for us to determine what patches a machine might need:
+
+* [IORegistryExplorer](https://github.com/khronokernel/IORegistryClone/blob/master/ioreg-210.zip?raw=true)
+  * `File -> SaveAs` and open an issue on Github
+  * Note: We want IOReg dumps of hardware not running on OpenCore, instead running a clean, supported OS
 
 If you have any legacy hardware you're willing to donate, please contact us at the following email:
 

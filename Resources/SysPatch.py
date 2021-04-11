@@ -164,7 +164,6 @@ class PatchSysVolume:
         print("- Enabling NSDefenestratorModeEnabled")
         subprocess.run("defaults write -g NSDefenestratorModeEnabled -bool true".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-
     def patch_root_vol(self):
         print(f"- Detecting patches for {self.model}")
         rebuild_required = False
@@ -282,7 +281,7 @@ class PatchSysVolume:
             self.download_files()
 
     def download_files(self):
-        utilities.cls()
+        Utilities.cls()
         print("- Downloading Apple binaries")
         popen_oclp = subprocess.Popen(f"curl -S -L {self.constants.url_apple_binaries} --output {self.constants.payload_apple_root_path_zip}".split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
         for stdout_line in iter(popen_oclp.stdout.readline, ""):
@@ -317,7 +316,7 @@ class PatchSysVolume:
             print(f"Cannot run on this OS, requires macOS 11!")
         else:
             self.check_status()
-            utilities.cls()
+            Utilities.cls()
             if (self.sip_patch_status is False) and (self.smb_status is False):
                 print("- Detected SIP and SecureBootModel are disabled, continuing")
                 input("\nPress [ENTER] to continue")
@@ -341,6 +340,7 @@ class PatchSysVolume:
                 print("Please disable FileVault in System Preferences")
                 print("")
         input("Press [Enter] to go exit.")
+
     def start_unpatch(self):
         if self.constants.custom_model is not None:
             print("Unpatching must be done on target machine!")
@@ -348,7 +348,7 @@ class PatchSysVolume:
             print(f"Cannot run on this OS, requires macOS 11!")
         else:
             self.check_status()
-            utilities.cls()
+            Utilities.cls()
             if (self.sip_patch_status is False) and (self.smb_status is False):
                 print("- Detected SIP and SecureBootModel are disabled, continuing")
                 input("\nPress [ENTER] to continue")
@@ -370,4 +370,3 @@ class PatchSysVolume:
                 print("Please disable FileVault in System Preferences")
                 print("")
         input("Press [Enter] to go exit.")
-
