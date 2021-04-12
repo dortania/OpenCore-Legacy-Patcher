@@ -7,7 +7,7 @@ A python program for building and booting [OpenCore](https://github.com/acidanth
 | Support Entry | Supported OSes | Description | Comment |
 | :--- | :--- | :--- | :--- |
 | HostOS | macOS 10.9 - macOS 11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [Python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
-| TargetOS | macOS 11 | Refers to OSes that can be patched to run with OpenCore | Unofficially supports 10.4 and newer, no support provided via this patcher |
+| TargetOS | macOS 11 | Refers to OSes that can be patched to run with OpenCore | May support 10.4 and newer (in a potentially broken state). No support provided. |
 
 Supported features:
 
