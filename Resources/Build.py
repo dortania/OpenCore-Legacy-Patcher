@@ -90,7 +90,7 @@ class BuildOpenCore:
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
             ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
             # Legacy audio
-            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: self.model in ModelArray.LegacyAudio),
+            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro71),
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
             # Hibernation Tests
@@ -125,7 +125,7 @@ class BuildOpenCore:
             try:
                 wifi_devices = plistlib.loads(subprocess.run("ioreg -r -n ARPT -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             except ValueError:
-                # Work-around Mac Pros where Wifi card is not named ARPT
+                # Work-around Mac Pros where Wifi card may not be named ARPT (ie. installed in dedicated PCIe card slot)
                 wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             vendor_atheros = binascii.unhexlify("E4140000")
             vendor_broadcom = binascii.unhexlify("8C160000")

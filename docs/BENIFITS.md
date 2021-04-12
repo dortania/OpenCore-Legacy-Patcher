@@ -13,9 +13,8 @@ With OpenCore Legacy Patcher we recommend users go through the below table to un
 | Firmware Patching | <span style="color:#30BCD5">None required</span> | <span style="color:red">Required for models without native APFS support</span> |
 | BootCamp Switching | <span style="color:red">Requires EFI Conversion for Start Disk support, otherwise still supported</span> | <span style="color:#30BCD5">Native</span> |
 | Brightness Control on Legacy GPUs | <span style="color:#30BCD5">Supported</span> | <span style="color:#30BCD5">Supported</span> |
+| Legacy GPU Acceleration | <span style="color:#30BCD5">In active development</span>, see Acceleration Progress Tracker: [Link](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) | <span style="color:red">Currently not researching</span> |
 | WPA Wifi Support | <span style="color:#30BCD5">Native, stable</span> | <span style="color:red">Unstable</span> |
-| Legacy GPU Acceleration | <span style="color:red">Coming soon</span> | <span style="color:red">Coming soon</span> |
-| Brightness Control on Legacy GPUs | <span style="color:red">Coming soon</span> | <span style="color:#30BCD5">Supported</span> |
 | HEVC/H.265 Support for Mac Pros and iMacs with Polaris+ GPUs | <span style="color:#30BCD5">Supported</span> | <span style="color:red">Not supported</span> |
 | Big Sur-styled Boot Picker |  <span style="color:#30BCD5">Available</span> | <span style="color:red">Not available</span> |
 | El Capitan-era Wifi cards | <span style="color:#30BCD5">Supported</span> | <span style="color:red">Not supported</span> |

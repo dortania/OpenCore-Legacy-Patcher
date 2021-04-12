@@ -9,10 +9,12 @@
 - Enhance Wifi model detection
 - Hide OpenShell.efi by default
 - Add Brightness Control patches for legacy Nvidia, AMD and Intel GPUs
+  - Models with brightness control issues in Catalina partially supported
 - Add user configurable Bootstrap setting
 - Enhance GPU Detection logic
 - Increment AppleBackLightFixup v1.0.1
   - Add panel type F10T9cde
+- Enhance HDMI audio support on Mac Pros and Xserves
 
 ## 0.0.22
 - Add ExFat support for models missing driver
