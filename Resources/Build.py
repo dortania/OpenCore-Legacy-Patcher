@@ -203,7 +203,7 @@ class BuildOpenCore:
 
         if self.model == "MacBookPro9,1":
             print(f"- Adding Display Map Overrides")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=vit9696"
+            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
             Path(self.constants.agdp_kext_folder).mkdir()
             Path(self.constants.agdp_contents_folder).mkdir()
             Path(self.constants.agpm_kext_folder).mkdir()
@@ -221,7 +221,7 @@ class BuildOpenCore:
         # AGPM Patch
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera"
+            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "pikera"}
 
         # HiDPI OpenCanopy and FileVault
         if self.model in ModelArray.HiDPIpicker:
@@ -241,12 +241,12 @@ class BuildOpenCore:
         def nvidia_patch(self):
             self.constants.custom_mxm_gpu = True
             print("- Adding Nvidia Brightness Control patches")
-            if self.model in ["iMac11,1", "iMac11,2", "iMac11,3"]:
+            if self.model == "iMac11,1":
                 backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
                 shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
                 self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
-            elif self.model in ["iMac12,1", "iMac12,2"]:
+            elif self.model in ["iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]:
                 backlight_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
                 print("- Disabling unsupported iGPU")
@@ -254,13 +254,15 @@ class BuildOpenCore:
                 shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
                 self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
             else:
-                print("- Failed to determine model")
+                print("- Failed to determine supported model")
 
         def amd_patch(self):
             self.constants.custom_mxm_gpu = True
             print("- Adding AMD DRM patches")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=80 unfairgva=1"
-            if self.model in ["iMac12,1", "iMac12,2"]:
+            if self.model == "iMac11,1":
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva=80": 80, "unfairgva": 1}
+            elif self.model in ["iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]:
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"shikigva=80": 80, "unfairgva": 1}
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
 

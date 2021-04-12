@@ -464,8 +464,6 @@ DualGPUPatch = [
     "MacBookPro5,1",
     "MacBookPro5,2",
     "MacBookPro5,3",
-    "MacBookPro5,4",
-    "MacBookPro5,5",
     "MacBookPro6,1",
     "MacBookPro6,2",
     "MacBookPro8,2",
