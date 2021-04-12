@@ -140,14 +140,14 @@ class BuildOpenCore:
             print("- Can't run Wifi hardware detection on Snow Leopard and older")
         if self.constants.wifi_build is True:
             print("- Skipping Wifi patches on request")
-        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "E414" and wifi_device in ModelArray.BCM4360Wifi:
+        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "14E4" and wifi_device in ModelArray.BCM4360Wifi:
             print("- Found supported WiFi card, skipping wifi patches")
-        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "E414" and wifi_device in ModelArray.BCM94331Wifi:
+        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "14E4" and wifi_device in ModelArray.BCM94331Wifi:
             wifi_fake_id(self)
-        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "E414" and wifi_device in ModelArray.BCM94322Wifi:
+        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "14E4" and wifi_device in ModelArray.BCM94322Wifi:
             self.enable_kext("IO80211Mojave.kext", self.constants.io80211mojave_version, self.constants.io80211mojave_path)
             self.get_kext_by_bundle_path("IO80211Mojave.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
-        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "E414" and wifi_device in ModelArray.BCM94328Wifi:
+        elif not self.constants.custom_model and wifi_devices and wifi_vendor == "14E4" and wifi_device in ModelArray.BCM94328Wifi:
             self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
             self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
             self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AppleAirPortBrcm43224.kext")["Enabled"] = True
@@ -201,7 +201,7 @@ class BuildOpenCore:
         agpm_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleGraphicsPowerManagement/Info.plist")
         amc_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleMuxControl/Info.plist")
 
-        if self.model == "MacBookPro9,1":
+        if self.model == "MacBookPro8,1":
             print(f"- Adding Display Map Overrides")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=vit9696"
             Path(self.constants.agdp_kext_folder).mkdir()
@@ -447,7 +447,7 @@ class BuildOpenCore:
 
         plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
 
-        if self.model == "MacBookPro9,1":
+        if self.model == "MacBookPro8,1":
             new_agdp_ls = Path(self.constants.agdp_contents_folder) / Path("Info.plist")
             new_agpm_ls = Path(self.constants.agpm_contents_folder) / Path("Info.plist")
             new_amc_ls = Path(self.constants.amc_contents_folder) / Path("Info.plist")
@@ -456,9 +456,9 @@ class BuildOpenCore:
             agpm_config = plistlib.load(Path(new_agpm_ls).open("rb"))
             amc_config = plistlib.load(Path(new_amc_ls).open("rb"))
 
-            agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_board] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(self.model)
+            #agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_board] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(self.model)
             agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board] = agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(self.model)
-            amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"][self.spoofed_board] = amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"].pop(self.model)
+            #amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"][self.spoofed_board] = amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"].pop(self.model)
 
             plistlib.dump(agdp_config, Path(new_agdp_ls).open("wb"), sort_keys=True)
             plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)

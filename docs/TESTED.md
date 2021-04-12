@@ -82,9 +82,9 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | iMac8,1 | <span style="color:#30BCD5"> YES </span> | EduCovas | - Stock Model<br/>- Patcher version 0.0.21 |
 | iMac9,1 | ^^ | Allanrfox | ^^ |
 | ^^ | ^^ | Jakeluke | ^^ |
-| iMac10,1 | No reports | N/A | N/A |
-| iMac11,1 | ^^ | ^^ | ^^ |
-| iMac11,2 | <span style="color:#30BCD5"> YES </span> | MykolaG | - Stock Model<br/>- Patcher version 0.0.21 |
+| iMac10,1 | ^^ | Ausdauersportler | - Upgraded with WX4150 |
+| iMac11,1 | ^^ | internetzel | - Upgraded with RX580 mobile |
+| iMac11,2 | ^^ | MykolaG | - Stock Model<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | iMac-iPad | - Stock Model<br/>- Patcher version 0.0.21 |
 | iMac11,3 | ^^ | Ausdauersportler | - Upgraded with Polaris GPU<br/>- Upgraded BCM943602CDP<br/>- Patcher version 0.0.21 |
 | iMac12,1 | ^^ | shnockdu | - Upgraded with Kepler GPU<br/>- Patcher version 0.0.21 |

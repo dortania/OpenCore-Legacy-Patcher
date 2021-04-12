@@ -11,6 +11,8 @@
 - Add Brightness Control patches for legacy Nvidia, AMD and Intel GPUs
 - Add user configurable Bootstrap setting
 - Enhance GPU Detection logic
+- Increment AppleBackLightFixup v1.0.1
+  - Add panel type F10T9cde
 
 ## 0.0.22
 - Add ExFat support for models missing driver

@@ -19,4 +19,4 @@ With OpenCore Legacy Patcher we recommend users go through the below table to un
 | HEVC/H.265 Support for Mac Pros and iMacs with Polaris+ GPUs | <span style="color:#30BCD5">Supported</span> | <span style="color:red">Not supported</span> |
 | Big Sur-styled Boot Picker |  <span style="color:#30BCD5">Available</span> | <span style="color:red">Not available</span> |
 | El Capitan-era Wifi cards | <span style="color:#30BCD5">Supported</span> | <span style="color:red">Not supported</span> |
-| Hibernation Support | <span style="color:red">Not available</span> (Partially broken for some) | <span style="color:#30BCD5">Supported</span> |
+| Hibernation Support | <span style="color:#30BCD5">Supports 3rd party SATA SSDs in addition to stock models</span> | <span style="color:red">Only supports stock drives</span> |

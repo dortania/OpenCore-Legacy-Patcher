@@ -47,6 +47,7 @@ sudo bless --verbose --file /Volumes/VOLNAME/EFI/OC/OpenCore.efi --folder /Volum
 
 * Note you will need to replace `VOLNAME` with the Volume name of your USB or hard drive with OpenCore
 * Note 2: Once done, you can re-enable SIP
+* Note 3: The EFI partition OpenCore was installed on must be mounted, if it's unmounted simply rerun "Install OpenCore to drive"
 
 Once you boot OpenCore for the first time, LauncherOption will install itself as the top boot priority making OpenCore always launch. Combined with `RequestBootVar`, all boot options must go through OpenCore ensuring seamless usage even with OS installation and updates.
 

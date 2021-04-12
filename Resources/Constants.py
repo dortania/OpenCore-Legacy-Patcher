@@ -29,7 +29,7 @@ class Constants:
         self.restrictevents_version = "1.0.0"
         self.restrictevents_mbp_version = "1.0.1"
         self.piixata_version = "1.0.0"
-        self.backlight_version = "1.0.0"
+        self.backlight_version = "1.0.1"
         self.cpufriend_version = "1.2.3"
         self.nightshift_version = "1.1.0"
         self.smcspoof_version = "1.0.0"
