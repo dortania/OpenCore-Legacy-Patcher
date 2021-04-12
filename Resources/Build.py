@@ -201,7 +201,7 @@ class BuildOpenCore:
         agpm_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleGraphicsPowerManagement/Info.plist")
         amc_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleMuxControl/Info.plist")
 
-        if self.model == "MacBookPro8,1":
+        if self.model == "MacBookPro9,1":
             print(f"- Adding Display Map Overrides")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=vit9696"
             Path(self.constants.agdp_kext_folder).mkdir()
