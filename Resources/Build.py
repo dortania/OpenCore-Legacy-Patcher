@@ -502,6 +502,10 @@ class BuildOpenCore:
 
     def cleanup(self):
         print("- Cleaning up files")
+        # Remove unused kexts
+        for kext in list(self.config["Kernel"]["Add"]):
+            if not kext["Enabled"]:
+                self.config["Kernel"]["Add"].remove(kext)
         plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
         for kext in self.constants.kexts_path.rglob("*.zip"):
             with zipfile.ZipFile(kext) as zip_file:
