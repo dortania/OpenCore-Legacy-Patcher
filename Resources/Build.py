@@ -708,9 +708,11 @@ Please build OpenCore first!"""
                 print("- Adding Internal Drive icon")
                 shutil.copy(self.constants.icon_path_internal, mount_path)
             print("- Cleaning install location")
-            subprocess.run(f"dot_clean '{mount_path}'".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(f"dot_clean {mount_path}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print("- Unmounting EFI partition")
+            subprocess.run(f"diskutil umount {mount_path}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             print("- OpenCore transfer complete")
             print("\nPress [Enter] to continue.\n")
             input()
         else:
-            utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()
+            Utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()
