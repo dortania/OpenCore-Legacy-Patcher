@@ -146,6 +146,7 @@ class BuildOpenCore:
             wifi_devices = [i for i in wifi_devices if i["vendor-id"] == vendor_atheros or i["vendor-id"] == vendor_broadcom and i["class-code"] == binascii.unhexlify("00800200")]
             wifi_vendor = self.hexswap(binascii.hexlify(wifi_devices[0]["vendor-id"]).decode()[:4])
             wifi_device = self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4])
+            wifi_ioname = wifi_devices[0]["IOName"]
             if not self.constants.custom_model:
                 print(f"- Detected Wifi Card: {wifi_vendor}:{wifi_device}")
 
@@ -156,9 +157,9 @@ class BuildOpenCore:
             print("- Skipping Wifi patches on request")
         elif not self.constants.custom_model and wifi_devices:
             if wifi_vendor == self.constants.pci_broadcom:
-                if wifi_device in ModelArray.BCM4360Wifi:
+                if wifi_device in ModelArray.BCM4360Wifi and wifi_ioname not in ["pci14e4,4353", "pci14e4,4331"]:
                     print("- Found supported WiFi card, skipping wifi patches")
-                elif wifi_device in ModelArray.BCM94331Wifi:
+                elif wifi_ioname in ["pci14e4,4353", "pci14e4,4331"] or wifi_device in ModelArray.BCM94331Wifi:
                     wifi_fake_id(self)
                 elif wifi_device in ModelArray.BCM94322Wifi:
                     self.enable_kext("IO80211Mojave.kext", self.constants.io80211mojave_version, self.constants.io80211mojave_path)
