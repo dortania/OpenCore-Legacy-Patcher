@@ -80,6 +80,13 @@ class Constants:
         self.catalina = 19
         self.big_sur = 20
 
+        # Vendor IDs
+        self.pci_nvidia = "10DE"
+        self.pci_amd_ati = "1002"
+        self.pci_intel = "8086"
+        self.pci_broadcom = "14E4"
+        self.pci_atheros = "16C8"
+
         # External Files
         self.url_backup = ""
         self.url_apple_binaries = "https://github.com/dortania/Apple-Binaries-OCLP/archive/refs/heads/main.zip"
@@ -195,6 +202,8 @@ class Constants:
     # Tools
     @property
     def macserial_path(self): return self.payload_path / Path("Tools/macserial")
+    @property
+    def gfxutil_path(self): return self.payload_path / Path("Tools/gfxutil")
     @property
     def vault_path(self): return self.payload_path / Path("Tools/CreateVault/sign.command")
 

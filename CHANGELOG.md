@@ -16,6 +16,7 @@
   - Add panel type F10T9cde
 - Enhance HDMI audio support on Mac Pros and Xserves
 - Strip unused kext entries during build
+- Add gfxutil support for better DeviceProperty path detection
 
 ## 0.0.22
 - Add ExFat support for models missing driver

@@ -139,16 +139,16 @@ class PatchSysVolume:
 
     def gpu_accel_patches_11(self):
         if self.dgpu_devices:
-            if self.dgpu_vendor == "10DE":
+            if self.dgpu_vendor == self.constants.pci_nvidia:
                 print("- Merging legacy Nvidia Kexts and Bundles")
                 self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                 self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
-            elif self.dgpu_vendor == "1002":
+            elif self.dgpu_vendor == self.constants.pci_amd_ati:
                 print("- Merging legacy AMD Kexts and Bundles")
                 self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
                 self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
         if self.igpu_devices:
-            if self.igpu_vendor == "8086":
+            if self.igpu_vendor == self.constants.pci_intel:
                 if self.igpu_device in ModelArray.IronLakepciid:
                     print("- Merging legacy Intel 1st Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
@@ -161,7 +161,7 @@ class PatchSysVolume:
                         # Swap custom AppleIntelSNBGraphicsFB-AMD.kext, required to fix linking
                         subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                         subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            elif self.igpu_vendor == "10DE":
+            elif self.igpu_vendor == self.constants.pci_nvidia:
                 if not self.dgpu_devices:
                     # Avoid patching twice, as Nvidia iGPUs will only have Nvidia dGPUs
                     print("- Merging legacy Nvidia Kexts and Bundles")
