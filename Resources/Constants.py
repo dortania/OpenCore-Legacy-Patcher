@@ -85,7 +85,7 @@ class Constants:
         self.pci_amd_ati = "1002"
         self.pci_intel = "8086"
         self.pci_broadcom = "14E4"
-        self.pci_atheros = "16C8"
+        self.pci_atheros = "168C"
 
         # External Files
         self.url_backup = ""
