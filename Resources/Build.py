@@ -186,7 +186,7 @@ class BuildOpenCore:
                 self.get_kext_by_bundle_path("IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
 
         # CPUFriend
-        pp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/PlatformPlugin/{self.model}/Info.plist")
+        pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
         if self.model not in ModelArray.NoAPFSsupport:
             Path(self.constants.pp_kext_folder).mkdir()
             Path(self.constants.pp_contents_folder).mkdir()
@@ -205,7 +205,7 @@ class BuildOpenCore:
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
 
         # USB Map
-        usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleUSBMaps/Info.plist")
+        usb_map_path = Path(self.constants.plist_path) / Path(f"AppleUSBMaps/Info.plist")
         if usb_map_path.exists():
             print(f"- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
@@ -213,9 +213,9 @@ class BuildOpenCore:
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
 
-        agdp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleGraphicsDevicePolicy/Info.plist")
-        agpm_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleGraphicsPowerManagement/Info.plist")
-        amc_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleMuxControl/Info.plist")
+        agdp_map_path = Path(self.constants.plist_path) / Path(f"AppleGraphicsDevicePolicy/Info.plist")
+        agpm_map_path = Path(self.constants.plist_path) / Path(f"AppleGraphicsPowerManagement/Info.plist")
+        amc_map_path = Path(self.constants.plist_path) / Path(f"ppleMuxControl/Info.plist")
 
         if self.model == "MacBookPro9,1":
             print(f"- Adding Display Map Overrides")
