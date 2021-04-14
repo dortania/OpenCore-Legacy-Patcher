@@ -44,7 +44,7 @@ class OpenCoreLegacyPatcher():
 
         parser = argparse.ArgumentParser()
 
-        # Generic args
+        # Generic building args
         parser.add_argument('--build', help='Build OpenCore', action='store_true', required=False)
         parser.add_argument('--verbose', help='Enable verbose boot', action='store_true', required=False)
         parser.add_argument('--debug_oc', help='Enable OpenCore DEBUG', action='store_true', required=False)
@@ -55,10 +55,15 @@ class OpenCoreLegacyPatcher():
         parser.add_argument('--disable_smb', help='Disable SecureBootModel', action='store_true', required=False)
         parser.add_argument('--vault', help='Enable OpenCore Vaulting', action='store_true', required=False)
 
-        # Args requiring value values
+        # Building args requiring value values
         parser.add_argument('--model', action='store', help='Set custom model', required=False)
-        parser.add_argument('--gpu', action='store', help='Set Metal GPU Vendor', required=False)
-        parser.add_argument('--smbios', action='store', help='Set SMBIOS patching mode', required=False)
+        parser.add_argument('--metal_gpu', action='store', help='Set Metal GPU Vendor', required=False)
+        parser.add_argument('--smbios_spoof', action='store', help='Set SMBIOS patching mode', required=False)
+
+        # SysPatch args
+        parser.add_argument('--patch_sys_vol', help='Patches root volume', action='store_true', required=False)
+        parser.add_argument('--unpatch_sys_vol', help='Unpatches root volume, EXPERIMENTAL', action='store_true', required=False)
+        parser.add_argument('--custom_repo', action='store', help='Set SMBIOS patching mode', required=False)
 
         args = parser.parse_args()
 
@@ -96,29 +101,28 @@ class OpenCoreLegacyPatcher():
         if args.vault:
             print("- Set Vault configuration")
             self.constants.vault = True
-        if args.gpu:
-            if args.gpu == "Nvidia":
+        if args.metal_gpu:
+            if args.metal_gpu == "Nvidia":
                 print("- Set Metal GPU patches to Nvidia")
                 self.constants.metal_build = True
                 self.constants.imac_vendor = "Nvidia"
-            elif args.gpu == "AMD":
+            elif args.metal_gpu == "AMD":
                 print("- Set Metal GPU patches to AMD")
                 self.constants.metal_build = True
                 self.constants.imac_vendor = "AMD"
             else:
-                print(f"- Unknown GPU arg passed: {args.gpu}")
+                print(f"- Unknown GPU arg passed: {args.metal_gpu}")
                 self.constants.metal_build = False
                 self.constants.imac_vendor = "None"
-        if args.smbios:
-            if args.smbios == "Minimal":
+        if args.smbios_spoof:
+            if args.smbios_spoof == "Minimal":
                 self.constants.serial_settings = "Minimal"
-            elif args.smbios == "Moderate":
+            elif args.smbios_spoof == "Moderate":
                 self.constants.serial_settings = "Moderate"
-            elif args.smbios == "Advanced":
+            elif args.smbios_spoof == "Advanced":
                 self.constants.serial_settings = "Advanced"
             else:
-                print(f"- Unknown SMBIOS arg passed: {args.smbios}")
-
+                print(f"- Unknown SMBIOS arg passed: {args.smbios_spoof}")
 
         if args.build:
             if args.model:
@@ -128,6 +132,16 @@ class OpenCoreLegacyPatcher():
             else:
                 print(f"- Using detected model: {self.current_model}")
                 self.build_opencore()
+        if args.patch_sys_vol:
+            print("- Set System Volume patching")
+            if args.custom_repo:
+                self.constants.url_apple_binaries = args.custom_repo
+            print(f"- Custom set repo to: {self.constants.url_apple_binaries}")
+            SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_patch()
+        elif args.unpatch_sys_vol:
+            print("- Set System Volume unpatching")
+            SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_unpatch()
+
 
     def build_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
@@ -137,6 +151,8 @@ class OpenCoreLegacyPatcher():
 
 OpenCoreLegacyPatcher()
 
+# Example arg for OCLP command line
+# ./OpenCore-Patcher ./OpenCore-Patcher --build --verbose --debug_oc --debug_kext --model iMac11,2
 
 
 

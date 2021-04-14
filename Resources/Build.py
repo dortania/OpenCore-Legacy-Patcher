@@ -658,7 +658,7 @@ Please build OpenCore first!"""
                 # cancelled prompt
                 return
             else:
-                utilities.TUIOnlyPrint(
+                Utilities.TUIOnlyPrint(
                     ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + ["", "Please report this to the devs at GitHub."]
                 ).start()
                 return

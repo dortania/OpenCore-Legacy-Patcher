@@ -60,6 +60,15 @@ class PatchSysVolume:
         self.mount_lauchd = f"{self.mount_location}/System/Library/LaunchDaemons"
         self.mount_private_frameworks = f"{self.mount_location}/System/Library/PrivateFrameworks"
 
+        args = [
+            "osascript",
+            "-e",
+            f'''do shell script "sudo mount -o nobrowse -t apfs /dev/{self.root_mount_path} {self.mount_location}"'''
+            ' with prompt "OpenCore Legacy Patcher needs administrator privileges to mount the system volume."'
+            " with administrator privileges"
+            " without altering line endings",
+        ]
+
         if self.root_mount_path.startswith("disk"):
             self.root_mount_path = self.root_mount_path[:-2] if self.root_mount_path.endswith('s1') else self.root_mount_path
             print(f"- Found Root Volume at: {self.root_mount_path}")
@@ -71,7 +80,8 @@ class PatchSysVolume:
                     self.unpatch_root_vol()
             else:
                 print("- Mounting drive as writable")
-                subprocess.run(f"sudo mount -o nobrowse -t apfs /dev/{self.root_mount_path} {self.mount_location}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                # result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 if Path(self.mount_extensions).exists():
                     print("- Sucessfully mounted the Root Volume")
                     if patch is True:
@@ -251,10 +261,12 @@ class PatchSysVolume:
         subprocess.run(f"sudo bless --mount {self.mount_location} --bootefi --last-sealed-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def rebuild_snapshot(self):
-        input("Press [ENTER] to continue with cache rebuild")
+        if self.constants.gui_mode is False:
+            input("Press [ENTER] to continue with cache rebuild")
         print("- Rebuilding Kernel Cache (This may take some time)")
         subprocess.run(f"sudo kmutil install --volume-root {self.mount_location} --update-all".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        input("Press [ENTER] to continue with snapshotting")
+        if self.constants.gui_mode is False:
+            input("Press [ENTER] to continue with snapshotting")
         print("- Creating new APFS snapshot")
         subprocess.run(f"sudo bless --folder {self.mount_location}/System/Library/CoreServices --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
@@ -290,10 +302,11 @@ class PatchSysVolume:
     def check_files(self):
         if Path(self.constants.payload_apple_root_path).exists():
             print("- Found Apple Binaries")
-            patch_input = input("Would you like to redownload?(y/n): ")
-            if patch_input in {"y", "Y", "yes", "Yes"}:
-                shutil.rmtree(Path(self.constants.payload_apple_root_path))
-                self.download_files()
+            if self.constants.gui_mode is False:
+                patch_input = input("Would you like to redownload?(y/n): ")
+                if patch_input in {"y", "Y", "yes", "Yes"}:
+                    shutil.rmtree(Path(self.constants.payload_apple_root_path))
+                    self.download_files()
         else:
             print("- Apple binaries missing")
             self.download_files()
@@ -314,7 +327,8 @@ class PatchSysVolume:
                 os.rename(self.constants.payload_apple_root_path_unzip, self.constants.payload_apple_root_path)
                 print("- Binaries downloaded to:")
                 print(self.constants.payload_path)
-                input("Press [ENTER] to continue")
+                if self.constants.gui_mode is False:
+                    input("Press [ENTER] to continue")
             except zipfile.BadZipFile:
                 print("- Couldn't unzip")
             os.remove(self.constants.payload_apple_root_path_zip)
@@ -337,7 +351,8 @@ class PatchSysVolume:
             Utilities.cls()
             if (self.sip_patch_status is False) and (self.smb_status is False):
                 print("- Detected SIP and SecureBootModel are disabled, continuing")
-                input("\nPress [ENTER] to continue")
+                if self.constants.gui_mode is False:
+                    input("\nPress [ENTER] to continue")
                 self.check_files()
                 if self.constants.payload_apple_root_path.exists():
                     self.find_mount_root_vol(True)
@@ -357,7 +372,8 @@ class PatchSysVolume:
                 print("FileVault enabled, unable to patch!")
                 print("Please disable FileVault in System Preferences")
                 print("")
-        input("Press [Enter] to go exit.")
+        if self.constants.gui_mode is False:
+            input("Press [Enter] to go exit.")
 
     def start_unpatch(self):
         if self.constants.custom_model is not None:
@@ -369,7 +385,8 @@ class PatchSysVolume:
             Utilities.cls()
             if (self.sip_patch_status is False) and (self.smb_status is False):
                 print("- Detected SIP and SecureBootModel are disabled, continuing")
-                input("\nPress [ENTER] to continue")
+                if self.constants.gui_mode is False:
+                    input("\nPress [ENTER] to continue")
                 self.find_mount_root_vol(False)
                 self.unmount_drive()
                 print("- Unpatching complete")
@@ -387,4 +404,5 @@ class PatchSysVolume:
                 print("FileVault enabled, unable to unpatch!")
                 print("Please disable FileVault in System Preferences")
                 print("")
-        input("Press [Enter] to go exit.")
+        if self.constants.gui_mode is False:
+            input("Press [Enter] to go exit.")
