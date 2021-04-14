@@ -5,7 +5,7 @@
 - Fix iMac7,1 24" and iMac9,1 24" audio support
 - Fix Macmini4,1 audio support
 - Increment binaries
-  - AppleALC 1a3e5cb (1.6.0 rolling - 04-10-2021)
+  - AppleALC 1a3e5cb (1.6.0 rolling - 04-14-2021)
 - Enhance Wifi model detection
 - Hide OpenShell.efi by default
 - Add Brightness Control patches for legacy Nvidia, AMD and Intel GPUs
