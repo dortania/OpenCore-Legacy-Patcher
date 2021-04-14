@@ -158,9 +158,9 @@ class Constants:
     @property
     def hibernationfixup_path(self): return self.payload_kexts_path / Path(f"Acidanthera/HibernationFixup-v{self.hibernationfixup}.zip")
     @property
-    def plist_path(self): return self.payload_kexts_path / Path(f"Plists")
+    def plist_folder_path(self): return self.payload_kexts_path / Path(f"Plists")
     @property
-    def platform_plugin_plist_path(self): return self.plist_path / Path(f"PlatformPlugin")
+    def platform_plugin_plist_path(self): return self.plist_folder_path / Path(f"PlatformPlugin")
 
 
 
