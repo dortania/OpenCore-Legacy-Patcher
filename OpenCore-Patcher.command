@@ -65,6 +65,12 @@ class OpenCoreLegacyPatcher():
         self.constants.gui_mode = True
         self.constants.current_path = Path.cwd()
 
+        if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+            print("- Rerouting payloads location")
+            self.constants.payload_path = sys._MEIPASS / Path("payloads")
+        else:
+            print("- Using defaul payloads location")
+
         if args.verbose:
             print("- Set verbose configuration")
             self.constants.verbose_debug = True
