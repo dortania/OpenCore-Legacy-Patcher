@@ -96,9 +96,31 @@ class OpenCoreLegacyPatcher():
         if args.vault:
             print("- Set Vault configuration")
             self.constants.vault = True
+        if args.gpu:
+            if args.gpu == "Nvidia":
+                print("- Set Metal GPU patches to Nvidia")
+                self.constants.metal_build = True
+                self.constants.imac_vendor = "Nvidia"
+            elif args.gpu == "AMD":
+                print("- Set Metal GPU patches to AMD")
+                self.constants.metal_build = True
+                self.constants.imac_vendor = "AMD"
+            else:
+                print(f"- Unknown GPU arg passed: {args.gpu}")
+                self.constants.metal_build = False
+                self.constants.imac_vendor = "None"
+        if args.smbios:
+            if args.smbios == "Minimal":
+                self.constants.serial_settings = "Minimal"
+            elif args.smbios == "Moderate":
+                self.constants.serial_settings = "Moderate"
+            elif args.smbios == "Advanced":
+                self.constants.serial_settings = "Advanced"
+            else:
+                print(f"- Unknown SMBIOS arg passed: {args.smbios}")
+
 
         if args.build:
-
             if args.model:
                 print(f"- Using custom model: {args.model}")
                 self.constants.custom_model = args.model
