@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: pyinstaller OCLP-CLI.spec
-      - run: cd dist; zip ../OCLP-GUI.zip OCLP-GUI
+      - run: cd dist; zip ../OCLP-CLI.zip OCLP-CLI
       - name: Upload Binary to Artifacts
         uses: actions/upload-artifact@v2
         with:
