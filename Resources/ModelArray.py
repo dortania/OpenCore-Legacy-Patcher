@@ -965,22 +965,28 @@ AddAMDAccel11 = [
     "IOSurface.kext",
 ]
 
-AddAMDBrightness11 = [
+AddAMDTeraScale1Brightness11 = [
     "AMD2400Controller.kext",
     "AMD2600Controller.kext",
     "AMD3800Controller.kext",
     "AMD4600Controller.kext",
     "AMD4800Controller.kext",
+    "AMDLegacyFramebuffer.kext",
+    "AMDLegacySupport.kext",
+    "ATIRadeonX2000.kext",
+    "ATIRadeonX2000GA.plugin",
+    "ATIRadeonX2000GLDriver.bundle",
+    "ATIRadeonX2000VADriver.bundle",
+]
+
+AddAMDTeraScale2Brightness11 = [
     "AMD5000Controller.kext",
     "AMD6000Controller.kext",
     "AMDLegacyFramebuffer.kext",
     "AMDLegacySupport.kext",
     "AMDRadeonX3000.kext",
     "AMDRadeonX3000GLDriver.bundle",
-    "ATIRadeonX2000.kext",
-    "ATIRadeonX2000GA.plugin",
-    "ATIRadeonX2000GLDriver.bundle",
-    "ATIRadeonX2000VADriver.bundle",
+    "IOAcceleratorFamily2.kext"
 ]
 
 AddIntelGen1Accel = [
