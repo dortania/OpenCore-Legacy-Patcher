@@ -17,6 +17,7 @@
 - Enhance HDMI audio support on Mac Pros and Xserves
 - Strip unused kext entries during build
 - Add gfxutil support for better DeviceProperty path detection
+- Add basic CLI support
 
 ## 0.0.22
 - Add ExFat support for models missing driver
