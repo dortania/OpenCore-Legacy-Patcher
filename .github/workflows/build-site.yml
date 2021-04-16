@@ -1,4 +1,4 @@
-name: Build/Test/Deploy
+name: CI - Build Site
 on:
   push:
     branches-ignore:
