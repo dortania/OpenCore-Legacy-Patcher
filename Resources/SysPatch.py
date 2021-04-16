@@ -201,48 +201,47 @@ class PatchSysVolume:
         # Ensures no .DS_Stores got in
         print("- Preparing Files")
         subprocess.run(f"sudo find {self.constants.payload_apple_root_path} -name '.DS_Store' -delete".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        # TODO: Unify GPU detection logic
-        current_gpu: str = subprocess.run("system_profiler SPDisplaysDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-        self.constants.current_gpuv = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Vendor"))][0]
-        self.constants.current_gpud = [line.strip().split(": ", 1)[1] for line in current_gpu.split("\n") if line.strip().startswith(("Device ID"))][0]
 
         if self.model in ModelArray.LegacyGPU:
-            if (self.constants.current_gpuv == "AMD (0x1002)") & (self.constants.current_gpud in ModelArray.AMDMXMGPUs):
+            self.check_pciid()
+            if self.dgpu_devices and self.dgpu_vendor == self.constants.pci_amd_ati and self.dgpu_device in ModelArray.AMDMXMGPUs:
                 print("- Detected Metal-based AMD GPU, skipping legacy patches")
-            elif (self.constants.current_gpuv == "NVIDIA (0x10de)") & (self.constants.current_gpud in ModelArray.NVIDIAMXMGPUs):
+            elif self.dgpu_devices and self.dgpu_vendor == self.constants.pci_nvidia and self.dgpu_device in ModelArray.NVIDIAMXMGPUs:
                 print("- Detected Metal-based Nvidia GPU, skipping legacy patches")
             else:
-                self.check_pciid()
                 if Path(self.constants.hiddhack_path).exists():
                     print("- Detected legacy GPU, attempting legacy acceleration patches")
                     self.gpu_accel_patches_11()
                 else:
-                    if self.dgpu_devices and self.dgpu_vendor == self.constants.pci_nvidia:
-                        print("- Adding Nvidia Brightness Control patches")
-                        self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
-                    elif self.dgpu_devices and self.dgpu_vendor == "1002":
-                        if self.dgpu_device in ModelArray.TeraScale1pciid:
-                            print("- Adding AMD/ATI TeraScale 1 Brightness Control patches")
-                            self.add_new_binaries(ModelArray.AddAMDTeraScale1Brightness11, self.constants.legacy_amd_path)
-                        elif self.dgpu_device in ModelArray.TeraScale2pciid:
-                            print("- Adding AMD/ATI TeraScale 2 Brightness Control patches")
-                            self.add_new_binaries(ModelArray.AddAMDTeraScale2Brightness11, self.constants.legacy_amd_path)
-                        else:
-                            print("- Could not find supported Legacy AMD/ATI GPU")
-                    if self.igpu_devices and self.igpu_vendor == "8086" and self.igpu_device in ModelArray.IronLakepciid:
-                        print("- Adding Intel Ironlake Brightness Control patches")
-                        self.add_new_binaries(ModelArray.AddIntelGen1Brightness, self.constants.legacy_intel_gen1_path)
-                    elif self.igpu_devices and self.igpu_vendor == "8086" and self.igpu_device in ModelArray.SandyBridgepiciid:
-                        print("- Adding Intel Sandy Bridge Brightness Control patches")
-                        self.add_new_binaries(ModelArray.AddIntelGen2Brightness, self.constants.legacy_intel_gen2_path)
-                        if self.model in ModelArray.LegacyGPUAMDIntelGen2:
-                            # Swap custom AppleIntelSNBGraphicsFB-AMD.kext, required to fix linking
-                            subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                            subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                    elif self.igpu_device and self.igpu_vendor == self.constants.pci_nvidia and not self.dgpu_devices:
-                        # Avoid patching twice, as Nvidia iGPUs will only have Nvidia dGPUs
-                        print("- Adding Nvidia Brightness Control patches")
-                        self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
+                    if self.dgpu_devices:
+                        if self.dgpu_vendor == self.constants.pci_nvidia:
+                            print("- Adding Nvidia Brightness Control patches")
+                            self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
+                        elif self.dgpu_vendor == self.constants.pci_amd_ati:
+                            if self.dgpu_device in ModelArray.TeraScale1pciid:
+                                print("- Adding AMD/ATI TeraScale 1 Brightness Control patches")
+                                self.add_new_binaries(ModelArray.AddAMDTeraScale1Brightness11, self.constants.legacy_amd_path)
+                            elif self.dgpu_device in ModelArray.TeraScale2pciid:
+                                print("- Adding AMD/ATI TeraScale 2 Brightness Control patches")
+                                self.add_new_binaries(ModelArray.AddAMDTeraScale2Brightness11, self.constants.legacy_amd_path)
+                            else:
+                                print("- Could not find supported Legacy AMD/ATI GPU")
+                    if self.igpu_devices:
+                        if self.igpu_vendor == self.constants.pci_intel:
+                            if self.igpu_device in ModelArray.IronLakepciid:
+                                print("- Adding Intel Ironlake Brightness Control patches")
+                                self.add_new_binaries(ModelArray.AddIntelGen1Brightness, self.constants.legacy_intel_gen1_path)
+                            elif self.igpu_device in ModelArray.SandyBridgepiciid:
+                                print("- Adding Intel Sandy Bridge Brightness Control patches")
+                                self.add_new_binaries(ModelArray.AddIntelGen2Brightness, self.constants.legacy_intel_gen2_path)
+                                if self.dgpu_devices and self.dgpu_vendor == self.constants.pci_amd_ati and self.dgpu_device in ModelArray.TeraScale2pciid:
+                                    # Swap custom AppleIntelSNBGraphicsFB-AMD.kext, required to fix linking
+                                    subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                                    subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                        elif self.igpu_vendor == self.constants.pci_nvidia and not self.dgpu_devices:
+                            # Avoid patching twice, as Nvidia iGPUs will only have Nvidia dGPUs
+                            print("- Adding Nvidia Brightness Control patches")
+                            self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
                     if self.model in ModelArray.LegacyBrightness:
                         self.add_brightness_patch()
                 rebuild_required = True
