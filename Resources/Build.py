@@ -116,9 +116,6 @@ class BuildOpenCore:
             ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro71),
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
-            # Hibernation Tests
-            #("CpuTscSync.kext", self.constants.cputscsync, self.constants.cputscsync_path, lambda: True),
-            #("HibernationFixup.kext", self.constants.hibernationfixup, self.constants.hibernationfixup_path, lambda: True),
         ]:
             self.enable_kext(name, version, path, check)
 
@@ -207,7 +204,7 @@ class BuildOpenCore:
                 self.get_kext_by_bundle_path("IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
 
         # CPUFriend
-        pp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/PlatformPlugin/{self.model}/Info.plist")
+        pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
         if self.model not in ModelArray.NoAPFSsupport:
             Path(self.constants.pp_kext_folder).mkdir()
             Path(self.constants.pp_contents_folder).mkdir()
@@ -226,7 +223,7 @@ class BuildOpenCore:
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
 
         # USB Map
-        usb_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleUSBMaps/Info.plist")
+        usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
         if usb_map_path.exists():
             print(f"- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
@@ -234,9 +231,9 @@ class BuildOpenCore:
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
 
-        agdp_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleGraphicsDevicePolicy/Info.plist")
-        agpm_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleGraphicsPowerManagement/Info.plist")
-        amc_map_path = Path(self.constants.current_path) / Path(f"payloads/Kexts/Plists/AppleMuxControl/Info.plist")
+        agdp_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsDevicePolicy/Info.plist")
+        agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
+        amc_map_path = Path(self.constants.plist_folder_path) / Path("AppleMuxControl/Info.plist")
 
         if self.model == "MacBookPro9,1":
             print(f"- Adding Display Map Overrides")
@@ -676,7 +673,7 @@ Please build OpenCore first!"""
                 # cancelled prompt
                 return
             else:
-                utilities.TUIOnlyPrint(
+                Utilities.TUIOnlyPrint(
                     ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + ["", "Please report this to the devs at GitHub."]
                 ).start()
                 return
