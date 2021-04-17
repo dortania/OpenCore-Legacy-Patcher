@@ -1,4 +1,4 @@
-name: CI
+name: CI - Build App
 
 on:
   push:
