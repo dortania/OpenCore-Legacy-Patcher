@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.1.1
+
 ## 0.1.0
 - Fix crash on iMacs with Metal GPUs
 

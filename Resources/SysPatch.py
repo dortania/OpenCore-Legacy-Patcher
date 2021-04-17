@@ -221,9 +221,9 @@ class PatchSysVolume:
                             if self.dgpu_device in ModelArray.TeraScale1pciid:
                                 print("- Adding AMD/ATI TeraScale 1 Brightness Control patches")
                                 self.add_new_binaries(ModelArray.AddAMDTeraScale1Brightness11, self.constants.legacy_amd_path)
-                            elif self.dgpu_device in ModelArray.TeraScale2pciid:
-                                print("- Adding AMD/ATI TeraScale 2 Brightness Control patches")
-                                self.add_new_binaries(ModelArray.AddAMDTeraScale2Brightness11, self.constants.legacy_amd_path)
+                            #elif self.dgpu_device in ModelArray.TeraScale2pciid:
+                                #print("- Adding AMD/ATI TeraScale 2 Brightness Control patches")
+                                #self.add_new_binaries(ModelArray.AddAMDTeraScale2Brightness11, self.constants.legacy_amd_path)
                             else:
                                 print("- Could not find supported Legacy AMD/ATI GPU")
                     if self.igpu_devices:
