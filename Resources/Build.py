@@ -43,26 +43,30 @@ class BuildOpenCore:
         hex_str = "".join(["".join(x) for x in hex_rev])
         return hex_str.upper()
 
-    def check_pciid(self):
+    def check_pciid(self, print_status):
         try:
-            self.igpu_devices = plistlib.loads(subprocess.run("ioreg -r -n IGPU -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            self.igpu_devices = [i for i in self.igpu_devices if i["class-code"] == binascii.unhexlify("00000300")]
-            self.igpu_vendor = self.hexswap(binascii.hexlify(self.igpu_devices[0]["vendor-id"]).decode()[:4])
-            self.igpu_device = self.hexswap(binascii.hexlify(self.igpu_devices[0]["device-id"]).decode()[:4])
-            print(f"- Detected iGPU: {self.igpu_vendor}:{self.igpu_device}")
+            self.constants.igpu_devices = plistlib.loads(subprocess.run("ioreg -r -n IGPU -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            self.constants.igpu_devices = [i for i in self.constants.igpu_devices if i["class-code"] == binascii.unhexlify("00000300")]
+            self.constants.igpu_vendor = self.hexswap(binascii.hexlify(self.constants.igpu_devices[0]["vendor-id"]).decode()[:4])
+            self.constants.igpu_device = self.hexswap(binascii.hexlify(self.constants.igpu_devices[0]["device-id"]).decode()[:4])
+            if print_status is True:
+                print(f"- Detected iGPU: {self.constants.igpu_vendor}:{self.constants.igpu_device}")
         except ValueError:
-            print("- No iGPU detected")
-            self.igpu_devices = ""
+            if print_status is True:
+                print("- No iGPU detected")
+            self.constants.igpu_devices = ""
 
         try:
-            self.dgpu_devices = plistlib.loads(subprocess.run("ioreg -r -n GFX0 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            self.dgpu_devices = [i for i in self.dgpu_devices if i["class-code"] == binascii.unhexlify("00000300")]
-            self.dgpu_vendor = self.hexswap(binascii.hexlify(self.dgpu_devices[0]["vendor-id"]).decode()[:4])
-            self.dgpu_device = self.hexswap(binascii.hexlify(self.dgpu_devices[0]["device-id"]).decode()[:4])
-            print(f"- Detected dGPU: {self.dgpu_vendor}:{self.dgpu_device}")
+            self.constants.dgpu_devices = plistlib.loads(subprocess.run("ioreg -r -n GFX0 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            self.constants.dgpu_devices = [i for i in self.constants.dgpu_devices if i["class-code"] == binascii.unhexlify("00000300")]
+            self.constants.dgpu_vendor = self.hexswap(binascii.hexlify(self.constants.dgpu_devices[0]["vendor-id"]).decode()[:4])
+            self.constants.dgpu_device = self.hexswap(binascii.hexlify(self.constants.dgpu_devices[0]["device-id"]).decode()[:4])
+            if print_status is True:
+                print(f"- Detected dGPU: {self.constants.dgpu_vendor}:{self.constants.dgpu_device}")
         except ValueError:
-            print("- No dGPU detected")
-            self.dgpu_devices = ""
+            if print_status is True:
+                print("- No dGPU detected")
+            self.constants.dgpu_devices = ""
 
     def build_efi(self):
         Utilities.cls()
@@ -310,10 +314,10 @@ class BuildOpenCore:
             else:
                 print("- Failed to find vendor")
         elif self.constants.custom_model == "None":
-            self.check_pciid()
-            if self.dgpu_devices and self.dgpu_vendor == self.constants.pci_amd_ati and self.dgpu_device in ModelArray.AMDMXMGPUs:
+            self.check_pciid(True)
+            if self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs:
                 amd_patch(self)
-            elif self.dgpu_devices and self.dgpu_vendor == self.constants.pci_nvidia and self.dgpu_device in ModelArray.NVIDIAMXMGPUs:
+            elif self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs:
                 nvidia_patch(self)
         elif self.model in ModelArray.MacPro71:
             print("- Adding Mac Pro, Xserve DRM patches")

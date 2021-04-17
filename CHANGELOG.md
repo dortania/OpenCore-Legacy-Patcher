@@ -18,6 +18,7 @@
 - Strip unused kext entries during build
 - Add gfxutil support for better DeviceProperty path detection
 - Add basic CLI support
+- Disable SIP and SecureBootModel by default on legacy GPUs
 
 ## 0.0.22
 - Add ExFat support for models missing driver

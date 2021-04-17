@@ -25,6 +25,11 @@ class OpenCoreLegacyPatcher():
         self.constants.detected_os = int(platform.uname().release.partition(".")[0])
         if self.current_model in ModelArray.NoAPFSsupport:
             self.constants.serial_settings = "Moderate"
+        if self.current_model in ModelArray.LegacyGPU:
+            Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).check_pciid(False)
+            if not (self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs) or not (self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs):
+                self.constants.sip_status = False
+                self.constants.secure_status = False
 
         # Logic for when user runs custom OpenCore build and do not expose it
         # Note: This logic currently only applies for iMacPro1,1 users, see below threads on the culprits:
