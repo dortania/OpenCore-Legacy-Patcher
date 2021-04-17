@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.1.0
+
 ## 0.0.23
 - Fix MacBookPro4,1 15" and 17" audio support
 - Fix iMac7,1 24" and iMac9,1 24" audio support
