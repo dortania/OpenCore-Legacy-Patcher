@@ -20,8 +20,8 @@ Regarding OS support, see below:
 
 | Support Entry | Supported OSes | Description | Comment |
 | :--- | :--- | :--- | :--- |
-| HostOS | macOS 10.9-11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
-| TargetOS | macOS 11 | Refers to OSes that can be patched to run with OpenCore | Unofficially supports 10.4 and newer, no support provided via this patcher |
+| HostOS | macOS 10.9 - macOS 11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [Python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
+| TargetOS | macOS 11 | Refers to OSes that can be patched to run with OpenCore | May support 10.4 and newer (in a potentially broken state). No support provided. |
 
 ### MacBook
 
@@ -31,7 +31,7 @@ Regarding OS support, see below:
 | MacBook2,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | MacBook3,1 | Late 2007 | ^^ | ^^ |
 | MacBook4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Mavericks and newer<br/>- No Keyboard and Trackpad<br/>- No USB<br/>- No Ethernet) |
-| MacBook5,1 | Late 2008 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Trackpad is recognized as mouse |
+| MacBook5,1 | Late 2008 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
 | MacBook5,2 | Early 2009 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Trackpad is recognized as mouse<br/>- Brightness control partially supported |
 | MacBook6,1 | Late 2009 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
 | MacBook7,1 | Mid-2010 | ^^ | ^^ |
