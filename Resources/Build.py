@@ -46,7 +46,7 @@ class BuildOpenCore:
     def check_pciid(self, print_status):
         try:
             self.constants.igpu_devices = plistlib.loads(subprocess.run("ioreg -r -n IGPU -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            self.constants.igpu_devices = [i for i in self.constants.igpu_devices if i["class-code"] == binascii.unhexlify("00000300")]
+            #self.constants.igpu_devices = [i for i in self.constants.igpu_devices if i["class-code"] == binascii.unhexlify("00000300") or i["class-code"] == binascii.unhexlify("00800300")]
             self.constants.igpu_vendor = self.hexswap(binascii.hexlify(self.constants.igpu_devices[0]["vendor-id"]).decode()[:4])
             self.constants.igpu_device = self.hexswap(binascii.hexlify(self.constants.igpu_devices[0]["device-id"]).decode()[:4])
             if print_status is True:
@@ -58,7 +58,7 @@ class BuildOpenCore:
 
         try:
             self.constants.dgpu_devices = plistlib.loads(subprocess.run("ioreg -r -n GFX0 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            self.constants.dgpu_devices = [i for i in self.constants.dgpu_devices if i["class-code"] == binascii.unhexlify("00000300")]
+            #self.constants.dgpu_devices = [i for i in self.constants.dgpu_devices if i["class-code"] == binascii.unhexlify("00000300") or i["class-code"] == binascii.unhexlify("00800300")]
             self.constants.dgpu_vendor = self.hexswap(binascii.hexlify(self.constants.dgpu_devices[0]["vendor-id"]).decode()[:4])
             self.constants.dgpu_device = self.hexswap(binascii.hexlify(self.constants.dgpu_devices[0]["device-id"]).decode()[:4])
             if print_status is True:
@@ -313,13 +313,13 @@ class BuildOpenCore:
                 nvidia_patch(self)
             else:
                 print("- Failed to find vendor")
-        elif self.constants.custom_model == "None":
+        elif not self.constants.custom_model:
             self.check_pciid(True)
             if self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs:
                 amd_patch(self)
             elif self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs:
                 nvidia_patch(self)
-        elif self.model in ModelArray.MacPro71:
+        if self.model in ModelArray.MacPro71:
             print("- Adding Mac Pro, Xserve DRM patches")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
 
@@ -409,11 +409,11 @@ class BuildOpenCore:
                 print("- Spoofing to iMacPro1,1")
                 spoofed_model = "iMacPro1,1"
                 spoofed_board = "Mac-7BA5B2D9E42DDD94"
-            elif (self.constants.current_gpuv == "AMD (0x1002)") & (self.constants.current_gpud in ModelArray.AMDMXMGPUs) & (self.constants.custom_model == "None"):
+            elif self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs and not self.constants.custom_model:
                 print("- Spoofing to iMacPro1,1")
                 spoofed_model = "iMacPro1,1"
                 spoofed_board = "Mac-7BA5B2D9E42DDD94"
-            elif (self.constants.current_gpuv == "NVIDIA (0x10de)") & (self.constants.current_gpud in ModelArray.NVIDIAMXMGPUs) & (self.constants.custom_model == "None"):
+            elif self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs:
                 print("- Spoofing to iMacPro1,1")
                 spoofed_model = "iMacPro1,1"
                 spoofed_board = "Mac-7BA5B2D9E42DDD94"

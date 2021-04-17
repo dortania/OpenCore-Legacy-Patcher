@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.1.0
+- Fix crash on iMacs with Metal GPUs
 
 ## 0.0.23
 - Fix MacBookPro4,1 15" and 17" audio support
@@ -33,7 +34,7 @@
 ## 0.0.21
 - Fix botched images in OpenCanopy
 - Add support for 3rd party OpenCore usage detection during building
-  - Mainly for users transtioning from Ausdauersportler's OpenCore configuration
+  - Mainly for users transitioning from Ausdauersportler's OpenCore configuration
 
 ## 0.0.20
 - Fix CPU Calculation on early MCP79 chipsets (ie. iMac9,1, MacBook5,x)
