@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.1.1
+- Fix iMac11,3 GFX0 pathing
 
 ## 0.1.0
 - Fix crash on iMacs with Metal GPUs

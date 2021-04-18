@@ -276,15 +276,16 @@ class BuildOpenCore:
             else:
                 self.config["DeviceProperties"]["Add"][hdef_path] = {"apple-layout-id": 90, "use-apple-layout-id": 1, "use-layout-id": 1, }
 
+
         def nvidia_patch(self):
             self.constants.custom_mxm_gpu = True
             print("- Adding Nvidia Brightness Control patches")
-            if self.model == "iMac11,1":
+            if self.model in ["iMac11,1", "iMac11,3"]:
                 backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
                 shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
                 self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
-            elif self.model in ["iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]:
+            elif self.model in ["iMac11,2", "iMac12,1", "iMac12,2"]:
                 backlight_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
                 print("- Disabling unsupported iGPU")
@@ -297,9 +298,9 @@ class BuildOpenCore:
         def amd_patch(self):
             self.constants.custom_mxm_gpu = True
             print("- Adding AMD DRM patches")
-            if self.model == "iMac11,1":
+            if self.model in ["iMac11,1", "iMac11,3"]:
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1}
-            elif self.model in ["iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]:
+            elif self.model in ["iMac11,2", "iMac12,1", "iMac12,2"]:
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1}
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
