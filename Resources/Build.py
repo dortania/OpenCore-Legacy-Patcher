@@ -304,6 +304,8 @@ class BuildOpenCore:
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1}
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
+            elif self.model == "iMac10,1":
+                self.enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
 
         # Check GPU Vendor
         if self.constants.metal_build is True:

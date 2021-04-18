@@ -2,6 +2,7 @@
 
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing
+- Add MouSSE support to iMac10,1 with Metal AMD GPU
 
 ## 0.1.0
 - Fix crash on iMacs with Metal GPUs

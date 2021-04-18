@@ -124,6 +124,7 @@ module.exports = {
 				'TERMS',
 				'HOW',
 				'PATCHEXPLAIN',
+				'CLI',
             ]
 
         },

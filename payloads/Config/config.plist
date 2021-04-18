@@ -274,7 +274,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string>18.0.0</string>
+				<string></string>
 				<key>BundlePath</key>
 				<string>AAAMouSSE.kext</string>
 				<key>ExecutablePath</key>
