@@ -270,3 +270,26 @@ see the EFI Boot entry in the boot picker.
             self.constants.boot_efi = True
         else:
             print("Invalid option")
+
+
+    def drm_setting(self):
+        Utilities.cls()
+        Utilities.header(["Set DRM preferences"])
+        print("""Sets OpenCore's DRM preferences for iMac13,x and iMac14,x.
+In Big Sur, some DRM based content may be broken by
+default in AppleTV, Photobooth, etc.
+
+To resolve, you can opt to disable Intel QuickSync support in
+favor of Nvidia's Software rendering. This can aid in DRM however
+greatly hampers Video rendering performance in Final Cut Pro and
+other programs relying on such features.
+
+Recommend only disabling if absolutely required.
+        """)
+        change_menu = input("Enable Nvidia's Software DRM rendering(y/n): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.drm_support = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.drm_support = False
+        else:
+            print("Invalid option")

@@ -259,7 +259,11 @@ class BuildOpenCore:
         # AGPM Patch
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
-            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "pikera"}
+            if self.model in ModelArray.IntelNvidiaDRM and self.constants.drm_support is True:
+                print("- Prioritizing DRM support over Intel QuickSync")
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "pikera", "shikigva": 256}
+            else:
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "pikera"}
 
         # HiDPI OpenCanopy and FileVault
         if self.model in ModelArray.HiDPIpicker:
@@ -279,15 +283,20 @@ class BuildOpenCore:
 
         def nvidia_patch(self):
             self.constants.custom_mxm_gpu = True
-            print("- Adding Nvidia Brightness Control patches")
-            if self.model in ["iMac11,1", "iMac11,3"]:
+            print("- Adding Nvidia Brightness Control and DRM patches")
+            if self.model == "iMac11,1":
                 backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
-                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
+                shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
+                self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
+            elif self.model == "iMac11,3":
+                backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256}
                 shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
                 self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
             elif self.model in ["iMac11,2", "iMac12,1", "iMac12,2"]:
                 backlight_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
-                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000")}
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256}
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
                 shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
@@ -298,7 +307,9 @@ class BuildOpenCore:
         def amd_patch(self):
             self.constants.custom_mxm_gpu = True
             print("- Adding AMD DRM patches")
-            if self.model in ["iMac11,1", "iMac11,3"]:
+            if self.model == "iMac11,1":
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1, "agdpmod": "vit9696"}
+            elif self.model == "iMac11,3":
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1}
             elif self.model in ["iMac11,2", "iMac12,1", "iMac12,2"]:
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1}
@@ -408,15 +419,7 @@ class BuildOpenCore:
             spoofed_board = "Mac-7BA5B2D9E42DDD94"
         elif self.model in ModelArray.iMac151:
             # Check for upgraded GPUs on iMacs
-            if self.constants.metal_build is True:
-                print("- Spoofing to iMacPro1,1")
-                spoofed_model = "iMacPro1,1"
-                spoofed_board = "Mac-7BA5B2D9E42DDD94"
-            elif self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs and not self.constants.custom_model:
-                print("- Spoofing to iMacPro1,1")
-                spoofed_model = "iMacPro1,1"
-                spoofed_board = "Mac-7BA5B2D9E42DDD94"
-            elif self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs and not self.constants.custom_model:
+            if self.constants.metal_build is True or (self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs and not self.constants.custom_model) or (self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs and not self.constants.custom_model) or (self.model in ModelArray.IntelNvidiaDRM and self.constants.drm_support is True):
                 print("- Spoofing to iMacPro1,1")
                 spoofed_model = "iMacPro1,1"
                 spoofed_board = "Mac-7BA5B2D9E42DDD94"

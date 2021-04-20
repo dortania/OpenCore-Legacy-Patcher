@@ -471,6 +471,7 @@ DualGPUPatch = [
     "Macmini5,2",
     "iMac12,1",
     "iMac12,2",
+    "iMac13,1",
     "iMac13,2",
     "iMac14,2",
     "iMac14,3",
@@ -479,6 +480,13 @@ DualGPUPatch = [
 
 DualGPUPatchRetina = [
     "MacBookPro10,1",
+]
+
+IntelNvidiaDRM = [
+    "iMac13,1",
+    "iMac13,2",
+    "iMac14,2",
+    "iMac14,3",
 ]
 
 HiDPIpicker = [

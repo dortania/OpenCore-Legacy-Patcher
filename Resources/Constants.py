@@ -68,6 +68,7 @@ class Constants:
         self.secure_status = True
         self.detected_os = 0
         self.boot_efi = False
+        self.drm_support = False
 
         # OS Versions
         self.tiger = 8
