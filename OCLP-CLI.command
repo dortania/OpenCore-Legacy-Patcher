@@ -142,11 +142,16 @@ class OpenCoreLegacyPatcher():
             if args.custom_repo:
                 self.constants.url_apple_binaries = args.custom_repo
             print(f"- Custom set repo to: {self.constants.url_apple_binaries}")
-            SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_patch()
+            self.patch_vol()
         elif args.unpatch_sys_vol:
             print("- Set System Volume unpatching")
-            SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_unpatch()
+            self.unpatch_vol()
 
+    def patch_vol(self):
+        SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_patch()
+
+    def unpatch_vol(self):
+        SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_unpatch()
 
     def build_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
