@@ -558,12 +558,12 @@ iMacPro11 = [
     "iMac11,1",
     "iMac11,2",
     "iMac11,3",
+    "iMac12,1",
+    "iMac12,2",
 ]
 
 # iMac = AMD and Nvidia GPU with iGPU
 iMac151 = [
-    "iMac12,1",
-    "iMac12,2",
     "iMac13,2",
     "iMac14,2",
     "iMac14,3"
