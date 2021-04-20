@@ -318,9 +318,9 @@ class BuildOpenCore:
                 print("- Failed to find vendor")
         elif not self.constants.custom_model:
             self.check_pciid(True)
-            if self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs:
+            if self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs:
                 amd_patch(self)
-            elif self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs:
+            elif self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs:
                 nvidia_patch(self)
         if self.model in ModelArray.MacPro71:
             print("- Adding Mac Pro, Xserve DRM patches")
@@ -416,7 +416,7 @@ class BuildOpenCore:
                 print("- Spoofing to iMacPro1,1")
                 spoofed_model = "iMacPro1,1"
                 spoofed_board = "Mac-7BA5B2D9E42DDD94"
-            elif self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs:
+            elif self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs and not self.constants.custom_model:
                 print("- Spoofing to iMacPro1,1")
                 spoofed_model = "iMacPro1,1"
                 spoofed_board = "Mac-7BA5B2D9E42DDD94"

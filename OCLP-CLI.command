@@ -29,7 +29,7 @@ class OpenCoreLegacyPatcher():
             self.constants.serial_settings = "Moderate"
         if self.current_model in ModelArray.LegacyGPU:
             Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).check_pciid(False)
-            if not (self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs) or not (self.constants.dgpu_devices and self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs):
+            if not (self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs) or not (self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs):
                 self.constants.sip_status = False
                 self.constants.secure_status = False
 
