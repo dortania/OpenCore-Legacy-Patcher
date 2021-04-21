@@ -166,11 +166,14 @@ class BuildOpenCore:
             vendor_atheros = binascii.unhexlify("E4140000")
             vendor_broadcom = binascii.unhexlify("8C160000")
             wifi_devices = [i for i in wifi_devices if i["vendor-id"] == vendor_atheros or i["vendor-id"] == vendor_broadcom and i["class-code"] == binascii.unhexlify("00800200")]
-            wifi_vendor = self.hexswap(binascii.hexlify(wifi_devices[0]["vendor-id"]).decode()[:4])
-            wifi_device = self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4])
-            wifi_ioname = wifi_devices[0]["IOName"]
-            if not self.constants.custom_model:
-                print(f"- Detected Wifi Card: {wifi_vendor}:{wifi_device}")
+            try:
+                wifi_vendor = self.hexswap(binascii.hexlify(wifi_devices[0]["vendor-id"]).decode()[:4])
+                wifi_device = self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4])
+                wifi_ioname = wifi_devices[0]["IOName"]
+                if not self.constants.custom_model:
+                    print(f"- Detected Wifi Card: {wifi_vendor}:{wifi_device}")
+            except IndexError:
+                wifi_devices = ""
 
         else:
             wifi_devices = ""
