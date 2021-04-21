@@ -35,7 +35,7 @@ class Constants:
         self.smcspoof_version = "1.0.0"
         self.cputscsync = "1.0.3"
         self.hibernationfixup = "1.3.9"
-        self.payload_version = "0.0.2"
+        self.payload_version = "0.0.3"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
