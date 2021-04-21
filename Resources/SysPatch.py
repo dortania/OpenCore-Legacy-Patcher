@@ -176,10 +176,13 @@ class PatchSysVolume:
             self.add_brightness_patch()
 
         # LaunchDaemons
-        print("- Adding HiddHack.plist")
+        if Path(self.mount_lauchd / Path("HiddHack.plist")).exists():
+            print("- Removing legacy HiddHack")
+            subprocess.run(f"sudo rm {self.mount_lauchd}/HiddHack.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        print("- Adding IOHID-Fixup.plist")
         subprocess.run(f"sudo ditto {self.constants.payload_apple_lauchd_path_accel} {self.mount_lauchd}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo chmod 755 {self.mount_lauchd}/HiddHack.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo chown root:wheel {self.mount_lauchd}/HiddHack.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo chmod 755 {self.mount_lauchd}/IOHID-Fixup.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(f"sudo chown root:wheel {self.mount_lauchd}/IOHID-Fixup.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # PrivateFrameworks
         print("- Merging legacy PrivateFrameworks")
@@ -209,7 +212,7 @@ class PatchSysVolume:
             elif self.dgpu_devices and self.dgpu_vendor == self.constants.pci_nvidia and self.dgpu_device in ModelArray.NVIDIAMXMGPUs:
                 print("- Detected Metal-based Nvidia GPU, skipping legacy patches")
             else:
-                if Path(self.constants.hiddhack_path).exists():
+                if self.constants.legacy_acceleration_patch is True:
                     print("- Detected legacy GPU, attempting legacy acceleration patches")
                     self.gpu_accel_patches_11()
                 else:
@@ -311,7 +314,7 @@ class PatchSysVolume:
     def download_files(self):
         Utilities.cls()
         print("- Downloading Apple binaries")
-        popen_oclp = subprocess.Popen(f"curl -S -L {self.constants.url_apple_binaries} --output {self.constants.payload_apple_root_path_zip}".split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+        popen_oclp = subprocess.Popen(f"curl -S -L {self.constants.url_apple_binaries}{self.constants.payload_version}.zip --output {self.constants.payload_apple_root_path_zip}".split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
         for stdout_line in iter(popen_oclp.stdout.readline, ""):
             print(stdout_line, end="")
         popen_oclp.stdout.close()

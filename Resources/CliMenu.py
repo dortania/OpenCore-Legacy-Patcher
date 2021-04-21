@@ -219,31 +219,6 @@ running, however this will enforce iMac Nvidia Build Patches.
         else:
             print("Invalid option")
 
-    def custom_repo(self):
-        Utilities.cls()
-        Utilities.header(["Set custom patch repo"])
-        print(f"""For users participating in OpenCore Patcher betas, this is
-where you can add custom repos such as Google Drive links.
-
-Valid options:
-
-1. Set custom location
-2. Reset repo location
-3. Exit
-
-Current repo:
-{self.constants.url_apple_binaries}
-        """)
-        change_menu = input("Set custom location?: ")
-        if change_menu == "1":
-            self.constants.url_backup = self.constants.url_apple_binaries
-            self.constants.url_apple_binaries = input("Enter new URL: ")
-        elif change_menu == "2":
-            if self.constants.url_backup != "":
-                self.constants.url_apple_binaries = self.constants.url_backup
-        else:
-            print("Invalid option")
-
     def bootstrap_setting(self):
         Utilities.cls()
         Utilities.header(["Set Bootstrap method"])
@@ -291,5 +266,32 @@ Recommend only disabling if absolutely required.
             self.constants.drm_support = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.drm_support = False
+        else:
+            print("Invalid option")
+
+    def accel_setting(self):
+        Utilities.cls()
+        Utilities.header(["Enable Beta Acceleration Patches"])
+        print("""Enables OCLP's experimental GPU Acceleration Patches
+Note these are still in beta and we highly recommend users
+not run them daily or expect stable performance.
+
+Currently the following are supported:
+
+- Nvidia:  Tesla and Fermi (8000-500)
+- AMD/ATI: TeraScale 1 (2000-4000)
+- Intel:   Ironlake and Sandy Bridge
+
+For relaibaility, please consider running macOS Catalina or
+older via Dosdude1's patchers
+
+Note: These patches may break Big Sur booting, please have any
+important data backed up in case of emergencies
+        """)
+        change_menu = input("Enable Beta Acceleration Patches(y/n): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.legacy_acceleration_patch = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.legacy_acceleration_patch = False
         else:
             print("Invalid option")

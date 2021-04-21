@@ -35,6 +35,7 @@ class Constants:
         self.smcspoof_version = "1.0.0"
         self.cputscsync = "1.0.3"
         self.hibernationfixup = "1.3.9"
+        self.payload_version = "0.0.2"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -69,6 +70,7 @@ class Constants:
         self.detected_os = 0
         self.boot_efi = False
         self.drm_support = False
+        self.legacy_acceleration_patch = False
 
         # OS Versions
         self.tiger = 8
@@ -93,8 +95,7 @@ class Constants:
         self.pci_atheros = "168C"
 
         # External Files
-        self.url_backup = ""
-        self.url_apple_binaries = "https://github.com/dortania/Apple-Binaries-OCLP/archive/refs/heads/main.zip"
+        self.url_apple_binaries = "https://github.com/dortania/Apple-Binaries-OCLP/archive/refs/tags/"
 
     # Payload Location
     # OpenCore
@@ -232,7 +233,7 @@ class Constants:
 
     # Apple Paylods Paths
     @property
-    def payload_apple_root_path_unzip(self): return self.payload_path / Path("Apple-Binaries-OCLP-main")
+    def payload_apple_root_path_unzip(self): return self.payload_path / Path(f"Apple-Binaries-OCLP-{self.payload_version}")
     @property
     def payload_apple_root_path_zip(self): return self.payload_path / Path("Apple.zip")
     @property
@@ -284,7 +285,9 @@ class Constants:
 
     # Apple LaunchDaemons
     @property
-    def hiddhack_path(self): return self.payload_apple_lauchd_path_accel / Path("HiddHack.plist")
+    def hiddhack_path(self): return self.payload_apple_lauchd_path_accel / Path("IOHID-Fixup.plist")
+    @property
+    def legacy_hiddhack_path(self): return self.payload_apple_lauchd_path_accel / Path("HiddHack.plist")
 
     # Apple PrivateFrameworks
     @property
