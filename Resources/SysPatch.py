@@ -157,10 +157,10 @@ class PatchSysVolume:
                     print("- Merging legacy Intel 2nd Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
-                    if self.model in ModelArray.LegacyGPUAMDIntelGen2:
+                    #if self.model in ModelArray.LegacyGPUAMDIntelGen2:
                         # Swap custom AppleIntelSNBGraphicsFB-AMD.kext, required to fix linking
-                        subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                        subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                    #    subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                    #    subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
             elif self.igpu_vendor == self.constants.pci_nvidia:
                 if not self.dgpu_devices:
                     # Avoid patching twice, as Nvidia iGPUs will only have Nvidia dGPUs
