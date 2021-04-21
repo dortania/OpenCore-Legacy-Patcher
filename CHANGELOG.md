@@ -7,7 +7,7 @@
 - Fix DRM support on Nvidia-only configurations
   - Support optional setting between DRM and QuickSync support on iMacs13,x and iMac14,x
 - Add public beta support for Legacy GPU Acceleration
-  - Note ATI/AMD TeraScale 2 unsupported
+  - Note ATI/AMD TeraScale 2 unsupported (HD 5/6000)
 
 ## 0.1.0
 - Fix crash on iMacs with Metal GPUs

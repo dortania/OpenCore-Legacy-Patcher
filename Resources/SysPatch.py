@@ -237,10 +237,10 @@ class PatchSysVolume:
                             elif self.igpu_device in ModelArray.SandyBridgepiciid:
                                 print("- Adding Intel Sandy Bridge Brightness Control patches")
                                 self.add_new_binaries(ModelArray.AddIntelGen2Brightness, self.constants.legacy_intel_gen2_path)
-                                if self.dgpu_devices and self.dgpu_vendor == self.constants.pci_amd_ati and self.dgpu_device in ModelArray.TeraScale2pciid:
+                                #if self.dgpu_devices and self.dgpu_vendor == self.constants.pci_amd_ati and self.dgpu_device in ModelArray.TeraScale2pciid:
                                     # Swap custom AppleIntelSNBGraphicsFB-AMD.kext, required to fix linking
-                                    subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                                    subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                                #    subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                                #    subprocess.run(f"sudo cp -R {self.constants.legacy_intel_gen2_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                         elif self.igpu_vendor == self.constants.pci_nvidia and not self.dgpu_devices:
                             # Avoid patching twice, as Nvidia iGPUs will only have Nvidia dGPUs
                             print("- Adding Nvidia Brightness Control patches")

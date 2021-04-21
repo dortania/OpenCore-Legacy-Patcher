@@ -158,7 +158,7 @@ pressing the "Esc" key
 contents can be tampered with. However for more advanced users, you may
 want to be able to freely edit the config.plist and files.
 
-Note: For secuirty reasons, OpenShell will be disabled when Vault is set.
+Note: For security reasons, OpenShell will be disabled when Vault is set.
 
         """)
         change_menu = input("Enable Vault(y/n): ")
