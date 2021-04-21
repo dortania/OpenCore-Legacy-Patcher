@@ -262,11 +262,22 @@ class PatchSysVolume:
         if self.constants.gui_mode is False:
             input("Press [ENTER] to continue with cache rebuild")
         print("- Rebuilding Kernel Cache (This may take some time)")
-        subprocess.run(f"sudo kmutil install --volume-root {self.mount_location} --update-all".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        if self.constants.gui_mode is False:
-            input("Press [ENTER] to continue with snapshotting")
-        print("- Creating new APFS snapshot")
-        subprocess.run(f"sudo bless --folder {self.mount_location}/System/Library/CoreServices --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        result = subprocess.run(f"sudo kmutil install --volume-root {self.mount_location} --update-all".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        if result.returncode != 0:
+            self.sucess_status = False
+            print("- Unable to build new kernel cache")
+            print("\nPlease report this to Github")
+            print("Reason for Patch Failure:")
+            print(result)
+            print("")
+        else:
+            self.sucess_status = True
+            print("- Sucessfully built new kernel cache")
+            if self.constants.gui_mode is False:
+                input("Press [ENTER] to continue with snapshotting")
+            print("- Creating new APFS snapshot")
+            subprocess.run(f"sudo bless --folder {self.mount_location}/System/Library/CoreServices --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
@@ -358,7 +369,10 @@ class PatchSysVolume:
                     self.find_mount_root_vol(True)
                     self.unmount_drive()
                     print("- Patching complete")
-                    print("\nPlease reboot the machine for patches to take effect")
+                    if self.sucess_status is True:
+                        print("\nPlease reboot the machine for patches to take effect")
+                    else:
+                        print("\nPlease reboot the machine to avoid pottential issues rerunning the patcher")
             if self.sip_patch_status is True:
                 print("SIP set incorrectly, cannot patch on this machine!")
                 print("Please disable SIP and SecureBootModel in Patcher Settings")
