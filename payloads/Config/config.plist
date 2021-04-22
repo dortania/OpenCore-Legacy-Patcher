@@ -220,7 +220,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string>19.0.0</string>
+				<string>18.0.0</string>
 				<key>BundlePath</key>
 				<string>AppleALC.kext</string>
 				<key>ExecutablePath</key>
