@@ -98,7 +98,7 @@ Regarding OS support, see below:
 | iMac5,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | iMac5,2 | ^^ | ^^ | ^^ |
 | iMac6,1 | ^^ | ^^ | ^^ |
-| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported  |
+| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported<br/>- Stock Bluetooth 2.0 card non-functional  |
 | iMac8,1 | Early 2008 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported |
 | iMac9,1 | Early 2009 | ^^ | ^^ |
 | iMac10,1 | Late 2009 | ^^ | GPU is socketed, [recommend upgrading to Metal GPU](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857)  |
