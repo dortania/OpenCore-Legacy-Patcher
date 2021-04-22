@@ -9,6 +9,8 @@
 - Add public beta support for Legacy GPU Acceleration (v0.0.3)
   - Note ATI/AMD TeraScale 2 unsupported (HD 5/6000)
 - Add better kmutil crash handling
+- Fix build crashing when no wifi card is present
+- Allow Legacy Acceleration Patches on Mac Pros and Xserves
 
 ## 0.1.0
 - Fix crash on iMacs with Metal GPUs

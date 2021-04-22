@@ -872,6 +872,16 @@ NoExFat = [
     "Dortania1,1"
 ]
 
+SandyIGPU = [
+    "MacBookAir4,1",
+    "MacBookAir4,2",
+    "MacBookPro8,1",
+    "MacBookPro8,2",
+    "MacBookPro8,3",
+    "Macmini5,1",
+    "Macmini5,3",
+]
+
 DeleteNvidiaAccel11 = [
     "AMDRadeonX4000.kext",
     "AMDRadeonX4000HWServices.kext",
