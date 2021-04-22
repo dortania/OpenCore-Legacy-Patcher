@@ -295,3 +295,20 @@ important data backed up in case of emergencies
             self.constants.legacy_acceleration_patch = False
         else:
             print("Invalid option")
+
+
+    def force_accel_setting(self):
+        Utilities.cls()
+        Utilities.header(["Assume Legacy GPU"])
+        print("""Allows any model to force install Legacy Acceleration
+patches. Only required for Mac Pro and Xserve users.
+
+DO NOT RUN IF METAL GPU IS INSTALLED
+        """)
+        change_menu = input("Enable Beta Acceleration Patches(y/n): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.assume_legacy = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.assume_legacy = False
+        else:
+            print("Invalid option")

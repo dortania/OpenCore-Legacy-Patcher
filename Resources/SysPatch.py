@@ -205,7 +205,7 @@ class PatchSysVolume:
         print("- Preparing Files")
         subprocess.run(f"sudo find {self.constants.payload_apple_root_path} -name '.DS_Store' -delete".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-        if self.model in ModelArray.LegacyGPU:
+        if self.model in ModelArray.LegacyGPU or self.constants.assume_legacy is True:
             self.check_pciid()
             if self.dgpu_devices and self.dgpu_vendor == self.constants.pci_amd_ati and self.dgpu_device in ModelArray.AMDMXMGPUs:
                 print("- Detected Metal-based AMD GPU, skipping legacy patches")
@@ -351,7 +351,7 @@ class PatchSysVolume:
         # Check SIP
         if self.constants.custom_model is not None:
             print("Root Patching must be done on target machine!")
-        elif self.model in ModelArray.NoRootPatch11:
+        elif self.model in ModelArray.NoRootPatch11 and self.constants.assume_legacy is False:
             print("Root Patching not required for this machine!")
         elif self.model not in ModelArray.SupportedSMBIOS:
             print("Cannot run on this machine, model is unsupported!")

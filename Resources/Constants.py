@@ -71,6 +71,7 @@ class Constants:
         self.boot_efi = False
         self.drm_support = False
         self.legacy_acceleration_patch = False
+        self.assume_legacy = False
 
         # OS Versions
         self.tiger = 8

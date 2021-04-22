@@ -93,6 +93,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"DRM Preferences:\t\t\tCurrently {self.constants.drm_support}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).drm_setting],
                 [f"Set Generic Bootstrap:\t\t{self.constants.boot_efi}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).bootstrap_setting],
                 [f"Set Accleration Patches:\t\t{self.constants.legacy_acceleration_patch}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).accel_setting],
+                [f"Assume Legacy GPU:\t\t\t{self.constants.assume_legacy}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).force_accel_setting],
             ]
 
             for option in options:
