@@ -11,6 +11,7 @@
 - Add better kmutil crash handling
 - Fix build crashing when no wifi card is present
 - Allow Legacy Acceleration Patches on Mac Pros and Xserves
+- Fix USB kernel panics on iMac7,1
 
 ## 0.1.0
 - Fix crash on iMacs with Metal GPUs
