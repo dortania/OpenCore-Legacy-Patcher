@@ -510,25 +510,25 @@ class BuildOpenCore:
             plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
             plistlib.dump(amc_config, Path(new_amc_ls).open("wb"), sort_keys=True)
 
-        if self.model in ModelArray.SandyIGPU:
-            print("- Adding AppleIntelSNBGraphicsFB patch")
-            if self.model == "MacBookPro8,1":
-                x = b'Mac-94245B3640C91C81'
-            elif self.model == "MacBookPro8,2":
-                x = b'Mac-94245A3940C91C80'
-            elif self.model == "MacBookPro8,3":
-                x = b'Mac-942459F5819B171B'
-            elif self.model == "MacBookAir4,1":
-                x = b'Mac-C08A6BB70A942AC2'
-            elif self.model == "MacBookAir4,2":
-                x = b'Mac-742912EFDBEE19B3'
-            elif self.model == "Macmini5,1":
-                x = b'Mac-8ED6AF5B48C039E1'
-            elif self.model == "Macmini5,3":
-                x = b'Mac-7BA5B2794B2CDB12'
-            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleIntelSNBGraphicsFB")["Enabled"] = True
-            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleIntelSNBGraphicsFB")["Find"] = binascii.unhexlify(str(binascii.hexlify(x),'ascii'))
-            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleIntelSNBGraphicsFB")["Replace"] = binascii.unhexlify(str(binascii.hexlify(self.spoofed_board.encode()),'ascii'))
+        #if self.model in ModelArray.SandyIGPU:
+        #    print("- Adding AppleIntelSNBGraphicsFB patch")
+        #    if self.model == "MacBookPro8,1":
+        #        x = b'Mac-94245B3640C91C81'
+        #    elif self.model == "MacBookPro8,2":
+        #        x = b'Mac-94245A3940C91C80'
+        #    elif self.model == "MacBookPro8,3":
+        #        x = b'Mac-942459F5819B171B'
+        #    elif self.model == "MacBookAir4,1":
+        #        x = b'Mac-C08A6BB70A942AC2'
+        #    elif self.model == "MacBookAir4,2":
+        #        x = b'Mac-742912EFDBEE19B3'
+        #    elif self.model == "Macmini5,1":
+        #        x = b'Mac-8ED6AF5B48C039E1'
+        #    elif self.model == "Macmini5,3":
+        #        x = b'Mac-7BA5B2794B2CDB12'
+        #    self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleIntelSNBGraphicsFB")["Enabled"] = True
+        #    self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleIntelSNBGraphicsFB")["Find"] = binascii.unhexlify(str(binascii.hexlify(x),'ascii'))
+        #    self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleIntelSNBGraphicsFB")["Replace"] = binascii.unhexlify(str(binascii.hexlify(self.spoofed_board.encode()),'ascii'))
 
     @staticmethod
     def get_item_by_kv(iterable, key, value):
