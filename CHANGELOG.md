@@ -3,7 +3,7 @@
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing
 - Add MouSSE support to iMac10,1 with Metal AMD GPU
-- Fix iMac11,1 boot issues after PRAM reset
+- Fix iMac11,1 and iMac11,3 Nvidia boot issues after PRAM reset
 - Fix DRM support on Nvidia-only configurations
   - Support optional setting between DRM and QuickSync support on iMacs13,x and iMac14,x
 - Add public beta support for Legacy GPU Acceleration (v0.0.4)

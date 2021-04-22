@@ -297,7 +297,7 @@ class BuildOpenCore:
             elif self.model == "iMac11,3":
                 print("- Adding Nvidia Brightness Control and DRM patches")
                 backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
-                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256}
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
                 shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
                 self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
             elif self.model in ["iMac11,2", "iMac12,1", "iMac12,2"]:
