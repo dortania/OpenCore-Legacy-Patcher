@@ -764,7 +764,7 @@
 			<key>model</key>
 			<string>XXerve3,1</string>
 		</dict>
-		<key>iMac7,1</key>
+		<key>#iMac7,1</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
@@ -3505,7 +3505,7 @@
 			<key>Tunnel Endpoint Device Vendor ID</key>
 			<data>AQAAAA==</data>
 		</dict>
-		<key>iMac7,1-EHC1</key>
+		<key>#iMac7,1-EHC1</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
@@ -3568,7 +3568,7 @@
 			<key>model</key>
 			<string>iXac7,1</string>
 		</dict>
-		<key>iMac7,1-EHC2</key>
+		<key>#iMac7,1-EHC2</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
@@ -5417,7 +5417,7 @@
 			<key>model</key>
 			<string>Xacmini4,1</string>
 		</dict>
-		<key>iMac7,1-OHC1</key>
+		<key>#iMac7,1-OHC1</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
@@ -5459,7 +5459,7 @@
 			<key>model</key>
 			<string>iXac9,1</string>
 		</dict>
-		<key>iMac7,1-OHC2</key>
+		<key>#iMac7,1-OHC2</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>com.apple.driver.AppleUSBHostMergeProperties</string>

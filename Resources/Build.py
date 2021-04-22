@@ -232,7 +232,7 @@ class BuildOpenCore:
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
         # iMac7,1 kernel panics with USB map installed, remove for time being until properly debugged
-        if usb_map_path.exists() and self.model != "iMac7,1":
+        if usb_map_path.exists():
             print(f"- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
