@@ -31,9 +31,6 @@ Note, when building OpenCore the output folder will be next to the OCLP binary a
 ### Patch System Arguments
 
 * **--patch_sys_vol**: patches root volume with detected hardware
-  * **--custom_repo xxxx**: Sets custom repo for volume patches, defaults to Apple-Binaries-OCLP when no arg provided
-    * ex. **--custom_repo https://github.com/dortania/Apple-Binaries-OCLP/archive/refs/heads/main.zip** 
-
 
 Example usage:
 

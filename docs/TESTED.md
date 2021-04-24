@@ -111,7 +111,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | AlexSakha67 | - Upgraded R9 280<br/>- Patcher version 0.0.20 |
 | ^^ | ^^ | nekton1 | - Upgraded GTX 680<br/>- Patcher version 0.0.20 |
 | ^^ | ^^ | Pri-est | - Patcher version 0.0.9 |
-| ^^ | ^^ | vinaypundith | - Patcher version 0.0.6 |
+| ^^ | ^^ | vinaypundith | - Upgraded GTX 680<br/>- Upgraded BCM94360CD<br/>- Patcher version 0.0.6 |
 | MacPro4,1 | ^^ | ^^ | - Patcher version 0.0.9 |
 | MacPro5,1 | ^^ | woefi | - Upgraded with RX 580<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | Mabrouk Oscar | - Patcher version 0.0.21 |

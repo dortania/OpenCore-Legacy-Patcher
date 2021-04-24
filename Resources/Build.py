@@ -70,6 +70,7 @@ class BuildOpenCore:
 
     def build_efi(self):
         Utilities.cls()
+        print(f"Building Configuration for model: {self.model}")
         if not Path(self.constants.build_path).exists():
             Path(self.constants.build_path).mkdir()
             print("Created build folder")
@@ -585,7 +586,7 @@ class BuildOpenCore:
         self.cleanup()
         self.sign_files()
         print("")
-        print("Your OpenCore EFI has been built at:")
+        print(f"Your OpenCore EFI for {self.model} has been built at:")
         print(f"    {self.constants.opencore_release_folder}")
         print("")
         if self.constants.gui_mode is False:

@@ -3,6 +3,8 @@
 
 from __future__ import print_function
 
+import binascii
+import plistlib
 import subprocess
 import sys
 import time
@@ -28,8 +30,18 @@ class OpenCoreLegacyPatcher():
         if self.current_model in ModelArray.NoAPFSsupport:
             self.constants.serial_settings = "Moderate"
         if self.current_model in ModelArray.LegacyGPU:
-            Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).check_pciid(False)
-            if not (self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs) or not (self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs):
+            try:
+                dgpu_devices = plistlib.loads(subprocess.run("ioreg -r -n GFX0 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+                dgpu_vendor = self.hexswap(binascii.hexlify(dgpu_devices[0]["vendor-id"]).decode()[:4])
+                dgpu_device = self.hexswap(binascii.hexlify(dgpu_devices[0]["device-id"]).decode()[:4])
+            except ValueError:
+                dgpu_vendor = ""
+                dgpu_device = ""
+
+            if (dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs):
+                self.constants.sip_status = True
+                self.constants.secure_status = True
+            else:
                 self.constants.sip_status = False
                 self.constants.secure_status = False
 
@@ -68,7 +80,6 @@ class OpenCoreLegacyPatcher():
         # SysPatch args
         parser.add_argument('--patch_sys_vol', help='Patches root volume', action='store_true', required=False)
         parser.add_argument('--unpatch_sys_vol', help='Unpatches root volume, EXPERIMENTAL', action='store_true', required=False)
-        parser.add_argument('--custom_repo', action='store', help='Set SMBIOS patching mode', required=False)
 
         args = parser.parse_args()
 
@@ -139,13 +150,16 @@ class OpenCoreLegacyPatcher():
                 self.build_opencore()
         if args.patch_sys_vol:
             print("- Set System Volume patching")
-            if args.custom_repo:
-                self.constants.url_apple_binaries = args.custom_repo
-            print(f"- Custom set repo to: {self.constants.url_apple_binaries}")
             self.patch_vol()
         elif args.unpatch_sys_vol:
             print("- Set System Volume unpatching")
             self.unpatch_vol()
+
+    def hexswap(self, input_hex: str):
+        hex_pairs = [input_hex[i:i + 2] for i in range(0, len(input_hex), 2)]
+        hex_rev = hex_pairs[::-1]
+        hex_str = "".join(["".join(x) for x in hex_rev])
+        return hex_str.upper()
 
     def patch_vol(self):
         SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_patch()
