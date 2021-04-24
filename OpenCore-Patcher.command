@@ -3,6 +3,8 @@
 
 from __future__ import print_function
 
+import binascii
+import plistlib
 import subprocess
 import sys
 import time
@@ -26,8 +28,14 @@ class OpenCoreLegacyPatcher():
         if self.current_model in ModelArray.NoAPFSsupport:
             self.constants.serial_settings = "Moderate"
         if self.current_model in ModelArray.LegacyGPU:
-            Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).check_pciid(False)
-            if not (self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs) or not (self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs):
+            try:
+                dgpu_devices = plistlib.loads(subprocess.run("ioreg -r -n GFX0 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+                dgpu_vendor = self.hexswap(binascii.hexlify(dgpu_devices[0]["vendor-id"]).decode()[:4])
+                dgpu_device = self.hexswap(binascii.hexlify(dgpu_devices[0]["device-id"]).decode()[:4])
+            except ValueError:
+                dgpu_vendor = ""
+                dgpu_device = ""
+            if not (dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs) or not (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs):
                 self.constants.sip_status = False
                 self.constants.secure_status = False
 
@@ -44,6 +52,11 @@ class OpenCoreLegacyPatcher():
             print(f"True Model: {true_model}")
             if not true_model.startswith("Unknown"):
                 self.current_model = true_model
+    def hexswap(self, input_hex: str):
+        hex_pairs = [input_hex[i:i + 2] for i in range(0, len(input_hex), 2)]
+        hex_rev = hex_pairs[::-1]
+        hex_str = "".join(["".join(x) for x in hex_rev])
+        return hex_str.upper()
 
     def build_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
