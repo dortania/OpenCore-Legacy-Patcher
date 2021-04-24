@@ -70,7 +70,7 @@ class Constants:
         self.detected_os = 0
         self.boot_efi = False
         self.drm_support = False
-        self.legacy_acceleration_patch = False
+        self.legacy_acceleration_patch = True
         self.assume_legacy = False
 
         # OS Versions
@@ -94,6 +94,11 @@ class Constants:
         self.pci_intel = "8086"
         self.pci_broadcom = "14E4"
         self.pci_atheros = "168C"
+
+        # Nvidia GPU Architecture
+        self.arch_tesla = "NV50"
+        self.arch_fermi = "GF100"
+        self.arch_kepler = "GK100"
 
         # External Files
         self.url_apple_binaries = "https://github.com/dortania/Apple-Binaries-OCLP/archive/refs/tags/"
@@ -267,11 +272,15 @@ class Constants:
     @property
     def legacy_nvidia_path(self): return self.legacy_graphics / Path("Nvidia-Tesla-Fermi")
     @property
+    def legacy_nvidia_kepler_path(self): return self.legacy_graphics / Path("Nvidia-Kepler")
+    @property
     def legacy_amd_path(self): return self.legacy_graphics / Path("AMD-ATI")
     @property
     def legacy_intel_gen1_path(self): return self.legacy_graphics / Path("Intel-Gen5-Ironlake")
     @property
     def legacy_intel_gen2_path(self): return self.legacy_graphics / Path("Intel-Gen6-SandyBridge")
+    @property
+    def legacy_intel_gen3_path(self): return self.legacy_graphics / Path("Intel-Gen7-IvyBridge")
 
     @property
     def legacy_brightness(self): return self.payload_apple_kexts_path / Path("Brightness-Control")

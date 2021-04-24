@@ -951,13 +951,17 @@ AddNvidiaAccel11 = [
     "IOSurface.kext",
 ]
 
-AddNvidiaBrightness11 = [
-    "GeForceGA.bundle",
-    "GeForceTesla.kext",
-    "GeForceTeslaGLDriver.bundle",
-    "GeForceTeslaVADriver.bundle",
-    "NVDANV50HalTesla.kext",
-    "NVDAResmanTesla.kext",
+AddNvidiaKeplerAccel11 = [
+	"GeForce.kext",
+	"GeForceAIRPlugin.bundle",
+	"GeForceGLDriver.bundle",
+	"GeForceMTLDriver.bundle",
+	"GeForceVADriver.bundle",
+	"NVDAGF100Hal.kext",
+	"NVDAGK100Hal.kext",
+	"NVDAResman.kext",
+	"NVDAStartup.kext",
+	"NVSMU.kext",
 ]
 
 AddAMDAccel11 = [
@@ -984,20 +988,6 @@ AddAMDAccel11 = [
     "IOSurface.kext",
 ]
 
-AddAMDTeraScale1Brightness11 = [
-    "AMD2400Controller.kext",
-    "AMD2600Controller.kext",
-    "AMD3800Controller.kext",
-    "AMD4600Controller.kext",
-    "AMD4800Controller.kext",
-    "AMDLegacyFramebuffer.kext",
-    "AMDLegacySupport.kext",
-    "ATIRadeonX2000.kext",
-    "ATIRadeonX2000GA.plugin",
-    "ATIRadeonX2000GLDriver.bundle",
-    "ATIRadeonX2000VADriver.bundle",
-]
-
 AddAMDTeraScale2Brightness11 = [
     "AMD5000Controller.kext",
     "AMD6000Controller.kext",
@@ -1019,16 +1009,6 @@ AddIntelGen1Accel = [
     "IOSurface.kext",
 ]
 
-AddIntelGen1Brightness = [
-    "AppleIntelFramebufferAzul.kext",
-    "AppleIntelFramebufferCapri.kext",
-    "AppleIntelHDGraphics.kext",
-    "AppleIntelHDGraphicsFB.kext",
-    "AppleIntelHDGraphicsGA.plugin",
-    "AppleIntelHDGraphicsGLDriver.bundle",
-    "AppleIntelHDGraphicsVADriver.bundle",
-]
-
 AddIntelGen2Accel = [
     "AppleIntelHD3000Graphics.kext",
     "AppleIntelHD3000GraphicsGA.plugin",
@@ -1039,13 +1019,12 @@ AddIntelGen2Accel = [
     "IOSurface.kext",
 ]
 
-AddIntelGen2Brightness = [
-    "AppleIntelHD3000Graphics.kext",
-    "AppleIntelHD3000GraphicsGA.plugin",
-    "AppleIntelHD3000GraphicsGLDriver.bundle",
-    "AppleIntelHD3000GraphicsVADriver.bundle",
-    "AppleIntelSNBGraphicsFB.kext",
-    "AppleIntelSNBVA.bundle",
+AddIntelGen3Accel = [
+	"AppleIntelFramebufferCapri.kext",
+	"AppleIntelHD4000Graphics.kext",
+	"AppleIntelHD4000GraphicsGLDriver.bundle",
+	"AppleIntelHD4000GraphicsMTLDriver.bundle",
+	"AppleIntelHD4000GraphicsVADriver.bundle",
 ]
 
 DeleteBrightness = [
@@ -1140,3 +1119,11 @@ SandyBridgepiciid = [
     "0102",
     "0126",
 ]
+
+IvyBridgepciid = [
+	"0152",
+	"0156",
+	"0162",
+	"0166",
+]
+

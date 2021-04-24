@@ -45,8 +45,14 @@ class PatchSysVolume:
             if print_status is True:
                 print(f"- {current_sip_bit}\t {temp}")
             i = i + 1
-        # TODO: Fix this garbage when I have more sanity
-        if ((self.constants.csr_values["CSR_ALLOW_UNTRUSTED_KEXTS           "] is True) and (self.constants.csr_values["CSR_ALLOW_UNRESTRICTED_FS           "] is True) and (self.constants.csr_values["CSR_ALLOW_UNRESTRICTED_DTRACE       "] is True) and (self.constants.csr_values["CSR_ALLOW_UNRESTRICTED_NVRAM        "] is True) and (self.constants.csr_values["CSR_ALLOW_DEVICE_CONFIGURATION      "] is True) and (self.constants.csr_values["CSR_ALLOW_UNAPPROVED_KEXTS          "] is True) and (self.constants.csr_values["CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE"] is True) and (self.constants.csr_values["CSR_ALLOW_UNAUTHENTICATED_ROOT      "] is True)):
+        if ((self.constants.csr_values["CSR_ALLOW_UNTRUSTED_KEXTS           "] is True) \
+        and (self.constants.csr_values["CSR_ALLOW_UNRESTRICTED_FS           "] is True) \
+        and (self.constants.csr_values["CSR_ALLOW_UNRESTRICTED_DTRACE       "] is True) \
+        and (self.constants.csr_values["CSR_ALLOW_UNRESTRICTED_NVRAM        "] is True) \
+        and (self.constants.csr_values["CSR_ALLOW_DEVICE_CONFIGURATION      "] is True) \
+        and (self.constants.csr_values["CSR_ALLOW_UNAPPROVED_KEXTS          "] is True) \
+        and (self.constants.csr_values["CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE"] is True) \
+        and (self.constants.csr_values["CSR_ALLOW_UNAUTHENTICATED_ROOT      "] is True)):
             self.sip_patch_status = False
         else:
             self.sip_patch_status = True
@@ -132,6 +138,10 @@ class PatchSysVolume:
             self.dgpu_devices = [i for i in self.dgpu_devices if i["class-code"] == binascii.unhexlify("00000300")]
             self.dgpu_vendor = self.hexswap(binascii.hexlify(self.dgpu_devices[0]["vendor-id"]).decode()[:4])
             self.dgpu_device = self.hexswap(binascii.hexlify(self.dgpu_devices[0]["device-id"]).decode()[:4])
+            try:
+                self.nvidia_arch = self.dgpu_devices[0]["NVArch"]
+            except ValueError:
+                self.nvidia_arch = ""
             print(f"- Detected dGPU: {self.dgpu_vendor}:{self.dgpu_device}")
         except ValueError:
             print("- No dGPU detected")
@@ -140,9 +150,13 @@ class PatchSysVolume:
     def gpu_accel_patches_11(self):
         if self.dgpu_devices:
             if self.dgpu_vendor == self.constants.pci_nvidia:
-                print("- Merging legacy Nvidia Kexts and Bundles")
-                self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
-                self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+                if self.nvidia_arch == self.constants.arch_kepler and self.constants.assume_legacy is True and self.constants.detected_os > self.constants.big_sur:
+                    print("- Merging legacy Nvidia Kepler Kexts and Bundles")
+                    self.add_new_binaries(ModelArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
+                else:
+                    print("- Merging legacy Nvidia Telsa and Fermi Kexts and Bundles")
+                    self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
+                    self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
             elif self.dgpu_vendor == self.constants.pci_amd_ati:
                 print("- Merging legacy AMD Kexts and Bundles")
                 self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
@@ -161,6 +175,11 @@ class PatchSysVolume:
                         # Swap custom AppleIntelSNBGraphicsFB-AMD.kext, required to fix linking
                     #    subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                     #    subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+
+                # Code for when Ivy Bridge binares are presumably removed from macOS 12, code currently
+                #elif self.igpu_device in ModelArray.IvyBridgepciid:
+                #    print("- Merging legacy Intel 3rd Gen Kexts and Bundles")
+                #    self.add_new_binaries(ModelArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
             elif self.igpu_vendor == self.constants.pci_nvidia:
                 if not self.dgpu_devices:
                     # Avoid patching twice, as Nvidia iGPUs will only have Nvidia dGPUs
@@ -199,8 +218,6 @@ class PatchSysVolume:
         # TODO: Create Backup of S*/L*/Extensions, Frameworks and PrivateFramework to easily revert changes
         # APFS snapshotting seems to ignore System Volume changes inconcistently, would like a backup to avoid total brick
         # Perhaps a basic py2 script to run in recovery to restore
-        print("- Creating backup snapshot of user data (This may take some time)")
-        subprocess.run("tmutil snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         # Ensures no .DS_Stores got in
         print("- Preparing Files")
         subprocess.run(f"sudo find {self.constants.payload_apple_root_path} -name '.DS_Store' -delete".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
@@ -212,41 +229,8 @@ class PatchSysVolume:
             elif self.dgpu_devices and self.dgpu_vendor == self.constants.pci_nvidia and self.dgpu_device in ModelArray.NVIDIAMXMGPUs:
                 print("- Detected Metal-based Nvidia GPU, skipping legacy patches")
             else:
-                if self.constants.legacy_acceleration_patch is True:
-                    print("- Detected legacy GPU, attempting legacy acceleration patches")
-                    self.gpu_accel_patches_11()
-                else:
-                    if self.dgpu_devices:
-                        if self.dgpu_vendor == self.constants.pci_nvidia:
-                            print("- Adding Nvidia Brightness Control patches")
-                            self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
-                        elif self.dgpu_vendor == self.constants.pci_amd_ati:
-                            if self.dgpu_device in ModelArray.TeraScale1pciid:
-                                print("- Adding AMD/ATI TeraScale 1 Brightness Control patches")
-                                self.add_new_binaries(ModelArray.AddAMDTeraScale1Brightness11, self.constants.legacy_amd_path)
-                            #elif self.dgpu_device in ModelArray.TeraScale2pciid:
-                                #print("- Adding AMD/ATI TeraScale 2 Brightness Control patches")
-                                #self.add_new_binaries(ModelArray.AddAMDTeraScale2Brightness11, self.constants.legacy_amd_path)
-                            else:
-                                print("- Could not find supported Legacy AMD/ATI GPU")
-                    if self.igpu_devices:
-                        if self.igpu_vendor == self.constants.pci_intel:
-                            if self.igpu_device in ModelArray.IronLakepciid:
-                                print("- Adding Intel Ironlake Brightness Control patches")
-                                self.add_new_binaries(ModelArray.AddIntelGen1Brightness, self.constants.legacy_intel_gen1_path)
-                            elif self.igpu_device in ModelArray.SandyBridgepiciid:
-                                print("- Adding Intel Sandy Bridge Brightness Control patches")
-                                self.add_new_binaries(ModelArray.AddIntelGen2Brightness, self.constants.legacy_intel_gen2_path)
-                                #if self.dgpu_devices and self.dgpu_vendor == self.constants.pci_amd_ati and self.dgpu_device in ModelArray.TeraScale2pciid:
-                                    # Swap custom AppleIntelSNBGraphicsFB-AMD.kext, required to fix linking
-                                #    subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                                #    subprocess.run(f"sudo cp -R {self.constants.legacy_intel_gen2_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                        elif self.igpu_vendor == self.constants.pci_nvidia and not self.dgpu_devices:
-                            # Avoid patching twice, as Nvidia iGPUs will only have Nvidia dGPUs
-                            print("- Adding Nvidia Brightness Control patches")
-                            self.add_new_binaries(ModelArray.AddNvidiaBrightness11, self.constants.legacy_nvidia_path)
-                    if self.model in ModelArray.LegacyBrightness:
-                        self.add_brightness_patch()
+                print("- Detected legacy GPU, attempting legacy acceleration patches")
+                self.gpu_accel_patches_11()
                 rebuild_required = True
 
         if rebuild_required is True:
