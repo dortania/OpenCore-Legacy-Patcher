@@ -56,6 +56,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | CyberDroid1 | - Stock model<br/>- Patcher version 0.0.16 |
 | ^^ | ^^ | woefi | - BCM94331CAX upgrade<br/>- Patcher version 0.0.13 |
 | ^^ | ^^ | whgmkeller | - Stock model<br/>- Patcher version 0.0.11 |
+| ^^ | ^^ | vinaypundith | - Patcher version 0.0.7 |
 | MacBookPro10,1 | ^^ | traviswparker | - Stock model <br/>- Patcher version 0.0.14 |
 | ^^ | ^^ | il-rollino | - Upgraded BCM94360CSAX <br/>- Patcher version 0.0.21 |
 | MacBookPro10,2 | No reports | N/A | N/A |
@@ -86,6 +87,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | iMac11,1 | ^^ | internetzel | - Upgraded with RX580 mobile |
 | iMac11,2 | ^^ | MykolaG | - Stock Model<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | iMac-iPad | - Stock Model<br/>- Patcher version 0.0.21 |
+| ^^ | ^^ | vinaypundith | - Patcher version 0.0.19 |
 | iMac11,3 | ^^ | Ausdauersportler | - Upgraded with Polaris GPU<br/>- Upgraded BCM943602CDP<br/>- Patcher version 0.0.21 |
 | iMac12,1 | ^^ | shnockdu | - Upgraded with Kepler GPU<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | StephN999 | - Upgraded WX4150 GPU<br/>- Upgraded BCM94360CD<br/>- Patcher version 0.0.21 |
@@ -109,6 +111,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | AlexSakha67 | - Upgraded R9 280<br/>- Patcher version 0.0.20 |
 | ^^ | ^^ | nekton1 | - Upgraded GTX 680<br/>- Patcher version 0.0.20 |
 | ^^ | ^^ | Pri-est | - Patcher version 0.0.9 |
+| ^^ | ^^ | vinaypundith | - Patcher version 0.0.6 |
 | MacPro4,1 | ^^ | ^^ | - Patcher version 0.0.9 |
 | MacPro5,1 | ^^ | woefi | - Upgraded with RX 580<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | Mabrouk Oscar | - Patcher version 0.0.21 |

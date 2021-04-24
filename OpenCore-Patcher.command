@@ -35,6 +35,7 @@ class OpenCoreLegacyPatcher():
             except ValueError:
                 dgpu_vendor = ""
                 dgpu_device = ""
+            print(f"- Detected dGPU: {dgpu_vendor}:{dgpu_device}")
             if not (dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs) or not (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs):
                 self.constants.sip_status = False
                 self.constants.secure_status = False
