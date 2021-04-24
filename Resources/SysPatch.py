@@ -140,7 +140,7 @@ class PatchSysVolume:
             self.dgpu_device = self.hexswap(binascii.hexlify(self.dgpu_devices[0]["device-id"]).decode()[:4])
             try:
                 self.nvidia_arch = self.dgpu_devices[0]["NVArch"]
-            except ValueError:
+            except KeyError:
                 self.nvidia_arch = ""
             print(f"- Detected dGPU: {self.dgpu_vendor}:{self.dgpu_device}")
         except ValueError:
