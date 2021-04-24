@@ -17,6 +17,7 @@
 - Enable Graphics Acceleration on legacy GPUs by default
 - Automatically disable AMD TeraScale 2 GPUs in MacBook Pros
 - Fix incorrectly disabling SIP/SMB on Metal GPUs
+- Fix error output when rebuilding kernel cache fails
 
 ## 0.1.0
 - Fix crash on iMacs with Metal GPUs
