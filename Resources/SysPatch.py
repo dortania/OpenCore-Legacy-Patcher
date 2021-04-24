@@ -246,14 +246,14 @@ class PatchSysVolume:
         if self.constants.gui_mode is False:
             input("Press [ENTER] to continue with cache rebuild")
         print("- Rebuilding Kernel Cache (This may take some time)")
-        result = subprocess.run(f"sudo kmutil install --volume-root {self.mount_location} --update-all".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(f"sudo kmutil install --volume-root {self.mount_location} --update-all".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         if result.returncode != 0:
             self.sucess_status = False
             print("- Unable to build new kernel cache")
             print("\nPlease report this to Github")
             print("Reason for Patch Failure:")
-            print(result)
+            print(result.stdout.decode())
             print("")
         else:
             self.sucess_status = True
