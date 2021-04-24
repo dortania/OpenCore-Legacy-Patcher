@@ -15,6 +15,7 @@
 - Fix AppleALC support in Mojave
 - Fix TeraScale 1 GPU detection
 - Enable Graphics Acceleration on legacy GPUs by default
+- Automatically disable AMD TeraScale 2 GPUs in MacBook Pros
 
 ## 0.1.0
 - Fix crash on iMacs with Metal GPUs

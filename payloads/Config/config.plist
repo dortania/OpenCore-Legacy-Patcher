@@ -1084,6 +1084,8 @@
 				<key>csr-active-config</key>
 				<data>AAAAAA==</data>
 			</dict>
+			<key>FA4CE28D-B62F-4C99-9CC3-6815686E30F9</key>
+			<dict/>
 		</dict>
 		<key>Delete</key>
 		<dict>
@@ -1101,6 +1103,8 @@
 			<array>
 				<string>boot-args</string>
 			</array>
+			<key>FA4CE28D-B62F-4C99-9CC3-6815686E30F9</key>
+			<array/>
 		</dict>
 		<key>LegacyEnable</key>
 		<false/>
