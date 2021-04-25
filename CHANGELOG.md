@@ -18,6 +18,7 @@
 - Automatically disable AMD TeraScale 2 GPUs in MacBook Pros
 - Fix incorrectly disabling SIP/SMB on Metal GPUs
 - Fix error output when rebuilding kernel cache fails
+- Fix Acceleration Linking for Intel Ironlake iGPUs
 
 ## 0.1.0
 - Fix crash on iMacs with Metal GPUs

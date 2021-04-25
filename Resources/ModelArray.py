@@ -999,8 +999,6 @@ AddAMDTeraScale2Brightness11 = [
 ]
 
 AddIntelGen1Accel = [
-    "AppleIntelFramebufferAzul.kext",
-    "AppleIntelFramebufferCapri.kext",
     "AppleIntelHDGraphics.kext",
     "AppleIntelHDGraphicsFB.kext",
     "AppleIntelHDGraphicsGA.plugin",
