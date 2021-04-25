@@ -510,11 +510,11 @@ class BuildOpenCore:
             plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
             plistlib.dump(amc_config, Path(new_amc_ls).open("wb"), sort_keys=True)
 
-        if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
-            print("- Disabling unsupported TeraScale 2 dGPU")
-            self.config["NVRAM"]["Add"]["FA4CE28D-B62F-4C99-9CC3-6815686E30F9"]["gpu-power-prefs"] = binascii.unhexlify("01000000")
-            self.config["NVRAM"]["Delete"]["FA4CE28D-B62F-4C99-9CC3-6815686E30F9"] += ["gpu-power-prefs"]
-            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
+        #if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
+        #    print("- Disabling unsupported TeraScale 2 dGPU")
+        #    self.config["NVRAM"]["Add"]["FA4CE28D-B62F-4C99-9CC3-6815686E30F9"]["gpu-power-prefs"] = binascii.unhexlify("01000000")
+        #    self.config["NVRAM"]["Delete"]["FA4CE28D-B62F-4C99-9CC3-6815686E30F9"] += ["gpu-power-prefs"]
+        #    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
 
     @staticmethod
     def get_item_by_kv(iterable, key, value):
