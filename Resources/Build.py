@@ -46,7 +46,6 @@ class BuildOpenCore:
     def check_pciid(self, print_status):
         try:
             self.constants.igpu_devices = plistlib.loads(subprocess.run("ioreg -r -n IGPU -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            #self.constants.igpu_devices = [i for i in self.constants.igpu_devices if i["class-code"] == binascii.unhexlify("00000300") or i["class-code"] == binascii.unhexlify("00800300")]
             self.constants.igpu_vendor = self.hexswap(binascii.hexlify(self.constants.igpu_devices[0]["vendor-id"]).decode()[:4])
             self.constants.igpu_device = self.hexswap(binascii.hexlify(self.constants.igpu_devices[0]["device-id"]).decode()[:4])
             if print_status is True:
@@ -58,7 +57,6 @@ class BuildOpenCore:
 
         try:
             self.constants.dgpu_devices = plistlib.loads(subprocess.run("ioreg -r -n GFX0 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            #self.constants.dgpu_devices = [i for i in self.constants.dgpu_devices if i["class-code"] == binascii.unhexlify("00000300") or i["class-code"] == binascii.unhexlify("00800300")]
             self.constants.dgpu_vendor = self.hexswap(binascii.hexlify(self.constants.dgpu_devices[0]["vendor-id"]).decode()[:4])
             self.constants.dgpu_device = self.hexswap(binascii.hexlify(self.constants.dgpu_devices[0]["device-id"]).decode()[:4])
             if print_status is True:
@@ -129,7 +127,6 @@ class BuildOpenCore:
             self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
             self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
             if not self.constants.custom_model:
-                # Try finding
                 arpt_path: str = subprocess.run([self.constants.gfxutil_path] + f"-v".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
                 try:
                     arpt_path = [line.strip().split("= ", 1)[1] for line in arpt_path.split("\n") if f"{wifi_vendor}:{wifi_device}".lower() in line.strip()][0]

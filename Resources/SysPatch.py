@@ -2,9 +2,8 @@
 # Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 # Missing Features:
 # - Full System/Library Snapshotting (need to research how Apple achieves this)
-#   - Temorary Work-around: sudo bless --mount /System/Volumes/Update/mnt1 --bootefi --last-sealed-snapshot
+#   - Temporary Work-around: sudo bless --mount /System/Volumes/Update/mnt1 --bootefi --last-sealed-snapshot
 # - Work-around battery throttling on laptops with no battery (IOPlatformPluginFamily.kext/Contents/PlugIns/ACPI_SMC_PlatformPlugin.kext/Contents/Resources/)
-# - Add kmutil error checking
 from __future__ import print_function
 
 import binascii
@@ -79,7 +78,7 @@ class PatchSysVolume:
                 print("- Mounting drive as writable")
                 subprocess.run(f"sudo mount -o nobrowse -t apfs /dev/{self.root_mount_path} {self.mount_location}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 if Path(self.mount_extensions).exists():
-                    print("- Sucessfully mounted the Root Volume")
+                    print("- Successfully mounted the Root Volume")
                     if patch is True:
                         self.patch_root_vol()
                     else:
@@ -216,7 +215,7 @@ class PatchSysVolume:
         print(f"- Detecting patches for {self.model}")
         rebuild_required = False
         # TODO: Create Backup of S*/L*/Extensions, Frameworks and PrivateFramework to easily revert changes
-        # APFS snapshotting seems to ignore System Volume changes inconcistently, would like a backup to avoid total brick
+        # APFS snapshotting seems to ignore System Volume changes inconsistently, would like a backup to avoid total brick
         # Perhaps a basic py2 script to run in recovery to restore
         # Ensures no .DS_Stores got in
         print("- Preparing Files")
@@ -237,8 +236,6 @@ class PatchSysVolume:
             self.rebuild_snapshot()
 
     def unpatch_root_vol(self):
-        print("- Creating backup snapshot of user data (This may take some time)")
-        subprocess.run("tmutil snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         print("- Reverting to last signed APFS snapshot")
         subprocess.run(f"sudo bless --mount {self.mount_location} --bootefi --last-sealed-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
@@ -257,7 +254,7 @@ class PatchSysVolume:
             print("")
         else:
             self.sucess_status = True
-            print("- Sucessfully built new kernel cache")
+            print("- Successfully built new kernel cache")
             if self.constants.gui_mode is False:
                 input("Press [ENTER] to continue with snapshotting")
             print("- Creating new APFS snapshot")

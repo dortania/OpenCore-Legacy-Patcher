@@ -282,7 +282,7 @@ Currently the following are supported:
 - AMD/ATI: TeraScale 1 (2000-4000)
 - Intel:   Ironlake and Sandy Bridge
 
-For relaibaility, please consider running macOS Catalina or
+For reliability, please consider running macOS Catalina or
 older via Dosdude1's patchers
 
 Note: These patches may break Big Sur booting, please have any
