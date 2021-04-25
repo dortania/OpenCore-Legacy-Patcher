@@ -720,7 +720,7 @@ Please build OpenCore first!"""
             if (mount_path / Path("System")).exists():
                 print("- Removing preexisting System folder")
                 shutil.rmtree(mount_path / Path("System"), onerror=rmtree_handler)
-            print("- Coping OpenCore onto EFI partition")
+            print("- Copying OpenCore onto EFI partition")
             shutil.copytree(self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC"))
             shutil.copytree(self.constants.opencore_release_folder / Path("System"), mount_path / Path("System"))
             if self.constants.boot_efi is True:
