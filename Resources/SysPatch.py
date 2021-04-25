@@ -356,7 +356,7 @@ class PatchSysVolume:
                     if self.sucess_status is True:
                         print("\nPlease reboot the machine for patches to take effect")
                     else:
-                        print("\nPlease reboot the machine to avoid pottential issues rerunning the patcher")
+                        print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
             if self.sip_patch_status is True:
                 print("SIP set incorrectly, cannot patch on this machine!")
                 print("Please disable SIP and SecureBootModel in Patcher Settings")
