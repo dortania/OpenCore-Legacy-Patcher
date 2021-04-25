@@ -237,7 +237,7 @@ class Constants:
     @property
     def gui_path(self): return self.payload_path / Path("Icon/Resources.zip")
 
-    # Apple Paylods Paths
+    # Apple Payloads Paths
     @property
     def payload_apple_root_path_unzip(self): return self.payload_path / Path(f"Apple-Binaries-OCLP-{self.payload_version}")
     @property

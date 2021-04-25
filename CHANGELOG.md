@@ -201,4 +201,4 @@
 - Add El Capitan era wireless cards
 
 ## 0.0.1
-- Inital developer preview
+- Initial developer preview
