@@ -45,7 +45,7 @@ Since this patcher tricks macOS into thinking you're running a newer Mac, certai
 
 ## Support
 
-To get aid with the patcher, we recommend joining the [Unsupported Mac Discord Server](https://discord.gg/XbbWAsE) and heading over to our `#opencore-patcher` channel. We're actively there and is the quickest way to receive help. For bigger issues such as patcher crashing on build and such, we recommend opening an issue right here on GitHub:
+To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise Discord Server](https://discord.gg/UbM8U75E). We're actively there and is the quickest way to receive help. For bigger issues such as patcher crashing on build and such, we recommend opening an issue right here on GitHub:
 
 * [OpenCore Legacy Patcher's Issue's tab](https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
 

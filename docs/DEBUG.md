@@ -2,7 +2,7 @@
 
 For those who've hit an odd bug and unsure if it's user error or patcher, the below will tell you how to get more verbose debug information as well as logs to help [file issues with us](https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
 
-* For users who are less experienced, we recommend asking on the [Unsupported Mac Discord Server](https://discord.gg/XbbWAsE) for help.
+* For users who are less experienced, we recommend asking on the [OpenCore Patcher Paradise Discord Server](https://discord.gg/UbM8U75E) for help.
 
 ## Debugging yourself
 
