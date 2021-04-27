@@ -326,7 +326,7 @@ class PatchSysVolume:
             os.remove(self.constants.payload_apple_root_path_zip)
         else:
             print("- Download failed, please verify the below link works:")
-            print(self.constants.url_apple_binaries)
+            print(f"{self.constants.url_apple_binaries}{self.constants.payload_version}")
 
     def start_patch(self):
         # Check SIP
