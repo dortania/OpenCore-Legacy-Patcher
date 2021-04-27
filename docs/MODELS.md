@@ -30,10 +30,10 @@ Regarding OS support, see below:
 | MacBook1,1 | Mid-2006 | <span style="color:red"> NO </span>  | 32-Bit CPU limitation |
 | MacBook2,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | MacBook3,1 | Late 2007 | ^^ | ^^ |
-| MacBook4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Mavericks and newer<br/>- No Keyboard and Trackpad<br/>- No USB<br/>- No Ethernet) |
-| MacBook5,1 | Late 2008 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
-| MacBook5,2 | Early 2009 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Trackpad is recognized as mouse<br/>- Brightness control partially supported |
-| MacBook6,1 | Late 2009 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
+| MacBook4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Mavericks and newer<br/>- No Keyboard and Trackpad<br/>- No USB |
+| MacBook5,1 | Late 2008 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
+| MacBook5,2 | Early 2009 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Trackpad is recognized as mouse<br/>- Brightness control partially supported |
+| MacBook6,1 | Late 2009 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
 | MacBook7,1 | Mid-2010 | ^^ | ^^ |
 
 ### MacBook Air
@@ -41,7 +41,7 @@ Regarding OS support, see below:
 | SMBIOS | Year | Supported | Comment |
 | :--- | :--- | :--- | :--- |
 | MacBookAir1,1 | Early 2008 | <span style="color:red"> NO </span> | Requires SSE4.1 CPU |
-| MacBookAir2,1 | Late 2008 |<span style="color:#30BCD5"> YES </span> | No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) |
+| MacBookAir2,1 | Late 2008 |<span style="color:#30BCD5"> YES </span> | GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) |
 | MacBookAir3,1 | Late 2010 | ^^ | ^^ |
 | MacBookAir3,2 | ^^ | ^^ | ^^ |
 | MacBookAir4,1 | Mid-2011 | ^^ | ^^ |
@@ -58,7 +58,7 @@ Regarding OS support, see below:
 | MacBookPro2,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | MacBookPro2,2 | Late 2006 | ^^ | ^^ |
 | MacBookPro3,1 | Mid-2007 | ^^ | Requires SSE4.1 CPU |
-| MacBookPro4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) |
+| MacBookPro4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) |
 | MacBookPro5,1 | Late 2008 | ^^ | ^^ |
 | MacBookPro5,2 | Early 2009 | ^^ | ^^ |
 | MacBookPro5,3 | Mid-2009 | ^^ | ^^ |
@@ -81,7 +81,7 @@ Regarding OS support, see below:
 | :--- | :--- | :--- | :--- |
 | Macmini1,1 | Early 2006 | <span style="color:red"> NO </span> | 32-Bit CPU limitation |
 | Macmini2,1 | Mid-2007 | ^^ | 32-Bit Firmware limitation |
-| Macmini3,1 | Early 2009 | <span style="color:#30BCD5"> YES </span> | No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) |
+| Macmini3,1 | Early 2009 | <span style="color:#30BCD5"> YES </span> | GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) |
 | Macmini4,1 | Mid-2010 | ^^ | ^^ |
 | Macmini5,1 | Mid-2011 | ^^ | ^^ |
 | Macmini5,2 | ^^ | ^^ | ^^ |
@@ -98,10 +98,10 @@ Regarding OS support, see below:
 | iMac5,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | iMac5,2 | ^^ | ^^ | ^^ |
 | iMac6,1 | ^^ | ^^ | ^^ |
-| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported<br/>- Stock Bluetooth 2.0 card non-functional  |
-| iMac8,1 | Early 2008 | ^^ | - No GPU Acceleration in Big Sur([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported |
+| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an SSE4.1 CPU Upgrade<br/>- GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported<br/>- Stock Bluetooth 2.0 card non-functional  |
+| iMac8,1 | Early 2008 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported |
 | iMac9,1 | Early 2009 | ^^ | ^^ |
-| iMac10,1 | Late 2009 | ^^ | GPU is socketed, [recommend upgrading to Metal GPU](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857)  |
+| iMac10,1 | Late 2009 | ^^ | - GPU is socketed, [recommend upgrading to Metal GPU](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857) <br/>- GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) |
 | iMac11,1 | ^^ | ^^ | ^^ |
 | iMac11,2 | Mid-2010 | ^^ | ^^ |
 | iMac11,3 | ^^ | ^^ | ^^ |
@@ -114,7 +114,7 @@ Regarding OS support, see below:
 | iMac14,2 | ^^ | ^^ | ^^ |
 | iMac14,3 | ^^ | ^^ | ^^ |
 
-* For iMac10,1 through iMac12,x, we highly recommend users upgrade the GPU to a Metal supported model. See here for more information: [iMac late 2009 to mid-2012 Graphics Card Upgrade Guide](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857)
+* For iMac10,1 through iMac12,x, we highly recommend users upgrade the GPU to a Metal supported model. See here for more information: [iMac late 2009 to mid-2011 Graphics Card Upgrade Guide](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857)
 
 ### Mac Pro
 

@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.1.2
+- Fix IDE support on 2008 era MacBooks and iMacs
+
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing
 - Add MouSSE support to iMac10,1 with Metal AMD GPU

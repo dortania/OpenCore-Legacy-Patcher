@@ -135,7 +135,10 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         Utilities.header(["Patching System Volume"])
         print("""Patches Root volume to fix misc issues such as:
 
-- Brightness control for non-Metal GPUs
+- Graphics Acceleration for non-Metal GPUs
+  - Nvidia: Tesla - Fermi (8000-500 series)
+  - Intel: Ironlake - Sandy Bridge
+  - AMD: TeraScale 1 (2000-4000 series)
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume
