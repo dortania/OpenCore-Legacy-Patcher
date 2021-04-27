@@ -501,6 +501,7 @@ IDEPatch = [
     "iMac7,1",
     "iMac8,1",
     "MacPro3,1",
+    "Xserve2,1",
     "Dortania1,1"
 ]
 

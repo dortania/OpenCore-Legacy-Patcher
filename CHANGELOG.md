@@ -1,8 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.1.2
-- Fix IDE support on 2008 era MacBooks and iMacs
+- Fix IDE support on 2008 era MacBooks, iMacs and Xserves
 - Fix reduced output speeds on BCM94360 series Wifi cards
+- Fix accidentally disabling non-existent iGPU in iMac11,2
 
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing

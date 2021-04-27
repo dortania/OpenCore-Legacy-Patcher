@@ -180,6 +180,7 @@ class BuildOpenCore:
             print("- Skipping Wifi patches on request")
         elif not self.constants.custom_model and wifi_devices:
             if wifi_vendor == self.constants.pci_broadcom:
+                # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
                 if wifi_device in ModelArray.BCM4360Wifi and wifi_ioname not in ["pci14e4,4353", "pci14e4,4331"]:
                     self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
                 elif wifi_ioname in ["pci14e4,4353", "pci14e4,4331"] or wifi_device in ModelArray.BCM94331Wifi:
@@ -288,19 +289,16 @@ class BuildOpenCore:
 
         def nvidia_patch(self):
             self.constants.custom_mxm_gpu = True
-            if self.model == "iMac11,1":
+            if self.model in ["iMac11,1", "iMac11,2", "iMac11,3"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
-                backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
+                if self.model == "iMac11,2":
+                    backlight_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
+                else:
+                    backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
                 shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
                 self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
-            elif self.model == "iMac11,3":
-                print("- Adding Nvidia Brightness Control and DRM patches")
-                backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
-                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
-                shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
-                self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
-            elif self.model in ["iMac11,2", "iMac12,1", "iMac12,2"]:
+            elif self.model in ["iMac12,1", "iMac12,2"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
                 backlight_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256}
@@ -312,11 +310,13 @@ class BuildOpenCore:
         def amd_patch(self):
             self.constants.custom_mxm_gpu = True
             print("- Adding AMD DRM patches")
-            if self.model == "iMac11,1":
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1, "agdpmod": "vit9696"}
-            elif self.model == "iMac11,3":
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1}
-            elif self.model in ["iMac11,2", "iMac12,1", "iMac12,2"]:
+            if self.model in ["iMac11,1", "iMac11,2", "iMac11,3"]:
+                if self.model == "iMac11,2":
+                    backlight_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
+                else:
+                    backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 80, "unfairgva": 1, "agdpmod": "vit9696"}
+            elif self.model in ["iMac12,1", "iMac12,2"]:
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1}
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
@@ -358,7 +358,7 @@ class BuildOpenCore:
             print("- Adding UGA to GOP Patch")
             self.config["UEFI"]["Output"]["GopPassThrough"] = True
 
-        # ThridPartDrives Check
+        # ThirdPartDrives Check
         if self.model not in ModelArray.NoSATAPatch:
             print("- Adding SATA Hibernation Patch")
             self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
@@ -457,7 +457,7 @@ class BuildOpenCore:
             self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
             self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
 
-        def adanced_serial_patch(self):
+        def advanced_serial_patch(self):
             macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             macserial_output = macserial_output.stdout.decode().strip().split(" | ")
             self.config["PlatformInfo"]["Automatic"] = True
@@ -475,7 +475,7 @@ class BuildOpenCore:
             moderate_serial_patch(self)
         elif self.constants.serial_settings == "Advanced":
             print("- Using Advanced SMBIOS patching")
-            adanced_serial_patch(self)
+            advanced_serial_patch(self)
         else:
             print("- Using Minimal SMBIOS patching")
             self.spoofed_model = self.model
