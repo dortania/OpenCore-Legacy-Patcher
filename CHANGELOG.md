@@ -2,6 +2,7 @@
 
 ## 0.1.2
 - Fix IDE support on 2008 era MacBooks and iMacs
+- Fix reduced output speeds on BCM94360 series Wifi cards
 
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing

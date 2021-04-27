@@ -181,7 +181,7 @@ class BuildOpenCore:
         elif not self.constants.custom_model and wifi_devices:
             if wifi_vendor == self.constants.pci_broadcom:
                 if wifi_device in ModelArray.BCM4360Wifi and wifi_ioname not in ["pci14e4,4353", "pci14e4,4331"]:
-                    print("- Found supported WiFi card, skipping wifi patches")
+                    self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
                 elif wifi_ioname in ["pci14e4,4353", "pci14e4,4331"] or wifi_device in ModelArray.BCM94331Wifi:
                     wifi_fake_id(self)
                 elif wifi_device in ModelArray.BCM94322Wifi:
@@ -195,7 +195,9 @@ class BuildOpenCore:
                 self.enable_kext("IO80211HighSierra.kext", self.constants.io80211high_sierra_version, self.constants.io80211high_sierra_path)
                 self.get_kext_by_bundle_path("IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
         else:
-            if self.model in ModelArray.WifiBCM94331:
+            if self.model in ["iMac14,1", "iMac14,2", "iMac14,3"]:
+                self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
+            elif self.model in ModelArray.WifiBCM94331:
                 wifi_fake_id(self)
             elif self.model in ModelArray.WifiBCM94322:
                 self.enable_kext("IO80211Mojave.kext", self.constants.io80211mojave_version, self.constants.io80211mojave_path)
