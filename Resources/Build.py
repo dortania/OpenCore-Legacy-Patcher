@@ -315,7 +315,7 @@ class BuildOpenCore:
                     backlight_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
                 else:
                     backlight_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
-                self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 80, "unfairgva": 1, "agdpmod": "vit9696"}
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 80, "unfairgva": 1}
             elif self.model in ["iMac12,1", "iMac12,2"]:
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1}
                 print("- Disabling unsupported iGPU")
