@@ -8,6 +8,8 @@ Main hardware we'd appreciate:
 
 * Any Mac you own
   * Does require SSE4,1 CPU to test on Sierra and newer however
+* Any spare SATA SSDs
+  * Having extra SSDs on hand allows us to quickly and easily test specific builds of macOS without having to wipe drives and reinstall as much
   
 Additionally, hardware info dumps are greatly beneficial for us to determine what patches a machine might need:
 
@@ -25,8 +27,7 @@ Current hardware we own:
 | :--- | :--- | :--- | :--- | :--- |
 | MacBook7,1 | Penryn | GT320M | Dhinak | N/A |
 | MacBook7,1 | Penryn | GT320M | Mykola | N/A |
+| MacBookPro8,1 | Sandy Bridge | HD 3000 | Mykola | N/A |
+| MacBookPro5,3 | Penryn | 9400M + 9600M | Dhinak | Display's partially broken |
+| Macmini4,1 | Penryn | GT320M | Dhinak | N/A |
 | iMac11,2 | Clarksdale | HD4670 | Mykola | N/A |
-
-
-<!-- | MacBookPro5,3 | Penryn | 9400M + 9600M | Dhinak | Display's partially broken | -->
-<!-- | Macmini4,1 | Penryn | GT320M | Dhinak | N/A | -->
