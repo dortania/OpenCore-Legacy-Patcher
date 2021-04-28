@@ -394,6 +394,12 @@ class BuildOpenCore:
         if self.constants.secure_status is False:
             print("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
+        if self.constants.serial_settings in ["Moderate", "Advanced"]:
+            print("- Enabling USB Rename Patches")
+            self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "XHC1 to SHC1")["Enabled"] = True
+            self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "EHC1 to EH01")["Enabled"] = True
+            self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "EHC2 to EH02")["Enabled"] = True
+
 
     def set_smbios(self):
         spoofed_model = self.model
@@ -490,6 +496,16 @@ class BuildOpenCore:
             try:
                 # Avoid erroring out when specific identity not found
                 map_config["IOKitPersonalities_x86_64"][model_patch]["model"] = self.spoofed_model
+
+                # Avoid ACPI renaming when not required
+                if self.constants.serial_settings == "Minimal":
+                    if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "EH01":
+                        map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "EHC1"
+                    if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "EH02":
+                        map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "EHC2"
+                    if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "SHC1":
+                        map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "XHC1"
+
             except KeyError:
                 continue
 
