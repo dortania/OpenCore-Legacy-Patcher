@@ -232,6 +232,10 @@ class PatchSysVolume:
                 self.gpu_accel_patches_11()
                 rebuild_required = True
 
+        #if self.model == "iMac7,1":
+        #    print("- Fixing Volume Control Support")
+        #    self.add_new_binaries(ModelArray.AddVolumeControl, self.constants.audio_path)
+
         if rebuild_required is True:
             self.rebuild_snapshot()
 

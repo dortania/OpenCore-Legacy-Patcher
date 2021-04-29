@@ -263,7 +263,7 @@ class Constants:
 
     # Apple Extensions
     @property
-    def applehda_path(self): return self.payload_apple_kexts_path / Path("Audio/AppleHDA.kext")
+    def audio_path(self): return self.payload_apple_kexts_path / Path("Audio")
 
     # GPU Kexts and Bundles
 

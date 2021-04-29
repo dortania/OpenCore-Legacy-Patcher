@@ -67,7 +67,7 @@ SupportedSMBIOS11 = [
     # Xserve
     "Xserve2,1",
     "Xserve3,1",
-    "Dortania1,1"
+    "Dortania1,1",
 ]
 
 SupportedSMBIOS12 = [
@@ -699,25 +699,26 @@ upgradableMXMGPUs = [
 
 # Reference: https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/
 NVIDIAMXMGPUs = [
-    "12B9",  # Quadro K610M
     "0FF6",  # Quadro K1100M
-    "11FC",  # Quadro K2100M
-    "0FFC",  # Quadro K1000M
     "0FFB",  # Quadro K2000M
+    "0FFC",  # Quadro K1000M
+    "1198",  # GTX 880M
+    "1199",  # GTX 870M
+    "119A",  # GTX 860M
+    "119E",  # GTX 780M
+    "119F",  # GTX 880M
+    "11A9",  # GTX 870M
     "11B6",  # Quadro K3100M
     "11B7",  # Quadro K4100M
-    "11BC",  # Quadro K5000M
     "11B8",  # Quadro K5100M
+    "11BC",  # Quadro K5000M
+    "11BD",  # Quadro K4000M
+    "11BE",  # Quadro K3000M
     "11E1",  # GTX 765M
     "11E2",  # GTX 765M
     "11E0",  # GTX 770M
-    "119E",  # GTX 780M Mac Edition
-    "119E",  # GTX 780M
-    "119F",  # GTX 880M
-    "119A",  # GTX 860M
-    "1392",  # GTX 860M
-    "1199",  # GTX 870M
-    "11A9",  # GTX 870M
+    "11FC",  # Quadro K2100M
+    "12B9",  # Quadro K610M
 ]
 
 AMDMXMGPUs = [
@@ -1037,6 +1038,10 @@ DeleteBrightness = [
 AddBrightness = [
     "AppleBacklight.kext",
     "AppleBacklightExpert.kext",
+]
+
+AddVolumeControl = [
+    "IOAudioFamily.kext",
 ]
 
 # List supported IDs

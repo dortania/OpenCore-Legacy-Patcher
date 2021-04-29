@@ -5,6 +5,7 @@
 - Fix reduced output speeds on BCM94360 series Wifi cards
 - Fix accidentally disabling non-existent iGPU in iMac11,2
 - Remove ACPI Patching requirement for Minimal SMBIOS setups
+- Probe hardware for Backlight pathing on iMac10,1, iMac11,x and iMac12,x with Metal GPUs
 
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing
