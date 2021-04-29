@@ -37,12 +37,12 @@ Once you've toggled them both off, build your OpenCore EFI once again and instal
 
 Once set, rebuild OpenCore, install to drive and reboot. Then, Post-Install Volume patches will run just fine
 
-To apply the Post-Install Volume patches on your [supported system](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) just use option #3 as shown below
+To apply the Post-Install Volume patches [to test out the Beta Graphics Acceleration Patches system](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108), select option #3 as shown below:
 
-![3-Post-Install-Volume-Patch](https://user-images.githubusercontent.com/71768134/116527398-e8fa8080-a8da-11eb-8e52-c482154403fa.png)
+![](../images/root-patch.png)
 
-and go ahead to option #1 and let the OCLP patcher apply the needed legacy vidoe patches.
+And go ahead to option #1 and let the OCLP patcher apply the needed legacy video patches.
 
-![1-Patch-System-Volume](https://user-images.githubusercontent.com/71768134/116527423-f0218e80-a8da-11eb-8ab7-aaa4b8cd9069.png)
+![](../images/root-patcher-2.png)
 
 Reboot your system and check out the now working graphics acceleration on your legacy system. This is still Beta software.

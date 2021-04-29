@@ -22,8 +22,7 @@ class OpenCoreLegacyPatcher():
             opencore_model = [line.strip().split(":oem-product	", 1)[1] for line in opencore_model.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
             self.current_model = opencore_model
         else:
-            self.current_model = subprocess.run("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            self.current_model = [line.strip().split(": ", 1)[1] for line in self.current_model.stdout.decode().split("\n") if line.strip().startswith("Model Identifier")][0]
+            self.current_model = plistlib.loads(subprocess.run("system_profiler -detailLevel mini -xml SPHardwareDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.strip())[0]["_items"][0]["machine_model"]
         self.constants.detected_os = int(platform.uname().release.partition(".")[0])
         if self.current_model in ModelArray.NoAPFSsupport:
             self.constants.serial_settings = "Moderate"
