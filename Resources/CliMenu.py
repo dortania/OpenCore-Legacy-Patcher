@@ -206,7 +206,7 @@ Valid options:
 
     def change_imac_nvidia(self):
         Utilities.cls()
-        Utilities.header(["Force iMac Nvidia Patches"])
+        Utilities.header(["Assume Metal GPU Always"])
         print("""Specifically for iMac10,x-12,x with Metal Nvidia GPU upgrades
 By default the patcher will try to detect what hardware is
 running, however this will enforce iMac Nvidia Build Patches.
