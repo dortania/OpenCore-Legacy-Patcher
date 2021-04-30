@@ -885,7 +885,32 @@ SandyIGPU = [
     "MacBookPro8,2",
     "MacBookPro8,3",
     "Macmini5,1",
+    "Macmini5,2",
     "Macmini5,3",
+]
+
+windows_audio = [
+    "MacBookAir4,1",
+    "MacBookAir4,2",
+    "MacBookAir5,1",
+    "MacBookAir5,2",
+    "MacBookPro8,1",
+    "MacBookPro8,2",
+    "MacBookPro8,3",
+    "MacBookPro9,1",
+    "MacBookPro9,2",
+    "MacBookPro10,1",
+    "MacBookPro10,2",
+    "Macmini5,1",
+    "Macmini5,2",
+    "Macmini5,3",
+    "Macmini6,1",
+    "Macmini6,2",
+    "iMac12,1",
+    "iMac12,2",
+    "iMac13,1",
+    "iMac13,2",
+    "iMac13,3",
 ]
 
 DeleteNvidiaAccel11 = [

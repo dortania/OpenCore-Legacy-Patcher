@@ -50,10 +50,12 @@ class BuildOpenCore:
             self.constants.igpu_device = self.hexswap(binascii.hexlify(self.constants.igpu_devices[0]["device-id"]).decode()[:4])
             if print_status is True:
                 print(f"- Detected iGPU: {self.constants.igpu_vendor}:{self.constants.igpu_device}")
+                self.config["#Revision"]["Hardware-iGPU"] = f"{self.constants.igpu_vendor}:{self.constants.igpu_device}"
         except ValueError:
             if print_status is True:
                 print("- No iGPU detected")
             self.constants.igpu_devices = ""
+            self.config["#Revision"]["Hardware-iGPU"] = "No iGPU detected"
 
         try:
             self.constants.dgpu_devices = plistlib.loads(subprocess.run("ioreg -r -n GFX0 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -61,10 +63,12 @@ class BuildOpenCore:
             self.constants.dgpu_device = self.hexswap(binascii.hexlify(self.constants.dgpu_devices[0]["device-id"]).decode()[:4])
             if print_status is True:
                 print(f"- Detected dGPU: {self.constants.dgpu_vendor}:{self.constants.dgpu_device}")
+                self.config["#Revision"]["Hardware-dGPU"] = f"{self.constants.dgpu_vendor}:{self.constants.dgpu_device}"
         except ValueError:
             if print_status is True:
                 print("- No dGPU detected")
             self.constants.dgpu_devices = ""
+            self.config["#Revision"]["Hardware-dGPU"] = "No dGPU detected"
 
     def build_efi(self):
         Utilities.cls()
@@ -94,6 +98,10 @@ class BuildOpenCore:
 
         # Set revision in config
         self.config["#Revision"]["Build-Version"] = f"{self.constants.patcher_version} - {date.today()}"
+        if not self.constants.custom_model:
+            self.config["#Revision"]["Build-Type"] = "OpenCore Built on Target Machine"
+        else:
+            self.config["#Revision"]["Build-Type"] = "OpenCore Built for External Machine"
         self.config["#Revision"]["OpenCore-Version"] = f"{self.constants.opencore_version} - {self.constants.opencore_build} - {self.constants.opencore_commit}"
         self.config["#Revision"]["Original-Model"] = self.model
         self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Version"] = f"{self.constants.patcher_version}"
@@ -169,7 +177,12 @@ class BuildOpenCore:
                 wifi_device = self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4])
                 wifi_ioname = wifi_devices[0]["IOName"]
                 if not self.constants.custom_model:
-                    print(f"- Detected Wifi Card: {wifi_vendor}:{wifi_device}")
+                    if wifi_ioname in ["pci14e4,4353", "pci14e4,4331"]:
+                        print(f"- Detected Wifi Card: {wifi_ioname}")
+                        self.config["#Revision"]["Hardware-Wifi"] = f"{wifi_ioname}"
+                    else:
+                        print(f"- Detected Wifi Card: {wifi_vendor}:{wifi_device}")
+                        self.config["#Revision"]["Hardware-Wifi"] = f"{wifi_vendor}:{wifi_device}"
             except IndexError:
                 wifi_devices = ""
 
@@ -229,6 +242,11 @@ class BuildOpenCore:
             print("- Adding SSDT-CPBG.aml")
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
+
+        #if self.model in ModelArray.windows_audio:
+        #    print("- Adding SSDT-PCI.aml")
+        #    self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-PCI.aml")["Enabled"] = True
+        #    shutil.copy(self.constants.windows_ssdt_path, self.constants.acpi_path)
 
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
@@ -311,6 +329,10 @@ class BuildOpenCore:
             if self.model in ["iMac11,1", "iMac11,2", "iMac11,3"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
+                if self.constants.custom_model and self.model == "iMac11,2":
+                    # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
+                    # Set both properties when we cannot run hardware detection
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
                 shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
                 self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
             elif self.model in ["iMac12,1", "iMac12,2"]:
@@ -325,6 +347,10 @@ class BuildOpenCore:
             self.constants.custom_mxm_gpu = True
             print("- Adding AMD DRM patches")
             self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 80, "unfairgva": 1}
+            if self.constants.custom_model and self.model == "iMac11,2":
+                    # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
+                    # Set both properties when we cannot run hardware detection
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 80, "unfairgva": 1}
             if self.model in ["iMac12,1", "iMac12,2"]:
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
@@ -459,7 +485,7 @@ class BuildOpenCore:
             spoofed_board = "Mac-27AD2F918AE68F61"
         self.spoofed_model = spoofed_model
         self.spoofed_board = spoofed_board
-        self.config["#Revision"]["Spoofed-Model"] = self.spoofed_model
+        self.config["#Revision"]["Spoofed-Model"] = f"{self.spoofed_model} - {self.constants.serial_settings}"
 
         # Setup menu
         def minimal_serial_patch(self):
