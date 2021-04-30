@@ -113,6 +113,8 @@ class Constants:
     # ACPI
     @property
     def pci_ssdt_path(self): return self.payload_path / Path("ACPI/SSDT-CPBG.aml")
+    @property
+    def windows_ssdt_path(self): return self.payload_path / Path("ACPI/SSDT-PCI.aml")
 
     # Drivers
     @property

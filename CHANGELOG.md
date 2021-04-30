@@ -6,6 +6,7 @@
 - Fix accidentally disabling non-existent iGPU in iMac11,2
 - Remove ACPI Patching requirement for Minimal SMBIOS setups
 - Probe hardware for Backlight pathing on iMac10,1, iMac11,x and iMac12,x with Metal GPUs
+- Add Windows UEFI Audio support to Sandy and Ivy Bridge Macs
 
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing

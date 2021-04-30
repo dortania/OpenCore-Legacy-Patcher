@@ -243,10 +243,12 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
 
-        #if self.model in ModelArray.windows_audio:
-        #    print("- Adding SSDT-PCI.aml")
-        #    self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-PCI.aml")["Enabled"] = True
-        #    shutil.copy(self.constants.windows_ssdt_path, self.constants.acpi_path)
+        if self.model in ModelArray.windows_audio:
+            # Based on: https://egpu.io/forums/pc-setup/fix-dsdt-override-to-correct-error-12/
+            print("- Enabling Windows 10 UEFI Audio support")
+            self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-PCI.aml")["Enabled"] = True
+            self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "BUF0 to BUF1")["Enabled"] = True
+            shutil.copy(self.constants.windows_ssdt_path, self.constants.acpi_path)
 
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
