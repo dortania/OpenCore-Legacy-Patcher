@@ -128,17 +128,17 @@
 			</dict>
 			<dict>
 				<key>Base</key>
-				<string></string>
+				<string>\_SB.PCI0</string>
 				<key>BaseSkip</key>
 				<integer>0</integer>
 				<key>Comment</key>
 				<string>BUF0 to BUF1</string>
 				<key>Count</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>Enabled</key>
 				<false/>
 				<key>Find</key>
-				<data>W4EGTUNIVAEIQlVGMA==</data>
+				<data>CEJVRjA=</data>
 				<key>Limit</key>
 				<integer>0</integer>
 				<key>Mask</key>
@@ -146,7 +146,7 @@
 				<key>OemTableId</key>
 				<data></data>
 				<key>Replace</key>
-				<data>W4EGTUNIVAEIQlVGMQ==</data>
+				<data>CEJVRjE=</data>
 				<key>ReplaceMask</key>
 				<data></data>
 				<key>Skip</key>
@@ -154,7 +154,7 @@
 				<key>TableLength</key>
 				<integer>0</integer>
 				<key>TableSignature</key>
-				<data></data>
+				<data>RFNEVA==</data>
 			</dict>
 		</array>
 		<key>Quirks</key>
