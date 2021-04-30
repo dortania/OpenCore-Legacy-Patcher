@@ -4,7 +4,7 @@
 - Fix IDE support on 2008 era MacBooks, iMacs and Xserves
 - Fix reduced output speeds on BCM94360 series Wifi cards
 - Fix accidentally disabling non-existent iGPU in iMac11,2
-- Remove ACPI Patching requirement for Minimal SMBIOS setups
+- Remove USB ACPI Patching requirement for Minimal SMBIOS setups
 - Probe hardware for Backlight pathing on iMac10,1, iMac11,x and iMac12,x with Metal GPUs
 - Add Windows UEFI Audio support to Sandy and Ivy Bridge Macs
 

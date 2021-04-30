@@ -103,6 +103,7 @@ module.exports = {
 				'UPDATE',
 				'UNINSTALL',
 				'ICNS',
+				'WINDOWS',
             ]
         },
         {
