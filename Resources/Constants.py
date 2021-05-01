@@ -35,6 +35,7 @@ class Constants:
         self.smcspoof_version = "1.0.0"
         self.cputscsync = "1.0.3"
         self.hibernationfixup = "1.3.9"
+        self.nvmefix_version = "1.0.7"
         self.payload_version = "0.0.4"
 
         # Get resource path
@@ -94,6 +95,17 @@ class Constants:
         self.pci_intel = "8086"
         self.pci_broadcom = "14E4"
         self.pci_atheros = "168C"
+        self.pci_apple = "106B"
+
+
+        # Class Codes
+        # https://pci-ids.ucw.cz/read/PD
+        self.classcode_sata = "01060100"
+        self.classcode_nvme = "02080100"
+        self.classcode_nvme_generic = "02800100"
+        self.classcode_wifi = "00800200"
+        self.classcode_gpu = "00000300"
+        self.classcode_gpu_variant = "00800300"
 
         # Nvidia GPU Architecture
         self.arch_tesla = "NV50"
@@ -171,6 +183,8 @@ class Constants:
     def cputscsync_path(self): return self.payload_kexts_path / Path(f"Acidanthera/CpuTscSync-v{self.cputscsync}.zip")
     @property
     def hibernationfixup_path(self): return self.payload_kexts_path / Path(f"Acidanthera/HibernationFixup-v{self.hibernationfixup}.zip")
+    @property
+    def nvmefix_path(self): return self.payload_kexts_path / Path(f"Acidanthera/NVMeFix-v{self.nvmefix_version}.zip")
     @property
     def plist_folder_path(self): return self.payload_kexts_path / Path(f"Plists")
     @property

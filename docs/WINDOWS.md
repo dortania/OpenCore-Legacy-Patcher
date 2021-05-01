@@ -58,8 +58,10 @@ Next, mount the Windows 10 ISO:
 The open terminal and run `rsync` on the USB drive (replace CCCOMA_X64 with the mounted ISO's name, as well as replacing W10USB with your USB drive's name):
 
 ```
-rsync -r /Volumes/CCCOMA_X64/ /Volumes/W10USB
+rsync -r -P /Volumes/CCCOMA_X64/ /Volumes/W10USB
 ```
+
+![](../images/rsync-progess.png)
 
 Command will take some time, so sit back and get some coffee. Once finished, the root of the USB drive should look as follows:
 

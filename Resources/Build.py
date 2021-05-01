@@ -63,12 +63,12 @@ class BuildOpenCore:
             self.constants.dgpu_device = self.hexswap(binascii.hexlify(self.constants.dgpu_devices[0]["device-id"]).decode()[:4])
             if print_status is True:
                 print(f"- Detected dGPU: {self.constants.dgpu_vendor}:{self.constants.dgpu_device}")
-                self.config["#Revision"]["Hardware-dGPU"] = f"{self.constants.dgpu_vendor}:{self.constants.dgpu_device}"
+                self.config["#Revision"]["Hardware-GFX0"] = f"{self.constants.dgpu_vendor}:{self.constants.dgpu_device}"
         except ValueError:
             if print_status is True:
                 print("- No dGPU detected")
             self.constants.dgpu_devices = ""
-            self.config["#Revision"]["Hardware-dGPU"] = "No dGPU detected"
+            self.config["#Revision"]["Hardware-GFX0"] = "No dGPU detected"
 
     def build_efi(self):
         Utilities.cls()
@@ -129,6 +129,41 @@ class BuildOpenCore:
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
         ]:
             self.enable_kext(name, version, path, check)
+
+
+        if not self.constants.custom_model:
+            nvme_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            nvme_devices = [i for i in nvme_devices if i.get("IORegistryEntryChildren", None) and i["vendor-id"] != binascii.unhexlify("6B100000") and i["IORegistryEntryChildren"][0]["IORegistryEntryName"] == "IONVMeController"]
+            nvme_path_gfx: str = subprocess.run([self.constants.gfxutil_path] + f"-v".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+            try:
+                x = 1
+                for i in nvme_devices:
+                    nvme_vendor = self.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
+                    nvme_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
+
+                    print(f'- Found 3rd Party NVMe SSD ({x}): {nvme_vendor}:{nvme_device}')
+                    self.config["#Revision"][f"Hardware-NVMe-{x}"] = f'{nvme_vendor}:{nvme_device}'
+
+                    try:
+                        nvme_path = [line.strip().split("= ", 1)[1] for line in nvme_path_gfx.split("\n") if f'{nvme_vendor}:{nvme_device}'.lower() in line.strip()][0]
+                        nvme_path_parent = "/".join(nvme_path.split("/")[:-1])
+                        print(f"- Found NVMe ({x}) at {nvme_path}")
+                        #print(f"- Found NVMe({x}) Parent at {nvme_path_parent}")
+                        self.config["DeviceProperties"]["Add"][nvme_path] = {"pci-aspm-default": 2}
+                        self.config["DeviceProperties"]["Add"][nvme_path_parent] = {"pci-aspm-default": 2}
+
+                    except IndexError:
+                        print(f"- Failed to find Device path for NVMe {x}")
+                        if "-nvmefaspm" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
+                            print("- Falling back to -nvmefaspm")
+                            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -nvmefaspm"
+                    if self.get_kext_by_bundle_path("NVMeFix.kext")["Enabled"] is False:
+                        self.enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)
+                    x = x + 1
+            except ValueError:
+                print("- No 3rd Party NVMe drive found")
+            except IndexError:
+                print("- No 3rd Party NVMe drive found")
 
         def wifi_fake_id(self):
             default_path = True
@@ -378,8 +413,47 @@ class BuildOpenCore:
                 backlight_path_detection(self)
                 nvidia_patch(self, self.gfx0_path)
         if self.model in ModelArray.MacPro71:
-            print("- Adding Mac Pro, Xserve DRM patches")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
+            if not self.constants.custom_model:
+                mp_dgpu_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+                mp_dgpu_devices = [i for i in mp_dgpu_devices if i["class-code"] == binascii.unhexlify("00000300") or i["class-code"] == binascii.unhexlify("00800300")]
+                mp_dgpu_devices_gfx: str = subprocess.run([self.constants.gfxutil_path] + f"-v".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+                try:
+                    x = 1
+                    for i in mp_dgpu_devices:
+                        mp_dgpu_vendor = self.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
+                        mp_dgpu_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
+
+                        print(f'- Found dGPU ({x}): {mp_dgpu_vendor}:{mp_dgpu_device}')
+                        self.config["#Revision"][f"Hardware-MacPro-dGPU-{x}"] = f'{mp_dgpu_vendor}:{mp_dgpu_device}'
+
+                        try:
+                            mp_dgpu_path = [line.strip().split("= ", 1)[1] for line in mp_dgpu_devices_gfx.split("\n") if f'{mp_dgpu_vendor}:{mp_dgpu_device}'.lower() in line.strip()][0]
+                            print(f"- Found dGPU ({x}) at {mp_dgpu_path}")
+                            if mp_dgpu_vendor == self.constants.pci_amd_ati:
+                                print("- Adding Mac Pro, Xserve DRM patches")
+                                self.config["DeviceProperties"]["Add"][mp_dgpu_path] = {"shikigva": 128, "unfairgva": 1, "wegtree": 1}
+                            #elif mp_dgpu_vendor == self.constants.pci_nvidia:
+                            #    print("- Enabling Nvidia Output Patch")
+                            #    self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+
+                        except IndexError:
+                            print(f"- Failed to find Device path for NVMe {x}")
+                            if mp_dgpu_vendor == self.constants.pci_amd_ati:
+                                print("- Adding Mac Pro, Xserve DRM patches")
+                                if "shikigva=128 unfairgva=1 -wegtree" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
+                                    print("- Falling back to boot-args")
+                                    self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
+                            #elif mp_dgpu_vendor == self.constants.pci_nvidia:
+                            #    print("- Enabling Nvidia Output Patch")
+                            #    self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+                        x = x + 1
+                except ValueError:
+                    print("- No socketed dGPU found")
+                except IndexError:
+                    print("- No socketed dGPU found")
+            else:
+                print("- Adding Mac Pro, Xserve DRM patches")
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
 
         # Add OpenCanopy
         print("- Adding OpenCanopy GUI")
@@ -521,7 +595,7 @@ class BuildOpenCore:
         elif self.constants.serial_settings == "Advanced":
             print("- Using Advanced SMBIOS patching")
             advanced_serial_patch(self)
-        else:
+        elif self.constants.serial_settings == "Minimal":
             print("- Using Minimal SMBIOS patching")
             self.spoofed_model = self.model
             minimal_serial_patch(self)
@@ -567,12 +641,6 @@ class BuildOpenCore:
             plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
             plistlib.dump(amc_config, Path(new_amc_ls).open("wb"), sort_keys=True)
 
-        #if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
-        #    print("- Disabling unsupported TeraScale 2 dGPU")
-        #    self.config["NVRAM"]["Add"]["FA4CE28D-B62F-4C99-9CC3-6815686E30F9"]["gpu-power-prefs"] = binascii.unhexlify("01000000")
-        #    self.config["NVRAM"]["Delete"]["FA4CE28D-B62F-4C99-9CC3-6815686E30F9"] += ["gpu-power-prefs"]
-        #    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
-
     @staticmethod
     def get_item_by_kv(iterable, key, value):
         item = None
@@ -609,10 +677,20 @@ class BuildOpenCore:
 
     def cleanup(self):
         print("- Cleaning up files")
-        # Remove unused kexts
-        for kext in list(self.config["Kernel"]["Add"]):
-            if not kext["Enabled"]:
-                self.config["Kernel"]["Add"].remove(kext)
+        # Remove unused entries
+        for entry in list(self.config["ACPI"]["Add"]):
+            if not entry["Enabled"]:
+                self.config["ACPI"]["Add"].remove(entry)
+        for entry in list(self.config["ACPI"]["Patch"]):
+            if not entry["Enabled"]:
+                self.config["ACPI"]["Patch"].remove(entry)
+        for entry in list(self.config["Kernel"]["Add"]):
+            if not entry["Enabled"]:
+                self.config["Kernel"]["Add"].remove(entry)
+        for entry in list(self.config["Kernel"]["Patch"]):
+            if not entry["Enabled"]:
+                self.config["Kernel"]["Patch"].remove(entry)
+
         plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
         for kext in self.constants.kexts_path.rglob("*.zip"):
             with zipfile.ZipFile(kext) as zip_file:

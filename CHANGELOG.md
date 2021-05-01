@@ -7,6 +7,9 @@
 - Remove USB ACPI Patching requirement for Minimal SMBIOS setups
 - Probe hardware for Backlight pathing on iMac10,1, iMac11,x and iMac12,x with Metal GPUs
 - Add Windows UEFI Audio support to Sandy and Ivy Bridge Macs
+- Add 3rd Party NVMe Power Management Patches
+  - NVMeFix fafc52d (1.0.7 rolling - 04-29-2021)
+- Strip unused ACPI and Kernel entries during build
 
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing
