@@ -13,6 +13,9 @@
 - Allow native Macs to use OpenCore
   - Better 3rd party NVMe support
   - Better Wireless networking support
+- Fix MacBook6,1 audio support
+- Increment binaries
+  - AppleALC 84850d0 (1.6.0 rolling - 04-30-2021)
 
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing
