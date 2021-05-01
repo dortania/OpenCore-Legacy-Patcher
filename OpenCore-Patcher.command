@@ -110,6 +110,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set Generic Bootstrap:\t\t{self.constants.boot_efi}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).bootstrap_setting],
                 [f"Set Acceleration Patches:\t\t{self.constants.legacy_acceleration_patch}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).accel_setting],
                 [f"Assume Legacy GPU:\t\t\t{self.constants.assume_legacy}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).force_accel_setting],
+                [f"Allow OpenCore on native Models:\t{self.constants.allow_oc_everywhere}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).allow_native_models],
             ]
 
             for option in options:
@@ -191,7 +192,7 @@ B. Exit
             menu = Utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
 
             options = (
-                [["Build OpenCore", self.build_opencore]] if ((self.constants.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) else []) + [
+                [["Build OpenCore", self.build_opencore]] if ((self.constants.custom_model or self.current_model) in ModelArray.SupportedSMBIOS) or self.constants.allow_oc_everywhere is True else []) + [
                 ["Install OpenCore to USB/internal drive", self.install_opencore],
                 ["Post-Install Volume Patch", self.PatchVolume],
                 ["Change Model", self.change_model],

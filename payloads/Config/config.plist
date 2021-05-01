@@ -884,7 +884,7 @@
 				<key>Count</key>
 				<integer>1</integer>
 				<key>Enabled</key>
-				<true/>
+				<false/>
 				<key>Find</key>
 				<data>c21jLXZlcnNpb24=</data>
 				<key>Identifier</key>
@@ -899,36 +899,6 @@
 				<string></string>
 				<key>Replace</key>
 				<data>b2xkLXZlcnNpb24=</data>
-				<key>ReplaceMask</key>
-				<data></data>
-				<key>Skip</key>
-				<integer>0</integer>
-			</dict>
-			<dict>
-				<key>Arch</key>
-				<string>x86_64</string>
-				<key>Base</key>
-				<string></string>
-				<key>Comment</key>
-				<string>Patch AppleIntelSNBGraphicsFB</string>
-				<key>Count</key>
-				<integer>0</integer>
-				<key>Enabled</key>
-				<false/>
-				<key>Find</key>
-				<data></data>
-				<key>Identifier</key>
-				<string>com.apple.driver.AppleIntelSNBGraphicsFB</string>
-				<key>Limit</key>
-				<integer>0</integer>
-				<key>Mask</key>
-				<data></data>
-				<key>MaxKernel</key>
-				<string></string>
-				<key>MinKernel</key>
-				<string>20.0.0</string>
-				<key>Replace</key>
-				<data></data>
 				<key>ReplaceMask</key>
 				<data></data>
 				<key>Skip</key>
@@ -1124,9 +1094,11 @@
 			</dict>
 			<key>4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102</key>
 			<dict>
-				<key>rtc-blacklist</key>
-				<data></data>
 				<key>OCLP-Version</key>
+				<string></string>
+				<key>revcpu</key>
+				<string></string>
+				<key>revcpuname</key>
 				<string></string>
 			</dict>
 			<key>7C436110-AB2A-4BBB-A880-FE41995C9F82</key>
@@ -1152,8 +1124,9 @@
 			</array>
 			<key>4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102</key>
 			<array>
-				<string>rtc-blacklist</string>
 				<string>OCLP-Version</string>
+				<string>revcpu</string>
+				<string>revcpuname</string>
 			</array>
 			<key>7C436110-AB2A-4BBB-A880-FE41995C9F82</key>
 			<array>
@@ -1334,7 +1307,7 @@
 		<key>UpdateNVRAM</key>
 		<false/>
 		<key>UpdateSMBIOS</key>
-		<true/>
+		<false/>
 		<key>UpdateSMBIOSMode</key>
 		<string>Create</string>
 		<key>UseRawUuidEncoding</key>

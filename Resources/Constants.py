@@ -73,6 +73,7 @@ class Constants:
         self.drm_support = False
         self.legacy_acceleration_patch = True
         self.assume_legacy = False
+        self.allow_oc_everywhere = False
 
         # OS Versions
         self.tiger = 8

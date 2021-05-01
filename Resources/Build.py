@@ -109,16 +109,16 @@ class BuildOpenCore:
         for name, version, path, check in [
             # Essential kexts
             ("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path, lambda: True),
-            ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: True),
+            ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: self.constants.allow_oc_everywhere is False),
             ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in ModelArray.MacPro71),
             ("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path, lambda: self.model == "MacBookPro9,1"),
-            ("NightShiftEnabler.kext", self.constants.nightshift_version, self.constants.nightshift_path, lambda: self.model not in ModelArray.NightShiftExclude),
-            ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: True),
+            ("NightShiftEnabler.kext", self.constants.nightshift_version, self.constants.nightshift_path, lambda: self.model not in ModelArray.NightShiftExclude and self.constants.allow_oc_everywhere is False),
+            ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False),
             # CPU patches
             ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model in ModelArray.DualSocket),
             ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: self.model in ModelArray.SSEEmulator),
             ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: self.model in ModelArray.MissingSSE42),
-            ("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path, lambda: self.model not in ModelArray.NoAPFSsupport),
+            ("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path, lambda: self.model not in ModelArray.NoAPFSsupport and self.constants.allow_oc_everywhere is False),
             # Ethernet patches
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
@@ -129,6 +129,9 @@ class BuildOpenCore:
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
         ]:
             self.enable_kext(name, version, path, check)
+
+        if self.constants.allow_oc_everywhere is False:
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
 
 
         if not self.constants.custom_model:
@@ -261,7 +264,7 @@ class BuildOpenCore:
 
         # CPUFriend
         pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
-        if self.model not in ModelArray.NoAPFSsupport:
+        if self.model not in ModelArray.NoAPFSsupport and self.constants.allow_oc_everywhere is False:
             Path(self.constants.pp_kext_folder).mkdir()
             Path(self.constants.pp_contents_folder).mkdir()
             shutil.copy(pp_map_path, self.constants.pp_contents_folder)
@@ -288,7 +291,7 @@ class BuildOpenCore:
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
         # iMac7,1 kernel panics with USB map installed, remove for time being until properly debugged
-        if usb_map_path.exists():
+        if usb_map_path.exists() and self.constants.allow_oc_everywhere is False:
             print(f"- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
@@ -559,20 +562,26 @@ class BuildOpenCore:
             print("- Spoofing to MacPro7,1")
             spoofed_model = "MacPro7,1"
             spoofed_board = "Mac-27AD2F918AE68F61"
+        else:
+            spoofed_model = self.model
+            spoofed_board = ""
         self.spoofed_model = spoofed_model
         self.spoofed_board = spoofed_board
-        self.config["#Revision"]["Spoofed-Model"] = f"{self.spoofed_model} - {self.constants.serial_settings}"
+        if self.constants.allow_oc_everywhere is False:
+            self.config["#Revision"]["Spoofed-Model"] = f"{self.spoofed_model} - {self.constants.serial_settings}"
 
         # Setup menu
         def minimal_serial_patch(self):
             self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
             self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
+            self.config["PlatformInfo"]["UpdateSMBIOS"] = True
 
         def moderate_serial_patch(self):
             self.config["PlatformInfo"]["Automatic"] = True
             self.config["PlatformInfo"]["UpdateDataHub"] = True
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
+            self.config["PlatformInfo"]["UpdateSMBIOS"] = True
             self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
             self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
 
@@ -582,6 +591,7 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["Automatic"] = True
             self.config["PlatformInfo"]["UpdateDataHub"] = True
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
+            self.config["PlatformInfo"]["UpdateSMBIOS"] = True
             self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
             self.config["PlatformInfo"]["Generic"]["ROM"] = binascii.unhexlify("0016CB445566")
             self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
@@ -601,28 +611,29 @@ class BuildOpenCore:
             minimal_serial_patch(self)
 
         # USB Map Patching
-        new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
-        map_config = plistlib.load(Path(new_map_ls).open("rb"))
+        if self.constants.allow_oc_everywhere is False:
+            new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
+            map_config = plistlib.load(Path(new_map_ls).open("rb"))
 
-        for model_controller in ModelArray.ControllerTypes:
-            model_patch = f"{self.model}{model_controller}"
-            try:
-                # Avoid erroring out when specific identity not found
-                map_config["IOKitPersonalities_x86_64"][model_patch]["model"] = self.spoofed_model
+            for model_controller in ModelArray.ControllerTypes:
+                model_patch = f"{self.model}{model_controller}"
+                try:
+                    # Avoid erroring out when specific identity not found
+                    map_config["IOKitPersonalities_x86_64"][model_patch]["model"] = self.spoofed_model
 
-                # Avoid ACPI renaming when not required
-                if self.constants.serial_settings == "Minimal":
-                    if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "EH01":
-                        map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "EHC1"
-                    if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "EH02":
-                        map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "EHC2"
-                    if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "SHC1":
-                        map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "XHC1"
+                    # Avoid ACPI renaming when not required
+                    if self.constants.serial_settings == "Minimal":
+                        if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "EH01":
+                            map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "EHC1"
+                        if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "EH02":
+                            map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "EHC2"
+                        if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "SHC1":
+                            map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "XHC1"
 
-            except KeyError:
-                continue
+                except KeyError:
+                    continue
 
-        plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
+            plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
 
         if self.model == "MacBookPro9,1":
             new_agdp_ls = Path(self.constants.agdp_contents_folder) / Path("Info.plist")

@@ -312,3 +312,21 @@ DO NOT RUN IF METAL GPU IS INSTALLED
             self.constants.assume_legacy = False
         else:
             print("Invalid option")
+
+    def allow_native_models(self):
+        Utilities.cls()
+        Utilities.header(["Allow OpenCore on native Models"])
+        print("""Allows natively supported Macs to use OpenCore. Recommended
+for users with 3rd Party NVMe SSDs to achieve improved overall
+power usage.
+
+        """)
+        change_menu = input("Allow OpenCore on all Models(y/n): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.allow_oc_everywhere = True
+            self.constants.serial_settings = "None"
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.allow_oc_everywhere = False
+            self.constants.serial_settings = "Minimal"
+        else:
+            print("Invalid option")

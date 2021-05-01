@@ -10,6 +10,9 @@
 - Add 3rd Party NVMe Power Management Patches
   - NVMeFix fafc52d (1.0.7 rolling - 04-29-2021)
 - Strip unused ACPI and Kernel entries during build
+- Allow native Macs to use OpenCore
+  - Better 3rd party NVMe support
+  - Better Wireless networking support
 
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing

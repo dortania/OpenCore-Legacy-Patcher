@@ -71,6 +71,8 @@ class OpenCoreLegacyPatcher():
         parser.add_argument('--disable_sip', help='Disable SIP', action='store_true', required=False)
         parser.add_argument('--disable_smb', help='Disable SecureBootModel', action='store_true', required=False)
         parser.add_argument('--vault', help='Enable OpenCore Vaulting', action='store_true', required=False)
+        parser.add_argument('--support_all', help='Allow OpenCore on natively supported Models', action='store_true', required=False)
+        parser.add_argument('--force_legacy', help='Allow acceleration on Mac Pros and Xserves', action='store_true', required=False)
 
         # Building args requiring value values
         parser.add_argument('--model', action='store', help='Set custom model', required=False)
@@ -139,6 +141,15 @@ class OpenCoreLegacyPatcher():
                 self.constants.serial_settings = "Advanced"
             else:
                 print(f"- Unknown SMBIOS arg passed: {args.smbios_spoof}")
+
+        if args.support_all:
+            print("- Building for natively supported model")
+            self.constants.allow_oc_everywhere = True
+            self.constants.serial_settings = "None"
+
+        if args.force_legacy:
+            print("- Allowing legacy acceleration patches on newer models")
+            self.constants.assume_legacy = True
 
         if args.build:
             if args.model:
