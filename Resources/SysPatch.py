@@ -153,7 +153,7 @@ class PatchSysVolume:
                     print("- Merging legacy Nvidia Kepler Kexts and Bundles")
                     self.add_new_binaries(ModelArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
                 else:
-                    print("- Merging legacy Nvidia Telsa and Fermi Kexts and Bundles")
+                    print("- Merging legacy Nvidia Tesla and Fermi Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
             elif self.dgpu_vendor == self.constants.pci_amd_ati:
@@ -338,7 +338,7 @@ class PatchSysVolume:
             print("Root Patching must be done on target machine!")
         elif self.model in ModelArray.NoRootPatch11 and self.constants.assume_legacy is False:
             print("Root Patching not required for this machine!")
-        elif self.model not in ModelArray.SupportedSMBIOS11:
+        elif self.model not in ModelArray.SupportedSMBIOS11 and self.constants.assume_legacy is False:
             print("Cannot run on this machine, model is unsupported!")
         elif self.constants.detected_os < self.constants.big_sur:
             print(f"Cannot run on this OS, requires macOS 11!")

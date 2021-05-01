@@ -169,9 +169,9 @@ B. Exit
                 f"Target OS: macOS {self.constants.os_support}",
             ]
 
-            if (self.constants.custom_model or self.current_model) not in ModelArray.SupportedSMBIOS:
+            if (self.constants.custom_model or self.current_model) not in ModelArray.SupportedSMBIOS and self.constants.allow_oc_everywhere is False:
                 in_between = [
-                    'Your model is not supported by this patcher!',
+                    'Your model is not supported by this patcher for running unsupported OSes!',
                     '',
                     'If you plan to create the USB for another machine, please select the "Change Model" option in the menu.'
                 ]
