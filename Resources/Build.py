@@ -143,6 +143,10 @@ class BuildOpenCore:
                 for i in nvme_devices:
                     nvme_vendor = self.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
                     nvme_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
+                    nvme_aspm = i["pci-aspm-default"]
+                    # Check if 0x2 is already present. If not, append
+                    if not nvme_aspm & 2:
+                        nvme_aspm |= 2
 
                     print(f'- Found 3rd Party NVMe SSD ({x}): {nvme_vendor}:{nvme_device}')
                     self.config["#Revision"][f"Hardware-NVMe-{x}"] = f'{nvme_vendor}:{nvme_device}'
@@ -152,8 +156,8 @@ class BuildOpenCore:
                         nvme_path_parent = "/".join(nvme_path.split("/")[:-1])
                         print(f"- Found NVMe ({x}) at {nvme_path}")
                         #print(f"- Found NVMe({x}) Parent at {nvme_path_parent}")
-                        self.config["DeviceProperties"]["Add"][nvme_path] = {"pci-aspm-default": 2}
-                        self.config["DeviceProperties"]["Add"][nvme_path_parent] = {"pci-aspm-default": 2}
+                        self.config["DeviceProperties"]["Add"][nvme_path] = {"pci-aspm-default": nvme_aspm}
+                        self.config["DeviceProperties"]["Add"][nvme_path_parent] = {"pci-aspm-default": nvme_aspm}
 
                     except IndexError:
                         print(f"- Failed to find Device path for NVMe {x}")
