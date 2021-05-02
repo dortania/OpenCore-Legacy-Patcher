@@ -10,9 +10,9 @@ from pathlib import Path
 class Constants:
     def __init__(self):
         self.patcher_version = "0.1.2"
-        self.opencore_commit = "c528597 - 2021-04-05"
-        self.opencore_version = "0.6.8"
-        self.lilu_version = "1.5.2"
+        self.opencore_commit = "1a673ad - 05-02-2021"
+        self.opencore_version = "0.6.9"
+        self.lilu_version = "1.5.3"
         self.whatevergreen_version = "1.4.9"
         self.airportbcrmfixup_version = "2.1.2"
         self.bcm570_version = "1.0.1"
@@ -26,7 +26,7 @@ class Constants:
         self.io80211high_sierra_version = "1.0.0"
         self.io80211mojave_version = "1.0.0"
         self.applealc_version = "1.6.0"
-        self.restrictevents_version = "1.0.0"
+        self.restrictevents_version = "1.0.1"
         self.restrictevents_mbp_version = "1.0.1"
         self.piixata_version = "1.0.0"
         self.backlight_version = "1.0.1"

@@ -438,9 +438,10 @@ class BuildOpenCore:
                             if mp_dgpu_vendor == self.constants.pci_amd_ati:
                                 print("- Adding Mac Pro, Xserve DRM patches")
                                 self.config["DeviceProperties"]["Add"][mp_dgpu_path] = {"shikigva": 128, "unfairgva": 1, "wegtree": 1}
-                            #elif mp_dgpu_vendor == self.constants.pci_nvidia:
-                            #    print("- Enabling Nvidia Output Patch")
-                            #    self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+                            elif mp_dgpu_vendor == self.constants.pci_nvidia:
+                                print("- Enabling Nvidia Output Patch")
+                                self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+                                self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
                         except IndexError:
                             print(f"- Failed to find Device path for NVMe {x}")
@@ -449,9 +450,10 @@ class BuildOpenCore:
                                 if "shikigva=128 unfairgva=1 -wegtree" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
                                     print("- Falling back to boot-args")
                                     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
-                            #elif mp_dgpu_vendor == self.constants.pci_nvidia:
-                            #    print("- Enabling Nvidia Output Patch")
-                            #    self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+                            elif mp_dgpu_vendor == self.constants.pci_nvidia:
+                                print("- Enabling Nvidia Output Patch")
+                                self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+                                self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
                         x = x + 1
                 except ValueError:
                     print("- No socketed dGPU found")

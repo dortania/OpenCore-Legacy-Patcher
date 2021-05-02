@@ -15,7 +15,10 @@
   - Better Wireless networking support
 - Fix MacBook6,1 audio support
 - Increment binaries
+  - OpenCore 1a673ad (0.6.9 rolling - 05-02-2021)
+  - Lilu c77722d (1.5.3 rolling - 05-01-2021)
   - AppleALC 84850d0 (1.6.0 rolling - 04-30-2021)
+  - RestrictEvents 9e2bb0f (1.0.1 rolling - 05-01-2021)
 
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing
