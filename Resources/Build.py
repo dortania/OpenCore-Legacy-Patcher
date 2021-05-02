@@ -144,7 +144,7 @@ class BuildOpenCore:
                     nvme_vendor = self.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
                     nvme_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
                     nvme_aspm = i["pci-aspm-default"]
-                    # Disable Bit 1 (L0), enable Bit 2 (L1)
+                    # Disable Bit 0 (L0s), enable Bit 1 (L1)
                     nvme_aspm = (nvme_aspm & (~3)) | 2
 
                     print(f'- Found 3rd Party NVMe SSD ({x}): {nvme_vendor}:{nvme_device}')
