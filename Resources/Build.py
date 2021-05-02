@@ -145,6 +145,12 @@ class BuildOpenCore:
                     nvme_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
                     nvme_aspm = i["pci-aspm-default"]
                     # Disable Bit 0 (L0s), enable Bit 1 (L1)
+                    if not isinstance(nvme_aspm, int):
+                        #print("- Converting variable")
+                        binascii.unhexlify(nvme_aspm)
+                        nvme_aspm = self.hexswap(nvme_aspm)
+                        nvme_aspm = int(nvme_aspm, 16)
+
                     nvme_aspm = (nvme_aspm & (~3)) | 2
 
                     print(f'- Found 3rd Party NVMe SSD ({x}): {nvme_vendor}:{nvme_device}')
@@ -615,7 +621,7 @@ class BuildOpenCore:
             self.spoofed_model = self.model
             minimal_serial_patch(self)
 
-        # USB Map Patching
+        # USB Map and CPUFriend Patching
         if self.constants.allow_oc_everywhere is False:
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
@@ -639,6 +645,42 @@ class BuildOpenCore:
                     continue
 
             plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
+
+
+            print("- Adjusting CPUFriend Map")
+            # Plistlib isn't very useful as we need to replace multiple sections in 1 string
+            # Easier to do find replace with ASCII -> Hex -> Base64
+            # iMac12,1
+            # 69 4d 61 63 31 32 2c 31
+            # aU1hYzEyLDE=
+            new_cpu_ls = Path(self.constants.pp_contents_folder) / Path("Info.plist")
+            cpu_config = plistlib.load(Path(new_cpu_ls).open("rb"))
+            cpu_data_config = plistlib.loads(cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"])
+
+
+
+            print(cpu_data_config["IOPlatformThermalProfile"]["ConfigArray"][0]["model"])
+
+
+
+
+            print(cpu_data_config["IOPlatformThermalProfile"]["ConfigArray"][0]["model"])
+
+            #cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"]["IOPlatformThermalProfile"]["ConfigArrazy"][0]["model"] = "iMacPro1,1"
+            #plistlib.dump(cpu_config, Path(new_cpu_ls).open("wb"), sort_keys=True)
+
+
+            #f = open(new_cpu_ls,'r')
+            #filedata = f.read()
+            #f.close()
+
+            #newdata = filedata.replace("IO","HAHAHA")
+
+            #f = open(new_cpu_ls,'w')
+            #f.write(newdata)
+            #f.close()
+
+
 
         if self.model == "MacBookPro9,1":
             new_agdp_ls = Path(self.constants.agdp_contents_folder) / Path("Info.plist")
