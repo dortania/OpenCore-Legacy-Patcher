@@ -9,7 +9,7 @@ from pathlib import Path
 
 class Constants:
     def __init__(self):
-        self.patcher_version = "0.1.2"
+        self.patcher_version = "0.1.3"
         self.opencore_commit = "65cc81b - 05-03-2021"
         self.opencore_version = "0.6.9"
         self.lilu_version = "1.5.3"
@@ -37,6 +37,7 @@ class Constants:
         self.hibernationfixup = "1.3.9"
         self.nvmefix_version = "1.0.7"
         self.sidecarfixup_version = "1.0.0"
+        self.innie_version = "1.3.0"
         self.payload_version = "0.0.4"
 
         # Get resource path
@@ -189,6 +190,8 @@ class Constants:
     def nvmefix_path(self): return self.payload_kexts_path / Path(f"Acidanthera/NVMeFix-v{self.nvmefix_version}.zip")
     @property
     def sidecarfixup_path(self): return self.payload_kexts_path / Path(f"Acidanthera/SidecarFixup-v{self.sidecarfixup_version}.zip")
+    @property
+    def innie_path(self): return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}.zip")
     @property
     def plist_folder_path(self): return self.payload_kexts_path / Path(f"Plists")
     @property

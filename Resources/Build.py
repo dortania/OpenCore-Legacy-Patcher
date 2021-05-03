@@ -130,6 +130,7 @@ class BuildOpenCore:
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
             # Misc
             ("SidecarFixup.kext", self.constants.sidecarfixup_version, self.constants.sidecarfixup_path, lambda: self.model in ModelArray.SidecarPatch),
+            ("Innie.kext", self.constants.innie_version, self.constants.innie_path, lambda: self.model in self.model in ModelArray.MacPro71),
         ]:
             self.enable_kext(name, version, path, check)
 

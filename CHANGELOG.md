@@ -1,5 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.1.3
+- Fix internal PCIe devices reporting as external
+  - Innie 0ccd95e (1.3.0 release - 01-16-2021)
+
 ## 0.1.2
 - Fix IDE support on 2008 era MacBooks, iMacs and Xserves
 - Fix reduced output speeds on BCM94360 series Wifi cards
