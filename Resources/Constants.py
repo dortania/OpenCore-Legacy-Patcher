@@ -25,7 +25,7 @@ class Constants:
         self.io80211elcap_version = "1.0.0"
         self.io80211high_sierra_version = "1.0.0"
         self.io80211mojave_version = "1.0.0"
-        self.applealc_version = "1.6.0"
+        self.applealc_version = "1.6.1"
         self.restrictevents_version = "1.0.1"
         self.restrictevents_mbp_version = "1.0.1"
         self.piixata_version = "1.0.0"
