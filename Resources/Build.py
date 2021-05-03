@@ -647,38 +647,7 @@ class BuildOpenCore:
             plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
 
 
-            print("- Adjusting CPUFriend Map")
-            # Plistlib isn't very useful as we need to replace multiple sections in 1 string
-            # Easier to do find replace with ASCII -> Hex -> Base64
-            # iMac12,1
-            # 69 4d 61 63 31 32 2c 31
-            # aU1hYzEyLDE=
-            new_cpu_ls = Path(self.constants.pp_contents_folder) / Path("Info.plist")
-            cpu_config = plistlib.load(Path(new_cpu_ls).open("rb"))
-            cpu_data_config = plistlib.loads(cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"])
 
-
-
-            print(cpu_data_config["IOPlatformThermalProfile"]["ConfigArray"][0]["model"])
-
-
-
-
-            print(cpu_data_config["IOPlatformThermalProfile"]["ConfigArray"][0]["model"])
-
-            #cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"]["IOPlatformThermalProfile"]["ConfigArrazy"][0]["model"] = "iMacPro1,1"
-            #plistlib.dump(cpu_config, Path(new_cpu_ls).open("wb"), sort_keys=True)
-
-
-            #f = open(new_cpu_ls,'r')
-            #filedata = f.read()
-            #f.close()
-
-            #newdata = filedata.replace("IO","HAHAHA")
-
-            #f = open(new_cpu_ls,'w')
-            #f.write(newdata)
-            #f.close()
 
 
 
