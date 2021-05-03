@@ -19,6 +19,8 @@
   - Lilu c77722d (1.5.3 rolling - 05-01-2021)
   - AppleALC 84850d0 (1.6.0 rolling - 04-30-2021)
   - RestrictEvents 9e2bb0f (1.0.1 rolling - 05-01-2021)
+- Allow CPUFriend on all El-Capitan Era Macs
+- Fix UEFI 2.0 Application support on upgraded Nvidia GPUs
 
 ## 0.1.1
 - Fix iMac11,3 GFX0 pathing

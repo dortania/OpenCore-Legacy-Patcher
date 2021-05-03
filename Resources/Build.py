@@ -11,6 +11,7 @@ import zipfile
 import os
 import sys
 import platform
+import ast
 from pathlib import Path
 from datetime import date
 
@@ -112,13 +113,13 @@ class BuildOpenCore:
             ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: self.constants.allow_oc_everywhere is False),
             ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in ModelArray.MacPro71),
             ("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path, lambda: self.model == "MacBookPro9,1"),
-            ("NightShiftEnabler.kext", self.constants.nightshift_version, self.constants.nightshift_path, lambda: self.model not in ModelArray.NightShiftExclude and self.constants.allow_oc_everywhere is False),
+            ("NightShiftEnabler.kext", self.constants.nightshift_version, self.constants.nightshift_path, lambda: self.model not in ModelArray.NightShiftExclude and self.constants.allow_oc_everywhere is False and self.constants.serial_settings == "Moderate"),
             ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False),
             # CPU patches
             ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model in ModelArray.DualSocket),
             ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: self.model in ModelArray.SSEEmulator),
             ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: self.model in ModelArray.MissingSSE42),
-            ("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path, lambda: self.model not in ModelArray.NoAPFSsupport and self.constants.allow_oc_everywhere is False),
+            ("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path, lambda: self.model != "iMac7,1" and self.constants.allow_oc_everywhere is False),
             # Ethernet patches
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
@@ -273,7 +274,7 @@ class BuildOpenCore:
 
         # CPUFriend
         pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
-        if self.model not in ModelArray.NoAPFSsupport and self.constants.allow_oc_everywhere is False:
+        if self.model != "iMac7,1" and self.constants.allow_oc_everywhere is False:
             Path(self.constants.pp_kext_folder).mkdir()
             Path(self.constants.pp_contents_folder).mkdir()
             shutil.copy(pp_map_path, self.constants.pp_contents_folder)
@@ -300,7 +301,7 @@ class BuildOpenCore:
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
         # iMac7,1 kernel panics with USB map installed, remove for time being until properly debugged
-        if usb_map_path.exists() and self.constants.allow_oc_everywhere is False:
+        if usb_map_path.exists() and self.constants.allow_oc_everywhere is False and self.model != "iMac7,1":
             print(f"- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
@@ -391,6 +392,8 @@ class BuildOpenCore:
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
                 shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
                 self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
+            self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+            self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
         def amd_patch(self, backlight_path):
             self.constants.custom_mxm_gpu = True
@@ -446,6 +449,7 @@ class BuildOpenCore:
                                 self.config["DeviceProperties"]["Add"][mp_dgpu_path] = {"shikigva": 128, "unfairgva": 1, "wegtree": 1}
                             elif mp_dgpu_vendor == self.constants.pci_nvidia:
                                 print("- Enabling Nvidia Output Patch")
+                                self.config["DeviceProperties"]["Add"][mp_dgpu_path] = {"wegtree": 1}
                                 self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
                                 self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
@@ -458,6 +462,9 @@ class BuildOpenCore:
                                     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
                             elif mp_dgpu_vendor == self.constants.pci_nvidia:
                                 print("- Enabling Nvidia Output Patch")
+                                if "-wegtree" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
+                                    print("- Falling back to boot-args")
+                                    self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -wegtree"
                                 self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
                                 self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
                         x = x + 1
@@ -583,12 +590,15 @@ class BuildOpenCore:
 
         # Setup menu
         def minimal_serial_patch(self):
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
             self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
             self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
+            self.config["PlatformInfo"]["SMBIOS"]["BIOSVersion"] = "9999.999.999.999.999"
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
             self.config["PlatformInfo"]["UpdateSMBIOS"] = True
 
         def moderate_serial_patch(self):
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
             self.config["PlatformInfo"]["Automatic"] = True
             self.config["PlatformInfo"]["UpdateDataHub"] = True
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
@@ -599,6 +609,7 @@ class BuildOpenCore:
         def advanced_serial_patch(self):
             macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             macserial_output = macserial_output.stdout.decode().strip().split(" | ")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
             self.config["PlatformInfo"]["Automatic"] = True
             self.config["PlatformInfo"]["UpdateDataHub"] = True
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
@@ -622,7 +633,7 @@ class BuildOpenCore:
             minimal_serial_patch(self)
 
         # USB Map and CPUFriend Patching
-        if self.constants.allow_oc_everywhere is False:
+        if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1":
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
 
@@ -645,6 +656,17 @@ class BuildOpenCore:
                     continue
 
             plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
+
+            # Adjust CPU Friend Data to correct SMBIOS
+            new_cpu_ls = Path(self.constants.pp_contents_folder) / Path("Info.plist")
+            cpu_config = plistlib.load(Path(new_cpu_ls).open("rb"))
+            string_stuff = str(cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"])
+            string_stuff = string_stuff.replace(self.model, self.spoofed_model)
+            string_stuff = ast.literal_eval(string_stuff)
+            cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"] = string_stuff
+            #cpu_data_config = plistlib.loads(cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"])
+            #print(f'Patching CPUFriend Data to: {cpu_data_config["IOPlatformThermalProfile"]["ConfigArray"][0]["model"]}')
+            plistlib.dump(cpu_config, Path(new_cpu_ls).open("wb"), sort_keys=True)
 
 
 
