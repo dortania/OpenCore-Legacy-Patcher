@@ -21,7 +21,7 @@
   - RestrictEvents 9e2bb0f (1.0.1 rolling - 05-01-2021)
 - Allow CPUFriend on all El-Capitan Era Macs
 - Fix UEFI 2.0 Application support on upgraded Nvidia GPUs
-- Add Sidecar support
+- Add experimental Sidecar support
   - Requires Mac with Metal Intel iGPU and the iPad to be directly plugged in, wireless highly unstable
   - SidecarFixup efdf11c (1.0.0 release - 05-02-2021)
 
