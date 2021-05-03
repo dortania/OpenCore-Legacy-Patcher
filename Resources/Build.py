@@ -128,6 +128,8 @@ class BuildOpenCore:
             ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro71),
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
+            # Misc
+            ("SidecarFixup.kext", self.constants.sidecarfixup_version, self.constants.sidecarfixup_path, lambda: self.model in ModelArray.SidecarPatch),
         ]:
             self.enable_kext(name, version, path, check)
 

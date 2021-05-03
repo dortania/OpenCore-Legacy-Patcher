@@ -36,6 +36,7 @@ class Constants:
         self.cputscsync = "1.0.3"
         self.hibernationfixup = "1.3.9"
         self.nvmefix_version = "1.0.7"
+        self.sidecarfixup_version = "1.0.0"
         self.payload_version = "0.0.4"
 
         # Get resource path
@@ -186,6 +187,8 @@ class Constants:
     def hibernationfixup_path(self): return self.payload_kexts_path / Path(f"Acidanthera/HibernationFixup-v{self.hibernationfixup}.zip")
     @property
     def nvmefix_path(self): return self.payload_kexts_path / Path(f"Acidanthera/NVMeFix-v{self.nvmefix_version}.zip")
+    @property
+    def sidecarfixup_path(self): return self.payload_kexts_path / Path(f"Acidanthera/SidecarFixup-v{self.sidecarfixup_version}.zip")
     @property
     def plist_folder_path(self): return self.payload_kexts_path / Path(f"Plists")
     @property
