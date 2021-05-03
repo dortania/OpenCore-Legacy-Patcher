@@ -8,17 +8,17 @@
 - Probe hardware for Backlight pathing on iMac10,1, iMac11,x and iMac12,x with Metal GPUs
 - Add Windows UEFI Audio support to Sandy and Ivy Bridge Macs
 - Add 3rd Party NVMe Power Management Patches
-  - NVMeFix fafc52d (1.0.7 rolling - 04-29-2021)
+  - NVMeFix fafc52d (1.0.7 release - 05-03-2021)
 - Strip unused ACPI and Kernel entries during build
 - Allow native Macs to use OpenCore
   - Better 3rd party NVMe support
   - Better Wireless networking support
 - Fix MacBook6,1 audio support
 - Increment binaries
-  - OpenCore 1a673ad (0.6.9 rolling - 05-02-2021)
-  - Lilu c77722d (1.5.3 rolling - 05-01-2021)
+  - OpenCore 65cc81b (0.6.9 release - 05-03-2021)
+  - Lilu c77722d (1.5.3 release - 05-03-2021)
   - AppleALC 84850d0 (1.6.0 rolling - 04-30-2021)
-  - RestrictEvents 9e2bb0f (1.0.1 rolling - 05-01-2021)
+  - RestrictEvents 9e2bb0f (1.0.1 release - 05-03-2021)
 - Allow CPUFriend on all El-Capitan Era Macs
 - Fix UEFI 2.0 Application support on upgraded Nvidia GPUs
 - Add experimental Sidecar support
