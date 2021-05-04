@@ -652,6 +652,7 @@ class BuildOpenCore:
             self.config["PlatformInfo"].pop("Memory")
         else:
             print("- Inserting 1.5TB of RAM into your Mac")
+            self.config["PlatformInfo"]["CustomMemory"] = True
 
         # USB Map and CPUFriend Patching
         if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1":
