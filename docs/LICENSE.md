@@ -10,9 +10,13 @@ This patcher is made of multiple external applications from different people and
   * [CPUFriend](https://github.com/acidanthera/CPUFriend/blob/master/LICENSE)
   * [RestrictEvents](https://github.com/acidanthera/RestrictEvents/blob/master/LICENSE.txt)
   * [NightShiftEnabler](https://github.com/cdf/NightShiftEnabler/blob/master/LICENSE.txt)
+  * [Innie](https://github.com/cdf/Innie/blob/master/LICENSE.txt)
+* GPL 2.0
+  * [NVMeFix](https://github.com/acidanthera/NVMeFix/blob/master/LICENSE.txt)
 * All rights reserved to respective authors
   * [AAAMouSSE](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/) - Syncretic
   * [telemetrap](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/post-28447707) - Syncretic
+  * [SidecarFixup](https://github.com/khronokernel/SidecarFixup) - Khronokernel
   * Apple Binaries - Apple Inc.
 
 Remaining files within OpenCore Legacy Patcher are copyrighted 2020-2021 Mykola Grymalyuk & Dhinak G, under the BSD-3 Clause license:

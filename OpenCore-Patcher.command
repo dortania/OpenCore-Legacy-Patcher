@@ -139,7 +139,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
   - ASentientBot:\tLegacy Acceleration Patches
   - Ausdauersportler:\tLinking fixes for SNBGraphicsFB and AMDX3000
   - Syncretic:\t\tAAAMouSSE and telemetrap
-  - cdf:\t\tNightShiftEnabler"""]).start()
+  - cdf:\t\tNightShiftEnabler and Innie"""]).start()
 
     def PatchVolume(self):
         Utilities.cls()

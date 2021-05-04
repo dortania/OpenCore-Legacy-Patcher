@@ -2,60 +2,50 @@
 
 <img src="images/OC-Patcher.png" width="256">
 
-A python program for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on legacy Macs, see [Supported SMBIOS](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) on whether your model is supported. Designed around Big Sur support, however can be used on older OSes.
-  
-| Support Entry | Supported OSes | Description | Comment |
-| :--- | :--- | :--- | :--- |
-| HostOS | macOS 10.9 - macOS 11 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [Python 3.6 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
-| TargetOS | macOS 11 | Refers to OSes that can be patched to run with OpenCore | May support 10.4 and newer (in a potentially broken state). No support provided. |
+A python program for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on both legacy and modern Macs, see our in-depth [Guide](https://dortania.github.io/OpenCore-Legacy-Patcher/) for more information.
 
 Supported features:
 
 * System Integrity Protection, FileVault 2, .im4m Secure Boot and Vaulting
+* WPA Wifi and Personal Hotspot support
 * Native OTA OS DELTA updates on all Macs
 * Recovery OS, Safe Mode and Single-user Mode booting
 * Zero firmware patching required (ie. APFS ROM patching)
 * GPU Switching on MacBook Pro models (2012 and newer)
 
-Note: Only clean-installs and upgrades are supported, installs already patched with other patchers, such as [Patched Sur](https://github.com/BenSova/Patched-Sur) or [bigmac](https://github.com/StarPlayrX/bigmac), cannot be used due to broken file integrity with APFS snapshots and SIP.
+Note: Only clean-installs and upgrades are supported, macOS Big Sur installs already patched with other patchers, such as [Patched Sur](https://github.com/BenSova/Patched-Sur) or [bigmac](https://github.com/StarPlayrX/bigmac), cannot be used due to broken file integrity with APFS snapshots and SIP.
 
 * You can however reinstall macOS with this patcher and retain your original data
 
 Note 2: Currently OpenCore Legacy Patcher officially supports patching to run macOS 11, Big Sur installs. For older OSes, OpenCore may function however support is currently not provided from Dortania.
 
-For Mojave and Catalina support, we recommend the use of [dosdude1's patchers](http://dosdude1.com)
-
-## How to use
-
-See the online guide on how:
-
-* [OpenCore Legacy Patcher Guide](https://dortania.github.io/OpenCore-Legacy-Patcher/)
-
-## Patcher Warnings
-
-Since this patcher tricks macOS into thinking you're running a newer Mac, certain functionality may be broken:
-
-* Boot Camp Assistant.app
-  * We recommend running the assistant on a natively supported OS, running via the patcher may result in unforeseen issues
-* Legacy Windows Booting
-  * Currently OpenCore cannot boot MBR-based installs, so Ivy Bridge and older Machines may [not be able to see Windows in OpenCore's Boot Picker](https://github.com/acidanthera/bugtracker/issues/912)
-  * [Solution is to convert install to UEFI](https://docs.microsoft.com/en-us/mem/configmgr/osd/deploy-use/task-sequence-steps-to-manage-bios-to-uefi-conversion), see MacRumors thread for more examples: [Installing Windows 10](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/)
-  * You can still boot BootCamp outside of OpenCore just like before however!
-* Boot Buddy support
-  * Due to how OpenCore overwrites NVRAM, the usage of Boot Buddy and such tools are **highly** in-advised
+* For Mojave and Catalina support, we recommend the use of [dosdude1's patchers](http://dosdude1.com)
 
 ## Support
 
-To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN). We're actively there and is the quickest way to receive help. For bigger issues such as patcher crashing on build and such, we recommend opening an issue right here on GitHub:
+To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN). We're actively there and is the quickest way to receive help. For bigger issues such as patcher crashing on build and such, we recommend opening an issue right here on GitHub(Please review [How to debug with OpenCore](https://dortania.github.io/OpenCore-Legacy-Patcher/DEBUG.html) before opening issues):
 
 * [OpenCore Legacy Patcher's Issue's tab](https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
 
-Regarding how to debug OpenCore Patcher, we recommend seeing the below:
+## Credits
 
-* [How to debug with OpenCore](https://dortania.github.io/OpenCore-Legacy-Patcher/DEBUG.html)
-
-## Supporting us!
-
-To help support this patcher, we recommend checking this page:
-
-* [Supporting the patcher](https://dortania.github.io/OpenCore-Legacy-Patcher/DONATE.html)
+* [Acidanthera](https://github.com/Acidanthera)
+  * OpenCorePkg as well as many of the core kexts and tools
+* [DhinakG](https://github.com/DhinakG)
+  * Main co-author
+* [Khronokernel](https://github.com/Khronokernel)
+  * Main co-author
+* [Ausdauersportler](https://github.com/Ausdauersportler)
+  * iMacs Metal GPUs Upgrade Patch set and documentation
+* [ASentientBot](https://github.com/ASentientBot)
+  * Legacy Acceleration Patch set and documentation
+* [cdf](https://github.com/cdf)
+  * Mac Pro on OpenCore Patch set and documentation
+* [dosdude1](https://github.com/dosdude1) and [BarryKN](https://github.com/BarryKN)
+  * Development of previous patchers, laying out much of what needs to be patched
+* [vit9696](https://github.com/vit9696)
+  * Endless amount of help troubleshooting, determining fixes and writing patches
+* [mario_bros_tech](https://github.com/mariobrostech) and the rest of the Unsupported Mac Discord
+  * Catalyst that started OpenCore Legacy Patcher
+* MacRumors and Unsupported Mac Communities
+  * Endless testing, reporting issues

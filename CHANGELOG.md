@@ -7,6 +7,7 @@
 - Increment binaries
   - AppleALC f2889fc (1.6.1 rolling - 05-03-2021)
 - Support custom CPU names in About This Mac
+- Fix NightShift accidentally disabling on Minimal SMBIOS configs
 
 ## 0.1.2
 - Fix IDE support on 2008 era MacBooks, iMacs and Xserves
