@@ -600,6 +600,8 @@ class BuildOpenCore:
 
         # Setup menu
         def minimal_serial_patch(self):
+            if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
+                self.config["PlatformInfo"]["PlatformNVRAM"]["ProcessorType"] = 1537
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
             self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
             self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
@@ -608,6 +610,8 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["UpdateSMBIOS"] = True
 
         def moderate_serial_patch(self):
+            if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
+                self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
             self.config["PlatformInfo"]["Automatic"] = True
             self.config["PlatformInfo"]["UpdateDataHub"] = True
@@ -617,6 +621,8 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
 
         def advanced_serial_patch(self):
+            if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
+                self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
             macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             macserial_output = macserial_output.stdout.decode().strip().split(" | ")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
@@ -641,6 +647,11 @@ class BuildOpenCore:
             print("- Using Minimal SMBIOS patching")
             self.spoofed_model = self.model
             minimal_serial_patch(self)
+
+        if self.constants.download_ram is False:
+            self.config["PlatformInfo"].pop("Memory")
+        else:
+            print("- Inserting 1.5TB of RAM into your Mac")
 
         # USB Map and CPUFriend Patching
         if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1":
@@ -677,10 +688,6 @@ class BuildOpenCore:
             #cpu_data_config = plistlib.loads(cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"])
             #print(f'Patching CPUFriend Data to: {cpu_data_config["IOPlatformThermalProfile"]["ConfigArray"][0]["model"]}')
             plistlib.dump(cpu_config, Path(new_cpu_ls).open("wb"), sort_keys=True)
-
-
-
-
 
 
         if self.model == "MacBookPro9,1":

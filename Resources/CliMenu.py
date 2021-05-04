@@ -6,6 +6,8 @@ import subprocess
 import sys
 import time
 import platform
+import tkinter as tk
+from tkinter import colorchooser
 
 from Resources import Build, ModelArray, Constants, SysPatch, Utilities
 
@@ -358,5 +360,37 @@ Custom names will report as follows:
         elif change_menu == "3":
             self.constants.custom_cpu_model = 1
             self.constants.custom_cpu_model_value = input("Enter new CPU Name: ")
+        else:
+            print("Invalid option")
+
+    def custom_color_thing(self):
+        Utilities.cls()
+        Utilities.header(["Set custom CPU Model Name"])
+        print("""Change reported CPU Model name in About This Mac
+Custom names will report as follows:
+
+1: Custom Color
+2. Reset
+        """)
+        change_menu = input("Set custom CPU Name(1,2,3): ")
+        if change_menu == "1":
+            temp_tk_root = tk.Tk()
+            temp_tk_root.wm_withdraw()
+            self.constants.custom_color = colorchooser.askcolor(title="Choose color")
+            temp_tk_root.destroy()
+        elif change_menu == "2":
+            self.constants.custom_color = ""
+        else:
+            print("Invalid option")
+
+    def download_more_ram_dot_com(self):
+        Utilities.cls()
+        Utilities.header(["Download more RAM"])
+        print("""Downloads more RAM to your Mac!
+Currently only offers 1.5TB bundles
+        """)
+        change_menu = input("Download more RAM?(y/n): ")
+        if change_menu == "1":
+            self.constants.download_ram = True
         else:
             print("Invalid option")

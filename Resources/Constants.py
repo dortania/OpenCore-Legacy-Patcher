@@ -78,6 +78,8 @@ class Constants:
         self.allow_oc_everywhere = False
         self.custom_cpu_model = 2
         self.custom_cpu_model_value = ""
+        self.custom_color = ""
+        self.download_ram = False
 
         # OS Versions
         self.tiger = 8
