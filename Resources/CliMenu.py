@@ -390,7 +390,9 @@ Custom names will report as follows:
 Currently only offers 1.5TB bundles
         """)
         change_menu = input("Download more RAM?(y/n): ")
-        if change_menu == "1":
+        if change_menu == "y":
             self.constants.download_ram = True
+        elif change_menu == "n":
+            self.constants.download_ram = False
         else:
             print("Invalid option")
