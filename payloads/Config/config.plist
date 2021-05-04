@@ -1248,7 +1248,7 @@
 					<key>SerialNumber</key>
 					<string>AAA000000001</string>
 					<key>Size</key>
-					<real>131072</real>
+					<integer>131072</integer>
 					<key>Speed</key>
 					<integer>5733</integer>
 				</dict>
