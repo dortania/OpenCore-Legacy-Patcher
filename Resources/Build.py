@@ -137,7 +137,6 @@ class BuildOpenCore:
         if self.constants.allow_oc_everywhere is False:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
 
-
         if not self.constants.custom_model:
             nvme_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             nvme_devices = [i for i in nvme_devices if i.get("IORegistryEntryChildren", None) and i["vendor-id"] != binascii.unhexlify("6B100000") and i["IORegistryEntryChildren"][0]["IORegistryEntryName"] == "IONVMeController"]
@@ -536,7 +535,15 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "XHC1 to SHC1")["Enabled"] = True
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "EHC1 to EH01")["Enabled"] = True
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "EHC2 to EH02")["Enabled"] = True
-
+        if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revcpu"] = self.constants.custom_cpu_model
+            if self.constants.custom_cpu_model_value != "":
+                print(f"- Adding custom CPU Name: {self.constants.custom_cpu_model_value}")
+                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revcpuname"] = self.constants.custom_cpu_model_value
+            else:
+                print("- Adding CPU Name Patch")
+            if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
+                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
 
     def set_smbios(self):
         spoofed_model = self.model

@@ -965,11 +965,11 @@ DeleteAMDAccel11 = [
     "AMDRadeonX6000.kext",
     "AMDRadeonX6000Framebuffer.kext",
     "AMDRadeonX6000HWServices.kext",
-    "AMD7000Controller.kext",  # AMDSupport Dependancy
-    "AMD8000Controller.kext",  # AMDSupport Dependancy
-    "AMD9000Controller.kext",  # AMDSupport Dependancy
-    "AMD9500Controller.kext",  # AMDSupport Dependancy
-    "AMD10000Controller.kext",  # AMDSupport Dependancy
+    "AMD7000Controller.kext",  # AMDSupport Dependency
+    "AMD8000Controller.kext",  # AMDSupport Dependency
+    "AMD9000Controller.kext",  # AMDSupport Dependency
+    "AMD9500Controller.kext",  # AMDSupport Dependency
+    "AMD10000Controller.kext",  # AMDSupport Dependency
     "AppleIntelBDWGraphics.kext",
     "AppleIntelBDWGraphicsFramebuffer.kext",
     "AppleIntelCFLGraphicsFramebuffer.kext",

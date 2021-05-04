@@ -55,6 +55,18 @@ class OpenCoreLegacyPatcher():
             print(f"True Model: {true_model}")
             if not true_model.startswith("Unknown"):
                 self.current_model = true_model
+
+        custom_cpu_model_value: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:revcpuname".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        if not custom_cpu_model_value.startswith("nvram: Error getting variable"):
+            custom_cpu_model= [line.strip().split(":revcpu	", 1)[1] for line in custom_cpu_model_value.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
+            custom_cpu_model_value = [line.strip().split(":revcpuname	", 1)[1] for line in custom_cpu_model_value.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
+            if custom_cpu_model.split("%00")[0] == "%01%00%00%00":
+                self.constants.custom_cpu_model = 1
+            elif custom_cpu_model.split("%00")[0] == "%00%00%00%00":
+                self.constants.custom_cpu_model = 0
+            if custom_cpu_model_value.split("%00")[0] != "":
+                self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
+
     def hexswap(self, input_hex: str):
         hex_pairs = [input_hex[i:i + 2] for i in range(0, len(input_hex), 2)]
         hex_rev = hex_pairs[::-1]
@@ -111,6 +123,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set Acceleration Patches:\t\t{self.constants.legacy_acceleration_patch}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).accel_setting],
                 [f"Assume Legacy GPU:\t\t\t{self.constants.assume_legacy}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).force_accel_setting],
                 [f"Allow OpenCore on native Models:\t{self.constants.allow_oc_everywhere}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).allow_native_models],
+                [f"Set Custom name {self.constants.custom_cpu_model_value}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).custom_cpu],
             ]
 
             for option in options:

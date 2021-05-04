@@ -76,6 +76,8 @@ class Constants:
         self.legacy_acceleration_patch = True
         self.assume_legacy = False
         self.allow_oc_everywhere = False
+        self.custom_cpu_model = 2
+        self.custom_cpu_model_value = ""
 
         # OS Versions
         self.tiger = 8
@@ -99,7 +101,6 @@ class Constants:
         self.pci_broadcom = "14E4"
         self.pci_atheros = "168C"
         self.pci_apple = "106B"
-
 
         # Class Codes
         # https://pci-ids.ucw.cz/read/PD

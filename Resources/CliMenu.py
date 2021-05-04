@@ -330,3 +330,33 @@ power usage.
             self.constants.serial_settings = "Minimal"
         else:
             print("Invalid option")
+
+    def custom_cpu(self):
+        Utilities.cls()
+        Utilities.header(["Set custom CPU Model Name"])
+        print("""Change reported CPU Model name in About This Mac
+Custom names will report as follows:
+
+1: Original Name: 2.5 Ghz Dual-Core Intel Core i5
+2. CPU name:      Intel(R) Core(TM) i5-3210M CPU @ 2.50Ghz
+3. Custom Name:   2.5Ghz Cotton Candy (example)
+        """)
+        if self.constants.custom_cpu_model_value == "":
+            if self.constants.custom_cpu_model == 0:
+                print("Currently using original name")
+            else:
+                print("Currently using CPU name")
+        else:
+            print(f"Custom CPU name currently: {self.constants.custom_cpu_model_value}")
+        change_menu = input("Set custom CPU Name(1,2,3): ")
+        if change_menu == "1":
+            self.constants.custom_cpu_model = 2
+            self.constants.custom_cpu_model_value = ""
+        elif change_menu == "2":
+            self.constants.custom_cpu_model = 0
+            self.constants.custom_cpu_model_value = ""
+        elif change_menu == "3":
+            self.constants.custom_cpu_model = 1
+            self.constants.custom_cpu_model_value = input("Enter new CPU Name: ")
+        else:
+            print("Invalid option")
