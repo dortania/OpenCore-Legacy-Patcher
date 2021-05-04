@@ -59,19 +59,12 @@ class OpenCoreLegacyPatcher():
             if not true_model.startswith("Unknown"):
                 self.current_model = true_model
 
-        custom_cpu_model: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:revcpu".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         custom_cpu_model_value: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:revcpuname".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-
-        if not custom_cpu_model.startswith("nvram: Error getting variable"):
-            custom_cpu_model = [line.strip().split(":revcpu	", 1)[1] for line in custom_cpu_model_value.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
-            if custom_cpu_model.split("%00")[0] == "%01%00%00%00":
-                self.constants.custom_cpu_model = 1
-            elif custom_cpu_model.split("%00")[0] == "%00%00%00%00":
-                self.constants.custom_cpu_model = 0
 
         if not custom_cpu_model_value.startswith("nvram: Error getting variable"):
             custom_cpu_model_value = [line.strip().split(":revcpuname	", 1)[1] for line in custom_cpu_model_value.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
             if custom_cpu_model_value.split("%00")[0] != "":
+                self.constants.custom_cpu_model = 1
                 self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
 
 
