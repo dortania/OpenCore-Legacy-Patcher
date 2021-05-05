@@ -159,7 +159,7 @@ class PatchSysVolume:
                 #    print("- Merging legacy Intel 3rd Gen Kexts and Bundles")
                 #    self.add_new_binaries(ModelArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
             elif igpu_vendor == self.constants.pci_nvidia:
-                if not dgpu_devices:
+                if not dgpu_vendor:
                     # Avoid patching twice, as Nvidia iGPUs will only have Nvidia dGPUs
                     print("- Merging legacy Nvidia Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
