@@ -130,12 +130,37 @@ class BuildOpenCore:
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
             # Misc
             ("SidecarFixup.kext", self.constants.sidecarfixup_version, self.constants.sidecarfixup_path, lambda: self.model in ModelArray.SidecarPatch),
-            ("Innie.kext", self.constants.innie_version, self.constants.innie_path, lambda: self.model in self.model in ModelArray.MacPro71),
         ]:
             self.enable_kext(name, version, path, check)
 
         if self.constants.allow_oc_everywhere is False:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
+
+
+        if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in ModelArray.MacPro71):
+            # Use Innie's same logic:
+            # https://github.com/cdf/Innie/blob/v1.3.0/Innie/Innie.cpp#L90-L97
+            storage_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            storage_devices = [i for i in wifi_devices if i["class-code"] == binascii.unhexlify(self.constants.classcode_sata) or i["class-code"] == binascii.unhexlify(self.constants.classcode_nvme)]
+            storage_path_gfx: str = subprocess.run([self.constants.gfxutil_path] + f"-v".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+            try:
+                x = 1
+                for i in storage_devices:
+                    storage_vendor = self.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
+                    storage_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
+                    print(f'- Fixing PCIe Drive ({x}) reporting')
+                    try:
+                        storage_path = [line.strip().split("= ", 1)[1] for line in storage_path_gfx.split("\n") if f'{storage_vendor}:{storage_device}'.lower() in line.strip()][0]
+                        self.config["DeviceProperties"]["Add"][storage_path] = { "built-in": 1}
+                    except IndexError:
+                        print(f"- Failed to find Device path for PCIe drive {x}, falling back to Innie")
+                        if self.get_kext_by_bundle_path("Innie.kext")["Enabled"] is False:
+                            self.enable_kext("Innie.kext", self.constants.innie_version, self.constants.innie_path)
+                    x = x + 1
+            except ValueError:
+                print("- No PCIe Drives found to fix")
+            except IndexError:
+                print("- No PCIe Drives found to fix")
 
         if not self.constants.custom_model:
             nvme_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -164,7 +189,7 @@ class BuildOpenCore:
                         nvme_path_parent = "/".join(nvme_path.split("/")[:-1])
                         print(f"- Found NVMe ({x}) at {nvme_path}")
                         #print(f"- Found NVMe({x}) Parent at {nvme_path_parent}")
-                        self.config["DeviceProperties"]["Add"][nvme_path] = {"pci-aspm-default": nvme_aspm}
+                        self.config["DeviceProperties"]["Add"][nvme_path] = {"pci-aspm-default": nvme_aspm, "built-in": 1}
                         self.config["DeviceProperties"]["Add"][nvme_path_parent] = {"pci-aspm-default": nvme_aspm}
 
                     except IndexError:

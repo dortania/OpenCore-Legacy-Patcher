@@ -2,6 +2,7 @@
 
 ## 0.1.3
 - Fix internal PCIe devices reporting as external
+  - Opt for `built-in` when device path is detectable
   - Innie 0ccd95e (1.3.0 release - 01-16-2021)
 - Fix MacBookPro5,4 audio support
 - Increment binaries
