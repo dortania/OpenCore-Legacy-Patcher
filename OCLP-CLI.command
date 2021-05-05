@@ -12,7 +12,7 @@ import platform
 import argparse
 from pathlib import Path
 
-from Resources import Build, ModelArray, Constants, SysPatch, Utilities, CliMenu
+from Resources import Build, ModelArray, Constants, SysPatch, Utilities, CliMenu, DeviceProbe
 
 
 class OpenCoreLegacyPatcher():
@@ -30,13 +30,7 @@ class OpenCoreLegacyPatcher():
         if self.current_model in ModelArray.NoAPFSsupport:
             self.constants.serial_settings = "Moderate"
         if self.current_model in ModelArray.LegacyGPU:
-            try:
-                dgpu_devices = plistlib.loads(subprocess.run("ioreg -r -n GFX0 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-                dgpu_vendor = self.hexswap(binascii.hexlify(dgpu_devices[0]["vendor-id"]).decode()[:4])
-                dgpu_device = self.hexswap(binascii.hexlify(dgpu_devices[0]["device-id"]).decode()[:4])
-            except ValueError:
-                dgpu_vendor = ""
-                dgpu_device = ""
+            dgpu_vendor,dgpu_device = DeviceProbe.pci_probe().gpu_probe("GFX0")
 
             if (dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs):
                 self.constants.sip_status = True

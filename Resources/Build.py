@@ -15,7 +15,7 @@ import ast
 from pathlib import Path
 from datetime import date
 
-from Resources import Constants, ModelArray, Utilities
+from Resources import Constants, ModelArray, Utilities, DeviceProbe
 
 
 def human_fmt(num):
@@ -43,33 +43,6 @@ class BuildOpenCore:
         hex_rev = hex_pairs[::-1]
         hex_str = "".join(["".join(x) for x in hex_rev])
         return hex_str.upper()
-
-    def check_pciid(self, print_status):
-        try:
-            self.constants.igpu_devices = plistlib.loads(subprocess.run("ioreg -r -n IGPU -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            self.constants.igpu_vendor = self.hexswap(binascii.hexlify(self.constants.igpu_devices[0]["vendor-id"]).decode()[:4])
-            self.constants.igpu_device = self.hexswap(binascii.hexlify(self.constants.igpu_devices[0]["device-id"]).decode()[:4])
-            if print_status is True:
-                print(f"- Detected iGPU: {self.constants.igpu_vendor}:{self.constants.igpu_device}")
-                self.config["#Revision"]["Hardware-iGPU"] = f"{self.constants.igpu_vendor}:{self.constants.igpu_device}"
-        except ValueError:
-            if print_status is True:
-                print("- No iGPU detected")
-            self.constants.igpu_devices = ""
-            self.config["#Revision"]["Hardware-iGPU"] = "No iGPU detected"
-
-        try:
-            self.constants.dgpu_devices = plistlib.loads(subprocess.run("ioreg -r -n GFX0 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            self.constants.dgpu_vendor = self.hexswap(binascii.hexlify(self.constants.dgpu_devices[0]["vendor-id"]).decode()[:4])
-            self.constants.dgpu_device = self.hexswap(binascii.hexlify(self.constants.dgpu_devices[0]["device-id"]).decode()[:4])
-            if print_status is True:
-                print(f"- Detected dGPU: {self.constants.dgpu_vendor}:{self.constants.dgpu_device}")
-                self.config["#Revision"]["Hardware-GFX0"] = f"{self.constants.dgpu_vendor}:{self.constants.dgpu_device}"
-        except ValueError:
-            if print_status is True:
-                print("- No dGPU detected")
-            self.constants.dgpu_devices = ""
-            self.config["#Revision"]["Hardware-GFX0"] = "No dGPU detected"
 
     def build_efi(self):
         Utilities.cls()
@@ -148,24 +121,23 @@ class BuildOpenCore:
                 for i in storage_devices:
                     storage_vendor = self.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
                     storage_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
-                    print(f'- Fixing PCIe Drive ({x}) reporting')
+                    print(f'- Fixing PCIe Storage Controller ({x}) reporting')
                     try:
                         storage_path = [line.strip().split("= ", 1)[1] for line in storage_path_gfx.split("\n") if f'{storage_vendor}:{storage_device}'.lower() in line.strip()][0]
                         self.config["DeviceProperties"]["Add"][storage_path] = { "built-in": 1}
                     except IndexError:
-                        print(f"- Failed to find Device path for PCIe drive {x}, falling back to Innie")
+                        print(f"- Failed to find Device path for PCIe Storage Controller {x}, falling back to Innie")
                         if self.get_kext_by_bundle_path("Innie.kext")["Enabled"] is False:
                             self.enable_kext("Innie.kext", self.constants.innie_version, self.constants.innie_path)
                     x = x + 1
             except ValueError:
-                print("- No PCIe Drives found to fix")
+                print("- No PCIe Storage Controllers found to fix")
             except IndexError:
-                print("- No PCIe Drives found to fix")
+                print("- No PCIe Storage Controllers found to fix")
 
         if not self.constants.custom_model:
             nvme_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             nvme_devices = [i for i in nvme_devices if i.get("IORegistryEntryChildren", None) and i["vendor-id"] != binascii.unhexlify("6B100000") and i["IORegistryEntryChildren"][0]["IORegistryEntryName"] == "IONVMeController"]
-            nvme_path_gfx: str = subprocess.run([self.constants.gfxutil_path] + f"-v".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
             try:
                 x = 1
                 for i in nvme_devices:
@@ -174,24 +146,18 @@ class BuildOpenCore:
                     nvme_aspm = i["pci-aspm-default"]
                     # Disable Bit 0 (L0s), enable Bit 1 (L1)
                     if not isinstance(nvme_aspm, int):
-                        #print("- Converting variable")
                         binascii.unhexlify(nvme_aspm)
                         nvme_aspm = self.hexswap(nvme_aspm)
                         nvme_aspm = int(nvme_aspm, 16)
-
                     nvme_aspm = (nvme_aspm & (~3)) | 2
-
                     print(f'- Found 3rd Party NVMe SSD ({x}): {nvme_vendor}:{nvme_device}')
                     self.config["#Revision"][f"Hardware-NVMe-{x}"] = f'{nvme_vendor}:{nvme_device}'
-
                     try:
-                        nvme_path = [line.strip().split("= ", 1)[1] for line in nvme_path_gfx.split("\n") if f'{nvme_vendor}:{nvme_device}'.lower() in line.strip()][0]
-                        nvme_path_parent = "/".join(nvme_path.split("/")[:-1])
+                        nvme_path = DeviceProbe.pci_probe().deviceproperty_probe(nvme_vendor, nvme_device)
+                        nvme_path_parent = DeviceProbe.pci_probe().device_property_parent(nvme_path)
                         print(f"- Found NVMe ({x}) at {nvme_path}")
-                        #print(f"- Found NVMe({x}) Parent at {nvme_path_parent}")
                         self.config["DeviceProperties"]["Add"][nvme_path] = {"pci-aspm-default": nvme_aspm, "built-in": 1}
                         self.config["DeviceProperties"]["Add"][nvme_path_parent] = {"pci-aspm-default": nvme_aspm}
-
                     except IndexError:
                         print(f"- Failed to find Device path for NVMe {x}")
                         if "-nvmefaspm" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
@@ -210,13 +176,11 @@ class BuildOpenCore:
             self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
             self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
             if not self.constants.custom_model:
-                arpt_path: str = subprocess.run([self.constants.gfxutil_path] + f"-v".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-                try:
-                    arpt_path = [line.strip().split("= ", 1)[1] for line in arpt_path.split("\n") if f"{wifi_vendor}:{wifi_device}".lower() in line.strip()][0]
+                arpt_path = DeviceProbe.pci_probe().deviceproperty_probe(wifi_vendor, wifi_device)
+                if arpt_path:
                     print(f"- Found ARPT device at {arpt_path}")
                     default_path = False
-                except IndexError:
-                    print("- Failed to find Device path")
+                else:
                     default_path = True
             if default_path is True:
                 if self.model in ModelArray.nvidiaHDEF:
@@ -238,35 +202,17 @@ class BuildOpenCore:
 
         # WiFi patches
         # TODO: -a is not supported in Lion and older, need to add proper fix
-        if self.constants.detected_os > self.constants.lion:
-            try:
-                wifi_devices = plistlib.loads(subprocess.run("ioreg -r -n ARPT -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            except ValueError:
-                # Work-around Mac Pros where Wifi card may not be named ARPT (ie. installed in dedicated PCIe card slot)
-                wifi_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            vendor_atheros = binascii.unhexlify("E4140000")
-            vendor_broadcom = binascii.unhexlify("8C160000")
-            wifi_devices = [i for i in wifi_devices if i["vendor-id"] == vendor_atheros or i["vendor-id"] == vendor_broadcom and i["class-code"] == binascii.unhexlify("00800200")]
-            try:
-                wifi_vendor = self.hexswap(binascii.hexlify(wifi_devices[0]["vendor-id"]).decode()[:4])
-                wifi_device = self.hexswap(binascii.hexlify(wifi_devices[0]["device-id"]).decode()[:4])
-                wifi_ioname = wifi_devices[0]["IOName"]
-                if not self.constants.custom_model:
-                    if wifi_ioname in ["pci14e4,4353", "pci14e4,4331"]:
-                        print(f"- Detected Wifi Card: {wifi_ioname}")
-                        self.config["#Revision"]["Hardware-Wifi"] = f"{wifi_ioname}"
-                    else:
-                        print(f"- Detected Wifi Card: {wifi_vendor}:{wifi_device}")
-                        self.config["#Revision"]["Hardware-Wifi"] = f"{wifi_vendor}:{wifi_device}"
-            except IndexError:
-                wifi_devices = ""
-
+        if self.constants.detected_os > self.constants.lion and not self.constants.custom_model:
+            wifi_vendor,wifi_device,wifi_ioname = DeviceProbe.pci_probe().wifi_probe()
+            if wifi_vendor:
+                print(f"- Found Wireless Device {wifi_vendor}:{wifi_device} ({wifi_ioname})")
+                self.config["#Revision"]["Hardware-Wifi"] = f"{wifi_vendor}:{wifi_device} ({wifi_ioname}"
         else:
-            wifi_devices = ""
-            print("- Can't run Wifi hardware detection on Snow Leopard and older")
+            wifi_vendor = ""
+            print("- Unable to run Wireless hardware detection")
         if self.constants.wifi_build is True:
             print("- Skipping Wifi patches on request")
-        elif not self.constants.custom_model and wifi_devices:
+        elif not self.constants.custom_model and wifi_vendor:
             if wifi_vendor == self.constants.pci_broadcom:
                 # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
                 if wifi_device in ModelArray.BCM4360Wifi and wifi_ioname not in ["pci14e4,4353", "pci14e4,4331"]:
@@ -447,13 +393,15 @@ class BuildOpenCore:
             else:
                 print("- Failed to find vendor")
         elif not self.constants.custom_model:
-            self.check_pciid(True)
-            if self.constants.dgpu_vendor == self.constants.pci_amd_ati and self.constants.dgpu_device in ModelArray.AMDMXMGPUs:
-                backlight_path_detection(self)
-                amd_patch(self, self.gfx0_path)
-            elif self.constants.dgpu_vendor == self.constants.pci_nvidia and self.constants.dgpu_device in ModelArray.NVIDIAMXMGPUs:
-                backlight_path_detection(self)
-                nvidia_patch(self, self.gfx0_path)
+            dgpu_vendor,dgpu_device = DeviceProbe.pci_probe().gpu_probe("GFX0")
+            if dgpu_vendor:
+                print(f"- Detected dGPU: {dgpu_vendor}:{dgpu_device}")
+                if dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs:
+                    backlight_path_detection(self)
+                    amd_patch(self, self.gfx0_path)
+                elif dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs:
+                    backlight_path_detection(self)
+                    nvidia_patch(self, self.gfx0_path)
         if self.model in ModelArray.MacPro71:
             if not self.constants.custom_model:
                 mp_dgpu_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())

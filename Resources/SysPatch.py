@@ -18,7 +18,7 @@ import os
 from pathlib import Path
 from datetime import date
 
-from Resources import Constants, ModelArray, Utilities
+from Resources import Constants, ModelArray, Utilities, DeviceProbe
 
 
 class PatchSysVolume:
@@ -121,52 +121,29 @@ class PatchSysVolume:
         subprocess.run(f"sudo chmod -R 755 {self.mount_private_frameworks}/DisplayServices.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(f"sudo chown -R root:wheel {self.mount_private_frameworks}/DisplayServices.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-    def check_pciid(self):
-        try:
-            self.igpu_devices = plistlib.loads(subprocess.run("ioreg -r -n IGPU -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            self.igpu_devices = [i for i in self.igpu_devices if i["class-code"] == binascii.unhexlify("00000300")]
-            self.igpu_vendor = self.hexswap(binascii.hexlify(self.igpu_devices[0]["vendor-id"]).decode()[:4])
-            self.igpu_device = self.hexswap(binascii.hexlify(self.igpu_devices[0]["device-id"]).decode()[:4])
-            print(f"- Detected iGPU: {self.igpu_vendor}:{self.igpu_device}")
-        except ValueError:
-            print("- No iGPU detected")
-            self.igpu_devices = ""
-
-        try:
-            self.dgpu_devices = plistlib.loads(subprocess.run("ioreg -r -n GFX0 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            self.dgpu_devices = [i for i in self.dgpu_devices if i["class-code"] == binascii.unhexlify("00000300")]
-            self.dgpu_vendor = self.hexswap(binascii.hexlify(self.dgpu_devices[0]["vendor-id"]).decode()[:4])
-            self.dgpu_device = self.hexswap(binascii.hexlify(self.dgpu_devices[0]["device-id"]).decode()[:4])
-            try:
-                self.nvidia_arch = self.dgpu_devices[0]["NVArch"]
-            except KeyError:
-                self.nvidia_arch = ""
-            print(f"- Detected dGPU: {self.dgpu_vendor}:{self.dgpu_device}")
-        except ValueError:
-            print("- No dGPU detected")
-            self.dgpu_devices = ""
-
     def gpu_accel_patches_11(self):
-        if self.dgpu_devices:
-            if self.dgpu_vendor == self.constants.pci_nvidia:
-                if self.nvidia_arch == self.constants.arch_kepler and self.constants.assume_legacy is True and self.constants.detected_os > self.constants.big_sur:
-                    print("- Merging legacy Nvidia Kepler Kexts and Bundles")
-                    self.add_new_binaries(ModelArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
-                else:
-                    print("- Merging legacy Nvidia Tesla and Fermi Kexts and Bundles")
-                    self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
-                    self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
-            elif self.dgpu_vendor == self.constants.pci_amd_ati:
+        igpu_vendor,igpu_device = DeviceProbe.pci_probe().gpu_probe("IGPU")
+        dgpu_vendor,dgpu_device = DeviceProbe.pci_probe().gpu_probe("GFX0")
+        if dgpu_vendor:
+            if dgpu_vendor == self.constants.pci_nvidia:
+                #if self.nvidia_arch == self.constants.arch_kepler and self.constants.assume_legacy is True and self.constants.detected_os > self.constants.big_sur:
+                #    print("- Merging legacy Nvidia Kepler Kexts and Bundles")
+                #    self.add_new_binaries(ModelArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
+                #else:
+                print("- Merging legacy Nvidia Tesla and Fermi Kexts and Bundles")
+                self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
+                self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+            elif dgpu_vendor == self.constants.pci_amd_ati:
                 print("- Merging legacy AMD Kexts and Bundles")
                 self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
                 self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
-        if self.igpu_devices:
-            if self.igpu_vendor == self.constants.pci_intel:
-                if self.igpu_device in ModelArray.IronLakepciid:
+        if igpu_vendor:
+            if igpu_vendor == self.constants.pci_intel:
+                if igpu_device in ModelArray.IronLakepciid:
                     print("- Merging legacy Intel 1st Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
-                elif self.igpu_device in ModelArray.SandyBridgepiciid:
+                elif igpu_device in ModelArray.SandyBridgepiciid:
                     print("- Merging legacy Intel 2nd Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
@@ -176,11 +153,11 @@ class PatchSysVolume:
                     #    subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
                 # Code for when Ivy Bridge binares are presumably removed from macOS 12, code currently
-                #elif self.igpu_device in ModelArray.IvyBridgepciid:
+                #elif igpu_device in ModelArray.IvyBridgepciid:
                 #    print("- Merging legacy Intel 3rd Gen Kexts and Bundles")
                 #    self.add_new_binaries(ModelArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
-            elif self.igpu_vendor == self.constants.pci_nvidia:
-                if not self.dgpu_devices:
+            elif igpu_vendor == self.constants.pci_nvidia:
+                if not dgpu_devices:
                     # Avoid patching twice, as Nvidia iGPUs will only have Nvidia dGPUs
                     print("- Merging legacy Nvidia Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
@@ -222,10 +199,10 @@ class PatchSysVolume:
         subprocess.run(f"sudo find {self.constants.payload_apple_root_path} -name '.DS_Store' -delete".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         if self.model in ModelArray.LegacyGPU or self.constants.assume_legacy is True:
-            self.check_pciid()
-            if self.dgpu_devices and self.dgpu_vendor == self.constants.pci_amd_ati and self.dgpu_device in ModelArray.AMDMXMGPUs:
+            dgpu_vendor,dgpu_device = DeviceProbe.pci_probe().gpu_probe("GFX0")
+            if dgpu_vendor and dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs:
                 print("- Detected Metal-based AMD GPU, skipping legacy patches")
-            elif self.dgpu_devices and self.dgpu_vendor == self.constants.pci_nvidia and self.dgpu_device in ModelArray.NVIDIAMXMGPUs:
+            elif dgpu_vendor and dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs:
                 print("- Detected Metal-based Nvidia GPU, skipping legacy patches")
             else:
                 print("- Detected legacy GPU, attempting legacy acceleration patches")
@@ -334,6 +311,7 @@ class PatchSysVolume:
 
     def start_patch(self):
         # Check SIP
+        # self.check_files()
         if self.constants.custom_model is not None:
             print("Root Patching must be done on target machine!")
         elif self.model in ModelArray.NoRootPatch11 and self.constants.assume_legacy is False:
