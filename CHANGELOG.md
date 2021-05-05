@@ -5,9 +5,10 @@
   - Innie 0ccd95e (1.3.0 release - 01-16-2021)
 - Fix MacBookPro5,4 audio support
 - Increment binaries
-  - AppleALC f2889fc (1.6.1 rolling - 05-03-2021)
+  - AppleALC fceb8b0 (1.6.1 rolling - 05-04-2021)
 - Support custom CPU names in About This Mac
 - Fix NightShift accidentally disabling on Minimal SMBIOS configs
+- Fix iMac9,1 audio support
 
 ## 0.1.2
 - Fix IDE support on 2008 era MacBooks, iMacs and Xserves
