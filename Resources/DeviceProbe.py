@@ -52,14 +52,14 @@ class pci_probe:
             vendor_id = self.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
             device_id = self.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
             try:
-                acpi_path = devices[0]["acpi-path"]
-                return vendor_id, device_id, acpi_path
+                #acpi_path = devices[0]["acpi-path"]
+                return vendor_id, device_id
             except KeyError:
                 print(f"- No ACPI entry found for {gpu_type}")
-                return vendor_id, device_id, ""
+                return vendor_id, device_id
         except ValueError:
             print(f"- No IOService entry found for {gpu_type}")
-            return "", "", ""
+            return "", ""
 
     def wifi_probe(self):
         try:
