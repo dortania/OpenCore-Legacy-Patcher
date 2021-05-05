@@ -141,7 +141,7 @@ class BuildOpenCore:
             # Use Innie's same logic:
             # https://github.com/cdf/Innie/blob/v1.3.0/Innie/Innie.cpp#L90-L97
             storage_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            storage_devices = [i for i in wifi_devices if i["class-code"] == binascii.unhexlify(self.constants.classcode_sata) or i["class-code"] == binascii.unhexlify(self.constants.classcode_nvme)]
+            storage_devices = [i for i in storage_devices if i["class-code"] == binascii.unhexlify(self.constants.classcode_sata) or i["class-code"] == binascii.unhexlify(self.constants.classcode_nvme)]
             storage_path_gfx: str = subprocess.run([self.constants.gfxutil_path] + f"-v".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
             try:
                 x = 1
