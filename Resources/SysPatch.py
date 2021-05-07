@@ -125,7 +125,7 @@ class PatchSysVolume:
         igpu_vendor,igpu_device = DeviceProbe.pci_probe().gpu_probe("IGPU")
         dgpu_vendor,dgpu_device = DeviceProbe.pci_probe().gpu_probe("GFX0")
         if dgpu_vendor:
-            print(f"- Found GFX0: {dgpu_vendor}{dgpu_device}")
+            print(f"- Found GFX0: {dgpu_vendor}:{dgpu_device}")
             if dgpu_vendor == self.constants.pci_nvidia:
                 #if self.nvidia_arch == self.constants.arch_kepler and self.constants.assume_legacy is True and self.constants.detected_os > self.constants.big_sur:
                 #    print("- Merging legacy Nvidia Kepler Kexts and Bundles")
@@ -139,7 +139,7 @@ class PatchSysVolume:
                 self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
                 self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
         if igpu_vendor:
-            print(f"- Found IGPU: {igpu_vendor}{igpu_device}")
+            print(f"- Found IGPU: {igpu_vendor}:{igpu_device}")
             if igpu_vendor == self.constants.pci_intel:
                 if igpu_device in ModelArray.IronLakepciid:
                     print("- Merging legacy Intel 1st Gen Kexts and Bundles")
