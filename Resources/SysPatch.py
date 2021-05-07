@@ -122,8 +122,8 @@ class PatchSysVolume:
         subprocess.run(f"sudo chown -R root:wheel {self.mount_private_frameworks}/DisplayServices.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_patches_11(self):
-        igpu_vendor,igpu_device = DeviceProbe.pci_probe().gpu_probe("IGPU")
-        dgpu_vendor,dgpu_device = DeviceProbe.pci_probe().gpu_probe("GFX0")
+        igpu_vendor,igpu_device,igpu_acpi = DeviceProbe.pci_probe().gpu_probe("IGPU")
+        dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
         if dgpu_vendor:
             print(f"- Found GFX0: {dgpu_vendor}:{dgpu_device}")
             if dgpu_vendor == self.constants.pci_nvidia:
@@ -201,7 +201,7 @@ class PatchSysVolume:
         subprocess.run(f"sudo find {self.constants.payload_apple_root_path} -name '.DS_Store' -delete".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         if self.model in ModelArray.LegacyGPU or self.constants.assume_legacy is True:
-            dgpu_vendor,dgpu_device = DeviceProbe.pci_probe().gpu_probe("GFX0")
+            dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
             if dgpu_vendor and dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs:
                 print("- Detected Metal-based AMD GPU, skipping legacy patches")
             elif dgpu_vendor and dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs:

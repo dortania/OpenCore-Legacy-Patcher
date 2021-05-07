@@ -27,7 +27,7 @@ class OpenCoreLegacyPatcher():
         if self.current_model in ModelArray.NoAPFSsupport:
             self.constants.serial_settings = "Moderate"
         if self.current_model in ModelArray.LegacyGPU:
-            dgpu_vendor,dgpu_device = DeviceProbe.pci_probe().gpu_probe("GFX0")
+            dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
 
             if (dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs):
                 self.constants.sip_status = True
