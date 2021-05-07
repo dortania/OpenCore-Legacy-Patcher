@@ -25,15 +25,16 @@ class pci_probe:
         return hex_str.upper()
 
     # Converts given device IDs to DeviceProperty pathing, requires ACPI pathing as DeviceProperties shouldn't be used otherwise
-    def deviceproperty_probe(self, vendor_id, device_id):
+    def deviceproperty_probe(self, vendor_id, device_id, acpi_path):
         gfxutil_output: str = subprocess.run([self.constants.gfxutil_path] + f"-v".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         try:
-            #device_path = [line.strip().split("= ", 1)[1] for line in gfxutil_output.split("\n") if f'{vendor_id}:{device_id}'.lower() in line.strip() and f'{acpi_path}' in line.strip()][0]
-            device_path = [line.strip().split("= ", 1)[1] for line in gfxutil_output.split("\n") if f'{vendor_id}:{device_id}'.lower() in line.strip()][0]
+            if acpi_path == "":
+                acpi_path = "No ACPI Path Given"
+                raise IndexError
+            device_path = [line.strip().split("= ", 1)[1] for line in gfxutil_output.split("\n") if f'{vendor_id}:{device_id}'.lower() in line.strip() and acpi_path in line.strip()][0]
             return device_path
         except IndexError:
-            #print(f"- No DevicePath found for {vendor_id}:{device_id} at {acpi_path}")
-            print(f"- No DevicePath found for {vendor_id}:{device_id}")
+            print(f"- No DevicePath found for {vendor_id}:{device_id} ({acpi_path})")
             return ""
 
     # Returns the device path of parent controller
@@ -41,25 +42,37 @@ class pci_probe:
         device_path_parent = "/".join(device_path.split("/")[:-1])
         return device_path_parent
 
-    # GPU probing, note best way to handle is:
-    #   vendor,device,acpi_path = gpu_vendor_probe("GFX0")
-    #
+    def acpi_strip(self, acpi_path_full):
+        # Strip IOACPIPlane:/_SB, remove 000's, convert ffff into 0 and finally make everything upper case
+        # IOReg                                      | gfxutil
+        # IOACPIPlane:/_SB/PC00@0/DMI0@0             -> /PC00@0/DMI0@0
+        # IOACPIPlane:/_SB/PC03@0/BR3A@0/SL09@ffff   -> /PC03@0/BR3A@0/SL09@0
+        # IOACPIPlane:/_SB/PC03@0/M2U0@150000        -> /PC03@0/M2U0@15
+        # IOACPIPlane:/_SB/PC01@0/CHA6@100000        -> /PC01@0/CHA6@10
+        # IOACPIPlane:/_SB/PC00@0/RP09@1d0000/PXSX@0 -> /PC00@0/RP09@1D/PXSX@0
+        # IOACPIPlane:/_SB/PCI0@0/P0P2@10000         -> /PCI0@0/P0P2@1
+        acpi_path = acpi_path_full.replace("IOACPIPlane:/_SB", "")
+        acpi_path = acpi_path.replace("0000", "")
+        acpi_path = acpi_path.replace("ffff", "0")
+        acpi_path = acpi_path.upper()
+        return acpi_path
+
     # Note gpu_probe should only be used on IGPU and GFX0 entries
     def gpu_probe(self, gpu_type):
-        print(f"- Probing IOService for device: {gpu_type}")
         try:
             devices = plistlib.loads(subprocess.run(f"ioreg -r -n {gpu_type} -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             vendor_id = self.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
             device_id = self.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
             try:
-                #acpi_path = devices[0]["acpi-path"]
-                return vendor_id, device_id
+                acpi_path = devices[0]["acpi-path"]
+                acpi_path = self.acpi_strip(acpi_path)
+                return vendor_id, device_id, acpi_path
             except KeyError:
                 print(f"- No ACPI entry found for {gpu_type}")
-                return vendor_id, device_id
+                return vendor_id, device_id, ""
         except ValueError:
             print(f"- No IOService entry found for {gpu_type}")
-            return "", ""
+            return "", "", ""
 
     def wifi_probe(self):
         try:
@@ -71,7 +84,13 @@ class pci_probe:
             vendor_id = self.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
             device_id = self.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
             ioname = devices[0]["IOName"]
-            return vendor_id, device_id, ioname
+            try:
+                acpi_path = devices[0]["acpi-path"]
+                acpi_path = self.acpi_strip(acpi_path)
+                return vendor_id, device_id, ioname, acpi_path
+            except KeyError:
+                print(f"- No ACPI entry found for {gpu_type}")
+                return vendor_id, device_id, ioname, ""
         except ValueError:
             print(f"- No IOService entry found for Wireless Card")
-            return "", "", ""
+            return "", "", "", ""

@@ -143,23 +143,30 @@ class BuildOpenCore:
                 for i in nvme_devices:
                     nvme_vendor = self.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
                     nvme_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
+                    print(f'- Found 3rd Party NVMe SSD ({x}): {nvme_vendor}:{nvme_device}')
                     nvme_aspm = i["pci-aspm-default"]
+                    try:
+                        nvme_acpi = i["acpi-path"]
+                        nvme_acpi = DeviceProbe.pci_probe().acpi_strip(nvme_acpi)
+                    except KeyError:
+                        print(f"- No ACPI entry found for NVMe SSD ({x})")
+                        nvme_acpi = ""
                     # Disable Bit 0 (L0s), enable Bit 1 (L1)
                     if not isinstance(nvme_aspm, int):
                         binascii.unhexlify(nvme_aspm)
                         nvme_aspm = self.hexswap(nvme_aspm)
                         nvme_aspm = int(nvme_aspm, 16)
                     nvme_aspm = (nvme_aspm & (~3)) | 2
-                    print(f'- Found 3rd Party NVMe SSD ({x}): {nvme_vendor}:{nvme_device}')
                     self.config["#Revision"][f"Hardware-NVMe-{x}"] = f'{nvme_vendor}:{nvme_device}'
                     try:
-                        nvme_path = DeviceProbe.pci_probe().deviceproperty_probe(nvme_vendor, nvme_device)
+                        nvme_path = DeviceProbe.pci_probe().deviceproperty_probe(nvme_vendor, nvme_device, nvme_acpi)
+                        if nvme_path == "":
+                            raise IndexError
                         nvme_path_parent = DeviceProbe.pci_probe().device_property_parent(nvme_path)
                         print(f"- Found NVMe ({x}) at {nvme_path}")
                         self.config["DeviceProperties"]["Add"][nvme_path] = {"pci-aspm-default": nvme_aspm, "built-in": 1}
                         self.config["DeviceProperties"]["Add"][nvme_path_parent] = {"pci-aspm-default": nvme_aspm}
                     except IndexError:
-                        print(f"- Failed to find Device path for NVMe {x}")
                         if "-nvmefaspm" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
                             print("- Falling back to -nvmefaspm")
                             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -nvmefaspm"
@@ -176,7 +183,7 @@ class BuildOpenCore:
             self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
             self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
             if not self.constants.custom_model:
-                arpt_path = DeviceProbe.pci_probe().deviceproperty_probe(wifi_vendor, wifi_device)
+                arpt_path = DeviceProbe.pci_probe().deviceproperty_probe(wifi_vendor, wifi_device, wifi_acpi)
                 if arpt_path:
                     print(f"- Found ARPT device at {arpt_path}")
                     default_path = False
@@ -203,7 +210,7 @@ class BuildOpenCore:
         # WiFi patches
         # TODO: -a is not supported in Lion and older, need to add proper fix
         if self.constants.detected_os > self.constants.lion and not self.constants.custom_model:
-            wifi_vendor,wifi_device,wifi_ioname = DeviceProbe.pci_probe().wifi_probe()
+            wifi_vendor,wifi_device,wifi_ioname,wifi_acpi = DeviceProbe.pci_probe().wifi_probe()
             if wifi_vendor:
                 print(f"- Found Wireless Device {wifi_vendor}:{wifi_device} ({wifi_ioname})")
                 self.config["#Revision"]["Hardware-Wifi"] = f"{wifi_vendor}:{wifi_device} ({wifi_ioname}"
@@ -393,7 +400,7 @@ class BuildOpenCore:
             else:
                 print("- Failed to find vendor")
         elif not self.constants.custom_model:
-            dgpu_vendor,dgpu_device = DeviceProbe.pci_probe().gpu_probe("GFX0")
+            dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
             if dgpu_vendor:
                 print(f"- Detected dGPU: {dgpu_vendor}:{dgpu_device}")
                 if dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs:
