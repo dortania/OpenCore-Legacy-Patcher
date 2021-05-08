@@ -762,26 +762,26 @@ BCM94322Wifi = [
 ]
 
 BCM94328Wifi = [
-    "4311",
-    "4312",
-    "4313",
-    "4318",
-    "4319",
-    "431A",
-    "4320",
-    "4324",
-    "4325",
-    "4328",
-    "432C",
-    "432D",
+    "4311", # BCM4311 - never used by Apple
+    "4312", # BCM4311 - never used by Apple
+    "4313", # BCM4311 - never used by Apple
+    "4318", # BCM4318 - never used by Apple
+    "4319", # BCM4318 - never used by Apple
+    "431A", # Unknown - never used by Apple
+    "4320", # BCM4306 - never used by Apple
+    "4324", # BCM4309 - never used by Apple
+    "4325", # BCM4306 - never used by Apple
+    "4328", # BCM94328
+    "432C", # BCM4322 - never used by Apple
+    "432D", # BCM4322 - never used by Apple
 ]
 
 AtherosWifi = [
-    "0030",
-    "002A",
-    "001C",
-    "0023",
-    "0024",
+    "0030", # AR93xx
+    "002A", # AR928X
+    "001C", # AR242x / AR542x
+    "0023", # AR5416 - never used by Apple
+    "0024", # AR5418
 ]
 
 NightShiftExclude = [
