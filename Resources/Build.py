@@ -92,7 +92,7 @@ class BuildOpenCore:
             ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model in ModelArray.DualSocket),
             ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: self.model in ModelArray.SSEEmulator),
             ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: self.model in ModelArray.MissingSSE42),
-            ("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path, lambda: self.model != "iMac7,1" and self.constants.allow_oc_everywhere is False),
+            ("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path, lambda: self.model != "iMac7,1" and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False),
             # Ethernet patches
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
@@ -312,12 +312,18 @@ class BuildOpenCore:
         # AGPM Patch
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
+            if not self.constants.custom_model:
+                gfx0_path: str = subprocess.run([self.constants.gfxutil_path] + f"-f GFX0".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+                if gfx0_path == "":
+                    gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
+            else:
+                gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
             if self.model in ModelArray.IntelNvidiaDRM and self.constants.drm_support is True:
                 print("- Prioritizing DRM support over Intel QuickSync")
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696", "shikigva": 256}
+                self.config["DeviceProperties"]["Add"][gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"disable-gpu-min": "20.0.0"}
             else:
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
+                self.config["DeviceProperties"]["Add"][gfx0_path] = {"agdpmod": "vit9696"}
 
         # HiDPI OpenCanopy and FileVault
         if self.model in ModelArray.HiDPIpicker:
@@ -342,12 +348,12 @@ class BuildOpenCore:
                     print(f"- Found GFX0 device at {self.gfx0_path}")
                 except IndexError:
                     print("- Failed to find GFX0 Device path, falling back on known logic")
-                    if self.model == ["iMac11,1", "iMac11,3"]:
+                    if self.model in ["iMac11,1", "iMac11,3"]:
                         self.gfx0_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
                     else:
                         self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
             else:
-                if self.model == ["iMac11,1", "iMac11,3"]:
+                if self.model in ["iMac11,1", "iMac11,3"]:
                     self.gfx0_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
                 else:
                     self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
@@ -635,7 +641,7 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["CustomMemory"] = True
 
         # USB Map and CPUFriend Patching
-        if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1":
+        if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1" and self.constants.disallow_cpufriend is False:
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
 

@@ -76,6 +76,7 @@ class Constants:
         self.custom_cpu_model_value = ""
         self.custom_color = ""
         self.download_ram = False
+        self.disallow_cpufriend = False
 
         # OS Versions
         self.tiger = 8

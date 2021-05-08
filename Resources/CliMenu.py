@@ -396,3 +396,19 @@ Currently only offers 1.5TB bundles
             self.constants.download_ram = False
         else:
             print("Invalid option")
+
+    def disable_cpufriend(self):
+        Utilities.cls()
+        Utilities.header(["Disable CPU Friend?"])
+        print("""Only recommended for advanced users
+Disabling CPUFriend forces macOS into using a different
+Mac's power profile for CPUs and GPUs, which can harm the
+hardware
+        """)
+        change_menu = input("Disable CPU Friend?(y/n): ")
+        if change_menu == "y":
+            self.constants.disallow_cpufriend = True
+        elif change_menu == "n":
+            self.constants.disallow_cpufriend = False
+        else:
+            print("Invalid option")
