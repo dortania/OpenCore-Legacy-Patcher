@@ -10,6 +10,7 @@
 - Support custom CPU names in About This Mac
 - Fix NightShift accidentally disabling on Minimal SMBIOS configs
 - Fix iMac9,1 audio support
+- Heavily expand Graphics ID list
 
 ## 0.1.2
 - Fix IDE support on 2008 era MacBooks, iMacs and Xserves
