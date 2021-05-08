@@ -80,3 +80,9 @@ From there, install Windows as normal and you'll get a new BootCamp entry in Ope
 * Don't forget to run BootCamp's utilities installer as well to ensure Wifi and such are functioning correctly. This can be downloaded from the BootCamp Assistant app in macOS
 
 ![](../images/oc-windows-done.png)
+
+## Troubleshooting
+
+### iMac12,x Bluescreen after driver installation
+
+Currently Intel's iGPU drivers for the HD 3000 series do not support UEFI booting in Windows. Recommended solution is to simply disable: [iMac 12,1 Windows 10 Boot Loop – Fix Intel Graphics issue](https://zzq.org/?p=39)
