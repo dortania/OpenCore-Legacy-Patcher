@@ -42,8 +42,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro5,5 | ^^ | ^^ | ^^ |
 | MacBookPro6,1 | ^^ | ^^ | ^^ |
 | MacBookPro6,2 | <span style="color:#30BCD5"> YES </span> | Jakeluke | - Stock model, dGPU broken <br/>- Patcher version unknown |
-| MacBookPro7,1 | <span style="color:#30BCD5"> YES </span> | fussel132 | - Stock model (Mac-F222BEC8)<br/>-Patcher version v0.1.2 |
-| MacBookPro8,1 | <span style="color:#30BCD5"> YES </span> | AvaQueen | - Stock model <br/>- Patcher version 0.0.19 |
+| MacBookPro7,1 | ^^ | fussel132 | - Stock model <br/>-Patcher version v0.1.2 |
+| MacBookPro8,1 | ^^ | AvaQueen | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro8,2 | ^^ | air.man | - Stock model, dGPU disabled <br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro8,3 | No reports | N/A | N/A |
