@@ -41,6 +41,9 @@ To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise
   * Legacy Acceleration Patch set and documentation
 * [cdf](https://github.com/cdf)
   * Mac Pro on OpenCore Patch set and documentation
+  * [Innie](https://github.com/cdf/Innie) and [NightShiftEnabler](https://github.com/cdf/NightShiftEnabler)
+* [Syncretic](https://forums.macrumors.com/members/syncretic.1173816/)
+  * [AAAMouSSE](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/) and [telemetrap](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/post-28447707)
 * [dosdude1](https://github.com/dosdude1) and [BarryKN](https://github.com/BarryKN)
   * Development of previous patchers, laying out much of what needs to be patched
 * [vit9696](https://github.com/vit9696)
@@ -49,3 +52,5 @@ To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise
   * Catalyst that started OpenCore Legacy Patcher
 * MacRumors and Unsupported Mac Communities
   * Endless testing, reporting issues
+* Apple
+  * for macOS and many of the kexts, frameworks and other binaries we reimplemented into newer OSes

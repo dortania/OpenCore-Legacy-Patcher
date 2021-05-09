@@ -89,7 +89,7 @@ class pci_probe:
                 acpi_path = self.acpi_strip(acpi_path)
                 return vendor_id, device_id, ioname, acpi_path
             except KeyError:
-                print(f"- No ACPI entry found for {gpu_type}")
+                print(f"- No ACPI entry found for {vendor_id}:{device_id}")
                 return vendor_id, device_id, ioname, ""
         except ValueError:
             print(f"- No IOService entry found for Wireless Card")
