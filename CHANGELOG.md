@@ -7,10 +7,12 @@
 - Fix MacBookPro5,4 audio support
 - Increment binaries
   - AppleALC 58b57ee (1.6.1 rolling - 05-07-2021)
+  - Apple Binaries 9392993 (0.0.5 release - 05-08-2021)
 - Support custom CPU names in About This Mac
 - Fix NightShift accidentally disabling on Minimal SMBIOS configs
 - Fix iMac9,1 audio support
 - Heavily expand Graphics ID list
+- Fix iMac7,1 audio support
 
 ## 0.1.2
 - Fix IDE support on 2008 era MacBooks, iMacs and Xserves
