@@ -18,7 +18,7 @@ import os
 from pathlib import Path
 from datetime import date
 
-from Resources import Constants, ModelArray, Utilities, DeviceProbe
+from Resources import Constants, ModelArray, PCIIDArray, Utilities, DeviceProbe
 
 
 class PatchSysVolume:
@@ -127,25 +127,29 @@ class PatchSysVolume:
         if dgpu_vendor:
             print(f"- Found GFX0: {dgpu_vendor}:{dgpu_device}")
             if dgpu_vendor == self.constants.pci_nvidia:
-                #if self.nvidia_arch == self.constants.arch_kepler and self.constants.assume_legacy is True and self.constants.detected_os > self.constants.big_sur:
+                if dgpu_device in PCIIDArray.nvidia_ids().tesla_ids or dgpu_device in PCIIDArray.nvidia_ids().fermi_ids:
+                    print("- Merging legacy Nvidia Tesla and Fermi Kexts and Bundles")
+                    self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
+                    self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+                # TODO: Enable below code if macOS 12 drops support
+                #elif dgpu_device in PCIIDArray.nvidia_ids().kepler_ids and self.constants.detected_os > self.constants.big_sur:
                 #    print("- Merging legacy Nvidia Kepler Kexts and Bundles")
                 #    self.add_new_binaries(ModelArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
-                #else:
-                print("- Merging legacy Nvidia Tesla and Fermi Kexts and Bundles")
-                self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
-                self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
             elif dgpu_vendor == self.constants.pci_amd_ati:
-                print("- Merging legacy AMD Kexts and Bundles")
-                self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
-                self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
+                if dgpu_device in PCIIDArray.amd_ids().terascale_1_ids:
+                    print("- Merging legacy TeraScale 1 AMD Kexts and Bundles")
+                    self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
+                    self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
+                #elif dgpu_device in PCIIDArray.amd_ids().terascale_2_ids:
+                #    print("- Merging legacy AMD TeraScale 2 Kexts and Bundles")
         if igpu_vendor:
             print(f"- Found IGPU: {igpu_vendor}:{igpu_device}")
             if igpu_vendor == self.constants.pci_intel:
-                if igpu_device in ModelArray.IronLakepciid:
+                if igpu_device in PCIIDArray.intel_ids().iron_ids:
                     print("- Merging legacy Intel 1st Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
-                elif igpu_device in ModelArray.SandyBridgepiciid:
+                elif igpu_device in PCIIDArray.intel_ids().sandy_ids:
                     print("- Merging legacy Intel 2nd Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
@@ -154,8 +158,8 @@ class PatchSysVolume:
                     #    subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                     #    subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-                # Code for when Ivy Bridge binares are presumably removed from macOS 12, code currently
-                #elif igpu_device in ModelArray.IvyBridgepciid:
+                # TODO: Enable below code if macOS 12 drops support
+                #elif igpu_device in PCIIDArray.intel_ids().ivy_ids:
                 #    print("- Merging legacy Intel 3rd Gen Kexts and Bundles")
                 #    self.add_new_binaries(ModelArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
             elif igpu_vendor == self.constants.pci_nvidia:
@@ -202,9 +206,9 @@ class PatchSysVolume:
 
         if self.model in ModelArray.LegacyGPU or self.constants.assume_legacy is True:
             dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
-            if dgpu_vendor and dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs:
+            if dgpu_vendor and dgpu_vendor == self.constants.pci_amd_ati and (dgpu_device in PCIIDArray.amd_ids().polaris_ids or dgpu_device in PCIIDArray.amd_ids().vega_ids or dgpu_device in PCIIDArray.amd_ids().navi_ids or dgpu_device in PCIIDArray.amd_ids().legacy_gcn_ids):
                 print("- Detected Metal-based AMD GPU, skipping legacy patches")
-            elif dgpu_vendor and dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs:
+            elif dgpu_vendor and dgpu_vendor == self.constants.pci_nvidia and dgpu_device in PCIIDArray.nvidia_ids().kepler_ids:
                 print("- Detected Metal-based Nvidia GPU, skipping legacy patches")
             else:
                 print("- Detected legacy GPU, attempting legacy acceleration patches")

@@ -10,7 +10,7 @@ import sys
 import time
 import platform
 
-from Resources import Build, ModelArray, Constants, SysPatch, Utilities, CliMenu, DeviceProbe
+from Resources import Build, ModelArray, PCIIDArray, Constants, SysPatch, Utilities, CliMenu, DeviceProbe
 
 
 class OpenCoreLegacyPatcher():
@@ -29,7 +29,7 @@ class OpenCoreLegacyPatcher():
         if self.current_model in ModelArray.LegacyGPU:
             dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
 
-            if (dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs):
+            if (dgpu_vendor == self.constants.pci_amd_ati and (dgpu_device in PCIIDArray.amd_ids().polaris_ids or dgpu_device in PCIIDArray.amd_ids().vega_ids or dgpu_device in PCIIDArray.amd_ids().navi_ids or dgpu_device in PCIIDArray.amd_ids().legacy_gcn_ids)) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in PCIIDArray.nvidia_ids().kepler_ids):
                 self.constants.sip_status = True
                 self.constants.secure_status = True
             else:

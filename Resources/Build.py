@@ -15,7 +15,7 @@ import ast
 from pathlib import Path
 from datetime import date
 
-from Resources import Constants, ModelArray, Utilities, DeviceProbe
+from Resources import Constants, ModelArray, PCIIDArray, Utilities, DeviceProbe
 
 
 def human_fmt(num):
@@ -222,18 +222,18 @@ class BuildOpenCore:
         elif not self.constants.custom_model and wifi_vendor:
             if wifi_vendor == self.constants.pci_broadcom:
                 # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
-                if wifi_device in ModelArray.BCM4360Wifi and wifi_ioname not in ["pci14e4,4353", "pci14e4,4331"]:
+                if wifi_device in PCIIDArray.broadcom_ids().BCM4360Wifi and wifi_ioname not in ["pci14e4,4353", "pci14e4,4331"]:
                     self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-                elif wifi_ioname in ["pci14e4,4353", "pci14e4,4331"] or wifi_device in ModelArray.BCM94331Wifi:
+                elif wifi_ioname in ["pci14e4,4353", "pci14e4,4331"] or wifi_device in PCIIDArray.broadcom_ids().BCM94331Wifi:
                     wifi_fake_id(self)
-                elif wifi_device in ModelArray.BCM94322Wifi:
+                elif wifi_device in PCIIDArray.broadcom_ids().BCM94322Wifi:
                     self.enable_kext("IO80211Mojave.kext", self.constants.io80211mojave_version, self.constants.io80211mojave_path)
                     self.get_kext_by_bundle_path("IO80211Mojave.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
-                elif wifi_device in ModelArray.BCM94328Wifi:
+                elif wifi_device in PCIIDArray.broadcom_ids().BCM94328Wifi:
                     self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
                     self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
                     self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AppleAirPortBrcm43224.kext")["Enabled"] = True
-            elif wifi_vendor == self.constants.pci_atheros and wifi_device in ModelArray.AtherosWifi:
+            elif wifi_vendor == self.constants.pci_atheros and wifi_device in PCIIDArray.atheros_ids().AtherosWifi:
                 self.enable_kext("IO80211HighSierra.kext", self.constants.io80211high_sierra_version, self.constants.io80211high_sierra_path)
                 self.get_kext_by_bundle_path("IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
         else:
@@ -409,10 +409,10 @@ class BuildOpenCore:
             dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
             if dgpu_vendor:
                 print(f"- Detected dGPU: {dgpu_vendor}:{dgpu_device}")
-                if dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs:
+                if dgpu_vendor == self.constants.pci_amd_ati and (dgpu_device in PCIIDArray.amd_ids().polaris_ids or dgpu_device in PCIIDArray.amd_ids().vega_ids or dgpu_device in PCIIDArray.amd_ids().navi_ids or dgpu_device in PCIIDArray.amd_ids().legacy_gcn_ids):
                     backlight_path_detection(self)
                     amd_patch(self, self.gfx0_path)
-                elif dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs:
+                elif dgpu_vendor == self.constants.pci_nvidia and dgpu_device in PCIIDArray.nvidia_ids().kepler_ids:
                     backlight_path_detection(self)
                     nvidia_patch(self, self.gfx0_path)
         if self.model in ModelArray.MacPro71:

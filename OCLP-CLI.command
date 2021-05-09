@@ -12,7 +12,7 @@ import platform
 import argparse
 from pathlib import Path
 
-from Resources import Build, ModelArray, Constants, SysPatch, Utilities, CliMenu, DeviceProbe
+from Resources import Build, ModelArray, PCIIDArray, Constants, SysPatch, Utilities, CliMenu, DeviceProbe
 
 
 class OpenCoreLegacyPatcher():
@@ -31,13 +31,13 @@ class OpenCoreLegacyPatcher():
             self.constants.serial_settings = "Moderate"
         if self.current_model in ModelArray.LegacyGPU:
             dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
-
-            if (dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs):
-                self.constants.sip_status = True
-                self.constants.secure_status = True
-            else:
-                self.constants.sip_status = False
-                self.constants.secure_status = False
+            if dgpu_vendor:
+                if (dgpu_vendor == self.constants.pci_amd_ati and (dgpu_device in PCIIDArray.amd_ids().polaris_ids or dgpu_device in PCIIDArray.amd_ids().vega_ids or dgpu_device in PCIIDArray.amd_ids().navi_ids or dgpu_device in PCIIDArray.amd_ids().legacy_gcn_ids)) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in PCIIDArray.nvidia_ids().kepler_ids):
+                    self.constants.sip_status = True
+                    self.constants.secure_status = True
+                else:
+                    self.constants.sip_status = False
+                    self.constants.secure_status = False
 
         # Logic for when user runs custom OpenCore build and do not expose it
         # Note: This logic currently only applies for iMacPro1,1 users, see below threads on the culprits:
