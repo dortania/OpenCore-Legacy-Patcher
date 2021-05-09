@@ -18,7 +18,7 @@ import os
 from pathlib import Path
 from datetime import date
 
-from Resources import Constants, ModelArray, Utilities, DeviceProbe
+from Resources import Constants, ModelArray, PCIIDArray, Utilities, DeviceProbe
 
 
 class PatchSysVolume:
@@ -141,11 +141,11 @@ class PatchSysVolume:
         if igpu_vendor:
             print(f"- Found IGPU: {igpu_vendor}:{igpu_device}")
             if igpu_vendor == self.constants.pci_intel:
-                if igpu_device in ModelArray.IronLakepciid:
+                if igpu_device in PCIIDArray.intel_ids().iron_ids:
                     print("- Merging legacy Intel 1st Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
-                elif igpu_device in ModelArray.SandyBridgepiciid:
+                elif igpu_device in PCIIDArray.intel_ids().sandy_ids:
                     print("- Merging legacy Intel 2nd Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
@@ -155,7 +155,7 @@ class PatchSysVolume:
                     #    subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
                 # Code for when Ivy Bridge binares are presumably removed from macOS 12, code currently
-                #elif igpu_device in ModelArray.IvyBridgepciid:
+                #elif igpu_device in PCIIDArray.intel_ids().ivy_ids:
                 #    print("- Merging legacy Intel 3rd Gen Kexts and Bundles")
                 #    self.add_new_binaries(ModelArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
             elif igpu_vendor == self.constants.pci_nvidia:
@@ -202,9 +202,9 @@ class PatchSysVolume:
 
         if self.model in ModelArray.LegacyGPU or self.constants.assume_legacy is True:
             dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
-            if dgpu_vendor and dgpu_vendor == self.constants.pci_amd_ati and dgpu_device in ModelArray.AMDMXMGPUs:
+            if dgpu_vendor and dgpu_vendor == self.constants.pci_amd_ati and (dgpu_device in PCIIDArray.amd_ids().polaris_ids or dgpu_device in PCIIDArray.amd_ids().vega_ids or dgpu_device in PCIIDArray.amd_ids().navi_ids or dgpu_device in PCIIDArray.amd_ids().legacy_gcn_ids):
                 print("- Detected Metal-based AMD GPU, skipping legacy patches")
-            elif dgpu_vendor and dgpu_vendor == self.constants.pci_nvidia and dgpu_device in ModelArray.NVIDIAMXMGPUs:
+            elif dgpu_vendor and dgpu_vendor == self.constants.pci_nvidia and dgpu_device in PCIIDArray.nvidia_ids().kepler_ids:
                 print("- Detected Metal-based Nvidia GPU, skipping legacy patches")
             else:
                 print("- Detected legacy GPU, attempting legacy acceleration patches")
