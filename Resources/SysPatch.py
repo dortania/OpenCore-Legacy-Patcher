@@ -130,6 +130,7 @@ class PatchSysVolume:
                 if dgpu_device in PCIIDArray.nvidia_ids().tesla_ids or dgpu_device in PCIIDArray.nvidia_ids().fermi_ids:
                     print("- Merging legacy Nvidia Tesla and Fermi Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
+                    self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
                 # TODO: Enable below code if macOS 12 drops support
                 #elif dgpu_device in PCIIDArray.nvidia_ids().kepler_ids and self.constants.detected_os > self.constants.big_sur:
@@ -139,6 +140,7 @@ class PatchSysVolume:
                 if dgpu_device in PCIIDArray.amd_ids().terascale_1_ids or dgpu_device in PCIIDArray.amd_ids().terascale_2_ids:
                     print("- Merging legacy AMD Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
+                    self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
         if igpu_vendor:
             print(f"- Found IGPU: {igpu_vendor}:{igpu_device}")
@@ -146,15 +148,13 @@ class PatchSysVolume:
                 if igpu_device in PCIIDArray.intel_ids().iron_ids:
                     print("- Merging legacy Intel 1st Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
+                    self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
                 elif igpu_device in PCIIDArray.intel_ids().sandy_ids:
                     print("- Merging legacy Intel 2nd Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
+                    self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
-                    #if self.model in ModelArray.LegacyGPUAMDIntelGen2:
-                        # Swap custom AppleIntelSNBGraphicsFB-AMD.kext, required to fix linking
-                    #    subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                    #    subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
                 # TODO: Enable below code if macOS 12 drops support
                 #elif igpu_device in PCIIDArray.intel_ids().ivy_ids:
@@ -165,6 +165,7 @@ class PatchSysVolume:
                     # Avoid patching twice, as Nvidia iGPUs will only have Nvidia dGPUs
                     print("- Merging legacy Nvidia Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
+                    self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
 
         # Frameworks

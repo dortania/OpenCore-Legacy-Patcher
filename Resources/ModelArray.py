@@ -929,16 +929,16 @@ AddNvidiaAccel11 = [
 ]
 
 AddNvidiaKeplerAccel11 = [
-	"GeForce.kext",
-	"GeForceAIRPlugin.bundle",
-	"GeForceGLDriver.bundle",
-	"GeForceMTLDriver.bundle",
-	"GeForceVADriver.bundle",
-	"NVDAGF100Hal.kext",
-	"NVDAGK100Hal.kext",
-	"NVDAResman.kext",
-	"NVDAStartup.kext",
-	"NVSMU.kext",
+    "GeForce.kext",
+    "GeForceAIRPlugin.bundle",
+    "GeForceGLDriver.bundle",
+    "GeForceMTLDriver.bundle",
+    "GeForceVADriver.bundle",
+    "NVDAGF100Hal.kext",
+    "NVDAGK100Hal.kext",
+    "NVDAResman.kext",
+    "NVDAStartup.kext",
+    "NVSMU.kext",
 ]
 
 AddAMDAccel11 = [
@@ -962,8 +962,6 @@ AddAMDAccel11 = [
     "ATIRadeonX2000GA.plugin",
     "ATIRadeonX2000GLDriver.bundle",
     "ATIRadeonX2000VADriver.bundle",
-    "IOAcceleratorFamily2.kext",
-    "IOSurface.kext",
 ]
 
 AddIntelGen1Accel = [
@@ -972,7 +970,6 @@ AddIntelGen1Accel = [
     "AppleIntelHDGraphicsGA.plugin",
     "AppleIntelHDGraphicsGLDriver.bundle",
     "AppleIntelHDGraphicsVADriver.bundle",
-    "IOSurface.kext",
 ]
 
 AddIntelGen2Accel = [
@@ -982,15 +979,25 @@ AddIntelGen2Accel = [
     "AppleIntelHD3000GraphicsVADriver.bundle",
     "AppleIntelSNBGraphicsFB.kext",
     "AppleIntelSNBVA.bundle",
-    "IOSurface.kext",
 ]
 
 AddIntelGen3Accel = [
-	"AppleIntelFramebufferCapri.kext",
-	"AppleIntelHD4000Graphics.kext",
-	"AppleIntelHD4000GraphicsGLDriver.bundle",
-	"AppleIntelHD4000GraphicsMTLDriver.bundle",
-	"AppleIntelHD4000GraphicsVADriver.bundle",
+    "AppleIntelFramebufferCapri.kext",
+    "AppleIntelHD4000Graphics.kext",
+    "AppleIntelHD4000GraphicsGLDriver.bundle",
+    "AppleIntelHD4000GraphicsMTLDriver.bundle",
+    "AppleIntelHD4000GraphicsVADriver.bundle",
+]
+
+AddGeneralAccel = [
+    # Below 5 from dosdude1, unknown whether they benifit
+    #"AppleGraphicsControl.kext",
+    #"AppleGraphicsPowerManagement.kext",
+    #"AppleMCCSControl.kext",
+    #"IOGraphicsFamily.kext",
+    #"IONDRVSupport.kext",
+    "IOAcceleratorFamily2.kext",
+    "IOSurface.kext"
 ]
 
 DeleteBrightness = [

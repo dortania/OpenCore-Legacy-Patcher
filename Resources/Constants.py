@@ -38,7 +38,7 @@ class Constants:
         self.nvmefix_version = "1.0.7"
         self.sidecarfixup_version = "1.0.0"
         self.innie_version = "1.3.0"
-        self.payload_version = "0.0.5"
+        self.payload_version = "0.0.6"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -304,6 +304,8 @@ class Constants:
     def legacy_intel_gen2_path(self): return self.legacy_graphics / Path("Intel-Gen6-SandyBridge")
     @property
     def legacy_intel_gen3_path(self): return self.legacy_graphics / Path("Intel-Gen7-IvyBridge")
+    @property
+    def legacy_general_path(self): return self.legacy_graphics / Path("General-Patches")
 
     @property
     def legacy_brightness(self): return self.payload_apple_kexts_path / Path("Brightness-Control")
