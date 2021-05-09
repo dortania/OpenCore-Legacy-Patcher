@@ -6,8 +6,6 @@ import subprocess
 import sys
 import time
 import platform
-import tkinter as tk
-from tkinter import colorchooser
 
 from Resources import Build, ModelArray, Constants, SysPatch, Utilities
 
@@ -374,10 +372,11 @@ Custom names will report as follows:
         """)
         change_menu = input("Set custom CPU Name(1,2,3): ")
         if change_menu == "1":
-            temp_tk_root = tk.Tk()
-            temp_tk_root.wm_withdraw()
-            self.constants.custom_color = colorchooser.askcolor(title="Choose color")
-            temp_tk_root.destroy()
+            print("")
+            #temp_tk_root = tk.Tk()
+            #temp_tk_root.wm_withdraw()
+            #self.constants.custom_color = colorchooser.askcolor(title="Choose color")
+            #temp_tk_root.destroy()
         elif change_menu == "2":
             self.constants.custom_color = ""
         else:
