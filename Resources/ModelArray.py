@@ -915,7 +915,6 @@ DeleteAMDAccel11 = [
     "AppleIntelFramebufferCapri.kext",
     "AppleParavirtGPU.kext",
     "GeForce.kext",
-    "IOAcceleratorFamily2.kext",
     "IOGPUFamily.kext",
 ]
 
@@ -955,25 +954,16 @@ AddAMDAccel11 = [
     "AMDLegacySupport.kext",
     "AMDRadeonVADriver.bundle",
     "AMDRadeonVADriver2.bundle",
-    # "AMDRadeonX3000.kext", # __ZN22IOAccelDisplayMachine210gMetaClassE link issues
-    # "AMDRadeonX3000GLDriver.bundle",
+    "AMDRadeonX3000.kext",
+    "AMDRadeonX3000GLDriver.bundle",
     "AMDShared.bundle",
     "AMDSupport.kext",
     "ATIRadeonX2000.kext",
     "ATIRadeonX2000GA.plugin",
     "ATIRadeonX2000GLDriver.bundle",
     "ATIRadeonX2000VADriver.bundle",
+    "IOAcceleratorFamily2.kext",
     "IOSurface.kext",
-]
-
-AddAMDTeraScale2Brightness11 = [
-    "AMD5000Controller.kext",
-    "AMD6000Controller.kext",
-    "AMDLegacyFramebuffer.kext",
-    "AMDLegacySupport.kext",
-    "AMDRadeonX3000.kext",
-    "AMDRadeonX3000GLDriver.bundle",
-    "IOAcceleratorFamily2.kext"
 ]
 
 AddIntelGen1Accel = [
