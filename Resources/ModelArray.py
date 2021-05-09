@@ -929,16 +929,16 @@ AddNvidiaAccel11 = [
 ]
 
 AddNvidiaKeplerAccel11 = [
-	"GeForce.kext",
-	"GeForceAIRPlugin.bundle",
-	"GeForceGLDriver.bundle",
-	"GeForceMTLDriver.bundle",
-	"GeForceVADriver.bundle",
-	"NVDAGF100Hal.kext",
-	"NVDAGK100Hal.kext",
-	"NVDAResman.kext",
-	"NVDAStartup.kext",
-	"NVSMU.kext",
+    "GeForce.kext",
+    "GeForceAIRPlugin.bundle",
+    "GeForceGLDriver.bundle",
+    "GeForceMTLDriver.bundle",
+    "GeForceVADriver.bundle",
+    "NVDAGF100Hal.kext",
+    "NVDAGK100Hal.kext",
+    "NVDAResman.kext",
+    "NVDAStartup.kext",
+    "NVSMU.kext",
 ]
 
 AddAMDAccel11 = [
@@ -982,19 +982,20 @@ AddIntelGen2Accel = [
 ]
 
 AddIntelGen3Accel = [
-	"AppleIntelFramebufferCapri.kext",
-	"AppleIntelHD4000Graphics.kext",
-	"AppleIntelHD4000GraphicsGLDriver.bundle",
-	"AppleIntelHD4000GraphicsMTLDriver.bundle",
-	"AppleIntelHD4000GraphicsVADriver.bundle",
+    "AppleIntelFramebufferCapri.kext",
+    "AppleIntelHD4000Graphics.kext",
+    "AppleIntelHD4000GraphicsGLDriver.bundle",
+    "AppleIntelHD4000GraphicsMTLDriver.bundle",
+    "AppleIntelHD4000GraphicsVADriver.bundle",
 ]
 
 AddGeneralAccel = [
-    "AppleGraphicsControl.kext",
-	"AppleGraphicsPowerManagement.kext",
-	"AppleMCCSControl.kext",
-	"IOGraphicsFamily.kext",
-	"IONDRVSupport.kext",
+    # Below 5 from dosdude1, unknown whether they benifit
+    #"AppleGraphicsControl.kext",
+    #"AppleGraphicsPowerManagement.kext",
+    #"AppleMCCSControl.kext",
+    #"IOGraphicsFamily.kext",
+    #"IONDRVSupport.kext",
     "IOAcceleratorFamily2.kext",
     "IOSurface.kext"
 ]
