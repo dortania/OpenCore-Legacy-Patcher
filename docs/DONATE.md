@@ -4,12 +4,14 @@ OpenCore Legacy Patcher is a hobby project for us developers, and while we love 
 
 The best way to support us in all honesty is to donate any old hardware you no longer need, as this allows us to have machines to test locally and push fixes much faster. While we appreciate cash donations, this makes it much more difficult for us to handle as an organization.
 
-Main hardware we'd appreciate:
+Main sections of help we'd appreciate:
 
-* Any Mac you own
+* Donating any Mac you own
   * Does require SSE4,1 CPU to test on Sierra and newer however
-* Any spare SATA SSDs
+* Donating any spare SATA SSDs
   * Having extra SSDs on hand allows us to quickly and easily test specific builds of macOS without having to wipe drives and reinstall as much
+* Aiding by buying items in our Amazon Wishlist
+  * Currently we have a few members within Dortania testing so we recommend messaging the email listed below to see which member at the time would something purchased the most 
   
 Additionally, hardware info dumps are greatly beneficial for us to determine what patches a machine might need:
 
@@ -17,7 +19,7 @@ Additionally, hardware info dumps are greatly beneficial for us to determine wha
   * `File -> SaveAs` and open an issue on Github
   * Note: We want IOReg dumps of hardware not running on OpenCore, instead running a clean, supported OS
 
-If you have any legacy hardware you're willing to donate, please contact us at the following email:
+If you have any legacy hardware you're willing to donate or what to buy us something, please contact us at the following email:
 
 * khronokernel@icloud.com
 
