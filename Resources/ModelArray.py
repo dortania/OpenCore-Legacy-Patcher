@@ -962,8 +962,6 @@ AddAMDAccel11 = [
     "ATIRadeonX2000GA.plugin",
     "ATIRadeonX2000GLDriver.bundle",
     "ATIRadeonX2000VADriver.bundle",
-    "IOAcceleratorFamily2.kext",
-    "IOSurface.kext",
 ]
 
 AddIntelGen1Accel = [
@@ -972,7 +970,6 @@ AddIntelGen1Accel = [
     "AppleIntelHDGraphicsGA.plugin",
     "AppleIntelHDGraphicsGLDriver.bundle",
     "AppleIntelHDGraphicsVADriver.bundle",
-    "IOSurface.kext",
 ]
 
 AddIntelGen2Accel = [
@@ -982,7 +979,6 @@ AddIntelGen2Accel = [
     "AppleIntelHD3000GraphicsVADriver.bundle",
     "AppleIntelSNBGraphicsFB.kext",
     "AppleIntelSNBVA.bundle",
-    "IOSurface.kext",
 ]
 
 AddIntelGen3Accel = [
@@ -991,6 +987,16 @@ AddIntelGen3Accel = [
 	"AppleIntelHD4000GraphicsGLDriver.bundle",
 	"AppleIntelHD4000GraphicsMTLDriver.bundle",
 	"AppleIntelHD4000GraphicsVADriver.bundle",
+]
+
+AddGeneralAccel = [
+    "AppleGraphicsControl.kext",
+	"AppleGraphicsPowerManagement.kext",
+	"AppleMCCSControl.kext",
+	"IOGraphicsFamily.kext",
+	"IONDRVSupport.kext",
+    "IOAcceleratorFamily2.kext",
+    "IOSurface.kext"
 ]
 
 DeleteBrightness = [

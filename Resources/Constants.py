@@ -304,6 +304,8 @@ class Constants:
     def legacy_intel_gen2_path(self): return self.legacy_graphics / Path("Intel-Gen6-SandyBridge")
     @property
     def legacy_intel_gen3_path(self): return self.legacy_graphics / Path("Intel-Gen7-IvyBridge")
+    @property
+    def legacy_general_path(self): return self.legacy_graphics / Path("General-Patches")
 
     @property
     def legacy_brightness(self): return self.payload_apple_kexts_path / Path("Brightness-Control")
