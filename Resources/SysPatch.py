@@ -127,13 +127,14 @@ class PatchSysVolume:
         if dgpu_vendor:
             print(f"- Found GFX0: {dgpu_vendor}:{dgpu_device}")
             if dgpu_vendor == self.constants.pci_nvidia:
-                #if self.nvidia_arch == self.constants.arch_kepler and self.constants.assume_legacy is True and self.constants.detected_os > self.constants.big_sur:
+                if dgpu_device in PCIIDArray.nvidia_ids().tesla_ids or dgpu_device in PCIIDArray.nvidia_ids().fermi_ids:
+                    print("- Merging legacy Nvidia Tesla and Fermi Kexts and Bundles")
+                    self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
+                    self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+                # TODO: Enable below code if macOS 12 drops support
+                #elif dgpu_device in PCIIDArray.nvidia_ids().kepler_ids and self.constants.detected_os > self.constants.big_sur:
                 #    print("- Merging legacy Nvidia Kepler Kexts and Bundles")
                 #    self.add_new_binaries(ModelArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
-                #else:
-                print("- Merging legacy Nvidia Tesla and Fermi Kexts and Bundles")
-                self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
-                self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
             elif dgpu_vendor == self.constants.pci_amd_ati:
                 print("- Merging legacy AMD Kexts and Bundles")
                 self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
@@ -154,7 +155,7 @@ class PatchSysVolume:
                     #    subprocess.run(f"sudo rm -R {self.mount_extensions}/AppleIntelSNBGraphicsFB.kext".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
                     #    subprocess.run(f"sudo cp -R {self.constants.legacy_amd_path}/AMD-Link/AppleIntelSNBGraphicsFB.kext {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-                # Code for when Ivy Bridge binares are presumably removed from macOS 12, code currently
+                # TODO: Enable below code if macOS 12 drops support
                 #elif igpu_device in PCIIDArray.intel_ids().ivy_ids:
                 #    print("- Merging legacy Intel 3rd Gen Kexts and Bundles")
                 #    self.add_new_binaries(ModelArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
