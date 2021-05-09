@@ -641,7 +641,7 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["CustomMemory"] = True
 
         # USB Map and CPUFriend Patching
-        if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1" and self.constants.disallow_cpufriend is False:
+        if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1":
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
 
@@ -662,9 +662,8 @@ class BuildOpenCore:
 
                 except KeyError:
                     continue
-
             plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
-
+        if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1" and self.constants.disallow_cpufriend is False:
             # Adjust CPU Friend Data to correct SMBIOS
             new_cpu_ls = Path(self.constants.pp_contents_folder) / Path("Info.plist")
             cpu_config = plistlib.load(Path(new_cpu_ls).open("rb"))
