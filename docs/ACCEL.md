@@ -1,5 +1,7 @@
 # Working Around Legacy Acceleration Issues
 
+* [Downloading older non-Metal Apps](#downloading-older-non-metal-apps)
+* [Unable to run Zoom](#unable-to-run-zoom)
 * [Unable to grant special permissions to apps (ie. Camera Access to Zoom)](#unable-to-grant-special-permissions-to-apps-ie-camera-access-to-zoom)
 * [Keyboard Backlight broken](#keyboard-backlight-broken)
 * [Photos and Maps Apps Heavily Distorted](#photos-and-maps-apps-heavily-distorted)
@@ -11,6 +13,20 @@ The below page is for users experiencing issues with their overall usage of macO
 
 * AMD/ATI TeraScale 2 - HD5/6000 series
 * Intel 3rd and 4th Gen - GMA series
+
+## Downloading older non-Metal Apps
+
+Many Apple apps now have direct reliance on Metal for proper functioning, however legacy builds of these apps still do work in Big Sur. See below for archive of many apps such as Pages, iMovie, GarageBand.
+
+* [Apple Apps for Non-Metal Macs](https://archive.org/details/apple-apps-for-non-metal-macs)
+
+Note: This archive assumes that you own these copies of these apps through the Mac App Store, Dortania does not condone piracy
+
+## Unable to run Zoom
+
+Currently Zoom relies partially on Metal and so needs a small binary patch. Dosdude1 has provided a nice script for this:
+
+* [Zoom Non-Metal Fix](http://dosdude1.com/catalina/zoomnonmetal-new.command.zip)
 
 ## Unable to grant special permissions to apps (ie. Camera Access to Zoom)
 
