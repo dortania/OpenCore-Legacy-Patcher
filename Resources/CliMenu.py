@@ -269,34 +269,6 @@ Recommend only disabling if absolutely required.
         else:
             print("Invalid option")
 
-    def accel_setting(self):
-        Utilities.cls()
-        Utilities.header(["Enable Beta Acceleration Patches"])
-        print("""Enables OCLP's experimental GPU Acceleration Patches
-Note these are still in beta and we highly recommend users
-not run them daily or expect stable performance.
-
-Currently the following are supported:
-
-- Nvidia:  Tesla and Fermi (8000-500)
-- AMD/ATI: TeraScale 1 (2000-4000)
-- Intel:   Ironlake and Sandy Bridge
-
-For reliability, please consider running macOS Catalina or
-older via Dosdude1's patchers
-
-Note: These patches may break Big Sur booting, please have any
-important data backed up in case of emergencies
-        """)
-        change_menu = input("Enable Beta Acceleration Patches(y/n): ")
-        if change_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.legacy_acceleration_patch = True
-        elif change_menu in {"n", "N", "no", "No"}:
-            self.constants.legacy_acceleration_patch = False
-        else:
-            print("Invalid option")
-
-
     def force_accel_setting(self):
         Utilities.cls()
         Utilities.header(["Assume Legacy GPU"])
