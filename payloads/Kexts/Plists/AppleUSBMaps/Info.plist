@@ -2860,6 +2860,28 @@
 			<key>model</key>
 			<string>XacPro3,1</string>
 		</dict>
+		<key>MacPro3,1-UHC3</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
+			<key>IOClass</key>
+			<string>AppleUSBHostMergeProperties</string>
+			<key>IONameMatch</key>
+			<string>UHC3</string>
+			<key>IOProviderClass</key>
+			<string>AppleUSBUHCIPCI</string>
+			<key>IOProviderMergeProperties</key>
+			<dict>
+				<key>kUSBMuxEnabled</key>
+				<false/>
+				<key>port-count</key>
+				<data>AAAAAA==</data>
+				<key>ports</key>
+				<dict/>
+			</dict>
+			<key>model</key>
+			<string>MacPro3,1</string>
+		</dict>
 		<key>MacPro4,1-EHC1</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -3616,6 +3638,28 @@
 			</dict>
 			<key>model</key>
 			<string>iXac7,1</string>
+		</dict>
+		<key>iMac7,1-UHC4</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
+			<key>IOClass</key>
+			<string>AppleUSBHostMergeProperties</string>
+			<key>IONameMatch</key>
+			<string>UHC4</string>
+			<key>IOProviderClass</key>
+			<string>AppleUSBUHCIPCI</string>
+			<key>IOProviderMergeProperties</key>
+			<dict>
+				<key>kUSBMuxEnabled</key>
+				<false/>
+				<key>port-count</key>
+				<data>AAAAAA==</data>
+				<key>ports</key>
+				<dict/>
+			</dict>
+			<key>model</key>
+			<string>iMac7,1</string>
 		</dict>
 		<key>iMac8,1-EHC1</key>
 		<dict>

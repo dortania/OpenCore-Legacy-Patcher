@@ -2,6 +2,8 @@
 
 With OpenCore Legacy Patcher we recommend users go through the below table to understand what the benefits and drawbacks are compared to other patchers. There are positive and negatives to each and we feel transparency is most important when patching another users machine. There should be no grey areas where users may be mislead.
 
+* Note: [Patched Sur](https://github.com/BenSova/Patched-Sur) and [MicropatcherAutomator](https://github.com/moosethegoose2213/automator-for-barrykn-micropatcher) are iterations of [BarryKN's micropatcher](https://github.com/barrykn/big-sur-micropatcher) and therefore share many of the same benefits and limitations. Patched Sur is used for this comparison as it's the most common form of BarryKN's patcher users will find.
+
 | Features | [OpenCore Legacy Patcher](https://github.com/dortania/OpenCore-Legacy-Patcher/) | [Patched Sur](https://github.com/BenSova/Patched-Sur) |
 | :--- | :--- | :--- |
 | Over The Air Updates | <span style="color:#30BCD5">Native System Preferences, additionally supports Deltas (~2GB) for Metal GPUs</span> | <span style="color:red">Inside Patcher Sur app (~12GB), only available when InstallAssistants release</span> |

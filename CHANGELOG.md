@@ -13,6 +13,8 @@
 - Fix iMac9,1 audio support
 - Heavily expand Graphics ID list
 - Fix iMac7,1 audio support
+- Work-around Bluetooth Kernel Panic on Apple's Bluetooth 2.0 Controllers (USB 05AC:8206)
+  - Affects iMac7,1 and MacPro3,1
 
 ## 0.1.2
 - Fix IDE support on 2008 era MacBooks, iMacs and Xserves
