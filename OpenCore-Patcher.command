@@ -103,18 +103,34 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Enable Verbose Mode:\t\tCurrently {self.constants.verbose_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_verbose],
                 [f"Enable OpenCore DEBUG:\t\tCurrently {self.constants.opencore_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_oc],
                 [f"Enable Kext DEBUG:\t\t\tCurrently {self.constants.kext_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_kext],
-                [f"Assume Metal GPU Always:\t\tCurrently {self.constants.imac_vendor}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_metal],
-                [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.wifi_build}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_wifi],
                 [f"Set ShowPicker Mode:\t\tCurrently {self.constants.showpicker}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_showpicker],
                 [f"Set Vault Mode:\t\t\tCurrently {self.constants.vault}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_vault],
                 [f"Set SIP and SecureBootModel:\tSIP: {self.constants.sip_status} SBM: {self.constants.secure_status}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_sip],
+                [f"Allow OpenCore on native Models:\tCurrently {self.constants.allow_oc_everywhere}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).allow_native_models],
+                [f"Advanced Patch Settings, for developers only", self.advanced_patcher_settings],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def advanced_patcher_settings(self):
+        response = None
+        while not (response and response == -1):
+            title = [
+                "Adjust Advanced Patcher Settings, for developers ONLY"
+            ]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Assume Metal GPU Always:\t\tCurrently {self.constants.imac_vendor}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_metal],
+                [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.wifi_build}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_wifi],
                 [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_serial],
                 [f"DRM Preferences:\t\t\tCurrently {self.constants.drm_support}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).drm_setting],
-                [f"Set Generic Bootstrap:\t\t{self.constants.boot_efi}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).bootstrap_setting],
-                [f"Assume Legacy GPU:\t\t\t{self.constants.assume_legacy}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).force_accel_setting],
-                [f"Allow OpenCore on native Models:\t{self.constants.allow_oc_everywhere}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).allow_native_models],
-                [f"Download more RAM:\t\t\t{self.constants.download_ram}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).download_more_ram_dot_com],
-                [f"Disable CPU Friend:\t\t{self.constants.disallow_cpufriend}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).disable_cpufriend],
+                [f"Set Generic Bootstrap:\t\tCurrently {self.constants.boot_efi}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).bootstrap_setting],
+                [f"Assume Legacy GPU:\t\t\tCurrently {self.constants.assume_legacy}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).force_accel_setting],
+                #[f"Download more RAM:\t\t\tCurrently {self.constants.download_ram}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).download_more_ram_dot_com],
+                [f"Disable CPU Friend:\t\t\tCurrently {self.constants.disallow_cpufriend}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).disable_cpufriend],
                 [f"Set Custom name {self.constants.custom_cpu_model_value}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).custom_cpu],
             ]
 

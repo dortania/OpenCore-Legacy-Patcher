@@ -131,9 +131,9 @@ class BuildOpenCore:
                             self.enable_kext("Innie.kext", self.constants.innie_version, self.constants.innie_path)
                     x = x + 1
             except ValueError:
-                print("- No PCIe Storage Controllers found to fix")
+                print("- No PCIe Storage Controllers found to fix(V)")
             except IndexError:
-                print("- No PCIe Storage Controllers found to fix")
+                print("- No PCIe Storage Controllers found to fix(I)")
 
         if not self.constants.custom_model:
             nvme_devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -153,10 +153,10 @@ class BuildOpenCore:
                         nvme_acpi = ""
                     # Disable Bit 0 (L0s), enable Bit 1 (L1)
                     if not isinstance(nvme_aspm, int):
-                        binascii.unhexlify(nvme_aspm)
-                        nvme_aspm = self.hexswap(nvme_aspm)
-                        nvme_aspm = int(nvme_aspm, 16)
+                        nvme_aspm = int.from_bytes(nvme_aspm, byteorder='little')
                     nvme_aspm = (nvme_aspm & (~3)) | 2
+                    #nvme_aspm &= ~1  # Turn off bit 1
+                    #nvme_aspm |= 2  # Turn on bit 2
                     self.config["#Revision"][f"Hardware-NVMe-{x}"] = f'{nvme_vendor}:{nvme_device}'
                     try:
                         nvme_path = DeviceProbe.pci_probe().deviceproperty_probe(nvme_vendor, nvme_device, nvme_acpi)
@@ -174,9 +174,9 @@ class BuildOpenCore:
                         self.enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)
                     x = x + 1
             except ValueError:
-                print("- No 3rd Party NVMe drive found")
+                print("- No 3rd Party NVMe drive found(V)")
             except IndexError:
-                print("- No 3rd Party NVMe drive found")
+                print("- No 3rd Party NVMe drive found(I)")
 
         def wifi_fake_id(self):
             default_path = True
@@ -405,7 +405,7 @@ class BuildOpenCore:
                 nvidia_patch(self, self.gfx0_path)
             else:
                 print("- Failed to find vendor")
-        elif not self.constants.custom_model:
+        elif not self.constants.custom_model and self.model in ModelArray.LegacyGPU:
             dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
             if dgpu_vendor:
                 print(f"- Detected dGPU: {dgpu_vendor}:{dgpu_device}")
