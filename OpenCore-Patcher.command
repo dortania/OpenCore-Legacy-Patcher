@@ -160,6 +160,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
   - Nvidia: Tesla - Fermi (8000-500 series)
   - Intel: Ironlake - Sandy Bridge
   - AMD: TeraScale 1 (2000-4000 series)
+- Audio support for iMac7,1 and iMac8,1
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume

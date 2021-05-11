@@ -268,8 +268,8 @@ LegacyAudio = [
     "Macmini5,1",
     "Macmini5,2",
     "Macmini5,3",
-    "iMac7,1",
-    "iMac8,1",
+    #"iMac7,1",
+    #"iMac8,1",
     "iMac9,1",
     "iMac10,1",
     "iMac11,1",
@@ -1014,5 +1014,6 @@ AddBrightness = [
 ]
 
 AddVolumeControl = [
+    "AppleHDA.kext",
     "IOAudioFamily.kext",
 ]
