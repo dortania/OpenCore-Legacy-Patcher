@@ -314,7 +314,11 @@ class BuildOpenCore:
             print("- Adding dual GPU patch")
             if not self.constants.custom_model:
                 gfx0_path: str = subprocess.run([self.constants.gfxutil_path] + f"-f GFX0".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-                if gfx0_path == "":
+                try:
+                    self.gfx0_path = [line.strip().split("= ", 1)[1] for line in gfx0_path.split("\n") if "GFX0" in line.strip()][0]
+                    print(f"- Found GFX0 device at {self.gfx0_path}")
+                except IndexError:
+                    print("- Failed to find GFX0 Device path, falling back on known logic")
                     gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
             else:
                 gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
