@@ -313,21 +313,21 @@ class BuildOpenCore:
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
             if not self.constants.custom_model:
-                gfx0_path: str = subprocess.run([self.constants.gfxutil_path] + f"-f GFX0".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-                try:
-                    self.gfx0_path = [line.strip().split("= ", 1)[1] for line in gfx0_path.split("\n") if "GFX0" in line.strip()][0]
-                    print(f"- Found GFX0 device at {self.gfx0_path}")
-                except IndexError:
+                dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
+                self.gfx0_path = DeviceProbe.pci_probe().deviceproperty_probe(dgpu_vendor,dgpu_device,dgpu_acpi)
+                if self.gfx0_path == "":
                     print("- Failed to find GFX0 Device path, falling back on known logic")
-                    gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
+                    self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
+                else:
+                    print(f"- Found GFX0 Device Path: {self.gfx0_path}")
             else:
-                gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
+                self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
             if self.model in ModelArray.IntelNvidiaDRM and self.constants.drm_support is True:
                 print("- Prioritizing DRM support over Intel QuickSync")
-                self.config["DeviceProperties"]["Add"][gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
+                self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"disable-gpu-min": "20.0.0"}
             else:
-                self.config["DeviceProperties"]["Add"][gfx0_path] = {"agdpmod": "vit9696"}
+                self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
         # HiDPI OpenCanopy and FileVault
         if self.model in ModelArray.HiDPIpicker:
@@ -346,16 +346,17 @@ class BuildOpenCore:
 
         def backlight_path_detection(self):
             if not self.constants.custom_model:
-                gfx0_path: str = subprocess.run([self.constants.gfxutil_path] + f"-f GFX0".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-                try:
-                    self.gfx0_path = [line.strip().split("= ", 1)[1] for line in gfx0_path.split("\n") if "GFX0" in line.strip()][0]
-                    print(f"- Found GFX0 device at {self.gfx0_path}")
-                except IndexError:
+                dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
+                self.gfx0_path = DeviceProbe.pci_probe().deviceproperty_probe(dgpu_vendor,dgpu_device,dgpu_acpi)
+                if self.gfx0_path == "":
                     print("- Failed to find GFX0 Device path, falling back on known logic")
                     if self.model in ["iMac11,1", "iMac11,3"]:
                         self.gfx0_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
                     else:
                         self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
+                else:
+                    print(f"- Found GFX0 Device Path: {self.gfx0_path}")
+
             else:
                 if self.model in ["iMac11,1", "iMac11,3"]:
                     self.gfx0_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"

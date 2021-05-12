@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.1.4
+- Fix Device Path formatting on 2012+ iMacs
+
 ## 0.1.3
 - Fix internal PCIe devices reporting as external
   - Opt for `built-in` when device path is detectable
