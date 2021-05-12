@@ -3,11 +3,9 @@
 
 from __future__ import print_function
 
-import binascii
 import plistlib
 import subprocess
 import sys
-import time
 import platform
 
 from Resources import Build, ModelArray, PCIIDArray, Constants, SysPatch, Utilities, CliMenu, DeviceProbe

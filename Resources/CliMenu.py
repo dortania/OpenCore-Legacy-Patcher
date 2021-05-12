@@ -2,12 +2,7 @@
 # Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 from __future__ import print_function
 
-import subprocess
-import sys
-import time
-import platform
-
-from Resources import Build, ModelArray, Constants, SysPatch, Utilities
+from Resources import ModelArray, Constants, Utilities
 
 
 class MenuOptions:

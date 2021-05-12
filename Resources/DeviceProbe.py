@@ -4,15 +4,9 @@ from __future__ import print_function
 
 import binascii
 import plistlib
-import shutil
 import subprocess
-import uuid
-import os
-import sys
-import platform
-from pathlib import Path
 
-from Resources import Constants, ModelArray, Utilities
+from Resources import Constants
 
 class pci_probe:
     def __init__(self):

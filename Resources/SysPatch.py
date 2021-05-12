@@ -6,17 +6,12 @@
 # - Work-around battery throttling on laptops with no battery (IOPlatformPluginFamily.kext/Contents/PlugIns/ACPI_SMC_PlatformPlugin.kext/Contents/Resources/)
 from __future__ import print_function
 
-import binascii
 import plistlib
 import shutil
-import signal
 import subprocess
-import sys
-import uuid
 import zipfile
 import os
 from pathlib import Path
-from datetime import date
 
 from Resources import Constants, ModelArray, PCIIDArray, Utilities, DeviceProbe
 

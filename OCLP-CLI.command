@@ -3,16 +3,13 @@
 
 from __future__ import print_function
 
-import binascii
-import plistlib
 import subprocess
 import sys
-import time
 import platform
 import argparse
 from pathlib import Path
 
-from Resources import Build, ModelArray, PCIIDArray, Constants, SysPatch, Utilities, CliMenu, DeviceProbe
+from Resources import Build, ModelArray, PCIIDArray, Constants, SysPatch, DeviceProbe
 
 
 class OpenCoreLegacyPatcher():
