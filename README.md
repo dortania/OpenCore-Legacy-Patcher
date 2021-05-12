@@ -37,6 +37,9 @@ To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise
   * Main co-author
 * [Ausdauersportler](https://github.com/Ausdauersportler)
   * iMacs Metal GPUs Upgrade Patch set and documentation
+  * Great amounts of help debugging and code suggestions
+* [vit9696](https://github.com/vit9696)
+  * Endless amount of help troubleshooting, determining fixes and writing patches
 * [ASentientBot](https://github.com/ASentientBot)
   * Legacy Acceleration Patch set and documentation
 * [cdf](https://github.com/cdf)
@@ -46,8 +49,6 @@ To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise
   * [AAAMouSSE](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/) and [telemetrap](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/post-28447707)
 * [dosdude1](https://github.com/dosdude1) and [BarryKN](https://github.com/BarryKN)
   * Development of previous patchers, laying out much of what needs to be patched
-* [vit9696](https://github.com/vit9696)
-  * Endless amount of help troubleshooting, determining fixes and writing patches
 * [mario_bros_tech](https://github.com/mariobrostech) and the rest of the Unsupported Mac Discord
   * Catalyst that started OpenCore Legacy Patcher
 * MacRumors and Unsupported Mac Communities
