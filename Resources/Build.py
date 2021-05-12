@@ -46,7 +46,10 @@ class BuildOpenCore:
 
     def build_efi(self):
         Utilities.cls()
-        print(f"Building Configuration for model: {self.model}")
+        if not self.constants.custom_model:
+            print(f"Building Configuration on model: {self.model}")
+        else:
+            print(f"Building Configuration for external model: {self.model}")
         if not Path(self.constants.build_path).exists():
             Path(self.constants.build_path).mkdir()
             print("Created build folder")

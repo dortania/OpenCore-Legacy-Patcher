@@ -71,8 +71,11 @@ class pci_probe:
                 print(f"- No ACPI entry found for {gpu_type}")
                 return vendor_id, device_id, ""
         except ValueError:
-            print(f"- No IOService entry found for {gpu_type}")
+            print(f"- No IOService entry found for {gpu_type} (V)")
             return "", "", ""
+        except IndexError:
+            print(f"- No IOService entry found for {gpu_type} (I)")
+            return "", "", "", ""
 
     def wifi_probe(self):
         try:
@@ -92,5 +95,8 @@ class pci_probe:
                 print(f"- No ACPI entry found for {vendor_id}:{device_id}")
                 return vendor_id, device_id, ioname, ""
         except ValueError:
-            print(f"- No IOService entry found for Wireless Card")
+            print(f"- No IOService entry found for Wireless Card (V)")
+            return "", "", "", ""
+        except IndexError:
+            print(f"- No IOService entry found for Wireless Card (I)")
             return "", "", "", ""
