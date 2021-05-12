@@ -2,6 +2,7 @@
 
 ## 0.1.5
 - Fix crashing when Wireless module not present
+- Add iMac10,1 default dGPU pathing
 
 ## 0.1.4
 - Fix Device Path formatting on 2012+ iMacs
