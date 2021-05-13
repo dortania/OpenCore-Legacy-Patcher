@@ -30,6 +30,7 @@ class Constants:
         self.restrictevents_mbp_version = "1.0.1"
         self.piixata_version = "1.0.0"
         self.backlight_version = "1.0.1"
+        self.backlight_injector_version = "1.0.0"
         self.cpufriend_version = "1.2.3"
         self.nightshift_version = "1.1.0"
         self.smcspoof_version = "1.0.0"
@@ -176,6 +177,8 @@ class Constants:
     def piixata_path(self): return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-v{self.piixata_version}.zip")
     @property
     def backlight_path(self): return self.payload_kexts_path / Path(f"Misc/AppleBacklightFixup-v{self.backlight_version}.zip")
+    @property
+    def backlight_injector_path(self): return self.payload_kexts_path / Path(f"Misc/BacklightInjector-v{self.backlight_injector_version}.zip")
     @property
     def cpufriend_path(self): return self.payload_kexts_path / Path(f"Acidanthera/CPUFriend-v{self.cpufriend_version}.zip")
     @property

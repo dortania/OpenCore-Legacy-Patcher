@@ -373,20 +373,18 @@ class BuildOpenCore:
             self.constants.custom_mxm_gpu = True
             if self.model in ["iMac11,1", "iMac11,2", "iMac11,3", "iMac10,1"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
-                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"applbkl": binascii.unhexlify("01000000"), "@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
                 if self.constants.custom_model and self.model == "iMac11,2":
                     # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
                     # Set both properties when we cannot run hardware detection
-                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
-                shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
-                self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"applbkl": binascii.unhexlify("01000000"), "@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
             elif self.model in ["iMac12,1", "iMac12,2"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
-                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"applbkl": binascii.unhexlify("01000000"), "@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
-                shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
-                self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
+            shutil.copy(self.constants.backlight_injector_path, self.constants.kexts_path)
+            self.get_kext_by_bundle_path("BacklightInjector.kext")["Enabled"] = True
             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
