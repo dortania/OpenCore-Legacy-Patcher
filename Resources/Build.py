@@ -352,6 +352,8 @@ class BuildOpenCore:
                     print("- Failed to find GFX0 Device path, falling back on known logic")
                     if self.model in ["iMac11,1", "iMac11,3"]:
                         self.gfx0_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
+                    elif self.model == "iMac10,1":
+                        self.gfx0_path = "PciRoot(0x0)/Pci(0xc,0x0)/Pci(0x0,0x0)"
                     else:
                         self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
                 else:
@@ -360,6 +362,8 @@ class BuildOpenCore:
             else:
                 if self.model in ["iMac11,1", "iMac11,3"]:
                     self.gfx0_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
+                elif self.model == "iMac10,1":
+                    self.gfx0_path = "PciRoot(0x0)/Pci(0xc,0x0)/Pci(0x0,0x0)"
                 else:
                     self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
                 print(f"- Using known GFX0 path: {self.gfx0_path}")
@@ -367,7 +371,7 @@ class BuildOpenCore:
 
         def nvidia_patch(self, backlight_path):
             self.constants.custom_mxm_gpu = True
-            if self.model in ["iMac11,1", "iMac11,2", "iMac11,3"]:
+            if self.model in ["iMac11,1", "iMac11,2", "iMac11,3", "iMac10,1"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"applbkl": binascii.unhexlify("01000000"), "@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
                 if self.constants.custom_model and self.model == "iMac11,2":
@@ -376,7 +380,7 @@ class BuildOpenCore:
                     self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"applbkl": binascii.unhexlify("01000000"), "@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
             elif self.model in ["iMac12,1", "iMac12,2"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
-                self.config["DeviceProperties"]["Add"][backlight_path] = {"applbkl": binascii.unhexlify("01000000"), "@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256}
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"applbkl": binascii.unhexlify("01000000"), "@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
             shutil.copy(self.constants.backlight_injector_path, self.constants.kexts_path)
