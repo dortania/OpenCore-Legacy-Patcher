@@ -3,6 +3,8 @@
 ## 0.1.5
 - Fix crashing when Wireless module not present
 - Add iMac10,1 default dGPU pathing
+- Add agdpmod=vit9696 to all Nvidia Metal iMacs
+  - Fixes external display support on Nvidia iMac12,x
 
 ## 0.1.4
 - Fix Device Path formatting on 2012+ iMacs

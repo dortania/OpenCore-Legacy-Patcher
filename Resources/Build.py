@@ -382,7 +382,7 @@ class BuildOpenCore:
                 self.get_kext_by_bundle_path("AppleBacklightFixup.kext")["Enabled"] = True
             elif self.model in ["iMac12,1", "iMac12,2"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
-                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256}
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"@0,backlight-control": binascii.unhexlify("01000000"), "@0,built-in": binascii.unhexlify("01000000"), "shikigva": 256, "agdpmod": "vit9696"}
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
                 shutil.copy(self.constants.backlight_path, self.constants.kexts_path)
