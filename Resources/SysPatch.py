@@ -88,7 +88,7 @@ class PatchSysVolume:
             delete_path = Path(self.mount_extensions) / Path(delete_current_kext)
             if Path(delete_path).exists():
                 print(f"- Deleting {delete_current_kext}")
-                subprocess.run(f"sudo rm -R {delete_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(["sudo", "rm", "-R", delete_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             else:
                 print(f"- Couldn't find {delete_current_kext}, skipping")
 
@@ -97,24 +97,19 @@ class PatchSysVolume:
             existing_path = Path(self.mount_extensions) / Path(add_current_kext)
             if Path(existing_path).exists():
                 print(f"- Found conflicting kext, Deleting Root Volume's {add_current_kext}")
-                subprocess.run(f"sudo rm -R {existing_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                print(f"- Adding {add_current_kext}")
-                subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                subprocess.run(f"sudo chmod -Rf 755 {self.mount_extensions}/{add_current_kext}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                subprocess.run(f"sudo chown -Rf root:wheel {self.mount_extensions}/{add_current_kext}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            else:
-                print(f"- Adding {add_current_kext}")
-                subprocess.run(f"sudo cp -R {vendor_location}/{add_current_kext} {self.mount_extensions}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                subprocess.run(f"sudo chmod -Rf 755 {self.mount_extensions}/{add_current_kext}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                subprocess.run(f"sudo chown -Rf root:wheel {self.mount_extensions}/{add_current_kext}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(["sudo", "rm", "-R", existing_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            print(f"- Adding {add_current_kext}")
+            subprocess.run(["sudo", "cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "chmod", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def add_brightness_patch(self):
         print("- Merging legacy Brightness Control Patches")
         self.delete_old_binaries(ModelArray.DeleteBrightness)
         self.add_new_binaries(ModelArray.AddBrightness, self.constants.legacy_brightness)
-        subprocess.run(f"sudo ditto {self.constants.payload_apple_private_frameworks_path_brightness} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo chmod -R 755 {self.mount_private_frameworks}/DisplayServices.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo chown -R root:wheel {self.mount_private_frameworks}/DisplayServices.framework".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "ditto", self.constants.payload_apple_private_frameworks_path_brightness, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "chmod", "-Rf", "755", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "chmod", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_patches_11(self):
         igpu_vendor,igpu_device,igpu_acpi = DeviceProbe.pci_probe().gpu_probe("IGPU")
@@ -165,7 +160,7 @@ class PatchSysVolume:
 
         # Frameworks
         print("- Merging legacy Frameworks")
-        subprocess.run(f"sudo ditto {self.constants.payload_apple_frameworks_path_accel} {self.mount_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "ditto", self.constants.payload_apple_frameworks_path_accel, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         if self.model in ModelArray.LegacyBrightness:
             self.add_brightness_patch()
@@ -173,20 +168,20 @@ class PatchSysVolume:
         # LaunchDaemons
         if Path(self.mount_lauchd / Path("HiddHack.plist")).exists():
             print("- Removing legacy HiddHack")
-            subprocess.run(f"sudo rm {self.mount_lauchd}/HiddHack.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "rm", f"{self.mount_lauchd}/HiddHack.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         print("- Adding IOHID-Fixup.plist")
-        subprocess.run(f"sudo ditto {self.constants.payload_apple_lauchd_path_accel} {self.mount_lauchd}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo chmod 755 {self.mount_lauchd}/IOHID-Fixup.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(f"sudo chown root:wheel {self.mount_lauchd}/IOHID-Fixup.plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "ditto", self.constants.payload_apple_lauchd_path_accel, self.mount_lauchd], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "chmod", "-Rf", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "chmod", "-Rf", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # PrivateFrameworks
         print("- Merging legacy PrivateFrameworks")
-        subprocess.run(f"sudo ditto {self.constants.payload_apple_private_frameworks_path_accel} {self.mount_private_frameworks}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "ditto", self.constants.payload_apple_private_frameworks_path_accel, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # Sets AppKit to Catalina Window Drawing codepath
         # Disabled upon ASentientBot request
-        print("- Enabling NSDefenestratorModeEnabled")
-        subprocess.run("defaults write -g NSDefenestratorModeEnabled -bool true".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        #print("- Enabling NSDefenestratorModeEnabled")
+        #subprocess.run("defaults write -g NSDefenestratorModeEnabled -bool true".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def patch_root_vol(self):
         print(f"- Detecting patches for {self.model}")
