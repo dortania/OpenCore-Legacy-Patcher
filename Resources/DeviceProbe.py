@@ -72,10 +72,7 @@ class pci_probe:
             return "", "", "", ""
 
     def wifi_probe(self):
-        try:
-            devices = plistlib.loads(subprocess.run("ioreg -r -n ARPT -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-        except ValueError:
-            devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         try:
             devices = [i for i in devices if i["class-code"] == binascii.unhexlify(self.constants.classcode_wifi)]
             vendor_id = self.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
