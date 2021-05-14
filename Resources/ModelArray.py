@@ -1017,3 +1017,11 @@ AddVolumeControl = [
     "AppleHDA.kext",
     "IOAudioFamily.kext",
 ]
+
+DeleteVolumeControl = [
+    "AppleVirtIO.kext",
+    "AppleVirtualGraphics.kext",
+    "AppleVirtualPlatform.kext",
+    "ApplePVPanic.kext",
+    "AppleVirtIOStorage.kext",
+]

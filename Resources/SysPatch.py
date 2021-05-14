@@ -206,6 +206,7 @@ class PatchSysVolume:
 
         if self.model in ["iMac7,1", "iMac8,1"]:
             print("- Fixing Volume Control Support")
+            self.delete_old_binaries(ModelArray.DeleteVolumeControl)
             self.add_new_binaries(ModelArray.AddVolumeControl, self.constants.audio_path)
             rebuild_required = True
 
