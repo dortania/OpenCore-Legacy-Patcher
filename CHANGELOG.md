@@ -6,6 +6,7 @@
 - Add agdpmod=vit9696 to all Nvidia Metal iMacs
   - Fixes external display support on Nvidia iMac12,x
 - Remove reliance on AppleBacklightFixup
+- Support space in path when downloading Root Patches
 
 ## 0.1.4
 - Fix Device Path formatting on 2012+ iMacs

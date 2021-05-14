@@ -288,7 +288,7 @@ class PatchSysVolume:
     def download_files(self):
         Utilities.cls()
         print("- Downloading Apple binaries")
-        popen_oclp = subprocess.Popen(f"curl -S -L {self.constants.url_apple_binaries}{self.constants.payload_version}.zip --output {self.constants.payload_apple_root_path_zip}".split(), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+        popen_oclp = subprocess.Popen(["curl", "-S", "-L", f"{self.constants.url_apple_binaries}{self.constants.payload_version}.zip", "--output", self.constants.payload_apple_root_path_zip], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
         for stdout_line in iter(popen_oclp.stdout.readline, ""):
             print(stdout_line, end="")
         popen_oclp.stdout.close()
@@ -296,7 +296,7 @@ class PatchSysVolume:
             print("- Download completed")
             print("- Unzipping download...")
             try:
-                subprocess.run(f"unzip {self.constants.payload_apple_root_path_zip}".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.constants.payload_path).stdout.decode()
+                subprocess.run(["unzip", self.constants.payload_apple_root_path_zip], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.constants.payload_path).stdout.decode()
                 print("- Renaming folder")
                 os.rename(self.constants.payload_apple_root_path_unzip, self.constants.payload_apple_root_path)
                 print("- Binaries downloaded to:")
