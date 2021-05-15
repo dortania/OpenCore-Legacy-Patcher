@@ -4,6 +4,7 @@ from __future__ import print_function
 import os
 import math as m
 
+from Resources import Constants
 
 def header(lines):
     lines = [i for i in lines if i is not None]
@@ -16,7 +17,13 @@ def header(lines):
 
 
 def cls():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    # RecoveryOS doesn't support terminal clearing
+    if Constants.Constants().recovery_status == False:
+        os.system('cls' if os.name == 'nt' else 'clear')
+    else:
+        # Default terminal window is 24 lines tall
+        for i in range(24):
+            print("")
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]
