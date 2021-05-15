@@ -24,11 +24,6 @@ jobs:
 
       - run: cd dist; zip ../OpenCore-Patcher.zip OpenCore-Patcher; zip -r ../OpenCore-Patcher.app.zip OpenCore-Patcher.app
       - run: ./../sign-app.sh
-      - name: Upload Binary to Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: OpenCore-Patcher
-          path: OpenCore-Patcher.zip
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v2
         with:

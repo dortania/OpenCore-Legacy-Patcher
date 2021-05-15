@@ -71,7 +71,7 @@ class PatchSysVolume:
                     self.unpatch_root_vol()
             else:
                 print("- Mounting drive as writable")
-                subprocess.run(f"sudo mount -o nobrowse -t apfs /dev/{self.root_mount_path} {self.mount_location}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(["sudo", "mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
@@ -191,7 +191,7 @@ class PatchSysVolume:
         # Perhaps a basic py2 script to run in recovery to restore
         # Ensures no .DS_Stores got in
         print("- Preparing Files")
-        subprocess.run(f"sudo find {self.constants.payload_apple_root_path} -name '.DS_Store' -delete".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "find", self.constants.payload_apple_root_path, "-name", "'.DS_Store'", "-delete"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         if self.model in ModelArray.LegacyGPU or self.constants.assume_legacy is True:
             dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
@@ -215,13 +215,13 @@ class PatchSysVolume:
 
     def unpatch_root_vol(self):
         print("- Reverting to last signed APFS snapshot")
-        subprocess.run(f"sudo bless --mount {self.mount_location} --bootefi --last-sealed-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def rebuild_snapshot(self):
         if self.constants.gui_mode is False:
             input("Press [ENTER] to continue with cache rebuild")
         print("- Rebuilding Kernel Cache (This may take some time)")
-        result = subprocess.run(f"sudo kmutil install --volume-root {self.mount_location} --update-all".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess.run(["sudo", "kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         if result.returncode != 0:
             self.sucess_status = False
@@ -236,11 +236,11 @@ class PatchSysVolume:
             if self.constants.gui_mode is False:
                 input("Press [ENTER] to continue with snapshotting")
             print("- Creating new APFS snapshot")
-            subprocess.run(f"sudo bless --folder {self.mount_location}/System/Library/CoreServices --bootefi --create-snapshot".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
-        subprocess.run(f"sudo diskutil unmount {self.root_mount_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def check_status(self):
         nvram_dump = plistlib.loads(subprocess.run("nvram -x -p".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
