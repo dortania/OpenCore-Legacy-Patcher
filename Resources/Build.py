@@ -541,6 +541,8 @@ class BuildOpenCore:
                 print("- Adding CPU Name Patch")
             if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
                 self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
+        if self.model in ModelArray.AMCSupport:
+            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"wegnoegpu": binascii.unhexlify("01000000")}
 
     def set_smbios(self):
         spoofed_model = self.model
@@ -761,8 +763,10 @@ class BuildOpenCore:
                 zip_file.extractall(self.constants.oc_folder)
             item.unlink()
 
-        for i in self.constants.build_path.rglob("__MACOSX"):
-            shutil.rmtree(i)
+        if self.constants.recovery_status == False:
+            # Crashes in RecoveryOS for unknown reason
+            for i in self.constants.build_path.rglob("__MACOSX"):
+                shutil.rmtree(i)
 
         Path(self.constants.opencore_zip_copied).unlink()
 
@@ -876,7 +880,7 @@ Please build OpenCore first!"""
             " without altering line endings",
         ]
 
-        if self.constants.detected_os > self.constants.yosemite:
+        if self.constants.detected_os > self.constants.yosemite and self.constants.recovery_status == False:
             result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
             result = subprocess.run(f"diskutil mount {disk_identifier}s{response}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)

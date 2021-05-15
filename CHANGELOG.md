@@ -9,6 +9,7 @@
 - Support space in path when downloading Root Patches
 - Enable PanicNoKextDump by default
 - Expand AppleGraphicsPowerManagement and AppleGraphicsDeviceControl Override support
+- Fix MacBookPro8,2/3 Hibernation wake
 
 ## 0.1.4
 - Fix Device Path formatting on 2012+ iMacs

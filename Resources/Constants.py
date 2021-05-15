@@ -78,6 +78,7 @@ class Constants:
         self.custom_color = ""
         self.download_ram = False
         self.disallow_cpufriend = False
+        self.recovery_status = False
 
         # OS Versions
         self.tiger = 8

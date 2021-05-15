@@ -883,6 +883,13 @@ AGDPSupport = [
     "iMac14,3",
 ]
 
+AMCSupport = [
+    "MacBookPro8,2",
+    "MacBookPro8,3",
+    #"MacBookPro9,1",
+    #"MacBookPro10,1"
+]
+
 DeleteNvidiaAccel11 = [
     "AMDRadeonX4000.kext",
     "AMDRadeonX4000HWServices.kext",
@@ -1043,4 +1050,11 @@ DeleteVolumeControl = [
     "AppleVirtualPlatform.kext",
     "ApplePVPanic.kext",
     "AppleVirtIOStorage.kext",
+]
+
+RecoveryIgnore = [
+    "Update",
+    "VM",
+    "Recovery",
+    "Preboot"
 ]

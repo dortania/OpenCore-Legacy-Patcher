@@ -56,6 +56,15 @@ class OpenCoreLegacyPatcher():
                 self.constants.custom_cpu_model = 1
                 self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
 
+        # Check if running in RecoveryOS
+        root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        if root_partition_info["VolumeName"] == "macOS Base System" and \
+            root_partition_info["FilesystemType"] == "apfs" and \
+            root_partition_info["BusProtocol"] == "Disk Image":
+            self.constants.recovery_status = True
+        else:
+            self.constants.recovery_status = False
+
     def hexswap(self, input_hex: str):
         hex_pairs = [input_hex[i:i + 2] for i in range(0, len(input_hex), 2)]
         hex_rev = hex_pairs[::-1]
