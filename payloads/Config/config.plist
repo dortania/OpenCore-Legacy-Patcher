@@ -1113,7 +1113,7 @@
 				<key>RealPath</key>
 				<false/>
 				<key>TextMode</key>
-				<false/>
+				<true/>
 			</dict>
 		</array>
 	</dict>

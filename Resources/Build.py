@@ -58,7 +58,7 @@ class BuildOpenCore:
             Path(self.constants.opencore_zip_copied).unlink()
         if Path(self.constants.opencore_release_folder).exists():
             print("Deleting old copy of OpenCore folder")
-            shutil.rmtree(self.constants.opencore_release_folder, onerror=rmtree_handler)
+            shutil.rmtree(self.constants.opencore_release_folder, onerror=rmtree_handler, ignore_errors=True)
 
         print()
         print(f"- Adding OpenCore v{self.constants.opencore_version} {self.constants.opencore_build}")
@@ -288,26 +288,31 @@ class BuildOpenCore:
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
 
-        agdp_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsDevicePolicy/Info.plist")
-        agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
-        amc_map_path = Path(self.constants.plist_folder_path) / Path("AppleMuxControl/Info.plist")
 
         if self.model == "MacBookPro9,1":
-            print(f"- Adding Display Map Overrides")
+            print("- Adding AppleMuxControl Override")
+            amc_map_path = Path(self.constants.plist_folder_path) / Path("AppleMuxControl/Info.plist")
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
-            Path(self.constants.agdp_kext_folder).mkdir()
-            Path(self.constants.agdp_contents_folder).mkdir()
-            Path(self.constants.agpm_kext_folder).mkdir()
-            Path(self.constants.agpm_contents_folder).mkdir()
             Path(self.constants.amc_kext_folder).mkdir()
             Path(self.constants.amc_contents_folder).mkdir()
-
-            shutil.copy(agdp_map_path, self.constants.agdp_contents_folder)
-            shutil.copy(agpm_map_path, self.constants.agpm_contents_folder)
             shutil.copy(amc_map_path, self.constants.amc_contents_folder)
-            self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
-            self.get_kext_by_bundle_path("AGPM-Override.kext")["Enabled"] = True
             self.get_kext_by_bundle_path("AMC-Override.kext")["Enabled"] = True
+
+        if self.model not in ModelArray.NoAGPMSupport:
+            print("- Adding AppleGraphicsPowerManagement Override")
+            agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
+            Path(self.constants.agpm_kext_folder).mkdir()
+            Path(self.constants.agpm_contents_folder).mkdir()
+            shutil.copy(agpm_map_path, self.constants.agpm_contents_folder)
+            self.get_kext_by_bundle_path("AGPM-Override.kext")["Enabled"] = True
+
+        if self.model in ModelArray.AGDPSupport:
+            print("- Adding AppleGraphicsDevicePolicy Override")
+            agdp_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsDevicePolicy/Info.plist")
+            Path(self.constants.agdp_kext_folder).mkdir()
+            Path(self.constants.agdp_contents_folder).mkdir()
+            shutil.copy(agdp_map_path, self.constants.agdp_contents_folder)
+            self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
 
         # AGPM Patch
         if self.model in ModelArray.DualGPUPatch:
@@ -650,24 +655,22 @@ class BuildOpenCore:
         if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1":
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
-
-            for model_controller in ModelArray.ControllerTypes:
-                model_patch = f"{self.model}{model_controller}"
-                try:
-                    # Avoid erroring out when specific identity not found
-                    map_config["IOKitPersonalities_x86_64"][model_patch]["model"] = self.spoofed_model
-
-                    # Avoid ACPI renaming when not required
-                    if self.constants.serial_settings == "Minimal":
-                        if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "EH01":
-                            map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "EHC1"
-                        if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "EH02":
-                            map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "EHC2"
-                        if map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] == "SHC1":
-                            map_config["IOKitPersonalities_x86_64"][model_patch]["IONameMatch"] = "XHC1"
-
-                except KeyError:
-                    continue
+            # Strip unused USB maps
+            for entry in list(map_config["IOKitPersonalities_x86_64"]):
+                if not entry.startswith(self.model):
+                    map_config["IOKitPersonalities_x86_64"].pop(entry)
+                else:
+                    try:
+                        map_config["IOKitPersonalities_x86_64"][entry]["model"] = self.spoofed_model
+                        if self.constants.serial_settings == "Minimal":
+                            if map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "EH01":
+                                map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] = "EHC1"
+                            if map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "EH02":
+                                map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] = "EHC2"
+                            if map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "SHC1":
+                                map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] = "XHC1"
+                    except KeyError:
+                        continue
             plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
         if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1" and self.constants.disallow_cpufriend is False:
             # Adjust CPU Friend Data to correct SMBIOS
@@ -677,27 +680,25 @@ class BuildOpenCore:
             string_stuff = string_stuff.replace(self.model, self.spoofed_model)
             string_stuff = ast.literal_eval(string_stuff)
             cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"] = string_stuff
-            #cpu_data_config = plistlib.loads(cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"])
-            #print(f'Patching CPUFriend Data to: {cpu_data_config["IOPlatformThermalProfile"]["ConfigArray"][0]["model"]}')
             plistlib.dump(cpu_config, Path(new_cpu_ls).open("wb"), sort_keys=True)
 
 
         if self.model == "MacBookPro9,1":
-            new_agdp_ls = Path(self.constants.agdp_contents_folder) / Path("Info.plist")
-            new_agpm_ls = Path(self.constants.agpm_contents_folder) / Path("Info.plist")
             new_amc_ls = Path(self.constants.amc_contents_folder) / Path("Info.plist")
-
-            agdp_config = plistlib.load(Path(new_agdp_ls).open("rb"))
-            agpm_config = plistlib.load(Path(new_agpm_ls).open("rb"))
             amc_config = plistlib.load(Path(new_amc_ls).open("rb"))
-
-            agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_board] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(self.model)
-            agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board] = agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(self.model)
             amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"][self.spoofed_board] = amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"].pop(self.model)
-
-            plistlib.dump(agdp_config, Path(new_agdp_ls).open("wb"), sort_keys=True)
-            plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
             plistlib.dump(amc_config, Path(new_amc_ls).open("wb"), sort_keys=True)
+        if self.model not in ModelArray.NoAGPMSupport:
+            new_agpm_ls = Path(self.constants.agpm_contents_folder) / Path("Info.plist")
+            agpm_config = plistlib.load(Path(new_agpm_ls).open("rb"))
+            agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board] = agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(self.model)
+            plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
+        if self.model in ModelArray.AGDPSupport:
+            new_agdp_ls = Path(self.constants.agdp_contents_folder) / Path("Info.plist")
+            agdp_config = plistlib.load(Path(new_agdp_ls).open("rb"))
+            agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_board] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(self.model)
+            plistlib.dump(agdp_config, Path(new_agdp_ls).open("wb"), sort_keys=True)
+
 
     @staticmethod
     def get_item_by_kv(iterable, key, value):

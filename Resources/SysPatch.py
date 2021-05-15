@@ -224,14 +224,14 @@ class PatchSysVolume:
         result = subprocess.run(["sudo", "kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         if result.returncode != 0:
-            self.sucess_status = False
+            self.success_status = False
             print("- Unable to build new kernel cache")
             print("\nPlease report this to Github")
             print("Reason for Patch Failure:")
             print(result.stdout.decode())
             print("")
         else:
-            self.sucess_status = True
+            self.success_status = True
             print("- Successfully built new kernel cache")
             if self.constants.gui_mode is False:
                 input("Press [ENTER] to continue with snapshotting")
@@ -329,7 +329,7 @@ class PatchSysVolume:
                     self.find_mount_root_vol(True)
                     self.unmount_drive()
                     print("- Patching complete")
-                    if self.sucess_status is True:
+                    if self.success_status is True:
                         print("\nPlease reboot the machine for patches to take effect")
                     else:
                         print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")

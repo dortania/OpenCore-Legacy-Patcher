@@ -864,6 +864,25 @@ windows_audio = [
     "iMac13,3",
 ]
 
+NoAGPMSupport = [
+    "MacBook4,1",
+    "MacBookPro4,1",
+    "iMac7,1",
+    "iMac8,1",
+    "MacPro3,1",
+    "Xserve2,1"
+]
+
+AGDPSupport = [
+    "MacBookPro9,1",
+    "MacBookPro10,1",
+    "iMac13,1",
+    "iMac13,2",
+    "iMac14,1",
+    "iMac14,2",
+    "iMac14,3",
+]
+
 DeleteNvidiaAccel11 = [
     "AMDRadeonX4000.kext",
     "AMDRadeonX4000HWServices.kext",
