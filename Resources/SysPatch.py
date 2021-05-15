@@ -101,7 +101,7 @@ class PatchSysVolume:
             print(f"- Adding {add_current_kext}")
             subprocess.run(["sudo", "cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             subprocess.run(["sudo", "chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(["sudo", "chmod", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def add_brightness_patch(self):
         print("- Merging legacy Brightness Control Patches")
@@ -109,7 +109,7 @@ class PatchSysVolume:
         self.add_new_binaries(ModelArray.AddBrightness, self.constants.legacy_brightness)
         subprocess.run(["sudo", "ditto", self.constants.payload_apple_private_frameworks_path_brightness, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         subprocess.run(["sudo", "chmod", "-Rf", "755", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(["sudo", "chmod", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_patches_11(self):
         igpu_vendor,igpu_device,igpu_acpi = DeviceProbe.pci_probe().gpu_probe("IGPU")
@@ -171,8 +171,8 @@ class PatchSysVolume:
             subprocess.run(["sudo", "rm", f"{self.mount_lauchd}/HiddHack.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         print("- Adding IOHID-Fixup.plist")
         subprocess.run(["sudo", "ditto", self.constants.payload_apple_lauchd_path_accel, self.mount_lauchd], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(["sudo", "chmod", "-Rf", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(["sudo", "chmod", "-Rf", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["sudo", "chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # PrivateFrameworks
         print("- Merging legacy PrivateFrameworks")

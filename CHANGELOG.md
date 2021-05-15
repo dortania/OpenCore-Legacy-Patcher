@@ -7,6 +7,7 @@
   - Fixes external display support on Nvidia iMac12,x
 - Remove reliance on AppleBacklightFixup
 - Support space in path when downloading Root Patches
+- Enable PanicNoKextDump by default
 
 ## 0.1.4
 - Fix Device Path formatting on 2012+ iMacs
