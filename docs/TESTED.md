@@ -46,7 +46,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro8,1 | ^^ | AvaQueen | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro8,2 | ^^ | air.man | - Stock model, dGPU disabled <br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
-| MacBookPro8,3 | No reports | N/A | N/A |
+| MacBookPro8,3 | ^^ | lulujyc | - Stock model, dGPU disabled <br/>- Patcher version 0.1.4 |
 | MacBookPro9,1 | <span style="color:#30BCD5"> YES </span> | jbdamiano | - Stock model <br/>- Patcher version 0.0.19 |
 | ^^ | ^^ | dennes544 | ^^|
 | ^^ | ^^ | cgrazy | ^^ |
