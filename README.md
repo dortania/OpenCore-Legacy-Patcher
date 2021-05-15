@@ -27,6 +27,8 @@ To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise
 
 * [OpenCore Legacy Patcher's Issue's tab](https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
 
+Nightly builds can be found here courteous of nightly.link: [Nightly OpenCore-Patcher.app](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app/main/OpenCore-Patcher.app.zip)
+
 ## Credits
 
 * [Acidanthera](https://github.com/Acidanthera)
