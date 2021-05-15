@@ -221,7 +221,7 @@ class PatchSysVolume:
         if self.constants.gui_mode is False:
             input("Press [ENTER] to continue with cache rebuild")
         print("- Rebuilding Kernel Cache (This may take some time)")
-        subprocess.run(["sudo", "kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess.run(["sudo", "kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         if result.returncode != 0:
             self.sucess_status = False
