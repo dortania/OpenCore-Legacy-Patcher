@@ -11,6 +11,8 @@
 - Expand AppleGraphicsPowerManagement and AppleGraphicsDeviceControl Override support
 - Fix MacBookPro8,2/3 Brightness Control
   - dGPU must be disabled via NVRAM or deMUXed
+- Increment binaries:
+  - Apple Binaries 478f6a6 (0.0.7 release - 05-16-2021)
 
 ## 0.1.4
 - Fix Device Path formatting on 2012+ iMacs

@@ -39,7 +39,7 @@ class Constants:
         self.nvmefix_version = "1.0.7"
         self.sidecarfixup_version = "1.0.0"
         self.innie_version = "1.3.0"
-        self.payload_version = "0.0.6"
+        self.payload_version = "0.0.7"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
