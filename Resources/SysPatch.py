@@ -51,9 +51,88 @@ class PatchSysVolume:
         else:
             self.sip_patch_status = True
 
+    def recovery_root_mount(self):
+        def human_fmt(num):
+            for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
+                if abs(num) < 1000.0:
+                    return "%3.1f %s" % (num, unit)
+                num /= 1000.0
+            return "%.1f %s" % (num, "EB")
+        print("- Starting Root Volume Picker")
+        # Planned logic:
+        # Load "diskutil list -plist"
+        # Find all APFSVolumes entries where VolumeName is not named Update, VM, Recovery or Preboot
+        # Omit any VolumeName entries containing "- Data"
+        # Parse remianing options for macOS 11.x with /Volumes/$disk/System/Library/CoreServices/SystemVersion.plist
+        # List remaining drives as user options
+        all_disks = {}
+        disks = plistlib.loads(subprocess.run("diskutil list -plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        for disk in disks["AllDisksAndPartitions"]:
+            disk_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            try:
+                all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info["MediaName"], "size": disk_info["TotalSize"], "partitions": {}}
+                for partition in disk["Partitions"]:
+                    partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {partition['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+                    all_disks[disk["DeviceIdentifier"]]["partitions"][partition["DeviceIdentifier"]] = {
+                        "fs": partition_info.get("FilesystemType", partition_info["Content"]),
+                        "type": partition_info["Content"],
+                        "name": partition_info.get("VolumeName", ""),
+                        "size": partition_info["TotalSize"],
+                    }
+            except KeyError:
+                # Avoid crashing with CDs installed
+                continue
+        menu = Utilities.TUIMenu(
+            ["Select Disk"],
+            "Please select the disk you would like to Patch: ",
+            in_between=["Missing disks? Ensure they have a macOS Big Sur install present."],
+            return_number_instead_of_direct_call=True,
+            loop=True,
+        )
+        for disk in all_disks:
+            if not any(all_disks[disk]["partitions"][partition]["fs"] in ("apfs") for partition in all_disks[disk]["partitions"]) and \
+                any(all_disks[disk]["partitions"][partition]["name"] not in (ModelArray.RecoveryIgnore) for partition in all_disks[disk]["partitions"]):
+
+                continue
+            menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({human_fmt(all_disks[disk]['size'])})", key=disk[4:])
+
+        response = menu.start()
+
+        if response == -1:
+            return
+
+        disk_identifier = "disk" + response
+        selected_disk = all_disks[disk_identifier]
+
+        menu = Utilities.TUIMenu(
+            ["Select Partition"],
+            "Please select the partition you would like to install OpenCore to: ",
+            return_number_instead_of_direct_call=True,
+            loop=True,
+            in_between=["Missing disks? Ensure they have a macOS Big Sur install present.", "", "* denotes likely candidate."],
+        )
+        for partition in selected_disk["partitions"]:
+            if selected_disk["partitions"][partition]["fs"] not in ("apfs"):
+                continue
+            text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({human_fmt(selected_disk['partitions'][partition]['size'])})"
+            if selected_disk["partitions"][partition]["type"] not in ModelArray.RecoveryIgnore:
+                text += " *"
+            menu.add_menu_option(text, key=partition[len(disk_identifier) + 1:])
+
+        response = menu.start()
+
+        if response == -1:
+            return
+        else:
+            return f"{disk_identifier}s{response}"
+
     def find_mount_root_vol(self, patch):
-        root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-        self.root_mount_path = root_partition_info["DeviceIdentifier"]
+
+        if self.constants.recovery_status is True:
+            print("- Running RecoveryOS logic")
+        else:
+            root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            self.root_mount_path = root_partition_info["DeviceIdentifier"]
         self.mount_location = "/System/Volumes/Update/mnt1"
         self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
         self.mount_frameworks = f"{self.mount_location}/System/Library/Frameworks"
