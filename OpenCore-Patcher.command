@@ -57,6 +57,9 @@ class OpenCoreLegacyPatcher():
                 self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
 
         # Check if running in RecoveryOS
+        self.check_recovery()
+
+    def check_recovery(self):
         root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         if root_partition_info["VolumeName"] == "macOS Base System" and \
             root_partition_info["FilesystemType"] == "apfs" and \

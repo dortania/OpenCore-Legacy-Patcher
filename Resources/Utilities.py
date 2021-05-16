@@ -3,8 +3,8 @@ from __future__ import print_function
 
 import os
 import math as m
-
-from Resources import Constants
+import plistlib
+import subprocess
 
 def header(lines):
     lines = [i for i in lines if i is not None]
@@ -15,10 +15,18 @@ def header(lines):
         print("#" + " " * left_side + line.strip() + " " * (total_length - len("#" + " " * left_side + line.strip()) - 1) + "#")
     print("#" * total_length)
 
+def check_recovery():
+    root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    if root_partition_info["VolumeName"] == "macOS Base System" and \
+        root_partition_info["FilesystemType"] == "apfs" and \
+        root_partition_info["BusProtocol"] == "Disk Image":
+        return True
+    else:
+        return False
 
 def cls():
     # RecoveryOS doesn't support terminal clearing
-    if Constants.Constants().recovery_status == False:
+    if check_recovery() == False:
         os.system('cls' if os.name == 'nt' else 'clear')
     else:
         # Default terminal window is 24 lines tall
