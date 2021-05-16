@@ -984,7 +984,7 @@ AddAMDAccel11 = [
     "AMDLegacySupport.kext",
     "AMDRadeonVADriver.bundle",
     "AMDRadeonVADriver2.bundle",
-    "AMDRadeonX3000.kext",
+    #"AMDRadeonX3000.kext",
     "AMDRadeonX3000GLDriver.bundle",
     "AMDShared.bundle",
     "AMDSupport.kext",

@@ -127,7 +127,7 @@ class PatchSysVolume:
                 #    print("- Merging legacy Nvidia Kepler Kexts and Bundles")
                 #    self.add_new_binaries(ModelArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
             elif dgpu_vendor == self.constants.pci_amd_ati:
-                if dgpu_device in PCIIDArray.amd_ids().terascale_1_ids:
+                if dgpu_device in PCIIDArray.amd_ids().terascale_1_ids or dgpu_device in PCIIDArray.amd_ids().terascale_2_ids:
                     print("- Merging legacy AMD Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
                     self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
