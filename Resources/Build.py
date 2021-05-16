@@ -541,8 +541,6 @@ class BuildOpenCore:
                 print("- Adding CPU Name Patch")
             if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
                 self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
-        if self.model in ModelArray.AMCSupport:
-            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"wegnoegpu": binascii.unhexlify("01000000")}
 
     def set_smbios(self):
         spoofed_model = self.model

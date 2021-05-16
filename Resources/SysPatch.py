@@ -132,6 +132,21 @@ class PatchSysVolume:
                     self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
                     self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
+                if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
+                    # This is used for MacBookPro8,2/3 where dGPU is disabled via NVRAM and still requires AMD framebuffer
+                    # For reference:
+                    #- deMUX: Don't need the AMD patches
+                    #- dGPUs enabled:  Don't install the AMD patches (Infinite login loop otherwise)
+                    #- dGPUs disabled: Do need the AMD patches (Restores Brightness control)
+                    dgpu_status: str = subprocess.run("nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+                    if dgpu_status.startswith("FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs	%01"):
+                        print("- Detected dGPU is disabled via NVRAM")
+                        print("- Merging legacy AMD Kexts and Bundles")
+                        self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
+                        self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
+                        self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
+                    else:
+                        print("- Cannot install Brightness Control, pleas ensure the dGPU is disabled via NVRAM")
         if igpu_vendor:
             print(f"- Found IGPU: {igpu_vendor}:{igpu_device}")
             if igpu_vendor == self.constants.pci_intel:
