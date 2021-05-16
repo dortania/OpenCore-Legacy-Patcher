@@ -940,11 +940,11 @@ Please build OpenCore first!"""
                 print("- Adding Internal Drive icon")
                 shutil.copy(self.constants.icon_path_internal, mount_path)
             print("- Cleaning install location")
-            if Constants.Constants().recovery_status == False:
+            if self.constants.recovery_status == False:
                 # RecoveryOS doesn't support dot_clean
                 subprocess.run(["dot_clean", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            print("- Unmounting EFI partition")
-            subprocess.run(["diskutil", "umount", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                print("- Unmounting EFI partition")
+                subprocess.run(["diskutil", "umount", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print("- OpenCore transfer complete")
             print("\nPress [Enter] to continue.\n")
             input()
