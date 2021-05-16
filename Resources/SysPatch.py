@@ -130,6 +130,11 @@ class PatchSysVolume:
 
         if self.constants.recovery_status is True:
             print("- Running RecoveryOS logic")
+            self.root_mount_path = self.recovery_root_mount()
+            print(f"- Root Mount Path: {self.root_mount_path}")
+            if not Path(self.mount_location).exists():
+                print("- Creating mnt1 folder")
+                subprocess.run(["mkdir", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         else:
             root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             self.root_mount_path = root_partition_info["DeviceIdentifier"]
