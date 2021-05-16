@@ -150,7 +150,10 @@ class PatchSysVolume:
                     self.unpatch_root_vol()
             else:
                 print("- Mounting drive as writable")
-                subprocess.run(["sudo", "mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                if self.constants.recovery_status is False:
+                    subprocess.run(["sudo", "mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                else:
+                    subprocess.run(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
@@ -167,7 +170,10 @@ class PatchSysVolume:
             delete_path = Path(self.mount_extensions) / Path(delete_current_kext)
             if Path(delete_path).exists():
                 print(f"- Deleting {delete_current_kext}")
-                subprocess.run(["sudo", "rm", "-R", delete_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                if self.constants.recovery_status is False:
+                    subprocess.run(["sudo", "rm", "-R", delete_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                else:
+                    subprocess.run(["rm", "-R", delete_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             else:
                 print(f"- Couldn't find {delete_current_kext}, skipping")
 
@@ -176,19 +182,32 @@ class PatchSysVolume:
             existing_path = Path(self.mount_extensions) / Path(add_current_kext)
             if Path(existing_path).exists():
                 print(f"- Found conflicting kext, Deleting Root Volume's {add_current_kext}")
-                subprocess.run(["sudo", "rm", "-R", existing_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                if self.constants.recovery_status is False:
+                    subprocess.run(["sudo", "rm", "-R", existing_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                else:
+                    subprocess.run(["rm", "-R", existing_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print(f"- Adding {add_current_kext}")
-            subprocess.run(["sudo", "cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(["sudo", "chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(["sudo", "chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            if self.constants.recovery_status is False:
+                subprocess.run(["sudo", "cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(["sudo", "chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(["sudo", "chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            else:
+                subprocess.run(["cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(["chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                subprocess.run(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def add_brightness_patch(self):
         print("- Merging legacy Brightness Control Patches")
         self.delete_old_binaries(ModelArray.DeleteBrightness)
         self.add_new_binaries(ModelArray.AddBrightness, self.constants.legacy_brightness)
-        subprocess.run(["sudo", "ditto", self.constants.payload_apple_private_frameworks_path_brightness, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(["sudo", "chmod", "-Rf", "755", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(["sudo", "chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        if self.constants.recovery_status is False:
+            subprocess.run(["sudo", "ditto", self.constants.payload_apple_private_frameworks_path_brightness, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "chmod", "-Rf", "755", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            subprocess.run(["ditto", self.constants.payload_apple_private_frameworks_path_brightness, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["chmod", "-Rf", "755", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_patches_11(self):
         igpu_vendor,igpu_device,igpu_acpi = DeviceProbe.pci_probe().gpu_probe("IGPU")
@@ -239,7 +258,10 @@ class PatchSysVolume:
 
         # Frameworks
         print("- Merging legacy Frameworks")
-        subprocess.run(["sudo", "ditto", self.constants.payload_apple_frameworks_path_accel, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        if self.constants.recovery_status is False:
+            subprocess.run(["sudo", "ditto", self.constants.payload_apple_frameworks_path_accel, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            subprocess.run(["ditto", self.constants.payload_apple_frameworks_path_accel, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         if self.model in ModelArray.LegacyBrightness:
             self.add_brightness_patch()
@@ -247,16 +269,26 @@ class PatchSysVolume:
         # LaunchDaemons
         if Path(self.mount_lauchd / Path("HiddHack.plist")).exists():
             print("- Removing legacy HiddHack")
-            subprocess.run(["sudo", "rm", f"{self.mount_lauchd}/HiddHack.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            if self.constants.recovery_status is False:
+                subprocess.run(["sudo", "rm", f"{self.mount_lauchd}/HiddHack.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            else:
+                subprocess.run(["rm", f"{self.mount_lauchd}/HiddHack.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         print("- Adding IOHID-Fixup.plist")
-        subprocess.run(["sudo", "ditto", self.constants.payload_apple_lauchd_path_accel, self.mount_lauchd], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(["sudo", "chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        subprocess.run(["sudo", "chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        if self.constants.recovery_status is False:
+            subprocess.run(["sudo", "ditto", self.constants.payload_apple_lauchd_path_accel, self.mount_lauchd], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            subprocess.run(["ditto", self.constants.payload_apple_lauchd_path_accel, self.mount_lauchd], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         # PrivateFrameworks
         print("- Merging legacy PrivateFrameworks")
-        subprocess.run(["sudo", "ditto", self.constants.payload_apple_private_frameworks_path_accel, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
+        if self.constants.recovery_status is False:
+            subprocess.run(["sudo", "ditto", self.constants.payload_apple_private_frameworks_path_accel, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            subprocess.run(["ditto", self.constants.payload_apple_private_frameworks_path_accel, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         # Sets AppKit to Catalina Window Drawing codepath
         # Disabled upon ASentientBot request
         #print("- Enabling NSDefenestratorModeEnabled")
@@ -270,7 +302,10 @@ class PatchSysVolume:
         # Perhaps a basic py2 script to run in recovery to restore
         # Ensures no .DS_Stores got in
         print("- Preparing Files")
-        subprocess.run(["sudo", "find", self.constants.payload_apple_root_path, "-name", "'.DS_Store'", "-delete"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        if self.constants.recovery_status is False:
+            subprocess.run(["sudo", "find", self.constants.payload_apple_root_path, "-name", "'.DS_Store'", "-delete"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            subprocess.run(["find", self.constants.payload_apple_root_path, "-name", "'.DS_Store'", "-delete"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         if self.model in ModelArray.LegacyGPU or self.constants.assume_legacy is True:
             dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
@@ -294,13 +329,19 @@ class PatchSysVolume:
 
     def unpatch_root_vol(self):
         print("- Reverting to last signed APFS snapshot")
-        subprocess.run(["sudo", "bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        if self.constants.recovery_status is False:
+            subprocess.run(["sudo", "bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            subprocess.run(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def rebuild_snapshot(self):
         if self.constants.gui_mode is False:
             input("Press [ENTER] to continue with cache rebuild")
         print("- Rebuilding Kernel Cache (This may take some time)")
-        result = subprocess.run(["sudo", "kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if self.constants.recovery_status is False:
+            result = subprocess.run(["sudo", "kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        else:
+            result = subprocess.run(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         if result.returncode != 0:
             self.success_status = False
@@ -315,11 +356,17 @@ class PatchSysVolume:
             if self.constants.gui_mode is False:
                 input("Press [ENTER] to continue with snapshotting")
             print("- Creating new APFS snapshot")
-            subprocess.run(["sudo", "bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            if self.constants.recovery_status is False:
+                subprocess.run(["sudo", "bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            else:
+                subprocess.run(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
-        subprocess.run(["sudo", "diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        if self.constants.recovery_status is False:
+            subprocess.run(["sudo", "diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            subprocess.run(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def check_status(self):
         nvram_dump = plistlib.loads(subprocess.run("nvram -x -p".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -338,11 +385,13 @@ class PatchSysVolume:
         else:
             self.smb_status = False
         self.fv_status = True
-        self.fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-        if self.fv_status.startswith("FileVault is Off"):
-            self.fv_status = False
+        if self.constants.recovery_status == False:
+            self.fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+            if self.fv_status.startswith("FileVault is Off"):
+                self.fv_status = False
         else:
-            self.fv_status = True
+            # Assume FileVault is off for Recovery purposes
+            self.fv_status = False
         self.sip_patch_status = True
         self.csr_decode(self.sip_status, False)
 
