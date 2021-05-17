@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.1.6
+
 ## 0.1.5
 - Fix crashing when Wireless module not present
 - Add iMac10,1 default dGPU pathing
