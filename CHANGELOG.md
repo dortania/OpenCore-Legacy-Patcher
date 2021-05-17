@@ -13,6 +13,7 @@
   - dGPU must be disabled via NVRAM or deMUXed
 - Increment binaries:
   - Apple Binaries 478f6a6 (0.0.7 release - 05-16-2021)
+- Add SeedUtil option to Advanced Patcher Settings
 
 ## 0.1.4
 - Fix Device Path formatting on 2012+ iMacs

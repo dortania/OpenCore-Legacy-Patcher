@@ -1,6 +1,7 @@
 # Handle misc CLI menu options
 # Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 from __future__ import print_function
+import subprocess
 
 from Resources import ModelArray, Constants, Utilities
 
@@ -378,3 +379,33 @@ hardware
             self.constants.disallow_cpufriend = False
         else:
             print("Invalid option")
+
+    def set_seedutil(self):
+        Utilities.cls()
+        Utilities.header(["Set SeedUtil Status"])
+        print("""Used for setting OS Update Preferences
+
+Valid options:
+1. Public Release Seed (Default)
+2. Public Beta Seed
+3. Developer Beta Seed
+4. Check SeedUtil's current status
+        """)
+
+        change_menu = input("Set update status(Press [ENTER] to exit): ")
+        if change_menu == "1":
+            subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "unenroll"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        elif change_menu == "2":
+            subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "unenroll"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "enroll", "PublicSeed"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        elif change_menu == "3":
+            subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "unenroll"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "enroll", "DeveloperSeed"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        elif change_menu == "4":
+            result = subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "current"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = [i.partition(":")[2] for i in result.stdout.decode().split("\n") if "Currently enrolled in" in i][0]
+            print(f"SeedUtil Current Status: {result}")
+            input("\nPress [ENTER] to continue")
+            self.set_seedutil()
+        else:
+            print("Returning to main menu")
