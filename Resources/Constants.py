@@ -111,6 +111,7 @@ class Constants:
         self.classcode_wifi = "00800200"
         self.classcode_gpu = "00000300"
         self.classcode_gpu_variant = "00800300"
+        self.classcode_xhci = "30030C00"
 
         # Nvidia GPU Architecture
         self.arch_tesla = "NV50"
@@ -138,6 +139,8 @@ class Constants:
     def nvme_driver_path(self): return self.payload_path / Path("Drivers/NvmExpressDxe.efi")
     @property
     def exfat_legacy_driver_path(self): return self.payload_path / Path("Drivers/ExFatDxeLegacy.efi")
+    @property
+    def xhci_driver_path(self): return self.payload_path / Path("Drivers/XhciDxe.efi")
 
     # Kexts
     @property

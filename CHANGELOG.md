@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.1.6
+- Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers
+  - Allows for Boot Support from OpenCore' Picker
 
 ## 0.1.5
 - Fix crashing when Wireless module not present
