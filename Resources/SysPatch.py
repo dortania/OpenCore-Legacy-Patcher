@@ -174,6 +174,10 @@ class PatchSysVolume:
             else:
                 if self.constants.recovery_status is True:
                     print("- Mounting drive as writable in Recovery")
+                    
+                    umount_drive = plistlib.loads(subprocess.run(f"diskutil info -plist {self.root_mount_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+                    umount_drive = umount_drive["VolumeName"]
+                    self.elevated(["umount", f'/Volumes/{umount_drive}'], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                     self.elevated(["mount", "-t", "apfs", "-rw", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 else:
                     print("- Mounting drive as writable in OS")
