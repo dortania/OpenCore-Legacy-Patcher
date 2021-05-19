@@ -172,8 +172,12 @@ class PatchSysVolume:
                     self.unpatch_root_vol()
                     return True
             else:
-                print("- Mounting drive as writable")
-                self.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                if self.constants.recovery_status is True:
+                    print("- Mounting drive as writable in Recovery")
+                    self.elevated(["mount", "-t", "apfs", "-rw", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                else:
+                    print("- Mounting drive as writable in OS")
+                    self.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
