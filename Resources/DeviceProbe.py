@@ -6,7 +6,7 @@ import binascii
 import plistlib
 import subprocess
 
-from Resources import Constants
+from Resources import Constants, Utilities
 
 class pci_probe:
     def __init__(self):
