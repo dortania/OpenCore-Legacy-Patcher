@@ -26,7 +26,9 @@ class PatchSysVolume:
 
         # TODO: Put this in a better place
         if self.constants.recovery_status is True:
-            self.mount_location = self.constants.payload_mnt1_path
+            if not Path("/Volumes/mnt1").exists:
+                Path("/Volumes/mnt1").mkdir()
+            self.mount_location = "/Volumes/mnt1"
         else:
             self.mount_location = "/System/Volumes/Update/mnt1"
         self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
