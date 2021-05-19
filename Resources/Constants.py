@@ -126,7 +126,11 @@ class Constants:
     def opencore_zip_source(self): return self.payload_path / Path(f"OpenCore/OpenCore-{self.opencore_build}.zip")
     @property
     def plist_template(self): return self.payload_path / Path(f"Config/config.plist")
-
+    
+    # Mount Location
+    @property
+    def payload_mnt1_path(self): return self.payload_path / Path("mnt1")
+    
     # ACPI
     @property
     def pci_ssdt_path(self): return self.payload_path / Path("ACPI/SSDT-CPBG.aml")
