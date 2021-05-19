@@ -50,7 +50,7 @@ class PatchSysVolume:
                 print(f"- {current_sip_bit}\t {temp}")
             i = i + 1
 
-        self.sip_patch_status = all(
+        self.sip_needs_change = all(
             self.constants.csr_values[i]
             for i in [
                 "CSR_ALLOW_UNTRUSTED_KEXTS",
@@ -63,6 +63,10 @@ class PatchSysVolume:
                 "CSR_ALLOW_UNAUTHENTICATED_ROOT",
             ]
         )
+        if sip_needs_change is True:
+            self.sip_patch_status = False
+        else:
+            self.sip_patch_status = True
 
     def recovery_root_mount(self):
         def human_fmt(num):
@@ -433,7 +437,7 @@ class PatchSysVolume:
         else:
             self.check_status()
             Utilities.cls()
-            if True or (self.sip_patch_status is False) and (self.smb_status is False):
+            if (self.sip_patch_status is False) and (self.smb_status is False):
                 print("- Detected SIP and SecureBootModel are disabled, continuing")
                 if self.constants.gui_mode is False:
                     input("\nPress [ENTER] to continue")
