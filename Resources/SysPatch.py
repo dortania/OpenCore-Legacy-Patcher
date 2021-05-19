@@ -35,7 +35,7 @@ class PatchSysVolume:
         if os.getuid() == 0:
             return subprocess.run(*args, **kwargs)
         else:
-            return subprocess.run(["sudo"] + args[0] + args[1:], **kwargs)
+            return subprocess.run(["sudo"] + [args[0][0]] + args[0][1:], **kwargs)
 
     def csr_decode(self, print_status):
         sip_int = int.from_bytes(self.sip_status, byteorder="little")
