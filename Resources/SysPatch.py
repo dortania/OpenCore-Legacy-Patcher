@@ -161,8 +161,10 @@ class PatchSysVolume:
                 print("- Root Volume is already mounted")
                 if patch is True:
                     self.patch_root_vol()
+                    return True
                 else:
                     self.unpatch_root_vol()
+                    return True
             else:
                 print("- Mounting drive as writable")
                 self.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
@@ -170,8 +172,10 @@ class PatchSysVolume:
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
                         self.patch_root_vol()
+                        return True
                     else:
                         self.unpatch_root_vol()
+                        return True
                 else:
                     print("- Failed to mount the Root Volume")
         else:
