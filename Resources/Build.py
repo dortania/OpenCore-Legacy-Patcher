@@ -213,7 +213,7 @@ class BuildOpenCore:
             wifi_vendor,wifi_device,wifi_ioname,wifi_acpi = DeviceProbe.pci_probe().wifi_probe()
             if wifi_vendor:
                 print(f"- Found Wireless Device {wifi_vendor}:{wifi_device} ({wifi_ioname})")
-                self.config["#Revision"]["Hardware-Wifi"] = f"{wifi_vendor}:{wifi_device} ({wifi_ioname}"
+                self.config["#Revision"]["Hardware-Wifi"] = f"{wifi_vendor}:{wifi_device} ({wifi_ioname})"
         else:
             wifi_vendor = ""
             print("- Unable to run Wireless hardware detection")
