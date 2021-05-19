@@ -151,9 +151,10 @@ class PatchSysVolume:
             if not self.root_mount_path:
                 return
             print(f"- Root Mount Path: {self.root_mount_path}")
-            if not Path(self.mount_location).exists():
+            if not Path(self.constants.payload_mnt1_path).exists():
                 print("- Creating mnt1 folder")
-                subprocess.run(["mkdir", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                Path(self.constants.payload_mnt1_path).mkdir()
+            self.mount_location = self.constants.payload_mnt1_path
         else:
             root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             self.root_mount_path = root_partition_info["DeviceIdentifier"]
