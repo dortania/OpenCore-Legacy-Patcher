@@ -238,7 +238,7 @@ B. Exit
 
             response = menu.start()
 
-        if getattr(sys, "frozen", False):
+        if getattr(sys, "frozen", False) and self.constants.recovery_status is False:
             subprocess.run("""osascript -e 'tell application "Terminal" to close first window' & exit""", shell=True)
 
 
