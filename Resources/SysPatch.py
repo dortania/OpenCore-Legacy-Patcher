@@ -160,7 +160,8 @@ class PatchSysVolume:
             self.root_mount_path = root_partition_info["DeviceIdentifier"]
 
         if self.root_mount_path.startswith("disk"):
-            self.root_mount_path = self.root_mount_path[:-2] if self.root_mount_path.count("s") > 1 else self.root_mount_path
+            if self.constants.recovery_status is False:
+                self.root_mount_path = self.root_mount_path[:-2] if self.root_mount_path.count("s") > 1 else self.root_mount_path
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
