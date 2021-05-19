@@ -25,7 +25,10 @@ class PatchSysVolume:
         self.sip_status = None
 
         # TODO: Put this in a better place
-        self.mount_location = "/System/Volumes/Update/mnt1"
+        if self.constants.recovery_status is True:
+            self.mount_location = self.constants.payload_mnt1_path
+        else:
+            self.mount_location = "/System/Volumes/Update/mnt1"
         self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
         self.mount_frameworks = f"{self.mount_location}/System/Library/Frameworks"
         self.mount_lauchd = f"{self.mount_location}/System/Library/LaunchDaemons"
@@ -154,7 +157,6 @@ class PatchSysVolume:
             if not Path(self.constants.payload_mnt1_path).exists():
                 print("- Creating mnt1 folder")
                 Path(self.constants.payload_mnt1_path).mkdir()
-            self.mount_location = self.constants.payload_mnt1_path
         else:
             root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             self.root_mount_path = root_partition_info["DeviceIdentifier"]
