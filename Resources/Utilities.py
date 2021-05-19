@@ -34,7 +34,8 @@ def check_recovery():
 
 def cls():
     # We only support macOS, so
-    print("\u001Bc")
+    #print("\u001Bc")
+    pass
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]
