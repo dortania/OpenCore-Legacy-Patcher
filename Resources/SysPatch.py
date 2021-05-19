@@ -27,7 +27,7 @@ class PatchSysVolume:
         # TODO: Put this in a better place
         if self.constants.recovery_status is True:
             if not Path("/Volumes/mnt1").exists:
-                Path("/Volumes/mnt1").mkdir()
+                self.elevated(["mkdir", "/Volumes/mnt1"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             self.mount_location = "/Volumes/mnt1"
         else:
             self.mount_location = "/System/Volumes/Update/mnt1"
