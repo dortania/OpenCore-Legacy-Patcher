@@ -12,12 +12,6 @@ class pci_probe:
     def __init__(self):
         self.constants = Constants.Constants()
 
-    def hexswap(self, input_hex: str):
-        hex_pairs = [input_hex[i:i + 2] for i in range(0, len(input_hex), 2)]
-        hex_rev = hex_pairs[::-1]
-        hex_str = "".join(["".join(x) for x in hex_rev])
-        return hex_str.upper()
-
     # Converts given device IDs to DeviceProperty pathing, requires ACPI pathing as DeviceProperties shouldn't be used otherwise
     def deviceproperty_probe(self, vendor_id, device_id, acpi_path):
         gfxutil_output: str = subprocess.run([self.constants.gfxutil_path] + f"-v".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
@@ -55,8 +49,8 @@ class pci_probe:
     def gpu_probe(self, gpu_type):
         try:
             devices = plistlib.loads(subprocess.run(f"ioreg -r -n {gpu_type} -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            vendor_id = self.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
-            device_id = self.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
+            vendor_id = Utilities.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
+            device_id = Utilities.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
             try:
                 acpi_path = devices[0]["acpi-path"]
                 acpi_path = self.acpi_strip(acpi_path)
@@ -69,14 +63,14 @@ class pci_probe:
             return "", "", ""
         except IndexError:
             print(f"- No IOService entry found for {gpu_type} (I)")
-            return "", "", "", ""
+            return "", "", ""
 
     def wifi_probe(self):
         devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         try:
             devices = [i for i in devices if i["class-code"] == binascii.unhexlify(self.constants.classcode_wifi)]
-            vendor_id = self.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
-            device_id = self.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
+            vendor_id = Utilities.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
+            device_id = Utilities.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
             ioname = devices[0]["IOName"]
             try:
                 acpi_path = devices[0]["acpi-path"]

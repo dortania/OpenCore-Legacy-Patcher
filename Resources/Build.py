@@ -35,12 +35,6 @@ class BuildOpenCore:
         self.config = None
         self.constants: Constants.Constants = versions
 
-    def hexswap(self, input_hex: str):
-        hex_pairs = [input_hex[i:i + 2] for i in range(0, len(input_hex), 2)]
-        hex_rev = hex_pairs[::-1]
-        hex_str = "".join(["".join(x) for x in hex_rev])
-        return hex_str.upper()
-
     def build_efi(self):
         Utilities.cls()
         if not self.constants.custom_model:
@@ -119,8 +113,8 @@ class BuildOpenCore:
             try:
                 x = 1
                 for i in storage_devices:
-                    storage_vendor = self.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
-                    storage_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
+                    storage_vendor = Utilities.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
+                    storage_device = Utilities.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
                     print(f'- Fixing PCIe Storage Controller ({x}) reporting')
                     try:
                         storage_path = [line.strip().split("= ", 1)[1] for line in storage_path_gfx.split("\n") if f'{storage_vendor}:{storage_device}'.lower() in line.strip()][0]
@@ -141,8 +135,8 @@ class BuildOpenCore:
             try:
                 x = 1
                 for i in nvme_devices:
-                    nvme_vendor = self.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
-                    nvme_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
+                    nvme_vendor = Utilities.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
+                    nvme_device = Utilities.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
                     print(f'- Found 3rd Party NVMe SSD ({x}): {nvme_vendor}:{nvme_device}')
                     nvme_aspm = i["pci-aspm-default"]
                     try:
@@ -435,8 +429,8 @@ class BuildOpenCore:
                 try:
                     x = 1
                     for i in mp_dgpu_devices:
-                        mp_dgpu_vendor = self.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
-                        mp_dgpu_device = self.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
+                        mp_dgpu_vendor = Utilities.hexswap(binascii.hexlify(i["vendor-id"]).decode()[:4])
+                        mp_dgpu_device = Utilities.hexswap(binascii.hexlify(i["device-id"]).decode()[:4])
 
                         print(f'- Found dGPU ({x}): {mp_dgpu_vendor}:{mp_dgpu_device}')
                         self.config["#Revision"][f"Hardware-MacPro-dGPU-{x}"] = f'{mp_dgpu_vendor}:{mp_dgpu_device}'

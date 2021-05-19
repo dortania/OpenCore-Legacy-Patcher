@@ -335,18 +335,18 @@ class Constants:
     def skylight_path(self): return self.payload_apple_private_frameworks_path_accel / Path("SkyLight.framework")
 
     csr_values = {
-        "CSR_ALLOW_UNTRUSTED_KEXTS           ": False,  # 0x1   - Introduced in El Capitan
-        "CSR_ALLOW_UNRESTRICTED_FS           ": False,  # 0x2   - Introduced in El Capitan
-        "CSR_ALLOW_TASK_FOR_PID              ": False,  # 0x4   - Introduced in El Capitan
-        "CSR_ALLOW_KERNEL_DEBUGGER           ": False,  # 0x8   - Introduced in El Capitan
-        "CSR_ALLOW_APPLE_INTERNAL            ": False,  # 0x10  - Introduced in El Capitan
-        "CSR_ALLOW_UNRESTRICTED_DTRACE       ": False,  # 0x20  - Introduced in El Capitan
-        "CSR_ALLOW_UNRESTRICTED_NVRAM        ": False,  # 0x40  - Introduced in El Capitan
-        "CSR_ALLOW_DEVICE_CONFIGURATION      ": False,  # 0x80  - Introduced in El Capitan
-        "CSR_ALLOW_ANY_RECOVERY_OS           ": False,  # 0x100 - Introduced in Sierra
-        "CSR_ALLOW_UNAPPROVED_KEXTS          ": False,  # 0x200 - Introduced in High Sierra
-        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE": False,  # 0x400 - Introduced in Mojave
-        "CSR_ALLOW_UNAUTHENTICATED_ROOT      ": False,  # 0x800 - Introduced in Big Sur
+        "CSR_ALLOW_UNTRUSTED_KEXTS":            False,  # 0x1   - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_UNRESTRICTED_FS":            False,  # 0x2   - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_TASK_FOR_PID":               False,  # 0x4   - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_KERNEL_DEBUGGER":            False,  # 0x8   - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_APPLE_INTERNAL":             False,  # 0x10  - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_UNRESTRICTED_DTRACE":        False,  # 0x20  - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_UNRESTRICTED_NVRAM":         False,  # 0x40  - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_DEVICE_CONFIGURATION":       False,  # 0x80  - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_ANY_RECOVERY_OS":            False,  # 0x100 - Introduced in Sierra      # noqa: E241
+        "CSR_ALLOW_UNAPPROVED_KEXTS":           False,  # 0x200 - Introduced in High Sierra # noqa: E241
+        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE": False,  # 0x400 - Introduced in Mojave      # noqa: E241
+        "CSR_ALLOW_UNAUTHENTICATED_ROOT":       False,  # 0x800 - Introduced in Big Sur     # noqa: E241
     }
 
     sbm_values = [
