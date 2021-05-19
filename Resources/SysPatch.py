@@ -49,8 +49,8 @@ class PatchSysVolume:
             if print_status is True:
                 print(f"- {current_sip_bit}\t {temp}")
             i = i + 1
-
-        self.sip_needs_change = all(
+        
+        sip_needs_change = all(
             self.constants.csr_values[i]
             for i in [
                 "CSR_ALLOW_UNTRUSTED_KEXTS",
