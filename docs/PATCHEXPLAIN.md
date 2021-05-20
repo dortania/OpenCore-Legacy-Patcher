@@ -233,6 +233,8 @@ Note, GPU Acceleration Patches are not public yet, the below section is simply d
   * GeForceTeslaVADriver.bundle
   * NVDANV50HalTesla.kext
   * NVDAResmanTesla.kext
+     * 0x1ea59a - 0x1ea5b3: nop 
+     * Replace VSLGestalt to IOLockLock or any other known symbol of the same length. 
 
 * AMD/ATI Binaries
   * AMD2400Controller.kext
@@ -271,6 +273,8 @@ Note, GPU Acceleration Patches are not public yet, the below section is simply d
   * AppleIntelHD3000GraphicsGLDriver.bundle
   * AppleIntelHD3000GraphicsVADriver.bundle
   * AppleIntelSNBGraphicsFB.kext
+    * Board ID Patch
+	  * Replace original Board ID with updated model
   * AppleIntelSNBVA.bundle
 
 ### Frameworks
