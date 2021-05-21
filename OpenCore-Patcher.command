@@ -68,12 +68,6 @@ class OpenCoreLegacyPatcher():
         else:
             self.constants.recovery_status = False
 
-    def hexswap(self, input_hex: str):
-        hex_pairs = [input_hex[i:i + 2] for i in range(0, len(input_hex), 2)]
-        hex_rev = hex_pairs[::-1]
-        hex_str = "".join(["".join(x) for x in hex_rev])
-        return hex_str.upper()
-
     def build_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
 
