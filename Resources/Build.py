@@ -475,8 +475,8 @@ class BuildOpenCore:
             devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             try:
                 devices = [i for i in devices if i["class-code"] == binascii.unhexlify(self.constants.classcode_xhci)]
-                vendor_id = self.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
-                device_id = self.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
+                vendor_id = Utilities.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
+                device_id = Utilities.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
                 print("- Found XHCI Controller, adding Boot Support")
                 shutil.copy(self.constants.xhci_driver_path, self.constants.drivers_path)
                 self.config["UEFI"]["Drivers"] += ["XhciDxe.efi"]
