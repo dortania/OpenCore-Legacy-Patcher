@@ -489,7 +489,7 @@ class BuildOpenCore:
         print("- Adding OpenCanopy GUI")
         shutil.rmtree(self.constants.resources_path, onerror=rmtree_handler)
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
-        self.config["UEFI"]["Drivers"] = ["OpenCanopy.efi", "OpenRuntime.efi"]
+        self.config["UEFI"]["Drivers"] += ["OpenCanopy.efi", "OpenRuntime.efi"]
         # Exfat check
         if self.model in ModelArray.NoExFat:
             print("- Adding ExFatDxeLegacy.efi")

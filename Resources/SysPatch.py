@@ -36,7 +36,7 @@ class PatchSysVolume:
         self.mount_lauchd = f"{self.mount_location}/System/Library/LaunchDaemons"
         self.mount_private_frameworks = f"{self.mount_location}/System/Library/PrivateFrameworks"
 
-    def elevated(self, *args, **kwargs) -> subprocess.CompletedProcess[Any]:
+    def elevated(self, *args, **kwargs) -> subprocess.CompletedProcess([Any], returncode=0):
         if os.getuid() == 0:
             return subprocess.run(*args, **kwargs)
         else:
@@ -54,7 +54,7 @@ class PatchSysVolume:
             if print_status is True:
                 print(f"- {current_sip_bit}\t {temp}")
             i = i + 1
-        
+
         sip_needs_change = all(
             self.constants.csr_values[i]
             for i in [
@@ -178,7 +178,7 @@ class PatchSysVolume:
             else:
                 if self.constants.recovery_status is True:
                     print("- Mounting drive as writable in Recovery")
-                    
+
                     umount_drive = plistlib.loads(subprocess.run(f"diskutil info -plist {self.root_mount_path}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
                     umount_drive = umount_drive["VolumeName"]
                     self.elevated(["umount", f'/Volumes/{umount_drive}'], stdout=subprocess.PIPE).stdout.decode().strip().encode()
