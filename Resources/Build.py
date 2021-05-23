@@ -499,7 +499,7 @@ class BuildOpenCore:
         # Add UGA to GOP layer
         if self.model in ModelArray.UGAtoGOP:
             print("- Adding UGA to GOP Patch")
-            self.config["UEFI"]["Output"]["GopPassThrough"] = True
+            self.config["UEFI"]["Output"]["GopPassThrough"] = "Apple"
 
         # ThirdPartDrives Check
         if self.model not in ModelArray.NoSATAPatch:

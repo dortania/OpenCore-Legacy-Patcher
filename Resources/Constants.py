@@ -10,8 +10,8 @@ from pathlib import Path
 class Constants:
     def __init__(self):
         self.patcher_version = "0.1.6"
-        self.opencore_commit = "65cc81b - 05-03-2021"
-        self.opencore_version = "0.6.9"
+        self.opencore_commit = "4e0ff2d - 05-23-2021"
+        self.opencore_version = "0.7.0"
         self.lilu_version = "1.5.3"
         self.whatevergreen_version = "1.4.9"
         self.airportbcrmfixup_version = "2.1.2"
@@ -127,11 +127,11 @@ class Constants:
     def opencore_zip_source(self): return self.payload_path / Path(f"OpenCore/OpenCore-{self.opencore_build}.zip")
     @property
     def plist_template(self): return self.payload_path / Path(f"Config/config.plist")
-    
+
     # Mount Location
     @property
     def payload_mnt1_path(self): return self.payload_path / Path("mnt1")
-    
+
     # ACPI
     @property
     def pci_ssdt_path(self): return self.payload_path / Path("ACPI/SSDT-CPBG.aml")

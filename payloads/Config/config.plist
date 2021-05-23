@@ -975,6 +975,8 @@
 			<true/>
 			<key>PowerTimeoutKernelPanic</key>
 			<false/>
+			<key>ProvideCurrentCpuInfo</key>
+			<false/>
 			<key>SetApfsTrimTimeout</key>
 			<integer>-1</integer>
 			<key>ThirdPartyDrives</key>
@@ -1015,7 +1017,7 @@
 			<key>PickerMode</key>
 			<string>External</string>
 			<key>PickerVariant</key>
-			<string>Modern</string>
+			<string>Acidanthera\GoldenGate</string>
 			<key>PollAppleHotKeys</key>
 			<true/>
 			<key>ShowPicker</key>
@@ -1090,6 +1092,8 @@
 				<string>BootKicker.efi</string>
 				<key>Enabled</key>
 				<true/>
+				<key>Flavour</key>
+				<string>Auto</string>
 				<key>Path</key>
 				<string>BootKicker.efi</string>
 				<key>RealPath</key>
@@ -1106,6 +1110,8 @@
 				<string>OpenShell.efi</string>
 				<key>Comment</key>
 				<string>OpenShell.efi</string>
+				<key>Flavour</key>
+				<string>OpenShell:UEFIShell:Shell</string>
 				<key>Enabled</key>
 				<true/>
 				<key>Path</key>
@@ -1642,7 +1648,7 @@
 			<key>ForceResolution</key>
 			<false/>
 			<key>GopPassThrough</key>
-			<false/>
+			<string>Disabled</string>
 			<key>IgnoreTextInGraphics</key>
 			<false/>
 			<key>ProvideConsoleGop</key>
@@ -1668,6 +1674,8 @@
 			<true/>
 			<key>AppleDebugLog</key>
 			<true/>
+			<key>AppleEg2Info</key>
+			<false/>
 			<key>AppleFramebufferInfo</key>
 			<false/>
 			<key>AppleImageConversion</key>

@@ -3,6 +3,9 @@
 ## 0.1.6
 - Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers
   - Allows for Boot Support from OpenCore' Picker
+- Fix UEFI output on MacPro3,1 with PC GPUs
+- Increment binaries:
+  - OpenCore 4e0ff2d (0.7.0 rolling - 05-23-2021)
 
 ## 0.1.5
 - Fix crashing when Wireless module not present
