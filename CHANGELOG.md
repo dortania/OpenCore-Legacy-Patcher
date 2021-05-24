@@ -6,6 +6,9 @@
 - Fix UEFI output on MacPro3,1 with PC GPUs
 - Increment binaries:
   - OpenCore 4e0ff2d (0.7.0 rolling - 05-23-2021)
+  - Apple Binaries 59a52a3 (0.0.8 release - 05-24-2021)
+- Allow legacy macOS Booting
+- Fix Photos app distortion on legacy GPUs
 
 ## 0.1.5
 - Fix crashing when Wireless module not present
