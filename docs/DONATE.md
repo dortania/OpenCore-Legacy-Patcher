@@ -11,13 +11,13 @@ Main sections of help we'd appreciate:
 * Donating any spare SATA SSDs
   * Having extra SSDs on hand allows us to quickly and easily test specific builds of macOS without having to wipe drives and reinstall as much
 * Aiding by buying items in our Amazon Wishlist
-  * Currently we have a few members within Dortania testing so we recommend messaging the email listed below to see which member at the time would something purchased the most 
-  
+  * Currently we have a few members within Dortania testing so we recommend messaging the email listed below to see which member at the time would require something purchased the most
+
 Additionally, hardware info dumps are greatly beneficial for us to determine what patches a machine might need:
 
 * [IORegistryExplorer](https://github.com/khronokernel/IORegistryClone/blob/master/ioreg-210.zip?raw=true)
   * `File -> SaveAs` and open an issue on Github
-  * Note: We want IOReg dumps of hardware not running on OpenCore, instead running a clean, supported OS
+  * Note: We want IOReg dumps of hardware not running on OpenCore, instead running a clean, officially supported OS by the machine
 
 If you have any legacy hardware you're willing to donate or what to buy us something, please contact us at the following email:
 
@@ -29,7 +29,7 @@ Current hardware we own:
 | :--- | :--- | :--- | :--- | :--- |
 | MacBook7,1 | Penryn | GT320M | Dhinak | N/A |
 | MacBook7,1 | Penryn | GT320M | Mykola | N/A |
-| MacBookPro8,1 | Sandy Bridge | HD 3000 | Mykola | N/A |
 | MacBookPro5,3 | Penryn | 9400M + 9600M | Dhinak | Display's partially broken |
 | Macmini4,1 | Penryn | GT320M | Dhinak | N/A |
 | iMac11,2 | Clarksdale | HD4670 | Mykola | N/A |
+| MacPro3,1 | Penryn | HD5770, RX570, GT710 | Mykola | N/A |
