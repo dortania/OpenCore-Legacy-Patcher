@@ -716,7 +716,7 @@ class broadcom_ids:
         "4320", # BCM4306 - never used by Apple
         "4324", # BCM4309 - never used by Apple
         "4325", # BCM4306 - never used by Apple
-        "4328", # BCM94328
+        "4328", # BCM4328
         "432C", # BCM4322 - never used by Apple
         "432D", # BCM4322 - never used by Apple
     ]

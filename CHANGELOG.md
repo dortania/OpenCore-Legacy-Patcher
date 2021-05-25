@@ -9,6 +9,7 @@
   - Apple Binaries 59a52a3 (0.0.8 release - 05-24-2021)
 - Allow legacy macOS Booting
 - Fix Photos app distortion on legacy GPUs
+- Fix device tree renaming on Mac Pros and Xserves
 
 ## 0.1.5
 - Fix crashing when Wireless module not present

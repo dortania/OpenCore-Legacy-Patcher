@@ -440,10 +440,10 @@ class BuildOpenCore:
                             print(f"- Found dGPU ({x}) at {mp_dgpu_path}")
                             if mp_dgpu_vendor == self.constants.pci_amd_ati:
                                 print("- Adding Mac Pro, Xserve DRM patches")
-                                self.config["DeviceProperties"]["Add"][mp_dgpu_path] = {"shikigva": 128, "unfairgva": 1, "wegtree": 1}
+                                self.config["DeviceProperties"]["Add"][mp_dgpu_path] = {"shikigva": 128, "unfairgva": 1, "rebuild-device-tree": 1}
                             elif mp_dgpu_vendor == self.constants.pci_nvidia:
                                 print("- Enabling Nvidia Output Patch")
-                                self.config["DeviceProperties"]["Add"][mp_dgpu_path] = {"wegtree": 1}
+                                self.config["DeviceProperties"]["Add"][mp_dgpu_path] = {"rebuild-device-tree": 1}
                                 self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
                                 self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
