@@ -238,6 +238,7 @@ class PatchSysVolume:
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+                    self.added_kexts = True
                 # TODO: Enable below code if macOS 12 drops support
                 # elif dgpu_device in PCIIDArray.nvidia_ids().kepler_ids and self.constants.detected_os > self.constants.big_sur:
                 #    print("- Merging legacy Nvidia Kepler Kexts and Bundles")
@@ -248,6 +249,7 @@ class PatchSysVolume:
                     self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
                     self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
+                    self.added_kexts = True
                 if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
                     # This is used for MacBookPro8,2/3 where dGPU is disabled via NVRAM and still requires AMD framebuffer
                     # For reference:
@@ -261,6 +263,7 @@ class PatchSysVolume:
                         self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
                         self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                         self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
+                        self.added_kexts = True
                     else:
                         print("- Cannot install Brightness Control, pleas ensure the dGPU is disabled via NVRAM")
         if igpu_vendor:
@@ -271,11 +274,13 @@ class PatchSysVolume:
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
+                    self.added_kexts = True
                 elif igpu_device in PCIIDArray.intel_ids().sandy_ids:
                     print("- Merging legacy Intel 2nd Gen Kexts and Bundles")
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
+                    self.added_kexts = True
 
                 # TODO: Enable below code if macOS 12 drops support
                 # elif igpu_device in PCIIDArray.intel_ids().ivy_ids:
@@ -288,30 +293,34 @@ class PatchSysVolume:
                     self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
                     self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
                     self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+                    self.added_kexts = True
 
-        # Frameworks
-        print("- Merging legacy Frameworks")
-        self.elevated(["ditto", self.constants.payload_apple_frameworks_path_accel, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        if self.added_kexts == True:
+            # Frameworks
+            print("- Merging legacy Frameworks")
+            self.elevated(["ditto", self.constants.payload_apple_frameworks_path_accel, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-        if self.model in ModelArray.LegacyBrightness:
-            self.add_brightness_patch()
+            if self.model in ModelArray.LegacyBrightness:
+                self.add_brightness_patch()
 
-        # LaunchDaemons
-        if Path(self.mount_lauchd / Path("HiddHack.plist")).exists():
-            print("- Removing legacy HiddHack")
-            self.elevated(["rm", f"{self.mount_lauchd}/HiddHack.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        print("- Adding IOHID-Fixup.plist")
-        self.elevated(["ditto", self.constants.payload_apple_lauchd_path_accel, self.mount_lauchd], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        self.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        self.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            # LaunchDaemons
+            if Path(self.mount_lauchd / Path("HiddHack.plist")).exists():
+                print("- Removing legacy HiddHack")
+                self.elevated(["rm", f"{self.mount_lauchd}/HiddHack.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            print("- Adding IOHID-Fixup.plist")
+            self.elevated(["ditto", self.constants.payload_apple_lauchd_path_accel, self.mount_lauchd], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            self.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            self.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-        # PrivateFrameworks
-        print("- Merging legacy PrivateFrameworks")
-        self.elevated(["ditto", self.constants.payload_apple_private_frameworks_path_accel, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        # Sets AppKit to Catalina Window Drawing codepath
-        # Disabled upon ASentientBot request
-        # print("- Enabling NSDefenestratorModeEnabled")
-        # subprocess.run("defaults write -g NSDefenestratorModeEnabled -bool true".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            # PrivateFrameworks
+            print("- Merging legacy PrivateFrameworks")
+            self.elevated(["ditto", self.constants.payload_apple_private_frameworks_path_accel, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            # Sets AppKit to Catalina Window Drawing codepath
+            # Disabled upon ASentientBot request
+            # print("- Enabling NSDefenestratorModeEnabled")
+            # subprocess.run("defaults write -g NSDefenestratorModeEnabled -bool true".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            print("- No Acceleration Kexts were installed, skipping remaining acceleration patches")
 
     def patch_root_vol(self):
         print(f"- Detecting patches for {self.model}")
