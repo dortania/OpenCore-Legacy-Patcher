@@ -17,7 +17,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 
 ### MacBook Air
 
-| SMBIOS | Year | Supported | Comment |
+| SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
 | MacBookAir2,1 | No reports | N/A | N/A |
 | MacBookAir3,1 | ^^ | ^^ | ^^ |
@@ -106,7 +106,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
-| MacPro3,1 | <span style="color:#30BCD5"> YES </span> | christiann | - Upgraded with RX 560 and BCM94322<br/>- Stock Bluetooth card removed<br/>- Patcher version 0.0.21 |
+| MacPro3,1 | <span style="color:#30BCD5"> YES </span> | MykolaG | - Upgraded with RX 470 and BCM94360CD<br/>- Stock Bluetooth card removed<br/>- Patcher version 0.1.6 |
+| ^^ | ^^ | christiann | - Upgraded with RX 560 and BCM94322<br/>- Stock Bluetooth card removed<br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | gw463 | - Upgraded GTX 680<br/>- Upgraded BCM94360<br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | AlexSakha67 | - Upgraded R9 280<br/>- Patcher version 0.0.20 |
 | ^^ | ^^ | nekton1 | - Upgraded GTX 680<br/>- Patcher version 0.0.20 |
