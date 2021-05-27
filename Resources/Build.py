@@ -35,6 +35,42 @@ class BuildOpenCore:
         self.config = None
         self.constants: Constants.Constants = versions
 
+    def smbios_set(self):
+        if self.model in ModelArray.MacBookAir61:
+            print("- Spoofing to MacBookAir6,1")
+            return "MacBookAir6,1"
+        elif self.model in ModelArray.MacBookAir62:
+            print("- Spoofing to MacBookAir6,2")
+            return "MacBookAir6,2"
+        elif self.model in ModelArray.MacBookPro111:
+            print("- Spoofing to MacBookPro11,1")
+            return "MacBookPro11,1"
+        elif self.model in ModelArray.MacBookPro113:
+            print("- Spoofing to MacBookPro11,3")
+            return "MacBookPro11,3"
+        elif self.model in ModelArray.Macmini71:
+            print("- Spoofing to Macmini7,1")
+            return "Macmini7,1"
+        elif self.model in ModelArray.iMacPro11:
+            print("- Spoofing to iMacPro1,1")
+            return "iMacPro1,1"
+        elif self.model in ModelArray.iMac151:
+            # Check for upgraded GPUs on iMacs
+            if self.constants.drm_support is True:
+                print("- Spoofing to iMacPro1,1")
+                return "iMacPro1,1"
+            else:
+                print("- Spoofing to iMac15,1")
+                return "iMac15,1"
+        elif self.model in ModelArray.iMac144:
+            print("- Spoofing to iMac14,4")
+            return "iMac14,4"
+        elif self.model in ModelArray.MacPro71:
+            print("- Spoofing to MacPro7,1")
+            return "MacPro7,1"
+        else:
+            return self.model
+
     def build_efi(self):
         Utilities.cls()
         if not self.constants.custom_model:
@@ -283,30 +319,31 @@ class BuildOpenCore:
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
 
 
-        if self.model == "MacBookPro9,1":
-            print("- Adding AppleMuxControl Override")
-            amc_map_path = Path(self.constants.plist_folder_path) / Path("AppleMuxControl/Info.plist")
-            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
-            Path(self.constants.amc_kext_folder).mkdir()
-            Path(self.constants.amc_contents_folder).mkdir()
-            shutil.copy(amc_map_path, self.constants.amc_contents_folder)
-            self.get_kext_by_bundle_path("AMC-Override.kext")["Enabled"] = True
+        if self.constants.allow_oc_everywhere is False:
+            if self.model == "MacBookPro9,1":
+                print("- Adding AppleMuxControl Override")
+                amc_map_path = Path(self.constants.plist_folder_path) / Path("AppleMuxControl/Info.plist")
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
+                Path(self.constants.amc_kext_folder).mkdir()
+                Path(self.constants.amc_contents_folder).mkdir()
+                shutil.copy(amc_map_path, self.constants.amc_contents_folder)
+                self.get_kext_by_bundle_path("AMC-Override.kext")["Enabled"] = True
 
-        if self.model not in ModelArray.NoAGPMSupport:
-            print("- Adding AppleGraphicsPowerManagement Override")
-            agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
-            Path(self.constants.agpm_kext_folder).mkdir()
-            Path(self.constants.agpm_contents_folder).mkdir()
-            shutil.copy(agpm_map_path, self.constants.agpm_contents_folder)
-            self.get_kext_by_bundle_path("AGPM-Override.kext")["Enabled"] = True
+            if self.model not in ModelArray.NoAGPMSupport:
+                print("- Adding AppleGraphicsPowerManagement Override")
+                agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
+                Path(self.constants.agpm_kext_folder).mkdir()
+                Path(self.constants.agpm_contents_folder).mkdir()
+                shutil.copy(agpm_map_path, self.constants.agpm_contents_folder)
+                self.get_kext_by_bundle_path("AGPM-Override.kext")["Enabled"] = True
 
-        if self.model in ModelArray.AGDPSupport:
-            print("- Adding AppleGraphicsDevicePolicy Override")
-            agdp_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsDevicePolicy/Info.plist")
-            Path(self.constants.agdp_kext_folder).mkdir()
-            Path(self.constants.agdp_contents_folder).mkdir()
-            shutil.copy(agdp_map_path, self.constants.agdp_contents_folder)
-            self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
+            if self.model in ModelArray.AGDPSupport:
+                print("- Adding AppleGraphicsDevicePolicy Override")
+                agdp_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsDevicePolicy/Info.plist")
+                Path(self.constants.agdp_kext_folder).mkdir()
+                Path(self.constants.agdp_contents_folder).mkdir()
+                shutil.copy(agdp_map_path, self.constants.agdp_contents_folder)
+                self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
 
         # AGPM Patch
         if self.model in ModelArray.DualGPUPatch:
@@ -502,7 +539,7 @@ class BuildOpenCore:
             self.config["UEFI"]["Output"]["GopPassThrough"] = "Apple"
 
         # ThirdPartDrives Check
-        if self.model not in ModelArray.NoSATAPatch:
+        if self.model not in ModelArray.NoSATAPatch and self.constants.allow_oc_everywhere is False:
             print("- Adding SATA Hibernation Patch")
             self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
 
@@ -553,51 +590,14 @@ class BuildOpenCore:
 
     def set_smbios(self):
         spoofed_model = self.model
-        # TODO: Set check as global variable
-        if self.model in ModelArray.MacBookAir61:
-            print("- Spoofing to MacBookAir6,1")
-            spoofed_model = "MacBookAir6,1"
-            spoofed_board = "Mac-35C1E88140C3E6CF"
-        elif self.model in ModelArray.MacBookAir62:
-            print("- Spoofing to MacBookAir6,2")
-            spoofed_model = "MacBookAir6,2"
-            spoofed_board = "Mac-7DF21CB3ED6977E5"
-        elif self.model in ModelArray.MacBookPro111:
-            print("- Spoofing to MacBookPro11,1")
-            spoofed_model = "MacBookPro11,1"
-            spoofed_board = "Mac-189A3D4F975D5FFC"
-        elif self.model in ModelArray.MacBookPro113:
-            print("- Spoofing to MacBookPro11,3")
-            spoofed_model = "MacBookPro11,3"
-            spoofed_board = "Mac-2BD1B31983FE1663"
-        elif self.model in ModelArray.Macmini71:
-            print("- Spoofing to Macmini7,1")
-            spoofed_model = "Macmini7,1"
-            spoofed_board = "Mac-35C5E08120C7EEAF"
-        elif self.model in ModelArray.iMacPro11:
-            print("- Spoofing to iMacPro1,1")
-            spoofed_model = "iMacPro1,1"
-            spoofed_board = "Mac-7BA5B2D9E42DDD94"
-        elif self.model in ModelArray.iMac151:
-            # Check for upgraded GPUs on iMacs
-            if self.constants.drm_support is True:
-                print("- Spoofing to iMacPro1,1")
-                spoofed_model = "iMacPro1,1"
-                spoofed_board = "Mac-7BA5B2D9E42DDD94"
-            else:
-                print("- Spoofing to iMac15,1")
-                spoofed_model = "iMac15,1"
-                spoofed_board = "Mac-42FD25EABCABB274"
-        elif self.model in ModelArray.iMac144:
-            print("- Spoofing to iMac14,4")
-            spoofed_model = "iMac14,4"
-            spoofed_board = "Mac-81E3E92DD6088272"
-        elif self.model in ModelArray.MacPro71:
-            print("- Spoofing to MacPro7,1")
-            spoofed_model = "MacPro7,1"
-            spoofed_board = "Mac-27AD2F918AE68F61"
+        if self.constants.override_smbios == "Default":
+            spoofed_model = self.smbios_set()
         else:
-            spoofed_model = self.model
+            spoofed_model = self.constants.override_smbios
+        try:
+            spoofed_board = self.constants.board_id[spoofed_model]
+            print(f"- Using Board ID: {spoofed_board}")
+        except KeyError:
             spoofed_board = ""
         self.spoofed_model = spoofed_model
         self.spoofed_board = spoofed_board
@@ -692,21 +692,22 @@ class BuildOpenCore:
             plistlib.dump(cpu_config, Path(new_cpu_ls).open("wb"), sort_keys=True)
 
 
-        if self.model == "MacBookPro9,1":
-            new_amc_ls = Path(self.constants.amc_contents_folder) / Path("Info.plist")
-            amc_config = plistlib.load(Path(new_amc_ls).open("rb"))
-            amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"][self.spoofed_board] = amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"].pop(self.model)
-            plistlib.dump(amc_config, Path(new_amc_ls).open("wb"), sort_keys=True)
-        if self.model not in ModelArray.NoAGPMSupport:
-            new_agpm_ls = Path(self.constants.agpm_contents_folder) / Path("Info.plist")
-            agpm_config = plistlib.load(Path(new_agpm_ls).open("rb"))
-            agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board] = agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(self.model)
-            plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
-        if self.model in ModelArray.AGDPSupport:
-            new_agdp_ls = Path(self.constants.agdp_contents_folder) / Path("Info.plist")
-            agdp_config = plistlib.load(Path(new_agdp_ls).open("rb"))
-            agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_board] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(self.model)
-            plistlib.dump(agdp_config, Path(new_agdp_ls).open("wb"), sort_keys=True)
+        if self.constants.allow_oc_everywhere is False:
+            if self.model == "MacBookPro9,1":
+                new_amc_ls = Path(self.constants.amc_contents_folder) / Path("Info.plist")
+                amc_config = plistlib.load(Path(new_amc_ls).open("rb"))
+                amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"][self.spoofed_board] = amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"].pop(self.model)
+                plistlib.dump(amc_config, Path(new_amc_ls).open("wb"), sort_keys=True)
+            if self.model not in ModelArray.NoAGPMSupport:
+                new_agpm_ls = Path(self.constants.agpm_contents_folder) / Path("Info.plist")
+                agpm_config = plistlib.load(Path(new_agpm_ls).open("rb"))
+                agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board] = agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(self.model)
+                plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
+            if self.model in ModelArray.AGDPSupport:
+                new_agdp_ls = Path(self.constants.agdp_contents_folder) / Path("Info.plist")
+                agdp_config = plistlib.load(Path(new_agdp_ls).open("rb"))
+                agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_board] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(self.model)
+                plistlib.dump(agdp_config, Path(new_agdp_ls).open("wb"), sort_keys=True)
 
 
     @staticmethod
@@ -949,7 +950,8 @@ Please build OpenCore first!"""
             print("- Cleaning install location")
             if self.constants.recovery_status == False:
                 # RecoveryOS doesn't support dot_clean
-                subprocess.run(["dot_clean", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                # Remove dot_clean, requires full disk access
+                #subprocess.run(["dot_clean", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 print("- Unmounting EFI partition")
                 subprocess.run(["diskutil", "umount", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print("- OpenCore transfer complete")

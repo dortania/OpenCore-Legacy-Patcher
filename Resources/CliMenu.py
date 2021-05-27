@@ -409,3 +409,32 @@ Valid options:
             self.set_seedutil()
         else:
             print("Returning to main menu")
+
+    def set_smbios(self):
+        Utilities.cls()
+        Utilities.header(["Override SMBIOS Spoof"])
+        print("""Change model OpenCore spoofs Mac too
+
+Valid options:
+1. Default set by OpenCore (Default)
+2. User Override
+3. Disable all spoofing (unsupported configuration)
+        """)
+
+        change_menu = input("Set SMBIOS status: ")
+        if change_menu == "1":
+            print("Setting SMBIOS spoof to default mode")
+            self.constants.override_smbios = "Default"
+        elif change_menu == "2":
+            custom_smbios = input("Set new SMBIOS mode: ")
+            try:
+                test = self.constants.board_id[custom_smbios]
+                self.constants.override_smbios = custom_smbios
+            except KeyError:
+                print("Unsupported SMBIOS, defaulting to Default setting")
+                self.constants.override_smbios = "Default"
+        elif change_menu == "3":
+            print("Disabling SMBIOS spoof")
+            self.constants.override_smbios = self.constants.custom_model or self.current_model
+        else:
+            print("Returning to main menu")

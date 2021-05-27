@@ -135,6 +135,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Assume Legacy GPU:\t\t\tCurrently {self.constants.assume_legacy}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).force_accel_setting],
                 #[f"Download more RAM:\t\t\tCurrently {self.constants.download_ram}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).download_more_ram_dot_com],
                 [f"Disable CPU Friend:\t\t\tCurrently {self.constants.disallow_cpufriend}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).disable_cpufriend],
+                [f"Override SMBIOS Spoof:\t\tCurrently {self.constants.override_smbios}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).set_smbios],
                 [f"Set Custom name {self.constants.custom_cpu_model_value}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).custom_cpu],
                 [f"Set SeedUtil Status", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).set_seedutil],
             ]
