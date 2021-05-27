@@ -100,11 +100,12 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
   * Reason: Fixes DRM support on models with upgraded AMD Metal GPUs
   * Logic: Adds args to NVRAM
   * Models: Models with upgraded AMD Metal GPUs
+
 ### UEFI -> ProtocolOverrides
 
 * GopPassThrough
   * Reason: Used for proper output on machines with UGA firmware but GOP GPU
-  * Logic: Provide GOP protocol instances on top of UGA protocol instances 
+  * Logic: Provide GOP protocol instances on top of UGA protocol instances
   * Models: MacPro3,1, MacBook4,1 iMac7,1-8,1
   
 :::
@@ -191,7 +192,6 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
   * Models: All models require
 :::
 
-
 ## On-Disk Patches
 
 Unfortunately certain on-disk patches are required to achieve full functionality. Below is a breakdown of patches supported
@@ -226,15 +226,15 @@ Note, GPU Acceleration Patches are not public yet, the below section is simply d
   * GeForceGA.bundle
   * GeForceTesla.kext
     * Skip IOFree Panic - Mojave+
-	  * At Offset `0x5CF9A` replace following bytes with `0xEB`
+      * At Offset `0x5CF9A` replace following bytes with `0xEB`
     * Avoids `addMemoryRegion/removeMemoryRegion` calls
       * At Offset `0x5527` and `0x77993`, replace following bytes with `0x909090909090`
   * GeForceTeslaGLDriver.bundle
   * GeForceTeslaVADriver.bundle
   * NVDANV50HalTesla.kext
   * NVDAResmanTesla.kext
-     * 0x1ea59a - 0x1ea5b3: nop 
-     * Replace VSLGestalt to IOLockLock or any other known symbol of the same length. 
+    * 0x1ea59a - 0x1ea5b3: nop
+    * Replace VSLGestalt to IOLockLock or any other known symbol of the same length.
 
 * AMD/ATI Binaries
   * AMD2400Controller.kext
@@ -274,7 +274,7 @@ Note, GPU Acceleration Patches are not public yet, the below section is simply d
   * AppleIntelHD3000GraphicsVADriver.bundle
   * AppleIntelSNBGraphicsFB.kext
     * Board ID Patch
-	  * Replace original Board ID with updated model
+      * Replace original Board ID with updated model
   * AppleIntelSNBVA.bundle
 
 ### Frameworks

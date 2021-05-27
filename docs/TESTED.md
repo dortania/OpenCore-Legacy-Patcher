@@ -2,7 +2,6 @@
 
 To aid users in troubleshooting, we've compiled a list of users who've reported success with OpenCore Legacy patcher as well as the version used. This should aid users in verifying whether issues with the patcher are regression-related with newer versions.
 
-
 ### MacBook
 
 | SMBIOS | Tested | Tester | Comment |

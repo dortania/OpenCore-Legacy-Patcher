@@ -18,7 +18,7 @@ For those who wish to support this patcher, please see the [Supporting the Patch
 Since this patcher tricks macOS into thinking you're running a newer Mac, certain functionality may be broken:
 
 * Boot Camp Assistant.app
-  * We recommend following our [guide on getting a UEFI Windows Install working](). Legacy MBR Based installs won't show up in OpenCore
+  * We recommend following our [guide on getting a UEFI Windows Install working](./WINDOWS.md). Legacy MBR Based installs won't show up in OpenCore
 
 ## How do I get started?
 

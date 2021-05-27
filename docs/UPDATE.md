@@ -1,4 +1,4 @@
-# Updating OpenCore and Co.
+# Updating OpenCore and Co
 
 With OpenCore Legacy Patcher, generally there's very little reason for users to update the OpenCore installed on their machine unless you feel there's a benefit with new versions for your setup.
 

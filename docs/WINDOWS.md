@@ -75,7 +75,7 @@ Once done, lets reboot into OpenCore's Menu and you'll see a new Windows' entry:
 
 ![](../images/oc-windows.png)
 
-From there, install Windows as normal and you'll get a new BootCamp entry in OpenCore's picker when done! 
+From there, install Windows as normal and you'll get a new BootCamp entry in OpenCore's picker when done!
 
 * Don't forget to run BootCamp's utilities installer as well to ensure Wifi and such are functioning correctly. This can be downloaded from the BootCamp Assistant app in macOS
 

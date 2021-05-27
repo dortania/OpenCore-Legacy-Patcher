@@ -2,11 +2,9 @@
 
 For users who want to customize your setup to be more personal, OpenCore does allow for custom icons and images in the boot picker.
 
-
 * [Custom OpenCore icons](#custom-opencore-icons)
 * [Custom Mac Boot Picker icons](#custom-mac-boot-picker-icons)
 * [Installing updated icons](#installing-updated-icons)
-
 
 # Custom OpenCore icons
 
@@ -32,7 +30,6 @@ To generate custom OpenCore icons, you'll need the following:
   
 Note, for each image we recommend having one of double the size. This ensures that icons are scaled correctly since .icns support dedicated images depending on HiDPI or not.
 
-
 Once you have a custom image you want to use(for example, as a background), download the [latest release of OpenCorePkg](https://github.com/acidanthera/OpenCorePkg/releases) and enter the `Utilities/icnspack/` folder:
 
 ![](../images/icnspack-folder.png)
@@ -42,6 +39,7 @@ Now `cd` this folder in terminal and run the following:
 ```sh
 ./icnspack Background.icns <insert_x1_image> <insert_x2_image>
 ```
+
 Once done, you'll see your custom icon generated in `icnspack`'s folder:
 
 ![](../images/icnspack-done.png)
@@ -54,7 +52,7 @@ To generate legacy icons, you'll need the following:
 
 * A machine running macOS 10.4 through 10.11
 * Icon Composer.app (Requires Apple Developer Account for official download)
-  * Users without the developer account can find a mirrors here: 
+  * Users without the developer account can find a mirrors here:
     * [Icon Composer 10.6](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/docs/Icon-Composer-10.6.zip)
     * [Icon Composer 10.11](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/docs/Icon-Composer-10.11.zip)
 * PNG Image you wish to convert

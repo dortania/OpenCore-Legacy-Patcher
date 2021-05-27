@@ -8,9 +8,9 @@ With OpenCore Legacy Patcher, we include an extra binary called [OCLP-CLI](https
   * **--model xxxx**: override default model detection
     * ex. **--model iMac11,2**
   * **--metal_gpu xxxx**: override default GPU detection (ie. Nvidia, AMD)
-    * **--metal_gpu Nvidia** 
+    * **--metal_gpu Nvidia**
   * **--smbios_spoof xxxx**: set spoofing mode, defaults to Minimal if no arg provided (ie. Minimal, Moderate, Advanced)
-    * ex. **--smbios_spoof Moderate** 
+    * ex. **--smbios_spoof Moderate**
   * **--verbose**: enable verbose booting
   * **--debug_oc**: enable debug OpenCore
   * **--debug_kext**: enable debug kexts

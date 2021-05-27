@@ -126,7 +126,6 @@ Regarding OS support, see below:
 | MacPro4,1 | Early 2009 | ^^ | <span style="color:green"> Everything is supported as long as GPU is Metal capable </span> |
 | MacPro5,1 | Mid-2010, Mid-2012 | ^^ | ^^ |
 
-
 ### Xserve
 
 | SMBIOS | Year | Supported | Comment |
