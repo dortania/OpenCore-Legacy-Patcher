@@ -1,6 +1,8 @@
+<p align="center">
+          <img src="images/OC-Patcher.png" alt="OpenCore patcher logo" width="256" />
+</p>
+                                                     
 # OpenCore Legacy Patcher
-
-<img src="images/OC-Patcher.png" width="256">
 
 A python program for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on both legacy and modern Macs, see our in-depth [Guide](https://dortania.github.io/OpenCore-Legacy-Patcher/) for more information.
 
