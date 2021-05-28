@@ -495,7 +495,6 @@ class Constants:
         "MacPro3,1": "Mac-F42C88C8",
         "MacPro4,1": "Mac-F221BEC8",
         "MacPro5,1": "Mac-F221BEC8",
-        "MacPro5,1": "Mac-F221BEC8",
         "MacPro6,1": "Mac-F60DEB81FF30ACF6",
         "MacPro7,1": "Mac-27AD2F918AE68F61",
         "Xserve1,1": "Mac-F4208AC8",
