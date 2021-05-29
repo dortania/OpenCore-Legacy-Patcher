@@ -80,6 +80,7 @@ class Constants:
         self.disallow_cpufriend = False
         self.recovery_status = False
         self.override_smbios = "Default"
+        self.apecid_support = False
 
         # OS Versions
         self.tiger = 8
