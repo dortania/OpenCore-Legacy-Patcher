@@ -59,7 +59,7 @@ Currently OpenCore Legacy Patcher doesn't have support for the TeraScale 2 serie
 The best way to achieve this is to boot Recovery (or Single User Mode if the dGPU refuses to function at all) and run the following command:
 
 ```sh
-nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%01%00%00%00
+nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00
 ```
 
 This will disable the dGPU and allow graphics acceleration in Big Sur. Note that external display outputs are directly routed to the dGPU and therefore can no longer be used. Solutions such as a [DisplayLink Adapters](https://www.displaylink.com/products/usb-adapters) can work around this limitation.
