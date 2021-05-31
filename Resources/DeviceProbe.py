@@ -86,3 +86,21 @@ class pci_probe:
         except IndexError:
             print(f"- No IOService entry found for Wireless Card (I)")
             return "", "", "", ""
+
+class smbios_probe:
+    def model_detect(self, custom):
+        opencore_model: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        if not opencore_model.startswith("nvram: Error getting variable") and custom is False:
+            current_model = [line.strip().split(":oem-product	", 1)[1] for line in opencore_model.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
+        else:
+            current_model = plistlib.loads(subprocess.run("system_profiler -detailLevel mini -xml SPHardwareDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.strip())[0]["_items"][0]["machine_model"]
+        return current_model
+
+    def board_detect(self, custom):
+        opencore_model: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-board".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        if not opencore_model.startswith("nvram: Error getting variable") and custom is False:
+            current_model = [line.strip().split(":oem-board	", 1)[1] for line in opencore_model.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
+        else:
+            current_model = plistlib.loads(subprocess.run(f"ioreg -p IODeviceTree -r -n / -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            current_model = current_model[0]["board-id"]
+        return current_model

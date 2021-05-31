@@ -12,6 +12,8 @@
 - Fix device tree renaming on Mac Pros and Xserves
 - Ensure no Acceleration Patches applied when no compatible GPU found
 - Allow custom SMBIOS overriding
+- Fix incorrectly setting CPU override for non-Minimal SMBIOS spoofs
+- Support Minimal SMBIOS spoofing on El Capitan era Macs
 
 ## 0.1.5
 - Fix crashing when Wireless module not present

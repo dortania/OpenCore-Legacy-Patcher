@@ -15,15 +15,8 @@ class OpenCoreLegacyPatcher():
     def __init__(self):
         self.constants = Constants.Constants()
         self.current_model: str = None
-        opencore_model: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-        if not opencore_model.startswith("nvram: Error getting variable"):
-            opencore_model = [line.strip().split(":oem-product	", 1)[1] for line in opencore_model.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
-            self.current_model = opencore_model
-        else:
-            self.current_model = plistlib.loads(subprocess.run("system_profiler -detailLevel mini -xml SPHardwareDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.strip())[0]["_items"][0]["machine_model"]
+        self.current_model = DeviceProbe.smbios_probe().model_detect(False)
         self.constants.detected_os = int(platform.uname().release.partition(".")[0])
-        if self.current_model in ModelArray.NoAPFSsupport:
-            self.constants.serial_settings = "Moderate"
         if self.current_model in ModelArray.LegacyGPU:
             dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
 
@@ -91,8 +84,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             if print_models in {"y", "Y", "yes", "Yes"}:
                 print("\n".join(ModelArray.SupportedSMBIOS))
                 input("Press any key to continue...")
-        if self.constants.custom_model in ModelArray.NoAPFSsupport:
-            self.constants.serial_settings = "Moderate"
 
     def patcher_settings(self):
         response = None

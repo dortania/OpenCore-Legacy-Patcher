@@ -72,6 +72,36 @@ class BuildOpenCore:
         else:
             return self.model
 
+    def fw_feature_detect(self, model):
+        # Flip bit 19 to enable APFS support
+        # https://github.com/acidanthera/OpenCorePkg/blob/0.6.9/Include/Apple/IndustryStandard/AppleFeatures.h#L136
+        if model == "iMac7,1":
+            fw_feature = 3221230599
+            fw_mask = 3221233663
+        elif model in ["MacPro4,1", "Xserve3,1"]:
+            fw_feature = 3758224695
+            fw_mask = 3221487415
+        else:
+            fw_feature = 3221230595
+            fw_mask = 3221241855
+
+        #print(f"- Detected FirmwareFeature value: {fw_feature}")
+        fw_feature |= 2**19
+        fw_mask |= 2**19
+        #print(f"- Updated FirmwareFeatures value: {fw_feature}")
+        # Allow for easy usage in config.plist
+        fw_feature = hex(fw_feature)
+        fw_feature = fw_feature.replace("0x", "")
+        fw_feature = Utilities.hexswap(fw_feature)
+        fw_feature = binascii.unhexlify(fw_feature)
+
+        fw_mask = hex(fw_mask)
+        fw_mask = fw_mask.replace("0x", "")
+        fw_mask = Utilities.hexswap(fw_mask)
+        fw_mask = binascii.unhexlify(fw_mask)
+
+        return fw_feature, fw_mask
+
     def build_efi(self):
         Utilities.cls()
         if not self.constants.custom_model:
@@ -613,7 +643,13 @@ class BuildOpenCore:
         # Setup menu
         def minimal_serial_patch(self):
             if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
-                self.config["PlatformInfo"]["PlatformNVRAM"]["ProcessorType"] = 1537
+                self.config["PlatformInfo"]["SMBIOS"]["ProcessorType"] = 1537
+            if self.model in ModelArray.NoAPFSsupport:
+                fw_feature,fw_mask = self.fw_feature_detect(self.model)
+                self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeatures"] = fw_feature
+                self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeatures"] = fw_feature
+                self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeaturesMask"] = fw_mask
+                self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeaturesMask"] = fw_mask
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
             self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
             self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
