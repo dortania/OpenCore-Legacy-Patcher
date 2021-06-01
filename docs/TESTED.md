@@ -20,8 +20,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | :--- | :--- | :--- | :--- |
 | MacBookAir2,1 | No reports | N/A | N/A |
 | MacBookAir3,1 | ^^ | ^^ | ^^ |
-| MacBookAir3,2 | ^^ | ^^ | ^^ |
-| MacBookAir4,1 | ^^ | ^^ | ^^ |
+| MacBookAir3,2 | <span style="color:#30BCD5"> YES </span> | houser42 | - Stock model <br/>- Patcher version unknown |
+| MacBookAir4,1 | No reports | N/A | N/A |
 | MacBookAir4,2 | ^^ | ^^ | ^^ |
 | MacBookAir5,1 | <span style="color:#30BCD5"> YES </span> | Ausdauersportler | - Stock Model<br/>- Patcher version 0.0.9 |
 | ^^ | ^^ | webg3 | Stock Model |
