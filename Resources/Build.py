@@ -9,7 +9,6 @@ import subprocess
 import uuid
 import zipfile
 import ast
-import secrets
 from pathlib import Path
 from datetime import date
 
@@ -603,11 +602,6 @@ class BuildOpenCore:
                 print("- Adding CPU Name Patch")
             if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
                 self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
-        if self.constants.apecid_support is True:
-            print("- Generating ApECID value")
-            apecid = secrets.randbits(64)
-            print(f"- Setting ApECID: {apecid}")
-            self.config["Misc"]["Security"]["ApECID"] = int(apecid)
 
     def set_smbios(self):
         spoofed_model = self.model
