@@ -14,6 +14,7 @@
 - Allow custom SMBIOS overriding
 - Fix incorrectly setting CPU override for non-Minimal SMBIOS spoofs
 - Support Minimal SMBIOS spoofing on El Capitan era Macs
+- Fix GPU Switching on MacBookPro6,x
 
 ## 0.1.5
 - Fix crashing when Wireless module not present
