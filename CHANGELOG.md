@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.1.7
+
 ## 0.1.6
 - Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers
   - Allows for Boot Support from OpenCore' Picker
