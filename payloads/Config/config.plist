@@ -1144,7 +1144,7 @@
 				<key>SystemAudioVolume</key>
 				<data>Rg==</data>
 				<key>boot-args</key>
-				<string>keepsyms=1 debug=0x100 -no_compat_check</string>
+				<string>keepsyms=1 debug=0x100 -no_compat_check -lilubetaall</string>
 				<key>csr-active-config</key>
 				<data>AAAAAA==</data>
 			</dict>
