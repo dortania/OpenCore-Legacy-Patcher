@@ -32,6 +32,15 @@ Currently Zoom relies partially on Metal and so needs a small binary patch. Dosd
 
 Due to the usage of `amfi_get_out_of_my_way=1`, macOS will fail to prompt users for special permissions upon application start as well as omit the entires in System Preferences. To work around this, we recommend users install [tccplus](https://github.com/jslegendre/tccplus) to manage permissions.
 
+Example usage with Discord and microphone permissions:
+
+```sh
+# Open Terminal and run the following commands
+cd ~/Downloads/
+chmod +x tccplus
+./tccplus add Microphone com.hnc.Discord
+```
+
 ## Keyboard Backlight broken
 
 Due to forcing `hidd` into spinning up with the fallback mode enabled, this can break the OS's recognition of backlight keyboards. Thankfully the drivers themselves still do operate so applications such as [LabTick](https://www.macupdate.com/app/mac/22151/lab-tick) are able to set the brightness manually.
