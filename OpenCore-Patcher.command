@@ -195,7 +195,7 @@ B. Exit
                     'If you plan to create the USB for another machine, please select the "Change Model" option in the menu.'
                 ]
             elif not self.constants.custom_model and self.current_model == "iMac7,1" and \
-                    "SSE4.1" not in subprocess.run("sysctl machdep.cpu.features".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode():
+                    DeviceProbe.pci_probe().cpu_feature("SSE4.1") is False:
                 in_between = [
                     'Your model requires a CPU upgrade to a CPU supporting SSE4.1+ to be supported by this patcher!',
                     '',
