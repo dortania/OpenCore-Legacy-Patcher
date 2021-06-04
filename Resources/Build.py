@@ -275,14 +275,14 @@ class BuildOpenCore:
         elif not self.constants.custom_model and wifi_vendor:
             if wifi_vendor == self.constants.pci_broadcom:
                 # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
-                if wifi_device in PCIIDArray.broadcom_ids().BCM4360Wifi and wifi_ioname not in ["pci14e4,4353", "pci14e4,4331"]:
+                if wifi_device in PCIIDArray.broadcom_ids().AirPortBrcmNIC and wifi_ioname not in ["pci14e4,4353", "pci14e4,4331"]:
                     self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-                elif wifi_ioname in ["pci14e4,4353", "pci14e4,4331"] or wifi_device in PCIIDArray.broadcom_ids().BCM94331Wifi:
+                elif wifi_ioname in ["pci14e4,4353", "pci14e4,4331"] or wifi_device in PCIIDArray.broadcom_ids().AirPortBrcm4360:
                     wifi_fake_id(self)
-                elif wifi_device in PCIIDArray.broadcom_ids().BCM94322Wifi:
+                elif wifi_device in PCIIDArray.broadcom_ids().AirPortBrcm4331:
                     self.enable_kext("IO80211Mojave.kext", self.constants.io80211mojave_version, self.constants.io80211mojave_path)
                     self.get_kext_by_bundle_path("IO80211Mojave.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
-                elif wifi_device in PCIIDArray.broadcom_ids().BCM94328Wifi:
+                elif wifi_device in PCIIDArray.broadcom_ids().AppleAirPortBrcm43224:
                     self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
                     self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
                     self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AppleAirPortBrcm43224.kext")["Enabled"] = True
