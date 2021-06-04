@@ -160,10 +160,12 @@ class PatchSysVolume:
                 print("- Creating mnt1 folder")
                 Path(self.constants.payload_mnt1_path).mkdir()
         else:
-            root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /System/Volumes/Update/mnt1".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
             self.root_mount_path = root_partition_info["DeviceIdentifier"]
 
         if self.root_mount_path.startswith("disk"):
+            if self.constants.recovery_status is False:
+                self.root_mount_path = self.root_mount_path[:-2] if self.root_mount_path.count("s") > 1 else self.root_mount_path
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
