@@ -981,6 +981,10 @@ DeleteAMDAccel11 = [
     "IOGPUFamily.kext",
 ]
 
+DeleteAMDAccel11TS2 = [
+    "AppleCameraInterface.kext",
+]
+
 AddNvidiaAccel11 = [
     "GeForceGA.bundle",
     "GeForceTesla.kext",
@@ -1017,7 +1021,7 @@ AddAMDAccel11 = [
     "AMDLegacySupport.kext",
     "AMDRadeonVADriver.bundle",
     "AMDRadeonVADriver2.bundle",
-    #"AMDRadeonX3000.kext",
+    "AMDRadeonX3000.kext",
     "AMDRadeonX3000GLDriver.bundle",
     "AMDShared.bundle",
     "AMDSupport.kext",
@@ -1025,6 +1029,10 @@ AddAMDAccel11 = [
     "ATIRadeonX2000GA.plugin",
     "ATIRadeonX2000GLDriver.bundle",
     "ATIRadeonX2000VADriver.bundle",
+]
+
+AddAMDAccel11TS2 = [
+    "IOSurface.kext",
 ]
 
 AddIntelGen1Accel = [

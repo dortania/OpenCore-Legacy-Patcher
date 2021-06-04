@@ -41,7 +41,8 @@ class pci_probe:
         # IOACPIPlane:/_SB/PCI0@0/P0P2@10000         -> /PCI0@0/P0P2@1
         acpi_path = acpi_path_full.replace("IOACPIPlane:/_SB", "")
         acpi_path = acpi_path.replace("0000", "")
-        acpi_path = acpi_path.replace("0001", "")
+        for entry in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]:
+            acpi_path = acpi_path.replace(f"000{entry}", f",{entry}")
         acpi_path = acpi_path.replace("ffff", "0")
         acpi_path = acpi_path.upper()
         return acpi_path

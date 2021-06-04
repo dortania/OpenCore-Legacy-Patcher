@@ -287,6 +287,8 @@ class Constants:
     @property
     def payload_apple_frameworks_path_accel(self): return self.payload_apple_frameworks_path / Path("Graphics-Acceleration")
     @property
+    def payload_apple_frameworks_path_accel_ts2(self): return self.payload_apple_frameworks_path / Path("Graphics-Acceleration-TS2")
+    @property
     def payload_apple_lauchd_path(self): return self.payload_apple_root_path / Path("LaunchDaemons")
     @property
     def payload_apple_lauchd_path_accel(self): return self.payload_apple_lauchd_path / Path("Graphics-Acceleration")
@@ -294,6 +296,8 @@ class Constants:
     def payload_apple_private_frameworks_path(self): return self.payload_apple_root_path / Path("PrivateFrameworks")
     @property
     def payload_apple_private_frameworks_path_accel(self): return self.payload_apple_private_frameworks_path / Path("Graphics-Acceleration")
+    @property
+    def payload_apple_private_frameworks_path_accel_ts2(self): return self.payload_apple_private_frameworks_path / Path("Graphics-Acceleration-TS2")
     @property
     def payload_apple_private_frameworks_path_brightness(self): return self.payload_apple_private_frameworks_path / Path("Brightness-Control")
 
@@ -306,11 +310,15 @@ class Constants:
     @property
     def legacy_graphics(self): return self.payload_apple_kexts_path / Path("Graphics-Acceleration")
     @property
+    def legacy_graphics_ts2(self): return self.payload_apple_kexts_path / Path("Graphics-Acceleration-TS2")
+    @property
     def legacy_nvidia_path(self): return self.legacy_graphics / Path("Nvidia-Tesla-Fermi")
     @property
     def legacy_nvidia_kepler_path(self): return self.legacy_graphics / Path("Nvidia-Kepler")
     @property
     def legacy_amd_path(self): return self.legacy_graphics / Path("AMD-ATI")
+    @property
+    def legacy_amd_path_ts2(self): return self.legacy_graphics / Path("ATI-TS2")
     @property
     def legacy_intel_gen1_path(self): return self.legacy_graphics / Path("Intel-Gen5-Ironlake")
     @property
