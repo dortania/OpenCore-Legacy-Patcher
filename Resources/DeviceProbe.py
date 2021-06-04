@@ -88,6 +88,15 @@ class pci_probe:
             print(f"- No IOService entry found for Wireless Card (I)")
             return "", "", "", ""
 
+    def cpu_feature(self, instruction):
+        cpu_features = subprocess.run("sysctl machdep.cpu.features".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip().split(" ")
+        if instruction in cpu_features:
+            print(f"- Found {instruction} support")
+            return True
+        else:
+            print(f"- Failed to find {instruction} support")
+            return False
+
 class smbios_probe:
     def model_detect(self, custom):
         opencore_model: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
