@@ -438,3 +438,49 @@ Valid options:
             self.constants.override_smbios = self.constants.custom_model or self.current_model
         else:
             print("Returning to main menu")
+
+    def allow_firewire(self):
+        Utilities.cls()
+        Utilities.header(["Allow FireWire Boot Support"])
+        print("""
+In macOS Catalina and newer, Apple restricted
+usage of FireWire devices to boot macOS for
+security concerns relating to DMA access.
+
+If you are comfortable lowering the security,
+you can re-enable FireWire support for Catalina
+and newer.
+
+Note: MacBook5,x-7,1 don't support FireWire boot
+        """)
+
+        change_menu = input("Enable FireWire Boot support?(y/n): ")
+        if change_menu == "y":
+            self.constants.firewire_boot = True
+        elif change_menu == "n":
+            self.constants.firewire_boot = False
+        else:
+            print("Invalid option")
+
+    def allow_nvme(self):
+        Utilities.cls()
+        Utilities.header(["Allow NVMe UEFI Support"])
+        print("""
+For machines not natively supporting NVMe,
+this option allows you to see and boot NVMe
+drive in OpenCore's picker
+
+Not required if your machine natively supports NVMe
+
+Note: You must have OpenCore on a bootable volume
+first, ie. USB or SATA drive. Once loaded,
+OpenCore will enable NVMe support in it's picker
+        """)
+
+        change_menu = input("Enable NVMe Boot support?(y/n): ")
+        if change_menu == "y":
+            self.constants.nvme_boot = True
+        elif change_menu == "n":
+            self.constants.nvme_boot = False
+        else:
+            print("Invalid option")

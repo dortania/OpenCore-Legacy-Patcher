@@ -923,6 +923,16 @@ AMCSupport = [
     #"MacBookPro10,1"
 ]
 
+NoFireWireSupport = [
+	"MacBook5,1",
+	"MacBook6,1",
+	"MacBook7,1",
+	"MacBookAir1,1",
+	"MacBookAir2,1",
+	"MacBookAir3,1",
+	"MacBookAir3,2",
+]
+
 DeleteNvidiaAccel11 = [
     "AMDRadeonX4000.kext",
     "AMDRadeonX4000HWServices.kext",

@@ -395,6 +395,14 @@ class BuildOpenCore:
             else:
                 self.config["DeviceProperties"]["Add"][hdef_path] = {"apple-layout-id": 90, "use-apple-layout-id": 1, "use-layout-id": 1, }
 
+        # Enable FireWire Boot Support
+        if self.constants.firewire_boot is True and self.model not in ModelArray.NoFireWireSupport:
+            print("- Enabling FireWire Boot Support")
+            self.enable_kext("IOFireWireFamily.kext", self.constants.fw_kext, self.constants.fw_family_path)
+            self.enable_kext("IOFireWireSBP2.kext", self.constants.fw_kext, self.constants.fw_sbp2_path)
+            self.enable_kext("IOFireWireSerialBusProtocolTransport.kext", self.constants.fw_kext, self.constants.fw_bus_path)
+            self.get_kext_by_bundle_path("IOFireWireFamily.kext/Contents/PlugIns/AppleFWOHCI.kext")["Enabled"] = True
+
         def backlight_path_detection(self):
             if not self.constants.custom_model:
                 dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
@@ -536,6 +544,11 @@ class BuildOpenCore:
                 print("- No XHCI Controller Found (V)")
             except IndexError:
                 print("- No XHCI Controller Found (I)")
+
+        if self.constants.nvme_boot is True:
+            print("- Enabling NVMe boot support")
+            shutil.copy(self.constants.nvme_driver_path, self.constants.drivers_path)
+            self.config["UEFI"]["Drivers"] += ["NvmExpressDxe.efi"]
 
         # Add OpenCanopy
         print("- Adding OpenCanopy GUI")

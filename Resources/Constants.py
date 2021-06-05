@@ -39,6 +39,7 @@ class Constants:
         self.nvmefix_version = "1.0.7"
         self.sidecarfixup_version = "1.0.0"
         self.innie_version = "1.3.0"
+        self.fw_kext = "1.0.0"
         self.payload_version = "0.0.8"
 
         # Get resource path
@@ -81,6 +82,8 @@ class Constants:
         self.recovery_status = False
         self.override_smbios = "Default"
         self.apecid_support = False
+        self.firewire_boot = False
+        self.nvme_boot = False
 
         # OS Versions
         self.tiger = 8
@@ -209,6 +212,12 @@ class Constants:
     def plist_folder_path(self): return self.payload_kexts_path / Path(f"Plists")
     @property
     def platform_plugin_plist_path(self): return self.plist_folder_path / Path(f"PlatformPlugin")
+    @property
+    def fw_family_path(self): return self.payload_kexts_path / Path(f"FireWire/IOFireWireFamily-v{self.fw_kext}.zip")
+    @property
+    def fw_sbp2_path(self): return self.payload_kexts_path / Path(f"FireWire/IOFireWireSBP2-v{self.fw_kext}.zip")
+    @property
+    def fw_bus_path(self): return self.payload_kexts_path / Path(f"FireWire/IOFireWireSerialBusProtocolTransport-v{self.fw_kext}.zip")
 
     # Build Location
     @property
