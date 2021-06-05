@@ -861,6 +861,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>BundlePath</key>
 				<string>IOFireWireFamily.kext</string>
 				<key>Comment</key>
@@ -869,8 +871,6 @@
 				<false/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/IOFireWireFamily</string>
-				<key>Arch</key>
-				<string>Any</string>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -879,6 +879,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>BundlePath</key>
 				<string>IOFireWireFamily.kext/Contents/PlugIns/AppleFWOHCI.kext</string>
 				<key>Comment</key>
@@ -887,8 +889,6 @@
 				<false/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleFWOHCI</string>
-				<key>Arch</key>
-				<string>Any</string>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -897,6 +897,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>BundlePath</key>
 				<string>IOFireWireSBP2.kext</string>
 				<key>Comment</key>
@@ -905,8 +907,6 @@
 				<false/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/IOFireWireSBP2</string>
-				<key>Arch</key>
-				<string>Any</string>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -915,6 +915,8 @@
 				<string>Contents/Info.plist</string>
 			</dict>
 			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
 				<key>BundlePath</key>
 				<string>IOFireWireSerialBusProtocolTransport.kext</string>
 				<key>Comment</key>
@@ -923,8 +925,6 @@
 				<false/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/IOFireWireSerialBusProtocolTransport</string>
-				<key>Arch</key>
-				<string>Any</string>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
