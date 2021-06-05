@@ -231,6 +231,7 @@ class PatchSysVolume:
         self.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_patches_11(self):
+        self.ts2_patch_set = False
         igpu_vendor, igpu_device, igpu_acpi = DeviceProbe.pci_probe().gpu_probe("IGPU")
         dgpu_vendor, dgpu_device, dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
         if dgpu_vendor:
