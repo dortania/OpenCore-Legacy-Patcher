@@ -4,6 +4,7 @@
 - Add FireWire Boot Support for Catalina and newer
 - Add NVMe firmware support for older models (ie. MacPro3,1)
   - OpenCore must be stored on a bootable volume (ie. USB or SATA)
+- Fix Thunderbolt Ethernet support on MacBookAir4,x
 
 ## 0.1.6
 - Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers

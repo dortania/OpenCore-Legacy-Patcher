@@ -152,6 +152,8 @@ EthernetMarvell = [
     "Dortania1,1"
 ]
 EthernetBroadcom = [
+    "MacBookAir4,1",
+    "MacBookAir4,2",
     "MacBookPro6,1",
     "MacBookPro6,2",
     "MacBookPro7,1",
