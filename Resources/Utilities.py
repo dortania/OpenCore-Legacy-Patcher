@@ -83,8 +83,8 @@ def patching_status():
     return sip_enabled, sbm_enabled, amfi_enabled, fv_enabled
 
 def cls():
-    if check_recovery() == False:
-         os.system('cls' if os.name == 'nt' else 'clear')
+    if not check_recovery():
+        os.system("cls" if os.name == "nt" else "clear")
     else:
         print("\u001Bc")
 
