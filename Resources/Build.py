@@ -227,7 +227,7 @@ class BuildOpenCore:
         def wifi_fake_id(self):
             default_path = True
             self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-            self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
+            #self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
             if not self.constants.custom_model:
                 arpt_path = DeviceProbe.pci_probe().deviceproperty_probe(wifi_vendor, wifi_device, wifi_acpi)
                 if arpt_path:
