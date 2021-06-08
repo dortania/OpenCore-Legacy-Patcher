@@ -12,9 +12,9 @@ class Constants:
         self.patcher_version = "0.1.7"
         self.opencore_commit = "4e0ff2d - 05-23-2021"
         self.opencore_version = "0.7.0"
-        self.lilu_version = "1.5.3"
-        self.whatevergreen_version = "1.4.9"
-        self.airportbcrmfixup_version = "2.1.2"
+        self.lilu_version = "1.5.4"
+        self.whatevergreen_version = "1.5.1"
+        self.airportbcrmfixup_version = "2.1.3"
         self.bcm570_version = "1.0.1"
         self.marvel_version = "1.0.0"
         self.nforce_version = "1.0.0"
@@ -25,22 +25,22 @@ class Constants:
         self.io80211elcap_version = "1.0.0"
         self.io80211high_sierra_version = "1.0.0"
         self.io80211mojave_version = "1.0.0"
-        self.applealc_version = "1.6.1"
-        self.restrictevents_version = "1.0.1"
-        self.restrictevents_mbp_version = "1.0.1"
+        self.applealc_version = "1.6.2"
+        self.restrictevents_version = "1.0.3"
+        self.restrictevents_mbp_version = "1.0.3"
         self.piixata_version = "1.0.0"
         self.backlight_version = "1.0.1"
         self.backlight_injector_version = "1.0.0"
-        self.cpufriend_version = "1.2.3"
+        self.cpufriend_version = "1.2.4"
         self.nightshift_version = "1.1.0"
         self.smcspoof_version = "1.0.0"
         self.cputscsync = "1.0.3"
         self.hibernationfixup = "1.3.9"
-        self.nvmefix_version = "1.0.7"
-        self.sidecarfixup_version = "1.0.0"
+        self.nvmefix_version = "1.0.9"
+        self.sidecarfixup_version = "1.0.2"
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
-        self.payload_version = "0.0.8"
+        self.payload_version = "0.0.13"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -56,9 +56,9 @@ class Constants:
         self.opencore_build = "RELEASE"
         self.kext_debug = False
         self.verbose_debug = False
-        self.os_support = 11.0
+        self.os_support = 12.0
         self.min_os_support = 11.0
-        self.max_os_support = 11.0
+        self.max_os_support = 12.0
         self.metal_build = False
         self.imac_vendor = "None"
         self.wifi_build = False
@@ -99,6 +99,7 @@ class Constants:
         self.mojave = 18
         self.catalina = 19
         self.big_sur = 20
+        self.monterey = 21
 
         # Vendor IDs
         self.pci_nvidia = "10DE"

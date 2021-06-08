@@ -83,7 +83,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             print_models = input(f"Print list of valid options for macOS {self.constants.os_support}? (y/n)")
             if print_models in {"y", "Y", "yes", "Yes"}:
                 print("\n".join(ModelArray.SupportedSMBIOS))
-                input("Press any key to continue...")
+                input("\nPress [ENTER] to continue")
 
     def patcher_settings(self):
         response = None
@@ -93,8 +93,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             ]
             menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
-                # TODO: Enable setting OS target when more OSes become supported by the patcher
-                #[f"Change OS version:\t\t\tCurrently macOS {self.constants.os_support}", self.change_os],
                 [f"Enable Verbose Mode:\t\tCurrently {self.constants.verbose_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_verbose],
                 [f"Enable OpenCore DEBUG:\t\tCurrently {self.constants.opencore_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_oc],
                 [f"Enable Kext DEBUG:\t\t\tCurrently {self.constants.kext_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_kext],
@@ -126,7 +124,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"DRM Preferences:\t\t\tCurrently {self.constants.drm_support}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).drm_setting],
                 [f"Set Generic Bootstrap:\t\tCurrently {self.constants.boot_efi}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).bootstrap_setting],
                 [f"Assume Legacy GPU:\t\t\tCurrently {self.constants.assume_legacy}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).force_accel_setting],
-                #[f"Download more RAM:\t\t\tCurrently {self.constants.download_ram}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).download_more_ram_dot_com],
                 [f"Disable CPU Friend:\t\t\tCurrently {self.constants.disallow_cpufriend}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).disable_cpufriend],
                 [f"Override SMBIOS Spoof:\t\tCurrently {self.constants.override_smbios}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).set_smbios],
                 [f"Set Custom name {self.constants.custom_cpu_model_value}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).custom_cpu],
@@ -182,7 +179,7 @@ B. Exit
 
     def main_menu(self):
         response = None
-        ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS11
+        ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS12
         while not (response and response == -1):
             title = [
                 f"OpenCore Legacy Patcher v{self.constants.patcher_version}",
