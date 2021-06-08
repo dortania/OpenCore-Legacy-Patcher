@@ -182,7 +182,7 @@ B. Exit
 
     def main_menu(self):
         response = None
-        ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS11
+        ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS12
         while not (response and response == -1):
             title = [
                 f"OpenCore Legacy Patcher v{self.constants.patcher_version}",

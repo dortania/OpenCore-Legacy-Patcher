@@ -84,6 +84,7 @@ class Constants:
         self.apecid_support = False
         self.firewire_boot = False
         self.nvme_boot = False
+        self.os_patch_type = 21
 
         # OS Versions
         self.tiger = 8
@@ -99,6 +100,7 @@ class Constants:
         self.mojave = 18
         self.catalina = 19
         self.big_sur = 20
+        self.monterey = 21
 
         # Vendor IDs
         self.pci_nvidia = "10DE"

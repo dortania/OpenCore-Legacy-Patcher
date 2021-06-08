@@ -36,40 +36,77 @@ class BuildOpenCore:
         self.constants: Constants.Constants = versions
 
     def smbios_set(self):
-        if self.model in ModelArray.MacBookAir61:
-            print("- Spoofing to MacBookAir6,1")
-            return "MacBookAir6,1"
-        elif self.model in ModelArray.MacBookAir62:
-            print("- Spoofing to MacBookAir6,2")
-            return "MacBookAir6,2"
-        elif self.model in ModelArray.MacBookPro111:
-            print("- Spoofing to MacBookPro11,1")
-            return "MacBookPro11,1"
-        elif self.model in ModelArray.MacBookPro113:
-            print("- Spoofing to MacBookPro11,3")
-            return "MacBookPro11,3"
-        elif self.model in ModelArray.Macmini71:
-            print("- Spoofing to Macmini7,1")
-            return "Macmini7,1"
-        elif self.model in ModelArray.iMacPro11:
-            print("- Spoofing to iMacPro1,1")
-            return "iMacPro1,1"
-        elif self.model in ModelArray.iMac151:
-            # Check for upgraded GPUs on iMacs
-            if self.constants.drm_support is True:
+        if self.constants.os_patch_type == self.constants.monterey:
+            print("- Setting macOS Monterey Supported SMBIOS")
+            if self.model in ModelArray.MacBookAir61:
+                print("- Spoofing to MacBookAir7,1")
+                return "MacBookAir7,1"
+            elif self.model in ModelArray.MacBookAir62:
+                print("- Spoofing to MacBookAir7,2")
+                return "MacBookAir7,2"
+            elif self.model in ModelArray.MacBookPro111:
+                print("- Spoofing to MacBookPro12,1")
+                return "MacBookPro12,1"
+            elif self.model in ModelArray.MacBookPro113:
+                print("- Spoofing to MacBookPro11,5")
+                return "MacBookPro11,5"
+            elif self.model in ModelArray.Macmini71:
+                print("- Spoofing to Macmini7,1")
+                return "Macmini7,1"
+            elif self.model in ModelArray.iMacPro11:
                 print("- Spoofing to iMacPro1,1")
                 return "iMacPro1,1"
+            elif self.model in ModelArray.iMac151:
+                # Check for upgraded GPUs on iMacs
+                if self.constants.drm_support is True:
+                    print("- Spoofing to iMacPro1,1")
+                    return "iMacPro1,1"
+                else:
+                    print("- Spoofing to iMac17,1")
+                    return "iMac17,1"
+            elif self.model in ModelArray.iMac144:
+                print("- Spoofing to iMac16,1")
+                return "iMac16,1"
+            elif self.model in ModelArray.MacPro71:
+                print("- Spoofing to MacPro7,1")
+                return "MacPro7,1"
             else:
-                print("- Spoofing to iMac15,1")
-                return "iMac15,1"
-        elif self.model in ModelArray.iMac144:
-            print("- Spoofing to iMac14,4")
-            return "iMac14,4"
-        elif self.model in ModelArray.MacPro71:
-            print("- Spoofing to MacPro7,1")
-            return "MacPro7,1"
+                return self.model
         else:
-            return self.model
+            if self.model in ModelArray.MacBookAir61:
+                print("- Spoofing to MacBookAir6,1")
+                return "MacBookAir6,1"
+            elif self.model in ModelArray.MacBookAir62:
+                print("- Spoofing to MacBookAir6,2")
+                return "MacBookAir6,2"
+            elif self.model in ModelArray.MacBookPro111:
+                print("- Spoofing to MacBookPro11,1")
+                return "MacBookPro11,1"
+            elif self.model in ModelArray.MacBookPro113:
+                print("- Spoofing to MacBookPro11,3")
+                return "MacBookPro11,3"
+            elif self.model in ModelArray.Macmini71:
+                print("- Spoofing to Macmini7,1")
+                return "Macmini7,1"
+            elif self.model in ModelArray.iMacPro11:
+                print("- Spoofing to iMacPro1,1")
+                return "iMacPro1,1"
+            elif self.model in ModelArray.iMac151:
+                # Check for upgraded GPUs on iMacs
+                if self.constants.drm_support is True:
+                    print("- Spoofing to iMacPro1,1")
+                    return "iMacPro1,1"
+                else:
+                    print("- Spoofing to iMac15,1")
+                    return "iMac15,1"
+            elif self.model in ModelArray.iMac144:
+                print("- Spoofing to iMac14,4")
+                return "iMac14,4"
+            elif self.model in ModelArray.MacPro71:
+                print("- Spoofing to MacPro7,1")
+                return "MacPro7,1"
+            else:
+                return self.model
 
     def fw_feature_detect(self, model):
         # Values based off OpenCorePkg's Firmwarefeatures and FirmwarefeaturesMask
@@ -131,13 +168,13 @@ class BuildOpenCore:
             ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: self.constants.allow_oc_everywhere is False),
             ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in ModelArray.MacPro71),
             ("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path, lambda: self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1"]),
-            ("NightShiftEnabler.kext", self.constants.nightshift_version, self.constants.nightshift_path, lambda: self.model not in ModelArray.NightShiftExclude and self.constants.allow_oc_everywhere is False and self.constants.serial_settings == "Minimal"),
+            ("NightShiftEnabler.kext", self.constants.nightshift_version, self.constants.nightshift_path, lambda: self.model in ModelArray.NightShift and self.constants.allow_oc_everywhere is False and self.constants.serial_settings == "Minimal"),
             ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False),
             # CPU patches
             ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model in ModelArray.DualSocket),
             ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: self.model in ModelArray.SSEEmulator),
             ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: self.model in ModelArray.MissingSSE42),
-            ("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path, lambda: self.model != "iMac7,1" and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False),
+            ("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path, lambda: self.model not in ["iMac7,1", "Xserve2,1"] and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False),
             # Ethernet patches
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
@@ -299,7 +336,7 @@ class BuildOpenCore:
 
         # CPUFriend
         pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
-        if self.model != "iMac7,1" and self.constants.allow_oc_everywhere is False:
+        if self.model not in ["iMac7,1", "Xserve2,1"] and self.constants.allow_oc_everywhere is False:
             Path(self.constants.pp_kext_folder).mkdir()
             Path(self.constants.pp_contents_folder).mkdir()
             shutil.copy(pp_map_path, self.constants.pp_contents_folder)
@@ -326,7 +363,7 @@ class BuildOpenCore:
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
         # iMac7,1 kernel panics with USB map installed, remove for time being until properly debugged
-        if usb_map_path.exists() and self.constants.allow_oc_everywhere is False and self.model != "iMac7,1":
+        if usb_map_path.exists() and self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1"]:
             print(f"- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
@@ -567,7 +604,7 @@ class BuildOpenCore:
             self.config["UEFI"]["Output"]["GopPassThrough"] = "Apple"
 
         # ThirdPartDrives Check
-        if self.model not in ModelArray.NoSATAPatch and self.constants.allow_oc_everywhere is False:
+        if self.model in ModelArray.SATAPatch and self.constants.allow_oc_everywhere is False:
             print("- Adding SATA Hibernation Patch")
             self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
 
@@ -695,7 +732,7 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["CustomMemory"] = True
 
         # USB Map and CPUFriend Patching
-        if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1":
+        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1"]:
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
             # Strip unused USB maps
@@ -715,7 +752,7 @@ class BuildOpenCore:
                     except KeyError:
                         continue
             plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
-        if self.constants.allow_oc_everywhere is False and self.model != "iMac7,1" and self.constants.disallow_cpufriend is False:
+        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1"] and self.constants.disallow_cpufriend is False:
             # Adjust CPU Friend Data to correct SMBIOS
             new_cpu_ls = Path(self.constants.pp_contents_folder) / Path("Info.plist")
             cpu_config = plistlib.load(Path(new_cpu_ls).open("rb"))
