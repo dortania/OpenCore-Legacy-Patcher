@@ -377,13 +377,13 @@ class BuildOpenCore:
             if self.model in ModelArray.IntelNvidiaDRM and self.constants.drm_support is True:
                 print("- Prioritizing DRM support over Intel QuickSync")
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"disable-gpu-min": "20.0.0"}
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
             else:
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
         if self.model in ["iMac13,1", "iMac13,2", "iMac13,3"]:
             print("- Fixing sleep support in macOS 12")
-            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"disable-gpu-min": "21.0.0"}
+            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
 
         # HiDPI OpenCanopy and FileVault
         if self.model in ModelArray.HiDPIpicker:
