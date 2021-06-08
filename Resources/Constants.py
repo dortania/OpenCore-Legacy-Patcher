@@ -56,9 +56,9 @@ class Constants:
         self.opencore_build = "RELEASE"
         self.kext_debug = False
         self.verbose_debug = False
-        self.os_support = 11.0
+        self.os_support = 12.0
         self.min_os_support = 11.0
-        self.max_os_support = 11.0
+        self.max_os_support = 12.0
         self.metal_build = False
         self.imac_vendor = "None"
         self.wifi_build = False
@@ -84,7 +84,6 @@ class Constants:
         self.apecid_support = False
         self.firewire_boot = False
         self.nvme_boot = False
-        self.os_patch_type = 21
 
         # OS Versions
         self.tiger = 8

@@ -36,77 +36,41 @@ class BuildOpenCore:
         self.constants: Constants.Constants = versions
 
     def smbios_set(self):
-        if self.constants.os_patch_type == self.constants.monterey:
-            print("- Setting macOS Monterey Supported SMBIOS")
-            if self.model in ModelArray.MacBookAir61:
-                print("- Spoofing to MacBookAir7,1")
-                return "MacBookAir7,1"
-            elif self.model in ModelArray.MacBookAir62:
-                print("- Spoofing to MacBookAir7,2")
-                return "MacBookAir7,2"
-            elif self.model in ModelArray.MacBookPro111:
-                print("- Spoofing to MacBookPro12,1")
-                return "MacBookPro12,1"
-            elif self.model in ModelArray.MacBookPro113:
-                print("- Spoofing to MacBookPro11,5")
-                return "MacBookPro11,5"
-            elif self.model in ModelArray.Macmini71:
-                print("- Spoofing to Macmini7,1")
-                return "Macmini7,1"
-            elif self.model in ModelArray.iMacPro11:
+        print("- Setting macOS Monterey Supported SMBIOS")
+        if self.model in ModelArray.MacBookAir61:
+            print("- Spoofing to MacBookAir7,1")
+            return "MacBookAir7,1"
+        elif self.model in ModelArray.MacBookAir62:
+            print("- Spoofing to MacBookAir7,2")
+            return "MacBookAir7,2"
+        elif self.model in ModelArray.MacBookPro111:
+            print("- Spoofing to MacBookPro12,1")
+            return "MacBookPro12,1"
+        elif self.model in ModelArray.MacBookPro113:
+            print("- Spoofing to MacBookPro11,5")
+            return "MacBookPro11,5"
+        elif self.model in ModelArray.Macmini71:
+            print("- Spoofing to Macmini7,1")
+            return "Macmini7,1"
+        elif self.model in ModelArray.iMacPro11:
+            print("- Spoofing to iMacPro1,1")
+            return "iMacPro1,1"
+        elif self.model in ModelArray.iMac151:
+            # Check for upgraded GPUs on iMacs
+            if self.constants.drm_support is True:
                 print("- Spoofing to iMacPro1,1")
                 return "iMacPro1,1"
-            elif self.model in ModelArray.iMac151:
-                # Check for upgraded GPUs on iMacs
-                if self.constants.drm_support is True:
-                    print("- Spoofing to iMacPro1,1")
-                    return "iMacPro1,1"
-                else:
-                    print("- Spoofing to iMac17,1")
-                    return "iMac17,1"
-            elif self.model in ModelArray.iMac144:
-                print("- Spoofing to iMac16,1")
-                return "iMac16,1"
-            elif self.model in ModelArray.MacPro71:
-                print("- Spoofing to MacPro7,1")
-                return "MacPro7,1"
             else:
-                return self.model
+                print("- Spoofing to iMac17,1")
+                return "iMac17,1"
+        elif self.model in ModelArray.iMac144:
+            print("- Spoofing to iMac16,1")
+            return "iMac16,1"
+        elif self.model in ModelArray.MacPro71:
+            print("- Spoofing to MacPro7,1")
+            return "MacPro7,1"
         else:
-            if self.model in ModelArray.MacBookAir61:
-                print("- Spoofing to MacBookAir6,1")
-                return "MacBookAir6,1"
-            elif self.model in ModelArray.MacBookAir62:
-                print("- Spoofing to MacBookAir6,2")
-                return "MacBookAir6,2"
-            elif self.model in ModelArray.MacBookPro111:
-                print("- Spoofing to MacBookPro11,1")
-                return "MacBookPro11,1"
-            elif self.model in ModelArray.MacBookPro113:
-                print("- Spoofing to MacBookPro11,3")
-                return "MacBookPro11,3"
-            elif self.model in ModelArray.Macmini71:
-                print("- Spoofing to Macmini7,1")
-                return "Macmini7,1"
-            elif self.model in ModelArray.iMacPro11:
-                print("- Spoofing to iMacPro1,1")
-                return "iMacPro1,1"
-            elif self.model in ModelArray.iMac151:
-                # Check for upgraded GPUs on iMacs
-                if self.constants.drm_support is True:
-                    print("- Spoofing to iMacPro1,1")
-                    return "iMacPro1,1"
-                else:
-                    print("- Spoofing to iMac15,1")
-                    return "iMac15,1"
-            elif self.model in ModelArray.iMac144:
-                print("- Spoofing to iMac14,4")
-                return "iMac14,4"
-            elif self.model in ModelArray.MacPro71:
-                print("- Spoofing to MacPro7,1")
-                return "MacPro7,1"
-            else:
-                return self.model
+            return self.model
 
     def fw_feature_detect(self, model):
         # Values based off OpenCorePkg's Firmwarefeatures and FirmwarefeaturesMask
