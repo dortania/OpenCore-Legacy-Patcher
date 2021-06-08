@@ -381,6 +381,10 @@ class BuildOpenCore:
             else:
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
+        if self.model in ["iMac13,1", "iMac13,2", "iMac13,3"]:
+            print("- Fixing sleep support in macOS 12")
+            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"disable-gpu-min": "21.0.0"}
+
         # HiDPI OpenCanopy and FileVault
         if self.model in ModelArray.HiDPIpicker:
             print("- Setting HiDPI picker")
@@ -532,19 +536,19 @@ class BuildOpenCore:
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
 
         # Add XhciDxe if firmware doesn't have XHCI controller support and XCHI controller detected
-        if self.model not in ModelArray.XhciSupport and not self.constants.custom_model:
-            devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-            try:
-                devices = [i for i in devices if i["class-code"] == binascii.unhexlify(self.constants.classcode_xhci)]
-                vendor_id = Utilities.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
-                device_id = Utilities.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
-                print("- Found XHCI Controller, adding Boot Support")
-                shutil.copy(self.constants.xhci_driver_path, self.constants.drivers_path)
-                self.config["UEFI"]["Drivers"] += ["XhciDxe.efi"]
-            except ValueError:
-                print("- No XHCI Controller Found (V)")
-            except IndexError:
-                print("- No XHCI Controller Found (I)")
+        #if self.model not in ModelArray.XhciSupport and not self.constants.custom_model:
+        #    devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        #    try:
+        #        devices = [i for i in devices if i["class-code"] == binascii.unhexlify(self.constants.classcode_xhci)]
+        #        vendor_id = Utilities.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
+        #        device_id = Utilities.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
+        #        print("- Found XHCI Controller, adding Boot Support")
+        #        shutil.copy(self.constants.xhci_driver_path, self.constants.drivers_path)
+        #        self.config["UEFI"]["Drivers"] += ["XhciDxe.efi"]
+        #    except ValueError:
+        #        print("- No XHCI Controller Found (V)")
+        #    except IndexError:
+        #        print("- No XHCI Controller Found (I)")
 
         if self.constants.nvme_boot is True:
             print("- Enabling NVMe boot support")

@@ -5,7 +5,19 @@
 - Add NVMe firmware support for older models (ie. MacPro3,1)
   - OpenCore must be stored on a bootable volume (ie. USB or SATA)
 - Fix Thunderbolt Ethernet support on MacBookAir4,x
+- Fix XHCI hangs on pre-2012 Machines
+  - XHCI boot support dropped due to instability
 - Add beta macOS Monterey Support
+  - Fix iMac13,x sleep support
+  - Add support for following models:
+    - iMac14,4
+    - iMac15,1
+    - MacBook8,1
+    - MacBookAir6,1
+    - MacBookAir6,2
+    - MacBookPro11,1
+    - MacBookPro11,2
+    - MacBookPro11,3
 
 ## 0.1.6
 - Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers
