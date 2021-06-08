@@ -83,7 +83,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             print_models = input(f"Print list of valid options for macOS {self.constants.os_support}? (y/n)")
             if print_models in {"y", "Y", "yes", "Yes"}:
                 print("\n".join(ModelArray.SupportedSMBIOS))
-                input("Press any key to continue...")
+                input("\nPress [ENTER] to continue")
 
     def patcher_settings(self):
         response = None

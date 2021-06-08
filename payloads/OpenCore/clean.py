@@ -45,6 +45,7 @@ bad_tools = [
     "OpenControl.efi",
     "ResetSystem.efi",
     "RtcRw.efi",
+    "CsrUtil.efi",
 ]
 
 for version in build_types:

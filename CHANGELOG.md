@@ -18,6 +18,15 @@
     - MacBookPro11,1
     - MacBookPro11,2
     - MacBookPro11,3
+- Increment binaries:
+  - OpenCore (0.7.0 release - 06-07-2021)
+  - AirportBrcmFixup (2.1.3 rolling - 06-08-2021)
+  - AppleALC (1.6.2 rolling - 06-08-2021)
+  - CPUFriend (1.2.4 rolling - 06-08-2021)
+  - Lilu (1.5.4 rolling - 06-08-2021)
+  - NVMeFix (1.0.9 rolling - 06-08-2021)
+  - WhateverGreen (1.5.1 rolling - 06-08-2021)
+  - RestrictEvents (1.0.3 rolling - 06-08-2021)
 
 ## 0.1.6
 - Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers
