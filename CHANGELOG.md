@@ -27,7 +27,9 @@
   - NVMeFix (1.0.9 rolling - 06-08-2021)
   - WhateverGreen (1.5.1 rolling - 06-08-2021)
   - RestrictEvents (1.0.3 rolling - 06-08-2021)
-  - Apple Binaries (0.0.13 release - 06-08)
+  - Apple Binaries (0.0.13 release - 06-08-2021)
+  - MouSSE (0.95 release - 06-08-2021)
+- Fix SSE4,2 Emulation
 
 ## 0.1.6
 - Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers

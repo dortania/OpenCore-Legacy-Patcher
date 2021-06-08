@@ -19,7 +19,7 @@ class Constants:
         self.marvel_version = "1.0.0"
         self.nforce_version = "1.0.0"
         self.mce_version = "1.0.0"
-        self.mousse_version = "0.93"
+        self.mousse_version = "0.95"
         self.telemetrap_version = "1.0.0"
         self.corecaptureelcap_version = "1.0.0"
         self.io80211elcap_version = "1.0.0"
