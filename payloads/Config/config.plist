@@ -1340,7 +1340,7 @@
 					<key>DeviceLocator</key>
 					<string>Slot 1</string>
 					<key>Manufacturer</key>
-					<string>Acidanthera</string>
+					<string>Acidanthera\GoldenGate</string>
 					<key>PartNumber</key>
 					<string>M00001-4GB</string>
 					<key>SerialNumber</key>
