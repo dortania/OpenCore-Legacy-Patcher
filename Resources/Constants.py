@@ -376,6 +376,18 @@ class Constants:
         "CSR_ALLOW_UNAUTHENTICATED_ROOT":       False,  # 0x800 - Introduced in Big Sur     # noqa: E241
     }
 
+    root_patch_sip_big_sur = [
+        # Variables required to root patch in Big Sur and Monterey
+        "CSR_ALLOW_UNTRUSTED_KEXTS",
+        "CSR_ALLOW_UNRESTRICTED_FS",
+        "CSR_ALLOW_UNRESTRICTED_DTRACE",
+        "CSR_ALLOW_UNRESTRICTED_NVRAM",
+        "CSR_ALLOW_DEVICE_CONFIGURATION",
+        "CSR_ALLOW_UNAPPROVED_KEXTS",
+        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE",
+        "CSR_ALLOW_UNAUTHENTICATED_ROOT",
+    ]
+
     sbm_values = [
         "j137",
         "j680",

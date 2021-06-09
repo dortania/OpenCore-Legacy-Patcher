@@ -1151,6 +1151,15 @@ AddNvidiaAccel11 = [
     "IOSurface.kext",
 ]
 
+AddNvidiaBrightness = [
+    "GeForceGA.bundle",
+    "GeForceTesla.kext",
+    "GeForceTeslaGLDriver.bundle",
+    "GeForceTeslaVADriver.bundle",
+    "NVDANV50HalTesla.kext",
+    "NVDAResmanTesla.kext",
+]
+
 AddNvidiaKeplerAccel11 = [
     "GeForce.kext",
     "GeForceAIRPlugin.bundle",
@@ -1181,6 +1190,27 @@ AddAMDAccel11 = [
     "AMDRadeonX3000GLDriver.bundle",
     "AMDShared.bundle",
     "AMDSupport.kext",
+    "ATIRadeonX2000.kext",
+    "ATIRadeonX2000GA.plugin",
+    "ATIRadeonX2000GLDriver.bundle",
+    "ATIRadeonX2000VADriver.bundle",
+]
+
+AddAMDBrightness = [
+    "AMD2400Controller.kext",
+    "AMD2600Controller.kext",
+    "AMD3800Controller.kext",
+    "AMD4600Controller.kext",
+    "AMD4800Controller.kext",
+    "AMD5000Controller.kext",
+    "AMD6000Controller.kext",
+    "AMDLegacyFramebuffer.kext",
+    "AMDLegacySupport.kext",
+    "AMDRadeonVADriver.bundle",
+    "AMDRadeonVADriver2.bundle",
+    #"AMDRadeonX3000.kext",
+    #"AMDRadeonX3000GLDriver.bundle",
+    "AMDShared.bundle",
     "ATIRadeonX2000.kext",
     "ATIRadeonX2000GA.plugin",
     "ATIRadeonX2000GLDriver.bundle",

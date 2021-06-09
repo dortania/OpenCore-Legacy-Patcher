@@ -6,6 +6,7 @@ import math
 import plistlib
 import subprocess
 
+from Resources import Constants
 
 def hexswap(input_hex: str):
     hex_pairs = [input_hex[i : i + 2] for i in range(0, len(input_hex), 2)]
@@ -31,12 +32,71 @@ def check_recovery():
     else:
         return False
 
+def get_disk_path():
+    root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    root_mount_path = root_partition_info["DeviceIdentifier"]
+    root_mount_path = root_mount_path[:-2] if root_mount_path.count("s") > 1 else root_mount_path
+    return root_mount_path
+
+def csr_decode(csr_active_config):
+    if csr_active_config is None:
+        csr_active_config = b"\x00\x00\x00\x00"
+    sip_int = int.from_bytes(csr_active_config, byteorder="little")
+    i = 0
+    for current_sip_bit in Constants.Constants().csr_values:
+        if sip_int & (1 << i):
+            Constants.Constants().csr_values[current_sip_bit] = True
+        i = i + 1
+
+    # Can be adjusted to whatever OS needs patching
+    sip_needs_change = all(
+        Constants.Constants().csr_values[i]
+        for i in Constants.Constants().root_patch_sip_big_sur
+    )
+    if sip_needs_change is True:
+        return False
+    else:
+        return True
+
+def patching_status():
+    # Detection for Root Patching
+    sip_enabled = True  # System Integrity Protection
+    sbm_enabled = True  # Secure Boot Status (SecureBootModel)
+    amfi_enabled = True # Apple Mobile File Integrity
+    fv_enabled = True   # FileVault
+
+    if get_nvram("boot-args", decode=False) and "amfi_get_out_of_my_way=" in get_nvram("boot-args", decode=False):
+        amfi_enabled = False
+    if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in Constants.Constants().sbm_values:
+        sbm_enabled = False
+
+    if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False)) is False:
+        sip_enabled = False
+
+    fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+    if fv_status.startswith("FileVault is Off"):
+        fv_enabled = False
+
+    return sip_enabled, sbm_enabled, amfi_enabled, fv_enabled
 
 def cls():
     if check_recovery() == False:
          os.system('cls' if os.name == 'nt' else 'clear')
     else:
         print("\u001Bc")
+
+def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
+    if uuid != None:
+        uuid += ":"
+    else:
+        uuid = ""
+    result = subprocess.run(f"nvram -x {uuid}{variable}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.strip()
+    if result:
+        value = plistlib.loads(result)[f"{uuid}{variable}"]
+        if decode:
+            value = value.strip(b"\0").decode()
+        return value
+    return None
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]
