@@ -310,7 +310,7 @@ class Computer:
 
     def smbios_probe(self):
         # Reported model
-        entry = next(self.ioregistry.find(entry_class="IOPlatformExpertDevice"))
+        entry = next(self.ioregistry.find(name="Root")).children[0]
         self.reported_model = entry.properties["model"].strip(b"\0").decode()
         self.reported_board_id = entry.properties.get("board-id", entry.properties.get("target-type", b"")).strip(b"\0").decode()
 
