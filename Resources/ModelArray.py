@@ -613,8 +613,12 @@ IntelNvidiaDRM = [
 ]
 
 HiDPIpicker = [
+    "MacBook8,1",
     "MacBookPro10,1",
     "MacBookPro10,2",
+    "MacBookPro11,1",
+    "MacBookPro11,2",
+    "MacBookPro11,3",
     "Dortania1,1"
 ]
 
