@@ -164,7 +164,7 @@ class Constants:
     @property
     def restrictevents_path(self): return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-v{self.restrictevents_version}.zip")
     @property
-    def restrictevents_mbp_path(self): return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-MBP91-v{self.restrictevents_mbp_version}.zip")
+    def restrictevents_mbp_path(self): return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-MBP91-{self.restrictevents_mbp_version}.zip")
     @property
     def bcm570_path(self): return self.payload_kexts_path / Path(f"Ethernet/CatalinaBCM5701Ethernet-v{self.bcm570_version}.zip")
     @property
