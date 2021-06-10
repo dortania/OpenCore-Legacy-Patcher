@@ -191,7 +191,9 @@ class PatchSysVolume:
         self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen1_path)
 
     def gpu_framebuffer_ivybridge(self):
+        self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
         self.add_new_binaries(ModelArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
+        self.elevated(["ditto", self.constants.payload_apple_frameworks_path_accel, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
