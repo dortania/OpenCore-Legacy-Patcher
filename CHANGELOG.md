@@ -27,7 +27,7 @@
   - NVMeFix (1.0.9 rolling - 06-08-2021)
   - WhateverGreen (1.5.1 rolling - 06-08-2021)
   - RestrictEvents (1.0.3 rolling - 06-08-2021)
-  - Apple Binaries (0.0.13 release - 06-08-2021)
+  - Apple Binaries (0.0.14 release - 06-10-2021)
   - MouSSE (0.95 release - 06-08-2021)
 - Fix SSE4,2 Emulation
 

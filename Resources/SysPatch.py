@@ -191,9 +191,9 @@ class PatchSysVolume:
         self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen1_path)
 
     def gpu_framebuffer_ivybridge(self):
-        self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
+        #self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
         self.add_new_binaries(ModelArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
-        self.elevated(["ditto", self.constants.payload_apple_frameworks_path_accel, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        #self.elevated(["ditto", self.constants.payload_apple_frameworks_path_accel, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
@@ -368,10 +368,9 @@ class PatchSysVolume:
                     if self.constants.detected_os > self.constants.catalina:
                         self.sandy_gpu = True
                         self.amfi_must_disable = True
-                # TODO: Re-enable when Accel Patches are ready
-                #elif igpu_device in PCIIDArray.intel_ids().ivy_ids:
-                #    if self.constants.detected_os > self.constants.big_sur:
-                #        self.ivy_gpu = True
+                elif igpu_device in PCIIDArray.intel_ids().ivy_ids:
+                    if self.constants.detected_os > self.constants.big_sur:
+                        self.ivy_gpu = True
             elif igpu_vendor == self.constants.pci_nvidia:
                 if self.constants.detected_os > self.constants.catalina:
                     self.nvidia_legacy = True
