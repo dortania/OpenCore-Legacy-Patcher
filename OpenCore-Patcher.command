@@ -119,11 +119,11 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Assume Metal GPU Always:\t\tCurrently {self.constants.imac_vendor}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_metal],
-                [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.wifi_build}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_wifi],
+                #[f"Assume Upgraded Wifi Always:\tCurrently {self.constants.wifi_build}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_wifi],
                 [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_serial],
                 [f"DRM Preferences:\t\t\tCurrently {self.constants.drm_support}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).drm_setting],
                 [f"Set Generic Bootstrap:\t\tCurrently {self.constants.boot_efi}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).bootstrap_setting],
-                [f"Assume Legacy GPU:\t\t\tCurrently {self.constants.assume_legacy}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).force_accel_setting],
+                #[f"Assume Legacy GPU:\t\t\tCurrently {self.constants.assume_legacy}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).force_accel_setting],
                 [f"Disable CPU Friend:\t\t\tCurrently {self.constants.disallow_cpufriend}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).disable_cpufriend],
                 [f"Override SMBIOS Spoof:\t\tCurrently {self.constants.override_smbios}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).set_smbios],
                 [f"Set Custom name {self.constants.custom_cpu_model_value}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).custom_cpu],
@@ -150,12 +150,12 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
     def PatchVolume(self):
         Utilities.cls()
         Utilities.header(["Patching System Volume"])
-        print("""Patches Root volume to fix misc issues such as:
+        big_sur = """Patches Root volume to fix misc issues such as:
 
 - Graphics Acceleration for non-Metal GPUs
   - Nvidia: Tesla - Fermi (8000-500 series)
   - Intel: Ironlake - Sandy Bridge
-  - AMD: TeraScale 1 (2000-4000 series)
+  - AMD: TeraScale 1 and 2 (2000-6000 series)
 - Audio support for iMac7,1 and iMac8,1
 
 WARNING: Root Volume Patching is still in active development, please
@@ -168,7 +168,30 @@ Supported Options:
 1. Patch System Volume
 2. Unpatch System Volume (Experimental)
 B. Exit
-        """)
+        """
+        monterey = """Patches Root volume to fix misc issues such as:
+
+- Basic Framebuffer and brightness Control (No acceleration)
+  - Nvidia: Tesla - Fermi (8000-500 series)
+  - Intel: Ironlake - Sandy Bridge
+  - AMD: TeraScale 1 and 2 (2000-6000 series)
+- Audio support for iMac7,1 and iMac8,1
+
+WARNING: Root Volume Patching is still in active development, please
+have all important user data backed up. Note when the system volume
+is patched, you can no longer have Delta updates or have FileVault
+enabled.
+
+Supported Options:
+
+1. Patch System Volume
+2. Unpatch System Volume (Experimental)
+B. Exit
+        """
+        if self.constants.detected_os > self.constants.big_sur:
+            print(monterey)
+        else:
+            print(big_sur)
         change_menu = input("Patch System Volume?: ")
         if change_menu == "1":
             SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_patch()
@@ -184,7 +207,6 @@ B. Exit
             title = [
                 f"OpenCore Legacy Patcher v{self.constants.patcher_version}",
                 f"Selected Model: {self.constants.custom_model or self.current_model}",
-                f"Target OS: macOS {self.constants.os_support}",
             ]
 
             if (self.constants.custom_model or self.current_model) not in ModelArray.SupportedSMBIOS and self.constants.allow_oc_everywhere is False:
