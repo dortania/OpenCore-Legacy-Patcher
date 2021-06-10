@@ -38,7 +38,11 @@ class PatchSysVolume:
         self.amfi_must_disable = False
         self.no_patch = True
 
-        self.mount_location = "/System/Volumes/Update/mnt1"
+        if self.constants.detected_os > self.constants.catalina:
+            # Big Sur and newer use APFS snapshots
+            self.mount_location = "/System/Volumes/Update/mnt1"
+        else:
+            self.mount_location = "/"
         self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
         self.mount_frameworks = f"{self.mount_location}/System/Library/Frameworks"
         self.mount_lauchd = f"{self.mount_location}/System/Library/LaunchDaemons"
@@ -336,28 +340,28 @@ class PatchSysVolume:
             print(f"- Found GFX0: {dgpu_vendor}:{dgpu_device}")
             if dgpu_vendor == self.constants.pci_nvidia:
                 if dgpu_device in PCIIDArray.nvidia_ids().tesla_ids or dgpu_device in PCIIDArray.nvidia_ids().fermi_ids:
-                    if self.constants.detected_os > self.constants.high_sierra:
+                    if self.constants.detected_os > self.constants.catalina:
                         self.nvidia_legacy = True
                         self.amfi_must_disable = True
             elif dgpu_vendor == self.constants.pci_amd_ati:
                 if dgpu_device in PCIIDArray.amd_ids().terascale_1_ids:
-                    if self.constants.detected_os > self.constants.high_sierra:
+                    if self.constants.detected_os > self.constants.catalina:
                         self.amd_ts1 = True
                         self.amfi_must_disable = True
                 # TODO: Enable TS2 support
-                #elif dgpu_device in PCIIDArray.amd_ids().terascale_2_ids:
-                #    if self.constants.detected_os > self.constants.high_sierra:
-                #        self.amd_ts2 = True
-                #        self.amfi_must_disable = True
+                elif dgpu_device in PCIIDArray.amd_ids().terascale_2_ids:
+                    if self.constants.detected_os > self.constants.catalina:
+                        self.amd_ts2 = True
+                        self.amfi_must_disable = True
         if igpu_vendor:
             print(f"- Found IGPU: {igpu_vendor}:{igpu_device}")
             if igpu_vendor == self.constants.pci_intel:
                 if igpu_device in PCIIDArray.intel_ids().iron_ids:
-                    if self.constants.detected_os > self.constants.high_sierra:
+                    if self.constants.detected_os > self.constants.catalina:
                         self.iron_gpu = True
                         self.amfi_must_disable = True
                 elif igpu_device in PCIIDArray.intel_ids().sandy_ids:
-                    if self.constants.detected_os > self.constants.high_sierra:
+                    if self.constants.detected_os > self.constants.catalina:
                         self.sandy_gpu = True
                         self.amfi_must_disable = True
                 # TODO: Re-enable when Accel Patches are ready
@@ -365,34 +369,34 @@ class PatchSysVolume:
                 #    if self.constants.detected_os > self.constants.big_sur:
                 #        self.ivy_gpu = True
             elif igpu_vendor == self.constants.pci_nvidia:
-                if self.constants.detected_os > self.constants.high_sierra:
+                if self.constants.detected_os > self.constants.catalina:
                     self.nvidia_legacy = True
                     self.amfi_must_disable = True
 
     def detect_patch_set(self):
         self.detect_gpus()
         if self.model in ModelArray.LegacyBrightness:
-            if self.constants.detected_os > self.constants.el_capitan:
+            if self.constants.detected_os > self.constants.catalina:
                 self.brightness_legacy = True
 
         if self.model in ["iMac7,1", "iMac8,1"]:
-            if self.constants.detected_os > self.constants.el_capitan:
+            if self.constants.detected_os > self.constants.catalina:
                 self.legacy_audio = True
 
         Utilities.cls()
         print("The following patches will be applied:")
         if self.nvidia_legacy is True:
-            print("- Add Legacy Nvidia Tesla Acceleration")
+            print("- Add Legacy Nvidia Tesla Graphics Patch")
         elif self.amd_ts1 is True:
-            print("- Add Legacy ATI TeraScale 1 Acceleration")
+            print("- Add Legacy ATI TeraScale 1 Graphics Patch")
         elif self.amd_ts2 is True:
-            print("- Add Legacy ATI TeraScale 2 Acceleration")
+            print("- Add Legacy ATI TeraScale 2 Graphics Patch")
         if self.iron_gpu is True:
-            print("- Add Legacy Intel IronLake Acceleration")
+            print("- Add Legacy Intel IronLake Graphics Patch")
         elif self.sandy_gpu is True:
-            print("- Add Legacy Intel Sandy Bridge Acceleration")
+            print("- Add Legacy Intel Sandy Bridge Graphics Patch")
         elif self.ivy_gpu is True:
-            print("- Add Legacy Intel Ivy Bridge Acceleration")
+            print("- Add Legacy Intel Ivy Bridge Graphics Patch")
         if self.brightness_legacy is True:
             print("- Add Legacy Brightness Control")
         if self.legacy_audio is True:
