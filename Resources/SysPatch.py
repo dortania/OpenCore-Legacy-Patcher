@@ -103,6 +103,7 @@ class PatchSysVolume:
             print(result.stdout.decode())
             print("")
             print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
+            input("Press [ENTER] to continue")
         else:
             self.success_status = True
             print("- Successfully built new kernel cache")
@@ -113,6 +114,7 @@ class PatchSysVolume:
             self.unmount_drive()
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
+            input("Press [ENTER] to continue")
 
 
     def unmount_drive(self):
