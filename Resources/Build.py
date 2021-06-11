@@ -43,6 +43,9 @@ class BuildOpenCore:
         elif self.model in ModelArray.MacBookAir62:
             print("- Spoofing to MacBookAir7,2")
             return "MacBookAir7,2"
+        elif self.model in ModelArray.MacBook81:
+            print("- Spoofing to MacBook9,1")
+            return "MacBook9,1"
         elif self.model in ModelArray.MacBookPro111:
             print("- Spoofing to MacBookPro12,1")
             return "MacBookPro12,1"

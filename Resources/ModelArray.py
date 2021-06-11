@@ -640,7 +640,7 @@ MacBookAir61 = [
     "MacBookAir6,1",
 ]
 
-# MacBook and 13" Air
+# Classic MacBook and 13" Air
 MacBookAir62 = [
     "MacBook4,1",
     "MacBook5,1",
@@ -652,6 +652,11 @@ MacBookAir62 = [
     "MacBookAir4,2",
     "MacBookAir5,2",
     "MacBookAir6,2",
+]
+
+# Retina MacBook
+MacBook81 = [
+    "MacBook8,1",
 ]
 
 # MacBook Pro 13"
