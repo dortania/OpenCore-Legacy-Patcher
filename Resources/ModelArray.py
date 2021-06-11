@@ -619,6 +619,7 @@ HiDPIpicker = [
     "MacBookPro11,1",
     "MacBookPro11,2",
     "MacBookPro11,3",
+    "iMac15,1",
     "Dortania1,1"
 ]
 

@@ -388,11 +388,6 @@ class BuildOpenCore:
             print("- Fixing sleep support in macOS 12")
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
 
-        # HiDPI OpenCanopy and FileVault
-        if self.model in ModelArray.HiDPIpicker:
-            print("- Setting HiDPI picker")
-            self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["UIScale"] = binascii.unhexlify("02")
-
         # Audio Patch
         if self.model in ModelArray.LegacyAudio:
             print("- Adding audio properties")

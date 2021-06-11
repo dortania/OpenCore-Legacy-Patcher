@@ -67,7 +67,7 @@ class Constants:
         self.showpicker = True
         self.vault = False
         self.sip_status = True
-        self.secure_status = True
+        self.secure_status = False
         self.detected_os = 0
         self.boot_efi = False
         self.drm_support = False
