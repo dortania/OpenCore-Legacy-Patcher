@@ -236,7 +236,7 @@
 				<key>Comment</key>
 				<string>Patching Engine</string>
 				<key>Enabled</key>
-				<true/>
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
@@ -272,7 +272,7 @@
 				<key>Comment</key>
 				<string>GPU Patching</string>
 				<key>Enabled</key>
-				<true/>
+				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
