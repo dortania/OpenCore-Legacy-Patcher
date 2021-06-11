@@ -671,7 +671,13 @@ MacBookPro111 = [
     "MacBookPro11,1",
 ]
 
-# MacBook Pro 15" and 17"
+# MacBook Pro 15" (iGPU)
+
+MacBookPro112 = [
+    "MacBookPro11,2"
+]
+
+# MacBook Pro 15" and 17" (dGPU)
 
 MacBookPro113 = [
     "MacBookPro4,1",
@@ -685,7 +691,6 @@ MacBookPro113 = [
     "MacBookPro8,3",
     "MacBookPro9,1",
     "MacBookPro10,1",
-    "MacBookPro11,2",
     "MacBookPro11,3",
 ]
 

@@ -582,7 +582,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string>20.0.0</string>
+				<string>19.0.0</string>
 				<key>BundlePath</key>
 				<string>AppleIntelPIIXATA.kext</string>
 				<key>ExecutablePath</key>
