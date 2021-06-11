@@ -1071,6 +1071,18 @@ AGDPSupport = [
     "iMac14,1",
     "iMac14,2",
     "iMac14,3",
+    "iMac14,4",
+    "iMac15,1",
+    # TODO: Uncomment when dropped from macOS
+    #"iMac17,1",
+    #"iMac18,2",
+    #"iMac18,3",
+    #"iMac19,1",
+    #"iMac19,2",
+    #"iMac20,1",
+    #"iMac20,2",
+    #"iMacPro1,1",
+    #"MacPro6,1",
 ]
 
 AMCSupport = [
