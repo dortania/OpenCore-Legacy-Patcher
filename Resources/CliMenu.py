@@ -435,7 +435,7 @@ Valid options:
                 self.constants.override_smbios = "Default"
         elif change_menu == "3":
             print("Disabling SMBIOS spoof")
-            self.constants.override_smbios = self.constants.custom_model or self.current_model
+            self.constants.override_smbios = self.model
         else:
             print("Returning to main menu")
 
