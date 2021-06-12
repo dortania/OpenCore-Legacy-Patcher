@@ -67,8 +67,12 @@ class PatchSysVolume:
                     self.unpatch_root_vol()
                     return True
             else:
-                print("- Mounting drive as writable in OS")
-                self.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                if self.constants.detected_os > self.constants.catalina:
+                    print("- Mounting APFS Snapshot as writable")
+                    self.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                elif self.constants.detected_os == self.constants.catalina:
+                    print("- Mounting Root Volume as writable")
+                    self.elevated(["mount", "-uw", "/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
@@ -93,7 +97,10 @@ class PatchSysVolume:
         if self.constants.gui_mode is False:
             input("Press [ENTER] to continue with cache rebuild: ")
         print("- Rebuilding Kernel Cache (This may take some time)")
-        result = self.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if self.constants.detected_os > self.constants.catalina:
+            result = self.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        else:
+            result = self.elevated(["kextcache", "-i", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         if result.returncode != 0:
             self.success_status = False
@@ -107,11 +114,12 @@ class PatchSysVolume:
         else:
             self.success_status = True
             print("- Successfully built new kernel cache")
-            if self.constants.gui_mode is False:
+            if self.constants.gui_mode is False and self.constants.detected_os > self.constants.catalina:
                 input("Press [ENTER] to continue with snapshotting")
-            print("- Creating new APFS snapshot")
-            self.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            self.unmount_drive()
+            if self.constants.detected_os > self.constants.catalina:
+                print("- Creating new APFS snapshot")
+                self.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                self.unmount_drive()
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
             input("Press [ENTER] to continue")
