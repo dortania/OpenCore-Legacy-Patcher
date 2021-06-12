@@ -32,6 +32,9 @@
   - SidecarFixup (1.0.2 rolling - 06-11-2021)
 - Fix SSE4,2 Emulation
 - Fix Sidecar and CPU renaming support in macOS Monterey
+- Add AirPlay support to older Models
+- Add Intel HD4000 Acceleration
+  - Big thanks to Jackluke!
 
 ## 0.1.6
 - Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers

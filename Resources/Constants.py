@@ -40,7 +40,7 @@ class Constants:
         self.sidecarfixup_version = "1.0.2"
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
-        self.payload_version = "0.0.14"
+        self.payload_version = "0.0.15"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
