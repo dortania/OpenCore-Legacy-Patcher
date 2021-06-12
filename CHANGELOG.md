@@ -23,13 +23,15 @@
   - AirportBrcmFixup (2.1.3 rolling - 06-08-2021)
   - AppleALC (1.6.2 rolling - 06-08-2021)
   - CPUFriend (1.2.4 rolling - 06-08-2021)
-  - Lilu (1.5.4 rolling - 06-08-2021)
+  - Lilu (1.5.4 rolling - 06-11-2021)
   - NVMeFix (1.0.9 rolling - 06-08-2021)
   - WhateverGreen (1.5.1 rolling - 06-08-2021)
-  - RestrictEvents (1.0.3 rolling - 06-08-2021)
+  - RestrictEvents (1.0.3 rolling - 06-11-2021)
   - Apple Binaries (0.0.14 release - 06-10-2021)
   - MouSSE (0.95 release - 06-08-2021)
+  - SidecarFixup (1.0.2 rolling - 06-11-2021)
 - Fix SSE4,2 Emulation
+- Fix Sidecar and CPU renaming support in macOS Monterey
 
 ## 0.1.6
 - Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers
