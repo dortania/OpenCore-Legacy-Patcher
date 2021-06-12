@@ -1267,9 +1267,7 @@ AddIntelGen3Accel = [
     "AppleIntelHD4000GraphicsGLDriver.bundle",
     "AppleIntelHD4000GraphicsMTLDriver.bundle",
     "AppleIntelHD4000GraphicsVADriver.bundle",
-    #"IOSurface.kext",
-    #"IOGPUFamily.kext",
-    #"IOAcceleratorFamily2.kext",
+    "AppleIntelIVBVA.bundle",
 ]
 
 AddGeneralAccel = [
