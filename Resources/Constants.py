@@ -38,9 +38,10 @@ class Constants:
         self.hibernationfixup = "1.3.9"
         self.nvmefix_version = "1.0.9"
         self.sidecarfixup_version = "1.0.2"
+        self.debugenhancer_version = "1.0.3"
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
-        self.payload_version = "0.0.18"
+        self.payload_version = "0.0.18" # Apple-Binaries-OCLP
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -208,6 +209,8 @@ class Constants:
     def nvmefix_path(self): return self.payload_kexts_path / Path(f"Acidanthera/NVMeFix-v{self.nvmefix_version}.zip")
     @property
     def sidecarfixup_path(self): return self.payload_kexts_path / Path(f"Acidanthera/SidecarFixup-v{self.sidecarfixup_version}.zip")
+    @property
+    def debugenhancer_path(self): return self.payload_kexts_path / Path(f"Acidanthera/DebugEnhancer-v{self.debugenhancer_version}.zip")
     @property
     def innie_path(self): return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}.zip")
     @property
