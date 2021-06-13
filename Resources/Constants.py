@@ -9,7 +9,7 @@ from pathlib import Path
 
 class Constants:
     def __init__(self):
-        self.patcher_version = "0.1.8"
+        self.patcher_version = "0.1.7"
         self.opencore_commit = "4e0ff2d - 05-23-2021"
         self.opencore_version = "0.7.0"
         self.lilu_version = "1.5.4"
@@ -40,7 +40,7 @@ class Constants:
         self.sidecarfixup_version = "1.0.2"
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
-        self.payload_version = "0.0.17"
+        self.payload_version = "0.0.18"
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
