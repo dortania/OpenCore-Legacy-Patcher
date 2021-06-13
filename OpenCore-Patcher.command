@@ -29,7 +29,7 @@ class OpenCoreLegacyPatcher():
                 self.constants.secure_status = False
                 self.constants.disable_amfi = True
         if self.current_model in ModelArray.ModernGPU:
-            if self.model in ["iMac13,1", "iMac13,3"]:
+            if self.current_model in ["iMac13,1", "iMac13,3"]:
                 dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
                 if not dgpu_vendor:
                     self.constants.sip_status = False
