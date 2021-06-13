@@ -626,9 +626,9 @@ class BuildOpenCore:
                 print("- Adding CPU Name Patch")
             if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
                 self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
-            if self.model == self.constants.override_smbios:
-                print("- Adding -no_compat_check")
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -no_compat_check"
+        if self.model == self.constants.override_smbios:
+            print("- Adding -no_compat_check")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -no_compat_check"
 
     def set_smbios(self):
         spoofed_model = self.model
