@@ -386,6 +386,8 @@ LegacyGPU = [
     "MacBookAir3,2",  # Nvidia 300
     "MacBookAir4,1",  # Intel 3000
     "MacBookAir4,2",  # Intel 3000
+    "MacBookAir5,1",  # Intel 4000
+    "MacBookAir5,2",  # Intel 4000
     "MacBookPro4,1",  # Nvidia 8000
     "MacBookPro5,1",  # Nvidia 9000
     "MacBookPro5,2",  # Nvidia 9000
@@ -398,11 +400,17 @@ LegacyGPU = [
     "MacBookPro8,1",  # Intel 3000
     "MacBookPro8,2",  # Intel 3000 + AMD 6000
     "MacBookPro8,3",  # Intel 3000 + AMD 6000
+    "MacBookPro9,1",  # Intel 4000 + Nvidia 650M
+    "MacBookPro9,2",  # Intel 4000
+    "MacBookPro10,1",  # Intel 4000 + Nvidia 650M
+    "MacBookPro10,2",  # Intel 4000
     "Macmini3,1",  # Nvidia 9000
     "Macmini4,1",  # Nvidia 300
     "Macmini5,1",  # Intel 3000
     "Macmini5,2",  # AMD 6000
     "Macmini5,3",  # Intel 3000
+    "Macmini6,1",  # Intel 4000
+    "Macmini6,2",  # Intel 4000
     "iMac7,1",  # AMD 2000
     "iMac8,1",  # Nvidia and AMD 2400
     "iMac9,1",  # Nvidia 9000
@@ -412,6 +420,8 @@ LegacyGPU = [
     "iMac11,3",  # AMD 5000
     "iMac12,1",  # AMD 6000
     "iMac12,2",  # AMD 6000
+    "iMac13,1",  # Intel 4000
+    "iMac13,3",  # Intel 4000
     "Dortania1,1"  # RTX 3080
 ]
 
