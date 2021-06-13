@@ -65,7 +65,10 @@ def patching_status():
     amfi_enabled = True # Apple Mobile File Integrity
     fv_enabled = True   # FileVault
 
-    if get_nvram("boot-args", decode=False) and "amfi_get_out_of_my_way=" in get_nvram("boot-args", decode=False):
+    amfi_1 = "amfi_get_out_of_my_way=0x1"
+    amfi_2 = "amfi_get_out_of_my_way=1"
+
+    if get_nvram("boot-args", decode=False) and (amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False)):
         amfi_enabled = False
     if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in Constants.Constants().sbm_values:
         sbm_enabled = False

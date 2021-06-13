@@ -84,6 +84,7 @@ class Constants:
         self.apecid_support = False
         self.firewire_boot = False
         self.nvme_boot = False
+        self.disable_amfi = False
 
         # OS Versions
         self.tiger = 8
@@ -362,27 +363,32 @@ class Constants:
     def skylight_path(self): return self.payload_apple_private_frameworks_path_accel / Path("SkyLight.framework")
 
     csr_values = {
-        "CSR_ALLOW_UNTRUSTED_KEXTS":            False,  # 0x1   - Introduced in El Capitan  # noqa: E241
-        "CSR_ALLOW_UNRESTRICTED_FS":            False,  # 0x2   - Introduced in El Capitan  # noqa: E241
-        "CSR_ALLOW_TASK_FOR_PID":               False,  # 0x4   - Introduced in El Capitan  # noqa: E241
-        "CSR_ALLOW_KERNEL_DEBUGGER":            False,  # 0x8   - Introduced in El Capitan  # noqa: E241
-        "CSR_ALLOW_APPLE_INTERNAL":             False,  # 0x10  - Introduced in El Capitan  # noqa: E241
-        "CSR_ALLOW_UNRESTRICTED_DTRACE":        False,  # 0x20  - Introduced in El Capitan  # noqa: E241
-        "CSR_ALLOW_UNRESTRICTED_NVRAM":         False,  # 0x40  - Introduced in El Capitan  # noqa: E241
-        "CSR_ALLOW_DEVICE_CONFIGURATION":       False,  # 0x80  - Introduced in El Capitan  # noqa: E241
-        "CSR_ALLOW_ANY_RECOVERY_OS":            False,  # 0x100 - Introduced in Sierra      # noqa: E241
-        "CSR_ALLOW_UNAPPROVED_KEXTS":           False,  # 0x200 - Introduced in High Sierra # noqa: E241
-        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE": False,  # 0x400 - Introduced in Mojave      # noqa: E241
-        "CSR_ALLOW_UNAUTHENTICATED_ROOT":       False,  # 0x800 - Introduced in Big Sur     # noqa: E241
+        "CSR_ALLOW_UNTRUSTED_KEXTS":            False,  # 0x1   - Allows Unsigned Kexts           - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_UNRESTRICTED_FS":            False,  # 0x2   - File System Access              - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_TASK_FOR_PID":               False,  # 0x4   - Unrestricted Debugging          - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_KERNEL_DEBUGGER":            False,  # 0x8   - Allow Kernel Debugger           - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_APPLE_INTERNAL":             False,  # 0x10  - Set AppleInternal Features      - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_UNRESTRICTED_DTRACE":        False,  # 0x20  - Unrestricted DTrace usage       - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_UNRESTRICTED_NVRAM":         False,  # 0x40  - Unrestricted NVRAM write        - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_DEVICE_CONFIGURATION":       False,  # 0x80  - Allow Device Configuration(?)   - Introduced in El Capitan  # noqa: E241
+        "CSR_ALLOW_ANY_RECOVERY_OS":            False,  # 0x100 - Disable BaseSystem Verification - Introduced in Sierra      # noqa: E241
+        "CSR_ALLOW_UNAPPROVED_KEXTS":           False,  # 0x200 - Allow Unapproved Kexts          - Introduced in High Sierra # noqa: E241
+        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE": False,  # 0x400 - Override Executable Policy      - Introduced in Mojave      # noqa: E241
+        "CSR_ALLOW_UNAUTHENTICATED_ROOT":       False,  # 0x800 - Allow Root Volume Mounting      - Introduced in Big Sur     # noqa: E241
     }
+
+    root_patch_sip_mojave = [
+        # Variables required to root patch in Mojave and Catalina
+        "CSR_ALLOW_UNTRUSTED_KEXTS",
+        "CSR_ALLOW_UNRESTRICTED_FS",
+        "CSR_ALLOW_UNAPPROVED_KEXTS",
+        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE",
+    ]
 
     root_patch_sip_big_sur = [
         # Variables required to root patch in Big Sur and Monterey
         "CSR_ALLOW_UNTRUSTED_KEXTS",
         "CSR_ALLOW_UNRESTRICTED_FS",
-        "CSR_ALLOW_UNRESTRICTED_DTRACE",
-        "CSR_ALLOW_UNRESTRICTED_NVRAM",
-        "CSR_ALLOW_DEVICE_CONFIGURATION",
         "CSR_ALLOW_UNAPPROVED_KEXTS",
         "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE",
         "CSR_ALLOW_UNAUTHENTICATED_ROOT",

@@ -172,10 +172,6 @@ Note: For security reasons, OpenShell will be disabled when Vault is set.
 however to patch the root volume both of these must be disabled.
 Only disable is absolutely necessary. SIP value = 0xFEF
 
-Note: for minor changes, SIP can be adjusted in recovery like normal.
-Additionally, when disabling SIP via the patcher amfi_get_out_of_my_way=1
-will be added to boot-args.
-
 Valid options:
 
 1. Enable Both
@@ -197,6 +193,21 @@ Valid options:
         elif change_menu == "4":
             self.constants.sip_status = False
             self.constants.secure_status = False
+        else:
+            print("Invalid option")
+
+    def set_amfi(self):
+        Utilities.cls()
+        Utilities.header(["Disable AMFI"])
+        print("""Required for Root Patching non-Metal GPUs
+in macOS Big Sur. Without this, will receive kernel panic once
+Patcher finishes installing legacy acceleration patches.
+        """)
+        change_menu = input("Disable AMFI(y/n): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.disable_amfi = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.disable_amfi = False
         else:
             print("Invalid option")
 

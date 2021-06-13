@@ -430,7 +430,12 @@ class PatchSysVolume:
         if self.sip_enabled is True:
             print("\nCannot patch!!! Please disable SIP!!!")
             print("Disable SIP in Patcher Settings and Rebuild OpenCore")
-            print("For Hackintoshes, set SIP to EF0F0000")
+            print("Ensure the following bits are set for csr-active-config:\n")
+            if self.constants.detected_os > self.constants.catalina:
+                sip = self.constants.root_patch_sip_big_sur
+            else:
+                sip = self.constants.root_patch_sip_mojave
+            print("\n".join(sip))
         if self.sbm_enabled is True:
             print("\nCannot patch!!! Please disable SecureBootModel!!!")
             print("Disable SecureBootModel in Patcher Settings and Rebuild OpenCore")
@@ -441,7 +446,7 @@ class PatchSysVolume:
 
         if self.amfi_enabled is True and self.amfi_must_disable is True:
             print("\nCannot patch!!! Please disable AMFI!!!")
-            print("For Hackintoshes, please add amfi_getOut_of_my_way=0x1 to boot-args")
+            print("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
 
         if self.amfi_must_disable is True:
             if self.sip_enabled is True or \

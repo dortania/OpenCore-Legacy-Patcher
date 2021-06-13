@@ -22,7 +22,18 @@ class OpenCoreLegacyPatcher():
 
             if (dgpu_vendor == self.constants.pci_amd_ati and (dgpu_device in PCIIDArray.amd_ids().polaris_ids or dgpu_device in PCIIDArray.amd_ids().vega_ids or dgpu_device in PCIIDArray.amd_ids().navi_ids or dgpu_device in PCIIDArray.amd_ids().legacy_gcn_ids)) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in PCIIDArray.nvidia_ids().kepler_ids):
                 self.constants.sip_status = True
-                self.constants.secure_status = True
+                self.constants.secure_status = False
+                self.constants.disable_amfi = False
+            else:
+                self.constants.sip_status = False
+                self.constants.secure_status = False
+                self.constants.disable_amfi = True
+        if self.current_model in ModelArray.ModernGPU:
+            if self.model in ["iMac13,1", "iMac13,3"]:
+                dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
+                if not dgpu_vendor:
+                    self.constants.sip_status = False
+                    self.constants.secure_status = False
             else:
                 self.constants.sip_status = False
                 self.constants.secure_status = False
@@ -100,6 +111,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set Vault Mode:\t\t\tCurrently {self.constants.vault}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_vault],
                 [f"Allow FireWire Boot:\t\tCurrently {self.constants.firewire_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).allow_firewire],
                 [f"Allow NVMe Boot:\t\t\tCurrently {self.constants.nvme_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).allow_nvme],
+                [f"Disable AMFI:\t\t\tCurrently {self.constants.disable_amfi}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).set_amfi],
                 [f"Set SIP and SecureBootModel:\tSIP: {self.constants.sip_status} SBM: {self.constants.secure_status}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_sip],
                 [f"Allow OpenCore on native Models:\tCurrently {self.constants.allow_oc_everywhere}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).allow_native_models],
                 [f"Advanced Patch Settings, for developers only", self.advanced_patcher_settings],

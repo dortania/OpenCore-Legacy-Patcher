@@ -388,8 +388,10 @@ class BuildOpenCore:
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
         if self.model in ["iMac13,1", "iMac13,2", "iMac13,3"]:
-            print("- Fixing sleep support in macOS 12")
-            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
+            dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
+            if dgpu_vendor:
+                print("- Fixing sleep support in macOS 12")
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"name": binascii.unhexlify("23646973706C6179"), "IOName": "#display", "class-code": binascii.unhexlify("FFFFFFFF")}
 
         # Audio Patch
         if self.model in ModelArray.LegacyAudio:
@@ -603,6 +605,8 @@ class BuildOpenCore:
             print("- Disabling SIP")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("EF0F0000")
             self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"] += ["csr-active-config"]
+        if self.constants.disable_amfi is True:
+            print("- Disabling AMFI")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi_get_out_of_my_way=1"
         if self.constants.secure_status is False:
             print("- Disabling SecureBootModel")
