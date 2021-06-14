@@ -362,7 +362,8 @@ class PatchSysVolume:
                         self.amfi_must_disable = True
                 # TODO: Enable TS2 support
                 elif dgpu_device in PCIIDArray.amd_ids().terascale_2_ids:
-                    if self.constants.detected_os > self.constants.catalina:
+                    # Requires manual permission from user to avoid medical issues
+                    if self.constants.detected_os > self.constants.catalina and self.constants.terscale_2_patch is True:
                         self.amd_ts2 = True
                         self.amfi_must_disable = True
         if igpu_vendor:

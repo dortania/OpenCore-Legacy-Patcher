@@ -495,3 +495,28 @@ OpenCore will enable NVMe support in it's picker
             self.constants.nvme_boot = False
         else:
             print("Invalid option")
+
+
+    def enable_terascale(self):
+        Utilities.cls()
+        Utilities.header(["Enable TeraScale 2 Acceleration"])
+        print("""
+Currently TeraScale 2 graphics acceleration is in beta with
+some unfortunate bugs on login including strobing colours
+until the user forces Million Colours on the Display with
+SwitchResX or resXtreme
+
+Users sensitive to seizures should avoid using TeraScale 2
+patches or ask someone to handle inital setup to ensure
+no issues
+
+Note: Acceleration only applies to macOS Big Sur
+        """)
+
+        change_menu = input("Enable TS2 Acceleration?(y/n): ")
+        if change_menu == "y":
+            self.constants.terscale_2_patch = True
+        elif change_menu == "n":
+            self.constants.terscale_2_patch = False
+        else:
+            print("Invalid option")

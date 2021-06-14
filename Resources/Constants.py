@@ -86,6 +86,7 @@ class Constants:
         self.firewire_boot = False
         self.nvme_boot = False
         self.disable_amfi = False
+        self.terscale_2_patch = False
 
         # OS Versions
         self.tiger = 8

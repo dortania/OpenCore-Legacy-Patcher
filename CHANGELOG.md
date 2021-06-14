@@ -37,6 +37,8 @@
   - Big thanks to Jackluke, EduCovas, DhinakG, MykolaG!
 - Add DebugEnhancer for better macOS Monterey logs
   - DebugEnhancer (1.0.3 rolling - 06-08-2021)
+- Add TeraScale 2 Graphics Acceleration to Big Sur
+  - User configurable, those prone to seizures are recommended to avoid or have another setup the machine due to initial colour strobing before forcing Million Colours on the display with SwitchResX or ResXtreme
 
 ## 0.1.6
 - Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers

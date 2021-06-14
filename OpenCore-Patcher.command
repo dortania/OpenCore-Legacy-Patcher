@@ -111,6 +111,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set Vault Mode:\t\t\tCurrently {self.constants.vault}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_vault],
                 [f"Allow FireWire Boot:\t\tCurrently {self.constants.firewire_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).allow_firewire],
                 [f"Allow NVMe Boot:\t\t\tCurrently {self.constants.nvme_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).allow_nvme],
+                [f"Enable TeraScale 2 Acceleration:\tCurrently {self.constants.terscale_2_patch}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).enable_terascale],
                 [f"Disable AMFI:\t\t\tCurrently {self.constants.disable_amfi}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).set_amfi],
                 [f"Set SIP and SecureBootModel:\tSIP: {self.constants.sip_status} SBM: {self.constants.secure_status}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).change_sip],
                 [f"Allow OpenCore on native Models:\tCurrently {self.constants.allow_oc_everywhere}", CliMenu.MenuOptions(self.constants.custom_model or self.current_model, self.constants).allow_native_models],
