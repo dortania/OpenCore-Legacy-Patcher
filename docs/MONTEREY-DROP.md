@@ -36,6 +36,19 @@ By default these machines require root volume patches to gain graphics accelerat
 * MacBookAir5,x and older
 * MacBookPro10,x and older
 
+Note: Currently HD 4000 support in Monterey is not perfect, following are broken:
+
+::: details HD 4000 Issues
+
+* Photo Booth app crashing
+* Safari sites crash if request camera access
+* Full Screen recoding crashing with Screenshot app
+* AirPlay to Mac crashes
+* Full Screen apps crashes
+  * Disable "Hide menubar in Full Screen" to avoid crash
+
+:::
+
 ### Non-Metal GPUs
 
 * Non-Metal GPUs no longer have working acceleration patches:
