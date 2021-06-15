@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.1.9
+- Fix incorrect AMFI and SIP detection
 
 ## 0.1.8
 - Fix Kernel Panic in Big Sur and Monterey
