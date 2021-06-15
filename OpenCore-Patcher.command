@@ -26,7 +26,7 @@ class OpenCoreLegacyPatcher():
                 self.constants.custom_cpu_model = 1
                 self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
 
-        if "-v" in Utilities.get_nvram("boot-args", decode=False):
+        if "-v" in (Utilities.get_nvram("boot-args", decode=False) or ""):
             self.constants.verbose_debug = True
 
         # Check if running in RecoveryOS
