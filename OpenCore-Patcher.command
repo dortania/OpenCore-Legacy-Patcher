@@ -42,6 +42,10 @@ class OpenCoreLegacyPatcher():
                     self.constants.sip_status = True
                     self.constants.secure_status = False
                     self.constants.disable_amfi = False
+                else:
+                    self.constants.sip_status = False
+                    self.constants.secure_status = False
+                    self.constants.disable_amfi = True
             else:
                 self.constants.sip_status = False
                 self.constants.secure_status = False
