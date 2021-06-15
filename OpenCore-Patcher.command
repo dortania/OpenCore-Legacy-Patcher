@@ -184,6 +184,8 @@ B. Exit
         """
         monterey = """Patches Root volume to fix misc issues such as:
 
+- Graphics Acceleration
+  - Intel: Ivy Bridge (4000 series iGPUs)
 - Basic Framebuffer and brightness Control (No acceleration)
   - Nvidia: Tesla - Fermi (8000-500 series)
   - Intel: Ironlake - Sandy Bridge
@@ -201,14 +203,27 @@ Supported Options:
 2. Unpatch System Volume (Experimental)
 B. Exit
         """
-        if self.constants.detected_os > self.constants.big_sur:
+
+        default = """
+This OS has no root patches available to apply, please ensure you're patching a booted
+install that requires root patches such as macOS Big Sur or Monterey
+
+Supported Options:
+
+B. Exit
+        """
+        no_patch = False
+        if self.constants.detected_os == self.constants.monterey:
             print(monterey)
-        else:
+        elif self.constants.detected_os == self.constants.big_sur:
             print(big_sur)
+        else:
+            print(default)
+            no_patch = True
         change_menu = input("Patch System Volume?: ")
-        if change_menu == "1":
+        if no_patch is not True and change_menu == "1":
             SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_patch()
-        elif change_menu == "2":
+        elif no_patch is not True and change_menu == "2":
             SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_unpatch()
         else:
             print("Returning to main menu")

@@ -94,6 +94,14 @@ module.exports = {
 
         },
         {
+            title: 'macOS Monterey',
+            collapsable: false,
+            sidebarDepth: 1,
+            children: [
+				'MONTEREY-DROP',
+            ]
+        },
+        {
             title: 'Misc',
             collapsable: false,
             sidebarDepth: 1,
