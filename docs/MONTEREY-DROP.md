@@ -31,10 +31,10 @@ Below is a list of hardware that currently has issues with Monterey:
 
 By default these machines require root volume patches to gain graphics acceleration in Monterey. OpenCore Legacy Patcher supports readding support however SIP and FileVault can no longer be enabled due to root patching:
 
-* iMac13,x and older
-* Macmini6,x and older
-* MacBookAir5,x and older
-* MacBookPro10,x and older
+* Macmini6,x
+* MacBookAir5,x
+* MacBookPro9,x
+* MacBookPro10,x
 
 Note: Currently HD 4000 support in Monterey is not perfect, following are broken:
 
