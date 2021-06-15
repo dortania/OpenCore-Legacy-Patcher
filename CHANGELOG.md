@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.1.9
+
 ## 0.1.8
 - Fix Kernel Panic in Big Sur and Monterey
 - Increment binaries:
