@@ -11,24 +11,6 @@ class MenuOptions:
         self.model = model
         self.constants: Constants.Constants = versions
 
-    def change_os(self):
-        Utilities.cls()
-        Utilities.header(["Select Patcher's Target OS"])
-        print(f"""
-Minimum Target:\t{self.constants.min_os_support}
-Maximum Target:\t{self.constants.max_os_support}
-Current target:\t{self.constants.os_support}
-        """)
-        temp_os_support = float(input("Please enter OS target: "))
-        if (self.constants.max_os_support < temp_os_support) or (temp_os_support < self.constants.min_os_support):
-            print("Unsupported entry")
-        else:
-            self.constants.os_support = temp_os_support
-        if temp_os_support == 11.0:
-            ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS11
-        elif temp_os_support == 12.0:
-            ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS12
-
     def change_verbose(self):
         Utilities.cls()
         Utilities.header(["Set Verbose mode"])

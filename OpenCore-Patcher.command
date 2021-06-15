@@ -17,51 +17,46 @@ class OpenCoreLegacyPatcher():
         self.current_model: str = None
         self.current_model = DeviceProbe.smbios_probe().model_detect(False)
         self.constants.detected_os = int(platform.uname().release.partition(".")[0])
-        if self.current_model in ModelArray.LegacyGPU:
-            dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
-
-            if (dgpu_vendor == self.constants.pci_amd_ati and (dgpu_device in PCIIDArray.amd_ids().polaris_ids or dgpu_device in PCIIDArray.amd_ids().vega_ids or dgpu_device in PCIIDArray.amd_ids().navi_ids or dgpu_device in PCIIDArray.amd_ids().legacy_gcn_ids)) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in PCIIDArray.nvidia_ids().kepler_ids):
-                self.constants.sip_status = True
-                self.constants.secure_status = False
-                self.constants.disable_amfi = False
-            else:
-                self.constants.sip_status = False
-                self.constants.secure_status = False
-                self.constants.disable_amfi = True
-        if self.current_model in ModelArray.ModernGPU:
-            if self.current_model in ["iMac13,1", "iMac13,3"]:
-                dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
-                if not dgpu_vendor:
-                    self.constants.sip_status = False
-                    self.constants.secure_status = False
-            else:
-                self.constants.sip_status = False
-                self.constants.secure_status = False
-
-        # Logic for when user runs custom OpenCore build and do not expose it
-        # Note: This logic currently only applies for iMacPro1,1 users, see below threads on the culprits:
-        # - https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/post-17425857
-        # - https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/
-        # PLEASE FOR THE LOVE OF GOD JUST SET ExposeSensitiveData CORRECTLY!!!
-        if self.current_model == "iMacPro1,1":
-            serial: str = subprocess.run("system_profiler SPHardwareDataType | grep Serial".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-            serial = [line.strip().split("Number (system): ", 1)[1] for line in serial.split("\n") if line.strip().startswith("Serial")][0]
-            true_model = subprocess.run([str(self.constants.macserial_path), "--info", str(serial)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            true_model = [i.partition(" - ")[2] for i in true_model.stdout.decode().split("\n") if "Model: " in i][0]
-            print(f"True Model: {true_model}")
-            if not true_model.startswith("Unknown"):
-                self.current_model = true_model
+        self.check_default_settings(self.current_model, False)
 
         custom_cpu_model_value: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:revcpuname".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-
         if not custom_cpu_model_value.startswith("nvram: Error getting variable"):
             custom_cpu_model_value = [line.strip().split(":revcpuname	", 1)[1] for line in custom_cpu_model_value.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
             if custom_cpu_model_value.split("%00")[0] != "":
                 self.constants.custom_cpu_model = 1
                 self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
 
+        if "-v" in Utilities.get_nvram("boot-args", decode=False):
+            self.constants.verbose_debug = True
+
         # Check if running in RecoveryOS
         self.check_recovery()
+
+    def check_default_settings(self, model, custom):
+        self.constants.sip_status = True
+        self.constants.disable_amfi = False
+        if model in ModelArray.LegacyGPU:
+            if custom is False:
+                dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
+                if (dgpu_vendor == self.constants.pci_amd_ati and (dgpu_device in PCIIDArray.amd_ids().polaris_ids or dgpu_device in PCIIDArray.amd_ids().vega_ids or dgpu_device in PCIIDArray.amd_ids().navi_ids or dgpu_device in PCIIDArray.amd_ids().legacy_gcn_ids)) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in PCIIDArray.nvidia_ids().kepler_ids):
+                    self.constants.sip_status = True
+                    self.constants.secure_status = False
+                    self.constants.disable_amfi = False
+            else:
+                self.constants.sip_status = False
+                self.constants.secure_status = False
+                self.constants.disable_amfi = True
+        if model in ModelArray.ModernGPU:
+            if model in ["iMac13,1", "iMac13,3"]:
+
+                if custom is False:
+                    dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
+                    if not dgpu_vendor:
+                        self.constants.sip_status = False
+                        self.constants.secure_status = False
+            else:
+                self.constants.sip_status = False
+                self.constants.secure_status = False
 
     def check_recovery(self):
         root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -95,6 +90,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             if print_models in {"y", "Y", "yes", "Yes"}:
                 print("\n".join(ModelArray.SupportedSMBIOS))
                 input("\nPress [ENTER] to continue")
+        else:
+            self.check_default_settings(self.constants.custom_model, True)
 
     def patcher_settings(self):
         response = None
@@ -230,7 +227,6 @@ B. Exit
 
     def main_menu(self):
         response = None
-        ModelArray.SupportedSMBIOS = ModelArray.SupportedSMBIOS12
         while not (response and response == -1):
             title = [
                 f"OpenCore Legacy Patcher v{self.constants.patcher_version}",

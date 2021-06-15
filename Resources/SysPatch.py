@@ -13,7 +13,7 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
-from Resources import Constants, DeviceProbe, ModelArray, PCIIDArray, Utilities
+from Resources import Constants, DeviceProbe, ModelArray, SysPatchArray, PCIIDArray, Utilities
 
 
 class PatchSysVolume:
@@ -150,58 +150,56 @@ class PatchSysVolume:
             self.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def add_brightness_patch(self):
-        self.delete_old_binaries(ModelArray.DeleteBrightness)
-        self.add_new_binaries(ModelArray.AddBrightness, self.constants.legacy_brightness)
+        self.delete_old_binaries(SysPatchArray.DeleteBrightness)
+        self.add_new_binaries(SysPatchArray.AddBrightness, self.constants.legacy_brightness)
         self.elevated(["ditto", self.constants.payload_apple_private_frameworks_path_brightness, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         self.elevated(["chmod", "-Rf", "755", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         self.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def add_audio_patch(self):
-        self.delete_old_binaries(ModelArray.DeleteVolumeControl)
-        self.add_new_binaries(ModelArray.AddVolumeControl, self.constants.audio_path)
+        self.delete_old_binaries(SysPatchArray.DeleteVolumeControl)
+        self.add_new_binaries(SysPatchArray.AddVolumeControl, self.constants.audio_path)
 
     def gpu_accel_legacy_nvidia(self):
-        self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
-        self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
-        self.add_new_binaries(ModelArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+        self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
+        self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
+        self.add_new_binaries(SysPatchArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
 
     def gpu_framebuffer_legacy_nvidia(self):
-        self.add_new_binaries(ModelArray.AddNvidiaBrightness, self.constants.legacy_nvidia_path)
+        self.add_new_binaries(SysPatchArray.AddNvidiaBrightness, self.constants.legacy_nvidia_path)
 
     def gpu_accel_legacy_ts1(self):
-        self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
-        self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
-        self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
+        self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
+        self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
+        self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
 
     def gpu_accel_legacy_ts2(self):
-        self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
-        self.delete_old_binaries(ModelArray.DeleteAMDAccel11TS2)
-        self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
-        self.add_new_binaries(ModelArray.AddAMDAccel11, self.constants.legacy_amd_path)
+        self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
+        self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11TS2)
+        self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
+        self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
 
     def gpu_framebuffer_legacy_amd(self):
-        self.add_new_binaries(ModelArray.AddAMDBrightness, self.constants.legacy_amd_path)
+        self.add_new_binaries(SysPatchArray.AddAMDBrightness, self.constants.legacy_amd_path)
 
     def gpu_accel_legacy_ironlake(self):
-        self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
-        self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
-        self.add_new_binaries(ModelArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
+        self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
+        self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
+        self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
 
     def gpu_framebuffer_legacy_ironlake(self):
-        self.add_new_binaries(ModelArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
+        self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
 
     def gpu_accel_legacy_sandybridge(self):
-        self.delete_old_binaries(ModelArray.DeleteNvidiaAccel11)
-        self.add_new_binaries(ModelArray.AddGeneralAccel, self.constants.legacy_general_path)
-        self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
+        self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
+        self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
+        self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
 
     def gpu_framebuffer_legacy_sandybridge(self):
-        self.add_new_binaries(ModelArray.AddIntelGen2Accel, self.constants.legacy_intel_gen1_path)
+        self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen1_path)
 
     def gpu_framebuffer_ivybridge(self):
-        #self.delete_old_binaries(ModelArray.DeleteAMDAccel11)
-        self.add_new_binaries(ModelArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
-        #self.elevated(["ditto", self.constants.payload_apple_frameworks_path_accel, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
 
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
@@ -281,7 +279,7 @@ class PatchSysVolume:
 
         if self.amd_ts2 is True:
             # TeraScale 2 patches must be installed after Intel HD3000
-            self.add_new_binaries(ModelArray.AddAMDAccel11TS2, self.constants.legacy_amd_path_ts2)
+            self.add_new_binaries(SysPatchArray.AddAMDAccel11TS2, self.constants.legacy_amd_path_ts2)
 
         if self.added_kexts is True:
             self.gpu_accel_legacy_extended()

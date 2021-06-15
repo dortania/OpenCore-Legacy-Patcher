@@ -1,5 +1,10 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.1.8
+- Fix Kernel Panic in Big Sur and Monterey
+- Increment binaries:
+  - Lilu (1.5.4 rolling - 06-15-2021)
+
 ## 0.1.7
 - Add FireWire Boot Support for Catalina and newer
 - Add NVMe firmware support for older models (ie. MacPro3,1)
