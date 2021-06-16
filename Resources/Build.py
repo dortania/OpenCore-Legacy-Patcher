@@ -590,8 +590,8 @@ class BuildOpenCore:
             #self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " msgbuf=1048576"
         if self.constants.opencore_debug is True:
             print("- Enabling DEBUG OpenCore")
-            self.config["Misc"]["Debug"]["Target"] = 67
-            self.config["Misc"]["Debug"]["DisplayLevel"] = 672151678018
+            self.config["Misc"]["Debug"]["Target"] = 0x43
+            self.config["Misc"]["Debug"]["DisplayLevel"] = 0x80000042
         if self.constants.showpicker is True:
             print("- Enabling ShowPicker")
             self.config["Misc"]["Boot"]["ShowPicker"] = True
