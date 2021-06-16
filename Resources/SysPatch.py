@@ -435,6 +435,8 @@ class PatchSysVolume:
             else:
                 sip = self.constants.root_patch_sip_mojave
             print("\n".join(sip))
+            print("For Hackintoshes, please set csr-active-config to 030A0000 (0xA03)")
+            print("For non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS")
         if self.sbm_enabled is True:
             print("\nCannot patch!!! Please disable SecureBootModel!!!")
             print("Disable SecureBootModel in Patcher Settings and Rebuild OpenCore")
