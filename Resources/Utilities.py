@@ -94,12 +94,13 @@ def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
     else:
         uuid = ""
     result = subprocess.run(f"nvram -x {uuid}{variable}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.strip()
-    if result:
+    try:
         value = plistlib.loads(result)[f"{uuid}{variable}"]
-        if decode:
-            value = value.strip(b"\0").decode()
-        return value
-    return None
+    except plistlib.InvalidFileException:
+        return None
+    if decode:
+        value = value.strip(b"\0").decode()
+    return value
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]
