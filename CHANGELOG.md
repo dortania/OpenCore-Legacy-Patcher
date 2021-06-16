@@ -1,5 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.2.0
+
+
+
 ## 0.1.9
 - Fix incorrect AMFI and SIP detection
 
