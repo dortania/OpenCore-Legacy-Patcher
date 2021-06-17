@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 import plistlib
 import subprocess
-from typing import Any
+from typing import Generator
 
 
 @dataclass
@@ -10,8 +12,8 @@ class IORegistryEntry:
     entry_class: str
     properties: dict
     location: str
-    children: list
-    parent: Any
+    children: list[IORegistryEntry]
+    parent: IORegistryEntry
 
 
 class IOReg:
@@ -49,25 +51,31 @@ class IOReg:
 
         return converted
 
-    def find(self, root=None, **kwargs):
+    def parse_conditions(self, entry: IORegistryEntry, **kwargs):
+        conditions = []
+        if "parent" in kwargs:
+            conditions.append(self.parse_conditions(entry.parent, **kwargs["parent"]))
+        if "children" in kwargs:
+            conditions.append(any(self.parse_conditions(i, **kwargs["children"]) for i in entry.children))
+        if "name" in kwargs:
+            conditions.append(kwargs["name"] == entry.name)
+        if "entry_class" in kwargs:
+            conditions.append(kwargs["entry_class"] == entry.entry_class)
+        if "key" in kwargs:
+            conditions.append(kwargs["key"] in entry.properties)
+        if "property" in kwargs:
+            conditions.append(kwargs["property"][0] in entry.properties and entry.properties[kwargs["property"][0]] == kwargs["property"][1])
+
+        return all(conditions)
+
+    def find(self, root: IORegistryEntry = None, **kwargs) -> Generator[IORegistryEntry, None, None]:
         if not root:
             root = self.tree
 
         if not kwargs:
             return
 
-        conditions = []
-
-        if "name" in kwargs:
-            conditions.append(kwargs["name"] == root.name)
-        if "entry_class" in kwargs:
-            conditions.append(kwargs["entry_class"] == root.entry_class)
-        if "key" in kwargs:
-            conditions.append(kwargs["key"] in root.properties)
-        if "property" in kwargs:
-            conditions.append(kwargs["property"][0] in root.properties and root.properties[kwargs["property"][0]] == kwargs["property"][1])
-
-        if all(conditions):
+        if self.parse_conditions(root, **kwargs):
             yield root
 
         for i in root.children:

@@ -6,14 +6,12 @@
 # - Work-around battery throttling on laptops with no battery (IOPlatformPluginFamily.kext/Contents/PlugIns/ACPI_SMC_PlatformPlugin.kext/Contents/Resources/)
 
 import os
-import plistlib
 import shutil
 import subprocess
 import zipfile
 from pathlib import Path
-from typing import Any
 
-from Resources import Constants, DeviceProbe, ModelArray, SysPatchArray, PCIIDArray, Utilities
+from Resources import Constants, device_probe, ModelArray, SysPatchArray, Utilities
 
 
 class PatchSysVolume:
@@ -48,14 +46,14 @@ class PatchSysVolume:
         self.mount_lauchd = f"{self.mount_location}/System/Library/LaunchDaemons"
         self.mount_private_frameworks = f"{self.mount_location}/System/Library/PrivateFrameworks"
 
-    def elevated(self, *args, **kwargs) -> subprocess.CompletedProcess([Any], returncode=0):
+    def elevated(self, *args, **kwargs) -> subprocess.CompletedProcess:
         if os.getuid() == 0:
             return subprocess.run(*args, **kwargs)
         else:
             return subprocess.run(["sudo"] + [args[0][0]] + args[0][1:], **kwargs)
 
     def find_mount_root_vol(self, patch):
-        self.root_mount_path  = Utilities.get_disk_path()
+        self.root_mount_path = Utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
@@ -123,7 +121,6 @@ class PatchSysVolume:
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
             input("Press [ENTER] to continue")
-
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
@@ -342,43 +339,39 @@ class PatchSysVolume:
             print("- Download failed, please verify the below link works:")
             print(f"{self.constants.url_apple_binaries}{self.constants.payload_version}")
 
-
     def detect_gpus(self):
-        igpu_vendor, igpu_device, igpu_acpi = DeviceProbe.pci_probe().gpu_probe("IGPU")
-        dgpu_vendor, dgpu_device, dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
-        if dgpu_vendor:
-            print(f"- Found GFX0: {dgpu_vendor}:{dgpu_device}")
-            if dgpu_vendor == self.constants.pci_nvidia:
-                if dgpu_device in PCIIDArray.nvidia_ids().tesla_ids or dgpu_device in PCIIDArray.nvidia_ids().fermi_ids:
-                    if self.constants.detected_os > self.constants.catalina:
-                        self.nvidia_legacy = True
-                        self.amfi_must_disable = True
-            elif dgpu_vendor == self.constants.pci_amd_ati:
-                if dgpu_device in PCIIDArray.amd_ids().terascale_1_ids:
-                    if self.constants.detected_os > self.constants.catalina:
-                        self.amd_ts1 = True
-                        self.amfi_must_disable = True
-                # TODO: Enable TS2 support
-                elif dgpu_device in PCIIDArray.amd_ids().terascale_2_ids:
-                    # Requires manual permission from user to avoid medical issues
-                    if self.constants.detected_os > self.constants.catalina and self.constants.terscale_2_patch is True:
-                        self.amd_ts2 = True
-                        self.amfi_must_disable = True
-        if igpu_vendor:
-            print(f"- Found IGPU: {igpu_vendor}:{igpu_device}")
-            if igpu_vendor == self.constants.pci_intel:
-                if igpu_device in PCIIDArray.intel_ids().iron_ids:
-                    if self.constants.detected_os > self.constants.catalina:
-                        self.iron_gpu = True
-                        self.amfi_must_disable = True
-                elif igpu_device in PCIIDArray.intel_ids().sandy_ids:
-                    if self.constants.detected_os > self.constants.catalina:
-                        self.sandy_gpu = True
-                        self.amfi_must_disable = True
-                elif igpu_device in PCIIDArray.intel_ids().ivy_ids:
-                    if self.constants.detected_os > self.constants.big_sur:
-                        self.ivy_gpu = True
-            elif igpu_vendor == self.constants.pci_nvidia:
+        dgpu = self.constants.computer.dgpu
+        igpu = self.constants.computer.igpu
+        if dgpu:
+            print(f"- Found GFX0: {Utilities.friendly_hex(dgpu.vendor_id)}:{Utilities.friendly_hex(dgpu.device_id)}")
+            if dgpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi]:
+                if self.constants.detected_os > self.constants.catalina:
+                    self.nvidia_legacy = True
+                    self.amfi_must_disable = True
+            elif dgpu.arch == device_probe.AMD.Archs.TeraScale_1:
+                if self.constants.detected_os > self.constants.catalina:
+                    self.amd_ts1 = True
+                    self.amfi_must_disable = True
+            # TODO: Enable TS2 support
+            elif dgpu.arch == device_probe.AMD.Archs.TeraScale_2:
+                # Requires manual permission from user to avoid medical issues
+                if self.constants.detected_os > self.constants.catalina and self.constants.terascale_2_patch is True:
+                    self.amd_ts2 = True
+                    self.amfi_must_disable = True
+        if igpu and igpu.class_code != 0xFFFFFF:
+            print(f"- Found IGPU: {Utilities.friendly_hex(igpu.vendor_id)}:{Utilities.friendly_hex(igpu.device_id)}")
+            if igpu.arch == device_probe.Intel.Archs.Iron_Lake:
+                if self.constants.detected_os > self.constants.catalina:
+                    self.iron_gpu = True
+                    self.amfi_must_disable = True
+            elif igpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
+                if self.constants.detected_os > self.constants.catalina:
+                    self.sandy_gpu = True
+                    self.amfi_must_disable = True
+            elif igpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
+                if self.constants.detected_os > self.constants.big_sur:
+                    self.ivy_gpu = True
+            elif isinstance(igpu, device_probe.NVIDIA):
                 if self.constants.detected_os > self.constants.catalina:
                     self.nvidia_legacy = True
                     self.amfi_must_disable = True
@@ -412,58 +405,46 @@ class PatchSysVolume:
         if self.legacy_audio is True:
             print("- Add legacy Audio Control")
 
-        if self.nvidia_legacy is False and \
-            self.amd_ts1 is False and \
-            self.amd_ts2 is False and \
-            self.iron_gpu is False and \
-            self.sandy_gpu is False and \
-            self.ivy_gpu is False and \
-            self.brightness_legacy is False and \
-            self.legacy_audio is False:
-            self.no_patch = True
-        else:
-            self.no_patch = False
+        self.no_patch = any(
+            [
+                self.nvidia_legacy,
+                self.amd_ts1,
+                self.amd_ts2,
+                self.iron_gpu,
+                self.sandy_gpu,
+                self.ivy_gpu,
+                self.brightness_legacy,
+                self.legacy_audio,
+            ]
+        )
 
     def verify_patch_allowed(self):
         self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled = Utilities.patching_status()
         if self.sip_enabled is True:
-            print("\nCannot patch!!! Please disable SIP!!!")
-            print("Disable SIP in Patcher Settings and Rebuild OpenCore")
-            print("Ensure the following bits are set for csr-active-config:\n")
-            if self.constants.detected_os > self.constants.catalina:
-                sip = self.constants.root_patch_sip_big_sur
-            else:
-                sip = self.constants.root_patch_sip_mojave
-            print("\n".join(sip))
-            print("For Hackintoshes, please set csr-active-config to 030A0000 (0xA03)")
+            print("\nCannot patch! Please disable System Integrity Protection (SIP).")
+            print("Disable SIP in Patcher Settings and Rebuild OpenCore\n")
+            print("Ensure the following bits are set for csr-active-config:")
+            print("\n".join(self.constants.root_patch_sip_big_sur if self.constants.detected_os > self.constants.catalina else self.constants.root_patch_sip_mojave))
+            print("For Hackintoshes, please set csr-active-config to '030A0000' (0xA03)")
             print("For non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS")
+
         if self.sbm_enabled is True:
-            print("\nCannot patch!!! Please disable SecureBootModel!!!")
+            print("\nCannot patch! Please disable Apple Secure Boot.")
             print("Disable SecureBootModel in Patcher Settings and Rebuild OpenCore")
             print("For Hackintoshes, set SecureBootModel to Disabled")
+
         if self.fv_enabled is True:
-            print("\nCannot patch!!! Please disable FileVault!!!")
+            print("\nCannot patch! Please disable FileVault.")
             print("Go to System Preferences -> Security and disable FileVault")
 
         if self.amfi_enabled is True and self.amfi_must_disable is True:
-            print("\nCannot patch!!! Please disable AMFI!!!")
+            print("\nCannot patch! Please disable AMFI.")
             print("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
 
-        if self.amfi_must_disable is True:
-            if self.sip_enabled is True or \
-            self.sbm_enabled is True or \
-            self.amfi_enabled is True or \
-            self.fv_enabled is True:
-                return False
-            else:
-                return True
+        if any([self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.amfi_enabled if self.amfi_must_disable else False]):
+            return False
         else:
-            if self.sip_enabled is True or \
-            self.sbm_enabled is True or \
-            self.fv_enabled is True:
-                return False
-            else:
-                return True
+            return True
 
     # Entry Function
     def start_patch(self):
@@ -494,4 +475,3 @@ class PatchSysVolume:
         if self.verify_patch_allowed() is True:
             self.find_mount_root_vol(False)
             input("\nPress [ENTER] to return to the main menu")
-

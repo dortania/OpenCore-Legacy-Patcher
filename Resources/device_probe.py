@@ -9,6 +9,12 @@ from Resources import PCIIDArray, Utilities, ioreg
 
 
 @dataclass
+class CPU:
+    name: str
+    flags: list[str]
+
+
+@dataclass
 class PCIDevice:
     VENDOR_ID: ClassVar[int]  # Default vendor id, for subclasses.
 
@@ -70,6 +76,12 @@ class PCIDevice:
             elif entry.entry_class == "IOACPIPlatformDevice":
                 paths.append(f"PciRoot({hex(int(entry.properties.get('_UID', 0)))})")
                 break
+            elif entry.entry_class in ["IOPCI2PCIBridge", "IOPCIBridge", "AppleACPIPCI"]:
+                pass
+            else:
+                # There's something in between that's not PCI! Abort
+                paths = []
+                break
             entry = entry.parent
         self.pci_path = "/".join(reversed(paths))
 
@@ -95,6 +107,19 @@ class WirelessCard(PCIDevice):
 
     def detect_chipset(self):
         raise NotImplementedError
+
+
+@dataclass
+class NVMeController(PCIDevice):
+    CLASS_CODE: ClassVar[int] = 0x010802
+
+    aspm: Optional[int] = None
+    parent_aspm: Optional[int] = None
+
+
+@dataclass
+class SATAController(PCIDevice):
+    CLASS_CODE: ClassVar[int] = 0x010601
 
 
 @dataclass
@@ -226,12 +251,6 @@ class Atheros(WirelessCard):
 
 
 @dataclass
-class CPU:
-    name: str
-    flags: list[str]
-
-
-@dataclass
 class Computer:
     real_model: Optional[str] = None
     real_board_id: Optional[str] = None
@@ -240,6 +259,7 @@ class Computer:
     gpus: list[GPU] = field(default_factory=list)
     igpu: Optional[GPU] = None  # Shortcut for IGPU
     dgpu: Optional[GPU] = None  # Shortcut for GFX0
+    storage: list[PCIDevice] = field(default_factory=list)
     wifi: Optional[WirelessCard] = None
     cpu: Optional[CPU] = None
     oclp_version: Optional[str] = None
@@ -253,6 +273,7 @@ class Computer:
         computer.dgpu_probe()
         computer.igpu_probe()
         computer.wifi_probe()
+        computer.storage_probe()
         computer.smbios_probe()
         computer.cpu_probe()
         return computer
@@ -303,10 +324,39 @@ class Computer:
         #     return
 
         for device in devices:
-            vendor: Type[WirelessCard] = PCIDevice.from_ioregistry(device).vendor_detect(inherits=WirelessCard)  # type: ignore
+            vendor: Type[WirelessCard] = PCIDevice.from_ioregistry(device, anti_spoof=True).vendor_detect(inherits=WirelessCard)  # type: ignore
             if vendor:
                 self.wifi = vendor.from_ioregistry(device, anti_spoof=True)  # type: ignore
                 break
+
+    def storage_probe(self):
+        sata_controllers = self.ioregistry.find(entry_class="IOPCIDevice", property=("class-code", binascii.a2b_hex(Utilities.hexswap(hex(SATAController.CLASS_CODE)[2:].zfill(8)))))
+        nvme_controllers = itertools.chain.from_iterable(
+            [
+                # self.ioregistry.find(entry_class="IOPCIDevice", property=("class-code", binascii.a2b_hex(Utilities.hexswap(hex(NVMeController.CLASS_CODE)[2:].zfill(8))))),
+                self.ioregistry.find(entry_class="IOPCIDevice", children={"entry_class": "IONVMeController"}),
+            ]
+        )
+        for device in sata_controllers:
+            self.storage.append(SATAController.from_ioregistry(device))
+        for device in nvme_controllers:
+            aspm = device.properties.get("pci-aspm-default", 0)
+            if isinstance(aspm, bytes):
+                aspm = int.from_bytes(aspm, byteorder="little")
+
+            if device.parent.parent.entry_class == "IOPCIDevice":
+                parent_aspm = device.parent.parent.properties.get("pci-aspm-default", 0)
+                if isinstance(parent_aspm, bytes):
+                    parent_aspm = int.from_bytes(parent_aspm, byteorder="little")
+            else:
+                parent_aspm = None
+
+            controller = NVMeController.from_ioregistry(device)
+            controller.aspm = aspm
+            controller.parent_aspm = parent_aspm
+
+            if controller.vendor_id != 0x106B:
+                self.storage.append(controller)
 
     def smbios_probe(self):
         # Reported model
