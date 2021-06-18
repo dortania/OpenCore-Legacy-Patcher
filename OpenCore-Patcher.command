@@ -38,36 +38,36 @@ class OpenCoreLegacyPatcher:
         self.constants.secure_status = False  # Default false for Monterey
         self.constants.disable_amfi = False
 
-        if (
-            model in ModelArray.LegacyGPU
-            and host_is_target
-            and self.computer.dgpu.arch
-            in [
-                device_probe.AMD.Archs.Legacy_GCN,
-                device_probe.AMD.Archs.Polaris,
-                device_probe.AMD.Archs.Vega,
-                device_probe.AMD.Archs.Navi,
-                device_probe.NVIDIA.Archs.Kepler,
-            ]
-        ):
-            # Building on device and we have a native, supported GPU
-            self.constants.sip_status = True
-            # self.constants.secure_status = True  # Monterey
-            self.constants.disable_amfi = False
-        else:
-            self.constants.sip_status = False  # Unsigned kexts
-            self.constants.secure_status = False  # Root volume modified
-            self.constants.disable_amfi = True  # Unsigned binaries
-
-        if model in ModelArray.ModernGPU and host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
-            # Some models have a supported dGPU, others don't
-            self.constants.sip_status = True
-            # self.constants.secure_status = True  # Monterey
-            self.constants.disable_amfi = False
-        else:
-            self.constants.sip_status = False  # Unsigned kexts
-            self.constants.secure_status = False  # Modified root volume
-            self.constants.disable_amfi = False  # Signed bundles
+        if model in ModelArray.LegacyGPU:
+            if (
+                host_is_target
+                and self.computer.dgpu.arch
+                in [
+                    device_probe.AMD.Archs.Legacy_GCN,
+                    device_probe.AMD.Archs.Polaris,
+                    device_probe.AMD.Archs.Vega,
+                    device_probe.AMD.Archs.Navi,
+                    device_probe.NVIDIA.Archs.Kepler,
+                ]
+            ):
+                # Building on device and we have a native, supported GPU
+                self.constants.sip_status = True
+                # self.constants.secure_status = True  # Monterey
+                self.constants.disable_amfi = False
+            else:
+                self.constants.sip_status = False  # Unsigned kexts
+                self.constants.secure_status = False  # Root volume modified
+                self.constants.disable_amfi = True  # Unsigned binaries
+        if model in ModelArray.ModernGPU:
+            if host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
+                # Some models have a supported dGPU, others don't
+                self.constants.sip_status = True
+                # self.constants.secure_status = True  # Monterey
+                #self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+            else:
+                self.constants.sip_status = False  # Unsigned kexts
+                self.constants.secure_status = False  # Modified root volume
+                #self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
 
     def build_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
