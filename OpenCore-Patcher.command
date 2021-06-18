@@ -41,6 +41,7 @@ class OpenCoreLegacyPatcher:
         if model in ModelArray.LegacyGPU:
             if (
                 host_is_target
+                and self.computer.dgpu
                 and self.computer.dgpu.arch
                 in [
                     device_probe.AMD.Archs.Legacy_GCN,
