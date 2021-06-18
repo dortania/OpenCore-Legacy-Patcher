@@ -352,7 +352,7 @@ class BuildOpenCore:
         if self.model in ModelArray.DualGPUPatch:
             print("- Adding dual GPU patch")
             if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
-                self.gfx0_path = self.computer.dgpi.pci_path
+                self.gfx0_path = self.computer.dgpu.pci_path
                 print(f"- Found GFX0 Device Path: {self.gfx0_path}")
             else:
                 if not self.constants.custom_model:
@@ -407,7 +407,7 @@ class BuildOpenCore:
 
         def backlight_path_detection(self):
             if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
-                self.gfx0_path = self.computer.dgpi.pci_path
+                self.gfx0_path = self.computer.dgpu.pci_path
                 print(f"- Found GFX0 Device Path: {self.gfx0_path}")
             else:
                 if not self.constants.custom_model:
