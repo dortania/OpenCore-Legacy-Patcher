@@ -140,11 +140,9 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Assume Metal GPU Always:\t\tCurrently {self.constants.imac_vendor}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_metal],
-                # [f"Assume Upgraded Wifi Always:\tCurrently {self.constants.wifi_build}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_wifi],
                 [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_serial],
                 [f"DRM Preferences:\t\t\tCurrently {self.constants.drm_support}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).drm_setting],
                 [f"Set Generic Bootstrap:\t\tCurrently {self.constants.boot_efi}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).bootstrap_setting],
-                # [f"Assume Legacy GPU:\t\t\tCurrently {self.constants.assume_legacy}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).force_accel_setting],
                 [
                     f"Disable CPU Friend:\t\t\tCurrently {self.constants.disallow_cpufriend}",
                     CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).disable_cpufriend,

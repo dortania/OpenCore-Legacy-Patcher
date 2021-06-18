@@ -37,14 +37,11 @@ class Constants:
         self.cpufriend_version = "1.2.4"
         self.nightshift_version = "1.1.0"
         self.smcspoof_version = "1.0.0"
-        self.cputscsync = "1.0.3"
-        self.hibernationfixup = "1.3.9"
         self.nvmefix_version = "1.0.9"
         self.sidecarfixup_version = "1.0.2"
         self.debugenhancer_version = "1.0.3"
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
-        self.payload_version = "0.0.18"  # Apple-Binaries-OCLP
         self.patcher_support_pkg_version = "0.0.2"  # PatcherSupportPkg
 
         # Get resource path
@@ -63,8 +60,6 @@ class Constants:
         self.kext_debug = False
         self.verbose_debug = False
         self.os_support = 12.0
-        self.min_os_support = 11.0
-        self.max_os_support = 12.0
         self.metal_build = False
         self.imac_vendor = "None"
         self.wifi_build = False
@@ -77,8 +72,6 @@ class Constants:
         self.detected_os = 0
         self.boot_efi = False
         self.drm_support = False
-        self.legacy_acceleration_patch = True
-        self.assume_legacy = False
         self.allow_oc_everywhere = False
         self.custom_cpu_model = 2
         self.custom_cpu_model_value = ""
@@ -133,7 +126,6 @@ class Constants:
         self.arch_kepler = "GK100"
 
         # External Files
-        self.url_apple_binaries = "https://github.com/dortania/Apple-Binaries-OCLP/archive/refs/tags/"
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
 
     # Payload Location
@@ -265,14 +257,6 @@ class Constants:
     @property
     def smcspoof_path(self):
         return self.payload_kexts_path / Path(f"Misc/SMC-Spoof-v{self.smcspoof_version}.zip")
-
-    @property
-    def cputscsync_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/CpuTscSync-v{self.cputscsync}.zip")
-
-    @property
-    def hibernationfixup_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/HibernationFixup-v{self.hibernationfixup}.zip")
 
     @property
     def nvmefix_path(self):

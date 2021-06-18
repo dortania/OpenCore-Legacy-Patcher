@@ -76,24 +76,6 @@ option is for those patching on a different machine or OCLP cannot detect.
         else:
             print("Invalid option")
 
-    def change_wifi(self):
-        Utilities.cls()
-        Utilities.header(["Assume Upgraded Wifi Always"])
-        print(
-            """This is for Macs with upgraded wifi cards(ie. BCM94360/2)
-
-Note: Patcher will detect whether hardware has been upgraded regardless, this
-option is for those patching on a different machine or cannot detect.
-        """
-        )
-        change_menu = input("Enable Upgraded Wifi build algorithm?(y/n): ")
-        if change_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.wifi_build = True
-        elif change_menu in {"n", "N", "no", "No"}:
-            self.constants.wifi_build = False
-        else:
-            print("Invalid option")
-
     def change_serial(self):
         Utilities.cls()
         Utilities.header(["Set SMBIOS Mode"])
@@ -260,24 +242,6 @@ Recommend only disabling if absolutely required.
         else:
             print("Invalid option")
 
-    def force_accel_setting(self):
-        Utilities.cls()
-        Utilities.header(["Assume Legacy GPU"])
-        print(
-            """Allows any model to force install Legacy Acceleration
-patches. Only required for Mac Pro and Xserve users.
-
-DO NOT RUN IF METAL GPU IS INSTALLED
-        """
-        )
-        change_menu = input("Enable Beta Acceleration Patches(y/n): ")
-        if change_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.assume_legacy = True
-        elif change_menu in {"n", "N", "no", "No"}:
-            self.constants.assume_legacy = False
-        else:
-            print("Invalid option")
-
     def allow_native_models(self):
         Utilities.cls()
         Utilities.header(["Allow OpenCore on native Models"])
@@ -350,22 +314,6 @@ Custom names will report as follows:
             # temp_tk_root.destroy()
         elif change_menu == "2":
             self.constants.custom_color = ""
-        else:
-            print("Invalid option")
-
-    def download_more_ram_dot_com(self):
-        Utilities.cls()
-        Utilities.header(["Download more RAM"])
-        print(
-            """Downloads more RAM to your Mac!
-Currently only offers 1.5TB bundles
-        """
-        )
-        change_menu = input("Download more RAM?(y/n): ")
-        if change_menu == "y":
-            self.constants.download_ram = True
-        elif change_menu == "n":
-            self.constants.download_ram = False
         else:
             print("Invalid option")
 
