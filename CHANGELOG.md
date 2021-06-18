@@ -7,6 +7,7 @@
   - Reduces binary sizes depending on OS
   - Deprecates Apple-Binaries-OCLP
 - Fix full screen and Airplay to Mac support for Intel HD4000 iGPUs
+- Automatically set `CMIO_Unit_Input_ASC.DoNotUseOpenCL` on TeraScale 2 GPUs
 
 ## 0.1.9
 - Fix incorrect AMFI and SIP detection

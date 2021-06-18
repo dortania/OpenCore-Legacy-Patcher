@@ -218,6 +218,8 @@ class PatchSysVolume:
         self.elevated(["ditto", self.constants.payload_apple_frameworks_path_accel_ts2, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         print("- Merging TeraScale 2 PrivateFrameworks")
         self.elevated(["ditto", self.constants.payload_apple_private_frameworks_path_accel_ts2, self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        print("- Fixing Acceleration in CMIO")
+        self.elevated(["defaults", "write", "com.apple.cmio", "CMIO_Unit_Input_ASC.DoNotUseOpenCL", "-bool", "true"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")
