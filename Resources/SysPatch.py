@@ -197,6 +197,8 @@ class PatchSysVolume:
 
     def gpu_framebuffer_ivybridge(self):
         self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
+        print("- Fixing Acceleration in CoreMedia")
+        self.elevated(["defaults", "write", "com.apple.coremedia", "hardwareVideoDecoder", "-string", "disable"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
@@ -309,10 +311,19 @@ class PatchSysVolume:
             self.download_files()
 
     def download_files(self):
+        if self.constants.detected_os == self.constants.monterey:
+            os_ver = "12-Monterey"
+        elif self.constants.detected_os == self.constants.big_sur:
+            os_ver = "11-Big-Sur"
+        elif self.constants.detected_os == self.constants.catalina:
+            os_ver = "10.15-Catalina"
+        elif self.constants.detected_os == self.constants.mojave:
+            os_ver = "10.14-Mojave"
+        link = f"{self.constants.url_patcher_support_pkg}{self.constants.patcher_support_pkg_version}/{os_ver}.zip"
         Utilities.cls()
         print("- Downloading Apple binaries")
         popen_oclp = subprocess.Popen(
-            ["curl", "-S", "-L", f"{self.constants.url_apple_binaries}{self.constants.payload_version}.zip", "--output", self.constants.payload_apple_root_path_zip],
+            ["curl", "-S", "-L", link, "--output", self.constants.payload_apple_root_path_zip],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -327,7 +338,7 @@ class PatchSysVolume:
             try:
                 subprocess.run(["unzip", self.constants.payload_apple_root_path_zip], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.constants.payload_path).stdout.decode()
                 print("- Renaming folder")
-                os.rename(self.constants.payload_apple_root_path_unzip, self.constants.payload_apple_root_path)
+                os.rename(self.constants.payload_path / Path(os_ver), self.constants.payload_apple_root_path)
                 print("- Binaries downloaded to:")
                 print(self.constants.payload_path)
                 if self.constants.gui_mode is False:
@@ -337,7 +348,7 @@ class PatchSysVolume:
             os.remove(self.constants.payload_apple_root_path_zip)
         else:
             print("- Download failed, please verify the below link works:")
-            print(f"{self.constants.url_apple_binaries}{self.constants.payload_version}")
+            print(link)
 
     def detect_gpus(self):
         dgpu = self.constants.computer.dgpu

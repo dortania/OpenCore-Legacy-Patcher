@@ -2,7 +2,11 @@
 
 ## 0.2.0
 
-
+- Refactor device probe logic
+- Implement PatcherSupportPkg v0.0.3
+  - Reduces binary sizes depending on OS
+  - Deprecates Apple-Binaries-OCLP
+- Fix full screen and Airplay to Mac support for Intel HD4000 iGPUs
 
 ## 0.1.9
 - Fix incorrect AMFI and SIP detection

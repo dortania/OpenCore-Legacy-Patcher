@@ -45,6 +45,7 @@ class Constants:
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
         self.payload_version = "0.0.18"  # Apple-Binaries-OCLP
+        self.patcher_support_pkg_version = "0.0.2"  # PatcherSupportPkg
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -133,6 +134,7 @@ class Constants:
 
         # External Files
         self.url_apple_binaries = "https://github.com/dortania/Apple-Binaries-OCLP/archive/refs/tags/"
+        self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
 
     # Payload Location
     # OpenCore
@@ -424,9 +426,6 @@ class Constants:
         return self.payload_path / Path("Icon/Resources.zip")
 
     # Apple Payloads Paths
-    @property
-    def payload_apple_root_path_unzip(self):
-        return self.payload_path / Path(f"Apple-Binaries-OCLP-{self.payload_version}")
 
     @property
     def payload_apple_root_path_zip(self):
@@ -450,7 +449,7 @@ class Constants:
 
     @property
     def payload_apple_frameworks_path_accel_ts2(self):
-        return self.payload_apple_frameworks_path / Path("Graphics-Acceleration-TS2")
+        return self.payload_apple_frameworks_path / Path("Graphics-Acceleration-TeraScale-2")
 
     @property
     def payload_apple_lauchd_path(self):
@@ -470,7 +469,7 @@ class Constants:
 
     @property
     def payload_apple_private_frameworks_path_accel_ts2(self):
-        return self.payload_apple_private_frameworks_path / Path("Graphics-Acceleration-TS2")
+        return self.payload_apple_private_frameworks_path / Path("Graphics-Acceleration-TeraScale-2")
 
     @property
     def payload_apple_private_frameworks_path_brightness(self):
@@ -488,10 +487,6 @@ class Constants:
         return self.payload_apple_kexts_path / Path("Graphics-Acceleration")
 
     @property
-    def legacy_graphics_ts2(self):
-        return self.payload_apple_kexts_path / Path("Graphics-Acceleration-TS2")
-
-    @property
     def legacy_nvidia_path(self):
         return self.legacy_graphics / Path("Nvidia-Tesla-Fermi")
 
@@ -501,11 +496,11 @@ class Constants:
 
     @property
     def legacy_amd_path(self):
-        return self.legacy_graphics / Path("AMD-ATI")
+        return self.legacy_graphics / Path("AMD-TeraScale")
 
     @property
     def legacy_amd_path_ts2(self):
-        return self.legacy_graphics / Path("ATI-TS2")
+        return self.legacy_graphics / Path("AMD-TeraScale-2")
 
     @property
     def legacy_intel_gen1_path(self):
@@ -526,37 +521,6 @@ class Constants:
     @property
     def legacy_brightness(self):
         return self.payload_apple_kexts_path / Path("Brightness-Control")
-
-    # Apple Frameworks
-    @property
-    def coredisplay_path(self):
-        return self.payload_apple_frameworks_path_accel / Path("CoreDisplay.framework")
-
-    @property
-    def iosurface_f_path(self):
-        return self.payload_apple_frameworks_path_accel / Path("IOSurface.framework")
-
-    @property
-    def opengl_path(self):
-        return self.payload_apple_frameworks_path_accel / Path("OpenGL.framework")
-
-    # Apple LaunchDaemons
-    @property
-    def hiddhack_path(self):
-        return self.payload_apple_lauchd_path_accel / Path("IOHID-Fixup.plist")
-
-    @property
-    def legacy_hiddhack_path(self):
-        return self.payload_apple_lauchd_path_accel / Path("HiddHack.plist")
-
-    # Apple PrivateFrameworks
-    @property
-    def gpusupport_path(self):
-        return self.payload_apple_private_frameworks_path_accel / Path("GPUSupport.framework")
-
-    @property
-    def skylight_path(self):
-        return self.payload_apple_private_frameworks_path_accel / Path("SkyLight.framework")
 
     csr_values = {
         "CSR_ALLOW_UNTRUSTED_KEXTS": False,  # 0x1   - Allows Unsigned Kexts           - Introduced in El Capitan  # noqa: E241
