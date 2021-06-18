@@ -129,8 +129,8 @@ AddAMDBrightness = [
     "AMDLegacySupport.kext",
     "AMDRadeonVADriver.bundle",
     "AMDRadeonVADriver2.bundle",
-    #"AMDRadeonX3000.kext",
-    #"AMDRadeonX3000GLDriver.bundle",
+    # "AMDRadeonX3000.kext",
+    # "AMDRadeonX3000GLDriver.bundle",
     "AMDShared.bundle",
     "ATIRadeonX2000.kext",
     "ATIRadeonX2000GA.plugin",
@@ -169,14 +169,9 @@ AddIntelGen3Accel = [
     "AppleIntelGraphicsShared.bundle",
 ]
 
-AddGeneralAccel = [
-    "IOAcceleratorFamily2.kext",
-    "IOSurface.kext"
-]
+AddGeneralAccel = ["IOAcceleratorFamily2.kext", "IOSurface.kext"]
 
-DeleteBrightness = [
-    "AppleGraphicsControl.kext/Contents/PlugIns/AGDCBacklightControl.kext"
-]
+DeleteBrightness = ["AppleGraphicsControl.kext/Contents/PlugIns/AGDCBacklightControl.kext"]
 
 AddBrightness = [
     "AppleBacklight.kext",
