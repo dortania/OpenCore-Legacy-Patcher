@@ -405,7 +405,7 @@ class PatchSysVolume:
         if self.legacy_audio is True:
             print("- Add legacy Audio Control")
 
-        self.no_patch = any(
+        self.no_patch = not any(
             [
                 self.nvidia_legacy,
                 self.amd_ts1,
