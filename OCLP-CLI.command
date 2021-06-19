@@ -9,55 +9,28 @@ import platform
 import argparse
 from pathlib import Path
 
-from Resources import Build, ModelArray, PCIIDArray, Constants, SysPatch, DeviceProbe
+from Resources import Build, ModelArray, Constants, SysPatch, device_probe, Utilities
 
 
 class OpenCoreLegacyPatcher():
     def __init__(self):
+        print("Loading...")
         self.constants = Constants.Constants()
-        self.current_model: str = None
-        opencore_model: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:oem-product".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-        if not opencore_model.startswith("nvram: Error getting variable"):
-            opencore_model = [line.strip().split(":oem-product	", 1)[1] for line in opencore_model.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
-            self.current_model = opencore_model
-        else:
-            self.current_model = subprocess.run("system_profiler SPHardwareDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            self.current_model = [line.strip().split(": ", 1)[1] for line in self.current_model.stdout.decode().split("\n") if line.strip().startswith("Model Identifier")][0]
+        self.constants.computer = device_probe.Computer.probe()
+        self.computer = self.constants.computer
         self.constants.detected_os = int(platform.uname().release.partition(".")[0])
-        if self.current_model in ModelArray.NoAPFSsupport:
-            self.constants.serial_settings = "Moderate"
-        if self.current_model in ModelArray.LegacyGPU:
-            dgpu_vendor,dgpu_device,dgpu_acpi = DeviceProbe.pci_probe().gpu_probe("GFX0")
-            if dgpu_vendor:
-                if (dgpu_vendor == self.constants.pci_amd_ati and (dgpu_device in PCIIDArray.amd_ids().polaris_ids or dgpu_device in PCIIDArray.amd_ids().vega_ids or dgpu_device in PCIIDArray.amd_ids().navi_ids or dgpu_device in PCIIDArray.amd_ids().legacy_gcn_ids)) or (dgpu_vendor == self.constants.pci_nvidia and dgpu_device in PCIIDArray.nvidia_ids().kepler_ids):
-                    self.constants.sip_status = True
-                    self.constants.secure_status = True
-                else:
-                    self.constants.sip_status = False
-                    self.constants.secure_status = False
 
-        # Logic for when user runs custom OpenCore build and do not expose it
-        # Note: This logic currently only applies for iMacPro1,1 users, see below threads on the culprits:
-        # - https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/post-17425857
-        # - https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/
-        # PLEASE FOR THE LOVE OF GOD JUST SET ExposeSensitiveData CORRECTLY!!!
-        if self.current_model == "iMacPro1,1":
-            serial: str = subprocess.run("system_profiler SPHardwareDataType | grep Serial".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-            serial = [line.strip().split("Number (system): ", 1)[1] for line in serial.split("\n") if line.strip().startswith("Serial")][0]
-            true_model = subprocess.run([str(self.constants.macserial_path), "--info", str(serial)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            true_model = [i.partition(" - ")[2] for i in true_model.stdout.decode().split("\n") if "Model: " in i][0]
-            print(f"True Model: {true_model}")
-            if not true_model.startswith("Unknown"):
-                self.current_model = true_model
+        custom_cpu_model_value = Utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+        if custom_cpu_model_value is not None:
+            # TODO: Fix to not use two separate variables
+            self.constants.custom_cpu_model = 1
+            self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
 
-        custom_cpu_model_value: str = subprocess.run("nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:revcpuname".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        if "-v" in (Utilities.get_nvram("boot-args") or ""):
+            self.constants.verbose_debug = True
 
-        if not custom_cpu_model_value.startswith("nvram: Error getting variable"):
-            custom_cpu_model_value = [line.strip().split(":revcpuname	", 1)[1] for line in custom_cpu_model_value.split("\n") if line.strip().startswith("4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:")][0]
-            if custom_cpu_model_value.split("%00")[0] != "":
-                self.constants.custom_cpu_model = 1
-                self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
-
+        # Check if running in RecoveryOS
+        self.constants.recovery_status = Utilities.check_recovery()
 
         parser = argparse.ArgumentParser()
 
@@ -155,9 +128,10 @@ class OpenCoreLegacyPatcher():
             if args.model:
                 print(f"- Using custom model: {args.model}")
                 self.constants.custom_model = args.model
+                self.set_defaults(self.computer.custom_model, False)
                 self.build_opencore()
             else:
-                print(f"- Using detected model: {self.current_model}")
+                print(f"- Using detected model: {self.constants.computer.real_model}")
                 self.build_opencore()
         if args.patch_sys_vol:
             print("- Set System Volume patching")
@@ -166,17 +140,55 @@ class OpenCoreLegacyPatcher():
             print("- Set System Volume unpatching")
             self.unpatch_vol()
 
+    def set_defaults(self, model, host_is_target):
+        # Defaults
+        self.constants.sip_status = True
+        self.constants.secure_status = False  # Default false for Monterey
+        self.constants.disable_amfi = False
+
+        if model in ModelArray.LegacyGPU:
+            if (
+                host_is_target
+                and self.computer.dgpu
+                and self.computer.dgpu.arch
+                in [
+                    device_probe.AMD.Archs.Legacy_GCN,
+                    device_probe.AMD.Archs.Polaris,
+                    device_probe.AMD.Archs.Vega,
+                    device_probe.AMD.Archs.Navi,
+                    device_probe.NVIDIA.Archs.Kepler,
+                ]
+            ):
+                # Building on device and we have a native, supported GPU
+                self.constants.sip_status = True
+                # self.constants.secure_status = True  # Monterey
+                self.constants.disable_amfi = False
+            else:
+                self.constants.sip_status = False  # Unsigned kexts
+                self.constants.secure_status = False  # Root volume modified
+                self.constants.disable_amfi = True  # Unsigned binaries
+        if model in ModelArray.ModernGPU:
+            if host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
+                # Some models have a supported dGPU, others don't
+                self.constants.sip_status = True
+                # self.constants.secure_status = True  # Monterey
+                #self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+            else:
+                self.constants.sip_status = False  # Unsigned kexts
+                self.constants.secure_status = False  # Modified root volume
+                #self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+
     def patch_vol(self):
-        SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_patch()
+        SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
 
     def unpatch_vol(self):
-        SysPatch.PatchSysVolume(self.constants.custom_model or self.current_model, self.constants).start_unpatch()
+        SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_unpatch()
 
     def build_opencore(self):
-        Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).build_opencore()
+        Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
 
     def install_opencore(self):
-        Build.BuildOpenCore(self.constants.custom_model or self.current_model, self.constants).copy_efi()
+        Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).copy_efi()
 
 OpenCoreLegacyPatcher()
 
