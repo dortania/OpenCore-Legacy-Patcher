@@ -9,6 +9,7 @@
 - Fix full screen and Airplay to Mac support for Intel HD4000 iGPUs
 - Automatically set `CMIO_Unit_Input_ASC.DoNotUseOpenCL` on TeraScale 2 GPUs
 - Fix Country Code detection on Wireless Cards
+- Add Windows detection and prompt during installation
 
 ## 0.1.9
 - Fix incorrect AMFI and SIP detection

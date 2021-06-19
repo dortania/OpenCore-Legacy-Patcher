@@ -975,6 +975,19 @@ Please build OpenCore first!"""
         Utilities.header(["Copying OpenCore"])
 
         if mount_path.exists():
+            if (mount_path / Path("EFI/Microsoft")).exists():
+                print("- Found Windows Boot Loader")
+                print("\nWould you like to continue installing OpenCore?")
+                print("Installing OpenCore onto this drive may make Windows unbootable until OpenCore")
+                print("is removed from the partition")
+                print("We highly recommend users partition 200MB off their drive with Disk Utility")
+                print("    Name:\t\t OPENCORE")
+                print("    Format:\t FAT32")
+                print("    Size:\t\t 200MB")
+                choice = input("\nWould you like to still install OpenCore to this drive?(y/n): ")
+                if not choice in ["y", "Y", "Yes", "yes"]:
+                    subprocess.run(["diskutil", "umount", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                    return
             if (mount_path / Path("EFI/OC")).exists():
                 print("- Removing preexisting EFI/OC folder")
                 shutil.rmtree(mount_path / Path("EFI/OC"), onerror=rmtree_handler)
