@@ -45,7 +45,9 @@ class OpenCoreLegacyPatcher():
         parser.add_argument('--disable_smb', help='Disable SecureBootModel', action='store_true', required=False)
         parser.add_argument('--vault', help='Enable OpenCore Vaulting', action='store_true', required=False)
         parser.add_argument('--support_all', help='Allow OpenCore on natively supported Models', action='store_true', required=False)
-        parser.add_argument('--force_legacy', help='Allow acceleration on Mac Pros and Xserves', action='store_true', required=False)
+        parser.add_argument('--firewire', help='Enable FireWire Booting', action='store_true', required=False)
+        parser.add_argument('--nvme', help='Enable NVMe Booting', action='store_true', required=False)
+        parser.add_argument('--disable_amfi', help='Disable AMFI', action='store_true', required=False)
 
         # Building args requiring value values
         parser.add_argument('--model', action='store', help='Set custom model', required=False)
@@ -55,6 +57,7 @@ class OpenCoreLegacyPatcher():
         # SysPatch args
         parser.add_argument('--patch_sys_vol', help='Patches root volume', action='store_true', required=False)
         parser.add_argument('--unpatch_sys_vol', help='Unpatches root volume, EXPERIMENTAL', action='store_true', required=False)
+        parser.add_argument('--terascale_2', help='Enable TeraScale 2 Acceleration', action='store_true', required=False)
 
         args = parser.parse_args()
 
@@ -92,6 +95,15 @@ class OpenCoreLegacyPatcher():
         if args.vault:
             print("- Set Vault configuration")
             self.constants.vault = True
+        if args.firewire:
+            print("- Set FireWire Boot configuration")
+            self.constants.firewire_boot = True
+        if args.nvme:
+            print("- Set NVMe Boot configuration")
+            self.constants.nvme_boot = True
+        if args.disable_amfi:
+            print("- Set Disable AMFI configuration")
+            self.constants.disable_amfi = True
         if args.metal_gpu:
             if args.metal_gpu == "Nvidia":
                 print("- Set Metal GPU patches to Nvidia")
@@ -120,10 +132,6 @@ class OpenCoreLegacyPatcher():
             self.constants.allow_oc_everywhere = True
             self.constants.serial_settings = "None"
 
-        if args.force_legacy:
-            print("- Allowing legacy acceleration patches on newer models")
-            self.constants.assume_legacy = True
-
         if args.build:
             if args.model:
                 print(f"- Using custom model: {args.model}")
@@ -134,6 +142,9 @@ class OpenCoreLegacyPatcher():
                 print(f"- Using detected model: {self.constants.computer.real_model}")
                 self.build_opencore()
         if args.patch_sys_vol:
+            if args.terascale_2:
+                print("- Set TeraScale 2 Accel configuration")
+                self.constants.terascale_2_patch = True
             print("- Set System Volume patching")
             self.patch_vol()
         elif args.unpatch_sys_vol:
