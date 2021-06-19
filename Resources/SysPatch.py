@@ -82,10 +82,12 @@ class PatchSysVolume:
                 else:
                     print("- Failed to mount the Root Volume")
                     print("- Recommend rebooting the machine and trying to patch again")
-                    input("- Press [ENTER] to exit: ")
+                    if self.constants.gui_mode is False:
+                        input("- Press [ENTER] to exit: ")
         else:
             print("- Could not find root volume")
-            input("- Press [ENTER] to exit: ")
+            if self.constants.gui_mode is False:
+                input("- Press [ENTER] to exit: ")
 
     def unpatch_root_vol(self):
         print("- Reverting to last signed APFS snapshot")
@@ -108,7 +110,8 @@ class PatchSysVolume:
             print(result.stdout.decode())
             print("")
             print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
-            input("Press [ENTER] to continue")
+            if self.constants.gui_mode is False:
+                input("Press [ENTER] to continue")
         else:
             self.success_status = True
             print("- Successfully built new kernel cache")
@@ -120,7 +123,8 @@ class PatchSysVolume:
                 self.unmount_drive()
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
-            input("Press [ENTER] to continue")
+            if self.constants.gui_mode is False:
+                input("Press [ENTER] to continue")
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
@@ -464,12 +468,13 @@ class PatchSysVolume:
         print("- Starting Patch Process")
         print(f"- Determinging Required Patch set for Darwin {self.constants.detected_os}")
         self.detect_patch_set()
-        if self.no_patch is False:
+        if self.no_patch is False and self.constants.gui_mode is False:
             change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
         else:
             change_menu = None
             print("- No Root Patches required for your machine!")
-            input("\nPress [ENTER] to return to the main menu: ")
+            if self.constants.gui_mode is False:
+                input("\nPress [ENTER] to return to the main menu: ")
         if change_menu in ["y", "Y"]:
             print("- Continuing with Patching")
             print("- Verifying whether Root Patching possible")
@@ -477,7 +482,7 @@ class PatchSysVolume:
                 print("- Patcher is capable of patching")
                 self.check_files()
                 self.find_mount_root_vol(True)
-            else:
+            elif self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu: ")
 
         else:
@@ -487,4 +492,5 @@ class PatchSysVolume:
         print("- Starting Unpatch Process")
         if self.verify_patch_allowed() is True:
             self.find_mount_root_vol(False)
-            input("\nPress [ENTER] to return to the main menu")
+            if self.constants.gui_mode is False:
+                input("\nPress [ENTER] to return to the main menu")
