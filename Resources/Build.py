@@ -262,7 +262,7 @@ class BuildOpenCore:
                     if not self.constants.custom_model and self.computer.wifi and self.computer.wifi.pci_path:
                         arpt_path = self.computer.wifi.pci_path
                         print(f"- Found ARPT device at {arpt_path}")
-                        self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.wifi.country_code}
+                        self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.country_code}
                     else:
                         self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" brcmfx-country={self.computer.wifi.country_code}"
                 elif self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
