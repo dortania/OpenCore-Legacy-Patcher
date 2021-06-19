@@ -1,6 +1,7 @@
 import binascii
 import enum
 import itertools
+import plistlib
 import subprocess
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type
@@ -104,7 +105,7 @@ class WirelessCard(PCIDevice):
     chipset: enum.Enum = field(init=False)
 
     def __post_init__(self):
-        system_profiler = plistlib.loads(subprocess.run("system_profiler -xml SPAirPortDataType", stdout=subprocess.PIPE).stdout)
+        system_profiler = plistlib.loads(subprocess.run("system_profiler -xml SPAirPortDataType".split(), stdout=subprocess.PIPE).stdout)
         self.country_code = system_profiler[0]["_items"][0]["spairport_airport_interfaces"][0]["spairport_wireless_country_code"]
         self.detect_chipset()
 
