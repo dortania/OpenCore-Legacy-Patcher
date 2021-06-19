@@ -157,7 +157,7 @@ class PatchSysVolume:
         self.delete_old_binaries(SysPatchArray.DeleteVolumeControl)
         self.add_new_binaries(SysPatchArray.AddVolumeControl, self.constants.audio_path)
 
-    def gpu_accel_legacy_nvidia(self):
+    def gpu_accel_legacy_nvidia_big_sur(self):
         self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
         self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
         self.add_new_binaries(SysPatchArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
@@ -165,12 +165,12 @@ class PatchSysVolume:
     def gpu_framebuffer_legacy_nvidia(self):
         self.add_new_binaries(SysPatchArray.AddNvidiaBrightness, self.constants.legacy_nvidia_path)
 
-    def gpu_accel_legacy_ts1(self):
+    def gpu_accel_legacy_ts1_big_sur(self):
         self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
         self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
         self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
 
-    def gpu_accel_legacy_ts2(self):
+    def gpu_accel_legacy_ts2_big_sur(self):
         self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
         self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11TS2)
         self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
@@ -179,7 +179,7 @@ class PatchSysVolume:
     def gpu_framebuffer_legacy_amd(self):
         self.add_new_binaries(SysPatchArray.AddAMDBrightness, self.constants.legacy_amd_path)
 
-    def gpu_accel_legacy_ironlake(self):
+    def gpu_accel_legacy_ironlake_big_sur(self):
         self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
         self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
         self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
@@ -187,7 +187,7 @@ class PatchSysVolume:
     def gpu_framebuffer_legacy_ironlake(self):
         self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
 
-    def gpu_accel_legacy_sandybridge(self):
+    def gpu_accel_legacy_sandybridge_big_sur(self):
         self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
         self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
         self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
@@ -195,7 +195,7 @@ class PatchSysVolume:
     def gpu_framebuffer_legacy_sandybridge(self):
         self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen1_path)
 
-    def gpu_framebuffer_ivybridge(self):
+    def gpu_framebuffer_ivybridge_big_sur(self):
         self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
         print("- Fixing Acceleration in CoreMedia")
         self.elevated(["defaults", "write", "com.apple.coremedia", "hardwareVideoDecoder", "-string", "disable"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
@@ -228,7 +228,7 @@ class PatchSysVolume:
             print("- Installing legacy Nvidia Patches")
             if self.constants.detected_os == self.constants.big_sur:
                 print("- Detected Big Sur, installing Acceleration patches")
-                self.gpu_accel_legacy_nvidia()
+                self.gpu_accel_legacy_nvidia_big_sur()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
@@ -238,7 +238,7 @@ class PatchSysVolume:
             print("- Installing legacy TeraScale 1 Patches")
             if self.constants.detected_os == self.constants.big_sur:
                 print("- Detected Big Sur, installing Acceleration patches")
-                self.gpu_accel_legacy_ts1()
+                self.gpu_accel_legacy_ts1_big_sur()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
@@ -248,7 +248,7 @@ class PatchSysVolume:
             print("- Installing legacy TeraScale 2 Patches")
             if self.constants.detected_os == self.constants.big_sur:
                 print("- Detected Big Sur, installing Acceleration patches")
-                self.gpu_accel_legacy_ts2()
+                self.gpu_accel_legacy_ts2_big_sur()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
@@ -258,7 +258,7 @@ class PatchSysVolume:
             print("- Installing legacy Ironlake Patches")
             if self.constants.detected_os == self.constants.big_sur:
                 print("- Detected Big Sur, installing Acceleration patches")
-                self.gpu_accel_legacy_ironlake()
+                self.gpu_accel_legacy_ironlake_big_sur()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
@@ -268,7 +268,7 @@ class PatchSysVolume:
             print("- Installing legacy Sandy Bridge Patches")
             if self.constants.detected_os == self.constants.big_sur:
                 print("- Detected Big Sur, installing Acceleration patches")
-                self.gpu_accel_legacy_sandybridge()
+                self.gpu_accel_legacy_sandybridge_big_sur()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
@@ -276,7 +276,7 @@ class PatchSysVolume:
 
         if self.ivy_gpu is True:
             print("- Installing Ivy Bridge Patches")
-            self.gpu_framebuffer_ivybridge()
+            self.gpu_framebuffer_ivybridge_big_sur()
 
         if self.amd_ts2 is True:
             # TeraScale 2 patches must be installed after Intel HD3000
