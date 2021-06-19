@@ -100,9 +100,12 @@ class GPU(PCIDevice):
 @dataclass
 class WirelessCard(PCIDevice):
     CLASS_CODE: ClassVar[int] = 0x028000  # 00800200 hexswapped
+    country_code: str = field(init=False)
     chipset: enum.Enum = field(init=False)
 
     def __post_init__(self):
+        system_profiler = plistlib.loads(subprocess.run("system_profiler -xml SPAirPortDataType", stdout=subprocess.PIPE).stdout)
+        self.country_code = system_profiler[0]["_items"][0]["spairport_airport_interfaces"][0]["spairport_wireless_country_code"]
         self.detect_chipset()
 
     def detect_chipset(self):
