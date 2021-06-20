@@ -345,7 +345,7 @@ class PatchSysVolume:
                 file.write(chunk)
                 count += len(chunk)
                 Utilities.cls()
-                print("- Downloading Apple binaries (Big Sur) from PatcherSupportPkg")
+                print(f"- Downloading Apple binaries ({os_ver}) from PatcherSupportPkg")
                 print(f"- {count / 1024 / 1024}MB Downloaded")
         checksum = hashlib.sha256()
         with self.constants.payload_apple_root_path_zip.open("rb") as file:
@@ -485,7 +485,6 @@ class PatchSysVolume:
         print("- Starting Patch Process")
         print(f"- Determinging Required Patch set for Darwin {self.constants.detected_os}")
         self.detect_patch_set()
-        self.check_files()
         if self.no_patch is False and self.constants.gui_mode is False:
             change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
         else:
