@@ -332,8 +332,11 @@ class PatchSysVolume:
         link = f"{self.constants.url_patcher_support_pkg}{self.constants.patcher_support_pkg_version}/{os_ver}.zip"
 
         if Path(self.constants.payload_apple_root_path).exists():
-            print("- Removing old Apple Binaries")
+            print("- Removing old Apple Binaries folder")
             Path(self.constants.payload_apple_root_path).unlink()
+        if Path(self.constants.payload_apple_root_path_zip).exists():
+            print("- Removing old Apple Binaries zip")
+            Path(self.constants.payload_apple_root_path_zip).unlink()
 
         response = requests.get(link, stream=True)
         with self.constants.payload_apple_root_path_zip.open("wb") as file:
@@ -358,17 +361,18 @@ class PatchSysVolume:
                 subprocess.run(["unzip", self.constants.payload_apple_root_path_zip], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.constants.payload_path).stdout.decode()
                 print("- Renaming folder")
                 os.rename(self.constants.payload_path / Path(os_ver), self.constants.payload_apple_root_path)
+                Path(self.constants.payload_apple_root_path_zip).unlink()
                 print("- Binaries downloaded to:")
                 print(self.constants.payload_path)
                 if self.constants.gui_mode is False:
                     input("Press [ENTER] to continue")
             except zipfile.BadZipFile:
                 print("- Couldn't unzip")
-            os.remove(self.constants.payload_apple_root_path_zip)
+                return
         else:
             print("- Download failed, please verify the below link works:")
             print(link)
-
+            input("Press [ENTER] to continue")
     def detect_gpus(self):
         dgpu = self.constants.computer.dgpu
         igpu = self.constants.computer.igpu
