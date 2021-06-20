@@ -5,7 +5,9 @@
 #   - Temporary Work-around: sudo bless --mount /System/Volumes/Update/mnt1 --bootefi --last-sealed-snapshot
 # - Work-around battery throttling on laptops with no battery (IOPlatformPluginFamily.kext/Contents/PlugIns/ACPI_SMC_PlatformPlugin.kext/Contents/Resources/)
 
+import hashlib
 import os
+import requests
 import shutil
 import subprocess
 import zipfile
@@ -328,18 +330,27 @@ class PatchSysVolume:
         elif self.constants.detected_os == self.constants.mojave:
             os_ver = "10.14-Mojave"
         link = f"{self.constants.url_patcher_support_pkg}{self.constants.patcher_support_pkg_version}/{os_ver}.zip"
-        Utilities.cls()
-        print("- Downloading Apple binaries")
-        popen_oclp = subprocess.Popen(
-            ["curl", "-S", "-L", link, "--output", self.constants.payload_apple_root_path_zip],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-        )
-        for stdout_line in iter(popen_oclp.stdout.readline, ""):
-            print(stdout_line, end="")
-        popen_oclp.stdout.close()
+
+        if Path(self.constants.payload_apple_root_path).exists():
+            print("- Removing old Apple Binaries")
+            Path(self.constants.payload_apple_root_path).unlink()
+
+        response = requests.get(link, stream=True)
+        with self.constants.payload_apple_root_path_zip.open("wb") as file:
+            count = 0
+            for chunk in response.iter_content(1024 * 1024 * 4):
+                file.write(chunk)
+                count += len(chunk)
+                Utilities.cls()
+                print("- Downloading Apple binaries (Big Sur) from PatcherSupportPkg")
+                print(f"- {count / 1024 / 1024}MB Downloaded")
+        checksum = hashlib.sha256()
+        with self.constants.payload_apple_root_path_zip.open("rb") as file:
+            chunk = file.read(1024 * 1024 * 16)
+            while chunk:
+                checksum.update(chunk)
+                chunk = file.read(1024 * 1024 * 16)
+        print(f"- Checksum: {checksum.hexdigest()}")
         if self.constants.payload_apple_root_path_zip.exists():
             print("- Download completed")
             print("- Unzipping download...")
@@ -470,6 +481,7 @@ class PatchSysVolume:
         print("- Starting Patch Process")
         print(f"- Determinging Required Patch set for Darwin {self.constants.detected_os}")
         self.detect_patch_set()
+        self.check_files()
         if self.no_patch is False and self.constants.gui_mode is False:
             change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
         else:
