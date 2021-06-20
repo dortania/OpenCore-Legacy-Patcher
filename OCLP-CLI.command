@@ -188,6 +188,9 @@ class OpenCoreLegacyPatcher():
                 self.constants.sip_status = False  # Unsigned kexts
                 self.constants.secure_status = False  # Modified root volume
                 #self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+        if model == "MacBook8,1":
+            # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
+            self.constants.serial_settings == "Moderate"
 
     def patch_vol(self):
         SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
