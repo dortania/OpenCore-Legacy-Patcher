@@ -10,6 +10,9 @@
 - Fix Country Code detection on Wireless Cards
 - Add Windows detection and prompt during installation
 - Fix Google Fonts rendering for Intel HD4000 iGPUs in Monterey
+- Increment Binaries
+  - Lilu 1.5.4 rolling (f69a972 - 06-20-2021)
+  - RestrictEvents 1.0.3 rolling (3773ce2 - 06-20-2021)
 
 ## 0.1.9
 - Fix incorrect AMFI and SIP detection
