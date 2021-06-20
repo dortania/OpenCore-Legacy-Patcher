@@ -3,7 +3,7 @@
 ## 0.2.0
 
 - Refactor device probe logic
-- Implement PatcherSupportPkg v0.0.6
+- Implement PatcherSupportPkg v0.0.7
   - Reduces binary sizes depending on OS
   - Deprecates Apple-Binaries-OCLP
 - Fix full screen and Airplay to Mac support for Intel HD4000 iGPUs in Monterey
