@@ -166,6 +166,7 @@ AddAMDBrightness = [
 
 AddAMDAccel11TS2 = [
     "IOSurface.kext",
+    "IOAcceleratorFamily2.kext"
 ]
 
 AddIntelGen1Accel = [

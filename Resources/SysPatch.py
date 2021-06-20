@@ -57,6 +57,9 @@ class PatchSysVolume:
     def find_mount_root_vol(self, patch):
         self.root_mount_path = Utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
+            if self.constants.detected_os == self.constants.catalina:
+                print("- Mounting Root Volume as writable")
+                self.elevated(["mount", "-uw", "/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")

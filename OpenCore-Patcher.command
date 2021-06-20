@@ -225,8 +225,6 @@ B. Exit
         mojave_catalina = """Patches Root volume to fix misc issues such as:
 
 - Graphics Acceleration
-  - Intel: Ivy Bridge (4000 series iGPUs)
-- Graphics Acceleration
   - Nvidia: Tesla - Fermi (8000-500 series)
   - Intel: Ironlake - Sandy Bridge
   - AMD: TeraScale 1 and 2 (2000-6000 series)
@@ -264,7 +262,7 @@ B. Exit
         change_menu = input("Patch System Volume?: ")
         if no_patch is not True and change_menu == "1":
             SysPatch.PatchSysVolume(self.constants.custom_model or self.computer.real_model, self.constants).start_patch()
-        elif no_patch is not True and change_menu == "2":
+        elif no_patch is not True and change_menu == "2" and self.constants.detected_os > self.constants.catalina:
             SysPatch.PatchSysVolume(self.constants.custom_model or self.computer.real_model, self.constants).start_unpatch()
         else:
             print("Returning to main menu")
