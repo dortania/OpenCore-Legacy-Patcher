@@ -3,13 +3,14 @@
 ## 0.2.0
 
 - Refactor device probe logic
-- Implement PatcherSupportPkg v0.0.3
+- Implement PatcherSupportPkg v0.0.6
   - Reduces binary sizes depending on OS
   - Deprecates Apple-Binaries-OCLP
-- Fix full screen and Airplay to Mac support for Intel HD4000 iGPUs
+- Fix full screen and Airplay to Mac support for Intel HD4000 iGPUs in Monterey
 - Automatically set `CMIO_Unit_Input_ASC.DoNotUseOpenCL` on TeraScale 2 GPUs
 - Fix Country Code detection on Wireless Cards
 - Add Windows detection and prompt during installation
+- Fix Google Fonts rendering for Intel HD4000 iGPUs in Monterey
 
 ## 0.1.9
 - Fix incorrect AMFI and SIP detection

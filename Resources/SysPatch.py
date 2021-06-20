@@ -203,6 +203,8 @@ class PatchSysVolume:
         self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
         print("- Fixing Acceleration in CoreMedia")
         subprocess.run(["defaults", "write", "com.apple.coremedia", "hardwareVideoDecoder", "-string", "disable"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        print("- Merging Ivy Bridge Frameworks")
+        self.elevated(["ditto", self.constants.payload_apple_frameworks_path_accel_ivy, self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
