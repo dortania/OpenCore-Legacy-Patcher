@@ -6,6 +6,9 @@ import math
 from pathlib import Path
 import plistlib
 import subprocess
+import requests
+import hashlib
+import requests
 
 from Resources import Constants
 
@@ -114,6 +117,28 @@ def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
         value = value.strip(b"\0").decode()
     return value
 
+def download_file(link, location):
+    print("- Attempting download from following link:")
+    print(link)
+    if Path(location).exists():
+        print("- Removing old file")
+        Path(location).unlink()
+    response = requests.get(link, stream=True)
+    with location.open("wb") as file:
+        count = 0
+        for chunk in response.iter_content(1024 * 1024 * 4):
+            file.write(chunk)
+            count += len(chunk)
+            cls()
+            print(f"- Downloading package")
+            print(f"- {count / 1024 / 1024}MB Downloaded")
+    checksum = hashlib.sha256()
+    with location.open("rb") as file:
+        chunk = file.read(1024 * 1024 * 16)
+        while chunk:
+            checksum.update(chunk)
+            chunk = file.read(1024 * 1024 * 16)
+    print(f"- Checksum: {checksum.hexdigest()}")
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]

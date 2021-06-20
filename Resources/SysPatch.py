@@ -338,35 +338,8 @@ class PatchSysVolume:
             print("- Removing old Apple Binaries zip")
             Path(self.constants.payload_apple_root_path_zip).unlink()
 
-        #Utilities.cls()
-        #print("- Downloading Apple binaries")
-        #popen_oclp = subprocess.Popen(
-        #    ["curl", "-S", "-L", link, "--output", self.constants.payload_apple_root_path_zip],
-        #    stdin=subprocess.PIPE,
-        #    stdout=subprocess.PIPE,
-        #    stderr=subprocess.STDOUT,
-        #    universal_newlines=True,
-        #)
-        #for stdout_line in iter(popen_oclp.stdout.readline, ""):
-        #    print(stdout_line, end="")
-        #popen_oclp.stdout.close()
+        Utilities.download_file(link, self.constants.payload_apple_root_path_zip)
 
-        response = requests.get(link, stream=True)
-        with self.constants.payload_apple_root_path_zip.open("wb") as file:
-            count = 0
-            for chunk in response.iter_content(1024 * 1024 * 4):
-                file.write(chunk)
-                count += len(chunk)
-                Utilities.cls()
-                print(f"- Downloading Apple binaries ({os_ver}) from PatcherSupportPkg")
-                print(f"- {count / 1024 / 1024}MB Downloaded")
-        checksum = hashlib.sha256()
-        with self.constants.payload_apple_root_path_zip.open("rb") as file:
-            chunk = file.read(1024 * 1024 * 16)
-            while chunk:
-                checksum.update(chunk)
-                chunk = file.read(1024 * 1024 * 16)
-        print(f"- Checksum: {checksum.hexdigest()}")
         if self.constants.payload_apple_root_path_zip.exists():
             print("- Download completed")
             print("- Unzipping download...")
