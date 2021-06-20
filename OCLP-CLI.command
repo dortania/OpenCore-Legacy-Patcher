@@ -136,7 +136,7 @@ class OpenCoreLegacyPatcher():
             if args.model:
                 print(f"- Using custom model: {args.model}")
                 self.constants.custom_model = args.model
-                self.set_defaults(self.computer.custom_model, False)
+                self.set_defaults(self.constants.custom_model, False)
                 self.build_opencore()
             else:
                 print(f"- Using detected model: {self.constants.computer.real_model}")
