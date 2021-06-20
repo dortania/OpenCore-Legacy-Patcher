@@ -42,7 +42,7 @@ class Constants:
         self.debugenhancer_version = "1.0.3"
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
-        self.patcher_support_pkg_version = "0.0.7"  # PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.0.8"  # PatcherSupportPkg
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
