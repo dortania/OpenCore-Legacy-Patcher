@@ -176,6 +176,10 @@ class PatchSysVolume:
         self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
         self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
 
+    def gpu_accel_legacy_ts2_mojave(self):
+        self.add_new_binaries(SysPatchArray.AddGeneralAccelLegacy, self.constants.legacy_general_path)
+        self.add_new_binaries(SysPatchArray.AddAMDAccelLegacy, self.constants.legacy_amd_path)
+
     def gpu_accel_legacy_ts2_big_sur(self):
         self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
         self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11TS2)
@@ -211,15 +215,14 @@ class PatchSysVolume:
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
         self.elevated(["rsync", "-r", "-i", f"{self.constants.payload_apple_frameworks_path_accel}/", self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        if Path(self.mount_lauchd / Path("HiddHack.plist")).exists():
-            print("- Removing legacy HiddHack")
-            self.elevated(["rm", f"{self.mount_lauchd}/HiddHack.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        print("- Adding IOHID-Fixup.plist")
-        self.elevated(["rsync", "-r", "-i", f"{self.constants.payload_apple_lauchd_path_accel}/", self.mount_lauchd], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        self.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        self.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         print("- Merging general legacy PrivateFrameworks")
         self.elevated(["rsync", "-r", "-i", f"{self.constants.payload_apple_private_frameworks_path_accel}/", self.mount_private_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+
+        if self.constants.detected_os > self.constants.catalina:
+            print("- Adding IOHID-Fixup.plist")
+            self.elevated(["rsync", "-r", "-i", f"{self.constants.payload_apple_lauchd_path_accel}/", self.mount_lauchd], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            self.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            self.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def gpu_accel_legacy_extended_ts2(self):
         print("- Merging TeraScale 2 legacy Frameworks")
@@ -257,6 +260,10 @@ class PatchSysVolume:
             if self.constants.detected_os == self.constants.big_sur:
                 print("- Detected Big Sur, installing Acceleration patches")
                 self.gpu_accel_legacy_ts2_big_sur()
+                self.added_kexts = True
+            elif self.constants.detected_os == self.constants.catalina:
+                print("- Detected Catalina, installing Acceleration patches")
+                self.gpu_accel_legacy_ts2_mojave()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
@@ -375,7 +382,7 @@ class PatchSysVolume:
             # TODO: Enable TS2 support
             elif dgpu.arch == device_probe.AMD.Archs.TeraScale_2:
                 # Requires manual permission from user to avoid medical issues
-                if self.constants.detected_os > self.constants.catalina and self.constants.terascale_2_patch is True:
+                if self.constants.detected_os > self.constants.high_sierra:
                     self.amd_ts2 = True
                     self.amfi_must_disable = True
         if igpu and igpu.class_code != 0xFFFFFF:

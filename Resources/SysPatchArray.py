@@ -94,6 +94,32 @@ AddNvidiaKeplerAccel11 = [
     "NVSMU.kext",
 ]
 
+AddAMDAccelLegacy = [
+    "AMD2400Controller.kext",
+    "AMD2600Controller.kext",
+    "AMD3800Controller.kext",
+    "AMD4600Controller.kext",
+    "AMD4800Controller.kext",
+    "AMD5000Controller.kext",
+    "AMD6000Controller.kext",
+    "AMDFramebuffer.kext",
+    "AMDLegacyFramebuffer.kext",
+    "AMDLegacySupport.kext",
+    "AMDRadeonVADriver.bundle",
+    "AMDRadeonVADriver2.bundle",
+    "AMDRadeonX3000.kext",
+    "AMDRadeonX3000GLDriver.bundle",
+    "AMDRadeonX4000HWServices.kext",
+    "AMDRadeonX4000.kext",
+    "AMDRadeonX4000GLDriver.bundle",
+    "AMDShared.bundle",
+    "AMDSupport.kext",
+    "ATIRadeonX2000.kext",
+    "ATIRadeonX2000GA.plugin",
+    "ATIRadeonX2000GLDriver.bundle",
+    "ATIRadeonX2000VADriver.bundle",
+]
+
 AddAMDAccel11 = [
     "AMD2400Controller.kext",
     "AMD2600Controller.kext",
@@ -170,6 +196,15 @@ AddIntelGen3Accel = [
 ]
 
 AddGeneralAccel = ["IOAcceleratorFamily2.kext", "IOSurface.kext"]
+
+AddGeneralAccelLegacy = [
+    "AppleGraphicsControl.kext",
+	"AppleGraphicsPowerManagement.kext",
+	"AppleMCCSControl.kext",
+	"IOGraphicsFamily.kext",
+	"IONDRVSupport.kext",
+	"IOSurface.kext",
+]
 
 DeleteBrightness = ["AppleGraphicsControl.kext/Contents/PlugIns/AGDCBacklightControl.kext"]
 
