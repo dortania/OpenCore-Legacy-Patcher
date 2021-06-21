@@ -66,8 +66,10 @@ def csr_decode(csr_active_config):
     else:
         return True
 
+
 def friendly_hex(integer: int):
     return "{:02X}".format(integer)
+
 
 def patching_status():
     # Detection for Root Patching
@@ -94,7 +96,18 @@ def patching_status():
     return sip_enabled, sbm_enabled, amfi_enabled, fv_enabled
 
 
+clear = True
+
+
+def disable_cls():
+    global clear
+    clear = False
+
+
 def cls():
+    global clear
+    if not clear:
+        return
     if not check_recovery():
         os.system("cls" if os.name == "nt" else "clear")
     else:
@@ -116,6 +129,7 @@ def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
     if decode:
         value = value.strip(b"\0").decode()
     return value
+
 
 def download_file(link, location):
     print("- Attempting download from following link:")
@@ -139,6 +153,7 @@ def download_file(link, location):
             checksum.update(chunk)
             chunk = file.read(1024 * 1024 * 16)
     print(f"- Checksum: {checksum.hexdigest()}")
+
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]

@@ -12,6 +12,9 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
+      - name: Install Python Dependencies
+        run: pip3 install --upgrade pyinstaller requests
+
       - run: pyinstaller OCLP-CLI.spec
       - run: cd dist; zip ../OCLP-CLI.zip OCLP-CLI
       - name: Upload Binary to Artifacts
