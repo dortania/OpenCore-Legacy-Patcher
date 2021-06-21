@@ -72,6 +72,15 @@ AddNvidiaAccel11 = [
     "IOSurface.kext",
 ]
 
+AddNvidiaAccelLegacy = [
+    "GeForceGA.bundle",
+    "GeForceTesla.kext",
+    "GeForceTeslaGLDriver.bundle",
+    "GeForceTeslaVADriver.bundle",
+    "NVDANV50HalTesla.kext",
+    "NVDAResmanTesla.kext",
+]
+
 AddNvidiaBrightness = [
     "GeForceGA.bundle",
     "GeForceTesla.kext",
@@ -198,13 +207,23 @@ AddIntelGen3Accel = [
 
 AddGeneralAccel = ["IOAcceleratorFamily2.kext", "IOSurface.kext"]
 
-AddGeneralAccelLegacy = [
+AddGeneralAccelCatalina = [
     "AppleGraphicsControl.kext",
 	"AppleGraphicsPowerManagement.kext",
 	"AppleMCCSControl.kext",
 	"IOGraphicsFamily.kext",
 	"IONDRVSupport.kext",
 	"IOSurface.kext",
+]
+
+AddGeneralAccelMojave = [
+	"IONDRVSupport.kext",
+	"AppleGraphicsControl.kext",
+	"AppleGraphicsPowerManagement.kext",
+	"AppleMCCSControl.kext",
+	"IOAccelerator2D.plugin",
+	"IOAcceleratorFamily2.kext",
+	"IOGraphicsFamily.kext",
 ]
 
 DeleteBrightness = ["AppleGraphicsControl.kext/Contents/PlugIns/AGDCBacklightControl.kext"]

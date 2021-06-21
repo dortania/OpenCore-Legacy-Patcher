@@ -107,7 +107,7 @@ class PatchSysVolume:
         else:
             result = self.elevated(["kextcache", "-i", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        if result.returncode != 0:
+        if result.returncode != 0 or (self.constants.detected_os in [self.constants.mojave, self.constants.catalina] and "KernelCache ID" not in result):
             self.success_status = False
             print("- Unable to build new kernel cache")
             print("\nPlease report this to Github")
@@ -166,47 +166,89 @@ class PatchSysVolume:
         self.delete_old_binaries(SysPatchArray.DeleteVolumeControl)
         self.add_new_binaries(SysPatchArray.AddVolumeControl, self.constants.audio_path)
 
-    def gpu_accel_legacy_nvidia_big_sur(self):
-        self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
-        self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
-        self.add_new_binaries(SysPatchArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+    def gpu_accel_legacy(self):
+        if self.constants.detected_os == self.constants.mojave:
+            print("- Installing General Acceleration Kext patches for Mojave")
+            self.add_new_binaries(SysPatchArray.AddGeneralAccelMojave, self.constants.legacy_general_path)
+        elif self.constants.detected_os == self.constants.catalina:
+            print("- Installing General Acceleration Kext patches for Catalina")
+            self.add_new_binaries(SysPatchArray.AddGeneralAccelCatalina, self.constants.legacy_general_path)
+        elif self.constants.detected_os == self.constants.big_sur:
+            print("- Installing General Acceleration Kext patches for Big Sur")
+            self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
 
-    def gpu_framebuffer_legacy_nvidia(self):
-        self.add_new_binaries(SysPatchArray.AddNvidiaBrightness, self.constants.legacy_nvidia_path)
+    # Nvidia
+    def gpu_accel_legacy_nvidia_master(self):
+        if self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
+            print("- Installing Nvidia Acceleration Kext patches for Mojave/Catalina")
+            self.gpu_accel_legacy()
+            self.add_new_binaries(SysPatchArray.AddNvidiaAccelLegacy, self.constants.legacy_nvidia_path)
+        elif self.constants.detected_os == self.constants.big_sur:
+            print("- Installing Nvidia Acceleration Kext patches for Big Sur")
+            self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
+            self.gpu_accel_legacy()
+            self.add_new_binaries(SysPatchArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+        else:
+            print("- Installing Nvidia Framebuffer Kext patches for generic OS")
+            self.add_new_binaries(SysPatchArray.AddNvidiaBrightness, self.constants.legacy_nvidia_path)
 
-    def gpu_accel_legacy_ts1_big_sur(self):
-        self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
-        self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
-        self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
+    # AMD
+    def gpu_accel_legacy_ts1_master(self):
+        if self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
+            print("- Installing TeraScale 1 Acceleration Kext patches for Mojave/Catalina")
+            self.gpu_accel_legacy()
+            self.add_new_binaries(SysPatchArray.AddAMDAccelLegacy, self.constants.legacy_amd_path)
+        elif self.constants.detected_os == self.constants.big_sur:
+            print("- Installing TeraScale 1 Acceleration Kext patches for Big Sur")
+            self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
+            self.gpu_accel_legacy()
+            self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
+        else:
+            print("- Installing TeraScale 1 Framebuffer Kext patches for generic OS")
+            self.add_new_binaries(SysPatchArray.AddAMDBrightness, self.constants.legacy_amd_path)
 
-    def gpu_accel_legacy_ts2_mojave(self):
-        self.add_new_binaries(SysPatchArray.AddGeneralAccelLegacy, self.constants.legacy_general_path)
-        self.add_new_binaries(SysPatchArray.AddAMDAccelLegacy, self.constants.legacy_amd_path)
+    def gpu_accel_legacy_ts2_master(self):
+        if self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
+            print("- Installing TeraScale 2 Acceleration Kext patches for Mojave/Catalina")
+            self.gpu_accel_legacy()
+            self.add_new_binaries(SysPatchArray.AddAMDAccelLegacy, self.constants.legacy_amd_path)
+        elif self.constants.detected_os == self.constants.big_sur:
+            print("- Installing TeraScale 2 Acceleration Kext patches for Big Sur")
+            self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
+            self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11TS2)
+            self.gpu_accel_legacy()
+            self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
+        else:
+            print("- Installing TeraScale 2 Framebuffer Kext patches for generic OS")
+            self.add_new_binaries(SysPatchArray.AddAMDBrightness, self.constants.legacy_amd_path)
 
-    def gpu_accel_legacy_ts2_big_sur(self):
-        self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
-        self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11TS2)
-        self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
-        self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
+    def gpu_accel_legacy_ironlake_master(self):
+        if self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
+            print("- Installing Ironlake Acceleration Kext patches for Mojave/Catalina")
+            self.gpu_accel_legacy()
+            self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
+        elif self.constants.detected_os == self.constants.big_sur:
+            print("- Installing Ironlake Acceleration Kext patches for Big Sur")
+            self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
+            self.gpu_accel_legacy()
+            self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
+        else:
+            print("- Installing Ironlake Framebuffer Kext patches for generic OS")
+            self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
 
-    def gpu_framebuffer_legacy_amd(self):
-        self.add_new_binaries(SysPatchArray.AddAMDBrightness, self.constants.legacy_amd_path)
-
-    def gpu_accel_legacy_ironlake_big_sur(self):
-        self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
-        self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
-        self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
-
-    def gpu_framebuffer_legacy_ironlake(self):
-        self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
-
-    def gpu_accel_legacy_sandybridge_big_sur(self):
-        self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
-        self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
-        self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
-
-    def gpu_framebuffer_legacy_sandybridge(self):
-        self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen1_path)
+    def gpu_accel_legacy_sandybridge_master(self):
+        if self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
+            print("- Installing Sandy Bridge Acceleration Kext patches for Mojave/Catalina")
+            self.gpu_accel_legacy()
+            self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
+        elif self.constants.detected_os == self.constants.big_sur:
+            print("- Installing Sandy Bridge Acceleration Kext patches for Big Sur")
+            self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
+            self.gpu_accel_legacy()
+            self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
+        else:
+            print("- Installing Sandy Bridge Framebuffer Kext patches for generic OS")
+            self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
 
     def gpu_framebuffer_ivybridge_big_sur(self):
         self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
@@ -240,57 +282,53 @@ class PatchSysVolume:
         # Graphics patches
         if self.nvidia_legacy is True:
             print("- Installing legacy Nvidia Patches")
-            if self.constants.detected_os == self.constants.big_sur:
-                print("- Detected Big Sur, installing Acceleration patches")
-                self.gpu_accel_legacy_nvidia_big_sur()
+            if self.constants.detected_os in [self.constants.mojave, self.constants.catalina, self.constants.big_sur]:
+                print("- Detected supported OS, installing Acceleration Patches")
+                self.gpu_accel_legacy_nvidia_master()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
-                self.gpu_framebuffer_legacy_nvidia()
+                self.gpu_accel_legacy_nvidia_master()
 
         if self.amd_ts1 is True:
             print("- Installing legacy TeraScale 1 Patches")
-            if self.constants.detected_os == self.constants.big_sur:
-                print("- Detected Big Sur, installing Acceleration patches")
-                self.gpu_accel_legacy_ts1_big_sur()
+            if self.constants.detected_os in [self.constants.mojave, self.constants.catalina, self.constants.big_sur]:
+                print("- Detected supported OS, installing Acceleration Patches")
+                self.gpu_accel_legacy_ts1_master()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
-                self.gpu_framebuffer_legacy_amd()
+                self.gpu_accel_legacy_ts1_master()
 
         if self.amd_ts2 is True:
             print("- Installing legacy TeraScale 2 Patches")
-            if self.constants.detected_os == self.constants.big_sur:
-                print("- Detected Big Sur, installing Acceleration patches")
-                self.gpu_accel_legacy_ts2_big_sur()
-                self.added_kexts = True
-            elif self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
-                print("- Detected Mojave/Catalina, installing Acceleration patches")
-                self.gpu_accel_legacy_ts2_mojave()
+            if self.constants.detected_os in [self.constants.mojave, self.constants.catalina, self.constants.big_sur]:
+                print("- Detected supported OS, installing Acceleration Patches")
+                self.gpu_accel_legacy_ts2_master()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
-                self.gpu_framebuffer_legacy_amd()
+                self.gpu_accel_legacy_ts2_master()
 
         if self.iron_gpu is True:
             print("- Installing legacy Ironlake Patches")
-            if self.constants.detected_os == self.constants.big_sur:
-                print("- Detected Big Sur, installing Acceleration patches")
-                self.gpu_accel_legacy_ironlake_big_sur()
+            if self.constants.detected_os in [self.constants.mojave, self.constants.catalina, self.constants.big_sur]:
+                print("- Detected supported OS, installing Acceleration Patches")
+                self.gpu_accel_legacy_ironlake_master()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
-                self.gpu_framebuffer_legacy_ironlake()
+                self.gpu_accel_legacy_ironlake_master()
 
         if self.sandy_gpu is True:
             print("- Installing legacy Sandy Bridge Patches")
-            if self.constants.detected_os == self.constants.big_sur:
-                print("- Detected Big Sur, installing Acceleration patches")
-                self.gpu_accel_legacy_sandybridge_big_sur()
+            if self.constants.detected_os in [self.constants.mojave, self.constants.catalina, self.constants.big_sur]:
+                print("- Detected supported OS, installing Acceleration Patches")
+                self.gpu_accel_legacy_sandybridge_master()
                 self.added_kexts = True
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
-                self.gpu_framebuffer_legacy_sandybridge()
+                self.gpu_accel_legacy_sandybridge_master()
 
         if self.ivy_gpu is True:
             print("- Installing Ivy Bridge Patches")
