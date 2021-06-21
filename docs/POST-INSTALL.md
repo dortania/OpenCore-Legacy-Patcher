@@ -28,6 +28,12 @@ Here you can change different patcher settings, however the main interest is:
 
 Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, then you can release the "ESC" key when you see the cursor arrow at the top left.
 
+## Enabling SIP
+
+For many users, SIP will be enabled by default on build. For Intel HD 4000 users, you may have noticed that SIP is disabled. This is to ensure full compatibility with macOS Monterey and allow seamless booting between it and older OSes. However for users who do not plan to boot Monterey, you can re-enable under Patcher Settings.
+
+Note: Machines with non-Metal GPUs cannot enable SIP in Big Sur either due to patched root volume
+
 ## Applying Post Install Volume Patches
 
 **Note**: For users who need Post-Install Volume patches for legacy video acceleration support, you **must** disable the following settings in "Patcher Settings" when building and installing your new OpenCore:
