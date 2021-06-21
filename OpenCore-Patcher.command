@@ -7,8 +7,7 @@ import platform
 import subprocess
 import sys
 
-from Resources import (Build, CliMenu, Constants, ModelArray, SysPatch,
-                       Utilities, device_probe)
+from Resources import Build, CliMenu, Constants, ModelArray, SysPatch, Utilities, device_probe
 
 
 class OpenCoreLegacyPatcher:
@@ -64,11 +63,11 @@ class OpenCoreLegacyPatcher:
                 # Some models have a supported dGPU, others don't
                 self.constants.sip_status = True
                 # self.constants.secure_status = True  # Monterey
-                #self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+                # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
             else:
                 self.constants.sip_status = False  # Unsigned kexts
                 self.constants.secure_status = False  # Modified root volume
-                #self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+                # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
         if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings == "Moderate"

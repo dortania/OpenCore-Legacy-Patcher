@@ -12,9 +12,10 @@ from pathlib import Path
 from Resources import Build, ModelArray, Constants, SysPatch, device_probe, Utilities
 
 
-class OpenCoreLegacyPatcher():
+class OpenCoreLegacyPatcher:
     def __init__(self):
         print("Loading...")
+        Utilities.disable_cls()
         self.constants = Constants.Constants()
         self.constants.computer = device_probe.Computer.probe()
         self.computer = self.constants.computer
@@ -35,29 +36,29 @@ class OpenCoreLegacyPatcher():
         parser = argparse.ArgumentParser()
 
         # Generic building args
-        parser.add_argument('--build', help='Build OpenCore', action='store_true', required=False)
-        parser.add_argument('--verbose', help='Enable verbose boot', action='store_true', required=False)
-        parser.add_argument('--debug_oc', help='Enable OpenCore DEBUG', action='store_true', required=False)
-        parser.add_argument('--debug_kext', help='Enable kext DEBUG', action='store_true', required=False)
-        parser.add_argument('--skip_wifi', help='Skip wifi patches', action='store_true', required=False)
-        parser.add_argument('--hide_picker', help='Hide OpenCore picker', action='store_true', required=False)
-        parser.add_argument('--disable_sip', help='Disable SIP', action='store_true', required=False)
-        parser.add_argument('--disable_smb', help='Disable SecureBootModel', action='store_true', required=False)
-        parser.add_argument('--vault', help='Enable OpenCore Vaulting', action='store_true', required=False)
-        parser.add_argument('--support_all', help='Allow OpenCore on natively supported Models', action='store_true', required=False)
-        parser.add_argument('--firewire', help='Enable FireWire Booting', action='store_true', required=False)
-        parser.add_argument('--nvme', help='Enable NVMe Booting', action='store_true', required=False)
-        parser.add_argument('--disable_amfi', help='Disable AMFI', action='store_true', required=False)
+        parser.add_argument("--build", help="Build OpenCore", action="store_true", required=False)
+        parser.add_argument("--verbose", help="Enable verbose boot", action="store_true", required=False)
+        parser.add_argument("--debug_oc", help="Enable OpenCore DEBUG", action="store_true", required=False)
+        parser.add_argument("--debug_kext", help="Enable kext DEBUG", action="store_true", required=False)
+        parser.add_argument("--skip_wifi", help="Skip wifi patches", action="store_true", required=False)
+        parser.add_argument("--hide_picker", help="Hide OpenCore picker", action="store_true", required=False)
+        parser.add_argument("--disable_sip", help="Disable SIP", action="store_true", required=False)
+        parser.add_argument("--disable_smb", help="Disable SecureBootModel", action="store_true", required=False)
+        parser.add_argument("--vault", help="Enable OpenCore Vaulting", action="store_true", required=False)
+        parser.add_argument("--support_all", help="Allow OpenCore on natively supported Models", action="store_true", required=False)
+        parser.add_argument("--firewire", help="Enable FireWire Booting", action="store_true", required=False)
+        parser.add_argument("--nvme", help="Enable NVMe Booting", action="store_true", required=False)
+        parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
 
         # Building args requiring value values
-        parser.add_argument('--model', action='store', help='Set custom model', required=False)
-        parser.add_argument('--metal_gpu', action='store', help='Set Metal GPU Vendor', required=False)
-        parser.add_argument('--smbios_spoof', action='store', help='Set SMBIOS patching mode', required=False)
+        parser.add_argument("--model", action="store", help="Set custom model", required=False)
+        parser.add_argument("--metal_gpu", action="store", help="Set Metal GPU Vendor", required=False)
+        parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
 
         # SysPatch args
-        parser.add_argument('--patch_sys_vol', help='Patches root volume', action='store_true', required=False)
-        parser.add_argument('--unpatch_sys_vol', help='Unpatches root volume, EXPERIMENTAL', action='store_true', required=False)
-        parser.add_argument('--terascale_2', help='Enable TeraScale 2 Acceleration', action='store_true', required=False)
+        parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
+        parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
+        parser.add_argument("--terascale_2", help="Enable TeraScale 2 Acceleration", action="store_true", required=False)
 
         args = parser.parse_args()
 
@@ -138,6 +139,13 @@ class OpenCoreLegacyPatcher():
                 self.constants.custom_model = args.model
                 self.set_defaults(self.constants.custom_model, False)
                 self.build_opencore()
+            elif self.computer.real_model not in ModelArray.SupportedSMBIOS and self.constants.allow_oc_everywhere is False:
+                print(
+                    """Your model is not supported by this patcher for running unsupported OSes!"
+
+If you plan to create the USB for another machine, please select the "Change Model" option in the menu."""
+                )
+                sys.exit(1)
             else:
                 print(f"- Using detected model: {self.constants.computer.real_model}")
                 self.build_opencore()
@@ -183,11 +191,11 @@ class OpenCoreLegacyPatcher():
                 # Some models have a supported dGPU, others don't
                 self.constants.sip_status = True
                 # self.constants.secure_status = True  # Monterey
-                #self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+                # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
             else:
                 self.constants.sip_status = False  # Unsigned kexts
                 self.constants.secure_status = False  # Modified root volume
-                #self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+                # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
         if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings == "Moderate"
@@ -203,6 +211,7 @@ class OpenCoreLegacyPatcher():
 
     def install_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).copy_efi()
+
 
 OpenCoreLegacyPatcher()
 

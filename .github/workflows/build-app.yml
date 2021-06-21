@@ -13,10 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Install Python Dependencies
-      #   run: |
-      #     python3 -m pip install -U pip
-      #     pip3 install pyinstaller
+      - name: Install Python Dependencies
+        run: pip3 install --upgrade pyinstaller requests
 
       - run: pyinstaller OpenCore-Patcher.spec
       - run: ./after_pyinstaller.sh
