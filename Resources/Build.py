@@ -205,7 +205,7 @@ class BuildOpenCore:
 
                 if controller.pci_path:
                     print(f"- Found NVMe ({i}) at {controller.pci_path}")
-                    self.config["DeviceProperties"]["Add"][controller.pci_path]["pci-aspm-default"] = nvme_aspm
+                    self.config["DeviceProperties"]["Add"].setdefault(controller.pci_path, {})["pci-aspm-default"] = nvme_aspm
                     self.config["DeviceProperties"]["Add"][controller.pci_path.rpartition("/")[0]] = {"pci-aspm-default": nvme_aspm}
                 else:
                     if "-nvmefaspm" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
