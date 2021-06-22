@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.2.2
+
 ## 0.2.1
 - Fix NVMe Crash on build
 
