@@ -473,6 +473,8 @@ class PatchSysVolume:
         self.detect_patch_set()
         if self.no_patch is False and self.constants.gui_mode is False:
             change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
+        elif self.constants.gui_mode is True:
+            print("Continuing root patching")
         else:
             change_menu = None
             print("- No Root Patches required for your machine!")
