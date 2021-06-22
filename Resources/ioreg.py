@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import plistlib
 import subprocess
+import tempfile
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Generator
+from xml.parsers.expat import ExpatError
 
 
 @dataclass
@@ -18,7 +21,15 @@ class IORegistryEntry:
 
 class IOReg:
     def __init__(self):
-        self.ioreg = plistlib.loads(subprocess.run("ioreg -a -l".split(), stdout=subprocess.PIPE).stdout.strip())
+        try:
+            self.ioreg = plistlib.loads(subprocess.run("ioreg -a -l".split(), stdout=subprocess.PIPE).stdout.strip())
+        except ExpatError:
+            fd, file_path = tempfile.mkstemp(suffix=".plist")
+            with open(fd, "wb") as file_obj:
+                file_obj.write(subprocess.run("ioreg -a -l".split(), stdout=subprocess.PIPE).stdout.strip())
+
+            subprocess.run("plutil -convert binary1".split() + [file_path])
+            self.ioreg = plistlib.load(Path(file_path).open("rb"))
         self.tree = self.recurse(self.ioreg, None)
 
     def recurse(self, entry, parent):

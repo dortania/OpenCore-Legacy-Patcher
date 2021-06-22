@@ -2,10 +2,14 @@
 
 ## 0.2.2
 
+- Fix IORegistry issue
+
 ## 0.2.1
+
 - Fix NVMe Crash on build
 
 ## 0.2.0
+
 - Refactor device probe logic
 - Implement PatcherSupportPkg v0.0.10
   - Reduces binary sizes depending on OS
@@ -22,14 +26,17 @@
 - Allow AirPlay to Mac support on Skylake - Coffeelake Macs
 
 ## 0.1.9
+
 - Fix incorrect AMFI and SIP detection
 
 ## 0.1.8
+
 - Fix Kernel Panic in Big Sur and Monterey
 - Increment binaries:
   - Lilu (1.5.4 rolling - 06-15-2021)
 
 ## 0.1.7
+
 - Add FireWire Boot Support for Catalina and newer
 - Add NVMe firmware support for older models (ie. MacPro3,1)
   - OpenCore must be stored on a bootable volume (ie. USB or SATA)
@@ -70,6 +77,7 @@
   - User configurable, those prone to seizures are recommended to avoid or have another setup the machine due to initial colour strobing before forcing Million Colours on the display with SwitchResX or ResXtreme
 
 ## 0.1.6
+
 - Add XHCI UEFI Driver for 3rd Party USB 3.0 Controllers
   - Allows for Boot Support from OpenCore' Picker
 - Fix UEFI output on MacPro3,1 with PC GPUs
@@ -86,6 +94,7 @@
 - Fix GPU Switching on MacBookPro6,x
 
 ## 0.1.5
+
 - Fix crashing when Wireless module not present
 - Add iMac10,1 default dGPU pathing
 - Add agdpmod=vit9696 to all Nvidia Metal iMacs
@@ -101,9 +110,11 @@
 - Add SeedUtil option to Advanced Patcher Settings
 
 ## 0.1.4
+
 - Fix Device Path formatting on 2012+ iMacs
 
 ## 0.1.3
+
 - Fix internal PCIe devices reporting as external
   - Opt for `built-in` when device path is detectable
   - Innie 0ccd95e (1.3.0 release - 01-16-2021)
@@ -122,6 +133,7 @@
 - Fix NVMe properties not applying when OpenCore is installed
 
 ## 0.1.2
+
 - Fix IDE support on 2008 era MacBooks, iMacs and Xserves
 - Fix reduced output speeds on BCM94360 series Wifi cards
 - Fix accidentally disabling non-existent iGPU in iMac11,2
@@ -147,6 +159,7 @@
   - SidecarFixup efdf11c (1.0.0 release - 05-02-2021)
 
 ## 0.1.1
+
 - Fix iMac11,3 GFX0 pathing
 - Add MouSSE support to iMac10,1 with Metal AMD GPU
 - Fix iMac11,1 and iMac11,3 Nvidia boot issues after PRAM reset
@@ -166,9 +179,11 @@
 - Fix Acceleration Linking for Intel Ironlake iGPUs
 
 ## 0.1.0
+
 - Fix crash on iMacs with Metal GPUs
 
 ## 0.0.23
+
 - Fix MacBookPro4,1 15" and 17" audio support
 - Fix iMac7,1 24" and iMac9,1 24" audio support
 - Fix Macmini4,1 audio support
@@ -189,6 +204,7 @@
 - Disable SIP and SecureBootModel by default on legacy GPUs
 
 ## 0.0.22
+
 - Add ExFat support for models missing driver
   - Aids BootCamp support for EFI based installs on 2010 and older Macs
 - Fix CPU Boosting on 2011 and older Macs
@@ -197,11 +213,13 @@
 - Add BCM94322 and BCM94321 chipset support
 
 ## 0.0.21
+
 - Fix botched images in OpenCanopy
 - Add support for 3rd party OpenCore usage detection during building
   - Mainly for users transitioning from Ausdauersportler's OpenCore configuration
 
 ## 0.0.20
+
 - Fix CPU Calculation on early MCP79 chipsets (ie. iMac9,1, MacBook5,x)
 - Increment binaries
   - OpenCore c528597 (0.6.8 release - 2021-04-05)
@@ -217,6 +235,7 @@
 - Fix Mac Pro and Xserve output issues
 
 ## 0.0.19
+
 - Add SMC-Spoof.kext to avoid triggering `smcupdater`
 - Add Root Volume patching for older machines
   - AppleHDA Patch for 2011 and older (Excluding MacPro4,1+)
@@ -235,6 +254,7 @@
 - Fix Broadcom Ethernet on older 2009-2011 Macs
 
 ## 0.0.18
+
 - Disable Vault by default due to breaking installations
 - Move BOOTx64.efi to System/Library/CoreServices/ to support GPT BootCamp installs
 - Disable verbose by default, still configurable by end-user
@@ -245,12 +265,14 @@
 - Add custom drive icons for external drives
 
 ## 0.0.17
+
 - Fix build detection breaking on older OS
 
 ## 0.0.16
+
 - Move Serial selection to Patcher Settings
 - Add new SMBIOS patching options:
-  - Minimal:  Only update board ID and BIOSVersion, keep original serials
+  - Minimal: Only update board ID and BIOSVersion, keep original serials
   - Moderate: Update entire SMBIOS, keep original serials
   - Advanced: Update entire SMBIOS, generate new serials
 - Fix crash on MacBookPro4,1
@@ -266,12 +288,14 @@
 - Enable `amfi_get_out_of_my_way=1` when SIP is disabled
 
 ## 0.0.15
+
 - Add user-configurable OpenCore DEBUG builds
 - Add user-configurable Wifi and GPU patches
 - Fix ThirdPartyDrives model detection
 - Add HW_BID injection to fix boot.efi error
 
 ## 0.0.14
+
 - Enable ThirdPartyDrives to aid with hibernation on 3rd party SATA drives
 - Increment OpenCore 7bb41aa (0.6.8 rolling, 2021-03-06)
 - Add ForceBooterSignature to resolve hibernation issues
@@ -280,70 +304,83 @@
 - Add GopPassThrough quirk for UGA-based systems
 
 ## 0.0.13
+
 - Add CPUFriend support to resolve X86PlatformPlugin clashes
-    - (1.2.3 c388a62 release)
+  - (1.2.3 c388a62 release)
 - Fix crash with MacBookAir5,x
 - Fix hibernation support
 - Remove Wireless patches for BCM4328/4321(14e4:4328) due to boot issues
 
 ## 0.0.12
+
 - Convert OpenCore-Patcher binary to OpenCore-Patcher.app
 - Add Backlight patches for modded Nvidia GPUs in iMac10,x-12,x
 - Fix sleep for iMac12,x with upgraded GPUs
 
 ## 0.0.11
+
 - Re-add OpenCore GUI
 - Rewrite in py3
 - Add OpenCore-Patcher binary for releases avoiding local python requirement
 - Increment binaries
-    - OpenCore cbd2fa3 (0.6.7 release)
-    - WhateverGreen 2e19d1b (1.4.8 release)
+  - OpenCore cbd2fa3 (0.6.7 release)
+  - WhateverGreen 2e19d1b (1.4.8 release)
 - Rework SMBIOS allowing both original and custom serials(Should resolve all iMessage issues)
 - Support upgraded GPU detection in iMac10,x-12,x
 - Add Wifi card upgrade detection
 
 ## 0.0.10
+
 - Increment binaries
-    - OpenCore 43f5339 (0.6.6 release)
-    - Lilu d107554 (1.5.1 release)
-    - WhateverGreen 9e53d8a (1.4.7 release)
+  - OpenCore 43f5339 (0.6.6 release)
+  - Lilu d107554 (1.5.1 release)
+  - WhateverGreen 9e53d8a (1.4.7 release)
 - Add IDE support to MacPro3,1
 - Set SecureBootModel to iMac Pro(should aid in booting older OSes with OpenCore)
 - Update MacBookPro SMBIOS
 
 ## 0.0.9
+
 - Resolve firmware install issues bricking Macs
 
 ## 0.0.8
+
 - Fix USB Map
 - Add HiDPI patch
 
 ## 0.0.7
+
 - Add MacPro3,1 to HID patch
 - Fix missing SSDT-CPBG patch
 - Fix BlacklistAppleUpdate
 - Add RestrictEvents kext
 
 ## 0.0.6
+
 - Fix macserial crashing
 
 ## 0.0.5
+
 - Enable hibernation support
 - Work around USB Map failing
 - Add checks whether booting with OpenCore
 - Fix MouSSE injection
 
 ## 0.0.4
+
 - Add basic audio support for legacy chipsets
 - Add patch for dual GPU machines
 
 ## 0.0.3
+
 - Fix Wireless patch logic
 
 ## 0.0.2
+
 - Expand IOHIDFamily Patch to all Nvidia chipsets
 - Fix Airdrop 1.0 support
 - Add El Capitan era wireless cards
 
 ## 0.0.1
+
 - Initial developer preview
