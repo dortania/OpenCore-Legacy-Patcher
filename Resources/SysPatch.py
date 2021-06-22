@@ -49,7 +49,7 @@ class PatchSysVolume:
         self.mount_private_frameworks = f"{self.mount_location}/System/Library/PrivateFrameworks"
 
     def elevated(self, *args, **kwargs) -> subprocess.CompletedProcess:
-        if os.getuid() == 0:
+        if os.getuid() == 0 or self.constants.gui_mode is True:
             return subprocess.run(*args, **kwargs)
         else:
             return subprocess.run(["sudo"] + [args[0][0]] + args[0][1:], **kwargs)
