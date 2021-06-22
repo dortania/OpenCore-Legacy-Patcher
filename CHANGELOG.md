@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.2.1
+- Fix NVMe Crash on build
+
 ## 0.2.0
 - Refactor device probe logic
 - Implement PatcherSupportPkg v0.0.10
