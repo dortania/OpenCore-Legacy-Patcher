@@ -7,7 +7,7 @@
 * [Photos and Maps Apps Heavily Distorted](#photos-and-maps-apps-heavily-distorted)
 * [Cannot press "Done" when editing a Sidebar Widget](#cannot-press-done-when-editing-a-sidebar-widget)
 * [Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer](#wake-from-sleep-heavily-distorted-on-amd-ati-in-macos-11-3-and-newer)
-* [Unable to achieve GPU Acceleration on 2011 15" and 17" MacBook Pros](#unable-to-achieve-gpu-acceleration-on-2011-15-and-17-macbook-pros)
+* [Achieving GPU Acceleration on 2011 15" and 17" MacBook Pros](#achieving-gpu-acceleration-on-2011-15-and-17-macbook-pros)
 
 The below page is for users experiencing issues with their overall usage of macOS Big Sur and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur:
 
@@ -61,14 +61,14 @@ In the event Apple removes 11.2.3 from their catalogue, we've provided a mirror 
 
 * [Install macOS 11.2.3 20D91](https://archive.org/details/install-mac-os-11.2.3-20-d-91)
 
-## Unable to achieve GPU Acceleration on 2011 15" and 17" MacBook Pros
+## Achieving GPU Acceleration on 2011 15" and 17" MacBook Pros
 
-Currently OpenCore Legacy Patcher doesn't have support for the TeraScale 2 series dGPUs found in the 15" and 17" models. Currently the best way to achieve graphics acceleration is to simply disable the dGPU and force the iGPU always.
+Currently, OpenCore Legacy Patcher has support for GPUs based on the AMD/ATI TeraScale 2 architecture. This includes the AMD/ATI HD 5000 and HD 6000 desktop graphics cards found in many Macs. To enable the functionality of these, a setting in the "5. Patcher Settings" menu for enabling TeraScale 2 graphics acceleration needs to be set to yes. However, the reason this is not enabled by default is because some systems with TeraScale 2 GPUs may experience strobing of the image/colours on screen. This can result in seizures to users sensitive to these flashing effects, so proceed at your own risk. On MacBook Pro 2011 15" and 17" however, there are fortunately no strobing effects. With the setting enabled, the "3. Post-Install Volume Patch" menu will now allow you to install the TeraScale 2 patches.
 
-The best way to achieve this is to boot Recovery (or Single User Mode if the dGPU refuses to function at all) and run the following command:
+Due to the widespread TeraScale 2 GPU failures on MacBook 2011 15" and 17", a command can be run that temporarily disables them and switches over to the integrated Intel HD 3000 graphics. To run the command, boot into Recovery (or Single User Mode if the dGPU is experiencing issues like green lines or image corruption) and run the following line in the Terminal:
 
 ```sh
 nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00
 ```
 
-This will disable the dGPU and allow graphics acceleration in Big Sur. Note that external display outputs are directly routed to the dGPU and therefore can no longer be used. Solutions such as a [DisplayLink Adapters](https://www.displaylink.com/products/usb-adapters) can work around this limitation.
+This will disable the dGPU and the graphics processing will occur on the Intel HD 3000 integrated graphics processor instead. Note that external display outputs are directly routed to the dGPU and therefore can not be used while it's disabled. Solutions such as a [DisplayLink Adapter](https://www.displaylink.com/products/usb-adapters) can work around this limitation.
