@@ -29,6 +29,7 @@ jobs:
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements entitlements.plist -o runtime "OpenCore Patcher.app/Contents/Resources/oclpd"'
       - name: Zip new GUI
         run: zip -r OpenCore-Patcher-GUI.app.zip OpenCore\ Patcher.app
+      - run: /usr/bin/ditto -c -k –sequesterRsrc --keepParent OpenCore\ Patcher.app OpenCore-Patcher-GUI.app.zip
       - run: ./../sign-gui.sh
       - name: Upload Binary to Artifacts
         uses: actions/upload-artifact@v2
