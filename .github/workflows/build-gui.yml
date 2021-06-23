@@ -19,9 +19,10 @@ jobs:
       - run: cd dist; cp OCLP-CLI ../
       - name: Download latest nightly OCLP-GUI
         run: curl -S -L https://nightly.link/dortania/OCLP-GUI/workflows/build-app/master/OpenCore-Patcher-GUI.app.zip --output ./OpenCore-Patcher-GUI.app.zip
-      - run: unzip OpenCore-Patcher-GUI.app.zip
+      - run: unzip -o OpenCore-Patcher-GUI.app.zip
       - name: Merge new GUI
         run: cp OCLP-CLI OpenCore\ Patcher.app/Contents/Resources/
+      - run: python3 merge_gui.py
       - name: Zip new GUI
         run: zip -r OpenCore\ Patcher.app.zip OpenCore-Patcher-GUI.app
       - name: Upload Binary to Artifacts
