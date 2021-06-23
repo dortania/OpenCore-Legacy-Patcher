@@ -52,6 +52,7 @@ class OpenCoreLegacyPatcher:
 
         # Building args requiring value values
         parser.add_argument("--model", action="store", help="Set custom model", required=False)
+        parser.add_argument("--disk", action="store", help="Specifies disk to patch", required=False)
         parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
 
         # SysPatch args
@@ -70,6 +71,8 @@ class OpenCoreLegacyPatcher:
         else:
             print("- Using default payloads location")
 
+        if args.disk:
+            print(f"Disk set: {args.disk}")
         if args.verbose:
             print("- Set verbose configuration")
             self.constants.verbose_debug = True
@@ -104,8 +107,6 @@ class OpenCoreLegacyPatcher:
         if args.moderate_smbios:
             print("- Set Moderate SMBIOS Patching configuration")
             self.constants.serial_settings = "Moderate"
-        if args.model:
-            host_is_target
         if args.smbios_spoof:
             if args.smbios_spoof == "Minimal":
                 self.constants.serial_settings = "Minimal"
