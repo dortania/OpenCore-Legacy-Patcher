@@ -18,10 +18,8 @@ jobs:
 
       - run: pyinstaller OpenCore-Patcher.spec
       - run: ./after_pyinstaller.sh
-      - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --deep --timestamp --entitlements entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
 
       - run: cd dist; zip ../OpenCore-Patcher.zip OpenCore-Patcher; zip -r ../OpenCore-Patcher.app.zip OpenCore-Patcher.app
-      - run: ./../sign-app.sh
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v2
         with:
