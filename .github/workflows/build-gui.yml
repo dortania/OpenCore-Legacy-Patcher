@@ -24,7 +24,7 @@ jobs:
       - name: Merge new GUI
         run: cp OCLP-CLI OpenCore\ Patcher.app/Contents/Resources/
       - run: python3 merge_gui.py
-      - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --deep --timestamp --entitlements entitlements.plist -o runtime "OpenCore Patcher.app"'
+      - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements entitlements.plist -o runtime "OpenCore Patcher.app"'
       - name: Zip new GUI
         run: zip -r OpenCore-Patcher-GUI.app.zip OpenCore\ Patcher.app
       - run: ./../sign-gui.sh
