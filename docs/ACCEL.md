@@ -11,7 +11,6 @@
 
 The below page is for users experiencing issues with their overall usage of macOS Big Sur and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur:
 
-* AMD/ATI TeraScale 2 - HD5/6000 series
 * Intel 3rd and 4th Gen - GMA series
 
 ## Downloading older non-Metal Apps
