@@ -25,7 +25,7 @@ jobs:
         run: cp OCLP-CLI OpenCore\ Patcher.app/Contents/Resources/
       - run: python3 merge_gui.py
       - name: Zip new GUI
-        run: zip -r OpenCore\ Patcher.app.zip OpenCore-Patcher-GUI.app
+        run: zip -r OpenCore-Patcher-GUI.app.zip OpenCore\ Patcher.app
       - name: Upload Binary to Artifacts
         uses: actions/upload-artifact@v2
         with:
