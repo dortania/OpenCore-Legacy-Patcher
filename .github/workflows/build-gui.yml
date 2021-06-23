@@ -1,0 +1,39 @@
+name: CI - Build GUI
+
+on:
+  push:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build GUI
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Python Dependencies
+        run: pip3 install --upgrade pyinstaller requests
+
+      - run: pyinstaller OCLP-CLI.spec
+      - run: cd dist; cp OCLP-CLI ../
+      - name: Download latest nightly OCLP-GUI
+        run: curl -S -L https://nightly.link/dortania/OCLP-GUI/workflows/build-app/master/OpenCore-Patcher-GUI.app.zip --output ./OpenCore-Patcher-GUI.app.zip
+      - run: unzip OpenCore-Patcher-GUI.app.zip
+      - name: Merge new GUI
+        run: cp OCLP-CLI OpenCore\ Patcher.app/Contents/Resources/
+      - name: Zip new GUI
+        run: zip -r OpenCore\ Patcher.app.zip OpenCore-Patcher-GUI.app
+      - name: Upload Binary to Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: OpenCore-Patcher-GUI.app
+          path: OpenCore-Patcher-GUI.app.zip
+      - name: Upload to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: OpenCore-Patcher-GUI.app.zip
+          tag: ${{ github.ref }}
+          file_glob: true
