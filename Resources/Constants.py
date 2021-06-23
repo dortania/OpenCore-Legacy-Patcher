@@ -476,7 +476,7 @@ class Constants:
 
     @property
     def legacy_nvidia_path(self):
-        return self.legacy_graphics / Path("Nvidia-Tesla-Fermi")
+        return self.legacy_graphics / Path("Nvidia-Tesla")
 
     @property
     def legacy_nvidia_kepler_path(self):

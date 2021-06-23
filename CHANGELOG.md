@@ -3,6 +3,7 @@
 ## 0.2.2
 
 - Fix IORegistry issue
+- Fix Root Patch Failure on Nvidia Tesla GPUs
 
 ## 0.2.1
 
