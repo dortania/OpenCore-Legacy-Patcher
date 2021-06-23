@@ -104,6 +104,8 @@ class OpenCoreLegacyPatcher:
         if args.moderate_smbios:
             print("- Set Moderate SMBIOS Patching configuration")
             self.constants.serial_settings = "Moderate"
+        if args.model:
+            host_is_target
         if args.smbios_spoof:
             if args.smbios_spoof == "Minimal":
                 self.constants.serial_settings = "Minimal"
@@ -134,6 +136,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 sys.exit(1)
             else:
                 print(f"- Using detected model: {self.constants.computer.real_model}")
+                self.set_defaults(self.constants.custom_model, True)
                 self.build_opencore()
         if args.patch_sys_vol:
             if args.terascale_2:
@@ -164,11 +167,22 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 self.constants.sip_status = True
                 # self.constants.secure_status = True  # Monterey
                 self.constants.disable_amfi = False
+            elif host_is_target:
+                 self.constants.sip_status = False  # Unsigned kexts
+                 self.constants.secure_status = False  # Root volume modified
+                 self.constants.disable_amfi = True  # Unsigned binaries
         if model in ModelArray.ModernGPU:
             if host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
                 # Some models have a supported dGPU, others don't
                 print("- Detected Metal dGPU, overriding default configuration")
                 self.constants.sip_status = True
+            elif host_is_target:
+                 self.constants.sip_status = False  # Unsigned kexts
+                 self.constants.secure_status = False  # Modified root volume
+                 # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+        if model == "MacBook8,1" and host_is_target:
+             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
+             self.constants.serial_settings == "Moderate"
 
     def patch_vol(self):
         SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
