@@ -16,7 +16,7 @@ jobs:
         run: pip3 install --upgrade pyinstaller requests
 
       - run: pyinstaller OCLP-CLI.spec
-      - run: cd dist; cp OCLP-CLI ../
+      - run: cd dist; cp OCLP-CLI ../; cd ..
       - name: Download latest nightly OCLP-GUI
         run: curl -S -L https://nightly.link/dortania/OCLP-GUI/workflows/build-app/master/OpenCore-Patcher-GUI.app.zip --output ./OpenCore-Patcher-GUI.app.zip
       - run: unzip -o OpenCore-Patcher-GUI.app.zip
