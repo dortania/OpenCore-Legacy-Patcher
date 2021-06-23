@@ -40,7 +40,6 @@ class OpenCoreLegacyPatcher:
         parser.add_argument("--verbose", help="Enable verbose boot", action="store_true", required=False)
         parser.add_argument("--debug_oc", help="Enable OpenCore DEBUG", action="store_true", required=False)
         parser.add_argument("--debug_kext", help="Enable kext DEBUG", action="store_true", required=False)
-        parser.add_argument("--skip_wifi", help="Skip wifi patches", action="store_true", required=False)
         parser.add_argument("--hide_picker", help="Hide OpenCore picker", action="store_true", required=False)
         parser.add_argument("--disable_sip", help="Disable SIP", action="store_true", required=False)
         parser.add_argument("--disable_smb", help="Disable SecureBootModel", action="store_true", required=False)
@@ -49,10 +48,10 @@ class OpenCoreLegacyPatcher:
         parser.add_argument("--firewire", help="Enable FireWire Booting", action="store_true", required=False)
         parser.add_argument("--nvme", help="Enable NVMe Booting", action="store_true", required=False)
         parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
+        parser.add_argument("--moderate_smbios", help="Moderate SMBIOS Patching", action="store_true", required=False)
 
         # Building args requiring value values
         parser.add_argument("--model", action="store", help="Set custom model", required=False)
-        parser.add_argument("--metal_gpu", action="store", help="Set Metal GPU Vendor", required=False)
         parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
 
         # SysPatch args
@@ -81,9 +80,6 @@ class OpenCoreLegacyPatcher:
         if args.debug_kext:
             print("- Set kext DEBUG configuration")
             self.constants.kext_debug = True
-        if args.skip_wifi:
-            print("- Set wifi skip configuration")
-            self.constants.wifi_build = True
         if args.hide_picker:
             print("- Set HidePicker configuration")
             self.constants.showpicker = False
@@ -105,19 +101,9 @@ class OpenCoreLegacyPatcher:
         if args.disable_amfi:
             print("- Set Disable AMFI configuration")
             self.constants.disable_amfi = True
-        if args.metal_gpu:
-            if args.metal_gpu == "Nvidia":
-                print("- Set Metal GPU patches to Nvidia")
-                self.constants.metal_build = True
-                self.constants.imac_vendor = "Nvidia"
-            elif args.metal_gpu == "AMD":
-                print("- Set Metal GPU patches to AMD")
-                self.constants.metal_build = True
-                self.constants.imac_vendor = "AMD"
-            else:
-                print(f"- Unknown GPU arg passed: {args.metal_gpu}")
-                self.constants.metal_build = False
-                self.constants.imac_vendor = "None"
+        if args.moderate_smbios:
+            print("- Set Moderate SMBIOS Patching configuration")
+            self.constants.serial_settings = "Moderate"
         if args.smbios_spoof:
             if args.smbios_spoof == "Minimal":
                 self.constants.serial_settings = "Minimal"
@@ -160,11 +146,6 @@ If you plan to create the USB for another machine, please select the "Change Mod
             self.unpatch_vol()
 
     def set_defaults(self, model, host_is_target):
-        # Defaults
-        self.constants.sip_status = True
-        self.constants.secure_status = False  # Default false for Monterey
-        self.constants.disable_amfi = False
-
         if model in ModelArray.LegacyGPU:
             if (
                 host_is_target
@@ -178,27 +159,16 @@ If you plan to create the USB for another machine, please select the "Change Mod
                     device_probe.NVIDIA.Archs.Kepler,
                 ]
             ):
+                print("- Detected Metal GPU, overriding default configuration")
                 # Building on device and we have a native, supported GPU
                 self.constants.sip_status = True
                 # self.constants.secure_status = True  # Monterey
                 self.constants.disable_amfi = False
-            else:
-                self.constants.sip_status = False  # Unsigned kexts
-                self.constants.secure_status = False  # Root volume modified
-                self.constants.disable_amfi = True  # Unsigned binaries
         if model in ModelArray.ModernGPU:
             if host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
                 # Some models have a supported dGPU, others don't
+                print("- Detected Metal dGPU, overriding default configuration")
                 self.constants.sip_status = True
-                # self.constants.secure_status = True  # Monterey
-                # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
-            else:
-                self.constants.sip_status = False  # Unsigned kexts
-                self.constants.secure_status = False  # Modified root volume
-                # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
-        if model == "MacBook8,1":
-            # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
-            self.constants.serial_settings == "Moderate"
 
     def patch_vol(self):
         SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
