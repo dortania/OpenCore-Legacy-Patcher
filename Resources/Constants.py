@@ -43,6 +43,7 @@ class Constants:
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
         self.patcher_support_pkg_version = "0.0.10"  # PatcherSupportPkg
+        self.disk = ""
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()

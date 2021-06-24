@@ -98,6 +98,29 @@ class BuildOpenCore:
             fw_mask = b"\xff\x3f\x08\xc0\x00\x00\x00\x00"
         return fw_feature, fw_mask
 
+    def disk_type(self):
+        drive_host_info = plistlib.loads(subprocess.run(f"diskutil info -plist {self.constants.disk}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        sd_type = drive_host_info["MediaName"]
+        try:
+            ssd_type = drive_host_info["SolidState"]
+        except KeyError:
+            ssd_type = False
+        # Array filled with common SD Card names
+        # Note most USB-based SD Card readers generally report as "Storage Device", and no reliable way to detect further
+        if sd_type in ["SD Card Reader", "SD/MMC"]:
+            print("- Adding SD Card icon")
+            shutil.copy(self.constants.icon_path_sd, self.constants.opencore_release_folder)
+        elif ssd_type is True:
+            print("- Adding SSD icon")
+            shutil.copy(self.constants.icon_path_ssd, self.constants.opencore_release_folder)
+        elif drive_host_info["BusProtocol"] == "USB":
+            print("- Adding External USB Drive icon")
+            shutil.copy(self.constants.icon_path_external, self.constants.opencore_release_folder)
+        else:
+            print("- Adding Internal Drive icon")
+            shutil.copy(self.constants.icon_path_internal, self.constants.opencore_release_folder)
+
+
     def build_efi(self):
         Utilities.cls()
         if not self.constants.custom_model:
@@ -639,6 +662,8 @@ class BuildOpenCore:
         if self.model == self.constants.override_smbios:
             print("- Adding -no_compat_check")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -no_compat_check"
+        if self.constants.disk != "":
+            self.disk_type()
 
     def set_smbios(self):
         spoofed_model = self.model

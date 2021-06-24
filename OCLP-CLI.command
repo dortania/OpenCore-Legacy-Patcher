@@ -72,7 +72,8 @@ class OpenCoreLegacyPatcher:
             print("- Using default payloads location")
 
         if args.disk:
-            print(f"Disk set: {args.disk}")
+            print(f"- Disk set: {args.disk}")
+            self.constants.disk = args.disk
         if args.verbose:
             print("- Set verbose configuration")
             self.constants.verbose_debug = True
