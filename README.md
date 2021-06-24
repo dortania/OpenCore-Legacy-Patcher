@@ -3,7 +3,7 @@
              <h1>OpenCore Legacy Patcher</h1>
 </div>
 
-A python program for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on both legacy and modern Macs, see our in-depth [Guide](https://dortania.github.io/OpenCore-Legacy-Patcher/) for more information.
+A python program with an [Objective-C GUI](https://github.com/dortania/OCLP-GUI) for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on both legacy and modern Macs, see our in-depth [Guide](https://dortania.github.io/OpenCore-Legacy-Patcher/) for more information.
 
 Supported features:
 
@@ -20,7 +20,8 @@ Note: Only clean-installs and upgrades are supported, macOS Big Sur installs alr
 
 Note 2: Currently OpenCore Legacy Patcher officially supports patching to run macOS 11, Big Sur installs. For older OSes, OpenCore may function however support is currently not provided from Dortania.
 
-* For Mojave and Catalina support, we recommend the use of [dosdude1's patchers](http://dosdude1.com)
+* For macOS Mojave and Catalina support, we recommend the use of [dosdude1's patchers](http://dosdude1.com)
+* macOS Monterey usage is provided however support is limited, currently recommended for users to run Big Sur for best compatibility
 
 ## Support
 
@@ -28,7 +29,11 @@ To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise
 
 * [OpenCore Legacy Patcher's Issue's tab](https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
 
-Nightly builds can be found here courteous of nightly.link: [Nightly OpenCore-Patcher.app](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app/main/OpenCore-Patcher.app.zip)
+Nightly builds can be found here courteous of nightly.link: 
+
+* [Nightly OpenCore Patcher (GUI)](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-gui/main/OpenCore-Patcher-GUI.app.zip)
+* [Nightly OpenCore Patcher (TUI)](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app/main/OpenCore-Patcher-TUI.app.zip)
+* [Nightly OpenCore Patcher (CLI)](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-gui/main/OCLP-CLI.zip)
 
 ## Credits
 
@@ -50,7 +55,10 @@ Nightly builds can be found here courteous of nightly.link: [Nightly OpenCore-Pa
   * [Innie](https://github.com/cdf/Innie) and [NightShiftEnabler](https://github.com/cdf/NightShiftEnabler)
 * [Syncretic](https://forums.macrumors.com/members/syncretic.1173816/)
   * [AAAMouSSE](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/) and [telemetrap](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/post-28447707)
-* [dosdude1](https://github.com/dosdude1) and [BarryKN](https://github.com/BarryKN)
+* [dosdude1](https://github.com/dosdude1)
+  * Main author of GUI
+  * Development of previous patchers, laying out much of what needs to be patched
+* [BarryKN](https://github.com/BarryKN)
   * Development of previous patchers, laying out much of what needs to be patched
 * [mario_bros_tech](https://github.com/mariobrostech) and the rest of the Unsupported Mac Discord
   * Catalyst that started OpenCore Legacy Patcher
