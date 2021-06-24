@@ -42,6 +42,7 @@ class Constants:
         self.debugenhancer_version = "1.0.3"
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
+        self.disk = ""
         self.patcher_support_pkg_version = "0.0.11"  # PatcherSupportPkg
 
         # Get resource path
