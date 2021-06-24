@@ -18,8 +18,9 @@ jobs:
 
       - run: pyinstaller OpenCore-Patcher.spec
       - run: ./after_pyinstaller.sh
-
+      - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --deep --timestamp --entitlements entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
       - run: cd dist; zip -r ../OpenCore-Patcher-TUI.app.zip OpenCore-Patcher.app
+      - run: ./../sign-tui.sh
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v2
         with:
