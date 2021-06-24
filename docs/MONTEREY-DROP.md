@@ -40,12 +40,8 @@ Note: Currently HD 4000 support in Monterey is not perfect, following are broken
 
 ::: details HD 4000 Issues
 
-* Photo Booth app crashing
-* Safari sites crash if request camera access
-* Full Screen recoding crashing with Screenshot app
-* AirPlay to Mac crashes
-* Full Screen apps crashes
-  * Disable "Hide menubar in Full Screen" to avoid crash
+* Hardware DRM Playback unsupported
+  * Chrome uses Software DRM so has no such limitation in Monterey
 
 :::
 
@@ -66,7 +62,7 @@ The following machines cannot gain graphics acceleration at all in Monterey, onl
 
 Note: iMac10,1 through iMac12,x can be upgraded with Metal GPUs, [see here for more info](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/)
 
-## Bluetooth Support Dropped 
+## Bluetooth Support Dropped
 
 * BRCM2046 and BRCM2070 Bluetooth Chipsets lost support
 
@@ -79,7 +75,7 @@ The following models lost Bluetooth support in macOS Monterey due to their legac
 * MacBookPro8,1 and older
 * MacPro5,1 and older
 
-::: details Dropped Firmwares 
+::: details Dropped Firmwares
 
 Here are the firmwares macOS Monterey Dropped (previously located within IOBluetoothUSBDFU.kext):
 

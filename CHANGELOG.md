@@ -3,6 +3,7 @@
 ## 0.2.3
 
 - Fix more IORegistry issues
+- Implement OpenCore GUI
 
 ## 0.2.2
 

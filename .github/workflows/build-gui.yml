@@ -17,6 +17,7 @@ jobs:
 
       - run: pyinstaller OCLP-CLI.spec
       - run: cd dist; cp OCLP-CLI ../; cd ..
+      - run: zip OCLP-CLI.zip OCLP-CLI
       - name: Download latest nightly OCLP-GUI
         run: curl -S -L https://nightly.link/dortania/OCLP-GUI/workflows/build-app/master/OpenCore-Patcher-GUI.app.zip --output ./OpenCore-Patcher-GUI.app.zip
       - run: unzip -o OpenCore-Patcher-GUI.app.zip
@@ -29,11 +30,16 @@ jobs:
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements entitlements.plist -o runtime "OpenCore Patcher.app"'
       - run: ditto -c -k --sequesterRsrc --keepParent OpenCore\ Patcher.app OpenCore-Patcher-GUI.app.zip
       - run: ./../sign-gui.sh
-      - name: Upload Binary to Artifacts
+      - name: Upload GUI to Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: OpenCore-Patcher-GUI.app
           path: OpenCore-Patcher-GUI.app.zip
+      - name: Upload CLI to Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: OCLP-CLI
+          path: OCLP-CLI.zip
       - name: Upload to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
