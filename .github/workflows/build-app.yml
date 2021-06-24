@@ -1,4 +1,4 @@
-name: CI - Build App
+name: CI - Build TUI
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build App
+    name: Build TUI
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
@@ -19,18 +19,18 @@ jobs:
       - run: pyinstaller OpenCore-Patcher.spec
       - run: ./after_pyinstaller.sh
 
-      - run: cd dist; zip ../OpenCore-Patcher.zip OpenCore-Patcher; zip -r ../OpenCore-Patcher.app.zip OpenCore-Patcher.app
+      - run: cd dist; zip -r ../OpenCore-Patcher-TUI.app.zip OpenCore-Patcher.app
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: OpenCore-Patcher.app
-          path: OpenCore-Patcher.app.zip
+          name: OpenCore-Patcher-TUI.app
+          path: OpenCore-Patcher-TUI.app.zip
 
       - name: Upload to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: OpenCore-Patcher.app.zip
+          file: OpenCore-Patcher-TUI.app.zip
           tag: ${{ github.ref }}
           file_glob: true
