@@ -1,5 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.2.3
+
+- Fix more IORegistry issues
+
 ## 0.2.2
 
 - Fix IORegistry issue

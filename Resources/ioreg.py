@@ -6,7 +6,6 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Generator
-from xml.parsers.expat import ExpatError
 
 
 @dataclass
@@ -23,7 +22,7 @@ class IOReg:
     def __init__(self):
         try:
             self.ioreg = plistlib.loads(subprocess.run("ioreg -a -l".split(), stdout=subprocess.PIPE).stdout.strip())
-        except ExpatError:
+        except Exception:
             fd, file_path = tempfile.mkstemp(suffix=".plist")
             with open(fd, "wb") as file_obj:
                 file_obj.write(subprocess.run("ioreg -a -l".split(), stdout=subprocess.PIPE).stdout.strip())
