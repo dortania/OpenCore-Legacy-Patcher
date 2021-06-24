@@ -1,16 +1,16 @@
 # Copyright (C) 2020-2021, Dhinak G
 from __future__ import print_function
 
-import os
+import hashlib
 import math
-from pathlib import Path
+import os
 import plistlib
 import subprocess
-import requests
-import hashlib
+from pathlib import Path
+
 import requests
 
-from Resources import Constants
+from Resources import Constants, ioreg
 
 
 def hexswap(input_hex: str):
@@ -121,12 +121,19 @@ def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
         uuid += ":"
     else:
         uuid = ""
-    result = subprocess.run(f"nvram -x {uuid}{variable}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.strip()
-    try:
-        value = plistlib.loads(result)[f"{uuid}{variable}"]
-    except plistlib.InvalidFileException:
+
+    nvram = ioreg.IORegistryEntryFromPath(ioreg.kIOMasterPortDefault, "IODeviceTree:/options".encode())
+
+    value = ioreg.IORegistryEntryCreateCFProperty(nvram, f"{uuid}{variable}", ioreg.kCFAllocatorDefault, ioreg.kNilOptions)
+
+    ioreg.IOObjectRelease(nvram)
+
+    if not value:
         return None
-    if decode:
+
+    value = ioreg.corefoundation_to_native(value)
+
+    if decode and isinstance(value, bytes):
         value = value.strip(b"\0").decode()
     return value
 
