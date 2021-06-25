@@ -6,8 +6,9 @@ block_cipher = None
 
 
 a = Analysis(['OpenCore-Patcher.command'],
+             pathex=['Resources'],
              binaries=[],
-             datas=[('payloads', 'payloads'), ('Resources', 'Resources')],
+             datas=[('payloads', 'payloads')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
