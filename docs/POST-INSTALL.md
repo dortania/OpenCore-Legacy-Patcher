@@ -34,6 +34,8 @@ For many users, SIP will be enabled by default on build. For Intel HD 4000 users
 
 Note: Machines with non-Metal GPUs cannot enable SIP in Big Sur either due to patched root volume
 
+Note 2: NVRAM may need to be reset to ensure SIP is correctly re-enabled
+
 ## Applying Post Install Volume Patches
 
 **Note**: For users who need Post-Install Volume patches for legacy video acceleration support, you **must** disable the following settings in "Patcher Settings" when building and installing your new OpenCore:
