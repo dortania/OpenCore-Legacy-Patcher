@@ -445,7 +445,7 @@ class PatchSysVolume:
             print("Disable SIP in Patcher Settings and Rebuild OpenCore\n")
             print("Ensure the following bits are set for csr-active-config:")
             print("\n".join(self.constants.root_patch_sip_big_sur if self.constants.detected_os > self.constants.catalina else self.constants.root_patch_sip_mojave))
-            print("For Hackintoshes, please set csr-active-config to '030A0000' (0xA03)")
+            print("For Hackintoshes, please set csr-active-config to '030E0000' (0xE03)")
             print("For non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS")
 
         if self.sbm_enabled is True:
