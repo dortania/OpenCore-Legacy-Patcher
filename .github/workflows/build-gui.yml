@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Python Dependencies
-        run: pip3 install --upgrade pyinstaller requests
+        run: pip3 install --upgrade pyinstaller requests pyobjc
 
       - run: pyinstaller OCLP-CLI.spec
       - run: cd dist; cp OCLP-CLI ../; cd ..

@@ -224,7 +224,7 @@ class BuildOpenCore:
                 self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{Utilities.friendly_hex(controller.vendor_id)}:{Utilities.friendly_hex(controller.device_id)}"
 
                 # Disable Bit 0 (L0s), enable Bit 1 (L1)
-                nvme_aspm = (controller.aspm & (~3)) | 2
+                nvme_aspm = (controller.aspm & (~0b11)) | 0b10
 
                 if controller.pci_path:
                     print(f"- Found NVMe ({i}) at {controller.pci_path}")
@@ -263,7 +263,9 @@ class BuildOpenCore:
                     arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
                 print(f"- Using known DevicePath {arpt_path}")
             print(f"- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}")
-            self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba", "brcmfx-country": self.computer.wifi.country_code}
+            self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
+            if not self.constants.custom_model and self.computer.wifi and self.computer.wifi.country_code:
+                self.config["DeviceProperties"]["Add"][arpt_path] += {"brcmfx-country": self.computer.wifi.country_code}
 
         # WiFi patches
         # TODO: -a is not supported in Lion and older, need to add proper fix
@@ -279,10 +281,10 @@ class BuildOpenCore:
         elif not self.constants.custom_model and self.computer.wifi:
             if isinstance(self.computer.wifi, device_probe.Broadcom):
                 # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
-                if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirportBrcmNIC:
+                if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirportBrcmNIC and self.computer.wifi.country_code:
                     self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
                     print(f"- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}")
-                    if not self.constants.custom_model and self.computer.wifi and self.computer.wifi.pci_path:
+                    if self.computer.wifi.pci_path:
                         arpt_path = self.computer.wifi.pci_path
                         print(f"- Found ARPT device at {arpt_path}")
                         self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.country_code}
@@ -315,8 +317,8 @@ class BuildOpenCore:
                 self.get_kext_by_bundle_path("IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
             else:
                 self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-                print(f"- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}")
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" brcmfx-country={self.computer.wifi.country_code}"
+                # print(f"- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}")
+                # self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" brcmfx-country={self.computer.wifi.country_code}"
 
         # CPUFriend
         pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
