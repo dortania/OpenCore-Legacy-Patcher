@@ -4,6 +4,7 @@
 
 - Fix more IORegistry issues
 - Implement OpenCore GUI
+- Ensure symlinks are preserved
 
 ## 0.2.2
 
