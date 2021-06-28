@@ -265,7 +265,7 @@ class BuildOpenCore:
             print(f"- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}")
             self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
             if not self.constants.custom_model and self.computer.wifi and self.computer.wifi.country_code:
-                self.config["DeviceProperties"]["Add"][arpt_path] += {"brcmfx-country": self.computer.wifi.country_code}
+                self.config["DeviceProperties"]["Add"][arpt_path].update({"brcmfx-country": self.computer.wifi.country_code})
 
         # WiFi patches
         # TODO: -a is not supported in Lion and older, need to add proper fix
