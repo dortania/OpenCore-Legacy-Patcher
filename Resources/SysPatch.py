@@ -125,6 +125,10 @@ class PatchSysVolume:
                 self.unmount_drive()
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
+            if self.amd_ts2 is True:
+                print("\nPlease note that with ATI TeraScale 2 GPUs, you may experience colour strobing on reboot")
+                print("Please use SwitchResX or ResXtreme to force 1 million colours on your monitor to fix this")
+                print("If you are epileptic, please ask for someone to aid you or set million colour before rebooting")
             if self.constants.gui_mode is False:
                 input("Press [ENTER] to continue")
 

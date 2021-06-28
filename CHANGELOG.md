@@ -5,6 +5,7 @@
 - Fix more IORegistry issues
 - Implement OpenCore GUI
 - Ensure symlinks are preserved
+- Enable TeraScale 2 patches by default on desktops
 
 ## 0.2.2
 
