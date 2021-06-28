@@ -185,12 +185,16 @@ If you plan to create the USB for another machine, please select the "Change Mod
         if model == "MacBook8,1" and host_is_target:
              # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
              self.constants.serial_settings == "Moderate"
-        if (
+        if ((
             host_is_target
             and model not in ["MacBookPro8,2", "MacBookPro8,3"]
             and self.computer.dgpu
-            and self.computer.dgpu.arch in device_probe.AMD.Archs.TeraScale_2) or self.model in ["Macmini5,2", "iMac12,1", "iMac12,2"]:
-            self.constants.terascale_2_patch == True
+            and self.computer.dgpu.arch in device_probe.AMD.Archs.TeraScale_2)
+            or model in ["Macmini5,2", "iMac12,1", "iMac12,2"]
+        ):
+            self.constants.terascale_2_patch = True
+        else:
+            self.constants.terascale_2_patch = False
 
     def patch_vol(self):
         SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
