@@ -75,7 +75,7 @@ class OpenCoreLegacyPatcher:
             host_is_target
             and model not in ["MacBookPro8,2", "MacBookPro8,3"]
             and self.computer.dgpu
-            and self.computer.dgpu.arch in device_probe.AMD.Archs.TeraScale_2) or self.model in ["Macmini5,2", "iMac12,1", "iMac12,2"]:
+            and self.computer.dgpu.arch in device_probe.AMD.Archs.TeraScale_2) or model in ["Macmini5,2", "iMac12,1", "iMac12,2"]:
             self.constants.terascale_2_patch == True
 
     def build_opencore(self):
