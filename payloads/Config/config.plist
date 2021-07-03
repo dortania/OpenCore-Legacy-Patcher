@@ -816,7 +816,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string>19.0.0</string>
+				<string>16.0.0</string>
 				<key>BundlePath</key>
 				<string>SidecarFixup.kext</string>
 				<key>ExecutablePath</key>
