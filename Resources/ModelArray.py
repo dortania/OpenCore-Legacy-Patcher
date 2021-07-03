@@ -483,6 +483,8 @@ SidecarPatch = [
     "iMac16,2",
     "iMac17,1",
     "iMac18,1",
+    "iMac18,2",
+    "iMac18,3",
     "MacPro5,1",
     "MacPro6,1",
     "Dortania1,1",
