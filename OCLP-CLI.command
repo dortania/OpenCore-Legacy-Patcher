@@ -47,6 +47,7 @@ class OpenCoreLegacyPatcher:
         parser.add_argument("--support_all", help="Allow OpenCore on natively supported Models", action="store_true", required=False)
         parser.add_argument("--firewire", help="Enable FireWire Booting", action="store_true", required=False)
         parser.add_argument("--nvme", help="Enable NVMe Booting", action="store_true", required=False)
+        parser.add_argument("--wlan", help="Enable Wake on WLAN support", action="store_true", required=False)
         parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
         parser.add_argument("--moderate_smbios", help="Moderate SMBIOS Patching", action="store_true", required=False)
 
@@ -109,6 +110,9 @@ class OpenCoreLegacyPatcher:
         if args.disable_amfi:
             print("- Set Disable AMFI configuration")
             self.constants.disable_amfi = True
+        if args.wlan:
+            print("- Set Wake on WLAN configuration")
+            self.constants.enable_wake_on_wlan = True
         if args.moderate_smbios:
             print("- Set Moderate SMBIOS Patching configuration")
             self.constants.serial_settings = "Moderate"

@@ -477,3 +477,25 @@ Note: Acceleration only applies to macOS Big Sur
             self.constants.terascale_2_patch = False
         else:
             print("Invalid option")
+
+    def allow_wowl(self):
+        Utilities.cls()
+        Utilities.header(["Allow Wake on WLAN"])
+        print(
+            """
+Due to an unfortunate bug in macOS Big Sur+, Wake on WLAN is
+disabled by default for BCM943224, BCM94331 and BCM94360/2 chipsets.
+
+This is due to Wake on WLAN creating network instability and in other cases
+halving network speeds. This issue is not replicable across machines however
+be prepared if enabling.
+        """
+        )
+
+        change_menu = input("Allow Wake on WLAN?(y/n): ")
+        if change_menu == "y":
+            self.constants.enable_wake_on_wlan = True
+        elif change_menu == "n":
+            self.constants.enable_wake_on_wlan = False
+        else:
+            print("Invalid option")

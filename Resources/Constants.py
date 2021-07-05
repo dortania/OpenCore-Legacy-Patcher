@@ -87,6 +87,7 @@ class Constants:
         self.nvme_boot = False
         self.disable_amfi = False
         self.terascale_2_patch = False
+        self.enable_wake_on_wlan = False
 
         # OS Versions
         self.tiger = 8
