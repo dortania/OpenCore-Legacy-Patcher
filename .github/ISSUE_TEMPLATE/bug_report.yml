@@ -117,12 +117,23 @@ body:
         - Other/Non-Applicable
     validations:
       required: true
+  - type: dropdown
+    id: where-issue
+    attributes:
+      label: Where does this issue happen?
+      multiple: true
+      options:
+        - Between booting macOS and Login Screen
+        - Within macOS (Before Logging in)
+        - Within macOS (After Logging in)
+        - Other/Non-Applicable
+    validations:
+      required: true
   - type: textarea
     id: what-happened
     attributes:
       label: What is the Isssue?
       description: Additionally, explain what you expected to happen?
-      placeholder: Tell us what you see!
       value: "Please clearly explain the issue"
     validations:
       required: true
@@ -130,4 +141,3 @@ body:
     id: extra-info
     attributes:
       label: Any Additional Information
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
