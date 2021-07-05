@@ -26,7 +26,7 @@ Term | Description
 **IOKit**   | Backbone of how Kernel Extentions (Kexts) probe and attach onto hardware, starts quickly after kernel initates
 **WindowServer**   | Backbone of the GUI interface in macOS, one of the first userfacing userspace programs to kick-in
 **OTA**   | Short for **O**ver **T**he **A**ir, refers to native OS updates via System Preferences like a supported Mac
-**DELTA**   | Often used with OTA, refers to OS updates that much smaller than full installers (generally ~3GB), note Deltas require the root volume to be unmotified otherwise ~12GB updates will occur.
+**DELTA**   | Often used with OTA, refers to OS updates that much smaller than full installers (generally ~3GB), note Deltas require the root volume to be unmodified otherwise ~12GB updates will occur.
 ---
 Term | Description
 --- | ---
