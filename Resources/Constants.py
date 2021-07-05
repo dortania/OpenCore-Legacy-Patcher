@@ -43,6 +43,7 @@ class Constants:
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
         self.disk = ""
+        self.patch_disk = ""
         self.patcher_support_pkg_version = "0.0.11"  # PatcherSupportPkg
 
         # Get resource path
@@ -302,7 +303,7 @@ class Constants:
 
     @property
     def opencore_release_folder(self):
-        return self.build_path / Path(f"OpenCore-{self.opencore_build}")
+        return self.build_path / Path(f"OpenCore-Build")
 
     @property
     def opencore_zip_copied(self):

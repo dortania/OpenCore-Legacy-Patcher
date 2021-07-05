@@ -46,6 +46,7 @@ bad_tools = [
     "ResetSystem.efi",
     "RtcRw.efi",
     "CsrUtil.efi",
+    "TpmInfo.efi",
 ]
 
 for version in build_types:
@@ -67,9 +68,8 @@ for version in build_types:
             subprocess.run(f"rm ./OpenCore-{version}/EFI/OC/Tools/{delete_tools}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
         else:
             print(f"- Unable to find {delete_tools}, skipping")
-    
-    
 
-
-    
-
+    print("Renaming folder to OpenCore-Build and zipping")
+    subprocess.run(f"mv ./OpenCore-{version} ./OpenCore-Build".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+    subprocess.run(f"zip -r ./OpenCore-{version}.zip ./OpenCore-Build".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
+    subprocess.run(f"rm -rf ./OpenCore-Build".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()

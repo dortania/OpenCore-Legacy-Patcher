@@ -71,16 +71,6 @@ class OpenCoreLegacyPatcher:
         if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings == "Moderate"
-        if ((
-            host_is_target
-            and model not in ["MacBookPro8,2", "MacBookPro8,3"]
-            and self.computer.dgpu
-            and self.computer.dgpu.arch == device_probe.AMD.Archs.TeraScale_2)
-            or model in ["Macmini5,2", "iMac12,1", "iMac12,2"]
-        ):
-            self.constants.terascale_2_patch = True
-        else:
-            self.constants.terascale_2_patch = False
 
     def build_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
@@ -125,10 +115,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set Vault Mode:\t\t\tCurrently {self.constants.vault}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_vault],
                 [f"Allow FireWire Boot:\t\tCurrently {self.constants.firewire_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_firewire],
                 [f"Allow NVMe Boot:\t\t\tCurrently {self.constants.nvme_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_nvme],
-                [
-                    f"Enable TeraScale 2 Acceleration:\tCurrently {self.constants.terascale_2_patch}",
-                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).enable_terascale,
-                ],
                 [f"Disable AMFI:\t\t\tCurrently {self.constants.disable_amfi}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_amfi],
                 [
                     f"Set SIP and SecureBootModel:\tSIP: {self.constants.sip_status} SBM: {self.constants.secure_status}",

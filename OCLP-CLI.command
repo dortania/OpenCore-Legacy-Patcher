@@ -52,13 +52,14 @@ class OpenCoreLegacyPatcher:
 
         # Building args requiring value values
         parser.add_argument("--model", action="store", help="Set custom model", required=False)
-        parser.add_argument("--disk", action="store", help="Specifies disk to patch", required=False)
+        parser.add_argument("--disk", action="store", help="Specifies disk to install to", required=False)
         parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
 
         # SysPatch args
         parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
         parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
         parser.add_argument("--terascale_2", help="Enable TeraScale 2 Acceleration", action="store_true", required=False)
+        #parser.add_argument("--patch_disk", action="store", help="Specifies disk to root patch", required=False)
 
         args = parser.parse_args()
 
@@ -72,8 +73,11 @@ class OpenCoreLegacyPatcher:
             print("- Using default payloads location")
 
         if args.disk:
-            print(f"- Disk set: {args.disk}")
+            print(f"- Install Disk set: {args.disk}")
             self.constants.disk = args.disk
+        if args.patch_disk:
+            print(f"- Patch Disk set: {args.patch_disk}")
+            self.constants.patch_disk = args.patch_disk
         if args.verbose:
             print("- Set verbose configuration")
             self.constants.verbose_debug = True
@@ -185,16 +189,6 @@ If you plan to create the USB for another machine, please select the "Change Mod
         if model == "MacBook8,1" and host_is_target:
              # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
              self.constants.serial_settings == "Moderate"
-        if ((
-            host_is_target
-            and model not in ["MacBookPro8,2", "MacBookPro8,3"]
-            and self.computer.dgpu
-            and self.computer.dgpu.arch == device_probe.AMD.Archs.TeraScale_2)
-            or model in ["Macmini5,2", "iMac12,1", "iMac12,2"]
-        ):
-            self.constants.terascale_2_patch = True
-        else:
-            self.constants.terascale_2_patch = False
 
     def patch_vol(self):
         SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()

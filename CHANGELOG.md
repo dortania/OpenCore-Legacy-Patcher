@@ -5,7 +5,7 @@
 - Fix more IORegistry issues
 - Implement OpenCore GUI
 - Ensure symlinks are preserved
-- Enable TeraScale 2 patches by default on desktops
+- Enable TeraScale 2 patches by default on all models
 - Fix NightShift support for macOS Monterey
 - Add UniversalControl support
   - Currently not enabled by Apple in macOS Monterey Beta 2/iOS 15 Beta 2
