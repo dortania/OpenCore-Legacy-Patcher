@@ -564,6 +564,15 @@ class Constants:
         "j185f",
     ]
 
+    sandy_board_id = [
+		"Mac-E43C1C25D4880AD6",
+		"Mac-06F11F11946D27C5",
+		"Mac-9F18E312C5C2BF0B",
+		"Mac-937CB26E2E02BB01",
+		"Mac-35C5E08120C7EEAF",
+		"Mac-7BA5B2D9E42DDD94",
+    ]
+
     board_id = {
         "MacBook1,1": "Mac-F4208CC8",
         "MacBook2,1": "Mac-F4208CA9",

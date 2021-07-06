@@ -76,9 +76,9 @@ class OpenCoreLegacyPatcher:
         if args.disk:
             print(f"- Install Disk set: {args.disk}")
             self.constants.disk = args.disk
-        if args.patch_disk:
-            print(f"- Patch Disk set: {args.patch_disk}")
-            self.constants.patch_disk = args.patch_disk
+        #if args.patch_disk:
+        #    print(f"- Patch Disk set: {args.patch_disk}")
+        #    self.constants.patch_disk = args.patch_disk
         if args.verbose:
             print("- Set verbose configuration")
             self.constants.verbose_debug = True
