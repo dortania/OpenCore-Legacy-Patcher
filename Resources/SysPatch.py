@@ -36,6 +36,8 @@ class PatchSysVolume:
         self.legacy_audio = False
         self.added_kexts = False
         self.amfi_must_disable = False
+        self.check_board_id = False
+        self.bad_board_id = False
         self.no_patch = True
 
         if self.constants.detected_os > self.constants.catalina:
@@ -391,6 +393,7 @@ class PatchSysVolume:
                 if self.constants.detected_os > self.constants.catalina:
                     self.sandy_gpu = True
                     self.amfi_must_disable = True
+                    self.check_board_id = True
             elif igpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
                 if self.constants.detected_os > self.constants.big_sur:
                     self.ivy_gpu = True
@@ -464,7 +467,13 @@ class PatchSysVolume:
             print("\nCannot patch! Please disable AMFI.")
             print("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
 
-        if any([self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.amfi_enabled if self.amfi_must_disable else False]):
+        if self.check_board_id is True and self.computer.reported_board_id not in self.constants.sandy_board_id:
+            print("\nCannot patch! Board ID not supported by AppleIntelSNBGraphicsFB")
+            print("Please ensure your Board ID is listed below:")
+            print("\n".join(self.constants.sandy_board_id))
+            self.bad_board_id = True
+
+        if any([self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.amfi_enabled if self.amfi_must_disable else False, self.bad_board_id if self.check_board_id else False]):
             return False
         else:
             return True
