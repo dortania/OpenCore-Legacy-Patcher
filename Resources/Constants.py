@@ -44,7 +44,7 @@ class Constants:
         self.fw_kext = "1.0.0"
         self.disk = ""
         self.patch_disk = ""
-        self.patcher_support_pkg_version = "0.0.11"  # PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.0.12"  # PatcherSupportPkg
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
