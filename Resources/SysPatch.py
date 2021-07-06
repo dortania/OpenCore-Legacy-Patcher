@@ -210,7 +210,7 @@ class PatchSysVolume:
     def gpu_framebuffer_ivybridge_big_sur(self):
         self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
         print("- Fixing Acceleration in CoreMedia")
-        subprocess.run(["defaults", "write", "com.apple.coremedia", "hardwareVideoDecoder", "-string", "disable"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        subprocess.run(["defaults", "write", "com.apple.coremedia", "hardwareVideoDecoder", "-string", "enable"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         print("- Merging Ivy Bridge Frameworks")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
