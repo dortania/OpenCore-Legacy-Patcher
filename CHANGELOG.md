@@ -17,7 +17,7 @@
   - Lilu 1.5.4 release (07-05-2021)
   - AppleALC 1.6.2 release
   - WhateverGreen 1.6.2 release
-  - PatcherSupportPkg 0.0.12 release
+  - PatcherSupportPkg 0.0.13 release
 
 ## 0.2.2
 
