@@ -20,6 +20,7 @@ class PatchSysVolume:
     def __init__(self, model, versions):
         self.model = model
         self.constants: Constants.Constants = versions
+        self.computer = self.constants.computer
         self.root_mount_path = None
         self.sip_enabled = True
         self.sbm_enabled = True
