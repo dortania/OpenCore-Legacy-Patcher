@@ -88,6 +88,7 @@ class Constants:
         self.disable_amfi = False
         self.terascale_2_patch = False
         self.enable_wake_on_wlan = False
+        self.allow_ivy_igpu = False
 
         # OS Versions
         self.tiger = 8

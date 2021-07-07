@@ -499,3 +499,28 @@ be prepared if enabling.
             self.constants.enable_wake_on_wlan = False
         else:
             print("Invalid option")
+
+    def allow_ivy(self):
+        Utilities.cls()
+        Utilities.header(["Allow Ivy iMac iGPU"])
+        print(
+            """
+For iMac13,x systems with a Nvidia dGPU, the iGPU is disabled by default to
+allow Delta Updates, FileVault, SIP and such on macOS Monterey. However due to this,
+DRM and QuickSync support may be broken.
+
+Users can choose to override this option but be aware SIP and FileVault must be disabled
+to run root patches to fix DRM and QuickSync.
+
+Note: This does not apply for Big Sur, the iGPU can be renabled without consequence
+Note 2: This setting only affects iMac13,x with dGPUs
+        """
+        )
+
+        change_menu = input("Allow Ivy iMac iGPU?(y/n): ")
+        if change_menu == "y":
+            self.constants.allow_ivy_igpu = True
+        elif change_menu == "n":
+            self.constants.allow_ivy_igpu = False
+        else:
+            print("Invalid option")

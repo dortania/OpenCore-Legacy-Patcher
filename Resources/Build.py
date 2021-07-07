@@ -411,13 +411,16 @@ class BuildOpenCore:
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
         if self.model in ["iMac13,1", "iMac13,2", "iMac13,3"]:
-            if self.computer.dgpu:
-                print("- Fixing sleep support in macOS 12")
+            if self.computer.dgpu and self.constants.allow_ivy_igpu is False:
+                print("- Disabling iGPU to fix sleep support in macOS 12")
+                self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                     "name": binascii.unhexlify("23646973706C6179"),
                     "IOName": "#display",
                     "class-code": binascii.unhexlify("FFFFFFFF"),
                 }
+            elif self.constants.allow_ivy_igpu is True:
+                print("- Enabling iGPU upon request")
 
         # Audio Patch
         if self.model in ModelArray.LegacyAudio:

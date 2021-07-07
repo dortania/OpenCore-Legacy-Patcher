@@ -18,6 +18,8 @@
   - AppleALC 1.6.2 release
   - WhateverGreen 1.6.2 release
   - PatcherSupportPkg 0.0.13 release
+- Fix Intel HD4000 DRM Support in macOS Monterey (thanks EduCovas!)
+- Support optionally re-enabling iGPU in iMac14,x with dGPUs
 
 ## 0.2.2
 
