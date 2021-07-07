@@ -394,8 +394,12 @@ class Computer:
         # Reported model
         entry = next(ioreg.ioiterator_to_list(ioreg.IOServiceGetMatchingServices(ioreg.kIOMasterPortDefault, ioreg.IOServiceMatching("IOPlatformExpertDevice".encode()), None)[1]))
         self.reported_model = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(entry, "model", ioreg.kCFAllocatorDefault, ioreg.kNilOptions)).strip(b"\0").decode()  # type: ignore
-        # TODO: Fix crash on Apple Silicon
-        self.reported_board_id = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(entry, "board-id", ioreg.kCFAllocatorDefault, ioreg.kNilOptions)).strip(b"\0").decode()  # type: ignore
+        translated = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()
+        if translated:
+            board = "target-type"
+        else:
+            board = "board-id"
+        self.reported_board_id = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(entry, board, ioreg.kCFAllocatorDefault, ioreg.kNilOptions)).strip(b"\0").decode()  # type: ignore
         ioreg.IOObjectRelease(entry)
 
         # Real model
