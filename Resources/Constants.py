@@ -38,7 +38,7 @@ class Constants:
         self.nightshift_version = "1.1.0"
         self.smcspoof_version = "1.0.0"
         self.nvmefix_version = "1.0.9"
-        self.sidecarfixup_version = "1.0.2"
+        self.featureunlock_version = "1.0.3"
         self.debugenhancer_version = "1.0.3"
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
@@ -89,6 +89,7 @@ class Constants:
         self.terascale_2_patch = False
         self.enable_wake_on_wlan = False
         self.allow_ivy_igpu = False
+        self.moj_cat_accel = False
 
         # OS Versions
         self.tiger = 8
@@ -267,8 +268,8 @@ class Constants:
         return self.payload_kexts_path / Path(f"Acidanthera/NVMeFix-v{self.nvmefix_version}.zip")
 
     @property
-    def sidecarfixup_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/SidecarFixup-v{self.sidecarfixup_version}.zip")
+    def featureunlock_path(self):
+        return self.payload_kexts_path / Path(f"Acidanthera/FeatureUnlock-v{self.featureunlock_version}.zip")
 
     @property
     def debugenhancer_path(self):

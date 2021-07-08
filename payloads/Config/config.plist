@@ -812,7 +812,7 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
-				<string>SidecarFixup</string>
+				<string>FeatureUnlock</string>
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
@@ -820,9 +820,9 @@
 				<key>MinKernel</key>
 				<string>16.0.0</string>
 				<key>BundlePath</key>
-				<string>SidecarFixup.kext</string>
+				<string>FeatureUnlock.kext</string>
 				<key>ExecutablePath</key>
-				<string>Contents/MacOS/SidecarFixup</string>
+				<string>Contents/MacOS/FeatureUnlock</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>

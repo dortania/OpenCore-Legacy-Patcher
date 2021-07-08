@@ -189,7 +189,7 @@ class BuildOpenCore:
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
             # Misc
-            ("SidecarFixup.kext", self.constants.sidecarfixup_version, self.constants.sidecarfixup_path, lambda: self.model in ModelArray.SidecarPatch),
+            ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: self.model in ModelArray.SidecarPatch),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
         ]:
             self.enable_kext(name, version, path, check)

@@ -13,7 +13,8 @@
   - Note: enabling may create network instability
 - Increment Binaries
   - OpenCore 0.7.1 release (07-05-2021)
-  - SidecarFixup 1.0.2 release (07-05-2021)
+  - FeatureUnlock 1.0.3 rolling (07-07-2021)
+    - Previously known as SidecarFixup
   - Lilu 1.5.4 release (07-05-2021)
   - AppleALC 1.6.2 release
   - WhateverGreen 1.6.2 release
