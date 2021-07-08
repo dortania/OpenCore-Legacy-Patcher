@@ -448,14 +448,18 @@ class PatchSysVolume:
         )
 
     def verify_patch_allowed(self):
-        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled = Utilities.patching_status()
+        sip = self.constants.root_patch_sip_big_sur if self.constants.detected_os > self.constants.catalina else self.constants.root_patch_sip_mojave
+        if sip == self.constants.root_patch_sip_mojave:
+            sip_value = "For Hackintoshes, please set csr-active-config to '03060000' (0x603)\nFor non-OpenCore Macs, please run 'csrutil disable' in RecoveryOS"
+        else:
+            sip_value = "For Hackintoshes, please set csr-active-config to '030A0000' (0xA03)\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
+        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled = Utilities.patching_status(sip)
         if self.sip_enabled is True:
             print("\nCannot patch! Please disable System Integrity Protection (SIP).")
             print("Disable SIP in Patcher Settings and Rebuild OpenCore\n")
             print("Ensure the following bits are set for csr-active-config:")
-            print("\n".join(self.constants.root_patch_sip_big_sur if self.constants.detected_os > self.constants.catalina else self.constants.root_patch_sip_mojave))
-            print("For Hackintoshes, please set csr-active-config to '030E0000' (0xE03)")
-            print("For non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS")
+            print("\n".join(sip))
+            print(sip_value)
 
         if self.sbm_enabled is True:
             print("\nCannot patch! Please disable Apple Secure Boot.")

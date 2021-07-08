@@ -49,7 +49,7 @@ def get_disk_path():
     return root_mount_path
 
 
-def csr_decode(csr_active_config):
+def csr_decode(csr_active_config, os_sip):
     if csr_active_config is None:
         csr_active_config = b"\x00\x00\x00\x00"
     sip_int = int.from_bytes(csr_active_config, byteorder="little")
@@ -60,7 +60,7 @@ def csr_decode(csr_active_config):
         i = i + 1
 
     # Can be adjusted to whatever OS needs patching
-    sip_needs_change = all(Constants.Constants.csr_values[i] for i in Constants.Constants.root_patch_sip_big_sur)
+    sip_needs_change = all(Constants.Constants.csr_values[i] for i in os_sip)
     if sip_needs_change is True:
         return False
     else:
@@ -71,7 +71,7 @@ def friendly_hex(integer: int):
     return "{:02X}".format(integer)
 
 
-def patching_status():
+def patching_status(os_sip):
     # Detection for Root Patching
     sip_enabled = True  # System Integrity Protection
     sbm_enabled = True  # Secure Boot Status (SecureBootModel)
@@ -86,7 +86,7 @@ def patching_status():
     if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in Constants.Constants.sbm_values:
         sbm_enabled = False
 
-    if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False)) is False:
+    if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
         sip_enabled = False
 
     fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
