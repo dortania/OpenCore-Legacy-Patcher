@@ -506,13 +506,14 @@ be prepared if enabling.
         print(
             """
 For iMac13,x systems with a Nvidia dGPU, the iGPU is disabled by default to
-allow Delta Updates, FileVault, SIP and such on macOS Monterey. However due to this,
-DRM and QuickSync support may be broken.
+allow Delta Updates, FileVault, SIP and such on macOS Monterey. However due to
+this, DRM and QuickSync support may be broken.
 
-Users can choose to override this option but be aware SIP and FileVault must be disabled
-to run root patches to fix DRM and QuickSync.
+Users can choose to override this option but be aware SIP and FileVault must be
+disabled to run root patches to fix DRM and QuickSync.
 
-Note: This does not apply for Big Sur, the iGPU can be renabled without consequence
+Note: This does not apply for Big Sur, the iGPU can be renabled without
+consequence
 Note 2: This setting only affects iMac13,x with dGPUs
         """
         )
