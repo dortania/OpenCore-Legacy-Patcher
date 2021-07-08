@@ -486,16 +486,16 @@ class PatchSysVolume:
         print("- Starting Patch Process")
         print(f"- Determinging Required Patch set for Darwin {self.constants.detected_os}")
         self.detect_patch_set()
-        if self.no_patch is False and self.constants.gui_mode is False:
-            change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
-        elif self.constants.gui_mode is True:
-            change_menu = "y"
-            print("Continuing root patching")
-        else:
+        if self.no_patch is True:
             change_menu = None
             print("- No Root Patches required for your machine!")
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu: ")
+        elif self.constants.gui_mode is False:
+            change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
+        else:
+            change_menu = "y"
+            print("Continuing root patching")
         if change_menu in ["y", "Y"]:
             print("- Continuing with Patching")
             print("- Verifying whether Root Patching possible")
