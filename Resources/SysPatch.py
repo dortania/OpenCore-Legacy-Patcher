@@ -5,9 +5,7 @@
 #   - Temporary Work-around: sudo bless --mount /System/Volumes/Update/mnt1 --bootefi --last-sealed-snapshot
 # - Work-around battery throttling on laptops with no battery (IOPlatformPluginFamily.kext/Contents/PlugIns/ACPI_SMC_PlatformPlugin.kext/Contents/Resources/)
 
-import hashlib
 import os
-import requests
 import shutil
 import subprocess
 import zipfile
