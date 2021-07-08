@@ -58,6 +58,9 @@ class PatchSysVolume:
     def find_mount_root_vol(self, patch):
         self.root_mount_path = Utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
+            if self.constants.detected_os == self.constants.catalina:
+                 print("- Mounting Catalina Root Volume as writable")
+                 self.elevated(["mount", "-uw", "/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
@@ -71,9 +74,6 @@ class PatchSysVolume:
                 if self.constants.detected_os > self.constants.catalina:
                     print("- Mounting APFS Snapshot as writable")
                     self.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                elif self.constants.detected_os == self.constants.catalina:
-                    print("- Mounting Root Volume as writable")
-                    self.elevated(["mount", "-uw", "/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
@@ -105,7 +105,7 @@ class PatchSysVolume:
         else:
             result = self.elevated(["kextcache", "-i", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        if result.returncode != 0:
+        if result.returncode != 0 or (self.constants.detected_os in [self.constants.mojave, self.constants.catalina] and "KernelCache ID" not in result):
             self.success_status = False
             print("- Unable to build new kernel cache")
             print("\nPlease report this to Github")
@@ -124,12 +124,16 @@ class PatchSysVolume:
                 print("- Creating new APFS snapshot")
                 self.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 self.unmount_drive()
+            else:
+                print("Copying over KC")
+                self.elevated(["kcditto"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
             if self.amd_ts2 is True:
-                print("\nPlease note that with ATI TeraScale 2 GPUs, you may experience colour strobing on reboot")
-                print("Please use SwitchResX or ResXtreme to force 1 million colours on your monitor to fix this")
-                print("If you are epileptic, please ask for someone to aid you or set million colour before rebooting")
+                print("""\nPlease note that with ATI TeraScale 2 GPUs, you may experience colour strobing
+on reboot. Please use SwitchResX or ResXtreme to force 1 million colours on your
+monitor to fix this. If you are epileptic, please ask for someone to aid you or
+set million colour before rebooting""")
             if self.constants.gui_mode is False:
                 input("Press [ENTER] to continue")
 
@@ -369,29 +373,32 @@ class PatchSysVolume:
     def detect_gpus(self):
         dgpu = self.constants.computer.dgpu
         igpu = self.constants.computer.igpu
+        if self.constants.moj_cat_accel is True:
+            non_metal_os = self.constants.high_sierra
+        else:
+            non_metal_os = self.constants.catalina
         if dgpu:
             print(f"- Found GFX0: {Utilities.friendly_hex(dgpu.vendor_id)}:{Utilities.friendly_hex(dgpu.device_id)}")
             if dgpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi]:
-                if self.constants.detected_os > self.constants.catalina:
+                if self.constants.detected_os > non_metal_os:
                     self.nvidia_legacy = True
                     self.amfi_must_disable = True
             elif dgpu.arch == device_probe.AMD.Archs.TeraScale_1:
-                if self.constants.detected_os > self.constants.catalina:
+                if self.constants.detected_os > non_metal_os:
                     self.amd_ts1 = True
                     self.amfi_must_disable = True
             elif dgpu.arch == device_probe.AMD.Archs.TeraScale_2:
-                # Requires manual permission from user to avoid medical issues
-                if self.constants.detected_os > self.constants.catalina:
+                if self.constants.detected_os > non_metal_os:
                     self.amd_ts2 = True
                     self.amfi_must_disable = True
         if igpu and igpu.class_code != 0xFFFFFF:
             print(f"- Found IGPU: {Utilities.friendly_hex(igpu.vendor_id)}:{Utilities.friendly_hex(igpu.device_id)}")
             if igpu.arch == device_probe.Intel.Archs.Iron_Lake:
-                if self.constants.detected_os > self.constants.catalina:
+                if self.constants.detected_os > non_metal_os:
                     self.iron_gpu = True
                     self.amfi_must_disable = True
             elif igpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
-                if self.constants.detected_os > self.constants.catalina:
+                if self.constants.detected_os > non_metal_os:
                     self.sandy_gpu = True
                     self.amfi_must_disable = True
                     self.check_board_id = True
@@ -399,7 +406,7 @@ class PatchSysVolume:
                 if self.constants.detected_os > self.constants.big_sur:
                     self.ivy_gpu = True
             elif isinstance(igpu, device_probe.NVIDIA):
-                if self.constants.detected_os > self.constants.catalina:
+                if self.constants.detected_os > non_metal_os:
                     self.nvidia_legacy = True
                     self.amfi_must_disable = True
 
