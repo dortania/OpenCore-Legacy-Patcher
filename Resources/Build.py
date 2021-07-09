@@ -120,7 +120,6 @@ class BuildOpenCore:
             print("- Adding Internal Drive icon")
             shutil.copy(self.constants.icon_path_internal, self.constants.opencore_release_folder)
 
-
     def build_efi(self):
         Utilities.cls()
         if not self.constants.custom_model:
@@ -140,8 +139,7 @@ class BuildOpenCore:
             print("Deleting old copy of OpenCore folder")
             shutil.rmtree(self.constants.opencore_release_folder, onerror=rmtree_handler, ignore_errors=True)
 
-        print()
-        print(f"- Adding OpenCore v{self.constants.opencore_version} {self.constants.opencore_build}")
+        print(f"\n- Adding OpenCore v{self.constants.opencore_version} {self.constants.opencore_build}")
         shutil.copy(self.constants.opencore_zip_source, self.constants.build_path)
         zipfile.ZipFile(self.constants.opencore_zip_copied).extractall(self.constants.build_path)
 
@@ -568,7 +566,9 @@ class BuildOpenCore:
                             print("- Adding Mac Pro, Xserve DRM patches")
                             if "shikigva=128 unfairgva=1" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
                                 print("- Falling back to boot-args")
-                                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1" + (" -wegtree" if "-wegtree" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] else "")
+                                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1" + (
+                                    " -wegtree" if "-wegtree" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] else ""
+                                )
                         elif isinstance(device, device_probe.NVIDIA):
                             print("- Enabling Nvidia Output Patch")
                             if "-wegtree" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:

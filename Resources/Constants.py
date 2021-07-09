@@ -133,6 +133,12 @@ class Constants:
         # External Files
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
 
+        self.legacy_accel_support = [
+            self.mojave,
+            self.catalina,
+            self.big_sur,
+        ]
+
     # Payload Location
     # OpenCore
     @property
@@ -571,12 +577,12 @@ class Constants:
     ]
 
     sandy_board_id = [
-		"Mac-E43C1C25D4880AD6",
-		"Mac-06F11F11946D27C5",
-		"Mac-9F18E312C5C2BF0B",
-		"Mac-937CB26E2E02BB01",
-		"Mac-35C5E08120C7EEAF",
-		"Mac-7BA5B2D9E42DDD94",
+        "Mac-E43C1C25D4880AD6",
+        "Mac-06F11F11946D27C5",
+        "Mac-9F18E312C5C2BF0B",
+        "Mac-937CB26E2E02BB01",
+        "Mac-35C5E08120C7EEAF",
+        "Mac-7BA5B2D9E42DDD94",
     ]
 
     board_id = {
