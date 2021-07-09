@@ -154,7 +154,7 @@ set million colour before rebooting"""
             delete_path = Path(self.mount_extensions) / Path(delete_current_kext)
             if Path(delete_path).exists():
                 print(f"- Deleting {delete_current_kext}")
-                self.elevated(["sudo", "rm", "-R", delete_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                self.elevated(["rm", "-R", delete_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             else:
                 print(f"- Couldn't find {delete_current_kext}, skipping")
 
