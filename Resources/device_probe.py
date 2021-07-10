@@ -81,7 +81,7 @@ class PCIDevice:
                 location = [hex(int(i, 16)) for i in ioreg.io_name_t_to_str(ioreg.IORegistryEntryGetLocationInPlane(entry, "IOService".encode(), None)[1]).split(",") + ["0"]]
                 paths.append(f"Pci({location[0]},{location[1]})")
             elif ioreg.IOObjectConformsTo(entry, "IOACPIPlatformDevice".encode()):
-                paths.append(f"PciRoot({hex(int(ioreg.IORegistryEntryCreateCFProperty(entry, '_UID', ioreg.kCFAllocatorDefault, ioreg.kNilOptions) or 0))})")  # type: ignore
+                paths.append(f"PciRoot({hex(int(ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(entry, '_UID', ioreg.kCFAllocatorDefault, ioreg.kNilOptions)) or 0))})")  # type: ignore
                 break
             elif ioreg.IOObjectConformsTo(entry, "IOPCIBridge".encode()):
                 pass
@@ -127,7 +127,7 @@ class WirelessCard(PCIDevice):
 
         interface = next(ioreg.ioiterator_to_list(ioreg.IOServiceGetMatchingServices(ioreg.kIOMasterPortDefault, matching_dict, None)[1]), None)
         if interface:
-            device.country_code = ioreg.IORegistryEntryCreateCFProperty(interface, "IO80211CountryCode", ioreg.kCFAllocatorDefault, ioreg.kNilOptions)  # type: ignore # If not present, will be None anyways
+            device.country_code = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(interface, "IO80211CountryCode", ioreg.kCFAllocatorDefault, ioreg.kNilOptions))  # type: ignore # If not present, will be None anyways
         else:
             device.country_code = None  # type: ignore
 
@@ -378,7 +378,7 @@ class Computer:
             parent = ioreg.IORegistryEntryGetParentEntry(device, "IOService".encode(), None)[1]
             ioreg.IOObjectRelease(device)
 
-            aspm: Union[int, bytes] = ioreg.IORegistryEntryCreateCFProperty(parent, "pci-aspm-default", ioreg.kCFAllocatorDefault, ioreg.kNilOptions) or 0  # type: ignore
+            aspm: Union[int, bytes] = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(parent, "pci-aspm-default", ioreg.kCFAllocatorDefault, ioreg.kNilOptions)) or 0  # type: ignore
             if isinstance(aspm, bytes):
                 aspm = int.from_bytes(aspm, byteorder="little")
 
