@@ -1,5 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.2.4
+
+- Fix BlessOverride typo
+
 ## 0.2.3
 
 - Fix more IORegistry issues
