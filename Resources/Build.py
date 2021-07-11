@@ -1019,7 +1019,7 @@ Please build OpenCore first!"""
                 print("is removed from the partition")
                 print("We highly recommend users partition 200MB off their drive with Disk Utility")
                 print("    Name:\t\t OPENCORE")
-                print("    Format:\t FAT32")
+                print("    Format:\t\t FAT32")
                 print("    Size:\t\t 200MB")
                 choice = input("\nWould you like to still install OpenCore to this drive?(y/n): ")
                 if not choice in ["y", "Y", "Yes", "yes"]:
