@@ -21,6 +21,7 @@
   - PatcherSupportPkg 0.0.13 release
 - Fix Intel HD4000 DRM Support in macOS Monterey (thanks EduCovas!)
 - Support optionally re-enabling iGPU in iMac14,x with dGPUs
+- Fix Windows scanning in OpenCore menu when Windows and macOS are stored on the same ESP
 
 ## 0.2.2
 

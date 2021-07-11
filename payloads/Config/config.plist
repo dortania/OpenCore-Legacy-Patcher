@@ -1141,7 +1141,9 @@
 			<integer>3</integer>
 		</dict>
 		<key>Entries</key>
-		<array/>
+		<array>
+			<string>\EFI\Microsoft\Boot\bootmgfw.efi</string>
+		</array>
 		<key>Security</key>
 		<dict>
 			<key>AllowNvramReset</key>
