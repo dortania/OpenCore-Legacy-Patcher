@@ -218,6 +218,8 @@ def ioiterator_to_list(iterator: io_iterator_t):
 
 
 def corefoundation_to_native(collection):
+    if collection is None:  # nullptr
+        return None
     native = Conversion.pythonCollectionFromPropertyList(collection)
     CFRelease(collection)
     return native
