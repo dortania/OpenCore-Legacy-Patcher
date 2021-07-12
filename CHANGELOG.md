@@ -3,6 +3,7 @@
 ## 0.2.4
 
 - Fix BlessOverride typo
+- Fix Wake on WLAN typo
 
 ## 0.2.3
 
