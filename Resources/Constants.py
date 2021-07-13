@@ -42,6 +42,7 @@ class Constants:
         self.debugenhancer_version = "1.0.3"
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
+        self.latebloom_version = "0.17"
         self.disk = ""
         self.patch_disk = ""
         self.patcher_support_pkg_version = "0.0.13"  # PatcherSupportPkg
@@ -90,6 +91,10 @@ class Constants:
         self.enable_wake_on_wlan = False
         self.allow_ivy_igpu = False
         self.moj_cat_accel = False
+        self.latebloom_status = False
+        self.latebloom_delay = 0
+        self.latebloom_range = 0
+        self.latebloom_debug = 0
 
         # OS Versions
         self.tiger = 8
@@ -284,6 +289,10 @@ class Constants:
     @property
     def innie_path(self):
         return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}.zip")
+    
+    @property
+    def latebloom_path(self):
+        return self.payload_kexts_path / Path(f"Misc/latebloom-v{self.latebloom_version}.zip")
 
     @property
     def plist_folder_path(self):

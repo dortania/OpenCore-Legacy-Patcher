@@ -7,6 +7,7 @@ import os
 import plistlib
 import subprocess
 from pathlib import Path
+import re
 
 import requests
 
@@ -47,6 +48,27 @@ def get_disk_path():
     root_mount_path = root_partition_info["DeviceIdentifier"]
     root_mount_path = root_mount_path[:-2] if root_mount_path.count("s") > 1 else root_mount_path
     return root_mount_path
+
+
+def latebloom_detection(model):
+    if model in ["MacPro4,1", "MacPro5,1", "iMac7,1", "iMac8,1"]:
+        # These machines are more likely to experience boot hangs, increase delays to accomodate
+        lb_delay = "250"
+    else:
+        lb_delay = "100"
+    lb_range = "1"
+    lb_debug = "0"
+    if get_nvram("boot-args", decode=False):
+        if "latebloom=" in get_nvram("boot-args", decode=False):
+            lb_delay = re.search(r"(?:[, ])latebloom=(\d+)", get_nvram("boot-args", decode=False))
+            lb_delay = lb_delay[1]
+        if "lb_range=" in get_nvram("boot-args", decode=False):
+            lb_range = re.search(r"(?:[, ])lb_range=(\d+)", get_nvram("boot-args", decode=False))
+            lb_range = lb_range[1]
+        if "lb_debug=" in get_nvram("boot-args", decode=False):
+            lb_debug = re.search(r"(?:[, ])lb_debug=(\d+)", get_nvram("boot-args", decode=False))
+            lb_debug = lb_debug[1]
+    return int(lb_range), int(lb_range), int(lb_debug)
 
 
 def csr_decode(csr_active_config, os_sip):

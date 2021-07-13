@@ -19,18 +19,6 @@ class OpenCoreLegacyPatcher:
         self.constants.detected_os = int(platform.uname().release.partition(".")[0])
         self.set_defaults(self.computer.real_model, True)
 
-        custom_cpu_model_value = Utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
-        if custom_cpu_model_value is not None:
-            # TODO: Fix to not use two separate variables
-            self.constants.custom_cpu_model = 1
-            self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
-
-        if "-v" in (Utilities.get_nvram("boot-args") or ""):
-            self.constants.verbose_debug = True
-
-        # Check if running in RecoveryOS
-        self.constants.recovery_status = Utilities.check_recovery()
-
     def set_defaults(self, model, host_is_target):
         # Defaults
         self.constants.sip_status = True
@@ -71,6 +59,20 @@ class OpenCoreLegacyPatcher:
         if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings == "Moderate"
+
+        custom_cpu_model_value = Utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+        if custom_cpu_model_value is not None:
+            # TODO: Fix to not use two separate variables
+            self.constants.custom_cpu_model = 1
+            self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
+
+        if "-v" in (Utilities.get_nvram("boot-args") or ""):
+            self.constants.verbose_debug = True
+
+        self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
+
+        # Check if running in RecoveryOS
+        self.constants.recovery_status = Utilities.check_recovery()
 
     def build_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()

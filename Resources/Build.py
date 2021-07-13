@@ -189,11 +189,16 @@ class BuildOpenCore:
             # Misc
             ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: self.model in ModelArray.SidecarPatch),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
+            #("latebloom.kext", self.constants.latebloom_version, self.constants.latebloom_path, lambda: self.model in ModelArray.PCIRaceCondition),
         ]:
             self.enable_kext(name, version, path, check)
 
         if self.constants.allow_oc_everywhere is False:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
+
+        if self.get_kext_by_bundle_path("latebloom.kext")["Enabled"] is True:
+            print(f"Setting latebloom delay of {self.constants.latebloom_delay}, range {self.constants.latebloom_range}, debug {self.constants.latebloom_debug}")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" latebloom={self.constants.latebloom_delay}, lb_range={self.constants.latebloom_range}, lb_debug={self.constants.latebloom_debug}"
 
         if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in ModelArray.MacPro71):
             # Use Innie's same logic:
