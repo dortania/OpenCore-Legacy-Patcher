@@ -1024,5 +1024,8 @@ PCIRaceCondition = [
     "iMac11,1",
     "iMac11,2",
     "iMac11,3",
+    "MacPro3,1",
+    "MacPro4,1",
+    "MacPro5,1",
     "Dortania1,1",
 ]

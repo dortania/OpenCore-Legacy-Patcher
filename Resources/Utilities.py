@@ -8,7 +8,7 @@ import plistlib
 import subprocess
 from pathlib import Path
 import re
-
+import os
 import requests
 
 from Resources import Constants, ioreg
@@ -99,9 +99,12 @@ def patching_status(os_sip):
     sbm_enabled = True  # Secure Boot Status (SecureBootModel)
     amfi_enabled = True  # Apple Mobile File Integrity
     fv_enabled = True  # FileVault
+    dosdude_patched = True
 
     amfi_1 = "amfi_get_out_of_my_way=0x1"
     amfi_2 = "amfi_get_out_of_my_way=1"
+    gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
+    gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
     if get_nvram("boot-args", decode=False) and (amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False)):
         amfi_enabled = False
@@ -114,8 +117,11 @@ def patching_status(os_sip):
     fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
     if fv_status.startswith("FileVault is Off"):
         fv_enabled = False
+    
+    if not (Path(gen6_kext).exists() and Path(gen7_kext).exists()):
+        dosdude_patched = False
 
-    return sip_enabled, sbm_enabled, amfi_enabled, fv_enabled
+    return sip_enabled, sbm_enabled, amfi_enabled, fv_enabled, dosdude_patched
 
 
 clear = True

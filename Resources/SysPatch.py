@@ -538,7 +538,7 @@ set million colour before rebooting"""
             sip_value = (
                 "For Hackintoshes, please set csr-active-config to '030A0000' (0xA03)\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
             )
-        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled = Utilities.patching_status(sip)
+        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = Utilities.patching_status(sip)
         if self.sip_enabled is True:
             print("\nCannot patch! Please disable System Integrity Protection (SIP).")
             print("Disable SIP in Patcher Settings and Rebuild OpenCore\n")
@@ -565,8 +565,12 @@ set million colour before rebooting"""
             print("Please ensure your Board ID is listed below:")
             print("\n".join(self.constants.sandy_board_id))
             self.bad_board_id = True
+        
+        if self.dosdude_patched is True:
+            print("\nCannot patch! Detected machine has already been patched by another patcher")
+            print("Please ensure your install is either clean or patched with OpenCore Legacy Patcher")
 
-        if any([self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.amfi_enabled if self.amfi_must_disable else False, self.bad_board_id if self.check_board_id else False]):
+        if any([self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched, self.amfi_enabled if self.amfi_must_disable else False, self.bad_board_id if self.check_board_id else False]):
             return False
         else:
             return True
