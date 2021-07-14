@@ -17,6 +17,7 @@ class OpenCoreLegacyPatcher:
         self.constants.computer = device_probe.Computer.probe()
         self.computer = self.constants.computer
         self.constants.detected_os = int(platform.uname().release.partition(".")[0])
+        self.constants.detected_os_minor = int(platform.uname().release.partition(".")[2].partition(".")[0])
         self.set_defaults(self.computer.real_model, True)
 
     def set_defaults(self, model, host_is_target):
@@ -220,6 +221,20 @@ Supported Options:
 2. Unpatch System Volume (Experimental)
 B. Exit
         """
+        mojave_catalina = """Patches Root volume to fix misc issues such as:
+ - Graphics Acceleration
+   - Nvidia: Tesla - Fermi (8000-500 series)
+   - Intel: Ironlake - Sandy Bridge
+   - AMD: TeraScale 1 and 2 (2000-6000 series)
+ - Audio support for iMac7,1 and iMac8,1
+ WARNING: Root Volume Patching is still in active development, please
+ have all important user data backed up. Note when the system volume
+ is patched, you can no longer have Delta updates or have FileVault
+ enabled.
+ Supported Options:
+ 1. Patch System Volume
+ B. Exit
+         """
 
         default = """
 This OS has no root patches available to apply, please ensure you're patching a booted
@@ -234,13 +249,15 @@ B. Exit
             print(monterey)
         elif self.constants.detected_os == self.constants.big_sur:
             print(big_sur)
+        elif self.constants.detected_os in [self.constants.mojave, self.constants.catalina] and self.constants.moj_cat_accel == True:
+            print(mojave_catalina)
         else:
             print(default)
             no_patch = True
         change_menu = input("Patch System Volume?: ")
         if no_patch is not True and change_menu == "1":
             SysPatch.PatchSysVolume(self.constants.custom_model or self.computer.real_model, self.constants).start_patch()
-        elif no_patch is not True and change_menu == "2":
+        elif no_patch is not True and change_menu == "2" and self.constants.detected_os > self.constants.catalina:
             SysPatch.PatchSysVolume(self.constants.custom_model or self.computer.real_model, self.constants).start_unpatch()
         else:
             print("Returning to main menu")

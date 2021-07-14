@@ -45,7 +45,7 @@ class Constants:
         self.latebloom_version = "0.17"
         self.disk = ""
         self.patch_disk = ""
-        self.patcher_support_pkg_version = "0.0.13"  # PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.0.14"  # PatcherSupportPkg
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -73,6 +73,7 @@ class Constants:
         self.sip_status = True
         self.secure_status = False
         self.detected_os = 0
+        self.detected_os_minor = 0
         self.boot_efi = False
         self.drm_support = False
         self.allow_oc_everywhere = False
