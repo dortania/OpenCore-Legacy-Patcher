@@ -92,8 +92,20 @@ class PatchSysVolume:
                 input("- Press [ENTER] to exit: ")
 
     def unpatch_root_vol(self):
-        print("- Reverting to last signed APFS snapshot")
-        self.elevated(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        if self.constants.detected_os > self.constants.catalina:
+            print("- Reverting to last signed APFS snapshot")
+            result = self.elevated(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                print("- Unable to revert root volume patches")
+                print("Reason for unpatch Failure:")
+                print(result.stdout.decode())
+                # print("- Failed to revert snapshot via bless, falling back on manual restoration")
+                # self.undo_root_patch()
+            else:
+                print("- Unpatching complete")
+                print("\nPlease reboot the machine for patches to take effect")
+        # else:
+        #    self.undo_root_patch()
 
     def rebuild_snapshot(self):
         if self.constants.gui_mode is False:
