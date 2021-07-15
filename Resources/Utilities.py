@@ -57,7 +57,7 @@ def latebloom_detection(model):
     else:
         lb_delay = "100"
     lb_range = "1"
-    lb_debug = "0"
+    lb_debug = "1"
     if get_nvram("boot-args", decode=False):
         if "latebloom=" in get_nvram("boot-args", decode=False):
             lb_delay = re.search(r"(?:[, ])latebloom=(\d+)", get_nvram("boot-args", decode=False))
@@ -68,7 +68,7 @@ def latebloom_detection(model):
         if "lb_debug=" in get_nvram("boot-args", decode=False):
             lb_debug = re.search(r"(?:[, ])lb_debug=(\d+)", get_nvram("boot-args", decode=False))
             lb_debug = lb_debug[1]
-    return int(lb_range), int(lb_range), int(lb_debug)
+    return int(lb_delay), int(lb_range), int(lb_debug)
 
 
 def csr_decode(csr_active_config, os_sip):

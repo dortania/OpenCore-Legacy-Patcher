@@ -129,6 +129,10 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                     f"Allow OpenCore on native Models:\tCurrently {self.constants.allow_oc_everywhere}",
                     CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_native_models,
                 ],
+                #[
+                #    f"Latebloom settings:\t\t\tDelay {self.constants.latebloom_delay}, Range {self.constants.latebloom_range}, Debug {self.constants.latebloom_debug}",
+                #    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).latebloom_settings,
+                #],
                 ["Advanced Patch Settings, for developers only", self.advanced_patcher_settings],
             ]
 

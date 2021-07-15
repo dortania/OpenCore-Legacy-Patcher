@@ -525,3 +525,39 @@ Note 2: This setting only affects iMac13,x with dGPUs
             self.constants.allow_ivy_igpu = False
         else:
             print("Invalid option")
+    
+
+    def latebloom_settings(self):
+        Utilities.cls()
+        Utilities.header(["Set latebloom properties"])
+        print(
+            f"""
+Set latebloom properties, useful for debugging boot stalls on
+pre-Sandy Bridge Macs.
+
+Valid options:
+
+1. Set delay (currently: {self.constants.latebloom_delay})
+2. Set range (currently: {self.constants.latebloom_range})
+3. Set debug (currently: {self.constants.latebloom_debug})
+        """
+        )
+
+        change_menu = input("Set latebloom properties: ")
+        if change_menu == "1":
+            try:
+                self.constants.latebloom_delay = int(input("Set delay: "))
+            except ValueError:
+                input("Invalid value, press [ENTER] to continue")
+        elif change_menu == "2":
+            try:
+                self.constants.latebloom_range = int(input("Set range: "))
+            except ValueError:
+                input("Invalid value, press [ENTER] to continue")
+        elif change_menu == "3":
+            try:
+                self.constants.latebloom_debug = int(input("Set debug: "))
+            except ValueError:
+                input("Invalid value, press [ENTER] to continue")
+        else:
+            print("Invalid option")
