@@ -28,6 +28,7 @@ Below is a list of hardware that currently has issues with Monterey:
 ### Metal GPUs
 
 * Intel HD4000 iGPUs lost support
+  * Re-introduced with OpenCore Legacy Patcher v0.1.7
 
 By default these machines require root volume patches to gain graphics acceleration in Monterey. OpenCore Legacy Patcher supports readding support however SIP and FileVault can no longer be enabled due to root patching:
 
@@ -35,15 +36,6 @@ By default these machines require root volume patches to gain graphics accelerat
 * MacBookAir5,x
 * MacBookPro9,x
 * MacBookPro10,x
-
-Note: Currently HD 4000 support in Monterey is not perfect, following are broken:
-
-::: details HD 4000 Issues
-
-* Hardware DRM Playback unsupported
-  * Chrome uses Software DRM so has no such limitation in Monterey
-
-:::
 
 ### Non-Metal GPUs
 
