@@ -21,6 +21,14 @@ def hexswap(input_hex: str):
     return hex_str.upper()
 
 
+def human_fmt(num):
+    for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
+        if abs(num) < 1000.0:
+            return "%3.1f %s" % (num, unit)
+        num /= 1000.0
+    return "%.1f %s" % (num, "EB")
+
+
 def header(lines):
     lines = [i for i in lines if i is not None]
     total_length = len(max(lines, key=len)) + 4
@@ -117,7 +125,7 @@ def patching_status(os_sip):
     fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
     if fv_status.startswith("FileVault is Off"):
         fv_enabled = False
-    
+
     if not (Path(gen6_kext).exists() and Path(gen7_kext).exists()):
         dosdude_patched = False
 

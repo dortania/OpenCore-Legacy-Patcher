@@ -17,14 +17,6 @@ from datetime import date
 from Resources import Constants, ModelArray, Utilities, device_probe
 
 
-def human_fmt(num):
-    for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
-        if abs(num) < 1000.0:
-            return "%3.1f %s" % (num, unit)
-        num /= 1000.0
-    return "%.1f %s" % (num, "EB")
-
-
 def rmtree_handler(func, path, exc_info):
     if exc_info[0] == FileNotFoundError:
         return
@@ -189,7 +181,7 @@ class BuildOpenCore:
             # Misc
             ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: self.model in ModelArray.SidecarPatch),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
-            #("latebloom.kext", self.constants.latebloom_version, self.constants.latebloom_path, lambda: self.model in ModelArray.PCIRaceCondition),
+            # ("latebloom.kext", self.constants.latebloom_version, self.constants.latebloom_path, lambda: self.model in ModelArray.PCIRaceCondition),
         ]:
             self.enable_kext(name, version, path, check)
 
@@ -198,7 +190,9 @@ class BuildOpenCore:
 
         if self.get_kext_by_bundle_path("latebloom.kext")["Enabled"] is True:
             print(f"- Setting latebloom delay of {self.constants.latebloom_delay}, range {self.constants.latebloom_range}, debug {self.constants.latebloom_debug}")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" latebloom={self.constants.latebloom_delay}, lb_range={self.constants.latebloom_range}, lb_debug={self.constants.latebloom_debug}"
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"][
+                "boot-args"
+            ] += f" latebloom={self.constants.latebloom_delay}, lb_range={self.constants.latebloom_range}, lb_debug={self.constants.latebloom_debug}"
 
         if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in ModelArray.MacPro71):
             # Use Innie's same logic:
@@ -946,7 +940,7 @@ Please build OpenCore first!"""
         for disk in all_disks:
             if not any(all_disks[disk]["partitions"][partition]["fs"] in ("msdos", "EFI") for partition in all_disks[disk]["partitions"]):
                 continue
-            menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({human_fmt(all_disks[disk]['size'])})", key=disk[4:])
+            menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({Utilities.human_fmt(all_disks[disk]['size'])})", key=disk[4:])
 
         response = menu.start()
 
@@ -966,7 +960,7 @@ Please build OpenCore first!"""
         for partition in selected_disk["partitions"]:
             if selected_disk["partitions"][partition]["fs"] not in ("msdos", "EFI"):
                 continue
-            text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({human_fmt(selected_disk['partitions'][partition]['size'])})"
+            text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({Utilities.human_fmt(selected_disk['partitions'][partition]['size'])})"
             if selected_disk["partitions"][partition]["type"] == "EFI" or (
                 selected_disk["partitions"][partition]["type"] == "Microsoft Basic Data" and selected_disk["partitions"][partition]["size"] < 1024 * 1024 * 512
             ):  # 512 megabytes:
