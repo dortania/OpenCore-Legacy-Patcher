@@ -525,7 +525,6 @@ Note 2: This setting only affects iMac13,x with dGPUs
             self.constants.allow_ivy_igpu = False
         else:
             print("Invalid option")
-    
 
     def latebloom_settings(self):
         Utilities.cls()
@@ -559,44 +558,5 @@ Valid options:
                 self.constants.latebloom_debug = int(input("Set debug: "))
             except ValueError:
                 input("Invalid value, press [ENTER] to continue")
-        else:
-            print("Invalid option")
-    
-    def kryptonite_settings(self):
-        Utilities.cls()
-        Utilities.header(["Set Kryptonite properties"])
-        print(
-            f"""
-Set Kryptonite properties, used for enhacning eGPUs.
-
-Valid options:
-
-1. Enable Kryptonite (currently: {self.constants.kryptonite_enabled})
-2. Set eGPU Vendor (currently: {self.constants.kryptonite_vendor})
-        """
-        )
-
-        change_menu = input("Set Kryptonite properties: ")
-        if change_menu == "1":
-            change_menu = input("Enable Kryptonite?(y/n): ")
-            if change_menu in {"y", "Y", "yes", "Yes"}:
-                self.constants.kryptonite_enabled = True
-            elif change_menu in {"n", "N", "no", "No"}:
-                self.constants.kryptonite_enabled = False
-            else:
-                print("Invalid option")
-            
-        elif change_menu == "2":
-            print("""Set Vendor:
-1. AMD
-2. Nvidia
-            """)
-            change_menu = input("Set eGPU Vendor(1/2): ")
-            if change_menu == "1":
-                self.constants.kryptonite_vendor = "AMD"
-            elif change_menu == "2":
-                self.constants.kryptonite_vendor = "Nvidia"
-            else:
-                print("Invalid option")
         else:
             print("Invalid option")
