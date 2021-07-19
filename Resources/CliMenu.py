@@ -328,9 +328,9 @@ hardware
         """
         )
         change_menu = input("Disable CPU Friend?(y/n): ")
-        if change_menu == "y":
+        if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.disallow_cpufriend = True
-        elif change_menu == "n":
+        elif change_menu in {"n", "N", "no", "No"}:
             self.constants.disallow_cpufriend = False
         else:
             print("Invalid option")
@@ -420,9 +420,9 @@ Note: MacBook5,x-7,1 don't support FireWire boot
         )
 
         change_menu = input("Enable FireWire Boot support?(y/n): ")
-        if change_menu == "y":
+        if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.firewire_boot = True
-        elif change_menu == "n":
+        elif change_menu in {"n", "N", "no", "No"}:
             self.constants.firewire_boot = False
         else:
             print("Invalid option")
@@ -445,9 +445,9 @@ OpenCore will enable NVMe support in it's picker
         )
 
         change_menu = input("Enable NVMe Boot support?(y/n): ")
-        if change_menu == "y":
+        if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.nvme_boot = True
-        elif change_menu == "n":
+        elif change_menu in {"n", "N", "no", "No"}:
             self.constants.nvme_boot = False
         else:
             print("Invalid option")
@@ -471,9 +471,9 @@ Note: Acceleration only applies to macOS Big Sur
         )
 
         change_menu = input("Enable TS2 Acceleration?(y/n): ")
-        if change_menu == "y":
+        if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.terascale_2_patch = True
-        elif change_menu == "n":
+        elif change_menu in {"n", "N", "no", "No"}:
             self.constants.terascale_2_patch = False
         else:
             print("Invalid option")
@@ -493,9 +493,9 @@ be prepared if enabling.
         )
 
         change_menu = input("Allow Wake on WLAN?(y/n): ")
-        if change_menu == "y":
+        if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.enable_wake_on_wlan = True
-        elif change_menu == "n":
+        elif change_menu in {"n", "N", "no", "No"}:
             self.constants.enable_wake_on_wlan = False
         else:
             print("Invalid option")
@@ -519,9 +519,9 @@ Note 2: This setting only affects iMac13,x with dGPUs
         )
 
         change_menu = input("Allow Ivy iMac iGPU?(y/n): ")
-        if change_menu == "y":
+        if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.allow_ivy_igpu = True
-        elif change_menu == "n":
+        elif change_menu in {"n", "N", "no", "No"}:
             self.constants.allow_ivy_igpu = False
         else:
             print("Invalid option")
@@ -559,5 +559,44 @@ Valid options:
                 self.constants.latebloom_debug = int(input("Set debug: "))
             except ValueError:
                 input("Invalid value, press [ENTER] to continue")
+        else:
+            print("Invalid option")
+    
+    def kryptonite_settings(self):
+        Utilities.cls()
+        Utilities.header(["Set Kryptonite properties"])
+        print(
+            f"""
+Set Kryptonite properties, used for enhacning eGPUs.
+
+Valid options:
+
+1. Enable Kryptonite (currently: {self.constants.kryptonite_enabled})
+2. Set eGPU Vendor (currently: {self.constants.kryptonite_vendor})
+        """
+        )
+
+        change_menu = input("Set Kryptonite properties: ")
+        if change_menu == "1":
+            change_menu = input("Enable Kryptonite?(y/n): ")
+            if change_menu in {"y", "Y", "yes", "Yes"}:
+                self.constants.kryptonite_enabled = True
+            elif change_menu in {"n", "N", "no", "No"}:
+                self.constants.kryptonite_enabled = False
+            else:
+                print("Invalid option")
+            
+        elif change_menu == "2":
+            print("""Set Vendor:
+1. AMD
+2. Nvidia
+            """)
+            change_menu = input("Set eGPU Vendor(1/2): ")
+            if change_menu == "1":
+                self.constants.kryptonite_vendor = "AMD"
+            elif change_menu == "2":
+                self.constants.kryptonite_vendor = "Nvidia"
+            else:
+                print("Invalid option")
         else:
             print("Invalid option")

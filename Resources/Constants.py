@@ -96,6 +96,9 @@ class Constants:
         self.latebloom_delay = 0
         self.latebloom_range = 0
         self.latebloom_debug = 0
+        self.kryptonite_enabled = False
+        self.kryptonite_vendor = "AMD"
+        self.kryptonite_nhi = 0
 
         # OS Versions
         self.tiger = 8
