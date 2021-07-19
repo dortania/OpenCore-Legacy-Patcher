@@ -32,48 +32,36 @@ class BuildOpenCore:
 
         self.gfx0_path = None
 
-    def smbios_set(self):
+    def smbios_set(self, model):
         print("- Setting macOS Monterey Supported SMBIOS")
-        if self.model in ModelArray.MacBookAir61:
-            print("- Spoofing to MacBookAir7,1")
+        if model in ModelArray.MacBookAir_11:
             return "MacBookAir7,1"
-        elif self.model in ModelArray.MacBookAir62:
-            print("- Spoofing to MacBookAir7,2")
+        elif model in ModelArray.MacBookAir_13:
             return "MacBookAir7,2"
-        elif self.model in ModelArray.MacBook81:
-            print("- Spoofing to MacBook9,1")
+        elif model in ModelArray.MacBook_12:
             return "MacBook9,1"
-        elif self.model in ModelArray.MacBookPro111:
-            print("- Spoofing to MacBookPro12,1")
+        elif model in ModelArray.MacBookPro_13:
             return "MacBookPro12,1"
-        elif self.model in ModelArray.MacBookPro112:
-            print("- Spoofing to MacBookPro11,4")
+        elif model in ModelArray.MacBookPro_15_iGPU:
             return "MacBookPro11,4"
-        elif self.model in ModelArray.MacBookPro113:
-            print("- Spoofing to MacBookPro11,5")
+        elif model in ModelArray.MacBookPro_15_dGPU:
             return "MacBookPro11,5"
-        elif self.model in ModelArray.Macmini71:
-            print("- Spoofing to Macmini7,1")
+        elif model in ModelArray.Macmini:
             return "Macmini7,1"
-        elif self.model in ModelArray.iMacPro11:
-            print("- Spoofing to iMacPro1,1")
+        elif model in ModelArray.iMac_iGPUless:
             return "iMacPro1,1"
-        elif self.model in ModelArray.iMac151:
+        elif model in ModelArray.iMac_dGPU:
             # Check for upgraded GPUs on iMacs
             if self.constants.drm_support is True:
-                print("- Spoofing to iMacPro1,1")
                 return "iMacPro1,1"
             else:
-                print("- Spoofing to iMac17,1")
                 return "iMac17,1"
-        elif self.model in ModelArray.iMac144:
-            print("- Spoofing to iMac16,1")
+        elif model in ModelArray.iMac_iGPU:
             return "iMac16,1"
-        elif self.model in ModelArray.MacPro71:
-            print("- Spoofing to MacPro7,1")
+        elif model in ModelArray.MacPro:
             return "MacPro7,1"
         else:
-            return self.model
+            return model
 
     def fw_feature_detect(self, model):
         # Values based off OpenCorePkg's Firmwarefeatures and FirmwarefeaturesMask
@@ -157,7 +145,8 @@ class BuildOpenCore:
             # Essential kexts
             ("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path, lambda: True),
             ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: self.constants.allow_oc_everywhere is False),
-            ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in ModelArray.MacPro71),
+            ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in ModelArray.MacPro),
+            # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
             ("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path, lambda: self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1"]),
             ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False),
             # CPU patches
@@ -175,7 +164,7 @@ class BuildOpenCore:
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
             ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
             # Legacy audio
-            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro71),
+            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro),
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
             # Misc
@@ -194,7 +183,7 @@ class BuildOpenCore:
                 "boot-args"
             ] += f" latebloom={self.constants.latebloom_delay}, lb_range={self.constants.latebloom_range}, lb_debug={self.constants.latebloom_debug}"
 
-        if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in ModelArray.MacPro71):
+        if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in ModelArray.MacPro):
             # Use Innie's same logic:
             # https://github.com/cdf/Innie/blob/v1.3.0/Innie/Innie.cpp#L90-L97
             for i, controller in enumerate(self.computer.storage):
@@ -542,7 +531,7 @@ class BuildOpenCore:
             elif self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
                 backlight_path_detection(self)
                 nvidia_patch(self, self.gfx0_path)
-        if self.model in ModelArray.MacPro71:
+        if self.model in ModelArray.MacPro:
             if not self.constants.custom_model:
                 for i, device in enumerate(self.computer.gpus):
                     print(f"- Found dGPU ({i + 1}): {Utilities.friendly_hex(device.vendor_id)}:{Utilities.friendly_hex(device.device_id)}")
@@ -584,6 +573,8 @@ class BuildOpenCore:
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
 
         # Add XhciDxe if firmware doesn't have XHCI controller support and XCHI controller detected
+        # TODO: Fix XhciDxe to work on pre UEFI 2.0 Macs
+        # Ref: https://github.com/acidanthera/bugtracker/issues/1663
         # if self.model not in ModelArray.XhciSupport and not self.constants.custom_model:
         #    devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         #    try:
@@ -631,6 +622,8 @@ class BuildOpenCore:
         if self.constants.kext_debug is True:
             print("- Enabling DEBUG Kexts")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -liludbgall"
+            # Disabled due to macOS Monterey crashing shortly after kernel init
+            # Use DebugEnhancer.kext instead
             # self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " msgbuf=1048576"
         if self.constants.opencore_debug is True:
             print("- Enabling DEBUG OpenCore")
@@ -679,7 +672,8 @@ class BuildOpenCore:
     def set_smbios(self):
         spoofed_model = self.model
         if self.constants.override_smbios == "Default":
-            spoofed_model = self.smbios_set()
+            spoofed_model = self.smbios_set(self.model)
+            print(f"- Spoofing to {spoofed_model}")
         else:
             spoofed_model = self.constants.override_smbios
         try:

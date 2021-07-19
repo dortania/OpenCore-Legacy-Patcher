@@ -563,7 +563,7 @@ HiDPIpicker = ["MacBook8,1", "MacBookPro10,1", "MacBookPro10,2", "MacBookPro11,1
 IDEPatch = ["MacBook4,1", "MacBookPro4,1", "iMac7,1", "iMac8,1", "MacPro3,1", "Xserve2,1", "Dortania1,1"]
 
 # 11" Air
-MacBookAir61 = [
+MacBookAir_11 = [
     "MacBookAir3,1",
     "MacBookAir4,1",
     "MacBookAir5,1",
@@ -571,7 +571,7 @@ MacBookAir61 = [
 ]
 
 # Classic MacBook and 13" Air
-MacBookAir62 = [
+MacBookAir_13 = [
     "MacBook4,1",
     "MacBook5,1",
     "MacBook5,2",
@@ -585,13 +585,13 @@ MacBookAir62 = [
 ]
 
 # Retina MacBook
-MacBook81 = [
+MacBook_12 = [
     "MacBook8,1",
 ]
 
 # MacBook Pro 13"
 
-MacBookPro111 = [
+MacBookPro_13 = [
     "MacBookPro5,5",
     "MacBookPro7,1",
     "MacBookPro8,1",
@@ -602,11 +602,11 @@ MacBookPro111 = [
 
 # MacBook Pro 15" (iGPU)
 
-MacBookPro112 = ["MacBookPro11,2"]
+MacBookPro_15_iGPU = ["MacBookPro11,2"]
 
 # MacBook Pro 15" and 17" (dGPU)
 
-MacBookPro113 = [
+MacBookPro_15_dGPU = [
     "MacBookPro4,1",
     "MacBookPro5,1",
     "MacBookPro5,2",
@@ -623,9 +623,9 @@ MacBookPro113 = [
 
 # Mac Mini
 
-Macmini71 = ["Macmini3,1", "Macmini4,1", "Macmini5,1", "Macmini5,2", "Macmini5,3", "Macmini6,1", "Macmini6,2"]
+Macmini = ["Macmini3,1", "Macmini4,1", "Macmini5,1", "Macmini5,2", "Macmini5,3", "Macmini6,1", "Macmini6,2"]
 # iMacPro = dGPU only iMacs
-iMacPro11 = [
+iMac_iGPUless = [
     "iMac7,1",
     "iMac8,1",
     "iMac9,1",
@@ -638,17 +638,17 @@ iMacPro11 = [
 ]
 
 # iMac = AMD and Nvidia GPU with iGPU
-iMac151 = [
+iMac_dGPU = [
     "iMac13,2",
     "iMac14,2",
     "iMac14,3",
     "iMac15,1",
 ]
 # iMac = Intel iGPU
-iMac144 = ["iMac13,1", "iMac14,1", "iMac14,4"]
+iMac_iGPU = ["iMac13,1", "iMac14,1", "iMac14,4"]
 
 # Mac Pro and Xserve
-MacPro71 = ["MacPro3,1", "MacPro4,1", "MacPro5,1", "Xserve2,1", "Xserve3,1", "Dortania1,1"]
+MacPro = ["MacPro3,1", "MacPro4,1", "MacPro5,1", "Xserve2,1", "Xserve3,1", "Dortania1,1"]
 
 XXerve = [
     "Xserve3,1",
