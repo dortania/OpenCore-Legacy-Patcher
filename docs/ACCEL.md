@@ -71,4 +71,4 @@ The best way to achieve this is to boot Recovery (or Single User Mode if the dGP
 nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00
 ```
 
-This will disable the dGPU and allow graphics acceleration in Big Sur. Note that external display outputs are directly routed to the dGPU and therefore can no longer be used. Solutions such as a [DisplayLink Adapters](https://www.displaylink.com/products/usb-adapters) can work around this limitation.
+This will disable the dGPU and allow graphics acceleration in Big Sur. Note that external display outputs are directly routed to the dGPU and therefore can no longer be used. Solutions such as a [DisplayLink Adapters](https://www.displaylink.com/products/usb-adapters) can work around this limitation in theory. However, currently the proprietary DisplayLink driver refuses to function on legacy-patched systems, either resulting in a windowserver crash loop or no output at all. 
