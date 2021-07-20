@@ -41,7 +41,7 @@ chmod +x tccplus
 ./tccplus add Microphone com.hnc.Discord
 ```
 
-For those who may experience issues with `tccplus`, you can manually patch `com.apple.TCC` ti add permissions:
+For those who may experience issues with `tccplus`, you can manually patch `com.apple.TCC` to add permissions:
 
 ```sh
 # get app id (Zoom.us used in example):
