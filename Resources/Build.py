@@ -178,7 +178,7 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
 
         if self.get_kext_by_bundle_path("latebloom.kext")["Enabled"] is True:
-            print(f"- Setting latebloom delay of {self.constants.latebloom_delay}, range {self.constants.latebloom_range}, debug {self.constants.latebloom_debug}")
+            print(f"- Setting latebloom delay of {self.constants.latebloom_delay}ms, range {self.constants.latebloom_range}ms, debug {bool(self.constants.latebloom_debug)}")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"][
                 "boot-args"
             ] += f" latebloom={self.constants.latebloom_delay}, lb_range={self.constants.latebloom_range}, lb_debug={self.constants.latebloom_debug}"

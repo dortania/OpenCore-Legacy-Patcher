@@ -536,9 +536,9 @@ pre-Sandy Bridge Macs.
 
 Valid options:
 
-1. Set delay (currently: {self.constants.latebloom_delay})
-2. Set range (currently: {self.constants.latebloom_range})
-3. Set debug (currently: {self.constants.latebloom_debug})
+1. Set delay (currently: {self.constants.latebloom_delay}ms)
+2. Set range (currently: {self.constants.latebloom_range}ms)
+3. Set debug (currently: {bool(self.constants.latebloom_debug)})
         """
         )
 
@@ -555,8 +555,8 @@ Valid options:
                 input("Invalid value, press [ENTER] to continue")
         elif change_menu == "3":
             try:
-                print("Currently supports either 0(debug disabled) or 1(debug enabled)")
-                latebloom_debug = int(input("Set debug: "))
+                print("Currently supports either 0(False) or 1(True)")
+                latebloom_debug = int(input("Set debug(0/1): "))
                 if latebloom_debug not in [0, 1]:
                     input("Invalid value, press [ENTER] to continue")
                 else:
