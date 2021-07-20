@@ -41,6 +41,18 @@ chmod +x tccplus
 ./tccplus add Microphone com.hnc.Discord
 ```
 
+For those who may experience issues with `tccplus`, you can manually patch `com.apple.TCC` to add permissions:
+
+```sh
+# get app id (Zoom.us used in example):
+$ osascript -e 'id of app "zoom.us"'
+# output: us.zoom.xos
+
+$ sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "INSERT or REPLACE INTO access VALUES('kTCCServiceMicrophone','us.zoom.xos',0,2,0,1,NULL,NULL,NULL,'UNUSED',NULL,0,1541440109);"
+
+$ sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "INSERT or REPLACE INTO access VALUES('kTCCServiceCamera','us.zoom.xos',0,2,0,1,NULL,NULL,NULL,'UNUSED',NULL,0,1541440109);"
+```
+
 ## Keyboard Backlight broken
 
 Due to forcing `hidd` into spinning up with the fallback mode enabled, this can break the OS's recognition of backlight keyboards. Thankfully the drivers themselves still do operate so applications such as [LabTick](https://www.macupdate.com/app/mac/22151/lab-tick) are able to set the brightness manually.
