@@ -170,7 +170,7 @@ class BuildOpenCore:
             # Misc
             ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: self.model in ModelArray.SidecarPatch),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
-            # ("latebloom.kext", self.constants.latebloom_version, self.constants.latebloom_path, lambda: self.model in ModelArray.PCIRaceCondition),
+            ("latebloom.kext", self.constants.latebloom_version, self.constants.latebloom_path, lambda: self.model in ModelArray.PCIRaceCondition),
         ]:
             self.enable_kext(name, version, path, check)
 

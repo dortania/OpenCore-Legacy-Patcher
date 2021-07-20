@@ -542,7 +542,7 @@ Valid options:
         """
         )
 
-        change_menu = input("Set latebloom properties: ")
+        change_menu = input("Select latebloom property(1/2/3): ")
         if change_menu == "1":
             try:
                 self.constants.latebloom_delay = int(input("Set delay: "))
@@ -555,7 +555,12 @@ Valid options:
                 input("Invalid value, press [ENTER] to continue")
         elif change_menu == "3":
             try:
-                self.constants.latebloom_debug = int(input("Set debug: "))
+                print("Currently supports either 0(debug disabled) or 1(debug enabled)")
+                latebloom_debug = int(input("Set debug: "))
+                if latebloom_debug not in [0, 1]:
+                    input("Invalid value, press [ENTER] to continue")
+                else:
+                    self.constants.latebloom_debug = latebloom_debug
             except ValueError:
                 input("Invalid value, press [ENTER] to continue")
         else:
