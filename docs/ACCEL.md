@@ -41,7 +41,8 @@ chmod +x tccplus
 ./tccplus add Microphone com.hnc.Discord
 ```
 
-In Big Sur currently `tccplus` and like utilities no longer work and this requires something more along the lines of this:
+For those who may experience issues with `tccplus`, you can manually patch `com.apple.TCC` ti add permissions:
+
 ```sh
 # get app id (Zoom.us used in example):
 $ osascript -e 'id of app "zoom.us"'
