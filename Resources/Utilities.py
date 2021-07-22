@@ -21,6 +21,13 @@ def hexswap(input_hex: str):
     return hex_str.upper()
 
 
+def process_status(process_result):
+    if process_result.returncode != 0:
+        print(f"Process failed with exit code {process_result.returncode}")
+        print(f"Please file an issue on our Github")
+        raise Exception(f"Process result: \n{process_result.stdout.decode()}")
+
+
 def human_fmt(num):
     for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
         if abs(num) < 1000.0:
