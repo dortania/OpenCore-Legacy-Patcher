@@ -157,7 +157,7 @@ class BuildOpenCore:
                 "CPUFriend.kext",
                 self.constants.cpufriend_version,
                 self.constants.cpufriend_path,
-                lambda: self.model not in ["iMac7,1", "Xserve2,1"] and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False,
+                lambda: self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False,
             ),
             # Ethernet patches
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
@@ -314,7 +314,7 @@ class BuildOpenCore:
 
         # CPUFriend
         pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
-        if self.model not in ["iMac7,1", "Xserve2,1"] and self.constants.allow_oc_everywhere is False:
+        if self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.allow_oc_everywhere is False:
             Path(self.constants.pp_kext_folder).mkdir()
             Path(self.constants.pp_contents_folder).mkdir()
             shutil.copy(pp_map_path, self.constants.pp_contents_folder)
@@ -341,7 +341,7 @@ class BuildOpenCore:
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
         # iMac7,1 kernel panics with USB map installed, remove for time being until properly debugged
-        if usb_map_path.exists() and self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1"]:
+        if usb_map_path.exists() and self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"]:
             print("- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
@@ -749,7 +749,7 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["CustomMemory"] = True
 
         # USB Map and CPUFriend Patching
-        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1"]:
+        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"]:
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
             # Strip unused USB maps
@@ -769,7 +769,7 @@ class BuildOpenCore:
                     except KeyError:
                         continue
             plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
-        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1"] and self.constants.disallow_cpufriend is False:
+        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False:
             # Adjust CPU Friend Data to correct SMBIOS
             new_cpu_ls = Path(self.constants.pp_contents_folder) / Path("Info.plist")
             cpu_config = plistlib.load(Path(new_cpu_ls).open("rb"))

@@ -953,7 +953,7 @@ windows_audio = [
     "iMac13,3",
 ]
 
-NoAGPMSupport = ["MacBook4,1", "MacBookPro4,1", "iMac7,1", "iMac8,1", "MacPro3,1", "Xserve2,1"]
+NoAGPMSupport = ["MacBook4,1", "MacBookPro4,1", "iMac7,1", "iMac8,1", "MacPro3,1", "Xserve2,1", "Dortania1,1"]
 
 AGDPSupport = [
     "MacBookPro9,1",

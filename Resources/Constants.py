@@ -13,8 +13,8 @@ from Resources import device_probe
 class Constants:
     def __init__(self):
         self.patcher_version = "0.2.4"
-        self.opencore_commit = "4e0ff2d - 05-23-2021"
-        self.opencore_version = "0.7.0"
+        self.opencore_commit = "be2d9fe - 07-2-2021"
+        self.opencore_version = "0.7.1"
         self.lilu_version = "1.5.4"
         self.whatevergreen_version = "1.5.1"
         self.airportbcrmfixup_version = "2.1.3"
@@ -404,6 +404,10 @@ class Constants:
     @property
     def vault_path(self):
         return self.payload_path / Path("Tools/CreateVault/sign.command")
+
+    @property
+    def ocvalidate_path(self):
+        return self.payload_path / Path("Tools/ocvalidate")
 
     # Icons
     @property

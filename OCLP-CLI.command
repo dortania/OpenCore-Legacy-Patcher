@@ -62,6 +62,8 @@ class OpenCoreLegacyPatcher:
         parser.add_argument("--terascale_2", help="Enable TeraScale 2 Acceleration", action="store_true", required=False)
         #parser.add_argument("--patch_disk", action="store", help="Specifies disk to root patch", required=False)
 
+        parser.add_argument("--validate", help="Validate", action="store_true", required=False)
+
         args = parser.parse_args()
 
         self.constants.gui_mode = True
@@ -76,6 +78,8 @@ class OpenCoreLegacyPatcher:
         if args.disk:
             print(f"- Install Disk set: {args.disk}")
             self.constants.disk = args.disk
+        if args.validate:
+            self.validate()
         #if args.patch_disk:
         #    print(f"- Patch Disk set: {args.patch_disk}")
         #    self.constants.patch_disk = args.patch_disk
@@ -205,7 +209,20 @@ If you plan to create the USB for another machine, please select the "Change Mod
 
     def install_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).copy_efi()
-
+    
+    def validate(self):
+        # Runs through ocvalidate to check for errors
+        for model in ModelArray.SupportedSMBIOS:
+            print(f"Validating model: {model}")
+            self.constants.custom_model = model
+            self.build_opencore()
+            result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                print("Error on build!")
+                print(result.stdout.decode())
+                raise Exception(f"Validation failed for model: {model}")
+            else:
+                print(f"Validation succeeded for model: {model}")
 
 OpenCoreLegacyPatcher()
 
