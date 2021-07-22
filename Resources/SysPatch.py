@@ -118,7 +118,7 @@ class PatchSysVolume:
 
         # kextcache always returns 0, even if it fails
         # Check the output for 'KernelCache ID' to see if the cache was successfully rebuilt
-        if result.returncode != 0 or (self.constants.detected_os < self.constants.catalina and "KernelCache ID" not in result):
+        if result.returncode != 0 or (self.constants.detected_os < self.constants.catalina and "KernelCache ID" not in result.stdout.decode()):
             self.success_status = False
             print("- Unable to build new kernel cache")
             print("\nPlease report this to Github")
