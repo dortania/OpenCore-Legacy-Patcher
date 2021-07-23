@@ -14,7 +14,7 @@ With OpenCore Legacy Patcher we recommend users go through the below table to un
 | Supported OSes | <span style="color:#30BCD5">10.7-11</span> | <span style="color:red">10.15-11</span> |
 | Firmware Patching | <span style="color:#30BCD5">None required</span> | <span style="color:red">Required for models without native APFS support</span> |
 | BootCamp Switching | <span style="color:red">Requires EFI Conversion for Start Disk support, otherwise still supported</span> | <span style="color:#30BCD5">Native</span> |
-| Legacy GPU Acceleration | <span style="color:#30BCD5">In active development</span>, see Acceleration Progress Tracker: [Link](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) | <span style="color:red">Currently not researching</span> |
+| Non-Metal GPU Acceleration | <span style="color:#30BCD5">In active development</span>, see Acceleration Progress Tracker: [Link](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) | <span style="color:red">Currently not researching</span> |
 | El Capitan-era Wifi cards | <span style="color:#30BCD5">Supported</span> | <span style="colorred">Not supported</span> |
 | WPA Wireless Support | <span style="color:#30BCD5">Supported</span> | <span style="color:red">Minority may experience issues on early 2013 and older Models</span> |
 | Personal Hotspot Support | <span style="color:#30BCD5">Native</span> | <span style="color:red">Often requires extra steps to achieve on early 2013 and older Models</span> |
