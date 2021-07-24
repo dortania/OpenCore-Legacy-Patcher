@@ -594,12 +594,12 @@ class Constants:
     ]
 
     sandy_board_id = [
-        "Mac-E43C1C25D4880AD6",
-        "Mac-06F11F11946D27C5",
-        "Mac-9F18E312C5C2BF0B",
-        "Mac-937CB26E2E02BB01",
-        "Mac-35C5E08120C7EEAF",
-        "Mac-7BA5B2D9E42DDD94",
+        "Mac-E43C1C25D4880AD6", # MacBookPro12,1
+        "Mac-06F11F11946D27C5", # MacBookPro11,5
+        "Mac-9F18E312C5C2BF0B", # MacBookAir7,1
+        "Mac-937CB26E2E02BB01", # MacBookAir7,2
+        "Mac-35C5E08120C7EEAF", # Macmini7,1
+        "Mac-7BA5B2D9E42DDD94", # iMacPro1,1
     ]
 
     board_id = {

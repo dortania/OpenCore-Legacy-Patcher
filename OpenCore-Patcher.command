@@ -226,18 +226,18 @@ Supported Options:
 B. Exit
         """
         mojave_catalina = """Patches Root volume to fix misc issues such as:
- - Graphics Acceleration
+- Graphics Acceleration
    - Nvidia: Tesla - Fermi (8000-500 series)
    - Intel: Ironlake - Sandy Bridge
    - AMD: TeraScale 1 and 2 (2000-6000 series)
- - Audio support for iMac7,1 and iMac8,1
- WARNING: Root Volume Patching is still in active development, please
- have all important user data backed up. Note when the system volume
- is patched, you can no longer have Delta updates or have FileVault
- enabled.
- Supported Options:
- 1. Patch System Volume
- B. Exit
+- Audio support for iMac7,1 and iMac8,1
+WARNING: Root Volume Patching is still in active development, please
+have all important user data backed up. Note when the system volume
+is patched, you can no longer have Delta updates or have FileVault
+enabled.
+Supported Options:
+1. Patch System Volume
+B. Exit
          """
 
         default = """
