@@ -248,7 +248,7 @@ class BuildOpenCore:
                 self.config["DeviceProperties"]["Add"][arpt_path].update({"brcmfx-country": self.computer.wifi.country_code})
             if self.constants.enable_wake_on_wlan is True:
                 print("- Enabling Wake on WLAN support")
-                self.config["DeviceProperties"]["Add"][arpt_path].update({"brcmfx-wowl": binascii.unhexlify("01000000")})
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" -brcmfxwowl"
 
         # WiFi patches
         # TODO: -a is not supported in Lion and older, need to add proper fix
@@ -271,14 +271,11 @@ class BuildOpenCore:
                         arpt_path = self.computer.wifi.pci_path
                         print(f"- Found ARPT device at {arpt_path}")
                         self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.country_code}
-                        if self.constants.enable_wake_on_wlan is True:
-                            print("- Enabling Wake on WLAN support")
-                            self.config["DeviceProperties"]["Add"][arpt_path].update({"brcmfx-wowl": binascii.unhexlify("01000000")})
                     else:
                         self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" brcmfx-country={self.computer.wifi.country_code}"
-                        if self.constants.enable_wake_on_wlan is True:
-                            print("- Enabling Wake on WLAN support")
-                            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" -brcmfxwowl"
+                    if self.constants.enable_wake_on_wlan is True:
+                        print("- Enabling Wake on WLAN support")
+                        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" -brcmfxwowl"
                 elif self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
                     wifi_fake_id(self)
                 elif self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4331:
