@@ -142,9 +142,9 @@ class PatchSysVolume:
                 self.unmount_drive()
             else:
                 if self.constants.detected_os == self.constants.catalina:
-                    print("Merging kernel cache")
+                    print("- Merging kernel cache")
                     Utilities.process_status(self.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-                print("Merging dyld cache")
+                print("- Merging dyld cache")
                 Utilities.process_status(self.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
