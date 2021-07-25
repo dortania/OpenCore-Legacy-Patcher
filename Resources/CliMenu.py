@@ -536,13 +536,13 @@ pre-Sandy Bridge Macs.
 
 Valid options:
 
-1. Set delay (currently: {self.constants.latebloom_delay})
-2. Set range (currently: {self.constants.latebloom_range})
-3. Set debug (currently: {self.constants.latebloom_debug})
+1. Set delay (currently: {self.constants.latebloom_delay}ms)
+2. Set range (currently: {self.constants.latebloom_range}ms)
+3. Set debug (currently: {bool(self.constants.latebloom_debug)})
         """
         )
 
-        change_menu = input("Set latebloom properties: ")
+        change_menu = input("Select latebloom property(1/2/3): ")
         if change_menu == "1":
             try:
                 self.constants.latebloom_delay = int(input("Set delay: "))
@@ -555,7 +555,12 @@ Valid options:
                 input("Invalid value, press [ENTER] to continue")
         elif change_menu == "3":
             try:
-                self.constants.latebloom_debug = int(input("Set debug: "))
+                print("Currently supports either 0(False) or 1(True)")
+                latebloom_debug = int(input("Set debug(0/1): "))
+                if latebloom_debug not in [0, 1]:
+                    input("Invalid value, press [ENTER] to continue")
+                else:
+                    self.constants.latebloom_debug = latebloom_debug
             except ValueError:
                 input("Invalid value, press [ENTER] to continue")
         else:
