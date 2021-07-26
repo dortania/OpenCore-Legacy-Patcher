@@ -4,6 +4,9 @@
 
 - Fix BlessOverride typo
 - Fix Wake on WLAN typo
+- Fix Catalyst App crashing in macOS 11.5 (ie. Messages.app)
+- Increment Binaries
+  - PatcherSupportPkg 0.0.15 release
 
 ## 0.2.3
 
