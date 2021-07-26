@@ -70,6 +70,9 @@ class OpenCoreLegacyPatcher:
         if "-v" in (Utilities.get_nvram("boot-args") or ""):
             self.constants.verbose_debug = True
 
+        if Utilities.amfi_status() is False:
+            self.constants.disable_amfi = True
+
         self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
 
         # Check if running in RecoveryOS

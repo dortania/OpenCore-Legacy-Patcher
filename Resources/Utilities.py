@@ -108,6 +108,14 @@ def friendly_hex(integer: int):
     return "{:02X}".format(integer)
 
 
+def amfi_status():
+    amfi_1 = "amfi_get_out_of_my_way=0x1"
+    amfi_2 = "amfi_get_out_of_my_way=1"
+    if get_nvram("boot-args", decode=False) and (amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False)):
+        return False
+    return True
+
+
 def patching_status(os_sip):
     # Detection for Root Patching
     sip_enabled = True  # System Integrity Protection
@@ -116,13 +124,11 @@ def patching_status(os_sip):
     fv_enabled = True  # FileVault
     dosdude_patched = True
 
-    amfi_1 = "amfi_get_out_of_my_way=0x1"
-    amfi_2 = "amfi_get_out_of_my_way=1"
     gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
     gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
-    if get_nvram("boot-args", decode=False) and (amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False)):
-        amfi_enabled = False
+    amfi_enabled = amfi_status()
+
     if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in Constants.Constants.sbm_values:
         sbm_enabled = False
 
