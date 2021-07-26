@@ -338,7 +338,12 @@ class BuildOpenCore:
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
         # iMac7,1 kernel panics with USB map installed, remove for time being until properly debugged
-        if usb_map_path.exists() and self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"]:
+        if (
+            usb_map_path.exists()
+            and self.constants.allow_oc_everywhere is False
+            and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"]
+            and (self.model in ModelArray.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
+        ):
             print("- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
@@ -746,7 +751,11 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["CustomMemory"] = True
 
         # USB Map and CPUFriend Patching
-        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"]:
+        if (
+            self.constants.allow_oc_everywhere is False
+            and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"]
+            and (self.model in ModelArray.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
+        ):
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
             # Strip unused USB maps

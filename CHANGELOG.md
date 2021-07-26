@@ -9,6 +9,7 @@
   - PatcherSupportPkg 0.0.15 release
 - Implement Latebloom.kext support (v0.19)
   - Work around macOS 11.3+ race condition on pre-Sandy Bridge Macs
+- Disable USB Map injection when unneeded
 
 ## 0.2.3
 
