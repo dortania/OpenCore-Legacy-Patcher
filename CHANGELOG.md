@@ -7,6 +7,8 @@
 - Fix Catalyst App crashing in macOS 11.5 (ie. Messages.app)
 - Increment Binaries
   - PatcherSupportPkg 0.0.15 release
+- Implement Latebloom.kext support (v0.19)
+  - Work around macOS 11.3+ race condition on pre-Sandy Bridge Macs
 
 ## 0.2.3
 
