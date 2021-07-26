@@ -6,6 +6,8 @@ First Download the latest release:
 
 * [OpenCore Legacy Patcher Releases](https://github.com/dortania/Opencore-Legacy-Patcher/releases)
 
+Or use the latest "Nightly builds" [found here](https://github.com/dortania/OpenCore-Legacy-Patcher#support)
+
 Next, run the `OpenCore-Patcher.app`:
 
 ![](../images/first-run.png)
@@ -25,7 +27,7 @@ Now lets enter "Build OpenCore":
 
 The process should be quite quick to build, once finished you'll be plopped back to the main menu.
 
-Next lets run `Install OpenCore to USB/internal drive`:
+Next lets run `Install OpenCore to USB/internal drive`: and install to the USB
 
 | Select Drive | Select EFI/FAT32 Partition |
 | :--- | :--- |
