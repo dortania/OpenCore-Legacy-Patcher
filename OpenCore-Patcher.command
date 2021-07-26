@@ -59,7 +59,7 @@ class OpenCoreLegacyPatcher:
                 # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
         if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
-            self.constants.serial_settings == "Moderate"
+            self.constants.serial_settings = "Moderate"
 
         custom_cpu_model_value = Utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
         if custom_cpu_model_value is not None:
