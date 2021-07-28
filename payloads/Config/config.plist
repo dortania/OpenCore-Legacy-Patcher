@@ -242,7 +242,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string></string>
+				<string>10.0.0</string>
 				<key>BundlePath</key>
 				<string>Lilu.kext</string>
 				<key>ExecutablePath</key>
@@ -278,7 +278,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string></string>
+				<string>10.0.0</string>
 				<key>BundlePath</key>
 				<string>WhateverGreen.kext</string>
 				<key>ExecutablePath</key>
@@ -296,7 +296,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string></string>
+				<string>12.0.0</string>
 				<key>BundlePath</key>
 				<string>RestrictEvents.kext</string>
 				<key>ExecutablePath</key>
@@ -314,7 +314,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string></string>
+				<string>16.0.0</string>
 				<key>BundlePath</key>
 				<string>AAAMouSSE.kext</string>
 				<key>ExecutablePath</key>
@@ -596,49 +596,13 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
-				<string>AppleBacklightFixup - Modded Nvidia GPUs</string>
-				<key>Enabled</key>
-				<false/>
-				<key>MaxKernel</key>
-				<string></string>
-				<key>MinKernel</key>
-				<string></string>
-				<key>BundlePath</key>
-				<string>AppleBacklightFixup.kext</string>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/AppleBacklightFixup</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>Arch</key>
-				<string>x86_64</string>
-				<key>Comment</key>
-				<string>NightShiftEnabler</string>
-				<key>Enabled</key>
-				<false/>
-				<key>MaxKernel</key>
-				<string></string>
-				<key>MinKernel</key>
-				<string></string>
-				<key>BundlePath</key>
-				<string>NightShiftEnabler.kext</string>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/NightShiftEnabler</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>Arch</key>
-				<string>x86_64</string>
-				<key>Comment</key>
 				<string>CPUFriend - Patching X86PlatformPlugin</string>
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string></string>
+				<string>15.0.0</string>
 				<key>BundlePath</key>
 				<string>CPUFriend.kext</string>
 				<key>ExecutablePath</key>
@@ -656,7 +620,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string></string>
+				<string>15.0.0</string>
 				<key>BundlePath</key>
 				<string>CPUFriendDataProvider.kext</string>
 				<key>ExecutablePath</key>
@@ -764,7 +728,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string></string>
+				<string>12.0.0</string>
 				<key>BundlePath</key>
 				<string>CpuTscSync.kext</string>
 				<key>ExecutablePath</key>
@@ -782,7 +746,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string></string>
+				<string>14.0.0</string>
 				<key>BundlePath</key>
 				<string>HibernationFixup.kext</string>
 				<key>ExecutablePath</key>
@@ -800,7 +764,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string></string>
+				<string>18.0.0</string>
 				<key>BundlePath</key>
 				<string>NVMeFix.kext</string>
 				<key>ExecutablePath</key>
@@ -948,7 +912,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string></string>
+				<string>12.0.0</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
@@ -1110,7 +1074,6 @@
 	<dict>
 		<key>BlessOverride</key>
 		<array>
-			<string>\EFI\Microsoft\Boot\bootmgfw.efi</string>
 		</array>
 		<key>Boot</key>
 		<dict>

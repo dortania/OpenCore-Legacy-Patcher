@@ -96,6 +96,7 @@ class Constants:
         self.latebloom_delay = 0
         self.latebloom_range = 0
         self.latebloom_debug = 0
+        self.validate = False
 
         # OS Versions
         self.tiger = 8
@@ -575,31 +576,31 @@ class Constants:
     ]
 
     sbm_values = [
-        "j137",
-        "j680",
-        "j132",
-        "j174",
-        "j140k",
-        "j780",
-        "j213",
-        "j140a",
-        "j152f",
-        "j160",
-        "j230k",
-        "j214k",
-        "j223",
-        "j215",
-        "j185",
-        "j185f",
+        "j137",  #  iMacPro1,1
+        "j680",  #  MacBookPro15,1
+        "j132",  #  MacBookPro15,2
+        "j174",  #  Macmini8,1
+        "j140k",  # MacBookAir8,1
+        "j780",  #  MacBookPro15,3
+        "j213",  #  MacBookPro15,4
+        "j140a",  # MacBookAir8,2
+        "j152f",  # MacBookPro16,1
+        "j160",  #  MacPro7,1
+        "j230k",  # MacBookAir9,1
+        "j214k",  # MacBookPro16,2
+        "j223",  #  MacBookPro16,3
+        "j215",  #  MacBookPro16,4
+        "j185",  #  iMac20,1
+        "j185f",  # iMac20,2
     ]
 
     sandy_board_id = [
-        "Mac-E43C1C25D4880AD6", # MacBookPro12,1
-        "Mac-06F11F11946D27C5", # MacBookPro11,5
-        "Mac-9F18E312C5C2BF0B", # MacBookAir7,1
-        "Mac-937CB26E2E02BB01", # MacBookAir7,2
-        "Mac-35C5E08120C7EEAF", # Macmini7,1
-        "Mac-7BA5B2D9E42DDD94", # iMacPro1,1
+        "Mac-E43C1C25D4880AD6",  # MacBookPro12,1
+        "Mac-06F11F11946D27C5",  # MacBookPro11,5
+        "Mac-9F18E312C5C2BF0B",  # MacBookAir7,1
+        "Mac-937CB26E2E02BB01",  # MacBookAir7,2
+        "Mac-35C5E08120C7EEAF",  # Macmini7,1
+        "Mac-7BA5B2D9E42DDD94",  # iMacPro1,1
     ]
 
     board_id = {

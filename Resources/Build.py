@@ -243,7 +243,7 @@ class BuildOpenCore:
                     arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
                 print(f"- Using known DevicePath {arpt_path}")
             self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
-            if not self.constants.custom_model and self.computer.wifi and self.computer.wifi.country_code:
+            if not self.constants.custom_model and self.computer.wifi and self.constants.validate is False and self.computer.wifi.country_code:
                 print(f"- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}")
                 self.config["DeviceProperties"]["Add"][arpt_path].update({"brcmfx-country": self.computer.wifi.country_code})
             if self.constants.enable_wake_on_wlan is True:
@@ -264,7 +264,7 @@ class BuildOpenCore:
         elif not self.constants.custom_model and self.computer.wifi:
             if isinstance(self.computer.wifi, device_probe.Broadcom):
                 # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
-                if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirportBrcmNIC and self.computer.wifi.country_code:
+                if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirportBrcmNIC and self.constants.validate is False and self.computer.wifi.country_code:
                     self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
                     print(f"- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}")
                     if self.computer.wifi.pci_path:
@@ -670,6 +670,9 @@ class BuildOpenCore:
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -no_compat_check"
         if self.constants.disk != "":
             self.disk_type()
+        if self.constants.validate is False:
+            print("- Adding bootmgfw.efi BlessOverride")
+            self.config["Misc"]["BlessOverride"] += ["\\EFI\\Microsoft\\Boot\\bootmgfw.efi"]
 
     def set_smbios(self):
         spoofed_model = self.model

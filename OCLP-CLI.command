@@ -9,7 +9,7 @@ import platform
 import argparse
 from pathlib import Path
 
-from Resources import Build, ModelArray, Constants, SysPatch, device_probe, Utilities
+from Resources import Build, ModelArray, Constants, SysPatch, device_probe, Utilities, ModelExample
 
 
 class OpenCoreLegacyPatcher:
@@ -212,17 +212,44 @@ If you plan to create the USB for another machine, please select the "Change Mod
     
     def validate(self):
         # Runs through ocvalidate to check for errors
+
+        valid_dumps = [
+            ModelExample.MacBookPro.MacBookPro92_Stock,
+            #ModelExample.MacBookPro.MacBookPro171_Stock,
+            ModelExample.iMac.iMac81_Stock,
+            ModelExample.iMac.iMac112_Stock,
+            ModelExample.MacPro.MacPro31_Stock,
+            ModelExample.MacPro.MacPro31_Upgrade,
+            ModelExample.MacPro.MacPro31_Modern_AMD,
+        ]
+        self.constants.validate = True
+
         for model in ModelArray.SupportedSMBIOS:
-            print(f"Validating model: {model}")
+            print(f"Validating predefined model: {model}")
             self.constants.custom_model = model
             self.build_opencore()
             result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 print("Error on build!")
                 print(result.stdout.decode())
-                raise Exception(f"Validation failed for model: {model}")
+                raise Exception(f"Validation failed for predefined model: {model}")
             else:
-                print(f"Validation succeeded for model: {model}")
+                print(f"Validation succeeded for predefined model: {model}")
+        
+        for model in valid_dumps:
+            self.constants.computer = model
+            self.computer = self.constants.computer
+            self.constants.custom_model = ""
+            print(f"Validating dumped model: {self.computer.real_model}")
+            self.build_opencore()
+            result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                print("Error on build!")
+                print(result.stdout.decode())
+                raise Exception(f"Validation failed for predefined model: {self.computer.real_model}")
+            else:
+                print(f"Validation succeeded for predefined model: {self.computer.real_model}")
+
 
 OpenCoreLegacyPatcher()
 
