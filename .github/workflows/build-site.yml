@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build Site and Deploy
-    runs-on: ubuntu-latest
+    runs-on: x86_64
     steps:
       - uses: actions/setup-node@v2-beta
         with:

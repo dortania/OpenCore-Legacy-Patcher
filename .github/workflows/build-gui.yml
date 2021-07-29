@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build GUI
-    runs-on: self-hosted
+    runs-on: x86_64
     steps:
       - uses: actions/checkout@v2
       - name: Install Python Dependencies
