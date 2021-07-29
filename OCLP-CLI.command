@@ -216,11 +216,14 @@ If you plan to create the USB for another machine, please select the "Change Mod
         valid_dumps = [
             ModelExample.MacBookPro.MacBookPro92_Stock,
             #ModelExample.MacBookPro.MacBookPro171_Stock,
+            #ModelExample.Macmini.Macmini91_Stock,
             ModelExample.iMac.iMac81_Stock,
             ModelExample.iMac.iMac112_Stock,
+            ModelExample.iMac.iMac122_Upgraded,
             ModelExample.MacPro.MacPro31_Stock,
             ModelExample.MacPro.MacPro31_Upgrade,
             ModelExample.MacPro.MacPro31_Modern_AMD,
+            ModelExample.MacPro.MacPro31_Modern_Kepler,
         ]
         self.constants.validate = True
 
