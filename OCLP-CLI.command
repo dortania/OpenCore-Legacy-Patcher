@@ -198,6 +198,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
              # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
              self.constants.serial_settings == "Moderate"
 
+        self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
+
     def patch_vol(self):
         SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
 
