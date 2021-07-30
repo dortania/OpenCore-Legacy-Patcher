@@ -645,7 +645,7 @@ iMac_dGPU = [
     "iMac15,1",
 ]
 # iMac = Intel iGPU
-iMac_iGPU = ["iMac13,1", "iMac14,1", "iMac14,4"]
+iMac_iGPU = ["iMac13,1", "iMac13,3", "iMac14,1", "iMac14,4"]
 
 # Mac Pro and Xserve
 MacPro = ["MacPro3,1", "MacPro4,1", "MacPro5,1", "Xserve2,1", "Xserve3,1", "Dortania1,1"]
