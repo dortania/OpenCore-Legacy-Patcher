@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.2.5
+
 ## 0.2.4
 
 - Fix BlessOverride typo

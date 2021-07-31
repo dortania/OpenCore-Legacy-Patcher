@@ -12,7 +12,7 @@ from Resources import device_probe
 
 class Constants:
     def __init__(self):
-        self.patcher_version = "0.2.4"
+        self.patcher_version = "0.2.5"
         self.opencore_commit = "be2d9fe - 07-2-2021"
         self.opencore_version = "0.7.1"
         self.lilu_version = "1.5.4"
