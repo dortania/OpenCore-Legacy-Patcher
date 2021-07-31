@@ -399,7 +399,7 @@ class BuildOpenCore:
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
         if self.model in ["iMac13,1", "iMac13,2", "iMac13,3"]:
-            if self.computer.dgpu:
+            if not self.constants.custom_model and self.computer.dgpu:
                 if self.constants.allow_ivy_igpu is False:
                     print("- Disabling iGPU to fix sleep support in macOS 12")
                     self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
@@ -678,7 +678,7 @@ class BuildOpenCore:
         spoofed_model = self.model
         if self.constants.override_smbios == "Default":
             spoofed_model = self.smbios_set(self.model)
-            print(f"- Spoofing to {spoofed_model}")
+            print(f"- Using Model ID: {spoofed_model}")
         else:
             spoofed_model = self.constants.override_smbios
         try:
