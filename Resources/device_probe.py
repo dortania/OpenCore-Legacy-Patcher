@@ -217,6 +217,12 @@ class Intel(GPU):
         Iron_Lake = "Iron Lake"
         Sandy_Bridge = "Sandy Bridge"
         Ivy_Bridge = "Ivy Bridge"
+        Haswell = "Haswell"
+        Broadwell = "Broadwell"
+        Skylake = "Skylake"
+        Kaby_Lake = "Kaby Lake"
+        Coffee_Lake = "Coffee Lake"
+        Ice_Lake = "Ice Lake"
         Unknown = "Unknown"
 
     arch: Archs = field(init=False)
@@ -228,6 +234,18 @@ class Intel(GPU):
             self.arch = Intel.Archs.Sandy_Bridge
         elif self.device_id in PCIIDArray.intel_ids.ivy_ids:
             self.arch = Intel.Archs.Ivy_Bridge
+        elif self.device_id in PCIIDArray.intel_ids.haswell_ids:
+            self.arch = Intel.Archs.Haswell
+        elif self.device_id in PCIIDArray.intel_ids.broadwell_ids:
+            self.arch = Intel.Archs.Broadwell
+        elif self.device_id in PCIIDArray.intel_ids.skylake_ids:
+            self.arch = Intel.Archs.Skylake
+        elif self.device_id in PCIIDArray.intel_ids.kaby_lake_ids:
+            self.arch = Intel.Archs.Kaby_Lake
+        elif self.device_id in PCIIDArray.intel_ids.coffee_lake_ids:
+            self.arch = Intel.Archs.Coffee_Lake
+        elif self.device_id in PCIIDArray.intel_ids.ice_lake_ids:
+            self.arch = Intel.Archs.Ice_Lake
         else:
             self.arch = Intel.Archs.Unknown
 

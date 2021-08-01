@@ -746,6 +746,81 @@ class intel_ids:
         0x0166,
     ]
 
+    haswell_ids = [
+        # AppleIntelHD5000Graphics IDs
+        # AppleIntelFramebufferAzul IDs
+        0x0D26,
+        0x0A26,
+        0x0A2E,
+        0x0D22,
+        0x0412,
+    ]
+
+    broadwell_ids = [
+        # AppleIntelBDWGraphicsFramebuffer IDs
+        0x0BD1,
+        0x0BD2,
+        0x0BD3,
+        0x1606,
+        0x160E,
+        0x1616,
+        0x161E,
+        0x1626,
+        0x1622,
+        0x1612,
+        0x162B,
+    ]
+
+    skylake_ids = [
+        # AppleIntelSKLGraphicsFramebuffer IDs
+        0x1916,
+        0x191E,
+        0x1926,
+        0x1927,
+        0x1912,
+        0x1932,
+        0x1902,
+        0x1917,
+        0x193B,
+        0x191B,
+    ]
+
+    kaby_lake_ids = [
+        # AppleIntelKBLGraphicsFramebuffer IDs
+        0x5912,
+        0x5916,
+        0x591B,
+        0x591C,
+        0x591E,
+        0x5926,
+        0x5927,
+        0x5923,
+    ]
+
+    coffee_lake_ids = [
+        # AppleIntelCFLGraphicsFramebuffer IDs
+        0x3E9B,
+        0x3EA5,
+        0x3EA6,
+        0x3E92,
+        0x3E91,
+        0x3E98,
+    ]
+
+    ice_lake_ids = [
+        # AppleIntelICLLPGraphicsFramebuffer IDs
+        0xFF05,
+        0x8A70,
+        0x8A71,
+        0x8A51,
+        0x8A5C,
+        0x8A5D,
+        0x8A52,
+        0x8A53,
+        0x8A5A,
+        0x8A5B,
+    ]
+
 
 class broadcom_ids:
     AirPortBrcmNIC = [
