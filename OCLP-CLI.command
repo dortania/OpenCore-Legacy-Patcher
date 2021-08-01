@@ -55,6 +55,9 @@ class OpenCoreLegacyPatcher:
         parser.add_argument("--model", action="store", help="Set custom model", required=False)
         parser.add_argument("--disk", action="store", help="Specifies disk to install to", required=False)
         parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
+        parser.add_argument("--lb_delay", action="store", help="Set Latebloom delay in ms", required=False)
+        parser.add_argument("--lb_range", action="store", help="Set Latebloom range in ms", required=False)
+        parser.add_argument("--lb_debug", action="store", help="Set Latebloom debug", required=False)
 
         # SysPatch args
         parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
@@ -130,6 +133,31 @@ class OpenCoreLegacyPatcher:
             else:
                 print(f"- Unknown SMBIOS arg passed: {args.smbios_spoof}")
 
+        if args.lb_delay:
+            try:
+                self.constants.latebloom_delay = int(args.lb_delay)
+                print(f"- Set LateBloom delay: {args.lb_delay}")
+            except ValueError:
+                print(f"- Invalid LateBloom delay: {args.lb_delay}")
+
+        if args.lb_range:
+            try:
+                self.constants.latebloom_range = int(args.lb_range)
+                print(f"- Set LateBloom range: {args.lb_range}")
+            except ValueError:
+                print(f"- Invalid LateBloom range: {args.lb_range}")
+        
+        if args.lb_debug:
+            try:
+                self.constants.latebloom_debug = int(args.lb_debug)
+                if self.constants.latebloom_debug in [0, 1]:
+                    print(f"- Set LateBloom debug: {args.lb_debug}")
+                else:
+                    print(f"- Invalid LateBloom debug: {args.lb_debug}")
+            except ValueError:
+                print(f"- Invalid LateBloom range: {args.lb_debug}")
+
+
         if args.support_all:
             print("- Building for natively supported model")
             self.constants.allow_oc_everywhere = True
@@ -198,7 +226,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
              # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
              self.constants.serial_settings == "Moderate"
 
-        self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
+        if self.constants.latebloom_delay == 0:
+            self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
 
     def patch_vol(self):
         SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()

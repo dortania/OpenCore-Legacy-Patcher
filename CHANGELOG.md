@@ -2,6 +2,8 @@
 
 ## 0.2.5
 
+- Implement Latebloom configuration via command line tool
+
 ## 0.2.4
 
 - Fix BlessOverride typo
