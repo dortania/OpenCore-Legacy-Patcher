@@ -5,6 +5,7 @@ With OpenCore Legacy Patcher v0.1.7 and newer, we've implemented beta macOS Mont
 Current models with full, unhindered support in OpenCore Legacy Patcher are the following:
 
 * iMac13,x and newer
+  * iMac13,x series must have a Nvidia dGPU for best support
   * iMac10,1-12,x included if Wireless Card and Bluetooth upgraded as well as Metal GPU
 * Macmini7,1 and newer
 * MacBook8,1 and newer
@@ -12,6 +13,22 @@ Current models with full, unhindered support in OpenCore Legacy Patcher are the 
 * MacBookPro11,x and newer
 * MacPro3,1 and newer
   * Requires Wireless Card and Bluetooth upgrade for 3,1-5,1 as well as Metal GPU
+ 
+ 
+## Newly dropped hardware
+
+With Monterey, Apple continues their their somewhat ruthless march of dropping Intel hardware. This release saw the removal, and thus addition into OpenCore Legacy Patcher, of the following models:
+
+* iMac14,4
+* iMac15,1
+* MacBook8,1
+* MacBookAir6,1
+* MacBookAir6,2
+* MacBookPro11,1
+* MacBookPro11,2
+* MacBookPro11,3
+
+All of these models now have support in OpenCore Legacy Patcher. Note iMac15,1 does have [an unfortunate firmware bug preventing resolutions above 4k](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/359) with OpenCore Legacy Patcher
 
 ## Current Hardware Drawbacks:
 
@@ -91,6 +108,13 @@ Here are the firmwares macOS Monterey Dropped (previously located within IOBluet
 :::
 
 Note: Native BRCM20702 and BRCM20703 are still fully support by OpenCore Legacy Patcher
+
+### macOS 12.0 Beta 4 issue on 2011 to early 2013 machines
+
+Currently in macOS 12.0 Beta 4, many Sandy and Ivy Bridge Macs have experienced Bluetooth issues relating to their BCM94331 chipset. Currently the exact issue is unknown however is assumed to be a bug on Apple's end. Recommend downgrading to macOS 12.0 Beta 3 till resolved:
+
+* [12.0 Beta 3 (21A5284e) InstallAssistant (Direct)](http://swcdn.apple.com/content/downloads/02/08/071-63739-A_G5RYVW5JHT/dfz5gp3s0jm9vl7m30oewq141zkpv8edr8/InstallAssistant.pkg)
+* [12.0 Beta 3 (21A5284e) InstallAssistant (archive.org)](https://archive.org/details/12.0-21a5284e-beta-3)
 
 ## Wireless Support Dropped
 
