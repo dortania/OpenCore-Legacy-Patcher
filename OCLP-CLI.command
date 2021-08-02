@@ -63,7 +63,7 @@ class OpenCoreLegacyPatcher:
         parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
         parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
         parser.add_argument("--terascale_2", help="Enable TeraScale 2 Acceleration", action="store_true", required=False)
-        #parser.add_argument("--patch_disk", action="store", help="Specifies disk to root patch", required=False)
+        # parser.add_argument("--patch_disk", action="store", help="Specifies disk to root patch", required=False)
 
         parser.add_argument("--validate", help="Validate", action="store_true", required=False)
 
@@ -83,7 +83,7 @@ class OpenCoreLegacyPatcher:
             self.constants.disk = args.disk
         if args.validate:
             self.validate()
-        #if args.patch_disk:
+        # if args.patch_disk:
         #    print(f"- Patch Disk set: {args.patch_disk}")
         #    self.constants.patch_disk = args.patch_disk
         if args.verbose:
@@ -146,7 +146,7 @@ class OpenCoreLegacyPatcher:
                 print(f"- Set LateBloom range: {args.lb_range}")
             except ValueError:
                 print(f"- Invalid LateBloom range: {args.lb_range}")
-        
+
         if args.lb_debug:
             try:
                 self.constants.latebloom_debug = int(args.lb_debug)
@@ -156,7 +156,6 @@ class OpenCoreLegacyPatcher:
                     print(f"- Invalid LateBloom debug: {args.lb_debug}")
             except ValueError:
                 print(f"- Invalid LateBloom range: {args.lb_debug}")
-
 
         if args.support_all:
             print("- Building for natively supported model")
@@ -210,21 +209,21 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 # self.constants.secure_status = True  # Monterey
                 self.constants.disable_amfi = False
             elif host_is_target:
-                 self.constants.sip_status = False  # Unsigned kexts
-                 self.constants.secure_status = False  # Root volume modified
-                 self.constants.disable_amfi = True  # Unsigned binaries
+                self.constants.sip_status = False  # Unsigned kexts
+                self.constants.secure_status = False  # Root volume modified
+                self.constants.disable_amfi = True  # Unsigned binaries
         if model in ModelArray.ModernGPU:
             if host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
                 # Some models have a supported dGPU, others don't
                 print("- Detected Metal dGPU, overriding default configuration")
                 self.constants.sip_status = True
             elif host_is_target:
-                 self.constants.sip_status = False  # Unsigned kexts
-                 self.constants.secure_status = False  # Modified root volume
-                 # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+                self.constants.sip_status = False  # Unsigned kexts
+                self.constants.secure_status = False  # Modified root volume
+                # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
         if model == "MacBook8,1" and host_is_target:
-             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
-             self.constants.serial_settings == "Moderate"
+            # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
+            self.constants.serial_settings == "Moderate"
 
         if self.constants.latebloom_delay == 0:
             self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
@@ -240,14 +239,14 @@ If you plan to create the USB for another machine, please select the "Change Mod
 
     def install_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).copy_efi()
-    
+
     def validate(self):
         # Runs through ocvalidate to check for errors
 
         valid_dumps = [
             ModelExample.MacBookPro.MacBookPro92_Stock,
-            #ModelExample.MacBookPro.MacBookPro171_Stock,
-            #ModelExample.Macmini.Macmini91_Stock,
+            # ModelExample.MacBookPro.MacBookPro171_Stock,
+            # ModelExample.Macmini.Macmini91_Stock,
             ModelExample.iMac.iMac81_Stock,
             ModelExample.iMac.iMac112_Stock,
             ModelExample.iMac.iMac122_Upgraded,
@@ -269,7 +268,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 raise Exception(f"Validation failed for predefined model: {model}")
             else:
                 print(f"Validation succeeded for predefined model: {model}")
-        
+
         for model in valid_dumps:
             self.constants.computer = model
             self.computer = self.constants.computer

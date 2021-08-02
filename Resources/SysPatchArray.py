@@ -245,3 +245,18 @@ AddGeneralAccelMojave = [
     "IOAcceleratorFamily2.kext",
     "IOGraphicsFamily.kext",
 ]
+
+BackupLocations = [
+    "System/Library/Extensions",
+    "System/Library/Frameworks/CoreDisplay.framework",
+    "System/Library/Frameworks/IOSurface.framework",
+    "System/Library/Frameworks/OpenGL.framework",
+    "System/Library/Frameworks/WebKit.framework",
+    "System/Library/LaunchDaemons",
+    "System/Library/PrivateFrameworks/DisplayServices.framework",
+    "System/Library/PrivateFrameworks/GPUSupport.framework",
+    "System/Library/PrivateFrameworks/SkyLight.framework",
+    "System/Library/PrivateFrameworks/IOAccelerator.framework",
+    "System/Library/PrivateFrameworks/AppleGVA.framework",
+    "System/Library/PrivateFrameworks/AppleGVACore.framework",
+]

@@ -678,9 +678,9 @@ class BuildOpenCore:
         spoofed_model = self.model
         if self.constants.override_smbios == "Default":
             spoofed_model = self.smbios_set(self.model)
-            print(f"- Using Model ID: {spoofed_model}")
         else:
             spoofed_model = self.constants.override_smbios
+        print(f"- Using Model ID: {spoofed_model}")
         try:
             spoofed_board = self.constants.board_id[spoofed_model]
             print(f"- Using Board ID: {spoofed_board}")

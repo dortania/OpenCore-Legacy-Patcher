@@ -65,6 +65,15 @@ def get_disk_path():
     return root_mount_path
 
 
+def check_seal():
+    # 'Snapshot Sealed' property is only listed on booted snapshots
+    sealed = subprocess.run(["diskutil", "apfs", "list"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    if "Snapshot Sealed:           Yes" in sealed.stdout.decode():
+        return True
+    else:
+        return False
+
+
 def latebloom_detection(model):
     if model in ["MacPro4,1", "MacPro5,1", "iMac7,1", "iMac8,1"]:
         # These machines are more likely to experience boot hangs, increase delays to accomodate
@@ -73,15 +82,18 @@ def latebloom_detection(model):
         lb_delay = "100"
     lb_range = "1"
     lb_debug = "1"
-    if get_nvram("boot-args", decode=False):
-        if "latebloom=" in get_nvram("boot-args", decode=False):
-            lb_delay = re.search(r"(?:[, ])latebloom=(\d+)", get_nvram("boot-args", decode=False))
+    boot_args = get_nvram("boot-args", decode=False)
+    # boot_args = "latebloom=200 lb_range=40 lb_debug=0 keepsyms=1 debug=0x100 -lilubetaall"
+    if boot_args:
+        # TODO: This crashes if latebloom=xxx is the very first entry in boot-args
+        if "latebloom=" in boot_args:
+            lb_delay = re.search(r"(?:[, ])latebloom=(\d+)", boot_args)
             lb_delay = lb_delay[1]
-        if "lb_range=" in get_nvram("boot-args", decode=False):
-            lb_range = re.search(r"(?:[, ])lb_range=(\d+)", get_nvram("boot-args", decode=False))
+        if "lb_range=" in boot_args:
+            lb_range = re.search(r"(?:[, ])lb_range=(\d+)", boot_args)
             lb_range = lb_range[1]
-        if "lb_debug=" in get_nvram("boot-args", decode=False):
-            lb_debug = re.search(r"(?:[, ])lb_debug=(\d+)", get_nvram("boot-args", decode=False))
+        if "lb_debug=" in boot_args:
+            lb_debug = re.search(r"(?:[, ])lb_debug=(\d+)", boot_args)
             lb_debug = lb_debug[1]
     return int(lb_delay), int(lb_range), int(lb_debug)
 

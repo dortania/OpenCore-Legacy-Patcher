@@ -3,6 +3,8 @@
 ## 0.2.5
 
 - Implement Latebloom configuration via command line tool
+- Implement Root Volume backups in addition to APFS snapshot reversions
+  - Backups applicable to machines with sealed APFS snapshots
 
 ## 0.2.4
 
