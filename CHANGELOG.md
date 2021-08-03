@@ -5,6 +5,8 @@
 - Implement Latebloom configuration via command line tool
 - Implement Root Volume backups in addition to APFS snapshot reversions
   - Backups applicable to machines with sealed APFS snapshots
+- Allow Root Patching on Mojave and Catalina
+  - Currently experimental
 
 ## 0.2.4
 

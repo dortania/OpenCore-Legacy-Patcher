@@ -50,8 +50,9 @@ class OpenCoreLegacyPatcher:
         parser.add_argument("--wlan", help="Enable Wake on WLAN support", action="store_true", required=False)
         parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
         parser.add_argument("--moderate_smbios", help="Moderate SMBIOS Patching", action="store_true", required=False)
+        parser.add_argument("--moj_cat_accel", help="Allow Root Patching on Mojave and Catalina", action="store_true", required=False)
 
-        # Building args requiring value values
+        # Building args requiring value values (ie. --model iMac12,2)
         parser.add_argument("--model", action="store", help="Set custom model", required=False)
         parser.add_argument("--disk", action="store", help="Specifies disk to install to", required=False)
         parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
@@ -62,7 +63,6 @@ class OpenCoreLegacyPatcher:
         # SysPatch args
         parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
         parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
-        parser.add_argument("--terascale_2", help="Enable TeraScale 2 Acceleration", action="store_true", required=False)
         # parser.add_argument("--patch_disk", action="store", help="Specifies disk to root patch", required=False)
 
         parser.add_argument("--validate", help="Validate", action="store_true", required=False)
@@ -180,9 +180,9 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 self.set_defaults(self.constants.custom_model, True)
                 self.build_opencore()
         if args.patch_sys_vol:
-            if args.terascale_2:
-                print("- Set TeraScale 2 Accel configuration")
-                self.constants.terascale_2_patch = True
+            if args.moj_cat_accel:
+                print("- Set Mojave/Catalina root patch configuration")
+                self.constants.moj_cat_accel = True
             print("- Set System Volume patching")
             self.patch_vol()
         elif args.unpatch_sys_vol:

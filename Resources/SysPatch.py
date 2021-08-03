@@ -139,7 +139,7 @@ class PatchSysVolume:
 
     def manual_root_patch_revert(self):
         print("- Attempting to revert patches")
-        if (Path(self.mount_location) / Path("System/Library/Extensions-Backup.zip")).exists():
+        if (Path(self.mount_location) / Path("/System/Library/Extensions-Backup.zip")).exists():
             print("- Verified manual unpatching is available")
 
             for location in SysPatchArray.BackupLocations:
@@ -147,16 +147,16 @@ class PatchSysVolume:
                 print("Reverting root volume patches (This may take some time)")
 
                 print(f"- Attempting to unpatch {location}")
-                location_zip = f"{location}-Backup.zip"
+                location_zip = f"/{location}-Backup.zip"
                 location_zip_path = Path(self.mount_location) / Path(location_zip)
                 location_old_path = Path(self.mount_location) / Path(location)
 
                 if "PrivateFrameworks" in location:
-                    copy_path = Path(self.mount_location) / Path("System/Library/PrivateFrameworks")
+                    copy_path = Path(self.mount_location) / Path("/System/Library/PrivateFrameworks")
                 elif "Frameworks" in location:
-                    copy_path = Path(self.mount_location) / Path("System/Library/Frameworks")
+                    copy_path = Path(self.mount_location) / Path("/System/Library/Frameworks")
                 else:
-                    copy_path = Path(self.mount_location) / Path("System/Library")
+                    copy_path = Path(self.mount_location) / Path("/System/Library")
 
                 if location_zip_path.exists():
                     print(f"- Found {location_zip}")

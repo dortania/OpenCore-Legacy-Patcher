@@ -565,3 +565,30 @@ Valid options:
                 input("Invalid value, press [ENTER] to continue")
         else:
             print("Invalid option")
+
+
+    def allow_moj_cat_patch(self):
+        Utilities.cls()
+        Utilities.header(["Allow Root Patching on Mojave/Catalina"])
+        print(
+            """
+This is an experimental option that allows the usage of legacy acceleration
+patches in Mojave and Catalina.
+
+The main goal of this is to allow developers to better test patch sets as well
+as allow acceleration on TeraScale 2 machines. Not all features may be available
+(ie. GPU switching may not work, FileVault is not supported, etc)
+
+Note: for the average user, we recommend using dosdude1's legacy patcher:
+
+- http://dosdude1.com/software.html
+        """
+        )
+
+        change_menu = input("Allow Root Patching on Mojave/Catalina?(y/n): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.moj_cat_accel = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.moj_cat_accel = False
+        else:
+            print("Invalid option")
