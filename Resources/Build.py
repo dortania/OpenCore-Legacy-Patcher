@@ -181,7 +181,7 @@ class BuildOpenCore:
             print(f"- Setting latebloom delay of {self.constants.latebloom_delay}ms, range {self.constants.latebloom_range}ms, debug {bool(self.constants.latebloom_debug)}")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"][
                 "boot-args"
-            ] += f" latebloom={self.constants.latebloom_delay}, lb_range={self.constants.latebloom_range}, lb_debug={self.constants.latebloom_debug}"
+            ] += f" latebloom={self.constants.latebloom_delay} lb_range={self.constants.latebloom_range} lb_debug={self.constants.latebloom_debug}"
 
         if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in ModelArray.MacPro):
             # Use Innie's same logic:
