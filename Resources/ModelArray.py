@@ -1072,6 +1072,7 @@ Thunderbolt_2 = [
     "Macmini7,1",
     "iMac15,1",
     "iMac16,1",
+    "iMac17,1",
     "iMac16,2",
     "MacPro6,1",
 ]
@@ -1096,7 +1097,6 @@ Thunderbolt_3 = [
     "MacBookPro16,3",
     "MacBookPro16,4",
     "Macmini8,1",
-    "iMac17,1",
     "iMac18,1",
     "iMac18,2",
     "iMac18,3",
