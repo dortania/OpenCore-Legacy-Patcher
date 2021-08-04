@@ -592,6 +592,7 @@ class Constants:
         "j215",  #  MacBookPro16,4
         "j185",  #  iMac20,1
         "j185f",  # iMac20,2
+        "x86legacy", # non-T2 Macs/VMs
     ]
 
     sandy_board_id = [
