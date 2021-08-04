@@ -212,7 +212,7 @@ def download_file(link, location):
             file.write(chunk)
             count += len(chunk)
             cls()
-            print(f"- Downloading package")
+            print("- Downloading package")
             print(f"- {count / 1024 / 1024}MB Downloaded")
     checksum = hashlib.sha256()
     with location.open("rb") as file:
@@ -220,7 +220,7 @@ def download_file(link, location):
         while chunk:
             checksum.update(chunk)
             chunk = file.read(1024 * 1024 * 16)
-    print(f"- Checksum: {checksum.hexdigest()}")
+    return checksum
 
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
