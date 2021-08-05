@@ -13,9 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install Python Dependencies
-        run: pip3 install --upgrade pyinstaller requests pyobjc
-
       - run: pyinstaller OpenCore-Patcher.spec
       - run: ./after_pyinstaller.sh
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
