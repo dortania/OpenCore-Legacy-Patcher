@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: pyinstaller OCLP-CLI.spec
+      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OCLP-CLI.spec
       - run: cd dist; cp OCLP-CLI ../; cd ..
       - run: zip OCLP-CLI.zip OCLP-CLI
       - name: Download latest nightly OCLP-GUI
