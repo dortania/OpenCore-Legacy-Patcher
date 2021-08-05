@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build GUI
-    runs-on: x86_64
+    runs-on: x86_64_mojave
     steps:
       - uses: actions/checkout@v2
       - name: Install Python Dependencies
