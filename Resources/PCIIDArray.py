@@ -821,6 +821,33 @@ class intel_ids:
         0x8A5B,
     ]
 
+    AppleIntel8254XEthernet = [
+        # AppleIntel8254XEthernet IDs
+        0x1096,
+        0x100F,
+        0x105E,
+    ]
+
+    AppleIntelI210Ethernet = [
+        # AppleIntelI210Ethernet IDs
+        0x1533,  # I210
+        0x15F2,  # I225
+        0x15F3,  # I225
+        0x3100,  # I225
+        0x3101,  # I225
+        0x5502,  # I225
+        0x0D9F,  # I225
+        0x15F8,  # I225
+        0x15F7,  # I225
+        0x15FD,  # I225
+    ]
+
+    Intel82574L = [
+        # Intel82574L IDs
+        0x104B,
+        0x10F6,
+    ]
+
 
 class broadcom_ids:
     AirPortBrcmNIC = [
@@ -855,6 +882,82 @@ class broadcom_ids:
         0x4328,  # BCM4328
         0x432C,  # BCM4322 - never used by Apple
         0x432D,  # BCM4322 - never used by Apple
+    ]
+
+    AppleBCM5701Ethernet = [
+        # AppleBCM5701Ethernet IDs
+        0x1684,
+        0x16B0,
+        0x16B4,
+        0x1682,
+        0x1686,
+    ]
+
+
+class aquantia_ids:
+    AppleEthernetAquantiaAqtion = [
+        # AppleEthernetAquantiaAqtion IDs
+        0x0001,  # AQC107
+        0xD107,  # AQC107
+        0x07B1,  # AQC107
+        0x80B1,  # AQC107
+        0x87B1,  # AQC107
+        0x88B1,  # AQC107
+        0x89B1,  # AQC107
+        0x91B1,  # AQC107
+        0x92B1,  # AQC107
+        0x00C0,  # AQC113
+        0x04C0,  # AQC113
+    ]
+
+
+class marvell_ids:
+    MarvelYukonEthernet = [
+        # AppleYukon2.kext IDs
+        # AppleYukon2 supports 2 vendors (Marvell and SysKonnect)
+        0x9E00,
+        0x2100,
+        0x9E00,
+        0x2200,
+        0x9E00,
+        0x8100,
+        0x9E00,
+        0x8200,
+        0x9E00,
+        0x9100,
+        0x9E00,
+        0x9200,
+        0x9000,
+        0x2100,
+        0x9000,
+        0x2200,
+        0x9000,
+        0x8100,
+        0x9000,
+        0x8200,
+        0x9000,
+        0x9100,
+        0x9000,
+        0x9200,
+        0x9E00,
+        0x2200,
+        0x9E00,
+        0x2200,
+    ]
+
+
+class syskonnect_ids:
+    MarvelYukonEthernet = [
+        # AppleYukon2.kext IDs
+        # AppleYukon2 supports 2 vendors (Marvell and SysKonnect)
+        0x4365,
+        0x4360,
+        0x435A,
+        0x4354,
+        0x4362,
+        0x4363,
+        0x00BA,
+        0x436A,
     ]
 
 

@@ -69,6 +69,24 @@ class MacBookPro:
 
 class Macmini:
 
+    Macmini81_Stock = device_probe.Computer(
+        real_model="Macmini8,1",
+        real_board_id="Mac-7BA5B2DFE22DDD8C",
+        reported_model="Macmini8,1",
+        reported_board_id="Mac-7BA5B2DFE22DDD8C",
+        gpus=[device_probe.Intel(vendor_id=32902, device_id=16027, class_code=196608, name="IGPU", model="Intel UHD Graphics 630", pci_path="PciRoot(0x0)/Pci(0x2,0x0)")],
+        igpu=device_probe.Intel(vendor_id=32902, device_id=16027, class_code=196608, name="IGPU", model="Intel UHD Graphics 630", pci_path="PciRoot(0x0)/Pci(0x2,0x0)"),
+        dgpu=None,
+        storage=[],
+        wifi=device_probe.Broadcom(vendor_id=5348, device_id=17508, class_code=163840, name="ARPT", model=None, pci_path="PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)"),
+        cpu=device_probe.CPU(
+            name="Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz", 
+            flags=["FPU", "VME", "DE", "PSE", "TSC", "MSR", "PAE", "MCE", "CX8", "APIC", "SEP", "MTRR", "PGE", "MCA", "CMOV", "PAT", "PSE36", "CLFSH", "DS", "ACPI", "MMX", "FXSR", "SSE", "SSE2", "SS", "HTT", "TM", "PBE", "SSE3", "PCLMULQDQ", "DTES64", "MON", "DSCPL", "VMX", "SMX", "EST", "TM2", "SSSE3", "FMA", "CX16", "TPR", "PDCM", "SSE4.1", "SSE4.2", "x2APIC", "MOVBE", "POPCNT", "AES", "PCID", "XSAVE", "OSXSAVE", "SEGLIM64", "TSCTMR", "AVX1.0", "RDRAND", "F16C"]
+        ), 
+        oclp_version=None, 
+        opencore_version=None   
+    )
+
     Macmini91_Stock = device_probe.Computer(
         # Run under Rosetta
         real_model="Macmini9,1",

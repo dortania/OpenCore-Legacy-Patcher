@@ -121,6 +121,9 @@ class Constants:
         self.pci_broadcom = "14E4"
         self.pci_atheros = "168C"
         self.pci_apple = "106B"
+        self.pci_aquantia = "1D6A"
+        self.pci_marvell = "11AB"
+        self.pci_syskonnect = "1148"
 
         # Class Codes
         # https://pci-ids.ucw.cz/read/PD
@@ -131,6 +134,7 @@ class Constants:
         self.classcode_gpu = "00000300"
         self.classcode_gpu_variant = "00800300"
         self.classcode_xhci = "30030C00"
+        self.classcode_ethernet = "00000200"
 
         # Nvidia GPU Architecture
         self.arch_tesla = "NV50"
