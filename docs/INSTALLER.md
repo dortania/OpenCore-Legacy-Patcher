@@ -12,7 +12,7 @@ This doc is centered around downloading and writing the macOS installer to a USB
 The simplest way to download macOS installs would be to use installinstallmacos:
 
 ```sh
-[ ! -d ~/macOS-installer/ ] && mkdir ~/macOS-installer; cd ~/macOS-installer; [ ! -f ~/macOS-installer/installinstallmacos.py ] && curl -O https://raw.githubusercontent.com/munki/macadmin-scripts/main/installinstallmacos.py; sudo python installinstallmacos.py
+[ ! -d ~/macOS-installer/ ] && mkdir ~/macOS-installer; cd ~/macOS-installer; [ ! -f ~/macOS-installer/installinstallmacos.py ] && curl -O https://raw.githubusercontent.com/munki/macadmin-scripts/main/installinstallmacos.py ; sudo python installinstallmacos.py
 ```
 
 * Note: On El Capitan (10.11) and older, you'll need to specify a catalog at the end of the command:
