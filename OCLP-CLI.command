@@ -254,6 +254,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
             ModelExample.MacPro.MacPro31_Upgrade,
             ModelExample.MacPro.MacPro31_Modern_AMD,
             ModelExample.MacPro.MacPro31_Modern_Kepler,
+            ModelExample.MacPro.MacPro41_Upgrade,
+            ModelExample.MacPro.MacPro41_Modern_AMD,
         ]
         self.constants.validate = True
 
