@@ -85,8 +85,8 @@ body:
       label: Application Version
       description: What build version of our software are you running?
       options:
-        - 0.2.4 (Latest Release)
-        - 0.2.3
+        - Latest Build (nightly)
+        - Latest Release
     validations:
       required: true
   - type: dropdown
