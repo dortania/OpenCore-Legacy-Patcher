@@ -9,6 +9,8 @@
   - Currently experimental
 - Allow disabling of faulty Thunderbolt controllers on 2013-2014 MacBook Pros
   - Currently limited to MacBookPro11,x
+- Set iMacPro1,1 SMBIOS for Mac Pro and Xserve models
+  - Allows for wider array of OS support (High Sierra+)
 
 ## 0.2.4
 

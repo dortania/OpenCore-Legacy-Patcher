@@ -59,7 +59,7 @@ class BuildOpenCore:
         elif model in ModelArray.iMac_iGPU:
             return "iMac16,1"
         elif model in ModelArray.MacPro:
-            return "MacPro7,1"
+            return "iMacPro1,1"
         else:
             return model
 
