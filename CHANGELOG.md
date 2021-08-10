@@ -7,6 +7,8 @@
   - Backups applicable to machines with sealed APFS snapshots
 - Allow Root Patching on Mojave and Catalina
   - Currently experimental
+- Allow disabling of faulty Thunderbolt controllers on 2013-2014 MacBook Pros
+  - Currently limited to MacBookPro11,x
 
 ## 0.2.4
 
