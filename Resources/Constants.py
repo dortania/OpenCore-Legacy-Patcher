@@ -97,6 +97,7 @@ class Constants:
         self.latebloom_range = 0
         self.latebloom_debug = 0
         self.validate = False
+        self.disable_thunderbolt = False
 
         # OS Versions
         self.tiger = 8
