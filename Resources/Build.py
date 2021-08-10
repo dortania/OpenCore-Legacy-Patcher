@@ -573,6 +573,17 @@ class BuildOpenCore:
             else:
                 print("- Adding Mac Pro, Xserve DRM patches")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
+        
+        if self.constants.disable_thunderbolt is True and self.model in ["MacBookPro11,1", "MacBookPro11,2", "MacBookPro11,3", "MacBookPro11,4", "MacBookPro11,5"]:
+            print("- Disabling 2013-2014 laptop Thunderbolt Controller")
+            if self.model in ["MacBookPro11,3", "MacBookPro11,5"]:
+                # 15" dGPU models: IOACPIPlane:/_SB/PCI0@0/PEG1@10001/UPSB@0/DSB0@0/NHI0@0
+                tb_device_path = "PciRoot(0x0)/Pci(0x1,0x1)/Pci(0x0,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)"
+            else:
+                # 13" and 15" iGPU 2013-2014 models: IOACPIPlane:/_SB/PCI0@0/P0P2@10000/UPSB@0/DSB0@0/NHI0@0
+                tb_device_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)"
+            
+            self.config["DeviceProperties"]["Add"][tb_device_path] = {"class-code": binascii.unhexlify("FFFFFFFF"), "device-id": binascii.unhexlify("FFFF0000")}
 
         # Add XhciDxe if firmware doesn't have XHCI controller support and XCHI controller detected
         # TODO: Fix XhciDxe to work on pre UEFI 2.0 Macs

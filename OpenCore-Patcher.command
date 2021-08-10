@@ -124,6 +124,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Allow Wake on WLAN:\t\t\tCurrently {self.constants.enable_wake_on_wlan}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_wowl],
                 [f"Allow Ivy iMac iGPU:\t\tCurrently {self.constants.allow_ivy_igpu}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_ivy],
                 [f"Allow Accel on Mojave/Catalina:\tCurrently {self.constants.moj_cat_accel}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_moj_cat_patch],
+                [f"Disable Thunderbolt:\t\tCurrently {self.constants.disable_thunderbolt}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).disable_thunderbolt],
                 [f"Disable AMFI:\t\t\tCurrently {self.constants.disable_amfi}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_amfi],
                 [
                     f"Set SIP and SecureBootModel:\tSIP: {self.constants.sip_status} SBM: {self.constants.secure_status}",

@@ -592,3 +592,27 @@ Note: for the average user, we recommend using dosdude1's legacy patcher:
             self.constants.moj_cat_accel = False
         else:
             print("Invalid option")
+
+    def disable_thunderbolt(self):
+        Utilities.cls()
+        Utilities.header(["Disable Thunderbolt on 2013-14 MacBook Pros"])
+        print(
+            """
+Some 2013-14 MacBook Pro's have issues with the built-in thunderbolt,
+resulting in kernel panics and random shutdowns.
+
+To alliviate, you can disable the thunderbolt controller on MacBookPro11,x 
+machines with this option.
+
+Note: This option only works on MacBookPro11,x, file an issue if you know of
+other devices that benefit from this fix.
+        """
+        )
+
+        change_menu = input("Disable Thunderbolt?(y/n): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.disable_thunderbolt = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.disable_thunderbolt = False
+        else:
+            print("Invalid option")

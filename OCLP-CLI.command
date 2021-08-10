@@ -51,6 +51,7 @@ class OpenCoreLegacyPatcher:
         parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
         parser.add_argument("--moderate_smbios", help="Moderate SMBIOS Patching", action="store_true", required=False)
         parser.add_argument("--moj_cat_accel", help="Allow Root Patching on Mojave and Catalina", action="store_true", required=False)
+        parser.add_argument("--disable_thunderbolt", help="Disable Thunderbolt on 2013-2014 MacBook Pros", action="store_true", required=False)
 
         # Building args requiring value values (ie. --model iMac12,2)
         parser.add_argument("--model", action="store", help="Set custom model", required=False)
@@ -120,6 +121,9 @@ class OpenCoreLegacyPatcher:
         if args.wlan:
             print("- Set Wake on WLAN configuration")
             self.constants.enable_wake_on_wlan = True
+        if args.disable_thunderbolt:
+            print("- Set Disable Thunderbolt configuration")
+            self.constants.disable_thunderbolt = True
         if args.moderate_smbios:
             print("- Set Moderate SMBIOS Patching configuration")
             self.constants.serial_settings = "Moderate"
