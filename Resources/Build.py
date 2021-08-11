@@ -223,29 +223,29 @@ class BuildOpenCore:
 
         def wifi_fake_id(self):
             self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-            # self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
-            if not self.constants.custom_model and self.computer.wifi and self.computer.wifi.pci_path:
-                arpt_path = self.computer.wifi.pci_path
-                print(f"- Found ARPT device at {arpt_path}")
-            else:
-                if self.model in ModelArray.nvidiaHDEF:
-                    # Nvidia chipsets all have the same path to ARPT
-                    arpt_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
-                elif self.model in ("iMac7,1", "iMac8,1", "MacPro3,1", "MacBookPro4,1"):
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
-                elif self.model in ("iMac13,1", "iMac13,2"):
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
-                elif self.model in ("MacPro4,1", "MacPro5,1"):
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
-                else:
-                    # Assumes we have a laptop with Intel chipset
-                    # iMac11,x-12,x also apply
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
-                print(f"- Using known DevicePath {arpt_path}")
-            self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
-            if not self.constants.custom_model and self.computer.wifi and self.constants.validate is False and self.computer.wifi.country_code:
-                print(f"- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}")
-                self.config["DeviceProperties"]["Add"][arpt_path].update({"brcmfx-country": self.computer.wifi.country_code})
+            self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
+            # if not self.constants.custom_model and self.computer.wifi and self.computer.wifi.pci_path:
+            #     arpt_path = self.computer.wifi.pci_path
+            #     print(f"- Found ARPT device at {arpt_path}")
+            # else:
+            #     if self.model in ModelArray.nvidiaHDEF:
+            #         # Nvidia chipsets all have the same path to ARPT
+            #         arpt_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
+            #     elif self.model in ("iMac7,1", "iMac8,1", "MacPro3,1", "MacBookPro4,1"):
+            #         arpt_path = "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
+            #     elif self.model in ("iMac13,1", "iMac13,2"):
+            #         arpt_path = "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
+            #     elif self.model in ("MacPro4,1", "MacPro5,1"):
+            #         arpt_path = "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
+            #     else:
+            #         # Assumes we have a laptop with Intel chipset
+            #         # iMac11,x-12,x also apply
+            #         arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
+            #     print(f"- Using known DevicePath {arpt_path}")
+            # self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
+            # if not self.constants.custom_model and self.computer.wifi and self.constants.validate is False and self.computer.wifi.country_code:
+            #     print(f"- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}")
+            #     self.config["DeviceProperties"]["Add"][arpt_path].update({"brcmfx-country": self.computer.wifi.country_code})
             if self.constants.enable_wake_on_wlan is True:
                 print("- Enabling Wake on WLAN support")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" -brcmfxwowl"
