@@ -47,4 +47,4 @@ jobs:
           tag: ${{ github.ref }}
           file_glob: true
       - name: Validate OpenCore
-        run: OCLP-CLI --validate
+        run: ./OCLP-CLI --validate
