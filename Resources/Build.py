@@ -223,7 +223,7 @@ class BuildOpenCore:
 
         def wifi_fake_id(self):
             self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-            # self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
+            self.get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
             if not self.constants.custom_model and self.computer.wifi and self.computer.wifi.pci_path:
                 arpt_path = self.computer.wifi.pci_path
                 print(f"- Found ARPT device at {arpt_path}")
@@ -242,7 +242,7 @@ class BuildOpenCore:
                     # iMac11,x-12,x also apply
                     arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
                 print(f"- Using known DevicePath {arpt_path}")
-            self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
+            # self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
             if not self.constants.custom_model and self.computer.wifi and self.constants.validate is False and self.computer.wifi.country_code:
                 print(f"- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}")
                 self.config["DeviceProperties"]["Add"][arpt_path].update({"brcmfx-country": self.computer.wifi.country_code})

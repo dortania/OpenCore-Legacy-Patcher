@@ -193,7 +193,7 @@ DeleteVolumeControl = [
 ]
 
 AddNvidiaAccelLegacy = [
-    "GeForceGA.bundle",
+    #"GeForceGA.bundle",
     "GeForceTesla.kext",
     "GeForceTeslaGLDriver.bundle",
     "GeForceTeslaVADriver.bundle",

@@ -11,6 +11,8 @@
   - Currently limited to MacBookPro11,x
 - Set iMacPro1,1 SMBIOS for Mac Pro and Xserve models
   - Allows for wider array of OS support (High Sierra+)
+- Use plist override for BCM943224 and BCM94331 support in Big Sur+
+  - Allows for older OS support through OpenCore
 
 ## 0.2.4
 
