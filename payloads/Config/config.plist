@@ -350,7 +350,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string>20.0.0</string>
+				<string>12.0.0</string>
 				<key>BundlePath</key>
 				<string>AirportBrcmFixup.kext</string>
 				<key>ExecutablePath</key>
