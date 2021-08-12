@@ -13,10 +13,10 @@ from Resources import device_probe
 class Constants:
     def __init__(self):
         self.patcher_version = "0.2.5"
-        self.opencore_commit = "be2d9fe - 07-2-2021"
-        self.opencore_version = "0.7.1"
-        self.lilu_version = "1.5.4"
-        self.whatevergreen_version = "1.5.1"
+        self.opencore_commit = "ff5ad67 - 08-02-2021"
+        self.opencore_version = "0.7.2"
+        self.lilu_version = "1.5.5"
+        self.whatevergreen_version = "1.5.2"
         self.airportbcrmfixup_version = "2.1.3"
         self.bcm570_version = "1.0.1"
         self.marvel_version = "1.0.0"
@@ -28,14 +28,13 @@ class Constants:
         self.io80211elcap_version = "1.0.0"
         self.io80211high_sierra_version = "1.0.0"
         self.io80211mojave_version = "1.0.0"
-        self.applealc_version = "1.6.2"
+        self.applealc_version = "1.6.3"
         self.restrictevents_version = "1.0.3"
         self.restrictevents_mbp_version = "1.0.3"
         self.piixata_version = "1.0.0"
         self.backlight_version = "1.0.1"
         self.backlight_injector_version = "1.0.0"
         self.cpufriend_version = "1.2.4"
-        self.nightshift_version = "1.1.0"
         self.smcspoof_version = "1.0.0"
         self.nvmefix_version = "1.0.9"
         self.featureunlock_version = "1.0.3"
@@ -272,10 +271,6 @@ class Constants:
     @property
     def cpufriend_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/CPUFriend-v{self.cpufriend_version}.zip")
-
-    @property
-    def nightshift_path(self):
-        return self.payload_kexts_path / Path(f"Misc/NightShiftEnabler-v{self.nightshift_version}.zip")
 
     @property
     def smcspoof_path(self):

@@ -13,6 +13,12 @@
   - Allows for wider array of OS support (High Sierra+)
 - Use plist override for BCM943224 and BCM94331 support in Big Sur+
   - Allows for older OS support through OpenCore
+- Increment Binaries:
+  - OpenCore 0.7.2 release
+  - Lilu 1.5.5 release
+  - AppleALC 1.6.3 release
+  - WhateverGreen 1.5.2 release
+  - FeatureUnlock 1.0.3 release
 
 ## 0.2.4
 

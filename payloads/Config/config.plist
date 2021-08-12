@@ -234,7 +234,7 @@
 		<array>
 			<dict>
 				<key>Arch</key>
-				<string>x86_64</string>
+				<string>Any</string>
 				<key>Comment</key>
 				<string>Patching Engine</string>
 				<key>Enabled</key>
@@ -242,7 +242,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string>10.0.0</string>
+				<string>8.0.0</string>
 				<key>BundlePath</key>
 				<string>Lilu.kext</string>
 				<key>ExecutablePath</key>
@@ -1065,7 +1065,7 @@
 			<key>FuzzyMatch</key>
 			<true/>
 			<key>KernelArch</key>
-			<string>x86_64</string>
+			<string>Auto</string>
 			<key>KernelCache</key>
 			<string>Auto</string>
 		</dict>
@@ -1314,242 +1314,6 @@
 			<key>SystemUUID</key>
 			<string></string>
 		</dict>
-		<key>Memory</key>
-		<dict>
-			<key>DataWidth</key>
-			<integer>64</integer>
-			<key>ErrorCorrection</key>
-			<integer>3</integer>
-			<key>FormFactor</key>
-			<integer>9</integer>
-			<key>MaxCapacity</key>
-			<integer>137438953472</integer>
-			<key>TotalWidth</key>
-			<integer>64</integer>
-			<key>Type</key>
-			<integer>26</integer>
-			<key>TypeDetail</key>
-			<integer>128</integer>
-			<key>Devices</key>
-			<array>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 1</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera\GoldenGate</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA000000001</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 2</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA00000000X</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 3</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA000000002</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 4</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA00000000X</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 5</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA000000002</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 6</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA00000000X</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 7</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA000000001</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 8</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA00000000X</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 9</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA00000000X</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 10</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA00000000X</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 11</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA00000000X</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-				<dict>
-					<key>AssetTag</key>
-					<string></string>
-					<key>BankLocator</key>
-					<string></string>
-					<key>DeviceLocator</key>
-					<string>Slot 12</string>
-					<key>Manufacturer</key>
-					<string>Acidanthera</string>
-					<key>PartNumber</key>
-					<string>M00001-4GB</string>
-					<key>SerialNumber</key>
-					<string>AAA00000000X</string>
-					<key>Size</key>
-					<integer>131072</integer>
-					<key>Speed</key>
-					<integer>5733</integer>
-				</dict>
-			</array>
-		</dict>
 		<key>PlatformNVRAM</key>
 		<dict>
 			<key>BID</key>
@@ -1662,6 +1426,8 @@
 			<integer>0</integer>
 			<key>KeySubsequentDelay</key>
 			<integer>5</integer>
+			<key>GraphicsInputMirroring</key>
+			<false/>
 			<key>PointerSpeedDiv</key>
 			<integer>1</integer>
 			<key>PointerSpeedMul</key>

@@ -758,12 +758,6 @@ class BuildOpenCore:
             self.spoofed_model = self.model
             minimal_serial_patch(self)
 
-        if self.constants.download_ram is False:
-            self.config["PlatformInfo"].pop("Memory")
-        else:
-            print("- Inserting 1.5TB of RAM into your Mac")
-            self.config["PlatformInfo"]["CustomMemory"] = True
-
         # USB Map and CPUFriend Patching
         if (
             self.constants.allow_oc_everywhere is False
