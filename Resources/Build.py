@@ -684,6 +684,9 @@ class BuildOpenCore:
         if self.constants.validate is False:
             print("- Adding bootmgfw.efi BlessOverride")
             self.config["Misc"]["BlessOverride"] += ["\\EFI\\Microsoft\\Boot\\bootmgfw.efi"]
+        if self.model in ModelArray.dGPU_switch:
+            print("- Allowing GMUX switching in Windows")
+            self.config["Booter"]["Quirks"]["SignalAppleOS"] = True
 
     def set_smbios(self):
         spoofed_model = self.model

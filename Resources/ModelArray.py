@@ -1149,3 +1149,19 @@ Missing_USB_Map = [
     "XServer2,1",
     "XServer3,1",
 ]
+
+dGPU_switch = [
+    # Allows iGPU and dGPU switching in Windows
+    "MacBookPro8,2",
+    "MacBookPro8,3",
+    "MacBookPro9,1",
+    "MacBookPro10,1",
+    "MacBookPro11,3",
+    "MacBookPro11,5",
+    "MacBookPro13,3",
+    "MacBookPro14,3",
+    "MacBookPro15,1",
+    "MacBookPro15,3",
+    "MacBookPro16,1",
+    "MacBookPro16,4",
+]
