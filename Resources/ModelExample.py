@@ -320,23 +320,24 @@ class MacPro:
     )
 
     MacPro41_51__Flashed_Modern_AMD = device_probe.Computer(
-        # 4,1 flashed to 5,1, RX470, BCM94360CD, WD SN750 NVMe
+        # 4,1 flashed to 5,1, RX5700XT, BCM94360CD, WD SN750 NVMe
         real_model="MacPro5,1", 
         real_board_id="Mac-F221BEC8", 
         reported_model="MacPro5,1", 
         reported_board_id="Mac-F221BEC8", 
-        gpus=[device_probe.AMD(vendor_id=4098, device_id=26591, class_code=196608, name="GFX0", model="Radeon RX 470/570", pci_path="PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)")], 
+        gpus=[device_probe.AMD(vendor_id=4098, device_id=29471, class_code=196608, name="GFX0", model="AMD Radeon RX 5700 XT", pci_path="PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)")], 
         igpu=None, 
-        dgpu=device_probe.AMD(vendor_id=4098, device_id=26591, class_code=196608, name="GFX0", model="Radeon RX 470/570", pci_path="PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"), 
+        dgpu=device_probe.AMD(vendor_id=4098, device_id=29471, class_code=196608, name="GFX0", model="AMD Radeon RX 5700 XT", pci_path="PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)"), 
         storage=[
             device_probe.SATAController(vendor_id=32902, device_id=14882, class_code=67073, name="SATA", model=None, pci_path="PciRoot(0x0)/Pci(0x1f,0x2)"), 
-            device_probe.NVMeController(vendor_id=5559, device_id=20482, class_code=67586, name="PXS3", model=None, pci_path="PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)/Pci(0x2,0x0)/Pci(0x0,0x0)", aspm=0)
+            device_probe.NVMeController(vendor_id=5559, device_id=20482, class_code=67586, name="PXS3", model=None, pci_path="PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)/Pci(0x2,0x0)/Pci(0x0,0x0)", aspm=2)
         ], 
+
         wifi=device_probe.Broadcom(vendor_id=5348, device_id=17312, class_code=163840, name="PXS4", model=None, pci_path="PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)/Pci(0x4,0x0)/Pci(0x0,0x0)"), 
         cpu=device_probe.CPU(
-            name="Intel(R) Xeon(R) CPU           W3520  @ 2.67GHz", 
-            flags=["FPU", "VME", "DE", "PSE", "TSC", "MSR", "PAE", "MCE", "CX8", "APIC", "SEP", "MTRR", "PGE", "MCA", "CMOV", "PAT", "PSE36", "CLFSH", "DS", "ACPI", "MMX", "FXSR", "SSE", "SSE2", "SS", "HTT", "TM", "PBE", "SSE3", "DTES64", "MON", "DSCPL", "VMX", "EST", "TM2", "SSSE3", "CX16", "TPR", "PDCM", "SSE4.1", "SSE4.2", "POPCNT"]
-        ), 
+            name="Intel(R) Xeon(R) CPU           X5670  @ 2.93GHz", 
+            flags=["FPU", "VME", "DE", "PSE", "TSC", "MSR", "PAE", "MCE", "CX8", "APIC", "SEP", "MTRR", "PGE", "MCA", "CMOV", "PAT", "PSE36", "CLFSH", "DS", "ACPI", "MMX", "FXSR", "SSE", "SSE2", "SS", "HTT", "TM", "PBE", "SSE3", "PCLMULQDQ", "DTES64", "MON", "DSCPL", "VMX", "SMX", "EST", "TM2", "SSSE3", "CX16", "TPR", "PDCM", "SSE4.1", "SSE4.2", "POPCNT", "AES", "PCID"]
+        ),
         oclp_version="0.2.5", 
         opencore_version="REL-071-2021-07-02"
     )
