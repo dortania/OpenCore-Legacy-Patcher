@@ -116,6 +116,12 @@ Currently in macOS 12.0 Beta 4, many Sandy and Ivy Bridge Macs have experienced 
 * [12.0 Beta 3 (21A5284e) InstallAssistant (Direct)](http://swcdn.apple.com/content/downloads/02/08/071-63739-A_G5RYVW5JHT/dfz5gp3s0jm9vl7m30oewq141zkpv8edr8/InstallAssistant.pkg)
 * [12.0 Beta 3 (21A5284e) InstallAssistant (archive.org)](https://archive.org/details/12.0-21a5284e-beta-3)
 
+A temporary fix is to restart the BlueTool and bluetoothd process with each boot, note it may not work for all users:
+
+```sh
+sudo killall -9 BlueTool bluetoothd
+```
+
 ## Wireless Support Dropped
 
 * Broadcom BCM94328, BCM94322 and Atheros Wireless Chipsets lost support
