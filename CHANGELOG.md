@@ -80,6 +80,7 @@
   - Lilu 1.5.4 rolling (f69a972 - 06-20-2021)
   - RestrictEvents 1.0.3 rolling (3773ce2 - 06-20-2021)
   - SidecarFixup 1.0.2 rolling (2c29166 - 06-21-2021)
+  - PatcherSupportPkg 0.0.18
 - Allow AirPlay to Mac support on Skylake - Coffeelake Macs
 
 ## 0.1.9
