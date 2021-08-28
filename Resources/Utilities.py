@@ -128,7 +128,7 @@ def amfi_status():
     return True
 
 
-def patching_status(os_sip):
+def patching_status(os_sip, os):
     # Detection for Root Patching
     sip_enabled = True  # System Integrity Protection
     sbm_enabled = True  # Secure Boot Status (SecureBootModel)
@@ -147,8 +147,11 @@ def patching_status(os_sip):
     if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
         sip_enabled = False
 
-    fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-    if fv_status.startswith("FileVault is Off"):
+    if os > Constants.Constants.catalina:
+        fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        if fv_status.startswith("FileVault is Off"):
+            fv_enabled = False
+    else:
         fv_enabled = False
 
     if not (Path(gen6_kext).exists() and Path(gen7_kext).exists()):

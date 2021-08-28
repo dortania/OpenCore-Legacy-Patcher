@@ -630,7 +630,7 @@ set million colour before rebooting"""
             sip_value = (
                 "For Hackintoshes, please set csr-active-config to '030A0000' (0xA03)\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
             )
-        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = Utilities.patching_status(sip)
+        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = Utilities.patching_status(sip, self.constants.detected_os)
         if self.sip_enabled is True:
             print("\nCannot patch! Please disable System Integrity Protection (SIP).")
             print("Disable SIP in Patcher Settings and Rebuild OpenCore\n")
