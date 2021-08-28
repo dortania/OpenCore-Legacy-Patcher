@@ -147,7 +147,7 @@ def patching_status(os_sip, os):
     if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
         sip_enabled = False
 
-    if os > Constants.Constants.catalina:
+    if os > Constants.Constants().catalina:
         fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         if fv_status.startswith("FileVault is Off"):
             fv_enabled = False
