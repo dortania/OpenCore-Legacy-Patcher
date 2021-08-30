@@ -30,6 +30,7 @@ class PCIDevice:
     # ioregistryentry: Optional[ioreg.IORegistryEntry] = None
     name: Optional[str] = None  # Name of IORegistryEntry
     model: Optional[str] = None  # model property
+    acpi_path: Optional[str] = None
     pci_path: Optional[str] = None
 
     # def __getstate__(self):
@@ -48,6 +49,8 @@ class PCIDevice:
         device = cls(vendor_id, device_id, int.from_bytes(properties["class-code"][:6], byteorder="little"), name=ioreg.io_name_t_to_str(ioreg.IORegistryEntryGetName(entry, None)[1]))
         if "model" in properties:
             device.model = properties["model"].strip(b"\0").decode()
+        if "acpi_path" in properties:
+            device.acpi_path = properties["acpi-path"].strip(b"\0").decode()
         device.populate_pci_path(entry)
         return device
 

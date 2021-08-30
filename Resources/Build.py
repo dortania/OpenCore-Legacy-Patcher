@@ -539,7 +539,7 @@ class BuildOpenCore:
                     print(f"- Found dGPU ({i + 1}): {Utilities.friendly_hex(device.vendor_id)}:{Utilities.friendly_hex(device.device_id)}")
                     self.config["#Revision"][f"Hardware-MacPro-dGPU-{i + 1}"] = f"{Utilities.friendly_hex(device.vendor_id)}:{Utilities.friendly_hex(device.device_id)}"
 
-                    if device.pci_path:
+                    if device.pci_path and device.acpi_path:
                         print(f"- Found dGPU ({i + 1}) at {device.pci_path}")
                         if isinstance(device, device_probe.AMD):
                             print("- Adding Mac Pro, Xserve DRM patches")
