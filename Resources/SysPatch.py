@@ -24,6 +24,7 @@ class PatchSysVolume:
         self.sbm_enabled = True
         self.amfi_enabled = True
         self.fv_enabled = True
+        self.dosdude_patched = True
         self.nvidia_legacy = False
         self.amd_ts1 = False
         self.amd_ts2 = False
@@ -37,8 +38,12 @@ class PatchSysVolume:
         self.check_board_id = False
         self.bad_board_id = False
         self.no_patch = True
+        self.validate = False
 
-        if self.constants.detected_os > self.constants.catalina:
+        if (Path.home() / "Desktop/OCLP-Test/").exists:
+            self.mount_location = Path.home() / "Desktop/OCLP-Test"
+            self.validate = True
+        elif self.constants.detected_os > self.constants.catalina:
             # Big Sur and newer use APFS snapshots
             self.mount_location = "/System/Volumes/Update/mnt1"
         else:
@@ -57,7 +62,7 @@ class PatchSysVolume:
     def find_mount_root_vol(self, patch):
         self.root_mount_path = Utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
-            if self.constants.detected_os == self.constants.catalina:
+            if self.constants.detected_os == self.constants.catalina and self.validate is False:
                 print("- Mounting Catalina Root Volume as writable")
                 self.elevated(["mount", "-uw", f"{self.mount_location}/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print(f"- Found Root Volume at: {self.root_mount_path}")
@@ -180,7 +185,8 @@ class PatchSysVolume:
 
                 else:
                     print(f"- Failed to find {location_zip}, unable to unpatch")
-            self.rebuild_snapshot()
+            if self.validate is False:
+                self.rebuild_snapshot()
         else:
             print("- Could not find Extensions.zip, cannot manually unpatch root volume")
 
@@ -328,11 +334,11 @@ set million colour before rebooting"""
             self.add_new_binaries(SysPatchArray.AddAMDBrightness, self.constants.legacy_amd_path)
 
     def gpu_accel_legacy_ts2_master(self):
-        if self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
+        if self.constants.detected_os in [self.constants.mojave, self.constants.catalina] and self.constants.allow_ts2_accel is True:
             print("- Installing TeraScale 2 Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddAMDAccelLegacy, self.constants.legacy_amd_path)
-        elif self.constants.detected_os == self.constants.big_sur:
+        elif self.constants.detected_os == self.constants.big_sur and self.constants.allow_ts2_accel is True:
             print("- Installing TeraScale 2 Acceleration Kext patches for Big Sur")
             self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
             self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11TS2)
@@ -375,8 +381,9 @@ set million colour before rebooting"""
         if self.constants.detected_os == self.constants.monterey:
             print("- Installing IvyBridge Acceleration Kext patches for Monterey")
             self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
-            print("- Fixing Acceleration in CoreMedia")
-            Utilities.process_status(subprocess.run(["defaults", "write", "com.apple.coremedia", "hardwareVideoDecoder", "-string", "enable"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            if self.validate is False:
+                print("- Fixing Acceleration in CoreMedia")
+                Utilities.process_status(subprocess.run(["defaults", "write", "com.apple.coremedia", "hardwareVideoDecoder", "-string", "enable"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             print("- Merging Ivy Bridge Frameworks")
             self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             print("- Merging Ivy Bridge PrivateFrameworks")
@@ -405,8 +412,9 @@ set million colour before rebooting"""
         
         print("- Merging TeraScale 2 PrivateFrameworks")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel_ts2}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
-        print("- Fixing Acceleration in CMIO")
-        Utilities.process_status(subprocess.run(["defaults", "write", "com.apple.cmio", "CMIO_Unit_Input_ASC.DoNotUseOpenCL", "-bool", "true"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        if self.validate is False:
+            print("- Fixing Acceleration in CMIO")
+            Utilities.process_status(subprocess.run(["defaults", "write", "com.apple.cmio", "CMIO_Unit_Input_ASC.DoNotUseOpenCL", "-bool", "true"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")
@@ -464,13 +472,13 @@ set million colour before rebooting"""
                 print("- Detected unsupported OS, installing Basic Framebuffer")
             self.gpu_framebuffer_ivybridge_master()
 
-        if self.amd_ts2 is True and self.constants.detected_os in self.constants.legacy_accel_support:
+        if self.amd_ts2 is True and self.constants.detected_os in self.constants.legacy_accel_support and self.constants.allow_ts2_accel is True:
             # TeraScale 2 patches must be installed after Intel HD3000
             self.add_new_binaries(SysPatchArray.AddAMDAccel11TS2, self.constants.legacy_amd_path_ts2)
 
         if self.added_legacy_kexts is True and self.constants.detected_os in self.constants.legacy_accel_support:
             self.gpu_accel_legacy_extended()
-            if self.amd_ts2 is True:
+            if self.amd_ts2 is True and self.constants.allow_ts2_accel is True:
                 self.gpu_accel_legacy_extended_ts2()
 
         # Misc patches
@@ -481,8 +489,8 @@ set million colour before rebooting"""
         if self.legacy_audio is True:
             print("- Fixing Volume Control Support")
             self.add_audio_patch()
-
-        self.rebuild_snapshot()
+        if self.validate is False:
+            self.rebuild_snapshot()
 
     def check_files(self):
         if Path(self.constants.payload_apple_root_path).exists():

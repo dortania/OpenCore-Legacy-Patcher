@@ -22,6 +22,8 @@
 - Allow iGPU/dGPU switching in Windows
   - Applicable to MacBook Pros with Intel iGPU and Nvidia/AMD dGPU
 - Clean up Patcher Settings
+- Allow disabling of TeraScale 2 Acceleration during root volume patch
+  - Use for MacBookPro8,x with heavily degraded dGPUs
 
 ## 0.2.4
 

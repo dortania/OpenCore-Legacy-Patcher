@@ -180,7 +180,7 @@ Q. Return to previous menu
             print("Returning to previous menu")
         else:
             self.change_sip()
-    
+
     def change_sbm(self):
         Utilities.cls()
         Utilities.header(["Set SecureBootModel"])
@@ -546,7 +546,6 @@ Q. Return to previous menu
         else:
             self.latebloom_settings()
 
-
     def allow_moj_cat_patch(self):
         Utilities.cls()
         Utilities.header(["Allow Root Patching on Mojave/Catalina"])
@@ -600,3 +599,35 @@ other devices that benefit from this fix.
             print("Returning to previous menu")
         else:
             self.disable_thunderbolt()
+
+    def terascale_2_accel(self):
+        Utilities.cls()
+        Utilities.header(["Set TeraScale 2 Acceleration"])
+        print(
+            """
+By default this patcher will install TeraScale 2 acceleration, however
+for some laptops this may be undesired due to how degraded their dGPU
+is.
+
+Disabling TeraScale 2 acceleration will instead install basic framebuffer
+support allowing for basic brightness control and let the HD3000 iGPU
+handle acceleration tasks.
+        """
+        )
+
+        change_menu = input("Allow TeraScale 2 Acceleration?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.allow_ts2_accel = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.allow_ts2_accel = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.terascale_2_accel()
+
+    def dump_hardware(self):
+        Utilities.cls()
+        Utilities.header(["Dumping detected hardware"])
+        print("")
+        print(self.constants.computer)
+        input("\nPress [ENTER] to exit: ")

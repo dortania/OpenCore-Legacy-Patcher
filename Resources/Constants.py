@@ -97,6 +97,7 @@ class Constants:
         self.latebloom_debug = 0
         self.validate = False
         self.disable_thunderbolt = False
+        self.allow_ts2_accel = True
 
         # OS Versions
         self.tiger = 8

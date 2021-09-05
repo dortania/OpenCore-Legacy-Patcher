@@ -119,6 +119,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 ["SMBIOS Settings", self.patcher_settings_smbios],
                 ["Boot Volume Settings", self.patcher_settings_boot],
                 ["Miscellaneous Settings", self.patcher_settings_misc],
+                ["Dump detected hardware", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).dump_hardware],
                 [
                     f"Allow Accel on Mojave/Catalina:\tCurrently {self.constants.moj_cat_accel}",
                     CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_moj_cat_patch,
@@ -208,8 +209,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             title = ["Adjust Bootable Volume Settings"]
             menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
-                [f"Allow FireWire Boot:\tCurrently {self.constants.firewire_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_firewire],
-                [f"Allow NVMe Boot:\t\tCurrently {self.constants.nvme_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_nvme],
+                [f"Set FireWire Boot:\tCurrently {self.constants.firewire_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_firewire],
+                [f"Set NVMe Boot:\tCurrently {self.constants.nvme_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_nvme],
             ]
 
             for option in options:
@@ -224,8 +225,9 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set ShowPicker Mode:\tCurrently {self.constants.showpicker}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_showpicker],
-                [f"Allow Wake on WLAN:\t\tCurrently {self.constants.enable_wake_on_wlan}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_wowl],
-                [f"Allow Ivy iMac iGPU:\tCurrently {self.constants.allow_ivy_igpu}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_ivy],
+                [f"Set Wake on WLAN:\t\tCurrently {self.constants.enable_wake_on_wlan}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_wowl],
+                [f"Set Ivy iMac iGPU:\t\tCurrently {self.constants.allow_ivy_igpu}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_ivy],
+                [f"Set TeraScale 2 Accel:\tCurrently {self.constants.allow_ts2_accel}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).terascale_2_accel],
                 [
                     f"Disable Thunderbolt:\tCurrently {self.constants.disable_thunderbolt}",
                     CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).disable_thunderbolt,
@@ -243,8 +245,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             title = ["Adjust Advanced Patcher Settings, for developers ONLY"]
             menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
-                [f"Assume Metal GPU Always:\t\tCurrently {self.constants.imac_vendor}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_metal],
-                [f"DRM Preferences:\t\t\tCurrently {self.constants.drm_support}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).drm_setting],
+                [f"Set Metal GPU Status:\t\tCurrently {self.constants.imac_vendor}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_metal],
+                [f"Set DRM Preferences:\t\tCurrently {self.constants.drm_support}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).drm_setting],
                 [f"Set Generic Bootstrap:\t\tCurrently {self.constants.boot_efi}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).bootstrap_setting],
                 [
                     f"Disable CPU Friend:\t\t\tCurrently {self.constants.disallow_cpufriend}",
