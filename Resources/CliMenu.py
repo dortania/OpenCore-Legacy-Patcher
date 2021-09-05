@@ -14,37 +14,43 @@ class MenuOptions:
     def change_verbose(self):
         Utilities.cls()
         Utilities.header(["Set Verbose mode"])
-        change_menu = input("Enable Verbose mode(y/n): ")
+        change_menu = input("Enable Verbose mode(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.verbose_debug = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.verbose_debug = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.change_verbose()
 
     def change_oc(self):
         Utilities.cls()
         Utilities.header(["Set OpenCore DEBUG mode"])
-        change_menu = input("Enable OpenCore DEBUG mode(y/n): ")
+        change_menu = input("Enable OpenCore DEBUG mode(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.opencore_debug = True
             self.constants.opencore_build = "DEBUG"
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.opencore_debug = False
             self.constants.opencore_build = "RELEASE"
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.change_oc()
 
     def change_kext(self):
         Utilities.cls()
         Utilities.header(["Set Kext DEBUG mode"])
-        change_menu = input("Enable Kext DEBUG mode(y/n): ")
+        change_menu = input("Enable Kext DEBUG mode(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.kext_debug = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.kext_debug = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.change_kext()
 
     def change_metal(self):
         Utilities.cls()
@@ -58,6 +64,7 @@ Valid Options:
 1. None(stock GPU)
 2. Nvidia GPU
 3. AMD GPU
+Q. Return to previous menu
 
 Note: Patcher will detect whether hardware has been upgraded regardless, this
 option is for those patching on a different machine or OCLP cannot detect.
@@ -73,12 +80,14 @@ option is for those patching on a different machine or OCLP cannot detect.
         elif change_menu == "3":
             self.constants.metal_build = True
             self.constants.imac_vendor = "AMD"
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.change_metal()
 
     def change_serial(self):
         Utilities.cls()
-        Utilities.header(["Set SMBIOS Mode"])
+        Utilities.header(["Set SMBIOS Spoof Level"])
         print(
             """This section is for setting how OpenCore generates the SMBIOS
 Recommended for adanced users who want control how serials are handled
@@ -88,19 +97,22 @@ Valid options:
 1. Minimal:\tUse original serials and minimally update SMBIOS
 2. Moderate:\tReplace entire SMBIOS but keep original serials
 3. Advanced:\tReplace entire SMBIOS and generate new serials
+Q. Return to previous menu
 
 Note: For new users we recommend leaving as default(1. Minimal)
         """
         )
-        change_menu = input("Set SMBIOS Mode(ie. 1): ")
+        change_menu = input("Set SMBIOS Spoof Level(ie. 1): ")
         if change_menu == "1":
             self.constants.serial_settings = "Minimal"
         elif change_menu == "2":
             self.constants.serial_settings = "Moderate"
         elif change_menu == "3":
             self.constants.serial_settings = "Advanced"
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.change_serial()
 
     def change_showpicker(self):
         Utilities.cls()
@@ -111,13 +123,15 @@ however this can be disabled by default and be shown on command by repeatedly
 pressing the "Esc" key
         """
         )
-        change_menu = input("Show OpenCore Picker by default(y/n): ")
+        change_menu = input("Show OpenCore Picker by default(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.showpicker = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.showpicker = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.change_showpicker()
 
     def change_vault(self):
         Utilities.cls()
@@ -131,63 +145,86 @@ Note: For security reasons, OpenShell will be disabled when Vault is set.
 
         """
         )
-        change_menu = input("Enable Vault(y/n): ")
+        change_menu = input("Enable Vault(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.vault = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.vault = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.change_vault()
 
     def change_sip(self):
         Utilities.cls()
-        Utilities.header(["Set SIP and SecureBootModel"])
+        Utilities.header(["Set System Integrity protection"])
         print(
-            """SIP and SecureBootModel are used to ensure proper OTA functionality,
-however to patch the root volume both of these must be disabled.
+            """SIP is used to ensure proper secuirty measures are set,
+however to patch the root volume this must be disabled.
 Only disable is absolutely necessary. SIP value = 0xFEF
 
 Valid options:
 
-1. Enable Both
-2. Disable SIP only
-3. Disable SecureBootModel Only
-4. Disable Both
+1. Enable SIP
+2. Disable SIP
+Q. Return to previous menu
 
         """
         )
-        change_menu = input("Set SIP and SecureBootModel(ie. 1): ")
+        change_menu = input("Set SIP: ")
         if change_menu == "1":
             self.constants.sip_status = True
-            self.constants.secure_status = True
         elif change_menu == "2":
             self.constants.sip_status = False
-            self.constants.secure_status = True
-        elif change_menu == "3":
-            self.constants.sip_status = True
-            self.constants.secure_status = False
-        elif change_menu == "4":
-            self.constants.sip_status = False
-            self.constants.secure_status = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.change_sip()
+    
+    def change_sbm(self):
+        Utilities.cls()
+        Utilities.header(["Set SecureBootModel"])
+        print(
+            """SecureBootModel is used to ensure best firmware security,
+however to patch the root volume this must be disabled.
+Only disable is absolutely necessary. SIP value = 0xFEF
+
+Valid options:
+
+1. Enable SecureBootModel
+2. Disable SecureBootModel
+Q. Return to previous menu
+
+        """
+        )
+        change_menu = input("Set SecureBootModel: ")
+        if change_menu == "1":
+            self.constants.secure_status = True
+        elif change_menu == "2":
+            self.constants.secure_status = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.change_sbm()
 
     def set_amfi(self):
         Utilities.cls()
-        Utilities.header(["Disable AMFI"])
+        Utilities.header(["Set AMFI"])
         print(
             """Required for Root Patching non-Metal GPUs
 in macOS Big Sur. Without this, will receive kernel panic once
 Patcher finishes installing legacy acceleration patches.
         """
         )
-        change_menu = input("Disable AMFI(y/n): ")
+        change_menu = input("Disable AMFI(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.disable_amfi = True
+            self.constants.amfi_status = False
         elif change_menu in {"n", "N", "no", "No"}:
-            self.constants.disable_amfi = False
+            self.constants.amfi_status = True
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.set_amfi()
 
     def bootstrap_setting(self):
         Utilities.cls()
@@ -200,7 +237,7 @@ Valid options:
 
 1. System/Library/CoreServices/boot.efi (default)
 2. EFI/BOOT/BOOTx64.efi
-3. Exit
+Q. Return to previous menu
 
 Note: S*/L*/C*/boot.efi method is only installed to the EFI partition only
 and not to macOS itself.
@@ -215,8 +252,10 @@ see the EFI Boot entry in the boot picker.
             self.constants.boot_efi = False
         elif change_menu == "2":
             self.constants.boot_efi = True
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.bootstrap_setting()
 
     def drm_setting(self):
         Utilities.cls()
@@ -234,13 +273,15 @@ other programs relying on such features.
 Recommend only disabling if absolutely required.
         """
         )
-        change_menu = input("Enable Nvidia's Software DRM rendering(y/n): ")
+        change_menu = input("Enable Nvidia's Software DRM rendering(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.drm_support = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.drm_support = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.drm_setting()
 
     def allow_native_models(self):
         Utilities.cls()
@@ -252,15 +293,17 @@ power usage.
 
         """
         )
-        change_menu = input("Allow OpenCore on all Models(y/n): ")
+        change_menu = input("Allow OpenCore on all Models(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.allow_oc_everywhere = True
             self.constants.serial_settings = "None"
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.allow_oc_everywhere = False
             self.constants.serial_settings = "Minimal"
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.allow_native_models()
 
     def custom_cpu(self):
         Utilities.cls()
@@ -272,6 +315,7 @@ Custom names will report as follows:
 1: Original Name: 2.5 Ghz Dual-Core Intel Core i5
 2. CPU name:      Intel(R) Core(TM) i5-3210M CPU @ 2.50Ghz
 3. Custom Name:   2.5Ghz Cotton Candy (example)
+Q. Return to previous menu
         """
         )
         if self.constants.custom_cpu_model_value == "":
@@ -291,31 +335,10 @@ Custom names will report as follows:
         elif change_menu == "3":
             self.constants.custom_cpu_model = 1
             self.constants.custom_cpu_model_value = input("Enter new CPU Name: ")
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
-
-    def custom_color_thing(self):
-        Utilities.cls()
-        Utilities.header(["Set custom CPU Model Name"])
-        print(
-            """Change reported CPU Model name in About This Mac
-Custom names will report as follows:
-
-1: Custom Color
-2. Reset
-        """
-        )
-        change_menu = input("Set custom CPU Name(1,2,3): ")
-        if change_menu == "1":
-            print("")
-            # temp_tk_root = tk.Tk()
-            # temp_tk_root.wm_withdraw()
-            # self.constants.custom_color = colorchooser.askcolor(title="Choose color")
-            # temp_tk_root.destroy()
-        elif change_menu == "2":
-            self.constants.custom_color = ""
-        else:
-            print("Invalid option")
+            self.custom_cpu()
 
     def disable_cpufriend(self):
         Utilities.cls()
@@ -327,53 +350,19 @@ Mac's power profile for CPUs and GPUs, which can harm the
 hardware
         """
         )
-        change_menu = input("Disable CPU Friend?(y/n): ")
+        change_menu = input("Disable CPU Friend?(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.disallow_cpufriend = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.disallow_cpufriend = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
-
-    def set_seedutil(self):
-        Utilities.cls()
-        Utilities.header(["Set SeedUtil Status"])
-        print(
-            """Used for setting OS Update Preferences
-
-Valid options:
-1. Public Release Seed (Default)
-2. Public Beta Seed
-3. Developer Beta Seed
-4. Check SeedUtil's current status
-        """
-        )
-
-        change_menu = input("Set update status(Press [ENTER] to exit): ")
-        if change_menu == "1":
-            subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "unenroll"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-        elif change_menu == "2":
-            subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "unenroll"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(
-                ["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "enroll", "PublicSeed"], stdout=subprocess.PIPE
-            ).stdout.decode().strip().encode()
-        elif change_menu == "3":
-            subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "unenroll"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            subprocess.run(
-                ["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "enroll", "DeveloperSeed"], stdout=subprocess.PIPE
-            ).stdout.decode().strip().encode()
-        elif change_menu == "4":
-            result = subprocess.run(["sudo", "/System/Library/PrivateFrameworks/Seeding.framework/Versions/A/Resources/seedutil", "current"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            result = [i.partition(":")[2] for i in result.stdout.decode().split("\n") if "Currently enrolled in" in i][0]
-            print(f"SeedUtil Current Status: {result}")
-            input("\nPress [ENTER] to continue")
-            self.set_seedutil()
-        else:
-            print("Returning to main menu")
+            self.disable_cpufriend()
 
     def set_smbios(self):
         Utilities.cls()
-        Utilities.header(["Override SMBIOS Spoof"])
+        Utilities.header(["Set SMBIOS Spoof Model"])
         print(
             """Change model OpenCore spoofs Mac too
 
@@ -381,10 +370,11 @@ Valid options:
 1. Default set by OpenCore (Default)
 2. User Override
 3. Disable all spoofing (unsupported configuration)
+Q. Return to previous menu
         """
         )
 
-        change_menu = input("Set SMBIOS status: ")
+        change_menu = input("Set SMBIOS Spoof Model: ")
         if change_menu == "1":
             print("Setting SMBIOS spoof to default mode")
             self.constants.override_smbios = "Default"
@@ -399,8 +389,10 @@ Valid options:
         elif change_menu == "3":
             print("Disabling SMBIOS spoof")
             self.constants.override_smbios = self.model
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Returning to main menu")
+            self.set_smbios()
 
     def allow_firewire(self):
         Utilities.cls()
@@ -419,13 +411,15 @@ Note: MacBook5,x-7,1 don't support FireWire boot
         """
         )
 
-        change_menu = input("Enable FireWire Boot support?(y/n): ")
+        change_menu = input("Enable FireWire Boot support?(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.firewire_boot = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.firewire_boot = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.allow_firewire()
 
     def allow_nvme(self):
         Utilities.cls()
@@ -444,39 +438,15 @@ OpenCore will enable NVMe support in it's picker
         """
         )
 
-        change_menu = input("Enable NVMe Boot support?(y/n): ")
+        change_menu = input("Enable NVMe Boot support?(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.nvme_boot = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.nvme_boot = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
-
-    def enable_terascale(self):
-        Utilities.cls()
-        Utilities.header(["Enable TeraScale 2 Acceleration"])
-        print(
-            """
-Currently TeraScale 2 graphics acceleration is in beta with
-some unfortunate bugs on login including strobing colours
-until the user forces Million Colours on the Display with
-SwitchResX or resXtreme
-
-Users sensitive to seizures should avoid using TeraScale 2
-patches or ask someone to handle inital setup to ensure
-no issues
-
-Note: Acceleration only applies to macOS Big Sur
-        """
-        )
-
-        change_menu = input("Enable TS2 Acceleration?(y/n): ")
-        if change_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.terascale_2_patch = True
-        elif change_menu in {"n", "N", "no", "No"}:
-            self.constants.terascale_2_patch = False
-        else:
-            print("Invalid option")
+            self.allow_nvme()
 
     def allow_wowl(self):
         Utilities.cls()
@@ -492,13 +462,15 @@ be prepared if enabling.
         """
         )
 
-        change_menu = input("Allow Wake on WLAN?(y/n): ")
+        change_menu = input("Allow Wake on WLAN?(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.enable_wake_on_wlan = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.enable_wake_on_wlan = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.allow_wowl()
 
     def allow_ivy(self):
         Utilities.cls()
@@ -518,13 +490,15 @@ Note 2: This setting only affects iMac13,x with dGPUs
         """
         )
 
-        change_menu = input("Allow Ivy iMac iGPU?(y/n): ")
+        change_menu = input("Allow Ivy iMac iGPU?(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.allow_ivy_igpu = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.allow_ivy_igpu = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.allow_ivy()
 
     def latebloom_settings(self):
         Utilities.cls()
@@ -539,6 +513,7 @@ Valid options:
 1. Set delay (currently: {self.constants.latebloom_delay}ms)
 2. Set range (currently: {self.constants.latebloom_range}ms)
 3. Set debug (currently: {bool(self.constants.latebloom_debug)})
+Q. Return to previous menu
         """
         )
 
@@ -548,11 +523,13 @@ Valid options:
                 self.constants.latebloom_delay = int(input("Set delay: "))
             except ValueError:
                 input("Invalid value, press [ENTER] to continue")
+            self.latebloom_settings()
         elif change_menu == "2":
             try:
                 self.constants.latebloom_range = int(input("Set range: "))
             except ValueError:
                 input("Invalid value, press [ENTER] to continue")
+            self.latebloom_settings()
         elif change_menu == "3":
             try:
                 print("Currently supports either 0(False) or 1(True)")
@@ -563,8 +540,11 @@ Valid options:
                     self.constants.latebloom_debug = latebloom_debug
             except ValueError:
                 input("Invalid value, press [ENTER] to continue")
+            self.latebloom_settings()
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.latebloom_settings()
 
 
     def allow_moj_cat_patch(self):
@@ -585,13 +565,15 @@ Note: for the average user, we recommend using dosdude1's legacy patcher:
         """
         )
 
-        change_menu = input("Allow Root Patching on Mojave/Catalina?(y/n): ")
+        change_menu = input("Allow Root Patching on Mojave/Catalina?(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.moj_cat_accel = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.moj_cat_accel = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.allow_moj_cat_patch()
 
     def disable_thunderbolt(self):
         Utilities.cls()
@@ -609,10 +591,12 @@ other devices that benefit from this fix.
         """
         )
 
-        change_menu = input("Disable Thunderbolt?(y/n): ")
+        change_menu = input("Disable Thunderbolt?(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.disable_thunderbolt = True
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.disable_thunderbolt = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
         else:
-            print("Invalid option")
+            self.disable_thunderbolt()

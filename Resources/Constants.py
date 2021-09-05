@@ -86,7 +86,7 @@ class Constants:
         self.apecid_support = False
         self.firewire_boot = False
         self.nvme_boot = False
-        self.disable_amfi = False
+        self.amfi_status = True
         self.terascale_2_patch = False
         self.enable_wake_on_wlan = False
         self.allow_ivy_igpu = False

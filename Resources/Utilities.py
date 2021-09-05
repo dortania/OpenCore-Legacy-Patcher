@@ -9,7 +9,15 @@ import subprocess
 from pathlib import Path
 import re
 import os
-import requests
+
+try:
+	import requests
+except ImportError:
+	subprocess.run(["pip3", "install", "requests"], stdout=subprocess.PIPE)
+	try:
+		import requests
+	except ImportError:
+		raise Exception("Missing requests library!\nPlease run the following before starting OCLP:\npip3 install requests")
 
 from Resources import Constants, ioreg
 
@@ -224,6 +232,11 @@ def download_file(link, location):
             checksum.update(chunk)
             chunk = file.read(1024 * 1024 * 16)
     return checksum
+
+def enable_apfs(fw_feature, fw_mask):
+    fw_feature |= 2**19
+    fw_mask |= 2**19
+
 
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):

@@ -24,7 +24,7 @@ class OpenCoreLegacyPatcher:
         # Defaults
         self.constants.sip_status = True
         self.constants.secure_status = False  # Default false for Monterey
-        self.constants.disable_amfi = False
+        self.constants.amfi_status = True
 
         if model in ModelArray.LegacyGPU:
             if (
@@ -42,21 +42,21 @@ class OpenCoreLegacyPatcher:
                 # Building on device and we have a native, supported GPU
                 self.constants.sip_status = True
                 # self.constants.secure_status = True  # Monterey
-                self.constants.disable_amfi = False
+                self.constants.amfi_status = True
             else:
                 self.constants.sip_status = False  # Unsigned kexts
                 self.constants.secure_status = False  # Root volume modified
-                self.constants.disable_amfi = True  # Unsigned binaries
+                self.constants.amfi_status = False  # Unsigned binaries
         if model in ModelArray.ModernGPU:
             if host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
                 # Some models have a supported dGPU, others don't
                 self.constants.sip_status = True
                 # self.constants.secure_status = True  # Monterey
-                # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+                # self.constants.amfi_status = True  # Signed bundles, Don't need to explicitly set currently
             else:
                 self.constants.sip_status = False  # Unsigned kexts
                 self.constants.secure_status = False  # Modified root volume
-                # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+                # self.constants.amfi_status = True  # Signed bundles, Don't need to explicitly set currently
         if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings = "Moderate"
@@ -71,7 +71,7 @@ class OpenCoreLegacyPatcher:
             self.constants.verbose_debug = True
 
         if Utilities.amfi_status() is False:
-            self.constants.disable_amfi = True
+            self.constants.amfi_status = False
 
         self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
 
@@ -114,31 +114,122 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             title = ["Adjust Patcher Settings"]
             menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
-                [f"Enable Verbose Mode:\t\tCurrently {self.constants.verbose_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_verbose],
-                [f"Enable OpenCore DEBUG:\t\tCurrently {self.constants.opencore_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_oc],
-                [f"Enable Kext DEBUG:\t\t\tCurrently {self.constants.kext_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_kext],
-                [f"Set ShowPicker Mode:\t\tCurrently {self.constants.showpicker}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_showpicker],
-                [f"Set Vault Mode:\t\t\tCurrently {self.constants.vault}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_vault],
-                [f"Allow FireWire Boot:\t\tCurrently {self.constants.firewire_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_firewire],
-                [f"Allow NVMe Boot:\t\t\tCurrently {self.constants.nvme_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_nvme],
-                [f"Allow Wake on WLAN:\t\t\tCurrently {self.constants.enable_wake_on_wlan}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_wowl],
-                [f"Allow Ivy iMac iGPU:\t\tCurrently {self.constants.allow_ivy_igpu}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_ivy],
-                [f"Allow Accel on Mojave/Catalina:\tCurrently {self.constants.moj_cat_accel}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_moj_cat_patch],
-                [f"Disable Thunderbolt:\t\tCurrently {self.constants.disable_thunderbolt}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).disable_thunderbolt],
-                [f"Disable AMFI:\t\t\tCurrently {self.constants.disable_amfi}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_amfi],
+                ["Debug Settings", self.patcher_setting_debug],
+                ["Security Settings", self.patcher_settings_security],
+                ["SMBIOS Settings", self.patcher_settings_smbios],
+                ["Boot Volume Settings", self.patcher_settings_boot],
+                ["Miscellaneous Settings", self.patcher_settings_misc],
                 [
-                    f"Set SIP and SecureBootModel:\tSIP: {self.constants.sip_status} SBM: {self.constants.secure_status}",
-                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_sip,
+                    f"Allow Accel on Mojave/Catalina:\tCurrently {self.constants.moj_cat_accel}",
+                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_moj_cat_patch,
                 ],
                 [
                     f"Allow OpenCore on native Models:\tCurrently {self.constants.allow_oc_everywhere}",
                     CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_native_models,
                 ],
+                ["Advanced Settings, for developers only", self.advanced_patcher_settings],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def patcher_setting_debug(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Debug Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Enable Verbose Mode:\tCurrently {self.constants.verbose_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_verbose],
+                [f"Enable OpenCore DEBUG:\tCurrently {self.constants.opencore_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_oc],
+                [f"Enable Kext DEBUG:\t\tCurrently {self.constants.kext_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_kext],
+            ] + (
                 [
-                    f"Latebloom settings:\t\tDelay {self.constants.latebloom_delay}, Range {self.constants.latebloom_range}, Debug {self.constants.latebloom_debug}",
-                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).latebloom_settings,
+                    [
+                        f"Set Latebloom args:\t\tDelay {self.constants.latebloom_delay}, Range {self.constants.latebloom_range}, Debug {self.constants.latebloom_debug}",
+                        CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).latebloom_settings,
+                    ]
+                ]
+                if ((self.constants.custom_model or self.computer.real_model) in ModelArray.PCIRaceCondition)
+                else []
+            )
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def patcher_settings_security(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Security Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [
+                    f"Set Apple Mobile File Integrity (AMFI):\tCurrently {self.constants.amfi_status}",
+                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_amfi,
                 ],
-                ["Advanced Patch Settings, for developers only", self.advanced_patcher_settings],
+                [
+                    f"Set System Intrgity Protection (SIP):\tCurrently {self.constants.sip_status}",
+                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_sip,
+                ],
+                [
+                    f"Set Secure Boot Model (SBM):\t\tCurrently {self.constants.secure_status}",
+                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_sbm,
+                ],
+                [f"Set Vault Mode:\t\t\t\tCurrently {self.constants.vault}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_vault],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def patcher_settings_smbios(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust SMBIOS Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Set SMBIOS Spoof Level:\tCurrently {self.constants.serial_settings}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_serial],
+                [f"Set SMBIOS Spoof Model:\tCurrently {self.constants.override_smbios}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_smbios],
+                [f"Set Custom name {self.constants.custom_cpu_model_value}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).custom_cpu],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def patcher_settings_boot(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Bootable Volume Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Allow FireWire Boot:\tCurrently {self.constants.firewire_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_firewire],
+                [f"Allow NVMe Boot:\t\tCurrently {self.constants.nvme_boot}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_nvme],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def patcher_settings_misc(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Miscellaneous Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Set ShowPicker Mode:\tCurrently {self.constants.showpicker}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_showpicker],
+                [f"Allow Wake on WLAN:\t\tCurrently {self.constants.enable_wake_on_wlan}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_wowl],
+                [f"Allow Ivy iMac iGPU:\tCurrently {self.constants.allow_ivy_igpu}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_ivy],
+                [
+                    f"Disable Thunderbolt:\tCurrently {self.constants.disable_thunderbolt}",
+                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).disable_thunderbolt,
+                ],
             ]
 
             for option in options:
@@ -153,16 +244,12 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Assume Metal GPU Always:\t\tCurrently {self.constants.imac_vendor}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_metal],
-                [f"Set SMBIOS Mode:\t\t\tCurrently {self.constants.serial_settings}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_serial],
                 [f"DRM Preferences:\t\t\tCurrently {self.constants.drm_support}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).drm_setting],
                 [f"Set Generic Bootstrap:\t\tCurrently {self.constants.boot_efi}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).bootstrap_setting],
                 [
                     f"Disable CPU Friend:\t\t\tCurrently {self.constants.disallow_cpufriend}",
                     CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).disable_cpufriend,
                 ],
-                [f"Override SMBIOS Spoof:\t\tCurrently {self.constants.override_smbios}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_smbios],
-                [f"Set Custom name {self.constants.custom_cpu_model_value}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).custom_cpu],
-                ["Set SeedUtil Status", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_seedutil],
             ]
 
             for option in options:
@@ -288,7 +375,9 @@ B. Exit
                 in_between = [
                     "Your model is not supported by this patcher for running unsupported OSes!",
                     "",
-                    'If you plan to create the USB for another machine, please select the "Change Model" option in the menu.',
+                    'If you plan to create the USB for another machine, please select the \n"Change Model" option in the menu.',
+                    "",
+                    'If you want to run OCLP on a native Mac, please toggle \n"Allow OpenCore on native Models" in settings',
                 ]
             elif not self.constants.custom_model and self.computer.real_model == "iMac7,1" and "SSE4.1" not in self.computer.cpu.flags:
                 in_between = [

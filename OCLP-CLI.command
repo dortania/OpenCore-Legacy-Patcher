@@ -117,7 +117,7 @@ class OpenCoreLegacyPatcher:
             self.constants.nvme_boot = True
         if args.disable_amfi:
             print("- Set Disable AMFI configuration")
-            self.constants.disable_amfi = True
+            self.constants.amfi_status = False
         if args.wlan:
             print("- Set Wake on WLAN configuration")
             self.constants.enable_wake_on_wlan = True
@@ -211,11 +211,11 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 # Building on device and we have a native, supported GPU
                 self.constants.sip_status = True
                 # self.constants.secure_status = True  # Monterey
-                self.constants.disable_amfi = False
+                self.constants.amfi_status = True
             elif host_is_target:
                 self.constants.sip_status = False  # Unsigned kexts
                 self.constants.secure_status = False  # Root volume modified
-                self.constants.disable_amfi = True  # Unsigned binaries
+                self.constants.amfi_status = False  # Unsigned binaries
         if model in ModelArray.ModernGPU:
             if host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
                 # Some models have a supported dGPU, others don't
@@ -224,7 +224,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             elif host_is_target:
                 self.constants.sip_status = False  # Unsigned kexts
                 self.constants.secure_status = False  # Modified root volume
-                # self.constants.disable_amfi = False  # Signed bundles, Don't need to explicitly set currently
+                # self.constants.amfi_status = True  # Signed bundles, Don't need to explicitly set currently
         if model == "MacBook8,1" and host_is_target:
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings == "Moderate"

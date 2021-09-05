@@ -21,6 +21,7 @@
   - FeatureUnlock 1.0.3 release
 - Allow iGPU/dGPU switching in Windows
   - Applicable to MacBook Pros with Intel iGPU and Nvidia/AMD dGPU
+- Clean up Patcher Settings
 
 ## 0.2.4
 
