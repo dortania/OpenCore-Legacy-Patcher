@@ -40,10 +40,10 @@ class PatchSysVolume:
         self.no_patch = True
         self.validate = False
 
-        if (Path.home() / "Desktop/OCLP-Test/").exists:
-            self.mount_location = Path.home() / "Desktop/OCLP-Test"
-            self.validate = True
-        elif self.constants.detected_os > self.constants.catalina:
+        #if (Path.home() / "Desktop/OCLP-Test/").exists:
+        #    self.mount_location = Path.home() / "Desktop/OCLP-Test"
+        #    self.validate = True
+        if self.constants.detected_os > self.constants.catalina:
             # Big Sur and newer use APFS snapshots
             self.mount_location = "/System/Volumes/Update/mnt1"
         else:
