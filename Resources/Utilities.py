@@ -11,13 +11,13 @@ import re
 import os
 
 try:
-	import requests
+    import requests
 except ImportError:
-	subprocess.run(["pip3", "install", "requests"], stdout=subprocess.PIPE)
-	try:
-		import requests
-	except ImportError:
-		raise Exception("Missing requests library!\nPlease run the following before starting OCLP:\npip3 install requests")
+    subprocess.run(["pip3", "install", "requests"], stdout=subprocess.PIPE)
+    try:
+        import requests
+    except ImportError:
+        raise Exception("Missing requests library!\nPlease run the following before starting OCLP:\npip3 install requests")
 
 from Resources import Constants, ioreg
 
@@ -157,7 +157,7 @@ def patching_status(os_sip, os):
 
     if os > Constants.Constants().catalina:
         fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-        if fv_status.startswith("FileVault is Off"):
+        if "FileVault is Off" in fv_status:
             fv_enabled = False
     else:
         fv_enabled = False

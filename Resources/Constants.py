@@ -44,7 +44,7 @@ class Constants:
         self.latebloom_version = "0.19"
         self.disk = ""
         self.patch_disk = ""
-        self.patcher_support_pkg_version = "0.0.18"  # PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.0.19"  # PatcherSupportPkg
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -149,6 +149,7 @@ class Constants:
             self.mojave,
             self.catalina,
             self.big_sur,
+            self.monterey,
         ]
 
     # Payload Location
@@ -593,7 +594,7 @@ class Constants:
         "j215",  #  MacBookPro16,4
         "j185",  #  iMac20,1
         "j185f",  # iMac20,2
-        "x86legacy", # non-T2 Macs/VMs
+        "x86legacy",  # non-T2 Macs/VMs
     ]
 
     sandy_board_id = [

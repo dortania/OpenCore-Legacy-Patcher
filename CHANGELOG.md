@@ -19,11 +19,18 @@
   - AppleALC 1.6.3 release
   - WhateverGreen 1.5.2 release
   - FeatureUnlock 1.0.3 release
+  - PatcherSupportPkg 0.0.19 release
 - Allow iGPU/dGPU switching in Windows
   - Applicable to MacBook Pros with Intel iGPU and Nvidia/AMD dGPU
 - Clean up Patcher Settings
 - Allow disabling of TeraScale 2 Acceleration during root volume patch
   - Use for MacBookPro8,x with heavily degraded dGPUs
+- Add non-Metal Monterey Acceleration
+  - Currently supports:
+    - Intel Ironlake and Sandy Bridge
+    - Nvidia Tesla
+    - AMD TeraScale 1
+  - TeraScale 2 acceleration to be added in the future
 
 ## 0.2.4
 

@@ -40,7 +40,7 @@ class PatchSysVolume:
         self.no_patch = True
         self.validate = False
 
-        #if (Path.home() / "Desktop/OCLP-Test/").exists:
+        # if (Path.home() / "Desktop/OCLP-Test/").exists:
         #    self.mount_location = Path.home() / "Desktop/OCLP-Test"
         #    self.validate = True
         if self.constants.detected_os > self.constants.catalina:
@@ -69,7 +69,7 @@ class PatchSysVolume:
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
                 if patch is True:
-                    if self.constants.detected_os < self.constants.big_sur or Utilities.check_seal() is True:
+                    if self.constants.detected_os < self.constants.big_sur or (self.constants.detected_os == self.constants.big_sur and Utilities.check_seal() is True):
                         self.backup_volume()
                     self.patch_root_vol()
                     return True
@@ -83,7 +83,7 @@ class PatchSysVolume:
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
-                        if self.constants.detected_os < self.constants.big_sur or Utilities.check_seal() is True:
+                        if self.constants.detected_os < self.constants.big_sur or (self.constants.detected_os == self.constants.big_sur and Utilities.check_seal() is True):
                             self.backup_volume()
                         self.patch_root_vol()
                         return True
@@ -247,7 +247,7 @@ class PatchSysVolume:
                 Utilities.process_status(self.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
-            if self.amd_ts2 is True:
+            if self.amd_ts2 is True and self.constants.allow_ts2_accel is True:
                 print(
                     """\nPlease note that with ATI TeraScale 2 GPUs, you may experience colour strobing
 on reboot. Please use SwitchResX or ResXtreme to force 1 million colours on your
@@ -309,8 +309,8 @@ set million colour before rebooting"""
             print("- Installing Nvidia Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddNvidiaAccelLegacy, self.constants.legacy_nvidia_path)
-        elif self.constants.detected_os == self.constants.big_sur:
-            print("- Installing Nvidia Acceleration Kext patches for Big Sur")
+        elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
+            print("- Installing Nvidia Acceleration Kext patches for Big Sur/Monterey")
             self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
@@ -324,8 +324,8 @@ set million colour before rebooting"""
             print("- Installing TeraScale 1 Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddAMDAccelLegacy, self.constants.legacy_amd_path)
-        elif self.constants.detected_os == self.constants.big_sur:
-            print("- Installing TeraScale 1 Acceleration Kext patches for Big Sur")
+        elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
+            print("- Installing TeraScale 1 Acceleration Kext patches for Big Sur/Monterey")
             self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
@@ -339,6 +339,7 @@ set million colour before rebooting"""
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddAMDAccelLegacy, self.constants.legacy_amd_path)
         elif self.constants.detected_os == self.constants.big_sur and self.constants.allow_ts2_accel is True:
+            # TODO: Enable for Monterey when acceleration patches proress
             print("- Installing TeraScale 2 Acceleration Kext patches for Big Sur")
             self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
             self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11TS2)
@@ -354,8 +355,8 @@ set million colour before rebooting"""
             print("- Installing Ironlake Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
-        elif self.constants.detected_os == self.constants.big_sur:
-            print("- Installing Ironlake Acceleration Kext patches for Big Sur")
+        elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
+            print("- Installing Ironlake Acceleration Kext patches for Big Sur/Monterey")
             self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
@@ -368,8 +369,8 @@ set million colour before rebooting"""
             print("- Installing Sandy Bridge Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
-        elif self.constants.detected_os == self.constants.big_sur:
-            print("- Installing Sandy Bridge Acceleration Kext patches for Big Sur")
+        elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
+            print("- Installing Sandy Bridge Acceleration Kext patches for Big Sur/Monterey")
             self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
@@ -395,7 +396,7 @@ set million colour before rebooting"""
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        
+
         print("- Merging general legacy PrivateFrameworks")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
         if self.constants.detected_os > self.constants.catalina:
@@ -409,7 +410,7 @@ set million colour before rebooting"""
     def gpu_accel_legacy_extended_ts2(self):
         print("- Merging TeraScale 2 legacy Frameworks")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ts2}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        
+
         print("- Merging TeraScale 2 PrivateFrameworks")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel_ts2}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
         if self.validate is False:
@@ -472,13 +473,18 @@ set million colour before rebooting"""
                 print("- Detected unsupported OS, installing Basic Framebuffer")
             self.gpu_framebuffer_ivybridge_master()
 
-        if self.amd_ts2 is True and self.constants.detected_os in self.constants.legacy_accel_support and self.constants.allow_ts2_accel is True:
+        if (
+            self.amd_ts2 is True
+            and self.constants.detected_os in self.constants.legacy_accel_support
+            and self.constants.allow_ts2_accel is True
+            and self.constants.detected_os != self.constants.monterey
+        ):
             # TeraScale 2 patches must be installed after Intel HD3000
             self.add_new_binaries(SysPatchArray.AddAMDAccel11TS2, self.constants.legacy_amd_path_ts2)
 
         if self.added_legacy_kexts is True and self.constants.detected_os in self.constants.legacy_accel_support:
             self.gpu_accel_legacy_extended()
-            if self.amd_ts2 is True and self.constants.allow_ts2_accel is True:
+            if self.amd_ts2 is True and self.constants.allow_ts2_accel is True and self.constants.detected_os != self.constants.monterey:
                 self.gpu_accel_legacy_extended_ts2()
 
         # Misc patches

@@ -281,9 +281,9 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         Utilities.header(["Patching System Volume"])
         big_sur = """Patches Root volume to fix misc issues such as:
 
-- Graphics Acceleration for non-Metal GPUs
-  - Nvidia: Tesla - Fermi (8000-500 series)
+- Non-Metal Graphics Acceleration
   - Intel: Ironlake - Sandy Bridge
+  - Nvidia: Tesla - Fermi (8000-500 series)
   - AMD: TeraScale 1 and 2 (2000-6000 series)
 - Audio support for iMac7,1 and iMac8,1
 
@@ -300,12 +300,14 @@ B. Exit
         """
         monterey = """Patches Root volume to fix misc issues such as:
 
-- Graphics Acceleration
+- Metal Graphics Acceleration
   - Intel: Ivy Bridge (4000 series iGPUs)
-- Basic Framebuffer and brightness Control (No acceleration)
-  - Nvidia: Tesla - Fermi (8000-500 series)
+- Non-Metal Graphics Accelertation
   - Intel: Ironlake - Sandy Bridge
-  - AMD: TeraScale 1 and 2 (2000-6000 series)
+  - Nvidia: Tesla - Fermi (8000-500 series)
+  - AMD: TeraScale 1 (2000-4000 series)
+- Basic Framebuffer and brightness Control (No acceleration)
+  - AMD: TeraScale 2 (5000-6000 series)
 - Audio support for iMac7,1 and iMac8,1
 
 WARNING: Root Volume Patching is still in active development, please
@@ -321,10 +323,10 @@ B. Exit
         """
         mojave_catalina = """Patches Root volume to fix misc issues such as:
 
-- Graphics Acceleration
-   - Nvidia: Tesla - Fermi (8000-500 series)
-   - Intel: Ironlake - Sandy Bridge
-   - AMD: TeraScale 1 and 2 (2000-6000 series)
+- Non-Metal Graphics Acceleration
+  - Intel: Ironlake - Sandy Bridge
+  - Nvidia: Tesla - Fermi (8000-500 series)
+  - AMD: TeraScale 1 and 2 (2000-6000 series)
 - Audio support for iMac7,1 and iMac8,1
 
 WARNING: Root Volume Patching is still in active development, please
