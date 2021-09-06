@@ -13,10 +13,10 @@ from Resources import device_probe
 class Constants:
     def __init__(self):
         self.patcher_version = "0.2.5"
-        self.opencore_commit = "ff5ad67 - 08-02-2021"
-        self.opencore_version = "0.7.2"
-        self.lilu_version = "1.5.5"
-        self.whatevergreen_version = "1.5.2"
+        self.opencore_commit = "ff4b099 - 09-06-2021"
+        self.opencore_version = "0.7.3"
+        self.lilu_version = "1.5.6"
+        self.whatevergreen_version = "1.5.3"
         self.airportbcrmfixup_version = "2.1.3"
         self.bcm570_version = "1.0.1"
         self.marvel_version = "1.0.0"
@@ -38,7 +38,7 @@ class Constants:
         self.smcspoof_version = "1.0.0"
         self.nvmefix_version = "1.0.9"
         self.featureunlock_version = "1.0.3"
-        self.debugenhancer_version = "1.0.3"
+        self.debugenhancer_version = "1.0.4"
         self.innie_version = "1.3.0"
         self.fw_kext = "1.0.0"
         self.latebloom_version = "0.19"

@@ -596,7 +596,7 @@ class BuildOpenCore:
         #        device_id = Utilities.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
         #        print("- Found XHCI Controller, adding Boot Support")
         #        shutil.copy(self.constants.xhci_driver_path, self.constants.drivers_path)
-        #        self.config["UEFI"]["Drivers"] += ["XhciDxe.efi"]
+        #        self.get_efi_binary_by_path("XhciDxe.efi", "UEFI", "Drivers")["Enabled"] = True
         #    except ValueError:
         #        print("- No XHCI Controller Found (V)")
         #    except IndexError:
@@ -605,18 +605,20 @@ class BuildOpenCore:
         if self.constants.nvme_boot is True:
             print("- Enabling NVMe boot support")
             shutil.copy(self.constants.nvme_driver_path, self.constants.drivers_path)
-            self.config["UEFI"]["Drivers"] += ["NvmExpressDxe.efi"]
+            self.get_efi_binary_by_path("NvmExpressDxe.efi", "UEFI", "Drivers")["Enabled"] = True
 
         # Add OpenCanopy
         print("- Adding OpenCanopy GUI")
         shutil.rmtree(self.constants.resources_path, onerror=rmtree_handler)
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
-        self.config["UEFI"]["Drivers"] += ["OpenCanopy.efi", "OpenRuntime.efi"]
+        self.get_efi_binary_by_path("OpenCanopy.efi", "UEFI", "Drivers")["Enabled"] = True
+        self.get_efi_binary_by_path("OpenRuntime.efi", "UEFI", "Drivers")["Enabled"] = True
+        self.get_efi_binary_by_path("OpenLinuxBoot.efi", "UEFI", "Drivers")["Enabled"] = True
         # Exfat check
         if self.model in ModelArray.NoExFat:
             print("- Adding ExFatDxeLegacy.efi")
             shutil.copy(self.constants.exfat_legacy_driver_path, self.constants.drivers_path)
-            self.config["UEFI"]["Drivers"] += ["ExFatDxeLegacy.efi"]
+            self.get_efi_binary_by_path("ExFatDxeLegacy.efi", "UEFI", "Drivers")["Enabled"] = True
 
         # Add UGA to GOP layer
         if self.model in ModelArray.UGAtoGOP:
@@ -651,7 +653,7 @@ class BuildOpenCore:
         if self.constants.vault is True:
             print("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
-            self.get_tool_by__path("OpenShell.efi")["Enabled"] = False
+            self.get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
         if self.constants.sip_status is False:
             print("- Disabling SIP")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("EF0F0000")
@@ -831,12 +833,13 @@ class BuildOpenCore:
             raise IndexError
         return kext
 
-    def get_tool_by__path(self, bundle_path):
-        tool = self.get_item_by_kv(self.config["Misc"]["Tools"], "Path", bundle_path)
-        if not tool:
-            print(f"- Could not find Tool {bundle_path}!")
+    def get_efi_binary_by_path(self, bundle_path, entry_location, efi_type):
+        efi_binary = self.get_item_by_kv(self.config[entry_location][efi_type], "Path", bundle_path)
+        if not efi_binary:
+            print(f"- Could not find {efi_type}: {bundle_path}!")
             raise IndexError
-        return tool
+        return efi_binary
+    
 
     def enable_kext(self, kext_name, kext_version, kext_path, check=False):
         kext = self.get_kext_by_bundle_path(kext_name)
@@ -852,6 +855,7 @@ class BuildOpenCore:
     def cleanup(self):
         print("- Cleaning up files")
         # Remove unused entries
+        # TODO: Consolidate into a single for loop
         for entry in list(self.config["ACPI"]["Add"]):
             if not entry["Enabled"]:
                 self.config["ACPI"]["Add"].remove(entry)
@@ -864,6 +868,12 @@ class BuildOpenCore:
         for entry in list(self.config["Kernel"]["Patch"]):
             if not entry["Enabled"]:
                 self.config["Kernel"]["Patch"].remove(entry)
+        for entry in list(self.config["Misc"]["Tools"]):
+            if not entry["Enabled"]:
+                self.config["Misc"]["Tools"].remove(entry)
+        for entry in list(self.config["UEFI"]["Drivers"]):
+            if not entry["Enabled"]:
+                self.config["UEFI"]["Drivers"].remove(entry)
 
         plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
         for kext in self.constants.kexts_path.rglob("*.zip"):
