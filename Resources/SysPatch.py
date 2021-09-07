@@ -396,6 +396,9 @@ set million colour before rebooting"""
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if self.constants.detected_os > self.constants.big_sur:
+            print("- Merging Monterey WebKit patch")
+            self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         print("- Merging general legacy PrivateFrameworks")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
