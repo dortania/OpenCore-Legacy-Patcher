@@ -44,7 +44,7 @@ class Constants:
         self.latebloom_version = "0.19"
         self.disk = ""
         self.patch_disk = ""
-        self.patcher_support_pkg_version = "0.0.19"  # PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.0.20"  # PatcherSupportPkg
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
