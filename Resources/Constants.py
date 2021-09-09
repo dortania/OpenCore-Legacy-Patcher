@@ -12,94 +12,131 @@ from Resources import device_probe
 
 class Constants:
     def __init__(self):
-        self.patcher_version = "0.2.5"
+        # Patcher Versioning
+        self.patcher_version = "0.2.5"  #              OpenCore-Legacy-Patcher
+        self.patcher_support_pkg_version = "0.0.20"  # PatcherSupportPkg
+
+        # OpenCore Versioning
+        # https://github.com/acidanthera/OpenCorePkg
         self.opencore_commit = "ff4b099 - 09-06-2021"
         self.opencore_version = "0.7.3"
-        self.lilu_version = "1.5.6"
-        self.whatevergreen_version = "1.5.3"
-        self.airportbcrmfixup_version = "2.1.3"
-        self.bcm570_version = "1.0.1"
-        self.marvel_version = "1.0.0"
-        self.nforce_version = "1.0.0"
-        self.mce_version = "1.0.0"
-        self.mousse_version = "0.95"
-        self.telemetrap_version = "1.0.0"
-        self.corecaptureelcap_version = "1.0.0"
-        self.io80211elcap_version = "1.0.0"
-        self.io80211high_sierra_version = "1.0.0"
-        self.io80211mojave_version = "1.0.0"
-        self.applealc_version = "1.6.3"
-        self.restrictevents_version = "1.0.3"
-        self.restrictevents_mbp_version = "1.0.3"
-        self.piixata_version = "1.0.0"
-        self.backlight_version = "1.0.1"
-        self.backlight_injector_version = "1.0.0"
-        self.cpufriend_version = "1.2.4"
-        self.smcspoof_version = "1.0.0"
-        self.nvmefix_version = "1.0.9"
-        self.featureunlock_version = "1.0.3"
-        self.debugenhancer_version = "1.0.4"
-        self.innie_version = "1.3.0"
-        self.fw_kext = "1.0.0"
-        self.latebloom_version = "0.19"
-        self.disk = ""
-        self.patch_disk = ""
-        self.patcher_support_pkg_version = "0.0.20"  # PatcherSupportPkg
+
+        # Kext Versioning
+        ## Acidanthera
+        ## https://github.com/acidanthera
+        self.lilu_version = "1.5.6"  #               Lilu
+        self.whatevergreen_version = "1.5.3"  #      WhateverGreen
+        self.airportbcrmfixup_version = "2.1.3"  #   AirPortBrcmFixup
+        self.nvmefix_version = "1.0.9"  #            NVMeFix
+        self.applealc_version = "1.6.3"  #           AppleALC
+        self.restrictevents_version = "1.0.3"  #     RestrictEvents
+        self.restrictevents_mbp_version = "1.0.3"  # RestrictEvents blocking displaypolicyd (see RestrictEvents-MBP91.patch)
+        self.featureunlock_version = "1.0.3"  #      FeatureUnlock
+        self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
+        self.cpufriend_version = "1.2.4"  #          CPUFriend
+
+        ## Apple
+        ## https://www.apple.com
+        self.marvel_version = "1.0.0"  #  MarvelYukonEthernet
+        self.nforce_version = "1.0.0"  #  nForceEthernet
+        self.piixata_version = "1.0.0"  # AppleIntelPIIXATA
+        self.fw_kext = "1.0.0"  #         IOFireWireFamily
+        self.apple_trackpad = "1.0.0"  #  AppleUSBTrackpad
+
+        ## Apple - Dortania Modified
+        self.bcm570_version = "1.0.1"  #             CatalinaBCM5701Ethernet
+        self.corecaptureelcap_version = "1.0.0"  #   corecaptureElCap
+        self.io80211elcap_version = "1.0.0"  #       IO80211ElCap
+        self.io80211high_sierra_version = "1.0.0"  # IO80211HighSierra
+        self.io80211mojave_version = "1.0.0"  #      IO80211Mojave
+
+        ## Dortania
+        ## https://github.com/dortania
+        self.backlight_injector_version = "1.0.0"  # BacklightInjector
+        self.smcspoof_version = "1.0.0"  #           SMC-Spoof
+        self.mce_version = "1.0.0"  #                AppleMCEReporterDisabler
+
+        ## Syncretic
+        ## https://forums.macrumors.com/members/syncretic.1173816/
+        self.latebloom_version = "0.19"  #   Latebloom
+        self.mousse_version = "0.95"  #      MouSSE
+        self.telemetrap_version = "1.0.0"  # telemetrap
+
+        ## cdf
+        ## https://github.com/cdf/Innie
+        self.innie_version = "1.3.0"  # Innie
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
         self.payload_path = self.current_path / Path("payloads")
 
-        # Hardware
-        self.computer: device_probe.Computer = None  # type: ignore
-
-        self.custom_model: Optional[str] = None
-        self.custom_mxm_gpu: bool = False
-
         # Patcher Settings
+        self.allow_oc_everywhere = False  # Set whether Patcher can be run on unsupported Macs
+        self.gui_mode = False  #            Determine whether running in a GUI or TUI
+        self.disk = ""  #                   Set installation ESP
+        self.patch_disk = ""  #             Set Root Volume to patch
+        self.validate = False  #            Enable validation testing for CI
+        self.recovery_status = False  #     Detect if booted into RecoveryOS
+
+        ## Hardware
+        self.computer: device_probe.Computer = None  # type: ignore
+        self.custom_model: Optional[str] = None
+
+        ## OpenCore Settings
         self.opencore_debug = False
         self.opencore_build = "RELEASE"
-        self.kext_debug = False
-        self.verbose_debug = False
+        self.showpicker = True  # Show or Hide OpenCore's Boot Picker
+        self.boot_efi = False  #  Use EFI/BOOT/BOOTx64.efi bootstrap
+
+        ## Kext Settings
+        self.kext_debug = False  # Enables Lilu debug and DebugEnhancer
+
+        ## NVRAM Settings
+        self.verbose_debug = False  # -v
+
+        ## SMBIOS Settings
+        self.custom_cpu_model = 2  #        Patch type value
+        self.custom_cpu_model_value = ""  # New CPU name within About This Mac
+        self.serial_settings = "Minimal"  # Set SMBIOS level used
+        self.override_smbios = "Default"  # Set SMBIOS model used
+
+        ## Latebloom Settings
+        self.latebloom_status = False  # Latebloom Enabled
+        self.latebloom_delay = 0  #      Delay between each PCIe Probe
+        self.latebloom_range = 0  #      Range each delay can differ
+        self.latebloom_debug = 0  #      Debug Setting
+
+        ## Security Settings
+        self.apecid_support = False  # ApECID
+        self.amfi_status = True  #     Apple Mobile File Integrity
+        self.sip_status = True  #      System Integrity Protection
+        self.secure_status = False  #  Secure Boot Model
+        self.vault = False  #          EFI Vault
+
+        ## OS Settings
         self.os_support = 12.0
-        self.metal_build = False
-        self.imac_vendor = "None"
-        self.wifi_build = False
-        self.gui_mode = False
-        self.serial_settings = "Minimal"
-        self.showpicker = True
-        self.vault = False
-        self.sip_status = True
-        self.secure_status = False
-        self.detected_os = 0
-        self.detected_os_minor = 0
-        self.boot_efi = False
-        self.drm_support = False
-        self.allow_oc_everywhere = False
-        self.custom_cpu_model = 2
-        self.custom_cpu_model_value = ""
-        self.custom_color = ""
-        self.download_ram = False
-        self.disallow_cpufriend = False
-        self.recovery_status = False
-        self.override_smbios = "Default"
-        self.apecid_support = False
-        self.firewire_boot = False
-        self.nvme_boot = False
-        self.amfi_status = True
-        self.terascale_2_patch = False
-        self.enable_wake_on_wlan = False
-        self.allow_ivy_igpu = False
-        self.moj_cat_accel = False
-        self.latebloom_status = False
-        self.latebloom_delay = 0
-        self.latebloom_range = 0
-        self.latebloom_debug = 0
-        self.validate = False
-        self.disable_thunderbolt = False
-        self.allow_ts2_accel = True
+        self.detected_os = 0  #        Major Kernel Version
+        self.detected_os_minor = 0  #  Minor Kernel Version
+
+        ## Boot Volume Settings
+        self.firewire_boot = False  # Allow macOS FireWire Boot
+        self.nvme_boot = False  #     Allow UEFI NVMe Boot
+
+        ## Graphics Settings
+        self.metal_build = False     # Set MXM Build support
+        self.imac_vendor = "None"    # Set MXM GPU vendor
+        self.drm_support = False     # Set iMac14,x DRM support
+        self.allow_ivy_igpu = False  # Set iMac13,x iGPU support
+        self.moj_cat_accel = False   # Set Mojave/Catalina Acceleration support
+        self.allow_ts2_accel = True  # Set TeraScale 2 Acceleration support
+
+        ## Miscellaneous
+        self.disallow_cpufriend = False  #   Disable CPUFriend
+        self.enable_wake_on_wlan = False  #  Allow Wake on WLAN for modern Broadcom
+        self.disable_thunderbolt = False  #  Disable Thunderbolt Controller
 
         # OS Versions
+        ## Based off Major Kernel Version
         self.tiger = 8
         self.leopard = 9
         self.snow_leopard = 10
@@ -127,7 +164,7 @@ class Constants:
         self.pci_syskonnect = "1148"
 
         # Class Codes
-        # https://pci-ids.ucw.cz/read/PD
+        ## https://pci-ids.ucw.cz/read/PD
         self.classcode_sata = "01060100"
         self.classcode_nvme = "02080100"
         self.classcode_nvme_generic = "02800100"
@@ -261,10 +298,6 @@ class Constants:
     @property
     def piixata_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-v{self.piixata_version}.zip")
-
-    @property
-    def backlight_path(self):
-        return self.payload_kexts_path / Path(f"Misc/AppleBacklightFixup-v{self.backlight_version}.zip")
 
     @property
     def backlight_injector_path(self):

@@ -259,9 +259,7 @@ class BuildOpenCore:
         else:
             print("- Unable to run Wireless hardware detection")
 
-        if self.constants.wifi_build is True:
-            print("- Skipping Wifi patches on request")
-        elif not self.constants.custom_model and self.computer.wifi:
+        if not self.constants.custom_model and self.computer.wifi:
             if isinstance(self.computer.wifi, device_probe.Broadcom):
                 # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
                 if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirportBrcmNIC and self.constants.validate is False and self.computer.wifi.country_code:
@@ -452,7 +450,6 @@ class BuildOpenCore:
                     self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
 
         def nvidia_patch(self, backlight_path):
-            self.constants.custom_mxm_gpu = True
             if self.model in ["iMac11,1", "iMac11,2", "iMac11,3", "iMac10,1"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
                 self.config["DeviceProperties"]["Add"][backlight_path] = {
@@ -493,7 +490,6 @@ class BuildOpenCore:
             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
         def amd_patch(self, backlight_path):
-            self.constants.custom_mxm_gpu = True
             print("- Adding AMD DRM patches")
             self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 80, "unfairgva": 1}
             if self.constants.custom_model and self.model == "iMac11,2":
