@@ -330,6 +330,10 @@ class Constants:
     @property
     def latebloom_path(self):
         return self.payload_kexts_path / Path(f"Misc/latebloom-v{self.latebloom_version}.zip")
+    
+    @property
+    def apple_trackpad_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleUSBTrackpad-v{self.apple_trackpad}.zip")
 
     @property
     def plist_folder_path(self):
