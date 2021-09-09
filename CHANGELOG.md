@@ -19,7 +19,7 @@
   - AppleALC 1.6.3 release
   - WhateverGreen 1.5.2 release
   - FeatureUnlock 1.0.3 release
-  - PatcherSupportPkg 0.0.21 release
+  - PatcherSupportPkg 0.1.0 release
 - Allow iGPU/dGPU switching in Windows
   - Applicable to MacBook Pros with Intel iGPU and Nvidia/AMD dGPU
 - Clean up Patcher Settings

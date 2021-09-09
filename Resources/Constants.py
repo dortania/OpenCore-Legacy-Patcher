@@ -14,7 +14,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.2.5"  #              OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.0.20"  # PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.1.0"  #  PatcherSupportPkg
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
@@ -123,11 +123,11 @@ class Constants:
         self.nvme_boot = False  #     Allow UEFI NVMe Boot
 
         ## Graphics Settings
-        self.metal_build = False     # Set MXM Build support
-        self.imac_vendor = "None"    # Set MXM GPU vendor
-        self.drm_support = False     # Set iMac14,x DRM support
+        self.metal_build = False  #    Set MXM Build support
+        self.imac_vendor = "None"  #   Set MXM GPU vendor
+        self.drm_support = False  #    Set iMac14,x DRM support
         self.allow_ivy_igpu = False  # Set iMac13,x iGPU support
-        self.moj_cat_accel = False   # Set Mojave/Catalina Acceleration support
+        self.moj_cat_accel = False  #  Set Mojave/Catalina Acceleration support
         self.allow_ts2_accel = True  # Set TeraScale 2 Acceleration support
 
         ## Miscellaneous
@@ -330,7 +330,7 @@ class Constants:
     @property
     def latebloom_path(self):
         return self.payload_kexts_path / Path(f"Misc/latebloom-v{self.latebloom_version}.zip")
-    
+
     @property
     def apple_trackpad_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleUSBTrackpad-v{self.apple_trackpad}.zip")
@@ -615,23 +615,23 @@ class Constants:
     ]
 
     sbm_values = [
-        "j137",  #  iMacPro1,1
-        "j680",  #  MacBookPro15,1
-        "j132",  #  MacBookPro15,2
-        "j174",  #  Macmini8,1
-        "j140k",  # MacBookAir8,1
-        "j780",  #  MacBookPro15,3
-        "j213",  #  MacBookPro15,4
-        "j140a",  # MacBookAir8,2
-        "j152f",  # MacBookPro16,1
-        "j160",  #  MacPro7,1
-        "j230k",  # MacBookAir9,1
-        "j214k",  # MacBookPro16,2
-        "j223",  #  MacBookPro16,3
-        "j215",  #  MacBookPro16,4
-        "j185",  #  iMac20,1
-        "j185f",  # iMac20,2
-        "x86legacy",  # non-T2 Macs/VMs
+        "j137ap",  #  iMacPro1,1
+        "j680ap",  #  MacBookPro15,1
+        "j132ap",  #  MacBookPro15,2
+        "j174ap",  #  Macmini8,1
+        "j140kap",  # MacBookAir8,1
+        "j780ap",  #  MacBookPro15,3
+        "j213ap",  #  MacBookPro15,4
+        "j140aap",  # MacBookAir8,2
+        "j152fap",  # MacBookPro16,1
+        "j160ap",  #  MacPro7,1
+        "j230kap",  # MacBookAir9,1
+        "j214kap",  # MacBookPro16,2
+        "j223ap",  #  MacBookPro16,3
+        "j215ap",  #  MacBookPro16,4
+        "j185ap",  #  iMac20,1
+        "j185fap",  # iMac20,2
+        #"x86legacy",  # non-T2 Macs/VMs, Monterey's boot.efi enforces this on all Macs
     ]
 
     sandy_board_id = [
