@@ -58,6 +58,7 @@ class Constants:
 
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
+        ## https://github.com/reenigneorcim/latebloom
         self.latebloom_version = "0.19"  #   Latebloom
         self.mousse_version = "0.95"  #      MouSSE
         self.telemetrap_version = "1.0.0"  # telemetrap
