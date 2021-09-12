@@ -33,6 +33,8 @@
   - TeraScale 2 acceleration to be added in the future
 - Allow Trackpad gestures on MacBook4,1 and MacBook5,2
   - System Preferences will not report settings however
+- Allow Root Volume Patched Systems to use FileVault 2
+  - Requires macOS 11.3 (20E232) or newer
 
 ## 0.2.4
 
