@@ -44,9 +44,10 @@ class OpenCoreLegacyPatcher:
                 # self.constants.secure_status = True  # Monterey
                 self.constants.amfi_status = True
             else:
-                self.constants.sip_status = False  # Unsigned kexts
+                self.constants.sip_status = False  #    Unsigned kexts
                 self.constants.secure_status = False  # Root volume modified
-                self.constants.amfi_status = False  # Unsigned binaries
+                self.constants.amfi_status = False  #   Unsigned binaries
+                self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
         if model in ModelArray.ModernGPU:
             if host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
                 # Some models have a supported dGPU, others don't

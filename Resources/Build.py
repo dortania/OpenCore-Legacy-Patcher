@@ -686,6 +686,13 @@ class BuildOpenCore:
         if self.model in ModelArray.dGPU_switch:
             print("- Allowing GMUX switching in Windows")
             self.config["Booter"]["Quirks"]["SignalAppleOS"] = True
+        # if self.constants.allow_fv_root is True:
+            # apfs.kext has an undocumented boot-arg that allows FileVault usage on broken APFS seals (-arv_allow_fv)
+            # This is however hidden behind kern.development, thus we patch _apfs_filevault_allowed to always return true
+            # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
+        print("- Allowing FileVault on Root Patched systems")
+        self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.filesystems.apfs")["Enabled"] = True
+
 
     def set_smbios(self):
         spoofed_model = self.model
