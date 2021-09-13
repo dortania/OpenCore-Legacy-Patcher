@@ -153,7 +153,11 @@ def patching_status(os_sip, os):
     gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
     gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
-    amfi_enabled = amfi_status()
+    if os > Constants.Constants().catalina:
+        amfi_enabled = amfi_status()
+    else:
+        # Catalina and older supports individually disabling Library Validation
+        amfi_enabled = False
 
     if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in Constants.Constants.sbm_values:
         sbm_enabled = False

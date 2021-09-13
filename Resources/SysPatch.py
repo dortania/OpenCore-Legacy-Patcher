@@ -409,6 +409,11 @@ set million colour before rebooting"""
             )
             Utilities.process_status(self.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             Utilities.process_status(self.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        else:
+            print("- Disabling Library Validation")
+            Utilities.process_status(
+                self.elevated(["defaults", "write", "/Library/Preferences/com.apple.security.libraryvalidation.plist", "-bool", "true"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            )
 
     def gpu_accel_legacy_extended_ts2(self):
         print("- Merging TeraScale 2 legacy Frameworks")
