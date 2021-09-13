@@ -44,19 +44,21 @@ class OpenCoreLegacyPatcher:
                 # self.constants.secure_status = True  # Monterey
                 self.constants.amfi_status = True
             else:
-                self.constants.sip_status = False  # Unsigned kexts
+                self.constants.sip_status = False  #    Unsigned kexts
                 self.constants.secure_status = False  # Root volume modified
-                self.constants.amfi_status = False  # Unsigned binaries
+                self.constants.amfi_status = False  #   Unsigned binaries
+                self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
         if model in ModelArray.ModernGPU:
             if host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
                 # Some models have a supported dGPU, others don't
                 self.constants.sip_status = True
                 # self.constants.secure_status = True  # Monterey
-                # self.constants.amfi_status = True  # Signed bundles, Don't need to explicitly set currently
+                # self.constants.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
             else:
-                self.constants.sip_status = False  # Unsigned kexts
+                self.constants.sip_status = False  #    Unsigned kexts
                 self.constants.secure_status = False  # Modified root volume
-                # self.constants.amfi_status = True  # Signed bundles, Don't need to explicitly set currently
+                self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
+                # self.constants.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
         if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings = "Moderate"
@@ -289,8 +291,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume
-is patched, you can no longer have Delta updates or have FileVault
-enabled.
+is patched, you can no longer have Delta updates.
 
 Supported Options:
 
@@ -312,8 +313,7 @@ B. Exit
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume
-is patched, you can no longer have Delta updates or have FileVault
-enabled.
+is patched, you can no longer have Delta updates.
 
 Supported Options:
 
@@ -331,8 +331,7 @@ B. Exit
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume
-is patched, you can no longer have Delta updates or have FileVault
-enabled.
+is patched, you can no longer have Delta updates.
 
 Supported Options:
 

@@ -135,13 +135,19 @@ def amfi_status():
         return False
     return True
 
+def check_oclp_boot():
+    if get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False):
+        return True
+    else:
+        return False
+
 
 def patching_status(os_sip, os):
     # Detection for Root Patching
-    sip_enabled = True  # System Integrity Protection
-    sbm_enabled = True  # Secure Boot Status (SecureBootModel)
+    sip_enabled = True  #  System Integrity Protection
+    sbm_enabled = True  #  Secure Boot Status (SecureBootModel)
     amfi_enabled = True  # Apple Mobile File Integrity
-    fv_enabled = True  # FileVault
+    fv_enabled = True  #   FileVault
     dosdude_patched = True
 
     gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
@@ -155,7 +161,8 @@ def patching_status(os_sip, os):
     if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
         sip_enabled = False
 
-    if os > Constants.Constants().catalina:
+    if os > Constants.Constants().catalina and not check_oclp_boot():
+        # Assume non-OCLP Macs do not have our APFS seal patch
         fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         if "FileVault is Off" in fv_status:
             fv_enabled = False

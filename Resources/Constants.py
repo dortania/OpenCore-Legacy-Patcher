@@ -118,6 +118,7 @@ class Constants:
         self.os_support = 12.0
         self.detected_os = 0  #        Major Kernel Version
         self.detected_os_minor = 0  #  Minor Kernel Version
+        self.allow_fv_root = False  #  Allow FileVault on broken sealed snapshots
 
         ## Boot Volume Settings
         self.firewire_boot = False  # Allow macOS FireWire Boot
