@@ -299,8 +299,8 @@ set million colour before rebooting"""
         elif self.constants.detected_os == self.constants.catalina:
             print("- Installing General Acceleration Kext patches for Catalina")
             self.add_new_binaries(SysPatchArray.AddGeneralAccelCatalina, self.constants.legacy_general_path)
-        elif self.constants.detected_os == self.constants.big_sur:
-            print("- Installing General Acceleration Kext patches for Big Sur")
+        elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
+            print("- Installing General Acceleration Kext patches for Big Sur/Monterey")
             self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
 
     # Nvidia
