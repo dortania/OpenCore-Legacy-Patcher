@@ -47,7 +47,7 @@ Below is a list of hardware that currently has issues with Monterey:
 * Intel HD4000 iGPUs lost support
   * Re-introduced with OpenCore Legacy Patcher v0.1.7
 
-By default these machines require root volume patches to gain graphics acceleration in Monterey. OpenCore Legacy Patcher supports readding support however SIP and FileVault can no longer be enabled due to root patching:
+By default these machines require root volume patches to gain graphics acceleration in Monterey. OpenCore Legacy Patcher supports readding support however SIP can no longer be enabled due to root patching:
 
 * Macmini6,x
 * MacBookAir5,x

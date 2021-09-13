@@ -291,8 +291,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume
-is patched, you can no longer have Delta updates or have FileVault
-enabled.
+is patched, you can no longer have Delta updates.
 
 Supported Options:
 
@@ -314,8 +313,7 @@ B. Exit
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume
-is patched, you can no longer have Delta updates or have FileVault
-enabled.
+is patched, you can no longer have Delta updates.
 
 Supported Options:
 
@@ -333,8 +331,7 @@ B. Exit
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume
-is patched, you can no longer have Delta updates or have FileVault
-enabled.
+is patched, you can no longer have Delta updates.
 
 Supported Options:
 
