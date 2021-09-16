@@ -1,0 +1,42 @@
+diff --git a/BrcmPatchRAM/BlueToolFixup.cpp b/BrcmPatchRAM/BlueToolFixup.cpp
+index 0fa891a..819eb3f 100644
+--- a/BrcmPatchRAM/BlueToolFixup.cpp
++++ b/BrcmPatchRAM/BlueToolFixup.cpp
+@@ -50,7 +50,15 @@ bool BlueToolFixup::start(IOService *provider) {
+ static const uint8_t kSkipUpdateFilePathOriginal[] = "/etc/bluetool/SkipBluetoothAutomaticFirmwareUpdate";
+ static const uint8_t kSkipUpdateFilePathPatched[] = "/System/Library/CoreServices/boot.efi";
+ 
++static const uint8_t kBluetoothUSBNameOriginal[] = "Bluetooth USB Host Controller";
++static const uint8_t kBluetoothUSBNamePatched2070[] = "BRCM2070 Hub Host Controller";
++static const uint8_t kBluetoothUSBNamePatched2046[] = "BRCM2046 Hub Host Controller";
++
+ static const char *blueToolPath = "/usr/sbin/BlueTool";
++static const char *bluetoothdPath = "/usr/sbin/bluetoothd";
++
++static const char brcm2046_patch = checkKernelArgument("-brcm2046_patch");
++static const char brcm2070_patch = checkKernelArgument("-brcm2070_patch");
+ 
+ static mach_vm_address_t orig_cs_validate {};
+ 
+@@ -71,8 +79,19 @@ static void patched_cs_validate_page(vnode_t vp, memory_object_t pager, memory_o
+     char path[PATH_MAX];
+     int pathlen = PATH_MAX;
+     FunctionCast(patched_cs_validate_page, orig_cs_validate)(vp, pager, page_offset, data, validated_p, tainted_p, nx_p);
+-    if (vn_getpath(vp, path, &pathlen) == 0 && UNLIKELY(strcmp(path, blueToolPath) == 0)) {
+-        searchAndPatch(data, PAGE_SIZE, path, kSkipUpdateFilePathOriginal, kSkipUpdateFilePathPatched);
++    if (vn_getpath(vp, path, &pathlen) == 0) {
++        if (UNLIKELY(strcmp(path, blueToolPath) == 0)) {
++            searchAndPatch(data, PAGE_SIZE, path, kSkipUpdateFilePathOriginal, kSkipUpdateFilePathPatched);
++        }
++        if (UNLIKELY(strcmp(path, bluetoothdPath) == 0)) {
++            if (brcm2046_patch) {
++                DBGLOG(MODULE_SHORT, "Patching BRCM2046 Hub into bluetoothd");
++                searchAndPatch(data, PAGE_SIZE, path, kBluetoothUSBNameOriginal, kBluetoothUSBNamePatched2046);
++            } else if (brcm2070_patch) {
++                DBGLOG(MODULE_SHORT, "Patching BRCM2070 Hub into bluetoothd");
++                searchAndPatch(data, PAGE_SIZE, path, kBluetoothUSBNameOriginal, kBluetoothUSBNamePatched2070);
++            }
++        }
+     }
+ }
+ 

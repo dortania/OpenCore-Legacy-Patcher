@@ -327,6 +327,10 @@ class Constants:
         return self.payload_kexts_path / Path(f"Acidanthera/DebugEnhancer-v{self.debugenhancer_version}.zip")
 
     @property
+    def bluetool_path(self):
+        return self.payload_kexts_path / Path(f"Acidanthera/BlueToolFixup-v{self.bluetool_version}.zip")
+
+    @property
     def innie_path(self):
         return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}.zip")
 
@@ -341,18 +345,6 @@ class Constants:
     @property
     def plist_folder_path(self):
         return self.payload_kexts_path / Path("Plists")
-
-    @property
-    def bluetooth_folder_path(self):
-        return self.payload_kexts_path / Path("Bluetooth")
-
-    @property
-    def brcm2046_path(self):
-        return self.bluetooth_folder_path / Path(f"BlueToolFixup-2046-v{self.bluetool_version}.zip")
-
-    @property
-    def brcm2070_path(self):
-        return self.bluetooth_folder_path / Path(f"BlueToolFixup-2070-v{self.bluetool_version}.zip")
 
     @property
     def platform_plugin_plist_path(self):
