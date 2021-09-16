@@ -582,6 +582,21 @@ class BuildOpenCore:
 
             self.config["DeviceProperties"]["Add"][tb_device_path] = {"class-code": binascii.unhexlify("FFFFFFFF"), "device-id": binascii.unhexlify("FFFF0000")}
 
+        # Bluetooth Detection
+        if not self.constants.custom_model and self.computer.bluetooth:
+            if self.computer.bluetooth == "BRCM2070 Hub":
+                print("- Enabling Bluetooth BRCM2070 for macOS Monterey")
+                self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.brcm2070_path)
+            elif self.computer.bluetooth == "BRCM2046 Hub":
+                print("- Enabling Bluetooth BRCM2046 for macOS Mojave")
+                self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.brcm2046_path)
+        elif self.model in ModelArray.Bluetooth_BRCM2070:
+            print("- Enabling Bluetooth BRCM2070 for macOS Monterey")
+            self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.brcm2070_path)
+        elif self.model in ModelArray.Bluetooth_BRCM2046:
+            print("- Enabling Bluetooth BRCM2046 for macOS Monterey")
+            self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.brcm2046_path)
+
         # Add XhciDxe if firmware doesn't have XHCI controller support and XCHI controller detected
         # TODO: Fix XhciDxe to work on pre UEFI 2.0 Macs
         # Ref: https://github.com/acidanthera/bugtracker/issues/1663
@@ -692,15 +707,6 @@ class BuildOpenCore:
             # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
             print("- Allowing FileVault on Root Patched systems")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.filesystems.apfs")["Enabled"] = True
-        
-        if self.model in ModelArray.Bluetooth_BRCM2070:
-            print("- Enabling Bluetooth BRCM2070 for macOS Monterey")
-            self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.brcm2070_path)
-        elif self.model in ModelArray.Bluetooth_BRCM2046:
-            print("- Enabling Bluetooth BRCM2046 for macOS Monterey")
-            self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.brcm2046_path)
-
-
 
     def set_smbios(self):
         spoofed_model = self.model
@@ -851,7 +857,6 @@ class BuildOpenCore:
             print(f"- Could not find {efi_type}: {bundle_path}!")
             raise IndexError
         return efi_binary
-    
 
     def enable_kext(self, kext_name, kext_version, kext_path, check=False):
         kext = self.get_kext_by_bundle_path(kext_name)

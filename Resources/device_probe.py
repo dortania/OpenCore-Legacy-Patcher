@@ -313,6 +313,7 @@ class Computer:
     cpu: Optional[CPU] = None
     oclp_version: Optional[str] = None
     opencore_version: Optional[str] = None
+    bluetooth_chipset: Optional[str] = None
 
     @staticmethod
     def probe():
@@ -324,6 +325,7 @@ class Computer:
         computer.storage_probe()
         computer.smbios_probe()
         computer.cpu_probe()
+        computer.bluetooth()
         return computer
 
     def gpu_probe(self):
@@ -437,3 +439,12 @@ class Computer:
             subprocess.run("sysctl machdep.cpu.brand_string".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip(),
             subprocess.run("sysctl machdep.cpu.features".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip().split(" "),
         )
+
+    def bluetooth(self):
+        usb_data: str = subprocess.run("system_profiler SPUSBDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        if "BRCM2070 Hub" in usb_data:
+            self.bluetooth_chipset = "BRCM2070 Hub"
+        elif "BRCM2046 Hub" in usb_data:
+            self.bluetooth_chipset = "BRCM2046 Hub"
+        elif "Bluetooth":
+            self.bluetooth_chipset = "Generic"
