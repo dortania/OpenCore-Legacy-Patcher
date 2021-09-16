@@ -1146,8 +1146,8 @@ Missing_USB_Map = [
     "iMac12,2",
     "MacPro3,1",
     "MacPro4,1",
-    "XServer2,1",
-    "XServer3,1",
+    "XServe2,1",
+    "XServe3,1",
 ]
 
 dGPU_switch = [
@@ -1181,7 +1181,6 @@ Bluetooth_BRCM2046 = [
     "MacBookPro5,5",
     "MacBookPro7,1",
     "Macmini3,1",
-    "iMac7,1",
     "iMac8,1",
     "iMac9,1",
     "iMac10,1",
@@ -1190,11 +1189,8 @@ Bluetooth_BRCM2046 = [
     "iMac11,3",
     "iMac12,1",
     "iMac12,2",
-    "MacPro3,1",
     "MacPro4,1",
     "MacPro5,1",
-    "XServer2,1",
-    "XServer3,1",
 ]
 
 Bluetooth_BRCM2070 = [
