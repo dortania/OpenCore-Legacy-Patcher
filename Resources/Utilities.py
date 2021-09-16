@@ -135,6 +135,7 @@ def amfi_status():
         return False
     return True
 
+
 def check_oclp_boot():
     if get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False):
         return True
@@ -244,10 +245,11 @@ def download_file(link, location):
             chunk = file.read(1024 * 1024 * 16)
     return checksum
 
-def enable_apfs(fw_feature, fw_mask):
-    fw_feature |= 2**19
-    fw_mask |= 2**19
 
+def enable_apfs(fw_feature, fw_mask):
+    fw_feature |= 2 ** 19
+    fw_mask |= 2 ** 19
+    return fw_feature, fw_mask
 
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):

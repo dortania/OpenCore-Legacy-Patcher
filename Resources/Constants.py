@@ -34,6 +34,7 @@ class Constants:
         self.featureunlock_version = "1.0.3"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.4"  #          CPUFriend
+        self.bluetool_version = "2.6.1"  #           BlueToolFixup
 
         ## Apple
         ## https://www.apple.com
@@ -342,6 +343,18 @@ class Constants:
         return self.payload_kexts_path / Path("Plists")
 
     @property
+    def bluetooth_folder_path(self):
+        return self.payload_kexts_path / Path("Bluetooth")
+
+    @property
+    def brcm2046_path(self):
+        return self.bluetooth_folder_path / Path(f"BlueToolFixup-2046-v{self.bluetool_version}.zip")
+
+    @property
+    def brcm2070_path(self):
+        return self.bluetooth_folder_path / Path(f"BlueToolFixup-2070-v{self.bluetool_version}.zip")
+
+    @property
     def platform_plugin_plist_path(self):
         return self.plist_folder_path / Path("PlatformPlugin")
 
@@ -633,7 +646,7 @@ class Constants:
         "j215ap",  #  MacBookPro16,4
         "j185ap",  #  iMac20,1
         "j185fap",  # iMac20,2
-        #"x86legacy",  # non-T2 Macs/VMs, Monterey's boot.efi enforces this on all Macs
+        # "x86legacy",  # non-T2 Macs/VMs, Monterey's boot.efi enforces this on all Macs
     ]
 
     sandy_board_id = [

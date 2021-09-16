@@ -692,6 +692,14 @@ class BuildOpenCore:
             # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
             print("- Allowing FileVault on Root Patched systems")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.filesystems.apfs")["Enabled"] = True
+        
+        if self.model in ModelArray.Bluetooth_BRCM2070:
+            print("- Enabling Bluetooth BRCM2070 for macOS Monterey")
+            self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.brcm2070_path)
+        elif self.model in ModelArray.Bluetooth_BRCM2046:
+            print("- Enabling Bluetooth BRCM2046 for macOS Monterey")
+            self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.brcm2046_path)
+
 
 
     def set_smbios(self):
