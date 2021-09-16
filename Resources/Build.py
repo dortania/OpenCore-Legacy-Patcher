@@ -588,7 +588,7 @@ class BuildOpenCore:
                 print("- Enabling Bluetooth BRCM2070 for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.brcm2070_path)
             elif self.computer.bluetooth == "BRCM2046 Hub":
-                print("- Enabling Bluetooth BRCM2046 for macOS Mojave")
+                print("- Enabling Bluetooth BRCM2046 for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.brcm2046_path)
         elif self.model in ModelArray.Bluetooth_BRCM2070:
             print("- Enabling Bluetooth BRCM2070 for macOS Monterey")
