@@ -583,12 +583,12 @@ class BuildOpenCore:
             self.config["DeviceProperties"]["Add"][tb_device_path] = {"class-code": binascii.unhexlify("FFFFFFFF"), "device-id": binascii.unhexlify("FFFF0000")}
 
         # Bluetooth Detection
-        if not self.constants.custom_model and self.computer.bluetooth:
-            if self.computer.bluetooth == "BRCM2070 Hub":
+        if not self.constants.custom_model and self.computer.bluetooth_chipset:
+            if self.computer.bluetooth_chipset == "BRCM2070 Hub":
                 print("- Enabling Bluetooth BRCM2070 for macOS Monterey")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -brcm2070_patch"
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-            elif self.computer.bluetooth == "BRCM2046 Hub":
+            elif self.computer.bluetooth_chipset == "BRCM2046 Hub":
                 print("- Enabling Bluetooth BRCM2046 for macOS Monterey")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -brcm2046_patch"
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)

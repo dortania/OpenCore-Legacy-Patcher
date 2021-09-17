@@ -325,7 +325,7 @@ class Computer:
         computer.storage_probe()
         computer.smbios_probe()
         computer.cpu_probe()
-        computer.bluetooth()
+        computer.bluetooth_probe()
         return computer
 
     def gpu_probe(self):
@@ -440,7 +440,7 @@ class Computer:
             subprocess.run("sysctl machdep.cpu.features".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip().split(" "),
         )
 
-    def bluetooth(self):
+    def bluetooth_probe(self):
         usb_data: str = subprocess.run("system_profiler SPUSBDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         if "BRCM2070 Hub" in usb_data:
             self.bluetooth_chipset = "BRCM2070 Hub"
