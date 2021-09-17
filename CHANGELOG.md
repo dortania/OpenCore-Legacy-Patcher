@@ -35,6 +35,8 @@
   - System Preferences will not report settings however
 - Allow Root Volume Patched Systems to use FileVault 2
   - Requires macOS 11.3 (20E232) or newer
+- Add offline TUI build
+  - Allows for root patching without network connection
 
 ## 0.2.4
 
