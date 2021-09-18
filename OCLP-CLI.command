@@ -232,6 +232,9 @@ If you plan to create the USB for another machine, please select the "Change Mod
 
         if self.constants.latebloom_delay == 0:
             self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
+        
+        if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9", decode=True):
+            self.constants.allow_ts2_accel = False
 
     def patch_vol(self):
         SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()

@@ -351,7 +351,7 @@ set million colour before rebooting"""
             print("- Installing TeraScale 2 Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddAMDAccelLegacy, self.constants.legacy_amd_path)
-        elif self.constants.detected_os == self.constants.big_sur and self.constants.allow_ts2_accel is True:
+        elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey] and self.constants.allow_ts2_accel is True:
             # TODO: Enable for Monterey when acceleration patches proress
             print("- Installing TeraScale 2 Acceleration Kext patches for Big Sur")
             self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
@@ -498,14 +498,13 @@ set million colour before rebooting"""
             self.amd_ts2 is True
             and self.constants.detected_os in self.constants.legacy_accel_support
             and self.constants.allow_ts2_accel is True
-            and self.constants.detected_os != self.constants.monterey
         ):
             # TeraScale 2 patches must be installed after Intel HD3000
             self.add_new_binaries(SysPatchArray.AddAMDAccel11TS2, self.constants.legacy_amd_path_ts2)
 
         if self.added_legacy_kexts is True and self.constants.detected_os in self.constants.legacy_accel_support:
             self.gpu_accel_legacy_extended()
-            if self.amd_ts2 is True and self.constants.allow_ts2_accel is True and self.constants.detected_os != self.constants.monterey:
+            if self.amd_ts2 is True and self.constants.allow_ts2_accel is True:
                 self.gpu_accel_legacy_extended_ts2()
 
         # Misc patches

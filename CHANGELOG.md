@@ -19,7 +19,7 @@
   - AppleALC 1.6.3 release
   - WhateverGreen 1.5.2 release
   - FeatureUnlock 1.0.3 release
-  - PatcherSupportPkg 0.1.0 release
+  - PatcherSupportPkg 0.1.2 release
 - Allow iGPU/dGPU switching in Windows
   - Applicable to MacBook Pros with Intel iGPU and Nvidia/AMD dGPU
 - Clean up Patcher Settings
@@ -29,8 +29,7 @@
   - Currently supports:
     - Intel Ironlake and Sandy Bridge
     - Nvidia Tesla
-    - AMD TeraScale 1
-  - TeraScale 2 acceleration to be added in the future
+    - AMD TeraScale 1 and 2
 - Allow Trackpad gestures on MacBook4,1 and MacBook5,2
   - System Preferences will not report settings however
 - Allow Root Volume Patched Systems to use FileVault 2

@@ -74,6 +74,9 @@ class OpenCoreLegacyPatcher:
 
         if Utilities.amfi_status() is False:
             self.constants.amfi_status = False
+        
+        if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9", decode=True):
+            self.constants.allow_ts2_accel = False
 
         self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
 
@@ -306,9 +309,7 @@ B. Exit
 - Non-Metal Graphics Accelertation
   - Intel: Ironlake - Sandy Bridge
   - Nvidia: Tesla - Fermi (8000-500 series)
-  - AMD: TeraScale 1 (2000-4000 series)
-- Basic Framebuffer and brightness Control (No acceleration)
-  - AMD: TeraScale 2 (5000-6000 series)
+  - AMD: TeraScale 1 and 2 (2000-6000 series)
 - Audio support for iMac7,1 and iMac8,1
 - Wifi support for BCM94328, BCM94322 and Atheros cards
 

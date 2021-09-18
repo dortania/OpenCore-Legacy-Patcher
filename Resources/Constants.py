@@ -14,7 +14,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.2.5"  #              OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.1.1"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.1.2"  #  PatcherSupportPkg
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
