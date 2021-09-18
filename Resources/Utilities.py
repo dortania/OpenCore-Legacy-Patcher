@@ -259,7 +259,7 @@ def download_file(link, location):
 def enable_apfs(fw_feature, fw_mask):
     fw_feature |= 2 ** 19
     fw_mask |= 2 ** 19
-
+    return fw_feature, fw_mask
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]

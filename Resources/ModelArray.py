@@ -1146,8 +1146,8 @@ Missing_USB_Map = [
     "iMac12,2",
     "MacPro3,1",
     "MacPro4,1",
-    "XServer2,1",
-    "XServer3,1",
+    "XServe2,1",
+    "XServe3,1",
 ]
 
 dGPU_switch = [
@@ -1164,4 +1164,47 @@ dGPU_switch = [
     "MacBookPro15,3",
     "MacBookPro16,1",
     "MacBookPro16,4",
+]
+
+Bluetooth_BRCM2046 = [
+    "MacBook4,1",
+    "MacBook5,1",
+    "MacBook5,2",
+    "MacBookAir2,1",
+    "MacBookAir3,1",
+    "MacBookAir3,2",
+    "MacBookPro4,1",
+    "MacBookPro5,1",
+    "MacBookPro5,2",
+    "MacBookPro5,3",
+    "MacBookPro5,4",
+    "MacBookPro5,5",
+    "MacBookPro7,1",
+    "Macmini3,1",
+    "iMac8,1",
+    "iMac9,1",
+    "iMac10,1",
+    "iMac11,1",
+    "iMac11,2",
+    "iMac11,3",
+    "iMac12,1",
+    "iMac12,2",
+    "MacPro4,1",
+    "MacPro5,1",
+]
+
+Bluetooth_BRCM2070 = [
+    "MacBook6,1",
+    "MacBook7,1",
+    "MacBookAir4,1",
+    "MacBookAir4,2",
+    "MacBookPro6,1",
+    "MacBookPro6,2",
+    "MacBookPro8,1",
+    "MacBookPro8,2",
+    "MacBookPro8,3",
+    "Macmini4,1",
+    "Macmini5,1",
+    "Macmini5,2",
+    "Macmini5,3",
 ]

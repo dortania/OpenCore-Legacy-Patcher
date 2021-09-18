@@ -34,6 +34,7 @@ class Constants:
         self.featureunlock_version = "1.0.3"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.4"  #          CPUFriend
+        self.bluetool_version = "2.6.1"  #           BlueToolFixup
 
         ## Apple
         ## https://www.apple.com
@@ -324,6 +325,10 @@ class Constants:
     @property
     def debugenhancer_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/DebugEnhancer-v{self.debugenhancer_version}.zip")
+
+    @property
+    def bluetool_path(self):
+        return self.payload_kexts_path / Path(f"Acidanthera/BlueToolFixup-v{self.bluetool_version}.zip")
 
     @property
     def innie_path(self):
@@ -653,7 +658,7 @@ class Constants:
         "j215ap",  #  MacBookPro16,4
         "j185ap",  #  iMac20,1
         "j185fap",  # iMac20,2
-        #"x86legacy",  # non-T2 Macs/VMs, Monterey's boot.efi enforces this on all Macs
+        # "x86legacy",  # non-T2 Macs/VMs, Monterey's boot.efi enforces this on all Macs
     ]
 
     sandy_board_id = [
