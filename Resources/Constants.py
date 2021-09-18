@@ -34,7 +34,7 @@ class Constants:
         self.featureunlock_version = "1.0.3"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.4"  #          CPUFriend
-        self.bluetool_version = "2.6.1"  #           BlueToolFixup
+        self.bluetool_version = "2.6.0"  #           BlueToolFixup
 
         ## Apple
         ## https://www.apple.com
@@ -56,6 +56,7 @@ class Constants:
         self.backlight_injector_version = "1.0.0"  # BacklightInjector
         self.smcspoof_version = "1.0.0"  #           SMC-Spoof
         self.mce_version = "1.0.0"  #                AppleMCEReporterDisabler
+        self.btspoof_version = "1.0.0"  #            Bluetooth-Spoof
 
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
@@ -313,6 +314,10 @@ class Constants:
     @property
     def smcspoof_path(self):
         return self.payload_kexts_path / Path(f"Misc/SMC-Spoof-v{self.smcspoof_version}.zip")
+
+    @property
+    def btspoof_path(self):
+        return self.payload_kexts_path / Path(f"Misc/Bluetooth-Spoof-v{self.btspoof_version}.zip")
 
     @property
     def nvmefix_path(self):

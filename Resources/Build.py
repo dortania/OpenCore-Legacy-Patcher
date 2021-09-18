@@ -588,22 +588,14 @@ class BuildOpenCore:
 
         # Bluetooth Detection
         if not self.constants.custom_model and self.computer.bluetooth_chipset:
-            if self.computer.bluetooth_chipset == "BRCM2070 Hub":
-                print("- Enabling Bluetooth BRCM2070 for macOS Monterey")
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -brcm2070_patch"
+            if self.computer.bluetooth_chipset in ["BRCM2070 Hub", "BRCM2046 Hub"]:
+                print("- Fixing Legacy Bluetooth for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-            elif self.computer.bluetooth_chipset == "BRCM2046 Hub":
-                print("- Enabling Bluetooth BRCM2046 for macOS Monterey")
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -brcm2046_patch"
-                self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-        elif self.model in ModelArray.Bluetooth_BRCM2070:
-            print("- Enabling Bluetooth BRCM2070 for macOS Monterey")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -brcm2070_patch"
+                self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
+        elif self.model in ModelArray.Bluetooth_BRCM2070 or self.model in ModelArray.Bluetooth_BRCM2046:
+            print("- Fixing Legacy Bluetooth for macOS Monterey")
             self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-        elif self.model in ModelArray.Bluetooth_BRCM2046:
-            print("- Enabling Bluetooth BRCM2046 for macOS Monterey")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -brcm2046_patch"
-            self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
+            self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
 
         # Add XhciDxe if firmware doesn't have XHCI controller support and XCHI controller detected
         # TODO: Fix XhciDxe to work on pre UEFI 2.0 Macs
