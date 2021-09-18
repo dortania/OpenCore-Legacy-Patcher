@@ -35,6 +35,10 @@
   - System Preferences will not report settings however
 - Allow Root Volume Patched Systems to use FileVault 2
   - Requires macOS 11.3 (20E232) or newer
+- Add offline TUI build
+  - Allows for root patching without network connection
+- Add Legacy Wireless support for Monterey
+  - Applicable for BCM94328, BCM94322 and Atheros chipsets
 
 ## 0.2.4
 

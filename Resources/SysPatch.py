@@ -33,6 +33,7 @@ class PatchSysVolume:
         self.ivy_gpu = False
         self.brightness_legacy = False
         self.legacy_audio = False
+        self.legacy_wifi = False
         self.added_legacy_kexts = False
         self.amfi_must_disable = False
         self.check_board_id = False
@@ -48,10 +49,12 @@ class PatchSysVolume:
             self.mount_location = "/System/Volumes/Update/mnt1"
         else:
             self.mount_location = ""
+        self.mount_coreservices = f"{self.mount_location}/System/Library/CoreServices"
         self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
         self.mount_frameworks = f"{self.mount_location}/System/Library/Frameworks"
         self.mount_lauchd = f"{self.mount_location}/System/Library/LaunchDaemons"
         self.mount_private_frameworks = f"{self.mount_location}/System/Library/PrivateFrameworks"
+        self.mount_libexec = f"{self.mount_location}/usr/libexec"
 
     def elevated(self, *args, **kwargs) -> subprocess.CompletedProcess:
         if os.getuid() == 0 or self.constants.gui_mode is True:
@@ -292,6 +295,12 @@ set million colour before rebooting"""
         self.delete_old_binaries(SysPatchArray.DeleteVolumeControl)
         self.add_new_binaries(SysPatchArray.AddVolumeControl, self.constants.audio_path)
 
+    def add_wifi_patch(self):
+        print("- Merging Wireless CoreSerices patches")
+        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_coreservices}/", self.mount_coreservices], stdout=subprocess.PIPE)
+        print("- Merging Wireless usr/libexec patches")
+        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_libexec}/", self.mount_libexec], stdout=subprocess.PIPE)
+
     def gpu_accel_legacy(self):
         if self.constants.detected_os == self.constants.mojave:
             print("- Installing General Acceleration Kext patches for Mojave")
@@ -503,6 +512,11 @@ set million colour before rebooting"""
         if self.legacy_audio is True:
             print("- Fixing Volume Control Support")
             self.add_audio_patch()
+
+        if self.legacy_wifi is True:
+            print("- Installing legacy Wireless support")
+            self.add_wifi_patch()
+
         if self.validate is False:
             self.rebuild_snapshot()
 
@@ -540,7 +554,13 @@ set million colour before rebooting"""
             print("- Removing old Apple Binaries zip")
             Path(self.constants.payload_apple_root_path_zip).unlink()
 
-        Utilities.download_file(link, self.constants.payload_apple_root_path_zip)
+        local_zip = Path(self.constants.payload_path) / f"{os_ver}.zip"
+        if Path(local_zip).exists():
+            print(f"- Found local {os_ver} zip, skipping download")
+            print(f"- Duplicating into Apple.zip")
+            shutil.copy(local_zip, self.constants.payload_apple_root_path_zip)
+        else:
+            Utilities.download_file(link, self.constants.payload_apple_root_path_zip)
 
         if self.constants.payload_apple_root_path_zip.exists():
             print("- Download completed")
@@ -612,6 +632,13 @@ set million colour before rebooting"""
             if self.constants.detected_os > self.constants.catalina:
                 self.legacy_audio = True
 
+        if (
+            isinstance(self.constants.computer.wifi, device_probe.Broadcom)
+            and self.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
+        ) or (isinstance(self.computer.wifi, device_probe.Atheros) and self.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
+            if self.constants.detected_os > self.constants.big_sur and Utilities.check_monterey_wifi is True:
+                self.legacy_wifi = True
+
         Utilities.cls()
         print("The following patches will be applied:")
         if self.nvidia_legacy is True:
@@ -630,6 +657,8 @@ set million colour before rebooting"""
             print("- Add Legacy Brightness Control")
         if self.legacy_audio is True:
             print("- Add legacy Audio Control")
+        if self.legacy_wifi is True:
+            print("- Add legacy WiFi Control")
 
         self.no_patch = not any(
             [
@@ -641,6 +670,7 @@ set million colour before rebooting"""
                 self.ivy_gpu,
                 self.brightness_legacy,
                 self.legacy_audio,
+                self.legacy_wifi,
             ]
         )
 

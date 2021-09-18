@@ -143,6 +143,16 @@ def check_oclp_boot():
         return False
 
 
+def check_monterey_wifi():
+    IO80211ElCap = "com.apple.iokit.IO80211ElCap (1110.26)"
+    CoreCaptureElCap = "com.apple.driver.corecaptureElCap (1.0.4)"
+    loaded_kexts: str = subprocess.run("kextcache".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+    if IO80211ElCap in loaded_kexts and CoreCaptureElCap in loaded_kexts:
+        return True
+    else:
+        return False
+
+
 def patching_status(os_sip, os):
     # Detection for Root Patching
     sip_enabled = True  #  System Integrity Protection
@@ -250,7 +260,6 @@ def enable_apfs(fw_feature, fw_mask):
     fw_feature |= 2 ** 19
     fw_mask |= 2 ** 19
     return fw_feature, fw_mask
-
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]
