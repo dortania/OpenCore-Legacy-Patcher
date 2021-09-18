@@ -294,13 +294,12 @@ set million colour before rebooting"""
     def add_audio_patch(self):
         self.delete_old_binaries(SysPatchArray.DeleteVolumeControl)
         self.add_new_binaries(SysPatchArray.AddVolumeControl, self.constants.audio_path)
-    
+
     def add_wifi_patch(self):
         print("- Merging Wireless CoreSerices patches")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_coreservices}/", self.mount_coreservices], stdout=subprocess.PIPE)
         print("- Merging Wireless usr/libexec patches")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_libexec}/", self.mount_libexec], stdout=subprocess.PIPE)
-        
 
     def gpu_accel_legacy(self):
         if self.constants.detected_os == self.constants.mojave:
@@ -513,7 +512,7 @@ set million colour before rebooting"""
         if self.legacy_audio is True:
             print("- Fixing Volume Control Support")
             self.add_audio_patch()
-        
+
         if self.legacy_wifi is True:
             print("- Installing legacy Wireless support")
             self.add_wifi_patch()
@@ -637,7 +636,7 @@ set million colour before rebooting"""
             isinstance(self.constants.computer.wifi, device_probe.Broadcom)
             and self.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
         ) or (isinstance(self.computer.wifi, device_probe.Atheros) and self.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
-            if self.constants.detected_os > self.constants.big_sur:
+            if self.constants.detected_os > self.constants.big_sur and Utilities.check_monterey_wifi is True:
                 self.legacy_wifi = True
 
         Utilities.cls()

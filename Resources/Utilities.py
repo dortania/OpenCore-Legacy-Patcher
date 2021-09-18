@@ -135,8 +135,19 @@ def amfi_status():
         return False
     return True
 
+
 def check_oclp_boot():
     if get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False):
+        return True
+    else:
+        return False
+
+
+def check_monterey_wifi():
+    IO80211ElCap = "com.apple.iokit.IO80211ElCap (1110.26)"
+    CoreCaptureElCap = "com.apple.driver.corecaptureElCap (1.0.4)"
+    loaded_kexts: str = subprocess.run("kextcache".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+    if IO80211ElCap in loaded_kexts and CoreCaptureElCap in loaded_kexts:
         return True
     else:
         return False
@@ -244,10 +255,10 @@ def download_file(link, location):
             chunk = file.read(1024 * 1024 * 16)
     return checksum
 
-def enable_apfs(fw_feature, fw_mask):
-    fw_feature |= 2**19
-    fw_mask |= 2**19
 
+def enable_apfs(fw_feature, fw_mask):
+    fw_feature |= 2 ** 19
+    fw_mask |= 2 ** 19
 
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
