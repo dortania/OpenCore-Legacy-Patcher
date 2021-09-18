@@ -794,3 +794,12 @@ class Constants:
         "Xserve2,1": "Mac-F42289C8",
         "Xserve3,1": "Mac-F223BEC8",
     }
+
+    target_type = {
+        "ADP3,2": "J273",
+        "MacBookAir10,1": "J313",
+        "MacBookPro17,1": "J293",
+        "Macmini9,1": "J274",
+        "iMac21,1": "J256",
+        "iMac21,2": "J257",
+    }

@@ -38,6 +38,7 @@ Regarding OS support, see below:
 | MacBook5,2 | Early 2009 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Trackpad is recognized as mouse<br/>- Brightness control partially supported |
 | MacBook6,1 | Late 2009 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
 | MacBook7,1 | Mid-2010 | ^^ | ^^ |
+| MacBook8,1 | Mid-2015 | ^^ | <span style="color:green"> Everything is supported</span> |
 
 ### MacBook Air
 
@@ -51,6 +52,8 @@ Regarding OS support, see below:
 | MacBookAir4,2 | ^^ | ^^ | ^^ |
 | MacBookAir5,1 | Mid-2012 |^^ | <span style="color:green"> Everything is supported</span> |
 | MacBookAir5,2 | ^^ | ^^ | ^^ |
+| MacBookAir6,1 | Mid-2013, Early 2014 | ^^ | ^^ |
+| MacBookAir6,2 | ^^ | ^^ | ^^ |
 
 ### MacBook Pro
 
@@ -77,6 +80,9 @@ Regarding OS support, see below:
 | MacBookPro9,2 | ^^ | ^^ | ^^ |
 | MacBookPro10,1 | Mid-2012, Early 2013 | ^^ | ^^ |
 | MacBookPro10,2 | Late 2012, Early 2013 | ^^ | ^^ |
+| MacBookPro11,1 | Late 2013, Mid-2014 | ^^ | ^^ |
+| MacBookPro11,2 | ^^ | ^^ | ^^ |
+| MacBookPro11,3 | ^^ | ^^ | ^^ |
 
 ### Mac mini
 
@@ -116,6 +122,8 @@ Regarding OS support, see below:
 | iMac14,1 | Late 2013 | ^^ | ^^ |
 | iMac14,2 | ^^ | ^^ | ^^ |
 | iMac14,3 | ^^ | ^^ | ^^ |
+| iMac14,4 | Mid-2014 | ^^ | ^^ |
+| iMac15,1 | Late 2014, Mid-2015 | ^^ | [Display will output to 4k instead of 5k](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/359) | 
 
 * For iMac10,1 through iMac12,x, we highly recommend users upgrade the GPU to a Metal supported model. See here for more information: [iMac late 2009 to mid-2011 Graphics Card Upgrade Guide](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857)
 
