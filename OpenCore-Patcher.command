@@ -310,6 +310,7 @@ B. Exit
 - Basic Framebuffer and brightness Control (No acceleration)
   - AMD: TeraScale 2 (5000-6000 series)
 - Audio support for iMac7,1 and iMac8,1
+- Wifi support for BCM94328, BCM94322 and Atheros cards
 
 WARNING: Root Volume Patching is still in active development, please
 have all important user data backed up. Note when the system volume
