@@ -38,18 +38,18 @@ class Constants:
 
         ## Apple
         ## https://www.apple.com
-        self.marvel_version = "1.0.0"  #  MarvelYukonEthernet
-        self.nforce_version = "1.0.0"  #  nForceEthernet
-        self.piixata_version = "1.0.0"  # AppleIntelPIIXATA
-        self.fw_kext = "1.0.0"  #         IOFireWireFamily
-        self.apple_trackpad = "1.0.0"  #  AppleUSBTrackpad
+        self.marvel_version = "1.0.1"  #  MarvelYukonEthernet
+        self.nforce_version = "1.0.1"  #  nForceEthernet
+        self.piixata_version = "1.0.1"  # AppleIntelPIIXATA
+        self.fw_kext = "1.0.1"  #         IOFireWireFamily
+        self.apple_trackpad = "1.0.1"  #  AppleUSBTrackpad
 
         ## Apple - Dortania Modified
-        self.bcm570_version = "1.0.1"  #             CatalinaBCM5701Ethernet
-        self.corecaptureelcap_version = "1.0.0"  #   corecaptureElCap
+        self.bcm570_version = "1.0.2"  #             CatalinaBCM5701Ethernet
+        self.corecaptureelcap_version = "1.0.1"  #   corecaptureElCap
         self.io80211elcap_version = "2.0.0"  #       IO80211ElCap
-        self.io80211high_sierra_version = "1.0.0"  # IO80211HighSierra
-        self.io80211mojave_version = "1.0.0"  #      IO80211Mojave
+        self.io80211high_sierra_version = "1.0.1"  # IO80211HighSierra
+        self.io80211mojave_version = "1.0.1"  #      IO80211Mojave
 
         ## Dortania
         ## https://github.com/dortania
