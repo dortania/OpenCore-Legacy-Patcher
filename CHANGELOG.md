@@ -39,6 +39,8 @@
   - Allows for root patching without network connection
 - Add Legacy Wireless support for Monterey
   - Applicable for BCM94328, BCM94322 and Atheros chipsets
+- Add Legacy Bluetooth support for Monterey
+  - Applicable for BRCM2046 and BRCM2070 chipsets
 
 ## 0.2.4
 
