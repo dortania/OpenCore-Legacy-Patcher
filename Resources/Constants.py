@@ -14,7 +14,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.2.5"  #              OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.1.0"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.1.1"  #  PatcherSupportPkg
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
@@ -46,7 +46,7 @@ class Constants:
         ## Apple - Dortania Modified
         self.bcm570_version = "1.0.1"  #             CatalinaBCM5701Ethernet
         self.corecaptureelcap_version = "1.0.0"  #   corecaptureElCap
-        self.io80211elcap_version = "1.0.0"  #       IO80211ElCap
+        self.io80211elcap_version = "2.0.0"  #       IO80211ElCap
         self.io80211high_sierra_version = "1.0.0"  # IO80211HighSierra
         self.io80211mojave_version = "1.0.0"  #      IO80211Mojave
 
@@ -491,6 +491,18 @@ class Constants:
         return self.payload_apple_root_path / Path("Extensions")
 
     @property
+    def payload_apple_coreservices_path(self):
+        return self.payload_apple_root_path / Path("CoreServices")
+
+    @property
+    def payload_apple_usr_path(self):
+        return self.payload_apple_root_path / Path("usr")
+    
+    @property
+    def payload_apple_libexec_path(self):
+        return self.payload_apple_usr_path / Path("libexec")
+
+    @property
     def payload_apple_frameworks_path(self):
         return self.payload_apple_root_path / Path("Frameworks")
 
@@ -580,6 +592,14 @@ class Constants:
     @property
     def legacy_brightness(self):
         return self.payload_apple_kexts_path / Path("Brightness-Control")
+    
+    @property
+    def legacy_wifi_coreservices(self):
+        return self.payload_apple_coreservices_path / Path("Legacy-Wifi")
+    
+    @property
+    def legacy_wifi_libexec(self):
+        return self.payload_apple_libexec_path / Path("Legacy-Wifi")
 
     csr_values = {
         # Source: macOS 11.4 (XNU's csr.h)

@@ -456,7 +456,7 @@
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
-				<string>20.99.99</string>
+				<string></string>
 				<key>MinKernel</key>
 				<string>16.0.0</string>
 				<key>BundlePath</key>
@@ -470,33 +470,15 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
-				<string>Atheros Wifi Patch</string>
+				<string>Monterey Atheros Wifi Patch</string>
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
-				<string>20.99.99</string>
+				<string></string>
 				<key>MinKernel</key>
 				<string>18.0.0</string>
 				<key>BundlePath</key>
-				<string>IO80211HighSierra.kext</string>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/IO80211HighSierra</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>Arch</key>
-				<string>x86_64</string>
-				<key>Comment</key>
-				<string>Atheros Wifi Patch</string>
-				<key>Enabled</key>
-				<false/>
-				<key>MaxKernel</key>
-				<string>20.99.99</string>
-				<key>MinKernel</key>
-				<string>18.0.0</string>
-				<key>BundlePath</key>
-				<string>IO80211HighSierra.kext/Contents/PlugIns/AirPortAtheros40.kext</string>
+				<string>IO80211ElCap.kext/Contents/PlugIns/AirPortAtheros40.kext</string>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AirPortAtheros40</string>
 				<key>PlistPath</key>
@@ -506,33 +488,15 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
-				<string>Broadcom Wifi Patch</string>
+				<string>Monterey BCM94322 Wifi Patch</string>
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
-				<string>20.99.99</string>
+				<string></string>
 				<key>MinKernel</key>
 				<string>19.0.0</string>
 				<key>BundlePath</key>
-				<string>IO80211Mojave.kext</string>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/IO80211Mojave</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>Arch</key>
-				<string>x86_64</string>
-				<key>Comment</key>
-				<string>Broadcom Wifi Patch</string>
-				<key>Enabled</key>
-				<false/>
-				<key>MaxKernel</key>
-				<string>20.99.99</string>
-				<key>MinKernel</key>
-				<string>19.0.0</string>
-				<key>BundlePath</key>
-				<string>IO80211Mojave.kext/Contents/PlugIns/AirPortBrcm4331.kext</string>
+				<string>IO80211ElCap.kext/Contents/PlugIns/AirPortBrcm4331.kext</string>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AirPortBrcm4331</string>
 				<key>PlistPath</key>
