@@ -48,7 +48,7 @@ class OpenCoreLegacyPatcher:
         parser.add_argument("--firewire", help="Enable FireWire Booting", action="store_true", required=False)
         parser.add_argument("--nvme", help="Enable NVMe Booting", action="store_true", required=False)
         parser.add_argument("--wlan", help="Enable Wake on WLAN support", action="store_true", required=False)
-        parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
+        # parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
         parser.add_argument("--moderate_smbios", help="Moderate SMBIOS Patching", action="store_true", required=False)
         parser.add_argument("--moj_cat_accel", help="Allow Root Patching on Mojave and Catalina", action="store_true", required=False)
         parser.add_argument("--disable_thunderbolt", help="Disable Thunderbolt on 2013-2014 MacBook Pros", action="store_true", required=False)
@@ -115,9 +115,9 @@ class OpenCoreLegacyPatcher:
         if args.nvme:
             print("- Set NVMe Boot configuration")
             self.constants.nvme_boot = True
-        if args.disable_amfi:
-            print("- Set Disable AMFI configuration")
-            self.constants.amfi_status = False
+        # if args.disable_amfi:
+        #     print("- Set Disable AMFI configuration")
+        #     self.constants.amfi_status = False
         if args.wlan:
             print("- Set Wake on WLAN configuration")
             self.constants.enable_wake_on_wlan = True
@@ -194,19 +194,13 @@ If you plan to create the USB for another machine, please select the "Change Mod
             self.unpatch_vol()
 
     def set_defaults(self, model, host_is_target):
+        if host_is_target:
+            if Utilities.check_metal_support(device_probe, self.computer) is False:
+                self.constants.disable_cs_lv = True
+        elif model in ModelArray.LegacyGPU:
+            self.constants.disable_cs_lv = True
         if model in ModelArray.LegacyGPU:
-            if (
-                host_is_target
-                and self.computer.dgpu
-                and self.computer.dgpu.arch
-                in [
-                    device_probe.AMD.Archs.Legacy_GCN,
-                    device_probe.AMD.Archs.Polaris,
-                    device_probe.AMD.Archs.Vega,
-                    device_probe.AMD.Archs.Navi,
-                    device_probe.NVIDIA.Archs.Kepler,
-                ]
-            ):
+            if Utilities.check_metal_support(device_probe, self.computer) is True:
                 print("- Detected Metal GPU, overriding default configuration")
                 # Building on device and we have a native, supported GPU
                 self.constants.sip_status = True
@@ -226,7 +220,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 self.constants.secure_status = False  # Modified root volume
                 self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
                 # self.constants.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
-        if model == "MacBook8,1" and host_is_target:
+        if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings == "Moderate"
 

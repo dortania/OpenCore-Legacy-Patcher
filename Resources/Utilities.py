@@ -19,7 +19,7 @@ except ImportError:
     except ImportError:
         raise Exception("Missing requests library!\nPlease run the following before starting OCLP:\npip3 install requests")
 
-from Resources import Constants, ioreg
+from Resources import Constants, ioreg, device_probe
 
 
 def hexswap(input_hex: str):
@@ -144,13 +144,26 @@ def check_oclp_boot():
 
 
 def check_monterey_wifi():
-    IO80211ElCap = "com.apple.iokit.IO80211ElCap (1110.26)"
-    CoreCaptureElCap = "com.apple.driver.corecaptureElCap (1.0.4)"
+    IO80211ElCap = "com.apple.iokit.IO80211ElCap"
+    CoreCaptureElCap = "com.apple.driver.corecaptureElCap"
     loaded_kexts: str = subprocess.run("kextcache".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
     if IO80211ElCap in loaded_kexts and CoreCaptureElCap in loaded_kexts:
         return True
     else:
         return False
+
+
+def check_metal_support(device_probe, computer):
+    dgpu = computer.dgpu
+    igpu = computer.igpu
+    if (
+        (dgpu and dgpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi, device_probe.AMD.Archs.TeraScale_1, device_probe.AMD.Archs.TeraScale_2])
+        or (igpu and igpu.arch in [device_probe.Intel.Archs.Iron_Lake, device_probe.Intel.Archs.Sandy_Bridge])
+        or isinstance(igpu, device_probe.NVIDIA)
+    ):
+        return False
+    else:
+        return True
 
 
 def patching_status(os_sip, os):
@@ -164,7 +177,8 @@ def patching_status(os_sip, os):
     gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
     gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
-    if os > Constants.Constants().catalina:
+    if os > Constants.Constants().catalina and not check_oclp_boot():
+        # Assume non-OCLP Macs don't patch _cs_require_lv
         amfi_enabled = amfi_status()
     else:
         # Catalina and older supports individually disabling Library Validation
@@ -260,6 +274,7 @@ def enable_apfs(fw_feature, fw_mask):
     fw_feature |= 2 ** 19
     fw_mask |= 2 ** 19
     return fw_feature, fw_mask
+
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]

@@ -670,9 +670,12 @@ class BuildOpenCore:
             print("- Disabling SIP")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("EF0F0000")
             self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"] += ["csr-active-config"]
-        if self.constants.amfi_status is False:
-            print("- Disabling AMFI")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi_get_out_of_my_way=1"
+        # if self.constants.amfi_status is False:
+        #     print("- Disabling AMFI")
+        #     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi_get_out_of_my_way=1"
+        if self.constants.disable_cs_lv is True:
+            print("- Disabling Library Validation")
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Library Validation Enforcement")["Enabled"] = True
         if self.constants.secure_status is False:
             print("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
