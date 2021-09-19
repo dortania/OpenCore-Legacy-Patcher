@@ -639,7 +639,7 @@ set million colour before rebooting"""
             isinstance(self.constants.computer.wifi, device_probe.Broadcom)
             and self.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
         ) or (isinstance(self.computer.wifi, device_probe.Atheros) and self.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
-            if self.constants.detected_os > self.constants.big_sur and Utilities.check_monterey_wifi is True:
+            if self.constants.detected_os > self.constants.big_sur and Utilities.check_monterey_wifi() is True:
                 self.legacy_wifi = True
 
         Utilities.cls()
