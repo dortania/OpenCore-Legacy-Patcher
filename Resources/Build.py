@@ -168,7 +168,7 @@ class BuildOpenCore:
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
             # Misc
-            ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: self.model in ModelArray.SidecarPatch),
+            ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: self.model in ModelArray.FeatureUnlockSupport),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
             ("latebloom.kext", self.constants.latebloom_version, self.constants.latebloom_path, lambda: self.model in ModelArray.PCIRaceCondition),
             ("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path, lambda: self.model in ["MacBook4,1", "MacBook5,2"]),
