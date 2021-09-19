@@ -26,19 +26,14 @@ class OpenCoreLegacyPatcher:
         self.constants.secure_status = False  # Default false for Monterey
         self.constants.amfi_status = True
 
+        if host_is_target:
+            if Utilities.check_metal_support(device_probe, self.computer) is False:
+                self.constants.disable_cs_lv = True
+        elif model in ModelArray.LegacyGPU:
+            self.constants.disable_cs_lv = True
+
         if model in ModelArray.LegacyGPU:
-            if (
-                host_is_target
-                and self.computer.dgpu
-                and self.computer.dgpu.arch
-                in [
-                    device_probe.AMD.Archs.Legacy_GCN,
-                    device_probe.AMD.Archs.Polaris,
-                    device_probe.AMD.Archs.Vega,
-                    device_probe.AMD.Archs.Navi,
-                    device_probe.NVIDIA.Archs.Kepler,
-                ]
-            ):
+            if Utilities.check_metal_support(device_probe, self.computer) is True:
                 # Building on device and we have a native, supported GPU
                 self.constants.sip_status = True
                 # self.constants.secure_status = True  # Monterey
@@ -78,7 +73,11 @@ class OpenCoreLegacyPatcher:
         if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9", decode=True):
             self.constants.allow_ts2_accel = False
 
-        self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
+        if self.constants.latebloom_delay == 0:
+            self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
+        
+        if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9", decode=True):
+            self.constants.allow_ts2_accel = False
 
         # Check if running in RecoveryOS
         self.constants.recovery_status = Utilities.check_recovery()
@@ -172,10 +171,10 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             title = ["Adjust Security Settings"]
             menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
-                [
-                    f"Set Apple Mobile File Integrity (AMFI):\tCurrently {self.constants.amfi_status}",
-                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_amfi,
-                ],
+                # [
+                #     f"Set Apple Mobile File Integrity (AMFI):\tCurrently {self.constants.amfi_status}",
+                #     CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_amfi,
+                # ],
                 [
                     f"Set System Intrgity Protection (SIP):\tCurrently {self.constants.sip_status}",
                     CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_sip,
