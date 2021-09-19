@@ -65,6 +65,10 @@ Currently Zoom relies partially on Metal and so needs a small binary patch. Dosd
 
 ## Unable to grant special permissions to apps (ie. Camera Access to Zoom)
 
+With version 0.2.5, this issue should be full resolved
+
+::: details 0.2.4 and older Work-Around
+
 Due to the usage of `amfi_get_out_of_my_way=1`, macOS will fail to prompt users for special permissions upon application start as well as omit the entires in System Preferences. To work around this, we recommend users install [tccplus](https://github.com/jslegendre/tccplus) to manage permissions.
 
 Example usage with Discord and microphone permissions:
@@ -87,6 +91,8 @@ $ sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "INSERT or RE
 
 $ sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "INSERT or REPLACE INTO access VALUES('kTCCServiceCamera','us.zoom.xos',0,2,0,1,NULL,NULL,NULL,'UNUSED',NULL,0,1541440109);"
 ```
+
+:::
 
 ## Keyboard Backlight broken
 
