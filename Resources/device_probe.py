@@ -446,5 +446,7 @@ class Computer:
             self.bluetooth_chipset = "BRCM2070 Hub"
         elif "BRCM2046 Hub" in usb_data:
             self.bluetooth_chipset = "BRCM2046 Hub"
+        elif "BRCM20702 Hub" in usb_data:
+            self.bluetooth_chipset = "BRCM20702 Hub"
         elif "Bluetooth":
             self.bluetooth_chipset = "Generic"

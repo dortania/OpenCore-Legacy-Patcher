@@ -34,7 +34,7 @@ class Constants:
         self.featureunlock_version = "1.0.3"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.4"  #          CPUFriend
-        self.bluetool_version = "2.6.0"  #           BlueToolFixup
+        self.bluetool_version = "2.6.1"  #           BlueToolFixup
 
         ## Apple
         ## https://www.apple.com
