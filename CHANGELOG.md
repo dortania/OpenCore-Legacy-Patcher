@@ -43,6 +43,8 @@
 - Disable Library Validation allowing for AMFI usage
   - Remove reliance on amfi_get_out_of_my_way=1
 - Add Kepler Accleration Patches for Monterey Beta 7 and newer
+- Add FirmwareFeature upgrading to all Models
+  - Fixes Monterey Beta 7 installation issues
 
 ## 0.2.4
 

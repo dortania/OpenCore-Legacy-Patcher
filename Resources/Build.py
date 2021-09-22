@@ -14,7 +14,7 @@ import ast
 from pathlib import Path
 from datetime import date
 
-from Resources import Constants, ModelArray, Utilities, device_probe
+from Resources import Constants, ModelArray, Utilities, device_probe, SMBIOSData
 
 
 def rmtree_handler(func, path, exc_info):
@@ -77,6 +77,19 @@ class BuildOpenCore:
             fw_feature = b"\x03\x14\x08\xc0\x00\x00\x00\x00"
             fw_mask = b"\xff\x3f\x08\xc0\x00\x00\x00\x00"
         return fw_feature, fw_mask
+
+    def patch_firmware_feature(self):
+        if not self.constants.custom_model:
+            firmwarefeature = Utilities.get_rom("firmware-features")
+            if not firmwarefeature:
+                print("- Failed to find FirmwareFeatures, falling back on defaults")
+                firmwarefeature = int(SMBIOSData.FirmwareFeatures[self.model], 16)
+        else:
+            firmwarefeature = int(SMBIOSData.FirmwareFeatures[self.model], 16)
+        firmwarefeature = Utilities.enable_apfs(firmwarefeature)
+        firmwarefeature = Utilities.enable_apfs_extended(firmwarefeature)
+        firmwarefeature = Utilities.enable_large_basesystem(firmwarefeature)
+        return firmwarefeature
 
     def disk_type(self):
         drive_host_info = plistlib.loads(subprocess.run(f"diskutil info -plist {self.constants.disk}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -735,12 +748,14 @@ class BuildOpenCore:
         def minimal_serial_patch(self):
             if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
                 self.config["PlatformInfo"]["SMBIOS"]["ProcessorType"] = 1537
-            if self.model in ModelArray.NoAPFSsupport:
-                fw_feature, fw_mask = self.fw_feature_detect(self.model)
-                self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeatures"] = fw_feature
-                self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeatures"] = fw_feature
-                self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeaturesMask"] = fw_mask
-                self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeaturesMask"] = fw_mask
+            fw_feature = self.patch_firmware_feature()
+            fw_feature = hex(fw_feature).lstrip("0x").rstrip("L").strip()
+            print(f"- Setting Firmware Feature: {fw_feature}")
+            fw_feature = Utilities.string_to_hex(fw_feature)
+            self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeatures"] = fw_feature
+            self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeatures"] = fw_feature
+            self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeaturesMask"] = fw_feature
+            self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeaturesMask"] = fw_feature
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
             self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
             self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
