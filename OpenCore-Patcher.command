@@ -31,6 +31,10 @@ class OpenCoreLegacyPatcher:
         if host_is_target:
             if Utilities.check_metal_support(device_probe, self.computer) is False:
                 self.constants.disable_cs_lv = True
+            if self.computer.dgpu and self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
+                self.constants.sip_status = False
+                self.constants.amfi_status = True
+                self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
         elif model in ModelArray.LegacyGPU:
             self.constants.disable_cs_lv = True
 
@@ -40,7 +44,6 @@ class OpenCoreLegacyPatcher:
                 if self.computer.dgpu and self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
                     self.constants.sip_status = False
                     # self.constants.secure_status = True  # Monterey
-                    self.constants.amfi_status = True
                     self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
                 else:
                     self.constants.sip_status = True
@@ -56,6 +59,8 @@ class OpenCoreLegacyPatcher:
             self.constants.secure_status = False  # Modified root volume
             self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
             # self.constants.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
+        
+
         if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings = "Moderate"

@@ -200,6 +200,10 @@ If you plan to create the USB for another machine, please select the "Change Mod
         if host_is_target:
             if Utilities.check_metal_support(device_probe, self.computer) is False:
                 self.constants.disable_cs_lv = True
+            if self.computer.dgpu and self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
+                self.constants.sip_status = False
+                self.constants.amfi_status = True
+                self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
         elif model in ModelArray.LegacyGPU:
             self.constants.disable_cs_lv = True
         if model in ModelArray.LegacyGPU:
