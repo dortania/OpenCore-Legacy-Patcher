@@ -63,22 +63,11 @@ class BuildOpenCore:
         else:
             return model
 
-    def fw_feature_detect(self, model):
-        # Values based off OpenCorePkg's Firmwarefeatures and FirmwarefeaturesMask
-        # Additionally, APFS bit(19) flipped
-        # https://github.com/acidanthera/OpenCorePkg/blob/0.6.9/Include/Apple/IndustryStandard/AppleFeatures.h#L136
-        if model == "iMac7,1":
-            fw_feature = b"\x07\x14\x08\xc0\x00\x00\x00\x00"
-            fw_mask = b"\xff\x1f\x08\xc0\x00\x00\x00\x00"
-        elif model in ["MacPro4,1", "Xserve3,1"]:
-            fw_feature = b"7\xf5\t\xe0\x00\x00\x00\x00"
-            fw_mask = b"7\xff\x0b\xc0\x00\x00\x00\x00"
-        else:
-            fw_feature = b"\x03\x14\x08\xc0\x00\x00\x00\x00"
-            fw_mask = b"\xff\x3f\x08\xc0\x00\x00\x00\x00"
-        return fw_feature, fw_mask
-
     def patch_firmware_feature(self):
+        # Adjust FirmwareFeature to support everything macOS requires
+        # APFS Bit (19/20): 10.13+ (OSInstall)
+        # Large BaseSystem Bit (35): 12.0 B7+ (patchd)
+        # https://github.com/acidanthera/OpenCorePkg/blob/0.6.9/Include/Apple/IndustryStandard/AppleFeatures.h
         if not self.constants.custom_model:
             firmwarefeature = Utilities.get_rom("firmware-features")
             if not firmwarefeature:

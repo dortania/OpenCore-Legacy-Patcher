@@ -140,16 +140,17 @@ def friendly_hex(integer: int):
 def amfi_status():
     amfi_1 = "amfi_get_out_of_my_way=0x1"
     amfi_2 = "amfi_get_out_of_my_way=1"
-    if (
-        (
-            get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False) and "-allow_amfi" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
-        ) or 
-        (
-            get_nvram("boot-args", decode=False) and (amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False))
-        )
-    ):
-        return False
-    return True
+
+    if get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False):
+        if "-allow_amfi" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True):
+            return False
+        else:
+            return True
+    elif get_nvram("boot-args", decode=False):
+        if amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False):
+            return False
+    else:
+        return True
 
 
 def check_oclp_boot():
