@@ -9,6 +9,7 @@ import subprocess
 from pathlib import Path
 import re
 import os
+import binascii
 
 try:
     import requests
@@ -27,6 +28,14 @@ def hexswap(input_hex: str):
     hex_rev = hex_pairs[::-1]
     hex_str = "".join(["".join(x) for x in hex_rev])
     return hex_str.upper()
+
+
+def string_to_hex(input_string):
+    if not (len(input_string) % 2) == 0:
+        input_string = "0" + input_string
+    input_string = hexswap(input_string)
+    input_string = binascii.unhexlify(input_string)
+    return input_string
 
 
 def process_status(process_result):
@@ -131,8 +140,13 @@ def friendly_hex(integer: int):
 def amfi_status():
     amfi_1 = "amfi_get_out_of_my_way=0x1"
     amfi_2 = "amfi_get_out_of_my_way=1"
-    if (get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False) and "-allow_amfi" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)) or (
-        get_nvram("boot-args", decode=False) and (amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False))
+    if (
+        (
+            get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False) and "-allow_amfi" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+        ) or 
+        (
+            get_nvram("boot-args", decode=False) and (amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False))
+        )
     ):
         return False
     return True
@@ -255,6 +269,25 @@ def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
     return value
 
 
+def get_rom(variable: str, *, decode: bool = False):
+    # TODO: Properly fix for El Capitan, which does not print the XML representation even though we say to
+
+    rom = ioreg.IORegistryEntryFromPath(ioreg.kIOMasterPortDefault, "IODeviceTree:/rom".encode())
+
+    value = ioreg.IORegistryEntryCreateCFProperty(rom, variable, ioreg.kCFAllocatorDefault, ioreg.kNilOptions)
+
+    ioreg.IOObjectRelease(rom)
+
+    if not value:
+        return None
+
+    value = ioreg.corefoundation_to_native(value)
+
+    if decode and isinstance(value, bytes):
+        value = value.strip(b"\0").decode()
+    return value
+
+
 def download_file(link, location):
     print("- Attempting download from following link:")
     print(link)
@@ -279,10 +312,17 @@ def download_file(link, location):
     return checksum
 
 
-def enable_apfs(fw_feature, fw_mask):
-    fw_feature |= 2 ** 19
-    fw_mask |= 2 ** 19
-    return fw_feature, fw_mask
+def enable_apfs(fw_feature):
+    fw_feature |= 2 ** 19  # Enable FW_FEATURE_SUPPORTS_APFS
+    return fw_feature
+
+def enable_apfs_extended(fw_feature):
+    fw_feature |= 2 ** 20  # Enable FW_FEATURE_SUPPORTS_APFS_EXTRA
+    return fw_feature
+
+def enable_large_basesystem(fw_feature):
+    fw_feature |= 2 ** 35  # Enable FW_FEATURE_SUPPORTS_LARGE_BASESYSTEM
+    return fw_feature
 
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
