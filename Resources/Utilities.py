@@ -131,7 +131,9 @@ def friendly_hex(integer: int):
 def amfi_status():
     amfi_1 = "amfi_get_out_of_my_way=0x1"
     amfi_2 = "amfi_get_out_of_my_way=1"
-    if get_nvram("boot-args", decode=False) and (amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False)):
+    if (get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False) and "-allow_amfi" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False)) or (
+        get_nvram("boot-args", decode=False) and (amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False))
+    ):
         return False
     return True
 
@@ -165,12 +167,14 @@ def check_metal_support(device_probe, computer):
     else:
         return True
 
+
 def check_filevault_skip():
     # Check whether we can skip FileVault check with Root Patching
     if get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False) and "-allow_fv" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False):
         return True
     else:
         return False
+
 
 def patching_status(os_sip, os):
     # Detection for Root Patching
@@ -183,8 +187,7 @@ def patching_status(os_sip, os):
     gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
     gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
-    if os > Constants.Constants().catalina and not check_oclp_boot():
-        # Assume non-OCLP Macs don't patch _cs_require_lv
+    if os > Constants.Constants().catalina:
         amfi_enabled = amfi_status()
     else:
         # Catalina and older supports individually disabling Library Validation
