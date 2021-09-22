@@ -591,8 +591,7 @@ class BuildOpenCore:
             if self.computer.bluetooth_chipset in ["BRCM2070 Hub", "BRCM2046 Hub"]:
                 print("- Fixing Legacy Bluetooth for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-                if self.computer.bluetooth_chipset in ["BRCM2070 Hub", "BRCM2046 Hub"]:
-                    self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
+                self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
             elif self.computer.bluetooth_chipset == "BRCM20702 Hub" and self.model in ModelArray.Bluetooth_BRCM20702_v1:
                 print("- Fixing Legacy Bluetooth for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
