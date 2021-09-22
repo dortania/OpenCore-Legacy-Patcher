@@ -137,7 +137,7 @@ def amfi_status():
 
 
 def check_oclp_boot():
-    if get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False):
+    if get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True):
         return True
     else:
         return False

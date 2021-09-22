@@ -91,7 +91,6 @@ AddNvidiaKeplerAccel11 = [
     "NVDAGK100Hal.kext",
     "NVDAResman.kext",
     "NVDAStartup.kext",
-    "NVSMU.kext",
 ]
 
 AddAMDAccel11 = [
