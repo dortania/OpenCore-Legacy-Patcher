@@ -165,6 +165,12 @@ def check_metal_support(device_probe, computer):
     else:
         return True
 
+def check_filevault_skip():
+    # Check whether we can skip FileVault check with Root Patching
+    if get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False) and "-allow_fv" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False):
+        return True
+    else:
+        return False
 
 def patching_status(os_sip, os):
     # Detection for Root Patching
@@ -190,7 +196,7 @@ def patching_status(os_sip, os):
     if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
         sip_enabled = False
 
-    if os > Constants.Constants().catalina and not check_oclp_boot():
+    if os > Constants.Constants().catalina and not check_filevault_skip():
         # Assume non-OCLP Macs do not have our APFS seal patch
         fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         if "FileVault is Off" in fv_status:

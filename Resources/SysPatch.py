@@ -422,7 +422,7 @@ set million colour before rebooting"""
             )
             Utilities.process_status(self.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             Utilities.process_status(self.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        elif Utilities.check_oclp_boot() is False:
+        elif Utilities.check_filevault_skip() is False:
             # Assume non-OCLP Macs don't have _cs_require_lv
             print("- Disabling Library Validation")
             Utilities.process_status(

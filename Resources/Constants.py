@@ -781,6 +781,8 @@ class Constants:
         "iMac16,1": "Mac-A369DDC4E67F1C45",
         "iMac16,2": "Mac-FFE5EF870D7BA81A",
         "iMac17,1": "Mac-DB15BD556843C820",
+        # iMac17,1": "Mac-65CE76090165799A",
+        # iMac17,1": "Mac-B809C3757DA9BB8D",
         "iMac18,1": "Mac-4B682C642B45593E",
         "iMac18,2": "Mac-77F17D7DA9285301",
         "iMac18,3": "Mac-BE088AF8C5EB4FA2",

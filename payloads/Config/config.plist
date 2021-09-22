@@ -1292,6 +1292,8 @@
 			<dict>
 				<key>OCLP-Version</key>
 				<string></string>
+				<key>OCLP-Settings</key>
+				<string></string>
 			</dict>
 			<key>7C436110-AB2A-4BBB-A880-FE41995C9F82</key>
 			<dict>
@@ -1312,6 +1314,7 @@
 			<key>4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102</key>
 			<array>
 				<string>OCLP-Version</string>
+				<string>OCLP-Settings</string>
 				<string>revcpu</string>
 				<string>revcpuname</string>
 			</array>

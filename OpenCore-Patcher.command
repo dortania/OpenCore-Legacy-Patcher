@@ -33,7 +33,7 @@ class OpenCoreLegacyPatcher:
             self.constants.disable_cs_lv = True
 
         if model in ModelArray.LegacyGPU:
-            if Utilities.check_metal_support(device_probe, self.computer) is True:
+            if host_is_target and Utilities.check_metal_support(device_probe, self.computer) is True:
                 # Building on device and we have a native, supported GPU
                 self.constants.sip_status = True
                 # self.constants.secure_status = True  # Monterey
