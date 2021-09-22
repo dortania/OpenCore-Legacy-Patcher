@@ -20,6 +20,9 @@ class OpenCoreLegacyPatcher:
         self.constants.computer = device_probe.Computer.probe()
         self.computer = self.constants.computer
         self.constants.detected_os = int(platform.uname().release.partition(".")[0])
+        self.constants.detected_os_minor = int(platform.uname().release.partition(".")[2].partition(".")[0])
+        detected_os_build: str = subprocess.run("sw_vers -buildVersion".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        self.constants.detected_os_build = detected_os_build
 
         custom_cpu_model_value = Utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
         if custom_cpu_model_value is not None:
@@ -200,33 +203,34 @@ If you plan to create the USB for another machine, please select the "Change Mod
         elif model in ModelArray.LegacyGPU:
             self.constants.disable_cs_lv = True
         if model in ModelArray.LegacyGPU:
-            if Utilities.check_metal_support(device_probe, self.computer) is True:
-                print("- Detected Metal GPU, overriding default configuration")
+            if host_is_target and Utilities.check_metal_support(device_probe, self.computer) is True:
                 # Building on device and we have a native, supported GPU
-                self.constants.sip_status = True
-                # self.constants.secure_status = True  # Monterey
-                self.constants.amfi_status = True
-            elif host_is_target:
+                if self.computer.dgpu and self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
+                    self.constants.sip_status = False
+                    # self.constants.secure_status = True  # Monterey
+                    self.constants.amfi_status = True
+                    self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
+                else:
+                    self.constants.sip_status = True
+                    # self.constants.secure_status = True  # Monterey
+                    self.constants.amfi_status = True
+            else:
                 self.constants.sip_status = False  #    Unsigned kexts
                 self.constants.secure_status = False  # Root volume modified
                 self.constants.amfi_status = False  #   Unsigned binaries
-        if model in ModelArray.ModernGPU:
-            if host_is_target and model in ["iMac13,1", "iMac13,3"] and self.computer.dgpu:
-                # Some models have a supported dGPU, others don't
-                print("- Detected Metal dGPU, overriding default configuration")
-                self.constants.sip_status = True
-            elif host_is_target:
-                self.constants.sip_status = False  #    Unsigned kexts
-                self.constants.secure_status = False  # Modified root volume
                 self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
-                # self.constants.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
+        if model in ModelArray.ModernGPU:
+            self.constants.sip_status = False  #    Unsigned kexts
+            self.constants.secure_status = False  # Modified root volume
+            self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
+            # self.constants.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
         if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings == "Moderate"
 
         if self.constants.latebloom_delay == 0:
             self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
-        
+
         if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9", decode=True):
             self.constants.allow_ts2_accel = False
 

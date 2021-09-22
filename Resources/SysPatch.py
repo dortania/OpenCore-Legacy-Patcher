@@ -26,6 +26,7 @@ class PatchSysVolume:
         self.fv_enabled = True
         self.dosdude_patched = True
         self.nvidia_legacy = False
+        self.kepler_gpu = False
         self.amd_ts1 = False
         self.amd_ts2 = False
         self.iron_gpu = False
@@ -406,6 +407,14 @@ set million colour before rebooting"""
             print("- Installing basic Ivy Bridge Kext patches for generic OS")
             self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
 
+    def gpu_franevuffer_kepler_master(self):
+        if self.constants.detected_os == self.constants.monterey:
+            print("- Installing Kepler Acceleration Kext patches for Monterey")
+            self.add_new_binaries(SysPatchArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
+        else:
+            print("- Installing Kepler Kext patches for generic OS")
+            self.add_new_binaries(SysPatchArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
+
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -426,7 +435,11 @@ set million colour before rebooting"""
             # Assume non-OCLP Macs don't have _cs_require_lv
             print("- Disabling Library Validation")
             Utilities.process_status(
-                self.elevated(["defaults", "write", "/Library/Preferences/com.apple.security.libraryvalidation.plist", "DisableLibraryValidation", "-bool", "true"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                self.elevated(
+                    ["defaults", "write", "/Library/Preferences/com.apple.security.libraryvalidation.plist", "DisableLibraryValidation", "-bool", "true"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                )
             )
 
     def gpu_accel_legacy_extended_ts2(self):
@@ -450,6 +463,14 @@ set million colour before rebooting"""
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
             self.gpu_accel_legacy_nvidia_master()
+
+        elif self.kepler_gpu is True:
+            print("- Installing Kepler Patches")
+            if self.constants.detected_os == self.constants.monterey:
+                print("- Detected supported OS, installing Acceleration Patches")
+            else:
+                print("- Detected unsupported OS, installing Basic Framebuffer")
+            self.gpu_franevuffer_kepler_master()
 
         elif self.amd_ts1 is True:
             print("- Installing legacy TeraScale 1 Patches")
@@ -495,11 +516,7 @@ set million colour before rebooting"""
                 print("- Detected unsupported OS, installing Basic Framebuffer")
             self.gpu_framebuffer_ivybridge_master()
 
-        if (
-            self.amd_ts2 is True
-            and self.constants.detected_os in self.constants.legacy_accel_support
-            and self.constants.allow_ts2_accel is True
-        ):
+        if self.amd_ts2 is True and self.constants.detected_os in self.constants.legacy_accel_support and self.constants.allow_ts2_accel is True:
             # TeraScale 2 patches must be installed after Intel HD3000
             self.add_new_binaries(SysPatchArray.AddAMDAccel11TS2, self.constants.legacy_amd_path_ts2)
 
@@ -599,6 +616,15 @@ set million colour before rebooting"""
                 if self.constants.detected_os > non_metal_os:
                     self.nvidia_legacy = True
                     self.amfi_must_disable = True
+            elif dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
+                if self.constants.detected_os > self.constants.big_sur:
+                    # Kepler drivers were dropped with Beta 7
+                    # 12.0 Beta 5: 21.0.0 - 21A5304g
+                    # 12.0 Beta 6: 21.1.0 - 21A5506j
+                    # 12.0 Beta 7: 21.1.0 - 21A5522h
+                    if self.constants.detected_os == self.constants.monterey and self.constants.detected_os_minor > 0:
+                        if "21A5506j" not in self.constants.detected_os_build:
+                            self.kepler_gpu = True
             elif dgpu.arch == device_probe.AMD.Archs.TeraScale_1:
                 if self.constants.detected_os > non_metal_os:
                     self.amd_ts1 = True
@@ -647,6 +673,8 @@ set million colour before rebooting"""
         print("The following patches will be applied:")
         if self.nvidia_legacy is True:
             print("- Add Legacy Nvidia Tesla Graphics Patch")
+        elif self.kepler_gpu is True:
+            print("- Add Legacy Nvidia Kepler Graphics Patch")
         elif self.amd_ts1 is True:
             print("- Add Legacy ATI TeraScale 1 Graphics Patch")
         elif self.amd_ts2 is True:
@@ -667,6 +695,7 @@ set million colour before rebooting"""
         self.no_patch = not any(
             [
                 self.nvidia_legacy,
+                self.kepler_gpu,
                 self.amd_ts1,
                 self.amd_ts2,
                 self.iron_gpu,
@@ -701,7 +730,8 @@ set million colour before rebooting"""
 
         if self.fv_enabled is True:
             print("\nCannot patch! Please disable FileVault.")
-            print("Go to System Preferences -> Security and disable FileVault")
+            print("For OCLP Macs, please rebuild your config with 0.2.5 or newer")
+            print("For others, Go to System Preferences -> Security and disable FileVault")
 
         if self.amfi_enabled is True and self.amfi_must_disable is True:
             print("\nCannot patch! Please disable AMFI.")

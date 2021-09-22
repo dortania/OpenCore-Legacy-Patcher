@@ -14,7 +14,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.2.5"  #              OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.1.2"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.1.3"  #  PatcherSupportPkg
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
@@ -121,6 +121,7 @@ class Constants:
         self.os_support = 12.0
         self.detected_os = 0  #        Major Kernel Version
         self.detected_os_minor = 0  #  Minor Kernel Version
+        self.detected_os_build = ""  # OS Build
         self.allow_fv_root = False  #  Allow FileVault on broken sealed snapshots
 
         ## Boot Volume Settings

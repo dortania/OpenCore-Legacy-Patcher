@@ -42,6 +42,7 @@
   - Applicable for BRCM2046 and BRCM2070 chipsets
 - Disable Library Validation allowing for AMFI usage
   - Remove reliance on amfi_get_out_of_my_way=1
+- Add Kepler Accleration Patches for Monterey Beta 7 and newer
 
 ## 0.2.4
 

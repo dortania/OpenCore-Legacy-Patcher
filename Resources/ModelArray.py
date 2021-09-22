@@ -271,10 +271,15 @@ ModernGPU = [
     "MacBookPro9,2",  # Intel 4000
     "MacBookPro10,1",  # Intel 4000 + Nvidia 650M
     "MacBookPro10,2",  # Intel 4000
+    "MacBookPro11,3",  # Intel 5000 + Nvidia Kepler
     "Macmini6,1",  # Intel 4000
     "Macmini6,2",  # Intel 4000
     "iMac13,1",  # Intel 4000
+    "iMac13,2",  # Intel 4000 + Nvidia Kepler
     "iMac13,3",  # Intel 4000
+    "iMac14,1",  # Intel 5000 + Nvidia Kepler
+    "iMac14,2",  # Intel 5000 + Nvidia Kepler
+    "iMac14,3",  # Intel 5000 + Nvidia Kepler
 ]
 
 LegacyGPU = [
