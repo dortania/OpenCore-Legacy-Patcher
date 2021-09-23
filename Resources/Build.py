@@ -67,7 +67,7 @@ class BuildOpenCore:
         # Adjust FirmwareFeature to support everything macOS requires
         # APFS Bit (19/20): 10.13+ (OSInstall)
         # Large BaseSystem Bit (35): 12.0 B7+ (patchd)
-        # https://github.com/acidanthera/OpenCorePkg/blob/0.6.9/Include/Apple/IndustryStandard/AppleFeatures.h
+        # https://github.com/acidanthera/OpenCorePkg/tree/2f76673546ac3e32d2e2d528095fddcd66ad6a23/Include/Apple/IndustryStandard/AppleFeatures.h
         if not self.constants.custom_model:
             firmwarefeature = Utilities.get_rom("firmware-features")
             if not firmwarefeature:
@@ -346,7 +346,7 @@ class BuildOpenCore:
         if (
             usb_map_path.exists()
             and self.constants.allow_oc_everywhere is False
-            and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"]
+            and self.model not in ["Xserve2,1", "Dortania1,1"]
             and (self.model in ModelArray.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
             print("- Adding USB-Map.kext")
@@ -682,7 +682,7 @@ class BuildOpenCore:
         if self.constants.disable_cs_lv is True:
             print("- Disabling Library Validation")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Library Validation Enforcement")["Enabled"] = True
-            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += "-allow_amfi"
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_amfi"
         if self.constants.secure_status is False:
             print("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
@@ -718,7 +718,7 @@ class BuildOpenCore:
             print("- Allowing FileVault on Root Patched systems")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.filesystems.apfs")["Enabled"] = True
             # Lets us check in SysPatch.py if config supports FileVault
-            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += "-allow_fv"
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
 
     def set_smbios(self):
         spoofed_model = self.model
@@ -798,7 +798,7 @@ class BuildOpenCore:
         # USB Map and CPUFriend Patching
         if (
             self.constants.allow_oc_everywhere is False
-            and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"]
+            and self.model not in ["Xserve2,1", "Dortania1,1"]
             and (self.model in ModelArray.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")

@@ -45,6 +45,7 @@
 - Add Kepler Accleration Patches for Monterey Beta 7 and newer
 - Add FirmwareFeature upgrading to all Models
   - Fixes Monterey Beta 7 installation issues
+- Add iMac7,1 USB map
 
 ## 0.2.4
 
