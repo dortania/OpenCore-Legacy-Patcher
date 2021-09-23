@@ -683,6 +683,9 @@ class BuildOpenCore:
             print("- Disabling Library Validation")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Library Validation Enforcement")["Enabled"] = True
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_amfi"
+            # CSLVFixup simply patches out __RESTRICT and __restrict out of the Music.app Binary
+            # Ref: https://pewpewthespells.com/blog/blocking_code_injection_on_ios_and_os_x.html
+            self.enable_kext("CSLVFixup.kext", self.constants.cslvfixup_version, self.constants.cslvfixup_path)
         if self.constants.secure_status is False:
             print("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"

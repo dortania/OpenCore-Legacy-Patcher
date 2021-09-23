@@ -35,6 +35,7 @@ class Constants:
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.4"  #          CPUFriend
         self.bluetool_version = "2.6.1"  #           BlueToolFixup
+        self.cslvfixup_version = "2.6.1"  #          CSLVFixup
 
         ## Apple
         ## https://www.apple.com
@@ -336,6 +337,10 @@ class Constants:
     @property
     def bluetool_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/BlueToolFixup-v{self.bluetool_version}.zip")
+    
+    @property
+    def cslvfixup_path(self):
+        return self.payload_kexts_path / Path(f"Acidanthera/CSLVFixup-v{self.cslvfixup_version}.zip")
 
     @property
     def innie_path(self):
