@@ -204,6 +204,12 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 self.constants.sip_status = False
                 self.constants.amfi_status = True
                 self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
+            if (
+                isinstance(self.computer.wifi, device_probe.Broadcom)
+                and self.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
+            ) or (isinstance(self.computer.wifi, device_probe.Atheros) and self.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
+                self.constants.sip_status = False
+                self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
         elif model in ModelArray.LegacyGPU:
             self.constants.disable_cs_lv = True
         if model in ModelArray.LegacyGPU:
