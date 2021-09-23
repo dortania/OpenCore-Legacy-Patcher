@@ -41,6 +41,7 @@ class PatchSysVolume:
         self.bad_board_id = False
         self.no_patch = True
         self.validate = False
+        self.supports_metal = False
 
         # if (Path.home() / "Desktop/OCLP-Test/").exists:
         #    self.mount_location = Path.home() / "Desktop/OCLP-Test"
@@ -625,6 +626,7 @@ set million colour before rebooting"""
                         if self.constants.detected_os == self.constants.monterey and self.constants.detected_os_minor > 0:
                             if "21A5506j" not in self.constants.detected_os_build:
                                 self.kepler_gpu = True
+                                self.supports_metal = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts1 = True
@@ -645,7 +647,16 @@ set million colour before rebooting"""
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
                     if self.constants.detected_os > self.constants.big_sur:
                         self.ivy_gpu = True
+                        self.supports_metal = True
                 i += 1
+        if self.supports_metal is True:
+            # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
+            # Main concerns are for iMac12,x with Sandy iGPU and Kepler dGPU
+            self.nvidia_legacy = False
+            self.amd_ts1 = False
+            self.amd_ts2 = False
+            self.iron_gpu = False
+            self.sandy_gpu = False
             
 
     def detect_patch_set(self):
