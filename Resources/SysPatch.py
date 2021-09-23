@@ -603,53 +603,50 @@ set million colour before rebooting"""
             input("Press [ENTER] to continue")
 
     def detect_gpus(self):
-        dgpu = self.constants.computer.dgpu
-        igpu = self.constants.computer.igpu
+        gpus = self.constants.computer.gpus
         if self.constants.moj_cat_accel is True:
             non_metal_os = self.constants.high_sierra
         else:
             non_metal_os = self.constants.catalina
-        if dgpu:
-            print(f"- Found GFX0: {Utilities.friendly_hex(dgpu.vendor_id)}:{Utilities.friendly_hex(dgpu.device_id)}")
-            if dgpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi]:
-                if self.constants.detected_os > non_metal_os:
-                    self.nvidia_legacy = True
-                    self.amfi_must_disable = True
-            elif dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
-                if self.constants.detected_os > self.constants.big_sur:
-                    # Kepler drivers were dropped with Beta 7
-                    # 12.0 Beta 5: 21.0.0 - 21A5304g
-                    # 12.0 Beta 6: 21.1.0 - 21A5506j
-                    # 12.0 Beta 7: 21.1.0 - 21A5522h
-                    if self.constants.detected_os == self.constants.monterey and self.constants.detected_os_minor > 0:
-                        if "21A5506j" not in self.constants.detected_os_build:
-                            self.kepler_gpu = True
-            elif dgpu.arch == device_probe.AMD.Archs.TeraScale_1:
-                if self.constants.detected_os > non_metal_os:
-                    self.amd_ts1 = True
-                    self.amfi_must_disable = True
-            elif dgpu.arch == device_probe.AMD.Archs.TeraScale_2:
-                if self.constants.detected_os > non_metal_os:
-                    self.amd_ts2 = True
-                    self.amfi_must_disable = True
-        if igpu and igpu.class_code != 0xFFFFFF:
-            print(f"- Found IGPU: {Utilities.friendly_hex(igpu.vendor_id)}:{Utilities.friendly_hex(igpu.device_id)}")
-            if igpu.arch == device_probe.Intel.Archs.Iron_Lake:
-                if self.constants.detected_os > non_metal_os:
-                    self.iron_gpu = True
-                    self.amfi_must_disable = True
-            elif igpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
-                if self.constants.detected_os > non_metal_os:
-                    self.sandy_gpu = True
-                    self.amfi_must_disable = True
-                    self.check_board_id = True
-            elif igpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
-                if self.constants.detected_os > self.constants.big_sur:
-                    self.ivy_gpu = True
-            elif isinstance(igpu, device_probe.NVIDIA):
-                if self.constants.detected_os > non_metal_os:
-                    self.nvidia_legacy = True
-                    self.amfi_must_disable = True
+        i = 0
+        for gpu in gpus:
+            if gpu.class_code and gpu.class_code != 0xFFFFFFFF:
+                print(f"- Found GPU ({i}): {Utilities.friendly_hex(gpu.vendor_id)}:{Utilities.friendly_hex(gpu.device_id)}")
+                if gpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi]:
+                    if self.constants.detected_os > non_metal_os:
+                        self.nvidia_legacy = True
+                        self.amfi_must_disable = True
+                elif gpu.arch == device_probe.NVIDIA.Archs.Kepler:
+                    if self.constants.detected_os > self.constants.big_sur:
+                        # Kepler drivers were dropped with Beta 7
+                        # 12.0 Beta 5: 21.0.0 - 21A5304g
+                        # 12.0 Beta 6: 21.1.0 - 21A5506j
+                        # 12.0 Beta 7: 21.1.0 - 21A5522h
+                        if self.constants.detected_os == self.constants.monterey and self.constants.detected_os_minor > 0:
+                            if "21A5506j" not in self.constants.detected_os_build:
+                                self.kepler_gpu = True
+                elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
+                    if self.constants.detected_os > non_metal_os:
+                        self.amd_ts1 = True
+                        self.amfi_must_disable = True
+                elif gpu.arch == device_probe.AMD.Archs.TeraScale_2:
+                    if self.constants.detected_os > non_metal_os:
+                        self.amd_ts2 = True
+                        self.amfi_must_disable = True
+                elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
+                    if self.constants.detected_os > non_metal_os:
+                        self.iron_gpu = True
+                        self.amfi_must_disable = True
+                elif gpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
+                    if self.constants.detected_os > non_metal_os:
+                        self.sandy_gpu = True
+                        self.amfi_must_disable = True
+                        self.check_board_id = True
+                elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
+                    if self.constants.detected_os > self.constants.big_sur:
+                        self.ivy_gpu = True
+                i += 1
+            
 
     def detect_patch_set(self):
         self.detect_gpus()
