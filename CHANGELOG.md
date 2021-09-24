@@ -1,5 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.3.0
+- Fix Nvidia Tesla Acceleration in Monterey Beta 7+
+  - Add missing NVDAStartup
+
 ## 0.2.5
 
 - Implement Latebloom configuration via command line tool

@@ -329,6 +329,9 @@ set million colour before rebooting"""
             self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
             self.gpu_accel_legacy()
             self.add_new_binaries(SysPatchArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+            if self.constants.detected_os == self.constants.monterey and self.constants.detected_os_minor > 0:
+                # Beta 7+ removes NVDAStartup
+                self.add_new_binaries(SysPatchArray.AddNvidiaTeslaAccel12, self.constants.legacy_nvidia_kepler_path)
         else:
             print("- Installing basic Nvidia Framebuffer Kext patches for generic OS")
             self.add_new_binaries(SysPatchArray.AddNvidiaBrightness, self.constants.legacy_nvidia_path)

@@ -13,7 +13,7 @@ from Resources import device_probe
 class Constants:
     def __init__(self):
         # Patcher Versioning
-        self.patcher_version = "0.2.5"  #              OpenCore-Legacy-Patcher
+        self.patcher_version = "0.3.0"  #              OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version = "0.1.3"  #  PatcherSupportPkg
 
         # OpenCore Versioning
