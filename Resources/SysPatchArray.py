@@ -93,6 +93,10 @@ AddNvidiaKeplerAccel11 = [
     "NVDAStartup.kext",
 ]
 
+AddNvidiaTeslaAccel12 = [
+    "NVDAStartup.kext",
+]
+
 AddAMDAccel11 = [
     "AMD2400Controller.kext",
     "AMD2600Controller.kext",
