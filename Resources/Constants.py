@@ -14,7 +14,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.3.0"  #              OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.1.3"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.1.4"  #  PatcherSupportPkg
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
@@ -141,6 +141,8 @@ class Constants:
         self.disallow_cpufriend = False  #   Disable CPUFriend
         self.enable_wake_on_wlan = False  #  Allow Wake on WLAN for modern Broadcom
         self.disable_thunderbolt = False  #  Disable Thunderbolt Controller
+        self.set_alc_usage = True  #         Set AppleALC usage
+        self.dGPU_switch = True #            Set Display GPU Switching for Windows
 
         # OS Versions
         ## Based off Major Kernel Version
@@ -564,9 +566,14 @@ class Constants:
         return self.payload_apple_private_frameworks_path / Path("Brightness-Control")
 
     # Apple Extensions
+    # El Capitan Extensions
     @property
     def audio_path(self):
         return self.payload_apple_kexts_path / Path("Audio")
+    # High Sierra Extensions
+    @property
+    def audio_v2_path(self):
+        return self.payload_apple_kexts_path / Path("Audio-v2")
 
     # GPU Kexts and Bundles
 

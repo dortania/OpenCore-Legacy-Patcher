@@ -166,7 +166,7 @@ class BuildOpenCore:
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
             ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
             # Legacy audio
-            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro),
+            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: (self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro) and self.constants.set_alc_usage is True),
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
             # Misc
@@ -711,7 +711,7 @@ class BuildOpenCore:
         if self.constants.validate is False:
             print("- Adding bootmgfw.efi BlessOverride")
             self.config["Misc"]["BlessOverride"] += ["\\EFI\\Microsoft\\Boot\\bootmgfw.efi"]
-        if self.model in ModelArray.dGPU_switch:
+        if self.model in ModelArray.dGPU_switch and self.constants.dGPU_switch is True:
             print("- Allowing GMUX switching in Windows")
             self.config["Booter"]["Quirks"]["SignalAppleOS"] = True
         if self.constants.allow_fv_root is True:

@@ -3,6 +3,11 @@
 ## 0.3.0
 - Fix Nvidia Tesla Acceleration in Monterey Beta 7+
   - Add missing NVDAStartup
+- Allow configuring GMUX usage for Windows
+   - Applicable for iGPU+dGPU MacBook Pros
+- Allow usage of legacy AppleHDA
+   - Only use for machines that cannot achieve audio support normally
+   - Main usage for Macs without boot screen output
 
 ## 0.2.5
 

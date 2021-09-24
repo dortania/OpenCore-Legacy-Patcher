@@ -294,8 +294,11 @@ set million colour before rebooting"""
         Utilities.process_status(self.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def add_audio_patch(self):
-        self.delete_old_binaries(SysPatchArray.DeleteVolumeControl)
-        self.add_new_binaries(SysPatchArray.AddVolumeControl, self.constants.audio_path)
+        if self.model in ["iMac7,1", "iMac8,1"]:
+            self.delete_old_binaries(SysPatchArray.DeleteVolumeControl)
+            self.add_new_binaries(SysPatchArray.AddVolumeControl, self.constants.audio_path)
+        else:
+            self.add_new_binaries(SysPatchArray.AddVolumeControlv2, self.constants.audio_v2_path)
 
     def add_wifi_patch(self):
         print("- Merging Wireless CoreSerices patches")
@@ -668,7 +671,9 @@ set million colour before rebooting"""
             if self.constants.detected_os > self.constants.catalina:
                 self.brightness_legacy = True
 
-        if self.model in ["iMac7,1", "iMac8,1"]:
+        if self.model in ["iMac7,1", "iMac8,1"] or (self.model in ModelArray.LegacyAudio and Utilities.check_kext_loaded("AppleALC", self.constants.detected_os) is False):
+            # Special hack for systems with botched GOPs
+            # TL;DR: No Boot Screen breaks Lilu, therefore breaking audio
             if self.constants.detected_os > self.constants.catalina:
                 self.legacy_audio = True
 

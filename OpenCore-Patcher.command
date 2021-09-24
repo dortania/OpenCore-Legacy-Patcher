@@ -249,6 +249,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                     f"Disable Thunderbolt:\tCurrently {self.constants.disable_thunderbolt}",
                     CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).disable_thunderbolt,
                 ],
+                [f"Set AppleALC Usage:\t\tCurrently {self.constants.set_alc_usage}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).applealc_support],
+                [f"Set Windows GMUX support:\tCurrently {self.constants.dGPU_switch}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).dGPU_switch_support],
             ]
 
             for option in options:

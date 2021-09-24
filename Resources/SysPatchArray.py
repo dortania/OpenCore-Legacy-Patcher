@@ -187,6 +187,10 @@ AddVolumeControl = [
     "IOAudioFamily.kext",
 ]
 
+AddVolumeControlv2 = [
+    "AppleHDA.kext",
+]
+
 DeleteVolumeControl = [
     "AppleVirtIO.kext",
     "AppleVirtualGraphics.kext",

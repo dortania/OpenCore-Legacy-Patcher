@@ -152,6 +152,15 @@ def amfi_status():
     else:
         return True
 
+def check_kext_loaded(kext_name, os_version):
+    if os_version > Constants.Constants().catalina:
+        kext_loaded = subprocess.run(["kmutil", "showloaded", "--list-only", "--variant-suffix", "release"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    else:
+        kext_loaded = subprocess.run(["kextstat", "-l"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    if kext_name in kext_loaded.stdout.decode():
+        return True
+    else:
+        return False
 
 def check_oclp_boot():
     if get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True):

@@ -631,3 +631,49 @@ handle acceleration tasks.
         print("")
         print(self.constants.computer)
         input("\nPress [ENTER] to exit: ")
+    
+    def applealc_support(self):
+        Utilities.cls()
+        Utilities.header(["Set AppleALC usage"])
+        print(
+            """
+By default this patcher will install audio patches in-memory via
+AppleALC. However for systems that cannot achieve boot screen support,
+this option will allow you to install the legacy AppleHDA patch via
+root patching.
+
+If AppleALC is detected, the Patcher will not install AppleHDA.
+        """
+        )
+
+        change_menu = input("Set AppleALC usage?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.set_alc_usage = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.set_alc_usage = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.applealc_support()
+    
+    def dGPU_switch_support(self):
+        Utilities.cls()
+        Utilities.header(["Set Windows GMUX support"])
+        print(
+            """
+With OCLP, we're able to restore iGPU funbctionality on iGPU+dGPU
+MacBook Pros. However for some this may not be desires, ie. eGPUs
+for Windows may prefer to only work with the dGPU and eGPU present.
+
+        """
+        )
+
+        change_menu = input("Set Windows GMUX support?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.dGPU_switch = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.dGPU_switch = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.dGPU_switch_support()
