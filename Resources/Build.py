@@ -59,7 +59,7 @@ class BuildOpenCore:
         elif model in ModelArray.iMac_iGPU:
             return "iMac16,1"
         elif model in ModelArray.MacPro:
-            return "iMacPro1,1"
+            return "MacPro7,1"
         else:
             return model
 
@@ -674,8 +674,7 @@ class BuildOpenCore:
             self.get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
         if self.constants.sip_status is False:
             print("- Disabling SIP")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("EF0F0000")
-            self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"] += ["csr-active-config"]
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("030E0000")
         # if self.constants.amfi_status is False:
         #     print("- Disabling AMFI")
         #     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi_get_out_of_my_way=1"

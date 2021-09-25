@@ -1339,6 +1339,7 @@
 			<key>7C436110-AB2A-4BBB-A880-FE41995C9F82</key>
 			<array>
 				<string>boot-args</string>
+				<string>csr-active-config</string>
 			</array>
 			<key>FA4CE28D-B62F-4C99-9CC3-6815686E30F9</key>
 			<array/>

@@ -142,7 +142,7 @@ class Constants:
         self.enable_wake_on_wlan = False  #  Allow Wake on WLAN for modern Broadcom
         self.disable_thunderbolt = False  #  Disable Thunderbolt Controller
         self.set_alc_usage = True  #         Set AppleALC usage
-        self.dGPU_switch = True #            Set Display GPU Switching for Windows
+        self.dGPU_switch = True  #           Set Display GPU Switching for Windows
 
         # OS Versions
         ## Based off Major Kernel Version
@@ -339,7 +339,7 @@ class Constants:
     @property
     def bluetool_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/BlueToolFixup-v{self.bluetool_version}.zip")
-    
+
     @property
     def cslvfixup_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/CSLVFixup-v{self.cslvfixup_version}.zip")
@@ -570,6 +570,7 @@ class Constants:
     @property
     def audio_path(self):
         return self.payload_apple_kexts_path / Path("Audio")
+
     # High Sierra Extensions
     @property
     def audio_v2_path(self):
@@ -645,19 +646,19 @@ class Constants:
 
     root_patch_sip_mojave = [
         # Variables required to root patch in Mojave and Catalina
-        "CSR_ALLOW_UNTRUSTED_KEXTS",
-        "CSR_ALLOW_UNRESTRICTED_FS",
-        "CSR_ALLOW_UNAPPROVED_KEXTS",
-        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE",
+        "CSR_ALLOW_UNTRUSTED_KEXTS",  #            0x1
+        "CSR_ALLOW_UNRESTRICTED_FS",  #            0x2
+        "CSR_ALLOW_UNAPPROVED_KEXTS",  #           0x200
+        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE",  # 0x400
     ]
 
     root_patch_sip_big_sur = [
         # Variables required to root patch in Big Sur and Monterey
-        "CSR_ALLOW_UNTRUSTED_KEXTS",
-        "CSR_ALLOW_UNRESTRICTED_FS",
-        "CSR_ALLOW_UNAPPROVED_KEXTS",
-        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE",
-        "CSR_ALLOW_UNAUTHENTICATED_ROOT",
+        "CSR_ALLOW_UNTRUSTED_KEXTS",  #            0x1
+        "CSR_ALLOW_UNRESTRICTED_FS",  #            0x2
+        "CSR_ALLOW_UNAPPROVED_KEXTS",  #           0x200
+        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE",  # 0x400
+        "CSR_ALLOW_UNAUTHENTICATED_ROOT",  #       0x800
     ]
 
     sbm_values = [

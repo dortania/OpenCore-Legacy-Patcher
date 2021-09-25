@@ -8,6 +8,15 @@
 - Allow usage of legacy AppleHDA
    - Only use for machines that cannot achieve audio support normally
    - Main usage for Macs without boot screen output
+- Revert iMacPro1,1 SMBIOS usage on Mac Pros and Xserves
+  - Resolves display output issues on Legacy GCN
+- Limit SIP bits flipped when disabled
+  - 0xFEF -> 0xE03
+      - `CSR_ALLOW_UNTRUSTED_KEXTS`
+      - `CSR_ALLOW_UNRESTRICTED_FS`
+      - `CSR_ALLOW_UNAPPROVED_KEXTS`
+      - `CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE`
+      - `CSR_ALLOW_UNAUTHENTICATED_ROOT`
 
 ## 0.2.5
 
