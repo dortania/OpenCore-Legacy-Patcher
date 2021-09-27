@@ -549,7 +549,7 @@ class BuildOpenCore:
                             self.config["DeviceProperties"]["Add"][device.pci_path] = {"shikigva": 128, "unfairgva": 1, "rebuild-device-tree": 1, "agdpmod": "pikera"}
                         elif isinstance(device, device_probe.NVIDIA):
                             print("- Enabling Nvidia Output Patch")
-                            self.config["DeviceProperties"]["Add"][device.pci_path] = {"rebuild-device-tree": 1}
+                            self.config["DeviceProperties"]["Add"][device.pci_path] = {"rebuild-device-tree": 1, "agdpmod": "vit9696"}
                             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
                             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
@@ -564,9 +564,9 @@ class BuildOpenCore:
                                 )
                         elif isinstance(device, device_probe.NVIDIA):
                             print("- Enabling Nvidia Output Patch")
-                            if "-wegtree" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
+                            if "-wegtree agdpmod=vit9696" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
                                 print("- Falling back to boot-args")
-                                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -wegtree"
+                                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -wegtree agdpmod=vit9696"
                             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
                             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 

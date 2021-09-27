@@ -17,6 +17,8 @@
       - `CSR_ALLOW_UNAPPROVED_KEXTS`
       - `CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE`
       - `CSR_ALLOW_UNAUTHENTICATED_ROOT`
+- Fix Kepler DisplayPort output
+  - Apply `agdpmod=vit9696` patch
 
 ## 0.2.5
 

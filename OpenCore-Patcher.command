@@ -61,6 +61,7 @@ class OpenCoreLegacyPatcher:
                 self.constants.amfi_status = False  #   Unsigned binaries
                 self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
         if model in ModelArray.ModernGPU:
+            # Systems with Ivy or Kepler GPUs, Monterey requires root patching for accel
             self.constants.sip_status = False  #    Unsigned kexts
             self.constants.secure_status = False  # Modified root volume
             self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
@@ -83,14 +84,13 @@ class OpenCoreLegacyPatcher:
         if Utilities.amfi_status() is False:
             self.constants.amfi_status = False
 
-        if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9", decode=True):
+        if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9"):
+            # Users disabling TS2 most likely have a faulty dGPU
+            # users can override this in settings
             self.constants.allow_ts2_accel = False
 
         if self.constants.latebloom_delay == 0:
             self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
-
-        if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9", decode=True):
-            self.constants.allow_ts2_accel = False
 
         # Check if running in RecoveryOS
         self.constants.recovery_status = Utilities.check_recovery()
