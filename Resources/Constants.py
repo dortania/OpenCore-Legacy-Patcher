@@ -143,6 +143,7 @@ class Constants:
         self.disable_thunderbolt = False  #  Disable Thunderbolt Controller
         self.set_alc_usage = True  #         Set AppleALC usage
         self.dGPU_switch = True  #           Set Display GPU Switching for Windows
+        self.force_surplus = False  #        Force SurPlus patch in newer OSes
 
         # OS Versions
         ## Based off Major Kernel Version

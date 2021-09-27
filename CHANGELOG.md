@@ -19,6 +19,8 @@
       - `CSR_ALLOW_UNAUTHENTICATED_ROOT`
 - Fix Kepler DisplayPort output
   - Apply `agdpmod=vit9696` patch
+- Add Syncretic's SurPlus 11.3+ Race Condition Patch
+  - [Source](https://github.com/reenigneorcim/SurPlus)
 
 ## 0.2.5
 

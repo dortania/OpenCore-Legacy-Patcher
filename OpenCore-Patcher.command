@@ -89,8 +89,8 @@ class OpenCoreLegacyPatcher:
             # users can override this in settings
             self.constants.allow_ts2_accel = False
 
-        if self.constants.latebloom_delay == 0:
-            self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
+        # if self.constants.latebloom_delay == 0:
+        #     self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
 
         # Check if running in RecoveryOS
         self.constants.recovery_status = Utilities.check_recovery()
@@ -164,10 +164,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Enable Kext DEBUG:\t\tCurrently {self.constants.kext_debug}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_kext],
             ] + (
                 [
-                    [
-                        f"Set Latebloom args:\t\tDelay {self.constants.latebloom_delay}, Range {self.constants.latebloom_range}, Debug {self.constants.latebloom_debug}",
-                        CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).latebloom_settings,
-                    ]
+                    [f"Set SurPlus Settings:\tCurrently {self.constants.force_surplus}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_surplus]
                 ]
                 if ((self.constants.custom_model or self.computer.real_model) in ModelArray.PCIRaceCondition)
                 else []

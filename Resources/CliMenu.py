@@ -676,3 +676,29 @@ for Windows may prefer to only work with the dGPU and eGPU active.
             print("Returning to previous menu")
         else:
             self.dGPU_switch_support()
+    
+    def set_surplus(self):
+        Utilities.cls()
+        Utilities.header(["Override SurPlus MaxKernel"])
+        print(
+            """
+By default OCLP will only allow SurPlus to be used on kernels 21.1.0
+and older (ie. Monterey beta 7 and older). This is for saftey reasons 
+in the event newer OSes may break compatibility and result in boot loops.
+
+Enabling this option will allow SurPlus to have no MaxKernel set, and 
+therefore allow it to run on anything newer than 11.2.3. However if you
+do toggle this setting, ensure you have a known-good OS to return to in
+the event there's issues.
+        """
+        )
+
+        change_menu = input("Force SurPlus on all newer OSes?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.force_surplus = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.force_surplus = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.set_surplus()

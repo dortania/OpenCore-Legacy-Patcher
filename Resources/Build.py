@@ -172,7 +172,7 @@ class BuildOpenCore:
             # Misc
             ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: self.model in ModelArray.FeatureUnlockSupport),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
-            ("latebloom.kext", self.constants.latebloom_version, self.constants.latebloom_path, lambda: self.model in ModelArray.PCIRaceCondition),
+            # ("latebloom.kext", self.constants.latebloom_version, self.constants.latebloom_path, lambda: self.model in ModelArray.PCIRaceCondition),
             ("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path, lambda: self.model in ["MacBook4,1", "MacBook5,2"]),
         ]:
             self.enable_kext(name, version, path, check)
@@ -180,11 +180,22 @@ class BuildOpenCore:
         if self.constants.allow_oc_everywhere is False:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
 
-        if self.get_kext_by_bundle_path("latebloom.kext")["Enabled"] is True:
-            print(f"- Setting latebloom delay of {self.constants.latebloom_delay}ms, range {self.constants.latebloom_range}ms, debug {bool(self.constants.latebloom_debug)}")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"][
-                "boot-args"
-            ] += f" latebloom={self.constants.latebloom_delay} lb_range={self.constants.latebloom_range} lb_debug={self.constants.latebloom_debug}"
+        # if self.get_kext_by_bundle_path("latebloom.kext")["Enabled"] is True:
+        #     print(f"- Setting latebloom delay of {self.constants.latebloom_delay}ms, range {self.constants.latebloom_range}ms, debug {bool(self.constants.latebloom_debug)}")
+        #     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"][
+        #         "boot-args"
+        #     ] += f" latebloom={self.constants.latebloom_delay} lb_range={self.constants.latebloom_range} lb_debug={self.constants.latebloom_debug}"
+        if self.model in ModelArray.PCIRaceCondition:
+            # Ref: https://github.com/reenigneorcim/SurPlus
+            print("- Adding SurPlus Patch for Race Condition")
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 1 of 2 - Patch read_erandom (inlined in _early_random)")["Enabled"] = True
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 2 of 2 - Patch register_and_init_prng")["Enabled"] = True
+            if self.constants.force_surplus is True:
+                # Syncretic forces SurPlus to only run on Beta 7 and older by default for saftey reasons
+                # If users desires, allow forcing in newer OSes
+                print("- Allowing SurPlus on all newer OSes")
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 1 of 2 - Patch read_erandom (inlined in _early_random)")["MaxKernel"] = ""
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 2 of 2 - Patch register_and_init_prng")["MaxKernel"] = ""
 
         if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in ModelArray.MacPro):
             # Use Innie's same logic:

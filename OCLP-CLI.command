@@ -55,14 +55,15 @@ class OpenCoreLegacyPatcher:
         parser.add_argument("--moderate_smbios", help="Moderate SMBIOS Patching", action="store_true", required=False)
         parser.add_argument("--moj_cat_accel", help="Allow Root Patching on Mojave and Catalina", action="store_true", required=False)
         parser.add_argument("--disable_thunderbolt", help="Disable Thunderbolt on 2013-2014 MacBook Pros", action="store_true", required=False)
+        parser.add_argument("--force_surplus", help="Force SurPlus in all newer OSes", action="store_true", required=False)
 
         # Building args requiring value values (ie. --model iMac12,2)
         parser.add_argument("--model", action="store", help="Set custom model", required=False)
         parser.add_argument("--disk", action="store", help="Specifies disk to install to", required=False)
         parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
-        parser.add_argument("--lb_delay", action="store", help="Set Latebloom delay in ms", required=False)
-        parser.add_argument("--lb_range", action="store", help="Set Latebloom range in ms", required=False)
-        parser.add_argument("--lb_debug", action="store", help="Set Latebloom debug", required=False)
+        # parser.add_argument("--lb_delay", action="store", help="Set Latebloom delay in ms", required=False)
+        # parser.add_argument("--lb_range", action="store", help="Set Latebloom range in ms", required=False)
+        # parser.add_argument("--lb_debug", action="store", help="Set Latebloom debug", required=False)
 
         # SysPatch args
         parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
@@ -127,6 +128,9 @@ class OpenCoreLegacyPatcher:
         if args.disable_thunderbolt:
             print("- Set Disable Thunderbolt configuration")
             self.constants.disable_thunderbolt = True
+        if args.force_surplus:
+            print("- Forcing SurPlus override configuration")
+            self.constants.force_surplus = True
         if args.moderate_smbios:
             print("- Set Moderate SMBIOS Patching configuration")
             self.constants.serial_settings = "Moderate"
@@ -238,8 +242,8 @@ If you plan to create the USB for another machine, please select the "Change Mod
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             self.constants.serial_settings == "Moderate"
 
-        if self.constants.latebloom_delay == 0:
-            self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
+        # if self.constants.latebloom_delay == 0:
+        #     self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
 
         if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9", decode=True):
             self.constants.allow_ts2_accel = False
