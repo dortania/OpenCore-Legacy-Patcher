@@ -752,22 +752,41 @@ class BuildOpenCore:
 
         # Setup menu
         def minimal_serial_patch(self):
-            if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
-                self.config["PlatformInfo"]["SMBIOS"]["ProcessorType"] = 1537
+            # Generate Firmware Features
             fw_feature = self.patch_firmware_feature()
             fw_feature = hex(fw_feature).lstrip("0x").rstrip("L").strip()
             print(f"- Setting Firmware Feature: {fw_feature}")
             fw_feature = Utilities.string_to_hex(fw_feature)
+
+            # FirmwareFeatures
             self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeatures"] = fw_feature
-            self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeatures"] = fw_feature
             self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeaturesMask"] = fw_feature
+            self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeatures"] = fw_feature
             self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeaturesMask"] = fw_feature
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
+            
+            # Board ID
+            self.config["PlatformInfo"]["DataHub"]["BoardProduct"] = self.spoofed_board
             self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
             self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
+            
+            # Model (ensures tables are not mismatched, even if we're not spoofing)
+            self.config["PlatformInfo"]["DataHub"]["SystemProductName"] = self.model
+            self.config["PlatformInfo"]["SMBIOS"]["SystemProductName"] = self.model
+            self.config["PlatformInfo"]["SMBIOS"]["BoardVersion"] = self.model
+
+            # ProcessorType (when RestrictEvent's CPU naming is used)
+            if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
+                self.config["PlatformInfo"]["SMBIOS"]["ProcessorType"] = 1537
+
+            # Avoid incorrect Firmware Updates
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
             self.config["PlatformInfo"]["SMBIOS"]["BIOSVersion"] = "9999.999.999.999.999"
+
+            # Update tables
+            self.config["PlatformInfo"]["UpdateDataHub"] = True
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
             self.config["PlatformInfo"]["UpdateSMBIOS"] = True
+            self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
 
         def moderate_serial_patch(self):
             if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
