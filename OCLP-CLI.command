@@ -144,29 +144,29 @@ class OpenCoreLegacyPatcher:
             else:
                 print(f"- Unknown SMBIOS arg passed: {args.smbios_spoof}")
 
-        if args.lb_delay:
-            try:
-                self.constants.latebloom_delay = int(args.lb_delay)
-                print(f"- Set LateBloom delay: {args.lb_delay}")
-            except ValueError:
-                print(f"- Invalid LateBloom delay: {args.lb_delay}")
+        # if args.lb_delay:
+        #     try:
+        #         self.constants.latebloom_delay = int(args.lb_delay)
+        #         print(f"- Set LateBloom delay: {args.lb_delay}")
+        #     except ValueError:
+        #         print(f"- Invalid LateBloom delay: {args.lb_delay}")
 
-        if args.lb_range:
-            try:
-                self.constants.latebloom_range = int(args.lb_range)
-                print(f"- Set LateBloom range: {args.lb_range}")
-            except ValueError:
-                print(f"- Invalid LateBloom range: {args.lb_range}")
+        # if args.lb_range:
+        #     try:
+        #         self.constants.latebloom_range = int(args.lb_range)
+        #         print(f"- Set LateBloom range: {args.lb_range}")
+        #     except ValueError:
+        #         print(f"- Invalid LateBloom range: {args.lb_range}")
 
-        if args.lb_debug:
-            try:
-                self.constants.latebloom_debug = int(args.lb_debug)
-                if self.constants.latebloom_debug in [0, 1]:
-                    print(f"- Set LateBloom debug: {args.lb_debug}")
-                else:
-                    print(f"- Invalid LateBloom debug: {args.lb_debug}")
-            except ValueError:
-                print(f"- Invalid LateBloom range: {args.lb_debug}")
+        # if args.lb_debug:
+        #     try:
+        #         self.constants.latebloom_debug = int(args.lb_debug)
+        #         if self.constants.latebloom_debug in [0, 1]:
+        #             print(f"- Set LateBloom debug: {args.lb_debug}")
+        #         else:
+        #             print(f"- Invalid LateBloom debug: {args.lb_debug}")
+        #     except ValueError:
+        #         print(f"- Invalid LateBloom range: {args.lb_debug}")
 
         if args.support_all:
             print("- Building for natively supported model")
