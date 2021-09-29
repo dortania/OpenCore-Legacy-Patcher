@@ -21,6 +21,12 @@
   - Apply `agdpmod=vit9696` patch
 - Add Syncretic's SurPlus 11.3+ Race Condition Patch
   - [Source](https://github.com/reenigneorcim/SurPlus)
+- Downgrade Nvidia Kepler Bundles to 11.0 Beta 3
+  - Resolves crashing at high loads, credit to [Jackluke](https://github.com/jacklukem) for discovery
+- Add Legacy GMUX patchsets
+  - Applicable for dual GPU MacBookPro5,x and demuxed MacBookPro8,x
+- Increment Binaries:
+  - PatcherSupportPkg 0.1.5 release
 
 ## 0.2.5
 

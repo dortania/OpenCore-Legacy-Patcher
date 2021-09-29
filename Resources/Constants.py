@@ -14,7 +14,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.3.0"  #              OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.1.4"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.1.5"  #  PatcherSupportPkg
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
@@ -618,6 +618,10 @@ class Constants:
     @property
     def legacy_brightness(self):
         return self.payload_apple_kexts_path / Path("Brightness-Control")
+    
+    @property
+    def legacy_mux_path(self):
+        return self.payload_apple_kexts_path / Path("Legacy-Mux")
 
     @property
     def legacy_wifi_coreservices(self):

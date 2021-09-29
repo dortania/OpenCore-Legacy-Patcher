@@ -177,6 +177,16 @@ AddGeneralAccel = ["IOAcceleratorFamily2.kext", "IOSurface.kext"]
 
 DeleteBrightness = ["AppleGraphicsControl.kext/Contents/PlugIns/AGDCBacklightControl.kext"]
 
+DeleteDemux = [
+    "AppleGraphicsControl.kext/Contents/PlugIns/AGDCBacklightControl.kext",
+    "AppleGraphicsControl.kext/Contents/PlugIns/AppleMuxControl.kext",
+    "AppleBacklight.kext",
+]
+
+AddDemux = [
+    "AppleMuxControl.kext",
+]
+
 AddBrightness = [
     "AppleBacklight.kext",
     "AppleBacklightExpert.kext",

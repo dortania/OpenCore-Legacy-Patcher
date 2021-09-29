@@ -35,6 +35,7 @@ class PatchSysVolume:
         self.brightness_legacy = False
         self.legacy_audio = False
         self.legacy_wifi = False
+        self.legacy_gmux = False
         self.added_legacy_kexts = False
         self.amfi_must_disable = False
         self.check_board_id = False
@@ -57,6 +58,7 @@ class PatchSysVolume:
         self.mount_lauchd = f"{self.mount_location}/System/Library/LaunchDaemons"
         self.mount_private_frameworks = f"{self.mount_location}/System/Library/PrivateFrameworks"
         self.mount_libexec = f"{self.mount_location}/usr/libexec"
+        self.mount_extensions_mux = f"{self.mount_location}/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
 
     def elevated(self, *args, **kwargs) -> subprocess.CompletedProcess:
         if os.getuid() == 0 or self.constants.gui_mode is True:
@@ -309,6 +311,11 @@ set million colour before rebooting"""
         self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_libexec}/", self.mount_libexec], stdout=subprocess.PIPE)
         Utilities.process_status(self.elevated(["chmod", "755", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         Utilities.process_status(self.elevated(["chown", "root:wheel", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+    
+    def add_legacy_mux_patch(self):
+        self.delete_old_binaries(SysPatchArray.DeleteDemux)
+        print("- Merging Legacy Mux Kext patches")
+        Utilities.process_status(self.elevated(["cp", "-R", f"{self.constants.legacy_mux_path}/AppleMuxControl.kext", self.mount_extensions_mux], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def gpu_accel_legacy(self):
         if self.constants.detected_os == self.constants.mojave:
@@ -414,7 +421,7 @@ set million colour before rebooting"""
             print("- Installing basic Ivy Bridge Kext patches for generic OS")
             self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
 
-    def gpu_franevuffer_kepler_master(self):
+    def gpu_framebuffer_kepler_master(self):
         if self.constants.detected_os == self.constants.monterey:
             print("- Installing Kepler Acceleration Kext patches for Monterey")
             self.add_new_binaries(SysPatchArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
@@ -476,7 +483,7 @@ set million colour before rebooting"""
                 print("- Detected supported OS, installing Acceleration Patches")
             else:
                 print("- Detected unsupported OS, installing Basic Framebuffer")
-            self.gpu_franevuffer_kepler_master()
+            self.gpu_framebuffer_kepler_master()
 
         elif self.amd_ts1 is True:
             print("- Installing legacy TeraScale 1 Patches")
@@ -543,6 +550,10 @@ set million colour before rebooting"""
         if self.legacy_wifi is True:
             print("- Installing legacy Wireless support")
             self.add_wifi_patch()
+        
+        if self.legacy_gmux is True:
+            print("- Installing Legacy Mux Brightness support")
+            self.add_legacy_mux_patch()
 
         if self.validate is False:
             self.rebuild_snapshot()
@@ -663,6 +674,16 @@ set million colour before rebooting"""
             self.amd_ts2 = False
             self.iron_gpu = False
             self.sandy_gpu = False
+    
+    def detect_demux(self):
+        # If GFX0 is missing, assume machine was demuxed
+        # -wegnoegpu would also trigger this, so ensure arg is not present
+        if not "-wegnoegpu" in (Utilities.get_nvram("boot-args") or ""):
+            igpu = self.constants.computer.igpu
+            dgpu = self.constants.computer.dgpu
+            if igpu and not dgpu:
+                return True
+        return False
             
 
     def detect_patch_set(self):
@@ -683,6 +704,17 @@ set million colour before rebooting"""
         ) or (isinstance(self.constants.computer.wifi, device_probe.Atheros) and self.constants.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
             if self.constants.detected_os > self.constants.big_sur:
                 self.legacy_wifi = True
+        
+        if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
+            # Sierra uses a legacy GMUX control method needed for dGPU switching on MacBookPro5,x
+            # Same method is also used for demuxed machines
+            if self.constants.detected_os > self.constants.high_sierra:
+                if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
+                    # Ref: https://doslabelectronics.com/Demux.html
+                    if self.detect_demux() is True:
+                        self.legacy_gmux = True
+                else:
+                    self.legacy_gmux = True
 
         Utilities.cls()
         print("The following patches will be applied:")
@@ -706,6 +738,8 @@ set million colour before rebooting"""
             print("- Add legacy Audio Control")
         if self.legacy_wifi is True:
             print("- Add legacy WiFi Control")
+        if self.legacy_gmux is True:
+            print("- Add Legacy Mux Brightness Control")
 
         self.no_patch = not any(
             [
@@ -719,6 +753,7 @@ set million colour before rebooting"""
                 self.brightness_legacy,
                 self.legacy_audio,
                 self.legacy_wifi,
+                self.legacy_gmux,
             ]
         )
 
