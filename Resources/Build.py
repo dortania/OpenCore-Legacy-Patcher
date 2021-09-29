@@ -784,10 +784,12 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["SMBIOS"]["BIOSVersion"] = "9999.999.999.999.999"
 
             # Update tables
-            self.config["PlatformInfo"]["UpdateDataHub"] = True
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
             self.config["PlatformInfo"]["UpdateSMBIOS"] = True
-            self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
+
+            # Updating DataHub breaks hibernation, disabling for time being
+            # self.config["PlatformInfo"]["UpdateDataHub"] = True
+            # self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
 
         def moderate_serial_patch(self):
             if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
