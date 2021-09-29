@@ -33,7 +33,6 @@ class BuildOpenCore:
         self.gfx0_path = None
 
     def smbios_set(self, model):
-        print("- Setting macOS Monterey Supported SMBIOS")
         if model in ModelArray.MacBookAir_11:
             return "MacBookAir7,1"
         elif model in ModelArray.MacBookAir_13:
@@ -180,11 +179,12 @@ class BuildOpenCore:
         if self.constants.allow_oc_everywhere is False:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
 
-        # if self.get_kext_by_bundle_path("latebloom.kext")["Enabled"] is True:
-        #     print(f"- Setting latebloom delay of {self.constants.latebloom_delay}ms, range {self.constants.latebloom_range}ms, debug {bool(self.constants.latebloom_debug)}")
-        #     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"][
-        #         "boot-args"
-        #     ] += f" latebloom={self.constants.latebloom_delay} lb_range={self.constants.latebloom_range} lb_debug={self.constants.latebloom_debug}"
+        if self.smbios_set(self.model) in ModelArray.T2_Models:
+            # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
+            # Forces VMM patch instead
+            if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
+                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
+
         if self.model in ModelArray.PCIRaceCondition:
             # Ref: https://github.com/reenigneorcim/SurPlus
             print("- Adding SurPlus Patch for Race Condition")
@@ -736,6 +736,7 @@ class BuildOpenCore:
     def set_smbios(self):
         spoofed_model = self.model
         if self.constants.override_smbios == "Default":
+            print("- Setting macOS Monterey Supported SMBIOS")
             spoofed_model = self.smbios_set(self.model)
         else:
             spoofed_model = self.constants.override_smbios

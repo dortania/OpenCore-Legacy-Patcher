@@ -27,7 +27,9 @@
   - Applicable for dual GPU MacBookPro5,x and demuxed MacBookPro8,x
 - Increment Binaries:
   - PatcherSupportPkg 0.1.5 release
+  - RestrictEvents  1.0.5 rolling (2430ed0)
 - Limit MacBookPro6,2 G State
+- Fix OTA updates on T2 SMBIOS
 
 ## 0.2.5
 

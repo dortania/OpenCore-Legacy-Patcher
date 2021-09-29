@@ -29,8 +29,8 @@ class Constants:
         self.airportbcrmfixup_version = "2.1.3"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
-        self.restrictevents_version = "1.0.3"  #     RestrictEvents
-        self.restrictevents_mbp_version = "1.0.3"  # RestrictEvents blocking displaypolicyd (see RestrictEvents-MBP91.patch)
+        self.restrictevents_version = "1.0.5"  #     RestrictEvents
+        self.restrictevents_mbp_version = "1.0.5"  # RestrictEvents blocking displaypolicyd (see RestrictEvents-MBP91.patch)
         self.featureunlock_version = "1.0.3"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.4"  #          CPUFriend

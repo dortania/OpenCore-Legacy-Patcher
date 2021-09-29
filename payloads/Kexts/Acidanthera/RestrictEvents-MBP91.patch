@@ -1,21 +1,12 @@
-From 772e02b375b5b2186342965f3089d9d1bca053bf Mon Sep 17 00:00:00 2001
-From: Dhinak G <17605561+dhinakg@users.noreply.github.com>
-Date: Tue, 23 Mar 2021 17:21:48 -0400
-Subject: [PATCH] Disable displaypolicyd
-
----
- RestrictEvents/RestrictEvents.cpp | 1 +
- 1 file changed, 1 insertion(+)
-
 diff --git a/RestrictEvents/RestrictEvents.cpp b/RestrictEvents/RestrictEvents.cpp
-index 69b6af8..029417c 100644
+index 27562f0..66365a3 100644
 --- a/RestrictEvents/RestrictEvents.cpp
 +++ b/RestrictEvents/RestrictEvents.cpp
-@@ -35,6 +35,7 @@ struct RestrictEventsPolicy {
+@@ -61,6 +61,7 @@ struct RestrictEventsPolicy {
+ 		static const char *procBlacklist[] {
  			"/System/Library/CoreServices/ExpansionSlotNotification",
  			"/System/Library/CoreServices/MemorySlotNotification",
- 			"/usr/libexec/firmwarecheckers/eficheck/eficheck",
-+			"/usr/libexec/displaypolicyd"
++			"/usr/libexec/displaypolicyd",
  		};
  
  		char pathbuf[MAXPATHLEN];
