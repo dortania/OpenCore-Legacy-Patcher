@@ -27,6 +27,7 @@
   - Applicable for dual GPU MacBookPro5,x and demuxed MacBookPro8,x
 - Increment Binaries:
   - PatcherSupportPkg 0.1.5 release
+- Limit MacBookPro6,2 G State
 
 ## 0.2.5
 
