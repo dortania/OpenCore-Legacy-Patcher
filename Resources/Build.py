@@ -179,7 +179,7 @@ class BuildOpenCore:
         if self.constants.allow_oc_everywhere is False:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
 
-        if self.smbios_set(self.model) in ModelArray.T2_Models:
+        if self.smbios_set(self.model) in ModelArray.T2_Models or self.constants.override_smbios in ModelArray.T2_Models:
             # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
             # Forces VMM patch instead
             if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
