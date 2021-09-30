@@ -17,9 +17,9 @@ With Monterey, Apple continues their their somewhat ruthless march of dropping I
 
 All of these models now have support in OpenCore Legacy Patcher. Note iMac15,1 does have [an unfortunate firmware bug preventing resolutions above 4k](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/359) with OpenCore Legacy Patcher
 
-## Current Hardware Drawbacks:
+## Previously Broken Hardware
 
-### macOS 12.0 Beta 4 issue on 2012 to early 2013 machines
+::: details macOS 12.0 Beta 4 issue on 2012 to early 2013 machines (Resolved in 0.2.5 and newer)
 
 Currently in macOS 12.0 Beta 4, many Ivy Bridge Macs have experienced Bluetooth issues relating to their BCM20702 chipset. Currently the exact issue is unknown however is assumed to be a bug on Apple's end. Recommend downgrading to macOS 12.0 Beta 3 till resolved:
 
@@ -32,7 +32,7 @@ A temporary fix is to restart the BlueTool and bluetoothd process with each boot
 sudo killall -9 BlueTool bluetoothd
 ```
 
-## Previously Broken Hardware
+:::
 
 ::: details Wireless Support Dropped (Resolved in 0.2.5 and newer)
 
