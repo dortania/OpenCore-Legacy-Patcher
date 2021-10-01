@@ -14,7 +14,7 @@ import ast
 from pathlib import Path
 from datetime import date
 
-from Resources import Constants, ModelArray, Utilities, device_probe
+from Resources import Constants, ModelArray, Utilities, device_probe, generate_smbios
 from Data import smbios_data, bluetooth_data, cpu_data
 
 
@@ -30,38 +30,7 @@ class BuildOpenCore:
         self.config = None
         self.constants: Constants.Constants = versions
         self.computer = self.constants.computer
-
         self.gfx0_path = None
-
-    def smbios_set(self, model):
-        if model in ModelArray.MacBookAir_11:
-            return "MacBookAir7,1"
-        elif model in ModelArray.MacBookAir_13:
-            return "MacBookAir7,2"
-        elif model in ModelArray.MacBook_12:
-            return "MacBook9,1"
-        elif model in ModelArray.MacBookPro_13:
-            return "MacBookPro12,1"
-        elif model in ModelArray.MacBookPro_15_iGPU:
-            return "MacBookPro11,4"
-        elif model in ModelArray.MacBookPro_15_dGPU:
-            return "MacBookPro11,5"
-        elif model in ModelArray.Macmini:
-            return "Macmini7,1"
-        elif model in ModelArray.iMac_iGPUless:
-            return "iMacPro1,1"
-        elif model in ModelArray.iMac_dGPU:
-            # Check for upgraded GPUs on iMacs
-            if self.constants.drm_support is True:
-                return "iMacPro1,1"
-            else:
-                return "iMac17,1"
-        elif model in ModelArray.iMac_iGPU:
-            return "iMac16,1"
-        elif model in ModelArray.MacPro:
-            return "MacPro7,1"
-        else:
-            return model
 
     def patch_firmware_feature(self):
         # Adjust FirmwareFeature to support everything macOS requires
@@ -179,12 +148,12 @@ class BuildOpenCore:
         if self.constants.allow_oc_everywhere is False:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
 
-
-        if (smbios_data.smbios_dictionary[self.smbios_set(self.model) or self.constants.override_smbios]["SecureBootModel"]) != None:
-            # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
-            # Forces VMM patch instead
-            if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
-                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
+        if self.constants.allow_oc_everywhere is False:
+            if (smbios_data.smbios_dictionary[generate_smbios.set_smbios_model_spoof(self.model) or self.constants.override_smbios]["SecureBootModel"]) != None:
+                # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
+                # Forces VMM patch instead
+                if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
+                    self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
 
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge:
             # Ref: https://github.com/reenigneorcim/SurPlus
@@ -345,14 +314,15 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.iokit.IOHIDFamily")["Enabled"] = True
 
         # SSDT patches
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.nahalem and not (self.model.startswith("MacPro") or self.model.startswith("Xserve")):
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.nehalem and not (self.model.startswith("MacPro") or self.model.startswith("Xserve")):
+            # Applicable for consumer Nehalem
             print("- Adding SSDT-CPBG.aml")
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
 
         if cpu_data.cpu_data.sandy_bridge <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge:
             # Based on: https://egpu.io/forums/pc-setup/fix-dsdt-override-to-correct-error-12/
-            # Apply to Sandy and Ivy Bridge Macs
+            # Applicable for Sandy and Ivy Bridge Macs
             print("- Enabling Windows 10 UEFI Audio support")
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-PCI.aml")["Enabled"] = True
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "BUF0 to BUF1")["Enabled"] = True
@@ -453,6 +423,7 @@ class BuildOpenCore:
                 }
 
         # Enable FireWire Boot Support
+        # Applicable for both native FireWire and Thunderbolt to FireWire adapters
         if self.constants.firewire_boot is True and self.model not in ModelArray.NoFireWireSupport:
             print("- Enabling FireWire Boot Support")
             self.enable_kext("IOFireWireFamily.kext", self.constants.fw_kext, self.constants.fw_family_path)
@@ -529,7 +500,8 @@ class BuildOpenCore:
                     "class-code": binascii.unhexlify("FFFFFFFF"),
                 }
             elif self.model == "iMac10,1":
-                self.enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
+                if self.get_kext_by_bundle_path("AAAMouSSE.kext")["Enabled"] is False:
+                    self.enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
 
         # Check GPU Vendor
         if self.constants.metal_build is True:
@@ -736,7 +708,7 @@ class BuildOpenCore:
         spoofed_model = self.model
         if self.constants.override_smbios == "Default":
             print("- Setting macOS Monterey Supported SMBIOS")
-            spoofed_model = self.smbios_set(self.model)
+            spoofed_model = generate_smbios.set_smbios_model_spoof(self.model)
         else:
             spoofed_model = self.constants.override_smbios
         print(f"- Using Model ID: {spoofed_model}")
@@ -983,7 +955,8 @@ class BuildOpenCore:
 
     def build_opencore(self):
         self.build_efi()
-        self.set_smbios()
+        if self.constants.allow_oc_everywhere is False:
+            self.set_smbios()
         self.cleanup()
         self.sign_files()
         print("")

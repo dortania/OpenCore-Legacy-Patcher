@@ -3,7 +3,7 @@ class cpu_data:
     yonah = 1
     conroe = 2
     penryn = 3
-    nahalem = 4 # (Westmere included)
+    nehalem = 4 # (Westmere included)
     sandy_bridge = 5  #     2000
     ivy_bridge = 6  #       3000
     haswell = 7     #       4000

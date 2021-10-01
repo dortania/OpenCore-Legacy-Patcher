@@ -75,7 +75,7 @@ class Constants:
         self.payload_path = self.current_path / Path("payloads")
 
         # Patcher Settings
-        self.allow_oc_everywhere = False  # Set whether Patcher can be run on unsupported Macs
+        self.allow_oc_everywhere = True  # Set whether Patcher can be run on unsupported Macs
         self.gui_mode = False  #            Determine whether running in a GUI or TUI
         self.disk = ""  #                   Set installation ESP
         self.patch_disk = ""  #             Set Root Volume to patch
