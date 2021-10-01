@@ -21,6 +21,7 @@ except ImportError:
         raise Exception("Missing requests library!\nPlease run the following before starting OCLP:\npip3 install requests")
 
 from Resources import Constants, ioreg, device_probe
+from Data import sip_data
 
 
 def hexswap(input_hex: str):
@@ -120,13 +121,13 @@ def csr_decode(csr_active_config, os_sip):
         csr_active_config = b"\x00\x00\x00\x00"
     sip_int = int.from_bytes(csr_active_config, byteorder="little")
     i = 0
-    for current_sip_bit in Constants.Constants.csr_values:
+    for current_sip_bit in sip_data.system_integrity_protection.csr_values:
         if sip_int & (1 << i):
-            Constants.Constants.csr_values[current_sip_bit] = True
+            sip_data.system_integrity_protection.csr_values[current_sip_bit] = True
         i = i + 1
 
     # Can be adjusted to whatever OS needs patching
-    sip_needs_change = all(Constants.Constants.csr_values[i] for i in os_sip)
+    sip_needs_change = all(sip_data.system_integrity_protection.csr_values[i] for i in os_sip)
     if sip_needs_change is True:
         return False
     else:

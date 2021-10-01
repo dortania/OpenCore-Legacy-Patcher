@@ -10,7 +10,8 @@ import subprocess
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type, Union
 
-from Resources import PCIIDArray, Utilities, ioreg
+from Resources import Utilities, ioreg
+from Data import pci_data
 
 
 @dataclass
@@ -168,11 +169,11 @@ class NVIDIA(GPU):
 
     def detect_arch(self):
         # G80/G80GL
-        if self.device_id in PCIIDArray.nvidia_ids.tesla_ids:
+        if self.device_id in pci_data.nvidia_ids.tesla_ids:
             self.arch = NVIDIA.Archs.Tesla
-        elif self.device_id in PCIIDArray.nvidia_ids.fermi_ids:
+        elif self.device_id in pci_data.nvidia_ids.fermi_ids:
             self.arch = NVIDIA.Archs.Fermi
-        elif self.device_id in PCIIDArray.nvidia_ids.kepler_ids:
+        elif self.device_id in pci_data.nvidia_ids.kepler_ids:
             self.arch = NVIDIA.Archs.Kepler
         else:
             self.arch = NVIDIA.Archs.Unknown
@@ -195,17 +196,17 @@ class AMD(GPU):
     arch: Archs = field(init=False)
 
     def detect_arch(self):
-        if self.device_id in PCIIDArray.amd_ids.legacy_gcn_ids:
+        if self.device_id in pci_data.amd_ids.legacy_gcn_ids:
             self.arch = AMD.Archs.Legacy_GCN
-        elif self.device_id in PCIIDArray.amd_ids.terascale_1_ids:
+        elif self.device_id in pci_data.amd_ids.terascale_1_ids:
             self.arch = AMD.Archs.TeraScale_1
-        elif self.device_id in PCIIDArray.amd_ids.terascale_2_ids:
+        elif self.device_id in pci_data.amd_ids.terascale_2_ids:
             self.arch = AMD.Archs.TeraScale_2
-        elif self.device_id in PCIIDArray.amd_ids.polaris_ids:
+        elif self.device_id in pci_data.amd_ids.polaris_ids:
             self.arch = AMD.Archs.Polaris
-        elif self.device_id in PCIIDArray.amd_ids.vega_ids:
+        elif self.device_id in pci_data.amd_ids.vega_ids:
             self.arch = AMD.Archs.Vega
-        elif self.device_id in PCIIDArray.amd_ids.navi_ids:
+        elif self.device_id in pci_data.amd_ids.navi_ids:
             self.arch = AMD.Archs.Navi
         else:
             self.arch = AMD.Archs.Unknown
@@ -231,23 +232,23 @@ class Intel(GPU):
     arch: Archs = field(init=False)
 
     def detect_arch(self):
-        if self.device_id in PCIIDArray.intel_ids.iron_ids:
+        if self.device_id in pci_data.intel_ids.iron_ids:
             self.arch = Intel.Archs.Iron_Lake
-        elif self.device_id in PCIIDArray.intel_ids.sandy_ids:
+        elif self.device_id in pci_data.intel_ids.sandy_ids:
             self.arch = Intel.Archs.Sandy_Bridge
-        elif self.device_id in PCIIDArray.intel_ids.ivy_ids:
+        elif self.device_id in pci_data.intel_ids.ivy_ids:
             self.arch = Intel.Archs.Ivy_Bridge
-        elif self.device_id in PCIIDArray.intel_ids.haswell_ids:
+        elif self.device_id in pci_data.intel_ids.haswell_ids:
             self.arch = Intel.Archs.Haswell
-        elif self.device_id in PCIIDArray.intel_ids.broadwell_ids:
+        elif self.device_id in pci_data.intel_ids.broadwell_ids:
             self.arch = Intel.Archs.Broadwell
-        elif self.device_id in PCIIDArray.intel_ids.skylake_ids:
+        elif self.device_id in pci_data.intel_ids.skylake_ids:
             self.arch = Intel.Archs.Skylake
-        elif self.device_id in PCIIDArray.intel_ids.kaby_lake_ids:
+        elif self.device_id in pci_data.intel_ids.kaby_lake_ids:
             self.arch = Intel.Archs.Kaby_Lake
-        elif self.device_id in PCIIDArray.intel_ids.coffee_lake_ids:
+        elif self.device_id in pci_data.intel_ids.coffee_lake_ids:
             self.arch = Intel.Archs.Coffee_Lake
-        elif self.device_id in PCIIDArray.intel_ids.ice_lake_ids:
+        elif self.device_id in pci_data.intel_ids.ice_lake_ids:
             self.arch = Intel.Archs.Ice_Lake
         else:
             self.arch = Intel.Archs.Unknown
@@ -259,6 +260,7 @@ class Broadcom(WirelessCard):
 
     class Chipsets(enum.Enum):
         # pylint: disable=invalid-name
+        AppleBCMWLANBusInterfacePCIe = "AppleBCMWLANBusInterfacePCIe supported"
         AirportBrcmNIC = "AirportBrcmNIC supported"
         AirPortBrcm4360 = "AirPortBrcm4360 supported"
         AirPortBrcm4331 = "AirPortBrcm4331 supported"
@@ -268,13 +270,15 @@ class Broadcom(WirelessCard):
     chipset: Chipsets = field(init=False)
 
     def detect_chipset(self):
-        if self.device_id in PCIIDArray.broadcom_ids.AirPortBrcmNIC:
+        if self.device_id in pci_data.broadcom_ids.AppleBCMWLANBusInterfacePCIe:
+            self.chipset = Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe
+        elif self.device_id in pci_data.broadcom_ids.AirPortBrcmNIC:
             self.chipset = Broadcom.Chipsets.AirportBrcmNIC
-        elif self.device_id in PCIIDArray.broadcom_ids.AirPortBrcm4360:
+        elif self.device_id in pci_data.broadcom_ids.AirPortBrcm4360:
             self.chipset = Broadcom.Chipsets.AirPortBrcm4360
-        elif self.device_id in PCIIDArray.broadcom_ids.AirPortBrcm4331:
+        elif self.device_id in pci_data.broadcom_ids.AirPortBrcm4331:
             self.chipset = Broadcom.Chipsets.AirPortBrcm4331
-        elif self.device_id in PCIIDArray.broadcom_ids.AppleAirPortBrcm43224:
+        elif self.device_id in pci_data.broadcom_ids.AppleAirPortBrcm43224:
             self.chipset = Broadcom.Chipsets.AirPortBrcm43224
         else:
             self.chipset = Broadcom.Chipsets.Unknown
@@ -293,7 +297,7 @@ class Atheros(WirelessCard):
     chipset: Chipsets = field(init=False)
 
     def detect_chipset(self):
-        if self.device_id in PCIIDArray.atheros_ids.AtherosWifi:
+        if self.device_id in pci_data.atheros_ids.AtherosWifi:
             self.chipset = Atheros.Chipsets.AirPortAtheros40
         else:
             self.chipset = Atheros.Chipsets.Unknown

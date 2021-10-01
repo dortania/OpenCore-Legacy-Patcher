@@ -12,6 +12,7 @@ import zipfile
 from pathlib import Path
 
 from Resources import Constants, device_probe, ModelArray, SysPatchArray, Utilities
+from Data import sip_data
 
 
 class PatchSysVolume:
@@ -758,8 +759,8 @@ set million colour before rebooting"""
         )
 
     def verify_patch_allowed(self):
-        sip = self.constants.root_patch_sip_big_sur if self.constants.detected_os > self.constants.catalina else self.constants.root_patch_sip_mojave
-        if sip == self.constants.root_patch_sip_mojave:
+        sip = sip_data.system_integrity_protection.root_patch_sip_big_sur if self.constants.detected_os > self.constants.catalina else sip_data.system_integrity_protection.root_patch_sip_mojave
+        if sip == sip_data.system_integrity_protection.root_patch_sip_mojave:
             sip_value = "For Hackintoshes, please set csr-active-config to '03060000' (0x603)\nFor non-OpenCore Macs, please run 'csrutil disable' in RecoveryOS"
         else:
             sip_value = (
