@@ -73,49 +73,6 @@ SupportedSMBIOS = [
     "Xserve3,1",
 ]
 
-# CPU patches
-
-DualSocket = ["MacPro3,1", "MacPro4,1", "MacPro5,1", "Xserve2,1", "Xserve3,1", "Dortania1,1"]
-
-# Ethernet patches
-
-EthernetNvidia = [
-    "MacBook5,1",
-    "MacBook5,2",
-    "MacBook6,1",
-    "MacBook7,1",
-    "MacBookPro5,1",
-    "MacBookPro5,2",
-    "MacBookPro5,3",
-    "MacBookPro5,4",
-    "MacBookPro5,5",
-    "Macmini3,1",
-    "iMac9,1",
-    "iMac10,1",
-    "Dortania1,1",
-]
-EthernetMarvell = ["MacBook4,1", "MacBookPro4,1", "iMac7,1", "iMac8,1", "Dortania1,1"]
-EthernetBroadcom = [
-    "MacBookAir4,1",
-    "MacBookAir4,2",
-    "MacBookPro6,1",
-    "MacBookPro6,2",
-    "MacBookPro7,1",
-    "MacBookPro8,1",
-    "MacBookPro8,2",
-    "MacBookPro8,3",
-    "Macmini4,1",
-    "Macmini5,1",
-    "Macmini5,2",
-    "Macmini5,3",
-    "iMac11,1",
-    "iMac11,2",
-    "iMac11,3",
-    "iMac12,1",
-    "iMac12,2",
-    "Dortania1,1",
-]
-
 # Audio
 
 LegacyAudio = [
@@ -157,26 +114,6 @@ LegacyAudio = [
     "iMac12,2",
     "MacPro3,1",
     "Dortania1,1",
-]
-
-nvidiaHDEF = [
-    "MacBook5,1",
-    "MacBook5,2",
-    "MacBook6,1",
-    "MacBook7,1",
-    "MacBookAir2,1",
-    "MacBookAir3,1",
-    "MacBookAir3,2",
-    "MacBookPro5,1",
-    "MacBookPro5,2",
-    "MacBookPro5,3",
-    "MacBookPro5,4",
-    "MacBookPro5,5",
-    "MacBookPro7,1",
-    "Macmini3,1",
-    "Macmini4,1",
-    "iMac9,1",
-    "iMac10,1",
 ]
 
 # GPU
@@ -414,96 +351,6 @@ AGDPSupport = [
     # "MacPro6,1",
 ]
 
-NoFireWireSupport = [
-    "MacBook5,1",
-    "MacBook6,1",
-    "MacBook7,1",
-    "MacBookAir1,1",
-    "MacBookAir2,1",
-    "MacBookAir3,1",
-    "MacBookAir3,2",
-]
-
-# Thunderbolt 1 Macs
-Thunderbolt_1 = [
-    "MacBookAir4,1",
-    "MacBookAir4,2",
-    "MacBookAir5,1",
-    "MacBookAir5,2",
-    "MacBookAir6,1",
-    "MacBookAir6,2",
-    "MacBookPro8,1",
-    "MacBookPro8,2",
-    "MacBookPro8,3",
-    "MacBookPro9,1",
-    "MacBookPro9,2",
-    "MacBookPro10,1",
-    "MacBookPro10,2",
-    "Macmini5,1",
-    "Macmini5,2",
-    "Macmini5,3",
-    "Macmini6,1",
-    "Macmini6,2",
-    "iMac12,1",
-    "iMac12,2",
-    "iMac13,1",
-    "iMac13,2",
-    "iMac13,3",
-    "iMac14,1",
-    "iMac14,2",
-    "iMac14,3",
-    "iMac14,4",
-    "Dortania1,1",
-]
-
-# Thunderbolt 2 Macs
-Thunderbolt_2 = [
-    "MacBookAir7,1",
-    "MacBookAir7,2",
-    "MacBookPro11,1",
-    "MacBookPro11,2",
-    "MacBookPro11,3",
-    "MacBookPro11,4",
-    "MacBookPro11,5",
-    "MacBookPro12,1",
-    "Macmini7,1",
-    "iMac15,1",
-    "iMac16,1",
-    "iMac17,1",
-    "iMac16,2",
-    "MacPro6,1",
-]
-
-# Thunderbolt 3 Macs
-Thunderbolt_3 = [
-    "MacBookAir8,1",
-    "MacBookAir8,2",
-    "MacBookAir9,1",
-    "MacBookPro13,1",
-    "MacBookPro13,2",
-    "MacBookPro13,3",
-    "MacBookPro14,1",
-    "MacBookPro14,2",
-    "MacBookPro14,3",
-    "MacBookPro15,1",
-    "MacBookPro15,2",
-    "MacBookPro15,3",
-    "MacBookPro15,4",
-    "MacBookPro16,1",
-    "MacBookPro16,2",
-    "MacBookPro16,3",
-    "MacBookPro16,4",
-    "Macmini8,1",
-    "iMac18,1",
-    "iMac18,2",
-    "iMac18,3",
-    "iMac19,1",
-    "iMac19,2",
-    "iMac20,1",
-    "iMac20,2",
-    "MacPro7,1",
-]
-
 Missing_USB_Map = [
     "MacBook4,1",
     "MacBook5,1",
@@ -543,6 +390,6 @@ Missing_USB_Map = [
     "iMac12,2",
     "MacPro3,1",
     "MacPro4,1",
-    "XServe2,1",
-    "XServe3,1",
+    "Xserve2,1",
+    "Xserve3,1",
 ]

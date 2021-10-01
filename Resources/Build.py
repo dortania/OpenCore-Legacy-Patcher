@@ -15,7 +15,7 @@ from pathlib import Path
 from datetime import date
 
 from Resources import Constants, ModelArray, Utilities, device_probe, generate_smbios
-from Data import smbios_data, bluetooth_data, cpu_data
+from Data import smbios_data, bluetooth_data, cpu_data, os_data
 
 
 def rmtree_handler(func, path, exc_info):
@@ -104,7 +104,7 @@ class BuildOpenCore:
             ("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path, lambda: self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1"]),
             ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False),
             # CPU patches
-            ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model in ModelArray.DualSocket),
+            ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model.startswith("MacPro") or self.model.startswith("Xserve")),
             ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn),
             ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn),
             (
@@ -114,9 +114,8 @@ class BuildOpenCore:
                 lambda: self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False,
             ),
             # Ethernet patches
-            ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
-            ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
-            ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
+            ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Marvel"),
+            ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Nvidia"),
             # Legacy audio
             ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: (self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro) and self.constants.set_alc_usage is True),
             # IDE patch
@@ -131,6 +130,13 @@ class BuildOpenCore:
         if self.constants.allow_oc_everywhere is False:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
 
+        # Ethernet Patch Sets
+        if smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Broadcom":
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge:
+                # Required due to Big Sur's BCM5701 requiring VT-x support
+                # Applicable for pre-Ivy Bridge models
+                self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
+    
         if self.constants.allow_oc_everywhere is False:
             if (smbios_data.smbios_dictionary[generate_smbios.set_smbios_model_spoof(self.model) or self.constants.override_smbios]["SecureBootModel"]) != None:
                 # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
@@ -196,19 +202,21 @@ class BuildOpenCore:
                 arpt_path = self.computer.wifi.pci_path
                 print(f"- Found ARPT device at {arpt_path}")
             else:
-                if self.model in ModelArray.nvidiaHDEF:
+                try:
+                    smbios_data.smbios_dictionary[self.model]["nForce Chipset"]
                     # Nvidia chipsets all have the same path to ARPT
                     arpt_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
-                elif self.model in ("iMac7,1", "iMac8,1", "MacPro3,1", "MacBookPro4,1"):
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
-                elif self.model in ("iMac13,1", "iMac13,2"):
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
-                elif self.model in ("MacPro4,1", "MacPro5,1"):
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
-                else:
-                    # Assumes we have a laptop with Intel chipset
-                    # iMac11,x-12,x also apply
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
+                except KeyError:
+                    if self.model in ("iMac7,1", "iMac8,1", "MacPro3,1", "MacBookPro4,1"):
+                        arpt_path = "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
+                    elif self.model in ("iMac13,1", "iMac13,2"):
+                        arpt_path = "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
+                    elif self.model in ("MacPro4,1", "MacPro5,1"):
+                        arpt_path = "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
+                    else:
+                        # Assumes we have a laptop with Intel chipset
+                        # iMac11,x-12,x also apply
+                        arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
                 print(f"- Using known DevicePath {arpt_path}")
             # self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
             if not self.constants.custom_model and self.computer.wifi and self.constants.validate is False and self.computer.wifi.country_code:
@@ -338,7 +346,6 @@ class BuildOpenCore:
             elif self.model == "MacBookPro10,1":
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
 
-
             if self.model not in ModelArray.NoAGPMSupport:
                 print("- Adding AppleGraphicsPowerManagement Override")
                 agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
@@ -378,26 +385,50 @@ class BuildOpenCore:
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
         # Audio Patch
-        if self.model in ModelArray.LegacyAudio:
-            print("- Adding audio properties")
-            hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)" if self.model in ModelArray.nvidiaHDEF else "PciRoot(0x0)/Pci(0x1b,0x0)"
-            # In AppleALC, MacPro3,1's original layout is already in use, forcing layout 13 instead
-            if self.model == "MacPro3,1":
-                self.config["DeviceProperties"]["Add"][hdef_path] = {
-                    "apple-layout-id": 90,
-                    "use-apple-layout-id": 1,
-                    "alc-layout-id": 13,
-                }
-            else:
-                self.config["DeviceProperties"]["Add"][hdef_path] = {
-                    "apple-layout-id": 90,
-                    "use-apple-layout-id": 1,
-                    "use-layout-id": 1,
-                }
+        if self.constants.set_alc_usage is True:
+            if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] <= os_data.os_data.high_sierra:
+                # Models dropped in Mojave also lost Audio support
+                # Xserves and MacPro4,1 are exceptions
+                # iMac7,1 and iMac8,1 require AppleHDA/IOAudioFamily downgrade
+                if not (self.model.startswith("Xserve") or self.model == "MacPro4,1"):
+                    try: 
+                        smbios_data.smbios_dictionary[self.model]["nForce Chipset"]
+                        hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)"
+                    except KeyError:
+                        hdef_path = "PciRoot(0x0)/Pci(0x1b,0x0)"
+                    # In AppleALC, MacPro3,1's original layout is already in use, forcing layout 13 instead
+                    if self.model == "MacPro3,1":
+                        self.config["DeviceProperties"]["Add"][hdef_path] = {
+                            "apple-layout-id": 90,
+                            "use-apple-layout-id": 1,
+                            "alc-layout-id": 13,
+                        }
+                    else:
+                        self.config["DeviceProperties"]["Add"][hdef_path] = {
+                            "apple-layout-id": 90,
+                            "use-apple-layout-id": 1,
+                            "use-layout-id": 1,
+                        }
+                    self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
+            elif self.model.startswith("MacPro") or self.model.startswith("Xserve"):
+                # Used to enable Audio support for non-standard dGPUs
+                self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
 
-        # Enable FireWire Boot Support
-        # Applicable for both native FireWire and Thunderbolt to FireWire adapters
-        if self.constants.firewire_boot is True and self.model not in ModelArray.NoFireWireSupport:
+ 
+        def check_firewire(model):
+            # MacBooks never supported FireWire
+            # Pre-Thunderbolt MacBook Airs as well
+            if model.startswith("MacBook"):
+                return False
+            elif model.startswith("MacBookAir"):
+                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge:
+                    return False
+            else:
+                return True
+
+        if self.constants.firewire_boot is True and check_firewire() is True:
+            # Enable FireWire Boot Support
+            # Applicable for both native FireWire and Thunderbolt to FireWire adapters
             print("- Enabling FireWire Boot Support")
             self.enable_kext("IOFireWireFamily.kext", self.constants.fw_kext, self.constants.fw_family_path)
             self.enable_kext("IOFireWireSBP2.kext", self.constants.fw_kext, self.constants.fw_sbp2_path)

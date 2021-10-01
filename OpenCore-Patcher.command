@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 from Resources import Build, CliMenu, Constants, ModelArray, SysPatch, Utilities, device_probe
-
+from Data import smbios_data, cpu_data
 
 class OpenCoreLegacyPatcher:
     def __init__(self):
@@ -166,7 +166,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [
                     [f"Set SurPlus Settings:\tCurrently {self.constants.force_surplus}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).set_surplus]
                 ]
-                if ((self.constants.custom_model or self.computer.real_model) in ModelArray.PCIRaceCondition)
+                if (smbios_data.smbios_dictionary[self.constants.custom_model or self.computer.real_model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge)
                 else []
             )
 

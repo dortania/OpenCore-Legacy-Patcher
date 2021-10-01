@@ -14,7 +14,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "Screen Size": 13,
         "UGA Graphics": True,
-
+        "Ethernet Chipset": "Marvell",
     },
 
     "MacBook2,1": {
@@ -27,6 +27,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "Screen Size": 13,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "MacBook3,1": {
@@ -39,6 +40,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "Screen Size": 13,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "MacBook4,1": {
@@ -51,6 +53,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
 
@@ -63,6 +66,8 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -75,6 +80,8 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -87,6 +94,8 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 13,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -99,6 +108,8 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 13,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -111,6 +122,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 12,
+        "Ethernet Chipset": None,
     },
 
     "MacBook9,1": {
@@ -122,6 +134,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 12,
+        "Ethernet Chipset": None,
     },
 
     "MacBook10,1": {
@@ -133,6 +146,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 12,
+        "Ethernet Chipset": None,
 
     },
 
@@ -145,6 +159,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookAir2,1": {
@@ -156,6 +171,8 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
+        "nForce Chipset": True,
+        "Ethernet Chipset": None,
     },
 
 
@@ -168,6 +185,8 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 11,
+        "nForce Chipset": True,
+        "Ethernet Chipset": None,
     },
 
 
@@ -180,6 +199,8 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
+        "nForce Chipset": True,
+        "Ethernet Chipset": None,
     },
 
 
@@ -192,6 +213,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 11,
+        "Ethernet Chipset": "Broadcom", # Set for Apple Thunderbolt Adapter
     },
 
 
@@ -204,6 +226,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 13,
+        "Ethernet Chipset": "Broadcom", # Set for Apple Thunderbolt Adapter
     },
 
 
@@ -216,6 +239,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Screen Size": 11,
+        "Ethernet Chipset": None,
     },
 
 
@@ -228,6 +252,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
 
@@ -240,6 +265,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 11,
+        "Ethernet Chipset": None,
     },
 
 
@@ -252,6 +278,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookAir7,1": {
@@ -263,6 +290,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 11,
+        "Ethernet Chipset": None,
     },
 
     "MacBookAir7,2": {
@@ -274,6 +302,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookAir8,1": {
@@ -285,6 +314,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookAir8,2": {
@@ -296,6 +326,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookAir9,1": {
@@ -307,6 +338,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro1,1": {
@@ -319,6 +351,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "Screen Size": 15,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "MacBookPro1,2": {
@@ -331,6 +364,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "Screen Size": 17,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "MacBookPro2,1": {
@@ -343,6 +377,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "Screen Size": 17,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "MacBookPro2,2": {
@@ -355,6 +390,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "Screen Size": 15,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "MacBookPro3,1": {
@@ -367,6 +403,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "Screen Size": 15,  # Shipped with 17 as well
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "MacBookPro4,1": {
@@ -380,6 +417,7 @@ smbios_dictionary = {
         "Screen Size": 15,  # Shipped with 17 as well
         "Switchable GPUs": True,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
 
@@ -393,6 +431,8 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -406,6 +446,8 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 17,
         "Switchable GPUs": True,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -419,6 +461,8 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -432,6 +476,8 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -444,6 +490,8 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -457,6 +505,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 17,
         "Switchable GPUs": True,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -470,6 +519,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -482,6 +532,8 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
+        "Ethernet Chipset": "Broadcom",
+        "nForce Chipset": True,
     },
 
 
@@ -494,6 +546,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 13,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -507,6 +560,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -520,6 +574,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 17,
         "Switchable GPUs": True,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -533,6 +588,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -545,6 +601,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Screen Size": 13,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -558,6 +615,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": None,
     },
 
 
@@ -570,6 +628,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
 
@@ -582,6 +641,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
 
@@ -594,6 +654,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 15,
+        "Ethernet Chipset": None,
     },
 
 
@@ -607,6 +668,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro11,4": {
@@ -618,6 +680,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 15,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro11,5": {
@@ -630,6 +693,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro12,1": {
@@ -641,6 +705,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro13,1": {
@@ -652,6 +717,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro13,2": {
@@ -663,6 +729,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro13,3": {
@@ -675,6 +742,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro14,1": {
@@ -686,6 +754,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro14,2": {
@@ -697,6 +766,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro14,3": {
@@ -709,6 +779,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro15,1": {
@@ -721,6 +792,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro15,2": {
@@ -732,6 +804,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro15,3": {
@@ -744,6 +817,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 15,
         "Switchable GPUs": True,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro15,4": {
@@ -755,6 +829,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro16,1": {
@@ -767,6 +842,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 16,
         "Switchable GPUs": True,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro16,2": {
@@ -778,6 +854,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro16,3": {
@@ -789,6 +866,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
+        "Ethernet Chipset": None,
     },
 
     "MacBookPro16,4": {
@@ -801,6 +879,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 16,
         "Switchable GPUs": True,
+        "Ethernet Chipset": None,
     },
 
     "Macmini1,1": {
@@ -811,6 +890,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.snow_leopard,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
+        "Ethernet Chipset": "Marvell",
     },
 
     "Macmini2,1": {
@@ -821,6 +901,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.lion,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
+        "Ethernet Chipset": "Marvell",
     },
 
     "Macmini3,1": {
@@ -831,6 +912,8 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.el_capitan,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -842,6 +925,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.high_sierra,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -853,6 +937,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.high_sierra,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -864,6 +949,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.high_sierra,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -875,6 +961,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.high_sierra,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -886,6 +973,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.catalina,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -897,6 +985,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.catalina,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "Macmini7,1": {
@@ -907,6 +996,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "Macmini8,1": {
@@ -917,6 +1007,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac4,1": {
@@ -928,6 +1019,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "iMac4,2": {
@@ -939,6 +1031,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "iMac5,1": {
@@ -950,6 +1043,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "iMac5,2": {
@@ -961,6 +1055,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "iMac6,1": {
@@ -972,6 +1067,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
     "iMac7,1": {
@@ -983,6 +1079,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
 
@@ -995,6 +1092,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Marvell",
     },
 
 
@@ -1006,6 +1104,8 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.el_capitan,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -1018,6 +1118,8 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.high_sierra,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
+        "Ethernet Chipset": "Nvidia",
+        "nForce Chipset": True,
     },
 
 
@@ -1029,6 +1131,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.high_sierra,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1040,6 +1143,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.high_sierra,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1051,6 +1155,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.high_sierra,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1062,6 +1167,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.high_sierra,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1073,6 +1179,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.high_sierra,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1084,6 +1191,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.catalina,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1095,6 +1203,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.catalina,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1106,6 +1215,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.catalina,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1117,6 +1227,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.catalina,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1128,6 +1239,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.catalina,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1139,6 +1251,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.catalina,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1150,6 +1263,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.big_sur,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Ethernet Chipset": "Broadcom",
     },
 
 
@@ -1161,6 +1275,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.big_sur,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac16,1": {
@@ -1171,6 +1286,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac16,2": {
@@ -1181,6 +1297,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac17,1": {
@@ -1193,6 +1310,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac18,1": {
@@ -1203,6 +1321,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac18,2": {
@@ -1213,6 +1332,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac18,3": {
@@ -1223,6 +1343,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac19,1": {
@@ -1233,6 +1354,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac19,2": {
@@ -1243,6 +1365,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac20,1": {
@@ -1253,6 +1376,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMac20,2": {
@@ -1263,6 +1387,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "iMacPro1,1": {
@@ -1273,6 +1398,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "MacPro1,1": {
@@ -1284,6 +1410,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Intel 80003ES2LAN",
     },
 
     "MacPro2,1": {
@@ -1295,6 +1422,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Intel 80003ES2LAN",
     },
 
     "MacPro3,1": {
@@ -1306,6 +1434,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Intel 80003ES2LAN",
     },
 
 
@@ -1317,6 +1446,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.el_capitan,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
+        "Ethernet Chipset": "Intel 82574L",
     },
 
 
@@ -1328,6 +1458,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.mojave,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
+        "Ethernet Chipset": "Intel 82574L",
     },
 
     "MacPro6,1": {
@@ -1338,6 +1469,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "MacPro7,1": {
@@ -1348,6 +1480,7 @@ smbios_dictionary = {
         "Max OS Supported": None,
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
+        "Ethernet Chipset": "Broadcom",
     },
 
     "Xserve1,1": {
@@ -1359,6 +1492,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Intel 80003ES2LAN",
     },
 
     "Xserve2,1": {
@@ -1370,6 +1504,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "UGA Graphics": True,
+        "Ethernet Chipset": "Intel 80003ES2LAN",
     },
 
     "Xserve3,1": {
@@ -1380,6 +1515,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.el_capitan,
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
+        "Ethernet Chipset": "Intel 82574L",
     },
 
 }
