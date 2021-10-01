@@ -92,30 +92,6 @@ def check_seal():
         return False
 
 
-def latebloom_detection(model):
-    if model in ["MacPro4,1", "MacPro5,1", "iMac7,1", "iMac8,1"]:
-        # These machines are more likely to experience boot hangs, increase delays to accomodate
-        lb_delay = "250"
-    else:
-        lb_delay = "100"
-    lb_range = "1"
-    lb_debug = "1"
-    boot_args = get_nvram("boot-args", decode=False)
-    # boot_args = "latebloom=200 lb_range=40 lb_debug=0 keepsyms=1 debug=0x100 -lilubetaall"
-    if boot_args:
-        # TODO: This crashes if latebloom=xxx is the very first entry in boot-args
-        if "latebloom=" in boot_args:
-            lb_delay = re.search(r"(?:[, ])latebloom=(\d+)", boot_args)
-            lb_delay = lb_delay[1]
-        if "lb_range=" in boot_args:
-            lb_range = re.search(r"(?:[, ])lb_range=(\d+)", boot_args)
-            lb_range = lb_range[1]
-        if "lb_debug=" in boot_args:
-            lb_debug = re.search(r"(?:[, ])lb_debug=(\d+)", boot_args)
-            lb_debug = lb_debug[1]
-    return int(lb_delay), int(lb_range), int(lb_debug)
-
-
 def csr_decode(csr_active_config, os_sip):
     if csr_active_config is None:
         csr_active_config = b"\x00\x00\x00\x00"
@@ -323,17 +299,7 @@ def download_file(link, location):
     return checksum
 
 
-def enable_apfs(fw_feature):
-    fw_feature |= 2 ** 19  # Enable FW_FEATURE_SUPPORTS_APFS
-    return fw_feature
 
-def enable_apfs_extended(fw_feature):
-    fw_feature |= 2 ** 20  # Enable FW_FEATURE_SUPPORTS_APFS_EXTRA
-    return fw_feature
-
-def enable_large_basesystem(fw_feature):
-    fw_feature |= 2 ** 35  # Enable FW_FEATURE_SUPPORTS_LARGE_BASESYSTEM
-    return fw_feature
 
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):

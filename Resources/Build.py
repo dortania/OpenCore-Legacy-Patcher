@@ -32,23 +32,6 @@ class BuildOpenCore:
         self.computer = self.constants.computer
         self.gfx0_path = None
 
-    def patch_firmware_feature(self):
-        # Adjust FirmwareFeature to support everything macOS requires
-        # APFS Bit (19/20): 10.13+ (OSInstall)
-        # Large BaseSystem Bit (35): 12.0 B7+ (patchd)
-        # https://github.com/acidanthera/OpenCorePkg/tree/2f76673546ac3e32d2e2d528095fddcd66ad6a23/Include/Apple/IndustryStandard/AppleFeatures.h
-        if not self.constants.custom_model:
-            firmwarefeature = Utilities.get_rom("firmware-features")
-            if not firmwarefeature:
-                print("- Failed to find FirmwareFeatures, falling back on defaults")
-                firmwarefeature = int(smbios_data.smbios_dictionary[self.model]["FirmwareFeatures"], 16)
-        else:
-            firmwarefeature = int(smbios_data.smbios_dictionary[self.model]["FirmwareFeatures"], 16)
-        firmwarefeature = Utilities.enable_apfs(firmwarefeature)
-        firmwarefeature = Utilities.enable_apfs_extended(firmwarefeature)
-        firmwarefeature = Utilities.enable_large_basesystem(firmwarefeature)
-        return firmwarefeature
-
     def disk_type(self):
         drive_host_info = plistlib.loads(subprocess.run(f"diskutil info -plist {self.constants.disk}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         sd_type = drive_host_info["MediaName"]
@@ -725,7 +708,8 @@ class BuildOpenCore:
         # Setup menu
         def minimal_serial_patch(self):
             # Generate Firmware Features
-            fw_feature = self.patch_firmware_feature()
+            fw_feature = generate_smbios.generate_fw_features(self.model, self.constants.custom_model)
+            # fw_feature = self.patch_firmware_feature()
             fw_feature = hex(fw_feature).lstrip("0x").rstrip("L").strip()
             print(f"- Setting Firmware Feature: {fw_feature}")
             fw_feature = Utilities.string_to_hex(fw_feature)
