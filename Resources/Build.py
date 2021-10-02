@@ -114,8 +114,8 @@ class BuildOpenCore:
                 lambda: self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False,
             ),
             # Ethernet patches
-            ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Marvel"),
-            ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Nvidia"),
+            ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Nvidia"),
+            ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Marvell"),
             # Legacy audio
             ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: (self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro) and self.constants.set_alc_usage is True),
             # IDE patch
@@ -390,8 +390,8 @@ class BuildOpenCore:
                 # Models dropped in Mojave also lost Audio support
                 # Xserves and MacPro4,1 are exceptions
                 # iMac7,1 and iMac8,1 require AppleHDA/IOAudioFamily downgrade
-                if not (self.model.startswith("Xserve") or self.model == "MacPro4,1"):
-                    try: 
+                if not (self.model.startswith("Xserve") or self.model in ["MacPro4,1", "iMac7,1", "iMac8,1"]):
+                    try:
                         smbios_data.smbios_dictionary[self.model]["nForce Chipset"]
                         hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)"
                     except KeyError:
