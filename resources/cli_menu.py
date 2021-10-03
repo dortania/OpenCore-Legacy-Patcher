@@ -3,8 +3,8 @@
 from __future__ import print_function
 import subprocess
 
-from resources import Constants, Utilities, defaults, ModelArray, sys_patch
-from data import cpu_data, smbios_data
+from resources import Constants, Utilities, defaults, sys_patch
+from data import cpu_data, smbios_data, model_array
 
 
 class MenuOptions:
@@ -732,7 +732,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
     """
         )
         self.constants.custom_model = input("Please enter the model identifier of the target machine: ").strip()
-        if self.constants.custom_model not in ModelArray.SupportedSMBIOS:
+        if self.constants.custom_model not in model_array.SupportedSMBIOS:
             print(
                 f"""
 {self.constants.custom_model} is not a valid SMBIOS Identifier for macOS {self.constants.os_support}!
@@ -740,7 +740,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             )
             print_models = input(f"Print list of valid options for macOS {self.constants.os_support}? (y/n)")
             if print_models.lower() in {"y", "yes"}:
-                print("\n".join(ModelArray.SupportedSMBIOS))
+                print("\n".join(model_array.SupportedSMBIOS))
                 input("\nPress [ENTER] to continue")
         else:
             defaults.generate_defaults.probe(self.constants.custom_model, False, self.constants)

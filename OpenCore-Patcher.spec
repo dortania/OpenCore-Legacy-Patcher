@@ -35,7 +35,7 @@ exe = EXE(pyz,
           console=True )
 app = BUNDLE(exe,
          name='OpenCore-Patcher.app',
-         icon="OC-Patcher.icns",
+         icon="payloads/OC-Patcher.icns",
          bundle_identifier=None,
          info_plist={
              "CFBundleShortVersionString": Constants.Constants().patcher_version,

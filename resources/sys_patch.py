@@ -11,8 +11,8 @@ import subprocess
 import zipfile
 from pathlib import Path
 
-from resources import Constants, device_probe, ModelArray, Utilities
-from data import sip_data, sys_patch_data
+from resources import Constants, device_probe, Utilities
+from data import sip_data, sys_patch_data, model_array
 
 
 class PatchSysVolume:
@@ -689,11 +689,11 @@ set million colour before rebooting"""
 
     def detect_patch_set(self):
         self.detect_gpus()
-        if self.model in ModelArray.LegacyBrightness:
+        if self.model in model_array.LegacyBrightness:
             if self.constants.detected_os > self.constants.catalina:
                 self.brightness_legacy = True
 
-        if self.model in ["iMac7,1", "iMac8,1"] or (self.model in ModelArray.LegacyAudio and Utilities.check_kext_loaded("AppleALC", self.constants.detected_os) is False):
+        if self.model in ["iMac7,1", "iMac8,1"] or (self.model in model_array.LegacyAudio and Utilities.check_kext_loaded("AppleALC", self.constants.detected_os) is False):
             # Special hack for systems with botched GOPs
             # TL;DR: No Boot Screen breaks Lilu, therefore breaking audio
             if self.constants.detected_os > self.constants.catalina:

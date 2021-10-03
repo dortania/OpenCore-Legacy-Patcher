@@ -14,8 +14,8 @@ import ast
 from pathlib import Path
 from datetime import date
 
-from resources import Constants, ModelArray, Utilities, device_probe, generate_smbios
-from data import smbios_data, bluetooth_data, cpu_data, os_data
+from resources import Constants, Utilities, device_probe, generate_smbios
+from data import smbios_data, bluetooth_data, cpu_data, os_data, model_array
 
 
 def rmtree_handler(func, path, exc_info):
@@ -99,7 +99,7 @@ class BuildOpenCore:
             # Essential kexts
             ("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path, lambda: True),
             ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: self.constants.allow_oc_everywhere is False),
-            ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in ModelArray.MacPro),
+            ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in model_array.MacPro),
             # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
             ("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path, lambda: self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1"]),
             ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False),
@@ -117,9 +117,9 @@ class BuildOpenCore:
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Nvidia"),
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Marvell"),
             # Legacy audio
-            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: (self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro) and self.constants.set_alc_usage is True),
+            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: (self.model in model_array.LegacyAudio or self.model in model_array.MacPro) and self.constants.set_alc_usage is True),
             # IDE patch
-            ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
+            ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in model_array.IDEPatch),
             # Misc
             ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.kaby_lake.value),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
@@ -157,7 +157,7 @@ class BuildOpenCore:
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 1 of 2 - Patch read_erandom (inlined in _early_random)")["MaxKernel"] = ""
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 2 of 2 - Patch register_and_init_prng")["MaxKernel"] = ""
 
-        if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in ModelArray.MacPro):
+        if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in model_array.MacPro):
             # Use Innie's same logic:
             # https://github.com/cdf/Innie/blob/v1.3.0/Innie/Innie.cpp#L90-L97
             for i, controller in enumerate(self.computer.storage):
@@ -327,7 +327,7 @@ class BuildOpenCore:
             usb_map_path.exists()
             and self.constants.allow_oc_everywhere is False
             and self.model not in ["Xserve2,1", "Dortania1,1"]
-            and (self.model in ModelArray.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
+            and (self.model in model_array.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
             print("- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
@@ -347,7 +347,7 @@ class BuildOpenCore:
             elif self.model == "MacBookPro10,1":
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
 
-            if self.model not in ModelArray.NoAGPMSupport:
+            if self.model not in model_array.NoAGPMSupport:
                 print("- Adding AppleGraphicsPowerManagement Override")
                 agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
                 Path(self.constants.agpm_kext_folder).mkdir()
@@ -355,7 +355,7 @@ class BuildOpenCore:
                 shutil.copy(agpm_map_path, self.constants.agpm_contents_folder)
                 self.get_kext_by_bundle_path("AGPM-Override.kext")["Enabled"] = True
 
-            if self.model in ModelArray.AGDPSupport:
+            if self.model in model_array.AGDPSupport:
                 print("- Adding AppleGraphicsDevicePolicy Override")
                 agdp_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsDevicePolicy/Info.plist")
                 Path(self.constants.agdp_kext_folder).mkdir()
@@ -364,7 +364,7 @@ class BuildOpenCore:
                 self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
 
         # AGPM Patch
-        if self.model in ModelArray.DualGPUPatch:
+        if self.model in model_array.DualGPUPatch:
             print("- Adding dual GPU patch")
             if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
                 self.gfx0_path = self.computer.dgpu.pci_path
@@ -374,7 +374,7 @@ class BuildOpenCore:
                     print("- Failed to find GFX0 Device path, falling back on known logic")
                 self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
 
-            if self.model in ModelArray.IntelNvidiaDRM and self.constants.drm_support is True:
+            if self.model in model_array.IntelNvidiaDRM and self.constants.drm_support is True:
                 print("- Prioritizing DRM support over Intel QuickSync")
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
@@ -518,7 +518,7 @@ class BuildOpenCore:
                 nvidia_patch(self, self.gfx0_path)
             else:
                 print("- Failed to find vendor")
-        elif not self.constants.custom_model and self.model in ModelArray.LegacyGPU and self.computer.dgpu:
+        elif not self.constants.custom_model and self.model in model_array.LegacyGPU and self.computer.dgpu:
             print(f"- Detected dGPU: {Utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{Utilities.friendly_hex(self.computer.dgpu.device_id)}")
             if self.computer.dgpu.arch in [
                 device_probe.AMD.Archs.Legacy_GCN,
@@ -531,7 +531,7 @@ class BuildOpenCore:
             elif self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
                 backlight_path_detection(self)
                 nvidia_patch(self, self.gfx0_path)
-        if self.model in ModelArray.MacPro:
+        if self.model in model_array.MacPro:
             if not self.constants.custom_model:
                 for i, device in enumerate(self.computer.gpus):
                     print(f"- Found dGPU ({i + 1}): {Utilities.friendly_hex(device.vendor_id)}:{Utilities.friendly_hex(device.device_id)}")
@@ -627,7 +627,7 @@ class BuildOpenCore:
             pass
 
         # ThirdPartDrives Check
-        if self.model in ModelArray.SATAPatch and self.constants.allow_oc_everywhere is False:
+        if self.model in model_array.SATAPatch and self.constants.allow_oc_everywhere is False:
             print("- Adding SATA Hibernation Patch")
             self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
 
@@ -811,7 +811,7 @@ class BuildOpenCore:
         if (
             self.constants.allow_oc_everywhere is False
             and self.model not in ["Xserve2,1", "Dortania1,1"]
-            and (self.model in ModelArray.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
+            and (self.model in model_array.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
@@ -851,7 +851,7 @@ class BuildOpenCore:
                     if not entry.startswith(self.spoofed_board):
                         amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"].pop(entry)
                 plistlib.dump(amc_config, Path(new_amc_ls).open("wb"), sort_keys=True)
-            if self.model not in ModelArray.NoAGPMSupport:
+            if self.model not in model_array.NoAGPMSupport:
                 new_agpm_ls = Path(self.constants.agpm_contents_folder) / Path("Info.plist")
                 agpm_config = plistlib.load(Path(new_agpm_ls).open("rb"))
                 agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board] = agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(self.model)
@@ -868,7 +868,7 @@ class BuildOpenCore:
                         agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(entry)
 
                 plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
-            if self.model in ModelArray.AGDPSupport:
+            if self.model in model_array.AGDPSupport:
                 new_agdp_ls = Path(self.constants.agdp_contents_folder) / Path("Info.plist")
                 agdp_config = plistlib.load(Path(new_agdp_ls).open("rb"))
                 agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_board] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(

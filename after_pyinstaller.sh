@@ -1,2 +1,2 @@
 #!/bin/sh
-cp launcher.sh dist/OpenCore-Patcher.app/Contents/MacOS/Launcher
+cp paylods/launcher.sh dist/OpenCore-Patcher.app/Contents/MacOS/Launcher

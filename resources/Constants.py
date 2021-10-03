@@ -474,7 +474,7 @@ class Constants:
     # Icons
     @property
     def app_icon_path(self):
-        return self.current_path / Path("OC-Patcher.icns")
+        return self.payload_path / Path("OC-Patcher.icns")
 
     @property
     def icon_path_external(self):

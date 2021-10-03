@@ -7,8 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from resources import Build, cli_menu, Constants, ModelArray, sys_patch, Utilities, device_probe, os_probe, defaults, arguments
-from data import smbios_data, cpu_data
+from resources import Build, cli_menu, Constants, Utilities, device_probe, os_probe, defaults, arguments
+from data import model_array
 
 class OpenCoreLegacyPatcher:
     def __init__(self):
@@ -37,12 +37,6 @@ class OpenCoreLegacyPatcher:
         else:
             print("- No arguments present, loading TUI")
 
-    def build_opencore(self):
-        Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
-
-    def install_opencore(self):
-        Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).copy_efi()
-
     def main_menu(self):
         response = None
         while not (response and response == -1):
@@ -51,7 +45,7 @@ class OpenCoreLegacyPatcher:
                 f"Selected Model: {self.constants.custom_model or self.computer.real_model}",
             ]
 
-            if (self.constants.custom_model or self.computer.real_model) not in ModelArray.SupportedSMBIOS and self.constants.allow_oc_everywhere is False:
+            if (self.constants.custom_model or self.computer.real_model) not in model_array.SupportedSMBIOS and self.constants.allow_oc_everywhere is False:
                 in_between = [
                     "Your model is not supported by this patcher for running unsupported OSes!",
                     "",
@@ -73,11 +67,11 @@ class OpenCoreLegacyPatcher:
             menu = Utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
 
             options = (
-                [["Build OpenCore", self.build_opencore]]
-                if ((self.constants.custom_model or self.computer.real_model) in ModelArray.SupportedSMBIOS) or self.constants.allow_oc_everywhere is True
+                [["Build OpenCore", Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()]]
+                if ((self.constants.custom_model or self.computer.real_model) in model_array.SupportedSMBIOS) or self.constants.allow_oc_everywhere is True
                 else []
             ) + [
-                ["Install OpenCore to USB/internal drive", self.install_opencore],
+                ["Install OpenCore to USB/internal drive", Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).copy_efi()],
                 ["Post-Install Volume Patch", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).PatchVolume],
                 ["Change Model", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_model],
                 ["Patcher Settings", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).patcher_settings],

@@ -1,8 +1,8 @@
 import argparse
 import sys
 import subprocess
-from resources import ModelArray, defaults, Build
-from data import example_data
+from resources import defaults, Build
+from data import example_data, model_array
 
 # Generic building args
 class arguments:
@@ -34,6 +34,8 @@ class arguments:
         # sys_patch args
         parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
         parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
+
+        # validation args
         parser.add_argument("--validate", help="Runs Validation Tests for CI", action="store_true", required=False)
         self.args = parser.parse_args()
 
@@ -53,7 +55,7 @@ class arguments:
                 print(f"- Using custom model: {self.args.model}")
                 settings.custom_model = self.args.model
                 defaults.generate_defaults.probe(settings.custom_model, False, settings)
-            elif settings.computer.real_model not in ModelArray.SupportedSMBIOS and settings.allow_oc_everywhere is False:
+            elif settings.computer.real_model not in model_array.SupportedSMBIOS and settings.allow_oc_everywhere is False:
                 print(
                     """Your model is not supported by this patcher for running unsupported OSes!"
 
@@ -166,7 +168,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
         ]
         settings.validate = True
         def build_prebuilt():
-            for model in ModelArray.SupportedSMBIOS:
+            for model in model_array.SupportedSMBIOS:
                 print(f"Validating predefined model: {model}")
                 settings.custom_model = model
                 Build.BuildOpenCore(settings.custom_model, settings).build_opencore()

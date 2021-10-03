@@ -1,5 +1,6 @@
 # Generate Default Data
-from resources import Utilities, device_probe, ModelArray
+from resources import Utilities, device_probe
+from data import model_array
 
 class generate_defaults():
     def probe(model, host_is_target, settings):
@@ -22,10 +23,10 @@ class generate_defaults():
             ) or (isinstance(settings.computer.wifi, device_probe.Atheros) and settings.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
                 settings.sip_status = False
                 settings.allow_fv_root = True  #  Allow FileVault on broken seal
-        elif model in ModelArray.LegacyGPU:
+        elif model in model_array.LegacyGPU:
             settings.disable_cs_lv = True
 
-        if model in ModelArray.LegacyGPU:
+        if model in model_array.LegacyGPU:
             if host_is_target and Utilities.check_metal_support(device_probe, settings.computer) is True:
                 # Building on device and we have a native, supported GPU
                 if settings.computer.dgpu and settings.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
@@ -41,7 +42,7 @@ class generate_defaults():
                 settings.secure_status = False  # Root volume modified
                 settings.amfi_status = False  #   Unsigned binaries
                 settings.allow_fv_root = True  #  Allow FileVault on broken seal
-        if model in ModelArray.ModernGPU:
+        if model in model_array.ModernGPU:
             # Systems with Ivy or Kepler GPUs, Monterey requires root patching for accel
             settings.sip_status = False  #    Unsigned kexts
             settings.secure_status = False  # Modified root volume
