@@ -1,7 +1,7 @@
 import argparse
 import sys
 import subprocess
-from resources import defaults, Build
+from resources import defaults, build
 from data import example_data, model_array
 
 # Generic building args
@@ -137,7 +137,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
 
         # Avoid running the root patcher if we're just building
         if self.args.build:
-            Build.BuildOpenCore(settings.custom_model, settings).build_opencore()
+            build.BuildOpenCore(settings.custom_model, settings).build_opencore()
         elif self.args.patch_sys_vol:
             if self.args.moj_cat_accel:
                 print("- Set Mojave/Catalina root patch configuration")
@@ -171,7 +171,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             for model in model_array.SupportedSMBIOS:
                 print(f"Validating predefined model: {model}")
                 settings.custom_model = model
-                Build.BuildOpenCore(settings.custom_model, settings).build_opencore()
+                build.BuildOpenCore(settings.custom_model, settings).build_opencore()
                 result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 if result.returncode != 0:
                     print("Error on build!")
@@ -185,7 +185,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 settings.computer = model
                 settings.custom_model = ""
                 print(f"Validating dumped model: {settings.computer.real_model}")
-                Build.BuildOpenCore(settings.computer.real_model, settings).build_opencore()
+                build.BuildOpenCore(settings.computer.real_model, settings).build_opencore()
                 result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 if result.returncode != 0:
                     print("Error on build!")
