@@ -3,7 +3,8 @@
 from __future__ import print_function
 import subprocess
 
-from Resources import Constants, Utilities, defaults, ModelArray, SysPatch
+from Resources import Constants, Utilities, defaults, ModelArray, sys_patch
+from Data import cpu_data, smbios_data
 
 
 class MenuOptions:
@@ -760,9 +761,9 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             no_patch = True
         change_menu = input("Patch System Volume?: ")
         if no_patch is not True and change_menu == "1":
-            SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
+            sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
         elif no_patch is not True and change_menu == "2":
-            SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_unpatch()
+            sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_unpatch()
         else:
             print("Returning to main menu")
     
@@ -785,6 +786,159 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 menu.add_menu_option(option[0], function=option[1])
 
             response = menu.start()
+    
+
+    def patcher_settings(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Patcher Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                ["Debug Settings", self.patcher_setting_debug],
+                ["Security Settings", self.patcher_settings_security],
+                ["SMBIOS Settings", self.patcher_settings_smbios],
+                ["Boot Volume Settings", self.patcher_settings_boot],
+                ["Miscellaneous Settings", self.patcher_settings_misc],
+                ["Dump detected hardware", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).dump_hardware],
+                [
+                    f"Allow Accel on Mojave/Catalina:\tCurrently {self.constants.moj_cat_accel}",
+                    MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_moj_cat_patch,
+                ],
+                [
+                    f"Allow OpenCore on native Models:\tCurrently {self.constants.allow_oc_everywhere}",
+                    MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_native_models,
+                ],
+                ["Advanced Settings, for developers only", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).advanced_patcher_settings],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def patcher_setting_debug(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Debug Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Enable Verbose Mode:\tCurrently {self.constants.verbose_debug}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_verbose],
+                [f"Enable OpenCore DEBUG:\tCurrently {self.constants.opencore_debug}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_oc],
+                [f"Enable Kext DEBUG:\t\tCurrently {self.constants.kext_debug}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_kext],
+            ] + (
+                [
+                    [f"Set SurPlus Settings:\tCurrently {self.constants.force_surplus}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_surplus]
+                ]
+                if (smbios_data.smbios_dictionary[self.constants.custom_model or self.constants.computer.real_model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge)
+                else []
+            )
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def patcher_settings_security(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Security Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                # [
+                #     f"Set Apple Mobile File Integrity (AMFI):\tCurrently {self.constants.amfi_status}",
+                #     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_amfi,
+                # ],
+                [
+                    f"Set System Intrgity Protection (SIP):\tCurrently {self.constants.sip_status}",
+                    MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_sip,
+                ],
+                [
+                    f"Set Secure Boot Model (SBM):\t\tCurrently {self.constants.secure_status}",
+                    MenuOptions(self.constants.custom_model or self.constant.computer.real_model, self.constants).change_sbm,
+                ],
+                [f"Set Vault Mode:\t\t\t\tCurrently {self.constants.vault}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_vault],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def patcher_settings_smbios(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust SMBIOS Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Set SMBIOS Spoof Level:\tCurrently {self.constants.serial_settings}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_serial],
+                [f"Set SMBIOS Spoof Model:\tCurrently {self.constants.override_smbios}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_smbios],
+                [f"Set Custom name {self.constants.custom_cpu_model_value}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).custom_cpu],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def patcher_settings_boot(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Bootable Volume Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Set FireWire Boot:\tCurrently {self.constants.firewire_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_firewire],
+                [f"Set NVMe Boot:\tCurrently {self.constants.nvme_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_nvme],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def patcher_settings_misc(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Miscellaneous Settings"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Set ShowPicker Mode:\tCurrently {self.constants.showpicker}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_showpicker],
+                [f"Set Wake on WLAN:\t\tCurrently {self.constants.enable_wake_on_wlan}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_wowl],
+                [f"Set Ivy iMac iGPU:\t\tCurrently {self.constants.allow_ivy_igpu}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_ivy],
+                [f"Set TeraScale 2 Accel:\tCurrently {self.constants.allow_ts2_accel}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).terascale_2_accel],
+                [
+                    f"Disable Thunderbolt:\tCurrently {self.constants.disable_tb}",
+                    MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).disable_tb,
+                ],
+                [f"Set AppleALC Usage:\t\tCurrently {self.constants.set_alc_usage}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).applealc_support],
+                [f"Set Windows GMUX support:\tCurrently {self.constants.dGPU_switch}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).dGPU_switch_support],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+    def advanced_patcher_settings(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Advanced Patcher Settings, for developers ONLY"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Set Metal GPU Status:\t\tCurrently {self.constants.imac_vendor}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_metal],
+                [f"Set DRM Preferences:\t\tCurrently {self.constants.drm_support}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).drm_setting],
+                [f"Set Generic Bootstrap:\t\tCurrently {self.constants.boot_efi}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).bootstrap_setting],
+                [
+                    f"Disable CPU Friend:\t\t\tCurrently {self.constants.disallow_cpufriend}",
+                    MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).disable_cpufriend,
+                ],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+
 
 
     big_sur = """Patches Root volume to fix misc issues such as:

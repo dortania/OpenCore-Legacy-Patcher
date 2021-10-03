@@ -105,8 +105,8 @@ class BuildOpenCore:
             ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False),
             # CPU patches
             ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model.startswith("MacPro") or self.model.startswith("Xserve")),
-            ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn),
-            ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn),
+            ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value),
+            ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value),
             (
                 "CPUFriend.kext",
                 self.constants.cpufriend_version,
@@ -121,7 +121,7 @@ class BuildOpenCore:
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
             # Misc
-            ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.kaby_lake),
+            ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.kaby_lake.value),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
             ("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path, lambda: self.model in ["MacBook4,1", "MacBook5,2"]),
         ]:
@@ -132,7 +132,7 @@ class BuildOpenCore:
 
         # Ethernet Patch Sets
         if smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Broadcom":
-            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge:
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
                 # Required due to Big Sur's BCM5701 requiring VT-x support
                 # Applicable for pre-Ivy Bridge models
                 self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
@@ -144,7 +144,7 @@ class BuildOpenCore:
                 if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
                     self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
 
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
             # Ref: https://github.com/reenigneorcim/SurPlus
             # Enable for all systems missing RDRAND support
             print("- Adding SurPlus Patch for Race Condition")
@@ -301,18 +301,18 @@ class BuildOpenCore:
             self.get_kext_by_bundle_path("CPUFriendDataProvider.kext")["Enabled"] = True
 
         # HID patches
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
             print("- Adding IOHIDFamily patch")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.iokit.IOHIDFamily")["Enabled"] = True
 
         # SSDT patches
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.nehalem and not (self.model.startswith("MacPro") or self.model.startswith("Xserve")):
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.nehalem.value and not (self.model.startswith("MacPro") or self.model.startswith("Xserve")):
             # Applicable for consumer Nehalem
             print("- Adding SSDT-CPBG.aml")
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
 
-        if cpu_data.cpu_data.sandy_bridge <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge:
+        if cpu_data.cpu_data.sandy_bridge <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
             # Based on: https://egpu.io/forums/pc-setup/fix-dsdt-override-to-correct-error-12/
             # Applicable for Sandy and Ivy Bridge Macs
             print("- Enabling Windows 10 UEFI Audio support")
@@ -422,7 +422,7 @@ class BuildOpenCore:
             if model.startswith("MacBook"):
                 return False
             elif model.startswith("MacBookAir"):
-                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge:
+                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
                     return False
             else:
                 return True
@@ -589,14 +589,14 @@ class BuildOpenCore:
                 print("- Fixing Legacy Bluetooth for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
                 self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
-            elif self.computer.bluetooth_chipset == "BRCM20702 Hub" and smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] == bluetooth_data.bluetooth_data.BRCM20702_v1:
+            elif self.computer.bluetooth_chipset == "BRCM20702 Hub" and smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] == bluetooth_data.bluetooth_data.BRCM20702_v1.value:
                 print("- Fixing Legacy Bluetooth for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
         # smbios_data.smbios_dictionary[self.model]["Bluetooth Model"]
-        elif smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM20702_v1:
+        elif smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM20702_v1.value:
             print("- Fixing Legacy Bluetooth for macOS Monterey")
             self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-            if smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM2070:
+            if smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM2070.value:
                 self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
 
         if self.constants.nvme_boot is True:
@@ -612,7 +612,7 @@ class BuildOpenCore:
         self.get_efi_binary_by_path("OpenRuntime.efi", "UEFI", "Drivers")["Enabled"] = True
         self.get_efi_binary_by_path("OpenLinuxBoot.efi", "UEFI", "Drivers")["Enabled"] = True
         # Exfat check
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
             # Sandy Bridge and newer Macs natively support ExFat
             print("- Adding ExFatDxeLegacy.efi")
             shutil.copy(self.constants.exfat_legacy_driver_path, self.constants.drivers_path)
@@ -706,7 +706,7 @@ class BuildOpenCore:
             # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
             print("- Allowing FileVault on Root Patched systems")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.filesystems.apfs")["Enabled"] = True
-            # Lets us check in SysPatch.py if config supports FileVault
+            # Lets us check in sys_patch.py if config supports FileVault
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
 
     def set_smbios(self):

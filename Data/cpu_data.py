@@ -1,4 +1,6 @@
-class cpu_data:
+import enum
+
+class cpu_data(enum.IntEnum):
     pentium_4 = 0
     yonah = 1
     conroe = 2
@@ -13,3 +15,8 @@ class cpu_data:
     coffee_lake = 11  #     8000
     comet_lake = 12 #       9000
     ice_lake = 13  #        10000
+
+
+    apple_dtk = 112 # A12
+    apple_m1 = 114 # A14
+    apple_m2 = 115 # A15

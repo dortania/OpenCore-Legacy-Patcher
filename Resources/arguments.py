@@ -1,7 +1,8 @@
 import argparse
 import sys
 import subprocess
-from Resources import ModelArray, defaults, Build, ModelExample
+from Resources import ModelArray, defaults, Build
+from Data import example_data
 
 # Generic building args
 class arguments:
@@ -30,7 +31,7 @@ class arguments:
         parser.add_argument("--disk", action="store", help="Specifies disk to install to", required=False)
         parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
 
-        # SysPatch args
+        # sys_patch args
         parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
         parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
         parser.add_argument("--validate", help="Runs Validation Tests for CI", action="store_true", required=False)
@@ -38,10 +39,7 @@ class arguments:
 
     def check_cli(self):
         # If no core arguments are present, assume we're running in TUI
-        # - build
-        # - patch_sys_vol
-        # - unpatch_sys_vol
-        # - validate
+        # build, patch_sys_vol, unpatch_sys_vol, validate
         if not(
             self.args.build or self.args.patch_sys_vol or self.args.unpatch_sys_vol or self.args.validate
         ):
@@ -50,6 +48,22 @@ class arguments:
             return True
     
     def parse_arguments(self, settings):
+        if self.args.model:
+            if self.args.model:
+                print(f"- Using custom model: {self.args.model}")
+                settings.custom_model = self.args.model
+                defaults.generate_defaults.probe(settings.custom_model, False, settings)
+            elif settings.computer.real_model not in ModelArray.SupportedSMBIOS and settings.allow_oc_everywhere is False:
+                print(
+                    """Your model is not supported by this patcher for running unsupported OSes!"
+
+If you plan to create the USB for another machine, please select the "Change Model" option in the menu."""
+                )
+                sys.exit(1)
+            else:
+                print(f"- Using detected model: {settings.computer.real_model}")
+                defaults.generate_defaults.probe(settings.custom_model, True, settings)
+
         if self.args.disk:
             print(f"- Install Disk set: {self.args.disk}")
             settings.disk = self.args.disk
@@ -58,6 +72,8 @@ class arguments:
         if self.args.verbose:
             print("- Set verbose configuration")
             settings.verbose_debug = True
+        else:
+            settings.verbose_debug = False # Override Defaults detected
         if self.args.debug_oc:
             print("- Set OpenCore DEBUG configuration")
             settings.opencore_debug = True
@@ -71,9 +87,13 @@ class arguments:
         if self.args.disable_sip:
             print("- Set Disable SIP configuration")
             settings.sip_status = False
+        else:
+            settings.sip_status = True # Override Defaults detected
         if self.args.disable_smb:
             print("- Set Disable SecureBootModel configuration")
             settings.secure_status = False
+        else:
+            settings.secure_status = True # Override Defaults detected
         if self.args.vault:
             print("- Set Vault configuration")
             settings.vault = True
@@ -113,28 +133,10 @@ class arguments:
             settings.allow_oc_everywhere = True
             settings.serial_settings = "None"
 
+        # Avoid running the root patcher if we're just building
         if self.args.build:
-            if self.args.model:
-                print(f"- Using custom model: {self.args.model}")
-                settings.custom_model = self.args.model
-                #self.set_defaults(settings.custom_model, False)
-                defaults.generate_defaults.probe(settings.custom_model, False, settings)
-                #self.build_opencore()
-                Build.BuildOpenCore(settings.custom_model, settings).build_opencore()
-            elif settings.computer.real_model not in ModelArray.SupportedSMBIOS and settings.allow_oc_everywhere is False:
-                print(
-                    """Your model is not supported by this patcher for running unsupported OSes!"
-
-If you plan to create the USB for another machine, please select the "Change Model" option in the menu."""
-                )
-                sys.exit(1)
-            else:
-                print(f"- Using detected model: {settings.computer.real_model}")
-                #self.set_defaults(settings.custom_model, True)
-                defaults.generate_defaults.probe(settings.custom_model, True, settings)
-                # self.build_opencore()
-                Build.BuildOpenCore(settings.custom_model, settings).build_opencore()
-        if self.args.patch_sys_vol:
+            Build.BuildOpenCore(settings.custom_model, settings).build_opencore()
+        elif self.args.patch_sys_vol:
             if self.args.moj_cat_accel:
                 print("- Set Mojave/Catalina root patch configuration")
                 settings.moj_cat_accel = True
@@ -148,48 +150,68 @@ If you plan to create the USB for another machine, please select the "Change Mod
         # Runs through ocvalidate to check for errors
 
         valid_dumps = [
-            # ModelExample.MacBookPro.MacBookPro92_Stock,
-            # ModelExample.MacBookPro.MacBookPro171_Stock,
-            # ModelExample.Macmini.Macmini91_Stock,
-            #ModelExample.iMac.iMac81_Stock,
-            ModelExample.iMac.iMac112_Stock,
-            #ModelExample.iMac.iMac122_Upgraded,
-            ModelExample.MacPro.MacPro31_Stock,
-            ModelExample.MacPro.MacPro31_Upgrade,
-            ModelExample.MacPro.MacPro31_Modern_AMD,
-            ModelExample.MacPro.MacPro31_Modern_Kepler,
-            ModelExample.MacPro.MacPro41_Upgrade,
-            ModelExample.MacPro.MacPro41_Modern_AMD,
-            ModelExample.MacPro.MacPro41_51__Flashed_Modern_AMD,
+            example_data.MacBookPro.MacBookPro92_Stock,
+            # example_data.MacBookPro.MacBookPro171_Stock,
+            # example_data.Macmini.Macmini91_Stock,
+            example_data.iMac.iMac81_Stock,
+            example_data.iMac.iMac112_Stock,
+            example_data.iMac.iMac122_Upgraded,
+            example_data.MacPro.MacPro31_Stock,
+            example_data.MacPro.MacPro31_Upgrade,
+            example_data.MacPro.MacPro31_Modern_AMD,
+            example_data.MacPro.MacPro31_Modern_Kepler,
+            example_data.MacPro.MacPro41_Upgrade,
+            example_data.MacPro.MacPro41_Modern_AMD,
+            example_data.MacPro.MacPro41_51__Flashed_Modern_AMD,
         ]
         settings.validate = True
+        def build_prebuilt():
+            for model in ModelArray.SupportedSMBIOS:
+                print(f"Validating predefined model: {model}")
+                settings.custom_model = model
+                Build.BuildOpenCore(settings.custom_model, settings).build_opencore()
+                result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                if result.returncode != 0:
+                    print("Error on build!")
+                    print(result.stdout.decode())
+                    raise Exception(f"Validation failed for predefined model: {model}")
+                else:
+                    print(f"Validation succeeded for predefined model: {model}")
+        
+        def build_dumps():
+            for model in valid_dumps:
+                settings.computer = model
+                settings.custom_model = ""
+                print(f"Validating dumped model: {settings.computer.real_model}")
+                Build.BuildOpenCore(settings.computer.real_model, settings).build_opencore()
+                result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                if result.returncode != 0:
+                    print("Error on build!")
+                    print(result.stdout.decode())
+                    raise Exception(f"Validation failed for predefined model: {settings.computer.real_model}")
+                else:
+                    print(f"Validation succeeded for predefined model: {settings.computer.real_model}")
+        
+        # First run is with default settings
+        build_prebuilt()
+        build_dumps()
+        # Second run, flip all settings
+        settings.verbose_debug = True
+        settings.opencore_debug = True
+        settings.opencore_build = "DEBUG"
+        settings.kext_debug = True
+        settings.showpicker = False
+        settings.sip_status = False
+        settings.secure_status = True
+        settings.firewire_boot = True
+        settings.nvme_boot = True
+        settings.enable_wake_on_wlan = True
+        settings.disable_tb = True
+        settings.force_surplus = True
+        build_prebuilt()
+        build_dumps()
 
-        for model in ModelArray.SupportedSMBIOS:
-            print(f"Validating predefined model: {model}")
-            settings.custom_model = model
-            # self.build_opencore()
-            Build.BuildOpenCore(settings.custom_model, settings).build_opencore()
-            result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            if result.returncode != 0:
-                print("Error on build!")
-                print(result.stdout.decode())
-                raise Exception(f"Validation failed for predefined model: {model}")
-            else:
-                print(f"Validation succeeded for predefined model: {model}")
 
-        for model in valid_dumps:
-            settings.computer = model
 
-            # self.computer = settings.computer
-            settings.custom_model = ""
-            print(f"Validating dumped model: {settings.computer.real_model}")
-            # self.build_opencore()
-            Build.BuildOpenCore(settings.computer.real_model, settings).build_opencore()
-            result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            if result.returncode != 0:
-                print("Error on build!")
-                print(result.stdout.decode())
-                raise Exception(f"Validation failed for predefined model: {settings.computer.real_model}")
-            else:
-                print(f"Validation succeeded for predefined model: {settings.computer.real_model}")
+
 

@@ -1,4 +1,6 @@
-class bluetooth_data:
+import enum
+
+class bluetooth_data(enum.IntEnum):
     # Bluetooth Chipsets
     NonApplicable = 0
     BRCM2045 = 1 # TODO: Rename chipset, currently guessing MacPro1,1-3,1 name
@@ -8,4 +10,5 @@ class bluetooth_data:
     BRCM20702_v2 = 5 # BT 4.0 - 2013+
     BRCM20703 = 6 # BT 4.2
     BRCM20703_UART = 9 # BRCM20703 over UART, BT 4.2
-    UART = 10
+    UART = 10 # T2
+    PCIe = 20 # Apple Silicon

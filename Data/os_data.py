@@ -1,4 +1,6 @@
-class os_data:
+import enum
+
+class os_data(enum.IntEnum):
     # OS Versions, Based off Major Kernel Version
     tiger = 8
     leopard = 9

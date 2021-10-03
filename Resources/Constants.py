@@ -659,12 +659,3 @@ class Constants:
         "Mac-35C5E08120C7EEAF",  # Macmini7,1
         "Mac-7BA5B2D9E42DDD94",  # iMacPro1,1
     ]
-
-    target_type = {
-        "ADP3,2": "J273",
-        "MacBookAir10,1": "J313",
-        "MacBookPro17,1": "J293",
-        "Macmini9,1": "J274",
-        "iMac21,1": "J256",
-        "iMac21,2": "J257",
-    }
