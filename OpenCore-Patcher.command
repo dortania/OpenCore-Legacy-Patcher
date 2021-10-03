@@ -3,127 +3,45 @@
 
 from __future__ import print_function
 
-import platform
 import subprocess
 import sys
+from pathlib import Path
 
-from Resources import Build, CliMenu, Constants, ModelArray, SysPatch, Utilities, device_probe
+from Resources import Build, CliMenu, Constants, ModelArray, SysPatch, Utilities, device_probe, os_probe, defaults, arguments
 from Data import smbios_data, cpu_data
 
 class OpenCoreLegacyPatcher:
     def __init__(self):
-        print("Loading...")
+        print("- Loading...")
         self.constants = Constants.Constants()
-        self.constants.computer = device_probe.Computer.probe()
-        self.computer = self.constants.computer
-        self.constants.detected_os = int(platform.uname().release.partition(".")[0])
-        self.constants.detected_os_minor = int(platform.uname().release.partition(".")[2].partition(".")[0])
-        detected_os_build: str = subprocess.run("sw_vers -buildVersion".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-        self.constants.detected_os_build = detected_os_build
-        self.set_defaults(self.computer.real_model, True)
-
-    def set_defaults(self, model, host_is_target):
-        # Defaults
-        self.constants.sip_status = True
-        self.constants.secure_status = False  # Default false for Monterey
-        self.constants.amfi_status = True
-
-        if host_is_target:
-            if Utilities.check_metal_support(device_probe, self.computer) is False:
-                self.constants.disable_cs_lv = True
-            if self.computer.dgpu and self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
-                self.constants.sip_status = False
-                self.constants.amfi_status = True
-                self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
-            if (
-                isinstance(self.computer.wifi, device_probe.Broadcom)
-                and self.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
-            ) or (isinstance(self.computer.wifi, device_probe.Atheros) and self.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
-                self.constants.sip_status = False
-                self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
-        elif model in ModelArray.LegacyGPU:
-            self.constants.disable_cs_lv = True
-
-        if model in ModelArray.LegacyGPU:
-            if host_is_target and Utilities.check_metal_support(device_probe, self.computer) is True:
-                # Building on device and we have a native, supported GPU
-                if self.computer.dgpu and self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
-                    self.constants.sip_status = False
-                    # self.constants.secure_status = True  # Monterey
-                    self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
-                else:
-                    self.constants.sip_status = True
-                    # self.constants.secure_status = True  # Monterey
-                    self.constants.amfi_status = True
-            else:
-                self.constants.sip_status = False  #    Unsigned kexts
-                self.constants.secure_status = False  # Root volume modified
-                self.constants.amfi_status = False  #   Unsigned binaries
-                self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
-        if model in ModelArray.ModernGPU:
-            # Systems with Ivy or Kepler GPUs, Monterey requires root patching for accel
-            self.constants.sip_status = False  #    Unsigned kexts
-            self.constants.secure_status = False  # Modified root volume
-            self.constants.allow_fv_root = True  #  Allow FileVault on broken seal
-            # self.constants.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
+        self.generate_base_data()
+        if arguments.arguments().check_cli() is False:
+            self.main_menu()
         
-
-        if model == "MacBook8,1":
-            # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
-            self.constants.serial_settings = "Moderate"
-
-        custom_cpu_model_value = Utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
-        if custom_cpu_model_value is not None:
-            # TODO: Fix to not use two separate variables
-            self.constants.custom_cpu_model = 1
-            self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
-
-        if "-v" in (Utilities.get_nvram("boot-args") or ""):
-            self.constants.verbose_debug = True
-
-        if Utilities.amfi_status() is False:
-            self.constants.amfi_status = False
-
-        if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9"):
-            # Users disabling TS2 most likely have a faulty dGPU
-            # users can override this in settings
-            self.constants.allow_ts2_accel = False
-
-        # if self.constants.latebloom_delay == 0:
-        #     self.constants.latebloom_delay, self.constants.latebloom_range, self.constants.latebloom_debug = Utilities.latebloom_detection(model)
-
-        # Check if running in RecoveryOS
+    def generate_base_data(self):
+        self.constants.detected_os = os_probe.detect_kernel_major()
+        self.constants.detected_os_minor = os_probe.detect_kernel_minor()
+        self.constants.detected_os_build = os_probe.detect_kernel_build()
+        self.constants.computer = device_probe.Computer.probe()
         self.constants.recovery_status = Utilities.check_recovery()
+        self.computer = self.constants.computer
+        defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
+        if arguments.arguments().check_cli() is True:
+            print("- Detected arguments, switching to CLI mode")
+            self.constants.gui_mode = True # Assumes no user interaction is required
+            self.constants.current_path = Path.cwd()
+            if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+                print("- Rerouting payloads location")
+                self.constants.payload_path = sys._MEIPASS / Path("payloads")
+            arguments.arguments().parse_arguments(self.constants)
+        else:
+            print("- No arguments present, loading TUI")
 
     def build_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
 
     def install_opencore(self):
         Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).copy_efi()
-
-    def change_model(self):
-        Utilities.cls()
-        Utilities.header(["Select Different Model"])
-        print(
-            """
-Tip: Run the following command on the target machine to find the model identifier:
-
-system_profiler SPHardwareDataType | grep 'Model Identifier'
-    """
-        )
-        self.constants.custom_model = input("Please enter the model identifier of the target machine: ").strip()
-        if self.constants.custom_model not in ModelArray.SupportedSMBIOS:
-            print(
-                f"""
-{self.constants.custom_model} is not a valid SMBIOS Identifier for macOS {self.constants.os_support}!
-"""
-            )
-            print_models = input(f"Print list of valid options for macOS {self.constants.os_support}? (y/n)")
-            if print_models.lower() in {"y", "yes"}:
-                print("\n".join(ModelArray.SupportedSMBIOS))
-                input("\nPress [ENTER] to continue")
-        else:
-            self.set_defaults(self.constants.custom_model, False)
 
     def patcher_settings(self):
         response = None
@@ -145,7 +63,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                     f"Allow OpenCore on native Models:\tCurrently {self.constants.allow_oc_everywhere}",
                     CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_native_models,
                 ],
-                ["Advanced Settings, for developers only", self.advanced_patcher_settings],
+                ["Advanced Settings, for developers only", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).advanced_patcher_settings],
             ]
 
             for option in options:
@@ -243,8 +161,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set Ivy iMac iGPU:\t\tCurrently {self.constants.allow_ivy_igpu}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).allow_ivy],
                 [f"Set TeraScale 2 Accel:\tCurrently {self.constants.allow_ts2_accel}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).terascale_2_accel],
                 [
-                    f"Disable Thunderbolt:\tCurrently {self.constants.disable_thunderbolt}",
-                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).disable_thunderbolt,
+                    f"Disable Thunderbolt:\tCurrently {self.constants.disable_tb}",
+                    CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).disable_tb,
                 ],
                 [f"Set AppleALC Usage:\t\tCurrently {self.constants.set_alc_usage}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).applealc_support],
                 [f"Set Windows GMUX support:\tCurrently {self.constants.dGPU_switch}", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).dGPU_switch_support],
@@ -274,111 +192,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 menu.add_menu_option(option[0], function=option[1])
 
             response = menu.start()
-
-    def credits(self):
-        Utilities.TUIOnlyPrint(
-            ["Credits"],
-            "Press [Enter] to go back.\n",
-            [
-                """Many thanks to the following:
-
-  - Acidanthera:\tOpenCore, kexts and other tools
-  - Khronokernel:\tWriting and maintaining this patcher
-  - DhinakG:\t\tWriting and maintaining this patcher
-  - ASentientBot:\tLegacy Acceleration Patches
-  - Ausdauersportler:\tLinking fixes for SNBGraphicsFB and AMDX3000
-  - Syncretic:\t\tAAAMouSSE and telemetrap
-  - cdf:\t\tNightShiftEnabler and Innie"""
-            ],
-        ).start()
-
-    def PatchVolume(self):
-        Utilities.cls()
-        Utilities.header(["Patching System Volume"])
-        big_sur = """Patches Root volume to fix misc issues such as:
-
-- Non-Metal Graphics Acceleration
-  - Intel: Ironlake - Sandy Bridge
-  - Nvidia: Tesla - Fermi (8000-500 series)
-  - AMD: TeraScale 1 and 2 (2000-6000 series)
-- Audio support for iMac7,1 and iMac8,1
-
-WARNING: Root Volume Patching is still in active development, please
-have all important user data backed up. Note when the system volume
-is patched, you can no longer have Delta updates.
-
-Supported Options:
-
-1. Patch System Volume
-2. Unpatch System Volume (Experimental)
-B. Exit
-        """
-        monterey = """Patches Root volume to fix misc issues such as:
-
-- Metal Graphics Acceleration
-  - Intel: Ivy Bridge (4000 series iGPUs)
-  - Nvidia: Kepler (600-700)
-- Non-Metal Graphics Accelertation
-  - Intel: Ironlake - Sandy Bridge
-  - Nvidia: Tesla - Fermi (8000-500 series)
-  - AMD: TeraScale 1 and 2 (2000-6000 series)
-- Audio support for iMac7,1 and iMac8,1
-- Wifi support for BCM94328, BCM94322 and Atheros cards
-
-WARNING: Root Volume Patching is still in active development, please
-have all important user data backed up. Note when the system volume
-is patched, you can no longer have Delta updates.
-
-Supported Options:
-
-1. Patch System Volume
-2. Unpatch System Volume (Experimental)
-B. Exit
-        """
-        mojave_catalina = """Patches Root volume to fix misc issues such as:
-
-- Non-Metal Graphics Acceleration
-  - Intel: Ironlake - Sandy Bridge
-  - Nvidia: Tesla - Fermi (8000-500 series)
-  - AMD: TeraScale 1 and 2 (2000-6000 series)
-- Audio support for iMac7,1 and iMac8,1
-
-WARNING: Root Volume Patching is still in active development, please
-have all important user data backed up. Note when the system volume
-is patched, you can no longer have Delta updates.
-
-Supported Options:
-
-1. Patch System Volume
-2. Unpatch System Volume (Experimental)
-B. Exit
-         """
-
-        default = """
-This OS has no root patches available to apply, please ensure you're patching a booted
-install that requires root patches such as macOS Big Sur or Monterey
-
-Supported Options:
-
-B. Exit
-        """
-        no_patch = False
-        if self.constants.detected_os == self.constants.monterey:
-            print(monterey)
-        elif self.constants.detected_os == self.constants.big_sur:
-            print(big_sur)
-        elif self.constants.detected_os in [self.constants.mojave, self.constants.catalina] and self.constants.moj_cat_accel == True:
-            print(mojave_catalina)
-        else:
-            print(default)
-            no_patch = True
-        change_menu = input("Patch System Volume?: ")
-        if no_patch is not True and change_menu == "1":
-            SysPatch.PatchSysVolume(self.constants.custom_model or self.computer.real_model, self.constants).start_patch()
-        elif no_patch is not True and change_menu == "2":
-            SysPatch.PatchSysVolume(self.constants.custom_model or self.computer.real_model, self.constants).start_unpatch()
-        else:
-            print("Returning to main menu")
 
     def main_menu(self):
         response = None
@@ -415,10 +228,10 @@ B. Exit
                 else []
             ) + [
                 ["Install OpenCore to USB/internal drive", self.install_opencore],
-                ["Post-Install Volume Patch", self.PatchVolume],
-                ["Change Model", self.change_model],
+                ["Post-Install Volume Patch", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).PatchVolume],
+                ["Change Model", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_model],
                 ["Patcher Settings", self.patcher_settings],
-                ["Credits", self.credits],
+                ["Credits", CliMenu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).credits],
             ]
 
             for option in options:
@@ -430,4 +243,4 @@ B. Exit
             subprocess.run("""osascript -e 'tell application "Terminal" to close first window' & exit""", shell=True)
 
 
-OpenCoreLegacyPatcher().main_menu()
+OpenCoreLegacyPatcher()

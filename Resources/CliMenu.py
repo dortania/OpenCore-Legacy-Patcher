@@ -3,7 +3,7 @@
 from __future__ import print_function
 import subprocess
 
-from Resources import Constants, Utilities
+from Resources import Constants, Utilities, defaults, ModelArray, SysPatch
 
 
 class MenuOptions:
@@ -574,7 +574,7 @@ Note: for the average user, we recommend using dosdude1's legacy patcher:
         else:
             self.allow_moj_cat_patch()
 
-    def disable_thunderbolt(self):
+    def disable_tb(self):
         Utilities.cls()
         Utilities.header(["Disable Thunderbolt on 2013-14 MacBook Pros"])
         print(
@@ -592,13 +592,13 @@ other devices that benefit from this fix.
 
         change_menu = input("Disable Thunderbolt?(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.disable_thunderbolt = True
+            self.constants.disable_tb = True
         elif change_menu in {"n", "N", "no", "No"}:
-            self.constants.disable_thunderbolt = False
+            self.constants.disable_tb = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
             print("Returning to previous menu")
         else:
-            self.disable_thunderbolt()
+            self.disable_tb()
 
     def terascale_2_accel(self):
         Utilities.cls()
@@ -702,3 +702,155 @@ the event there's issues.
             print("Returning to previous menu")
         else:
             self.set_surplus()
+    
+    def credits(self):
+        Utilities.TUIOnlyPrint(
+            ["Credits"],
+            "Press [Enter] to go back.\n",
+            [
+                """Many thanks to the following:
+
+  - Acidanthera:\tOpenCore, kexts and other tools
+  - Khronokernel:\tWriting and maintaining this patcher
+  - DhinakG:\t\tWriting and maintaining this patcher
+  - ASentientBot:\tLegacy Acceleration Patches
+  - Ausdauersportler:\tLinking fixes for SNBGraphicsFB and AMDX3000
+  - Syncretic:\t\tAAAMouSSE and telemetrap
+  - cdf:\t\tNightShiftEnabler and Innie"""
+            ],
+        ).start()
+
+    def change_model(self):
+        Utilities.cls()
+        Utilities.header(["Select Different Model"])
+        print(
+            """
+Tip: Run the following command on the target machine to find the model identifier:
+
+system_profiler SPHardwareDataType | grep 'Model Identifier'
+    """
+        )
+        self.constants.custom_model = input("Please enter the model identifier of the target machine: ").strip()
+        if self.constants.custom_model not in ModelArray.SupportedSMBIOS:
+            print(
+                f"""
+{self.constants.custom_model} is not a valid SMBIOS Identifier for macOS {self.constants.os_support}!
+"""
+            )
+            print_models = input(f"Print list of valid options for macOS {self.constants.os_support}? (y/n)")
+            if print_models.lower() in {"y", "yes"}:
+                print("\n".join(ModelArray.SupportedSMBIOS))
+                input("\nPress [ENTER] to continue")
+        else:
+            defaults.generate_defaults.probe(self.constants.custom_model, False, self.constants)
+    
+    def PatchVolume(self):
+        Utilities.cls()
+        Utilities.header(["Patching System Volume"])
+
+        no_patch = False
+        if self.constants.detected_os == self.constants.monterey:
+            print(MenuOptions.monterey)
+        elif self.constants.detected_os == self.constants.big_sur:
+            print(MenuOptions.big_sur)
+        elif self.constants.detected_os in [self.constants.mojave, self.constants.catalina] and self.constants.moj_cat_accel == True:
+            print(MenuOptions.mojave_catalina)
+        else:
+            print(MenuOptions.default)
+            no_patch = True
+        change_menu = input("Patch System Volume?: ")
+        if no_patch is not True and change_menu == "1":
+            SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
+        elif no_patch is not True and change_menu == "2":
+            SysPatch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_unpatch()
+        else:
+            print("Returning to main menu")
+    
+    def advanced_patcher_settings(self):
+        response = None
+        while not (response and response == -1):
+            title = ["Adjust Advanced Patcher Settings, for developers ONLY"]
+            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            options = [
+                [f"Set Metal GPU Status:\t\tCurrently {self.constants.imac_vendor}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_metal],
+                [f"Set DRM Preferences:\t\tCurrently {self.constants.drm_support}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).drm_setting],
+                [f"Set Generic Bootstrap:\t\tCurrently {self.constants.boot_efi}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).bootstrap_setting],
+                [
+                    f"Disable CPU Friend:\t\t\tCurrently {self.constants.disallow_cpufriend}",
+                    MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).disable_cpufriend,
+                ],
+            ]
+
+            for option in options:
+                menu.add_menu_option(option[0], function=option[1])
+
+            response = menu.start()
+
+
+    big_sur = """Patches Root volume to fix misc issues such as:
+
+- Non-Metal Graphics Acceleration
+  - Intel: Ironlake - Sandy Bridge
+  - Nvidia: Tesla - Fermi (8000-500 series)
+  - AMD: TeraScale 1 and 2 (2000-6000 series)
+- Audio support for iMac7,1 and iMac8,1
+
+WARNING: Root Volume Patching is still in active development, please
+have all important user data backed up. Note when the system volume
+is patched, you can no longer have Delta updates.
+
+Supported Options:
+
+1. Patch System Volume
+2. Unpatch System Volume (Experimental)
+B. Exit
+        """
+    monterey = """Patches Root volume to fix misc issues such as:
+
+- Metal Graphics Acceleration
+  - Intel: Ivy Bridge (4000 series iGPUs)
+  - Nvidia: Kepler (600-700)
+- Non-Metal Graphics Accelertation
+  - Intel: Ironlake - Sandy Bridge
+  - Nvidia: Tesla - Fermi (8000-500 series)
+  - AMD: TeraScale 1 and 2 (2000-6000 series)
+- Audio support for iMac7,1 and iMac8,1
+- Wifi support for BCM94328, BCM94322 and Atheros cards
+
+WARNING: Root Volume Patching is still in active development, please
+have all important user data backed up. Note when the system volume
+is patched, you can no longer have Delta updates.
+
+Supported Options:
+
+1. Patch System Volume
+2. Unpatch System Volume (Experimental)
+B. Exit
+        """
+    mojave_catalina = """Patches Root volume to fix misc issues such as:
+
+- Non-Metal Graphics Acceleration
+  - Intel: Ironlake - Sandy Bridge
+  - Nvidia: Tesla - Fermi (8000-500 series)
+  - AMD: TeraScale 1 and 2 (2000-6000 series)
+- Audio support for iMac7,1 and iMac8,1
+
+WARNING: Root Volume Patching is still in active development, please
+have all important user data backed up. Note when the system volume
+is patched, you can no longer have Delta updates.
+
+Supported Options:
+
+1. Patch System Volume
+2. Unpatch System Volume (Experimental)
+B. Exit
+         """
+
+    default = """
+This OS has no root patches available to apply, please ensure you're patching a booted
+install that requires root patches such as macOS Big Sur or Monterey
+
+Supported Options:
+
+B. Exit
+        """

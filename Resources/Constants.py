@@ -140,7 +140,7 @@ class Constants:
         ## Miscellaneous
         self.disallow_cpufriend = False  #   Disable CPUFriend
         self.enable_wake_on_wlan = False  #  Allow Wake on WLAN for modern Broadcom
-        self.disable_thunderbolt = False  #  Disable Thunderbolt Controller
+        self.disable_tb = False  #  Disable Thunderbolt Controller
         self.set_alc_usage = True  #         Set AppleALC usage
         self.dGPU_switch = True  #           Set Display GPU Switching for Windows
         self.force_surplus = False  #        Force SurPlus patch in newer OSes

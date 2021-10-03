@@ -13,11 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OCLP-CLI.spec
-      - run: cd dist; cp OCLP-CLI ../; cd ..
-      - run: zip OCLP-CLI.zip OCLP-CLI
+      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher.spec
+      - run: cd dist; cp OpenCore-Patcher ../; cd ..; mv OpenCore-Patcher OCLP-CLI
       - name: Download latest nightly OCLP-GUI
-        run: curl -S -L https://nightly.link/dortania/OCLP-GUI/workflows/build-app/master/OpenCore-Patcher-GUI.app.zip --output ./OpenCore-Patcher-GUI.app.zip
+        run: curl -S -L https://nightly.link/dortania/OCLP-GUI/workflows/build-app/master/OpenCore-Patcher-GUI.app.zip --output ./OpenCore-Patcher-GUI.app.zip --insecure
       - run: unzip -o OpenCore-Patcher-GUI.app.zip
       - run: unzip OpenCore-Patcher-GUI.app.zip; rm OpenCore-Patcher-GUI.app.zip
       - name: Merge new GUI
@@ -37,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: OCLP-CLI
-          path: OCLP-CLI.zip
+          path: OCLP-CLI
       - name: Upload to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d

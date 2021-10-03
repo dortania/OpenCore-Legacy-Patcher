@@ -219,6 +219,7 @@ class BuildOpenCore:
                         arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
                 print(f"- Using known DevicePath {arpt_path}")
             # self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
+
             if not self.constants.custom_model and self.computer.wifi and self.constants.validate is False and self.computer.wifi.country_code:
                 print(f"- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}")
                 self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.country_code}
@@ -426,7 +427,7 @@ class BuildOpenCore:
             else:
                 return True
 
-        if self.constants.firewire_boot is True and check_firewire() is True:
+        if self.constants.firewire_boot is True and check_firewire(self.model) is True:
             # Enable FireWire Boot Support
             # Applicable for both native FireWire and Thunderbolt to FireWire adapters
             print("- Enabling FireWire Boot Support")
@@ -571,7 +572,7 @@ class BuildOpenCore:
                 print("- Adding Mac Pro, Xserve DRM patches")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
 
-        if self.constants.disable_thunderbolt is True and self.model in ["MacBookPro11,1", "MacBookPro11,2", "MacBookPro11,3", "MacBookPro11,4", "MacBookPro11,5"]:
+        if self.constants.disable_tb is True and self.model in ["MacBookPro11,1", "MacBookPro11,2", "MacBookPro11,3", "MacBookPro11,4", "MacBookPro11,5"]:
             print("- Disabling 2013-2014 laptop Thunderbolt Controller")
             if self.model in ["MacBookPro11,3", "MacBookPro11,5"]:
                 # 15" dGPU models: IOACPIPlane:/_SB/PCI0@0/PEG1@10001/UPSB@0/DSB0@0/NHI0@0

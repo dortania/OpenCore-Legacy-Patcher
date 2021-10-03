@@ -14,3 +14,4 @@ class os_data:
     catalina = 19
     big_sur = 20
     monterey = 21
+    max_os = 99
