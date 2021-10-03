@@ -14,7 +14,7 @@ import ast
 from pathlib import Path
 from datetime import date
 
-from resources import constants, Utilities, device_probe, generate_smbios
+from resources import constants, utilities, device_probe, generate_smbios
 from data import smbios_data, bluetooth_data, cpu_data, os_data, model_array
 
 
@@ -55,7 +55,7 @@ class BuildOpenCore:
             shutil.copy(self.constants.icon_path_internal, self.constants.opencore_release_folder)
 
     def build_efi(self):
-        Utilities.cls()
+        utilities.cls()
         if not self.constants.custom_model:
             print(f"Building Configuration on model: {self.model}")
         else:
@@ -174,8 +174,8 @@ class BuildOpenCore:
         if not self.constants.custom_model:
             nvme_devices = [i for i in self.computer.storage if isinstance(i, device_probe.NVMeController)]
             for i, controller in enumerate(nvme_devices):
-                print(f"- Found 3rd Party NVMe SSD ({i + 1}): {Utilities.friendly_hex(controller.vendor_id)}:{Utilities.friendly_hex(controller.device_id)}")
-                self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{Utilities.friendly_hex(controller.vendor_id)}:{Utilities.friendly_hex(controller.device_id)}"
+                print(f"- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}")
+                self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}"
 
                 # Disable Bit 0 (L0s), enable Bit 1 (L1)
                 nvme_aspm = (controller.aspm & (~0b11)) | 0b10
@@ -231,8 +231,8 @@ class BuildOpenCore:
         # TODO: -a is not supported in Lion and older, need to add proper fix
         if self.constants.detected_os > self.constants.lion and not self.constants.custom_model:
             if self.computer.wifi:
-                print(f"- Found Wireless Device {Utilities.friendly_hex(self.computer.wifi.vendor_id)}:{Utilities.friendly_hex(self.computer.wifi.device_id)}")
-                self.config["#Revision"]["Hardware-Wifi"] = f"{Utilities.friendly_hex(self.computer.wifi.vendor_id)}:{Utilities.friendly_hex(self.computer.wifi.device_id)}"
+                print(f"- Found Wireless Device {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}")
+                self.config["#Revision"]["Hardware-Wifi"] = f"{utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}"
         else:
             print("- Unable to run Wireless hardware detection")
 
@@ -519,7 +519,7 @@ class BuildOpenCore:
             else:
                 print("- Failed to find vendor")
         elif not self.constants.custom_model and self.model in model_array.LegacyGPU and self.computer.dgpu:
-            print(f"- Detected dGPU: {Utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{Utilities.friendly_hex(self.computer.dgpu.device_id)}")
+            print(f"- Detected dGPU: {utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{utilities.friendly_hex(self.computer.dgpu.device_id)}")
             if self.computer.dgpu.arch in [
                 device_probe.AMD.Archs.Legacy_GCN,
                 device_probe.AMD.Archs.Polaris,
@@ -534,8 +534,8 @@ class BuildOpenCore:
         if self.model in model_array.MacPro:
             if not self.constants.custom_model:
                 for i, device in enumerate(self.computer.gpus):
-                    print(f"- Found dGPU ({i + 1}): {Utilities.friendly_hex(device.vendor_id)}:{Utilities.friendly_hex(device.device_id)}")
-                    self.config["#Revision"][f"Hardware-MacPro-dGPU-{i + 1}"] = f"{Utilities.friendly_hex(device.vendor_id)}:{Utilities.friendly_hex(device.device_id)}"
+                    print(f"- Found dGPU ({i + 1}): {utilities.friendly_hex(device.vendor_id)}:{utilities.friendly_hex(device.device_id)}")
+                    self.config["#Revision"][f"Hardware-MacPro-dGPU-{i + 1}"] = f"{utilities.friendly_hex(device.vendor_id)}:{utilities.friendly_hex(device.device_id)}"
 
                     if device.pci_path and device.acpi_path:
                         print(f"- Found dGPU ({i + 1}) at {device.pci_path}")
@@ -734,7 +734,7 @@ class BuildOpenCore:
             # fw_feature = self.patch_firmware_feature()
             fw_feature = hex(fw_feature).lstrip("0x").rstrip("L").strip()
             print(f"- Setting Firmware Feature: {fw_feature}")
-            fw_feature = Utilities.string_to_hex(fw_feature)
+            fw_feature = utilities.string_to_hex(fw_feature)
 
             # FirmwareFeatures
             self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeatures"] = fw_feature
@@ -973,11 +973,11 @@ class BuildOpenCore:
             input("Press [Enter] to go back.\n")
 
     def copy_efi(self):
-        Utilities.cls()
-        Utilities.header(["Installing OpenCore to Drive"])
+        utilities.cls()
+        utilities.header(["Installing OpenCore to Drive"])
 
         if not self.constants.opencore_release_folder.exists():
-            Utilities.TUIOnlyPrint(
+            utilities.TUIOnlyPrint(
                 ["Installing OpenCore to Drive"],
                 "Press [Enter] to go back.\n",
                 [
@@ -1013,7 +1013,7 @@ Please build OpenCore first!"""
                 # Avoid crashing with CDs installed
                 continue
         # TODO: Advanced mode
-        menu = Utilities.TUIMenu(
+        menu = utilities.TUIMenu(
             ["Select Disk"],
             "Please select the disk you would like to install OpenCore to: ",
             in_between=["Missing disks? Ensure they have an EFI or FAT32 partition."],
@@ -1023,7 +1023,7 @@ Please build OpenCore first!"""
         for disk in all_disks:
             if not any(all_disks[disk]["partitions"][partition]["fs"] in ("msdos", "EFI") for partition in all_disks[disk]["partitions"]):
                 continue
-            menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({Utilities.human_fmt(all_disks[disk]['size'])})", key=disk[4:])
+            menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({utilities.human_fmt(all_disks[disk]['size'])})", key=disk[4:])
 
         response = menu.start()
 
@@ -1033,7 +1033,7 @@ Please build OpenCore first!"""
         disk_identifier = "disk" + response
         selected_disk = all_disks[disk_identifier]
 
-        menu = Utilities.TUIMenu(
+        menu = utilities.TUIMenu(
             ["Select Partition"],
             "Please select the partition you would like to install OpenCore to: ",
             return_number_instead_of_direct_call=True,
@@ -1043,7 +1043,7 @@ Please build OpenCore first!"""
         for partition in selected_disk["partitions"]:
             if selected_disk["partitions"][partition]["fs"] not in ("msdos", "EFI"):
                 continue
-            text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({Utilities.human_fmt(selected_disk['partitions'][partition]['size'])})"
+            text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({utilities.human_fmt(selected_disk['partitions'][partition]['size'])})"
             if selected_disk["partitions"][partition]["type"] == "EFI" or (
                 selected_disk["partitions"][partition]["type"] == "Microsoft Basic Data" and selected_disk["partitions"][partition]["size"] < 1024 * 1024 * 512
             ):  # 512 megabytes:
@@ -1075,7 +1075,7 @@ Please build OpenCore first!"""
                 # cancelled prompt
                 return
             else:
-                Utilities.TUIOnlyPrint(
+                utilities.TUIOnlyPrint(
                     ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + ["", "Please report this to the devs at GitHub."]
                 ).start()
                 return
@@ -1090,8 +1090,8 @@ Please build OpenCore first!"""
             ssd_type = False
         mount_path = Path(partition_info["MountPoint"])
         disk_type = partition_info["BusProtocol"]
-        Utilities.cls()
-        Utilities.header(["Copying OpenCore"])
+        utilities.cls()
+        utilities.header(["Copying OpenCore"])
 
         if mount_path.exists():
             if (mount_path / Path("EFI/Microsoft")).exists():
@@ -1148,4 +1148,4 @@ Please build OpenCore first!"""
             print("\nPress [Enter] to continue.\n")
             input()
         else:
-            Utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()
+            utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()

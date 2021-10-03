@@ -1,5 +1,5 @@
 # Generate Default Data
-from resources import Utilities, device_probe
+from resources import utilities, device_probe
 from data import model_array
 
 class generate_defaults():
@@ -11,7 +11,7 @@ class generate_defaults():
         settings.amfi_status = True
 
         if host_is_target:
-            if Utilities.check_metal_support(device_probe, settings.computer) is False:
+            if utilities.check_metal_support(device_probe, settings.computer) is False:
                 settings.disable_cs_lv = True
             if settings.computer.dgpu and settings.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
                 settings.sip_status = False
@@ -27,7 +27,7 @@ class generate_defaults():
             settings.disable_cs_lv = True
 
         if model in model_array.LegacyGPU:
-            if host_is_target and Utilities.check_metal_support(device_probe, settings.computer) is True:
+            if host_is_target and utilities.check_metal_support(device_probe, settings.computer) is True:
                 # Building on device and we have a native, supported GPU
                 if settings.computer.dgpu and settings.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
                     settings.sip_status = False
@@ -54,22 +54,22 @@ class generate_defaults():
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
             settings.serial_settings = "Moderate"
 
-        custom_cpu_model_value = Utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+        custom_cpu_model_value = utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
         if custom_cpu_model_value is not None:
             # TODO: Fix to not use two separate variables
             settings.custom_cpu_model = 1
             settings.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
 
-        if "-v" in (Utilities.get_nvram("boot-args") or ""):
+        if "-v" in (utilities.get_nvram("boot-args") or ""):
             settings.verbose_debug = True
 
-        if Utilities.amfi_status() is False:
+        if utilities.amfi_status() is False:
             settings.amfi_status = False
 
-        if Utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9"):
+        if utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9"):
             # Users disabling TS2 most likely have a faulty dGPU
             # users can override this in settings
             settings.allow_ts2_accel = False
 
         # Check if running in RecoveryOS
-        settings.recovery_status = Utilities.check_recovery()
+        settings.recovery_status = utilities.check_recovery()

@@ -1,5 +1,5 @@
 from data import smbios_data, os_data
-from resources import Utilities
+from resources import utilities
 
 def set_smbios_model_spoof(model):
     try:
@@ -65,7 +65,7 @@ def update_firmware_features(firmwarefeature):
     
 def generate_fw_features(model, custom):
     if not custom:
-        firmwarefeature = Utilities.get_rom("firmware-features")
+        firmwarefeature = utilities.get_rom("firmware-features")
         if not firmwarefeature:
             print("- Failed to find FirmwareFeatures, falling back on defaults")
             firmwarefeature = int(smbios_data.smbios_dictionary[model]["FirmwareFeatures"], 16)

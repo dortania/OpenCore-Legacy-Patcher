@@ -7,7 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from resources import Build, cli_menu, constants, Utilities, device_probe, os_probe, defaults, arguments
+from resources import Build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments
 from data import model_array
 
 class OpenCoreLegacyPatcher:
@@ -23,7 +23,7 @@ class OpenCoreLegacyPatcher:
         self.constants.detected_os_minor = os_probe.detect_kernel_minor()
         self.constants.detected_os_build = os_probe.detect_kernel_build()
         self.constants.computer = device_probe.Computer.probe()
-        self.constants.recovery_status = Utilities.check_recovery()
+        self.constants.recovery_status = utilities.check_recovery()
         self.computer = self.constants.computer
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
         if arguments.arguments().check_cli() is True:
@@ -64,7 +64,7 @@ class OpenCoreLegacyPatcher:
             else:
                 in_between = ["This model is supported"]
 
-            menu = Utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
+            menu = utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
 
             options = (
                 [["Build OpenCore", Build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()]]

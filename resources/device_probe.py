@@ -10,7 +10,7 @@ import subprocess
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type, Union
 
-from resources import Utilities, ioreg
+from resources import utilities, ioreg
 from data import pci_data
 
 
@@ -373,7 +373,7 @@ class Computer:
         devices = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": {"class-code": binascii.a2b_hex(Utilities.hexswap(hex(WirelessCard.CLASS_CODE)[2:].zfill(8)))}},
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": {"class-code": binascii.a2b_hex(utilities.hexswap(hex(WirelessCard.CLASS_CODE)[2:].zfill(8)))}},
                 None,
             )[1]
         )
@@ -389,7 +389,7 @@ class Computer:
         sata_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(Utilities.hexswap(hex(SATAController.CLASS_CODE)[2:].zfill(8)))}]},
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(SATAController.CLASS_CODE)[2:].zfill(8)))}]},
                 None,
             )[1]
         )
@@ -431,12 +431,12 @@ class Computer:
 
         # Real model
         # TODO: We previously had logic for OC users using iMacPro1,1 with incorrect ExposeSensitiveData. Add logic?
-        self.real_model = Utilities.get_nvram("oem-product", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True) or self.reported_model
-        self.real_board_id = Utilities.get_nvram("oem-board", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True) or self.reported_board_id
+        self.real_model = utilities.get_nvram("oem-product", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True) or self.reported_model
+        self.real_board_id = utilities.get_nvram("oem-board", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True) or self.reported_board_id
 
         # OCLP version
-        self.oclp_version = Utilities.get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
-        self.opencore_version = Utilities.get_nvram("opencore-version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+        self.oclp_version = utilities.get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+        self.opencore_version = utilities.get_nvram("opencore-version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
 
     def cpu_probe(self):
         self.cpu = CPU(

@@ -3,7 +3,7 @@
 from __future__ import print_function
 import subprocess
 
-from resources import constants, Utilities, defaults, sys_patch
+from resources import constants, utilities, defaults, sys_patch
 from data import cpu_data, smbios_data, model_array
 
 
@@ -13,8 +13,8 @@ class MenuOptions:
         self.constants: constants.Constants() = versions
 
     def change_verbose(self):
-        Utilities.cls()
-        Utilities.header(["Set Verbose mode"])
+        utilities.cls()
+        utilities.header(["Set Verbose mode"])
         change_menu = input("Enable Verbose mode(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.verbose_debug = True
@@ -26,8 +26,8 @@ class MenuOptions:
             self.change_verbose()
 
     def change_oc(self):
-        Utilities.cls()
-        Utilities.header(["Set OpenCore DEBUG mode"])
+        utilities.cls()
+        utilities.header(["Set OpenCore DEBUG mode"])
         change_menu = input("Enable OpenCore DEBUG mode(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.opencore_debug = True
@@ -41,8 +41,8 @@ class MenuOptions:
             self.change_oc()
 
     def change_kext(self):
-        Utilities.cls()
-        Utilities.header(["Set Kext DEBUG mode"])
+        utilities.cls()
+        utilities.header(["Set Kext DEBUG mode"])
         change_menu = input("Enable Kext DEBUG mode(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.kext_debug = True
@@ -54,8 +54,8 @@ class MenuOptions:
             self.change_kext()
 
     def change_metal(self):
-        Utilities.cls()
-        Utilities.header(["Assume Metal GPU Always in iMac"])
+        utilities.cls()
+        utilities.header(["Assume Metal GPU Always in iMac"])
         print(
             """This is for iMacs that have upgraded Metal GPUs, otherwise
 Patcher assumes based on stock configuration (ie. iMac10,x-12,x)
@@ -87,8 +87,8 @@ option is for those patching on a different machine or OCLP cannot detect.
             self.change_metal()
 
     def change_serial(self):
-        Utilities.cls()
-        Utilities.header(["Set SMBIOS Spoof Level"])
+        utilities.cls()
+        utilities.header(["Set SMBIOS Spoof Level"])
         print(
             """This section is for setting how OpenCore generates the SMBIOS
 Recommended for adanced users who want control how serials are handled
@@ -116,8 +116,8 @@ Note: For new users we recommend leaving as default(1. Minimal)
             self.change_serial()
 
     def change_showpicker(self):
-        Utilities.cls()
-        Utilities.header(["Set OpenCore Picker mode"])
+        utilities.cls()
+        utilities.header(["Set OpenCore Picker mode"])
         print(
             """By default, OpenCore will show its boot picker each time on boot up,
 however this can be disabled by default and be shown on command by repeatedly
@@ -135,8 +135,8 @@ pressing the "Esc" key
             self.change_showpicker()
 
     def change_vault(self):
-        Utilities.cls()
-        Utilities.header(["Set OpenCore Vaulting"])
+        utilities.cls()
+        utilities.header(["Set OpenCore Vaulting"])
         print(
             """By default, this patcher will sign all your files and ensure none of the
 contents can be tampered with. However for more advanced users, you may
@@ -157,8 +157,8 @@ Note: For security reasons, OpenShell will be disabled when Vault is set.
             self.change_vault()
 
     def change_sip(self):
-        Utilities.cls()
-        Utilities.header(["Set System Integrity protection"])
+        utilities.cls()
+        utilities.header(["Set System Integrity protection"])
         print(
             """SIP is used to ensure proper secuirty measures are set,
 however to patch the root volume this must be disabled.
@@ -183,8 +183,8 @@ Q. Return to previous menu
             self.change_sip()
 
     def change_sbm(self):
-        Utilities.cls()
-        Utilities.header(["Set SecureBootModel"])
+        utilities.cls()
+        utilities.header(["Set SecureBootModel"])
         print(
             """SecureBootModel is used to ensure best firmware security,
 however to patch the root volume this must be disabled.
@@ -209,8 +209,8 @@ Q. Return to previous menu
             self.change_sbm()
 
     def set_amfi(self):
-        Utilities.cls()
-        Utilities.header(["Set AMFI"])
+        utilities.cls()
+        utilities.header(["Set AMFI"])
         print(
             """Required for Root Patching non-Metal GPUs
 in macOS Big Sur. Without this, will receive kernel panic once
@@ -228,8 +228,8 @@ Patcher finishes installing legacy acceleration patches.
             self.set_amfi()
 
     def bootstrap_setting(self):
-        Utilities.cls()
-        Utilities.header(["Set Bootstrap method"])
+        utilities.cls()
+        utilities.header(["Set Bootstrap method"])
         print(
             """Sets OpenCore's bootstrap method, currently the patcher supports the
 following options.
@@ -259,8 +259,8 @@ see the EFI Boot entry in the boot picker.
             self.bootstrap_setting()
 
     def drm_setting(self):
-        Utilities.cls()
-        Utilities.header(["Set DRM preferences"])
+        utilities.cls()
+        utilities.header(["Set DRM preferences"])
         print(
             """Sets OpenCore's DRM preferences for iMac13,x and iMac14,x.
 In Big Sur, some DRM based content may be broken by
@@ -285,8 +285,8 @@ Recommend only disabling if absolutely required.
             self.drm_setting()
 
     def allow_native_models(self):
-        Utilities.cls()
-        Utilities.header(["Allow OpenCore on native Models"])
+        utilities.cls()
+        utilities.header(["Allow OpenCore on native Models"])
         print(
             """Allows natively supported Macs to use OpenCore. Recommended
 for users with 3rd Party NVMe SSDs to achieve improved overall
@@ -307,8 +307,8 @@ power usage.
             self.allow_native_models()
 
     def custom_cpu(self):
-        Utilities.cls()
-        Utilities.header(["Set custom CPU Model Name"])
+        utilities.cls()
+        utilities.header(["Set custom CPU Model Name"])
         print(
             """Change reported CPU Model name in About This Mac
 Custom names will report as follows:
@@ -342,8 +342,8 @@ Q. Return to previous menu
             self.custom_cpu()
 
     def disable_cpufriend(self):
-        Utilities.cls()
-        Utilities.header(["Disable CPU Friend?"])
+        utilities.cls()
+        utilities.header(["Disable CPU Friend?"])
         print(
             """Only recommended for advanced users
 Disabling CPUFriend forces macOS into using a different
@@ -362,8 +362,8 @@ hardware
             self.disable_cpufriend()
 
     def set_smbios(self):
-        Utilities.cls()
-        Utilities.header(["Set SMBIOS Spoof Model"])
+        utilities.cls()
+        utilities.header(["Set SMBIOS Spoof Model"])
         print(
             """Change model OpenCore spoofs Mac too
 
@@ -396,8 +396,8 @@ Q. Return to previous menu
             self.set_smbios()
 
     def allow_firewire(self):
-        Utilities.cls()
-        Utilities.header(["Allow FireWire Boot Support"])
+        utilities.cls()
+        utilities.header(["Allow FireWire Boot Support"])
         print(
             """
 In macOS Catalina and newer, Apple restricted
@@ -423,8 +423,8 @@ Note: MacBook5,x-7,1 don't support FireWire boot
             self.allow_firewire()
 
     def allow_nvme(self):
-        Utilities.cls()
-        Utilities.header(["Allow NVMe UEFI Support"])
+        utilities.cls()
+        utilities.header(["Allow NVMe UEFI Support"])
         print(
             """
 For machines not natively supporting NVMe,
@@ -450,8 +450,8 @@ OpenCore will enable NVMe support in it's picker
             self.allow_nvme()
 
     def allow_wowl(self):
-        Utilities.cls()
-        Utilities.header(["Allow Wake on WLAN"])
+        utilities.cls()
+        utilities.header(["Allow Wake on WLAN"])
         print(
             """
 Due to an unfortunate bug in macOS Big Sur+, Wake on WLAN is
@@ -474,8 +474,8 @@ be prepared if enabling.
             self.allow_wowl()
 
     def allow_ivy(self):
-        Utilities.cls()
-        Utilities.header(["Allow Ivy iMac iGPU"])
+        utilities.cls()
+        utilities.header(["Allow Ivy iMac iGPU"])
         print(
             """
 For iMac13,x systems with a Nvidia dGPU, the iGPU is disabled by default to
@@ -502,8 +502,8 @@ Note 2: This setting only affects iMac13,x with dGPUs
             self.allow_ivy()
 
     def latebloom_settings(self):
-        Utilities.cls()
-        Utilities.header(["Set latebloom properties"])
+        utilities.cls()
+        utilities.header(["Set latebloom properties"])
         print(
             f"""
 Set latebloom properties, useful for debugging boot stalls on
@@ -548,8 +548,8 @@ Q. Return to previous menu
             self.latebloom_settings()
 
     def allow_moj_cat_patch(self):
-        Utilities.cls()
-        Utilities.header(["Allow Root Patching on Mojave/Catalina"])
+        utilities.cls()
+        utilities.header(["Allow Root Patching on Mojave/Catalina"])
         print(
             """
 This is an experimental option that allows the usage of legacy acceleration
@@ -576,8 +576,8 @@ Note: for the average user, we recommend using dosdude1's legacy patcher:
             self.allow_moj_cat_patch()
 
     def disable_tb(self):
-        Utilities.cls()
-        Utilities.header(["Disable Thunderbolt on 2013-14 MacBook Pros"])
+        utilities.cls()
+        utilities.header(["Disable Thunderbolt on 2013-14 MacBook Pros"])
         print(
             """
 Some 2013-14 MacBook Pro's have issues with the built-in thunderbolt,
@@ -602,8 +602,8 @@ other devices that benefit from this fix.
             self.disable_tb()
 
     def terascale_2_accel(self):
-        Utilities.cls()
-        Utilities.header(["Set TeraScale 2 Acceleration"])
+        utilities.cls()
+        utilities.header(["Set TeraScale 2 Acceleration"])
         print(
             """
 By default this patcher will install TeraScale 2 acceleration, however
@@ -627,15 +627,15 @@ handle acceleration tasks.
             self.terascale_2_accel()
 
     def dump_hardware(self):
-        Utilities.cls()
-        Utilities.header(["Dumping detected hardware"])
+        utilities.cls()
+        utilities.header(["Dumping detected hardware"])
         print("")
         print(self.constants.computer)
         input("\nPress [ENTER] to exit: ")
     
     def applealc_support(self):
-        Utilities.cls()
-        Utilities.header(["Set AppleALC usage"])
+        utilities.cls()
+        utilities.header(["Set AppleALC usage"])
         print(
             """
 By default this patcher will install audio patches in-memory via
@@ -658,8 +658,8 @@ If AppleALC is detected, the Patcher will not install AppleHDA.
             self.applealc_support()
     
     def dGPU_switch_support(self):
-        Utilities.cls()
-        Utilities.header(["Set Windows GMUX support"])
+        utilities.cls()
+        utilities.header(["Set Windows GMUX support"])
         print(
             """
 With OCLP, we're able to restore iGPU funbctionality on iGPU+dGPU
@@ -679,8 +679,8 @@ for Windows may prefer to only work with the dGPU and eGPU active.
             self.dGPU_switch_support()
     
     def set_surplus(self):
-        Utilities.cls()
-        Utilities.header(["Override SurPlus MaxKernel"])
+        utilities.cls()
+        utilities.header(["Override SurPlus MaxKernel"])
         print(
             """
 By default OCLP will only allow SurPlus to be used on kernels 21.1.0
@@ -705,7 +705,7 @@ the event there's issues.
             self.set_surplus()
     
     def credits(self):
-        Utilities.TUIOnlyPrint(
+        utilities.TUIOnlyPrint(
             ["Credits"],
             "Press [Enter] to go back.\n",
             [
@@ -722,8 +722,8 @@ the event there's issues.
         ).start()
 
     def change_model(self):
-        Utilities.cls()
-        Utilities.header(["Select Different Model"])
+        utilities.cls()
+        utilities.header(["Select Different Model"])
         print(
             """
 Tip: Run the following command on the target machine to find the model identifier:
@@ -746,8 +746,8 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             defaults.generate_defaults.probe(self.constants.custom_model, False, self.constants)
     
     def PatchVolume(self):
-        Utilities.cls()
-        Utilities.header(["Patching System Volume"])
+        utilities.cls()
+        utilities.header(["Patching System Volume"])
 
         no_patch = False
         if self.constants.detected_os == self.constants.monterey:
@@ -771,7 +771,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Advanced Patcher Settings, for developers ONLY"]
-            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set Metal GPU Status:\t\tCurrently {self.constants.imac_vendor}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_metal],
                 [f"Set DRM Preferences:\t\tCurrently {self.constants.drm_support}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).drm_setting],
@@ -792,7 +792,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Patcher Settings"]
-            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 ["Debug Settings", self.patcher_setting_debug],
                 ["Security Settings", self.patcher_settings_security],
@@ -820,7 +820,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Debug Settings"]
-            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Enable Verbose Mode:\tCurrently {self.constants.verbose_debug}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_verbose],
                 [f"Enable OpenCore DEBUG:\tCurrently {self.constants.opencore_debug}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_oc],
@@ -842,7 +842,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Security Settings"]
-            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 # [
                 #     f"Set Apple Mobile File Integrity (AMFI):\tCurrently {self.constants.amfi_status}",
@@ -868,7 +868,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust SMBIOS Settings"]
-            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set SMBIOS Spoof Level:\tCurrently {self.constants.serial_settings}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_serial],
                 [f"Set SMBIOS Spoof Model:\tCurrently {self.constants.override_smbios}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_smbios],
@@ -884,7 +884,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Bootable Volume Settings"]
-            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set FireWire Boot:\tCurrently {self.constants.firewire_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_firewire],
                 [f"Set NVMe Boot:\tCurrently {self.constants.nvme_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_nvme],
@@ -899,7 +899,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Miscellaneous Settings"]
-            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set ShowPicker Mode:\tCurrently {self.constants.showpicker}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_showpicker],
                 [f"Set Wake on WLAN:\t\tCurrently {self.constants.enable_wake_on_wlan}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_wowl],
@@ -922,7 +922,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Advanced Patcher Settings, for developers ONLY"]
-            menu = Utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set Metal GPU Status:\t\tCurrently {self.constants.imac_vendor}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_metal],
                 [f"Set DRM Preferences:\t\tCurrently {self.constants.drm_support}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).drm_setting],
