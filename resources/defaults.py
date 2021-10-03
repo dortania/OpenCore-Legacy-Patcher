@@ -1,5 +1,5 @@
 # Generate Default Data
-from Resources import Utilities, device_probe, ModelArray
+from resources import Utilities, device_probe, ModelArray
 
 class generate_defaults():
     def probe(model, host_is_target, settings):

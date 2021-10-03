@@ -1,5 +1,5 @@
 import subprocess
-from Resources import Constants
+from resources import Constants
 
 patcher_support_pkg_version = Constants.Constants().patcher_support_pkg_version
 binary_packages = ["10.14-Mojave", "10.15-Catalina", "11-Big-Sur", "12-Monterey"]

@@ -1,7 +1,7 @@
 # Defines Model Data
 
-from Resources import device_probe
-from Data import cpu_data, os_data, bluetooth_data
+from resources import device_probe
+from data import cpu_data, os_data, bluetooth_data
 
 smbios_dictionary = {
     "MacBook1,1": {

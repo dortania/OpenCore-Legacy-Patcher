@@ -1,7 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 import sys, os
 sys.path.append(os.path.abspath(os.getcwd()))
-from Resources import Constants
+from resources import Constants
 block_cipher = None
 
 

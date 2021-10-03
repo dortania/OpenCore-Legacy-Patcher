@@ -11,8 +11,8 @@ import subprocess
 import zipfile
 from pathlib import Path
 
-from Resources import Constants, device_probe, ModelArray, Utilities
-from Data import sip_data, sys_patch_data
+from resources import Constants, device_probe, ModelArray, Utilities
+from data import sip_data, sys_patch_data
 
 
 class PatchSysVolume:

@@ -3,8 +3,8 @@
 from __future__ import print_function
 import subprocess
 
-from Resources import Constants, Utilities, defaults, ModelArray, sys_patch
-from Data import cpu_data, smbios_data
+from resources import Constants, Utilities, defaults, ModelArray, sys_patch
+from data import cpu_data, smbios_data
 
 
 class MenuOptions:

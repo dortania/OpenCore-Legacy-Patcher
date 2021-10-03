@@ -2,7 +2,7 @@
 # Copyright (C) 2021 Mykola Grymalyuk
 import plistlib
 from pathlib import Path
-from Resources import Constants
+from resources import Constants
 
 app_path = Path.cwd() / Path ("OpenCore Patcher.app/Contents/Info.plist")
 info = plistlib.load(Path(app_path).open("rb"))

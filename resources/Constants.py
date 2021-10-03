@@ -7,7 +7,7 @@ from __future__ import print_function
 from pathlib import Path
 from typing import Optional
 
-from Resources import device_probe
+from resources import device_probe
 
 
 class Constants:

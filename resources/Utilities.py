@@ -20,8 +20,8 @@ except ImportError:
     except ImportError:
         raise Exception("Missing requests library!\nPlease run the following before starting OCLP:\npip3 install requests")
 
-from Resources import Constants, ioreg, device_probe
-from Data import sip_data
+from resources import Constants, ioreg, device_probe
+from data import sip_data
 
 
 def hexswap(input_hex: str):

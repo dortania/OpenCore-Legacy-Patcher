@@ -10,8 +10,8 @@ import subprocess
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type, Union
 
-from Resources import Utilities, ioreg
-from Data import pci_data
+from resources import Utilities, ioreg
+from data import pci_data
 
 
 @dataclass

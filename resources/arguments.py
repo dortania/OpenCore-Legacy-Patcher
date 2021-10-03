@@ -1,8 +1,8 @@
 import argparse
 import sys
 import subprocess
-from Resources import ModelArray, defaults, Build
-from Data import example_data
+from resources import ModelArray, defaults, Build
+from data import example_data
 
 # Generic building args
 class arguments:

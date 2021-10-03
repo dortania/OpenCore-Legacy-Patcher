@@ -1,5 +1,5 @@
-from Data import smbios_data, os_data
-from Resources import Utilities
+from data import smbios_data, os_data
+from resources import Utilities
 
 def set_smbios_model_spoof(model):
     try:

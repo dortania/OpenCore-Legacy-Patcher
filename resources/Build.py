@@ -14,8 +14,8 @@ import ast
 from pathlib import Path
 from datetime import date
 
-from Resources import Constants, ModelArray, Utilities, device_probe, generate_smbios
-from Data import smbios_data, bluetooth_data, cpu_data, os_data
+from resources import Constants, ModelArray, Utilities, device_probe, generate_smbios
+from data import smbios_data, bluetooth_data, cpu_data, os_data
 
 
 def rmtree_handler(func, path, exc_info):

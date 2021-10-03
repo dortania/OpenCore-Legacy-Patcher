@@ -1,6 +1,6 @@
 # Logic for mounting root volume
-from Data import os_data
-from Resources import Utilities
+from data import os_data
+from resources import Utilities
 import plistlib
 import subprocess
 

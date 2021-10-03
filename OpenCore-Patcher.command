@@ -7,8 +7,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from Resources import Build, cli_menu, Constants, ModelArray, sys_patch, Utilities, device_probe, os_probe, defaults, arguments
-from Data import smbios_data, cpu_data
+from resources import Build, cli_menu, Constants, ModelArray, sys_patch, Utilities, device_probe, os_probe, defaults, arguments
+from data import smbios_data, cpu_data
 
 class OpenCoreLegacyPatcher:
     def __init__(self):
