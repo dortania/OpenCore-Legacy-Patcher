@@ -14,7 +14,7 @@ import ast
 from pathlib import Path
 from datetime import date
 
-from resources import Constants, Utilities, device_probe, generate_smbios
+from resources import constants, Utilities, device_probe, generate_smbios
 from data import smbios_data, bluetooth_data, cpu_data, os_data, model_array
 
 
@@ -28,7 +28,7 @@ class BuildOpenCore:
     def __init__(self, model, versions):
         self.model = model
         self.config = None
-        self.constants: Constants.Constants = versions
+        self.constants: constants.Constants = versions
         self.computer = self.constants.computer
         self.gfx0_path = None
 

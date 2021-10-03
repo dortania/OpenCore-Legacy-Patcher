@@ -7,13 +7,13 @@ import subprocess
 import sys
 from pathlib import Path
 
-from resources import Build, cli_menu, Constants, Utilities, device_probe, os_probe, defaults, arguments
+from resources import Build, cli_menu, constants, Utilities, device_probe, os_probe, defaults, arguments
 from data import model_array
 
 class OpenCoreLegacyPatcher:
     def __init__(self):
         print("- Loading...")
-        self.constants = Constants.Constants()
+        self.constants = constants.Constants()
         self.generate_base_data()
         if arguments.arguments().check_cli() is False:
             self.main_menu()

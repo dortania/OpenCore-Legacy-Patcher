@@ -20,7 +20,7 @@ except ImportError:
     except ImportError:
         raise Exception("Missing requests library!\nPlease run the following before starting OCLP:\npip3 install requests")
 
-from resources import Constants, ioreg, device_probe
+from resources import constants, ioreg
 from data import sip_data
 
 
@@ -130,7 +130,7 @@ def amfi_status():
         return True
 
 def check_kext_loaded(kext_name, os_version):
-    if os_version > Constants.Constants().catalina:
+    if os_version > constants.Constants().catalina:
         kext_loaded = subprocess.run(["kmutil", "showloaded", "--list-only", "--variant-suffix", "release"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     else:
         kext_loaded = subprocess.run(["kextstat", "-l"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -188,19 +188,19 @@ def patching_status(os_sip, os):
     gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
     gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
-    if os > Constants.Constants().catalina:
+    if os > constants.Constants().catalina:
         amfi_enabled = amfi_status()
     else:
         # Catalina and older supports individually disabling Library Validation
         amfi_enabled = False
 
-    if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in Constants.Constants.sbm_values:
+    if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in constants.Constants.sbm_values:
         sbm_enabled = False
 
     if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
         sip_enabled = False
 
-    if os > Constants.Constants().catalina and not check_filevault_skip():
+    if os > constants.Constants().catalina and not check_filevault_skip():
         # Assume non-OCLP Macs do not have our APFS seal patch
         fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         if "FileVault is Off" in fv_status:

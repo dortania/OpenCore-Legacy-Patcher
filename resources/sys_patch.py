@@ -11,14 +11,14 @@ import subprocess
 import zipfile
 from pathlib import Path
 
-from resources import Constants, device_probe, Utilities
+from resources import constants, device_probe, Utilities
 from data import sip_data, sys_patch_data, model_array
 
 
 class PatchSysVolume:
     def __init__(self, model, versions):
         self.model = model
-        self.constants: Constants.Constants = versions
+        self.constants: constants.Constants() = versions
         self.computer = self.constants.computer
         self.root_mount_path = None
         self.sip_enabled = True

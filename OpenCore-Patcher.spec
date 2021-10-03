@@ -1,7 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 import sys, os
 sys.path.append(os.path.abspath(os.getcwd()))
-from resources import Constants
+from resources import constants
 block_cipher = None
 
 
@@ -38,7 +38,7 @@ app = BUNDLE(exe,
          icon="payloads/OC-Patcher.icns",
          bundle_identifier=None,
          info_plist={
-             "CFBundleShortVersionString": Constants.Constants().patcher_version,
+             "CFBundleShortVersionString": constants.Constants().patcher_version,
              "CFBundleExecutable": "MacOS/Launcher",
              "NSHumanReadableCopyright": "Copyright 2020-2021 Dortania"
          })

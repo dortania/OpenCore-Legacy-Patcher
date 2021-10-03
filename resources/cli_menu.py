@@ -3,14 +3,14 @@
 from __future__ import print_function
 import subprocess
 
-from resources import Constants, Utilities, defaults, sys_patch
+from resources import constants, Utilities, defaults, sys_patch
 from data import cpu_data, smbios_data, model_array
 
 
 class MenuOptions:
     def __init__(self, model, versions):
         self.model = model
-        self.constants: Constants.Constants = versions
+        self.constants: constants.Constants() = versions
 
     def change_verbose(self):
         Utilities.cls()

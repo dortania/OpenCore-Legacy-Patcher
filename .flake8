@@ -1,4 +1,4 @@
 [flake8]
 extend-ignore = E501, E203
 per-file-ignores =
-    Resources/Constants.py:E704
+    Resources/constants.py:E704
