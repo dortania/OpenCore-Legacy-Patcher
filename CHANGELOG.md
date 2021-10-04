@@ -29,7 +29,12 @@
   - PatcherSupportPkg 0.1.5 release
   - RestrictEvents  1.0.5 rolling (2430ed0)
 - Limit MacBookPro6,2 G State
+  - Works around crashing when switching GPUs
 - Fix OTA updates on T2 SMBIOS
+- Allow iMac13,x iGPU usage always
+  - Due to both Kepler and Ivy needing root patching, no benefit to disable the iGPU
+- Refactor Hardware Model building
+- Resolve dGPU output on MacBookPro10,1
 
 ## 0.2.5
 

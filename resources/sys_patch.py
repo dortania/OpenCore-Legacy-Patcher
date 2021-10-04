@@ -11,13 +11,14 @@ import subprocess
 import zipfile
 from pathlib import Path
 
-from Resources import Constants, device_probe, ModelArray, SysPatchArray, Utilities
+from resources import constants, device_probe, utilities
+from data import sip_data, sys_patch_data, model_array
 
 
 class PatchSysVolume:
     def __init__(self, model, versions):
         self.model = model
-        self.constants: Constants.Constants = versions
+        self.constants: constants.Constants() = versions
         self.computer = self.constants.computer
         self.root_mount_path = None
         self.sip_enabled = True
@@ -44,9 +45,6 @@ class PatchSysVolume:
         self.validate = False
         self.supports_metal = False
 
-        # if (Path.home() / "Desktop/OCLP-Test/").exists:
-        #    self.mount_location = Path.home() / "Desktop/OCLP-Test"
-        #    self.validate = True
         if self.constants.detected_os > self.constants.catalina:
             # Big Sur and newer use APFS snapshots
             self.mount_location = "/System/Volumes/Update/mnt1"
@@ -60,23 +58,17 @@ class PatchSysVolume:
         self.mount_libexec = f"{self.mount_location}/usr/libexec"
         self.mount_extensions_mux = f"{self.mount_location}/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
 
-    def elevated(self, *args, **kwargs) -> subprocess.CompletedProcess:
-        if os.getuid() == 0 or self.constants.gui_mode is True:
-            return subprocess.run(*args, **kwargs)
-        else:
-            return subprocess.run(["sudo"] + [args[0][0]] + args[0][1:], **kwargs)
-
     def find_mount_root_vol(self, patch):
-        self.root_mount_path = Utilities.get_disk_path()
+        self.root_mount_path = utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
             if self.constants.detected_os == self.constants.catalina and self.validate is False:
                 print("- Mounting Catalina Root Volume as writable")
-                self.elevated(["mount", "-uw", f"{self.mount_location}/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                utilities.elevated(["mount", "-uw", f"{self.mount_location}/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
                 if patch is True:
-                    if self.constants.detected_os < self.constants.big_sur or (self.constants.detected_os == self.constants.big_sur and Utilities.check_seal() is True):
+                    if self.constants.detected_os < self.constants.big_sur or (self.constants.detected_os == self.constants.big_sur and utilities.check_seal() is True):
                         self.backup_volume()
                     self.patch_root_vol()
                     return True
@@ -86,11 +78,11 @@ class PatchSysVolume:
             else:
                 if self.constants.detected_os > self.constants.catalina:
                     print("- Mounting APFS Snapshot as writable")
-                    self.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                    utilities.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
-                        if self.constants.detected_os < self.constants.big_sur or (self.constants.detected_os == self.constants.big_sur and Utilities.check_seal() is True):
+                        if self.constants.detected_os < self.constants.big_sur or (self.constants.detected_os == self.constants.big_sur and utilities.check_seal() is True):
                             self.backup_volume()
                         self.patch_root_vol()
                         return True
@@ -108,8 +100,8 @@ class PatchSysVolume:
                 input("- Press [ENTER] to exit: ")
 
     def backup_volume(self):
-        for location in SysPatchArray.BackupLocations:
-            Utilities.cls()
+        for location in sys_patch_data.BackupLocations:
+            utilities.cls()
             print("Backing up root volume before patching (This may take some time)")
             print(f"- Attempting to backup {location}")
             location_zip = f"{location}-Backup.zip"
@@ -124,7 +116,7 @@ class PatchSysVolume:
                 # rm -r ./Extensions-Backup
 
                 print("- Creating Backup folder")
-                Utilities.process_status(
+                utilities.process_status(
                     self.elevated(
                         ["cp", "-r", f"{self.mount_location}/{location}", f"{self.mount_location}/{location}-Backup"],
                         stdout=subprocess.PIPE,
@@ -132,7 +124,7 @@ class PatchSysVolume:
                     )
                 )
                 print("- Zipping Backup folder")
-                Utilities.process_status(
+                utilities.process_status(
                     self.elevated(
                         ["ditto", "-c", "-k", "--sequesterRsrc", "--keepParent", f"{self.mount_location}/{location}-Backup", f"{self.mount_location}/{location_zip}"],
                         stdout=subprocess.PIPE,
@@ -141,7 +133,7 @@ class PatchSysVolume:
                 )
 
                 print("- Removing Backup folder")
-                Utilities.process_status(
+                utilities.process_status(
                     self.elevated(
                         ["rm", "-r", f"{self.mount_location}/{location}-Backup"],
                         stdout=subprocess.PIPE,
@@ -154,8 +146,8 @@ class PatchSysVolume:
         if (Path(self.mount_location) / Path("/System/Library/Extensions-Backup.zip")).exists():
             print("- Verified manual unpatching is available")
 
-            for location in SysPatchArray.BackupLocations:
-                Utilities.cls()
+            for location in sys_patch_data.BackupLocations:
+                utilities.cls()
                 print("Reverting root volume patches (This may take some time)")
 
                 print(f"- Attempting to unpatch {location}")
@@ -174,21 +166,21 @@ class PatchSysVolume:
                     print(f"- Found {location_zip}")
 
                     print(f"- Unzipping {location_zip}")
-                    Utilities.process_status(self.elevated(["unzip", location_zip_path, "-d", copy_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    utilities.process_status(utilities.elevated(["unzip", location_zip_path, "-d", copy_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                     if location_old_path.exists():
                         print(f"- Renaming {location}")
-                        Utilities.process_status(self.elevated(["mv", location_old_path, f"{location_old_path}-Patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                        utilities.process_status(utilities.elevated(["mv", location_old_path, f"{location_old_path}-Patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                     print(f"- Renaming {location}-Backup")
-                    Utilities.process_status(self.elevated(["mv", f"{location_old_path}-Backup", location_old_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    utilities.process_status(utilities.elevated(["mv", f"{location_old_path}-Backup", location_old_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                     print(f"- Removing {location_old_path}-Patched")
-                    Utilities.process_status(self.elevated(["rm", "-r", f"{location_old_path}-Patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    utilities.process_status(utilities.elevated(["rm", "-r", f"{location_old_path}-Patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                     # ditto will create a '__MACOSX' folder
                     # print("- Removing __MACOSX folder")
-                    # Utilities.process_status(self.elevated(["rm", "-r", f"{copy_path}/__MACOSX"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    # utilities.process_status(utilities.elevated(["rm", "-r", f"{copy_path}/__MACOSX"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                 else:
                     print(f"- Failed to find {location_zip}, unable to unpatch")
@@ -200,7 +192,7 @@ class PatchSysVolume:
     def unpatch_root_vol(self):
         if self.constants.detected_os > self.constants.catalina:
             print("- Reverting to last signed APFS snapshot")
-            result = self.elevated(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = utilities.elevated(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 print("- Unable to revert root volume patches")
                 print("Reason for unpatch Failure:")
@@ -218,9 +210,9 @@ class PatchSysVolume:
             input("Press [ENTER] to continue with cache rebuild: ")
         print("- Rebuilding Kernel Cache (This may take some time)")
         if self.constants.detected_os > self.constants.catalina:
-            result = self.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = utilities.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         else:
-            result = self.elevated(["kextcache", "-i", f"{self.mount_location}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = utilities.elevated(["kextcache", "-i", f"{self.mount_location}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         # kextcache always returns 0, even if it fails
         # Check the output for 'KernelCache ID' to see if the cache was successfully rebuilt
@@ -244,14 +236,14 @@ class PatchSysVolume:
                     input("Press [ENTER] to continue with kernel and dyld cache merging")
             if self.constants.detected_os > self.constants.catalina:
                 print("- Creating new APFS snapshot")
-                self.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                utilities.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 self.unmount_drive()
             else:
                 if self.constants.detected_os == self.constants.catalina:
                     print("- Merging kernel cache")
-                    Utilities.process_status(self.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    utilities.process_status(utilities.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
                 print("- Merging dyld cache")
-                Utilities.process_status(self.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
+                utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
             if self.amd_ts2 is True and self.constants.allow_ts2_accel is True:
@@ -266,14 +258,14 @@ set million colour before rebooting"""
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
-        self.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
+        utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+    
     def delete_old_binaries(self, vendor_patch):
         for delete_current_kext in vendor_patch:
             delete_path = Path(self.mount_extensions) / Path(delete_current_kext)
             if Path(delete_path).exists():
                 print(f"- Deleting {delete_current_kext}")
-                Utilities.process_status(self.elevated(["rm", "-R", delete_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["rm", "-R", delete_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
                 print(f"- Couldn't find {delete_current_kext}, skipping")
 
@@ -282,173 +274,174 @@ set million colour before rebooting"""
             existing_path = Path(self.mount_extensions) / Path(add_current_kext)
             if Path(existing_path).exists():
                 print(f"- Found conflicting kext, Deleting Root Volume's {add_current_kext}")
-                Utilities.process_status(self.elevated(["rm", "-R", existing_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["rm", "-R", existing_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             print(f"- Adding {add_current_kext}")
-            Utilities.process_status(self.elevated(["cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            Utilities.process_status(self.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            Utilities.process_status(self.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
 
     def add_brightness_patch(self):
-        self.delete_old_binaries(SysPatchArray.DeleteBrightness)
-        self.add_new_binaries(SysPatchArray.AddBrightness, self.constants.legacy_brightness)
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_brightness}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
-        Utilities.process_status(self.elevated(["chmod", "-Rf", "755", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        Utilities.process_status(self.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        self.delete_old_binaries(sys_patch_data.DeleteBrightness)
+        self.add_new_binaries(sys_patch_data.AddBrightness, self.constants.legacy_brightness)
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_brightness}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
+        utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def add_audio_patch(self):
         if self.model in ["iMac7,1", "iMac8,1"]:
-            self.delete_old_binaries(SysPatchArray.DeleteVolumeControl)
-            self.add_new_binaries(SysPatchArray.AddVolumeControl, self.constants.audio_path)
+            self.delete_old_binaries(sys_patch_data.DeleteVolumeControl)
+            self.add_new_binaries(sys_patch_data.AddVolumeControl, self.constants.audio_path)
         else:
-            self.add_new_binaries(SysPatchArray.AddVolumeControlv2, self.constants.audio_v2_path)
+            self.add_new_binaries(sys_patch_data.AddVolumeControlv2, self.constants.audio_v2_path)
 
     def add_wifi_patch(self):
         print("- Merging Wireless CoreSerices patches")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_coreservices}/", self.mount_coreservices], stdout=subprocess.PIPE)
-        Utilities.process_status(self.elevated(["chmod", "-Rf", "755", f"{self.mount_coreservices}/WiFiAgent.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        Utilities.process_status(self.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_coreservices}/WiFiAgent.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_coreservices}/", self.mount_coreservices], stdout=subprocess.PIPE)
+        utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_coreservices}/WiFiAgent.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_coreservices}/WiFiAgent.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         print("- Merging Wireless usr/libexec patches")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_libexec}/", self.mount_libexec], stdout=subprocess.PIPE)
-        Utilities.process_status(self.elevated(["chmod", "755", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        Utilities.process_status(self.elevated(["chown", "root:wheel", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_libexec}/", self.mount_libexec], stdout=subprocess.PIPE)
+        utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
     
     def add_legacy_mux_patch(self):
-        self.delete_old_binaries(SysPatchArray.DeleteDemux)
+        self.delete_old_binaries(sys_patch_data.DeleteDemux)
         print("- Merging Legacy Mux Kext patches")
-        Utilities.process_status(self.elevated(["cp", "-R", f"{self.constants.legacy_mux_path}/AppleMuxControl.kext", self.mount_extensions_mux], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(["cp", "-R", f"{self.constants.legacy_mux_path}/AppleMuxControl.kext", self.mount_extensions_mux], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def gpu_accel_legacy(self):
         if self.constants.detected_os == self.constants.mojave:
             print("- Installing General Acceleration Kext patches for Mojave")
-            self.add_new_binaries(SysPatchArray.AddGeneralAccelMojave, self.constants.legacy_general_path)
+            self.add_new_binaries(sys_patch_data.AddGeneralAccelMojave, self.constants.legacy_general_path)
         elif self.constants.detected_os == self.constants.catalina:
             print("- Installing General Acceleration Kext patches for Catalina")
-            self.add_new_binaries(SysPatchArray.AddGeneralAccelCatalina, self.constants.legacy_general_path)
+            self.add_new_binaries(sys_patch_data.AddGeneralAccelCatalina, self.constants.legacy_general_path)
         elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
             print("- Installing General Acceleration Kext patches for Big Sur/Monterey")
-            self.add_new_binaries(SysPatchArray.AddGeneralAccel, self.constants.legacy_general_path)
+            self.add_new_binaries(sys_patch_data.AddGeneralAccel, self.constants.legacy_general_path)
 
     # Nvidia
     def gpu_accel_legacy_nvidia_master(self):
         if self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
             print("- Installing Nvidia Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
-            self.add_new_binaries(SysPatchArray.AddNvidiaAccelLegacy, self.constants.legacy_nvidia_path)
+            self.add_new_binaries(sys_patch_data.AddNvidiaAccelLegacy, self.constants.legacy_nvidia_path)
         elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
             print("- Installing Nvidia Acceleration Kext patches for Big Sur/Monterey")
-            self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
+            self.delete_old_binaries(sys_patch_data.DeleteNvidiaAccel11)
             self.gpu_accel_legacy()
-            self.add_new_binaries(SysPatchArray.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
+            self.add_new_binaries(sys_patch_data.AddNvidiaAccel11, self.constants.legacy_nvidia_path)
             if self.constants.detected_os == self.constants.monterey and self.constants.detected_os_minor > 0:
                 # Beta 7+ removes NVDAStartup
-                self.add_new_binaries(SysPatchArray.AddNvidiaTeslaAccel12, self.constants.legacy_nvidia_kepler_path)
+                self.add_new_binaries(sys_patch_data.AddNvidiaTeslaAccel12, self.constants.legacy_nvidia_kepler_path)
         else:
             print("- Installing basic Nvidia Framebuffer Kext patches for generic OS")
-            self.add_new_binaries(SysPatchArray.AddNvidiaBrightness, self.constants.legacy_nvidia_path)
+            self.add_new_binaries(sys_patch_data.AddNvidiaBrightness, self.constants.legacy_nvidia_path)
 
     # AMD/ATI
     def gpu_accel_legacy_ts1_master(self):
         if self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
             print("- Installing TeraScale 1 Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
-            self.add_new_binaries(SysPatchArray.AddAMDAccelLegacy, self.constants.legacy_amd_path)
+            self.add_new_binaries(sys_patch_data.AddAMDAccelLegacy, self.constants.legacy_amd_path)
         elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
             print("- Installing TeraScale 1 Acceleration Kext patches for Big Sur/Monterey")
-            self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
+            self.delete_old_binaries(sys_patch_data.DeleteAMDAccel11)
             self.gpu_accel_legacy()
-            self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
+            self.add_new_binaries(sys_patch_data.AddAMDAccel11, self.constants.legacy_amd_path)
         else:
             print("- Installing basic TeraScale 1 Framebuffer Kext patches for generic OS")
-            self.add_new_binaries(SysPatchArray.AddAMDBrightness, self.constants.legacy_amd_path)
+            self.add_new_binaries(sys_patch_data.AddAMDBrightness, self.constants.legacy_amd_path)
 
     def gpu_accel_legacy_ts2_master(self):
         if self.constants.detected_os in [self.constants.mojave, self.constants.catalina] and self.constants.allow_ts2_accel is True:
             print("- Installing TeraScale 2 Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
-            self.add_new_binaries(SysPatchArray.AddAMDAccelLegacy, self.constants.legacy_amd_path)
+            self.add_new_binaries(sys_patch_data.AddAMDAccelLegacy, self.constants.legacy_amd_path)
         elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey] and self.constants.allow_ts2_accel is True:
             # TODO: Enable for Monterey when acceleration patches proress
             print("- Installing TeraScale 2 Acceleration Kext patches for Big Sur")
-            self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11)
-            self.delete_old_binaries(SysPatchArray.DeleteAMDAccel11TS2)
+            self.delete_old_binaries(sys_patch_data.DeleteAMDAccel11)
+            self.delete_old_binaries(sys_patch_data.DeleteAMDAccel11TS2)
             self.gpu_accel_legacy()
-            self.add_new_binaries(SysPatchArray.AddAMDAccel11, self.constants.legacy_amd_path)
+            self.add_new_binaries(sys_patch_data.AddAMDAccel11, self.constants.legacy_amd_path)
         else:
             print("- Installing basic TeraScale 2 Framebuffer Kext patches for generic OS")
-            self.add_new_binaries(SysPatchArray.AddAMDBrightness, self.constants.legacy_amd_path)
+            self.add_new_binaries(sys_patch_data.AddAMDBrightness, self.constants.legacy_amd_path)
 
     # Intel
     def gpu_accel_legacy_ironlake_master(self):
         if self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
             print("- Installing Ironlake Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
-            self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
+            self.add_new_binaries(sys_patch_data.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
         elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
             print("- Installing Ironlake Acceleration Kext patches for Big Sur/Monterey")
-            self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
+            self.delete_old_binaries(sys_patch_data.DeleteNvidiaAccel11)
             self.gpu_accel_legacy()
-            self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
+            self.add_new_binaries(sys_patch_data.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
         else:
             print("- Installing basic Ironlake Framebuffer Kext patches for generic OS")
-            self.add_new_binaries(SysPatchArray.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
+            self.add_new_binaries(sys_patch_data.AddIntelGen1Accel, self.constants.legacy_intel_gen1_path)
 
     def gpu_accel_legacy_sandybridge_master(self):
         if self.constants.detected_os in [self.constants.mojave, self.constants.catalina]:
             print("- Installing Sandy Bridge Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
-            self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
+            self.add_new_binaries(sys_patch_data.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
         elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
             print("- Installing Sandy Bridge Acceleration Kext patches for Big Sur/Monterey")
-            self.delete_old_binaries(SysPatchArray.DeleteNvidiaAccel11)
+            self.delete_old_binaries(sys_patch_data.DeleteNvidiaAccel11)
             self.gpu_accel_legacy()
-            self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
+            self.add_new_binaries(sys_patch_data.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
         else:
             print("- Installing basic Sandy Bridge Framebuffer Kext patches for generic OS")
-            self.add_new_binaries(SysPatchArray.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
+            self.add_new_binaries(sys_patch_data.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
 
     def gpu_framebuffer_ivybridge_master(self):
         if self.constants.detected_os == self.constants.monterey:
             print("- Installing IvyBridge Acceleration Kext patches for Monterey")
-            self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
+            self.add_new_binaries(sys_patch_data.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
             if self.validate is False:
                 print("- Fixing Acceleration in CoreMedia")
-                Utilities.process_status(subprocess.run(["defaults", "write", "com.apple.coremedia", "hardwareVideoDecoder", "-string", "enable"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(subprocess.run(["defaults", "write", "com.apple.coremedia", "hardwareVideoDecoder", "-string", "enable"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             print("- Merging Ivy Bridge Frameworks")
-            self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             print("- Merging Ivy Bridge PrivateFrameworks")
-            self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel_ivy}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
+            utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel_ivy}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
         else:
             print("- Installing basic Ivy Bridge Kext patches for generic OS")
-            self.add_new_binaries(SysPatchArray.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
+            self.add_new_binaries(sys_patch_data.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
 
     def gpu_framebuffer_kepler_master(self):
         if self.constants.detected_os == self.constants.monterey:
             print("- Installing Kepler Acceleration Kext patches for Monterey")
-            self.add_new_binaries(SysPatchArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
+            self.add_new_binaries(sys_patch_data.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
         else:
             print("- Installing Kepler Kext patches for generic OS")
-            self.add_new_binaries(SysPatchArray.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
+            self.add_new_binaries(sys_patch_data.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
 
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if self.constants.detected_os > self.constants.big_sur:
             print("- Merging Monterey WebKit patch")
-            self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         print("- Merging general legacy PrivateFrameworks")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
         if self.constants.detected_os > self.constants.catalina:
             print("- Adding IOHID-Fixup.plist")
-            Utilities.process_status(
-                self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_lauchd_path_accel}/", self.mount_lauchd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.process_status(
+                utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_lauchd_path_accel}/", self.mount_lauchd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             )
-            Utilities.process_status(self.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            Utilities.process_status(self.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         else:
             print("- Disabling Library Validation")
-            Utilities.process_status(
-                self.elevated(
+            utilities.process_status(
+                utilities.elevated(
                     ["defaults", "write", "/Library/Preferences/com.apple.security.libraryvalidation.plist", "DisableLibraryValidation", "-bool", "true"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
@@ -457,13 +450,13 @@ set million colour before rebooting"""
 
     def gpu_accel_legacy_extended_ts2(self):
         print("- Merging TeraScale 2 legacy Frameworks")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ts2}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ts2}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         print("- Merging TeraScale 2 PrivateFrameworks")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel_ts2}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel_ts2}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
         if self.validate is False:
             print("- Fixing Acceleration in CMIO")
-            Utilities.process_status(subprocess.run(["defaults", "write", "com.apple.cmio", "CMIO_Unit_Input_ASC.DoNotUseOpenCL", "-bool", "true"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(subprocess.run(["defaults", "write", "com.apple.cmio", "CMIO_Unit_Input_ASC.DoNotUseOpenCL", "-bool", "true"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")
@@ -531,7 +524,7 @@ set million colour before rebooting"""
 
         if self.amd_ts2 is True and self.constants.detected_os in self.constants.legacy_accel_support and self.constants.allow_ts2_accel is True:
             # TeraScale 2 patches must be installed after Intel HD3000
-            self.add_new_binaries(SysPatchArray.AddAMDAccel11TS2, self.constants.legacy_amd_path_ts2)
+            self.add_new_binaries(sys_patch_data.AddAMDAccel11TS2, self.constants.legacy_amd_path_ts2)
 
         if self.added_legacy_kexts is True and self.constants.detected_os in self.constants.legacy_accel_support:
             self.gpu_accel_legacy_extended()
@@ -598,13 +591,13 @@ set million colour before rebooting"""
             print(f"- Duplicating into Apple.zip")
             shutil.copy(local_zip, self.constants.payload_apple_root_path_zip)
         else:
-            Utilities.download_file(link, self.constants.payload_apple_root_path_zip)
+            utilities.download_file(link, self.constants.payload_apple_root_path_zip)
 
         if self.constants.payload_apple_root_path_zip.exists():
             print("- Download completed")
             print("- Unzipping download...")
             try:
-                Utilities.process_status(subprocess.run(["unzip", self.constants.payload_apple_root_path_zip], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.constants.payload_path))
+                utilities.process_status(subprocess.run(["unzip", self.constants.payload_apple_root_path_zip], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.constants.payload_path))
                 print("- Renaming folder")
                 os.rename(self.constants.payload_path / Path(os_ver), self.constants.payload_apple_root_path)
                 Path(self.constants.payload_apple_root_path_zip).unlink()
@@ -629,7 +622,7 @@ set million colour before rebooting"""
         i = 0
         for gpu in gpus:
             if gpu.class_code and gpu.class_code != 0xFFFFFFFF:
-                print(f"- Found GPU ({i}): {Utilities.friendly_hex(gpu.vendor_id)}:{Utilities.friendly_hex(gpu.device_id)}")
+                print(f"- Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
                 if gpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi]:
                     if self.constants.detected_os > non_metal_os:
                         self.nvidia_legacy = True
@@ -678,7 +671,7 @@ set million colour before rebooting"""
     def detect_demux(self):
         # If GFX0 is missing, assume machine was demuxed
         # -wegnoegpu would also trigger this, so ensure arg is not present
-        if not "-wegnoegpu" in (Utilities.get_nvram("boot-args") or ""):
+        if not "-wegnoegpu" in (utilities.get_nvram("boot-args") or ""):
             igpu = self.constants.computer.igpu
             dgpu = self.constants.computer.dgpu
             if igpu and not dgpu:
@@ -688,11 +681,11 @@ set million colour before rebooting"""
 
     def detect_patch_set(self):
         self.detect_gpus()
-        if self.model in ModelArray.LegacyBrightness:
+        if self.model in model_array.LegacyBrightness:
             if self.constants.detected_os > self.constants.catalina:
                 self.brightness_legacy = True
 
-        if self.model in ["iMac7,1", "iMac8,1"] or (self.model in ModelArray.LegacyAudio and Utilities.check_kext_loaded("AppleALC", self.constants.detected_os) is False):
+        if self.model in ["iMac7,1", "iMac8,1"] or (self.model in model_array.LegacyAudio and utilities.check_kext_loaded("AppleALC", self.constants.detected_os) is False):
             # Special hack for systems with botched GOPs
             # TL;DR: No Boot Screen breaks Lilu, therefore breaking audio
             if self.constants.detected_os > self.constants.catalina:
@@ -716,7 +709,7 @@ set million colour before rebooting"""
                 else:
                     self.legacy_gmux = True
 
-        Utilities.cls()
+        utilities.cls()
         print("The following patches will be applied:")
         if self.nvidia_legacy is True:
             print("- Add Legacy Nvidia Tesla Graphics Patch")
@@ -758,14 +751,14 @@ set million colour before rebooting"""
         )
 
     def verify_patch_allowed(self):
-        sip = self.constants.root_patch_sip_big_sur if self.constants.detected_os > self.constants.catalina else self.constants.root_patch_sip_mojave
-        if sip == self.constants.root_patch_sip_mojave:
+        sip = sip_data.system_integrity_protection.root_patch_sip_big_sur if self.constants.detected_os > self.constants.catalina else sip_data.system_integrity_protection.root_patch_sip_mojave
+        if sip == sip_data.system_integrity_protection.root_patch_sip_mojave:
             sip_value = "For Hackintoshes, please set csr-active-config to '03060000' (0x603)\nFor non-OpenCore Macs, please run 'csrutil disable' in RecoveryOS"
         else:
             sip_value = (
                 "For Hackintoshes, please set csr-active-config to '030E0000' (0xE03)\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
             )
-        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = Utilities.patching_status(sip, self.constants.detected_os)
+        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
         if self.sip_enabled is True:
             print("\nCannot patch! Please disable System Integrity Protection (SIP).")
             print("Disable SIP in Patcher Settings and Rebuild OpenCore\n")

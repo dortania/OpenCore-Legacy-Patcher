@@ -14,7 +14,8 @@ import ast
 from pathlib import Path
 from datetime import date
 
-from Resources import Constants, ModelArray, Utilities, device_probe, SMBIOSData
+from resources import constants, utilities, device_probe, generate_smbios
+from data import smbios_data, bluetooth_data, cpu_data, os_data, model_array
 
 
 def rmtree_handler(func, path, exc_info):
@@ -27,57 +28,9 @@ class BuildOpenCore:
     def __init__(self, model, versions):
         self.model = model
         self.config = None
-        self.constants: Constants.Constants = versions
+        self.constants: constants.Constants = versions
         self.computer = self.constants.computer
-
         self.gfx0_path = None
-
-    def smbios_set(self, model):
-        if model in ModelArray.MacBookAir_11:
-            return "MacBookAir7,1"
-        elif model in ModelArray.MacBookAir_13:
-            return "MacBookAir7,2"
-        elif model in ModelArray.MacBook_12:
-            return "MacBook9,1"
-        elif model in ModelArray.MacBookPro_13:
-            return "MacBookPro12,1"
-        elif model in ModelArray.MacBookPro_15_iGPU:
-            return "MacBookPro11,4"
-        elif model in ModelArray.MacBookPro_15_dGPU:
-            return "MacBookPro11,5"
-        elif model in ModelArray.Macmini:
-            return "Macmini7,1"
-        elif model in ModelArray.iMac_iGPUless:
-            return "iMacPro1,1"
-        elif model in ModelArray.iMac_dGPU:
-            # Check for upgraded GPUs on iMacs
-            if self.constants.drm_support is True:
-                return "iMacPro1,1"
-            else:
-                return "iMac17,1"
-        elif model in ModelArray.iMac_iGPU:
-            return "iMac16,1"
-        elif model in ModelArray.MacPro:
-            return "MacPro7,1"
-        else:
-            return model
-
-    def patch_firmware_feature(self):
-        # Adjust FirmwareFeature to support everything macOS requires
-        # APFS Bit (19/20): 10.13+ (OSInstall)
-        # Large BaseSystem Bit (35): 12.0 B7+ (patchd)
-        # https://github.com/acidanthera/OpenCorePkg/tree/2f76673546ac3e32d2e2d528095fddcd66ad6a23/Include/Apple/IndustryStandard/AppleFeatures.h
-        if not self.constants.custom_model:
-            firmwarefeature = Utilities.get_rom("firmware-features")
-            if not firmwarefeature:
-                print("- Failed to find FirmwareFeatures, falling back on defaults")
-                firmwarefeature = int(SMBIOSData.FirmwareFeatures[self.model], 16)
-        else:
-            firmwarefeature = int(SMBIOSData.FirmwareFeatures[self.model], 16)
-        firmwarefeature = Utilities.enable_apfs(firmwarefeature)
-        firmwarefeature = Utilities.enable_apfs_extended(firmwarefeature)
-        firmwarefeature = Utilities.enable_large_basesystem(firmwarefeature)
-        return firmwarefeature
 
     def disk_type(self):
         drive_host_info = plistlib.loads(subprocess.run(f"diskutil info -plist {self.constants.disk}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -102,7 +55,7 @@ class BuildOpenCore:
             shutil.copy(self.constants.icon_path_internal, self.constants.opencore_release_folder)
 
     def build_efi(self):
-        Utilities.cls()
+        utilities.cls()
         if not self.constants.custom_model:
             print(f"Building Configuration on model: {self.model}")
         else:
@@ -146,14 +99,14 @@ class BuildOpenCore:
             # Essential kexts
             ("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path, lambda: True),
             ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: self.constants.allow_oc_everywhere is False),
-            ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in ModelArray.MacPro),
+            ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in model_array.MacPro),
             # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
             ("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path, lambda: self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1"]),
             ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False),
             # CPU patches
-            ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model in ModelArray.DualSocket),
-            ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: self.model in ModelArray.SSEEmulator),
-            ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: self.model in ModelArray.MissingSSE42),
+            ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model.startswith("MacPro") or self.model.startswith("Xserve")),
+            ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value),
+            ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value),
             (
                 "CPUFriend.kext",
                 self.constants.cpufriend_version,
@@ -161,17 +114,15 @@ class BuildOpenCore:
                 lambda: self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False,
             ),
             # Ethernet patches
-            ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: self.model in ModelArray.EthernetNvidia),
-            ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: self.model in ModelArray.EthernetMarvell),
-            ("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path, lambda: self.model in ModelArray.EthernetBroadcom),
+            ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Nvidia"),
+            ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Marvell"),
             # Legacy audio
-            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: (self.model in ModelArray.LegacyAudio or self.model in ModelArray.MacPro) and self.constants.set_alc_usage is True),
+            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: (self.model in model_array.LegacyAudio or self.model in model_array.MacPro) and self.constants.set_alc_usage is True),
             # IDE patch
-            ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in ModelArray.IDEPatch),
+            ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in model_array.IDEPatch),
             # Misc
-            ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: self.model in ModelArray.FeatureUnlockSupport),
+            ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.kaby_lake.value),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
-            # ("latebloom.kext", self.constants.latebloom_version, self.constants.latebloom_path, lambda: self.model in ModelArray.PCIRaceCondition),
             ("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path, lambda: self.model in ["MacBook4,1", "MacBook5,2"]),
         ]:
             self.enable_kext(name, version, path, check)
@@ -179,14 +130,23 @@ class BuildOpenCore:
         if self.constants.allow_oc_everywhere is False:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
 
-        if self.smbios_set(self.model) in ModelArray.T2_Models or self.constants.override_smbios in ModelArray.T2_Models:
-            # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
-            # Forces VMM patch instead
-            if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
-                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
+        # Ethernet Patch Sets
+        if smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Broadcom":
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
+                # Required due to Big Sur's BCM5701 requiring VT-x support
+                # Applicable for pre-Ivy Bridge models
+                self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
+    
+        if self.constants.allow_oc_everywhere is False:
+            if (smbios_data.smbios_dictionary[generate_smbios.set_smbios_model_spoof(self.model) or self.constants.override_smbios]["SecureBootModel"]) != None:
+                # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
+                # Forces VMM patch instead
+                if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
+                    self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
 
-        if self.model in ModelArray.PCIRaceCondition:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
             # Ref: https://github.com/reenigneorcim/SurPlus
+            # Enable for all systems missing RDRAND support
             print("- Adding SurPlus Patch for Race Condition")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 1 of 2 - Patch read_erandom (inlined in _early_random)")["Enabled"] = True
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 2 of 2 - Patch register_and_init_prng")["Enabled"] = True
@@ -197,7 +157,7 @@ class BuildOpenCore:
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 1 of 2 - Patch read_erandom (inlined in _early_random)")["MaxKernel"] = ""
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 2 of 2 - Patch register_and_init_prng")["MaxKernel"] = ""
 
-        if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in ModelArray.MacPro):
+        if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in model_array.MacPro):
             # Use Innie's same logic:
             # https://github.com/cdf/Innie/blob/v1.3.0/Innie/Innie.cpp#L90-L97
             for i, controller in enumerate(self.computer.storage):
@@ -214,8 +174,8 @@ class BuildOpenCore:
         if not self.constants.custom_model:
             nvme_devices = [i for i in self.computer.storage if isinstance(i, device_probe.NVMeController)]
             for i, controller in enumerate(nvme_devices):
-                print(f"- Found 3rd Party NVMe SSD ({i + 1}): {Utilities.friendly_hex(controller.vendor_id)}:{Utilities.friendly_hex(controller.device_id)}")
-                self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{Utilities.friendly_hex(controller.vendor_id)}:{Utilities.friendly_hex(controller.device_id)}"
+                print(f"- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}")
+                self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}"
 
                 # Disable Bit 0 (L0s), enable Bit 1 (L1)
                 nvme_aspm = (controller.aspm & (~0b11)) | 0b10
@@ -242,21 +202,24 @@ class BuildOpenCore:
                 arpt_path = self.computer.wifi.pci_path
                 print(f"- Found ARPT device at {arpt_path}")
             else:
-                if self.model in ModelArray.nvidiaHDEF:
+                try:
+                    smbios_data.smbios_dictionary[self.model]["nForce Chipset"]
                     # Nvidia chipsets all have the same path to ARPT
                     arpt_path = "PciRoot(0x0)/Pci(0x15,0x0)/Pci(0x0,0x0)"
-                elif self.model in ("iMac7,1", "iMac8,1", "MacPro3,1", "MacBookPro4,1"):
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
-                elif self.model in ("iMac13,1", "iMac13,2"):
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
-                elif self.model in ("MacPro4,1", "MacPro5,1"):
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
-                else:
-                    # Assumes we have a laptop with Intel chipset
-                    # iMac11,x-12,x also apply
-                    arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
+                except KeyError:
+                    if self.model in ("iMac7,1", "iMac8,1", "MacPro3,1", "MacBookPro4,1"):
+                        arpt_path = "PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)"
+                    elif self.model in ("iMac13,1", "iMac13,2"):
+                        arpt_path = "PciRoot(0x0)/Pci(0x1C,0x3)/Pci(0x0,0x0)"
+                    elif self.model in ("MacPro4,1", "MacPro5,1"):
+                        arpt_path = "PciRoot(0x0)/Pci(0x1C,0x5)/Pci(0x0,0x0)"
+                    else:
+                        # Assumes we have a laptop with Intel chipset
+                        # iMac11,x-12,x also apply
+                        arpt_path = "PciRoot(0x0)/Pci(0x1C,0x1)/Pci(0x0,0x0)"
                 print(f"- Using known DevicePath {arpt_path}")
             # self.config["DeviceProperties"]["Add"][arpt_path] = {"device-id": binascii.unhexlify("ba430000"), "compatible": "pci14e4,43ba"}
+
             if not self.constants.custom_model and self.computer.wifi and self.constants.validate is False and self.computer.wifi.country_code:
                 print(f"- Applying fake ID for WiFi, setting Country Code: {self.computer.wifi.country_code}")
                 self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.country_code}
@@ -268,8 +231,8 @@ class BuildOpenCore:
         # TODO: -a is not supported in Lion and older, need to add proper fix
         if self.constants.detected_os > self.constants.lion and not self.constants.custom_model:
             if self.computer.wifi:
-                print(f"- Found Wireless Device {Utilities.friendly_hex(self.computer.wifi.vendor_id)}:{Utilities.friendly_hex(self.computer.wifi.device_id)}")
-                self.config["#Revision"]["Hardware-Wifi"] = f"{Utilities.friendly_hex(self.computer.wifi.vendor_id)}:{Utilities.friendly_hex(self.computer.wifi.device_id)}"
+                print(f"- Found Wireless Device {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}")
+                self.config["#Revision"]["Hardware-Wifi"] = f"{utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}"
         else:
             print("- Unable to run Wireless hardware detection")
 
@@ -303,21 +266,25 @@ class BuildOpenCore:
                 self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
                 self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
         else:
-            if self.model in ModelArray.WifiBCM94331:
+            if smbios_data.smbios_dictionary[self.model]["Wireless Model"] == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
+                print("- Enabling BCM943224 and BCM94331 Networking Support")
                 wifi_fake_id(self)
-            elif self.model in ModelArray.WifiBCM94322:
+            elif smbios_data.smbios_dictionary[self.model]["Wireless Model"] == device_probe.Broadcom.Chipsets.AirPortBrcm4331:
+                print("- Enabling BCM94328 Networking Support")
                 self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
                 self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
                 self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
-            elif self.model in ModelArray.WifiBCM94328:
+            elif smbios_data.smbios_dictionary[self.model]["Wireless Model"] == device_probe.Broadcom.Chipsets.AirPortBrcm43224:
+                print("- Enabling BCM94328 Networking Support")
                 self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
                 self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
                 self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AppleAirPortBrcm43224.kext")["Enabled"] = True
-            elif self.model in ModelArray.WifiAtheros:
+            elif smbios_data.smbios_dictionary[self.model]["Wireless Model"] == device_probe.Atheros.Chipsets.AirPortAtheros40:
+                print("- Enabling Atheros Networking Support")
                 self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
                 self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
                 self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
-            else:
+            elif smbios_data.smbios_dictionary[self.model]["Wireless Model"] == device_probe.Broadcom.Chipsets.AirportBrcmNIC:
                 self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
                 # print(f"- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}")
                 # self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" brcmfx-country={self.computer.wifi.country_code}"
@@ -334,18 +301,20 @@ class BuildOpenCore:
             self.get_kext_by_bundle_path("CPUFriendDataProvider.kext")["Enabled"] = True
 
         # HID patches
-        if self.model in ModelArray.LegacyHID:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
             print("- Adding IOHIDFamily patch")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.iokit.IOHIDFamily")["Enabled"] = True
 
         # SSDT patches
-        if self.model in ModelArray.pciSSDT:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.nehalem.value and not (self.model.startswith("MacPro") or self.model.startswith("Xserve")):
+            # Applicable for consumer Nehalem
             print("- Adding SSDT-CPBG.aml")
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
 
-        if self.model in ModelArray.windows_audio:
+        if cpu_data.cpu_data.sandy_bridge <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
             # Based on: https://egpu.io/forums/pc-setup/fix-dsdt-override-to-correct-error-12/
+            # Applicable for Sandy and Ivy Bridge Macs
             print("- Enabling Windows 10 UEFI Audio support")
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-PCI.aml")["Enabled"] = True
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "BUF0 to BUF1")["Enabled"] = True
@@ -358,7 +327,7 @@ class BuildOpenCore:
             usb_map_path.exists()
             and self.constants.allow_oc_everywhere is False
             and self.model not in ["Xserve2,1", "Dortania1,1"]
-            and (self.model in ModelArray.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
+            and (self.model in model_array.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
             print("- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
@@ -375,8 +344,10 @@ class BuildOpenCore:
                 Path(self.constants.amc_contents_folder).mkdir()
                 shutil.copy(amc_map_path, self.constants.amc_contents_folder)
                 self.get_kext_by_bundle_path("AMC-Override.kext")["Enabled"] = True
+            elif self.model == "MacBookPro10,1":
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
 
-            if self.model not in ModelArray.NoAGPMSupport:
+            if self.model not in model_array.NoAGPMSupport:
                 print("- Adding AppleGraphicsPowerManagement Override")
                 agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
                 Path(self.constants.agpm_kext_folder).mkdir()
@@ -384,7 +355,7 @@ class BuildOpenCore:
                 shutil.copy(agpm_map_path, self.constants.agpm_contents_folder)
                 self.get_kext_by_bundle_path("AGPM-Override.kext")["Enabled"] = True
 
-            if self.model in ModelArray.AGDPSupport:
+            if self.model in model_array.AGDPSupport:
                 print("- Adding AppleGraphicsDevicePolicy Override")
                 agdp_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsDevicePolicy/Info.plist")
                 Path(self.constants.agdp_kext_folder).mkdir()
@@ -393,7 +364,7 @@ class BuildOpenCore:
                 self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
 
         # AGPM Patch
-        if self.model in ModelArray.DualGPUPatch:
+        if self.model in model_array.DualGPUPatch:
             print("- Adding dual GPU patch")
             if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
                 self.gfx0_path = self.computer.dgpu.pci_path
@@ -403,7 +374,7 @@ class BuildOpenCore:
                     print("- Failed to find GFX0 Device path, falling back on known logic")
                 self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
 
-            if self.model in ModelArray.IntelNvidiaDRM and self.constants.drm_support is True:
+            if self.model in model_array.IntelNvidiaDRM and self.constants.drm_support is True:
                 print("- Prioritizing DRM support over Intel QuickSync")
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
@@ -414,39 +385,51 @@ class BuildOpenCore:
             else:
                 self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
-        if self.model in ["iMac13,1", "iMac13,2", "iMac13,3"]:
-            if not self.constants.custom_model and self.computer.dgpu:
-                if self.constants.allow_ivy_igpu is False:
-                    print("- Disabling iGPU to fix sleep support in macOS 12")
-                    self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
-                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
-                        "name": binascii.unhexlify("23646973706C6179"),
-                        "IOName": "#display",
-                        "class-code": binascii.unhexlify("FFFFFFFF"),
-                    }
-                else:
-                    print("- Enabling iGPU upon request")
-
         # Audio Patch
-        if self.model in ModelArray.LegacyAudio:
-            print("- Adding audio properties")
-            hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)" if self.model in ModelArray.nvidiaHDEF else "PciRoot(0x0)/Pci(0x1b,0x0)"
-            # In AppleALC, MacPro3,1's original layout is already in use, forcing layout 13 instead
-            if self.model == "MacPro3,1":
-                self.config["DeviceProperties"]["Add"][hdef_path] = {
-                    "apple-layout-id": 90,
-                    "use-apple-layout-id": 1,
-                    "alc-layout-id": 13,
-                }
-            else:
-                self.config["DeviceProperties"]["Add"][hdef_path] = {
-                    "apple-layout-id": 90,
-                    "use-apple-layout-id": 1,
-                    "use-layout-id": 1,
-                }
+        if self.constants.set_alc_usage is True:
+            if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] <= os_data.os_data.high_sierra:
+                # Models dropped in Mojave also lost Audio support
+                # Xserves and MacPro4,1 are exceptions
+                # iMac7,1 and iMac8,1 require AppleHDA/IOAudioFamily downgrade
+                if not (self.model.startswith("Xserve") or self.model in ["MacPro4,1", "iMac7,1", "iMac8,1"]):
+                    try:
+                        smbios_data.smbios_dictionary[self.model]["nForce Chipset"]
+                        hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)"
+                    except KeyError:
+                        hdef_path = "PciRoot(0x0)/Pci(0x1b,0x0)"
+                    # In AppleALC, MacPro3,1's original layout is already in use, forcing layout 13 instead
+                    if self.model == "MacPro3,1":
+                        self.config["DeviceProperties"]["Add"][hdef_path] = {
+                            "apple-layout-id": 90,
+                            "use-apple-layout-id": 1,
+                            "alc-layout-id": 13,
+                        }
+                    else:
+                        self.config["DeviceProperties"]["Add"][hdef_path] = {
+                            "apple-layout-id": 90,
+                            "use-apple-layout-id": 1,
+                            "use-layout-id": 1,
+                        }
+                    self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
+            elif self.model.startswith("MacPro") or self.model.startswith("Xserve"):
+                # Used to enable Audio support for non-standard dGPUs
+                self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
 
-        # Enable FireWire Boot Support
-        if self.constants.firewire_boot is True and self.model not in ModelArray.NoFireWireSupport:
+ 
+        def check_firewire(model):
+            # MacBooks never supported FireWire
+            # Pre-Thunderbolt MacBook Airs as well
+            if model.startswith("MacBook"):
+                return False
+            elif model.startswith("MacBookAir"):
+                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
+                    return False
+            else:
+                return True
+
+        if self.constants.firewire_boot is True and check_firewire(self.model) is True:
+            # Enable FireWire Boot Support
+            # Applicable for both native FireWire and Thunderbolt to FireWire adapters
             print("- Enabling FireWire Boot Support")
             self.enable_kext("IOFireWireFamily.kext", self.constants.fw_kext, self.constants.fw_family_path)
             self.enable_kext("IOFireWireSBP2.kext", self.constants.fw_kext, self.constants.fw_sbp2_path)
@@ -522,7 +505,8 @@ class BuildOpenCore:
                     "class-code": binascii.unhexlify("FFFFFFFF"),
                 }
             elif self.model == "iMac10,1":
-                self.enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
+                if self.get_kext_by_bundle_path("AAAMouSSE.kext")["Enabled"] is False:
+                    self.enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
 
         # Check GPU Vendor
         if self.constants.metal_build is True:
@@ -534,8 +518,8 @@ class BuildOpenCore:
                 nvidia_patch(self, self.gfx0_path)
             else:
                 print("- Failed to find vendor")
-        elif not self.constants.custom_model and self.model in ModelArray.LegacyGPU and self.computer.dgpu:
-            print(f"- Detected dGPU: {Utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{Utilities.friendly_hex(self.computer.dgpu.device_id)}")
+        elif not self.constants.custom_model and self.model in model_array.LegacyGPU and self.computer.dgpu:
+            print(f"- Detected dGPU: {utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{utilities.friendly_hex(self.computer.dgpu.device_id)}")
             if self.computer.dgpu.arch in [
                 device_probe.AMD.Archs.Legacy_GCN,
                 device_probe.AMD.Archs.Polaris,
@@ -547,11 +531,11 @@ class BuildOpenCore:
             elif self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
                 backlight_path_detection(self)
                 nvidia_patch(self, self.gfx0_path)
-        if self.model in ModelArray.MacPro:
+        if self.model in model_array.MacPro:
             if not self.constants.custom_model:
                 for i, device in enumerate(self.computer.gpus):
-                    print(f"- Found dGPU ({i + 1}): {Utilities.friendly_hex(device.vendor_id)}:{Utilities.friendly_hex(device.device_id)}")
-                    self.config["#Revision"][f"Hardware-MacPro-dGPU-{i + 1}"] = f"{Utilities.friendly_hex(device.vendor_id)}:{Utilities.friendly_hex(device.device_id)}"
+                    print(f"- Found dGPU ({i + 1}): {utilities.friendly_hex(device.vendor_id)}:{utilities.friendly_hex(device.device_id)}")
+                    self.config["#Revision"][f"Hardware-MacPro-dGPU-{i + 1}"] = f"{utilities.friendly_hex(device.vendor_id)}:{utilities.friendly_hex(device.device_id)}"
 
                     if device.pci_path and device.acpi_path:
                         print(f"- Found dGPU ({i + 1}) at {device.pci_path}")
@@ -588,7 +572,7 @@ class BuildOpenCore:
                 print("- Adding Mac Pro, Xserve DRM patches")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
 
-        if self.constants.disable_thunderbolt is True and self.model in ["MacBookPro11,1", "MacBookPro11,2", "MacBookPro11,3", "MacBookPro11,4", "MacBookPro11,5"]:
+        if self.constants.disable_tb is True and self.model in ["MacBookPro11,1", "MacBookPro11,2", "MacBookPro11,3", "MacBookPro11,4", "MacBookPro11,5"]:
             print("- Disabling 2013-2014 laptop Thunderbolt Controller")
             if self.model in ["MacBookPro11,3", "MacBookPro11,5"]:
                 # 15" dGPU models: IOACPIPlane:/_SB/PCI0@0/PEG1@10001/UPSB@0/DSB0@0/NHI0@0
@@ -605,31 +589,15 @@ class BuildOpenCore:
                 print("- Fixing Legacy Bluetooth for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
                 self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
-            elif self.computer.bluetooth_chipset == "BRCM20702 Hub" and self.model in ModelArray.Bluetooth_BRCM20702_v1:
+            elif self.computer.bluetooth_chipset == "BRCM20702 Hub" and smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] == bluetooth_data.bluetooth_data.BRCM20702_v1.value:
                 print("- Fixing Legacy Bluetooth for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-        elif self.model in ModelArray.Bluetooth_BRCM2070 or self.model in ModelArray.Bluetooth_BRCM2046 or self.model in ModelArray.Bluetooth_BRCM20702_v1:
+        # smbios_data.smbios_dictionary[self.model]["Bluetooth Model"]
+        elif smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM20702_v1.value:
             print("- Fixing Legacy Bluetooth for macOS Monterey")
             self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-            if self.model in ModelArray.Bluetooth_BRCM2070 or self.model in ModelArray.Bluetooth_BRCM2046:
+            if smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM2070.value:
                 self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
-
-        # Add XhciDxe if firmware doesn't have XHCI controller support and XCHI controller detected
-        # TODO: Fix XhciDxe to work on pre UEFI 2.0 Macs
-        # Ref: https://github.com/acidanthera/bugtracker/issues/1663
-        # if self.model not in ModelArray.XhciSupport and not self.constants.custom_model:
-        #    devices = plistlib.loads(subprocess.run("ioreg -c IOPCIDevice -r -d2 -a".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-        #    try:
-        #        devices = [i for i in devices if i["class-code"] == binascii.unhexlify(self.constants.classcode_xhci)]
-        #        vendor_id = Utilities.hexswap(binascii.hexlify(devices[0]["vendor-id"]).decode()[:4])
-        #        device_id = Utilities.hexswap(binascii.hexlify(devices[0]["device-id"]).decode()[:4])
-        #        print("- Found XHCI Controller, adding Boot Support")
-        #        shutil.copy(self.constants.xhci_driver_path, self.constants.drivers_path)
-        #        self.get_efi_binary_by_path("XhciDxe.efi", "UEFI", "Drivers")["Enabled"] = True
-        #    except ValueError:
-        #        print("- No XHCI Controller Found (V)")
-        #    except IndexError:
-        #        print("- No XHCI Controller Found (I)")
 
         if self.constants.nvme_boot is True:
             print("- Enabling NVMe boot support")
@@ -644,18 +612,22 @@ class BuildOpenCore:
         self.get_efi_binary_by_path("OpenRuntime.efi", "UEFI", "Drivers")["Enabled"] = True
         self.get_efi_binary_by_path("OpenLinuxBoot.efi", "UEFI", "Drivers")["Enabled"] = True
         # Exfat check
-        if self.model in ModelArray.NoExFat:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
+            # Sandy Bridge and newer Macs natively support ExFat
             print("- Adding ExFatDxeLegacy.efi")
             shutil.copy(self.constants.exfat_legacy_driver_path, self.constants.drivers_path)
             self.get_efi_binary_by_path("ExFatDxeLegacy.efi", "UEFI", "Drivers")["Enabled"] = True
 
         # Add UGA to GOP layer
-        if self.model in ModelArray.UGAtoGOP:
+        try:
+            smbios_data.smbios_dictionary[self.model]["UGA Graphics"]
             print("- Adding UGA to GOP Patch")
             self.config["UEFI"]["Output"]["GopPassThrough"] = "Apple"
+        except KeyError:
+            pass
 
         # ThirdPartDrives Check
-        if self.model in ModelArray.SATAPatch and self.constants.allow_oc_everywhere is False:
+        if self.model in model_array.SATAPatch and self.constants.allow_oc_everywhere is False:
             print("- Adding SATA Hibernation Patch")
             self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
 
@@ -677,7 +649,7 @@ class BuildOpenCore:
             print("- Enabling ShowPicker")
             self.config["Misc"]["Boot"]["ShowPicker"] = True
         else:
-            print("- Hiding picker and enabling PollAppleHotKeys")
+            print("- Hiding OpenCore picker")
             self.config["Misc"]["Boot"]["ShowPicker"] = False
         if self.constants.vault is True:
             print("- Setting Vault configuration")
@@ -721,28 +693,32 @@ class BuildOpenCore:
         if self.constants.validate is False:
             print("- Adding bootmgfw.efi BlessOverride")
             self.config["Misc"]["BlessOverride"] += ["\\EFI\\Microsoft\\Boot\\bootmgfw.efi"]
-        if self.model in ModelArray.dGPU_switch and self.constants.dGPU_switch is True:
-            print("- Allowing GMUX switching in Windows")
+        try:
+            if self.constants.dGPU_switch is True:
+                smbios_data.smbios_dictionary[self.model]["Switchable GPUs"]
+                print("- Allowing GMUX switching in Windows")
             self.config["Booter"]["Quirks"]["SignalAppleOS"] = True
+        except KeyError:
+            pass
         if self.constants.allow_fv_root is True:
             # apfs.kext has an undocumented boot-arg that allows FileVault usage on broken APFS seals (-arv_allow_fv)
             # This is however hidden behind kern.development, thus we patch _apfs_filevault_allowed to always return true
             # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
             print("- Allowing FileVault on Root Patched systems")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.filesystems.apfs")["Enabled"] = True
-            # Lets us check in SysPatch.py if config supports FileVault
+            # Lets us check in sys_patch.py if config supports FileVault
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
 
     def set_smbios(self):
         spoofed_model = self.model
         if self.constants.override_smbios == "Default":
             print("- Setting macOS Monterey Supported SMBIOS")
-            spoofed_model = self.smbios_set(self.model)
+            spoofed_model = generate_smbios.set_smbios_model_spoof(self.model)
         else:
             spoofed_model = self.constants.override_smbios
         print(f"- Using Model ID: {spoofed_model}")
         try:
-            spoofed_board = self.constants.board_id[spoofed_model]
+            spoofed_board = smbios_data.smbios_dictionary[spoofed_model]["Board ID"]
             print(f"- Using Board ID: {spoofed_board}")
         except KeyError:
             spoofed_board = ""
@@ -754,10 +730,11 @@ class BuildOpenCore:
         # Setup menu
         def minimal_serial_patch(self):
             # Generate Firmware Features
-            fw_feature = self.patch_firmware_feature()
+            fw_feature = generate_smbios.generate_fw_features(self.model, self.constants.custom_model)
+            # fw_feature = self.patch_firmware_feature()
             fw_feature = hex(fw_feature).lstrip("0x").rstrip("L").strip()
             print(f"- Setting Firmware Feature: {fw_feature}")
-            fw_feature = Utilities.string_to_hex(fw_feature)
+            fw_feature = utilities.string_to_hex(fw_feature)
 
             # FirmwareFeatures
             self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeatures"] = fw_feature
@@ -834,7 +811,7 @@ class BuildOpenCore:
         if (
             self.constants.allow_oc_everywhere is False
             and self.model not in ["Xserve2,1", "Dortania1,1"]
-            and (self.model in ModelArray.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
+            and (self.model in model_array.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
@@ -874,7 +851,7 @@ class BuildOpenCore:
                     if not entry.startswith(self.spoofed_board):
                         amc_config["IOKitPersonalities"]["AppleMuxControl"]["ConfigMap"].pop(entry)
                 plistlib.dump(amc_config, Path(new_amc_ls).open("wb"), sort_keys=True)
-            if self.model not in ModelArray.NoAGPMSupport:
+            if self.model not in model_array.NoAGPMSupport:
                 new_agpm_ls = Path(self.constants.agpm_contents_folder) / Path("Info.plist")
                 agpm_config = plistlib.load(Path(new_agpm_ls).open("rb"))
                 agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board] = agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(self.model)
@@ -891,7 +868,7 @@ class BuildOpenCore:
                         agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(entry)
 
                 plistlib.dump(agpm_config, Path(new_agpm_ls).open("wb"), sort_keys=True)
-            if self.model in ModelArray.AGDPSupport:
+            if self.model in model_array.AGDPSupport:
                 new_agdp_ls = Path(self.constants.agdp_contents_folder) / Path("Info.plist")
                 agdp_config = plistlib.load(Path(new_agdp_ls).open("rb"))
                 agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"][self.spoofed_board] = agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(
@@ -984,7 +961,8 @@ class BuildOpenCore:
 
     def build_opencore(self):
         self.build_efi()
-        self.set_smbios()
+        if self.constants.allow_oc_everywhere is False:
+            self.set_smbios()
         self.cleanup()
         self.sign_files()
         print("")
@@ -995,11 +973,11 @@ class BuildOpenCore:
             input("Press [Enter] to go back.\n")
 
     def copy_efi(self):
-        Utilities.cls()
-        Utilities.header(["Installing OpenCore to Drive"])
+        utilities.cls()
+        utilities.header(["Installing OpenCore to Drive"])
 
         if not self.constants.opencore_release_folder.exists():
-            Utilities.TUIOnlyPrint(
+            utilities.TUIOnlyPrint(
                 ["Installing OpenCore to Drive"],
                 "Press [Enter] to go back.\n",
                 [
@@ -1035,7 +1013,7 @@ Please build OpenCore first!"""
                 # Avoid crashing with CDs installed
                 continue
         # TODO: Advanced mode
-        menu = Utilities.TUIMenu(
+        menu = utilities.TUIMenu(
             ["Select Disk"],
             "Please select the disk you would like to install OpenCore to: ",
             in_between=["Missing disks? Ensure they have an EFI or FAT32 partition."],
@@ -1045,7 +1023,7 @@ Please build OpenCore first!"""
         for disk in all_disks:
             if not any(all_disks[disk]["partitions"][partition]["fs"] in ("msdos", "EFI") for partition in all_disks[disk]["partitions"]):
                 continue
-            menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({Utilities.human_fmt(all_disks[disk]['size'])})", key=disk[4:])
+            menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({utilities.human_fmt(all_disks[disk]['size'])})", key=disk[4:])
 
         response = menu.start()
 
@@ -1055,7 +1033,7 @@ Please build OpenCore first!"""
         disk_identifier = "disk" + response
         selected_disk = all_disks[disk_identifier]
 
-        menu = Utilities.TUIMenu(
+        menu = utilities.TUIMenu(
             ["Select Partition"],
             "Please select the partition you would like to install OpenCore to: ",
             return_number_instead_of_direct_call=True,
@@ -1065,7 +1043,7 @@ Please build OpenCore first!"""
         for partition in selected_disk["partitions"]:
             if selected_disk["partitions"][partition]["fs"] not in ("msdos", "EFI"):
                 continue
-            text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({Utilities.human_fmt(selected_disk['partitions'][partition]['size'])})"
+            text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({utilities.human_fmt(selected_disk['partitions'][partition]['size'])})"
             if selected_disk["partitions"][partition]["type"] == "EFI" or (
                 selected_disk["partitions"][partition]["type"] == "Microsoft Basic Data" and selected_disk["partitions"][partition]["size"] < 1024 * 1024 * 512
             ):  # 512 megabytes:
@@ -1097,7 +1075,7 @@ Please build OpenCore first!"""
                 # cancelled prompt
                 return
             else:
-                Utilities.TUIOnlyPrint(
+                utilities.TUIOnlyPrint(
                     ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + ["", "Please report this to the devs at GitHub."]
                 ).start()
                 return
@@ -1112,8 +1090,8 @@ Please build OpenCore first!"""
             ssd_type = False
         mount_path = Path(partition_info["MountPoint"])
         disk_type = partition_info["BusProtocol"]
-        Utilities.cls()
-        Utilities.header(["Copying OpenCore"])
+        utilities.cls()
+        utilities.header(["Copying OpenCore"])
 
         if mount_path.exists():
             if (mount_path / Path("EFI/Microsoft")).exists():
@@ -1170,4 +1148,4 @@ Please build OpenCore first!"""
             print("\nPress [Enter] to continue.\n")
             input()
         else:
-            Utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()
+            utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()

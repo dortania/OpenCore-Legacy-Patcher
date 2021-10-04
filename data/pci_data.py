@@ -1,6 +1,4 @@
 # Array of Device IDs for different devices
-
-
 class nvidia_ids:
     # Courteous of envytools as well as Macrumors:
     # https://envytools.readthedocs.io/en/latest/hw/pciid.html
@@ -850,6 +848,13 @@ class intel_ids:
 
 
 class broadcom_ids:
+    AppleBCMWLANBusInterfacePCIe = [
+        0x43DC,  # BCM4355
+        0x4464,  # BCM4364
+        0x4488,  # BCM4377b
+        0x4425,  # Unknown
+    ]
+
     AirPortBrcmNIC = [
         # AirPortBrcmNIC IDs
         0x43BA,  # BCM43602

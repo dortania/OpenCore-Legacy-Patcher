@@ -1,12 +1,12 @@
 # -*- mode: python ; coding: utf-8 -*-
 import sys, os
 sys.path.append(os.path.abspath(os.getcwd()))
-from Resources import Constants
+from resources import constants
 block_cipher = None
 
 
 a = Analysis(['OpenCore-Patcher.command'],
-             pathex=['Resources'],
+             pathex=['resources', 'data'],
              binaries=[],
              datas=[('payloads', 'payloads')],
              hiddenimports=[],
@@ -35,10 +35,10 @@ exe = EXE(pyz,
           console=True )
 app = BUNDLE(exe,
          name='OpenCore-Patcher.app',
-         icon="OC-Patcher.icns",
+         icon="payloads/OC-Patcher.icns",
          bundle_identifier=None,
          info_plist={
-             "CFBundleShortVersionString": Constants.Constants().patcher_version,
+             "CFBundleShortVersionString": constants.Constants().patcher_version,
              "CFBundleExecutable": "MacOS/Launcher",
              "NSHumanReadableCopyright": "Copyright 2020-2021 Dortania"
          })

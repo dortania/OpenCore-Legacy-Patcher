@@ -1,6 +1,6 @@
 # Example Hardware probe of multiple models
 # To be used when running validation tests
-from Resources import device_probe
+from resources import device_probe
 
 class MacBook:
 

@@ -1,4 +1,4 @@
-# Lists Root patches used by SysPatch.py
+# Lists Root patches used by sys_patch.py
 # Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 DeleteNvidiaAccel11 = [
     "AMDRadeonX4000.kext",

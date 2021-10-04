@@ -7,9 +7,9 @@ import os
 import plistlib
 import subprocess
 from pathlib import Path
-import re
 import os
 import binascii
+import argparse
 
 try:
     import requests
@@ -20,7 +20,8 @@ except ImportError:
     except ImportError:
         raise Exception("Missing requests library!\nPlease run the following before starting OCLP:\npip3 install requests")
 
-from Resources import Constants, ioreg, device_probe
+from resources import constants, ioreg
+from data import sip_data
 
 
 def hexswap(input_hex: str):
@@ -91,42 +92,18 @@ def check_seal():
         return False
 
 
-def latebloom_detection(model):
-    if model in ["MacPro4,1", "MacPro5,1", "iMac7,1", "iMac8,1"]:
-        # These machines are more likely to experience boot hangs, increase delays to accomodate
-        lb_delay = "250"
-    else:
-        lb_delay = "100"
-    lb_range = "1"
-    lb_debug = "1"
-    boot_args = get_nvram("boot-args", decode=False)
-    # boot_args = "latebloom=200 lb_range=40 lb_debug=0 keepsyms=1 debug=0x100 -lilubetaall"
-    if boot_args:
-        # TODO: This crashes if latebloom=xxx is the very first entry in boot-args
-        if "latebloom=" in boot_args:
-            lb_delay = re.search(r"(?:[, ])latebloom=(\d+)", boot_args)
-            lb_delay = lb_delay[1]
-        if "lb_range=" in boot_args:
-            lb_range = re.search(r"(?:[, ])lb_range=(\d+)", boot_args)
-            lb_range = lb_range[1]
-        if "lb_debug=" in boot_args:
-            lb_debug = re.search(r"(?:[, ])lb_debug=(\d+)", boot_args)
-            lb_debug = lb_debug[1]
-    return int(lb_delay), int(lb_range), int(lb_debug)
-
-
 def csr_decode(csr_active_config, os_sip):
     if csr_active_config is None:
         csr_active_config = b"\x00\x00\x00\x00"
     sip_int = int.from_bytes(csr_active_config, byteorder="little")
     i = 0
-    for current_sip_bit in Constants.Constants.csr_values:
+    for current_sip_bit in sip_data.system_integrity_protection.csr_values:
         if sip_int & (1 << i):
-            Constants.Constants.csr_values[current_sip_bit] = True
+            sip_data.system_integrity_protection.csr_values[current_sip_bit] = True
         i = i + 1
 
     # Can be adjusted to whatever OS needs patching
-    sip_needs_change = all(Constants.Constants.csr_values[i] for i in os_sip)
+    sip_needs_change = all(sip_data.system_integrity_protection.csr_values[i] for i in os_sip)
     if sip_needs_change is True:
         return False
     else:
@@ -153,7 +130,7 @@ def amfi_status():
         return True
 
 def check_kext_loaded(kext_name, os_version):
-    if os_version > Constants.Constants().catalina:
+    if os_version > constants.Constants().catalina:
         kext_loaded = subprocess.run(["kmutil", "showloaded", "--list-only", "--variant-suffix", "release"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     else:
         kext_loaded = subprocess.run(["kextstat", "-l"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -211,19 +188,19 @@ def patching_status(os_sip, os):
     gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
     gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
-    if os > Constants.Constants().catalina:
+    if os > constants.Constants().catalina:
         amfi_enabled = amfi_status()
     else:
         # Catalina and older supports individually disabling Library Validation
         amfi_enabled = False
 
-    if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in Constants.Constants.sbm_values:
+    if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in constants.Constants.sbm_values:
         sbm_enabled = False
 
     if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
         sip_enabled = False
 
-    if os > Constants.Constants().catalina and not check_filevault_skip():
+    if os > constants.Constants().catalina and not check_filevault_skip():
         # Assume non-OCLP Macs do not have our APFS seal patch
         fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         if "FileVault is Off" in fv_status:
@@ -249,11 +226,12 @@ def cls():
     global clear
     if not clear:
         return
-    if not check_recovery():
-        os.system("cls" if os.name == "nt" else "clear")
-    else:
-        print("\u001Bc")
-
+    if check_cli_args() is None:
+        # Our GUI does not support clear screen
+        if not check_recovery():
+            os.system("cls" if os.name == "nt" else "clear")
+        else:
+            print("\u001Bc")
 
 def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
     # TODO: Properly fix for El Capitan, which does not print the XML representation even though we say to
@@ -321,19 +299,55 @@ def download_file(link, location):
             chunk = file.read(1024 * 1024 * 16)
     return checksum
 
+def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
+    # When runnign through our GUI, we run as root, however we do not get uid 0
+    # Best to assume CLI is running as root
+    if os.getuid() == 0 or check_cli_args() is not None:
+        return subprocess.run(*args, **kwargs)
+    else:
+        return subprocess.run(["sudo"] + [args[0][0]] + args[0][1:], **kwargs)
 
-def enable_apfs(fw_feature):
-    fw_feature |= 2 ** 19  # Enable FW_FEATURE_SUPPORTS_APFS
-    return fw_feature
+def check_cli_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--build", help="Build OpenCore", action="store_true", required=False)
+    parser.add_argument("--verbose", help="Enable verbose boot", action="store_true", required=False)
+    parser.add_argument("--debug_oc", help="Enable OpenCore DEBUG", action="store_true", required=False)
+    parser.add_argument("--debug_kext", help="Enable kext DEBUG", action="store_true", required=False)
+    parser.add_argument("--hide_picker", help="Hide OpenCore picker", action="store_true", required=False)
+    parser.add_argument("--disable_sip", help="Disable SIP", action="store_true", required=False)
+    parser.add_argument("--disable_smb", help="Disable SecureBootModel", action="store_true", required=False)
+    parser.add_argument("--vault", help="Enable OpenCore Vaulting", action="store_true", required=False)
+    parser.add_argument("--support_all", help="Allow OpenCore on natively supported Models", action="store_true", required=False)
+    parser.add_argument("--firewire", help="Enable FireWire Booting", action="store_true", required=False)
+    parser.add_argument("--nvme", help="Enable NVMe Booting", action="store_true", required=False)
+    parser.add_argument("--wlan", help="Enable Wake on WLAN support", action="store_true", required=False)
+    # parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
+    parser.add_argument("--moderate_smbios", help="Moderate SMBIOS Patching", action="store_true", required=False)
+    parser.add_argument("--moj_cat_accel", help="Allow Root Patching on Mojave and Catalina", action="store_true", required=False)
+    parser.add_argument("--disable_tb", help="Disable Thunderbolt on 2013-2014 MacBook Pros", action="store_true", required=False)
+    parser.add_argument("--force_surplus", help="Force SurPlus in all newer OSes", action="store_true", required=False)
 
-def enable_apfs_extended(fw_feature):
-    fw_feature |= 2 ** 20  # Enable FW_FEATURE_SUPPORTS_APFS_EXTRA
-    return fw_feature
+    # Building args requiring value values (ie. --model iMac12,2)
+    parser.add_argument("--model", action="store", help="Set custom model", required=False)
+    parser.add_argument("--disk", action="store", help="Specifies disk to install to", required=False)
+    parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
 
-def enable_large_basesystem(fw_feature):
-    fw_feature |= 2 ** 35  # Enable FW_FEATURE_SUPPORTS_LARGE_BASESYSTEM
-    return fw_feature
+    # sys_patch args
+    parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
+    parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
 
+    # validation args
+    parser.add_argument("--validate", help="Runs Validation Tests for CI", action="store_true", required=False)
+    args = parser.parse_args()
+    if not(
+        args.build or 
+        args.patch_sys_vol or 
+        args.unpatch_sys_vol or 
+        args.validate
+    ):
+        return None
+    else:
+        return args
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]
