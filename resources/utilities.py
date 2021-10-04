@@ -226,7 +226,7 @@ def cls():
     global clear
     if not clear:
         return
-    if check_cli_args() is not None:
+    if check_cli_args() is None:
         # Our GUI does not support clear screen
         if not check_recovery():
             os.system("cls" if os.name == "nt" else "clear")
