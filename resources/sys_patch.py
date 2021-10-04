@@ -45,9 +45,6 @@ class PatchSysVolume:
         self.validate = False
         self.supports_metal = False
 
-        # if (Path.home() / "Desktop/OCLP-Test/").exists:
-        #    self.mount_location = Path.home() / "Desktop/OCLP-Test"
-        #    self.validate = True
         if self.constants.detected_os > self.constants.catalina:
             # Big Sur and newer use APFS snapshots
             self.mount_location = "/System/Volumes/Update/mnt1"
@@ -61,18 +58,12 @@ class PatchSysVolume:
         self.mount_libexec = f"{self.mount_location}/usr/libexec"
         self.mount_extensions_mux = f"{self.mount_location}/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
 
-    def elevated(self, *args, **kwargs) -> subprocess.CompletedProcess:
-        if os.getuid() == 0 or self.constants.gui_mode is True:
-            return subprocess.run(*args, **kwargs)
-        else:
-            return subprocess.run(["sudo"] + [args[0][0]] + args[0][1:], **kwargs)
-
     def find_mount_root_vol(self, patch):
         self.root_mount_path = utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
             if self.constants.detected_os == self.constants.catalina and self.validate is False:
                 print("- Mounting Catalina Root Volume as writable")
-                self.elevated(["mount", "-uw", f"{self.mount_location}/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                utilities.elevated(["mount", "-uw", f"{self.mount_location}/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
@@ -87,7 +78,7 @@ class PatchSysVolume:
             else:
                 if self.constants.detected_os > self.constants.catalina:
                     print("- Mounting APFS Snapshot as writable")
-                    self.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                    utilities.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
@@ -175,21 +166,21 @@ class PatchSysVolume:
                     print(f"- Found {location_zip}")
 
                     print(f"- Unzipping {location_zip}")
-                    utilities.process_status(self.elevated(["unzip", location_zip_path, "-d", copy_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    utilities.process_status(utilities.elevated(["unzip", location_zip_path, "-d", copy_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                     if location_old_path.exists():
                         print(f"- Renaming {location}")
-                        utilities.process_status(self.elevated(["mv", location_old_path, f"{location_old_path}-Patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                        utilities.process_status(utilities.elevated(["mv", location_old_path, f"{location_old_path}-Patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                     print(f"- Renaming {location}-Backup")
-                    utilities.process_status(self.elevated(["mv", f"{location_old_path}-Backup", location_old_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    utilities.process_status(utilities.elevated(["mv", f"{location_old_path}-Backup", location_old_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                     print(f"- Removing {location_old_path}-Patched")
-                    utilities.process_status(self.elevated(["rm", "-r", f"{location_old_path}-Patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    utilities.process_status(utilities.elevated(["rm", "-r", f"{location_old_path}-Patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                     # ditto will create a '__MACOSX' folder
                     # print("- Removing __MACOSX folder")
-                    # utilities.process_status(self.elevated(["rm", "-r", f"{copy_path}/__MACOSX"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    # utilities.process_status(utilities.elevated(["rm", "-r", f"{copy_path}/__MACOSX"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                 else:
                     print(f"- Failed to find {location_zip}, unable to unpatch")
@@ -201,7 +192,7 @@ class PatchSysVolume:
     def unpatch_root_vol(self):
         if self.constants.detected_os > self.constants.catalina:
             print("- Reverting to last signed APFS snapshot")
-            result = self.elevated(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = utilities.elevated(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 print("- Unable to revert root volume patches")
                 print("Reason for unpatch Failure:")
@@ -219,9 +210,9 @@ class PatchSysVolume:
             input("Press [ENTER] to continue with cache rebuild: ")
         print("- Rebuilding Kernel Cache (This may take some time)")
         if self.constants.detected_os > self.constants.catalina:
-            result = self.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = utilities.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         else:
-            result = self.elevated(["kextcache", "-i", f"{self.mount_location}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = utilities.elevated(["kextcache", "-i", f"{self.mount_location}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         # kextcache always returns 0, even if it fails
         # Check the output for 'KernelCache ID' to see if the cache was successfully rebuilt
@@ -245,14 +236,14 @@ class PatchSysVolume:
                     input("Press [ENTER] to continue with kernel and dyld cache merging")
             if self.constants.detected_os > self.constants.catalina:
                 print("- Creating new APFS snapshot")
-                self.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                utilities.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                 self.unmount_drive()
             else:
                 if self.constants.detected_os == self.constants.catalina:
                     print("- Merging kernel cache")
-                    utilities.process_status(self.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    utilities.process_status(utilities.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
                 print("- Merging dyld cache")
-                utilities.process_status(self.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
+                utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
             if self.amd_ts2 is True and self.constants.allow_ts2_accel is True:
@@ -267,14 +258,14 @@ set million colour before rebooting"""
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
-        self.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-
+        utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+    
     def delete_old_binaries(self, vendor_patch):
         for delete_current_kext in vendor_patch:
             delete_path = Path(self.mount_extensions) / Path(delete_current_kext)
             if Path(delete_path).exists():
                 print(f"- Deleting {delete_current_kext}")
-                utilities.process_status(self.elevated(["rm", "-R", delete_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["rm", "-R", delete_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
                 print(f"- Couldn't find {delete_current_kext}, skipping")
 
@@ -283,18 +274,19 @@ set million colour before rebooting"""
             existing_path = Path(self.mount_extensions) / Path(add_current_kext)
             if Path(existing_path).exists():
                 print(f"- Found conflicting kext, Deleting Root Volume's {add_current_kext}")
-                utilities.process_status(self.elevated(["rm", "-R", existing_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["rm", "-R", existing_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             print(f"- Adding {add_current_kext}")
-            utilities.process_status(self.elevated(["cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(self.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(self.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
 
     def add_brightness_patch(self):
         self.delete_old_binaries(sys_patch_data.DeleteBrightness)
         self.add_new_binaries(sys_patch_data.AddBrightness, self.constants.legacy_brightness)
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_brightness}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
-        utilities.process_status(self.elevated(["chmod", "-Rf", "755", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        utilities.process_status(self.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_brightness}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
+        utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_private_frameworks}/DisplayServices.framework"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def add_audio_patch(self):
         if self.model in ["iMac7,1", "iMac8,1"]:
@@ -305,18 +297,18 @@ set million colour before rebooting"""
 
     def add_wifi_patch(self):
         print("- Merging Wireless CoreSerices patches")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_coreservices}/", self.mount_coreservices], stdout=subprocess.PIPE)
-        utilities.process_status(self.elevated(["chmod", "-Rf", "755", f"{self.mount_coreservices}/WiFiAgent.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        utilities.process_status(self.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_coreservices}/WiFiAgent.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_coreservices}/", self.mount_coreservices], stdout=subprocess.PIPE)
+        utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_coreservices}/WiFiAgent.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_coreservices}/WiFiAgent.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         print("- Merging Wireless usr/libexec patches")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_libexec}/", self.mount_libexec], stdout=subprocess.PIPE)
-        utilities.process_status(self.elevated(["chmod", "755", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        utilities.process_status(self.elevated(["chown", "root:wheel", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_libexec}/", self.mount_libexec], stdout=subprocess.PIPE)
+        utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
     
     def add_legacy_mux_patch(self):
         self.delete_old_binaries(sys_patch_data.DeleteDemux)
         print("- Merging Legacy Mux Kext patches")
-        utilities.process_status(self.elevated(["cp", "-R", f"{self.constants.legacy_mux_path}/AppleMuxControl.kext", self.mount_extensions_mux], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(["cp", "-R", f"{self.constants.legacy_mux_path}/AppleMuxControl.kext", self.mount_extensions_mux], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def gpu_accel_legacy(self):
         if self.constants.detected_os == self.constants.mojave:
@@ -415,9 +407,9 @@ set million colour before rebooting"""
                 print("- Fixing Acceleration in CoreMedia")
                 utilities.process_status(subprocess.run(["defaults", "write", "com.apple.coremedia", "hardwareVideoDecoder", "-string", "enable"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             print("- Merging Ivy Bridge Frameworks")
-            self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             print("- Merging Ivy Bridge PrivateFrameworks")
-            self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel_ivy}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
+            utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel_ivy}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
         else:
             print("- Installing basic Ivy Bridge Kext patches for generic OS")
             self.add_new_binaries(sys_patch_data.AddIntelGen3Accel, self.constants.legacy_intel_gen3_path)
@@ -432,24 +424,24 @@ set million colour before rebooting"""
 
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if self.constants.detected_os > self.constants.big_sur:
             print("- Merging Monterey WebKit patch")
-            self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ivy}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         print("- Merging general legacy PrivateFrameworks")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
         if self.constants.detected_os > self.constants.catalina:
             print("- Adding IOHID-Fixup.plist")
             utilities.process_status(
-                self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_lauchd_path_accel}/", self.mount_lauchd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_lauchd_path_accel}/", self.mount_lauchd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             )
-            utilities.process_status(self.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(self.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         else:
             print("- Disabling Library Validation")
             utilities.process_status(
-                self.elevated(
+                utilities.elevated(
                     ["defaults", "write", "/Library/Preferences/com.apple.security.libraryvalidation.plist", "DisableLibraryValidation", "-bool", "true"],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
@@ -458,10 +450,10 @@ set million colour before rebooting"""
 
     def gpu_accel_legacy_extended_ts2(self):
         print("- Merging TeraScale 2 legacy Frameworks")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ts2}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_ts2}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         print("- Merging TeraScale 2 PrivateFrameworks")
-        self.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel_ts2}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel_ts2}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
         if self.validate is False:
             print("- Fixing Acceleration in CMIO")
             utilities.process_status(subprocess.run(["defaults", "write", "com.apple.cmio", "CMIO_Unit_Input_ASC.DoNotUseOpenCL", "-bool", "true"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))

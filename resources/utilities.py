@@ -7,9 +7,9 @@ import os
 import plistlib
 import subprocess
 from pathlib import Path
-import re
 import os
 import binascii
+import argparse
 
 try:
     import requests
@@ -298,9 +298,55 @@ def download_file(link, location):
             chunk = file.read(1024 * 1024 * 16)
     return checksum
 
+def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
+    # When runnign through our GUI, we run as root, however we do not get uid 0
+    # Best to assume CLI is running as root
+    if os.getuid() == 0 or check_cli_args() is not None:
+        return subprocess.run(*args, **kwargs)
+    else:
+        return subprocess.run(["sudo"] + [args[0][0]] + args[0][1:], **kwargs)
 
+def check_cli_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--build", help="Build OpenCore", action="store_true", required=False)
+    parser.add_argument("--verbose", help="Enable verbose boot", action="store_true", required=False)
+    parser.add_argument("--debug_oc", help="Enable OpenCore DEBUG", action="store_true", required=False)
+    parser.add_argument("--debug_kext", help="Enable kext DEBUG", action="store_true", required=False)
+    parser.add_argument("--hide_picker", help="Hide OpenCore picker", action="store_true", required=False)
+    parser.add_argument("--disable_sip", help="Disable SIP", action="store_true", required=False)
+    parser.add_argument("--disable_smb", help="Disable SecureBootModel", action="store_true", required=False)
+    parser.add_argument("--vault", help="Enable OpenCore Vaulting", action="store_true", required=False)
+    parser.add_argument("--support_all", help="Allow OpenCore on natively supported Models", action="store_true", required=False)
+    parser.add_argument("--firewire", help="Enable FireWire Booting", action="store_true", required=False)
+    parser.add_argument("--nvme", help="Enable NVMe Booting", action="store_true", required=False)
+    parser.add_argument("--wlan", help="Enable Wake on WLAN support", action="store_true", required=False)
+    # parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
+    parser.add_argument("--moderate_smbios", help="Moderate SMBIOS Patching", action="store_true", required=False)
+    parser.add_argument("--moj_cat_accel", help="Allow Root Patching on Mojave and Catalina", action="store_true", required=False)
+    parser.add_argument("--disable_tb", help="Disable Thunderbolt on 2013-2014 MacBook Pros", action="store_true", required=False)
+    parser.add_argument("--force_surplus", help="Force SurPlus in all newer OSes", action="store_true", required=False)
 
+    # Building args requiring value values (ie. --model iMac12,2)
+    parser.add_argument("--model", action="store", help="Set custom model", required=False)
+    parser.add_argument("--disk", action="store", help="Specifies disk to install to", required=False)
+    parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
 
+    # sys_patch args
+    parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
+    parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
+
+    # validation args
+    parser.add_argument("--validate", help="Runs Validation Tests for CI", action="store_true", required=False)
+    args = parser.parse_args()
+    if not(
+        args.build or 
+        args.patch_sys_vol or 
+        args.unpatch_sys_vol or 
+        args.validate
+    ):
+        return None
+    else:
+        return args
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]

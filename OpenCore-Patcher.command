@@ -15,7 +15,7 @@ class OpenCoreLegacyPatcher:
         print("- Loading...")
         self.constants = constants.Constants()
         self.generate_base_data()
-        if arguments.arguments().check_cli() is False:
+        if utilities.check_cli_args() is None:
             self.main_menu()
         
     def generate_base_data(self):
@@ -26,7 +26,7 @@ class OpenCoreLegacyPatcher:
         self.constants.recovery_status = utilities.check_recovery()
         self.computer = self.constants.computer
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
-        if arguments.arguments().check_cli() is True:
+        if utilities.check_cli_args() is not None:
             print("- Detected arguments, switching to CLI mode")
             self.constants.gui_mode = True # Assumes no user interaction is required
             self.constants.current_path = Path.cwd()

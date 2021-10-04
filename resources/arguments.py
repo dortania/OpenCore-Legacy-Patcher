@@ -1,53 +1,12 @@
-import argparse
 import sys
 import subprocess
-from resources import defaults, build
+from resources import defaults, build, utilities, validation
 from data import example_data, model_array
 
 # Generic building args
 class arguments:
     def __init__(self):
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--build", help="Build OpenCore", action="store_true", required=False)
-        parser.add_argument("--verbose", help="Enable verbose boot", action="store_true", required=False)
-        parser.add_argument("--debug_oc", help="Enable OpenCore DEBUG", action="store_true", required=False)
-        parser.add_argument("--debug_kext", help="Enable kext DEBUG", action="store_true", required=False)
-        parser.add_argument("--hide_picker", help="Hide OpenCore picker", action="store_true", required=False)
-        parser.add_argument("--disable_sip", help="Disable SIP", action="store_true", required=False)
-        parser.add_argument("--disable_smb", help="Disable SecureBootModel", action="store_true", required=False)
-        parser.add_argument("--vault", help="Enable OpenCore Vaulting", action="store_true", required=False)
-        parser.add_argument("--support_all", help="Allow OpenCore on natively supported Models", action="store_true", required=False)
-        parser.add_argument("--firewire", help="Enable FireWire Booting", action="store_true", required=False)
-        parser.add_argument("--nvme", help="Enable NVMe Booting", action="store_true", required=False)
-        parser.add_argument("--wlan", help="Enable Wake on WLAN support", action="store_true", required=False)
-        # parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
-        parser.add_argument("--moderate_smbios", help="Moderate SMBIOS Patching", action="store_true", required=False)
-        parser.add_argument("--moj_cat_accel", help="Allow Root Patching on Mojave and Catalina", action="store_true", required=False)
-        parser.add_argument("--disable_tb", help="Disable Thunderbolt on 2013-2014 MacBook Pros", action="store_true", required=False)
-        parser.add_argument("--force_surplus", help="Force SurPlus in all newer OSes", action="store_true", required=False)
-
-        # Building args requiring value values (ie. --model iMac12,2)
-        parser.add_argument("--model", action="store", help="Set custom model", required=False)
-        parser.add_argument("--disk", action="store", help="Specifies disk to install to", required=False)
-        parser.add_argument("--smbios_spoof", action="store", help="Set SMBIOS patching mode", required=False)
-
-        # sys_patch args
-        parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
-        parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
-
-        # validation args
-        parser.add_argument("--validate", help="Runs Validation Tests for CI", action="store_true", required=False)
-        self.args = parser.parse_args()
-
-    def check_cli(self):
-        # If no core arguments are present, assume we're running in TUI
-        # build, patch_sys_vol, unpatch_sys_vol, validate
-        if not(
-            self.args.build or self.args.patch_sys_vol or self.args.unpatch_sys_vol or self.args.validate
-        ):
-            return False
-        else:
-            return True
+        self.args = utilities.check_cli_args()
     
     def parse_arguments(self, settings):
         if self.args.model:
@@ -70,7 +29,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             print(f"- Install Disk set: {self.args.disk}")
             settings.disk = self.args.disk
         if self.args.validate:
-            self.validate(settings)
+            validation.validate(settings)
         if self.args.verbose:
             print("- Set verbose configuration")
             settings.verbose_debug = True
@@ -147,73 +106,3 @@ If you plan to create the USB for another machine, please select the "Change Mod
         elif self.args.unpatch_sys_vol:
             print("- Set System Volume unpatching")
             self.unpatch_vol()
-
-    def validate(self, settings):
-        # Runs through ocvalidate to check for errors
-
-        valid_dumps = [
-            example_data.MacBookPro.MacBookPro92_Stock,
-            # example_data.MacBookPro.MacBookPro171_Stock,
-            # example_data.Macmini.Macmini91_Stock,
-            example_data.iMac.iMac81_Stock,
-            example_data.iMac.iMac112_Stock,
-            example_data.iMac.iMac122_Upgraded,
-            example_data.MacPro.MacPro31_Stock,
-            example_data.MacPro.MacPro31_Upgrade,
-            example_data.MacPro.MacPro31_Modern_AMD,
-            example_data.MacPro.MacPro31_Modern_Kepler,
-            example_data.MacPro.MacPro41_Upgrade,
-            example_data.MacPro.MacPro41_Modern_AMD,
-            example_data.MacPro.MacPro41_51__Flashed_Modern_AMD,
-        ]
-        settings.validate = True
-        def build_prebuilt():
-            for model in model_array.SupportedSMBIOS:
-                print(f"Validating predefined model: {model}")
-                settings.custom_model = model
-                build.BuildOpenCore(settings.custom_model, settings).build_opencore()
-                result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                if result.returncode != 0:
-                    print("Error on build!")
-                    print(result.stdout.decode())
-                    raise Exception(f"Validation failed for predefined model: {model}")
-                else:
-                    print(f"Validation succeeded for predefined model: {model}")
-        
-        def build_dumps():
-            for model in valid_dumps:
-                settings.computer = model
-                settings.custom_model = ""
-                print(f"Validating dumped model: {settings.computer.real_model}")
-                build.BuildOpenCore(settings.computer.real_model, settings).build_opencore()
-                result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                if result.returncode != 0:
-                    print("Error on build!")
-                    print(result.stdout.decode())
-                    raise Exception(f"Validation failed for predefined model: {settings.computer.real_model}")
-                else:
-                    print(f"Validation succeeded for predefined model: {settings.computer.real_model}")
-        
-        # First run is with default settings
-        build_prebuilt()
-        build_dumps()
-        # Second run, flip all settings
-        settings.verbose_debug = True
-        settings.opencore_debug = True
-        settings.opencore_build = "DEBUG"
-        settings.kext_debug = True
-        settings.showpicker = False
-        settings.sip_status = False
-        settings.secure_status = True
-        settings.firewire_boot = True
-        settings.nvme_boot = True
-        settings.enable_wake_on_wlan = True
-        settings.disable_tb = True
-        settings.force_surplus = True
-        build_prebuilt()
-        build_dumps()
-
-
-
-
-
