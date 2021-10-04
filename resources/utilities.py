@@ -226,11 +226,12 @@ def cls():
     global clear
     if not clear:
         return
-    if not check_recovery():
-        os.system("cls" if os.name == "nt" else "clear")
-    elif check_cli_args() is not None:
-        print("\u001Bc")
-    # Our GUI does not support clear screen
+    if check_cli_args() is not None:
+        # Our GUI does not support clear screen
+        if not check_recovery():
+            os.system("cls" if os.name == "nt" else "clear")
+        else:
+            print("\u001Bc")
 
 def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
     # TODO: Properly fix for El Capitan, which does not print the XML representation even though we say to
