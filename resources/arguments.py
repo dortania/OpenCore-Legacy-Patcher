@@ -1,7 +1,6 @@
 import sys
-import subprocess
-from resources import defaults, build, utilities, validation
-from data import example_data, model_array
+from resources import defaults, build, utilities, validation, sys_patch
+from data import model_array
 
 # Generic building args
 class arguments:
@@ -102,7 +101,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 print("- Set Mojave/Catalina root patch configuration")
                 settings.moj_cat_accel = True
             print("- Set System Volume patching")
-            self.patch_vol()
+            sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings).start_patch()
         elif self.args.unpatch_sys_vol:
             print("- Set System Volume unpatching")
-            self.unpatch_vol()
+            sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings).start_unpatch()
