@@ -67,11 +67,11 @@ class OpenCoreLegacyPatcher:
             menu = utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
 
             options = (
-                [["Build OpenCore", build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()]]
+                [["Build OpenCore", build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore]]
                 if ((self.constants.custom_model or self.computer.real_model) in model_array.SupportedSMBIOS) or self.constants.allow_oc_everywhere is True
                 else []
             ) + [
-                ["Install OpenCore to USB/internal drive", build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).copy_efi()],
+                ["Install OpenCore to USB/internal drive", build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).copy_efi],
                 ["Post-Install Volume Patch", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).PatchVolume],
                 ["Change Model", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_model],
                 ["Patcher Settings", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).patcher_settings],
