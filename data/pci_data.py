@@ -849,10 +849,10 @@ class intel_ids:
 
 class broadcom_ids:
     AppleBCMWLANBusInterfacePCIe = [
-        0x43DC,
-        0x4464,
-        0x4488,
-        0x4425,
+        0x43DC,  # BCM4355
+        0x4464,  # BCM4364
+        0x4488,  # BCM4377b
+        0x4425,  # Unknown
     ]
 
     AirPortBrcmNIC = [
