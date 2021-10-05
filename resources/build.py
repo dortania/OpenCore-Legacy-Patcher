@@ -139,7 +139,7 @@ class BuildOpenCore:
                 print("- Enabling SMC exemption patch")
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
 
-        if self.get_kext_by_bundle_path("Lilu.kext")["Enabled"] is False:
+        if self.get_kext_by_bundle_path("Lilu.kext")["Enabled"] is True:
             # Required for Lilu in 11.0+
             self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
 
