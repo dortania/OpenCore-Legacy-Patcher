@@ -54,7 +54,7 @@ class Constants:
 
         ## Dortania
         ## https://github.com/dortania
-        self.backlight_injector_version = "1.0.0"  # BacklightInjector
+        self.backlight_injector_version = "1.1.0"  # BacklightInjector
         self.smcspoof_version = "1.0.0"  #           SMC-Spoof
         self.mce_version = "1.0.0"  #                AppleMCEReporterDisabler
         self.btspoof_version = "1.0.0"  #            Bluetooth-Spoof

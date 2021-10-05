@@ -35,6 +35,8 @@
   - Due to both Kepler and Ivy needing root patching, no benefit to disable the iGPU
 - Refactor Hardware Model building
 - Resolve dGPU output on MacBookPro10,1
+- Add Panel ID `9cd6` for iMac11,3
+  - Resolves Brightness control
 
 ## 0.2.5
 
