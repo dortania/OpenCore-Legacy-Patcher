@@ -335,7 +335,6 @@ class BuildOpenCore:
 
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
-        # iMac7,1 kernel panics with USB map installed, remove for time being until properly debugged
         if (
             usb_map_path.exists()
             and self.constants.allow_oc_everywhere is False

@@ -660,3 +660,15 @@ class Constants:
         "Mac-35C5E08120C7EEAF",  # Macmini7,1
         "Mac-7BA5B2D9E42DDD94",  # iMacPro1,1
     ]
+
+    sandy_board_id_stock = [
+        "Mac-94245B3640C91C81",  # MacBookPro8,1
+        "Mac-94245A3940C91C80",  # MacBookPro8,2
+        "Mac-942459F5819B171B",  # MacBookPro8,3
+        "Mac-C08A6BB70A942AC2",  # MacBookAir4,1
+        "Mac-742912EFDBEE19B3",  # MacBookAir4,2
+        "Mac-8ED6AF5B48C039E1",  # Macmini5,1   
+        "Mac-7BA5B2794B2CDB12",  # Macmini5,3   
+        "Mac-942B5BF58194151B",  # iMac12,1     
+        "Mac-942B59F58194171B",  # iMac12,2     
+    ]
