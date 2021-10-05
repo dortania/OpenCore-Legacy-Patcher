@@ -98,20 +98,20 @@ class BuildOpenCore:
         for name, version, path, check in [
             # Essential kexts
             ("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path, lambda: True),
-            ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: self.constants.allow_oc_everywhere is False),
+            ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None"),
             ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in model_array.MacPro),
             # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
             ("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path, lambda: self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1"]),
-            ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False),
+            ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None"),
             # CPU patches
-            ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: self.model.startswith("MacPro") or self.model.startswith("Xserve")),
+            ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: (self.model.startswith("MacPro") or self.model.startswith("Xserve")) and self.constants.serial_settings != "None"),
             ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value),
             ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value),
             (
                 "CPUFriend.kext",
                 self.constants.cpufriend_version,
                 self.constants.cpufriend_path,
-                lambda: self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False,
+                lambda: self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None",
             ),
             # Ethernet patches
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Nvidia"),
@@ -128,7 +128,20 @@ class BuildOpenCore:
             self.enable_kext(name, version, path, check)
 
         if self.constants.allow_oc_everywhere is False:
-            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
+            if self.constants.serial_settings == "None":
+                # Credit to Parrotgeek1 for boot.efi and hv_vmm_present patch sets
+                print("- Enabling Board ID exemption patch")
+                self.get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Skip Board ID check")["Enabled"] = True
+                print("- Enabling VMM exemption patch")
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2)")["Enabled"] = True
+            else:
+                print("- Enabling SMC exemption patch")
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
+
+        if self.get_kext_by_bundle_path("Lilu.kext")["Enabled"] is False:
+            # Required for Lilu in 11.0+
+            self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
 
         # Ethernet Patch Sets
         if smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Broadcom":
@@ -137,7 +150,7 @@ class BuildOpenCore:
                 # Applicable for pre-Ivy Bridge models
                 self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
     
-        if self.constants.allow_oc_everywhere is False:
+        if self.constants.allow_oc_everywhere is False or self.constants.serial_settings != "None":
             if (smbios_data.smbios_dictionary[generate_smbios.set_smbios_model_spoof(self.model) or self.constants.override_smbios]["SecureBootModel"]) != None:
                 # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
                 # Forces VMM patch instead
@@ -293,8 +306,8 @@ class BuildOpenCore:
                     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" -brcmfxwowl"
 
         # CPUFriend
-        pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
-        if self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.allow_oc_everywhere is False:
+        if self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None":
+            pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
             Path(self.constants.pp_kext_folder).mkdir()
             Path(self.constants.pp_contents_folder).mkdir()
             shutil.copy(pp_map_path, self.constants.pp_contents_folder)
@@ -336,54 +349,57 @@ class BuildOpenCore:
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
 
         if self.constants.allow_oc_everywhere is False:
-            if self.model == "MacBookPro9,1":
-                print("- Adding AppleMuxControl Override")
-                amc_map_path = Path(self.constants.plist_folder_path) / Path("AppleMuxControl/Info.plist")
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
-                Path(self.constants.amc_kext_folder).mkdir()
-                Path(self.constants.amc_contents_folder).mkdir()
-                shutil.copy(amc_map_path, self.constants.amc_contents_folder)
-                self.get_kext_by_bundle_path("AMC-Override.kext")["Enabled"] = True
-            elif self.model == "MacBookPro10,1":
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
+            if  self.constants.serial_settings != "None":
+                if self.model == "MacBookPro9,1":
+                    print("- Adding AppleMuxControl Override")
+                    amc_map_path = Path(self.constants.plist_folder_path) / Path("AppleMuxControl/Info.plist")
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
+                    Path(self.constants.amc_kext_folder).mkdir()
+                    Path(self.constants.amc_contents_folder).mkdir()
+                    shutil.copy(amc_map_path, self.constants.amc_contents_folder)
+                    self.get_kext_by_bundle_path("AMC-Override.kext")["Enabled"] = True
+                elif self.model == "MacBookPro10,1":
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
 
-            if self.model not in model_array.NoAGPMSupport:
-                print("- Adding AppleGraphicsPowerManagement Override")
-                agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
-                Path(self.constants.agpm_kext_folder).mkdir()
-                Path(self.constants.agpm_contents_folder).mkdir()
-                shutil.copy(agpm_map_path, self.constants.agpm_contents_folder)
-                self.get_kext_by_bundle_path("AGPM-Override.kext")["Enabled"] = True
+                if self.model not in model_array.NoAGPMSupport:
+                    print("- Adding AppleGraphicsPowerManagement Override")
+                    agpm_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsPowerManagement/Info.plist")
+                    Path(self.constants.agpm_kext_folder).mkdir()
+                    Path(self.constants.agpm_contents_folder).mkdir()
+                    shutil.copy(agpm_map_path, self.constants.agpm_contents_folder)
+                    self.get_kext_by_bundle_path("AGPM-Override.kext")["Enabled"] = True
 
-            if self.model in model_array.AGDPSupport:
-                print("- Adding AppleGraphicsDevicePolicy Override")
-                agdp_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsDevicePolicy/Info.plist")
-                Path(self.constants.agdp_kext_folder).mkdir()
-                Path(self.constants.agdp_contents_folder).mkdir()
-                shutil.copy(agdp_map_path, self.constants.agdp_contents_folder)
-                self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
+                if self.model in model_array.AGDPSupport:
+                    print("- Adding AppleGraphicsDevicePolicy Override")
+                    agdp_map_path = Path(self.constants.plist_folder_path) / Path("AppleGraphicsDevicePolicy/Info.plist")
+                    Path(self.constants.agdp_kext_folder).mkdir()
+                    Path(self.constants.agdp_contents_folder).mkdir()
+                    shutil.copy(agdp_map_path, self.constants.agdp_contents_folder)
+                    self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
 
-        # AGPM Patch
-        if self.model in model_array.DualGPUPatch:
-            print("- Adding dual GPU patch")
-            if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
-                self.gfx0_path = self.computer.dgpu.pci_path
-                print(f"- Found GFX0 Device Path: {self.gfx0_path}")
-            else:
-                if not self.constants.custom_model:
-                    print("- Failed to find GFX0 Device path, falling back on known logic")
-                self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
+        
+        if self.constants.serial_settings != "None":
+            # AGPM Patch
+            if self.model in model_array.DualGPUPatch:
+                print("- Adding dual GPU patch")
+                if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
+                    self.gfx0_path = self.computer.dgpu.pci_path
+                    print(f"- Found GFX0 Device Path: {self.gfx0_path}")
+                else:
+                    if not self.constants.custom_model:
+                        print("- Failed to find GFX0 Device path, falling back on known logic")
+                    self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
 
-            if self.model in model_array.IntelNvidiaDRM and self.constants.drm_support is True:
-                print("- Prioritizing DRM support over Intel QuickSync")
-                self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
-                    "name": binascii.unhexlify("23646973706C6179"),
-                    "IOName": "#display",
-                    "class-code": binascii.unhexlify("FFFFFFFF"),
-                }
-            else:
-                self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
+                if self.model in model_array.IntelNvidiaDRM and self.constants.drm_support is True:
+                    print("- Prioritizing DRM support over Intel QuickSync")
+                    self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696", "shikigva": 256}
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
+                        "name": binascii.unhexlify("23646973706C6179"),
+                        "IOName": "#display",
+                        "class-code": binascii.unhexlify("FFFFFFFF"),
+                    }
+                else:
+                    self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
         # Audio Patch
         if self.constants.set_alc_usage is True:
@@ -458,8 +474,13 @@ class BuildOpenCore:
                     "@0,backlight-control": binascii.unhexlify("01000000"),
                     "@0,built-in": binascii.unhexlify("01000000"),
                     "shikigva": 256,
-                    "agdpmod": "vit9696",
+                    # "agdpmod": "vit9696",
                 }
+                if self.constants.serial_settings != "None":
+                    self.config["DeviceProperties"]["Add"][backlight_path] += {
+                        "agdpmod": "vit9696",
+                    }
+
                 if self.constants.custom_model and self.model == "iMac11,2":
                     # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
                     # Set both properties when we cannot run hardware detection
@@ -468,8 +489,12 @@ class BuildOpenCore:
                         "@0,backlight-control": binascii.unhexlify("01000000"),
                         "@0,built-in": binascii.unhexlify("01000000"),
                         "shikigva": 256,
-                        "agdpmod": "vit9696",
+                        #"agdpmod": "vit9696",
                     }
+                    if self.constants.serial_settings != "None":
+                        self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] += {
+                            "agdpmod": "vit9696",
+                        }
             elif self.model in ["iMac12,1", "iMac12,2"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
                 self.config["DeviceProperties"]["Add"][backlight_path] = {
@@ -477,8 +502,12 @@ class BuildOpenCore:
                     "@0,backlight-control": binascii.unhexlify("01000000"),
                     "@0,built-in": binascii.unhexlify("01000000"),
                     "shikigva": 256,
-                    "agdpmod": "vit9696",
+                    #"agdpmod": "vit9696",
                 }
+                if self.constants.serial_settings != "None":
+                    self.config["DeviceProperties"]["Add"][backlight_path] += {
+                        "agdpmod": "vit9696",
+                    }
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                     "name": binascii.unhexlify("23646973706C6179"),
@@ -712,8 +741,9 @@ class BuildOpenCore:
     def set_smbios(self):
         spoofed_model = self.model
         if self.constants.override_smbios == "Default":
-            print("- Setting macOS Monterey Supported SMBIOS")
-            spoofed_model = generate_smbios.set_smbios_model_spoof(self.model)
+            if self.constants.serial_settings != "None":
+                print("- Setting macOS Monterey Supported SMBIOS")
+                spoofed_model = generate_smbios.set_smbios_model_spoof(self.model)
         else:
             spoofed_model = self.constants.override_smbios
         print(f"- Using Model ID: {spoofed_model}")
@@ -795,6 +825,23 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
             self.config["PlatformInfo"]["Generic"]["MLB"] = macserial_output[1]
             self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
+        
+        def no_smbios_patch(self):
+            # Still ensure Firmware Features are updated correctly
+            fw_feature = generate_smbios.generate_fw_features(self.model, self.constants.custom_model)
+            fw_feature = hex(fw_feature).lstrip("0x").rstrip("L").strip()
+            print(f"- Setting Firmware Feature: {fw_feature}")
+            fw_feature = utilities.string_to_hex(fw_feature)
+
+            # FirmwareFeatures
+            self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeatures"] = fw_feature
+            self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeaturesMask"] = fw_feature
+            self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeatures"] = fw_feature
+            self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeaturesMask"] = fw_feature
+
+            # Update tables
+            self.config["PlatformInfo"]["UpdateNVRAM"] = True
+            self.config["PlatformInfo"]["UpdateSMBIOS"] = True
 
         if self.constants.serial_settings == "Moderate":
             print("- Using Moderate SMBIOS patching")
@@ -806,6 +853,10 @@ class BuildOpenCore:
             print("- Using Minimal SMBIOS patching")
             self.spoofed_model = self.model
             minimal_serial_patch(self)
+        elif self.constants.serial_settings == "None":
+            if self.constants.allow_oc_everywhere is False:
+                print("- Using Basic FirmwareFeatures patching")
+                no_smbios_patch(self)
 
         # USB Map and CPUFriend Patching
         if (
@@ -832,7 +883,7 @@ class BuildOpenCore:
                     except KeyError:
                         continue
             plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
-        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False:
+        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
             # Adjust CPU Friend Data to correct SMBIOS
             new_cpu_ls = Path(self.constants.pp_contents_folder) / Path("Info.plist")
             cpu_config = plistlib.load(Path(new_cpu_ls).open("rb"))
@@ -842,7 +893,7 @@ class BuildOpenCore:
             cpu_config["IOKitPersonalities"]["CPUFriendDataProvider"]["cf-frequency-data"] = string_stuff
             plistlib.dump(cpu_config, Path(new_cpu_ls).open("wb"), sort_keys=True)
 
-        if self.constants.allow_oc_everywhere is False:
+        if self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None":
             if self.model == "MacBookPro9,1":
                 new_amc_ls = Path(self.constants.amc_contents_folder) / Path("Info.plist")
                 amc_config = plistlib.load(Path(new_amc_ls).open("rb"))
@@ -923,6 +974,9 @@ class BuildOpenCore:
         for entry in list(self.config["ACPI"]["Patch"]):
             if not entry["Enabled"]:
                 self.config["ACPI"]["Patch"].remove(entry)
+        for entry in list(self.config["Booter"]["Patch"]):
+            if not entry["Enabled"]:
+                self.config["Booter"]["Patch"].remove(entry)
         for entry in list(self.config["Kernel"]["Add"]):
             if not entry["Enabled"]:
                 self.config["Kernel"]["Add"].remove(entry)

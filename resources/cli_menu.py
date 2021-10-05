@@ -95,6 +95,7 @@ Recommended for adanced users who want control how serials are handled
 
 Valid options:
 
+0. None:\tOnly update FirmwareFeatures
 1. Minimal:\tUse original serials and minimally update SMBIOS
 2. Moderate:\tReplace entire SMBIOS but keep original serials
 3. Advanced:\tReplace entire SMBIOS and generate new serials
@@ -104,7 +105,9 @@ Note: For new users we recommend leaving as default(1. Minimal)
         """
         )
         change_menu = input("Set SMBIOS Spoof Level(ie. 1): ")
-        if change_menu == "1":
+        if change_menu == "0":
+            self.constants.serial_settings = "None"
+        elif change_menu == "1":
             self.constants.serial_settings = "Minimal"
         elif change_menu == "2":
             self.constants.serial_settings = "Moderate"

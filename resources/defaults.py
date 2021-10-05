@@ -14,6 +14,7 @@ class generate_defaults():
             if utilities.check_metal_support(device_probe, settings.computer) is False:
                 settings.disable_cs_lv = True
             if settings.computer.dgpu and settings.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
+                # 12.0 (B7+): Kepler are now unsupported
                 settings.sip_status = False
                 settings.amfi_status = True
                 settings.allow_fv_root = True  #  Allow FileVault on broken seal
@@ -21,8 +22,18 @@ class generate_defaults():
                 isinstance(settings.computer.wifi, device_probe.Broadcom)
                 and settings.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
             ) or (isinstance(settings.computer.wifi, device_probe.Atheros) and settings.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
+                # 12.0: Legacy Wireless chipsets require root patching
                 settings.sip_status = False
                 settings.allow_fv_root = True  #  Allow FileVault on broken seal
+
+            if settings.computer.dgpu and settings.computer.dgpu.arch in [device_probe.AMD.Archs.Polaris, device_probe.AMD.Archs.Vega, device_probe.AMD.Archs.Navi]:
+                # Allow H.265 on AMD
+                settings.serial_settings = "Minimal"
+        elif model in ["MacPro4,1", "MacPro5,1"]:
+            # Allow H.265 on AMD
+            # Assume 2009+ machines have Polaris on pre-builts (internal testing)
+            # Hardware Detection will never hit this
+            settings.serial_settings = "Minimal"
         elif model in model_array.LegacyGPU:
             settings.disable_cs_lv = True
 

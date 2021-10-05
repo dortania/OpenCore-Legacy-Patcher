@@ -101,7 +101,7 @@ class Constants:
         ## SMBIOS Settings
         self.custom_cpu_model = 2  #        Patch type value
         self.custom_cpu_model_value = ""  # New CPU name within About This Mac
-        self.serial_settings = "Minimal"  # Set SMBIOS level used
+        self.serial_settings = "None"  #    Set SMBIOS level used
         self.override_smbios = "Default"  # Set SMBIOS model used
 
         ## Latebloom Settings
@@ -144,6 +144,7 @@ class Constants:
         self.set_alc_usage = True  #         Set AppleALC usage
         self.dGPU_switch = True  #           Set Display GPU Switching for Windows
         self.force_surplus = False  #        Force SurPlus patch in newer OSes
+        self.set_kext_usage = True  #        Set Kext usage
 
         # OS Versions
         ## Based off Major Kernel Version
