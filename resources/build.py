@@ -825,23 +825,7 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = macserial_output[0]
             self.config["PlatformInfo"]["Generic"]["MLB"] = macserial_output[1]
             self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
-        
-        def no_smbios_patch(self):
-            # Still ensure Firmware Features are updated correctly
-            fw_feature = generate_smbios.generate_fw_features(self.model, self.constants.custom_model)
-            fw_feature = hex(fw_feature).lstrip("0x").rstrip("L").strip()
-            print(f"- Setting Firmware Feature: {fw_feature}")
-            fw_feature = utilities.string_to_hex(fw_feature)
-
-            # FirmwareFeatures
-            self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeatures"] = fw_feature
-            self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeaturesMask"] = fw_feature
-            self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeatures"] = fw_feature
-            self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeaturesMask"] = fw_feature
-
-            # Update tables
-            self.config["PlatformInfo"]["UpdateNVRAM"] = True
-            self.config["PlatformInfo"]["UpdateSMBIOS"] = True
+    
 
         if self.constants.serial_settings == "Moderate":
             print("- Using Moderate SMBIOS patching")
@@ -853,10 +837,6 @@ class BuildOpenCore:
             print("- Using Minimal SMBIOS patching")
             self.spoofed_model = self.model
             minimal_serial_patch(self)
-        elif self.constants.serial_settings == "None":
-            if self.constants.allow_oc_everywhere is False:
-                print("- Using Basic FirmwareFeatures patching")
-                no_smbios_patch(self)
 
         # USB Map and CPUFriend Patching
         if (
@@ -873,7 +853,7 @@ class BuildOpenCore:
                 else:
                     try:
                         map_config["IOKitPersonalities_x86_64"][entry]["model"] = self.spoofed_model
-                        if self.constants.serial_settings == "Minimal":
+                        if self.constants.serial_settings in ["Minimal", "None"]:
                             if map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "EH01":
                                 map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] = "EHC1"
                             if map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "EH02":
