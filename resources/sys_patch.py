@@ -795,7 +795,7 @@ set million colour before rebooting"""
             print("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
 
         if self.check_board_id is True and (
-            self.computer.reported_board_id not in self.constants.sandy_board_id or
+            self.computer.reported_board_id not in self.constants.sandy_board_id and
             self.computer.reported_board_id not in self.constants.sandy_board_id_stock
             ):
             print("\nCannot patch! Board ID not supported by AppleIntelSNBGraphicsFB")
