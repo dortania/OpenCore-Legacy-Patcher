@@ -13,8 +13,9 @@ from resources import device_probe
 class Constants:
     def __init__(self):
         # Patcher Versioning
-        self.patcher_version = "0.3.0"  #              OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.1.5"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.1.6"  #  PatcherSupportPkg
+        self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
+        self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
@@ -54,7 +55,7 @@ class Constants:
 
         ## Dortania
         ## https://github.com/dortania
-        self.backlight_injector_version = "1.0.0"  # BacklightInjector
+        self.backlight_injector_version = "1.1.0"  # BacklightInjector
         self.smcspoof_version = "1.0.0"  #           SMC-Spoof
         self.mce_version = "1.0.0"  #                AppleMCEReporterDisabler
         self.btspoof_version = "1.0.0"  #            Bluetooth-Spoof
@@ -145,6 +146,7 @@ class Constants:
         self.dGPU_switch = True  #           Set Display GPU Switching for Windows
         self.force_surplus = False  #        Force SurPlus patch in newer OSes
         self.set_kext_usage = True  #        Set Kext usage
+        self.force_latest_psp = False  #     Force latest PatcherSupportPkg
 
         # OS Versions
         ## Based off Major Kernel Version
@@ -189,9 +191,6 @@ class Constants:
         self.arch_tesla = "NV50"
         self.arch_fermi = "GF100"
         self.arch_kepler = "GK100"
-
-        # External Files
-        self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
 
         self.legacy_accel_support = [
             self.mojave,
@@ -566,6 +565,10 @@ class Constants:
     @property
     def payload_apple_private_frameworks_path_brightness(self):
         return self.payload_apple_private_frameworks_path / Path("Brightness-Control")
+    
+    @property
+    def payload_apple_private_frameworks_path_legacy_drm(self):
+        return self.payload_apple_private_frameworks_path / Path("Legacy-GVA")
 
     # Apple Extensions
     # El Capitan Extensions

@@ -77,7 +77,7 @@ class generate_defaults():
         if utilities.amfi_status() is False:
             settings.amfi_status = False
 
-        if utilities.get_nvram("gpu-power-prefs", "FA4CE28D-B62F-4C99-9CC3-6815686E30F9"):
+        if model in ["MacBookPro8,2", "MacBookPro8,3"]:
             # Users disabling TS2 most likely have a faulty dGPU
             # users can override this in settings
             settings.allow_ts2_accel = False

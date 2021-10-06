@@ -117,7 +117,7 @@ class PatchSysVolume:
 
                 print("- Creating Backup folder")
                 utilities.process_status(
-                    self.elevated(
+                    utilities.elevated(
                         ["cp", "-r", f"{self.mount_location}/{location}", f"{self.mount_location}/{location}-Backup"],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT,
@@ -125,7 +125,7 @@ class PatchSysVolume:
                 )
                 print("- Zipping Backup folder")
                 utilities.process_status(
-                    self.elevated(
+                    utilities.elevated(
                         ["ditto", "-c", "-k", "--sequesterRsrc", "--keepParent", f"{self.mount_location}/{location}-Backup", f"{self.mount_location}/{location_zip}"],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT,
@@ -134,7 +134,7 @@ class PatchSysVolume:
 
                 print("- Removing Backup folder")
                 utilities.process_status(
-                    self.elevated(
+                    utilities.elevated(
                         ["rm", "-r", f"{self.mount_location}/{location}-Backup"],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT,
@@ -397,6 +397,7 @@ set million colour before rebooting"""
             self.gpu_accel_legacy()
             self.add_new_binaries(sys_patch_data.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
             self.gpu_accel_legacy_sandybridge_board_id()
+            self.gpu_accel_legacy_gva()
         else:
             print("- Installing basic Sandy Bridge Framebuffer Kext patches for generic OS")
             self.add_new_binaries(sys_patch_data.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
@@ -435,6 +436,10 @@ set million colour before rebooting"""
         else:
             print("- Installing Kepler Kext patches for generic OS")
             self.add_new_binaries(sys_patch_data.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
+    
+    def gpu_accel_legacy_gva(self):
+        print("- Merging AppleGVA Hardware Accel patches for non-Metal")
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_legacy_drm}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
 
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
