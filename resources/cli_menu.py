@@ -854,7 +854,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 ],
                 [
                     f"Set Secure Boot Model (SBM):\t\tCurrently {self.constants.secure_status}",
-                    MenuOptions(self.constants.custom_model or self.constant.computer.real_model, self.constants).change_sbm,
+                    MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_sbm,
                 ],
                 [f"Set Vault Mode:\t\t\t\tCurrently {self.constants.vault}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_vault],
             ]

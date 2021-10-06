@@ -117,7 +117,7 @@ class PatchSysVolume:
 
                 print("- Creating Backup folder")
                 utilities.process_status(
-                    self.elevated(
+                    utilities.elevated(
                         ["cp", "-r", f"{self.mount_location}/{location}", f"{self.mount_location}/{location}-Backup"],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT,
@@ -125,7 +125,7 @@ class PatchSysVolume:
                 )
                 print("- Zipping Backup folder")
                 utilities.process_status(
-                    self.elevated(
+                    utilities.elevated(
                         ["ditto", "-c", "-k", "--sequesterRsrc", "--keepParent", f"{self.mount_location}/{location}-Backup", f"{self.mount_location}/{location_zip}"],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT,
@@ -134,7 +134,7 @@ class PatchSysVolume:
 
                 print("- Removing Backup folder")
                 utilities.process_status(
-                    self.elevated(
+                    utilities.elevated(
                         ["rm", "-r", f"{self.mount_location}/{location}-Backup"],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT,
