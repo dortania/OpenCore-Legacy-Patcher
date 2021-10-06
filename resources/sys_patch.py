@@ -390,15 +390,30 @@ set million colour before rebooting"""
             print("- Installing Sandy Bridge Acceleration Kext patches for Mojave/Catalina")
             self.gpu_accel_legacy()
             self.add_new_binaries(sys_patch_data.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
+            self.gpu_accel_legacy_sandybridge_board_id()
         elif self.constants.detected_os in [self.constants.big_sur, self.constants.monterey]:
             print("- Installing Sandy Bridge Acceleration Kext patches for Big Sur/Monterey")
             self.delete_old_binaries(sys_patch_data.DeleteNvidiaAccel11)
             self.gpu_accel_legacy()
             self.add_new_binaries(sys_patch_data.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
+            self.gpu_accel_legacy_sandybridge_board_id()
+            self.gpu_accel_legacy_gva()
         else:
             print("- Installing basic Sandy Bridge Framebuffer Kext patches for generic OS")
             self.add_new_binaries(sys_patch_data.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
-
+            self.gpu_accel_legacy_sandybridge_board_id()
+    
+    def gpu_accel_legacy_sandybridge_board_id(self):
+        if self.computer.reported_board_id in self.constants.sandy_board_id_stock:
+            print("- Using stock AppleIntelSNBGraphicsFB")
+            self.add_new_binaries(sys_patch_data.AddIntelGen2AccelStock, self.constants.legacy_intel_gen2_path)
+            # Rename kext
+            utilities.process_status(utilities.elevated(["mv", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB-Clean.kext", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        else:
+            # Adjust board ID for spoofs
+            print("- Installing modified AppleIntelSNBGraphicsFB")
+            self.add_new_binaries(sys_patch_data.AddIntelGen2AccelPatched, self.constants.legacy_intel_gen2_path)
+    
     def gpu_framebuffer_ivybridge_master(self):
         if self.constants.detected_os == self.constants.monterey:
             print("- Installing IvyBridge Acceleration Kext patches for Monterey")
@@ -421,6 +436,10 @@ set million colour before rebooting"""
         else:
             print("- Installing Kepler Kext patches for generic OS")
             self.add_new_binaries(sys_patch_data.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
+    
+    def gpu_accel_legacy_gva(self):
+        print("- Merging AppleGVA Hardware Accel patches for non-Metal")
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_legacy_drm}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
 
     def gpu_accel_legacy_extended(self):
         print("- Merging general legacy Frameworks")
@@ -780,11 +799,15 @@ set million colour before rebooting"""
             print("\nCannot patch! Please disable AMFI.")
             print("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
 
-        if self.check_board_id is True and self.computer.reported_board_id not in self.constants.sandy_board_id:
+        if self.check_board_id is True and (
+            self.computer.reported_board_id not in self.constants.sandy_board_id and
+            self.computer.reported_board_id not in self.constants.sandy_board_id_stock
+            ):
             print("\nCannot patch! Board ID not supported by AppleIntelSNBGraphicsFB")
             print(f"Detected Board ID: {self.computer.reported_board_id}")
             print("Please ensure your Board ID is listed below:")
             print("\n".join(self.constants.sandy_board_id))
+            print("\n".join(self.constants.sandy_board_id_stock))
             self.bad_board_id = True
 
         if self.dosdude_patched is True:

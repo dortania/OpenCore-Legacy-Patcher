@@ -26,7 +26,7 @@
 - Add Legacy GMUX patchsets
   - Applicable for dual GPU MacBookPro5,x and demuxed MacBookPro8,x
 - Increment Binaries:
-  - PatcherSupportPkg 0.1.5 release
+  - PatcherSupportPkg 0.1.6 release
   - RestrictEvents  1.0.5 rolling (2430ed0)
 - Limit MacBookPro6,2 G State
   - Works around crashing when switching GPUs
@@ -37,6 +37,8 @@
 - Resolve dGPU output on MacBookPro10,1
 - Add Panel ID `9cd6` for iMac11,3
   - Resolves Brightness control
+- Add AppleGVA patch set for HD3000 machines
+  - Mainly applicable for iMac12,x and iGPU-only MacBooks
 
 ## 0.2.5
 

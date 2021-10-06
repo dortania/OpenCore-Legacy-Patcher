@@ -13,8 +13,9 @@ from resources import device_probe
 class Constants:
     def __init__(self):
         # Patcher Versioning
-        self.patcher_version = "0.3.0"  #              OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.1.5"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.1.6"  #  PatcherSupportPkg
+        self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
+        self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
@@ -144,6 +145,7 @@ class Constants:
         self.set_alc_usage = True  #         Set AppleALC usage
         self.dGPU_switch = True  #           Set Display GPU Switching for Windows
         self.force_surplus = False  #        Force SurPlus patch in newer OSes
+        self.force_latest_psp = False  #     Force latest PatcherSupportPkg
 
         # OS Versions
         ## Based off Major Kernel Version
@@ -188,9 +190,6 @@ class Constants:
         self.arch_tesla = "NV50"
         self.arch_fermi = "GF100"
         self.arch_kepler = "GK100"
-
-        # External Files
-        self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
 
         self.legacy_accel_support = [
             self.mojave,
@@ -565,6 +564,10 @@ class Constants:
     @property
     def payload_apple_private_frameworks_path_brightness(self):
         return self.payload_apple_private_frameworks_path / Path("Brightness-Control")
+    
+    @property
+    def payload_apple_private_frameworks_path_legacy_drm(self):
+        return self.payload_apple_private_frameworks_path / Path("Legacy-GVA")
 
     # Apple Extensions
     # El Capitan Extensions
@@ -658,4 +661,16 @@ class Constants:
         "Mac-937CB26E2E02BB01",  # MacBookAir7,2
         "Mac-35C5E08120C7EEAF",  # Macmini7,1
         "Mac-7BA5B2D9E42DDD94",  # iMacPro1,1
+    ]
+
+    sandy_board_id_stock = [
+        "Mac-94245B3640C91C81",  # MacBookPro8,1
+        "Mac-94245A3940C91C80",  # MacBookPro8,2
+        "Mac-942459F5819B171B",  # MacBookPro8,3
+        "Mac-C08A6BB70A942AC2",  # MacBookAir4,1
+        "Mac-742912EFDBEE19B3",  # MacBookAir4,2
+        "Mac-8ED6AF5B48C039E1",  # Macmini5,1   
+        "Mac-7BA5B2794B2CDB12",  # Macmini5,3   
+        "Mac-942B5BF58194151B",  # iMac12,1     
+        "Mac-942B59F58194171B",  # iMac12,2     
     ]
