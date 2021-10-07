@@ -159,9 +159,17 @@ AddIntelGen2Accel = [
     "AppleIntelHD3000GraphicsGA.plugin",
     "AppleIntelHD3000GraphicsGLDriver.bundle",
     "AppleIntelHD3000GraphicsVADriver.bundle",
-    "AppleIntelSNBGraphicsFB.kext",
+    # "AppleIntelSNBGraphicsFB.kext",
     "AppleIntelSNBVA.bundle",
 ]
+
+AddIntelGen2AccelStock = [
+    "AppleIntelSNBGraphicsFB-Clean.kext",
+]
+
+AddIntelGen2AccelPatched = [
+    "AppleIntelSNBGraphicsFB.kext",
+],
 
 AddIntelGen3Accel = [
     "AppleIntelFramebufferCapri.kext",
