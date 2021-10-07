@@ -712,12 +712,17 @@ the event there's issues.
                 """Many thanks to the following:
 
   - Acidanthera:\tOpenCore, kexts and other tools
-  - Khronokernel:\tWriting and maintaining this patcher
   - DhinakG:\t\tWriting and maintaining this patcher
+  - Khronokernel:\tWriting and maintaining this patcher
   - ASentientBot:\tLegacy Acceleration Patches
   - Ausdauersportler:\tLinking fixes for SNBGraphicsFB and AMDX3000
-  - Syncretic:\t\tAAAMouSSE and telemetrap
-  - cdf:\t\tNightShiftEnabler and Innie"""
+  - Syncretic:\t\tAAAMouSSE, telemetrap, and SurPlus
+  - cdf:\t\tNightShiftEnabler and Innie
+  - parrotgeek1:\tVMM Patch Set
+
+Source Code:
+https://github.com/dortania/OpenCore-Legacy-Patcher
+  """
             ],
         ).start()
 
