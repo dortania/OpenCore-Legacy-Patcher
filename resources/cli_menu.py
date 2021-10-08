@@ -854,7 +854,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 #     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_amfi,
                 # ],
                 [
-                    f"Set System Intrgity Protection (SIP):\tCurrently {self.constants.sip_status}",
+                    f"Set System Integrity Protection (SIP):\tCurrently {self.constants.sip_status}",
                     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_sip,
                 ],
                 [
