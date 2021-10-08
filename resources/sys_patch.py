@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import zipfile
 from pathlib import Path
+import sys
 
 from resources import constants, device_probe, utilities
 from data import sip_data, sys_patch_data, model_array
@@ -236,8 +237,16 @@ class PatchSysVolume:
                     input("Press [ENTER] to continue with kernel and dyld cache merging")
             if self.constants.detected_os > self.constants.catalina:
                 print("- Creating new APFS snapshot")
-                utilities.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                self.unmount_drive()
+                bless = utilities.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                if bless.returncode != 0:
+                    print("- Unable to create new snapshot")
+                    print("Reason for snapshot failure:")
+                    print(bless.stdout.decode())
+                    if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
+                        print("- This is an APFS bug with Monterey! Perform a clean installation to ensure your APFS volume is built correctly")
+                    sys.exit(1)
+                else:
+                    self.unmount_drive()
             else:
                 if self.constants.detected_os == self.constants.catalina:
                     print("- Merging kernel cache")

@@ -12,7 +12,7 @@ def set_smbios_model_spoof(model):
                 return "MacBookAir7,1"
             else:
                 # Unknown Model
-                raise Exception
+                raise Exception(f"Unknown SMBIOS for spoofing: {model}")
         elif model.startswith("MacBookPro"):
             if smbios_data.smbios_dictionary[model]["Screen Size"] == 13:
                 return "MacBookPro12,1"
@@ -25,7 +25,7 @@ def set_smbios_model_spoof(model):
                     return "MacBookPro11,4"
             else:
                 # Unknown Model
-                raise Exception
+                raise Exception(f"Unknown SMBIOS for spoofing: {model}")
         elif model.startswith("MacBook"):
             if smbios_data.smbios_dictionary[model]["Screen Size"] == 13:
                 return "MacBookAir7,2"
@@ -33,10 +33,10 @@ def set_smbios_model_spoof(model):
                 return "MacBook9,1"
             else:
                 # Unknown Model
-                raise Exception
+                raise Exception(f"Unknown SMBIOS for spoofing: {model}")
         else:
             # Unknown Model
-            raise Exception
+            raise Exception(f"Unknown SMBIOS for spoofing: {model}")
     except KeyError:
         # Found desktop model
         if model.startswith("MacPro") or model.startswith("Xserve"):
@@ -51,7 +51,7 @@ def set_smbios_model_spoof(model):
                 return "iMac17,1"
         else:
             # Unknown Model
-            raise Exception
+            raise Exception(f"Unknown SMBIOS for spoofing: {model}")
 
 def update_firmware_features(firmwarefeature):
     # Adjust FirmwareFeature to support everything macOS requires

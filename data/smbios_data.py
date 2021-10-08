@@ -1585,4 +1585,15 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
     },
 
+    "AAPLJ53,1": {
+        # AppleInternal MacBookPro11,4
+        "Board ID": "Mac-C08A65A66A9A3BA2",
+        "FirmwareFeatures": None,
+        "SecureBootModel": None,
+        "CPU Generation": cpu_data.cpu_data.haswell.value,
+        "Max OS Supported": os_data.os_data.mavericks,
+        "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
+        "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+    },
+
 }
