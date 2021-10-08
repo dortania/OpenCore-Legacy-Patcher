@@ -413,15 +413,34 @@ set million colour before rebooting"""
             self.gpu_accel_legacy_sandybridge_board_id()
     
     def gpu_accel_legacy_sandybridge_board_id(self):
-        if self.computer.reported_board_id in self.constants.sandy_board_id_stock:
+        if self.constants.computer.reported_board_id in self.constants.sandy_board_id_stock:
             print("- Using stock AppleIntelSNBGraphicsFB")
-            self.add_new_binaries(sys_patch_data.AddIntelGen2AccelStock, self.constants.legacy_intel_gen2_path)
+            # TODO: Clean this function up
+            # add_new_binaries() and delete_old_binaries() have a bug when the passed array has a single element
+            #   'TypeError: expected str, bytes or os.PathLike object, not list'
+            # This is a temporary workaround to fix that
+            utilities.elevated(["rm", "-r", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB-Clean.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["rm", "-r", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            # Add kext
+            print("- Adding AppleIntelSNBGraphicsFB.kext")
+            utilities.elevated(["cp", "-r", f"{self.constants.legacy_intel_gen2_path}/AppleIntelSNBGraphicsFB-Clean.kext", f"{self.mount_extensions}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             # Rename kext
-            utilities.process_status(utilities.elevated(["mv", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB-Clean.kext", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.elevated(["mv", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB-Clean.kext", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            # Fix permissions
+            utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            
         else:
             # Adjust board ID for spoofs
-            print("- Installing modified AppleIntelSNBGraphicsFB")
-            self.add_new_binaries(sys_patch_data.AddIntelGen2AccelPatched, self.constants.legacy_intel_gen2_path)
+            print("- Using Board ID patched AppleIntelSNBGraphicsFB")
+            utilities.elevated(["rm", "-r", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB-Clean.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["rm", "-r", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            # Add kext
+            print("- Adding AppleIntelSNBGraphicsFB.kext")
+            utilities.elevated(["cp", "-r", f"{self.constants.legacy_intel_gen2_path}/AppleIntelSNBGraphicsFB.kext", f"{self.mount_extensions}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            # Fix permissions
+            utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     
     def gpu_framebuffer_ivybridge_master(self):
         if self.constants.detected_os == self.constants.monterey:
