@@ -19,7 +19,7 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
 * EHCx and XHC1 Patches
   * Reason: Required for proper USB operation
   * Logic: Avoids USB maps of newer models attaching and breaking USB port functionality
-  * Models: All models require
+  * Models: All models require when spoofing with Moderate or Advanced SMBIOS
 
 ### Booter -> Quirks
 
@@ -53,11 +53,11 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
 * SMC Patch
   * Reason: Required to avoid SMC Firmware updates
   * Logic: Patches out `smc-version` in AppleSMC.kext, requires SMC-Spoof.kext for full functionality
-  * Models: All models require
+  * Models: All models require when spoofing SMBIOS
 * IOHIDFamily Patch
   * Reason: Required for HID peripheral support in macOS on older hardware
   * Logic: Tricks IOHIDFamily into thinking it's always booting recovery
-  * Models: [2010 and older](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/79ab028b0a039e97a528e0b99c876d95d9c2d41d/Resources/ModelArray.py#L310-L332)
+  * Models: Penryn CPUs (Core2 series)
 
 ### Kernel -> Quirks
 
@@ -196,15 +196,13 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 
 Unfortunately certain on-disk patches are required to achieve full functionality. Below is a breakdown of patches supported
 
-Note, GPU Acceleration Patches are not public yet, the below section is simply documentation for easier research with new aids.
-
 ::: details Audio Patches
 
 ### Extensions
 
 * AppleHDA
-  * Reason: Re-add High Sierra's AppleHDA to achieve audio support
-  * Models: 2011 and older Macs (excluding MacPro4,1+)
+  * Reason: Re-add El Capitan's AppleHDA to achieve audio support
+  * Models: iMac7,1 and iMac8,1
 
 :::
 

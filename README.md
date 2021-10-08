@@ -55,10 +55,12 @@ Nightly builds can be found here courteous of nightly.link:
   * Mac Pro on OpenCore Patch set and documentation
   * [Innie](https://github.com/cdf/Innie) and [NightShiftEnabler](https://github.com/cdf/NightShiftEnabler)
 * [Syncretic](https://forums.macrumors.com/members/syncretic.1173816/)
-  * [AAAMouSSE](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/) and [telemetrap](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/post-28447707)
+  * [AAAMouSSE](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/), [telemetrap](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/post-28447707) and [SurPlus](https://github.com/reenigneorcim/SurPlus)
 * [dosdude1](https://github.com/dosdude1)
   * Main author of GUI
   * Development of previous patchers, laying out much of what needs to be patched
+* [parrotgeek1](https://github.com/parrotgeek1)
+  * [VMM Patch Set](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/4a8f61a01da72b38a4b2250386cc4b497a31a839/payloads/Config/config.plist#L1222-L1281)
 * [BarryKN](https://github.com/BarryKN)
   * Development of previous patchers, laying out much of what needs to be patched
 * [mario_bros_tech](https://github.com/mariobrostech) and the rest of the Unsupported Mac Discord

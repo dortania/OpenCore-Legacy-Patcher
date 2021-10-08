@@ -257,6 +257,10 @@ class Constants:
     @property
     def restrictevents_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-v{self.restrictevents_version}.zip")
+    
+    @property
+    def efi_disabler_path(self):
+        return self.payload_kexts_path / Path(f"Acidanthera/EFICheckDisabler-v{self.restrictevents_version}.zip")
 
     @property
     def restrictevents_mbp_path(self):

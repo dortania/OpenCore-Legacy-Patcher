@@ -39,6 +39,8 @@
   - Resolves Brightness control
 - Add AppleGVA patch set for HD3000 machines
   - Mainly applicable for iMac12,x and iGPU-only MacBooks
+- Add EFICheckDisabler
+  - Based off stripped RestrictEvents.kext
 
 ## 0.2.5
 
