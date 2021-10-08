@@ -237,7 +237,7 @@ class PatchSysVolume:
                     input("Press [ENTER] to continue with kernel and dyld cache merging")
             if self.constants.detected_os > self.constants.catalina:
                 print("- Creating new APFS snapshot")
-                bless = utilities.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                bless = utilities.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 if bless.returncode != 0:
                     print("- Unable to create new snapshot")
                     print("Reason for snapshot failure:")
