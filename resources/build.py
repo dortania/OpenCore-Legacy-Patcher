@@ -159,7 +159,7 @@ class BuildOpenCore:
                 # Applicable for pre-Ivy Bridge models
                 self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
     
-        if self.constants.allow_oc_everywhere is False or self.constants.serial_settings != "None":
+        if self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None":
             if (smbios_data.smbios_dictionary[generate_smbios.set_smbios_model_spoof(self.model) or self.constants.override_smbios]["SecureBootModel"]) != None:
                 # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
                 # Forces VMM patch instead
