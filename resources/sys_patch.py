@@ -12,7 +12,7 @@ import zipfile
 from pathlib import Path
 import sys
 
-from resources import constants, device_probe, utilities
+from resources import constants, device_probe, utilities, generate_smbios
 from data import sip_data, sys_patch_data, model_array
 
 
@@ -837,8 +837,11 @@ set million colour before rebooting"""
             print("\nCannot patch! Board ID not supported by AppleIntelSNBGraphicsFB")
             print(f"Detected Board ID: {self.computer.reported_board_id}")
             print("Please ensure your Board ID is listed below:")
-            print("\n".join(self.constants.sandy_board_id))
-            print("\n".join(self.constants.sandy_board_id_stock))
+            for board in self.constants.sandy_board_id:
+                print(f"- {board} ({generate_smbios.find_model_off_board(board)})")
+            for board in self.constants.sandy_board_id_stock:
+                print(f"- {board} ({generate_smbios.find_model_off_board(board)})")
+
             self.bad_board_id = True
 
         if self.dosdude_patched is True:

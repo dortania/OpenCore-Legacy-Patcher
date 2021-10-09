@@ -648,7 +648,10 @@ class Constants:
         "Mac-C08A6BB70A942AC2",  # MacBookAir4,1
         "Mac-742912EFDBEE19B3",  # MacBookAir4,2
         "Mac-8ED6AF5B48C039E1",  # Macmini5,1
+        "Mac-4BC72D62AD45599E",  # Macmini5,2
         "Mac-7BA5B2794B2CDB12",  # Macmini5,3
         "Mac-942B5BF58194151B",  # iMac12,1
         "Mac-942B59F58194171B",  # iMac12,2
+        "Mac-94245AF5819B141B",  # AppleInternal MacBookPro8,3
+        "Mac-942B5B3A40C91381",  # AppleInternal iMac12,2
     ]
