@@ -237,7 +237,9 @@ class PatchSysVolume:
                     input("Press [ENTER] to continue with kernel and dyld cache merging")
             if self.constants.detected_os > self.constants.catalina:
                 print("- Creating new APFS snapshot")
-                bless = utilities.elevated(["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                bless = utilities.elevated(
+                    ["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+                )
                 if bless.returncode != 0:
                     print("- Unable to create new snapshot")
                     print("Reason for snapshot failure:")
@@ -268,7 +270,7 @@ set million colour before rebooting"""
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
         utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-    
+
     def delete_old_binaries(self, vendor_patch):
         for delete_current_kext in vendor_patch:
             delete_path = Path(self.mount_extensions) / Path(delete_current_kext)
@@ -288,7 +290,6 @@ set million colour before rebooting"""
             utilities.process_status(utilities.elevated(["cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
 
     def add_brightness_patch(self):
         self.delete_old_binaries(sys_patch_data.DeleteBrightness)
@@ -313,11 +314,13 @@ set million colour before rebooting"""
         utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_libexec}/", self.mount_libexec], stdout=subprocess.PIPE)
         utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-    
+
     def add_legacy_mux_patch(self):
         self.delete_old_binaries(sys_patch_data.DeleteDemux)
         print("- Merging Legacy Mux Kext patches")
-        utilities.process_status(utilities.elevated(["cp", "-R", f"{self.constants.legacy_mux_path}/AppleMuxControl.kext", self.mount_extensions_mux], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(
+            utilities.elevated(["cp", "-R", f"{self.constants.legacy_mux_path}/AppleMuxControl.kext", self.mount_extensions_mux], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        )
 
     def gpu_accel_legacy(self):
         if self.constants.detected_os == self.constants.mojave:
@@ -411,7 +414,7 @@ set million colour before rebooting"""
             print("- Installing basic Sandy Bridge Framebuffer Kext patches for generic OS")
             self.add_new_binaries(sys_patch_data.AddIntelGen2Accel, self.constants.legacy_intel_gen2_path)
             self.gpu_accel_legacy_sandybridge_board_id()
-    
+
     def gpu_accel_legacy_sandybridge_board_id(self):
         if self.constants.computer.reported_board_id in self.constants.sandy_board_id_stock:
             print("- Using stock AppleIntelSNBGraphicsFB")
@@ -423,13 +426,17 @@ set million colour before rebooting"""
             utilities.elevated(["rm", "-r", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             # Add kext
             print("- Adding AppleIntelSNBGraphicsFB.kext")
-            utilities.elevated(["cp", "-r", f"{self.constants.legacy_intel_gen2_path}/AppleIntelSNBGraphicsFB-Clean.kext", f"{self.mount_extensions}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(
+                ["cp", "-r", f"{self.constants.legacy_intel_gen2_path}/AppleIntelSNBGraphicsFB-Clean.kext", f"{self.mount_extensions}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            )
             # Rename kext
-            utilities.elevated(["mv", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB-Clean.kext", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(
+                ["mv", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB-Clean.kext", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            )
             # Fix permissions
             utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            
+
         else:
             # Adjust board ID for spoofs
             print("- Using Board ID patched AppleIntelSNBGraphicsFB")
@@ -441,7 +448,7 @@ set million colour before rebooting"""
             # Fix permissions
             utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/AppleIntelSNBGraphicsFB.kext"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    
+
     def gpu_framebuffer_ivybridge_master(self):
         if self.constants.detected_os == self.constants.monterey:
             print("- Installing IvyBridge Acceleration Kext patches for Monterey")
@@ -464,7 +471,7 @@ set million colour before rebooting"""
         else:
             print("- Installing Kepler Kext patches for generic OS")
             self.add_new_binaries(sys_patch_data.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
-    
+
     def gpu_accel_legacy_gva(self):
         print("- Merging AppleGVA Hardware Accel patches for non-Metal")
         utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_legacy_drm}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
@@ -590,7 +597,7 @@ set million colour before rebooting"""
         if self.legacy_wifi is True:
             print("- Installing legacy Wireless support")
             self.add_wifi_patch()
-        
+
         if self.legacy_gmux is True:
             print("- Installing Legacy Mux Brightness support")
             self.add_legacy_mux_patch()
@@ -714,7 +721,7 @@ set million colour before rebooting"""
             self.amd_ts2 = False
             self.iron_gpu = False
             self.sandy_gpu = False
-    
+
     def detect_demux(self):
         # If GFX0 is missing, assume machine was demuxed
         # -wegnoegpu would also trigger this, so ensure arg is not present
@@ -724,7 +731,6 @@ set million colour before rebooting"""
             if igpu and not dgpu:
                 return True
         return False
-            
 
     def detect_patch_set(self):
         self.detect_gpus()
@@ -744,7 +750,7 @@ set million colour before rebooting"""
         ) or (isinstance(self.constants.computer.wifi, device_probe.Atheros) and self.constants.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
             if self.constants.detected_os > self.constants.big_sur:
                 self.legacy_wifi = True
-        
+
         if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
             # Sierra uses a legacy GMUX control method needed for dGPU switching on MacBookPro5,x
             # Same method is also used for demuxed machines
@@ -827,10 +833,7 @@ set million colour before rebooting"""
             print("\nCannot patch! Please disable AMFI.")
             print("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
 
-        if self.check_board_id is True and (
-            self.computer.reported_board_id not in self.constants.sandy_board_id and
-            self.computer.reported_board_id not in self.constants.sandy_board_id_stock
-            ):
+        if self.check_board_id is True and (self.computer.reported_board_id not in self.constants.sandy_board_id and self.computer.reported_board_id not in self.constants.sandy_board_id_stock):
             print("\nCannot patch! Board ID not supported by AppleIntelSNBGraphicsFB")
             print(f"Detected Board ID: {self.computer.reported_board_id}")
             print("Please ensure your Board ID is listed below:")

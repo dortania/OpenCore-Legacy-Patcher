@@ -2,7 +2,8 @@
 from resources import utilities, device_probe
 from data import model_array
 
-class generate_defaults():
+
+class generate_defaults:
     def probe(model, host_is_target, settings):
         # Generate Default Data
         # Takes in Settings data set, and returns updated Settings
@@ -48,7 +49,6 @@ class generate_defaults():
             settings.secure_status = False  # Modified root volume
             settings.allow_fv_root = True  #  Allow FileVault on broken seal
             # settings.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
-        
 
         if model == "MacBook8,1":
             # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing

@@ -7,13 +7,13 @@ from typing import NewType, Union
 import subprocess
 
 try:
-	import objc
+    import objc
 except ImportError:
-	subprocess.run(["pip3", "install", "pyobjc"], stdout=subprocess.PIPE)
-	try:
-		import objc
-	except ImportError:
-		raise Exception("Missing PyObjc library!\nPlease run the following before starting OCLP:\npip3 install pyobjc")
+    subprocess.run(["pip3", "install", "pyobjc"], stdout=subprocess.PIPE)
+    try:
+        import objc
+    except ImportError:
+        raise Exception("Missing PyObjc library!\nPlease run the following before starting OCLP:\npip3 install pyobjc")
 
 from CoreFoundation import CFRelease, kCFAllocatorDefault  # type: ignore # pylint: disable=no-name-in-module
 from Foundation import NSBundle  # type: ignore # pylint: disable=no-name-in-module

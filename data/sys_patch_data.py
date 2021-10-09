@@ -169,7 +169,7 @@ AddIntelGen2AccelStock = [
 
 AddIntelGen2AccelPatched = [
     "AppleIntelSNBGraphicsFB.kext",
-],
+]
 
 AddIntelGen3Accel = [
     "AppleIntelFramebufferCapri.kext",

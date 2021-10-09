@@ -129,6 +129,7 @@ def amfi_status():
     else:
         return True
 
+
 def check_kext_loaded(kext_name, os_version):
     if os_version > constants.Constants().catalina:
         kext_loaded = subprocess.run(["kmutil", "showloaded", "--list-only", "--variant-suffix", "release"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -138,6 +139,7 @@ def check_kext_loaded(kext_name, os_version):
         return True
     else:
         return False
+
 
 def check_oclp_boot():
     if get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True):
@@ -194,7 +196,10 @@ def patching_status(os_sip, os):
         # Catalina and older supports individually disabling Library Validation
         amfi_enabled = False
 
-    if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in constants.Constants.sbm_values:
+    if (
+        get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False)
+        and get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in constants.Constants().sbm_values
+    ):
         sbm_enabled = False
 
     if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
@@ -232,6 +237,7 @@ def cls():
             os.system("cls" if os.name == "nt" else "clear")
         else:
             print("\u001Bc")
+
 
 def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
     # TODO: Properly fix for El Capitan, which does not print the XML representation even though we say to
@@ -299,6 +305,7 @@ def download_file(link, location):
             chunk = file.read(1024 * 1024 * 16)
     return checksum
 
+
 def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
     # When runnign through our GUI, we run as root, however we do not get uid 0
     # Best to assume CLI is running as root
@@ -306,6 +313,7 @@ def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
         return subprocess.run(*args, **kwargs)
     else:
         return subprocess.run(["sudo"] + [args[0][0]] + args[0][1:], **kwargs)
+
 
 def check_cli_args():
     parser = argparse.ArgumentParser()
@@ -339,15 +347,11 @@ def check_cli_args():
     # validation args
     parser.add_argument("--validate", help="Runs Validation Tests for CI", action="store_true", required=False)
     args = parser.parse_args()
-    if not(
-        args.build or 
-        args.patch_sys_vol or 
-        args.unpatch_sys_vol or 
-        args.validate
-    ):
+    if not (args.build or args.patch_sys_vol or args.unpatch_sys_vol or args.validate):
         return None
     else:
         return args
+
 
 # def menu(title, prompt, menu_options, add_quit=True, auto_number=False, in_between=[], top_level=False):
 #     return_option = ["Q", "Quit", None] if top_level else ["B", "Back", None]

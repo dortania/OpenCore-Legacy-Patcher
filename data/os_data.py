@@ -1,5 +1,6 @@
 import enum
 
+
 class os_data(enum.IntEnum):
     # OS Versions, Based off Major Kernel Version
     tiger = 8

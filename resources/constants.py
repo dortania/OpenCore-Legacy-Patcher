@@ -13,7 +13,7 @@ from resources import device_probe
 class Constants:
     def __init__(self):
         # Patcher Versioning
-        self.patcher_version = "0.3.0" # OpenCore-Legacy-Patcher
+        self.patcher_version = "0.3.0"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version = "0.1.6"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
@@ -165,33 +165,6 @@ class Constants:
         self.big_sur = 20
         self.monterey = 21
 
-        # Vendor IDs
-        self.pci_nvidia = "10DE"
-        self.pci_amd_ati = "1002"
-        self.pci_intel = "8086"
-        self.pci_broadcom = "14E4"
-        self.pci_atheros = "168C"
-        self.pci_apple = "106B"
-        self.pci_aquantia = "1D6A"
-        self.pci_marvell = "11AB"
-        self.pci_syskonnect = "1148"
-
-        # Class Codes
-        ## https://pci-ids.ucw.cz/read/PD
-        self.classcode_sata = "01060100"
-        self.classcode_nvme = "02080100"
-        self.classcode_nvme_generic = "02800100"
-        self.classcode_wifi = "00800200"
-        self.classcode_gpu = "00000300"
-        self.classcode_gpu_variant = "00800300"
-        self.classcode_xhci = "30030C00"
-        self.classcode_ethernet = "00000200"
-
-        # Nvidia GPU Architecture
-        self.arch_tesla = "NV50"
-        self.arch_fermi = "GF100"
-        self.arch_kepler = "GK100"
-
         self.legacy_accel_support = [
             self.mojave,
             self.catalina,
@@ -256,7 +229,7 @@ class Constants:
     @property
     def restrictevents_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-v{self.restrictevents_version}.zip")
-    
+
     @property
     def efi_disabler_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/EFICheckDisabler-v{self.restrictevents_version}.zip")
@@ -569,7 +542,7 @@ class Constants:
     @property
     def payload_apple_private_frameworks_path_brightness(self):
         return self.payload_apple_private_frameworks_path / Path("Brightness-Control")
-    
+
     @property
     def payload_apple_private_frameworks_path_legacy_drm(self):
         return self.payload_apple_private_frameworks_path / Path("Legacy-GVA")
@@ -626,7 +599,7 @@ class Constants:
     @property
     def legacy_brightness(self):
         return self.payload_apple_kexts_path / Path("Brightness-Control")
-    
+
     @property
     def legacy_mux_path(self):
         return self.payload_apple_kexts_path / Path("Legacy-Mux")
@@ -674,8 +647,8 @@ class Constants:
         "Mac-942459F5819B171B",  # MacBookPro8,3
         "Mac-C08A6BB70A942AC2",  # MacBookAir4,1
         "Mac-742912EFDBEE19B3",  # MacBookAir4,2
-        "Mac-8ED6AF5B48C039E1",  # Macmini5,1   
-        "Mac-7BA5B2794B2CDB12",  # Macmini5,3   
-        "Mac-942B5BF58194151B",  # iMac12,1     
-        "Mac-942B59F58194171B",  # iMac12,2     
+        "Mac-8ED6AF5B48C039E1",  # Macmini5,1
+        "Mac-7BA5B2794B2CDB12",  # Macmini5,3
+        "Mac-942B5BF58194151B",  # iMac12,1
+        "Mac-942B59F58194171B",  # iMac12,2
     ]

@@ -26,7 +26,7 @@ class PCIDevice:
 
     vendor_id: int  # The vendor ID of this PCI device
     device_id: int  # The device ID of this PCI device
-    class_code: int  # The class code of this PCI device
+    class_code: int  # The class code of this PCI device - https://pci-ids.ucw.cz/read/PD
 
     # ioregistryentry: Optional[ioreg.IORegistryEntry] = None
     name: Optional[str] = None  # Name of IORegistryEntry

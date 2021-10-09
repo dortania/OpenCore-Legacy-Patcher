@@ -1,4 +1,3 @@
-
 import subprocess
 from resources import build
 from data import example_data, model_array
@@ -22,8 +21,9 @@ def validate(settings):
         example_data.MacPro.MacPro41_Modern_AMD,
         example_data.MacPro.MacPro41_51__Flashed_Modern_AMD,
     ]
-    
+
     settings.validate = True
+
     def build_prebuilt():
         for model in model_array.SupportedSMBIOS:
             print(f"Validating predefined model: {model}")
@@ -36,7 +36,7 @@ def validate(settings):
                 raise Exception(f"Validation failed for predefined model: {model}")
             else:
                 print(f"Validation succeeded for predefined model: {model}")
-    
+
     def build_dumps():
         for model in valid_dumps:
             settings.computer = model
@@ -50,7 +50,7 @@ def validate(settings):
                 raise Exception(f"Validation failed for predefined model: {settings.computer.real_model}")
             else:
                 print(f"Validation succeeded for predefined model: {settings.computer.real_model}")
-    
+
     # First run is with default settings
     build_prebuilt()
     build_dumps()
