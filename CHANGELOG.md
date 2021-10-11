@@ -41,6 +41,7 @@
   - Mainly applicable for iMac12,x and iGPU-only MacBooks
 - Add EFICheckDisabler
   - Based off stripped RestrictEvents.kext
+- Add SimpleMSR to disable missing battery throttling on Nehalem+ MacBooks
 
 ## 0.2.5
 

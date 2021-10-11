@@ -635,7 +635,7 @@ handle acceleration tasks.
         print("")
         print(self.constants.computer)
         input("\nPress [ENTER] to exit: ")
-    
+
     def applealc_support(self):
         utilities.cls()
         utilities.header(["Set AppleALC usage"])
@@ -659,7 +659,7 @@ If AppleALC is detected, the Patcher will not install AppleHDA.
             print("Returning to previous menu")
         else:
             self.applealc_support()
-    
+
     def dGPU_switch_support(self):
         utilities.cls()
         utilities.header(["Set Windows GMUX support"])
@@ -681,6 +681,35 @@ for Windows may prefer to only work with the dGPU and eGPU active.
         else:
             self.dGPU_switch_support()
     
+    def set_battery_throttle(self):
+        utilities.cls()
+        utilities.header(["Disable Firmware Throttling"])
+        print(
+            """
+By default on Nehalem and newer Macs, the firmware will throttle if
+the battery is either dead or missing. The firmware will set
+'BD PROCHOT' to notify the OS the machine needs to run in an extreme
+low power mode.
+
+Enabling this option will patch 'MSR_POWER_CTL' to be unset allowing
+proper CPU behaviour as if battery is present. Note that this can cause
+instability in situations where the CPU is being taxed and pulls more 
+power than the PSU can supply.
+
+Note: Only supported on Nehalem and newer MacBooks (2010+)
+        """
+        )
+
+        change_menu = input("Disable Firmware Throttling?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.disable_msr_power_ctl = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.disable_msr_power_ctl = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.set_battery_throttle()
+
     def set_surplus(self):
         utilities.cls()
         utilities.header(["Override SurPlus MaxKernel"])
@@ -706,7 +735,7 @@ the event there's issues.
             print("Returning to previous menu")
         else:
             self.set_surplus()
-    
+
     def credits(self):
         utilities.TUIOnlyPrint(
             ["Credits"],
@@ -752,7 +781,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 input("\nPress [ENTER] to continue")
         else:
             defaults.generate_defaults.probe(self.constants.custom_model, False, self.constants)
-    
+
     def PatchVolume(self):
         utilities.cls()
         utilities.header(["Patching System Volume"])
@@ -774,7 +803,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_unpatch()
         else:
             print("Returning to main menu")
-    
+
     def advanced_patcher_settings(self):
         response = None
         while not (response and response == -1):
@@ -794,7 +823,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 menu.add_menu_option(option[0], function=option[1])
 
             response = menu.start()
-    
 
     def patcher_settings(self):
         response = None
@@ -834,9 +862,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Enable OpenCore DEBUG:\tCurrently {self.constants.opencore_debug}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_oc],
                 [f"Enable Kext DEBUG:\t\tCurrently {self.constants.kext_debug}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_kext],
             ] + (
-                [
-                    [f"Set SurPlus Settings:\tCurrently {self.constants.force_surplus}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_surplus]
-                ]
+                [[f"Set SurPlus Settings:\tCurrently {self.constants.force_surplus}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_surplus]]
                 if (smbios_data.smbios_dictionary[self.constants.custom_model or self.constants.computer.real_model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge)
                 else []
             )
@@ -912,13 +938,20 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set ShowPicker Mode:\tCurrently {self.constants.showpicker}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_showpicker],
                 [f"Set Wake on WLAN:\t\tCurrently {self.constants.enable_wake_on_wlan}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_wowl],
                 [f"Set Ivy iMac iGPU:\t\tCurrently {self.constants.allow_ivy_igpu}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_ivy],
-                [f"Set TeraScale 2 Accel:\tCurrently {self.constants.allow_ts2_accel}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).terascale_2_accel],
+                [
+                    f"Set TeraScale 2 Accel:\tCurrently {self.constants.allow_ts2_accel}",
+                    MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).terascale_2_accel,
+                ],
                 [
                     f"Disable Thunderbolt:\tCurrently {self.constants.disable_tb}",
                     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).disable_tb,
                 ],
                 [f"Set AppleALC Usage:\t\tCurrently {self.constants.set_alc_usage}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).applealc_support],
-                [f"Set Windows GMUX support:\tCurrently {self.constants.dGPU_switch}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).dGPU_switch_support],
+                [
+                    f"Set Windows GMUX support:\tCurrently {self.constants.dGPU_switch}",
+                    MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).dGPU_switch_support,
+                ],
+                [f"Disable Battery Throttling:\tCurrently {self.constants.disable_msr_power_ctl}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_battery_throttle],
             ]
 
             for option in options:
@@ -945,9 +978,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 menu.add_menu_option(option[0], function=option[1])
 
             response = menu.start()
-
-
-
 
     big_sur = """Patches Root volume to fix misc issues such as:
 

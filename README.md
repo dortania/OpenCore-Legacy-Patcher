@@ -65,6 +65,8 @@ Nightly builds can be found here courteous of nightly.link:
   * Development of previous patchers, laying out much of what needs to be patched
 * [mario_bros_tech](https://github.com/mariobrostech) and the rest of the Unsupported Mac Discord
   * Catalyst that started OpenCore Legacy Patcher
+* [arter97](https://github.com/arter97/)
+  * [SimpleMSR](https://github.com/arter97/SimpleMSR/) to disable firmware throttling in Nehalem+ MacBooks without batteries
 * MacRumors and Unsupported Mac Communities
   * Endless testing, reporting issues
 * Apple

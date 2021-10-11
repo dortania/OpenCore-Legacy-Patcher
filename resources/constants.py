@@ -13,7 +13,7 @@ from resources import device_probe
 class Constants:
     def __init__(self):
         # Patcher Versioning
-        self.patcher_version = "0.3.0" # OpenCore-Legacy-Patcher
+        self.patcher_version = "0.3.0"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version = "0.1.6"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
@@ -71,6 +71,10 @@ class Constants:
         ## cdf
         ## https://github.com/cdf/Innie
         self.innie_version = "1.3.0"  # Innie
+
+        ## arter97
+        ## https://github.com/arter97/SimpleMSR/
+        self.simplemsr_version = "1.0.0"  # SimpleMSR
 
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
@@ -140,14 +144,14 @@ class Constants:
         self.allow_ts2_accel = True  # Set TeraScale 2 Acceleration support
 
         ## Miscellaneous
-        self.disallow_cpufriend = False  #   Disable CPUFriend
-        self.enable_wake_on_wlan = False  #  Allow Wake on WLAN for modern Broadcom
-        self.disable_tb = False  #  Disable Thunderbolt Controller
-        self.set_alc_usage = True  #         Set AppleALC usage
-        self.dGPU_switch = True  #           Set Display GPU Switching for Windows
-        self.force_surplus = False  #        Force SurPlus patch in newer OSes
-        self.set_kext_usage = True  #        Set Kext usage
-        self.force_latest_psp = False  #     Force latest PatcherSupportPkg
+        self.disallow_cpufriend = False  #    Disable CPUFriend
+        self.enable_wake_on_wlan = False  #   Allow Wake on WLAN for modern Broadcom
+        self.disable_tb = False  #            Disable Thunderbolt Controller
+        self.set_alc_usage = True  #          Set AppleALC usage
+        self.dGPU_switch = True  #            Set Display GPU Switching for Windows
+        self.force_surplus = False  #         Force SurPlus patch in newer OSes
+        self.force_latest_psp = False  #      Force latest PatcherSupportPkg
+        self.disable_msr_power_ctl = False  # Disable MSR Power Control (missing battery throttling)
 
         # OS Versions
         ## Based off Major Kernel Version
@@ -165,33 +169,6 @@ class Constants:
         self.catalina = 19
         self.big_sur = 20
         self.monterey = 21
-
-        # Vendor IDs
-        self.pci_nvidia = "10DE"
-        self.pci_amd_ati = "1002"
-        self.pci_intel = "8086"
-        self.pci_broadcom = "14E4"
-        self.pci_atheros = "168C"
-        self.pci_apple = "106B"
-        self.pci_aquantia = "1D6A"
-        self.pci_marvell = "11AB"
-        self.pci_syskonnect = "1148"
-
-        # Class Codes
-        ## https://pci-ids.ucw.cz/read/PD
-        self.classcode_sata = "01060100"
-        self.classcode_nvme = "02080100"
-        self.classcode_nvme_generic = "02800100"
-        self.classcode_wifi = "00800200"
-        self.classcode_gpu = "00000300"
-        self.classcode_gpu_variant = "00800300"
-        self.classcode_xhci = "30030C00"
-        self.classcode_ethernet = "00000200"
-
-        # Nvidia GPU Architecture
-        self.arch_tesla = "NV50"
-        self.arch_fermi = "GF100"
-        self.arch_kepler = "GK100"
 
         self.legacy_accel_support = [
             self.mojave,
@@ -257,7 +234,7 @@ class Constants:
     @property
     def restrictevents_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-v{self.restrictevents_version}.zip")
-    
+
     @property
     def efi_disabler_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/EFICheckDisabler-v{self.restrictevents_version}.zip")
@@ -353,6 +330,10 @@ class Constants:
     @property
     def innie_path(self):
         return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}.zip")
+    
+    @property
+    def simplemsr_path(self):
+        return self.payload_kexts_path / Path(f"Misc/SimpleMSR-v{self.simplemsr_version}.zip")
 
     @property
     def latebloom_path(self):
@@ -570,7 +551,7 @@ class Constants:
     @property
     def payload_apple_private_frameworks_path_brightness(self):
         return self.payload_apple_private_frameworks_path / Path("Brightness-Control")
-    
+
     @property
     def payload_apple_private_frameworks_path_legacy_drm(self):
         return self.payload_apple_private_frameworks_path / Path("Legacy-GVA")
@@ -627,7 +608,7 @@ class Constants:
     @property
     def legacy_brightness(self):
         return self.payload_apple_kexts_path / Path("Brightness-Control")
-    
+
     @property
     def legacy_mux_path(self):
         return self.payload_apple_kexts_path / Path("Legacy-Mux")
@@ -675,8 +656,11 @@ class Constants:
         "Mac-942459F5819B171B",  # MacBookPro8,3
         "Mac-C08A6BB70A942AC2",  # MacBookAir4,1
         "Mac-742912EFDBEE19B3",  # MacBookAir4,2
-        "Mac-8ED6AF5B48C039E1",  # Macmini5,1   
-        "Mac-7BA5B2794B2CDB12",  # Macmini5,3   
-        "Mac-942B5BF58194151B",  # iMac12,1     
-        "Mac-942B59F58194171B",  # iMac12,2     
+        "Mac-8ED6AF5B48C039E1",  # Macmini5,1
+        "Mac-4BC72D62AD45599E",  # Macmini5,2
+        "Mac-7BA5B2794B2CDB12",  # Macmini5,3
+        "Mac-942B5BF58194151B",  # iMac12,1
+        "Mac-942B59F58194171B",  # iMac12,2
+        "Mac-94245AF5819B141B",  # AppleInternal MacBookPro8,3
+        "Mac-942B5B3A40C91381",  # AppleInternal iMac12,2
     ]

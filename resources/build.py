@@ -106,7 +106,12 @@ class BuildOpenCore:
             # CPU patches
             ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: (self.model.startswith("MacPro") or self.model.startswith("Xserve")) and self.constants.serial_settings != "None"),
             ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value),
-            ("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value),
+            (
+                "telemetrap.kext",
+                self.constants.telemetrap_version,
+                self.constants.telemetrap_path,
+                lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value,
+            ),
             (
                 "CPUFriend.kext",
                 self.constants.cpufriend_version,
@@ -117,11 +122,21 @@ class BuildOpenCore:
             ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Nvidia"),
             ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Marvell"),
             # Legacy audio
-            ("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path, lambda: (self.model in model_array.LegacyAudio or self.model in model_array.MacPro) and self.constants.set_alc_usage is True),
+            (
+                "AppleALC.kext",
+                self.constants.applealc_version,
+                self.constants.applealc_path,
+                lambda: (self.model in model_array.LegacyAudio or self.model in model_array.MacPro) and self.constants.set_alc_usage is True,
+            ),
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in model_array.IDEPatch),
             # Misc
-            ("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.kaby_lake.value),
+            (
+                "FeatureUnlock.kext",
+                self.constants.featureunlock_version,
+                self.constants.featureunlock_path,
+                lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.kaby_lake.value,
+            ),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
             ("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path, lambda: self.model in ["MacBook4,1", "MacBook5,2"]),
         ]:
@@ -158,7 +173,7 @@ class BuildOpenCore:
                 # Required due to Big Sur's BCM5701 requiring VT-x support
                 # Applicable for pre-Ivy Bridge models
                 self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
-    
+
         if self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None":
             if (smbios_data.smbios_dictionary[generate_smbios.set_smbios_model_spoof(self.model) or self.constants.override_smbios]["SecureBootModel"]) != None:
                 # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
@@ -439,7 +454,6 @@ class BuildOpenCore:
                 # Used to enable Audio support for non-standard dGPUs
                 self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
 
- 
         def check_firewire(model):
             # MacBooks never supported FireWire
             # Pre-Thunderbolt MacBook Airs as well
@@ -745,6 +759,11 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.filesystems.apfs")["Enabled"] = True
             # Lets us check in sys_patch.py if config supports FileVault
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
+        if self.constants.disable_msr_power_ctl is True and self.model.startswith("MacBook"):
+            print("- Disabling Battery Throttling")
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.cpu_data.nehalem.value:
+                # Nehalem and newer MacBooks force firmware throttling via MSR_POWER_CTL
+                self.enable_kext("SimpleMSR.kext", self.constants.simplemsr_version, self.constants.simplemsr_path)
         if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
             # Ensure this is done at the end so all previous RestrictEvents patches are applied
             # RestrictEvents and EFICheckDisabler will confilict if both are injected
@@ -783,12 +802,12 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeaturesMask"] = fw_feature
             self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeatures"] = fw_feature
             self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeaturesMask"] = fw_feature
-            
+
             # Board ID
             self.config["PlatformInfo"]["DataHub"]["BoardProduct"] = self.spoofed_board
             self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
             self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
-            
+
             # Model (ensures tables are not mismatched, even if we're not spoofing)
             self.config["PlatformInfo"]["DataHub"]["SystemProductName"] = self.model
             self.config["PlatformInfo"]["SMBIOS"]["SystemProductName"] = self.model
@@ -905,7 +924,7 @@ class BuildOpenCore:
                     for gpu in ["Vendor10deDevice0a34", "Vendor10deDevice0a29"]:
                         agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board][gpu]["BoostPState"] = [2, 2, 2, 2]
                         agpm_config["IOKitPersonalities"]["AGPM"]["Machines"][self.spoofed_board][gpu]["BoostTime"] = [2, 2, 2, 2]
-                
+
                 for entry in list(agpm_config["IOKitPersonalities"]["AGPM"]["Machines"]):
                     if not entry.startswith(self.spoofed_board):
                         agpm_config["IOKitPersonalities"]["AGPM"]["Machines"].pop(entry)

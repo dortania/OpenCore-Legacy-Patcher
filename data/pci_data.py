@@ -699,8 +699,8 @@ class amd_ids:
         0x6898,  # HD 5870
         0x6899,  # HD 5850
         0x68B8,  # HD 5770
-        0x68B0,  # Unknown 
-        0x68B1,  # Unknown 
+        0x68B0,  # Unknown
+        0x68B1,  # Unknown
         0x68A0,  # HD 5870 (mobile)
         0x68A1,  # HD 5850 (mobile)
         0x6840,  # HD 7500M/7600M
@@ -714,7 +714,7 @@ class amd_ids:
         0x6759,  # HD 6570/7570/8550
         0x6740,  # HD 6730M/6770M/7690M XT
         0x6741,  # HD 6630M/6650M/6750M/7670M/7690M
-        0x6745,  # Unknown 
+        0x6745,  # Unknown
     ]
 
 

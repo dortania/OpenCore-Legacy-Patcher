@@ -10,6 +10,7 @@ from pathlib import Path
 from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments
 from data import model_array
 
+
 class OpenCoreLegacyPatcher:
     def __init__(self):
         print("- Loading...")
@@ -17,7 +18,7 @@ class OpenCoreLegacyPatcher:
         self.generate_base_data()
         if utilities.check_cli_args() is None:
             self.main_menu()
-        
+
     def generate_base_data(self):
         self.constants.detected_os = os_probe.detect_kernel_major()
         self.constants.detected_os_minor = os_probe.detect_kernel_minor()
@@ -28,7 +29,7 @@ class OpenCoreLegacyPatcher:
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
         if utilities.check_cli_args() is not None:
             print("- Detected arguments, switching to CLI mode")
-            self.constants.gui_mode = True # Assumes no user interaction is required
+            self.constants.gui_mode = True  # Assumes no user interaction is required
             self.constants.current_path = Path.cwd()
             if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
                 print("- Rerouting payloads location")

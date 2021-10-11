@@ -6,7 +6,7 @@ from data import model_array
 class arguments:
     def __init__(self):
         self.args = utilities.check_cli_args()
-    
+
     def parse_arguments(self, settings):
         if self.args.model:
             if self.args.model:
@@ -33,7 +33,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
             print("- Set verbose configuration")
             settings.verbose_debug = True
         else:
-            settings.verbose_debug = False # Override Defaults detected
+            settings.verbose_debug = False  # Override Defaults detected
         if self.args.debug_oc:
             print("- Set OpenCore DEBUG configuration")
             settings.opencore_debug = True
@@ -48,12 +48,12 @@ If you plan to create the USB for another machine, please select the "Change Mod
             print("- Set Disable SIP configuration")
             settings.sip_status = False
         else:
-            settings.sip_status = True # Override Defaults detected
+            settings.sip_status = True  # Override Defaults detected
         if self.args.disable_smb:
             print("- Set Disable SecureBootModel configuration")
             settings.secure_status = False
         else:
-            settings.secure_status = True # Override Defaults detected
+            settings.secure_status = True  # Override Defaults detected
         if self.args.vault:
             print("- Set Vault configuration")
             settings.vault = True
