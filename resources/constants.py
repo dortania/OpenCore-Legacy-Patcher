@@ -72,6 +72,10 @@ class Constants:
         ## https://github.com/cdf/Innie
         self.innie_version = "1.3.0"  # Innie
 
+        ## arter97
+        ## https://github.com/arter97/SimpleMSR/
+        self.simplemsr_version = "1.0.0"  # SimpleMSR
+
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
         self.payload_path = self.current_path / Path("payloads")
@@ -140,13 +144,14 @@ class Constants:
         self.allow_ts2_accel = True  # Set TeraScale 2 Acceleration support
 
         ## Miscellaneous
-        self.disallow_cpufriend = False  #   Disable CPUFriend
-        self.enable_wake_on_wlan = False  #  Allow Wake on WLAN for modern Broadcom
-        self.disable_tb = False  #  Disable Thunderbolt Controller
-        self.set_alc_usage = True  #         Set AppleALC usage
-        self.dGPU_switch = True  #           Set Display GPU Switching for Windows
-        self.force_surplus = False  #        Force SurPlus patch in newer OSes
-        self.force_latest_psp = False  #     Force latest PatcherSupportPkg
+        self.disallow_cpufriend = False  #    Disable CPUFriend
+        self.enable_wake_on_wlan = False  #   Allow Wake on WLAN for modern Broadcom
+        self.disable_tb = False  #            Disable Thunderbolt Controller
+        self.set_alc_usage = True  #          Set AppleALC usage
+        self.dGPU_switch = True  #            Set Display GPU Switching for Windows
+        self.force_surplus = False  #         Force SurPlus patch in newer OSes
+        self.force_latest_psp = False  #      Force latest PatcherSupportPkg
+        self.disable_msr_power_ctl = False  # Disable MSR Power Control (missing battery throttling)
 
         # OS Versions
         ## Based off Major Kernel Version
@@ -325,6 +330,10 @@ class Constants:
     @property
     def innie_path(self):
         return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}.zip")
+    
+    @property
+    def simplemsr_path(self):
+        return self.payload_kexts_path / Path(f"Misc/SimpleMSR-v{self.simplemsr_version}.zip")
 
     @property
     def latebloom_path(self):

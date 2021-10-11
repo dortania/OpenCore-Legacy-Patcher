@@ -976,7 +976,7 @@
 				<key>BundlePath</key>
 				<string>CSLVFixup.kext</string>
 				<key>Comment</key>
-				<string>Fix Music.app</string>
+				<string>Fix Music</string>
 				<key>Enabled</key>
 				<false/>
 				<key>ExecutablePath</key>
@@ -985,6 +985,24 @@
 				<string>20.99.99</string>
 				<key>MinKernel</key>
 				<string>20.0.0</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
+				<string>SimpleMSR.kext</string>
+				<key>Comment</key>
+				<string>Disable firmware based battery throttling</string>
+				<key>Enabled</key>
+				<false/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/SimpleMSR</string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string></string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>

@@ -677,6 +677,35 @@ for Windows may prefer to only work with the dGPU and eGPU active.
             print("Returning to previous menu")
         else:
             self.dGPU_switch_support()
+    
+    def set_battery_throttle(self):
+        utilities.cls()
+        utilities.header(["Disable Firmware Throttling"])
+        print(
+            """
+By default on Nehalem and newer Macs, the firmware will throttle if
+the battery is either dead or missing. The firmware will set
+'BD PROCHOT' to notify the OS the machine needs to run in an extreme
+low power mode.
+
+Enabling this option will patch 'MSR_POWER_CTL' to be unset allowing
+proper CPU behaviour as if battery is present. Note that this can cause
+instability in situations where the CPU is being taxed and pulls more 
+power than the PSU can supply.
+
+Note: Only supported on Nehalem and newer MacBooks (2010+)
+        """
+        )
+
+        change_menu = input("Disable Firmware Throttling?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.disable_msr_power_ctl = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.disable_msr_power_ctl = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.set_battery_throttle()
 
     def set_surplus(self):
         utilities.cls()
@@ -919,6 +948,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                     f"Set Windows GMUX support:\tCurrently {self.constants.dGPU_switch}",
                     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).dGPU_switch_support,
                 ],
+                [f"Disable Battery Throttling:\tCurrently {self.constants.disable_msr_power_ctl}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_battery_throttle],
             ]
 
             for option in options:
