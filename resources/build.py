@@ -597,6 +597,19 @@ class BuildOpenCore:
 
             self.config["DeviceProperties"]["Add"][tb_device_path] = {"class-code": binascii.unhexlify("FFFFFFFF"), "device-id": binascii.unhexlify("FFFF0000")}
 
+        if self.constants.software_demux is True and self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
+            print("- Enabling software demux")
+            # Add ACPI patches
+            self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-DGPU.aml")["Enabled"] = True
+            self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "_INI to XINI")["Enabled"] = True
+            shutil.copy(self.constants.demux_ssdt_path, self.constants.acpi_path)
+            # Disable dGPU
+            # IOACPIPlane:/_SB/PCI0@0/P0P2@10000/GFX0@0
+            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"class-code": binascii.unhexlify("FFFFFFFF"), "device-id": binascii.unhexlify("FFFF0000"), "IOName": "Dortania Disabled Card", "name": "Dortania Disabled Card"}
+            self.config["DeviceProperties"]["Delete"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = ["class-code", "device-id", "IOName", "name"]
+            # Add AMDGPUWakeHandler
+            self.enable_kext("AMDGPUWakeHandler.kext", self.constants.gpu_wake_version, self.constants.gpu_wake_path)
+
         # Bluetooth Detection
         if not self.constants.custom_model and self.computer.bluetooth_chipset:
             if self.computer.bluetooth_chipset in ["BRCM2070 Hub", "BRCM2046 Hub"]:

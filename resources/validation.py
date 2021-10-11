@@ -67,5 +67,6 @@ def validate(settings):
     settings.enable_wake_on_wlan = True
     settings.disable_tb = True
     settings.force_surplus = True
+    settings.software_demux = True
     build_prebuilt()
     build_dumps()

@@ -721,13 +721,22 @@ set million colour before rebooting"""
             self.amd_ts2 = False
             self.iron_gpu = False
             self.sandy_gpu = False
+    
+    def check_dgpu_status(self):
+        dgpu = self.constants.computer.dgpu
+        if dgpu:
+            if dgpu.class_code and dgpu.class_code == 0xFFFFFFFF:
+                # If dGPU is disabled via class-codes, assume demuxed
+                return False
+            return True
+        return False
 
     def detect_demux(self):
         # If GFX0 is missing, assume machine was demuxed
         # -wegnoegpu would also trigger this, so ensure arg is not present
         if not "-wegnoegpu" in (utilities.get_nvram("boot-args") or ""):
             igpu = self.constants.computer.igpu
-            dgpu = self.constants.computer.dgpu
+            dgpu = self.check_dgpu_status()
             if igpu and not dgpu:
                 return True
         return False
