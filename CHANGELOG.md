@@ -42,6 +42,9 @@
 - Add EFICheckDisabler
   - Based off stripped RestrictEvents.kext
 - Add SimpleMSR to disable missing battery throttling on Nehalem+ MacBooks
+- Implement software demux patch set for 2011 15/17" MacBook Pros
+  - Alternative to hardware demux
+  - Adds [AMDGPUWakeHandler](https://github.com/blackgate/AMDGPUWakeHandler)
 
 ## 0.2.5
 

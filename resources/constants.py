@@ -76,6 +76,10 @@ class Constants:
         ## https://github.com/arter97/SimpleMSR/
         self.simplemsr_version = "1.0.0"  # SimpleMSR
 
+        ## blackgate
+        ## https://github.com/blackgate/AMDGPUWakeHandler
+        self.gpu_wake_version = "1.0.0"
+
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
         self.payload_path = self.current_path / Path("payloads")
@@ -152,6 +156,7 @@ class Constants:
         self.force_surplus = False  #         Force SurPlus patch in newer OSes
         self.force_latest_psp = False  #      Force latest PatcherSupportPkg
         self.disable_msr_power_ctl = False  # Disable MSR Power Control (missing battery throttling)
+        self.software_demux = False  #        Enable Software Demux patch set
 
         # OS Versions
         ## Based off Major Kernel Version
@@ -200,6 +205,10 @@ class Constants:
     @property
     def windows_ssdt_path(self):
         return self.payload_path / Path("ACPI/SSDT-PCI.aml")
+    
+    @property
+    def demux_ssdt_path(self):
+        return self.payload_path / Path("ACPI/SSDT-DGPU.aml")
 
     # Drivers
     @property
@@ -334,6 +343,10 @@ class Constants:
     @property
     def simplemsr_path(self):
         return self.payload_kexts_path / Path(f"Misc/SimpleMSR-v{self.simplemsr_version}.zip")
+    
+    @property
+    def gpu_wake_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AMDGPUWakeHandler-v{self.gpu_wake_version}.zip")
 
     @property
     def latebloom_path(self):

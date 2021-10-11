@@ -681,6 +681,34 @@ for Windows may prefer to only work with the dGPU and eGPU active.
         else:
             self.dGPU_switch_support()
     
+    def set_software_demux(self):
+        utilities.cls()
+        utilities.header(["Set Software Demux"])
+        print(
+            """
+For MacBookPro8,2/3 users, it's very common for the dGPU to fail and
+thus require the user to disable them via the 'gpu-power-prefs'
+nvram argument.
+
+However this solution still allows the dGPU to pull power (6-7w). Enabling
+this option will simulate a demuxed enviroment allowing the dGPU to pull nearly
+no power and have the iGPU handle all tasks including brightness control.
+
+Note: this option requires dGPU to be disabled via NVRAM:
+https://dortania.github.io/OpenCore-Legacy-Patcher/ACCEL.html#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros
+        """
+        )
+
+        change_menu = input("Set Software Demux?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.software_demux = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.software_demux = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.set_software_demux()
+    
     def set_battery_throttle(self):
         utilities.cls()
         utilities.header(["Disable Firmware Throttling"])
@@ -951,6 +979,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                     f"Set Windows GMUX support:\tCurrently {self.constants.dGPU_switch}",
                     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).dGPU_switch_support,
                 ],
+                [f"Set Software Demux:\t\tCurrently {self.constants.software_demux}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_software_demux],
                 [f"Disable Battery Throttling:\tCurrently {self.constants.disable_msr_power_ctl}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_battery_throttle],
             ]
 
