@@ -521,6 +521,16 @@ class BuildOpenCore:
             elif self.model == "iMac10,1":
                 if self.get_kext_by_bundle_path("AAAMouSSE.kext")["Enabled"] is False:
                     self.enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
+            if self.computer and self.computer.dgpu:
+                if self.computer.dgpu.arch == device_probe.AMD.Archs.Legacy_GCN_7000:
+                    # Add Power Gate Patches
+                    self.config["DeviceProperties"]["Add"][backlight_path] += {
+                        "rebuild-device-tree": 1,
+                        "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
+                        "CAIL,CAIL_DisableGfxCGPowerGating": 1,
+                        "CAIL,CAIL_DisableUVDPowerGating": 1,
+                        "CAIL,CAIL_DisableVCEPowerGating": 1,
+                    }
 
         # Check GPU Vendor
         if self.constants.metal_build is True:
@@ -535,7 +545,9 @@ class BuildOpenCore:
         elif not self.constants.custom_model and self.model in model_array.LegacyGPU and self.computer.dgpu:
             print(f"- Detected dGPU: {utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{utilities.friendly_hex(self.computer.dgpu.device_id)}")
             if self.computer.dgpu.arch in [
-                device_probe.AMD.Archs.Legacy_GCN,
+                device_probe.AMD.Archs.Legacy_GCN_7000,
+                device_probe.AMD.Archs.Legacy_GCN_8000,
+                device_probe.AMD.Archs.Legacy_GCN_9000,
                 device_probe.AMD.Archs.Polaris,
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,

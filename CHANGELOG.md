@@ -45,6 +45,8 @@
 - Implement software demux patch set for 2011 15/17" MacBook Pros
   - Alternative to hardware demux
   - Adds [AMDGPUWakeHandler](https://github.com/blackgate/AMDGPUWakeHandler)
+- Add Legacy GCN support for iMac11,x and iMac12,x with upgraded GPUs
+  - Note: iMac12,x with legacy GCN will fail to wake
 
 ## 0.2.5
 
