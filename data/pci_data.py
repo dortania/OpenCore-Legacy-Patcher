@@ -3,6 +3,18 @@ class nvidia_ids:
     # Courteous of envytools as well as Macrumors:
     # https://envytools.readthedocs.io/en/latest/hw/pciid.html
     # https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/
+    curie_ids = [
+        0x0040,
+        0x00f0,
+        0x0220,
+        0x0140,
+        0x0160,
+        0x0090,
+        0x01d0,
+        0x0390,
+        0x0290,
+    ]
+
     tesla_ids = [
         # G80
         0x0190,  # G80 [GeForce 8800 GTS / 8800 GTX]
@@ -841,6 +853,12 @@ class intel_ids:
         0x3E92,
         0x3E91,
         0x3E98,
+    ]
+
+    comet_lake_ids = [
+        0x9BC8,
+        0x9BC5,
+        0x9BC4,
     ]
 
     ice_lake_ids = [

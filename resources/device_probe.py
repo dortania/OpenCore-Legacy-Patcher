@@ -160,6 +160,7 @@ class NVIDIA(GPU):
 
     class Archs(enum.Enum):
         # pylint: disable=invalid-name
+        Curie = "Curie"
         Fermi = "Fermi"
         Tesla = "Tesla"
         Kepler = "Kepler"
@@ -169,7 +170,9 @@ class NVIDIA(GPU):
 
     def detect_arch(self):
         # G80/G80GL
-        if self.device_id in pci_data.nvidia_ids.tesla_ids:
+        if self.device_id in pci_data.nvidia_ids.curie_ids:
+            self.arch = NVIDIA.Archs.Curie
+        elif self.device_id in pci_data.nvidia_ids.tesla_ids:
             self.arch = NVIDIA.Archs.Tesla
         elif self.device_id in pci_data.nvidia_ids.fermi_ids:
             self.arch = NVIDIA.Archs.Fermi
@@ -237,6 +240,7 @@ class Intel(GPU):
         Skylake = "Skylake"
         Kaby_Lake = "Kaby Lake"
         Coffee_Lake = "Coffee Lake"
+        Comet_Lake = "Comet Lake"
         Ice_Lake = "Ice Lake"
         Unknown = "Unknown"
 
@@ -263,6 +267,8 @@ class Intel(GPU):
             self.arch = Intel.Archs.Kaby_Lake
         elif self.device_id in pci_data.intel_ids.coffee_lake_ids:
             self.arch = Intel.Archs.Coffee_Lake
+        elif self.device_id in pci_data.intel_ids.comet_lake_ids:
+            self.arch = Intel.Archs.Comet_Lake
         elif self.device_id in pci_data.intel_ids.ice_lake_ids:
             self.arch = Intel.Archs.Ice_Lake
         else:
