@@ -513,57 +513,6 @@ class nvidia_ids:
 
 
 class amd_ids:
-    legacy_gcn_ids = [
-        # AMDRadeonX4000
-        # AMDBonaireGraphicsAccelerator - AMD8000Controller
-        0x6640,  # M6100
-        0x6641,  # HD 8930M
-        0x6646,  # R9 M280X / W6170M
-        0x6647,  # R9 M270X/M280X
-        0x6650,  # Unknown
-        0x6651,  # Unknown
-        0x665C,  # HD 7790/8770 / R7 360 / R9 260/360
-        0x665D,  # R7 200
-        # AMDFijiGraphicsAccelerator - AMD9000Controller
-        0x7300,  # R9 FURY / NANO
-        0x730F,  # Unknown
-        # AMDHawaiiGraphicsAccelerator - AMD8000Controller
-        0x67B0,  # R9 290X/390X
-        # AMDPitcairnGraphicsAccelerator - AMD7000Controller
-        0x6800,  # HD 7970M
-        0x6801,  # HD 8970M
-        0x6806,  # Unknown
-        0x6808,  # W7000
-        0x6810,  # R7 370 / R9 270X/370X
-        0x6818,  # HD 7870
-        0x6819,  # HD 7850 / R7 265 / R9 270 1024SP
-        # AMDTahitiGraphicsAccelerator - AMD7000Controller
-        0x6790,  # Unknown
-        0x6798,  # HD 7970/8970 OEM / R9 280X / D700
-        0x679A,  # HD 7950/8950 OEM / R9 280
-        0x679E,  # HD 7870 XT
-        0x6780,  # W9000
-        # AMDTongaGraphicsAccelerator - AMD9000Controller
-        0x6920,  # R9 M395/ M395X
-        0x6921,  # R9 M295X / M390X
-        0x6930,  # Unknown
-        0x6938,  # R9 380X / R9 M295X
-        0x6939,  # R9 285/380
-        # AMDVerdeGraphicsAccelerator - AMD7000Controller
-        0x6820,  # HD 8890M / R9 M275X/M375X / M5100
-        0x6821,  # HD 8870M / R9 M270X/M370X
-        0x6823,  # HD 8850M / R9 M265X
-        0x6825,  # HD 7870M
-        0x6827,  # HD 7850M/8850M
-        0x682B,  # HD 8830M / R7 250 / R7 M465X
-        0x682D,  # M4000
-        0x682F,  # HD 7730M
-        0x6835,  # R9 255
-        0x6839,  # Unknown
-        0x683B,  # Unknown
-        0x683D,  # HD 7770/8760 / R7 250X
-        0x683F,  # HD 7750/8740 / R7 250E
-    ]
 
     gcn_7000_ids = [
         # GCN v1
@@ -718,6 +667,14 @@ class amd_ids:
         0x73AB,
         0x73BF,
     ]
+
+    r500_ids = [
+        0x7187,  # X1300/X1550
+        0x7146,  # X1300/X1550
+        0x71c5,  # Mobile X1600
+        0x7249,  # X1900 XT
+    ]
+
     terascale_1_ids = [
         0x9400,
         0x9401,

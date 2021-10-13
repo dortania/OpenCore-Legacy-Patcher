@@ -185,6 +185,7 @@ class AMD(GPU):
 
     class Archs(enum.Enum):
         # pylint: disable=invalid-name
+        R500 = "R500"
         TeraScale_1 = "TeraScale 1"
         TeraScale_2 = "TeraScale 2"
         Legacy_GCN_7000 = "Legacy GCN v1"
@@ -198,7 +199,9 @@ class AMD(GPU):
     arch: Archs = field(init=False)
 
     def detect_arch(self):
-        if self.device_id in pci_data.amd_ids.gcn_7000_ids:
+        if self.device_id in pci_data.amd_ids.r500_ids:
+            self.arch = AMD.Archs.R500
+        elif self.device_id in pci_data.amd_ids.gcn_7000_ids:
             self.arch = AMD.Archs.Legacy_GCN_7000
         elif self.device_id in pci_data.amd_ids.gcn_8000_ids:
             self.arch = AMD.Archs.Legacy_GCN_8000
