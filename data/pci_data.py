@@ -789,6 +789,17 @@ class amd_ids:
 
 
 class intel_ids:
+    gma_950_ids = [
+        0x2582,
+        0x2592,
+        0x2772,
+        0x27A2,
+    ]
+
+    gma_x3100_ids = [
+        0x2a02,
+    ]
+
     iron_ids = [
         # AppleIntelHDGraphics IDs
         0x0044,

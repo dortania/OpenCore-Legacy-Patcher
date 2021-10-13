@@ -224,6 +224,8 @@ class Intel(GPU):
 
     class Archs(enum.Enum):
         # pylint: disable=invalid-name
+        GMA_950 = "GMA 950"
+        GMA_X3100 = "GMA X3100"
         Iron_Lake = "Iron Lake"
         Sandy_Bridge = "Sandy Bridge"
         Ivy_Bridge = "Ivy Bridge"
@@ -238,7 +240,11 @@ class Intel(GPU):
     arch: Archs = field(init=False)
 
     def detect_arch(self):
-        if self.device_id in pci_data.intel_ids.iron_ids:
+        if self.device_id in pci_data.intel_ids.gma_950_ids:
+            self.arch = Intel.Archs.GMA_950
+        elif self.device_id in pci_data.intel_ids.gma_x3100_ids:
+            self.arch = Intel.Archs.GMA_X3100
+        elif self.device_id in pci_data.intel_ids.iron_ids:
             self.arch = Intel.Archs.Iron_Lake
         elif self.device_id in pci_data.intel_ids.sandy_ids:
             self.arch = Intel.Archs.Sandy_Bridge
