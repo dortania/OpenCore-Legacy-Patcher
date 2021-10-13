@@ -2131,7 +2131,7 @@ smbios_dictionary = {
     "ADP3,2": {
         "Board ID": None,
         "FirmwareFeatures": None,
-        "SecureBootModel": "j293",
+        "SecureBootModel": "j273a",
         "CPU Generation": cpu_data.cpu_data.apple_dtk.value,
         "Max OS Supported": os_data.os_data.max_os,
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
