@@ -12,6 +12,7 @@
 #   Ethernet Chipset: Vendor of the ethernet chipset (if multiple unique chipset within Vendor, chipset name is used)
 #   nForce Chipset: If model uses nForce chipset
 #   Switchable GPUs: If model uses a GMUX
+#   Stock GPUs: GPUs variations shipped
 
 from resources import device_probe
 from data import cpu_data, os_data, bluetooth_data
@@ -28,6 +29,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.GMA_950
+        ],
     },
     "MacBook2,1": {
         "Board ID": "Mac-F4208CA9",
@@ -40,6 +44,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.GMA_950
+        ],
     },
     "MacBook3,1": {
         "Board ID": "Mac-F22788C8",
@@ -52,6 +59,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.GMA_X3100
+        ],
     },
     "MacBook4,1": {
         "Board ID": "Mac-F22788A9",
@@ -64,6 +74,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.GMA_X3100
+        ],
     },
     "MacBook5,1": {
         "Board ID": "Mac-F42D89C8",
@@ -76,6 +89,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBook5,1_v2": {
         "Board ID": "Mac-F42D89A9",
@@ -88,6 +104,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBook5,2": {
         "Board ID": "Mac-F22788AA",
@@ -100,6 +119,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBook6,1": {
         "Board ID": "Mac-F22C8AC8",
@@ -112,6 +134,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBook7,1": {
         "Board ID": "Mac-F22C89C8",
@@ -124,6 +149,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBook8,1": {
         "Board ID": "Mac-BE0E8AC46FE800CC",
@@ -135,6 +163,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 12,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Broadwell
+        ],
     },
     "MacBook8,1_v2": {
         "Board ID": "Mac-F305150B0C7DEEEF",
@@ -146,6 +177,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 12,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Broadwell
+        ],
     },
     "MacBook9,1": {
         "Board ID": "Mac-9AE82516C7C6B903",
@@ -157,6 +191,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 12,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Skylake
+        ],
     },
     "MacBook10,1": {
         "Board ID": "Mac-EE2EBD4B90B839A8",
@@ -168,6 +205,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 12,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Kaby_Lake
+        ],
     },
     "MacBookAir1,1": {
         "Board ID": "Mac-F42C8CC8",
@@ -179,6 +219,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.GMA_X3100
+        ],
     },
     "MacBookAir2,1": {
         "Board ID": "Mac-F42D88C8",
@@ -191,6 +234,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "nForce Chipset": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookAir3,1": {
         "Board ID": "Mac-942452F5819B1C1B",
@@ -203,6 +249,9 @@ smbios_dictionary = {
         "Screen Size": 11,
         "nForce Chipset": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookAir3,2": {
         "Board ID": "Mac-942C5DF58193131B",
@@ -215,6 +264,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "nForce Chipset": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookAir4,1": {
         "Board ID": "Mac-C08A6BB70A942AC2",
@@ -226,6 +278,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 11,
         "Ethernet Chipset": "Broadcom",  # Set for Apple Thunderbolt Adapter
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge
+        ],
     },
     "MacBookAir4,2": {
         "Board ID": "Mac-742912EFDBEE19B3",
@@ -237,6 +292,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 13,
         "Ethernet Chipset": "Broadcom",  # Set for Apple Thunderbolt Adapter
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge
+        ],
     },
     "MacBookAir5,1": {
         "Board ID": "Mac-66F35F19FE2A0D05",
@@ -248,6 +306,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Screen Size": 11,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ivy_Bridge
+        ],
     },
     "MacBookAir5,2": {
         "Board ID": "Mac-2E6FAB96566FE58C",
@@ -259,6 +320,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ivy_Bridge
+        ],
     },
     "MacBookAir6,1": {
         "Board ID": "Mac-35C1E88140C3E6CF",
@@ -270,6 +334,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 11,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell
+        ],
     },
     "MacBookAir6,2": {
         "Board ID": "Mac-7DF21CB3ED6977E5",
@@ -281,6 +348,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell
+        ],
     },
     "MacBookAir7,1": {
         "Board ID": "Mac-9F18E312C5C2BF0B",
@@ -292,6 +362,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 11,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Broadwell
+        ],
     },
     "MacBookAir7,2": {
         "Board ID": "Mac-937CB26E2E02BB01",
@@ -303,6 +376,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Broadwell
+        ],
     },
     "MacBookAir8,1": {
         "Board ID": "Mac-827FAC58A8FDFA22",
@@ -314,6 +390,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake
+        ],
     },
     "MacBookAir8,1_v2": {
         "Board ID": "Mac-112818653D3AABFC",
@@ -325,6 +404,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake
+        ],
     },
     "AAPL_MacBookAir8,1": {
         # AppleInternal MacBookAir8,1
@@ -338,6 +420,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake
+        ],
     },
     "MacBookAir8,2": {
         "Board ID": "Mac-226CB3C6A851A671",
@@ -349,6 +434,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake
+        ],
     },
     "MacBookAir9,1": {
         "Board ID": "Mac-0CFF9C7C2B63DF8D",
@@ -360,6 +448,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ice_Lake
+        ],
     },
     "AAPL_MacBookAir9,1": {
         # AppleInternal MacBookAir9,1
@@ -373,6 +464,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ice_Lake
+        ],
     },
     "MacBookAir10,1": {
         "Board ID": None,
@@ -383,6 +477,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": None,
+        "Stock GPUs": [], # TODO: Add Apple Silicon GPU
     },
     "MacBookPro1,1": {
         "Board ID": "Mac-F425BEC8",
@@ -395,6 +490,9 @@ smbios_dictionary = {
         "Screen Size": 15,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.R500
+        ],
     },
     "MacBookPro1,2": {
         "Board ID": "Mac-F42DBEC8",
@@ -407,6 +505,9 @@ smbios_dictionary = {
         "Screen Size": 17,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.R500
+        ],
     },
     "MacBookPro2,1": {
         "Board ID": "Mac-F42189C8",
@@ -419,6 +520,9 @@ smbios_dictionary = {
         "Screen Size": 17,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.R500
+        ],
     },
     "MacBookPro2,2": {
         "Board ID": "Mac-F42187C8",
@@ -431,6 +535,9 @@ smbios_dictionary = {
         "Screen Size": 15,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.R500
+        ],
     },
     "MacBookPro3,1": {
         "Board ID": "Mac-F4238BC8",
@@ -443,6 +550,9 @@ smbios_dictionary = {
         "Screen Size": 15,  # Shipped with 17 as well
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro3,1_v2": {
         "Board ID": "Mac-F42388C8",
@@ -455,6 +565,9 @@ smbios_dictionary = {
         "Screen Size": 15,  # Shipped with 17 as well
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro4,1": {
         "Board ID": "Mac-F42C89C8",
@@ -468,6 +581,9 @@ smbios_dictionary = {
         "Switchable GPUs": True,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro4,1_v2": {
         "Board ID": "Mac-F42C86C8",
@@ -481,6 +597,9 @@ smbios_dictionary = {
         "Switchable GPUs": True,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro5,1": {
         "Board ID": "Mac-F42D86C8",
@@ -494,6 +613,9 @@ smbios_dictionary = {
         "Switchable GPUs": True,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro5,1_v2": {
         "Board ID": "Mac-F42D86A9",
@@ -507,6 +629,9 @@ smbios_dictionary = {
         "Switchable GPUs": True,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro5,2": {
         "Board ID": "Mac-F2268EC8",
@@ -520,6 +645,9 @@ smbios_dictionary = {
         "Switchable GPUs": True,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro5,3": {
         "Board ID": "Mac-F22587C8",
@@ -533,6 +661,9 @@ smbios_dictionary = {
         "Switchable GPUs": True,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro5,4": {
         "Board ID": "Mac-F22587A1",
@@ -546,6 +677,9 @@ smbios_dictionary = {
         "Switchable GPUs": True,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro5,5": {
         "Board ID": "Mac-F2268AC8",
@@ -558,6 +692,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro6,1": {
         "Board ID": "Mac-F22589C8",
@@ -570,6 +707,10 @@ smbios_dictionary = {
         "Screen Size": 17,
         "Switchable GPUs": True,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Iron_Lake,
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro6,2": {
         "Board ID": "Mac-F22586C8",
@@ -582,6 +723,10 @@ smbios_dictionary = {
         "Screen Size": 15,
         "Switchable GPUs": True,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Iron_Lake,
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro7,1": {
         "Board ID": "Mac-F222BEC8",
@@ -594,6 +739,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "Ethernet Chipset": "Broadcom",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacBookPro8,1": {
         "Board ID": "Mac-94245B3640C91C81",
@@ -605,6 +753,10 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Screen Size": 13,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge,
+            device_probe.AMD.Archs.TeraScale_2
+        ],
     },
     "MacBookPro8,2": {
         "Board ID": "Mac-94245A3940C91C80",
@@ -617,6 +769,10 @@ smbios_dictionary = {
         "Screen Size": 15,
         "Switchable GPUs": True,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge,
+            device_probe.AMD.Archs.TeraScale_2
+        ],
     },
     "MacBookPro8,3": {
         "Board ID": "Mac-942459F5819B171B",
@@ -629,6 +785,10 @@ smbios_dictionary = {
         "Screen Size": 17,
         "Switchable GPUs": True,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge,
+            device_probe.AMD.Archs.TeraScale_2
+        ],
     },
     "AAPL_MacBookPro8,3": {
         # AppleInternal MacBookPro8,3
@@ -643,6 +803,10 @@ smbios_dictionary = {
         "Screen Size": 17,
         "Switchable GPUs": True,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge,
+            device_probe.AMD.Archs.TeraScale_2
+        ],
     },
     "MacBookPro9,1": {
         "Board ID": "Mac-4B7AC7E43945597E",
@@ -655,6 +819,10 @@ smbios_dictionary = {
         "Screen Size": 15,
         "Switchable GPUs": True,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ivy_Bridge,
+            device_probe.NVIDIA.Archs.Kepler
+        ],
     },
     "MacBookPro9,2": {
         "Board ID": "Mac-6F01561E16C75D06",
@@ -666,6 +834,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Screen Size": 13,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Kepler
+        ],
     },
     "MacBookPro10,1": {
         "Board ID": "Mac-C3EC7CD22292981F",
@@ -678,6 +849,10 @@ smbios_dictionary = {
         "Screen Size": 15,
         "Switchable GPUs": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ivy_Bridge,
+            device_probe.NVIDIA.Archs.Kepler
+        ],
     },
     "MacBookPro10,2": {
         "Board ID": "Mac-AFD8A9D944EA4843",
@@ -689,6 +864,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Kepler
+        ],
     },
     "MacBookPro11,1": {
         "Board ID": "Mac-189A3D4F975D5FFC",
@@ -700,6 +878,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+        ],
     },
     "MacBookPro11,2": {
         "Board ID": "Mac-3CBD00234E554E41",
@@ -711,6 +892,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 15,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+        ],
     },
     "MacBookPro11,3": {
         "Board ID": "Mac-2BD1B31983FE1663",
@@ -723,6 +907,9 @@ smbios_dictionary = {
         "Screen Size": 15,
         "Switchable GPUs": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+        ],
     },
     "MacBookPro11,4": {
         "Board ID": "Mac-06F11FD93F0323C5",
@@ -734,6 +921,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 15,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+        ],
     },
     "MacBookPro11,5": {
         "Board ID": "Mac-06F11F11946D27C5",
@@ -746,6 +936,10 @@ smbios_dictionary = {
         "Screen Size": 15,
         "Switchable GPUs": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+            device_probe.AMD.Archs.Legacy_GCN_7000
+        ],
     },
     "MacBookPro12,1": {
         "Board ID": "Mac-E43C1C25D4880AD6",
@@ -757,6 +951,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Broadwell,
+        ],
     },
     "MacBookPro13,1": {
         "Board ID": "Mac-473D31EABEB93F9B",
@@ -768,6 +965,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Skylake,
+        ],
     },
     "MacBookPro13,2": {
         "Board ID": "Mac-66E35819EE2D0D05",
@@ -779,6 +979,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Skylake,
+        ],
     },
     "MacBookPro13,3": {
         "Board ID": "Mac-A5C67F76ED83108C",
@@ -791,6 +994,10 @@ smbios_dictionary = {
         "Screen Size": 15,
         "Switchable GPUs": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Skylake,
+            device_probe.AMD.Archs.Polaris
+        ],
     },
     "MacBookPro14,1": {
         "Board ID": "Mac-B4831CEBD52A0C4C",
@@ -802,6 +1009,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Kaby_Lake,
+        ],
     },
     "MacBookPro14,2": {
         "Board ID": "Mac-CAD6701F7CEA0921",
@@ -813,6 +1023,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703_UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Kaby_Lake,
+        ],
     },
     "MacBookPro14,3": {
         "Board ID": "Mac-551B86E5744E2388",
@@ -825,6 +1038,10 @@ smbios_dictionary = {
         "Screen Size": 15,
         "Switchable GPUs": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Kaby_Lake,
+            device_probe.AMD.Archs.Polaris
+        ],
     },
     "MacBookPro15,1": {
         "Board ID": "Mac-937A206F2EE63C01",
@@ -837,6 +1054,10 @@ smbios_dictionary = {
         "Screen Size": 15,
         "Switchable GPUs": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+            device_probe.AMD.Archs.Polaris
+        ],
     },
     "MacBookPro15,2": {
         "Board ID": "Mac-827FB448E656EC26",
@@ -848,6 +1069,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+        ],
     },
     "MacBookPro15,3": {
         "Board ID": "Mac-1E7E29AD0135F9BC",
@@ -860,6 +1084,10 @@ smbios_dictionary = {
         "Screen Size": 15,
         "Switchable GPUs": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+            device_probe.AMD.Archs.Vega
+        ],
     },
     "MacBookPro15,4": {
         "Board ID": "Mac-53FDB3D8DB8CA971",
@@ -871,6 +1099,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+        ],
     },
     "MacBookPro16,1": {
         "Board ID": "Mac-E1008331FDC96864",
@@ -883,17 +1114,24 @@ smbios_dictionary = {
         "Screen Size": 16,
         "Switchable GPUs": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+            device_probe.AMD.Archs.Navi
+        ],
     },
     "MacBookPro16,2": {
         "Board ID": "Mac-5F9802EFE386AA28",
         "FirmwareFeatures": "0xFFAFF06E",
         "SecureBootModel": "j214k",
-        "CPU Generation": cpu_data.cpu_data.coffee_lake.value,
+        "CPU Generation": cpu_data.cpu_data.ice_lake.value,
         "Max OS Supported": os_data.os_data.max_os,
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ice_Lake,
+        ],
     },
     "MacBookPro16,3": {
         "Board ID": "Mac-E7203C0F68AA0004",
@@ -905,6 +1143,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Screen Size": 13,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+        ],
     },
     "MacBookPro16,4": {
         "Board ID": "Mac-A61BADE1FDAD7B05",
@@ -917,6 +1158,10 @@ smbios_dictionary = {
         "Screen Size": 16,
         "Switchable GPUs": True,
         "Ethernet Chipset": None,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+            device_probe.AMD.Archs.Navi
+        ],
     },
     "MacBookPro17,1": {
         "Board ID": None,
@@ -927,6 +1172,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": None,
+        "Stock GPUs": [],
     },
     "Macmini1,1": {
         "Board ID": "Mac-F4208EC8",
@@ -937,6 +1183,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.GMA_950
+        ],
     },
     "Macmini2,1": {
         "Board ID": "Mac-F4208EAA",
@@ -947,6 +1196,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.GMA_950
+        ],
     },
     "Macmini3,1": {
         "Board ID": "Mac-F22C86C8",
@@ -958,6 +1210,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "Macmini4,1": {
         "Board ID": "Mac-F2208EC8",
@@ -968,6 +1223,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "Macmini5,1": {
         "Board ID": "Mac-8ED6AF5B48C039E1",
@@ -978,6 +1236,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge
+        ],
     },
     "Macmini5,2": {
         "Board ID": "Mac-4BC72D62AD45599E",
@@ -988,6 +1249,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge,
+            device_probe.AMD.Archs.TeraScale_2
+        ],
     },
     "Macmini5,3": {
         "Board ID": "Mac-7BA5B2794B2CDB12",
@@ -998,6 +1263,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge,
+        ],
     },
     "Macmini6,1": {
         "Board ID": "Mac-031AEE4D24BFF0B1",
@@ -1008,6 +1276,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ivy_Bridge,
+        ],
     },
     "Macmini6,2": {
         "Board ID": "Mac-F65AE981FFA204ED",
@@ -1018,6 +1289,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ivy_Bridge,
+        ],
     },
     "Macmini7,1": {
         "Board ID": "Mac-35C5E08120C7EEAF",
@@ -1028,6 +1302,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+        ],
     },
     "Macmini8,1": {
         "Board ID": "Mac-7BA5B2DFE22DDD8C",
@@ -1038,6 +1315,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+        ],
     },
     "Macmini9,1": {
         "Board ID": None,
@@ -1048,6 +1328,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [],
     },
     "iMac4,1": {
         "Board ID": "Mac-F42786C8",
@@ -1059,6 +1340,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.R500,
+        ],
     },
     "iMac4,2": {
         "Board ID": "Mac-F4218EC8",
@@ -1070,6 +1354,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.GMA_950,
+        ],
     },
     "iMac5,1": {
         "Board ID": "Mac-F4228EC8",
@@ -1081,6 +1368,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.R500,
+        ],
     },
     "iMac5,2": {
         "Board ID": "Mac-F4218EC8",
@@ -1092,6 +1382,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.GMA_950,
+        ],
     },
     "iMac6,1": {
         "Board ID": "Mac-F4218FC8",
@@ -1103,6 +1396,10 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.R500,
+            device_probe.NVIDIA.Archs.Curie
+        ],
     },
     "iMac7,1": {
         "Board ID": "Mac-F42386C8",
@@ -1114,6 +1411,10 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.TeraScale_1,
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac7,1_v2": {
         "Board ID": "Mac-F4238CC8",
@@ -1125,6 +1426,10 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.TeraScale_1,
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac8,1": {
         "Board ID": "Mac-F227BEC8",
@@ -1136,6 +1441,10 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.TeraScale_1,
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac8,1_v2": {
         "Board ID": "Mac-F226BEC8",
@@ -1147,6 +1456,10 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.TeraScale_1,
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac9,1": {
         "Board ID": "Mac-F2218FA9",
@@ -1158,6 +1471,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac9,1_v2": {
         "Board ID": "Mac-F2218EA9",
@@ -1169,6 +1485,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac9,1_v3": {
         "Board ID": "Mac-F2218EC8",
@@ -1180,6 +1499,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac9,1_v4": {
         "Board ID": "Mac-F2218FC8",
@@ -1191,6 +1513,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac10,1": {
         "Board ID": "Mac-F221DCC8",
@@ -1203,6 +1528,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac10,1_v2": {
         "Board ID": "Mac-F2268CC8",
@@ -1214,6 +1542,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac10,1_v3": {
         "Board ID": "Mac-F2268DC8",
@@ -1225,6 +1556,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla,
+        ],
     },
     "iMac11,1": {
         "Board ID": "Mac-F2268DAE",
@@ -1235,6 +1569,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.TeraScale_1,
+        ],
     },
     "iMac11,2": {
         "Board ID": "Mac-F2238AC8",
@@ -1245,6 +1582,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.TeraScale_1,
+            device_probe.AMD.Archs.TeraScale_2,
+        ],
     },
     "iMac11,3": {
         "Board ID": "Mac-F2238BAE",
@@ -1255,6 +1596,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.TeraScale_1,
+            device_probe.AMD.Archs.TeraScale_2,
+        ],
     },
     "iMac12,1": {
         "Board ID": "Mac-942B5BF58194151B",
@@ -1265,6 +1610,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge,
+            device_probe.AMD.Archs.TeraScale_2,
+        ],
     },
     "iMac12,2": {
         "Board ID": "Mac-942B59F58194171B",
@@ -1275,6 +1624,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge,
+            device_probe.AMD.Archs.TeraScale_2,
+        ],
     },
     "AAPL_iMac12,2": {
         # AppleInternal iMac12,2
@@ -1287,6 +1640,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Sandy_Bridge,
+            device_probe.AMD.Archs.TeraScale_2,
+        ],
     },
     "iMac13,1": {
         "Board ID": "Mac-00BE6ED71E35EB86",
@@ -1297,6 +1654,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ivy_Bridge,
+            device_probe.NVIDIA.Archs.Kepler,
+        ],
     },
     "iMac13,2": {
         "Board ID": "Mac-FC02E91DDD3FA6A4",
@@ -1307,6 +1668,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ivy_Bridge,
+            device_probe.NVIDIA.Archs.Kepler,
+        ],
     },
     "iMac13,3": {
         "Board ID": "Mac-7DF2A3B5E5D671ED",
@@ -1317,6 +1682,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v1,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Ivy_Bridge,
+            device_probe.NVIDIA.Archs.Kepler,
+        ],
     },
     "iMac14,1": {
         "Board ID": "Mac-031B6874CF7F642A",
@@ -1327,6 +1696,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+            device_probe.NVIDIA.Archs.Kepler,
+        ],
     },
     "iMac14,2": {
         "Board ID": "Mac-27ADBB7B4CEE8E61",
@@ -1337,6 +1710,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+            device_probe.NVIDIA.Archs.Kepler,
+        ],
     },
     "iMac14,3": {
         "Board ID": "Mac-77EB7D7DAF985301",
@@ -1347,6 +1724,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+            device_probe.NVIDIA.Archs.Kepler,
+        ],
     },
     "iMac14,4": {
         "Board ID": "Mac-81E3E92DD6088272",
@@ -1357,6 +1738,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+        ],
     },
     "iMac15,1": {
         "Board ID": "Mac-42FD25EABCABB274",
@@ -1367,6 +1751,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+            device_probe.AMD.Archs.Legacy_GCN_7000,
+        ],
     },
     "iMac15,1_v2": {
         "Board ID": "Mac-FA842E06C61E91C5",
@@ -1377,6 +1765,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+            device_probe.AMD.Archs.Legacy_GCN_7000,
+        ],
     },
     "iMac16,1": {
         "Board ID": "Mac-A369DDC4E67F1C45",
@@ -1387,6 +1779,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Broadwell,
+        ],
     },
     "iMac16,2": {
         "Board ID": "Mac-FFE5EF870D7BA81A",
@@ -1397,6 +1792,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Broadwell,
+        ],
     },
     "iMac17,1": {
         "Board ID": "Mac-DB15BD556843C820",
@@ -1409,6 +1807,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Skylake,
+            device_probe.AMD.Archs.Legacy_GCN_9000,
+        ],
     },
     "iMac17,1_v2": {
         "Board ID": "Mac-65CE76090165799A",
@@ -1420,6 +1822,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Skylake,
+            device_probe.AMD.Archs.Legacy_GCN_9000,
+        ],
     },
     "iMac17,1_v3": {
         "Board ID": "Mac-B809C3757DA9BB8D",
@@ -1430,6 +1836,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Skylake,
+            device_probe.AMD.Archs.Legacy_GCN_9000,
+        ],
     },
     "iMac18,1": {
         "Board ID": "Mac-4B682C642B45593E",
@@ -1440,6 +1850,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Kaby_Lake,
+        ],
     },
     "iMac18,2": {
         "Board ID": "Mac-77F17D7DA9285301",
@@ -1450,6 +1863,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Kaby_Lake,
+            device_probe.AMD.Archs.Polaris,
+        ],
     },
     "iMac18,3": {
         "Board ID": "Mac-BE088AF8C5EB4FA2",
@@ -1460,6 +1877,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20703,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Kaby_Lake,
+            device_probe.AMD.Archs.Polaris,
+        ],
     },
     "iMac19,1": {
         "Board ID": "Mac-AA95B1DDAB278B95",
@@ -1470,6 +1891,11 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+            device_probe.AMD.Archs.Polaris,
+            device_probe.AMD.Archs.Vega,
+        ],
     },
     "AAPL_iMac19,1": {
         # AppleInternal iMac19,1 unit
@@ -1481,6 +1907,11 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+            device_probe.AMD.Archs.Polaris,
+            device_probe.AMD.Archs.Vega,
+        ],
     },
     "iMac19,2": {
         "Board ID": "Mac-63001698E7A34814",
@@ -1491,6 +1922,11 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Coffee_Lake,
+            device_probe.AMD.Archs.Polaris,
+            device_probe.AMD.Archs.Vega,
+        ],
     },
     "iMac20,1": {
         "Board ID": "Mac-CFF7D910A743CAAF",
@@ -1501,6 +1937,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Comet_Lake,
+            device_probe.AMD.Archs.Navi,
+        ],
     },
     "iMac20,2": {
         "Board ID": "Mac-AF89B6D9451A490B",
@@ -1511,6 +1951,10 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Comet_Lake,
+            device_probe.AMD.Archs.Navi,
+        ],
     },
     "iMac21,1": {
         "Board ID": None,
@@ -1521,6 +1965,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [],
     },
     "iMac21,2": {
         "Board ID": None,
@@ -1531,6 +1976,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [],
     },
     "iMacPro1,1": {
         "Board ID": "Mac-7BA5B2D9E42DDD94",
@@ -1541,6 +1987,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.Vega,
+        ],
     },
     "MacPro1,1": {
         "Board ID": "Mac-F4208DC8",
@@ -1552,6 +2001,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Curie
+        ],
     },
     "MacPro2,1": {
         "Board ID": "Mac-F4208DA9",
@@ -1563,6 +2015,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Curie
+        ],
     },
     "MacPro3,1": {
         "Board ID": "Mac-F42C88C8",
@@ -1574,6 +2029,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.TeraScale_1
+        ],
     },
     "MacPro4,1": {
         "Board ID": "Mac-F221BEC8",
@@ -1584,6 +2042,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Intel 82574L",
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "MacPro5,1": {
         "Board ID": "Mac-F221BEC8",
@@ -1594,6 +2055,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Intel 82574L",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.TeraScale_2
+        ],
     },
     "MacPro6,1": {
         "Board ID": "Mac-F60DEB81FF30ACF6",
@@ -1604,6 +2068,9 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.Legacy_GCN_7000
+        ],
     },
     "MacPro7,1": {
         "Board ID": "Mac-27AD2F918AE68F61",
@@ -1614,6 +2081,11 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.Polaris,
+            device_probe.AMD.Archs.Vega,
+            device_probe.AMD.Archs.Navi
+        ],
     },
     "Xserve1,1": {
         "Board ID": "Mac-F4208AC8",
@@ -1625,6 +2097,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "UGA Graphics": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.R500
+        ],
     },
     "Xserve2,1": {
         "Board ID": "Mac-F42289C8",
@@ -1636,6 +2111,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "UGA Graphics": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
+        "Stock GPUs": [
+            device_probe.AMD.Archs.R500
+        ],
     },
     "Xserve3,1": {
         "Board ID": "Mac-F223BEC8",
@@ -1646,6 +2124,9 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "Ethernet Chipset": "Intel 82574L",
+        "Stock GPUs": [
+            device_probe.NVIDIA.Archs.Tesla
+        ],
     },
     "ADP3,2": {
         "Board ID": None,
@@ -1656,6 +2137,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": "Broadcom",
+        "Stock GPUs": [],
     },
     "AAPLJ53,1": {
         # AppleInternal MacBookPro11,4
@@ -1666,6 +2148,10 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.mavericks,
         "Wireless Model": device_probe.Broadcom.Chipsets.AirportBrcmNIC,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM20702_v2,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.Haswell,
+        ],
+
     },
     "Intel Virtual Machine": {
         "Board ID": "VMM-x86_64",
@@ -1675,6 +2161,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.max_os,
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
+        "Stock GPUs": [],
     },
     "VirtualMac1,1": {
         # Apple Silicon Virtual Machine
@@ -1685,6 +2172,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.max_os,
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
+        "Stock GPUs": [],
     },
     "VirtualMac2,1": {
         # Apple Silicon Virtual Machine
@@ -1695,6 +2183,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.max_os,
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
+        "Stock GPUs": [],
     },
     "iBridge2,11": {
         # Unknown ID, Intel based, present in Monterey
@@ -1705,6 +2194,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.max_os,
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
+        "Stock GPUs": [],
     },
     "iBridge2,13": {
         # Unknown ID, Intel based, present in Monterey
@@ -1715,5 +2205,6 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.max_os,
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
+        "Stock GPUs": [],
     },
 }
