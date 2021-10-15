@@ -27,7 +27,14 @@ class generate_defaults:
                 settings.sip_status = False
                 settings.allow_fv_root = True  #  Allow FileVault on broken seal
 
-            if settings.computer.dgpu and settings.computer.dgpu.arch in [device_probe.AMD.Archs.Polaris, device_probe.AMD.Archs.Vega, device_probe.AMD.Archs.Navi]:
+            if settings.computer.dgpu and settings.computer.dgpu.arch in [
+                device_probe.AMD.Archs.Legacy_GCN_7000,
+                device_probe.AMD.Archs.Legacy_GCN_8000,
+                device_probe.AMD.Archs.Legacy_GCN_9000,
+                device_probe.AMD.Archs.Polaris,
+                device_probe.AMD.Archs.Vega,
+                device_probe.AMD.Archs.Navi,
+            ]:
                 # Allow H.265 on AMD
                 settings.serial_settings = "Minimal"
         elif model in ["MacPro4,1", "MacPro5,1"]:
@@ -60,10 +67,6 @@ class generate_defaults:
             settings.secure_status = False  # Modified root volume
             settings.allow_fv_root = True  #  Allow FileVault on broken seal
             # settings.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
-
-        if model == "MacBook8,1":
-            # MacBook8,1 has an odd bug where it cannot install Monterey with Minimal spoofing
-            settings.serial_settings = "Moderate"
 
         custom_cpu_model_value = utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
         if custom_cpu_model_value is not None:
