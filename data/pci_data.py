@@ -3,6 +3,18 @@ class nvidia_ids:
     # Courteous of envytools as well as Macrumors:
     # https://envytools.readthedocs.io/en/latest/hw/pciid.html
     # https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/
+    curie_ids = [
+        0x0040,
+        0x00f0,
+        0x0220,
+        0x0140,
+        0x0160,
+        0x0090,
+        0x01d0,
+        0x0390,
+        0x0290,
+    ]
+
     tesla_ids = [
         # G80
         0x0190,  # G80 [GeForce 8800 GTS / 8800 GTX]
@@ -513,61 +525,79 @@ class nvidia_ids:
 
 
 class amd_ids:
-    legacy_gcn_ids = [
-        # AMDRadeonX4000
-        # AMDBonaireGraphicsAccelerator
-        0x6640,
-        0x6641,
-        0x6646,
-        0x6647,
-        0x6650,
-        0x6651,
-        0x665C,
-        0x665D,
-        # AMDFijiGraphicsAccelerator
-        0x7300,
-        0x730F,
-        # AMDHawaiiGraphicsAccelerator
-        0x67B0,
-        # AMDPitcairnGraphicsAccelerator
-        0x6800,
-        0x6801,
-        0x6806,
-        0x6808,
-        0x6810,
-        0x6818,
-        0x6819,
-        # AMDTahitiGraphicsAccelerator
-        0x6790,
-        0x6798,
-        0x679A,
-        0x679E,
-        0x6780,
-        # AMDTongaGraphicsAccelerator
-        0x6920,
-        0x6921,
-        0x6930,
-        0x6938,
-        0x6939,
-        # AMDVerdeGraphicsAccelerator
-        0x6820,
-        0x6821,
-        0x6823,
-        0x6825,
-        0x6827,
-        0x682B,
-        0x682D,
-        0x682F,
-        0x6835,
-        0x6839,
-        0x683B,
-        0x683D,
-        0x683F,
+
+    gcn_7000_ids = [
+        # GCN v1
+        # AMDPitcairnGraphicsAccelerator - AMD7000Controller
+        0x6800,  # HD 7970M
+        0x6801,  # HD 8970M
+        0x6806,  # Unknown
+        0x6808,  # W7000
+        0x6810,  # R7 370 / R9 270X/370X
+        0x6818,  # HD 7870
+        0x6819,  # HD 7850 / R7 265 / R9 270 1024SP
+        # AMDPitcairnGraphicsAccelerator - AMD7000Controller
+        0x6800,  # HD 7970M
+        0x6801,  # HD 8970M
+        0x6806,  # Unknown
+        0x6808,  # W7000
+        0x6810,  # R7 370 / R9 270X/370X
+        0x6818,  # HD 7870
+        0x6819,  # HD 7850 / R7 265 / R9 270 1024SP
+        # AMDTahitiGraphicsAccelerator - AMD7000Controller
+        0x6790,  # Unknown
+        0x6798,  # HD 7970/8970 OEM / R9 280X / D700
+        0x679A,  # HD 7950/8950 OEM / R9 280
+        0x679E,  # HD 7870 XT
+        0x6780,  # W9000
+        # AMDVerdeGraphicsAccelerator - AMD7000Controller
+        0x6820,  # HD 8890M / R9 M275X/M375X / M5100
+        0x6821,  # HD 8870M / R9 M270X/M370X
+        0x6823,  # HD 8850M / R9 M265X
+        0x6825,  # HD 7870M
+        0x6827,  # HD 7850M/8850M
+        0x682B,  # HD 8830M / R7 250 / R7 M465X
+        0x682D,  # M4000
+        0x682F,  # HD 7730M
+        0x6835,  # R9 255
+        0x6839,  # Unknown
+        0x683B,  # Unknown
+        0x683D,  # HD 7770/8760 / R7 250X
+        0x683F,  # HD 7750/8740 / R7 250E
+    ]
+
+    gcn_8000_ids = [
+        # GCN v2
+        # AMDBonaireGraphicsAccelerator - AMD8000Controller
+        0x6640,  # M6100
+        0x6641,  # HD 8930M
+        0x6646,  # R9 M280X / W6170M
+        0x6647,  # R9 M270X/M280X
+        0x6650,  # Unknown
+        0x6651,  # Unknown
+        0x665C,  # HD 7790/8770 / R7 360 / R9 260/360
+        0x665D,  # R7 200
+        # AMDHawaiiGraphicsAccelerator - AMD8000Controller
+        0x67B0,  # R9 290X/390X
+    ]
+
+    gcn_9000_ids = [
+        # GCN v3
+        # AMDFijiGraphicsAccelerator - AMD9000Controller
+        0x7300,  # R9 FURY / NANO
+        0x730F,  # Unknown
+        # AMDTongaGraphicsAccelerator - AMD9000Controller
+        0x6920,  # R9 M395/ M395X
+        0x6921,  # R9 M295X / M390X
+        0x6930,  # Unknown
+        0x6938,  # R9 380X / R9 M295X
+        0x6939,  # R9 285/380
     ]
 
     polaris_ids = [
+        # GCN v4
         # AMDRadeonX4000
-        # AMDBaffinGraphicsAccelerator
+        # AMDBaffinGraphicsAccelerator - AMD9500Controller
         0x67E0,
         0x67E3,
         0x67E8,
@@ -577,7 +607,7 @@ class amd_ids:
         0x67E1,
         0x67E7,
         0x67E9,
-        # AMDEllesmereGraphicsAccelerator
+        # AMDEllesmereGraphicsAccelerator - AMD9500Controller
         0x67C0,
         0x67C1,
         0x67C2,
@@ -593,8 +623,9 @@ class amd_ids:
     ]
 
     vega_ids = [
+        # GCN v5
         # AMDRadeonX5000
-        # AMDVega10GraphicsAccelerator
+        # AMDVega10GraphicsAccelerator - AMD10000Controller
         0x6860,
         0x6861,
         0x6862,
@@ -610,13 +641,13 @@ class amd_ids:
         0x686E,
         0x686F,
         0x687F,
-        # AMDVega12GraphicsAccelerator
+        # AMDVega12GraphicsAccelerator - AMD10000Controller
         0x69A0,
         0x69A1,
         0x69A2,
         0x69A3,
         0x69AF,
-        # AMDVega20GraphicsAccelerator
+        # AMDVega20GraphicsAccelerator - AMD10000Controller
         0x66A0,
         0x66A1,
         0x66A2,
@@ -636,7 +667,7 @@ class amd_ids:
         0x731B,
         0x731F,
         # AMDNavi12GraphicsAccelerator
-        0x7360,
+        0x7360,  # 5600M
         # AMDNavi14GraphicsAccelerator
         0x7340,
         0x7341,
@@ -648,6 +679,14 @@ class amd_ids:
         0x73AB,
         0x73BF,
     ]
+
+    r500_ids = [
+        0x7187,  # X1300/X1550
+        0x7146,  # X1300/X1550
+        0x71c5,  # Mobile X1600
+        0x7249,  # X1900 XT
+    ]
+
     terascale_1_ids = [
         0x9400,
         0x9401,
@@ -719,6 +758,17 @@ class amd_ids:
 
 
 class intel_ids:
+    gma_950_ids = [
+        0x2582,
+        0x2592,
+        0x2772,
+        0x27A2,
+    ]
+
+    gma_x3100_ids = [
+        0x2a02,
+    ]
+
     iron_ids = [
         # AppleIntelHDGraphics IDs
         0x0044,
@@ -803,6 +853,12 @@ class intel_ids:
         0x3E92,
         0x3E91,
         0x3E98,
+    ]
+
+    comet_lake_ids = [
+        0x9BC8,
+        0x9BC5,
+        0x9BC4,
     ]
 
     ice_lake_ids = [

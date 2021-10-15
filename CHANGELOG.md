@@ -26,7 +26,7 @@
 - Add Legacy GMUX patchsets
   - Applicable for dual GPU MacBookPro5,x and demuxed MacBookPro8,x
 - Increment Binaries:
-  - PatcherSupportPkg 0.1.6 release
+  - PatcherSupportPkg 0.1.7 release
   - RestrictEvents  1.0.5 rolling (2430ed0)
 - Limit MacBookPro6,2 G State
   - Works around crashing when switching GPUs
@@ -45,6 +45,10 @@
 - Implement software demux patch set for 2011 15/17" MacBook Pros
   - Alternative to hardware demux
   - Adds [AMDGPUWakeHandler](https://github.com/blackgate/AMDGPUWakeHandler)
+- Add Legacy GCN support for iMac11,x and iMac12,x with upgraded GPUs
+  - Note: iMac12,x with legacy GCN will fail to wake
+- Fix Beta 10 Bluetooth
+  - Works around new Broadcom/CSR vendor checks in `bluetoothd`
 
 ## 0.2.5
 

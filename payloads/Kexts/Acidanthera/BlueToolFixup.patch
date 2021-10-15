@@ -1,5 +1,5 @@
 diff --git a/BrcmPatchRAM/BlueToolFixup.cpp b/BrcmPatchRAM/BlueToolFixup.cpp
-index 0fa891a..b64b780 100644
+index 0fa891a..4cebff4 100644
 --- a/BrcmPatchRAM/BlueToolFixup.cpp
 +++ b/BrcmPatchRAM/BlueToolFixup.cpp
 @@ -37,8 +37,10 @@ bool BlueToolFixup::start(IOService *provider) {
@@ -13,3 +13,45 @@ index 0fa891a..b64b780 100644
      registerService();
      
      return true;
+@@ -50,7 +52,22 @@ bool BlueToolFixup::start(IOService *provider) {
+ static const uint8_t kSkipUpdateFilePathOriginal[] = "/etc/bluetool/SkipBluetoothAutomaticFirmwareUpdate";
+ static const uint8_t kSkipUpdateFilePathPatched[] = "/System/Library/CoreServices/boot.efi";
+ 
++static const uint8_t kVendorCheckOriginal[] =
++ {
++     0x74, 0x08,     // jz short 08
++     0x81, 0xFA,     // cmp edx
++     0x12, 0x0A, 0x00, 0x00  // Vendor CSR
++ };
++
++ static const uint8_t kVendorCheckPatched[] =
++ {
++     0xEB, 0x08,     // jmp short 08
++     0x81, 0xFA,     // cmp edx
++     0x12, 0x0A, 0x00, 0x00  // Vendor CSR
++ };
++
+ static const char *blueToolPath = "/usr/sbin/BlueTool";
++static const char *bluetoothdPath = "/usr/sbin/bluetoothd";
+ 
+ static mach_vm_address_t orig_cs_validate {};
+ 
+@@ -70,10 +87,14 @@ static inline void searchAndPatch(const void *haystack, size_t haystackSize, con
+ static void patched_cs_validate_page(vnode_t vp, memory_object_t pager, memory_object_offset_t page_offset, const void *data, int *validated_p, int *tainted_p, int *nx_p) {
+     char path[PATH_MAX];
+     int pathlen = PATH_MAX;
+-    FunctionCast(patched_cs_validate_page, orig_cs_validate)(vp, pager, page_offset, data, validated_p, tainted_p, nx_p);
+-    if (vn_getpath(vp, path, &pathlen) == 0 && UNLIKELY(strcmp(path, blueToolPath) == 0)) {
+-        searchAndPatch(data, PAGE_SIZE, path, kSkipUpdateFilePathOriginal, kSkipUpdateFilePathPatched);
+-    }
++    if (vn_getpath(vp, path, &pathlen) == 0) {
++         if (UNLIKELY(strcmp(path, blueToolPath) == 0)) {
++             searchAndPatch(data, PAGE_SIZE, path, kSkipUpdateFilePathOriginal, kSkipUpdateFilePathPatched);
++         }
++         if (UNLIKELY(strcmp(path, bluetoothdPath) == 0)) {
++             searchAndPatch(data, PAGE_SIZE, path, kVendorCheckOriginal, kVendorCheckPatched);
++         }
++     }
+ }
+ 
+ 

@@ -385,10 +385,13 @@ Q. Return to previous menu
         elif change_menu == "2":
             custom_smbios = input("Set new SMBIOS mode: ")
             try:
-                test = self.constants.board_id[custom_smbios]
-                self.constants.override_smbios = custom_smbios
+                if smbios_data.smbios_dictionary[custom_smbios]["Board ID"] != None:
+                    self.constants.override_smbios = custom_smbios
+                else:
+                    print("Non-Intel SMBIOS, reverting to Default setting")
+                    self.constants.override_smbios = "Default"
             except KeyError:
-                print("Unsupported SMBIOS, defaulting to Default setting")
+                print("Unsupported SMBIOS, reverting to Default setting")
                 self.constants.override_smbios = "Default"
         elif change_menu == "3":
             print("Disabling SMBIOS spoof")
