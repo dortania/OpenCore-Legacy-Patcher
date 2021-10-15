@@ -26,7 +26,7 @@
 - Add Legacy GMUX patchsets
   - Applicable for dual GPU MacBookPro5,x and demuxed MacBookPro8,x
 - Increment Binaries:
-  - PatcherSupportPkg 0.1.6 release
+  - PatcherSupportPkg 0.1.7 release
   - RestrictEvents  1.0.5 rolling (2430ed0)
 - Limit MacBookPro6,2 G State
   - Works around crashing when switching GPUs
