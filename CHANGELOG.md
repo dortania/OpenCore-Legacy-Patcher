@@ -47,6 +47,8 @@
   - Adds [AMDGPUWakeHandler](https://github.com/blackgate/AMDGPUWakeHandler)
 - Add Legacy GCN support for iMac11,x and iMac12,x with upgraded GPUs
   - Note: iMac12,x with legacy GCN will fail to wake
+- Fix Beta 10 Bluetooth
+  - Works around new Broadcom/CSR vendor checks in `bluetoothd`
 
 ## 0.2.5
 
