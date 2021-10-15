@@ -1,5 +1,5 @@
 diff --git a/BrcmPatchRAM/BlueToolFixup.cpp b/BrcmPatchRAM/BlueToolFixup.cpp
-index 0fa891a..4cebff4 100644
+index 0fa891a..18e4b74 100644
 --- a/BrcmPatchRAM/BlueToolFixup.cpp
 +++ b/BrcmPatchRAM/BlueToolFixup.cpp
 @@ -37,8 +37,10 @@ bool BlueToolFixup::start(IOService *provider) {
@@ -36,11 +36,10 @@ index 0fa891a..4cebff4 100644
  
  static mach_vm_address_t orig_cs_validate {};
  
-@@ -70,10 +87,14 @@ static inline void searchAndPatch(const void *haystack, size_t haystackSize, con
- static void patched_cs_validate_page(vnode_t vp, memory_object_t pager, memory_object_offset_t page_offset, const void *data, int *validated_p, int *tainted_p, int *nx_p) {
+@@ -71,9 +88,14 @@ static void patched_cs_validate_page(vnode_t vp, memory_object_t pager, memory_o
      char path[PATH_MAX];
      int pathlen = PATH_MAX;
--    FunctionCast(patched_cs_validate_page, orig_cs_validate)(vp, pager, page_offset, data, validated_p, tainted_p, nx_p);
+     FunctionCast(patched_cs_validate_page, orig_cs_validate)(vp, pager, page_offset, data, validated_p, tainted_p, nx_p);
 -    if (vn_getpath(vp, path, &pathlen) == 0 && UNLIKELY(strcmp(path, blueToolPath) == 0)) {
 -        searchAndPatch(data, PAGE_SIZE, path, kSkipUpdateFilePathOriginal, kSkipUpdateFilePathPatched);
 -    }
