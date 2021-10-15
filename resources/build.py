@@ -499,12 +499,8 @@ class BuildOpenCore:
                     "@0,backlight-control": binascii.unhexlify("01000000"),
                     "@0,built-in": binascii.unhexlify("01000000"),
                     "shikigva": 256,
+                    "agdpmod": "vit9696",
                 }
-                if self.constants.serial_settings != "None":
-                    self.config["DeviceProperties"]["Add"][backlight_path] += {
-                        "agdpmod": "vit9696",
-                    }
-
                 if self.constants.custom_model and self.model == "iMac11,2":
                     # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
                     # Set both properties when we cannot run hardware detection
@@ -513,11 +509,8 @@ class BuildOpenCore:
                         "@0,backlight-control": binascii.unhexlify("01000000"),
                         "@0,built-in": binascii.unhexlify("01000000"),
                         "shikigva": 256,
+                        "agdpmod": "vit9696",
                     }
-                    if self.constants.serial_settings != "None":
-                        self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] += {
-                            "agdpmod": "vit9696",
-                        }
             elif self.model in ["iMac12,1", "iMac12,2"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
                 self.config["DeviceProperties"]["Add"][backlight_path] = {
