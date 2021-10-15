@@ -489,6 +489,9 @@ class BuildOpenCore:
                     self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
 
         def nvidia_patch(self, backlight_path):
+            if not self.get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
+                # Ensure WEG is enabled as we need if for Backlight patching
+                self.enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
             if self.model in ["iMac11,1", "iMac11,2", "iMac11,3", "iMac10,1"]:
                 print("- Adding Nvidia Brightness Control and DRM patches")
                 self.config["DeviceProperties"]["Add"][backlight_path] = {
@@ -540,6 +543,9 @@ class BuildOpenCore:
 
         def amd_patch(self, backlight_path):
             print("- Adding AMD DRM patches")
+            if not self.get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
+                # Ensure WEG is enabled as we need if for Backlight patching
+                self.enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
             self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1}
             if self.constants.custom_model and self.model == "iMac11,2":
                 # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
