@@ -1,6 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.3.1
+- Increment Binaries:
+  - OpenCorePkg 0.7.4 release
+  - RestrictEvents 1.0.5 release
 
 ## 0.3.0
 - Fix Nvidia Tesla Acceleration in Monterey Beta 7+

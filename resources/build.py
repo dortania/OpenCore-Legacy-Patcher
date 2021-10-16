@@ -100,8 +100,6 @@ class BuildOpenCore:
             ("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path, lambda: True),
             ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None"),
             ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in model_array.MacPro),
-            # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
-            ("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path, lambda: self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1"]),
             ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None"),
             # CPU patches
             ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: (self.model.startswith("MacPro") or self.model.startswith("Xserve")) and self.constants.serial_settings != "None"),
@@ -166,6 +164,14 @@ class BuildOpenCore:
         if self.get_kext_by_bundle_path("Lilu.kext")["Enabled"] is True:
             # Required for Lilu in 11.0+
             self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
+        
+        if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
+            # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
+            if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1"]:
+                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
+            elif self.constants.serial_settings == "None":
+                # MacBookPro10,1 without SMBIOS spoof needs RestrictEvents
+                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
 
         # Ethernet Patch Sets
         if smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Broadcom":
@@ -173,13 +179,6 @@ class BuildOpenCore:
                 # Required due to Big Sur's BCM5701 requiring VT-x support
                 # Applicable for pre-Ivy Bridge models
                 self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
-
-        if self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None":
-            if (smbios_data.smbios_dictionary[generate_smbios.set_smbios_model_spoof(self.model) or self.constants.override_smbios]["SecureBootModel"]) != None:
-                # Monterey T2 SMBIOS don't get OS updates without a T2 SBM
-                # Forces VMM patch instead
-                if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
-                    self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
 
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
             # Ref: https://github.com/reenigneorcim/SurPlus
@@ -740,6 +739,10 @@ class BuildOpenCore:
         if self.constants.secure_status is False:
             print("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
+            if self.constants.force_vmm is True:
+                print("- Forcing VMM patchset to support OTA updates")
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2)")["Enabled"] = True
         if self.constants.serial_settings in ["Moderate", "Advanced"]:
             print("- Enabling USB Rename Patches")
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "XHC1 to SHC1")["Enabled"] = True

@@ -1,6 +1,6 @@
 # Generate Default Data
-from resources import utilities, device_probe
-from data import model_array
+from resources import utilities, device_probe, generate_smbios
+from data import model_array, smbios_data
 
 
 class generate_defaults:
@@ -52,10 +52,6 @@ class generate_defaults:
                     settings.sip_status = False
                     # settings.secure_status = True  # Monterey
                     settings.allow_fv_root = True  #  Allow FileVault on broken seal
-                else:
-                    settings.sip_status = True
-                    # settings.secure_status = True  # Monterey
-                    settings.amfi_status = True
             else:
                 settings.sip_status = False  #    Unsigned kexts
                 settings.secure_status = False  # Root volume modified
@@ -87,3 +83,22 @@ class generate_defaults:
 
         # Check if running in RecoveryOS
         settings.recovery_status = utilities.check_recovery()
+
+        # Check if model uses T2 SMBIOS, if so see if it needs root patching (determined earlier on via SIP variable)
+        # If not, allow SecureBootModel usage, otherwise force VMM patching
+        # Needed for macOS Monterey to allow OTA updates
+        try:
+            spoof_model = generate_smbios.set_smbios_model_spoof(model)
+        except:
+            # Native Macs (mainly M1s) will error out as they don't know what SMBIOS to spoof to
+            # As we don't spoof on native models, we can safely ignore this
+            spoof_model = model
+        if smbios_data.smbios_dictionary[spoof_model]["SecureBootModel"] is not None:
+            if settings.sip_status is False:
+                # Force VMM as root patching is 
+                settings.secure_status = False
+                settings.force_vmm = True
+            else:
+                # Allow SecureBootModel
+                settings.secure_status = True
+                settings.force_vmm = False

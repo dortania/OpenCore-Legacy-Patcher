@@ -20,8 +20,8 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_commit = "ff4b099 - 09-06-2021"
-        self.opencore_version = "0.7.3"
+        self.opencore_commit = "bd3f7a1 - 10-04-2021"
+        self.opencore_version = "0.7.4"
 
         # Kext Versioning
         ## Acidanthera
@@ -157,6 +157,7 @@ class Constants:
         self.force_latest_psp = False  #      Force latest PatcherSupportPkg
         self.disable_msr_power_ctl = False  # Disable MSR Power Control (missing battery throttling)
         self.software_demux = False  #        Enable Software Demux patch set
+        self.force_vmm = False  #             Force VMM patch 
 
         # OS Versions
         ## Based off Major Kernel Version
