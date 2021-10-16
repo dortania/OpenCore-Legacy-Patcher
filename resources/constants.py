@@ -13,7 +13,7 @@ from resources import device_probe
 class Constants:
     def __init__(self):
         # Patcher Versioning
-        self.patcher_version = "0.3.0"  # OpenCore-Legacy-Patcher
+        self.patcher_version = "0.3.1"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version = "0.1.7"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
