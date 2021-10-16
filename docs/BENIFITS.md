@@ -11,7 +11,7 @@ With OpenCore Legacy Patcher we recommend users go through the below table to un
 | System Integrity Protection | <span style="color:#30BCD5">Fully enabled on Metal GPUs</span> | <span style="color:red">Disabled for early 2013 and older during the patching process and first boot afterwards, otherwise enabled</span> |
 | APFS Snapshots | <span style="color:#30BCD5">Fully enabled</span> | <span style="color:red">Disabled</span> |
 | User facing | <span style="color:red">TUI interface</span> | <span style="color:#30BCD5">SwiftUI interface, more user friendly</span> |
-| Supported OSes | <span style="color:#30BCD5">10.7-11</span> | <span style="color:red">10.15-11</span> |
+| Supported OSes | <span style="color:#30BCD5">10.7-12</span> | <span style="color:red">10.15-11</span> |
 | Firmware Patching | <span style="color:#30BCD5">None required</span> | <span style="color:red">Required for models without native APFS support</span> |
 | BootCamp Switching | <span style="color:red">Requires EFI Conversion for Start Disk support, otherwise still supported</span> | <span style="color:#30BCD5">Native</span> |
 | Non-Metal GPU Acceleration | <span style="color:#30BCD5">In active development</span>, see Acceleration Progress Tracker: [Link](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) | <span style="color:red">Currently not researching</span> |
