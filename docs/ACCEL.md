@@ -9,8 +9,9 @@
 * [Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer](#wake-from-sleep-heavily-distorted-on-amd-ati-in-macos-11-3-and-newer)
 * [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
+* [Unable to allow Safari Extensions](#Unable-to-allow-Safari-Extensions)
 
-The below page is for users experiencing issues with their overall usage of macOS Big Sur and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur:
+The below page is for users experiencing issues with their overall usage of macOS Big Sur / macOS Monterey and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur:
 
 * Intel 3rd and 4th Gen - GMA series
 
@@ -106,6 +107,8 @@ Due to the Metal Backend, the enhanced color output of these apps seems to heavi
 
 To work around this, simply press Tab to hover over and press spacebar to simulate a click.
 
+Note: This work-around doesn't seem to work in macOS 11.3 and newer
+
 ## Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer
 
 Unfortunately a very well known issue the community is investigating, current known solution is to simply downgrade to 11.2.3 or older until a proper fix can be found. Additionally logging out and logging in can resolve the issue without requiring a reboot
@@ -136,3 +139,11 @@ Applications that can set color depth are:
 
 * [SwitchResX](https://www.madrau.com)
 * [ResXtreme](https://macdownload.informer.com/resxtreme/)
+
+## Unable to allow Safari Extensions
+
+Due to an bug on the legacy acceleration patches, users won't be able to enable Safari Extensions
+
+This tool can be used to work-around this issue:
+
+* [Non-Metal Safari Extensions](https://github.com/moosethegoose2213/Non-Metal-Safari-Extensions/)
