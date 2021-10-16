@@ -5,12 +5,10 @@
 # - Place the X64 folder in the /payloads/OpenCore folder
 # - Rename to OpenCore-VERSION (ie. DEBUG or RELEASE)
 # - Run script
-# - Rename folders to appropriate versions (ie. OpenCore-v0.6.8)
+# - Rename folders to appropriate versions (ie. OpenCore-Build)
 # - Zip folders
 # TODO:
-# - Import OC version from Constants.py
 # - Download latest builds from dortania.github.io
-# - Automatically rename and zip folders
 from __future__ import print_function
 
 import subprocess
@@ -69,7 +67,7 @@ for version in build_types:
         else:
             print(f"- Unable to find {delete_tools}, skipping")
 
-    print("Renaming folder to OpenCore-Build and zipping")
+    print("- Renaming folder to OpenCore-Build and zipping")
     subprocess.run(f"mv ./OpenCore-{version} ./OpenCore-Build".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
     subprocess.run(f"zip -r ./OpenCore-{version}.zip ./OpenCore-Build".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()
     subprocess.run(f"rm -rf ./OpenCore-Build".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode()

@@ -1,9 +1,114 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.3.1
+
+## 0.3.0
+- Fix Nvidia Tesla Acceleration in Monterey Beta 7+
+  - Add missing NVDAStartup
+- Allow configuring GMUX usage for Windows
+   - Applicable for iGPU+dGPU MacBook Pros
+- Allow usage of legacy AppleHDA
+   - Only use for machines that cannot achieve audio support normally
+   - Main usage for Macs without boot screen output
+- Revert iMacPro1,1 SMBIOS usage on Mac Pros and Xserves
+  - Resolves display output issues on Legacy GCN
+- Limit SIP bits flipped when disabled
+  - 0xFEF -> 0xE03
+      - `CSR_ALLOW_UNTRUSTED_KEXTS`
+      - `CSR_ALLOW_UNRESTRICTED_FS`
+      - `CSR_ALLOW_UNAPPROVED_KEXTS`
+      - `CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE`
+      - `CSR_ALLOW_UNAUTHENTICATED_ROOT`
+- Fix Kepler DisplayPort output
+  - Apply `agdpmod=vit9696` patch
+- Add Syncretic's SurPlus 11.3+ Race Condition Patch
+  - [Source](https://github.com/reenigneorcim/SurPlus)
+- Downgrade Nvidia Kepler Bundles to 11.0 Beta 3
+  - Resolves crashing at high loads, credit to [Jackluke](https://github.com/jacklukem) for discovery
+- Add Legacy GMUX patchsets
+  - Applicable for dual GPU MacBookPro5,x and demuxed MacBookPro8,x
+- Increment Binaries:
+  - PatcherSupportPkg 0.1.7 release
+  - RestrictEvents  1.0.5 rolling (2430ed0)
+- Limit MacBookPro6,2 G State
+  - Works around crashing when switching GPUs
+- Fix OTA updates on T2 SMBIOS
+- Allow iMac13,x iGPU usage always
+  - Due to both Kepler and Ivy needing root patching, no benefit to disable the iGPU
+- Refactor Hardware Model building
+- Resolve dGPU output on MacBookPro10,1
+- Add Panel ID `9cd6` for iMac11,3
+  - Resolves Brightness control
+- Add AppleGVA patch set for HD3000 machines
+  - Mainly applicable for iMac12,x and iGPU-only MacBooks
+- Add EFICheckDisabler
+  - Based off stripped RestrictEvents.kext
+- Add SimpleMSR to disable missing battery throttling on Nehalem+ MacBooks
+- Implement software demux patch set for 2011 15/17" MacBook Pros
+  - Alternative to hardware demux
+  - Adds [AMDGPUWakeHandler](https://github.com/blackgate/AMDGPUWakeHandler)
+- Add Legacy GCN support for iMac11,x and iMac12,x with upgraded GPUs
+  - Note: iMac12,x with legacy GCN will fail to wake
+- Fix Beta 10 Bluetooth
+  - Works around new Broadcom/CSR vendor checks in `bluetoothd`
+
+## 0.2.5
+
+- Implement Latebloom configuration via command line tool
+- Implement Root Volume backups in addition to APFS snapshot reversions
+  - Backups applicable to machines with sealed APFS snapshots
+- Allow Root Patching on Mojave and Catalina
+  - Currently experimental
+- Allow disabling of faulty Thunderbolt controllers on 2013-2014 MacBook Pros
+  - Currently limited to MacBookPro11,x
+- Set iMacPro1,1 SMBIOS for Mac Pro and Xserve models
+  - Allows for wider array of OS support (High Sierra+)
+- Use plist override for BCM943224 and BCM94331 support in Big Sur+
+  - Allows for older OS support through OpenCore
+- Increment Binaries:
+  - OpenCore 0.7.2 release
+  - Lilu 1.5.5 release
+  - AppleALC 1.6.3 release
+  - WhateverGreen 1.5.2 release
+  - FeatureUnlock 1.0.3 release
+  - PatcherSupportPkg 0.1.2 release
+- Allow iGPU/dGPU switching in Windows
+  - Applicable to MacBook Pros with Intel iGPU and Nvidia/AMD dGPU
+- Clean up Patcher Settings
+- Allow disabling of TeraScale 2 Acceleration during root volume patch
+  - Use for MacBookPro8,x with heavily degraded dGPUs
+- Add non-Metal Monterey Acceleration
+  - Currently supports:
+    - Intel Ironlake and Sandy Bridge
+    - Nvidia Tesla
+    - AMD TeraScale 1 and 2
+- Allow Trackpad gestures on MacBook4,1 and MacBook5,2
+  - System Preferences will not report settings however
+- Allow Root Volume Patched Systems to use FileVault 2
+  - Requires macOS 11.3 (20E232) or newer
+- Add offline TUI build
+  - Allows for root patching without network connection
+- Add Legacy Wireless support for Monterey
+  - Applicable for BCM94328, BCM94322 and Atheros chipsets
+- Add Legacy Bluetooth support for Monterey
+  - Applicable for BRCM2046 and BRCM2070 chipsets
+- Disable Library Validation allowing for AMFI usage
+  - Remove reliance on amfi_get_out_of_my_way=1
+- Add Kepler Accleration Patches for Monterey Beta 7 and newer
+- Add FirmwareFeature upgrading to all Models
+  - Fixes Monterey Beta 7 installation issues
+- Add iMac7,1 USB map
+
 ## 0.2.4
 
 - Fix BlessOverride typo
 - Fix Wake on WLAN typo
+- Fix Catalyst App crashing in macOS 11.5 (ie. Messages.app)
+- Increment Binaries
+  - PatcherSupportPkg 0.0.15 release
+- Implement Latebloom.kext support (v0.19)
+  - Work around macOS 11.3+ race condition on pre-Sandy Bridge Macs
+- Disable USB Map injection when unneeded
 
 ## 0.2.3
 
@@ -52,6 +157,7 @@
   - Lilu 1.5.4 rolling (f69a972 - 06-20-2021)
   - RestrictEvents 1.0.3 rolling (3773ce2 - 06-20-2021)
   - SidecarFixup 1.0.2 rolling (2c29166 - 06-21-2021)
+  - PatcherSupportPkg 0.0.18
 - Allow AirPlay to Mac support on Skylake - Coffeelake Macs
 
 ## 0.1.9

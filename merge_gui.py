@@ -2,9 +2,9 @@
 # Copyright (C) 2021 Mykola Grymalyuk
 import plistlib
 from pathlib import Path
-from Resources import Constants
+from resources import constants
 
 app_path = Path.cwd() / Path ("OpenCore Patcher.app/Contents/Info.plist")
 info = plistlib.load(Path(app_path).open("rb"))
-info["CFBundleShortVersionString"] = Constants.Constants().patcher_version
+info["CFBundleShortVersionString"] = constants.Constants().patcher_version
 plistlib.dump(info, Path(app_path).open("wb"), sort_keys=True)
