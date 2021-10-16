@@ -10,6 +10,7 @@ Here are some common errors users may experience while using this patcher:
 * [How to Boot Big Sur Recovery](#how-to-boot-big-sur-recovery)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 * [No Brightness Control](#no-brightness-control)
+* [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-Wi-Fi-on-Monterey-with-legacy-cards)
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
@@ -68,3 +69,9 @@ With OCLP v0.0.22, we've added support for brightness control on many models. Ho
 To work-around, we recommend user try out the below app:
 
 * [Brightness Slider](https://actproductions.net/free-apps/brightness-slider/)
+
+## Cannot connect Wi-Fi on Monterey with legacy cards
+
+With OCLP v0.2.5, we've added support for legacy Wi-Fi on Monterey. However some users may have noticed that they can't connect to wireless networks.
+
+To work-around, we recommend users to manually connect using the "other" option on the Wi-Fi menu bar or manually adding the network on the "Network" preference pane.
