@@ -11,7 +11,7 @@
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
 * [Unable to allow Safari Extensions](#Unable-to-allow-Safari-Extensions)
 
-The below page is for users experiencing issues with their overall usage of macOS Big Sur / macOS Monterey and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur:
+The below page is for users experiencing issues with their overall usage of macOS Big Sur / macOS Monterey and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur / Monterey:
 
 * Intel 3rd and 4th Gen - GMA series
 
@@ -31,22 +31,6 @@ For those unfamiliar with what is considered a non-Metal GPU, see below chart:
 | ^^ | Iron Lake | HD series | ^^ |
 | ^^ | Sandy Bridge | HD3000 | ^^ |
 | ^^ | Ivy Bridge (and newer) | HD4000 | <span style="color:green">Yes</span> |
-
-:::
-
-Additionally we currently do not have macOS Monterey acceleration patches for non-Metal Macs. We recommend users either upgrade their Macs with a Metal GPU or remain on Big Sur until further development
-
-::: details Why there's no non-Metal patches for Monterey
-
-With macOS Monterey, please understand our current legacy acceleration patch sets are no longer functional. As of right now, only basic framebuffer and brightness control may be achieved, however proper animations and hardware acceleration is not available.
-
-This is due to numerous changes with Skylight and other macOS frameworks relying more and more on Metal functions and thus making it even more difficult to re-add legacy OpenGL support.
-
-> When can we expect acceleration support
-
-For the time being, please understand we cannot predict when there will be patch sets ready. Note that it took over 300 days from Big Sur's unveiling to achieve public acceleration for non-Metal GPUs. And with TeraScale 2 acceleration, this took almost 3 years to achieve public acceleration.
-
-So please be patient as developers are hard at work, however please expect no acceleration support in Monterey until next year at the minimum if not even later.
 
 :::
 
