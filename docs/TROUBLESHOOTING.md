@@ -10,7 +10,7 @@ Here are some common errors users may experience while using this patcher:
 * [How to Boot Big Sur Recovery](#how-to-boot-big-sur-recovery)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 * [No Brightness Control](#no-brightness-control)
-* [Cannot connect Wi-Fi on Monterey with legacy cards](#Cannot-conect-to-Wi-Fi-on-Monterey-with-legacy-cards)
+* [Cannot connect Wi-Fi on Monterey with legacy cards](#Cannot-connect-Wi-Fi-on-Monterey-with-legacy-cards)
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
