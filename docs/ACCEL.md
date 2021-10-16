@@ -9,7 +9,7 @@
 * [Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer](#wake-from-sleep-heavily-distorted-on-amd-ati-in-macos-11-3-and-newer)
 * [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
-* [Unable to allow Safari Extensions](#Unable-to-allow-Safari-Extensions)
+* [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
 
 The below page is for users experiencing issues with their overall usage of macOS Big Sur / macOS Monterey and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur / Monterey:
 
