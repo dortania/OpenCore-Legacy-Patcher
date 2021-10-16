@@ -381,8 +381,6 @@ class BuildOpenCore:
                     Path(self.constants.amc_contents_folder).mkdir()
                     shutil.copy(amc_map_path, self.constants.amc_contents_folder)
                     self.get_kext_by_bundle_path("AMC-Override.kext")["Enabled"] = True
-                elif self.model == "MacBookPro10,1":
-                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"agdpmod": "vit9696"}
 
                 if self.model not in model_array.NoAGPMSupport:
                     print("- Adding AppleGraphicsPowerManagement Override")
@@ -399,7 +397,6 @@ class BuildOpenCore:
                     Path(self.constants.agdp_contents_folder).mkdir()
                     shutil.copy(agdp_map_path, self.constants.agdp_contents_folder)
                     self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
-
         
         if self.constants.serial_settings != "None":
             # AGPM Patch
