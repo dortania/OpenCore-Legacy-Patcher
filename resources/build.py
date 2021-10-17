@@ -723,7 +723,10 @@ class BuildOpenCore:
             print("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
             self.get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
-        if self.constants.sip_status is False:
+        if self.constants.custom_sip_value:
+            print(f"- Setting SIP value to: {self.constants.custom_sip_value}")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = utilities.string_to_hex(self.constants.custom_sip_value.lstrip("0x"))
+        elif self.constants.sip_status is False:
             print("- Disabling SIP")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("030E0000")
         # if self.constants.amfi_status is False:
@@ -1042,8 +1045,15 @@ class BuildOpenCore:
 
     def sign_files(self):
         if self.constants.vault is True:
-            print("- Vaulting EFI")
-            subprocess.run([str(self.constants.vault_path), f"{self.constants.oc_folder}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if utilities.check_command_line_tools() is True:
+                # sign.command checks for the existance of '/usr/bin/strings' however does not verify whether it's executable
+                # sign.command will continue to run and create an unbootable OpenCore.efi due to the missing strings binary
+                # macOS has dummy binaries that just reroute to the actual binaries after you install Xcode's Command Line Tools
+                print("- Vaulting EFI")
+                subprocess.run([str(self.constants.vault_path), f"{self.constants.oc_folder}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            else:
+                print("- Missing Command Line tools, skipping Vault for saftey reasons")
+                print("- Install via 'xcode-select --install' and rerun OCLP if you wish to vault this config")
 
     def build_opencore(self):
         self.build_efi()

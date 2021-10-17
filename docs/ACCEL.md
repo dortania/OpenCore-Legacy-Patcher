@@ -9,8 +9,9 @@
 * [Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer](#wake-from-sleep-heavily-distorted-on-amd-ati-in-macos-11-3-and-newer)
 * [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
+* [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
 
-The below page is for users experiencing issues with their overall usage of macOS Big Sur and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur:
+The below page is for users experiencing issues with their overall usage of macOS Big Sur / macOS Monterey and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur / Monterey:
 
 * Intel 3rd and 4th Gen - GMA series
 
@@ -30,22 +31,6 @@ For those unfamiliar with what is considered a non-Metal GPU, see below chart:
 | ^^ | Iron Lake | HD series | ^^ |
 | ^^ | Sandy Bridge | HD3000 | ^^ |
 | ^^ | Ivy Bridge (and newer) | HD4000 | <span style="color:green">Yes</span> |
-
-:::
-
-Additionally we currently do not have macOS Monterey acceleration patches for non-Metal Macs. We recommend users either upgrade their Macs with a Metal GPU or remain on Big Sur until further development
-
-::: details Why there's no non-Metal patches for Monterey
-
-With macOS Monterey, please understand our current legacy acceleration patch sets are no longer functional. As of right now, only basic framebuffer and brightness control may be achieved, however proper animations and hardware acceleration is not available.
-
-This is due to numerous changes with Skylight and other macOS frameworks relying more and more on Metal functions and thus making it even more difficult to re-add legacy OpenGL support.
-
-> When can we expect acceleration support
-
-For the time being, please understand we cannot predict when there will be patch sets ready. Note that it took over 300 days from Big Sur's unveiling to achieve public acceleration for non-Metal GPUs. And with TeraScale 2 acceleration, this took almost 3 years to achieve public acceleration.
-
-So please be patient as developers are hard at work, however please expect no acceleration support in Monterey until next year at the minimum if not even later.
 
 :::
 
@@ -106,6 +91,8 @@ Due to the Metal Backend, the enhanced color output of these apps seems to heavi
 
 To work around this, simply press Tab to hover over and press spacebar to simulate a click.
 
+Note: This work-around doesn't seem to work in macOS 11.3 and newer
+
 ## Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer
 
 Unfortunately a very well known issue the community is investigating, current known solution is to simply downgrade to 11.2.3 or older until a proper fix can be found. Additionally logging out and logging in can resolve the issue without requiring a reboot
@@ -136,3 +123,11 @@ Applications that can set color depth are:
 
 * [SwitchResX](https://www.madrau.com)
 * [ResXtreme](https://macdownload.informer.com/resxtreme/)
+
+## Unable to allow Safari Extensions
+
+Due to an bug on the legacy acceleration patches, users won't be able to enable Safari Extensions
+
+This tool can be used to work-around this issue:
+
+* [Non-Metal Safari Extensions](https://github.com/moosethegoose2213/Non-Metal-Safari-Extensions/)

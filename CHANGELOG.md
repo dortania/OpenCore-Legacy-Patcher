@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.3.1
+- Allow for setting custom SIP values via TUI
 - Increment Binaries:
   - OpenCorePkg 0.7.4 release
   - RestrictEvents 1.0.5 release
