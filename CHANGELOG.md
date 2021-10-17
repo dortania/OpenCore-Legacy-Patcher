@@ -2,6 +2,8 @@
 
 ## 0.3.1
 - Allow for setting custom SIP values via TUI
+- Drop `CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE` requirement for root patching
+  - Lowers default SIP Disabled value to 0xA03
 
 ## 0.3.0
 - Fix Nvidia Tesla Acceleration in Monterey Beta 7+

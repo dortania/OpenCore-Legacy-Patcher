@@ -162,7 +162,7 @@ Note: For security reasons, OpenShell will be disabled when Vault is set.
         print(
             f"""SIP is used to ensure proper secuirty measures are set,
 however to patch the root volume this must be disabled.
-Only disable is absolutely necessary. SIP value = 0xE03
+Only disable is absolutely necessary. SIP value = 0xA03
 
 Valid options:
 
@@ -773,7 +773,7 @@ the event there's issues.
         print(
             """
 By default OCLP will use the SIP value of 0x00 as the enabled and
-0xE03 for machines that require root patching. For users who wish
+0xA03 for machines that require root patching. For users who wish
 to flip additional bits in SIP may use this option.
 
 To disable SIP outright, set it to 0xFEF
