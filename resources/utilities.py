@@ -238,6 +238,14 @@ def cls():
         else:
             print("\u001Bc")
 
+def check_command_line_tools():
+    # Determine whether Command Line Tools exist
+    # xcode-select -p
+    xcode_select = subprocess.run("xcode-select -p".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    if xcode_select.returncode == 0:
+        return True
+    else:
+        return False
 
 def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
     # TODO: Properly fix for El Capitan, which does not print the XML representation even though we say to

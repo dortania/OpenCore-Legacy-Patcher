@@ -1002,8 +1002,15 @@ class BuildOpenCore:
 
     def sign_files(self):
         if self.constants.vault is True:
-            print("- Vaulting EFI")
-            subprocess.run([str(self.constants.vault_path), f"{self.constants.oc_folder}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if utilities.check_command_line_tools() is True:
+                # sign.command checks for the existance of '/usr/bin/strings' however does not verify whether it's executable
+                # sign.command will continue to run and create an unbootable OpenCore.efi due to the missing strings binary
+                # macOS has dummy binaries that just reroute to the actual binaries after you install Xcode's Command Line Tools
+                print("- Vaulting EFI")
+                subprocess.run([str(self.constants.vault_path), f"{self.constants.oc_folder}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            else:
+                print("- Missing Command Line tools, skipping Vault for saftey reasons")
+                print("- Install via 'xcode-select --install' and rerun OCLP if you wish to vault this config")
 
     def build_opencore(self):
         self.build_efi()
