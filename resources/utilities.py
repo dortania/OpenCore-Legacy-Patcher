@@ -196,10 +196,10 @@ def patching_status(os_sip, os):
         # Catalina and older supports individually disabling Library Validation
         amfi_enabled = False
 
-    if (
-        get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False)
-        and get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in constants.Constants().sbm_values
-    ):
+    if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False):
+        if get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False) not in constants.Constants().sbm_values:
+            sbm_enabled = False
+    else:
         sbm_enabled = False
 
     if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
