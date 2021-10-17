@@ -157,6 +157,7 @@ class Constants:
         self.force_latest_psp = False  #      Force latest PatcherSupportPkg
         self.disable_msr_power_ctl = False  # Disable MSR Power Control (missing battery throttling)
         self.software_demux = False  #        Enable Software Demux patch set
+        self.custom_sip_value = None  #         Set custom SIP value
 
         # OS Versions
         ## Based off Major Kernel Version

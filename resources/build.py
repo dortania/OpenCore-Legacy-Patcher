@@ -692,7 +692,12 @@ class BuildOpenCore:
             print("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
             self.get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
-        if self.constants.sip_status is False:
+        if self.constants.custom_sip_value:
+            print(f"- Setting SIP value to: {self.constants.custom_sip_value}")
+            sip = self.constants.custom_sip_value.lstrip("0x")
+            # Ensure SIP is 8 characters long
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = utilities.string_to_hex(self.constants.custom_sip_value)
+        elif self.constants.sip_status is False:
             print("- Disabling SIP")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("030E0000")
         # if self.constants.amfi_status is False:

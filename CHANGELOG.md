@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.3.1
+- Allow for setting custom SIP values via TUI
 
 ## 0.3.0
 - Fix Nvidia Tesla Acceleration in Monterey Beta 7+

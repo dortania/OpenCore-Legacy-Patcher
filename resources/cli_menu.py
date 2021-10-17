@@ -160,7 +160,7 @@ Note: For security reasons, OpenShell will be disabled when Vault is set.
         utilities.cls()
         utilities.header(["Set System Integrity protection"])
         print(
-            """SIP is used to ensure proper secuirty measures are set,
+            f"""SIP is used to ensure proper secuirty measures are set,
 however to patch the root volume this must be disabled.
 Only disable is absolutely necessary. SIP value = 0xE03
 
@@ -168,6 +168,7 @@ Valid options:
 
 1. Enable SIP
 2. Disable SIP
+3. Set Custom SIP value {self.constants.custom_sip_value}
 Q. Return to previous menu
 
         """
@@ -177,6 +178,8 @@ Q. Return to previous menu
             self.constants.sip_status = True
         elif change_menu == "2":
             self.constants.sip_status = False
+        elif change_menu == "3":
+            self.set_custom_sip_value()
         elif change_menu in {"q", "Q", "Quit", "quit"}:
             print("Returning to previous menu")
         else:
@@ -763,6 +766,29 @@ the event there's issues.
             print("Returning to previous menu")
         else:
             self.set_surplus()
+    
+    def set_custom_sip_value(self):
+        utilities.cls()
+        utilities.header(["Set Custom SIP Value"])
+        print(
+            """
+By default OCLP will use the SIP value of 0x00 as the enabled and
+0xE03 for machines that require root patching. For users who wish
+to flip additional bits in SIP may use this option.
+
+To disable SIP outright, set it to 0xFEF
+            """
+        )
+        change_menu = input("Set Custom SIP Value (0xFEF): ")
+        try:
+            # Verify whether input is a valid hex value
+            int(change_menu, 16)
+            # Convert to binary hex
+            self.constants.custom_sip_value = change_menu
+        except ValueError:
+            print("Invalid input, returning to previous menu")
+            self.set_custom_sip_value()
+
 
     def credits(self):
         utilities.TUIOnlyPrint(
@@ -911,7 +937,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 #     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_amfi,
                 # ],
                 [
-                    f"Set System Integrity Protection (SIP):\tCurrently {self.constants.sip_status}",
+                    f"Set System Integrity Protection (SIP):\tCurrently {self.constants.custom_sip_value or self.constants.sip_status}",
                     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_sip,
                 ],
                 [
