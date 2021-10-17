@@ -694,7 +694,7 @@ class BuildOpenCore:
             self.get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
         if self.constants.custom_sip_value:
             print(f"- Setting SIP value to: {self.constants.custom_sip_value}")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = utilities.string_to_hex(self.constants.custom_sip_value)
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = utilities.string_to_hex(self.constants.custom_sip_value.lstrip("0x"))
         elif self.constants.sip_status is False:
             print("- Disabling SIP")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("030E0000")
