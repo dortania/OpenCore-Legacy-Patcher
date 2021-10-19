@@ -7,6 +7,7 @@
 - Remove legacy GMUX patch set for MacBookPro5,x machines due to instabilites
 - Fix non-Metal acceleration crashing on 12.0.1
   - Yes Apple adding a notch broke our accel patches
+- Fix non-Metal Control Center crashing on 12.0 Beta 10+
 
 ## 0.3.0
 - Fix Nvidia Tesla Acceleration in Monterey Beta 7+
