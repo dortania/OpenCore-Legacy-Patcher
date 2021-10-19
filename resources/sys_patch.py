@@ -760,9 +760,12 @@ set million colour before rebooting"""
             if self.constants.detected_os > self.constants.big_sur:
                 self.legacy_wifi = True
 
-        if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
+        # if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
+        if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
             # Sierra uses a legacy GMUX control method needed for dGPU switching on MacBookPro5,x
             # Same method is also used for demuxed machines
+            # Note that MacBookPro5,x machines are extremely unstable with this patch set, so disabled until investigated further
+            # Ref: https://github.com/dortania/OpenCore-Legacy-Patcher/files/7360909/KP-b10-030.txt
             if self.constants.detected_os > self.constants.high_sierra:
                 if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
                     # Ref: https://doslabelectronics.com/Demux.html
@@ -818,7 +821,7 @@ set million colour before rebooting"""
             sip_value = "For Hackintoshes, please set csr-active-config to '03060000' (0x603)\nFor non-OpenCore Macs, please run 'csrutil disable' in RecoveryOS"
         else:
             sip_value = (
-                "For Hackintoshes, please set csr-active-config to '030E0000' (0xE03)\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
+                "For Hackintoshes, please set csr-active-config to '030A0000' (0xA03)\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
             )
         self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
         if self.sip_enabled is True:

@@ -22,14 +22,17 @@ class system_integrity_protection:
         "CSR_ALLOW_UNTRUSTED_KEXTS",  #            0x1
         "CSR_ALLOW_UNRESTRICTED_FS",  #            0x2
         "CSR_ALLOW_UNAPPROVED_KEXTS",  #           0x200
-        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE",  # 0x400
     ]
 
     root_patch_sip_big_sur = [
         # Variables required to root patch in Big Sur and Monterey
         "CSR_ALLOW_UNTRUSTED_KEXTS",  #            0x1
-        "CSR_ALLOW_UNRESTRICTED_FS",  #            0x2
+        "CSR_ALLOW_UNRESTRICTED_FS",  #            0x2   - Required to mount and edit root volume, as well as load modded platform binaries
         "CSR_ALLOW_UNAPPROVED_KEXTS",  #           0x200
-        "CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE",  # 0x400
-        "CSR_ALLOW_UNAUTHENTICATED_ROOT",  #       0x800
+        "CSR_ALLOW_UNAUTHENTICATED_ROOT",  #       0x800 - Required to avoid KC mismatch kernel panic
     ]
+
+    # CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE (introduced with Mojave):
+    # This bit is quite strange and was originally assumed to be required for modded platform binaries
+    # However after extensive testing, this doesn't seem true. In addition, this bit is never flipped via
+    # 'csrutil disable'. Usage within the kernel is not present.

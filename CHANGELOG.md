@@ -1,10 +1,13 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.3.1
-- Allow for setting custom SIP values via TUI
 - Increment Binaries:
   - OpenCorePkg 0.7.4 release
   - RestrictEvents 1.0.5 release
+- Allow for setting custom SIP values via TUI
+- Drop `CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE` requirement for root patching
+  - Lowers default SIP Disabled value to 0xA03
+- Remove legacy GMUX patch set for MacBookPro5,x machines due to instabilites
 
 ## 0.3.0
 - Fix Nvidia Tesla Acceleration in Monterey Beta 7+
