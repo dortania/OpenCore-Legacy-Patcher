@@ -46,8 +46,10 @@ class MenuOptions:
         change_menu = input("Enable Kext DEBUG mode(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.kext_debug = True
+            self.constants.kext_variant = "DEBUG"
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.kext_debug = False
+            self.constants.kext_variant = "RELEASE"
         elif change_menu in {"q", "Q", "Quit", "quit"}:
             print("Returning to previous menu")
         else:

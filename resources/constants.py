@@ -27,7 +27,7 @@ class Constants:
         ## Acidanthera
         ## https://github.com/acidanthera
         self.lilu_version = "1.5.6"  #               Lilu
-        self.whatevergreen_version = "1.5.3"  #      WhateverGreen
+        self.whatevergreen_version = "1.5.4"  #      WhateverGreen
         self.airportbcrmfixup_version = "2.1.3"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
@@ -104,6 +104,7 @@ class Constants:
 
         ## Kext Settings
         self.kext_debug = False  # Enables Lilu debug and DebugEnhancer
+        self.kext_variant = "RELEASE"
 
         ## NVRAM Settings
         self.verbose_debug = False  # -v
@@ -232,19 +233,19 @@ class Constants:
 
     @property
     def lilu_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/Lilu-v{self.lilu_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/Lilu-v{self.lilu_version}-{self.kext_variant}.zip")
 
     @property
     def whatevergreen_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/WhateverGreen-v{self.whatevergreen_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/WhateverGreen-v{self.whatevergreen_version}-{self.kext_variant}.zip")
 
     @property
     def airportbcrmfixup_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/AirportBrcmFixup-v{self.airportbcrmfixup_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/AirportBrcmFixup-v{self.airportbcrmfixup_version}-{self.kext_variant}.zip")
 
     @property
     def restrictevents_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-v{self.restrictevents_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-v{self.restrictevents_version}-{self.kext_variant}.zip")
 
     @property
     def efi_disabler_path(self):
@@ -252,7 +253,7 @@ class Constants:
 
     @property
     def restrictevents_mbp_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-MBP91-v{self.restrictevents_mbp_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-MBP91-v{self.restrictevents_mbp_version}-{self.kext_variant}.zip")
 
     @property
     def bcm570_path(self):
@@ -296,7 +297,7 @@ class Constants:
 
     @property
     def applealc_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/AppleALC-v{self.applealc_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/AppleALC-v{self.applealc_version}-{self.kext_variant}.zip")
 
     @property
     def piixata_path(self):
@@ -320,15 +321,15 @@ class Constants:
 
     @property
     def nvmefix_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/NVMeFix-v{self.nvmefix_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/NVMeFix-v{self.nvmefix_version}-{self.kext_variant}.zip")
 
     @property
     def featureunlock_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/FeatureUnlock-v{self.featureunlock_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/FeatureUnlock-v{self.featureunlock_version}-{self.kext_variant}.zip")
 
     @property
     def debugenhancer_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/DebugEnhancer-v{self.debugenhancer_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/DebugEnhancer-v{self.debugenhancer_version}-{self.kext_variant}.zip")
 
     @property
     def bluetool_path(self):
@@ -336,7 +337,7 @@ class Constants:
 
     @property
     def cslvfixup_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/CSLVFixup-v{self.cslvfixup_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/CSLVFixup-v{self.cslvfixup_version}.-{self.kext_variant}zip")
 
     @property
     def innie_path(self):

@@ -4,6 +4,7 @@
 - Increment Binaries:
   - OpenCorePkg 0.7.4 release
   - RestrictEvents 1.0.5 release
+  - WhateverGreen 1.5.4 release
 - Allow for setting custom SIP values via TUI
 - Drop `CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE` requirement for root patching
   - Lowers default SIP Disabled value to 0xA03
