@@ -2177,6 +2177,18 @@ smbios_dictionary = {
             device_probe.NVIDIA.Archs.Tesla
         ],
     },
+    "ADP2,1": {
+        "Board ID": None,
+        "FirmwareFeatures": None,
+        "SecureBootModel": None,
+        "CPU Generation": cpu_data.cpu_data.pentium_4.value,
+        "Max OS Supported": os_data.os_data.leopard,
+        "Wireless Model": None,
+        "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
+        "Stock GPUs": [
+            device_probe.Intel.Archs.GMA_950
+        ],
+    },
     "ADP3,2": {
         "Board ID": None,
         "FirmwareFeatures": None,
