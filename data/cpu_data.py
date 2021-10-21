@@ -19,4 +19,5 @@ class cpu_data(enum.IntEnum):
 
     apple_dtk = 112  # A12
     apple_m1 = 114  # A14
-    apple_m2 = 115  # A15
+    apple_m1_pro = 115
+    apple_m1_max = 116
