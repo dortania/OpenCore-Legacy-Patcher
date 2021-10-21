@@ -95,7 +95,7 @@ class generate_defaults:
             spoof_model = model
         if smbios_data.smbios_dictionary[spoof_model]["SecureBootModel"] is not None:
             if settings.sip_status is False:
-                # Force VMM as root patching is 
+                # Force VMM as root patching breaks .im4m signature
                 settings.secure_status = False
                 settings.force_vmm = True
             else:
