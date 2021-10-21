@@ -337,7 +337,7 @@ class Constants:
 
     @property
     def cslvfixup_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/CSLVFixup-v{self.cslvfixup_version}.-{self.kext_variant}zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/CSLVFixup-v{self.cslvfixup_version}-{self.kext_variant}.zip")
 
     @property
     def innie_path(self):
