@@ -447,6 +447,7 @@ class BuildOpenCore:
             self.enable_kext("IOFireWireSBP2.kext", self.constants.fw_kext, self.constants.fw_sbp2_path)
             self.enable_kext("IOFireWireSerialBusProtocolTransport.kext", self.constants.fw_kext, self.constants.fw_bus_path)
             self.get_kext_by_bundle_path("IOFireWireFamily.kext/Contents/PlugIns/AppleFWOHCI.kext")["Enabled"] = True
+    
 
         def backlight_path_detection(self):
             if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
@@ -522,13 +523,13 @@ class BuildOpenCore:
             if self.computer and self.computer.dgpu:
                 if self.computer.dgpu.arch == device_probe.AMD.Archs.Legacy_GCN_7000:
                     # Add Power Gate Patches
-                    self.config["DeviceProperties"]["Add"][backlight_path] += {
+                    self.config["DeviceProperties"]["Add"][backlight_path].update({
                         "rebuild-device-tree": 1,
                         "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
                         "CAIL,CAIL_DisableGfxCGPowerGating": 1,
                         "CAIL,CAIL_DisableUVDPowerGating": 1,
                         "CAIL,CAIL_DisableVCEPowerGating": 1,
-                    }
+                    })
 
         # Check GPU Vendor
         if self.constants.metal_build is True:
