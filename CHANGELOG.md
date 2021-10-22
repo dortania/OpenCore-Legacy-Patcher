@@ -4,7 +4,8 @@
 - Allow for setting custom SIP values via TUI
 - Drop `CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE` requirement for root patching
   - Lowers default SIP Disabled value to 0xA03
-- Remove legacy GMUX patch set for MacBookPro5,x machines due to instabilites
+- Update Legacy GMUX patchset to latest Sierra Secuirty Update
+  - [Source](https://github.com/HackintoshHD/mbp5x-instant-gpu-switching)
 - Fix non-Metal acceleration crashing on 12.0.1
   - Yes Apple adding a notch broke our accel patches
 - Fix non-Metal Control Center crashing on 12.0 Beta 10+
