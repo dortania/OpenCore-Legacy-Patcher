@@ -309,7 +309,7 @@ class Constants:
 
     @property
     def cpufriend_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/CPUFriend-v{self.cpufriend_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/CPUFriend-v{self.cpufriend_version}-{self.kext_variant}.zip")
 
     @property
     def smcspoof_path(self):
