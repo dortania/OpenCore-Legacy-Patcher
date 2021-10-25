@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.3.2
+
 ## 0.3.1
 - Allow for setting custom SIP values via TUI
 - Drop `CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE` requirement for root patching
