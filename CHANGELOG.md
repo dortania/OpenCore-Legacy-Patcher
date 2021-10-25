@@ -9,6 +9,8 @@
 - Fix non-Metal acceleration crashing on 12.0.1
   - Yes Apple adding a notch broke our accel patches
 - Fix non-Metal Control Center crashing on 12.0 Beta 10+
+- Increment Binaries:
+  - PatcherSupportPkg 0.1.12
 
 ## 0.3.0
 - Fix Nvidia Tesla Acceleration in Monterey Beta 7+
