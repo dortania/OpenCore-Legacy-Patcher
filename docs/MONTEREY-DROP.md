@@ -102,6 +102,19 @@ By default these machines require root volume patches to gain graphics accelerat
 
 :::
 
+::: details NVIDIA Kepler dGPU Acceleration (Resolved in 0.2.5 and newer)
+
+* NVIDIA Kepler dGPUs lost support
+
+By default these machines require root volume patches to gain graphics acceleration in Monterey. OpenCore Legacy Patcher supports readding support however SIP can no longer be enabled due to root patching:
+
+* MacBookPro9,1
+* MacBookPro10,1
+* iMac13,x
+* iMac14,x
+
+:::
+
 ::: details Non-Metal Acceleration (Resolved in 0.2.5 and newer)
 
 * Non-Metal GPUs no longer have working acceleration patches:
