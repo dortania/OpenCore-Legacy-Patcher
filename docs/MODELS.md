@@ -35,7 +35,7 @@ Regarding OS support, see below:
 | MacBook3,1 | Late 2007 | ^^ | ^^ |
 | MacBook4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - No GPU Acceleration in Mavericks and newer<br/>- No Keyboard and Trackpad<br/>- No USB |
 | MacBook5,1 | Late 2008 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
-| MacBook5,2 | Early 2009 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Trackpad is recognized as mouse<br/>- Brightness control partially supported |
+| MacBook5,2 | Early 2009 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Trackpad is recognized as mouse |
 | MacBook6,1 | Late 2009 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
 | MacBook7,1 | Mid-2010 | ^^ | ^^ |
 | MacBook8,1 | Mid-2015 | ^^ | <span style="color:green"> Everything is supported</span> |
@@ -107,8 +107,8 @@ Regarding OS support, see below:
 | iMac5,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | iMac5,2 | ^^ | ^^ | ^^ |
 | iMac6,1 | ^^ | ^^ | ^^ |
-| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an [SSE4.1 CPU Upgrade](https://lowendmac.com/2018/penryn-t9300-9500-cpu-upgrades-for-the-2007-imac/)<br/>- GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported<br/>- Stock Bluetooth 2.0 card non-functional  |
-| iMac8,1 | Early 2008 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)))<br/>- Brightness control partially supported on Nvidia GPUs, AMD unsupported |
+| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an [SSE4.1 CPU Upgrade](https://lowendmac.com/2018/penryn-t9300-9500-cpu-upgrades-for-the-2007-imac/)<br/>- GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Stock Bluetooth 2.0 card non-functional  |
+| iMac8,1 | Early 2008 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))) |
 | iMac9,1 | Early 2009 | ^^ | ^^ |
 | iMac10,1 | Late 2009 | ^^ | - GPU is socketed, [recommend upgrading to Metal GPU](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857) <br/>- GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) |
 | iMac11,1 | ^^ | ^^ | ^^ |
