@@ -70,5 +70,6 @@ def validate(settings):
     settings.disable_tb = True
     settings.force_surplus = True
     settings.software_demux = True
+    settings.serial_settings = "Minimal"
     build_prebuilt()
     build_dumps()

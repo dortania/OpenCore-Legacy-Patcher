@@ -196,7 +196,7 @@ Q. Return to previous menu
         print(
             """SecureBootModel is used to ensure best firmware security,
 however to patch the root volume this must be disabled.
-Only disable is absolutely necessary. SIP value = 0xFEF
+Only recommended to enable for users with T2 SMBIOS spoofs.
 
 Valid options:
 
