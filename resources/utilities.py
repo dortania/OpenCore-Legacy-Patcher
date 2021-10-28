@@ -190,7 +190,7 @@ def patching_status(os_sip, os):
     gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
     gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
-    if os > constants.Constants().catalina:
+    if os > os_data.os_data.catalina:
         amfi_enabled = amfi_status()
     else:
         # Catalina and older supports individually disabling Library Validation
