@@ -7,7 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments
+from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install
 from data import model_array
 
 
@@ -72,7 +72,7 @@ class OpenCoreLegacyPatcher:
                 if ((self.constants.custom_model or self.computer.real_model) in model_array.SupportedSMBIOS) or self.constants.allow_oc_everywhere is True
                 else []
             ) + [
-                ["Install OpenCore to USB/internal drive", build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).copy_efi],
+                ["Install OpenCore to USB/internal drive", install.tui_disk_installation(self.constants).copy_efi],
                 ["Post-Install Volume Patch", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).PatchVolume],
                 ["Change Model", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_model],
                 ["Patcher Settings", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).patcher_settings],
