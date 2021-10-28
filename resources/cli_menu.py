@@ -4,7 +4,7 @@ from __future__ import print_function
 import subprocess
 
 from resources import constants, utilities, defaults, sys_patch
-from data import cpu_data, smbios_data, model_array
+from data import cpu_data, smbios_data, model_array, os_data
 
 
 class MenuOptions:
@@ -846,11 +846,11 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         utilities.header(["Patching System Volume"])
 
         no_patch = False
-        if self.constants.detected_os == self.constants.monterey:
+        if self.constants.detected_os == os_data.os_data.monterey:
             print(MenuOptions.monterey)
-        elif self.constants.detected_os == self.constants.big_sur:
+        elif self.constants.detected_os == os_data.os_data.big_sur:
             print(MenuOptions.big_sur)
-        elif self.constants.detected_os in [self.constants.mojave, self.constants.catalina] and self.constants.moj_cat_accel == True:
+        elif self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina] and os_data.os_data.moj_cat_accel == True:
             print(MenuOptions.mojave_catalina)
         else:
             print(MenuOptions.default)

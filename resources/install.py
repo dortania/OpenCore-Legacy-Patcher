@@ -7,6 +7,7 @@ import subprocess
 import shutil
 from pathlib import Path
 from resources import utilities, constants
+from data import os_data
 
 class tui_disk_installation:
     def __init__(self, versions):
@@ -119,7 +120,7 @@ Please build OpenCore first!"""
             " without altering line endings",
         ]
 
-        if self.constants.detected_os >= self.constants.el_capitan and not self.constants.recovery_status:
+        if self.constants.detected_os >= os_data.os_data.el_capitan and not self.constants.recovery_status:
             result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
             result = subprocess.run(f"diskutil mount {disk_identifier}s{response}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)

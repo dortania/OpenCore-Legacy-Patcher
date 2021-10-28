@@ -264,8 +264,7 @@ class BuildOpenCore:
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" -brcmfxwowl"
 
         # WiFi patches
-        # TODO: -a is not supported in Lion and older, need to add proper fix
-        if self.constants.detected_os > self.constants.lion and not self.constants.custom_model:
+        if not self.constants.custom_model:
             if self.computer.wifi:
                 print(f"- Found Wireless Device {utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}")
                 self.config["#Revision"]["Hardware-Wifi"] = f"{utilities.friendly_hex(self.computer.wifi.vendor_id)}:{utilities.friendly_hex(self.computer.wifi.device_id)}"

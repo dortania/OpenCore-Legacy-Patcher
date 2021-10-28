@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Optional
 
 from resources import device_probe
+from data import os_data
 
 
 class Constants:
@@ -161,28 +162,11 @@ class Constants:
         self.force_vmm = False  #             Force VMM patch 
         self.custom_sip_value = None  #         Set custom SIP value
 
-        # OS Versions
-        ## Based off Major Kernel Version
-        self.tiger = 8
-        self.leopard = 9
-        self.snow_leopard = 10
-        self.lion = 11
-        self.mountain_lion = 12
-        self.mavericks = 13
-        self.yosemite = 14
-        self.el_capitan = 15
-        self.sierra = 16
-        self.high_sierra = 17
-        self.mojave = 18
-        self.catalina = 19
-        self.big_sur = 20
-        self.monterey = 21
-
         self.legacy_accel_support = [
-            self.mojave,
-            self.catalina,
-            self.big_sur,
-            self.monterey,
+            os_data.os_data.mojave,
+            os_data.os_data.catalina,
+            os_data.os_data.big_sur,
+            os_data.os_data.monterey,
         ]
 
     # Payload Location
