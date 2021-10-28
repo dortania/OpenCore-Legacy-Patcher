@@ -21,7 +21,7 @@ except ImportError:
         raise Exception("Missing requests library!\nPlease run the following before starting OCLP:\npip3 install requests")
 
 from resources import constants, ioreg
-from data import sip_data
+from data import sip_data, os_data
 
 
 def hexswap(input_hex: str):
@@ -131,7 +131,7 @@ def amfi_status():
 
 
 def check_kext_loaded(kext_name, os_version):
-    if os_version > constants.Constants().catalina:
+    if os_version > os_data.os_data.catalina:
         kext_loaded = subprocess.run(["kmutil", "showloaded", "--list-only", "--variant-suffix", "release"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     else:
         kext_loaded = subprocess.run(["kextstat", "-l"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -205,7 +205,7 @@ def patching_status(os_sip, os):
     if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
         sip_enabled = False
 
-    if os > constants.Constants().catalina and not check_filevault_skip():
+    if os > os_data.os_data.catalina and not check_filevault_skip():
         # Assume non-OCLP Macs do not have our APFS seal patch
         fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         if "FileVault is Off" in fv_status:
