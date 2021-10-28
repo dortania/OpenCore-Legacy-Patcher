@@ -1,8 +1,15 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.3.2
+- Implement spoofless support (ie. no SMBIOS patching)
+  - Requires macOS 11.3 or newer, for 11.2.3 and older use Minimal or higher spoofing
+  - See additional notes before updating: [VMM usage notes](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/543#issuecomment-953441283)
 
 ## 0.3.1
+- Increment Binaries:
+  - OpenCorePkg 0.7.4 release
+  - RestrictEvents 1.0.5 release
+  - WhateverGreen 1.5.4 release
 - Allow for setting custom SIP values via TUI
 - Drop `CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE` requirement for root patching
   - Lowers default SIP Disabled value to 0xA03

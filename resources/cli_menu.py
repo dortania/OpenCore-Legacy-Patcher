@@ -46,8 +46,10 @@ class MenuOptions:
         change_menu = input("Enable Kext DEBUG mode(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
             self.constants.kext_debug = True
+            self.constants.kext_variant = "DEBUG"
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.kext_debug = False
+            self.constants.kext_variant = "RELEASE"
         elif change_menu in {"q", "Q", "Quit", "quit"}:
             print("Returning to previous menu")
         else:
@@ -95,6 +97,7 @@ Recommended for adanced users who want control how serials are handled
 
 Valid options:
 
+0. None:\tOnly update FirmwareFeatures
 1. Minimal:\tUse original serials and minimally update SMBIOS
 2. Moderate:\tReplace entire SMBIOS but keep original serials
 3. Advanced:\tReplace entire SMBIOS and generate new serials
@@ -104,7 +107,9 @@ Note: For new users we recommend leaving as default(1. Minimal)
         """
         )
         change_menu = input("Set SMBIOS Spoof Level(ie. 1): ")
-        if change_menu == "1":
+        if change_menu == "0":
+            self.constants.serial_settings = "None"
+        elif change_menu == "1":
             self.constants.serial_settings = "Minimal"
         elif change_menu == "2":
             self.constants.serial_settings = "Moderate"
@@ -191,7 +196,7 @@ Q. Return to previous menu
         print(
             """SecureBootModel is used to ensure best firmware security,
 however to patch the root volume this must be disabled.
-Only disable is absolutely necessary. SIP value = 0xFEF
+Only recommended to enable for users with T2 SMBIOS spoofs.
 
 Valid options:
 

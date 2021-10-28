@@ -59,6 +59,8 @@ def validate(settings):
     settings.opencore_debug = True
     settings.opencore_build = "DEBUG"
     settings.kext_debug = True
+    settings.kext_variant = "DEBUG"
+    settings.kext_debug = True
     settings.showpicker = False
     settings.sip_status = False
     settings.secure_status = True
@@ -68,5 +70,6 @@ def validate(settings):
     settings.disable_tb = True
     settings.force_surplus = True
     settings.software_demux = True
+    settings.serial_settings = "Minimal"
     build_prebuilt()
     build_dumps()
