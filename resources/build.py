@@ -186,6 +186,14 @@ class BuildOpenCore:
             print("- Adding SurPlus Patch for Race Condition")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 1 of 2 - Patch read_erandom (inlined in _early_random)")["Enabled"] = True
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "SurPlus v1 - PART 2 of 2 - Patch register_and_init_prng")["Enabled"] = True
+
+            # Experimental Patch for 12.1 Beta 1+
+            # Credit to Syncretic for quickly developing this patch
+            # Currently set to apply to only 21.2.0, adjust once added to mainline
+            print("- Adding Experimental RDRAND patch for 12.1 Beta 1")
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "MonteRand (12.1b1) #1")["Enabled"] = True
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "MonteRand (12.1b1) #2")["Enabled"] = True
+
             if self.constants.force_surplus is True:
                 # Syncretic forces SurPlus to only run on Beta 7 and older by default for saftey reasons
                 # If users desires, allow forcing in newer OSes
