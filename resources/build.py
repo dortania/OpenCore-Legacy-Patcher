@@ -657,10 +657,14 @@ class BuildOpenCore:
                 print("- Fixing Legacy Bluetooth for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
                 self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
-            elif self.computer.bluetooth_chipset == "BRCM20702 Hub" and smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] == bluetooth_data.bluetooth_data.BRCM20702_v1.value:
-                print("- Fixing Legacy Bluetooth for macOS Monterey")
-                self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-        # smbios_data.smbios_dictionary[self.model]["Bluetooth Model"]
+            elif self.computer.bluetooth_chipset == "BRCM20702 Hub":
+                # BCM94331 can include either BCM2070 or BRCM20702 v1 Bluetooth chipsets
+                # Note Monterey only natively supports BRCM20702 v2 (found with BCM94360)
+                # Due to this, BlueToolFixup is required to resolve Firmware Uploading on legacy chipsets
+                if self.computer.wifi:
+                    if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
+                        print("- Fixing Legacy Bluetooth for macOS Monterey")
+                        self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
         elif smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM20702_v1.value:
             print("- Fixing Legacy Bluetooth for macOS Monterey")
             self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
