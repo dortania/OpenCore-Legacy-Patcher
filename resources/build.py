@@ -418,6 +418,10 @@ class BuildOpenCore:
                     }
                 elif self.constants.serial_settings != "None":
                     self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
+            if self.model.startswith("iMac14,"):
+                if self.computer.igpu and not self.computer.dgpu:
+                    # Ensure that agdpmod is applied to iMac14,x with iGPU only
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"agdpmod": "vit9696"}
 
         # Audio Patch
         if self.constants.set_alc_usage is True:
