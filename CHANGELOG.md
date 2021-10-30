@@ -4,6 +4,9 @@
 - Implement spoofless support (ie. no SMBIOS patching)
   - Requires macOS 11.3 or newer, for 11.2.3 and older use Minimal or higher spoofing
   - See additional notes before updating: [VMM usage notes](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/543#issuecomment-953441283)
+- Adjust SIP setting to better reflect current SIP usage
+- Resolve Monterey Bluetooth issues on user-upgraded BCM94331 BT4.0 modules
+- Fix iGPU-only iMac14,x display output when using Minimal/Moderate spoof
 
 ## 0.3.1
 - Increment Binaries:

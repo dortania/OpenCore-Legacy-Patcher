@@ -166,13 +166,13 @@ Note: For security reasons, OpenShell will be disabled when Vault is set.
         utilities.header(["Set System Integrity protection"])
         print(
             f"""SIP is used to ensure proper secuirty measures are set,
-however to patch the root volume this must be disabled.
+however to patch the root volume this must be lowered partially.
 Only disable is absolutely necessary. SIP value = 0xA03
 
 Valid options:
 
 1. Enable SIP
-2. Disable SIP
+2. Lower SIP partially (allow root volume patching)
 3. Set Custom SIP value {self.constants.custom_sip_value}
 Q. Return to previous menu
 

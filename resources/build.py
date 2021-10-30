@@ -426,6 +426,10 @@ class BuildOpenCore:
                     }
                 elif self.constants.serial_settings != "None":
                     self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
+            if self.model.startswith("iMac14,"):
+                if self.computer.igpu and not self.computer.dgpu:
+                    # Ensure that agdpmod is applied to iMac14,x with iGPU only
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"agdpmod": "vit9696"}
 
         # Audio Patch
         if self.constants.set_alc_usage is True:
@@ -665,10 +669,14 @@ class BuildOpenCore:
                 print("- Fixing Legacy Bluetooth for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
                 self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
-            elif self.computer.bluetooth_chipset == "BRCM20702 Hub" and smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] == bluetooth_data.bluetooth_data.BRCM20702_v1.value:
-                print("- Fixing Legacy Bluetooth for macOS Monterey")
-                self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
-        # smbios_data.smbios_dictionary[self.model]["Bluetooth Model"]
+            elif self.computer.bluetooth_chipset == "BRCM20702 Hub":
+                # BCM94331 can include either BCM2070 or BRCM20702 v1 Bluetooth chipsets
+                # Note Monterey only natively supports BRCM20702 v2 (found with BCM94360)
+                # Due to this, BlueToolFixup is required to resolve Firmware Uploading on legacy chipsets
+                if self.computer.wifi:
+                    if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
+                        print("- Fixing Legacy Bluetooth for macOS Monterey")
+                        self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
         elif smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM20702_v1.value:
             print("- Fixing Legacy Bluetooth for macOS Monterey")
             self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
@@ -735,7 +743,7 @@ class BuildOpenCore:
             print(f"- Setting SIP value to: {self.constants.custom_sip_value}")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = utilities.string_to_hex(self.constants.custom_sip_value.lstrip("0x"))
         elif self.constants.sip_status is False:
-            print("- Disabling SIP")
+            print("- Set SIP to allow Root Volume patching")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("030A0000")
         # if self.constants.amfi_status is False:
         #     print("- Disabling AMFI")
