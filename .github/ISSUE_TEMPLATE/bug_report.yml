@@ -102,6 +102,28 @@ body:
     validations:
       required: true
   - type: dropdown
+    id: verify-previously-reported
+    attributes:
+      label: Have you verified whether this issue has been opened before? If no, your issue will be closed
+      description: If no, your issue will be closed. We'd appreciate if users check with Github Issue's search before filing (https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
+      multiple: true
+      options:
+        - True
+        - False
+    validations:
+      required: true
+  - type: dropdown
+    id: 3rd-party-application
+    attributes:
+      label: Is this issue with a 3rd party application? 
+      description: If yes, please move discussions onto forums. We're unable to dedicate time to working on every single application that may be broken in macOS. Only file issues if you have a fix you'd like to add to our project
+      multiple: true
+      options:
+        - True
+        - False
+    validations:
+      required: true
+  - type: dropdown
     id: os-version
     attributes:
       label: What versions of macOS are you seeing the problem on?
