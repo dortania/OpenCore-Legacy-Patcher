@@ -29,13 +29,6 @@ To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise
 
 * [OpenCore Legacy Patcher's Issue's tab](https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
 
-Nightly builds can be found here courteous of nightly.link: 
-
-* [Nightly OpenCore Patcher (GUI)](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-gui/main/OpenCore-Patcher-GUI.app.zip)
-* [Nightly OpenCore Patcher (TUI)](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app/main/OpenCore-Patcher-TUI.app.zip)
-  * [Offline Variant](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-offline/main/OpenCore-Patcher-TUI-Offline.app.zip) (No network connection needed on target Mac for Root Patching)
-* [Nightly OpenCore Patcher (CLI)](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-gui/main/OCLP-CLI.zip)
-
 ## Credits
 
 * [Acidanthera](https://github.com/Acidanthera)
