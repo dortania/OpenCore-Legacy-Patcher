@@ -108,8 +108,8 @@ body:
       description: If no, your issue will be closed. We'd appreciate if users check with Github Issue's search before filing (https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
       multiple: true
       options:
-        - True
-        - False
+        - 'true'
+        - 'false'
     validations:
       required: true
   - type: dropdown
@@ -119,8 +119,8 @@ body:
       description: If yes, please move discussions onto forums. We're unable to dedicate time to working on every single application that may be broken in macOS. Only file issues if you have a fix you'd like to add to our project
       multiple: true
       options:
-        - True
-        - False
+        - 'true'
+        - 'false'
     validations:
       required: true
   - type: dropdown
