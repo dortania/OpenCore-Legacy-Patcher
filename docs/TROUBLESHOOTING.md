@@ -11,7 +11,7 @@ Here are some common errors users may experience while using this patcher:
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 * [No Brightness Control](#no-brightness-control)
 * [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-Wi-Fi-on-Monterey-with-legacy-cards)
-* [No Graphics Acceleration on Intel Ivy Bride and Nvidia Kepler GPUs](#no-graphics-acceleration-on-intel-ivy-brodge-and-nvidia-kepler-gpus)
+* [No Graphics Acceleration on Intel Ivy Bridge and Nvidia Kepler GPUs](#no-graphics-acceleration-on-intel-ivy-bridge-and-nvidia-kepler-gpus)
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
@@ -77,7 +77,7 @@ With OCLP v0.2.5, we've added support for legacy Wi-Fi on Monterey. However some
 
 To work-around, we recommend users to manually connect using the "other" option on the Wi-Fi menu bar or manually adding the network on the "Network" preference pane.
 
-## No Graphics Acceleration on Intel Ivy Bride and Nvidia Kepler GPUs
+## No Graphics Acceleration on Intel Ivy Bridge and Nvidia Kepler GPUs
 
 With macOS Monterey, Apple removed Graphics Drivers for both Intel Ivy Bride and Nvidia Kepler. To re-enable acceleration, simply run the Post Install Root Volume patches.
 
