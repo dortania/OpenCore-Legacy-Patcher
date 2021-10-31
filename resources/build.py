@@ -788,7 +788,7 @@ class BuildOpenCore:
             if self.constants.dGPU_switch is True:
                 smbios_data.smbios_dictionary[self.model]["Switchable GPUs"]
                 print("- Allowing GMUX switching in Windows")
-            self.config["Booter"]["Quirks"]["SignalAppleOS"] = True
+                self.config["Booter"]["Quirks"]["SignalAppleOS"] = True
         except KeyError:
             pass
         if self.constants.allow_fv_root is True:
