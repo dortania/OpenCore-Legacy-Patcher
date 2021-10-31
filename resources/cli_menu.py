@@ -751,9 +751,9 @@ Note: Only supported on Nehalem and newer MacBooks (2010+)
         utilities.header(["Override SurPlus MaxKernel"])
         print(
             """
-By default OCLP will only allow SurPlus to be used on kernels 21.1.0
-and older (ie. Monterey beta 7 and older). This is for saftey reasons 
-in the event newer OSes may break compatibility and result in boot loops.
+By default OCLP will only allow SurPlus to be used on Big Sur and Monterey.
+This is for saftey reasons in the event newer OSes may break compatibility
+and result in boot loops.
 
 Enabling this option will allow SurPlus to have no MaxKernel set, and 
 therefore allow it to run on anything newer than 11.2.3. However if you
