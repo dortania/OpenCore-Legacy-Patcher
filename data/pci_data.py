@@ -669,15 +669,18 @@ class amd_ids:
         # AMDNavi12GraphicsAccelerator
         0x7360,  # 5600M
         # AMDNavi14GraphicsAccelerator
-        0x7340,
-        0x7341,
-        0x7343,
-        0x7347,
-        0x734F,
+        0x7340,  # 5500/5500M / Pro 5500M
+        0x7341,  # Pro W5500
+        0x7343,  # Unknown
+        0x7347,  # Pro W5500M
+        0x734F,  # Pro W5300M
         # AMDNavi21GraphicsAccelerator
-        0x73A2,
-        0x73AB,
-        0x73BF,
+        0x73A2,  # Pro W6900X
+        0x73AB,  # Pro W6800X/Pro W6800X Duo
+        0x73BF,  # 6800/6800 XT / 6900 XT
+        # AMDNavi23GraphicsAccelerator
+        0x73E3,  # Pro W6600
+        0x73FF,  # 6600/6600 XT/6600M
     ]
 
     r500_ids = [
