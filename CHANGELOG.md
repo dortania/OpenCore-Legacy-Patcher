@@ -7,6 +7,10 @@
 - Adjust SIP setting to better reflect current SIP usage
 - Resolve Monterey Bluetooth issues on user-upgraded BCM94331 BT4.0 modules
 - Fix iGPU-only iMac14,x display output when using Minimal/Moderate spoof
+- Increment Binaries:
+  - OpenCore 0.7.5 - release
+  - BrcmPatchRAM 2.6.1 - release
+  - WhateverGreen 1.5.5 - release
 
 ## 0.3.1
 - Increment Binaries:
