@@ -22,13 +22,13 @@ class Constants:
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
         self.opencore_commit = "bd3f7a1 - 10-04-2021"
-        self.opencore_version = "0.7.4"
+        self.opencore_version = "0.7.5"
 
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
         self.lilu_version = "1.5.6"  #               Lilu
-        self.whatevergreen_version = "1.5.4"  #      WhateverGreen
+        self.whatevergreen_version = "1.5.5"  #      WhateverGreen
         self.airportbcrmfixup_version = "2.1.3"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
@@ -37,7 +37,7 @@ class Constants:
         self.featureunlock_version = "1.0.3"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.4"  #          CPUFriend
-        self.bluetool_version = "2.6.1"  #           BlueToolFixup
+        self.bluetool_version = "2.6.1"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
 
         ## Apple
@@ -317,7 +317,7 @@ class Constants:
 
     @property
     def bluetool_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/BlueToolFixup-v{self.bluetool_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/BlueToolFixup-v{self.bluetool_version}-{self.kext_variant}.zip")
 
     @property
     def cslvfixup_path(self):
@@ -455,7 +455,7 @@ class Constants:
 
     @property
     def ocvalidate_path(self):
-        return self.payload_path / Path("Tools/ocvalidate")
+        return self.payload_path / Path(f"Tools/ocvalidate-{self.opencore_version}")
 
     # Icons
     @property

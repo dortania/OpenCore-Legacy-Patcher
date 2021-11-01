@@ -850,7 +850,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             print(MenuOptions.monterey)
         elif self.constants.detected_os == os_data.os_data.big_sur:
             print(MenuOptions.big_sur)
-        elif self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina] and os_data.os_data.moj_cat_accel == True:
+        elif self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina] and self.constants.moj_cat_accel == True:
             print(MenuOptions.mojave_catalina)
         else:
             print(MenuOptions.default)

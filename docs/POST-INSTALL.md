@@ -38,14 +38,46 @@ Note 2: NVRAM may need to be reset to ensure SIP is correctly re-enabled
 
 ## Applying Post Install Volume Patches
 
-**Note**: For users who need Post-Install Volume patches for legacy video acceleration support, you **must** disable the following settings in "Patcher Settings" when building and installing your new OpenCore:
+For users with unsupported GPUs/wifi cards, you'll need to run the Post Install Root Volume patches to regain functionality. See below on whether your hardware needs root volume patching. 
 
-* SIP: Disabled
-* SecureBootModel: Disabled
+* Hint: Try running the root volume patch option, the Patcher will determine and install patches only when required. So there is no harm in applying them
 
-Once set, rebuild OpenCore, install to drive and reboot. Then, Post-Install Volume patches will run just fine
+::: details Unsupported GPUs in macOS Big Sur
 
-To apply the Post-Install Volume patches [to test out the Beta Graphics Acceleration Patches system](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108), select option #3 as shown below:
+* Nvidia:
+  * Tesla (8000 - 300 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+
+:::
+
+::: details Unsupported GPUs in macOS Monterey
+
+* Nvidia:
+  * Tesla (8000 - 300 series)
+  * Kepler (600 - 800 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+  * Ivy Bridge (4000 series)
+
+:::
+
+::: details Unsupported Wireless Cards in macOS Monterey
+
+* Broadcom:
+  * BCM94328
+  * BCM94322
+* Atheros
+
+:::
+
+To apply the Post-Install Volume patches, select option #3 as shown below:
 
 ![](../images/root-patch.png)
 
