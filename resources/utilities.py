@@ -294,16 +294,22 @@ def download_file(link, location):
     if Path(location).exists():
         Path(location).unlink()
     response = requests.get(link, stream=True)
+    short_link = os.path.basename(link)
+    # SU Catalog's link is quite long, strip to make it bearable
+    if "sucatalog.gz" in short_link:
+        short_link = "sucatalog.gz"
+    header = f"# Downloading: {short_link} #"
+    box_length = len(header)
     with location.open("wb") as file:
         count = 0
         for chunk in response.iter_content(1024 * 1024 * 4):
             file.write(chunk)
             count += len(chunk)
             cls()
-            print("####################")
-            print("# Downloading file #")
-            print("####################")
-            print(link)
+            print("#" * box_length)
+            print(header)
+            print("#" * box_length)
+            print("")
             print(f"{count / 1024 / 1024}MB Downloaded")
     checksum = hashlib.sha256()
     with location.open("rb") as file:
