@@ -291,10 +291,7 @@ def get_rom(variable: str, *, decode: bool = False):
 
 
 def download_file(link, location):
-    print("- Attempting download from following link:")
-    print(link)
     if Path(location).exists():
-        print("- Removing old file")
         Path(location).unlink()
     response = requests.get(link, stream=True)
     with location.open("wb") as file:
@@ -303,8 +300,11 @@ def download_file(link, location):
             file.write(chunk)
             count += len(chunk)
             cls()
-            print("- Downloading package")
-            print(f"- {count / 1024 / 1024}MB Downloaded")
+            print("####################")
+            print("# Downloading file #")
+            print("####################")
+            print(link)
+            print(f"{count / 1024 / 1024}MB Downloaded")
     checksum = hashlib.sha256()
     with location.open("rb") as file:
         chunk = file.read(1024 * 1024 * 16)
