@@ -536,14 +536,6 @@ class amd_ids:
         0x6810,  # R7 370 / R9 270X/370X
         0x6818,  # HD 7870
         0x6819,  # HD 7850 / R7 265 / R9 270 1024SP
-        # AMDPitcairnGraphicsAccelerator - AMD7000Controller
-        0x6800,  # HD 7970M
-        0x6801,  # HD 8970M
-        0x6806,  # Unknown
-        0x6808,  # W7000
-        0x6810,  # R7 370 / R9 270X/370X
-        0x6818,  # HD 7870
-        0x6819,  # HD 7850 / R7 265 / R9 270 1024SP
         # AMDTahitiGraphicsAccelerator - AMD7000Controller
         0x6790,  # Unknown
         0x6798,  # HD 7970/8970 OEM / R9 280X / D700

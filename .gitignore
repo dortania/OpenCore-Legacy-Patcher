@@ -2,6 +2,9 @@
 OCLP-GUI.command
 /payloads/Apple
 /payloads/*.zip
+/payloads/BuildManifest.plist
+/payloads/*.sucatalog
+/payloads/*.pkg
 /payloads/__MACOSX
 /App
 /Build-Folder
