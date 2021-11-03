@@ -1101,7 +1101,7 @@ to your USB drive.
             if installer.format_drive(disk) is True:
                 # Only install if OC is found
                 # Allows a user to create a macOS Installer without OCLP if desired
-                if self.constants.opencore_release_folder.exists():
+                if self.constants.opencore_release_folder.exists() and self.constants.walkthrough is True:
                     # ESP will always be the first partition when formatted by disk utility
                     install.tui_disk_installation.install_opencore(self, f"disk{disk}", "1")
                 if installer.create_installer(installer_path, "OCLP-Installer") is True:
