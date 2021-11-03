@@ -291,20 +291,26 @@ def get_rom(variable: str, *, decode: bool = False):
 
 
 def download_file(link, location):
-    print("- Attempting download from following link:")
-    print(link)
     if Path(location).exists():
-        print("- Removing old file")
         Path(location).unlink()
     response = requests.get(link, stream=True)
+    short_link = os.path.basename(link)
+    # SU Catalog's link is quite long, strip to make it bearable
+    if "sucatalog.gz" in short_link:
+        short_link = "sucatalog.gz"
+    header = f"# Downloading: {short_link} #"
+    box_length = len(header)
     with location.open("wb") as file:
         count = 0
         for chunk in response.iter_content(1024 * 1024 * 4):
             file.write(chunk)
             count += len(chunk)
             cls()
-            print("- Downloading package")
-            print(f"- {count / 1024 / 1024}MB Downloaded")
+            print("#" * box_length)
+            print(header)
+            print("#" * box_length)
+            print("")
+            print(f"{count / 1024 / 1024}MB Downloaded")
     checksum = hashlib.sha256()
     with location.open("rb") as file:
         chunk = file.read(1024 * 1024 * 16)
