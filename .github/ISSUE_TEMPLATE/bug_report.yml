@@ -154,7 +154,7 @@ body:
   - type: textarea
     id: what-happened
     attributes:
-      label: What is the Isssue?
+      label: What is the Issue?
       description: Additionally, explain what you expected to happen?
       value: "Please clearly explain the issue"
     validations:
