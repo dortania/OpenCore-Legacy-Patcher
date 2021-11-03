@@ -20,6 +20,7 @@ class PatchSysVolume:
     def __init__(self, model, versions):
         self.model = model
         self.constants: constants.Constants() = versions
+        self.forced = self.constants.force_patch
         self.computer = self.constants.computer
         self.root_mount_path = None
         self.sip_enabled = True
@@ -891,7 +892,7 @@ set million colour before rebooting"""
             else:
                 change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
         else:
-            if Path("/System/Library/.dortania-patched").exists():
+            if Path("/System/Library/.dortania-patched").exists() and self.forced is False:
                 change_menu = "n"
                 print("- Machine already patched! Nothing to do.")
             else:
