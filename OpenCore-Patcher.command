@@ -17,7 +17,7 @@ class OpenCoreLegacyPatcher:
         self.constants = constants.Constants()
         self.generate_base_data()
         if utilities.check_cli_args() is None:
-            self.main_menu()
+            self.main_menu(True)
 
     def generate_base_data(self):
         self.constants.detected_os = os_probe.detect_kernel_major()
@@ -37,8 +37,34 @@ class OpenCoreLegacyPatcher:
             arguments.arguments().parse_arguments(self.constants)
         else:
             print("- No arguments present, loading TUI")
+    
+    def first_setup(self):
+        # Order of operations:
+        # 1. Build OpenCore
+        # 2. Download macOS
+        # 3. Select USB drive
+        # 4. Format USB drive
+        # 5. Install OpenCore to ESP
+        # 6. flash macOS 
+        # 7. Prompt user to reboot
+        build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
+        cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).download_macOS()
+        utilities.cls()
 
-    def main_menu(self):
+        sys.exit(0)
+
+    
+    def post_install(self):
+        # Order of operations:
+        # 1. Build OpenCore
+        # 2. Prompt drive to install OC to
+        # 3. Install OpenCore to ESP
+        # 4. Determine whether root patching needed
+        # 5. Prompt user to reboot
+        print()
+            
+
+    def main_menu(self, walkthrough):
         response = None
         while not (response and response == -1):
             title = [
@@ -67,17 +93,31 @@ class OpenCoreLegacyPatcher:
 
             menu = utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
 
-            options = (
-                [["Build OpenCore", build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore]]
-                if ((self.constants.custom_model or self.computer.real_model) in model_array.SupportedSMBIOS) or self.constants.allow_oc_everywhere is True
-                else []
-            ) + [
-                ["Install OpenCore to USB/internal drive", install.tui_disk_installation(self.constants).copy_efi],
-                ["Post-Install Volume Patch", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).PatchVolume],
-                ["Change Model", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_model],
-                ["Patcher Settings", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).patcher_settings],
-                ["Credits", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).credits],
-            ]
+            if walkthrough is True:
+                options = (
+                    [["First Time Setup", self.first_setup]]
+                    if ((self.constants.custom_model or self.computer.real_model) in model_array.SupportedSMBIOS) or self.constants.allow_oc_everywhere is True
+                    else []
+                ) + [
+                    #["Post-Installation setup", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).closing_message],
+                    ["Change Model", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_model],
+                    ["Patcher Settings", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).patcher_settings],
+                    ["Credits", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).credits],
+                    ["Legacy Menu", lambda: self.main_menu(False)],
+                ]
+            else:
+                options = (
+                    [["Build OpenCore", build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore]]
+                    if ((self.constants.custom_model or self.computer.real_model) in model_array.SupportedSMBIOS) or self.constants.allow_oc_everywhere is True
+                    else []
+                ) + [
+                    ["Install OpenCore to USB/internal drive", install.tui_disk_installation(self.constants).copy_efi],
+                    ["Post-Install Volume Patch", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).PatchVolume],
+                    ["Change Model", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_model],
+                    ["Patcher Settings", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).patcher_settings],
+                    ["Installer Creation", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).download_macOS],
+                    ["Credits", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).credits],
+                ]
 
             for option in options:
                 menu.add_menu_option(option[0], function=option[1])

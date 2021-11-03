@@ -12,20 +12,6 @@ from data import os_data
 class tui_disk_installation:
     def __init__(self, versions):
         self.constants: constants.Constants = versions
-    
-    def determine_sd_card(self, media_name):
-        # Array filled with common SD Card names
-        # Note most USB-based SD Card readers generally report as "Storage Device"
-        # Thus no reliable way to detect further without parsing IOService output (kUSBProductString)
-        if (
-            "SD Card" in media_name or \
-            "SD/MMC" in media_name or \
-            "SDXC Reader" in media_name or \
-            "SD Reader" in media_name or \
-            "Card Reader" in media_name
-        ):
-            return True
-        return False
 
     def copy_efi(self):
         utilities.cls()
@@ -108,8 +94,24 @@ Please build OpenCore first!"""
         response = menu.start()
 
         if response == -1:
-            return
+            return        
+        self.install_opencore(disk_identifier, response)
 
+    def install_opencore(self, disk_identifier, response):
+        def determine_sd_card(media_name):
+            # Array filled with common SD Card names
+            # Note most USB-based SD Card readers generally report as "Storage Device"
+            # Thus no reliable way to detect further without parsing IOService output (kUSBProductString)
+            if (
+                "SD Card" in media_name or \
+                "SD/MMC" in media_name or \
+                "SDXC Reader" in media_name or \
+                "SD Reader" in media_name or \
+                "Card Reader" in media_name
+            ):
+                return True
+            return False
+        
         # TODO: Apple Script fails in Yosemite(?) and older
         args = [
             "osascript",
@@ -134,8 +136,6 @@ Please build OpenCore first!"""
                     ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + ["", "Please report this to the devs at GitHub."]
                 ).start()
                 return
-
-        # TODO: Remount if readonly
         drive_host_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk_identifier}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk_identifier}s{response}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         sd_type = drive_host_info["MediaName"]
@@ -178,7 +178,7 @@ Please build OpenCore first!"""
                 Path(mount_path / Path("EFI/BOOT")).mkdir()
                 shutil.move(mount_path / Path("System/Library/CoreServices/boot.efi"), mount_path / Path("EFI/BOOT/BOOTx64.efi"))
                 shutil.rmtree(mount_path / Path("System"), onerror=rmtree_handler)
-            if self.determine_sd_card(sd_type) is True:
+            if determine_sd_card(sd_type) is True:
                 print("- Adding SD Card icon")
                 shutil.copy(self.constants.icon_path_sd, mount_path)
             elif ssd_type is True:
