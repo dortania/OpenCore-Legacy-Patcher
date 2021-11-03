@@ -51,13 +51,15 @@ class PatchSysVolume:
             self.mount_location = "/System/Volumes/Update/mnt1"
         else:
             self.mount_location = ""
-        self.mount_coreservices = f"{self.mount_location}/System/Library/CoreServices"
-        self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
-        self.mount_frameworks = f"{self.mount_location}/System/Library/Frameworks"
-        self.mount_lauchd = f"{self.mount_location}/System/Library/LaunchDaemons"
-        self.mount_private_frameworks = f"{self.mount_location}/System/Library/PrivateFrameworks"
+        self.mount_syslibrary = f"{self.mount_location}/System/Library"
+        self.mount_library = f"{self.mount_location}/Library"
+        self.mount_coreservices = f"{self.mount_syslibrary}/CoreServices"
+        self.mount_extensions = f"{self.mount_syslibrary}/Extensions"
+        self.mount_frameworks = f"{self.mount_syslibrary}/Frameworks"
+        self.mount_lauchd = f"{self.mount_syslibrary}/LaunchDaemons"
+        self.mount_private_frameworks = f"{self.mount_syslibrary}/PrivateFrameworks"
         self.mount_libexec = f"{self.mount_location}/usr/libexec"
-        self.mount_extensions_mux = f"{self.mount_location}/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
+        self.mount_extensions_mux = f"{self.mount_syslibrary}/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
 
     def find_mount_root_vol(self, patch):
         self.root_mount_path = utilities.get_disk_path()
@@ -185,6 +187,9 @@ class PatchSysVolume:
 
                 else:
                     print(f"- Failed to find {location_zip}, unable to unpatch")
+            # This touch command prevents people that haven't run the patcher on this version from erroring out.
+            utilities.process_status(utilities.elevated(["touch", f"{self.mount_syslibrary}/.dortania-patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["rm", "-f", f"{self.mount_syslibrary}/.dortania-patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             if self.validate is False:
                 self.rebuild_snapshot()
         else:
@@ -602,6 +607,9 @@ set million colour before rebooting"""
             print("- Installing Legacy Mux Brightness support")
             self.add_legacy_mux_patch()
 
+        # Creating /System/Library/.dortania-patched
+        print("- Installing LaunchDaemon")
+        utilities.process_status(utilities.elevated(["touch", f"{self.mount_syslibrary}/.dortania-patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         if self.validate is False:
             self.rebuild_snapshot()
 
@@ -878,10 +886,17 @@ set million colour before rebooting"""
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu: ")
         elif self.constants.gui_mode is False:
-            change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
+            if Path("/System/Library/.dortania-patched").exists():
+                change_menu = input("Machine already patched, would you like to continue with Root Volume Patching?(y/n): ")
+            else:
+                change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
         else:
-            change_menu = "y"
-            print("Continuing root patching")
+            if Path("/System/Library/.dortania-patched").exists():
+                change_menu = "n"
+                print("- Machine already patched! Nothing to do.")
+            else:
+                change_menu = "y"
+                print("Continuing root patching")
         if change_menu in ["y", "Y"]:
             print("- Continuing with Patching")
             print("- Verifying whether Root Patching possible")
@@ -892,7 +907,7 @@ set million colour before rebooting"""
             elif self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu: ")
 
-        else:
+        elif self.constants.gui_mode is False:
             print("- Returning to main menu")
 
     def start_unpatch(self):
