@@ -1,6 +1,7 @@
 # Handle misc CLI menu options
 # Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 from __future__ import print_function
+import sys
 
 from resources import constants, install, utilities, defaults, sys_patch, installer
 from data import cpu_data, smbios_data, model_array, os_data
@@ -1114,7 +1115,7 @@ to your USB drive.
                     input("Press enter to return to the previous.")
                     return
             else:
-                exit()
+                sys.exit()
 
     def closing_message(self):
         utilities.cls()
@@ -1126,7 +1127,7 @@ to your USB drive.
         print("\n\tGuide: https://dortania.github.io/OpenCore-Legacy-Patcher/")
         print("\tDiscord: https://discord.gg/rqdPgH8xSN")
         input("\nPress enter to exit: ")
-        exit()
+        sys.exit()
 
     big_sur = """Patches Root volume to fix misc issues such as:
 
