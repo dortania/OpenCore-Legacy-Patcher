@@ -4,7 +4,7 @@ from __future__ import print_function
 import sys
 
 from resources import constants, install, utilities, defaults, sys_patch, installer
-from data import cpu_data, smbios_data, model_array, os_data
+from data import cpu_data, smbios_data, model_array, os_data, mirror_data
 
 
 class MenuOptions:
@@ -1073,8 +1073,10 @@ to your USB drive.
             menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             avalible_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "DeveloperSeed")
             if avalible_installers:
+                # Add mirror of 11.2.3 for users who want it
+                options.append([f"macOS {mirror_data.Install_macOS_Big_Sur_11_2_3['Version']} ({mirror_data.Install_macOS_Big_Sur_11_2_3['Build']} - {utilities.human_fmt(mirror_data.Install_macOS_Big_Sur_11_2_3['Size'])} - {mirror_data.Install_macOS_Big_Sur_11_2_3['Source']})", lambda: self.download_install_assistant(mirror_data.Install_macOS_Big_Sur_11_2_3['Link'])])
                 for app in avalible_installers:
-                    options.append([f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])})", lambda x=app: self.download_install_assistant(avalible_installers[x]['Link'])])
+                    options.append([f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']})", lambda x=app: self.download_install_assistant(avalible_installers[x]['Link'])])
                 for option in options:
                     menu.add_menu_option(option[0], function=option[1])
             response = menu.start()
@@ -1107,7 +1109,8 @@ to your USB drive.
                     utilities.header(["Create macOS installer"])
                     print("Installer created successfully.")
                     input("Press enter to exit.")
-                    self.closing_message()
+                    if self.constants.walkthrough is True:
+                        self.closing_message()
                 else:
                     utilities.cls()
                     utilities.header(["Create macOS installer"])
@@ -1115,7 +1118,8 @@ to your USB drive.
                     input("Press enter to return to the previous.")
                     return
             else:
-                sys.exit()
+                if self.constants.walkthrough is True:
+                    sys.exit()
 
     def closing_message(self):
         utilities.cls()

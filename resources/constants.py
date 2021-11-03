@@ -160,7 +160,8 @@ class Constants:
         self.disable_msr_power_ctl = False  # Disable MSR Power Control (missing battery throttling)
         self.software_demux = False  #        Enable Software Demux patch set
         self.force_vmm = False  #             Force VMM patch 
-        self.custom_sip_value = None  #         Set custom SIP value
+        self.custom_sip_value = None  #       Set custom SIP value
+        self.walkthrough = False  #           Enable Walkthrough
 
         self.legacy_accel_support = [
             os_data.os_data.mojave,

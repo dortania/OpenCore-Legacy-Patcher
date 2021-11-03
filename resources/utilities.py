@@ -293,6 +293,11 @@ def get_rom(variable: str, *, decode: bool = False):
 def download_file(link, location):
     if Path(location).exists():
         Path(location).unlink()
+    try:
+        # Handle cases where Content-Length has garbage or is missing
+        size_string = f" of {int(requests.head(link).headers['Content-Length']) / 1024 / 1024}MB"
+    except KeyError:
+        size_string = ""
     response = requests.get(link, stream=True)
     short_link = os.path.basename(link)
     # SU Catalog's link is quite long, strip to make it bearable
@@ -300,17 +305,18 @@ def download_file(link, location):
         short_link = "sucatalog.gz"
     header = f"# Downloading: {short_link} #"
     box_length = len(header)
+    box_string = "#" * box_length
     with location.open("wb") as file:
         count = 0
         for chunk in response.iter_content(1024 * 1024 * 4):
             file.write(chunk)
             count += len(chunk)
             cls()
-            print("#" * box_length)
+            print(box_string)
             print(header)
-            print("#" * box_length)
+            print(box_string)
             print("")
-            print(f"{count / 1024 / 1024}MB Downloaded")
+            print(f"{count / 1024 / 1024}MB Downloaded{size_string}")
     checksum = hashlib.sha256()
     with location.open("rb") as file:
         chunk = file.read(1024 * 1024 * 16)

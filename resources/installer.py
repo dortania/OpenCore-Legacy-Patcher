@@ -99,6 +99,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
                             "Link": download_link,
                             "Size": size,
                             "integirty": integirty,
+                            "Source": "Apple Inc.",
                         }
                     })
         except KeyError:

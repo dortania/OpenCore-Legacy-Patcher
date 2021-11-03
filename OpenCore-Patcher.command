@@ -17,7 +17,7 @@ class OpenCoreLegacyPatcher:
         self.constants = constants.Constants()
         self.generate_base_data()
         if utilities.check_cli_args() is None:
-            self.main_menu(True)
+            self.main_menu(False)
 
     def generate_base_data(self):
         self.constants.detected_os = os_probe.detect_kernel_major()
@@ -47,11 +47,9 @@ class OpenCoreLegacyPatcher:
         # 5. Install OpenCore to ESP
         # 6. flash macOS 
         # 7. Prompt user to reboot
+        self.constants.walkthrough = True
         build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
         cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).download_macOS()
-        utilities.cls()
-
-        sys.exit(0)
 
     
     def post_install(self):
@@ -61,8 +59,9 @@ class OpenCoreLegacyPatcher:
         # 3. Install OpenCore to ESP
         # 4. Determine whether root patching needed
         # 5. Prompt user to reboot
-        print()
-            
+        build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
+        install.tui_disk_installation(self.constants).copy_efi()
+        cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).PatchVolume
 
     def main_menu(self, walkthrough):
         response = None

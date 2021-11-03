@@ -1,0 +1,11 @@
+# Mirrors of Apple's InstallAssistant.ppkg
+# Currently only listing important Installers no longer on Apple's servers
+
+Install_macOS_Big_Sur_11_2_3 = {
+    "Version": "11.2.3",
+    "Build": "20D91",
+    "Link": "https://archive.org/download/install-assistant-20D91/InstallAssistant.pkg",
+    "Size": 11848909000,
+    "Source": "Archive.org",
+    "integirty": None,
+}
