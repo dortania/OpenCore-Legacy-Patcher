@@ -358,11 +358,12 @@ def check_cli_args():
     parser.add_argument("--force_patch", help="Ignores patched status and patches root volume", action="store_true", required=False)
     parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
     parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
+    parser.add_argument("--cli_offline", help="Use offline CLI mode", action="store_true", required=False)
     
     # validation args
     parser.add_argument("--validate", help="Runs Validation Tests for CI", action="store_true", required=False)
     args = parser.parse_args()
-    if not (args.build or args.force_patch or args.patch_sys_vol or args.unpatch_sys_vol or args.validate):
+    if not (args.build or args.patch_sys_vol or args.unpatch_sys_vol or args.validate):
         return None
     else:
         return args

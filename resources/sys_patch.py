@@ -57,7 +57,8 @@ class PatchSysVolume:
         self.mount_coreservices = f"{self.mount_syslibrary}/CoreServices"
         self.mount_extensions = f"{self.mount_syslibrary}/Extensions"
         self.mount_frameworks = f"{self.mount_syslibrary}/Frameworks"
-        self.mount_lauchd = f"{self.mount_syslibrary}/LaunchDaemons"
+        self.mount_syslaunchd = f"{self.mount_syslibrary}/LaunchDaemons"
+        self.mount_launchd = f"{self.mount_library}/LaunchDaemons"
         self.mount_private_frameworks = f"{self.mount_syslibrary}/PrivateFrameworks"
         self.mount_libexec = f"{self.mount_location}/usr/libexec"
         self.mount_extensions_mux = f"{self.mount_syslibrary}/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
@@ -188,9 +189,16 @@ class PatchSysVolume:
 
                 else:
                     print(f"- Failed to find {location_zip}, unable to unpatch")
-            # This touch command prevents people that haven't run the patcher on this version from erroring out.
-            utilities.process_status(utilities.elevated(["touch", f"{self.mount_syslibrary}/.dortania-patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["rm", "-f", f"{self.mount_syslibrary}/.dortania-patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            
+            if Path(f"{self.mount_syslibrary}/.dortania-patched").exists():
+                print(f"- Removing /System/Library/.dortania-patched")
+                utilities.process_status(utilities.elevated(["rm", "-f", f"{self.mount_syslibrary}/.dortania-patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            if Path(f"{self.mount_library}/Dortania").exists():
+                print(f"- Removing /Library/Dortania")
+                utilities.process_status(utilities.elevated(["rm", "-rf", f"{self.mount_syslibrary}/Dortania"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            if Path(f"{self.mount_launchd}/io.dortania.rootvolpatch.plist").exists():
+                print(f"- Removing /Library/LaunchDaemons/io.dortania.rootvolpatch.plist")
+                utilities.process_status(utilities.elevated(["rm", "-f", f"{self.mount_syslibrary}/io.dortania.rootvolpatch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             if self.validate is False:
                 self.rebuild_snapshot()
         else:
@@ -269,6 +277,12 @@ class PatchSysVolume:
 on reboot. Please use SwitchResX or ResXtreme to force 1 million colours on your
 monitor to fix this. If you are epileptic, please ask for someone to aid you or
 set million colour before rebooting"""
+                )
+            print(
+                """\nThe automatic root patching LaunchDaemon has been installed.
+After you log in when booting fresh from updating, your Mac may become unresponsive
+to apply these patches. Please wait for your system to tell you it is
+okay to reboot, hard resetting your Mac may require you to reinstall the OS."""
                 )
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to continue")
@@ -494,10 +508,10 @@ set million colour before rebooting"""
         if self.constants.detected_os > os_data.os_data.catalina:
             print("- Adding IOHID-Fixup.plist")
             utilities.process_status(
-                utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_lauchd_path_accel}/", self.mount_lauchd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_lauchd_path_accel}/", self.mount_syslaunchd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             )
-            utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_syslaunchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_syslaunchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         else:
             print("- Disabling Library Validation")
             utilities.process_status(
@@ -608,9 +622,17 @@ set million colour before rebooting"""
             print("- Installing Legacy Mux Brightness support")
             self.add_legacy_mux_patch()
 
-        # Creating /System/Library/.dortania-patched
-        print("- Installing LaunchDaemon")
+        # Creating /System/Library/.dortania-patched and setting up LaunchDaemon
+        print("- Creating /System/Library/.dortania-patched")
         utilities.process_status(utilities.elevated(["touch", f"{self.mount_syslibrary}/.dortania-patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        if sys.argv[0] != "/Library/Dortania/OpenCore-Patcher":
+            print("- Installing LaunchDaemon")
+            utilities.process_status(utilities.elevated(["cp", sys.argv[0], "/Library/Dortania/OpenCore-Patcher"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["cp", f"{self.constants.payload_path}/rootvolpatch.sh", "/Library/Dortania/rootvolpatch.sh"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["cp", f"{self.constants.payload_path}/io.dortania.rootvolpatch.plist", "/Library/LaunchDaemons/io.dortania.rootvolpatch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["launchctl", "load", "-w", "/Library/Dortania/io.dortania.roolvolpatch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        else:
+            print("- Running from launchd, not copying executable")
         if self.validate is False:
             self.rebuild_snapshot()
 
@@ -622,7 +644,7 @@ set million colour before rebooting"""
                 if patch_input in {"y", "Y", "yes", "Yes"}:
                     shutil.rmtree(Path(self.constants.payload_apple_root_path))
                     self.download_files()
-            else:
+            elif self.constants.cli_offline is False:
                 self.download_files()
         else:
             print("- Apple binaries missing")
@@ -641,10 +663,10 @@ set million colour before rebooting"""
             raise Exception(f"Unsupported OS: {self.constants.detected_os}")
         link = f"{self.constants.url_patcher_support_pkg}{self.constants.patcher_support_pkg_version}/{os_ver}.zip"
 
-        if Path(self.constants.payload_apple_root_path).exists():
+        if Path(self.constants.payload_apple_root_path).exists() and self.constants.cli_offline is False:
             print("- Removing old Apple Binaries folder")
             Path(self.constants.payload_apple_root_path).unlink()
-        if Path(self.constants.payload_apple_root_path_zip).exists():
+        if Path(self.constants.payload_apple_root_path_zip).exists() and self.constants.cli_offline is False:
             print("- Removing old Apple Binaries zip")
             Path(self.constants.payload_apple_root_path_zip).unlink()
 

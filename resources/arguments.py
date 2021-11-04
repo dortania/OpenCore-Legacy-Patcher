@@ -100,6 +100,9 @@ If you plan to create the USB for another machine, please select the "Change Mod
             if self.args.force_patch:
                 print("- Ignore seal and patch root volume anyway")
                 settings.force_patch = True
+            if self.args.cli_offline:
+                print("- Use offline CLI")
+                settings.cli_offline = True
             if self.args.moj_cat_accel:
                 print("- Set Mojave/Catalina root patch configuration")
                 settings.moj_cat_accel = True
