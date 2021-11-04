@@ -105,7 +105,18 @@ body:
     id: verify-previously-reported
     attributes:
       label: Have you verified whether this issue has been opened before? If no, your issue will be closed
-      description: If no, your issue will be closed. We'd appreciate if users check with Github Issue's search before filing (https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
+      description: If no, your issue will be closed. We'd appreciate it if users check with Github Issue's search before filing (https://github.com/dortania/OpenCore-Legacy-Patcher/issues?q=is%3Aissue)
+      multiple: true
+      options:
+        - 'true'
+        - 'false'
+    validations:
+      required: true
+  - type: dropdown
+    id: verify-guide
+    attributes:
+      label: Have you verified whether this issue is covered in our guide? ie. Troubleshooting and Legacy Acceleration pages
+      description: If no, your issue will be closed. We'd appreciate it if users check with Guide before filing (https://dortania.github.io/OpenCore-Legacy-Patcher/)
       multiple: true
       options:
         - 'true'
@@ -154,7 +165,7 @@ body:
   - type: textarea
     id: what-happened
     attributes:
-      label: What is the Isssue?
+      label: What is the Issue?
       description: Additionally, explain what you expected to happen?
       value: "Please clearly explain the issue"
     validations:
