@@ -34,7 +34,7 @@ class Constants:
         self.applealc_version = "1.6.3"  #           AppleALC
         self.restrictevents_version = "1.0.5"  #     RestrictEvents
         self.restrictevents_mbp_version = "1.0.5"  # RestrictEvents blocking displaypolicyd (see RestrictEvents-MBP91.patch)
-        self.featureunlock_version = "1.0.3"  #      FeatureUnlock
+        self.featureunlock_version = "1.0.4"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.4"  #          CPUFriend
         self.bluetool_version = "2.6.1"  #           BlueToolFixup (BrcmPatchRAM)
@@ -163,7 +163,7 @@ class Constants:
         self.custom_sip_value = None  #       Set custom SIP value
         self.force_patch = False  #           Force patches even if system seal is broken
         self.cli_offline = False  #           Enables offline CLI
-        
+        self.walkthrough = False  #           Enable Walkthrough
         self.legacy_accel_support = [
             os_data.os_data.mojave,
             os_data.os_data.catalina,

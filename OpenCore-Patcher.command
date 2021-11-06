@@ -76,6 +76,7 @@ class OpenCoreLegacyPatcher:
                 ["Post-Install Volume Patch", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).PatchVolume],
                 ["Change Model", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).change_model],
                 ["Patcher Settings", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).patcher_settings],
+                ["Installer Creation", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).download_macOS],
                 ["Credits", cli_menu.MenuOptions(self.constants.custom_model or self.computer.real_model, self.constants).credits],
             ]
 
