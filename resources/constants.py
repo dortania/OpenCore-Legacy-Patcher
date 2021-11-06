@@ -34,7 +34,7 @@ class Constants:
         self.applealc_version = "1.6.3"  #           AppleALC
         self.restrictevents_version = "1.0.5"  #     RestrictEvents
         self.restrictevents_mbp_version = "1.0.5"  # RestrictEvents blocking displaypolicyd (see RestrictEvents-MBP91.patch)
-        self.featureunlock_version = "1.0.3"  #      FeatureUnlock
+        self.featureunlock_version = "1.0.4"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.4"  #          CPUFriend
         self.bluetool_version = "2.6.1"  #           BlueToolFixup (BrcmPatchRAM)
@@ -160,7 +160,8 @@ class Constants:
         self.disable_msr_power_ctl = False  # Disable MSR Power Control (missing battery throttling)
         self.software_demux = False  #        Enable Software Demux patch set
         self.force_vmm = False  #             Force VMM patch 
-        self.custom_sip_value = None  #         Set custom SIP value
+        self.custom_sip_value = None  #       Set custom SIP value
+        self.walkthrough = False  #           Enable Walkthrough
 
         self.legacy_accel_support = [
             os_data.os_data.mojave,

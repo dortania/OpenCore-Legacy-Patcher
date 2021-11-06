@@ -1,10 +1,10 @@
 # Handle misc CLI menu options
 # Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
 from __future__ import print_function
-import subprocess
+import sys
 
-from resources import constants, utilities, defaults, sys_patch
-from data import cpu_data, smbios_data, model_array, os_data
+from resources import constants, install, utilities, defaults, sys_patch, installer
+from data import cpu_data, smbios_data, model_array, os_data, mirror_data
 
 
 class MenuOptions:
@@ -1038,6 +1038,100 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 menu.add_menu_option(option[0], function=option[1])
 
             response = menu.start()
+    
+    def download_macOS(self):
+        utilities.cls()
+        utilities.header(["Create macOS installer"])
+        print(
+            """
+This option allows you to download and flash a macOS installer
+to your USB drive.
+
+1. Download macOS Installer
+2. Use Existing Installer
+"""
+        )
+        change_menu = input("Select an option: ")
+        if change_menu == "1":
+            self.download_macOS_installer()
+        elif change_menu == "2":
+            self.find_local_installer()
+        else:
+            self.download_macOS()
+
+    def download_install_assistant(self, link):
+        installer.download_install_assistant(self.constants.payload_path, link)
+        # To avoid selecting the wrong installer by mistake, let user select the correct one
+        self.find_local_installer()
+
+    
+    def download_macOS_installer(self):
+        response = None
+        while not (response and response == -1):
+            options = []
+            title = ["Select the macOS Installer you wish to download"]
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            avalible_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "DeveloperSeed")
+            if avalible_installers:
+                # Add mirror of 11.2.3 for users who want it
+                options.append([f"macOS {mirror_data.Install_macOS_Big_Sur_11_2_3['Version']} ({mirror_data.Install_macOS_Big_Sur_11_2_3['Build']} - {utilities.human_fmt(mirror_data.Install_macOS_Big_Sur_11_2_3['Size'])} - {mirror_data.Install_macOS_Big_Sur_11_2_3['Source']})", lambda: self.download_install_assistant(mirror_data.Install_macOS_Big_Sur_11_2_3['Link'])])
+                for app in avalible_installers:
+                    options.append([f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']})", lambda x=app: self.download_install_assistant(avalible_installers[x]['Link'])])
+                for option in options:
+                    menu.add_menu_option(option[0], function=option[1])
+            response = menu.start()
+    
+    def find_local_installer(self):
+        response = None
+        while not (response and response == -1):
+            options = []
+            title = ["Select the macOS Installer you wish to use"]
+            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            avalible_installers = installer.list_local_macOS_installers()
+            if avalible_installers:
+                for app in avalible_installers:
+                    options.append([f"{avalible_installers[app]['Short Name']}: {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']})", lambda: self.list_disks(avalible_installers[app]['Path'])])
+                for option in options:
+                    menu.add_menu_option(option[0], function=option[1])
+            response = menu.start()
+    
+    def list_disks(self, installer_path):
+        disk = installer.select_disk_to_format()
+        if disk != None:
+            if installer.format_drive(disk) is True:
+                # Only install if OC is found
+                # Allows a user to create a macOS Installer without OCLP if desired
+                if self.constants.opencore_release_folder.exists() and self.constants.walkthrough is True:
+                    # ESP will always be the first partition when formatted by disk utility
+                    install.tui_disk_installation.install_opencore(self, f"disk{disk}", "1")
+                if installer.create_installer(installer_path, "OCLP-Installer") is True:
+                    utilities.cls()
+                    utilities.header(["Create macOS installer"])
+                    print("Installer created successfully.")
+                    input("Press enter to exit.")
+                    if self.constants.walkthrough is True:
+                        self.closing_message()
+                else:
+                    utilities.cls()
+                    utilities.header(["Create macOS installer"])
+                    print("Installer creation failed.")
+                    input("Press enter to return to the previous.")
+                    return
+            else:
+                if self.constants.walkthrough is True:
+                    sys.exit()
+
+    def closing_message(self):
+        utilities.cls()
+        utilities.header(["Create macOS installer"])
+        print("Thank you for using OpenCore Legacy Patcher!")
+        print("Reboot your machine and select EFI Boot to load OpenCore")
+        print("")
+        print("If you have any issues, remember to check the guide as well as\nour Discord server:")
+        print("\n\tGuide: https://dortania.github.io/OpenCore-Legacy-Patcher/")
+        print("\tDiscord: https://discord.gg/rqdPgH8xSN")
+        input("\nPress enter to exit: ")
+        sys.exit()
 
     big_sur = """Patches Root volume to fix misc issues such as:
 

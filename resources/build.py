@@ -1082,4 +1082,4 @@ class BuildOpenCore:
         print(f"    {self.constants.opencore_release_folder}")
         print("")
         if self.constants.gui_mode is False:
-            input("Press [Enter] to go back.\n")
+            input("Press [Enter] to continue\n")
