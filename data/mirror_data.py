@@ -7,5 +7,5 @@ Install_macOS_Big_Sur_11_2_3 = {
     "Link": "https://archive.org/download/install-assistant-20D91/InstallAssistant.pkg",
     "Size": 12211077798,
     "Source": "Archive.org",
-    "integirty": None,
+    "integrity": None,
 }

@@ -90,7 +90,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
                         if "InstallAssistant.pkg" in ia_package["URL"]:
                             download_link = ia_package["URL"]
                             size = ia_package["Size"]
-                            integirty = ia_package["IntegrityDataURL"]
+                            integrity = ia_package["IntegrityDataURL"]
 
                     avalible_apps.update({
                         item: {
@@ -98,7 +98,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
                             "Build": build,
                             "Link": download_link,
                             "Size": size,
-                            "integirty": integirty,
+                            "integrity": integrity,
                             "Source": "Apple Inc.",
                         }
                     })
