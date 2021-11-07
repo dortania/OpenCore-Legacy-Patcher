@@ -32,6 +32,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
+        ],
     },
     "MacBook2,1": {
         "Board ID": "Mac-F4208CA9",
@@ -46,6 +50,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
         ],
     },
     "MacBook3,1": {
@@ -62,6 +70,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_X3100
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
+        ],
     },
     "MacBook4,1": {
         "Board ID": "Mac-F22788A9",
@@ -76,6 +88,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_X3100
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
         ],
     },
     "MacBook5,1": {
@@ -92,6 +108,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBook5,1_v2": {
         "Board ID": "Mac-F42D89A9",
@@ -106,6 +125,9 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "MacBook5,2": {
@@ -122,6 +144,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBook6,1": {
         "Board ID": "Mac-F22C8AC8",
@@ -136,6 +161,9 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "MacBook7,1": {
@@ -152,6 +180,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBook8,1": {
         "Board ID": "Mac-BE0E8AC46FE800CC",
@@ -165,6 +196,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Broadwell
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBook8,1_v2": {
@@ -180,6 +214,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Broadwell
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBook9,1": {
         "Board ID": "Mac-9AE82516C7C6B903",
@@ -193,6 +230,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Skylake
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBook10,1": {
@@ -208,6 +248,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Kaby_Lake
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookAir1,1": {
         "Board ID": "Mac-F42C8CC8",
@@ -221,6 +264,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_X3100
+        ],
+        "Stock Storage": [
+            "SATA 1.8",
         ],
     },
     "MacBookAir2,1": {
@@ -237,6 +283,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 1.8",
+        ],
     },
     "MacBookAir3,1": {
         "Board ID": "Mac-942452F5819B1C1B",
@@ -251,6 +300,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
+        ],
+        "Stock Storage": [
+            "mSATA",
         ],
     },
     "MacBookAir3,2": {
@@ -267,6 +319,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "mSATA",
+        ],
     },
     "MacBookAir4,1": {
         "Board ID": "Mac-C08A6BB70A942AC2",
@@ -280,6 +335,9 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",  # Set for Apple Thunderbolt Adapter
         "Stock GPUs": [
             device_probe.Intel.Archs.Sandy_Bridge
+        ],
+        "Stock Storage": [
+            "mSATA",
         ],
     },
     "MacBookAir4,2": {
@@ -295,6 +353,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Sandy_Bridge
         ],
+        "Stock Storage": [
+            "mSATA",
+        ],
     },
     "MacBookAir5,1": {
         "Board ID": "Mac-66F35F19FE2A0D05",
@@ -308,6 +369,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Ivy_Bridge
+        ],
+        "Stock Storage": [
+            "mSATA",
         ],
     },
     "MacBookAir5,2": {
@@ -323,6 +387,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Ivy_Bridge
         ],
+        "Stock Storage": [
+            "mSATA",
+        ],
     },
     "MacBookAir6,1": {
         "Board ID": "Mac-35C1E88140C3E6CF",
@@ -336,6 +403,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell
+        ],
+        "Stock Storage": [
+            "mSATA",
         ],
     },
     "MacBookAir6,2": {
@@ -351,6 +421,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookAir7,1": {
         "Board ID": "Mac-9F18E312C5C2BF0B",
@@ -364,6 +437,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Broadwell
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBookAir7,2": {
@@ -379,6 +455,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Broadwell
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookAir8,1": {
         "Board ID": "Mac-827FAC58A8FDFA22",
@@ -393,6 +472,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Coffee_Lake
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookAir8,1_v2": {
         "Board ID": "Mac-112818653D3AABFC",
@@ -406,6 +488,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Coffee_Lake
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "AAPL_MacBookAir8,1": {
@@ -423,6 +508,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Coffee_Lake
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookAir8,2": {
         "Board ID": "Mac-226CB3C6A851A671",
@@ -437,6 +525,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Coffee_Lake
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookAir9,1": {
         "Board ID": "Mac-0CFF9C7C2B63DF8D",
@@ -450,6 +541,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Ice_Lake
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "AAPL_MacBookAir9,1": {
@@ -467,6 +561,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Ice_Lake
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookAir10,1": {
         "Board ID": None,
@@ -478,6 +575,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": None,
         "Stock GPUs": [], # TODO: Add Apple Silicon GPU
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro1,1": {
         "Board ID": "Mac-F425BEC8",
@@ -492,6 +592,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
         ],
     },
     "MacBookPro1,2": {
@@ -508,6 +612,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
+        ],
     },
     "MacBookPro2,1": {
         "Board ID": "Mac-F42189C8",
@@ -522,6 +630,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
         ],
     },
     "MacBookPro2,2": {
@@ -538,6 +650,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
+        ],
     },
     "MacBookPro3,1": {
         "Board ID": "Mac-F4238BC8",
@@ -553,6 +669,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
+        ],
     },
     "MacBookPro3,1_v2": {
         "Board ID": "Mac-F42388C8",
@@ -567,6 +687,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
         ],
     },
     "MacBookPro4,1": {
@@ -584,6 +708,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
+        ],
     },
     "MacBookPro4,1_v2": {
         "Board ID": "Mac-F42C86C8",
@@ -599,6 +727,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
         ],
     },
     "MacBookPro5,1": {
@@ -616,6 +748,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBookPro5,1_v2": {
         "Board ID": "Mac-F42D86A9",
@@ -631,6 +766,9 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "MacBookPro5,2": {
@@ -648,6 +786,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBookPro5,3": {
         "Board ID": "Mac-F22587C8",
@@ -663,6 +804,9 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "MacBookPro5,4": {
@@ -680,6 +824,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBookPro5,5": {
         "Board ID": "Mac-F2268AC8",
@@ -694,6 +841,9 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "MacBookPro6,1": {
@@ -711,6 +861,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Iron_Lake,
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBookPro6,2": {
         "Board ID": "Mac-F22586C8",
@@ -727,6 +880,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Iron_Lake,
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBookPro7,1": {
         "Board ID": "Mac-F222BEC8",
@@ -742,6 +898,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBookPro8,1": {
         "Board ID": "Mac-94245B3640C91C81",
@@ -756,6 +915,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "MacBookPro8,2": {
@@ -773,6 +935,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBookPro8,3": {
         "Board ID": "Mac-942459F5819B171B",
@@ -788,6 +953,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "AAPL_MacBookPro8,3": {
@@ -807,6 +975,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBookPro9,1": {
         "Board ID": "Mac-4B7AC7E43945597E",
@@ -823,6 +994,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Ivy_Bridge,
             device_probe.NVIDIA.Archs.Kepler
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "MacBookPro9,2": {
         "Board ID": "Mac-6F01561E16C75D06",
@@ -836,6 +1010,9 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Kepler
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "MacBookPro10,1": {
@@ -853,6 +1030,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Ivy_Bridge,
             device_probe.NVIDIA.Archs.Kepler
         ],
+        "Stock Storage": [
+            "mSATA",
+        ],
     },
     "MacBookPro10,2": {
         "Board ID": "Mac-AFD8A9D944EA4843",
@@ -866,6 +1046,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Kepler
+        ],
+        "Stock Storage": [
+            "mSATA",
         ],
     },
     "MacBookPro11,1": {
@@ -881,6 +1064,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell,
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro11,2": {
         "Board ID": "Mac-3CBD00234E554E41",
@@ -894,6 +1080,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell,
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBookPro11,3": {
@@ -910,6 +1099,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell,
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro11,4": {
         "Board ID": "Mac-06F11FD93F0323C5",
@@ -923,6 +1115,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell,
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBookPro11,5": {
@@ -940,6 +1135,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Haswell,
             device_probe.AMD.Archs.Legacy_GCN_7000
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro12,1": {
         "Board ID": "Mac-E43C1C25D4880AD6",
@@ -953,6 +1151,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Broadwell,
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBookPro13,1": {
@@ -968,6 +1169,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Skylake,
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro13,2": {
         "Board ID": "Mac-66E35819EE2D0D05",
@@ -981,6 +1185,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Skylake,
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBookPro13,3": {
@@ -998,6 +1205,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Skylake,
             device_probe.AMD.Archs.Polaris
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro14,1": {
         "Board ID": "Mac-B4831CEBD52A0C4C",
@@ -1012,6 +1222,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Kaby_Lake,
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro14,2": {
         "Board ID": "Mac-CAD6701F7CEA0921",
@@ -1025,6 +1238,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Kaby_Lake,
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBookPro14,3": {
@@ -1042,6 +1258,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Kaby_Lake,
             device_probe.AMD.Archs.Polaris
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro15,1": {
         "Board ID": "Mac-937A206F2EE63C01",
@@ -1058,6 +1277,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Coffee_Lake,
             device_probe.AMD.Archs.Polaris
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro15,2": {
         "Board ID": "Mac-827FB448E656EC26",
@@ -1071,6 +1293,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Coffee_Lake,
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBookPro15,3": {
@@ -1088,6 +1313,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Coffee_Lake,
             device_probe.AMD.Archs.Vega
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro15,4": {
         "Board ID": "Mac-53FDB3D8DB8CA971",
@@ -1101,6 +1329,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Coffee_Lake,
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBookPro16,1": {
@@ -1118,6 +1349,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Coffee_Lake,
             device_probe.AMD.Archs.Navi
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro16,2": {
         "Board ID": "Mac-5F9802EFE386AA28",
@@ -1132,6 +1366,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Ice_Lake,
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro16,3": {
         "Board ID": "Mac-E7203C0F68AA0004",
@@ -1145,6 +1382,9 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Coffee_Lake,
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacBookPro16,4": {
@@ -1162,6 +1402,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Coffee_Lake,
             device_probe.AMD.Archs.Navi
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro17,1": {
         "Board ID": None,
@@ -1174,6 +1417,9 @@ smbios_dictionary = {
         "Screen Size": 13,
         "Ethernet Chipset": None,
         "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro18,1": {
         "Board ID": None,
@@ -1186,6 +1432,9 @@ smbios_dictionary = {
         "Screen Size": 16,
         "Ethernet Chipset": None,
         "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro18,2": {
         "Board ID": None,
@@ -1198,6 +1447,9 @@ smbios_dictionary = {
         "Screen Size": 16,
         "Ethernet Chipset": None,
         "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro18,3": {
         "Board ID": None,
@@ -1210,6 +1462,9 @@ smbios_dictionary = {
         "Screen Size": 14,
         "Ethernet Chipset": None,
         "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "MacBookPro18,4": {
         "Board ID": None,
@@ -1222,6 +1477,9 @@ smbios_dictionary = {
         "Screen Size": 14,
         "Ethernet Chipset": None,
         "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "Macmini1,1": {
         "Board ID": "Mac-F4208EC8",
@@ -1235,6 +1493,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
+        ],
     },
     "Macmini2,1": {
         "Board ID": "Mac-F4208EAA",
@@ -1247,6 +1509,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "PATA",
         ],
     },
     "Macmini3,1": {
@@ -1262,6 +1528,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "Macmini4,1": {
         "Board ID": "Mac-F2208EC8",
@@ -1275,6 +1544,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "Macmini5,1": {
         "Board ID": "Mac-8ED6AF5B48C039E1",
@@ -1287,6 +1559,9 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.Intel.Archs.Sandy_Bridge
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "Macmini5,2": {
@@ -1302,6 +1577,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "Macmini5,3": {
         "Board ID": "Mac-7BA5B2794B2CDB12",
@@ -1314,6 +1592,9 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.Intel.Archs.Sandy_Bridge,
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "Macmini6,1": {
@@ -1328,6 +1609,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Ivy_Bridge,
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+        ],
     },
     "Macmini6,2": {
         "Board ID": "Mac-F65AE981FFA204ED",
@@ -1340,6 +1624,9 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.Intel.Archs.Ivy_Bridge,
+        ],
+        "Stock Storage": [
+            "SATA 2.5",
         ],
     },
     "Macmini7,1": {
@@ -1354,6 +1641,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell,
         ],
+        "Stock Storage": [
+            "SATA 2.5",
+            "NVMe",
+        ],
     },
     "Macmini8,1": {
         "Board ID": "Mac-7BA5B2DFE22DDD8C",
@@ -1367,6 +1658,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Coffee_Lake,
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "Macmini9,1": {
         "Board ID": None,
@@ -1378,6 +1672,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "iMac4,1": {
         "Board ID": "Mac-F42786C8",
@@ -1391,6 +1688,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.AMD.Archs.R500,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
         ],
     },
     "iMac4,2": {
@@ -1406,6 +1707,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
+        ],
     },
     "iMac5,1": {
         "Board ID": "Mac-F4228EC8",
@@ -1420,6 +1725,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.AMD.Archs.R500,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
+        ],
     },
     "iMac5,2": {
         "Board ID": "Mac-F4218EC8",
@@ -1433,6 +1742,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
         ],
     },
     "iMac6,1": {
@@ -1449,6 +1762,10 @@ smbios_dictionary = {
             device_probe.AMD.Archs.R500,
             device_probe.NVIDIA.Archs.Curie
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
+        ],
     },
     "iMac7,1": {
         "Board ID": "Mac-F42386C8",
@@ -1463,6 +1780,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.NVIDIA.Archs.Tesla,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
         ],
     },
     "iMac7,1_v2": {
@@ -1479,6 +1800,10 @@ smbios_dictionary = {
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.NVIDIA.Archs.Tesla,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
+        ],
     },
     "iMac8,1": {
         "Board ID": "Mac-F227BEC8",
@@ -1493,6 +1818,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.NVIDIA.Archs.Tesla,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
         ],
     },
     "iMac8,1_v2": {
@@ -1509,6 +1838,10 @@ smbios_dictionary = {
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.NVIDIA.Archs.Tesla,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
+        ],
     },
     "iMac9,1": {
         "Board ID": "Mac-F2218FA9",
@@ -1522,6 +1855,9 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
         ],
     },
     "iMac9,1_v2": {
@@ -1537,6 +1873,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+        ],
     },
     "iMac9,1_v3": {
         "Board ID": "Mac-F2218EC8",
@@ -1551,6 +1890,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+        ],
     },
     "iMac9,1_v4": {
         "Board ID": "Mac-F2218FC8",
@@ -1564,6 +1906,9 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
         ],
     },
     "iMac10,1": {
@@ -1580,6 +1925,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+        ],
     },
     "iMac10,1_v2": {
         "Board ID": "Mac-F2268CC8",
@@ -1593,6 +1941,9 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
         ],
     },
     "iMac10,1_v3": {
@@ -1608,6 +1959,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+        ],
     },
     "iMac11,1": {
         "Board ID": "Mac-F2268DAE",
@@ -1620,6 +1974,9 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
         ],
     },
     "iMac11,2": {
@@ -1635,6 +1992,9 @@ smbios_dictionary = {
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.AMD.Archs.TeraScale_2,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+        ],
     },
     "iMac11,3": {
         "Board ID": "Mac-F2238BAE",
@@ -1648,6 +2008,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.AMD.Archs.TeraScale_2,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
         ],
     },
     "iMac12,1": {
@@ -1663,6 +2026,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+        ],
     },
     "iMac12,2": {
         "Board ID": "Mac-942B59F58194171B",
@@ -1676,6 +2042,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
         ],
     },
     "AAPL_iMac12,2": {
@@ -1693,6 +2062,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+        ],
     },
     "iMac13,1": {
         "Board ID": "Mac-00BE6ED71E35EB86",
@@ -1706,6 +2078,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Ivy_Bridge,
             device_probe.NVIDIA.Archs.Kepler,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "mSATA"
         ],
     },
     "iMac13,2": {
@@ -1721,6 +2097,10 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Ivy_Bridge,
             device_probe.NVIDIA.Archs.Kepler,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "mSATA"
+        ],
     },
     "iMac13,3": {
         "Board ID": "Mac-7DF2A3B5E5D671ED",
@@ -1734,6 +2114,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Ivy_Bridge,
             device_probe.NVIDIA.Archs.Kepler,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "mSATA"
         ],
     },
     "iMac14,1": {
@@ -1749,6 +2133,10 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Haswell,
             device_probe.NVIDIA.Archs.Kepler,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
+        ],
     },
     "iMac14,2": {
         "Board ID": "Mac-27ADBB7B4CEE8E61",
@@ -1762,6 +2150,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell,
             device_probe.NVIDIA.Archs.Kepler,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
         ],
     },
     "iMac14,3": {
@@ -1777,6 +2169,10 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Haswell,
             device_probe.NVIDIA.Archs.Kepler,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
+        ],
     },
     "iMac14,4": {
         "Board ID": "Mac-81E3E92DD6088272",
@@ -1789,6 +2185,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
         ],
     },
     "iMac15,1": {
@@ -1804,6 +2204,10 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Haswell,
             device_probe.AMD.Archs.Legacy_GCN_7000,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
+        ],
     },
     "iMac15,1_v2": {
         "Board ID": "Mac-FA842E06C61E91C5",
@@ -1818,6 +2222,10 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Haswell,
             device_probe.AMD.Archs.Legacy_GCN_7000,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
+        ],
     },
     "iMac16,1": {
         "Board ID": "Mac-A369DDC4E67F1C45",
@@ -1830,6 +2238,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.Intel.Archs.Broadwell,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
         ],
     },
     "iMac16,2": {
@@ -1844,11 +2256,13 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Broadwell,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
+        ],
     },
     "iMac17,1": {
         "Board ID": "Mac-DB15BD556843C820",
-        # "Board ID": "Mac-65CE76090165799A",
-        # "Board ID": "Mac-B809C3757DA9BB8D",
         "FirmwareFeatures": "0xFC0FE137",
         "SecureBootModel": None,
         "CPU Generation": cpu_data.cpu_data.skylake.value,
@@ -1860,10 +2274,13 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Skylake,
             device_probe.AMD.Archs.Legacy_GCN_9000,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
+        ],
     },
     "iMac17,1_v2": {
         "Board ID": "Mac-65CE76090165799A",
-        # "Board ID": "Mac-B809C3757DA9BB8D",
         "FirmwareFeatures": "0xFC0FE137",
         "SecureBootModel": None,
         "CPU Generation": cpu_data.cpu_data.skylake.value,
@@ -1874,6 +2291,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Skylake,
             device_probe.AMD.Archs.Legacy_GCN_9000,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
         ],
     },
     "iMac17,1_v3": {
@@ -1889,6 +2310,10 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Skylake,
             device_probe.AMD.Archs.Legacy_GCN_9000,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
+        ],
     },
     "iMac18,1": {
         "Board ID": "Mac-4B682C642B45593E",
@@ -1901,6 +2326,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.Intel.Archs.Kaby_Lake,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
         ],
     },
     "iMac18,2": {
@@ -1916,6 +2345,10 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Kaby_Lake,
             device_probe.AMD.Archs.Polaris,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
+        ],
     },
     "iMac18,3": {
         "Board ID": "Mac-BE088AF8C5EB4FA2",
@@ -1929,6 +2362,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Kaby_Lake,
             device_probe.AMD.Archs.Polaris,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
         ],
     },
     "iMac19,1": {
@@ -1944,6 +2381,10 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Coffee_Lake,
             device_probe.AMD.Archs.Polaris,
             device_probe.AMD.Archs.Vega,
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
         ],
     },
     "AAPL_iMac19,1": {
@@ -1961,6 +2402,10 @@ smbios_dictionary = {
             device_probe.AMD.Archs.Polaris,
             device_probe.AMD.Archs.Vega,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
+        ],
     },
     "iMac19,2": {
         "Board ID": "Mac-63001698E7A34814",
@@ -1976,6 +2421,10 @@ smbios_dictionary = {
             device_probe.AMD.Archs.Polaris,
             device_probe.AMD.Archs.Vega,
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe"
+        ],
     },
     "iMac20,1": {
         "Board ID": "Mac-CFF7D910A743CAAF",
@@ -1989,6 +2438,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Comet_Lake,
             device_probe.AMD.Archs.Navi,
+        ],
+        "Stock Storage": [
+            "NVMe"
         ],
     },
     "iMac20,2": {
@@ -2004,6 +2456,9 @@ smbios_dictionary = {
             device_probe.Intel.Archs.Comet_Lake,
             device_probe.AMD.Archs.Navi,
         ],
+        "Stock Storage": [
+            "NVMe"
+        ],
     },
     "iMac21,1": {
         "Board ID": None,
@@ -2015,6 +2470,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe"
+        ],
     },
     "iMac21,2": {
         "Board ID": None,
@@ -2026,6 +2484,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe"
+        ],
     },
     "iMacPro1,1": {
         "Board ID": "Mac-7BA5B2D9E42DDD94",
@@ -2038,6 +2499,9 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.AMD.Archs.Vega,
+        ],
+        "Stock Storage": [
+            "NVMe"
         ],
     },
     "MacPro1,1": {
@@ -2053,6 +2517,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Curie
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
+        ],
     },
     "MacPro2,1": {
         "Board ID": "Mac-F4208DA9",
@@ -2066,6 +2534,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Intel 80003ES2LAN",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Curie
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
         ],
     },
     "MacPro3,1": {
@@ -2081,6 +2553,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
+        ],
     },
     "MacPro4,1": {
         "Board ID": "Mac-F221BEC8",
@@ -2093,6 +2569,9 @@ smbios_dictionary = {
         "Ethernet Chipset": "Intel 82574L",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
         ],
     },
     "MacPro5,1": {
@@ -2107,6 +2586,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_2
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+        ],
     },
     "MacPro6,1": {
         "Board ID": "Mac-F60DEB81FF30ACF6",
@@ -2119,6 +2601,9 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.AMD.Archs.Legacy_GCN_7000
+        ],
+        "Stock Storage": [
+            "NVMe",
         ],
     },
     "MacPro7,1": {
@@ -2135,6 +2620,10 @@ smbios_dictionary = {
             device_probe.AMD.Archs.Vega,
             device_probe.AMD.Archs.Navi
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "NVMe",
+        ],
     },
     "Xserve1,1": {
         "Board ID": "Mac-F4208AC8",
@@ -2148,6 +2637,10 @@ smbios_dictionary = {
         "Ethernet Chipset": "Intel 80003ES2LAN",
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
+        ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
         ],
     },
     "Xserve2,1": {
@@ -2163,6 +2656,10 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+            "PATA",
+        ],
     },
     "Xserve3,1": {
         "Board ID": "Mac-F223BEC8",
@@ -2176,6 +2673,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+        ],
     },
     "ADP2,1": {
         "Board ID": None,
@@ -2188,6 +2688,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950
         ],
+        "Stock Storage": [
+            "SATA 3.5",
+        ],
     },
     "ADP3,2": {
         "Board ID": None,
@@ -2199,6 +2702,9 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe",
+        ],
     },
     "AAPLJ53,1": {
         # AppleInternal MacBookPro11,4
@@ -2212,6 +2718,9 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell,
         ],
+        "Stock Storage": [
+            "NVMe",
+        ],
 
     },
     "Intel Virtual Machine": {
@@ -2223,6 +2732,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "Stock GPUs": [],
+        "Stock Storage": [],
     },
     "VirtualMac1,1": {
         # Apple Silicon Virtual Machine
@@ -2234,6 +2744,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "Stock GPUs": [],
+        "Stock Storage": [],
     },
     "VirtualMac2,1": {
         # Apple Silicon Virtual Machine
@@ -2245,6 +2756,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "Stock GPUs": [],
+        "Stock Storage": [],
     },
     "iBridge2,11": {
         # Unknown ID, Intel based, present in Monterey
@@ -2256,6 +2768,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "Stock GPUs": [],
+        "Stock Storage": [],
     },
     "iBridge2,13": {
         # Unknown ID, Intel based, present in Monterey
@@ -2267,5 +2780,6 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "Stock GPUs": [],
+        "Stock Storage": [],
     },
 }

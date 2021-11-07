@@ -127,7 +127,7 @@ class BuildOpenCore:
                 lambda: (self.model in model_array.LegacyAudio or self.model in model_array.MacPro) and self.constants.set_alc_usage is True,
             ),
             # IDE patch
-            ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in model_array.IDEPatch),
+            ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: "PATA" in smbios_data.smbios_dictionary[self.model]["Stock Storage"]),
             # Misc
             (
                 "FeatureUnlock.kext",
