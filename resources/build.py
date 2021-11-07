@@ -180,7 +180,10 @@ class BuildOpenCore:
                 # Applicable for pre-Ivy Bridge models
                 self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
 
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
+        # i3 Ivy Bridge iMacs don't support RDRAND
+        # However for prebuilt, assume they do
+        if (not self.constants.custom_model and "RDRAND" not in self.computer.cpu.flags) or \
+            (smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value):
             # Ref: https://github.com/reenigneorcim/SurPlus
             # Enable for all systems missing RDRAND support
             print("- Adding SurPlus Patch for Race Condition")
@@ -190,6 +193,7 @@ class BuildOpenCore:
             # Experimental Patch for 12.1 Beta 1+
             # Credit to Syncretic for quickly developing this patch
             # Currently set to apply to only 21.2.0, adjust once added to mainline
+            # Ref: https://forums.macrumors.com/threads/monterand-probably-the-start-of-an-ongoing-saga.2320479/
             print("- Adding Experimental RDRAND patch for 12.1 Beta 1")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "MonteRand (12.1b1) #1")["Enabled"] = True
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "MonteRand (12.1b1) #2")["Enabled"] = True
