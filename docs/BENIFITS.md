@@ -7,7 +7,7 @@ With OpenCore Legacy Patcher we recommend users go through the below table to un
 | Features | [OpenCore Legacy Patcher](https://github.com/dortania/OpenCore-Legacy-Patcher/) | [Patched Sur](https://github.com/BenSova/Patched-Sur) |
 | :--- | :--- | :--- |
 | Over The Air Updates | <span style="color:#30BCD5">Native System Preferences, additionally supports Deltas (~2GB) for Metal GPUs</span> | <span style="color:red">Inside Patcher Sur app (~12GB), only available when InstallAssistants release.</span> InstallAssistants generally available same day as System Preference updates, however developer betas will lag behind by 1 day compared to OTAs |
-| FileVault | <span style="color:#30BCD5">Fully supported on all machines</span> | <span style="color:red">Not supported</span> |
+| FileVault | <span style="color:#30BCD5">Fully supported on all machines</span>. Note unsupported on APFS ROM Patched Macs, revert to stock firmware to resolve | <span style="color:red">Not supported</span> |
 | System Integrity Protection | <span style="color:#30BCD5">Fully enabled on Metal GPUs</span> | <span style="color:red">Disabled for early 2013 and older during the patching process and first boot afterwards, otherwise enabled</span> |
 | APFS Snapshots | <span style="color:#30BCD5">Fully enabled</span> | <span style="color:red">Disabled</span> |
 | User facing | <span style="color:red">TUI interface</span> | <span style="color:#30BCD5">SwiftUI interface, more user friendly</span> |
