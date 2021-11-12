@@ -486,12 +486,12 @@ set million colour before rebooting"""
         print("- Merging general legacy PrivateFrameworks")
         utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_accel}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
         if self.constants.detected_os > os_data.os_data.catalina:
-            print("- Adding IOHID-Fixup.plist")
-            utilities.process_status(
-                utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_lauchd_path_accel}/", self.mount_lauchd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            )
-            utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            # With PatcherSupportPkg v0.2.0, IOHID-Fixup.plist is deprecated and integrated into SkyLight patch set
+            if (Path(self.mount_lauchd) / Path("IOHID-Fixup.plist")).exists():
+                print("- Stripping legacy IOHID-Fixup.plist")
+                utilities.process_status(
+                    utilities.elevated(["rm", "-f", f"{self.mount_lauchd}/IOHID-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                )
         else:
             print("- Disabling Library Validation")
             utilities.process_status(
