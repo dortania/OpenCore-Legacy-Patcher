@@ -78,8 +78,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
-| iMac7,1 | No reports | N/A | N/A |
-| iMac8,1 | <span style="color:#30BCD5"> YES </span> | EduCovas | - Stock Model<br/>- Patcher version 0.0.21 |
+| iMac7,1 | <span style="color:#30BCD5"> YES </span> | lulujyc | iMac 20-inch 2007. Patcher version 0.3.1. The USB 1.1 controller is rather unstable on Big Sur+, using USB hubs (forcing USB 2.0) can fix unrecognized keyboard/ mouse. Otherwise runs great, including brightness control. Upgraded BCM94352HMB, manually added 3rd-party drivers. Tested: Big Sur, Monterey. |
+| iMac8,1 | ^^ | EduCovas | - Stock Model<br/>- Patcher version 0.0.21 |
 | iMac9,1 | ^^ | Allanrfox | ^^ |
 | ^^ | ^^ | Jakeluke | ^^ |
 | iMac10,1 | ^^ | Ausdauersportler | - Upgraded with WX4150 |

@@ -127,7 +127,7 @@ class BuildOpenCore:
                 lambda: (self.model in model_array.LegacyAudio or self.model in model_array.MacPro) and self.constants.set_alc_usage is True,
             ),
             # IDE patch
-            ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: self.model in model_array.IDEPatch),
+            ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: "PATA" in smbios_data.smbios_dictionary[self.model]["Stock Storage"]),
             # Misc
             (
                 "FeatureUnlock.kext",
@@ -530,11 +530,8 @@ class BuildOpenCore:
                     "@0,backlight-control": binascii.unhexlify("01000000"),
                     "@0,built-in": binascii.unhexlify("01000000"),
                     "shikigva": 256,
+                    "agdpmod": "vit9696",
                 }
-                if self.constants.serial_settings != "None":
-                    self.config["DeviceProperties"]["Add"][backlight_path] += {
-                        "agdpmod": "vit9696",
-                    }
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                     "name": binascii.unhexlify("23646973706C6179"),

@@ -11,6 +11,7 @@
   - OpenCore 0.7.5 - release
   - BrcmPatchRAM 2.6.1 - release
   - WhateverGreen 1.5.5 - release
+  - PatcherSupportPkg 0.2.0 - release
 - Fix AirPlay to Mac on macOS 12.1
 - Add macOS InstallAssistant downloader to TUI
 
@@ -114,6 +115,7 @@
   - System Preferences will not report settings however
 - Allow Root Volume Patched Systems to use FileVault 2
   - Requires macOS 11.3 (20E232) or newer
+  - Unsupported on APFS ROM Patched Macs, revert to stock firmware to resolve
 - Add offline TUI build
   - Allows for root patching without network connection
 - Add Legacy Wireless support for Monterey
