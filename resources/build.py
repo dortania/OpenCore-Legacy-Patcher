@@ -518,11 +518,8 @@ class BuildOpenCore:
                     "@0,backlight-control": binascii.unhexlify("01000000"),
                     "@0,built-in": binascii.unhexlify("01000000"),
                     "shikigva": 256,
+                    "agdpmod": "vit9696",
                 }
-                if self.constants.serial_settings != "None":
-                    self.config["DeviceProperties"]["Add"][backlight_path] += {
-                        "agdpmod": "vit9696",
-                    }
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                     "name": binascii.unhexlify("23646973706C6179"),

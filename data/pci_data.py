@@ -590,74 +590,74 @@ class amd_ids:
         # GCN v4
         # AMDRadeonX4000
         # AMDBaffinGraphicsAccelerator - AMD9500Controller
-        0x67E0,
-        0x67E3,
-        0x67E8,
-        0x67EB,
-        0x67EF,
-        0x67FF,
-        0x67E1,
-        0x67E7,
-        0x67E9,
+        0x67E0,  # Pro WX 4170
+        0x67E3,  # Pro WX 4100
+        0x67E8,  # Pro WX 4130/4150
+        0x67EB,  # Pro V5300X
+        0x67EF,  # 460/560D / Pro 450/455/460/555/555X/560/560X
+        0x67FF,  # 550 640SP / RX 560/560X
+        0x67E1,  # Unknown
+        0x67E7,  # Unknown
+        0x67E9,  # Unknown
         # AMDEllesmereGraphicsAccelerator - AMD9500Controller
-        0x67C0,
-        0x67C1,
-        0x67C2,
-        0x67C4,
-        0x67C7,
-        0x67DF,
-        0x67D0,
-        0x67C8,
-        0x67C9,
-        0x67CA,
-        0x67CC,
-        0x67CF,
+        0x67C0,  # Pro WX 7100 Mobile
+        0x67C1,  # Unknown  
+        0x67C2,  # Pro V7300X / V7350x2
+        0x67C4,  # Pro WX 7100
+        0x67C7,  # Pro WX 5100
+        0x67DF,  # 470/480/570/570X/580/580X/590
+        0x67D0,  # Pro V7300X / V7350x2
+        0x67C8,  # Unknown
+        0x67C9,  # Unknown
+        0x67CA,  # Unknown
+        0x67CC,  # Unknown
+        0x67CF,  # Unknown
     ]
 
     vega_ids = [
         # GCN v5
         # AMDRadeonX5000
         # AMDVega10GraphicsAccelerator - AMD10000Controller
-        0x6860,
-        0x6861,
-        0x6862,
-        0x6863,
-        0x6864,
-        0x6867,
-        0x6868,
-        0x6869,
-        0x686A,
-        0x686B,
-        0x686C,
-        0x686D,
-        0x686E,
-        0x686F,
-        0x687F,
+        0x6860,  # Instinct MI25
+        0x6861,  # Pro WX 9100
+        0x6862,  # Pro SSG
+        0x6863,  # Vega Frontier
+        0x6864,  # Pro V340
+        0x6867,  # Pro Vega 56
+        0x6868,  # Pro WX 8100/8200
+        0x6869,  # Pro Vega 48
+        0x686A,  # Unknown
+        0x686B,  # Pro Vega 64X
+        0x686C,  # Instinct MI25
+        0x686D,  # Unknown
+        0x686E,  # Unknown
+        0x686F,  # Unknown
+        0x687F,  # RX Vega 56/64
         # AMDVega12GraphicsAccelerator - AMD10000Controller
-        0x69A0,
-        0x69A1,
-        0x69A2,
-        0x69A3,
-        0x69AF,
+        0x69A0,  # Unknown
+        0x69A1,  # Unknown
+        0x69A2,  # Unknown
+        0x69A3,  # Unknown
+        0x69AF,  # Unknown
         # AMDVega20GraphicsAccelerator - AMD10000Controller
-        0x66A0,
-        0x66A1,
-        0x66A2,
-        0x66A3,
-        0x66A7,
-        0x66AF,
+        0x66A0,  # Instinct
+        0x66A1,  # Pro VII/Instinct MI50
+        0x66A2,  # Unknown
+        0x66A3,  #  Pro Vega II/ Pro Vega II Duo
+        0x66A7,  # Unknown
+        0x66AF,  # VII
     ]
 
     navi_ids = [
         # AMDRadeonX6000
         # AMDNavi10GraphicsAccelerator
-        0x7310,
-        0x7312,
-        0x7318,
-        0x7319,
-        0x731A,
-        0x731B,
-        0x731F,
+        0x7310,  # Pro W5700X
+        0x7312,  # Pro W5700
+        0x7318,  # Unknown
+        0x7319,  # Unknown
+        0x731A,  # Unknown
+        0x731B,  # Unknown
+        0x731F,  # RX 5600/5600 XT / 5700/5700 XT
         # AMDNavi12GraphicsAccelerator
         0x7360,  # 5600M
         # AMDNavi14GraphicsAccelerator
@@ -753,65 +753,66 @@ class amd_ids:
 
 
 class intel_ids:
+    # https://dgpu-docs.intel.com/devices/hardware-table.html
     gma_950_ids = [
-        0x2582,
-        0x2592,
-        0x2772,
-        0x27A2,
+        0x2582,  # 915G
+        0x2592,  # 915GM
+        0x2772,  # 945G
+        0x27A2,  # 945GM
     ]
 
     gma_x3100_ids = [
-        0x2a02,
+        0x2a02,  # 965GM
     ]
 
     iron_ids = [
         # AppleIntelHDGraphics IDs
-        0x0044,
-        0x0046,
+        0x0044,  # Unknown
+        0x0046,  # HD Graphics
     ]
 
     sandy_ids = [
         # AppleIntelHD3000Graphics IDs
         # AppleIntelSNBGraphicsFB IDs
-        0x0106,
-        0x0601,
-        0x0116,
-        0x0102,
-        0x0126,
+        0x0106,  # HD Graphics 2000
+        0x0601,  # Unknown
+        0x0116,  # HD Graphics 3000
+        0x0102,  # HD Graphics 2000
+        0x0126,  # HD Graphics 3000
     ]
 
     ivy_ids = [
         # AppleIntelHD4000Graphics IDs
         # AppleIntelFramebufferCapri IDs
-        0x0152,
-        0x0156,
-        0x0162,
-        0x0166,
+        0x0152,  # HD Graphics 2500
+        0x0156,  # HD Graphics 2500
+        0x0162,  # HD Graphics 4000
+        0x0166,  # HD Graphics 4000
     ]
 
     haswell_ids = [
         # AppleIntelHD5000Graphics IDs
         # AppleIntelFramebufferAzul IDs
-        0x0D26,
-        0x0A26,
-        0x0A2E,
-        0x0D22,
-        0x0412,
+        0x0D26,  # Iris Pro Graphics P5200
+        0x0A26,  # HD Graphics 5000
+        0x0A2E,  # Iris Graphics 5100
+        0x0D22,  # Iris Pro Graphics 5200
+        0x0412,  # HD Graphics 4600
     ]
 
     broadwell_ids = [
         # AppleIntelBDWGraphicsFramebuffer IDs
-        0x0BD1,
-        0x0BD2,
-        0x0BD3,
-        0x1606,
-        0x160E,
-        0x1616,
-        0x161E,
-        0x1626,
-        0x1622,
-        0x1612,
-        0x162B,
+        0x0BD1,  # Unknown
+        0x0BD2,  # Unknown
+        0x0BD3,  # Unknown
+        0x1606,  # HD Graphics
+        0x160E,  # HD Graphics
+        0x1616,  # HD Graphics 5500
+        0x161E,  # HD Graphics 5300
+        0x1626,  # HD Graphics 6000
+        0x1622,  # Iris Pro Graphics 6200
+        0x1612,  # HD Graphics 5600
+        0x162B,  # Iris Graphics 6100
     ]
 
     skylake_ids = [
@@ -851,9 +852,9 @@ class intel_ids:
     ]
 
     comet_lake_ids = [
-        0x9BC8,
-        0x9BC5,
-        0x9BC4,
+        0x9BC8,  # UHD Graphics 630
+        0x9BC5,  # UHD Graphics 630
+        0x9BC4,  # UHD Graphics
     ]
 
     ice_lake_ids = [
@@ -872,9 +873,9 @@ class intel_ids:
 
     AppleIntel8254XEthernet = [
         # AppleIntel8254XEthernet IDs
-        0x1096,
-        0x100F,
-        0x105E,
+        0x1096,  # 80003ES2LAN
+        0x100F,  # 82545EM
+        0x105E,  # 82571EB/82571GB
     ]
 
     AppleIntelI210Ethernet = [
@@ -893,8 +894,8 @@ class intel_ids:
 
     Intel82574L = [
         # Intel82574L IDs
-        0x104B,
-        0x10F6,
+        0x104B,  # 82566DC
+        0x10F6,  # 82574L
     ]
 
 
@@ -942,11 +943,11 @@ class broadcom_ids:
 
     AppleBCM5701Ethernet = [
         # AppleBCM5701Ethernet IDs
-        0x1684,
-        0x16B0,
-        0x16B4,
-        0x1682,
-        0x1686,
+        0x1684,  # BCM5764M
+        0x16B0,  # BCM57761
+        0x16B4,  # BCM57765
+        0x1682,  # BCM57762
+        0x1686,  # BCM57766
     ]
 
 

@@ -90,9 +90,7 @@ Due to the Metal Backend, the enhanced color output of these apps seems to heavi
 
 ## Cannot press "Done" when editing a Sidebar Widget
 
-To work around this, simply press Tab to hover over and press spacebar to simulate a click.
-
-Note: This work-around doesn't seem to work in macOS 11.3 and newer
+Workaround: Press some combination of Tab, or Tab and then Shift-Tab, or just Shift-Tab until the "Done" button is highlighted. Then press spacebar to activate the button, the same as in any other dialog with a highlighted button halo. 
 
 ## Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer
 
