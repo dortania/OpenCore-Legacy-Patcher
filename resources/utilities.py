@@ -10,6 +10,7 @@ from pathlib import Path
 import os
 import binascii
 import argparse
+from ctypes import CDLL, c_uint, byref
 
 try:
     import requests
@@ -92,10 +93,18 @@ def check_seal():
         return False
 
 
-def csr_decode(csr_active_config, os_sip):
-    if csr_active_config is None:
-        csr_active_config = b"\x00\x00\x00\x00"
-    sip_int = int.from_bytes(csr_active_config, byteorder="little")
+def csr_decode(os_sip):
+    # Based off sip_config.py
+    # https://gist.github.com/pudquick/8b320be960e1654b908b10346272326b
+    # https://opensource.apple.com/source/xnu/xnu-7195.141.2/libsyscall/wrappers/csr.c.auto.html
+    # Far more reliable than parsing csr-active-config
+
+    # Note that 'csr_get_active_config' was not introduced until 10.11
+    # However this function should never be called on 10.10 or earlier
+    libsys = CDLL('/usr/lib/libSystem.dylib')
+    raw    = c_uint(0)
+    errmsg = libsys.csr_get_active_config(byref(raw))
+    sip_int = raw.value
     i = 0
     for current_sip_bit in sip_data.system_integrity_protection.csr_values:
         if sip_int & (1 << i):
@@ -202,7 +211,9 @@ def patching_status(os_sip, os):
     else:
         sbm_enabled = False
 
-    if get_nvram("csr-active-config", decode=False) and csr_decode(get_nvram("csr-active-config", decode=False), os_sip) is False:
+    if os > os_data.os_data.yosemite:
+        sip_enabled = csr_decode(os_sip)
+    else:
         sip_enabled = False
 
     if os > os_data.os_data.catalina and not check_filevault_skip():
