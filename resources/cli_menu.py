@@ -846,19 +846,22 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         utilities.header(["Patching System Volume"])
 
         no_patch = False
+        no_unpatch = False
         if self.constants.detected_os == os_data.os_data.monterey:
             print(MenuOptions.monterey)
         elif self.constants.detected_os == os_data.os_data.big_sur:
             print(MenuOptions.big_sur)
         elif self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina] and self.constants.moj_cat_accel == True:
             print(MenuOptions.mojave_catalina)
+            no_unpatch = True
         else:
             print(MenuOptions.default)
             no_patch = True
+            no_unpatch = True
         change_menu = input("Patch System Volume?: ")
         if no_patch is not True and change_menu == "1":
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
-        elif no_patch is not True and change_menu == "2":
+        elif no_unpatch is not True and change_menu == "2":
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_unpatch()
         else:
             print("Returning to main menu")
@@ -1170,7 +1173,7 @@ is patched, you can no longer have Delta updates.
 Supported Options:
 
 1. Patch System Volume
-2. Unpatch System Volume (Experimental)
+2. Unpatch System Volume
 B. Exit
         """
     mojave_catalina = """Patches Root volume to fix misc issues such as:
@@ -1188,7 +1191,6 @@ is patched, you can no longer have Delta updates.
 Supported Options:
 
 1. Patch System Volume
-2. Unpatch System Volume (Experimental)
 B. Exit
          """
 
