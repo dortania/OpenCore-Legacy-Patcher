@@ -12,8 +12,11 @@
   - BrcmPatchRAM 2.6.1 - release
   - WhateverGreen 1.5.5 - release
   - PatcherSupportPkg 0.2.0 - release
+  - FeatureUnlock 1.0.4 - rolling (4b3ebe3)
 - Fix AirPlay to Mac on macOS 12.1
 - Add macOS InstallAssistant downloader to TUI
+- Resolve rare memory corruption due to FeatureUnlock
+- Raise SurPlus MaxKernel to 21.99.99
 
 ## 0.3.1
 - Increment Binaries:

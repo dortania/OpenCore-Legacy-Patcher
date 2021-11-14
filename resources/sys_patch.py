@@ -69,7 +69,9 @@ class PatchSysVolume:
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
                 if patch is True:
-                    if self.constants.detected_os < os_data.os_data.big_sur or (self.constants.detected_os == os_data.os_data.big_sur and utilities.check_seal() is True):
+                    # Root Volume unpatching is unreliable due to being a live volume
+                    # Only worth while on Big Sur as '--last-sealed-snapshot' is hit or miss
+                    if self.constants.detected_os == os_data.os_data.big_sur and utilities.check_seal() is True:
                         self.backup_volume()
                     self.patch_root_vol()
                     return True
@@ -83,7 +85,9 @@ class PatchSysVolume:
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
-                        if self.constants.detected_os < os_data.os_data.big_sur or (self.constants.detected_os == os_data.os_data.big_sur and utilities.check_seal() is True):
+                        # Root Volume unpatching is unreliable due to being a live volume
+                        # Only worth while on Big Sur as '--last-sealed-snapshot' is hit or miss
+                        if self.constants.detected_os == os_data.os_data.big_sur and utilities.check_seal() is True:
                             self.backup_volume()
                         self.patch_root_vol()
                         return True
@@ -207,8 +211,8 @@ class PatchSysVolume:
             self.manual_root_patch_revert()
 
     def rebuild_snapshot(self):
-        if self.constants.gui_mode is False:
-            input("Press [ENTER] to continue with cache rebuild: ")
+        # if self.constants.gui_mode is False:
+        #     input("Press [ENTER] to continue with cache rebuild: ")
         print("- Rebuilding Kernel Cache (This may take some time)")
         if self.constants.detected_os > os_data.os_data.catalina:
             result = utilities.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -230,11 +234,11 @@ class PatchSysVolume:
         else:
             self.success_status = True
             print("- Successfully built new kernel cache")
-            if self.constants.gui_mode is False:
-                if self.constants.detected_os > os_data.os_data.catalina:
-                    input("Press [ENTER] to continue with snapshotting")
-                else:
-                    input("Press [ENTER] to continue with kernel and dyld cache merging")
+            # if self.constants.gui_mode is False:
+            #     if self.constants.detected_os > os_data.os_data.catalina:
+            #         input("Press [ENTER] to continue with snapshotting")
+            #     else:
+            #         input("Press [ENTER] to continue with kernel and dyld cache merging")
             if self.constants.detected_os > os_data.os_data.catalina:
                 print("- Creating new APFS snapshot")
                 bless = utilities.elevated(
@@ -657,8 +661,8 @@ set million colour before rebooting"""
                 Path(self.constants.payload_apple_root_path_zip).unlink()
                 print("- Binaries downloaded to:")
                 print(self.constants.payload_path)
-                if self.constants.gui_mode is False:
-                    input("Press [ENTER] to continue")
+                # if self.constants.gui_mode is False:
+                #     input("Press [ENTER] to continue")
             except zipfile.BadZipFile:
                 print("- Couldn't unzip")
                 return
