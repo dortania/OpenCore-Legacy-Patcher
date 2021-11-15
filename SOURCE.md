@@ -23,6 +23,8 @@ Once Python is installed, open Terminal and run the following:
 ```sh
 # Move into a directory to store the project
 cd ~/Developer
+# Move into Project directory
+cd ./OpenCore-Legacy-Patcher
 # Clone project
 git clone https://github.com/dortania/OpenCore-Legacy-Patcher
 # Install Python dependacies used by the project
