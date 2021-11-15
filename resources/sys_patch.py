@@ -677,8 +677,7 @@ set million colour before rebooting"""
             non_metal_os = os_data.os_data.high_sierra
         else:
             non_metal_os = os_data.os_data.catalina
-        i = 0
-        for gpu in gpus:
+        for i, gpu in enumerate(gpus):
             if gpu.class_code and gpu.class_code != 0xFFFFFFFF:
                 print(f"- Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
                 if gpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi]:
@@ -716,7 +715,6 @@ set million colour before rebooting"""
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         self.ivy_gpu = True
                         self.supports_metal = True
-                i += 1
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
             # Main concerns are for iMac12,x with Sandy iGPU and Kepler dGPU

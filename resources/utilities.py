@@ -105,11 +105,9 @@ def csr_decode(os_sip):
     raw    = c_uint(0)
     errmsg = libsys.csr_get_active_config(byref(raw))
     sip_int = raw.value
-    i = 0
-    for current_sip_bit in sip_data.system_integrity_protection.csr_values:
+    for i,  current_sip_bit in enumerate(sip_data.system_integrity_protection.csr_values):
         if sip_int & (1 << i):
             sip_data.system_integrity_protection.csr_values[current_sip_bit] = True
-        i = i + 1
 
     # Can be adjusted to whatever OS needs patching
     sip_needs_change = all(sip_data.system_integrity_protection.csr_values[i] for i in os_sip)
