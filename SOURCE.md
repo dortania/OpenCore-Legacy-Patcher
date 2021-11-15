@@ -89,6 +89,6 @@ cp ./OpenCore-Legacy-Patcher/dist/OpenCore-Patcher ./OCLP-GUI/OpenCore\ Patcher/
 mv ./OCLP-GUI/OpenCore\ Patcher/OpenCore\ Patcher/OCLP-GUI/OpenCore-Patcher ./OCLP-GUI/OpenCore\ Patcher/OpenCore\ Patcher/OCLP-GUI/OCLP-CLI
 # Build project
 cd ./OCLP-GUI/OpenCore\ Patcher; xcodebuild; cd ../../
-# Move application to project root
-open ./OCLP-GUI/OpenCore\ Patcher/build/Release/OpenCore\ Patcher.app
+# Open build folder
+open ./OCLP-GUI/OpenCore\ Patcher/build/Release/
 ```
