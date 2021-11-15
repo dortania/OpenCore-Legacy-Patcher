@@ -24,11 +24,12 @@ jobs:
       - run: python3 merge_gui.py
       - name: Sign Binaries for release
         if: github.event_name == 'release'
-        run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "OpenCore Patcher.app/Contents/Resources/OCLP-CLI"'
-        run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "OpenCore Patcher.app/Contents/Resources/oclpd"'
-        run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "OpenCore Patcher.app"'
-        run: ditto -c -k --sequesterRsrc --keepParent OpenCore\ Patcher.app OpenCore-Patcher-GUI.app.zip
-        run: ./../sign-gui.sh
+        run: |
+          'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "OpenCore Patcher.app/Contents/Resources/OCLP-CLI"'
+          'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "OpenCore Patcher.app/Contents/Resources/oclpd"'
+          'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "OpenCore Patcher.app"'
+          ditto -c -k --sequesterRsrc --keepParent OpenCore\ Patcher.app OpenCore-Patcher-GUI.app.zip
+          ./../sign-gui.sh
       - name: Upload GUI to Artifacts
         uses: actions/upload-artifact@v2
         with:
