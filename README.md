@@ -18,16 +18,19 @@ Note: Only clean-installs and upgrades are supported, macOS Big Sur installs alr
 
 * You can however reinstall macOS with this patcher and retain your original data
 
-Note 2: Currently OpenCore Legacy Patcher officially supports patching to run macOS 11, Big Sur installs. For older OSes, OpenCore may function however support is currently not provided from Dortania.
+Note 2: Currently OpenCore Legacy Patcher officially supports patching to run macOS Big Sur and Monterey installs. For older OSes, OpenCore may function however support is currently not provided from Dortania.
 
 * For macOS Mojave and Catalina support, we recommend the use of [dosdude1's patchers](http://dosdude1.com)
-* macOS Monterey usage is provided however support is limited, currently recommended for users to run Big Sur for best compatibility
+
+## Running from source
+
+To run the project from source, see here: [Build and run from source](./SOURCE.md)
 
 ## Support
 
-To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN). We're actively there and is the quickest way to receive help. For bigger issues such as patcher crashing on build and such, we recommend opening an issue right here on GitHub(Please review [How to debug with OpenCore](https://dortania.github.io/OpenCore-Legacy-Patcher/DEBUG.html) before opening issues):
-
-* [OpenCore Legacy Patcher's Issue's tab](https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
+To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN). We're actively there and is the quickest way to receive help. For bigger issues such as patcher crashing on build and such, we recommend opening an issue right here on GitHub
+  
+  * Please review [How to debug with OpenCore](https://dortania.github.io/OpenCore-Legacy-Patcher/DEBUG.html) before opening issues
 
 ## Credits
 
