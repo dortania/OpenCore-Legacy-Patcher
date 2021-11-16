@@ -673,7 +673,7 @@ If AppleALC is detected, the Patcher will not install AppleHDA.
         utilities.header(["Set Windows GMUX support"])
         print(
             """
-With OCLP, we're able to restore iGPU funbctionality on iGPU+dGPU
+With OCLP, we're able to restore iGPU functionality on iGPU+dGPU
 MacBook Pros. However for some this may not be desires, ie. eGPUs
 for Windows may prefer to only work with the dGPU and eGPU active.
         """
