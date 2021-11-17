@@ -150,18 +150,19 @@ class Constants:
         self.allow_ts2_accel = True  # Set TeraScale 2 Acceleration support
 
         ## Miscellaneous
-        self.disallow_cpufriend = False  #    Disable CPUFriend
-        self.enable_wake_on_wlan = False  #   Allow Wake on WLAN for modern Broadcom
-        self.disable_tb = False  #            Disable Thunderbolt Controller
-        self.set_alc_usage = True  #          Set AppleALC usage
-        self.dGPU_switch = True  #            Set Display GPU Switching for Windows
-        self.force_surplus = False  #         Force SurPlus patch in newer OSes
-        self.force_latest_psp = False  #      Force latest PatcherSupportPkg
-        self.disable_msr_power_ctl = False  # Disable MSR Power Control (missing battery throttling)
-        self.software_demux = False  #        Enable Software Demux patch set
-        self.force_vmm = False  #             Force VMM patch 
-        self.custom_sip_value = None  #       Set custom SIP value
-        self.walkthrough = False  #           Enable Walkthrough
+        self.disallow_cpufriend = False  #     Disable CPUFriend
+        self.enable_wake_on_wlan = False  #    Allow Wake on WLAN for modern Broadcom
+        self.disable_tb = False  #             Disable Thunderbolt Controller
+        self.set_alc_usage = True  #           Set AppleALC usage
+        self.dGPU_switch = True  #             Set Display GPU Switching for Windows
+        self.force_surplus = False  #          Force SurPlus patch in newer OSes
+        self.force_latest_psp = False  #       Force latest PatcherSupportPkg
+        self.disable_msr_power_ctl = False  #  Disable MSR Power Control (missing battery throttling)
+        self.software_demux = False  #         Enable Software Demux patch set
+        self.force_vmm = False  #              Force VMM patch 
+        self.custom_sip_value = None  #        Set custom SIP value
+        self.walkthrough = False  #            Enable Walkthrough
+        self.disable_connectdrivers = False  # Disable ConnectDrivers (hibernation)
 
         self.legacy_accel_support = [
             os_data.os_data.mojave,

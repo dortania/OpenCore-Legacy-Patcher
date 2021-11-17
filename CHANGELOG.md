@@ -18,6 +18,8 @@
 - Resolve rare memory corruption due to FeatureUnlock
 - Raise SurPlus MaxKernel to 21.99.99
 - Fix Content Caching with spoofless usage
+- Allow disabling of ConnectDrivers 
+  - Aid with Hibernation on MacBookPro9,1/MacBookPro10,1
 
 ## 0.3.1
 - Increment Binaries:

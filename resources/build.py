@@ -796,6 +796,9 @@ class BuildOpenCore:
             if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.cpu_data.nehalem.value:
                 # Nehalem and newer MacBooks force firmware throttling via MSR_POWER_CTL
                 self.enable_kext("SimpleMSR.kext", self.constants.simplemsr_version, self.constants.simplemsr_path)
+        if self.constants.disable_connectdrivers is True:
+            print("- Disabling ConnectDrivers")
+            self.config["UEFI"]["ConnectDrivers"] = False
         if self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True:
             # Add Content Caching patch
             print("- Fixing Content Caching support")

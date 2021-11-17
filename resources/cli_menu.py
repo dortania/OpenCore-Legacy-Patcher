@@ -772,6 +772,37 @@ the event there's issues.
         else:
             self.set_surplus()
     
+    def set_hibernation_workaround(self):
+        utilities.cls()
+        utilities.header(["Set Hibernation Workaround"])
+        print(
+            """
+For users with Hibernation issues, you can flip this option to disable certain
+OpenCore settings that may affect the stability of Hibernation. Namely 
+OpenCore's ConnectDrivers option.
+
+Flipping this setting will disable automatic loading of additional drives in 
+OpenCore's boot menu other than what was booted.
+
+Note: This option should only be flipped under the following circumstances:
+      - You are experincing wake failures from hibernation
+      - You are only using 1 disk in your system for booting (ie. no RAID)
+      - OpenCore is installed on the same disk as the OS
+      - Your system has an Intel iGPU and Nvidia dGPU
+      - You have no need to boot external media through OpenCore
+        """
+        )
+
+        change_menu = input("Disable ConnectDrivers?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.disable_connectdrivers = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.disable_connectdrivers = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.set_hibernation_workaround()
+    
     def set_custom_sip_value(self):
         utilities.cls()
         utilities.header(["Set Custom SIP Value"])
@@ -1013,8 +1044,10 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                     f"Set Windows GMUX support:\tCurrently {self.constants.dGPU_switch}",
                     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).dGPU_switch_support,
                 ],
-                [f"Set Software Demux:\t\tCurrently {self.constants.software_demux}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_software_demux],
+                [f"Set Hibernation Workaround:\tCurrently {self.constants.disable_connectdrivers}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_hibernation_workaround],
                 [f"Disable Battery Throttling:\tCurrently {self.constants.disable_msr_power_ctl}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_battery_throttle],
+                [f"Set Software Demux:\tCurrently {self.constants.software_demux}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_software_demux],
+                
             ]
 
             for option in options:
