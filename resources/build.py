@@ -274,35 +274,36 @@ class BuildOpenCore:
         else:
             print("- Unable to run Wireless hardware detection")
 
-        if not self.constants.custom_model and self.computer.wifi:
-            if isinstance(self.computer.wifi, device_probe.Broadcom):
-                # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
-                if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirportBrcmNIC and self.constants.validate is False and self.computer.wifi.country_code:
-                    self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
-                    print(f"- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}")
-                    if self.computer.wifi.pci_path:
-                        arpt_path = self.computer.wifi.pci_path
-                        print(f"- Found ARPT device at {arpt_path}")
-                        self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.country_code}
-                    else:
-                        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" brcmfx-country={self.computer.wifi.country_code}"
-                    if self.constants.enable_wake_on_wlan is True:
-                        print("- Enabling Wake on WLAN support")
-                        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" -brcmfxwowl"
-                elif self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
-                    wifi_fake_id(self)
-                elif self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4331:
+        if not self.constants.custom_model:
+            if self.computer.wifi:
+                if isinstance(self.computer.wifi, device_probe.Broadcom):
+                    # This works around OCLP spoofing the Wifi card and therefore unable to actually detect the correct device
+                    if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirportBrcmNIC and self.constants.validate is False and self.computer.wifi.country_code:
+                        self.enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
+                        print(f"- Setting Wireless Card's Country Code: {self.computer.wifi.country_code}")
+                        if self.computer.wifi.pci_path:
+                            arpt_path = self.computer.wifi.pci_path
+                            print(f"- Found ARPT device at {arpt_path}")
+                            self.config["DeviceProperties"]["Add"][arpt_path] = {"brcmfx-country": self.computer.wifi.country_code}
+                        else:
+                            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" brcmfx-country={self.computer.wifi.country_code}"
+                        if self.constants.enable_wake_on_wlan is True:
+                            print("- Enabling Wake on WLAN support")
+                            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += f" -brcmfxwowl"
+                    elif self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
+                        wifi_fake_id(self)
+                    elif self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4331:
+                        self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
+                        self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
+                        self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
+                    elif self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm43224:
+                        self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
+                        self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
+                        self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AppleAirPortBrcm43224.kext")["Enabled"] = True
+                elif isinstance(self.computer.wifi, device_probe.Atheros) and self.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40:
                     self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
                     self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
-                    self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AirPortBrcm4331.kext")["Enabled"] = True
-                elif self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm43224:
-                    self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
-                    self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
-                    self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AppleAirPortBrcm43224.kext")["Enabled"] = True
-            elif isinstance(self.computer.wifi, device_probe.Atheros) and self.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40:
-                self.enable_kext("corecaptureElCap.kext", self.constants.corecaptureelcap_version, self.constants.corecaptureelcap_path)
-                self.enable_kext("IO80211ElCap.kext", self.constants.io80211elcap_version, self.constants.io80211elcap_path)
-                self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
+                    self.get_kext_by_bundle_path("IO80211ElCap.kext/Contents/PlugIns/AirPortAtheros40.kext")["Enabled"] = True
         else:
             if smbios_data.smbios_dictionary[self.model]["Wireless Model"] == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
                 print("- Enabling BCM943224 and BCM94331 Networking Support")
