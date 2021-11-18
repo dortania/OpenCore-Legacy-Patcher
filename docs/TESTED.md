@@ -99,7 +99,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | mikeboss | - Stock Model<br/>- Patcher version 0.0.19 |
 | iMac14,2 | ^^ | OKonnel | - Stock Model<br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | mibaxx | - Stock Model<br/>- Patcher version 0.0.21 |
-| iMac14,3 | No reports | N/A | N/A |
+| iMac14,3 | ^^ | Ypnose | - Stock Model<br/>- Patcher version 0.3.1<br/>- The installation was chaotic because the iMac freezed three times while installing. Do not know if it's related to the Patcher or just related to the hardware. I successfully created an account after it was finished. |
 
 ### Mac Pro
 
