@@ -7,6 +7,7 @@ import binascii
 import enum
 import itertools
 import subprocess
+import plistlib
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type, Union
 
@@ -339,6 +340,7 @@ class Computer:
     oclp_version: Optional[str] = None
     opencore_version: Optional[str] = None
     bluetooth_chipset: Optional[str] = None
+    third_party_sata_ssd: Optional[bool] = False
 
     @staticmethod
     def probe():
@@ -351,6 +353,7 @@ class Computer:
         computer.smbios_probe()
         computer.cpu_probe()
         computer.bluetooth_probe()
+        computer.sata_disk_probe()
         return computer
 
     def gpu_probe(self):
@@ -475,3 +478,26 @@ class Computer:
             self.bluetooth_chipset = "BRCM20702 Hub"
         elif "Bluetooth":
             self.bluetooth_chipset = "Generic"
+    
+    def sata_disk_probe(self):
+        # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'
+        # Determine whether SATA SSD is present and Apple-made
+        sp_sata_data = plistlib.loads(subprocess.run(f"system_profiler SPSerialATADataType -xml".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        for root in sp_sata_data:
+            for ahci_controller in root["_items"]:
+                # Each AHCI controller will have its own entry
+                # Skip entries that are AHCI PCIe controllers
+                # Apple's AHCI PCIe controller will report 'PCI' interconnect
+                if ahci_controller["spsata_physical_interconnect"] == "SATA":
+                    # Note: 'spsata_physical_interconnect' was not introduced till 10.9
+                    for port in ahci_controller["_items"]:
+                        try:
+                            if port["spsata_medium_type"] == "Solid State" and "apple" not in port["device_model"].lower():
+                                self.third_party_sata_ssd = True
+                                # Bail out of loop as we only need to know if there are any third-party SSDs present
+                                break
+                        except KeyError:
+                            # SATA Optical Disk Drives don't report 'spsata_medium_type'
+                            continue
+        print(f"SATA 3rd Party: {self.third_party_sata_ssd}")
+        

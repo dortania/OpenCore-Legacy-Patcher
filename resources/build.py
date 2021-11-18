@@ -704,9 +704,17 @@ class BuildOpenCore:
             pass
 
         # ThirdPartDrives Check
-        if self.model in model_array.SATAPatch and self.constants.allow_oc_everywhere is False:
-            print("- Adding SATA Hibernation Patch")
-            self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
+        for drive in ["SATA 2.5", "SATA 3.5", "mSATA"]:
+            if drive in smbios_data.smbios_dictionary[self.model]["Stock Storage"]:
+                if not self.constants.custom_model:
+                    if self.computer.third_party_sata_ssd is True:
+                        print("- Adding SATA Hibernation Patch")
+                        self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
+                        break
+                else:
+                    print("- Adding SATA Hibernation Patch")
+                    self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
+                    break
 
         # DEBUG Settings
         if self.constants.verbose_debug is True:
