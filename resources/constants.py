@@ -42,11 +42,12 @@ class Constants:
 
         ## Apple
         ## https://www.apple.com
-        self.marvel_version = "1.0.1"  #  MarvelYukonEthernet
-        self.nforce_version = "1.0.1"  #  nForceEthernet
-        self.piixata_version = "1.0.1"  # AppleIntelPIIXATA
-        self.fw_kext = "1.0.1"  #         IOFireWireFamily
-        self.apple_trackpad = "1.0.1"  #  AppleUSBTrackpad
+        self.marvel_version = "1.0.1"  #       MarvelYukonEthernet
+        self.nforce_version = "1.0.1"  #       nForceEthernet
+        self.piixata_version = "1.0.1"  #      AppleIntelPIIXATA
+        self.fw_kext = "1.0.1"  #              IOFireWireFamily
+        self.apple_trackpad = "1.0.1"  #       AppleUSBTrackpad
+        self.apple_isight_version = "1.0.0"  # AppleISight
 
         ## Apple - Dortania Modified
         self.bcm570_version = "1.0.2"  #             CatalinaBCM5701Ethernet
@@ -344,6 +345,10 @@ class Constants:
     @property
     def apple_trackpad_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleUSBTrackpad-v{self.apple_trackpad}.zip")
+    
+    @property
+    def apple_isight_path(self):
+        return self.payload_kexts_path / Path(f"Misc/LegacyUSBVideoSupport-v{self.apple_isight_version}.zip")
 
     @property
     def plist_folder_path(self):

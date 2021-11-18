@@ -29,6 +29,7 @@ smbios_dictionary = {
         "Screen Size": 13,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Legacy iSight": True,
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950
         ],
@@ -48,6 +49,7 @@ smbios_dictionary = {
         "Screen Size": 13,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Legacy iSight": True,
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950
         ],
@@ -67,6 +69,7 @@ smbios_dictionary = {
         "Screen Size": 13,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Legacy iSight": True,
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_X3100
         ],
@@ -86,6 +89,7 @@ smbios_dictionary = {
         "Screen Size": 13,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Legacy iSight": True,
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_X3100
         ],
@@ -140,6 +144,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
         "Ethernet Chipset": "Nvidia",
+        "Legacy iSight": True,
         "nForce Chipset": True,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
@@ -1686,6 +1691,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Legacy iSight": True,
         "Stock GPUs": [
             device_probe.AMD.Archs.R500,
         ],
@@ -1704,6 +1710,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Legacy iSight": True,
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950,
         ],
@@ -1722,6 +1729,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Legacy iSight": True,
         "Stock GPUs": [
             device_probe.AMD.Archs.R500,
         ],
@@ -1740,6 +1748,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Legacy iSight": True,
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950,
         ],
@@ -1758,6 +1767,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Legacy iSight": True,
         "Stock GPUs": [
             device_probe.AMD.Archs.R500,
             device_probe.NVIDIA.Archs.Curie

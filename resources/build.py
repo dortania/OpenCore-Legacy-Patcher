@@ -343,6 +343,13 @@ class BuildOpenCore:
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
             print("- Adding IOHIDFamily patch")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.iokit.IOHIDFamily")["Enabled"] = True
+        
+        # Legacy iSight patches
+        try:
+            if smbios_data.smbios_dictionary[self.model]["Legacy iSight"] is True:
+                self.enable_kext("LegacyUSBVideoSupport.kext", self.constants.apple_isight_version, self.constants.apple_isight_path)
+        except KeyError:
+            pass
 
         # SSDT patches
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.nehalem.value and not (self.model.startswith("MacPro") or self.model.startswith("Xserve")):

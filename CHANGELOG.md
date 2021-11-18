@@ -20,6 +20,10 @@
 - Fix Content Caching with spoofless usage
 - Allow disabling of ConnectDrivers 
   - Aid with Hibernation on MacBookPro9,1/MacBookPro10,1
+- Add legacy iSight patch
+  - Applicable for MacBook4,1/5,2
+  - Affected Device IDs: 0x8300, 0x8501, 0x8503
+  - Credit to parrotgeek1 for LegacyUSBVideoSupport
 
 ## 0.3.1
 - Increment Binaries:
