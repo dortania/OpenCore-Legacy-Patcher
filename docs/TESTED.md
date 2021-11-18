@@ -22,7 +22,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookAir3,1 | ^^ | ^^ | ^^ |
 | MacBookAir3,2 | <span style="color:#30BCD5"> YES </span> | houser42 | - Stock model <br/>- Patcher version unknown |
 | MacBookAir4,1 | No reports | N/A | N/A |
-| MacBookAir4,2 | ^^ | ^^ | ^^ |
+| MacBookAir4,2 | <span style="color:#30BCD5"> YES </span> | bdwilson1907 | - Stock Model <br/>- Patcher version 0.3.1 <br/>- Intermittent keyboard backlight|
 | MacBookAir5,1 | <span style="color:#30BCD5"> YES </span> | Ausdauersportler | - Stock Model<br/>- Patcher version 0.0.9 |
 | ^^ | ^^ | webg3 | Stock Model |
 | MacBookAir5,2 | ^^ | Bab-droid | - Stock Model<br/>- Patcher version 0.0.19 |
