@@ -488,16 +488,16 @@ class Computer:
                 # Each AHCI controller will have its own entry
                 # Skip entries that are AHCI PCIe controllers
                 # Apple's AHCI PCIe controller will report 'PCI' interconnect
-                if ahci_controller["spsata_physical_interconnect"] == "SATA":
-                    # Note: 'spsata_physical_interconnect' was not introduced till 10.9
-                    for port in ahci_controller["_items"]:
-                        try:
+                try:
+                    if ahci_controller["spsata_physical_interconnect"] == "SATA":
+                        for port in ahci_controller["_items"]:
                             if port["spsata_medium_type"] == "Solid State" and "apple" not in port["device_model"].lower():
                                 self.third_party_sata_ssd = True
                                 # Bail out of loop as we only need to know if there are any third-party SSDs present
                                 break
-                        except KeyError:
-                            # SATA Optical Disk Drives don't report 'spsata_medium_type'
-                            continue
-        print(f"SATA 3rd Party: {self.third_party_sata_ssd}")
+                except KeyError:
+                    # Notes: 
+                    # - SATA Optical Disk Drives don't report 'spsata_medium_type'
+                    # - 'spsata_physical_interconnect' was not introduced till 10.9
+                    continue
         
