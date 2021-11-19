@@ -1085,6 +1085,7 @@ to your USB drive.
 
 1. Download macOS Installer
 2. Use Existing Installer
+B. Exit
 """
         )
         change_menu = input("Select an option: ")
@@ -1092,6 +1093,8 @@ to your USB drive.
             self.download_macOS_installer()
         elif change_menu == "2":
             self.find_local_installer()
+        elif change_menu in ["B", "b"]:
+            return
         else:
             self.download_macOS()
 
