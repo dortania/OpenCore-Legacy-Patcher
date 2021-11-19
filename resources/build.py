@@ -167,11 +167,7 @@ class BuildOpenCore:
         
         if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
             # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
-            if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1"]:
-                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
-            elif self.constants.serial_settings == "None":
-                # MacBookPro10,1 without SMBIOS spoof needs RestrictEvents
-                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
+            self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path)
 
         # Ethernet Patch Sets
         if smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Broadcom":
