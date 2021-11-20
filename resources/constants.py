@@ -15,7 +15,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.3.2"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.2.0"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.2.1"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
 
@@ -514,6 +514,14 @@ class Constants:
     @property
     def payload_apple_libexec_path(self):
         return self.payload_apple_usr_path / Path("libexec")
+    
+    @property
+    def payload_apple_private_path(self):
+        return self.payload_apple_root_path / Path("private")
+    
+    @property
+    def payload_apple_etc_path(self):
+        return self.payload_apple_private_path / Path("etc")
 
     @property
     def payload_apple_frameworks_path(self):
@@ -627,6 +635,10 @@ class Constants:
     @property
     def legacy_wifi_libexec(self):
         return self.payload_apple_libexec_path / Path("Legacy-Wifi")
+    
+    @property
+    def legacy_wifi_etc(self):
+        return self.payload_apple_etc_path / Path("Legacy-Wifi")
 
     sbm_values = [
         "j137ap",  #  iMacPro1,1

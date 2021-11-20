@@ -11,7 +11,7 @@
   - OpenCore 0.7.5 - release
   - BrcmPatchRAM 2.6.1 - release
   - WhateverGreen 1.5.5 - release
-  - PatcherSupportPkg 0.2.0 - release
+  - PatcherSupportPkg 0.2.1 - release
   - FeatureUnlock 1.0.4 - rolling (4161389)
 - Fix AirPlay to Mac on macOS 12.1
 - Add macOS InstallAssistant downloader to TUI
@@ -24,6 +24,8 @@
   - Applicable for MacBook4,1/5,2
   - Affected Device IDs: 0x8300, 0x8501, 0x8503
   - Credit to parrotgeek1 for LegacyUSBVideoSupport
+- Fix Wifi Password prompt in Monterey on legacy wifi
+  - Applicable for Atheros, BCM94328, BCM94322
 
 ## 0.3.1
 - Increment Binaries:

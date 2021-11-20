@@ -49,8 +49,10 @@ class PatchSysVolume:
         if self.constants.detected_os > os_data.os_data.catalina:
             # Big Sur and newer use APFS snapshots
             self.mount_location = "/System/Volumes/Update/mnt1"
+            self.mount_location_data = ""
         else:
             self.mount_location = ""
+            self.mount_location_data = ""
         self.mount_coreservices = f"{self.mount_location}/System/Library/CoreServices"
         self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
         self.mount_frameworks = f"{self.mount_location}/System/Library/Frameworks"
@@ -58,6 +60,7 @@ class PatchSysVolume:
         self.mount_private_frameworks = f"{self.mount_location}/System/Library/PrivateFrameworks"
         self.mount_libexec = f"{self.mount_location}/usr/libexec"
         self.mount_extensions_mux = f"{self.mount_location}/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
+        self.mount_private_etc = f"{self.mount_location}/private/etc"
 
     def find_mount_root_vol(self, patch):
         self.root_mount_path = utilities.get_disk_path()
@@ -318,6 +321,12 @@ set million colour before rebooting"""
         utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_libexec}/", self.mount_libexec], stdout=subprocess.PIPE)
         utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_libexec}/airportd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+        # dylib patch to resolve password crash prompt
+        # Note requires ASentientBot's SkyLight to function
+        # Thus Metal machines do not benefit from this patch, however install anyways as harmless 
+        print("- Merging Wireless private/etc")
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_etc}/", self.mount_private_etc], stdout=subprocess.PIPE)
 
     def add_legacy_mux_patch(self):
         self.delete_old_binaries(sys_patch_data.DeleteDemux)
