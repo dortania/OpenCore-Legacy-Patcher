@@ -2700,6 +2700,7 @@ smbios_dictionary = {
         ],
         "Stock Storage": [
             "SATA 3.5",
+            "PATA",
         ],
     },
     "ADP3,2": {
