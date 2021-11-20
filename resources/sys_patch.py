@@ -60,7 +60,7 @@ class PatchSysVolume:
         self.mount_private_frameworks = f"{self.mount_location}/System/Library/PrivateFrameworks"
         self.mount_libexec = f"{self.mount_location}/usr/libexec"
         self.mount_extensions_mux = f"{self.mount_location}/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
-        self.mount_private_etc = f"{self.mount_location}/private/etc"
+        self.mount_private_etc = f"{self.mount_location_data}/private/etc"
 
     def find_mount_root_vol(self, patch):
         self.root_mount_path = utilities.get_disk_path()
