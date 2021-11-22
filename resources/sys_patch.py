@@ -481,6 +481,8 @@ set million colour before rebooting"""
         if self.constants.detected_os == os_data.os_data.monterey:
             print("- Installing Kepler Acceleration Kext patches for Monterey")
             self.add_new_binaries(sys_patch_data.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)
+            print("- Merging Kepler Frameworks")
+            utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel_kepler}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         else:
             print("- Installing Kepler Kext patches for generic OS")
             self.add_new_binaries(sys_patch_data.AddNvidiaKeplerAccel11, self.constants.legacy_nvidia_kepler_path)

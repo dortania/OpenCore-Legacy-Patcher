@@ -15,7 +15,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.3.2"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.2.4"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.2.5"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
 
@@ -529,7 +529,7 @@ class Constants:
 
     @property
     def payload_apple_frameworks_path_accel(self):
-        return self.payload_apple_frameworks_path / Path("Graphics-Acceleration")
+        return self.payload_apple_frameworks_path / Path("Graphics-Acceleration-Non-Metal")
 
     @property
     def payload_apple_frameworks_path_accel_ts2(self):
@@ -538,14 +538,14 @@ class Constants:
     @property
     def payload_apple_frameworks_path_accel_ivy(self):
         return self.payload_apple_frameworks_path / Path("Graphics-Acceleration-Ivy-Bridge")
+    
+    @property
+    def payload_apple_frameworks_path_accel_kepler(self):
+        return self.payload_apple_frameworks_path / Path("Graphics-Acceleration-Kepler")
 
     @property
     def payload_apple_lauchd_path(self):
         return self.payload_apple_root_path / Path("LaunchDaemons")
-
-    @property
-    def payload_apple_lauchd_path_accel(self):
-        return self.payload_apple_lauchd_path / Path("Graphics-Acceleration")
 
     @property
     def payload_apple_private_frameworks_path(self):
@@ -553,7 +553,7 @@ class Constants:
 
     @property
     def payload_apple_private_frameworks_path_accel(self):
-        return self.payload_apple_private_frameworks_path / Path("Graphics-Acceleration")
+        return self.payload_apple_private_frameworks_path / Path("Graphics-Acceleration-Non-Metal")
 
     @property
     def payload_apple_private_frameworks_path_accel_ts2(self):

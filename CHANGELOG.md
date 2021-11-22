@@ -11,7 +11,7 @@
   - OpenCore 0.7.5 - release
   - BrcmPatchRAM 2.6.1 - release
   - WhateverGreen 1.5.5 - release
-  - PatcherSupportPkg 0.2.4 - release
+  - PatcherSupportPkg 0.2.5 - release
   - FeatureUnlock 1.0.4 - rolling (4161389)
 - Fix AirPlay to Mac on macOS 12.1
 - Add macOS InstallAssistant downloader to TUI
@@ -26,6 +26,7 @@
   - Credit to parrotgeek1 for LegacyUSBVideoSupport
 - Fix Wifi Password prompt in Monterey on legacy wifi
   - Applicable for Atheros, BCM94328, BCM94322
+- Fix OpenCL Acceleration on Ivy Bridge and Kepler
 
 ## 0.3.1
 - Increment Binaries:
