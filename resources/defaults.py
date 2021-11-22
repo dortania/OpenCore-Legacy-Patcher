@@ -14,11 +14,13 @@ class generate_defaults:
         if host_is_target:
             if utilities.check_metal_support(device_probe, settings.computer) is False:
                 settings.disable_cs_lv = True
-            if settings.computer.dgpu and settings.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
-                # 12.0 (B7+): Kepler are now unsupported
-                settings.sip_status = False
-                settings.amfi_status = True
-                settings.allow_fv_root = True  #  Allow FileVault on broken seal
+            if settings.computer.gpus: 
+                for gpu in settings.computer.gpus:
+                    if gpu.arch == device_probe.NVIDIA.Archs.Kepler:
+                        # 12.0 (B7+): Kepler are now unsupported
+                        settings.sip_status = False
+                        settings.amfi_status = True
+                        settings.allow_fv_root = True  #  Allow FileVault on broken seal
             if (
                 isinstance(settings.computer.wifi, device_probe.Broadcom)
                 and settings.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
@@ -27,16 +29,18 @@ class generate_defaults:
                 settings.sip_status = False
                 settings.allow_fv_root = True  #  Allow FileVault on broken seal
 
-            if settings.computer.dgpu and settings.computer.dgpu.arch in [
-                device_probe.AMD.Archs.Legacy_GCN_7000,
-                device_probe.AMD.Archs.Legacy_GCN_8000,
-                device_probe.AMD.Archs.Legacy_GCN_9000,
-                device_probe.AMD.Archs.Polaris,
-                device_probe.AMD.Archs.Vega,
-                device_probe.AMD.Archs.Navi,
-            ]:
-                # Allow H.265 on AMD
-                settings.serial_settings = "Minimal"
+            if settings.computer.gpus: 
+                for gpu in settings.computer.gpus:
+                    if gpu.arch in [
+                        device_probe.AMD.Archs.Legacy_GCN_7000,
+                        device_probe.AMD.Archs.Legacy_GCN_8000,
+                        device_probe.AMD.Archs.Legacy_GCN_9000,
+                        device_probe.AMD.Archs.Polaris,
+                        device_probe.AMD.Archs.Vega,
+                        device_probe.AMD.Archs.Navi,
+                    ]:
+                        # Allow H.265 on AMD
+                        settings.serial_settings = "Minimal"
         elif model in ["MacPro4,1", "MacPro5,1"]:
             # Allow H.265 on AMD
             # Assume 2009+ machines have Polaris on pre-builts (internal testing)

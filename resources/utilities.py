@@ -166,16 +166,21 @@ def check_monterey_wifi():
 
 
 def check_metal_support(device_probe, computer):
-    dgpu = computer.dgpu
-    igpu = computer.igpu
-    if (
-        (dgpu and dgpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi, device_probe.AMD.Archs.TeraScale_1, device_probe.AMD.Archs.TeraScale_2])
-        or (igpu and igpu.arch in [device_probe.Intel.Archs.Iron_Lake, device_probe.Intel.Archs.Sandy_Bridge])
-        or isinstance(igpu, device_probe.NVIDIA)
-    ):
-        return False
-    else:
-        return True
+    if computer.gpus:
+        for gpu in computer.gpus:
+            if (
+                (gpu.arch in [
+                    device_probe.NVIDIA.Archs.Tesla, 
+                    device_probe.NVIDIA.Archs.Fermi, 
+                    device_probe.AMD.Archs.TeraScale_1, 
+                    device_probe.AMD.Archs.TeraScale_2, 
+                    device_probe.Intel.Archs.Iron_Lake, 
+                    device_probe.Intel.Archs.Sandy_Bridge
+                    ]
+                )
+            ):
+                return False
+    return True
 
 
 def check_filevault_skip():
