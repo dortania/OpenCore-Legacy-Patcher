@@ -21,6 +21,7 @@ class generate_defaults:
                         settings.sip_status = False
                         settings.amfi_status = True
                         settings.allow_fv_root = True  #  Allow FileVault on broken seal
+                        break
             if (
                 isinstance(settings.computer.wifi, device_probe.Broadcom)
                 and settings.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
@@ -41,6 +42,7 @@ class generate_defaults:
                     ]:
                         # Allow H.265 on AMD
                         settings.serial_settings = "Minimal"
+                        break
         elif model in ["MacPro4,1", "MacPro5,1"]:
             # Allow H.265 on AMD
             # Assume 2009+ machines have Polaris on pre-builts (internal testing)
