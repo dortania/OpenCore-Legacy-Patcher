@@ -27,6 +27,7 @@
 - Fix Wifi Password prompt in Monterey on legacy wifi
   - Applicable for Atheros, BCM94328, BCM94322
 - Fix OpenCL Acceleration on Ivy Bridge and Kepler
+- Add Apple RAID Card support
 
 ## 0.3.1
 - Increment Binaries:

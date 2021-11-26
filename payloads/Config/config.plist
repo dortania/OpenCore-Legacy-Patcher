@@ -1119,7 +1119,7 @@
 				<key>BundlePath</key>
 				<string>LegacyUSBVideoSupport.kext</string>
 				<key>Comment</key>
-				<string>Legayc iSight support</string>
+				<string>Legacy iSight support</string>
 				<key>Enabled</key>
 				<false/>
 				<key>ExecutablePath</key>
@@ -1128,6 +1128,24 @@
 				<string></string>
 				<key>MinKernel</key>
 				<string>18.0.0</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
+				<string>AppleRAIDCard.kext</string>
+				<key>Comment</key>
+				<string>RAID Card Support</string>
+				<key>Enabled</key>
+				<false/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AppleRAIDCard</string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>19.0.0</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>

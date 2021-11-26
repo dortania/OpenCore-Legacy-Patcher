@@ -718,6 +718,19 @@ class BuildOpenCore:
                     print("- Adding SATA Hibernation Patch")
                     self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
                     break
+        
+        # Apple RAID Card check
+        if not self.constants.custom_model:
+            if self.computer.storage:
+                for storage_controller in self.computer.storage:
+                    if storage_controller.vendor_id == 0x106b and storage_controller.device_id == 0x008A:
+                        # AppleRAIDCard.kext only supports pci106b,8a
+                        self.enable_kext("AppleRAIDCard.kext", self.constants.apple_raid_version, self.constants.apple_raid_path)
+                        break
+        elif self.model.startswith("XServe"):
+            # For XServes, assume RAID is present
+            # Namely due to Xserve2,1 being limited to 10.7, thus no hardware detection
+            self.enable_kext("AppleRAIDCard.kext", self.constants.apple_raid_version, self.constants.apple_raid_path)
 
         # DEBUG Settings
         if self.constants.verbose_debug is True:

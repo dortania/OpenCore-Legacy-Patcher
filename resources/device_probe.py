@@ -154,6 +154,10 @@ class NVMeController(PCIDevice):
 class SATAController(PCIDevice):
     CLASS_CODE: ClassVar[int] = 0x010601
 
+@dataclass
+class SASController(PCIDevice):
+    CLASS_CODE: ClassVar[int] = 0x010400
+
 
 @dataclass
 class NVIDIA(GPU):
@@ -417,6 +421,14 @@ class Computer:
                 None,
             )[1]
         )
+        sas_controllers = ioreg.ioiterator_to_list(
+            ioreg.IOServiceGetMatchingServices(
+                ioreg.kIOMasterPortDefault,
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(SASController.CLASS_CODE)[2:].zfill(8)))}]},
+                None,
+            )[1]
+        )
+
         nvme_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault, {"IOProviderClass": "IONVMeController", "IOParentMatch": {"IOProviderClass": "IOPCIDevice"}, "IOPropertyMatch": {"IOClass": "IONVMeController"}}, None
@@ -425,6 +437,11 @@ class Computer:
         for device in sata_controllers:
             self.storage.append(SATAController.from_ioregistry(device))
             ioreg.IOObjectRelease(device)
+        
+        for device in sas_controllers:
+            self.storage.append(SASController.from_ioregistry(device))
+            ioreg.IOObjectRelease(device)
+
         for device in nvme_controllers:
             parent = ioreg.IORegistryEntryGetParentEntry(device, "IOService".encode(), None)[1]
             ioreg.IOObjectRelease(device)
