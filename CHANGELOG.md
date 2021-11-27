@@ -11,7 +11,7 @@
   - OpenCore 0.7.5 - release
   - BrcmPatchRAM 2.6.1 - release
   - WhateverGreen 1.5.5 - release
-  - PatcherSupportPkg 0.2.6 - release
+  - PatcherSupportPkg 0.2.7 - release
   - FeatureUnlock 1.0.4 - rolling (4161389)
 - Fix AirPlay to Mac on macOS 12.1
 - Add macOS InstallAssistant downloader to TUI
