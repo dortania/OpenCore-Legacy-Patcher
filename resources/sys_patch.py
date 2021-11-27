@@ -13,7 +13,7 @@ from pathlib import Path
 import sys
 
 from resources import constants, device_probe, utilities, generate_smbios
-from data import sip_data, sys_patch_data, model_array, os_data
+from data import sip_data, sys_patch_data, model_array, os_data, smbios_data, cpu_data
 
 
 class PatchSysVolume:
@@ -38,6 +38,7 @@ class PatchSysVolume:
         self.legacy_audio = False
         self.legacy_wifi = False
         self.legacy_gmux = False
+        self.legacy_keyboard_backlight = False
         self.added_legacy_kexts = False
         self.amfi_must_disable = False
         self.check_board_id = False
@@ -334,6 +335,14 @@ set million colour before rebooting"""
         utilities.process_status(
             utilities.elevated(["cp", "-R", f"{self.constants.legacy_mux_path}/AppleMuxControl.kext", self.mount_extensions_mux], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         )
+    
+    def add_legacy_keyboard_backlight_patch(self):
+        print("- Adding Backlight-Fixup.plist")
+        utilities.process_status(
+            utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_keyboard_backlight_lauchd}/", self.mount_lauchd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        )
+        utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_lauchd}/Backlight-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/Backlight-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def gpu_accel_legacy(self):
         if self.constants.detected_os == os_data.os_data.mojave:
@@ -616,6 +625,10 @@ set million colour before rebooting"""
         if self.legacy_gmux is True:
             print("- Installing Legacy Mux Brightness support")
             self.add_legacy_mux_patch()
+        
+        if self.legacy_keyboard_backlight is True:
+            print("- Installing Legacy Keyboard Backlight support")
+            self.add_legacy_keyboard_backlight_patch()
 
         if self.validate is False:
             self.rebuild_snapshot()
@@ -695,6 +708,7 @@ set million colour before rebooting"""
                     if self.constants.detected_os > non_metal_os:
                         self.nvidia_legacy = True
                         self.amfi_must_disable = True
+                        self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                 elif gpu.arch == device_probe.NVIDIA.Archs.Kepler:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         # Kepler drivers were dropped with Beta 7
@@ -752,6 +766,17 @@ set million colour before rebooting"""
             dgpu = self.check_dgpu_status()
             if igpu and not dgpu:
                 return True
+        return False
+    
+    def check_legacy_keyboard_backlight(self):
+        # With Big Sur and newer, Skylight patch set unfortunately breaks native keyboard backlight
+        # Penryn Macs are able to re-enable the keyboard backlight by simply running '/usr/libexec/TouchBarServer'
+        # For Arrendale and newer, this has no effect.
+        if self.model.startswith("MacBookPro") or self.model.startswith("MacBookAir"):
+            # non-Metal MacBooks never had keyboard backlight
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
+                if self.constants.detected_os > os_data.os_data.catalina:
+                    return True
         return False
 
     def detect_patch_set(self):
@@ -811,6 +836,8 @@ set million colour before rebooting"""
             print("- Add legacy WiFi Control")
         if self.legacy_gmux is True:
             print("- Add Legacy Mux Brightness Control")
+        if self.legacy_keyboard_backlight is True:
+            print("- Add Legacy Keyboard Backlight Control")
 
         self.no_patch = not any(
             [

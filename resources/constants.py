@@ -15,7 +15,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.3.2"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.2.5"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.2.6"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
 
@@ -644,6 +644,10 @@ class Constants:
     @property
     def legacy_wifi_etc(self):
         return self.payload_apple_etc_path / Path("Legacy-Wifi")
+    
+    @property
+    def legacy_keyboard_backlight_lauchd(self):
+        return self.payload_apple_lauchd_path / Path("Keyboard-Backlight")
 
     sbm_values = [
         "j137ap",  #  iMacPro1,1
