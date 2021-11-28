@@ -708,7 +708,7 @@ set million colour before rebooting"""
                     if self.constants.detected_os > non_metal_os:
                         self.nvidia_legacy = True
                         self.amfi_must_disable = True
-                        self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
+                        # self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                 elif gpu.arch == device_probe.NVIDIA.Archs.Kepler:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         # Kepler drivers were dropped with Beta 7

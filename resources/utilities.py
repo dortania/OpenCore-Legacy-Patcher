@@ -11,6 +11,7 @@ import os
 import binascii
 import argparse
 from ctypes import CDLL, c_uint, byref
+import sys, time
 
 try:
     import requests
@@ -304,41 +305,78 @@ def get_rom(variable: str, *, decode: bool = False):
     return value
 
 
-def download_file(link, location):
-    if Path(location).exists():
-        Path(location).unlink()
+def verify_network_connection(url):
     try:
-        # Handle cases where Content-Length has garbage or is missing
-        size_string = f" of {int(requests.head(link).headers['Content-Length']) / 1024 / 1024}MB"
-    except KeyError:
-        size_string = ""
-    response = requests.get(link, stream=True)
-    short_link = os.path.basename(link)
-    # SU Catalog's link is quite long, strip to make it bearable
-    if "sucatalog.gz" in short_link:
-        short_link = "sucatalog.gz"
-    header = f"# Downloading: {short_link} #"
-    box_length = len(header)
-    box_string = "#" * box_length
-    with location.open("wb") as file:
-        count = 0
-        for chunk in response.iter_content(1024 * 1024 * 4):
-            file.write(chunk)
-            count += len(chunk)
-            cls()
-            print(box_string)
-            print(header)
-            print(box_string)
-            print("")
-            print(f"{count / 1024 / 1024}MB Downloaded{size_string}")
-    checksum = hashlib.sha256()
-    with location.open("rb") as file:
-        chunk = file.read(1024 * 1024 * 16)
-        while chunk:
-            checksum.update(chunk)
-            chunk = file.read(1024 * 1024 * 16)
-    return checksum
+        response = requests.head(url, timeout=5)
+        return True
+    except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError, requests.exceptions.HTTPError):
+        return False
 
+def download_file(link, location):
+    if verify_network_connection(link):
+        if Path(location).exists():
+            Path(location).unlink()
+        try:
+            # Handle cases where Content-Length has garbage or is missing
+            total_file_size = int(requests.head(link).headers['Content-Length'])
+        except KeyError:
+            total_file_size = 0
+        if total_file_size != 0:
+            file_size_rounded = round(total_file_size / 1024 / 1024, 2)
+            file_size_string = f" of {file_size_rounded}MB"
+        else:
+            file_size_string = ""
+        response = requests.get(link, stream=True)
+        short_link = os.path.basename(link)
+        # SU Catalog's link is quite long, strip to make it bearable
+        if "sucatalog.gz" in short_link:
+            short_link = "sucatalog.gz"
+        header = f"# Downloading: {short_link} #"
+        box_length = len(header)
+        box_string = "#" * box_length
+        dl = 0
+        with location.open("wb") as file:
+            count = 0
+            start = time.perf_counter()
+            for chunk in response.iter_content(1024 * 1024 * 4):
+                dl += len(chunk)
+                file.write(chunk)
+                count += len(chunk)
+                cls()
+                print(box_string)
+                print(header)
+                print(box_string)
+                print("")
+                try:
+                    total_file_downloaded_percent = round(float(dl / total_file_size * 100), 2)
+                    total_downloaded_string = f" ({total_file_downloaded_percent}%)"
+                except ZeroDivisionError:
+                    total_file_downloaded_percent = 0
+                    total_downloaded_string = ""
+                print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}")
+                print(f"Average Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
+        checksum = hashlib.sha256()
+        with location.open("rb") as file:
+            chunk = file.read(1024 * 1024 * 16)
+            while chunk:
+                checksum.update(chunk)
+                chunk = file.read(1024 * 1024 * 16)
+        return checksum
+    else:
+        cls()
+        header = "# Could not establish Network Connection with provided link! #"
+        box_length = len(header)
+        box_string = "#" * box_length
+        print(box_string)
+        print(header)
+        print(box_string)
+        if constants.Constants().url_patcher_support_pkg in link:
+            # If we're downloading PatcherSupportPkg, present offline build
+            print("\nPlease grab the offline variant of OpenCore Legacy Patcher from Github:")
+            print(f"https://github.com/dortania/OpenCore-Legacy-Patcher/releases/download/{constants.Constants().patcher_version}/OpenCore-Patcher-TUI-Offline.app.zip")
+        else:
+            print(link)
+        sys.exit()
 
 def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
     # When runnign through our GUI, we run as root, however we do not get uid 0

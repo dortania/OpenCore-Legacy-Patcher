@@ -21,6 +21,7 @@ build_types = [
 
 bad_drivers = [
     "AudioDxe.efi",
+    "BiosVideo.efi",
     "CrScreenshotDxe.efi",
     "HiiDatabase.efi",
     "NvmExpressDxe.efi",
