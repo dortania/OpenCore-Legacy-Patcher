@@ -64,9 +64,10 @@ Patcher assumes based on stock configuration (ie. iMac10,x-12,x)
 
 Valid Options:
 
-1. None(stock GPU)
-2. Nvidia GPU
-3. AMD GPU
+1. None (stock GPU)
+2. Nvidia Kepler
+3. AMD Polaris
+4. AMD Legacy GCN 
 Q. Return to previous menu
 
 Note: Patcher will detect whether hardware has been upgraded regardless, this
@@ -77,12 +78,19 @@ option is for those patching on a different machine or OCLP cannot detect.
         if change_menu == "1":
             self.constants.metal_build = False
             self.constants.imac_vendor = "None"
+            self.constants.imac_model = ""
         elif change_menu == "2":
             self.constants.metal_build = True
             self.constants.imac_vendor = "Nvidia"
+            self.constants.imac_model = "Kepler"
         elif change_menu == "3":
             self.constants.metal_build = True
             self.constants.imac_vendor = "AMD"
+            self.constants.imac_model = "Polaris"
+        elif change_menu == "4":
+            self.constants.metal_build = True
+            self.constants.imac_vendor = "AMD"
+            self.constants.imac_model = "Legacy GCN"
         elif change_menu in {"q", "Q", "Quit", "quit"}:
             print("Returning to previous menu")
         else:

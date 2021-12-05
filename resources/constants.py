@@ -146,6 +146,7 @@ class Constants:
         ## Graphics Settings
         self.metal_build = False  #    Set MXM Build support
         self.imac_vendor = "None"  #   Set MXM GPU vendor
+        self.imac_model = "" #         Set MXM GPU model
         self.drm_support = False  #    Set iMac14,x DRM support
         self.allow_ivy_igpu = False  # Set iMac13,x iGPU support
         self.moj_cat_accel = False  #  Set Mojave/Catalina Acceleration support

@@ -560,8 +560,25 @@ class BuildOpenCore:
                     self.enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
             if self.computer and self.computer.dgpu:
                 if self.computer.dgpu.arch == device_probe.AMD.Archs.Legacy_GCN_7000:
-                    # Add Power Gate Patches
+                    print("- Adding Legacy GCN Power Gate Patches")
                     self.config["DeviceProperties"]["Add"][backlight_path].update({
+                        "rebuild-device-tree": 1,
+                        "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
+                        "CAIL,CAIL_DisableGfxCGPowerGating": 1,
+                        "CAIL,CAIL_DisableUVDPowerGating": 1,
+                        "CAIL,CAIL_DisableVCEPowerGating": 1,
+                    })
+            elif self.constants.imac_model == "Legacy GCN":
+                print("- Adding Legacy GCN Power Gate Patches")
+                self.config["DeviceProperties"]["Add"][backlight_path].update({
+                    "rebuild-device-tree": 1,
+                    "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
+                    "CAIL,CAIL_DisableGfxCGPowerGating": 1,
+                    "CAIL,CAIL_DisableUVDPowerGating": 1,
+                    "CAIL,CAIL_DisableVCEPowerGating": 1,
+                })
+                if self.model == "iMac11,2":
+                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"].update({
                         "rebuild-device-tree": 1,
                         "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
                         "CAIL,CAIL_DisableGfxCGPowerGating": 1,

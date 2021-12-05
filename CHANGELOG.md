@@ -28,6 +28,7 @@
   - Applicable for Atheros, BCM94328, BCM94322
 - Fix OpenCL Acceleration on Ivy Bridge and Kepler
 - Add Apple RAID Card support
+- Add Legacy GCN build support off model for MXM iMacs
 
 ## 0.3.1
 - Increment Binaries:
