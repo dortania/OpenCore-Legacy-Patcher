@@ -567,6 +567,7 @@ class BuildOpenCore:
                         "CAIL,CAIL_DisableGfxCGPowerGating": 1,
                         "CAIL,CAIL_DisableUVDPowerGating": 1,
                         "CAIL,CAIL_DisableVCEPowerGating": 1,
+                        "agdpmod": "pikera",
                     })
             elif self.constants.imac_model == "Legacy GCN":
                 print("- Adding Legacy GCN Power Gate Patches")
@@ -576,6 +577,7 @@ class BuildOpenCore:
                     "CAIL,CAIL_DisableGfxCGPowerGating": 1,
                     "CAIL,CAIL_DisableUVDPowerGating": 1,
                     "CAIL,CAIL_DisableVCEPowerGating": 1,
+                    "agdpmod": "pikera",
                 })
                 if self.model == "iMac11,2":
                     self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"].update({
@@ -584,6 +586,7 @@ class BuildOpenCore:
                         "CAIL,CAIL_DisableGfxCGPowerGating": 1,
                         "CAIL,CAIL_DisableUVDPowerGating": 1,
                         "CAIL,CAIL_DisableVCEPowerGating": 1,
+                        "agdpmod": "pikera",
                     })
 
         # Check GPU Vendor
