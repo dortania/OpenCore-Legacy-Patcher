@@ -12,7 +12,7 @@
   - BrcmPatchRAM 2.6.1 - release
   - WhateverGreen 1.5.5 - release
   - PatcherSupportPkg 0.2.7 - release
-  - FeatureUnlock 1.0.4 - rolling (4161389)
+  - FeatureUnlock 1.0.5 - rolling (9cf1e81)
 - Fix AirPlay to Mac on macOS 12.1
 - Add macOS InstallAssistant downloader to TUI
 - Resolve rare memory corruption due to FeatureUnlock
