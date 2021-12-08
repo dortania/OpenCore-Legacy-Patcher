@@ -29,6 +29,7 @@
 - Fix OpenCL Acceleration on Ivy Bridge and Kepler
 - Add Apple RAID Card support
 - Add Legacy GCN build support off model for MXM iMacs
+- Resolve 5k Display Output support on 5k iMacs and iMac Pro
 
 ## 0.3.1
 - Increment Binaries:
