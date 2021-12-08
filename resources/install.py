@@ -191,19 +191,6 @@ Please build OpenCore first!"""
                 print("- Adding Internal Drive icon")
                 shutil.copy(self.constants.icon_path_internal, mount_path)
             
-            if self.constants.force_diagnostics is True:
-                # Chainload Diagnostics
-                # Required for 5k iMacs
-                print("- Adding 5K Display Patch")
-                Path(mount_path / Path("System/Library/CoreServices/.diagnostics/Drivers/HardwareDrivers")).mkdir(parents=True, exist_ok=True)
-                if self.constants.boot_efi is True:
-                    path_boot_efi = mount_path / Path("EFI/BOOT/BOOTx64.efi")
-                else:
-                    path_boot_efi = mount_path / Path("System/Library/CoreServices/boot.efi")
-                shutil.move(path_boot_efi, mount_path / Path("System/Library/CoreServices/.diagnostics/Drivers/HardwareDrivers/Product.efi"))
-                shutil.copy(self.constants.diags_launcher_path, mount_path / Path("System/Library/CoreServices"))
-                shutil.move(mount_path / Path("System/Library/CoreServices/diags.efi"), mount_path / Path("System/Library/CoreServices/boot.efi"))
-                
             print("- Cleaning install location")
             if not self.constants.recovery_status:
                 print("- Unmounting EFI partition")

@@ -53,6 +53,16 @@ class BuildOpenCore:
         else:
             print("- Adding Internal Drive icon")
             shutil.copy(self.constants.icon_path_internal, self.constants.opencore_release_folder)
+    
+    def chainload_diags(self):
+        Path(self.constants.opencore_release_folder / Path("System/Library/CoreServices/.diagnostics/Drivers/HardwareDrivers")).mkdir(parents=True, exist_ok=True)
+        if self.constants.boot_efi is True:
+            path_oc_loader = self.constants.opencore_release_folder / Path("EFI/BOOT/BOOTx64.efi")
+        else:
+            path_oc_loader = self.constants.opencore_release_folder / Path("System/Library/CoreServices/boot.efi")
+        shutil.move(path_oc_loader, self.constants.opencore_release_folder / Path("System/Library/CoreServices/.diagnostics/Drivers/HardwareDrivers/Product.efi"))
+        shutil.copy(self.constants.diags_launcher_path, self.constants.opencore_release_folder)
+        shutil.move(self.constants.opencore_release_folder / Path("diags.efi"), self.constants.opencore_release_folder / Path("boot.efi"))
 
     def build_efi(self):
         utilities.cls()
@@ -735,14 +745,18 @@ class BuildOpenCore:
 
         # To work around this issue, we trick the firmware into loading OpenCore through Apple's Hardware Diagnostic Tests
         # Specifically hiding as Product.efi under '/System/Library/CoreServices/.diagnostics/Drivers/HardwareDrivers/Product.efi'
+        # The reason chainloading via ./Drivers/HardwareDrivers is possible is thanks to it being loaded via an encrypted file buffer
+        # whereas other drivers like ./qa_logger.efi is invoked via Device Path.
 
         try:
             smbios_data.smbios_dictionary[self.model]["5K Display"]
             print("- Adding 5K Display Patch")
-            # Set LauncherPath to '/System/Library/CoreServices/boot.efi'
-            self.config["Misc"]["Boot"]["LauncherPath"] = "\\System\\Library\\CoreServices\\boot.efi"
-            # Set Diagnostics Flag
-            self.constants.force_diagnostics = True
+            # Set LauncherPath to '/boot.efi'
+            # This is to ensure that only the Mac's firmware presents the boot option, but not OpenCore
+            # https://github.com/acidanthera/OpenCorePkg/blob/0.7.6/Library/OcAppleBootPolicyLib/OcAppleBootPolicyLib.c#L50-L73
+            self.config["Misc"]["Boot"]["LauncherPath"] = "\\boot.efi"
+            # Setup diags.efi chainloading
+            self.chainload_diags()
         except KeyError:
             pass
 
