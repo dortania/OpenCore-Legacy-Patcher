@@ -1787,6 +1787,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.NVIDIA.Archs.Tesla,
@@ -1806,6 +1807,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.NVIDIA.Archs.Tesla,
@@ -1825,6 +1827,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.NVIDIA.Archs.Tesla,
@@ -1844,6 +1847,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
         "Ethernet Chipset": "Marvell",
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.NVIDIA.Archs.Tesla,
@@ -1932,6 +1936,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
         ],
@@ -1949,6 +1954,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
         ],
@@ -1966,6 +1972,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
         ],
@@ -1982,6 +1989,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
         ],
@@ -1998,6 +2006,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.AMD.Archs.TeraScale_2,
@@ -2015,6 +2024,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1,
             device_probe.AMD.Archs.TeraScale_2,
@@ -2032,6 +2042,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2,
@@ -2049,6 +2060,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2,
@@ -2068,6 +2080,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Broadcom",
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.Intel.Archs.Sandy_Bridge,
             device_probe.AMD.Archs.TeraScale_2,
@@ -2535,6 +2548,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
+        "Socketed GPUs": "PCIe",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Curie
         ],
@@ -2553,6 +2567,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
+        "Socketed GPUs": "PCIe",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Curie
         ],
@@ -2571,6 +2586,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2045,
         "UGA Graphics": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
+        "Socketed GPUs": "PCIe",
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_1
         ],
@@ -2588,6 +2604,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Intel 82574L",
+        "Socketed GPUs": "PCIe",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
@@ -2604,6 +2621,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4331,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Intel 82574L",
+        "Socketed GPUs": "PCIe",
         "Stock GPUs": [
             device_probe.AMD.Archs.TeraScale_2
         ],
@@ -2636,6 +2654,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
         "Bluetooth Model": bluetooth_data.bluetooth_data.UART,
         "Ethernet Chipset": "Aquantia",
+        "Socketed GPUs": "PCIe",
         "Stock GPUs": [
             device_probe.AMD.Archs.Polaris,
             device_probe.AMD.Archs.Vega,
@@ -2656,6 +2675,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "UGA Graphics": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
+        "Socketed GPUs": "PCIe",
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
         ],
@@ -2674,6 +2694,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "UGA Graphics": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
+        "Socketed GPUs": "PCIe",
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
         ],
@@ -2691,6 +2712,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "Ethernet Chipset": "Intel 82574L",
+        "Socketed GPUs": "PCIe",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
@@ -2706,6 +2728,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.leopard,
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
+        "Socketed GPUs": "PCIe",
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950
         ],

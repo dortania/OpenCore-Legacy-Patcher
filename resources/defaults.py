@@ -41,7 +41,11 @@ class generate_defaults:
                         device_probe.AMD.Archs.Navi,
                     ]:
                         # Allow H.265 on AMD
-                        settings.serial_settings = "Minimal"
+                        try:
+                            smbios_data.smbios_dictionary[model]["Socketed GPUs"]
+                            settings.serial_settings = "Minimal"
+                        except KeyError:
+                            pass
                         break
         elif model in ["MacPro4,1", "MacPro5,1"]:
             # Allow H.265 on AMD
