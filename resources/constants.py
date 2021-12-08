@@ -125,12 +125,13 @@ class Constants:
         self.latebloom_debug = 0  #      Debug Setting
 
         ## Security Settings
-        self.apecid_support = False  # ApECID
-        self.amfi_status = True  #     Apple Mobile File Integrity
-        self.sip_status = True  #      System Integrity Protection
-        self.secure_status = False  #  Secure Boot Model
-        self.vault = False  #          EFI Vault
-        self.disable_cs_lv = False  #  Disable Library validation
+        self.apecid_support = False  #    ApECID
+        self.amfi_status = True  #        Apple Mobile File Integrity
+        self.sip_status = True  #         System Integrity Protection
+        self.secure_status = False  #     Secure Boot Model
+        self.vault = False  #             EFI Vault
+        self.disable_cs_lv = False  #     Disable Library validation
+        self.force_diagnostics = False  # Force diags.efi chainloading for 5k iMacs and iMac Pro
 
         ## OS Settings
         self.os_support = 12.0
@@ -214,6 +215,10 @@ class Constants:
     @property
     def xhci_driver_path(self):
         return self.payload_path / Path("Drivers/XhciDxe.efi")
+
+    @property
+    def diags_launcher_path(self):
+        return self.payload_path / Path("Drivers/diags.efi")
 
     # Kexts
     @property

@@ -726,6 +726,26 @@ class BuildOpenCore:
         except KeyError:
             pass
 
+        # Check if model has 5K display
+        # Apple has 2 modes for display handling on 5K iMacs and iMac Pro
+        # If at during any point in the boot chain an "unsupported" entry is booted, the firmware will tell the
+        # Display Controller to enter a 4K compatible mode that only uses a single DisplayPort 1.2 stream internally.
+        # This is to prevent situations where the system would boot into an enviroment that cannot handle the custom
+        # dual DisplayPort 1.2 streams the 5k Display uses
+
+        # To work around this issue, we trick the firmware into loading OpenCore through Apple's Hardware Diagnostic Tests
+        # Specifically hiding as diags_gui.efi under '/System/Library/CoreServices/.diagnostics/GUI/diags_gui.efi'
+
+        try:
+            smbios_data.smbios_dictionary[self.model]["5K Display"]
+            print("- Adding 5K Display Patch")
+            # Set LauncherPath to '/System/Library/CoreServices/boot.efi'
+            self.config["Misc"]["Boot"]["LauncherPath"] = "\\System\\Library\\CoreServices\\boot.efi"
+            # Set Diagnostics Flag
+            self.constants.force_diagnostics = True
+        except KeyError:
+            pass
+
         # ThirdPartDrives Check
         for drive in ["SATA 2.5", "SATA 3.5", "mSATA"]:
             if drive in smbios_data.smbios_dictionary[self.model]["Stock Storage"]:
