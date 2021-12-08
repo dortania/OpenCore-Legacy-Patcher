@@ -5,6 +5,7 @@
 import plistlib
 import subprocess
 import shutil
+import os
 from pathlib import Path
 from resources import utilities, constants
 from data import os_data
@@ -168,9 +169,13 @@ Please build OpenCore first!"""
             if (mount_path / Path("System")).exists():
                 print("- Removing preexisting System folder")
                 shutil.rmtree(mount_path / Path("System"), onerror=rmtree_handler)
+            if (mount_path / Path("boot.efi")).exists():
+                print("- Removing preexisting boot.efi")
+                os.remove(mount_path / Path("boot.efi"))
             print("- Copying OpenCore onto EFI partition")
             shutil.copytree(self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC"))
             shutil.copytree(self.constants.opencore_release_folder / Path("System"), mount_path / Path("System"))
+            shutil.copy(self.constants.opencore_release_folder / Path("boot.efi"), mount_path / Path("boot.efi"))
             if self.constants.boot_efi is True:
                 print("- Converting Bootstrap to BOOTx64.efi")
                 if (mount_path / Path("EFI/BOOT")).exists():
