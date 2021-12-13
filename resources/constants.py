@@ -21,13 +21,13 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_commit = "bd3f7a1 - 10-04-2021"
-        self.opencore_version = "0.7.5"
+        self.opencore_commit = "7266ec9 - 12-06-2021"
+        self.opencore_version = "0.7.6"
 
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
-        self.lilu_version = "1.5.6"  #               Lilu
+        self.lilu_version = "1.5.8"  #               Lilu
         self.whatevergreen_version = "1.5.5"  #      WhateverGreen
         self.airportbcrmfixup_version = "2.1.3"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix

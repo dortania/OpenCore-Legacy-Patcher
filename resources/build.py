@@ -862,6 +862,17 @@ class BuildOpenCore:
                 self.config["Booter"]["Quirks"]["SignalAppleOS"] = True
         except KeyError:
             pass
+        if (
+            self.model.startswith("MacBook")
+            and (
+                smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.haswell.value or
+                smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.broadwell.value
+            )
+        ):
+            # Fix Virtual Machine support for non-macOS OSes
+            # Haswell and Broadwell MacBooks lock out the VMX bit if booting UEFI Windows
+            print("- Enabling VMX Bit for non-macOS OSes")
+            self.config["UEFI"]["Quirks"]["EnableVmx"] = True
         if self.constants.allow_fv_root is True:
             # apfs.kext has an undocumented boot-arg that allows FileVault usage on broken APFS seals (-arv_allow_fv)
             # This is however hidden behind kern.development, thus we patch _apfs_filevault_allowed to always return true

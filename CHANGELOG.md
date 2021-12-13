@@ -8,7 +8,8 @@
 - Resolve Monterey Bluetooth issues on user-upgraded BCM94331 BT4.0 modules
 - Fix iGPU-only iMac14,x display output when using Minimal/Moderate spoof
 - Increment Binaries:
-  - OpenCore 0.7.5 - release
+  - OpenCore 0.7.6 - release
+  - Lilu 1.5.8 - release
   - BrcmPatchRAM 2.6.1 - release
   - WhateverGreen 1.5.5 - release
   - PatcherSupportPkg 0.2.8 - release
@@ -31,6 +32,7 @@
 - Add Legacy GCN build support off model for MXM iMacs
 - Resolve 5k Display Output support on 5k iMacs and iMac Pro
 - Resolve NVMe Patching on 2016-2017 MacBook Pros
+- Enable Windows VMX support for Haswell and Broadwell MacBooks
 
 ## 0.3.1
 - Increment Binaries:
