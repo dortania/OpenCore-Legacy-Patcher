@@ -20,3 +20,4 @@ __pycache__/
 /docs/yarn.lock
 /docs/yarn-error.log
 /docs/node_modules/
+/payloads/List.txt

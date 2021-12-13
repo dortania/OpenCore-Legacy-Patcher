@@ -13,7 +13,7 @@ from pathlib import Path
 import sys
 
 from resources import constants, device_probe, utilities, generate_smbios
-from data import sip_data, sys_patch_data, model_array, os_data, smbios_data, cpu_data
+from data import sip_data, sys_patch_data, model_array, os_data, smbios_data, cpu_data, dylib_data
 
 
 class PatchSysVolume:
@@ -215,8 +215,26 @@ class PatchSysVolume:
             self.manual_root_patch_revert()
 
     def rebuild_snapshot(self):
-        # if self.constants.gui_mode is False:
-        #     input("Press [ENTER] to continue with cache rebuild: ")
+        # Grab List.txt if appropriate
+        dylib_list = self.build_skylight_plugin_list()
+        if dylib_list is not None:
+            print("- Updating SkyLightPlugins List.txt")
+            if (Path(self.mount_private_etc) / Path("SkyLightPlugins/List.txt")).exists():
+                print("- Removing existing List.txt")
+                utilities.process_status(
+                    utilities.elevated(
+                        ["rm", "-f", f"{self.mount_private_etc}/SkyLightPlugins/List.txt"],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                    )
+                )
+            utilities.process_status(
+                utilities.elevated(
+                    ["cp", dylib_list, f"{self.mount_private_etc}/SkyLightPlugins/"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                )
+            )
         print("- Rebuilding Kernel Cache (This may take some time)")
         if self.constants.detected_os > os_data.os_data.catalina:
             result = utilities.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -299,6 +317,34 @@ set million colour before rebooting"""
             utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
+    def build_skylight_plugin_list(self):
+        # ASentientBot's Skylight system support injecting additional dylibs into macOS
+        # To do so, it parses the List.txt file in '/private/etc/SkyLightPlugins/'
+        # The format of this file is:
+        #    <plugin path> : <plugin name>
+        # Parse all dylibs in /private/etc/SkyLightPlugins/, generate an appropriate List.txt
+
+        skylight_plugins = []
+        if self.constants.list_txt_path.exists():
+            self.constants.list_txt_path.unlink()
+
+        if (Path(self.mount_private_etc) / Path("SkyLightPlugins")).exists():
+            for file in (Path(self.mount_private_etc) / Path("SkyLightPlugins")).glob("*.dylib"):
+                skylight_plugins.append(file.name)
+        if len(skylight_plugins) > 0:
+            with open(self.constants.list_txt_path, "w") as f:
+                for plugin in skylight_plugins:
+                    try:
+                        path = dylib_data.shim_list.shim_pathing[plugin]
+                        print(f"- Adding {plugin} to list.txt")
+                        f.write(f"{path} : {plugin}\n")
+                    except KeyError:
+                        print(f"- Skipping {plugin}, unknown pathing")
+                        continue
+                return self.constants.list_txt_path
+        return None
+        
+
     def add_brightness_patch(self):
         self.delete_old_binaries(sys_patch_data.DeleteBrightness)
         self.add_new_binaries(sys_patch_data.AddBrightness, self.constants.legacy_brightness)
@@ -337,12 +383,8 @@ set million colour before rebooting"""
         )
     
     def add_legacy_keyboard_backlight_patch(self):
-        print("- Adding Backlight-Fixup.plist")
-        utilities.process_status(
-            utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_keyboard_backlight_lauchd}/", self.mount_lauchd], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        )
-        utilities.process_status(utilities.elevated(["chmod", "755", f"{self.mount_lauchd}/Backlight-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{self.mount_lauchd}/Backlight-Fixup.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        print("- Merging Backlight private/etc")
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_keyboard_backlight_etc}/", self.mount_private_etc], stdout=subprocess.PIPE)
 
     def gpu_accel_legacy(self):
         if self.constants.detected_os == os_data.os_data.mojave:
