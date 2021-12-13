@@ -335,6 +335,7 @@ def download_file(link, location):
         box_length = len(header)
         box_string = "#" * box_length
         dl = 0
+        total_downloaded_string = ""
         with location.open("wb") as file:
             count = 0
             start = time.perf_counter()
@@ -347,12 +348,8 @@ def download_file(link, location):
                 print(header)
                 print(box_string)
                 print("")
-                try:
-                    total_file_downloaded_percent = round(float(dl / total_file_size * 100), 2)
-                    total_downloaded_string = f" ({total_file_downloaded_percent}%)"
-                except ZeroDivisionError:
-                    total_file_downloaded_percent = 0
-                    total_downloaded_string = ""
+                if total_file_size != 0:
+                    total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
                 print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}")
                 print(f"Average Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
         checksum = hashlib.sha256()
