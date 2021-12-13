@@ -453,7 +453,19 @@ class Computer:
             controller = NVMeController.from_ioregistry(parent)
             controller.aspm = aspm
 
-            if controller.vendor_id != 0x106B:
+            if (
+                # Handle Apple Vendor ID
+                controller.vendor_id != 0x106B
+                and (
+                    # Handle soldered Samsung SSDs
+                    controller.vendor_id != 0x144D and controller.device_id != 0xA804
+                )
+            ):
+                # Avoid patching when a native Apple NVMe drive is present
+                # Note on 2016-2017 MacBook Pros, 15" devices used a stock Samsung SSD with IONVMeController
+                # Technically this should be patched based on NVMeFix.kext logic, 
+                # however Apple deemed the SSD unsupported for usage with AppleNVMeController class
+                # https://github.com/acidanthera/NVMeFix/blob/1.0.9/NVMeFix/NVMeFix.cpp#L220-L225
                 self.storage.append(controller)
 
             ioreg.IOObjectRelease(parent)

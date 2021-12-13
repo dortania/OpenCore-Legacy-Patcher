@@ -30,6 +30,7 @@
 - Add Apple RAID Card support
 - Add Legacy GCN build support off model for MXM iMacs
 - Resolve 5k Display Output support on 5k iMacs and iMac Pro
+- Resolve NVMe Patching on 2016-2017 MacBook Pros
 
 ## 0.3.1
 - Increment Binaries:
