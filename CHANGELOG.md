@@ -1,5 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.3.3
+- Disable Asset Caching support with spoofless approach
+  - Switch to Minimal or higher if required
+
 ## 0.3.2
 - Implement spoofless support (ie. no SMBIOS patching)
   - Requires macOS 11.3 or newer, for 11.2.3 and older use Minimal or higher spoofing

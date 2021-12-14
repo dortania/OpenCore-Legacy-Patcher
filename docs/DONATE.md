@@ -27,9 +27,16 @@ Current hardware we own:
 
 | Model | CPU | GPU | Owner | Notes |
 | :--- | :--- | :--- | :--- | :--- |
+| MacBook5,1 | Penryn | 9400M | Mykola | N/A |
 | MacBook7,1 | Penryn | GT320M | Dhinak | N/A |
 | MacBook7,1 | Penryn | GT320M | Mykola | N/A |
 | MacBookPro5,3 | Penryn | 9400M + 9600M | Dhinak | Display's partially broken |
+| MacBookPro8,2 | Sandy Bridge | HD3000 | Mykola | Dead dGPU |
+| MacPro3,1 | Penryn | GTX 680 | Dhinak | N/A |
 | Macmini4,1 | Penryn | GT320M | Dhinak | N/A |
-| iMac11,2 | Clarksdale | HD4670 | Mykola | N/A |
-| MacPro3,1 | Penryn | HD5770, RX570, GT710 | Mykola | N/A |
+
+Dead Hardware:
+| Model | CPU | GPU | Owner | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| MacPro3,1 | Penryn | HD5770, RX570, GT710 | Mykola | No longer powers on |
+| MacPro4,1 | Westmere | HD7950 | Mykola | Dead Northbridge on CPU Tray |
