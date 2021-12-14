@@ -123,7 +123,7 @@ Regarding OS support, see below:
 | iMac14,2 | ^^ | ^^ | ^^ |
 | iMac14,3 | ^^ | ^^ | ^^ |
 | iMac14,4 | Mid-2014 | ^^ | ^^ |
-| iMac15,1 | Late 2014, Mid-2015 | ^^ | [Display will output to 4k instead of 5k](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/359) | 
+| iMac15,1 | Late 2014, Mid-2015 | ^^ | ^^ | 
 
 * For iMac10,1 through iMac12,x, we highly recommend users upgrade the GPU to a Metal supported model. See here for more information: [iMac late 2009 to mid-2011 Graphics Card Upgrade Guide](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857)
 
