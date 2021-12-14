@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.3.4
+
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach
   - Switch to Minimal or higher if required
