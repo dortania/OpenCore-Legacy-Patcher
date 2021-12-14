@@ -23,7 +23,9 @@ jobs:
         run: cp OCLP-CLI OpenCore\ Patcher.app/Contents/Resources/
       - run: python3 merge_gui.py
       - name: Code Sign Binaries
-        run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "OpenCore Patcher.app"'
+        run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "OpenCore Patcher.app/Contents/Resources/OCLP-CLI"'
+      - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "OpenCore Patcher.app/Contents/Resources/oclpd"'
+      - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "OpenCore Patcher.app"'
       - run: ditto -c -k --sequesterRsrc --keepParent OpenCore\ Patcher.app OpenCore-Patcher-GUI.app.zip
       - name: Notarize Binaries for release
         if: github.event_name == 'release'
