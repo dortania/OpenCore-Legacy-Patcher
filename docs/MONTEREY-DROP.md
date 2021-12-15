@@ -19,6 +19,12 @@ All of these models now have support in OpenCore Legacy Patcher.
 
 ## Previously Broken Hardware
 
+::: details Firmware bug preventing 5k output on iMac15,1 (Resolved in 0.3.2 and newer)
+
+When booting OpenCore on an iMac15,1, the iMac's firmware will enforce a 3840x2160 resolution on the internal display. This seems to be an unfortunate issue with the 5k iMac series as the issue plagued Windows, Linux and UEFI. Apple eventually made a driver hack for Windows however both UEFI and Linux fixes are missing. (see https://github.com/dortania/OpenCore-Legacy-Patcher/issues/359#issuecomment-988417731)
+
+:::
+
 ::: details macOS 12.0 Beta 4 issue on 2012 to early 2013 machines (Resolved in 0.2.5 and newer)
 
 Currently in macOS 12.0 Beta 4, many Ivy Bridge Macs have experienced Bluetooth issues relating to their BCM20702 chipset. Currently the exact issue is unknown however is assumed to be a bug on Apple's end. Recommend downgrading to macOS 12.0 Beta 3 till resolved:
