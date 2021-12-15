@@ -15,7 +15,7 @@ With Monterey, Apple continues their their somewhat ruthless march of dropping I
 * MacBookPro11,2
 * MacBookPro11,3
 
-All of these models now have support in OpenCore Legacy Patcher. Note iMac15,1 does have [an unfortunate firmware bug preventing resolutions above 4k](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/359) with OpenCore Legacy Patcher
+All of these models now have support in OpenCore Legacy Patcher.
 
 ## Previously Broken Hardware
 
