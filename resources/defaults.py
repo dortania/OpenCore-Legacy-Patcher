@@ -103,12 +103,15 @@ class generate_defaults:
             # Native Macs (mainly M1s) will error out as they don't know what SMBIOS to spoof to
             # As we don't spoof on native models, we can safely ignore this
             spoof_model = model
-        if smbios_data.smbios_dictionary[spoof_model]["SecureBootModel"] is not None:
-            if settings.sip_status is False:
-                # Force VMM as root patching breaks .im4m signature
-                settings.secure_status = False
-                settings.force_vmm = True
-            else:
-                # Allow SecureBootModel
-                settings.secure_status = True
-                settings.force_vmm = False
+        try:
+            if smbios_data.smbios_dictionary[spoof_model]["SecureBootModel"] is not None:
+                if settings.sip_status is False:
+                    # Force VMM as root patching breaks .im4m signature
+                    settings.secure_status = False
+                    settings.force_vmm = True
+                else:
+                    # Allow SecureBootModel
+                    settings.secure_status = True
+                    settings.force_vmm = False
+        except KeyError:
+            pass
