@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.3.4
+- Resolves Install USB Creation using incorrect installer
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach

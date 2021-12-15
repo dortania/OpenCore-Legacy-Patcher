@@ -1137,7 +1137,7 @@ B. Exit
             avalible_installers = installer.list_local_macOS_installers()
             if avalible_installers:
                 for app in avalible_installers:
-                    options.append([f"{avalible_installers[app]['Short Name']}: {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']})", lambda: self.list_disks(avalible_installers[app]['Path'])])
+                    options.append([f"{avalible_installers[app]['Short Name']}: {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']})", lambda x=app: self.list_disks(avalible_installers[x]['Path'])])
                 for option in options:
                     menu.add_menu_option(option[0], function=option[1])
             response = menu.start()
