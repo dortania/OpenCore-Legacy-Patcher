@@ -13,6 +13,7 @@ def validate(settings):
         example_data.iMac.iMac81_Stock,
         example_data.iMac.iMac112_Stock,
         example_data.iMac.iMac122_Upgraded,
+        example_data.iMac.iMac151_Stock,
         example_data.MacPro.MacPro31_Stock,
         example_data.MacPro.MacPro31_Upgrade,
         example_data.MacPro.MacPro31_Modern_AMD,

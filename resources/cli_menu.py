@@ -101,17 +101,16 @@ option is for those patching on a different machine or OCLP cannot detect.
         utilities.header(["Set SMBIOS Spoof Level"])
         print(
             """This section is for setting how OpenCore generates the SMBIOS
-Recommended for adanced users who want control how serials are handled
+Recommended for advanced users who want control how serials are handled
 
 Valid options:
 
-0. None:\tOnly update FirmwareFeatures
+0. None:\tUse stock SMBIOS (VMM Masking)
 1. Minimal:\tUse original serials and minimally update SMBIOS
 2. Moderate:\tReplace entire SMBIOS but keep original serials
 3. Advanced:\tReplace entire SMBIOS and generate new serials
 Q. Return to previous menu
 
-Note: For new users we recommend leaving as default(1. Minimal)
         """
         )
         change_menu = input("Set SMBIOS Spoof Level(ie. 1): ")
