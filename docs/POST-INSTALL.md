@@ -16,17 +16,21 @@ Once you've installed macOS through OpenCore, you can boot up and go through the
 
 And voila! No more USB drive required
 
-## Booting seamlessly without Verbose or OpenCore Picker
+## Booting seamlessly without OpenCore Picker
 
 To do this, run the OpenCore Patcher and head to Patcher Settings:
 
 ![](../images/settings.png)
 
-Here you can change different patcher settings, however the main interest is:
+The patcher settings are divided in sub-menus. For now we need to chose "Miscellaneous Settings":
+
+![](../images/settings-miscellaneous.png)
+
+Here you can change different miscellaneous patcher settings, however the main interest is:
 
 * Set ShowPicker Mode
 
-Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, then you can release the "ESC" key when you see the cursor arrow at the top left.
+Once you've toggled it off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, then you can release the "ESC" key when you see the cursor arrow at the top left.
 
 ## Enabling SIP
 
