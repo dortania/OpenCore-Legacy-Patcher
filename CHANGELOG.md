@@ -2,6 +2,8 @@
 
 ## 0.3.4
 - Resolves Install USB Creation using incorrect installer
+- Resolves `installer` failing to extract InstallAssistant in older OSes
+- Resolves certain Samsung NVMe drives appearing as external on Mac Pros
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach
