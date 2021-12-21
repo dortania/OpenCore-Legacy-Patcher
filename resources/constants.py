@@ -18,6 +18,8 @@ class Constants:
         self.patcher_support_pkg_version = "0.2.8"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
+        self.discord_link = "https://discord.gg/rqdPgH8xSN"
+        self.guide_link = "https://dortania.github.io/OpenCore-Legacy-Patcher/"
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
