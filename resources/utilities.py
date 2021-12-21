@@ -312,7 +312,7 @@ def verify_network_connection(url):
     except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError, requests.exceptions.HTTPError):
         return False
 
-def download_file(link, location):
+def download_file(link, location, is_gui=None):
     if verify_network_connection(link):
         if Path(location).exists():
             Path(location).unlink()
@@ -343,15 +343,15 @@ def download_file(link, location):
                 dl += len(chunk)
                 file.write(chunk)
                 count += len(chunk)
-                cls()
-                print(box_string)
-                print(header)
-                print(box_string)
-                print("")
+                if is_gui is None:
+                    cls()
+                    print(box_string)
+                    print(header)
+                    print(box_string)
+                    print("")
                 if total_file_size != 0:
                     total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
-                print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}")
-                print(f"Average Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
+                print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
         checksum = hashlib.sha256()
         with location.open("rb") as file:
             chunk = file.read(1024 * 1024 * 16)
