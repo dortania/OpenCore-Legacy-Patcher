@@ -179,6 +179,31 @@ class iMac:
         opencore_version=None,
     )
 
+    iMac151_Stock = device_probe.Computer(
+        real_model='iMac15,1', 
+        real_board_id='Mac-42FD25EABCABB274', 
+        reported_model='iMac15,1', reported_board_id='Mac-42FD25EABCABB274', 
+        gpus=[
+            device_probe.Intel(vendor_id=32902, device_id=1042, class_code=196608, name='IGPU', model='Intel Iris Pro', acpi_path=None, pci_path='PciRoot(0x0)/Pci(0x2,0x0)'), 
+            device_probe.AMD(vendor_id=4098, device_id=26640, class_code=196608, name='GFX0', model='AMD Radeon R9 M290X', acpi_path=None, pci_path='PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)')
+        ], 
+        igpu=device_probe.Intel(vendor_id=32902, device_id=1042, class_code=196608, name='IGPU', model='Intel Iris Pro', acpi_path=None, pci_path='PciRoot(0x0)/Pci(0x2,0x0)'), 
+        dgpu=device_probe.AMD(vendor_id=4098, device_id=26640, class_code=196608, name='GFX0', model='AMD Radeon R9 M290X', acpi_path=None, pci_path='PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)'), 
+        storage=[
+            device_probe.SATAController(vendor_id=32902, device_id=35842, class_code=67073, name='SATA', model=None, acpi_path=None, pci_path='PciRoot(0x0)/Pci(0x1f,0x2)'), 
+            device_probe.SATAController(vendor_id=6987, device_id=37251, class_code=67073, name='SSD0', model=None, acpi_path=None, pci_path='PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)')
+        ], 
+        wifi=device_probe.Broadcom(vendor_id=5348, device_id=17312, class_code=163840, name='ARPT', model=None, acpi_path=None, pci_path='PciRoot(0x0)/Pci(0x1c,0x2)/Pci(0x0,0x0)'), 
+        cpu=device_probe.CPU(
+            name='Intel(R) Core(TM) i5-4690 CPU @ 3.50GHz', 
+            flags=['FPU', 'VME', 'DE', 'PSE', 'TSC', 'MSR', 'PAE', 'MCE', 'CX8', 'APIC', 'SEP', 'MTRR', 'PGE', 'MCA', 'CMOV', 'PAT', 'PSE36', 'CLFSH', 'DS', 'ACPI', 'MMX', 'FXSR', 'SSE', 'SSE2', 'SS', 'HTT', 'TM', 'PBE', 'SSE3', 'PCLMULQDQ', 'DTES64', 'MON', 'DSCPL', 'VMX', 'SMX', 'EST', 'TM2', 'SSSE3', 'FMA', 'CX16', 'TPR', 'PDCM', 'SSE4.1', 'SSE4.2', 'x2APIC', 'MOVBE', 'POPCNT', 'AES', 'PCID', 'XSAVE', 'OSXSAVE', 'SEGLIM64', 'TSCTMR', 'AVX1.0', 'RDRAND', 'F16C']
+        ), 
+        oclp_version=None, 
+        opencore_version=None, 
+        bluetooth_chipset='BRCM20702 Hub', 
+        third_party_sata_ssd=False
+    )
+
 class MacPro:
 
     MacPro31_Stock = device_probe.Computer(
