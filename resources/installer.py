@@ -53,11 +53,27 @@ def create_installer(installer_path, volume_name):
     return False
 
 def download_install_assistant(download_path, ia_link):
-    # Downloads and unpackages InstallAssistant.pkg into /Applications
+    # Downloads InstallAssistant.pkg
     utilities.download_file(ia_link, (Path(download_path) / Path("InstallAssistant.pkg")))
-    print("- Installing InstallAssistant.pkg to /Applications/")
-    utilities.elevated(["installer", "-pkg", (Path(download_path) / Path("InstallAssistant.pkg")), "-target", "/Applications"])
-    input("- Press ENTER to continue: ")
+
+def install_macOS_installer(download_path):
+    args = [
+        "osascript",
+        "-e",
+        f'''do shell script "installer -pkg {Path(download_path)}/InstallAssistant.pkg -target /"'''
+        ' with prompt "OpenCore Legacy Patcher needs administrator privileges to add InstallAssistant."'
+        " with administrator privileges"
+        " without altering line endings",
+    ]
+
+    result = subprocess.run(args,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.returncode == 0:
+        print("- InstallAssistant installed")
+        return True
+    else:
+        print("- Failed to install InstallAssistant")
+        print(f"  Error Code: {result.returncode}")
+        return False
 
 def list_downloadable_macOS_installers(download_path, catalog):
     avalible_apps = {}

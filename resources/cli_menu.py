@@ -1107,6 +1107,8 @@ B. Exit
 
     def download_install_assistant(self, link):
         installer.download_install_assistant(self.constants.payload_path, link)
+        installer.install_macOS_installer(self.constants.payload_path)
+        input("Press any key to continue...")
         # To avoid selecting the wrong installer by mistake, let user select the correct one
         self.find_local_installer()
 
