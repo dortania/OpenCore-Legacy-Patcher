@@ -26,6 +26,13 @@ class OpenCoreLegacyPatcher:
         self.constants.computer = device_probe.Computer.probe()
         self.constants.recovery_status = utilities.check_recovery()
         self.computer = self.constants.computer
+        launcher_script = None
+        launcher_binary = sys.executable
+        if "python" in launcher_binary:
+            # We're running from source
+            launcher_script =  __file__
+        self.constants.launcher_binary = launcher_binary
+        self.constants.launcher_script = launcher_script
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
         if utilities.check_cli_args() is not None:
             print("- Detected arguments, switching to CLI mode")

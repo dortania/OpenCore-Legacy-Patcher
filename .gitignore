@@ -21,3 +21,4 @@ __pycache__/
 /docs/yarn-error.log
 /docs/node_modules/
 /payloads/List.txt
+/payloads/Installer.sh

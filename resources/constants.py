@@ -96,6 +96,8 @@ class Constants:
         self.patch_disk = ""  #             Set Root Volume to patch
         self.validate = False  #            Enable validation testing for CI
         self.recovery_status = False  #     Detect if booted into RecoveryOS
+        self.launcher_binary = None #       Determine launch binary (ie. Python vs PyInstaller)
+        self.launcher_script = None  #      Determine launch file (if run via Python)
 
         ## Hardware
         self.computer: device_probe.Computer = None  # type: ignore
