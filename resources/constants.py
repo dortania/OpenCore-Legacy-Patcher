@@ -120,6 +120,10 @@ class Constants:
         self.serial_settings = "None"  #    Set SMBIOS level used
         self.override_smbios = "Default"  # Set SMBIOS model used
 
+        ## FeatureUnlock Settings
+        self.fu_status = True   # Enable FeatureUnlock
+        self.fu_arguments = ""  # Set FeatureUnlock arguments
+
         ## Latebloom Settings
         self.latebloom_status = False  # Latebloom Enabled
         self.latebloom_delay = 0  #      Delay between each PCIe Probe
@@ -224,6 +228,10 @@ class Constants:
     @property
     def list_txt_path(self):
         return self.payload_path / Path("List.txt")
+    
+    @property
+    def installer_sh_path(self):
+        return self.payload_path / Path("Installer.sh")
 
     # Kexts
     @property
@@ -479,6 +487,10 @@ class Constants:
     @property
     def ocvalidate_path(self):
         return self.payload_path / Path(f"Tools/ocvalidate-{self.opencore_version}")
+    
+    @property
+    def oclp_helper_path(self):
+        return self.payload_path / Path("Tools/OCLP-Helper")
 
     # Icons
     @property

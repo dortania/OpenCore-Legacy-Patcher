@@ -831,7 +831,41 @@ To disable SIP outright, set it to 0xFEF
         except ValueError:
             print("Invalid input, returning to previous menu")
             self.set_custom_sip_value()
+    
+    def set_fu_settings(self):
+        utilities.cls()
+        utilities.header(["Set FeatureUnlock Settings"])
+        print(
+            """
+By default OCLP will add a kext called FeatureUnlock to enable
+features locked out from older models. Including:
 
+- AirPlay to Mac
+- SideCar
+- Night Shift
+
+However for systems experiencing memory instability, disabling this
+kext can help.
+
+Supported Options:
+
+1. Enable FeatureUnlock and all patches
+2. Enable FeatureUnlock and disable AirPlay to Mac and SideCar
+3. Disable FeatureUnlock
+            """
+        )
+        change_menu = input("Set FeatreUnlock (ie. 1): ")
+        if change_menu == "1":
+            self.constants.fu_status = True
+            self.constants.fu_arguments = ""
+        elif change_menu == "2":
+            self.constants.fu_status = True
+            self.constants.fu_arguments = " -disable_sidecar_mac"
+        elif change_menu == "3":
+            self.constants.fu_status = False
+        else:
+            print("Invalid input, returning to previous menu")
+            self.set_fu_settings()
 
     def credits(self):
         utilities.TUIOnlyPrint(
@@ -1054,7 +1088,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set Hibernation Workaround:\tCurrently {self.constants.disable_connectdrivers}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_hibernation_workaround],
                 [f"Disable Battery Throttling:\tCurrently {self.constants.disable_msr_power_ctl}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_battery_throttle],
                 [f"Set Software Demux:\tCurrently {self.constants.software_demux}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_software_demux],
-                
+                [f"Set FeatureUnlock: \tCurrently {self.constants.fu_status}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_fu_settings],
             ]
 
             for option in options:

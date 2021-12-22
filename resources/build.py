@@ -139,12 +139,6 @@ class BuildOpenCore:
             # IDE patch
             ("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path, lambda: "PATA" in smbios_data.smbios_dictionary[self.model]["Stock Storage"]),
             # Misc
-            (
-                "FeatureUnlock.kext",
-                self.constants.featureunlock_version,
-                self.constants.featureunlock_path,
-                lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.kaby_lake.value,
-            ),
             ("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path, lambda: self.constants.kext_debug is True),
             ("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path, lambda: self.model in ["MacBook4,1", "MacBook5,2"]),
         ]:
@@ -174,6 +168,14 @@ class BuildOpenCore:
         if self.get_kext_by_bundle_path("Lilu.kext")["Enabled"] is True:
             # Required for Lilu in 11.0+
             self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
+        
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.kaby_lake.value:
+            if self.constants.fu_status is True:
+                # Enable FeatureUnlock.kext
+                self.enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
+                if self.constants.fu_arguments is not None:
+                    print(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
+                    self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
         
         if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
             # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
