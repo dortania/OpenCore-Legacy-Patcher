@@ -11,6 +11,8 @@
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
 * [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
 * [Cannot Login on 2011 15" and 17" MacBook Pros](#cannot-login-on-2011-15-and-17-macbook-pros)
+* [Cannot Login on 2014 MacBookPro11,3](#cannot-login-on-2014-macbookpro11,3)
+
 
 The below page is for users experiencing issues with their overall usage of macOS Big Sur / macOS Monterey and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur / Monterey:
 
@@ -151,3 +153,13 @@ nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00
 # To reset, simply write zeros or NVRAM Reset your Mac
 nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%00%00%00%00
 ```
+
+## Cannot Login on 2014 MacBookPro11,3
+
+After installing or updating Monterey this model will only boot into a black screen unless the post install patches have been installed. To achieve this boot the system into safe mode. Please notice that you cannot alter the OpenCore configuraton in safe mode! Do this - if necessary - after patching the system and booting into normal mode, again.
+
+1. Boot macOS in Save Mode
+    * Press Shift key in OpenCore's menu when you turn the Mac on
+2. Log into an existing account (update) or create your user account (new installation)
+3. Start OCLP app and apply the patches (TUI app recommended with option #3)
+4. Reboot and finish the setup
