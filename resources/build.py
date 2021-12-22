@@ -587,7 +587,7 @@ class BuildOpenCore:
                         "CAIL,CAIL_DisableVCEPowerGating": 1,
                         "agdpmod": "pikera",
                     })
-            elif self.constants.imac_model == "Legacy GCN":
+            if self.constants.imac_model == "Legacy GCN":
                 print("- Adding Legacy GCN Power Gate Patches")
                 self.config["DeviceProperties"]["Add"][backlight_path].update({
                     "rebuild-device-tree": 1,
