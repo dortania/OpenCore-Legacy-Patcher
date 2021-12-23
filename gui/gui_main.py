@@ -10,7 +10,7 @@ import subprocess
 import time
 
 from resources import constants, defaults, build, install, installer, utilities, sys_patch_detect
-from data import model_array, os_data
+from data import model_array, os_data, smbios_data
 from gui import menu_redirect
 
 class wx_python_gui:
@@ -40,10 +40,18 @@ class wx_python_gui:
         )
         self.frame.Centre(~wx.MAXIMIZE_BOX)
         self.frame.Show()
+        self.frame.Bind(wx.EVT_CLOSE, self.OnCloseFrame)
 
         self.main_menu(None)
 
         wx.CallAfter(self.frame.Close)
+    
+    def OnCloseFrame(self, event):
+        print("Cleaning up on close")
+        self.frame.DestroyChildren()
+        self.frame.Destroy()
+        self.app.ExitMainLoop()
+        sys.exit()
     
     def reset_window(self):
         self.frame.DestroyChildren()
@@ -1341,6 +1349,7 @@ If you require this feature, enable '10.14/15 Accel' in Settings."""))
         )
         self.dropdown_model.Bind(wx.EVT_CHOICE, self.model_choice_click)
         self.dropdown_model.Centre(wx.HORIZONTAL)
+        self.dropdown_model.ToolTip = wx.ToolTip("Select the model you want to build for")
 
         # Checkboxes
         # Checkbox: Allow native models
@@ -1348,53 +1357,72 @@ If you require this feature, enable '10.14/15 Accel' in Settings."""))
         self.checkbox_allow_native_models.SetValue(self.constants.allow_oc_everywhere)
         self.checkbox_allow_native_models.SetPosition(wx.Point(self.dropdown_model.GetPosition().x, self.dropdown_model.GetPosition().y + self.dropdown_model.GetSize().height + 10))
         self.checkbox_allow_native_models.Bind(wx.EVT_CHECKBOX, self.allow_native_models_click)
+        self.checkbox_allow_native_models.ToolTip = wx.ToolTip("""Select to allow OpenCore to be installed on native models
+Generally used for enabling OS features Apple locks out of native Macs
+ie. AirPlay to Mac, Sidecar.""")
 
         # Checkbox: Verbose
         self.verbose_checkbox = wx.CheckBox(self.frame, label="Verbose")
         self.verbose_checkbox.SetValue(self.constants.verbose_debug)
         self.verbose_checkbox.SetPosition(wx.Point(self.checkbox_allow_native_models.GetPosition().x, self.checkbox_allow_native_models.GetPosition().y + self.checkbox_allow_native_models.GetSize().height))
         self.verbose_checkbox.Bind(wx.EVT_CHECKBOX, self.verbose_checkbox_click)
+        self.verbose_checkbox.ToolTip = wx.ToolTip("""Add -v (verbose) to boot-args during build""")
 
         # Checkbox: Kext Debug
         self.kext_checkbox = wx.CheckBox(self.frame, label="Kext Debug")
         self.kext_checkbox.SetValue(self.constants.kext_debug)
         self.kext_checkbox.SetPosition(wx.Point(self.verbose_checkbox.GetPosition().x , self.verbose_checkbox.GetPosition().y + self.verbose_checkbox.GetSize().height))
         self.kext_checkbox.Bind(wx.EVT_CHECKBOX, self.kext_checkbox_click)
+        self.kext_checkbox.ToolTip = wx.ToolTip("""Enables additional kext logging, including expanded message buffer""")
 
         # Checkbox: OpenCore Debug
         self.opencore_checkbox = wx.CheckBox(self.frame, label="OpenCore Debug")
         self.opencore_checkbox.SetValue(self.constants.opencore_debug)
         self.opencore_checkbox.SetPosition(wx.Point(self.kext_checkbox.GetPosition().x , self.kext_checkbox.GetPosition().y + self.kext_checkbox.GetSize().height))
         self.opencore_checkbox.Bind(wx.EVT_CHECKBOX, self.oc_checkbox_click)
+        self.opencore_checkbox.ToolTip = wx.ToolTip("""Enables OpenCore logging, can heavily impact boot times""")
 
         # Checkbox: SIP
         self.sip_checkbox = wx.CheckBox(self.frame, label="SIP")
         self.sip_checkbox.SetValue(self.constants.sip_status)
         self.sip_checkbox.SetPosition(wx.Point(self.opencore_checkbox.GetPosition().x , self.opencore_checkbox.GetPosition().y + self.opencore_checkbox.GetSize().height))
         self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.sip_checkbox_click)
+        self.sip_checkbox.ToolTip = wx.ToolTip("""Sets SIP, disable to allow root patching""")
 
         # Checkbox: SecureBootModel
         self.secureboot_checkbox = wx.CheckBox(self.frame, label="SecureBootModel")
         self.secureboot_checkbox.SetValue(self.constants.secure_status)
         self.secureboot_checkbox.SetPosition(wx.Point(self.sip_checkbox.GetPosition().x , self.sip_checkbox.GetPosition().y + self.sip_checkbox.GetSize().height))
         self.secureboot_checkbox.Bind(wx.EVT_CHECKBOX, self.secureboot_checkbox_click)
+        self.secureboot_checkbox.ToolTip = wx.ToolTip("""Sets SecureBootModel, useful for models spoofing T2 Macs to get OTA updates""")
 
         # Checkbox: Show Boot Picker
         self.bootpicker_checkbox = wx.CheckBox(self.frame, label="Show Boot Picker")
         self.bootpicker_checkbox.SetValue(self.constants.showpicker)
         self.bootpicker_checkbox.SetPosition(wx.Point(self.secureboot_checkbox.GetPosition().x , self.secureboot_checkbox.GetPosition().y + self.secureboot_checkbox.GetSize().height))
         self.bootpicker_checkbox.Bind(wx.EVT_CHECKBOX, self.show_picker_checkbox_click)
+        self.bootpicker_checkbox.ToolTip = wx.ToolTip("""Shows OpenCore's Boot Picker on machine start
+Toggling this off will hide the picker, and only load when holding either Option or Escape""")
 
         # Checkbox: Allow Accel on Mojave/Catalina
         self.accel_checkbox = wx.CheckBox(self.frame, label="Allow Accel on 10.14/15")
         self.accel_checkbox.SetValue(self.constants.moj_cat_accel)
         self.accel_checkbox.SetPosition(wx.Point(self.bootpicker_checkbox.GetPosition().x , self.bootpicker_checkbox.GetPosition().y + self.bootpicker_checkbox.GetSize().height))
         self.accel_checkbox.Bind(wx.EVT_CHECKBOX, self.accel_checkbox_click)
+        self.accel_checkbox.ToolTip = wx.ToolTip("""Allows Root Patching on Mojave/Catalina
+Useful for enabling TeraScale 2 Acceleration when not provided by dosdude1's patcher""")
+
 
         # Buttons
+        # Button: SMBIOS Settings
+        self.smbios_button = wx.Button(self.frame, label="SMBIOS Settings",  size=(150,30))
+        self.smbios_button.SetPosition(wx.Point(self.accel_checkbox.GetPosition().x , self.accel_checkbox.GetPosition().y + self.accel_checkbox.GetSize().height + 10))
+        self.smbios_button.Bind(wx.EVT_BUTTON, self.smbios_settings_menu)
+        self.smbios_button.Center(wx.HORIZONTAL)
+
         # Button: Developer Settings
         self.miscellaneous_button = wx.Button(self.frame, label="Developer Settings",  size=(150,30))
-        self.miscellaneous_button.SetPosition(wx.Point(self.accel_checkbox.GetPosition().x , self.accel_checkbox.GetPosition().y + self.accel_checkbox.GetSize().height + 10))
+        self.miscellaneous_button.SetPosition(wx.Point(self.smbios_button.GetPosition().x , self.smbios_button.GetPosition().y + self.smbios_button.GetSize().height))
         self.miscellaneous_button.Bind(wx.EVT_BUTTON, self.misc_settings_menu)
         self.miscellaneous_button.Centre(wx.HORIZONTAL)
 
@@ -1752,3 +1780,73 @@ If you require this feature, enable '10.14/15 Accel' in Settings."""))
         
         print(f"GPU Vendor: {self.constants.imac_vendor}")
         print(f"GPU Model: {self.constants.imac_model}")
+
+    def smbios_settings_menu(self, event=None):
+        self.frame.DestroyChildren()
+
+        # Header: SMBIOS Settings
+        self.smbios_settings_header = wx.StaticText(self.frame, label="SMBIOS Settings", pos=wx.Point(10, 10))
+        self.smbios_settings_header.SetFont(wx.Font(16, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.smbios_settings_header.Center(wx.HORIZONTAL)
+
+        # Label: SMBIOS Spoof Level
+        self.smbios_spoof_level_label = wx.StaticText(self.frame, label="SMBIOS Spoof Level")
+        self.smbios_spoof_level_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.smbios_spoof_level_label.SetPosition(
+            wx.Point(self.smbios_settings_header.GetPosition().x, self.smbios_settings_header.GetPosition().y + self.smbios_settings_header.GetSize().height + 10)
+        )
+        self.smbios_spoof_level_label.Center(wx.HORIZONTAL)
+
+        # Dropdown: SMBIOS Spoof Level
+        self.smbios_dropdown = wx.Choice(self.frame)
+        self.smbios_dropdown.SetPosition(
+            wx.Point(self.smbios_spoof_level_label.GetPosition().x, self.smbios_spoof_level_label.GetPosition().y + self.smbios_spoof_level_label.GetSize().height + 10)
+        )
+        self.smbios_dropdown.AppendItems(["None", "Minimal", "Moderate", "Advanced"])
+        self.smbios_dropdown.SetStringSelection(self.constants.serial_settings)
+        self.smbios_dropdown.Bind(wx.EVT_CHOICE, self.smbios_spoof_level_click)
+        self.smbios_dropdown.Center(wx.HORIZONTAL)
+
+        # Label: SMBIOS Spoof Model
+        self.smbios_spoof_model_label = wx.StaticText(self.frame, label="SMBIOS Spoof Model")
+        self.smbios_spoof_model_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.smbios_spoof_model_label.SetPosition(
+            wx.Point(self.smbios_dropdown.GetPosition().x, self.smbios_dropdown.GetPosition().y + self.smbios_dropdown.GetSize().height + 10)
+        )
+        self.smbios_spoof_model_label.Center(wx.HORIZONTAL)
+
+        # Dropdown: SMBIOS Spoof Model
+        self.smbios_model_dropdown = wx.Choice(self.frame)
+        self.smbios_model_dropdown.SetPosition(
+            wx.Point(self.smbios_spoof_model_label.GetPosition().x, self.smbios_spoof_model_label.GetPosition().y + self.smbios_spoof_model_label.GetSize().height + 10)
+        )
+        for model in smbios_data.smbios_dictionary:
+            if "_" not in model and " " not in model:
+                if smbios_data.smbios_dictionary[model]["Board ID"] is not None:
+                    self.smbios_model_dropdown.Append(model)
+        self.smbios_model_dropdown.Append("Default")
+        self.smbios_model_dropdown.SetStringSelection(self.constants.override_smbios)
+        self.smbios_model_dropdown.Bind(wx.EVT_CHOICE, self.smbios_model_click)
+        self.smbios_model_dropdown.Center(wx.HORIZONTAL)
+
+        # Button: Return to Main Menu
+        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu_button.SetPosition(
+            wx.Point(self.smbios_model_dropdown.GetPosition().x, self.smbios_model_dropdown.GetPosition().y + self.smbios_model_dropdown.GetSize().height + 10)
+        )
+        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu_button.Center(wx.HORIZONTAL)
+
+        self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
+
+
+    
+    def smbios_spoof_level_click(self, event=None):
+        selection = self.smbios_dropdown.GetStringSelection()
+        print(f"SMBIOS Spoof Level: {selection}")
+        self.constants.serial_settings = selection
+    
+    def smbios_model_click(self, event=None):
+        selection = self.smbios_model_dropdown.GetStringSelection()
+        print(f"SMBIOS Spoof Model: {selection}")
+        self.constants.override_smbios = selection
