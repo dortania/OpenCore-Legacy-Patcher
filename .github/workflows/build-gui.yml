@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher.spec --exclude-module wxpython
+      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher.spec
       - run: cd dist; cp OpenCore-Patcher ../; cd ..; mv OpenCore-Patcher OCLP-CLI
       - name: Download latest nightly OCLP-GUI
         run: curl -S -L https://nightly.link/dortania/OCLP-GUI/workflows/build-app/master/OpenCore-Patcher-GUI.app.zip --output ./OpenCore-Patcher-GUI.app.zip --insecure

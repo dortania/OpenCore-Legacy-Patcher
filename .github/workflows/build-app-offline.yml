@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: python3 create_offline_build.py
-      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher.spec --exclude-module wxpython
+      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher.spec
       - run: ./after_pyinstaller.sh
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
       - run: cd dist; zip -r ../OpenCore-Patcher-TUI-Offline.app.zip OpenCore-Patcher.app
