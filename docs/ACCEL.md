@@ -158,7 +158,7 @@ nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%00%00%00%00
 
 After installing or updating Monterey this model will only boot into a black screen unless the post install patches have been installed. To achieve this boot the system into safe mode. Please notice that you cannot alter the OpenCore configuraton in safe mode! Do this - if necessary - after patching the system and booting into normal mode, again.
 
-1. Boot macOS in Save Mode
+1. Boot macOS in Safe Mode
     * Press Shift key in OpenCore's menu when you turn the Mac on
 2. Log into an existing account (update) or create your user account (new installation)
 3. Start OCLP app and apply the patches (TUI app recommended with option #3)
