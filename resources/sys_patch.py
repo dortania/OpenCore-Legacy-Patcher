@@ -952,7 +952,7 @@ set million colour before rebooting"""
     # Entry Function
     def start_patch(self):
         print("- Starting Patch Process")
-        print(f"- Determinging Required Patch set for Darwin {self.constants.detected_os}")
+        print(f"- Determining Required Patch set for Darwin {self.constants.detected_os}")
         self.detect_patch_set()
         if self.no_patch is True:
             change_menu = None
