@@ -189,3 +189,64 @@ def select_disk_to_format():
         return None
     
     return response
+
+
+
+def list_disk_to_format():
+    all_disks = {}
+    list_disks = {}
+    # TODO: AllDisksAndPartitions is not supported in Snow Leopard and older
+    try:
+        # High Sierra and newer
+        disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    except ValueError:
+        # Sierra and older
+        disks = plistlib.loads(subprocess.run("diskutil list -plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    for disk in disks["AllDisksAndPartitions"]:
+        disk_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        try:
+            all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info["MediaName"], "size": disk_info["TotalSize"], "removable": disk_info["Internal"], "partitions": {}}
+        except KeyError:
+            # Avoid crashing with CDs installed
+            continue
+    for disk in all_disks:
+        # Strip disks that are under 14GB (15,032,385,536 bytes)
+        # createinstallmedia isn't great at detecting if a disk has enough space
+        if not any(all_disks[disk]['size'] > 15032385536 for partition in all_disks[disk]):
+            continue
+        # Strip internal disks as well (avoid user formatting their SSD/HDD)
+        # Ensure user doesn't format their boot drive
+        if not any(all_disks[disk]['removable'] is False for partition in all_disks[disk]):
+            continue
+        print(f"disk {disk}: {all_disks[disk]['name']} ({utilities.human_fmt(all_disks[disk]['size'])})")
+        list_disks.update({
+            disk: {
+                "identifier": all_disks[disk]["identifier"],
+                "name": all_disks[disk]["name"],
+                "size": all_disks[disk]["size"],
+            }
+        })
+    return list_disks
+
+
+def generate_installer_creation_script(script_location, installer_path, disk):
+    # Creates installer.sh to be piped to OCLP-Helper and run as admin
+    # Goals:
+    # - Format provided disk as HFS+ GPT
+    # - Run createinstallmedia on provided disk
+    # Implemnting this into a single installer.sh script allows us to only call
+    # OCLP-Helper once to avoid nagging the user about permissions
+
+    createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
+
+    if script_location.exists():
+        script_location.unlink()
+    script_location.touch()
+
+    with script_location.open("w") as script:
+        script.write(f'''#!/bin/bash
+diskutil eraseDisk HFS+ OCLP-Installer {disk}
+"{createinstallmedia_path}" --volume /Volumes/OCLP-Installer --nointeraction
+        ''')
+    
+    return True
