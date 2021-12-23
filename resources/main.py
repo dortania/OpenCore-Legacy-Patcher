@@ -10,12 +10,16 @@ from resources import build, cli_menu, constants, utilities, device_probe, os_pr
 from data import model_array
 
 class OpenCoreLegacyPatcher:
-    def __init__(self):
+    def __init__(self, launch_gui=False):
         print("- Loading...")
         self.constants = constants.Constants()
         self.generate_base_data()
         if utilities.check_cli_args() is None:
-            self.main_menu()
+            if launch_gui is True:
+                from gui import gui_main
+                gui_main.wx_python_gui(self.constants)
+            else:
+                self.main_menu()
 
     def generate_base_data(self):
         self.constants.detected_os = os_probe.detect_kernel_major()
