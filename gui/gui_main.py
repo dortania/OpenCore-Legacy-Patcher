@@ -482,7 +482,7 @@ If you require this feature, enable '10.14/15 Accel' in Settings."""))
         self.subheader.Centre(wx.HORIZONTAL)
 
         # Build OpenCore
-        self.build_opencore = wx.Button(self.frame, label="🧱 Build OpenCore", size=(150,30))
+        self.build_opencore = wx.Button(self.frame, label="🔨 Build OpenCore", size=(150,30))
         self.build_opencore.SetPosition(
             wx.Point(
                 self.header.GetPosition().x,
