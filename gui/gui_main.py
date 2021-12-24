@@ -1653,13 +1653,20 @@ Useful for enabling TeraScale 2 Acceleration when not provided by dosdude1's pat
             self.disable_cpu_friend_checkbox.GetPosition().x, 
             self.disable_cpu_friend_checkbox.GetPosition().y + self.disable_cpu_friend_checkbox.GetSize().height))
 
+        # Set WriteFlash
+        self.set_writeflash_checkbox = wx.CheckBox(self.frame, label="Set NVRAM WriteFlash")
+        self.set_writeflash_checkbox.SetValue(self.constants.nvram_write)
+        self.set_writeflash_checkbox.Bind(wx.EVT_CHECKBOX, self.set_writeflash_click)
+        self.set_writeflash_checkbox.SetPosition(wx.Point(
+            self.apple_alc_checkbox.GetPosition().x,
+            self.apple_alc_checkbox.GetPosition().y + self.apple_alc_checkbox.GetSize().height))
         
         # Button: return to main menu
         self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu_button.SetPosition(wx.Point(
-            self.apple_alc_checkbox.GetPosition().x,
-            self.apple_alc_checkbox.GetPosition().y + self.apple_alc_checkbox.GetSize().height + 10))
+            self.set_writeflash_checkbox.GetPosition().x,
+            self.set_writeflash_checkbox.GetPosition().y + self.set_writeflash_checkbox.GetSize().height + 10))
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         # set frame size below return to main menu button
@@ -1780,6 +1787,14 @@ Useful for enabling TeraScale 2 Acceleration when not provided by dosdude1's pat
         
         print(f"GPU Vendor: {self.constants.imac_vendor}")
         print(f"GPU Model: {self.constants.imac_model}")
+    
+    def set_writeflash_click(self, event=None):
+        if self.set_writeflash_checkbox.GetValue():
+            print("Write Flash Enabled")
+            self.constants.nvram_write = True
+        else:
+            print("Write Flash Disabled")
+            self.constants.nvram_write = False
 
     def smbios_settings_menu(self, event=None):
         self.frame.DestroyChildren()
