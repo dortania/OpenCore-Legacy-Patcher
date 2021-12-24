@@ -5,6 +5,7 @@
 - Resolves `installer` failing to extract InstallAssistant in older OSes
 - Resolves certain Samsung NVMe drives appearing as external on Mac Pros
 - Add FeatureUnlock configurability 
+- Add NVRAM WriteFlash configurability for degarded/fragile systems
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach

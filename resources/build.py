@@ -481,11 +481,13 @@ class BuildOpenCore:
         def check_firewire(model):
             # MacBooks never supported FireWire
             # Pre-Thunderbolt MacBook Airs as well
-            if model.startswith("MacBook"):
-                return False
+            if model.startswith("MacBookPro"):
+                return True
             elif model.startswith("MacBookAir"):
                 if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
                     return False
+            elif model.startswith("MacBook"):
+                return False
             else:
                 return True
 
@@ -897,6 +899,9 @@ class BuildOpenCore:
         if self.constants.disable_connectdrivers is True:
             print("- Disabling ConnectDrivers")
             self.config["UEFI"]["ConnectDrivers"] = False
+        if self.constants.nvram_write is False:
+            print("- Disabling Hardware NVRAM Write")
+            self.config["NVRAM"]["WriteFlash"] = False
         # if self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True:
         #     # Add Content Caching patch
         #     print("- Fixing Content Caching support")

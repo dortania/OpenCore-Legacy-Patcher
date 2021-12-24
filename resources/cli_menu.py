@@ -866,6 +866,30 @@ Supported Options:
         else:
             print("Invalid input, returning to previous menu")
             self.set_fu_settings()
+    
+    def set_nvram_write(self):
+        utilities.cls()
+        utilities.header(["Set NVRAM Write"])
+        print(
+            """
+By default, OpenCore will write NVRAM variables to flash. This is
+recommended for majority of systems however for extremely degraded
+or fragile systems, you may wish to disable this.
+
+Supported Options:
+
+1. Enable NVRAM Write
+2. Disable NVRAM Write
+            """
+        )
+        change_menu = input("Set NVRAM Write (ie. 1): ")
+        if change_menu == "1":
+            self.constants.nvram_write = True
+        elif change_menu == "2":
+            self.constants.nvram_write = False
+        else:
+            print("Invalid input, returning to previous menu")
+            self.set_nvram_write()
 
     def credits(self):
         utilities.TUIOnlyPrint(
@@ -1089,6 +1113,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Disable Battery Throttling:\tCurrently {self.constants.disable_msr_power_ctl}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_battery_throttle],
                 [f"Set Software Demux:\tCurrently {self.constants.software_demux}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_software_demux],
                 [f"Set FeatureUnlock: \tCurrently {self.constants.fu_status}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_fu_settings],
+                [f"Set NVRAM Write:\t\tCurrently {self.constants.nvram_write}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_nvram_write],
             ]
 
             for option in options:
