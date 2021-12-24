@@ -296,9 +296,7 @@ class wx_python_gui:
             self.constants.custom_model is None and \
             self.computer.real_model not in model_array.SupportedSMBIOS:
             self.build_install.Disable()
-            self.build_install.SetToolTip(wx.ToolTip("""If building for a native Mac model, 
-select 'Allow Native Models' in Settings.
-If building for another Mac, change model in Settings"""))
+            self.build_install.SetToolTip(wx.ToolTip("""If building for a native Mac model, \nselect 'Allow Native Models' in Settings.\nIf building for another Mac, change model in Settings"""))
 
         # Post Install Root Patch
         self.post_install = wx.Button(self.frame, label="Post Install Root Patch", size=(200,30))
@@ -311,8 +309,7 @@ If building for another Mac, change model in Settings"""))
         self.post_install.Bind(wx.EVT_BUTTON, self.root_patch_menu)
         self.post_install.Centre(wx.HORIZONTAL)
         if self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina] and self.constants.moj_cat_accel == False:
-            self.post_install.SetToolTip(wx.ToolTip("""Graphics Acceleration fro Mojave and Catalina is currently experimental. 
-If you require this feature, enable '10.14/15 Accel' in Settings."""))
+            self.post_install.SetToolTip(wx.ToolTip("""Graphics Acceleration fro Mojave and Catalina is currently experimental. \nIf you require this feature, enable '10.14/15 Accel' in Settings."""))
             self.post_install.Disable()
         elif self.constants.detected_os < os_data.os_data.mojave:
             self.post_install.SetToolTip(wx.ToolTip("""Root Patching is only available for Mojave and newer."""))
@@ -1357,9 +1354,7 @@ If you require this feature, enable '10.14/15 Accel' in Settings."""))
         self.checkbox_allow_native_models.SetValue(self.constants.allow_oc_everywhere)
         self.checkbox_allow_native_models.SetPosition(wx.Point(self.dropdown_model.GetPosition().x, self.dropdown_model.GetPosition().y + self.dropdown_model.GetSize().height + 10))
         self.checkbox_allow_native_models.Bind(wx.EVT_CHECKBOX, self.allow_native_models_click)
-        self.checkbox_allow_native_models.ToolTip = wx.ToolTip("""Select to allow OpenCore to be installed on native models
-Generally used for enabling OS features Apple locks out of native Macs
-ie. AirPlay to Mac, Sidecar.""")
+        self.checkbox_allow_native_models.ToolTip = wx.ToolTip("""Select to allow OpenCore to be installed on native models\nGenerally used for enabling OS features Apple locks out of native Macs\nie. AirPlay to Mac, Sidecar.""")
 
         # Checkbox: Verbose
         self.verbose_checkbox = wx.CheckBox(self.frame, label="Verbose")
@@ -1401,16 +1396,14 @@ ie. AirPlay to Mac, Sidecar.""")
         self.bootpicker_checkbox.SetValue(self.constants.showpicker)
         self.bootpicker_checkbox.SetPosition(wx.Point(self.secureboot_checkbox.GetPosition().x , self.secureboot_checkbox.GetPosition().y + self.secureboot_checkbox.GetSize().height))
         self.bootpicker_checkbox.Bind(wx.EVT_CHECKBOX, self.show_picker_checkbox_click)
-        self.bootpicker_checkbox.ToolTip = wx.ToolTip("""Shows OpenCore's Boot Picker on machine start
-Toggling this off will hide the picker, and only load when holding either Option or Escape""")
+        self.bootpicker_checkbox.ToolTip = wx.ToolTip("""Shows OpenCore's Boot Picker on machine start\nToggling this off will hide the picker, and only load when holding either Option or Escape""")
 
         # Checkbox: Allow Accel on Mojave/Catalina
         self.accel_checkbox = wx.CheckBox(self.frame, label="Allow Accel on 10.14/15")
         self.accel_checkbox.SetValue(self.constants.moj_cat_accel)
         self.accel_checkbox.SetPosition(wx.Point(self.bootpicker_checkbox.GetPosition().x , self.bootpicker_checkbox.GetPosition().y + self.bootpicker_checkbox.GetSize().height))
         self.accel_checkbox.Bind(wx.EVT_CHECKBOX, self.accel_checkbox_click)
-        self.accel_checkbox.ToolTip = wx.ToolTip("""Allows Root Patching on Mojave/Catalina
-Useful for enabling TeraScale 2 Acceleration when not provided by dosdude1's patcher""")
+        self.accel_checkbox.ToolTip = wx.ToolTip("""Allows Root Patching on Mojave/Catalina\nUseful for enabling TeraScale 2 Acceleration when not provided by dosdude1's patcher""")
 
 
         # Buttons
