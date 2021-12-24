@@ -106,8 +106,9 @@ class Constants:
         ## OpenCore Settings
         self.opencore_debug = False
         self.opencore_build = "RELEASE"
-        self.showpicker = True  # Show or Hide OpenCore's Boot Picker
-        self.boot_efi = False  #  Use EFI/BOOT/BOOTx64.efi bootstrap
+        self.showpicker = True  #  Show or Hide OpenCore's Boot Picker
+        self.boot_efi = False  #   Use EFI/BOOT/BOOTx64.efi bootstrap
+        self.nvram_write = True  # Write to hardware NVRAM
 
         ## Kext Settings
         self.kext_debug = False  # Enables Lilu debug and DebugEnhancer

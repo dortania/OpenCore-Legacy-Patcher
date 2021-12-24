@@ -899,6 +899,9 @@ class BuildOpenCore:
         if self.constants.disable_connectdrivers is True:
             print("- Disabling ConnectDrivers")
             self.config["UEFI"]["ConnectDrivers"] = False
+        if self.constants.nvram_write is False:
+            print("- Disabling Hardware NVRAM Write")
+            self.config["NVRAM"]["WriteFlash"] = False
         # if self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True:
         #     # Add Content Caching patch
         #     print("- Fixing Content Caching support")
