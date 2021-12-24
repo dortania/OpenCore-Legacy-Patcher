@@ -481,11 +481,13 @@ class BuildOpenCore:
         def check_firewire(model):
             # MacBooks never supported FireWire
             # Pre-Thunderbolt MacBook Airs as well
-            if model.startswith("MacBook"):
-                return False
+            if model.startswith("MacBookPro"):
+                return True
             elif model.startswith("MacBookAir"):
                 if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
                     return False
+            elif model.startswith("MacBook"):
+                return False
             else:
                 return True
 
