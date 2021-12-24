@@ -46,5 +46,6 @@ app = BUNDLE(exe,
              bundle_identifier=None,
              info_plist={
              "CFBundleShortVersionString": constants.Constants().patcher_version,
-             "NSHumanReadableCopyright": "Copyright 2020-2021 Dortania"
+             "NSHumanReadableCopyright": "Copyright 2020-2021 Dortania",
+             "LSMinimumSystemVersion": "10.10.0",
              })
