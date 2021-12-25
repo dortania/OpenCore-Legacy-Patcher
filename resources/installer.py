@@ -245,8 +245,9 @@ def generate_installer_creation_script(script_location, installer_path, disk):
 
     with script_location.open("w") as script:
         script.write(f'''#!/bin/bash
-diskutil eraseDisk HFS+ OCLP-Installer {disk}
-"{createinstallmedia_path}" --volume /Volumes/OCLP-Installer --nointeraction
+earse_disk='diskutil eraseDisk HFS+ OCLP-Installer {disk}'
+if $earse_disk; then
+    "{createinstallmedia_path}" --volume /Volumes/OCLP-Installer --nointeraction
+fi
         ''')
-    
     return True

@@ -848,8 +848,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        sys.stdout = menu_redirect.RedirectText(self.text_box)
-
         # Update frame height to right below return_to_main_menu
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
@@ -863,23 +861,22 @@ class wx_python_gui:
         else:
             self.text_box.AppendText("- Starting OCLP-CLI via Python\n")
             args = [self.constants.oclp_helper_path, self.constants.launcher_binary, self.constants.launcher_script, "--unpatch_sys_vol"]
-        # process = subprocess.Popen(
-        #     args, 
-        #     stdout=subprocess.PIPE,
-        #     # stderr=subprocess.PIPE
-        # )
-        # # Print each line of output
-        # while process.wait() is None:
-        #     for line in process.stdout:
-        #         self.text_box.AppendText(line.decode("utf-8"))
-        # Wait for process to finish
-        self.text_box.AppendText("- Remaining code is not yet implemented\n")
-
+        process = subprocess.Popen(
+            args, 
+            stdout=subprocess.PIPE,
+            # stderr=subprocess.PIPE
+        )
         wx.GetApp().Yield()
-        # for line in process.stdout:
-        #     self.text_box.AppendText(line.decode("utf-8"))
-        
-
+        while True:
+            line = process.stdout.readline()
+            wx.GetApp().Yield()
+            if line.strip() == "":
+                pass
+            else:
+                self.text_box.AppendText(line)
+            if not line: break
+            
+        process.wait()
 
     def create_macos_menu(self, event=None):
         # Define Menu
@@ -1223,7 +1220,7 @@ class wx_python_gui:
         self.creating_macos_installer_label.Centre(wx.HORIZONTAL)
 
         # Label: Developer Note: createinstallmedia output currently not implemented
-        self.developer_note_label = wx.StaticText(self.frame, label="Developer Note: createinstallmedia output currently not implemented")
+        self.developer_note_label = wx.StaticText(self.frame, label="Developer Note: createinstallmedia output will print after finishing")
         self.developer_note_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.developer_note_label.SetPosition(
             # Set Position below header
@@ -1252,7 +1249,7 @@ class wx_python_gui:
         # Centre the text box to top of window
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
-        sys.stdout=menu_redirect.RedirectText(self.stdout_text)
+        # sys.stdout=menu_redirect.RedirectText(self.stdout_text)
 
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
@@ -1281,17 +1278,29 @@ class wx_python_gui:
             wx.GetApp().Yield()
             time.sleep(1)
             sys.stdout=menu_redirect.RedirectText(self.stdout_text)
-            cim_start = subprocess.run(
+            cim_start = subprocess.Popen(
                 [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path],
                 stdout=subprocess.PIPE,
                 # stderr=subprocess.STDOUT
             )
 
+            wx.GetApp().Yield()
+            while True:
+                line = cim_start.stdout.readline()
+                wx.GetApp().Yield()
+                if line.strip() == "":
+                    pass
+                else:
+                    self.stdout_text.AppendText(line)
+                if not line: break
+                
+            cim_start.wait()
+
             if cim_start.returncode == 0:
                 print("Installer created successfully!")
             else:
                 print("Installer creation failed")
-                print(cim_start.returncode)
+                print(f"Return Code {cim_start.returncode}")
             sys.stdout = self.stock_stdout
         else:
             print("- Failed to create installer script")

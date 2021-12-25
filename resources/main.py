@@ -33,6 +33,8 @@ class OpenCoreLegacyPatcher:
         if "python" in launcher_binary:
             # We're running from source
             launcher_script =  __file__
+            if "main.py" in launcher_script:
+                launcher_script = launcher_script.replace("/resources/main.py", "/OpenCore-Patcher-GUI.command")
         self.constants.launcher_binary = launcher_binary
         self.constants.launcher_script = launcher_script
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
