@@ -586,7 +586,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.install_button.GetPosition().x,
                 self.install_button.GetPosition().y + self.install_button.GetSize().height + 10
@@ -636,7 +635,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.install_button.GetPosition().x,
                 self.install_button.GetPosition().y + self.install_button.GetSize().height + 10
@@ -680,7 +678,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.stdout_text.GetPosition().x,
                 self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 10
@@ -755,7 +752,6 @@ class wx_python_gui:
         # Start Root Patching
         self.start_root_patching = wx.Button(self.frame, label="Start Root Patching", size=(170, -1))
         self.start_root_patching.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.patch_label.GetPosition().x,
                 self.patch_label.GetPosition().y + self.patch_label.GetSize().height + 10
@@ -769,7 +765,6 @@ class wx_python_gui:
         # Revert Root Patches
         self.revert_root_patches = wx.Button(self.frame, label="Revert Root Patches", size=(170, -1))
         self.revert_root_patches.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.start_root_patching.GetPosition().x,
                 self.start_root_patching.GetPosition().y + self.start_root_patching.GetSize().height + 3
@@ -783,7 +778,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.revert_root_patches.GetPosition().x,
                 self.revert_root_patches.GetPosition().y + self.revert_root_patches.GetSize().height + 10
@@ -839,7 +833,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.text_box.GetPosition().x,
                 self.text_box.GetPosition().y + self.text_box.GetSize().height + 10
@@ -864,7 +857,7 @@ class wx_python_gui:
         process = subprocess.Popen(
             args, 
             stdout=subprocess.PIPE,
-            # stderr=subprocess.PIPE
+            stderr=subprocess.PIPE
         )
         wx.GetApp().Yield()
         while True:
@@ -896,7 +889,6 @@ class wx_python_gui:
         # Button: Download macOS Installer
         self.download_macos_installer = wx.Button(self.frame, label="Download macOS Installer", size=(200, 30))
         self.download_macos_installer.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.header.GetPosition().x,
                 self.header.GetPosition().y + self.header.GetSize().height + 10
@@ -908,7 +900,6 @@ class wx_python_gui:
         # Button: Use existing macOS Installer
         self.use_existing_macos_installer = wx.Button(self.frame, label="Use existing macOS Installer", size=(200, 30))
         self.use_existing_macos_installer.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.download_macos_installer.GetPosition().x,
                 self.download_macos_installer.GetPosition().y + self.download_macos_installer.GetSize().height
@@ -920,7 +911,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.use_existing_macos_installer.GetPosition().x,
                 self.use_existing_macos_installer.GetPosition().y + self.use_existing_macos_installer.GetSize().height + 10
@@ -957,7 +947,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.download_label.GetPosition().x,
                 self.download_label.GetPosition().y + self.download_label.GetSize().height + 30
@@ -991,6 +980,11 @@ class wx_python_gui:
         )
         self.subheader.Centre(wx.HORIZONTAL)
 
+
+        # Sort Installers by 'Version'
+        # By default Apple adds new builds to the end of the list, so we need to sort them by version
+        avalible_installers = {k: v for k, v in sorted(avalible_installers.items(), key=lambda x: x[1]['Version'])}
+
         i = -20
         if avalible_installers:
             for app in avalible_installers:
@@ -998,7 +992,6 @@ class wx_python_gui:
                 self.install_selection = wx.Button(self.frame, label=f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])})", size=(250, 30))
                 i = i + 25
                 self.install_selection.SetPosition(
-                    # Set Position right above bottom of frame
                     wx.Point(
                         self.subheader.GetPosition().x,
                         self.subheader.GetPosition().y + self.subheader.GetSize().height + i
@@ -1010,7 +1003,6 @@ class wx_python_gui:
             self.install_selection = wx.StaticText(self.frame, label="No installers available")
             i = i + 25
             self.install_selection.SetPosition(
-                # Set Position right above bottom of frame
                 wx.Point(
                     self.subheader.GetPosition().x,
                     self.subheader.GetPosition().y + self.subheader.GetSize().height + i
@@ -1022,7 +1014,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.install_selection.GetPosition().x,
                 self.install_selection.GetPosition().y + self.install_selection.GetSize().height + 10
@@ -1060,7 +1051,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.download_label.GetPosition().x,
                 self.download_label.GetPosition().y + self.download_label.GetSize().height + 30
@@ -1111,7 +1101,6 @@ class wx_python_gui:
                 self.install_selection = wx.Button(self.frame, label=f"{avalible_installers[app]['Short Name']}: {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']})", size=(300, 30))
                 i = i + 25
                 self.install_selection.SetPosition(
-                    # Set Position right above bottom of frame
                     wx.Point(
                         self.header.GetPosition().x,
                         self.header.GetPosition().y + self.header.GetSize().height + i
@@ -1136,7 +1125,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.install_selection.GetPosition().x,
                 self.install_selection.GetPosition().y + self.install_selection.GetSize().height + 10
@@ -1190,7 +1178,6 @@ class wx_python_gui:
                 self.usb_selection = wx.Button(self.frame, label=f"{disk} - {availible_disks[disk]['name']} - {utilities.human_fmt(availible_disks[disk]['size'])}", size=(300, 30))
                 i = i + 25
                 self.usb_selection.SetPosition(
-                    # Set Position right above bottom of frame
                     wx.Point(
                         self.usb_selection_label.GetPosition().x,
                         self.usb_selection_label.GetPosition().y + self.usb_selection_label.GetSize().height + i
@@ -1215,7 +1202,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.usb_selection.GetPosition().x,
                 self.usb_selection.GetPosition().y + self.usb_selection.GetSize().height + 10
@@ -1282,7 +1268,6 @@ class wx_python_gui:
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
-            # Set Position right above bottom of frame
             wx.Point(
                 self.stdout_text.GetPosition().x,
                 self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 10
