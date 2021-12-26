@@ -373,7 +373,7 @@ def download_file(link, location, is_gui=None):
             print(f"https://github.com/dortania/OpenCore-Legacy-Patcher/releases/download/{constants.Constants().patcher_version}/OpenCore-Patcher-TUI-Offline.app.zip")
         else:
             print(link)
-        sys.exit()
+        return None
 
 def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
     # When runnign through our GUI, we run as root, however we do not get uid 0

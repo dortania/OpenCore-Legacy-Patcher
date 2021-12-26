@@ -992,9 +992,22 @@ class wx_python_gui:
         self.subheader.Centre(wx.HORIZONTAL)
 
         i = -20
-        for app in avalible_installers:
-            print(f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']})")
-            self.install_selection = wx.Button(self.frame, label=f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])})", size=(250, 30))
+        if avalible_installers:
+            for app in avalible_installers:
+                print(f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']})")
+                self.install_selection = wx.Button(self.frame, label=f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])})", size=(250, 30))
+                i = i + 25
+                self.install_selection.SetPosition(
+                    # Set Position right above bottom of frame
+                    wx.Point(
+                        self.subheader.GetPosition().x,
+                        self.subheader.GetPosition().y + self.subheader.GetSize().height + i
+                    )
+                )
+                self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.download_macos_click(f"macOS {avalible_installers[temp]['Version']} ({avalible_installers[temp]['Build']})", avalible_installers[temp]['Link']))
+                self.install_selection.Centre(wx.HORIZONTAL)
+        else:
+            self.install_selection = wx.StaticText(self.frame, label="No installers available")
             i = i + 25
             self.install_selection.SetPosition(
                 # Set Position right above bottom of frame
@@ -1003,7 +1016,7 @@ class wx_python_gui:
                     self.subheader.GetPosition().y + self.subheader.GetSize().height + i
                 )
             )
-            self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.download_macos_click(f"macOS {avalible_installers[temp]['Version']} ({avalible_installers[temp]['Build']})", avalible_installers[temp]['Link']))
+            self.install_selection.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
             self.install_selection.Centre(wx.HORIZONTAL)
         
         # Return to Main Menu
@@ -1058,25 +1071,28 @@ class wx_python_gui:
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         # Download macOS install data
-        installer.download_install_assistant(self.constants.payload_path, installer_link)
+        if installer.download_install_assistant(self.constants.payload_path, installer_link):
+            # Fix stdout
+            sys.stdout = self.stock_stdout
+            self.download_label.SetLabel(f"Finished Downloading {installer_name}")
+            self.download_label.Centre(wx.HORIZONTAL)
 
-        # Fix stdout
-        sys.stdout = self.stock_stdout
-        self.download_label.SetLabel(f"Finished Downloading {installer_name}")
-        self.download_label.Centre(wx.HORIZONTAL)
+            # Update Label: 
+            sys.stdout=menu_redirect.RedirectLabelAll(self.download_label)
+            installer.install_macOS_installer(self.constants.payload_path)
+            sys.stdout = self.stock_stdout
+            # Update Label:
+            self.download_label.SetLabel(f"Finished Installing {installer_name}")
+            self.download_label.Centre(wx.HORIZONTAL)
 
-        # Update Label: 
-        sys.stdout=menu_redirect.RedirectLabelAll(self.download_label)
-        installer.install_macOS_installer(self.constants.payload_path)
-        sys.stdout = self.stock_stdout
-        # Update Label:
-        self.download_label.SetLabel(f"Finished Installing {installer_name}")
-        self.download_label.Centre(wx.HORIZONTAL)
-
-        # Set Return to Main Menu into flash_installer_menu
-        self.return_to_main_menu.SetLabel("Flash Installer")
-        self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.flash_installer_menu)
-        self.return_to_main_menu.Centre(wx.HORIZONTAL)
+            # Set Return to Main Menu into flash_installer_menu
+            self.return_to_main_menu.SetLabel("Flash Installer")
+            self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.flash_installer_menu)
+            self.return_to_main_menu.Centre(wx.HORIZONTAL)
+        else:
+            sys.stdout = self.stock_stdout
+            self.download_label.SetLabel(f"Failed to download {installer_name}")
+            self.download_label.Centre(wx.HORIZONTAL)
 
     def flash_installer_menu(self, event=None):
         self.frame.DestroyChildren()

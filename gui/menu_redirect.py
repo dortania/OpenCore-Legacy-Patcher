@@ -23,6 +23,9 @@ class RedirectLabel(object):
             self.out.SetLabel(string)
             self.out.Centre(wx.HORIZONTAL)
         wx.GetApp().Yield()
+    
+    def flush(self):
+        pass
 
 class RedirectLabelAll(object):
     def __init__(self,aWxTextCtrl):
