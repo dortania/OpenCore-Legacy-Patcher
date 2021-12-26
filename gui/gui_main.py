@@ -979,7 +979,19 @@ class wx_python_gui:
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
-        i = -15
+        # Subheader:
+        self.subheader = wx.StaticText(self.frame, label="Installers currently available from Apple:")
+        self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.subheader.SetPosition(
+            # Set Position below header
+            wx.Point(
+                self.header.GetPosition().x,
+                self.header.GetPosition().y + self.header.GetSize().height + 10
+            )
+        )
+        self.subheader.Centre(wx.HORIZONTAL)
+
+        i = -20
         for app in avalible_installers:
             print(f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']})")
             self.install_selection = wx.Button(self.frame, label=f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])})", size=(250, 30))
@@ -987,8 +999,8 @@ class wx_python_gui:
             self.install_selection.SetPosition(
                 # Set Position right above bottom of frame
                 wx.Point(
-                    self.header.GetPosition().x,
-                    self.header.GetPosition().y + self.header.GetSize().height + i
+                    self.subheader.GetPosition().x,
+                    self.subheader.GetPosition().y + self.subheader.GetSize().height + i
                 )
             )
             self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.download_macos_click(f"macOS {avalible_installers[temp]['Version']} ({avalible_installers[temp]['Build']})", avalible_installers[temp]['Link']))
