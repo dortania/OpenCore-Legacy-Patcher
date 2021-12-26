@@ -5,7 +5,6 @@
 import wx
 import sys
 import webbrowser
-from pathlib import Path
 import subprocess
 import time
 
@@ -1294,7 +1293,7 @@ class wx_python_gui:
             cim_start = subprocess.Popen(
                 [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path],
                 stdout=subprocess.PIPE,
-                # stderr=subprocess.STDOUT
+                stderr=subprocess.STDOUT
             )
 
             wx.GetApp().Yield()
