@@ -28,22 +28,6 @@ class detect_root_patch:
         self.check_board_id= False
         self.supports_metal= False
 
-        self.root_patch_dict = {
-            "Graphics: Nvidia Tesla": self.nvidia_legacy,
-            "Graphics: Nvidia Kepler": self.kepler_gpu,
-            "Graphics: AMD TeraScale 1": self.amd_ts1,
-            "Graphics: AMD TeraScale 2": self.amd_ts2,
-            "Graphics: Intel Ironlake": self.iron_gpu,
-            "Graphics: Intel Sandy Bridge": self.sandy_gpu,
-            "Graphics: Intel Ivy Bridge": self.ivy_gpu,
-            "Brightness: Legacy Backlight Control": self.brightness_legacy,
-            "Audio: Legacy Realtek": self.legacy_audio,
-            "Networking: Legacy Wireless": self.legacy_wifi,
-            "Miscellaneous: Legacy GMUX": self.legacy_gmux,
-            "Miscellaneous: Legacy Keyboard Backlight": self.legacy_keyboard_backlight,
-            "Settings: Requires AMFI exemption": self.amfi_must_disable,
-            "Settings: Requires Board ID validation": self.check_board_id,
-        }
     
     def detect_gpus(self):
         gpus = self.constants.computer.gpus
@@ -161,6 +145,22 @@ class detect_root_patch:
                         self.legacy_gmux = True
                 else:
                     self.legacy_gmux = True
-            
+        
+        self.root_patch_dict = {
+            "Graphics: Nvidia Tesla": self.nvidia_legacy,
+            "Graphics: Nvidia Kepler": self.kepler_gpu,
+            "Graphics: AMD TeraScale 1": self.amd_ts1,
+            "Graphics: AMD TeraScale 2": self.amd_ts2,
+            "Graphics: Intel Ironlake": self.iron_gpu,
+            "Graphics: Intel Sandy Bridge": self.sandy_gpu,
+            "Graphics: Intel Ivy Bridge": self.ivy_gpu,
+            "Brightness: Legacy Backlight Control": self.brightness_legacy,
+            "Audio: Legacy Realtek": self.legacy_audio,
+            "Networking: Legacy Wireless": self.legacy_wifi,
+            "Miscellaneous: Legacy GMUX": self.legacy_gmux,
+            "Miscellaneous: Legacy Keyboard Backlight": self.legacy_keyboard_backlight,
+            "Settings: Requires AMFI exemption": self.amfi_must_disable,
+            "Settings: Requires Board ID validation": self.check_board_id,
+        }
         
         return self.root_patch_dict
