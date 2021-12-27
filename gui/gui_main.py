@@ -716,7 +716,6 @@ class wx_python_gui:
         self.subheader.Centre(wx.HORIZONTAL)
 
         patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
-
         if not any(not patch.startswith("Settings") and patches[patch] is True for patch in patches):
             print("- No applicable patches available")
             patches = []
@@ -788,6 +787,91 @@ class wx_python_gui:
         # Update frame height to right below return_to_main_menu
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
     
+    def root_patch_start(self, event=None):
+        self.frame.DestroyChildren()
+
+        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
+
+        # Header
+        self.header = wx.StaticText(self.frame, label="Root Patching")
+        self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.header.Centre(wx.HORIZONTAL)
+
+        # Subheader
+        self.subheader = wx.StaticText(self.frame, label="Starting root volume patching")
+        self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.subheader.SetPosition(
+            wx.Point(
+                self.header.GetPosition().x,
+                self.header.GetPosition().y + self.header.GetSize().height + 10
+            )
+        )
+        self.subheader.Centre(wx.HORIZONTAL)
+
+        self.developer_note = wx.StaticText(self.frame, label="Developer Note: OCLP-CLI output will print after finishing")
+        self.developer_note.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.developer_note.SetPosition(
+            wx.Point(
+                self.subheader.GetPosition().x,
+                self.subheader.GetPosition().y + self.subheader.GetSize().height + 3
+            )
+        )
+        self.developer_note.Centre(wx.HORIZONTAL)
+
+        # Text Box
+        self.text_box = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.text_box.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.text_box.SetPosition(
+            wx.Point(
+                self.developer_note.GetPosition().x,
+                self.developer_note.GetPosition().y + self.developer_note.GetSize().height + 3
+            )
+        )
+        self.text_box.SetSize(
+            wx.Size(
+                self.frame.GetSize().width - 10,
+                self.frame.GetSize().height - self.text_box.GetPosition().y + 40
+            )
+        )
+        self.text_box.Centre(wx.HORIZONTAL)
+
+        # Return to Main Menu
+        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu.SetPosition(
+            wx.Point(
+                self.text_box.GetPosition().x,
+                self.text_box.GetPosition().y + self.text_box.GetSize().height + 10
+            )
+        )
+        self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu.Centre(wx.HORIZONTAL)
+
+        # Update frame height to right below return_to_main_menu
+        self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+
+        wx.GetApp().Yield()
+        if self.constants.launcher_script is None:
+            self.text_box.AppendText("- Starting OCLP-CLI via Binary\n")
+            args = [self.constants.oclp_helper_path, self.constants.launcher_binary, "--patch_sys_vol"]
+        else:
+            self.text_box.AppendText("- Starting OCLP-CLI via Python\n")
+            args = [self.constants.oclp_helper_path, self.constants.launcher_binary, self.constants.launcher_script, "--patch_sys_vol"]
+        process = subprocess.Popen(
+            args, 
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        wx.GetApp().Yield()
+        while True:
+            line = process.stdout.readline()
+            wx.GetApp().Yield()
+            if line.strip() == "":
+                pass
+            else:
+                self.text_box.AppendText(line)
+            if not line: break
+        process.wait()
+    
     def root_patch_revert(self, event=None):
         self.frame.DestroyChildren()
 
@@ -812,13 +896,23 @@ class wx_python_gui:
         )
         self.subheader.Centre(wx.HORIZONTAL)
 
+        self.developer_note = wx.StaticText(self.frame, label="Developer Note: OCLP-CLI output will print after finishing")
+        self.developer_note.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.developer_note.SetPosition(
+            wx.Point(
+                self.subheader.GetPosition().x,
+                self.subheader.GetPosition().y + self.subheader.GetSize().height + 3
+            )
+        )
+        self.developer_note.Centre(wx.HORIZONTAL)
+
         # Text Box
         self.text_box = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.text_box.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.text_box.SetPosition(
             wx.Point(
-                self.subheader.GetPosition().x,
-                self.subheader.GetPosition().y + self.subheader.GetSize().height + 3
+                self.developer_note.GetPosition().x,
+                self.developer_note.GetPosition().y + self.developer_note.GetSize().height + 3
             )
         )
         self.text_box.SetSize(
