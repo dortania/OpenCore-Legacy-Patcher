@@ -859,7 +859,7 @@ class wx_python_gui:
         process = subprocess.Popen(
             args, 
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.STDOUT
         )
         wx.GetApp().Yield()
         while True:
@@ -950,7 +950,7 @@ class wx_python_gui:
         process = subprocess.Popen(
             args, 
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.STDOUT
         )
         wx.GetApp().Yield()
         while True:
