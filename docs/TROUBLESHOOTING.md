@@ -12,6 +12,7 @@ Here are some common errors users may experience while using this patcher:
 * [No Brightness Control](#no-brightness-control)
 * [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-Wi-Fi-on-Monterey-with-legacy-cards)
 * [No Graphics Acceleration on Intel Ivy Bridge and Nvidia Kepler GPUs](#no-graphics-acceleration-on-intel-ivy-bridge-and-nvidia-kepler-gpus)
+* [Black Screen on MacBookPro11,3 in macOS Monterey](#black-screen-on-macbookpro113-in-macos-monterey)
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
@@ -82,3 +83,9 @@ To work-around, we recommend users to manually connect using the "other" option 
 With macOS Monterey, Apple removed Graphics Drivers for both Intel Ivy Bride and Nvidia Kepler. To re-enable acceleration, simply run the Post Install Root Volume patches.
 
 Once rebooted, acceleration will be re-enabled as well as brightness control for laptops.
+
+## Black Screen on MacBookPro11,3 in macOS Monterey
+
+Due to Apple dropping Nvidia Kepler support in macOS Monterey, [MacBookPro11,3's GMUX has difficulties switching back to the iGPU to display macOS correctly.](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/522) To work-around this issue, boot the MacBookPro11,3 in Safe Mode and once macOS is installed, run OCLP's Post Install Root Patches to enable GPU Acceleration for the Nvidia dGPU.
+
+* Safe Mode can be started by holding Shift+Enter when selecting macOS Monterey in OCLP's Boot Menu.
