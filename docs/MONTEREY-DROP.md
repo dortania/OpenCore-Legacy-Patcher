@@ -15,9 +15,18 @@ With Monterey, Apple continues their their somewhat ruthless march of dropping I
 * MacBookPro11,2
 * MacBookPro11,3
 
-All of these models now have support in OpenCore Legacy Patcher. Note iMac15,1 does have [an unfortunate firmware bug preventing resolutions above 4k](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/359) with OpenCore Legacy Patcher
+All of these models now have support in OpenCore Legacy Patcher.
 
 ## Previously Broken Hardware
+
+::: details iMac15,1 5K Display Output Issue (Resolved in 0.3.2 and newer)
+
+* Documentation: 
+  * [5K iMac and UEFI: Fixing the dreaded output limitation](https://khronokernel.github.io/macos/2021/12/08/5K-UEFI.html)
+* Associated Github Issue:
+  * [5k Output issues on iMac15,1 (27" 5k iMac - 2014) #359](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/359)
+
+:::
 
 ::: details macOS 12.0 Beta 4 issue on 2012 to early 2013 machines (Resolved in 0.2.5 and newer)
 
