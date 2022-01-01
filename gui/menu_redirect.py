@@ -1,4 +1,5 @@
 import wx
+import time
 
 class RedirectText(object):
     def __init__(self,aWxTextCtrl):
@@ -7,6 +8,7 @@ class RedirectText(object):
     def write(self,string):
         self.out.WriteText(string)
         wx.GetApp().Yield()
+        time.sleep(0.01)
     
     def fileno(self):
         return 1
@@ -23,6 +25,7 @@ class RedirectLabel(object):
             self.out.SetLabel(string)
             self.out.Centre(wx.HORIZONTAL)
         wx.GetApp().Yield()
+        time.sleep(0.01)
     
     def flush(self):
         pass
@@ -35,3 +38,4 @@ class RedirectLabelAll(object):
         self.out.SetLabel(string)
         self.out.Centre(wx.HORIZONTAL)
         wx.GetApp().Yield()
+        time.sleep(0.01)

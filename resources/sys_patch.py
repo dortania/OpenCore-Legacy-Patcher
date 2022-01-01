@@ -83,9 +83,12 @@ class PatchSysVolume:
                     self.unpatch_root_vol()
                     return True
             else:
+                print(f"User ID: {os.getuid()} - {os.geteuid()}")
                 if self.constants.detected_os > os_data.os_data.catalina:
                     print("- Mounting APFS Snapshot as writable")
-                    utilities.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+                    result = utilities.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                    if result.returncode == 0:
+                        print(f"- Mounted APFS Snapshot as writable at: {self.mount_location}")
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
@@ -272,7 +275,7 @@ class PatchSysVolume:
                     print(bless.stdout.decode())
                     if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
                         print("- This is an APFS bug with Monterey! Perform a clean installation to ensure your APFS volume is built correctly")
-                    sys.exit(1)
+                    return
                 else:
                     self.unmount_drive()
             else:

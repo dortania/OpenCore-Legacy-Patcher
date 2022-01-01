@@ -7,8 +7,10 @@ import sys
 import webbrowser
 import subprocess
 import time
+import os
+import wx.adv
 
-from resources import constants, defaults, build, install, installer, utilities, sys_patch_detect
+from resources import constants, defaults, build, install, installer, utilities, sys_patch_detect, sys_patch, run
 from data import model_array, os_data, smbios_data
 from gui import menu_redirect
 
@@ -21,6 +23,7 @@ class wx_python_gui:
 
         # Backup stdout for usage with wxPython
         self.stock_stdout = sys.stdout
+        self.stock_stderr = sys.stderr
 
         # Define Window Size
         self.WINDOW_WIDTH_MAIN = 350
@@ -56,9 +59,94 @@ class wx_python_gui:
         self.frame.DestroyChildren()
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
         sys.stdout = self.stock_stdout
+        sys.stderr = self.stock_stderr
     
-    def print_test(self, text):
-        print(text)
+    def relaunch_as_root(self, event=None):
+
+        # Add Dialog Box asking if it's ok to relaunch as root
+        # If yes, relaunch as root
+        # If no, do nothing
+
+        # Create Dialog Box
+        self.dialog = wx.MessageDialog(
+            self.frame,
+            "OpenCore Legacy Patcher needs to relaunch as admin to continue. You will be prompted to enter your password.",
+            "Relaunch as root?",
+            wx.YES_NO | wx.ICON_QUESTION
+        )
+
+        # Show Dialog Box
+        if self.dialog.ShowModal() == wx.ID_YES:
+            print("Relaunching as root")
+            if self.constants.launcher_script is None:
+                args_string = f"{self.constants.launcher_binary}"""
+            else:
+                args_string = f"{self.constants.launcher_binary} {self.constants.launcher_script}"
+
+            args = [
+                "osascript",
+                "-e",
+                f'''do shell script "{args_string}"'''
+                ' with prompt "OpenCore Legacy Patcher needs administrator privileges to mount your EFI."'
+                " with administrator privileges"
+                " without altering line endings",
+            ]
+
+            self.frame.DestroyChildren()
+            self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
+
+            # Header
+            self.header = wx.StaticText(self.frame, label="Relaunching as root")
+            self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+            self.header.Centre(wx.HORIZONTAL)
+
+            # Add count down label
+            self.countdown_label = wx.StaticText(self.frame, label="Closing old process in 15 seconds")
+            self.countdown_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+            # Set below header
+            self.countdown_label.SetPosition(
+                (
+                    self.header.GetPosition().x + 3,
+                    self.header.GetPosition().y + self.header.GetSize().height + 3
+                )
+            )
+            self.countdown_label.Centre(wx.HORIZONTAL)
+            # Label: You can close this window if app finished relaunching
+            self.countdown_label2 = wx.StaticText(self.frame, label="You can close this window if app finished relaunching")
+            self.countdown_label2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+            # Set below countdown label
+            self.countdown_label2.SetPosition(
+                (
+                    self.countdown_label.GetPosition().x,
+                    self.countdown_label.GetPosition().y + self.countdown_label.GetSize().height + 3
+                )
+            )
+            self.countdown_label2.Centre(wx.HORIZONTAL)
+
+            # Set frame right below countdown label
+            self.frame.SetSize(
+                (
+                    -1,
+                    self.countdown_label2.GetPosition().y + self.countdown_label2.GetSize().height + 40
+                )
+            )
+
+            wx.GetApp().Yield()
+            subprocess.Popen(
+                args, 
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT
+            )
+            timer_val = 15
+            while True:
+                wx.GetApp().Yield()
+                self.countdown_label.SetLabel(f"Closing old process in {timer_val} seconds")
+                time.sleep(1)
+                timer_val -= 1
+                if timer_val == 0:
+                    break
+            # Close Current Application
+            self.frame.Close()
     
     def not_yet_implemented_menu(self, event=None):
         self.frame.DestroyChildren()
@@ -263,6 +351,8 @@ class wx_python_gui:
         # Reset Data in the event of re-run
         self.reset_window()
 
+        # Set header text
+        self.frame.SetTitle(f"OpenCore Legacy Patcher v{self.constants.patcher_version}")
         # Header
         self.header = wx.StaticText(self.frame, label=f"OpenCore Legacy Patcher v{self.constants.patcher_version}")
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
@@ -499,6 +589,7 @@ class wx_python_gui:
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
         sys.stdout=menu_redirect.RedirectText(self.stdout_text)
+        sys.stderr=menu_redirect.RedirectText(self.stdout_text)
 
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
@@ -519,6 +610,7 @@ class wx_python_gui:
         
         # Reset stdout
         sys.stdout = self.stock_stdout
+        sys.stderr = self.stock_stderr
     
     def install_menu(self, event=None):
         self.frame.DestroyChildren()
@@ -666,6 +758,7 @@ class wx_python_gui:
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
         sys.stdout=menu_redirect.RedirectText(self.stdout_text)
+        sys.stderr=menu_redirect.RedirectText(self.stdout_text)
 
         # Update frame height to right below
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 40)
@@ -700,7 +793,7 @@ class wx_python_gui:
         self.frame.DestroyChildren()
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Post-Install Menu")
+        self.header = wx.StaticText(self.frame, label=f"Post-Install Menu")
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
@@ -755,7 +848,12 @@ class wx_python_gui:
                 self.patch_label.GetPosition().y + self.patch_label.GetSize().height + 10
             )
         )
-        self.start_root_patching.Bind(wx.EVT_BUTTON, self.not_yet_implemented_menu)
+        uid = os.geteuid()
+        print(f"Effective UID: {uid}")
+        if uid == 0:
+            self.start_root_patching.Bind(wx.EVT_BUTTON, self.root_patch_start)
+        else:
+            self.start_root_patching.Bind(wx.EVT_BUTTON, self.relaunch_as_root)
         self.start_root_patching.Centre(wx.HORIZONTAL)
         if not patches:
             self.start_root_patching.Disable()
@@ -768,7 +866,10 @@ class wx_python_gui:
                 self.start_root_patching.GetPosition().y + self.start_root_patching.GetSize().height + 3
             )
         )
-        self.revert_root_patches.Bind(wx.EVT_BUTTON, self.root_patch_revert)
+        if uid == 0:
+            self.revert_root_patches.Bind(wx.EVT_BUTTON, self.root_patch_revert)
+        else:
+            self.revert_root_patches.Bind(wx.EVT_BUTTON, self.relaunch_as_root)
         self.revert_root_patches.Centre(wx.HORIZONTAL)
         if self.constants.detected_os < os_data.os_data.big_sur:
             self.revert_root_patches.Disable()
@@ -808,7 +909,7 @@ class wx_python_gui:
         )
         self.subheader.Centre(wx.HORIZONTAL)
 
-        self.developer_note = wx.StaticText(self.frame, label="Developer Note: OCLP-CLI output will print after finishing")
+        self.developer_note = wx.StaticText(self.frame, label="Starting shortly")
         self.developer_note.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.developer_note.SetPosition(
             wx.Point(
@@ -830,7 +931,7 @@ class wx_python_gui:
         self.text_box.SetSize(
             wx.Size(
                 self.frame.GetSize().width - 10,
-                self.frame.GetSize().height - self.text_box.GetPosition().y + 40
+                self.frame.GetSize().height + self.text_box.GetPosition().y + 80
             )
         )
         self.text_box.Centre(wx.HORIZONTAL)
@@ -850,27 +951,16 @@ class wx_python_gui:
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         wx.GetApp().Yield()
-        if self.constants.launcher_script is None:
-            self.text_box.AppendText("- Starting OCLP-CLI via Binary\n")
-            args = [self.constants.oclp_helper_path, self.constants.launcher_binary, "--patch_sys_vol"]
-        else:
-            self.text_box.AppendText("- Starting OCLP-CLI via Python\n")
-            args = [self.constants.oclp_helper_path, self.constants.launcher_binary, self.constants.launcher_script, "--patch_sys_vol"]
-        process = subprocess.Popen(
-            args, 
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT
-        )
+
+        sys.stdout = menu_redirect.RedirectText(self.text_box)
+        sys.stderr = menu_redirect.RedirectText(self.text_box)
         wx.GetApp().Yield()
-        while True:
-            line = process.stdout.readline()
-            wx.GetApp().Yield()
-            if line.strip() == "":
-                pass
-            else:
-                self.text_box.AppendText(line)
-            if not line: break
-        process.wait()
+        self.frame.Show()
+        sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
+        sys.stdout = self.stock_stdout
+        sys.stderr = self.stock_stderr
+
+        wx.GetApp().Yield()
     
     def root_patch_revert(self, event=None):
         self.frame.DestroyChildren()
@@ -896,7 +986,7 @@ class wx_python_gui:
         )
         self.subheader.Centre(wx.HORIZONTAL)
 
-        self.developer_note = wx.StaticText(self.frame, label="Developer Note: OCLP-CLI output will print after finishing")
+        self.developer_note = wx.StaticText(self.frame, label="Starting shortly")
         self.developer_note.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.developer_note.SetPosition(
             wx.Point(
@@ -918,7 +1008,7 @@ class wx_python_gui:
         self.text_box.SetSize(
             wx.Size(
                 self.frame.GetSize().width - 10,
-                self.frame.GetSize().height - self.text_box.GetPosition().y + 40
+                self.frame.GetSize().height + self.text_box.GetPosition().y + 80
             )
         )
         self.text_box.Centre(wx.HORIZONTAL)
@@ -938,31 +1028,14 @@ class wx_python_gui:
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         # Start reverting root patches
-        # Grab binary path, launch second instance as CLI
-        # This is the cleanest way to implement admin root patching without either seperating OCLP or including duplicate code
+        sys.stdout = menu_redirect.RedirectText(self.text_box)
+        sys.stderr = menu_redirect.RedirectText(self.text_box)
         wx.GetApp().Yield()
-        if self.constants.launcher_script is None:
-            self.text_box.AppendText("- Starting OCLP-CLI via Binary\n")
-            args = [self.constants.oclp_helper_path, self.constants.launcher_binary, "--unpatch_sys_vol"]
-        else:
-            self.text_box.AppendText("- Starting OCLP-CLI via Python\n")
-            args = [self.constants.oclp_helper_path, self.constants.launcher_binary, self.constants.launcher_script, "--unpatch_sys_vol"]
-        process = subprocess.Popen(
-            args, 
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT
-        )
+        sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_unpatch()
+        sys.stdout = self.stock_stdout
+        sys.stderr = self.stock_stderr
+
         wx.GetApp().Yield()
-        while True:
-            line = process.stdout.readline()
-            wx.GetApp().Yield()
-            if line.strip() == "":
-                pass
-            else:
-                self.text_box.AppendText(line)
-            if not line: break
-            
-        process.wait()
 
     def create_macos_menu(self, event=None):
         # Define Menu
@@ -1162,8 +1235,10 @@ class wx_python_gui:
 
             # Update Label: 
             sys.stdout=menu_redirect.RedirectLabelAll(self.download_label)
+            sys.stderr=menu_redirect.RedirectLabelAll(self.download_label)
             installer.install_macOS_installer(self.constants.payload_path)
             sys.stdout = self.stock_stdout
+            sys.stderr = self.stock_stderr
             # Update Label:
             self.download_label.SetLabel(f"Finished Installing {installer_name}")
             self.download_label.Centre(wx.HORIZONTAL)
@@ -1383,34 +1458,14 @@ class wx_python_gui:
             print("- Starting creation script as admin")
             wx.GetApp().Yield()
             time.sleep(1)
-            sys.stdout=menu_redirect.RedirectText(self.stdout_text)
-            cim_start = subprocess.Popen(
-                [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT
-            )
-
-            wx.GetApp().Yield()
-            while True:
-                line = cim_start.stdout.readline()
-                wx.GetApp().Yield()
-                if line.strip() == "":
-                    pass
-                else:
-                    self.stdout_text.AppendText(line)
-                if not line: break
-                
-            cim_start.wait()
-
-            if cim_start.returncode == 0:
-                print("Installer created successfully!")
-            else:
-                print("Installer creation failed")
-                print(f"Return Code {cim_start.returncode}")
-            sys.stdout = self.stock_stdout
+            args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
+            sys.stdout = menu_redirect.RedirectText(self.stdout_text)
+            sys.stderr = menu_redirect.RedirectText(self.stdout_text)
+            run.Run()._stream_output(comm=args)
         else:
             print("- Failed to create installer script")
-            sys.stdout = self.stock_stdout
+        sys.stdout = self.stock_stdout
+        sys.stderr = self.stock_stderr
 
     
     def settings_menu(self, event=None):
@@ -1430,7 +1485,7 @@ class wx_python_gui:
 
         self.frame.DestroyChildren()
         self.frame.SetSize(self.WINDOW_SETTINGS_WIDTH, self.WINDOW_SETTINGS_HEIGHT)
-        self.frame.SetLabel("Settings")
+        self.frame.SetTitle("Settings")
 
         # Header
         self.header = wx.StaticText(self.frame, label="Settings")
@@ -1769,12 +1824,20 @@ class wx_python_gui:
             self.apple_alc_checkbox.GetPosition().x,
             self.apple_alc_checkbox.GetPosition().y + self.apple_alc_checkbox.GetSize().height))
         
+        # Button: Developer Debug Info
+        self.debug_button = wx.Button(self.frame, label="Developer Debug Info")
+        self.debug_button.Bind(wx.EVT_BUTTON, self.additional_info_menu)
+        self.debug_button.SetPosition(wx.Point(
+            self.set_writeflash_checkbox.GetPosition().x,
+            self.set_writeflash_checkbox.GetPosition().y + self.set_writeflash_checkbox.GetSize().height))
+        self.debug_button.Center(wx.HORIZONTAL)
+        
         # Button: return to main menu
         self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu_button.SetPosition(wx.Point(
-            self.set_writeflash_checkbox.GetPosition().x,
-            self.set_writeflash_checkbox.GetPosition().y + self.set_writeflash_checkbox.GetSize().height + 10))
+            self.debug_button.GetPosition().x,
+            self.debug_button.GetPosition().y + self.debug_button.GetSize().height + 10))
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         # set frame size below return to main menu button
@@ -1973,3 +2036,103 @@ class wx_python_gui:
         selection = self.smbios_model_dropdown.GetStringSelection()
         print(f"SMBIOS Spoof Model: {selection}")
         self.constants.override_smbios = selection
+    
+    def additional_info_menu(self, event=None):
+        # Define Menu:
+
+        # Header: Additional Info
+        # Label: Model Dump
+        # Textbox: Model Dump
+        # Label: Real User ID
+        # Label: Effective User ID
+        # Label: Launcher Binary
+        # Textbox: Launcher Binary
+        # Label: Launcher Script
+        # Textbox: Launcher Script
+
+        self.frame.DestroyChildren()
+
+        # Header: Additional Info
+        self.additional_info_header = wx.StaticText(self.frame, label="Developer Debug Info", pos=wx.Point(10, 10))
+        self.additional_info_header.SetFont(wx.Font(16, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.additional_info_header.Center(wx.HORIZONTAL)
+
+        # Label: Real User ID
+        self.real_user_id_label = wx.StaticText(self.frame, label=f"Current UID: {os.getuid()} - ({os.geteuid()})")
+        self.real_user_id_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.real_user_id_label.SetPosition(
+            wx.Point(self.additional_info_header.GetPosition().x, self.additional_info_header.GetPosition().y + self.additional_info_header.GetSize().height + 10)
+        )
+        self.real_user_id_label.Center(wx.HORIZONTAL)
+
+        # Label: Model Dump
+        self.model_dump_label = wx.StaticText(self.frame, label="Model Dump")
+        self.model_dump_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.model_dump_label.SetPosition(
+            wx.Point(self.real_user_id_label.GetPosition().x, self.real_user_id_label.GetPosition().y + self.real_user_id_label.GetSize().height + 10)
+        )
+        self.model_dump_label.Center(wx.HORIZONTAL)
+
+        # Textbox: Model Dump
+        self.model_dump_textbox = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE, pos=wx.Point(self.model_dump_label.GetPosition().x, self.model_dump_label.GetPosition().y + self.model_dump_label.GetSize().height + 10))
+        self.model_dump_textbox.SetValue(str(self.constants.computer))
+        self.model_dump_textbox.SetPosition(
+            wx.Point(self.model_dump_label.GetPosition().x, self.model_dump_label.GetPosition().y + self.model_dump_label.GetSize().height + 10)
+        )
+        self.model_dump_textbox.SetSize(
+            wx.Size(
+                self.frame.GetSize().width - 5, 
+                self.model_dump_textbox.GetSize().height + self.model_dump_textbox.GetSize().height
+            )
+        )
+        self.model_dump_textbox.Center(wx.HORIZONTAL)
+        self.model_dump_textbox.SetEditable(False)
+        
+        
+
+        # Label: Launcher Binary
+        self.launcher_binary_label = wx.StaticText(self.frame, label="Launcher Binary")
+        self.launcher_binary_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.launcher_binary_label.SetPosition(
+            wx.Point(self.model_dump_textbox.GetPosition().x, self.model_dump_textbox.GetPosition().y + self.model_dump_textbox.GetSize().height + 10)
+        )
+        self.launcher_binary_label.Center(wx.HORIZONTAL)
+
+        # Textbox: Launcher Binary
+        self.launcher_binary_textbox = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE, pos=wx.Point(self.launcher_binary_label.GetPosition().x, self.launcher_binary_label.GetPosition().y + self.launcher_binary_label.GetSize().height + 10))
+        self.launcher_binary_textbox.SetValue(self.constants.launcher_binary)
+        self.launcher_binary_textbox.SetPosition(
+            wx.Point(self.launcher_binary_label.GetPosition().x, self.launcher_binary_label.GetPosition().y + self.launcher_binary_label.GetSize().height + 10)
+        )
+        self.launcher_binary_textbox.SetSize(wx.Size(self.frame.GetSize().width - 5, 50))
+        self.launcher_binary_textbox.Center(wx.HORIZONTAL)
+        self.launcher_binary_textbox.SetEditable(False)
+
+        # Label: Launcher Script
+        self.launcher_script_label = wx.StaticText(self.frame, label="Launcher Script")
+        self.launcher_script_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.launcher_script_label.SetPosition(
+            wx.Point(self.launcher_binary_textbox.GetPosition().x, self.launcher_binary_textbox.GetPosition().y + self.launcher_binary_textbox.GetSize().height + 10)
+        )
+        self.launcher_script_label.Center(wx.HORIZONTAL)
+
+        # Textbox: Launcher Script
+        self.launcher_script_textbox = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE, pos=wx.Point(self.launcher_script_label.GetPosition().x, self.launcher_script_label.GetPosition().y + self.launcher_script_label.GetSize().height + 10))
+        self.launcher_script_textbox.SetValue(str(self.constants.launcher_script))
+        self.launcher_script_textbox.SetPosition(
+            wx.Point(self.launcher_script_label.GetPosition().x, self.launcher_script_label.GetPosition().y + self.launcher_script_label.GetSize().height + 10)
+        )
+        self.launcher_script_textbox.SetSize(wx.Size(self.frame.GetSize().width - 5, 60))
+        self.launcher_script_textbox.Center(wx.HORIZONTAL)
+        self.launcher_script_textbox.SetEditable(False)
+
+        # Return to Main Menu Button
+        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu_button.SetPosition(
+            wx.Point(self.launcher_script_textbox.GetPosition().x, self.launcher_script_textbox.GetPosition().y + self.launcher_script_textbox.GetSize().height + 10)
+        )
+        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu_button.Center(wx.HORIZONTAL)
+        
+        # Set frame below return to main menu button
+        self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
