@@ -1,4 +1,4 @@
-# Copyright (C) 2020-2021, Dhinak G
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymaluk
 from __future__ import print_function
 
 import hashlib

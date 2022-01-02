@@ -1,6 +1,6 @@
 # Installation of OpenCore files to ESP
 # Usage soley for TUI
-# Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 import plistlib
 import subprocess

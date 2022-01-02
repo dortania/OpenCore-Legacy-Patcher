@@ -1,5 +1,5 @@
 # Lists all models and required patches
-# Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 SupportedSMBIOS = [
     # MacBook
     "MacBook4,1",

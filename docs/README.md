@@ -16,5 +16,5 @@ features:
   details: Install updates the moment they come out just like on a supported Mac, and no more 12GB+ updates.
 - title: Zero firmware patching
   details: No need to patch APFS ROM support, all protocol upgrades are done in memory and never permanent.
-footer: Copyright © Dortania 2020-2021
+footer: Copyright © Dortania 2020-2022
 ---

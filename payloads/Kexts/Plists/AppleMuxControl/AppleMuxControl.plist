@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>AppleMuxControl</string>
 	<key>CFBundleGetInfoString</key>
-	<string>6.2.9, Copyright 2008-2021 Apple Inc. All rights reserved.</string>
+	<string>6.2.9, Copyright 2008-2022 Apple Inc. All rights reserved.</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.apple.driver.AppleMuxControl</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -390,7 +390,7 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>11.3</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>6.2.9, Copyright © 2008-2021 Apple Inc. All rights reserved.</string>
+	<string>6.2.9, Copyright © 2008-2022 Apple Inc. All rights reserved.</string>
 	<key>OSBundleLibraries</key>
 	<dict>
 		<key>com.apple.AppleGraphicsDeviceControl</key>

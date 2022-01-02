@@ -1,5 +1,5 @@
 # Handle misc CLI menu options
-# Copyright (C) 2020-2021, Dhinak G
+# Copyright (C) 2020-2022, Dhinak G
 
 from __future__ import annotations
 

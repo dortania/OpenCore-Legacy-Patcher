@@ -1,5 +1,5 @@
 # Updates build version in OCLP-GUI during CI builds
-# Copyright (C) 2021 Mykola Grymalyuk
+# Copyright (C) 2021-2022 Mykola Grymalyuk
 import plistlib
 from pathlib import Path
 from resources import constants

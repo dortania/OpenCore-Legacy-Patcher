@@ -1,5 +1,5 @@
 # Framework for mounting and patching macOS root volume
-# Copyright (C) 2020-2021, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 # Missing Features:
 # - Full System/Library Snapshotting (need to research how Apple achieves this)
 #   - Temporary Work-around: sudo bless --mount /System/Volumes/Update/mnt1 --bootefi --last-sealed-snapshot
