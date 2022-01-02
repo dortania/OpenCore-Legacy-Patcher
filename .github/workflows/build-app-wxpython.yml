@@ -24,12 +24,12 @@ jobs:
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: OpenCore-Patcher-wxPython.app (macOS 10.13 and newer)
+          name: OpenCore-Patcher.app (GUI, macOS 10.13 and newer)
           path: OpenCore-Patcher-wxPython.app.zip
       - name: Upload Legacy App to Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: OpenCore-Patcher-wxPython.app (macOS 10.12 and older)
+          name: OpenCore-Patcher.app (GUI, macOS 10.12 and older)
           path: OpenCore-Patcher-wxPython-Legacy.app.zip
 
       - name: Upload to Release
@@ -40,7 +40,7 @@ jobs:
           file: OpenCore-Patcher-wxPython.app.zip
           tag: ${{ github.ref }}
           file_glob: true
-          asset_name: OpenCore-Patcher-wxPython.app (macOS 10.13 and newer)
+          asset_name: OpenCore-Patcher.app (GUI, macOS 10.13 and newer)
       
       - name: Upload Legacy to Release
         if: github.event_name == 'release'
@@ -50,4 +50,4 @@ jobs:
           file: OpenCore-Patcher-wxPython-Legacy.app.zip
           tag: ${{ github.ref }}
           file_glob: true
-          asset_name: OpenCore-Patcher-wxPython.app (macOS 10.12 and older)
+          asset_name: OpenCore-Patcher.app (GUI, macOS 10.12 and older)
