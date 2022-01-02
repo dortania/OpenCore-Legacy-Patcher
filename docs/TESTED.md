@@ -19,7 +19,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
 | MacBookAir2,1 | No reports | N/A | N/A |
-| MacBookAir3,1 | ^^ | ^^ | ^^ |
+| MacBookAir3,1 | <span style="color:#30BCD5"> YES </span> | uvesten | - Stock Model<br/>- Patcher version 0.3.3 |
 | MacBookAir3,2 | <span style="color:#30BCD5"> YES </span> | houser42 | - Stock model <br/>- Patcher version unknown |
 | MacBookAir4,1 | No reports | N/A | N/A |
 | MacBookAir4,2 | ^^ | ^^ | ^^ |
