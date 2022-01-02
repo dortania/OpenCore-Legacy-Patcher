@@ -439,7 +439,7 @@ class wx_python_gui:
 
 
         # Copyright Label
-        self.copyright = wx.StaticText(self.frame, label="Copyright © 2020-2021 Dortania")
+        self.copyright = wx.StaticText(self.frame, label="Copyright © 2020-2022 Dortania")
         self.copyright.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.copyright.SetPosition(
             wx.Point(
