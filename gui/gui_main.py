@@ -1829,7 +1829,7 @@ class wx_python_gui:
         self.debug_button.Bind(wx.EVT_BUTTON, self.additional_info_menu)
         self.debug_button.SetPosition(wx.Point(
             self.set_writeflash_checkbox.GetPosition().x,
-            self.set_writeflash_checkbox.GetPosition().y + self.set_writeflash_checkbox.GetSize().height))
+            self.set_writeflash_checkbox.GetPosition().y + self.set_writeflash_checkbox.GetSize().height + 3))
         self.debug_button.Center(wx.HORIZONTAL)
         
         # Button: return to main menu
@@ -2051,6 +2051,8 @@ class wx_python_gui:
         # Textbox: Launcher Script
 
         self.frame.DestroyChildren()
+
+        self.frame.SetSize(wx.Size(500, -1))
 
         # Header: Additional Info
         self.additional_info_header = wx.StaticText(self.frame, label="Developer Debug Info", pos=wx.Point(10, 10))

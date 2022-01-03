@@ -1,5 +1,3 @@
-name: CI - Build wxPython
-
 on:
   push:
   workflow_dispatch:
@@ -16,7 +14,7 @@ on:
 
 jobs:
   build:
-    name: Build wxPython Offline
+    name: Build Offline wxPython
     runs-on: x86_64_mojave
     steps:
       - uses: actions/checkout@v2
