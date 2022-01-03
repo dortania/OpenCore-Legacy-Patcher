@@ -966,10 +966,7 @@ class BuildOpenCore:
             # Update tables
             self.config["PlatformInfo"]["UpdateNVRAM"] = True
             self.config["PlatformInfo"]["UpdateSMBIOS"] = True
-
-            # Updating DataHub breaks hibernation, disabling for time being
-            # self.config["PlatformInfo"]["UpdateDataHub"] = True
-            # self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
+            self.config["PlatformInfo"]["UpdateDataHub"] = True
 
         def moderate_serial_patch(self):
             if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
@@ -1010,6 +1007,18 @@ class BuildOpenCore:
             print("- Using Minimal SMBIOS patching")
             self.spoofed_model = self.model
             minimal_serial_patch(self)
+        else:
+            # Update DataHub to resolve Lilu Race Condition
+            # macOS Monterey will somtimes not present the boardIdentifier in the DeviceTree on UEFI 1.2 or older Mac,
+            # Thus resulting in an infitinte loop as Lilu tries to request the Board ID
+            # To resolve this, set PlatformInfo -> DataHub -> BoardProduct and enable UpdateDataHub
+
+            # Note 1: Only apply if system is UEFI 1.2, this is generally Ivy Bridge and older, excluding MacPro6,1
+            # Note 2: Flipping 'UEFI -> ProtocolOverrides -> DataHub' will break hibernation
+            if (smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value and self.model != "MacPro6,1"):
+                print("- Detected UEFI 1.2 or older Mac, updating BoardProduct")
+                self.config["PlatformInfo"]["DataHub"]["BoardProduct"] = self.spoofed_board
+                self.config["PlatformInfo"]["UpdateDataHub"] = True
 
         # USB Map and CPUFriend Patching
         if (
