@@ -2,13 +2,15 @@ import wx
 import time
 
 class RedirectText(object):
-    def __init__(self,aWxTextCtrl):
+    def __init__(self,aWxTextCtrl, sleep):
         self.out=aWxTextCtrl
+        self.sleep = sleep
 
     def write(self,string):
         self.out.WriteText(string)
         wx.GetApp().Yield()
-        time.sleep(0.01)
+        if self.sleep:
+            time.sleep(0.01)
     
     def fileno(self):
         return 1

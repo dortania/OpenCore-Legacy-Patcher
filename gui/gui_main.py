@@ -9,6 +9,7 @@ import subprocess
 import time
 import os
 import wx.adv
+from wx.lib.agw import hyperlink
 
 from resources import constants, defaults, build, install, installer, utilities, sys_patch_detect, sys_patch, run
 from data import model_array, os_data, smbios_data, sip_data
@@ -588,8 +589,8 @@ class wx_python_gui:
         # Centre the text box to top of window
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
-        sys.stdout=menu_redirect.RedirectText(self.stdout_text)
-        sys.stderr=menu_redirect.RedirectText(self.stdout_text)
+        sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
+        sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
 
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
@@ -757,8 +758,8 @@ class wx_python_gui:
         # Centre the text box to top of window
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
-        sys.stdout=menu_redirect.RedirectText(self.stdout_text)
-        sys.stderr=menu_redirect.RedirectText(self.stdout_text)
+        sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
+        sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
 
         # Update frame height to right below
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 40)
@@ -952,8 +953,8 @@ class wx_python_gui:
 
         wx.GetApp().Yield()
 
-        sys.stdout = menu_redirect.RedirectText(self.text_box)
-        sys.stderr = menu_redirect.RedirectText(self.text_box)
+        sys.stdout = menu_redirect.RedirectText(self.text_box, True)
+        sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
         self.frame.Show()
         sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
@@ -1028,8 +1029,8 @@ class wx_python_gui:
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         # Start reverting root patches
-        sys.stdout = menu_redirect.RedirectText(self.text_box)
-        sys.stderr = menu_redirect.RedirectText(self.text_box)
+        sys.stdout = menu_redirect.RedirectText(self.text_box, True)
+        sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
         sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_unpatch()
         sys.stdout = self.stock_stdout
@@ -1431,7 +1432,6 @@ class wx_python_gui:
         # Centre the text box to top of window
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
-        # sys.stdout=menu_redirect.RedirectText(self.stdout_text)
 
         # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
@@ -1459,8 +1459,8 @@ class wx_python_gui:
             wx.GetApp().Yield()
             time.sleep(1)
             args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
-            sys.stdout = menu_redirect.RedirectText(self.stdout_text)
-            sys.stderr = menu_redirect.RedirectText(self.stdout_text)
+            sys.stdout = menu_redirect.RedirectText(self.stdout_text, True)
+            sys.stderr = menu_redirect.RedirectText(self.stdout_text, True)
             run.Run()._stream_output(comm=args)
         else:
             print("- Failed to create installer script")
@@ -2180,14 +2180,15 @@ class wx_python_gui:
         )
 
         # Hyperlink to the right of sip_label
-        import wx.lib.agw.hyperlink as hl
-        hl.HyperLinkCtrl(
+        
+        hyperlink_label = hyperlink.HyperLinkCtrl(
             self.frame,
             -1, 
             "XNU's csr.h", 
             pos=(self.sip_label.GetPosition().x + self.sip_label.GetSize().width, self.sip_label.GetPosition().y), 
-            URL="https://github.com/apple/darwin-xnu/blob/main/bsd/sys/csr.h"
+            URL="https://github.com/apple/darwin-xnu/blob/main/bsd/sys/csr.h",
         )
+        hyperlink_label.SetForegroundColour((25, 179, 231))
 
         # Label: By default, SIP is set to 0x00 (enabled) on newer Macs.
         # For older Macs requiring root patching, we set SIP to (0xA03)
@@ -2232,13 +2233,31 @@ class wx_python_gui:
         )
         self.sip_label_5.Center(wx.HORIZONTAL)
 
+        # Label: If you system requires SIP to be lowered, do not try to re-enable it.
+        # You may accidentally break your system. OpenCore Legacy Patcher by default 
+        # knows the most ideal SIP value for your system. Override this value if you
+        # understand the consequences or are absolutely certain your configuration supports SIP
+        # in the OSes you wish to run OpenCore Legacy Patcher on.
+        warning_string = """
+OpenCore Legacy Patcher by default knows the most ideal
+   SIP value for your system. Override this value only if you 
+     understand the consequences. Reckless usage of this
+               menu can break your installation.
+"""
+        self.sip_label_6 = wx.StaticText(self.frame, label=warning_string)
+        self.sip_label_6.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.sip_label_6.SetPosition(
+            wx.Point(self.sip_label_5.GetPosition().x, self.sip_label_5.GetPosition().y + self.sip_label_5.GetSize().height)
+        )
+        self.sip_label_6.Center(wx.HORIZONTAL)
+
         i = 0
         for sip_bit in sip_data.system_integrity_protection.csr_values_extended:
             self.sip_checkbox = wx.CheckBox(self.frame, label=sip_data.system_integrity_protection.csr_values_extended[sip_bit]["name"])
             self.sip_checkbox.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
             self.sip_checkbox.SetToolTip(f'Description: {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["description"]}\nValue: {hex(sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"])}\nIntroduced in: macOS {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["introduced_friendly"]}')
             self.sip_checkbox.SetPosition(
-                wx.Point(self.sip_label_5.GetPosition().x + 10, self.sip_label_5.GetPosition().y + self.sip_label_5.GetSize().height + 10 + i)
+                wx.Point(70, self.sip_label_6.GetPosition().y + self.sip_label_6.GetSize().height + i)
             )
             i = i + 20
             self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.update_sip_value)
@@ -2262,6 +2281,13 @@ class wx_python_gui:
             self.sip_value = self.sip_value + dict["value"]
         else:
             self.sip_value = self.sip_value - dict["value"]
-        self.constants.custom_sip_value = hex(self.sip_value)
+        if hex(self.sip_value) == "0x0":
+            self.constants.custom_sip_value = None
+            self.constants.sip_status = True
+        elif hex(self.sip_value) == "0xa03":
+            self.constants.custom_sip_value = None
+            self.constants.sip_status = False
+        else:
+            self.constants.custom_sip_value = hex(self.sip_value)
         self.sip_label_2.SetLabel(f"Currently configured SIP: {hex(self.sip_value)}")
         self.sip_label_2.Center(wx.HORIZONTAL)
