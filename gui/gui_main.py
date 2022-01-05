@@ -11,7 +11,7 @@ import os
 import wx.adv
 
 from resources import constants, defaults, build, install, installer, utilities, sys_patch_detect, sys_patch, run
-from data import model_array, os_data, smbios_data
+from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect
 
 class wx_python_gui:
@@ -1547,17 +1547,17 @@ class wx_python_gui:
         self.opencore_checkbox.Bind(wx.EVT_CHECKBOX, self.oc_checkbox_click)
         self.opencore_checkbox.ToolTip = wx.ToolTip("""Enables OpenCore logging, can heavily impact boot times""")
 
-        # Checkbox: SIP
-        self.sip_checkbox = wx.CheckBox(self.frame, label="SIP")
-        self.sip_checkbox.SetValue(self.constants.sip_status)
-        self.sip_checkbox.SetPosition(wx.Point(self.opencore_checkbox.GetPosition().x , self.opencore_checkbox.GetPosition().y + self.opencore_checkbox.GetSize().height))
-        self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.sip_checkbox_click)
-        self.sip_checkbox.ToolTip = wx.ToolTip("""Sets SIP, disable to allow root patching""")
+        # # Checkbox: SIP
+        # self.sip_checkbox = wx.CheckBox(self.frame, label="SIP")
+        # self.sip_checkbox.SetValue(self.constants.sip_status)
+        # self.sip_checkbox.SetPosition(wx.Point(self.opencore_checkbox.GetPosition().x , self.opencore_checkbox.GetPosition().y + self.opencore_checkbox.GetSize().height))
+        # self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.sip_checkbox_click)
+        # self.sip_checkbox.ToolTip = wx.ToolTip("""Sets SIP, disable to allow root patching""")
 
         # Checkbox: SecureBootModel
         self.secureboot_checkbox = wx.CheckBox(self.frame, label="SecureBootModel")
         self.secureboot_checkbox.SetValue(self.constants.secure_status)
-        self.secureboot_checkbox.SetPosition(wx.Point(self.sip_checkbox.GetPosition().x , self.sip_checkbox.GetPosition().y + self.sip_checkbox.GetSize().height))
+        self.secureboot_checkbox.SetPosition(wx.Point(self.opencore_checkbox.GetPosition().x , self.opencore_checkbox.GetPosition().y + self.opencore_checkbox.GetSize().height))
         self.secureboot_checkbox.Bind(wx.EVT_CHECKBOX, self.secureboot_checkbox_click)
         self.secureboot_checkbox.ToolTip = wx.ToolTip("""Sets SecureBootModel, useful for models spoofing T2 Macs to get OTA updates""")
 
@@ -1577,20 +1577,33 @@ class wx_python_gui:
 
 
         # Buttons
+        
+        # Button: SIP Settings
+        if self.constants.custom_sip_value:
+            sip_string = "Custom"
+        elif self.constants.sip_status:
+            sip_string = "Enabled"
+        else:
+            sip_string = "Disabled"
+        self.sip_button = wx.Button(self.frame, label=f"SIP Settings ({sip_string})",  size=(155,30))
+        self.sip_button.SetPosition(wx.Point(self.accel_checkbox.GetPosition().x , self.accel_checkbox.GetPosition().y + self.accel_checkbox.GetSize().height + 10))
+        self.sip_button.Bind(wx.EVT_BUTTON, self.sip_config_menu)
+        self.sip_button.Center(wx.HORIZONTAL)
+
         # Button: SMBIOS Settings
-        self.smbios_button = wx.Button(self.frame, label="SMBIOS Settings",  size=(150,30))
-        self.smbios_button.SetPosition(wx.Point(self.accel_checkbox.GetPosition().x , self.accel_checkbox.GetPosition().y + self.accel_checkbox.GetSize().height + 10))
+        self.smbios_button = wx.Button(self.frame, label="SMBIOS Settings",  size=(155,30))
+        self.smbios_button.SetPosition(wx.Point(self.sip_button.GetPosition().x , self.sip_button.GetPosition().y + self.sip_button.GetSize().height))
         self.smbios_button.Bind(wx.EVT_BUTTON, self.smbios_settings_menu)
         self.smbios_button.Center(wx.HORIZONTAL)
 
         # Button: Developer Settings
-        self.miscellaneous_button = wx.Button(self.frame, label="Developer Settings",  size=(150,30))
+        self.miscellaneous_button = wx.Button(self.frame, label="Developer Settings",  size=(155,30))
         self.miscellaneous_button.SetPosition(wx.Point(self.smbios_button.GetPosition().x , self.smbios_button.GetPosition().y + self.smbios_button.GetSize().height))
         self.miscellaneous_button.Bind(wx.EVT_BUTTON, self.misc_settings_menu)
         self.miscellaneous_button.Centre(wx.HORIZONTAL)
 
         # Return to Main Menu
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu", size=(150,30))
+        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu", size=(155,30))
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.miscellaneous_button.GetPosition().x,
@@ -1829,7 +1842,7 @@ class wx_python_gui:
         self.debug_button.Bind(wx.EVT_BUTTON, self.additional_info_menu)
         self.debug_button.SetPosition(wx.Point(
             self.set_writeflash_checkbox.GetPosition().x,
-            self.set_writeflash_checkbox.GetPosition().y + self.set_writeflash_checkbox.GetSize().height + 3))
+            self.set_writeflash_checkbox.GetPosition().y + self.set_writeflash_checkbox.GetSize().height + 5))
         self.debug_button.Center(wx.HORIZONTAL)
         
         # Button: return to main menu
@@ -2138,3 +2151,117 @@ class wx_python_gui:
         
         # Set frame below return to main menu button
         self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
+
+    
+    def sip_config_menu(self, event=None):
+        # Implement individual checkbox for each bit in SIP
+        # Add label showing 'self.constants.custom_sip_value'
+        # custom_sip_value is equivlant to all enabled checkboxes
+        # Refresh label whenever checkbox is changed
+
+        self.frame.DestroyChildren()
+        self.frame.SetSize(wx.Size(400, 600))
+
+        # Title: Configure SIP
+        self.configure_sip_title = wx.StaticText(self.frame, label="Configure SIP")
+        self.configure_sip_title.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.configure_sip_title.Center(wx.HORIZONTAL)
+
+        # Label: Flip indivdual bits corresponding to XNU's csr.h
+        # If you're unfamiliar with how SIP works, do not touch this menu
+        self.sip_label = wx.StaticText(self.frame, label="Flip indivdual bits corresponding to")
+        self.sip_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.sip_label.SetPosition(
+            wx.Point(-1, self.configure_sip_title.GetPosition().y + self.configure_sip_title.GetSize().height + 10)
+        )
+        self.sip_label.Center(wx.HORIZONTAL)
+        self.sip_label.SetPosition(
+            wx.Point(self.sip_label.GetPosition().x - 25, -1)
+        )
+
+        # Hyperlink to the right of sip_label
+        import wx.lib.agw.hyperlink as hl
+        hl.HyperLinkCtrl(
+            self.frame,
+            -1, 
+            "XNU's csr.h", 
+            pos=(self.sip_label.GetPosition().x + self.sip_label.GetSize().width, self.sip_label.GetPosition().y), 
+            URL="https://github.com/apple/darwin-xnu/blob/main/bsd/sys/csr.h"
+        )
+
+        # Label: By default, SIP is set to 0x00 (enabled) on newer Macs.
+        # For older Macs requiring root patching, we set SIP to (0xA03)
+        # This corresponds to the following bits:
+        #  - 0x1 -   CSR_ALLOW_UNTRUSTED_KEXTS
+        #  - 0x2 -   CSR_ALLOW_UNRESTRICTED_FS
+        #  - 0x200 - CSR_ALLOW_UNAPPROVED_KEXTS
+        #  - 0x800 - CSR_ALLOW_UNAUTHENTICATED_ROOT
+
+        if self.constants.custom_sip_value is not None:
+            self.sip_value = int(self.constants.custom_sip_value, 16)
+        elif self.constants.sip_status is True:
+            self.sip_value = 0x00
+        else:
+            self.sip_value = 0xa03
+        
+        self.sip_label_2 = wx.StaticText(self.frame, label=f"Currently configured SIP: {hex(self.sip_value)}")
+        self.sip_label_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.sip_label_2.SetPosition(
+            wx.Point(self.sip_label.GetPosition().x, self.sip_label.GetPosition().y + self.sip_label.GetSize().height + 10)
+        )
+        self.sip_label_2.Center(wx.HORIZONTAL)
+
+        self.sip_label_3 = wx.StaticText(self.frame, label="For older Macs requiring root patching, we set SIP to\n be partially disabled (0xa03) to allow root patching.")
+        self.sip_label_3.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.sip_label_3.SetPosition(
+            wx.Point(self.sip_label_2.GetPosition().x, self.sip_label_2.GetPosition().y + self.sip_label_2.GetSize().height + 10)
+        )
+        self.sip_label_3.Center(wx.HORIZONTAL)
+
+        self.sip_label_4 = wx.StaticText(self.frame, label="This value (0xa03) corresponds to the following bits in csr.h:")
+        self.sip_label_4.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.sip_label_4.SetPosition(
+            wx.Point(self.sip_label_3.GetPosition().x, self.sip_label_3.GetPosition().y + self.sip_label_3.GetSize().height + 5)
+        )
+        self.sip_label_4.Center(wx.HORIZONTAL)
+
+        self.sip_label_5 = wx.StaticText(self.frame, label="   0x1     - CSR_ALLOW_UNTRUSTED_KEXTS\n   0x2     - CSR_ALLOW_UNRESTRICTED_FS\n   0x200 - CSR_ALLOW_UNAPPROVED_KEXTS\n   0x800 - CSR_ALLOW_UNAUTHENTICATED_ROOT")
+        self.sip_label_5.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.sip_label_5.SetPosition(
+            wx.Point(self.sip_label_4.GetPosition().x, self.sip_label_4.GetPosition().y + self.sip_label_4.GetSize().height + 7)
+        )
+        self.sip_label_5.Center(wx.HORIZONTAL)
+
+        i = 0
+        for sip_bit in sip_data.system_integrity_protection.csr_values_extended:
+            self.sip_checkbox = wx.CheckBox(self.frame, label=sip_data.system_integrity_protection.csr_values_extended[sip_bit]["name"])
+            self.sip_checkbox.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+            self.sip_checkbox.SetToolTip(f'Description: {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["description"]}\nValue: {hex(sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"])}\nIntroduced in: macOS {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["introduced_friendly"]}')
+            self.sip_checkbox.SetPosition(
+                wx.Point(self.sip_label_5.GetPosition().x + 10, self.sip_label_5.GetPosition().y + self.sip_label_5.GetSize().height + 10 + i)
+            )
+            i = i + 20
+            self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.update_sip_value)
+            if self.sip_value & sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"] == sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"]:
+                self.sip_checkbox.SetValue(True)
+        
+        # Button: returns to the main menu
+        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu_button.SetPosition(
+            wx.Point(self.sip_checkbox.GetPosition().x, self.sip_checkbox.GetPosition().y + self.sip_checkbox.GetSize().height + 15)
+        )
+        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu_button.Center(wx.HORIZONTAL)
+
+        # Set the frame size
+        self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
+    
+    def update_sip_value(self, event):
+        dict = sip_data.system_integrity_protection.csr_values_extended[event.GetEventObject().GetLabel()]
+        if event.GetEventObject().GetValue() is True:
+            self.sip_value = self.sip_value + dict["value"]
+        else:
+            self.sip_value = self.sip_value - dict["value"]
+        self.constants.custom_sip_value = hex(self.sip_value)
+        self.sip_label_2.SetLabel(f"Currently configured SIP: {hex(self.sip_value)}")
+        self.sip_label_2.Center(wx.HORIZONTAL)
