@@ -1403,7 +1403,7 @@ class wx_python_gui:
         self.creating_macos_installer_label.Centre(wx.HORIZONTAL)
 
         # Label: Developer Note: createinstallmedia output currently not implemented
-        self.developer_note_label = wx.StaticText(self.frame, label="Developer Note: createinstallmedia output will print after finishing")
+        self.developer_note_label = wx.StaticText(self.frame, label="\tDeveloper Note: createinstallmedia output will print after finishing\nIf Application becomes unresponsive, this is due to slow USB flash drives.\n\tPlease do not close this window until the process is complete.")
         self.developer_note_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.developer_note_label.SetPosition(
             # Set Position below header
