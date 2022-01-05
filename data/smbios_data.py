@@ -2803,6 +2803,28 @@ smbios_dictionary = {
         "Stock GPUs": [],
         "Stock Storage": [],
     },
+    "VMware7,1": {
+        # VMware Virtual Machine
+        "Board ID": "440BX Desktop Reference Platform",
+        "FirmwareFeatures": None,
+        "CPU Generation": cpu_data.cpu_data.penryn.value,
+        "Max OS Supported": os_data.os_data.max_os,
+        "Wireless Model": None,
+        "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
+        "Stock GPUs": [],
+        "Stock Storage": [],
+    },
+    "Parallels17,1": {
+        # Parallels Virtual Machine
+        "Board ID": "Parallels Virtual Platform",
+        "FirmwareFeatures": None,
+        "CPU Generation": cpu_data.cpu_data.penryn.value,
+        "Max OS Supported": os_data.os_data.max_os,
+        "Wireless Model": None,
+        "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
+        "Stock GPUs": [],
+        "Stock Storage": [],
+    },
     "iBridge2,11": {
         # Unknown ID, Intel based, present in Monterey
         "Board ID": None,
