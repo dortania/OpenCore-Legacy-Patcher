@@ -712,15 +712,17 @@ set million colour before rebooting"""
             print("- Removing old Apple Binaries zip")
             Path(self.constants.payload_apple_root_path_zip).unlink()
 
+        download_result = None
         local_zip = Path(self.constants.payload_path) / f"{os_ver}.zip"
         if Path(local_zip).exists():
             print(f"- Found local {os_ver} zip, skipping download")
             print(f"- Duplicating into Apple.zip")
             shutil.copy(local_zip, self.constants.payload_apple_root_path_zip)
+            download_result = True
         else:
-            utilities.download_file(link, self.constants.payload_apple_root_path_zip)
+            download_result = utilities.download_file(link, self.constants.payload_apple_root_path_zip)
 
-        if self.constants.payload_apple_root_path_zip.exists():
+        if download_result and self.constants.payload_apple_root_path_zip.exists():
             print("- Download completed")
             print("- Unzipping download...")
             try:
