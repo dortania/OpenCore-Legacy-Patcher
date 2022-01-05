@@ -87,7 +87,7 @@ class wx_python_gui:
             args = [
                 "osascript",
                 "-e",
-                f'''do shell script "{args_string}"'''
+                f'''do shell script "'{args_string}'"'''
                 ' with prompt "OpenCore Legacy Patcher needs administrator privileges to mount your EFI."'
                 " with administrator privileges"
                 " without altering line endings",
@@ -2240,7 +2240,7 @@ class wx_python_gui:
         # in the OSes you wish to run OpenCore Legacy Patcher on.
         warning_string = """
 OpenCore Legacy Patcher by default knows the most ideal
-   SIP value for your system. Override this value only if you 
+ SIP value for your system. Override this value only if you 
      understand the consequences. Reckless usage of this
                menu can break your installation.
 """
