@@ -433,7 +433,7 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
-				<string>4331 Wifi Patch</string>
+				<string>Broadcom Wifi Patch</string>
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
@@ -921,7 +921,7 @@
 				<key>BundlePath</key>
 				<string>IOFireWireFamily.kext</string>
 				<key>Comment</key>
-				<string></string>
+				<string>Enable FireWire Rooting #1</string>
 				<key>Enabled</key>
 				<false/>
 				<key>ExecutablePath</key>
@@ -939,7 +939,7 @@
 				<key>BundlePath</key>
 				<string>IOFireWireFamily.kext/Contents/PlugIns/AppleFWOHCI.kext</string>
 				<key>Comment</key>
-				<string></string>
+				<string>Enable FireWire Rooting #2</string>
 				<key>Enabled</key>
 				<false/>
 				<key>ExecutablePath</key>
@@ -957,7 +957,7 @@
 				<key>BundlePath</key>
 				<string>IOFireWireSBP2.kext</string>
 				<key>Comment</key>
-				<string></string>
+				<string>Enable FireWire Rooting #3</string>
 				<key>Enabled</key>
 				<false/>
 				<key>ExecutablePath</key>
@@ -975,7 +975,7 @@
 				<key>BundlePath</key>
 				<string>IOFireWireSerialBusProtocolTransport.kext</string>
 				<key>Comment</key>
-				<string></string>
+				<string>Enable FireWire Rooting #4</string>
 				<key>Enabled</key>
 				<false/>
 				<key>ExecutablePath</key>
