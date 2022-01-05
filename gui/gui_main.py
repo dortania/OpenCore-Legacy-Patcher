@@ -2247,11 +2247,11 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.sip_label_6 = wx.StaticText(self.frame, label=warning_string)
         self.sip_label_6.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_6.SetPosition(
-            wx.Point(self.sip_label_5.GetPosition().x, self.sip_label_5.GetPosition().y + self.sip_label_5.GetSize().height)
+            wx.Point(self.sip_label_5.GetPosition().x, self.sip_label_5.GetPosition().y + self.sip_label_5.GetSize().height - 10)
         )
         self.sip_label_6.Center(wx.HORIZONTAL)
 
-        i = 0
+        i = -10
         for sip_bit in sip_data.system_integrity_protection.csr_values_extended:
             self.sip_checkbox = wx.CheckBox(self.frame, label=sip_data.system_integrity_protection.csr_values_extended[sip_bit]["name"])
             self.sip_checkbox.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
