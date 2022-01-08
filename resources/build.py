@@ -771,17 +771,18 @@ class BuildOpenCore:
             pass
 
         # ThirdPartDrives Check
-        for drive in ["SATA 2.5", "SATA 3.5", "mSATA"]:
-            if drive in smbios_data.smbios_dictionary[self.model]["Stock Storage"]:
-                if not self.constants.custom_model:
-                    if self.computer.third_party_sata_ssd is True:
+        if self.constants.allow_3rd_party_drives is True:
+            for drive in ["SATA 2.5", "SATA 3.5", "mSATA"]:
+                if drive in smbios_data.smbios_dictionary[self.model]["Stock Storage"]:
+                    if not self.constants.custom_model:
+                        if self.computer.third_party_sata_ssd is True:
+                            print("- Adding SATA Hibernation Patch")
+                            self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
+                            break
+                    else:
                         print("- Adding SATA Hibernation Patch")
                         self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
                         break
-                else:
-                    print("- Adding SATA Hibernation Patch")
-                    self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
-                    break
         
         # Apple RAID Card check
         if not self.constants.custom_model:

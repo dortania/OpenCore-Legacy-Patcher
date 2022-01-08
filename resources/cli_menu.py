@@ -696,6 +696,29 @@ for Windows may prefer to only work with the dGPU and eGPU active.
         else:
             self.dGPU_switch_support()
     
+    def set_3rd_party_drices(self):
+        utilities.cls()
+        utilities.header(["Set enhanced 3rd Party SSD Support"])
+        print(
+            """
+On SATA-based Macs, Apple restricts enhanced OS support to native
+drives. Namely hibernation and TRIM.
+
+This option allows you to disable enhanced support in situations where
+TRIM is not ideal.
+        """
+        )
+
+        change_menu = input("Set enhanced 3rd Party SSD Support?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.allow_3rd_party_drives = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.allow_3rd_party_drives = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.set_3rd_party_drices()
+    
     def set_software_demux(self):
         utilities.cls()
         utilities.header(["Set Software Demux"])
@@ -1112,6 +1135,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set Hibernation Workaround:\tCurrently {self.constants.disable_connectdrivers}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_hibernation_workaround],
                 [f"Disable Battery Throttling:\tCurrently {self.constants.disable_msr_power_ctl}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_battery_throttle],
                 [f"Set Software Demux:\tCurrently {self.constants.software_demux}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_software_demux],
+                [f"Set 3rd Party SSD Support:\tCurrently {self.constants.allow_3rd_party_drives}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_3rd_party_drices],
                 [f"Set FeatureUnlock: \tCurrently {self.constants.fu_status}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_fu_settings],
                 [f"Set NVRAM Write:\t\tCurrently {self.constants.nvram_write}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_nvram_write],
             ]
