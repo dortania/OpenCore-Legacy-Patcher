@@ -857,12 +857,13 @@ Supported Options:
         change_menu = input("Set FeatreUnlock (ie. 1): ")
         if change_menu == "1":
             self.constants.fu_status = True
-            self.constants.fu_arguments = ""
+            self.constants.fu_arguments = None
         elif change_menu == "2":
             self.constants.fu_status = True
             self.constants.fu_arguments = " -disable_sidecar_mac"
         elif change_menu == "3":
             self.constants.fu_status = False
+            self.constants.fu_arguments = None
         else:
             print("Invalid input, returning to previous menu")
             self.set_fu_settings()

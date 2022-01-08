@@ -11,7 +11,7 @@ import os
 import wx.adv
 from wx.lib.agw import hyperlink
 
-from resources import constants, defaults, build, install, installer, utilities, sys_patch_detect, sys_patch, run
+from resources import constants, defaults, build, install, installer, utilities, sys_patch_detect, sys_patch, run, generate_smbios
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect
 
@@ -352,7 +352,6 @@ class wx_python_gui:
         self.overclock.Centre(wx.HORIZONTAL)
 
 
-        # Return to Main Menu
         self.return_to_main = wx.Button(self.frame, label="Return to Main Menu", size=(150,30))
         self.return_to_main.SetPosition(
             wx.Point(
@@ -422,7 +421,6 @@ class wx_python_gui:
         sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
         sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -505,7 +503,6 @@ class wx_python_gui:
             
 
         
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -516,7 +513,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
     
     def install_oc_disk_select(self, disk, disk_data):
@@ -554,7 +550,6 @@ class wx_python_gui:
             self.install_button.Centre(wx.HORIZONTAL)
             i += self.install_button.GetSize().height + 3
         
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -565,7 +560,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
     def install_oc_process(self, partition):
@@ -598,7 +592,6 @@ class wx_python_gui:
 
         install.tui_disk_installation(self.constants).install_opencore(partition)
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -610,7 +603,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
     def root_patch_menu(self, event=None):
@@ -705,7 +697,6 @@ class wx_python_gui:
         if self.constants.detected_os < os_data.os_data.big_sur:
             self.revert_root_patches.Disable()
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -716,7 +707,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
     
     def root_patch_start(self, event=None):
@@ -767,7 +757,6 @@ class wx_python_gui:
         )
         self.text_box.Centre(wx.HORIZONTAL)
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -778,7 +767,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         wx.GetApp().Yield()
@@ -844,7 +832,6 @@ class wx_python_gui:
         )
         self.text_box.Centre(wx.HORIZONTAL)
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -855,7 +842,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         # Start reverting root patches
@@ -905,7 +891,6 @@ class wx_python_gui:
         self.use_existing_macos_installer.Bind(wx.EVT_BUTTON, self.flash_installer_menu)
         self.use_existing_macos_installer.Centre(wx.HORIZONTAL)
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -916,7 +901,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
     def grab_installer_data(self, event=None):
@@ -931,7 +915,6 @@ class wx_python_gui:
         self.download_label = wx.StaticText(self.frame, label="Downloading installer catalog...")
         self.download_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
         self.download_label.SetPosition(
-            # Set Position below header
             wx.Point(
                 self.header.GetPosition().x,
                 self.header.GetPosition().y + self.header.GetSize().height + 10
@@ -941,7 +924,6 @@ class wx_python_gui:
         # Redirect stdout to label
         sys.stdout=menu_redirect.RedirectLabel(self.download_label)
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -969,7 +951,6 @@ class wx_python_gui:
         self.subheader = wx.StaticText(self.frame, label="Installers currently available from Apple:")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader.SetPosition(
-            # Set Position below header
             wx.Point(
                 self.header.GetPosition().x,
                 self.header.GetPosition().y + self.header.GetSize().height + 10
@@ -1008,7 +989,6 @@ class wx_python_gui:
             self.install_selection.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
             self.install_selection.Centre(wx.HORIZONTAL)
         
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -1019,7 +999,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
     def download_macos_click(self, installer_name, installer_link):
@@ -1035,7 +1014,6 @@ class wx_python_gui:
         self.download_label = wx.StaticText(self.frame, label="Downloading...")
         self.download_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
         self.download_label.SetPosition(
-            # Set Position below header
             wx.Point(
                 self.header.GetPosition().x,
                 self.header.GetPosition().y + self.header.GetSize().height + 10
@@ -1045,7 +1023,6 @@ class wx_python_gui:
         # Redirect stdout to label
         sys.stdout=menu_redirect.RedirectLabel(self.download_label)
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -1090,8 +1067,18 @@ class wx_python_gui:
         self.header = wx.StaticText(self.frame, label="Select macOS Installer")
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
+        # Subheader: Installers found in /Applications
+        self.subheader = wx.StaticText(self.frame, label="Installers found in Applications folder")
+        self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.subheader.SetPosition(
+            wx.Point(
+                self.header.GetPosition().x,
+                self.header.GetPosition().y + self.header.GetSize().height
+            )
+        )
+        self.subheader.Centre(wx.HORIZONTAL)
 
-        i = -10
+        i = -7
         avalible_installers = installer.list_local_macOS_installers()
         if avalible_installers:
             print("Installer found")
@@ -1121,7 +1108,6 @@ class wx_python_gui:
             )
             self.install_selection.Centre(wx.HORIZONTAL)
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -1132,7 +1118,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
     
     def format_usb_menu(self, installer_path):
@@ -1148,7 +1133,6 @@ class wx_python_gui:
         self.subheader = wx.StaticText(self.frame, label="Selected USB will be erased, please backup your data")
         self.subheader.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
         self.subheader.SetPosition(
-            # Set Position below header
             wx.Point(
                 self.header.GetPosition().x,
                 self.header.GetPosition().y + self.header.GetSize().height + 10
@@ -1160,7 +1144,6 @@ class wx_python_gui:
         self.usb_selection_label = wx.StaticText(self.frame, label="Missing drives? Ensure they're 14GB+ and removable")
         self.usb_selection_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.usb_selection_label.SetPosition(
-            # Set Position below header
             wx.Point(
                 self.subheader.GetPosition().x,
                 self.subheader.GetPosition().y + self.subheader.GetSize().height + 10
@@ -1198,7 +1181,6 @@ class wx_python_gui:
             )
             self.usb_selection.Centre(wx.HORIZONTAL)
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -1209,7 +1191,6 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
     def format_usb_progress(self, disk, installer_path):
@@ -1224,7 +1205,6 @@ class wx_python_gui:
         self.creating_macos_installer_label = wx.StaticText(self.frame, label="Formatting and flashing installer to drive")
         self.creating_macos_installer_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.creating_macos_installer_label.SetPosition(
-            # Set Position below header
             wx.Point(
                 self.header.GetPosition().x,
                 self.header.GetPosition().y + self.header.GetSize().height + 10
@@ -1236,7 +1216,6 @@ class wx_python_gui:
         self.developer_note_label = wx.StaticText(self.frame, label="\tDeveloper Note: createinstallmedia output will print after finishing\nIf Application becomes unresponsive, this is due to slow USB flash drives.\n\tPlease do not close this window until the process is complete.")
         self.developer_note_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.developer_note_label.SetPosition(
-            # Set Position below header
             wx.Point(
                 self.creating_macos_installer_label.GetPosition().x,
                 self.creating_macos_installer_label.GetPosition().y + self.creating_macos_installer_label.GetSize().height + 10
@@ -1248,7 +1227,6 @@ class wx_python_gui:
         # Redirect stdout to a text box
         self.stdout_text = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.stdout_text.SetPosition(
-            # Set Position below header
             wx.Point(
                 self.developer_note_label.GetPosition().x,
                 self.developer_note_label.GetPosition().y + self.developer_note_label.GetSize().height + 10
@@ -1263,7 +1241,6 @@ class wx_python_gui:
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -1276,7 +1253,6 @@ class wx_python_gui:
 
         self.frame.Show()
 
-        # Update frame height to right below return_to_main_menu
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
         wx.GetApp().Yield()
         # Create installer.sh script
@@ -1377,13 +1353,6 @@ class wx_python_gui:
         self.opencore_checkbox.Bind(wx.EVT_CHECKBOX, self.oc_checkbox_click)
         self.opencore_checkbox.ToolTip = wx.ToolTip("""Enables OpenCore logging, can heavily impact boot times""")
 
-        # # Checkbox: SIP
-        # self.sip_checkbox = wx.CheckBox(self.frame, label="SIP")
-        # self.sip_checkbox.SetValue(self.constants.sip_status)
-        # self.sip_checkbox.SetPosition(wx.Point(self.opencore_checkbox.GetPosition().x , self.opencore_checkbox.GetPosition().y + self.opencore_checkbox.GetSize().height))
-        # self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.sip_checkbox_click)
-        # self.sip_checkbox.ToolTip = wx.ToolTip("""Sets SIP, disable to allow root patching""")
-
         # Checkbox: SecureBootModel
         self.secureboot_checkbox = wx.CheckBox(self.frame, label="SecureBootModel")
         self.secureboot_checkbox.SetValue(self.constants.secure_status)
@@ -1405,7 +1374,6 @@ class wx_python_gui:
         self.accel_checkbox.Bind(wx.EVT_CHECKBOX, self.accel_checkbox_click)
         self.accel_checkbox.ToolTip = wx.ToolTip("""Allows Root Patching on Mojave/Catalina\nUseful for enabling TeraScale 2 Acceleration when not provided by dosdude1's patcher""")
 
-
         # Buttons
         
         # Button: SIP Settings
@@ -1414,7 +1382,7 @@ class wx_python_gui:
         elif self.constants.sip_status:
             sip_string = "Enabled"
         else:
-            sip_string = "Disabled"
+            sip_string = "Lowered"
         self.sip_button = wx.Button(self.frame, label=f"SIP Settings ({sip_string})",  size=(155,30))
         self.sip_button.SetPosition(wx.Point(self.accel_checkbox.GetPosition().x , self.accel_checkbox.GetPosition().y + self.accel_checkbox.GetSize().height + 10))
         self.sip_button.Bind(wx.EVT_BUTTON, self.sip_config_menu)
@@ -1432,7 +1400,6 @@ class wx_python_gui:
         self.miscellaneous_button.Bind(wx.EVT_BUTTON, self.misc_settings_menu)
         self.miscellaneous_button.Centre(wx.HORIZONTAL)
 
-        # Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu", size=(155,30))
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -1540,17 +1507,39 @@ class wx_python_gui:
         # Subheader: If unfamiliar with the following settings, please do not change them.
         self.subheader = wx.StaticText(self.frame, label="Do not change if unfamiliar", style=wx.ALIGN_CENTRE)
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
-        self.subheader.SetPosition(wx.Point(0, self.header.GetPosition().y + self.header.GetSize().height + 10))
+        self.subheader.SetPosition(wx.Point(0, self.header.GetPosition().y + self.header.GetSize().height))
         self.subheader.SetSize(wx.Size(self.frame.GetSize().width, 30))
         self.subheader.Centre(wx.HORIZONTAL)
 
+        # Label: Set FeatreUnlock status
+        self.feature_unlock_label = wx.StaticText(self.frame, label="Feature Unlock Status:", style=wx.ALIGN_CENTRE)
+        self.feature_unlock_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.feature_unlock_label.SetPosition(wx.Point(0, self.subheader.GetPosition().y + self.subheader.GetSize().height -5))
+        self.feature_unlock_label.Centre(wx.HORIZONTAL)
+
+        # Dropdown: Set Feature Unlock status
+        self.feature_unlock_dropdown = wx.Choice(self.frame)
+        for entry in ["Enabled", "Paritally enabled (No AirPlay/SideCar)", "Disabled"]:
+            self.feature_unlock_dropdown.Append(entry)
+        self.feature_unlock_dropdown.SetPosition(wx.Point(0, self.feature_unlock_label.GetPosition().y + self.feature_unlock_label.GetSize().height + 5))
+        if self.constants.fu_status is True:
+            if self.constants.fu_arguments is None:
+                selection = 0
+            else:
+                selection = 1
+        else:
+            selection = 2
+        self.feature_unlock_dropdown.SetSelection(selection)
+        self.feature_unlock_dropdown.Bind(wx.EVT_CHOICE, self.fu_selection_click)
+        self.feature_unlock_dropdown.Centre(wx.HORIZONTAL)
 
         # Label: Set GPU Model for MXM iMacs
         self.label_model = wx.StaticText(self.frame, label="Set GPU Model for MXM iMacs:", style=wx.ALIGN_CENTRE)
         self.label_model.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
-        self.label_model.SetPosition(wx.Point(0, self.subheader.GetPosition().y + self.subheader.GetSize().height))
+        self.label_model.SetPosition(wx.Point(0, self.feature_unlock_dropdown.GetPosition().y + self.feature_unlock_dropdown.GetSize().height + 2))
         self.label_model.SetSize(wx.Size(self.frame.GetSize().width, 30))
         self.label_model.Centre(wx.HORIZONTAL)
+        self.label_model.SetToolTip(wx.ToolTip("Configures MXM GPU Vendor logic on pre-built models\nIf you are not using MXM iMacs, please leave this setting as is."))
 
         # Dropdown: GPU Model
         self.gpu_dropdown = wx.Choice(self.frame)
@@ -1562,6 +1551,8 @@ class wx_python_gui:
             self.label_model.GetPosition().y + self.label_model.GetSize().height / 1.5))
         self.gpu_dropdown.Bind(wx.EVT_CHOICE, self.gpu_selection_click)
         self.gpu_dropdown.Centre(wx.HORIZONTAL)
+        if self.computer.real_model not in ["iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]:
+            self.gpu_dropdown.Disable()
 
         # Checkbox List:
         # FireWire Boot
@@ -1579,13 +1570,16 @@ class wx_python_gui:
         self.firewire_boot_checkbox.SetValue(self.constants.firewire_boot)
         self.firewire_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.firewire_click)
         self.firewire_boot_checkbox.SetPosition(wx.Point(30, self.gpu_dropdown.GetPosition().y + self.gpu_dropdown.GetSize().height + 5))
+        self.firewire_boot_checkbox.SetToolTip(wx.ToolTip("Enable FireWire Boot support in macOS 10.15 and newer.\nMainly applicable for Macs with FireWire or Thunderbolt to FireWire adapters"))
+        if generate_smbios.check_firewire(self.computer.real_model) is False and not self.constants.custom_model:
+            self.firewire_boot_checkbox.Disable()
 
         # NVMe Boot
         self.nvme_boot_checkbox = wx.CheckBox(self.frame, label="NVMe Boot")
         self.nvme_boot_checkbox.SetValue(self.constants.nvme_boot)
         self.nvme_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.nvme_click)
         self.nvme_boot_checkbox.SetPosition(wx.Point(self.firewire_boot_checkbox.GetPosition().x, self.firewire_boot_checkbox.GetPosition().y + self.firewire_boot_checkbox.GetSize().height))
-
+        self.nvme_boot_checkbox.SetToolTip(wx.ToolTip("Enables NVMe support in UEFI for non-native systems (ie. MacPro3,1)\nRequires OpenCore to be stored on a natively bootable volume however"))
 
         # Wake on WLAN
         self.wake_on_wlan_checkbox = wx.CheckBox(self.frame, label="Wake on WLAN")
@@ -1594,6 +1588,7 @@ class wx_python_gui:
         self.wake_on_wlan_checkbox.SetPosition(wx.Point(
             self.nvme_boot_checkbox.GetPosition().x,
             self.nvme_boot_checkbox.GetPosition().y + self.nvme_boot_checkbox.GetSize().height))
+        self.wake_on_wlan_checkbox.SetToolTip(wx.ToolTip("Enables Wake on WLAN for Broadcom Wifi.\nBy default, Wake on WLAN is disabled to work around Apple's wake from sleep bug causing heavily degraded networking performance."))
 
         # Disable Thunderbolt
         self.disable_thunderbolt_checkbox = wx.CheckBox(self.frame, label="Disable Thunderbolt")
@@ -1602,7 +1597,9 @@ class wx_python_gui:
         self.disable_thunderbolt_checkbox.SetPosition(wx.Point(
             self.wake_on_wlan_checkbox.GetPosition().x,
             self.wake_on_wlan_checkbox.GetPosition().y + self.wake_on_wlan_checkbox.GetSize().height))
-
+        self.disable_thunderbolt_checkbox.SetToolTip(wx.ToolTip("Disables Thunderbolt support on MacBookPro11,x\nMainly applicable for systems that cannot boot with Thunderbolt enabled"))
+        if not self.constants.custom_model and not self.computer.real_model.startswith("MacBookPro11"):
+            self.disable_thunderbolt_checkbox.Disable()
         # Set TeraScale 2 Accel
         self.set_terascale_accel_checkbox = wx.CheckBox(self.frame, label="Set TeraScale 2 Accel")
         self.set_terascale_accel_checkbox.SetValue(self.constants.allow_ts2_accel)
@@ -1610,6 +1607,9 @@ class wx_python_gui:
         self.set_terascale_accel_checkbox.SetPosition(wx.Point(
             self.disable_thunderbolt_checkbox.GetPosition().x,
             self.disable_thunderbolt_checkbox.GetPosition().y + self.disable_thunderbolt_checkbox.GetSize().height))
+        self.set_terascale_accel_checkbox.SetToolTip(wx.ToolTip("This option will determine whether TeraScale 2 acceleration is avalible during Root Volume patching.\nOnly applicable if your system has a AMD TeraScale 2 GPU (ie. MacBookPro8,2/3)"))
+        if self.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"]:
+            self.set_terascale_accel_checkbox.Disable()
 
         # Windows GMUX
         self.windows_gmux_checkbox = wx.CheckBox(self.frame, label="Windows GMUX")
@@ -1618,6 +1618,7 @@ class wx_python_gui:
         self.windows_gmux_checkbox.SetPosition(wx.Point(
             self.set_terascale_accel_checkbox.GetPosition().x,
             self.set_terascale_accel_checkbox.GetPosition().y + self.set_terascale_accel_checkbox.GetSize().height))
+        self.windows_gmux_checkbox.SetToolTip(wx.ToolTip("Enable this option to allow usage of the hardware GMUX to switch between Intel and Nvidia/AMD GPUs in Windows."))
 
         # Hibernation Workaround
         self.hibernation_checkbox = wx.CheckBox(self.frame, label="Hibernation Workaround")
@@ -1626,6 +1627,7 @@ class wx_python_gui:
         self.hibernation_checkbox.SetPosition(wx.Point(
             self.windows_gmux_checkbox.GetPosition().x, 
             self.windows_gmux_checkbox.GetPosition().y + self.windows_gmux_checkbox.GetSize().height))
+        self.hibernation_checkbox.SetToolTip(wx.ToolTip("This will disable the ConnectDrivers in OpenCore\nRecommended to toggle if your machine is having issues with hibernation.\nMainly applicable for MacBookPro9,1 and MacBookPro10,1"))
 
         # Disable Battery Throttling
         self.disable_battery_throttling_checkbox = wx.CheckBox(self.frame, label="Disable Battery Throttling")
@@ -1634,6 +1636,7 @@ class wx_python_gui:
         self.disable_battery_throttling_checkbox.SetPosition(wx.Point(
             self.hibernation_checkbox.GetPosition().x, 
             self.hibernation_checkbox.GetPosition().y + self.hibernation_checkbox.GetSize().height))
+        self.disable_battery_throttling_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable MSR Power Control on Arrendale and newer Laptops\nMainly applicable for systems with severe battery throttling"))
 
         # Software Demux
         self.software_demux_checkbox = wx.CheckBox(self.frame, label="Software Demux")
@@ -1642,6 +1645,9 @@ class wx_python_gui:
         self.software_demux_checkbox.SetPosition(wx.Point(
             self.disable_battery_throttling_checkbox.GetPosition().x,
             self.disable_battery_throttling_checkbox.GetPosition().y + self.disable_battery_throttling_checkbox.GetSize().height))
+        self.software_demux_checkbox.SetToolTip(wx.ToolTip("This will force a software based demux on MacBookPro8,2/3 aiding for better battery life\nThis will require the dGPU to be disabled via NVRAM"))
+        if not self.constants.custom_model and self.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"]:
+            self.software_demux_checkbox.Disable()
 
         # Disable CPUFriend
         self.disable_cpu_friend_checkbox = wx.CheckBox(self.frame, label="Disable CPUFriend")
@@ -1650,6 +1656,9 @@ class wx_python_gui:
         self.disable_cpu_friend_checkbox.SetPosition(wx.Point(
             self.software_demux_checkbox.GetPosition().x,
             self.software_demux_checkbox.GetPosition().y + self.software_demux_checkbox.GetSize().height))
+        self.disable_cpu_friend_checkbox.SetToolTip(wx.ToolTip("This will disable CPUFriend on your system when using Minimal or higher SMBIOS spoofing.\nMainly applicable for older iMacs (2007-9) that wish to disable CPU throttling"))
+        if self.constants.serial_settings == "None":
+            self.disable_cpu_friend_checkbox.Disable()
 
         # AppleALC Usage
         self.apple_alc_checkbox = wx.CheckBox(self.frame, label="AppleALC Usage")
@@ -1658,6 +1667,7 @@ class wx_python_gui:
         self.apple_alc_checkbox.SetPosition(wx.Point(
             self.disable_cpu_friend_checkbox.GetPosition().x, 
             self.disable_cpu_friend_checkbox.GetPosition().y + self.disable_cpu_friend_checkbox.GetSize().height))
+        self.apple_alc_checkbox.SetToolTip(wx.ToolTip("This will set whether AppleALC is allowed to be used during config building.\nMainly applicable for MacPro3,1s that do not have boot screen support, thus preventing AppleALC from working."))
 
         # Set WriteFlash
         self.set_writeflash_checkbox = wx.CheckBox(self.frame, label="Set NVRAM WriteFlash")
@@ -1666,6 +1676,7 @@ class wx_python_gui:
         self.set_writeflash_checkbox.SetPosition(wx.Point(
             self.apple_alc_checkbox.GetPosition().x,
             self.apple_alc_checkbox.GetPosition().y + self.apple_alc_checkbox.GetSize().height))
+        self.set_writeflash_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore is allowed to write to hardware NVRAM.\nDisable this option if your system has degraded or fragile NVRAM."))
         
         # Button: Developer Debug Info
         self.debug_button = wx.Button(self.frame, label="Developer Debug Info")
@@ -1802,6 +1813,18 @@ class wx_python_gui:
         print(f"GPU Vendor: {self.constants.imac_vendor}")
         print(f"GPU Model: {self.constants.imac_model}")
     
+    def fu_selection_click(self, event=None):
+        fu_choice =  self.feature_unlock_dropdown.GetStringSelection()
+        if fu_choice == "Enabled":
+            self.constants.fu_status = True
+            self.constants.fu_arguments = None
+        elif fu_choice == "Paritally enabled (No AirPlay/SideCar)":
+            self.constants.fu_status = True
+            self.constants.fu_arguments = " -disable_sidecar_mac"
+        else:
+            self.constants.fu_status = False
+            self.constants.fu_arguments = None
+    
     def set_writeflash_click(self, event=None):
         if self.set_writeflash_checkbox.GetValue():
             print("Write Flash Enabled")
@@ -1881,20 +1904,7 @@ class wx_python_gui:
         self.constants.override_smbios = selection
     
     def additional_info_menu(self, event=None):
-        # Define Menu:
-
-        # Header: Additional Info
-        # Label: Model Dump
-        # Textbox: Model Dump
-        # Label: Real User ID
-        # Label: Effective User ID
-        # Label: Launcher Binary
-        # Textbox: Launcher Binary
-        # Label: Launcher Script
-        # Textbox: Launcher Script
-
         self.frame.DestroyChildren()
-
         self.frame.SetSize(wx.Size(500, -1))
 
         # Header: Additional Info
@@ -1971,7 +1981,6 @@ class wx_python_gui:
         self.launcher_script_textbox.Center(wx.HORIZONTAL)
         self.launcher_script_textbox.SetEditable(False)
 
-        # Return to Main Menu Button
         self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu_button.SetPosition(
             wx.Point(self.launcher_script_textbox.GetPosition().x, self.launcher_script_textbox.GetPosition().y + self.launcher_script_textbox.GetSize().height + 10)
@@ -1984,11 +1993,6 @@ class wx_python_gui:
 
     
     def sip_config_menu(self, event=None):
-        # Implement individual checkbox for each bit in SIP
-        # Add label showing 'self.constants.custom_sip_value'
-        # custom_sip_value is equivlant to all enabled checkboxes
-        # Refresh label whenever checkbox is changed
-
         self.frame.DestroyChildren()
         self.frame.SetSize(wx.Size(400, 600))
 
@@ -2008,8 +2012,6 @@ class wx_python_gui:
         self.sip_label.SetPosition(
             wx.Point(self.sip_label.GetPosition().x - 25, -1)
         )
-
-        # Hyperlink to the right of sip_label
         
         hyperlink_label = hyperlink.HyperLinkCtrl(
             self.frame,
@@ -2019,14 +2021,6 @@ class wx_python_gui:
             URL="https://github.com/apple/darwin-xnu/blob/main/bsd/sys/csr.h",
         )
         hyperlink_label.SetForegroundColour((25, 179, 231))
-
-        # Label: By default, SIP is set to 0x00 (enabled) on newer Macs.
-        # For older Macs requiring root patching, we set SIP to (0xA03)
-        # This corresponds to the following bits:
-        #  - 0x1 -   CSR_ALLOW_UNTRUSTED_KEXTS
-        #  - 0x2 -   CSR_ALLOW_UNRESTRICTED_FS
-        #  - 0x200 - CSR_ALLOW_UNAPPROVED_KEXTS
-        #  - 0x800 - CSR_ALLOW_UNAUTHENTICATED_ROOT
 
         if self.constants.custom_sip_value is not None:
             self.sip_value = int(self.constants.custom_sip_value, 16)
@@ -2063,11 +2057,6 @@ class wx_python_gui:
         )
         self.sip_label_5.Center(wx.HORIZONTAL)
 
-        # Label: If you system requires SIP to be lowered, do not try to re-enable it.
-        # You may accidentally break your system. OpenCore Legacy Patcher by default 
-        # knows the most ideal SIP value for your system. Override this value if you
-        # understand the consequences or are absolutely certain your configuration supports SIP
-        # in the OSes you wish to run OpenCore Legacy Patcher on.
         warning_string = """
 OpenCore Legacy Patcher by default knows the most ideal
  SIP value for your system. Override this value only if you 
