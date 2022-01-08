@@ -175,6 +175,7 @@ class Constants:
         self.custom_sip_value = None  #        Set custom SIP value
         self.walkthrough = False  #            Enable Walkthrough
         self.disable_connectdrivers = False  # Disable ConnectDrivers (hibernation)
+        self.allow_3rd_party_drives = True   # Allow ThridPartyDrives quirk
 
         self.legacy_accel_support = [
             os_data.os_data.mojave,
