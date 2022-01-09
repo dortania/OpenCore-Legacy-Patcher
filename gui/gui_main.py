@@ -1532,6 +1532,7 @@ class wx_python_gui:
         self.feature_unlock_dropdown.SetSelection(selection)
         self.feature_unlock_dropdown.Bind(wx.EVT_CHOICE, self.fu_selection_click)
         self.feature_unlock_dropdown.Centre(wx.HORIZONTAL)
+        self.feature_unlock_dropdown.SetToolTip(wx.ToolTip("Set whether FeatureUnlock support level\nBy default, full functionality is enabled. For systems experiencing memory instability, lowering this option to disable AirPlay/Sidecar patch sets is recommended."))
 
         # Label: Set GPU Model for MXM iMacs
         self.label_model = wx.StaticText(self.frame, label="Set GPU Model for MXM iMacs:", style=wx.ALIGN_CENTRE)
@@ -1539,7 +1540,6 @@ class wx_python_gui:
         self.label_model.SetPosition(wx.Point(0, self.feature_unlock_dropdown.GetPosition().y + self.feature_unlock_dropdown.GetSize().height + 2))
         self.label_model.SetSize(wx.Size(self.frame.GetSize().width, 30))
         self.label_model.Centre(wx.HORIZONTAL)
-        self.label_model.SetToolTip(wx.ToolTip("Configures MXM GPU Vendor logic on pre-built models\nIf you are not using MXM iMacs, please leave this setting as is."))
 
         # Dropdown: GPU Model
         self.gpu_dropdown = wx.Choice(self.frame)
@@ -1551,6 +1551,7 @@ class wx_python_gui:
             self.label_model.GetPosition().y + self.label_model.GetSize().height / 1.5))
         self.gpu_dropdown.Bind(wx.EVT_CHOICE, self.gpu_selection_click)
         self.gpu_dropdown.Centre(wx.HORIZONTAL)
+        self.gpu_dropdown.SetToolTip(wx.ToolTip("Configures MXM GPU Vendor logic on pre-built models\nIf you are not using MXM iMacs, please leave this setting as is."))
         if self.computer.real_model not in ["iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]:
             self.gpu_dropdown.Disable()
 
@@ -1677,13 +1678,24 @@ class wx_python_gui:
             self.apple_alc_checkbox.GetPosition().x,
             self.apple_alc_checkbox.GetPosition().y + self.apple_alc_checkbox.GetSize().height))
         self.set_writeflash_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore is allowed to write to hardware NVRAM.\nDisable this option if your system has degraded or fragile NVRAM."))
+        # Set Enhanced 3rd Party SSD
+        self.set_enhanced_3rd_party_ssd_checkbox = wx.CheckBox(self.frame, label="Enhanced SSD Support")
+        self.set_enhanced_3rd_party_ssd_checkbox.SetValue(self.constants.allow_3rd_party_drives)
+        self.set_enhanced_3rd_party_ssd_checkbox.Bind(wx.EVT_CHECKBOX, self.set_enhanced_3rd_party_ssd_click)
+        self.set_enhanced_3rd_party_ssd_checkbox.SetPosition(wx.Point(
+            self.set_writeflash_checkbox.GetPosition().x,
+            self.set_writeflash_checkbox.GetPosition().y + self.set_writeflash_checkbox.GetSize().height))
+        self.set_enhanced_3rd_party_ssd_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore is allowed to force Apple Vendor on 3rd Party SATA SSDs\nSome benefits from this patch include better SSD performance, TRIM support and hibernation support.\nDisable this option if your SSD does not support TRIM correctly"))
+        if self.computer.third_party_sata_ssd is False and not self.constants.custom_model:
+            self.set_enhanced_3rd_party_ssd_checkbox.Disable()
+
         
         # Button: Developer Debug Info
         self.debug_button = wx.Button(self.frame, label="Developer Debug Info")
         self.debug_button.Bind(wx.EVT_BUTTON, self.additional_info_menu)
         self.debug_button.SetPosition(wx.Point(
-            self.set_writeflash_checkbox.GetPosition().x,
-            self.set_writeflash_checkbox.GetPosition().y + self.set_writeflash_checkbox.GetSize().height + 5))
+            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().x,
+            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().y + self.set_enhanced_3rd_party_ssd_checkbox.GetSize().height + 5))
         self.debug_button.Center(wx.HORIZONTAL)
         
         # Button: return to main menu
@@ -1784,6 +1796,14 @@ class wx_python_gui:
         else:
             print("AppleALC Usage Disabled")
             self.constants.set_alc_usage = False
+    
+    def set_enhanced_3rd_party_ssd_click(self, event=None):
+        if self.set_enhanced_3rd_party_ssd_checkbox.GetValue():
+            print("Enhanced 3rd Party SSDs Enabled")
+            self.constants.allow_3rd_party_drives = True
+        else:
+            print("Enhanced 3rd Party SSDs Disabled")
+            self.constants.allow_3rd_party_drives = False
 
     def gpu_selection_click(self, event=None):
         gpu_choice =  self.gpu_dropdown.GetStringSelection()
