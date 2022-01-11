@@ -32,4 +32,4 @@ jobs:
           file_glob: true
           asset_name: OpenCore-Patcher.app (GUI Offline, macOS 10.13 and newer)
       - name: Validate OpenCore
-        run: ./OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --validate
+        run: ./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --validate
