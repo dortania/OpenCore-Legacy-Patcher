@@ -1,2 +1,3 @@
 requests
 pyobjc
+wxpython
