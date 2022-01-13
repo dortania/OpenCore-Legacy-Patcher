@@ -7,6 +7,7 @@
 - Add FeatureUnlock configurability 
 - Add NVRAM WriteFlash configurability for degarded/fragile systems
 - Add `ThirdPartyDrives` quirk configurability
+- Resolve Skylight dylib injection issue
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach

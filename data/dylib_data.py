@@ -1,8 +1,8 @@
 # Data for SkyLightShim Plugin systems
 class shim_list:
     shim_pathing = {
-        "CoreWLAN.dylib": "/Systen/Library/CoreServices/WiFiAgent.app/Contents/MacOS/WiFiAgent",
-        "BacklightFixup.dylib": "/System/Library/CoreServices/loginwindow.app/Contents/Mac0S/loginwindow",
+        "CoreWLAN.dylib": "/System/Library/CoreServices/WiFiAgent.app/Contents/MacOS/WiFiAgent",
+        "BacklightFixup.dylib": "/System/Library/CoreServices/loginwindow.app/Contents/MacOS/loginwindow",
     }
 
     shim_legacy_accel = [
