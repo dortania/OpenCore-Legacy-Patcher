@@ -26,6 +26,8 @@ class wx_python_gui:
         self.stock_stdout = sys.stdout
         self.stock_stderr = sys.stderr
 
+        current_uid = os.getuid()
+
         # Define Window Size
         self.WINDOW_WIDTH_MAIN = 350
         self.WINDOW_HEIGHT_MAIN = 220
@@ -45,12 +47,24 @@ class wx_python_gui:
         self.frame.Show()
         self.frame.Bind(wx.EVT_CLOSE, self.OnCloseFrame)
 
+        # Create Menubar (allows Cmd+Q usage)
+        self.menubar = wx.MenuBar()
+        self.file_menu = wx.Menu()
+        self.file_menu.Append(wx.ID_EXIT, "Quit", "Quit Application" )
+        self.file_menu.Append(wx.ID_REDO, f"Relaunch as Root (UID: {int(current_uid)})", "Relaunch OpenCore Legacy Patcher as Root")
+        self.menubar.Append(self.file_menu, "File")
+        self.frame.Bind(wx.EVT_MENU, self.OnCloseFrame, id=wx.ID_EXIT)
+        self.frame.Bind(wx.EVT_MENU, self.relaunch_as_root, id=wx.ID_REDO)
+        self.frame.SetMenuBar(self.menubar)
+
+        if current_uid == 0:
+            self.file_menu.Enable(wx.ID_REDO, False)
+
         self.main_menu(None)
 
         wx.CallAfter(self.frame.Close)
     
     def OnCloseFrame(self, event):
-        print("Cleaning up on close")
         self.frame.DestroyChildren()
         self.frame.Destroy()
         self.app.ExitMainLoop()
@@ -80,15 +94,15 @@ class wx_python_gui:
         if self.dialog.ShowModal() == wx.ID_YES:
             print("Relaunching as root")
             if self.constants.launcher_script is None:
-                args_string = f"{self.constants.launcher_binary}"""
+                args_string = f"'{self.constants.launcher_binary}'"
             else:
                 args_string = f"{self.constants.launcher_binary} {self.constants.launcher_script}"
 
             args = [
                 "osascript",
                 "-e",
-                f'''do shell script "'{args_string}'"'''
-                ' with prompt "OpenCore Legacy Patcher needs administrator privileges to mount your EFI."'
+                f'''do shell script "{args_string}"'''
+                ' with prompt "OpenCore Legacy Patcher needs administrator privileges to relaunch as admin."'
                 " with administrator privileges"
                 " without altering line endings",
             ]
@@ -183,7 +197,7 @@ class wx_python_gui:
         self.reset_window()
 
         # Set header text
-        self.frame.SetTitle(f"OpenCore Legacy Patcher v{self.constants.patcher_version}")
+        self.frame.SetTitle(f"OpenCore Legacy Patcher")
         # Header
         self.header = wx.StaticText(self.frame, label=f"OpenCore Legacy Patcher v{self.constants.patcher_version}")
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
