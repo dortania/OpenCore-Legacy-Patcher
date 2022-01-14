@@ -83,7 +83,6 @@ class PatchSysVolume:
                     self.unpatch_root_vol()
                     return True
             else:
-                print(f"User ID: {os.getuid()} - {os.geteuid()}")
                 if self.constants.detected_os > os_data.os_data.catalina:
                     print("- Mounting APFS Snapshot as writable")
                     result = utilities.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
