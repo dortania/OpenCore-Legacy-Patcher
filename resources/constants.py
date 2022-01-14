@@ -124,8 +124,8 @@ class Constants:
         self.override_smbios = "Default"  # Set SMBIOS model used
 
         ## FeatureUnlock Settings
-        self.fu_status = True   # Enable FeatureUnlock
-        self.fu_arguments = ""  # Set FeatureUnlock arguments
+        self.fu_status = True   #   Enable FeatureUnlock
+        self.fu_arguments = None  # Set FeatureUnlock arguments
 
         ## Latebloom Settings
         self.latebloom_status = False  # Latebloom Enabled

@@ -1,4 +1,4 @@
-from data import smbios_data, os_data
+from data import smbios_data, os_data, cpu_data
 from resources import utilities
 
 
@@ -98,3 +98,16 @@ def find_model_off_board(board):
                 key = "MacPro5,1"
             return key
     return None
+
+def check_firewire(model):
+    # MacBooks never supported FireWire
+    # Pre-Thunderbolt MacBook Airs as well
+    if model.startswith("MacBookPro"):
+        return True
+    elif model.startswith("MacBookAir"):
+        if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
+            return False
+    elif model.startswith("MacBook"):
+        return False
+    else:
+        return True

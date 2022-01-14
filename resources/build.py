@@ -478,20 +478,8 @@ class BuildOpenCore:
                 # Used to enable Audio support for non-standard dGPUs
                 self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
 
-        def check_firewire(model):
-            # MacBooks never supported FireWire
-            # Pre-Thunderbolt MacBook Airs as well
-            if model.startswith("MacBookPro"):
-                return True
-            elif model.startswith("MacBookAir"):
-                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
-                    return False
-            elif model.startswith("MacBook"):
-                return False
-            else:
-                return True
 
-        if self.constants.firewire_boot is True and check_firewire(self.model) is True:
+        if self.constants.firewire_boot is True and generate_smbios.check_firewire(self.model) is True:
             # Enable FireWire Boot Support
             # Applicable for both native FireWire and Thunderbolt to FireWire adapters
             print("- Enabling FireWire Boot Support")

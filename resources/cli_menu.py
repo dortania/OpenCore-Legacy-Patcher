@@ -880,12 +880,13 @@ Supported Options:
         change_menu = input("Set FeatreUnlock (ie. 1): ")
         if change_menu == "1":
             self.constants.fu_status = True
-            self.constants.fu_arguments = ""
+            self.constants.fu_arguments = None
         elif change_menu == "2":
             self.constants.fu_status = True
             self.constants.fu_arguments = " -disable_sidecar_mac"
         elif change_menu == "3":
             self.constants.fu_status = False
+            self.constants.fu_arguments = None
         else:
             print("Invalid input, returning to previous menu")
             self.set_fu_settings()
@@ -1189,11 +1190,14 @@ B. Exit
             self.download_macOS()
 
     def download_install_assistant(self, link):
-        installer.download_install_assistant(self.constants.payload_path, link)
-        installer.install_macOS_installer(self.constants.payload_path)
-        input("Press any key to continue...")
-        # To avoid selecting the wrong installer by mistake, let user select the correct one
-        self.find_local_installer()
+        if installer.download_install_assistant(self.constants.payload_path, link):
+            installer.install_macOS_installer(self.constants.payload_path)
+            input("Press any key to continue...")
+            # To avoid selecting the wrong installer by mistake, let user select the correct one
+            self.find_local_installer()
+        else:
+            print("Failed to start download")
+            input("Press any key to continue...")
 
     
     def download_macOS_installer(self):

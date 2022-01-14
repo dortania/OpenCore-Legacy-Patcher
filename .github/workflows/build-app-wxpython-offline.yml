@@ -1,4 +1,4 @@
-name: CI - Build Offline TUI
+name: CI - Build wxPython Offline
 
 on:
   push:
@@ -8,28 +8,28 @@ on:
 
 jobs:
   build:
-    name: Build Offline TUI
+    name: Build wxPython Offline
     runs-on: x86_64_mojave
     steps:
       - uses: actions/checkout@v2
       - run: python3 create_offline_build.py
-      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher.spec
-      - run: ./after_pyinstaller.sh
+      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher-GUI.spec
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
-      - run: cd dist; zip -r ../OpenCore-Patcher-TUI.app.zip OpenCore-Patcher.app
-      - run: ./../sign-tui.sh
+      - run: cd dist; zip -r ../OpenCore-Patcher-wxPython.app.zip OpenCore-Patcher.app
+      - run: ./../sign-wxpython.sh
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: OpenCore-Patcher-TUI.app (Offline)
-          path: OpenCore-Patcher-TUI.app.zip
-
+          name: OpenCore-Patcher.app (GUI Offline)
+          path: OpenCore-Patcher-wxPython.app.zip
       - name: Upload to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          asset_name: OpenCore-Patcher-TUI.app (Offline)
-          file: OpenCore-Patcher-TUI.app.zip
+          file: OpenCore-Patcher-wxPython.app.zip
           tag: ${{ github.ref }}
           file_glob: true
+          asset_name: OpenCore-Patcher.app (GUI Offline)
+      - name: Validate OpenCore
+        run: ./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --validate

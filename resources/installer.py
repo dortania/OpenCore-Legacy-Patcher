@@ -54,7 +54,9 @@ def create_installer(installer_path, volume_name):
 
 def download_install_assistant(download_path, ia_link):
     # Downloads InstallAssistant.pkg
-    utilities.download_file(ia_link, (Path(download_path) / Path("InstallAssistant.pkg")))
+    if utilities.download_file(ia_link, (Path(download_path) / Path("InstallAssistant.pkg"))):
+        return True
+    return False
 
 def install_macOS_installer(download_path):
     args = [
@@ -85,41 +87,41 @@ def list_downloadable_macOS_installers(download_path, catalog):
         link = "https://swscan.apple.com/content/catalogs/others/index-12customerseed-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
     
     # Download and unzip the catalog
-    utilities.download_file(link, (Path(download_path) / Path("seed.sucatalog.gz")))
-    subprocess.run(["gunzip", "-d", "-f", Path(download_path) / Path("seed.sucatalog.gz")])
-    catalog_plist = plistlib.load((Path(download_path) / Path("seed.sucatalog")).open("rb"))
+    if utilities.download_file(link, (Path(download_path) / Path("seed.sucatalog.gz"))):
+        subprocess.run(["gunzip", "-d", "-f", Path(download_path) / Path("seed.sucatalog.gz")])
+        catalog_plist = plistlib.load((Path(download_path) / Path("seed.sucatalog")).open("rb"))
 
-    for item in catalog_plist["Products"]:
-        try:
-            # Check if entry has SharedSupport and BuildManifest
-            # Ensures only Big Sur and newer Installers are listed
-            catalog_plist["Products"][item]["ExtendedMetaInfo"]["InstallAssistantPackageIdentifiers"]["SharedSupport"]
-            catalog_plist["Products"][item]["ExtendedMetaInfo"]["InstallAssistantPackageIdentifiers"]["BuildManifest"]
+        for item in catalog_plist["Products"]:
+            try:
+                # Check if entry has SharedSupport and BuildManifest
+                # Ensures only Big Sur and newer Installers are listed
+                catalog_plist["Products"][item]["ExtendedMetaInfo"]["InstallAssistantPackageIdentifiers"]["SharedSupport"]
+                catalog_plist["Products"][item]["ExtendedMetaInfo"]["InstallAssistantPackageIdentifiers"]["BuildManifest"]
 
-            for bm_package in catalog_plist["Products"][item]["Packages"]:
-                if "BuildManifest.plist" in bm_package["URL"]:
-                    utilities.download_file(bm_package["URL"], (Path(download_path) / Path("BuildManifest.plist")))
-                    build_plist = plistlib.load((Path(download_path) / Path("BuildManifest.plist")).open("rb"))
-                    version = build_plist["ProductVersion"]
-                    build = build_plist["ProductBuildVersion"]
-                    for ia_package in catalog_plist["Products"][item]["Packages"]:
-                        if "InstallAssistant.pkg" in ia_package["URL"]:
-                            download_link = ia_package["URL"]
-                            size = ia_package["Size"]
-                            integrity = ia_package["IntegrityDataURL"]
+                for bm_package in catalog_plist["Products"][item]["Packages"]:
+                    if "BuildManifest.plist" in bm_package["URL"]:
+                        utilities.download_file(bm_package["URL"], (Path(download_path) / Path("BuildManifest.plist")))
+                        build_plist = plistlib.load((Path(download_path) / Path("BuildManifest.plist")).open("rb"))
+                        version = build_plist["ProductVersion"]
+                        build = build_plist["ProductBuildVersion"]
+                        for ia_package in catalog_plist["Products"][item]["Packages"]:
+                            if "InstallAssistant.pkg" in ia_package["URL"]:
+                                download_link = ia_package["URL"]
+                                size = ia_package["Size"]
+                                integrity = ia_package["IntegrityDataURL"]
 
-                    avalible_apps.update({
-                        item: {
-                            "Version": version,
-                            "Build": build,
-                            "Link": download_link,
-                            "Size": size,
-                            "integrity": integrity,
-                            "Source": "Apple Inc.",
-                        }
-                    })
-        except KeyError:
-            pass
+                        avalible_apps.update({
+                            item: {
+                                "Version": version,
+                                "Build": build,
+                                "Link": download_link,
+                                "Size": size,
+                                "integrity": integrity,
+                                "Source": "Apple Inc.",
+                            }
+                        })
+            except KeyError:
+                pass
     return avalible_apps
 
 def format_drive(disk_id):
@@ -245,8 +247,9 @@ def generate_installer_creation_script(script_location, installer_path, disk):
 
     with script_location.open("w") as script:
         script.write(f'''#!/bin/bash
-diskutil eraseDisk HFS+ OCLP-Installer {disk}
-"{createinstallmedia_path}" --volume /Volumes/OCLP-Installer --nointeraction
+earse_disk='diskutil eraseDisk HFS+ OCLP-Installer {disk}'
+if $earse_disk; then
+    "{createinstallmedia_path}" --volume /Volumes/OCLP-Installer --nointeraction
+fi
         ''')
-    
     return True
