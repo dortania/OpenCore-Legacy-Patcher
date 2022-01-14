@@ -903,10 +903,12 @@ class BuildOpenCore:
         if self.constants.nvram_write is False:
             print("- Disabling Hardware NVRAM Write")
             self.config["NVRAM"]["WriteFlash"] = False
-        # if self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True:
-        #     # Add Content Caching patch
-        #     print("- Fixing Content Caching support")
-        #     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -allow_assetcache"
+        if self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True:
+            # Add Content Caching patch
+            print("- Fixing Content Caching support")
+            if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
+                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -revasset"
         if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
             # Ensure this is done at the end so all previous RestrictEvents patches are applied
             # RestrictEvents and EFICheckDisabler will confilict if both are injected

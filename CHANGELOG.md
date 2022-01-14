@@ -15,6 +15,7 @@
   - WhateverGreen 1.5.6 - release
   - Lilu 1.5.9 - release
   - gfxutil 1.8.2b - release
+- Re-add Content Caching support for VMM-spoofed systems
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach
