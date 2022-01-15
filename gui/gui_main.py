@@ -95,7 +95,7 @@ class wx_python_gui:
                         caption="Update Available for OpenCore Legacy Patcher!", 
                         style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
                     )
-                    self.dialog.SetYesNoCancelLabels("View on Github", "Ignore Always", "Ignore Once")
+                    self.dialog.SetYesNoCancelLabels("View on Github", "Always Ignore", "Ignore Once")
                     responce = self.dialog.ShowModal()
                     if responce == wx.ID_YES:
                         webbrowser.open(github_link)
