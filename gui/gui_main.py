@@ -10,8 +10,9 @@ import time
 import os
 import wx.adv
 from wx.lib.agw import hyperlink
+import threading
 
-from resources import constants, defaults, build, install, installer, utilities, sys_patch_detect, sys_patch, run, generate_smbios
+from resources import constants, defaults, build, install, installer, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect
 
@@ -60,6 +61,8 @@ class wx_python_gui:
         if current_uid == 0:
             self.file_menu.Enable(wx.ID_REDO, False)
 
+        # Spawn thread to check for updates
+        threading.Thread(target=self.check_for_updates).start()
         self.main_menu(None)
 
         wx.CallAfter(self.frame.Close)
@@ -75,6 +78,36 @@ class wx_python_gui:
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
+    
+    def check_for_updates(self, event=None):
+        ignore_updates = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher-wxpython", "IgnoreAppUpdates"], capture_output=True).stdout.decode("utf-8").strip()
+        if ignore_updates not in ["1", "True", "TRUE"]:
+            self.constants.ignore_updates = False
+            dict = updates.check_binary_updates(self.constants).check_binary_updates()
+            if dict:
+                for entry in dict:
+                    version = dict[entry]["Version"]
+                    github_link = dict[entry]["Github Link"]
+                    print(f"New version: {version}")
+                    self.dialog = wx.MessageDialog(
+                        parent=self.frame, 
+                        message=f"Current Version: {self.constants.patcher_version}\nNew version: {version}\nWould you like to view?", 
+                        caption="Update Available for OpenCore Legacy Patcher!", 
+                        style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
+                    )
+                    self.dialog.SetYesNoCancelLabels("View on Github", "Ignore Always", "Ignore Once")
+                    responce = self.dialog.ShowModal()
+                    if responce == wx.ID_YES:
+                        webbrowser.open(github_link)
+                    elif responce == wx.ID_NO:
+                        print("- Setting IgnoreAppUpdates to True")
+                        self.constants.ignore_updates = True
+                        subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher-wxpython", "IgnoreAppUpdates", "-bool", "TRUE"])
+            else:
+                print("No updates available")
+        else:
+            self.constants.ignore_updates = True
+            print("- Ignoring App Updates due to defaults")
     
     def relaunch_as_root(self, event=None):
 
@@ -1649,14 +1682,23 @@ class wx_python_gui:
         self.set_enhanced_3rd_party_ssd_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore is allowed to force Apple Vendor on 3rd Party SATA SSDs\nSome benefits from this patch include better SSD performance, TRIM support and hibernation support.\nDisable this option if your SSD does not support TRIM correctly"))
         if self.computer.third_party_sata_ssd is False and not self.constants.custom_model:
             self.set_enhanced_3rd_party_ssd_checkbox.Disable()
+        
+        # Set Ignore App Updates
+        self.set_ignore_app_updates_checkbox = wx.CheckBox(self.frame, label="Ignore App Updates")
+        self.set_ignore_app_updates_checkbox.SetValue(self.constants.ignore_updates)
+        self.set_ignore_app_updates_checkbox.Bind(wx.EVT_CHECKBOX, self.set_ignore_app_updates_click)
+        self.set_ignore_app_updates_checkbox.SetPosition(wx.Point(
+            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().x,
+            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().y + self.set_enhanced_3rd_party_ssd_checkbox.GetSize().height))
+        self.set_ignore_app_updates_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore will ignore App Updates on launch.\nEnable this option if you do not want to be prompted for App Updates"))
 
         
         # Button: Developer Debug Info
         self.debug_button = wx.Button(self.frame, label="Developer Debug Info")
         self.debug_button.Bind(wx.EVT_BUTTON, self.additional_info_menu)
         self.debug_button.SetPosition(wx.Point(
-            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().x,
-            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().y + self.set_enhanced_3rd_party_ssd_checkbox.GetSize().height + 5))
+            self.set_ignore_app_updates_checkbox.GetPosition().x,
+            self.set_ignore_app_updates_checkbox.GetPosition().y + self.set_ignore_app_updates_checkbox.GetSize().height + 5))
         self.debug_button.Center(wx.HORIZONTAL)
         
         # Button: return to main menu
@@ -1670,6 +1712,13 @@ class wx_python_gui:
         # set frame size below return to main menu button
         self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
     
+    def set_ignore_app_updates_click(self, event):
+        self.constants.ignore_updates = self.set_ignore_app_updates_checkbox.GetValue()
+        if self.constants.ignore_updates is True:
+            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher-wxpython", "IgnoreAppUpdates", "-bool", "TRUE"])
+        else:
+            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher-wxpython", "IgnoreAppUpdates", "-bool", "FALSE"])
+
     def firewire_click(self, event=None):
         if self.firewire_boot_checkbox.GetValue():
             print("Firewire Enabled")

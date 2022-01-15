@@ -43,7 +43,7 @@ exe = EXE(pyz,
 app = BUNDLE(exe,
              name='OpenCore-Patcher.app',
              icon="payloads/OC-Patcher.icns",
-             bundle_identifier=None,
+             bundle_identifier="com.dortania.opencore-legacy-patcher-wxpython",
              info_plist={
              "CFBundleShortVersionString": constants.Constants().patcher_version,
              "NSHumanReadableCopyright": "Copyright 2020-2022 Dortania",

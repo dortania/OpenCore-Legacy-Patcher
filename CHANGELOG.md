@@ -26,6 +26,9 @@
 - Disable AirPlay to Mac/Sidecar patch set by default
   - Work-around some older systems with memory instability
   - Configurable by end user to re-enable (via FeatureUnlock setting)
+- Add App Update checks to GUI
+  - If new version available, app will prompt on launch.
+  - Configurable in Developer Settings
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach

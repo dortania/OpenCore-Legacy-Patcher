@@ -98,6 +98,7 @@ class Constants:
         self.recovery_status = False  #     Detect if booted into RecoveryOS
         self.launcher_binary = None #       Determine launch binary (ie. Python vs PyInstaller)
         self.launcher_script = None  #      Determine launch file (if run via Python)
+        self.ignore_updates = False  #      Ignore OCLP updates
 
         ## Hardware
         self.computer: device_probe.Computer = None  # type: ignore
