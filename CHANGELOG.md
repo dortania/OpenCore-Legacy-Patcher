@@ -23,6 +23,9 @@
 - Allow optional spoofing on native Models
   - Recommended for systems that cannot update their firmware natively (ie. dead internal drive)
 - Add Dropbox fix for non-Metal on Monterey
+- Disable AirPlay to Mac/Sidecar patch set by default
+  - Work-around some older systems with memory instability
+  - Configurable by end user to re-enable (via FeatureUnlock setting)
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach

@@ -22,6 +22,13 @@ class generate_defaults:
                         settings.amfi_status = True
                         settings.allow_fv_root = True  #  Allow FileVault on broken seal
                         break
+            if model not in model_array.SupportedSMBIOS:
+                # Allow FeatureUnlock on native models
+                settings.fu_status = True
+                settings.fu_arguments = None
+            else:
+                settings.fu_status = True
+                settings.fu_arguments = " -disable_sidecar_mac"
             if (
                 isinstance(settings.computer.wifi, device_probe.Broadcom)
                 and settings.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
@@ -54,6 +61,9 @@ class generate_defaults:
             settings.serial_settings = "Minimal"
         elif model in model_array.LegacyGPU:
             settings.disable_cs_lv = True
+        elif model in model_array.SupportedSMBIOS:
+            settings.fu_status = True
+            settings.fu_arguments = " -disable_sidecar_mac"
 
         if model in model_array.LegacyGPU:
             if host_is_target and utilities.check_metal_support(device_probe, settings.computer) is True:

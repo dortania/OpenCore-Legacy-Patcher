@@ -488,13 +488,15 @@ class Computer:
 
     def bluetooth_probe(self):
         usb_data: str = subprocess.run("system_profiler SPUSBDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-        if "BRCM2070 Hub" in usb_data:
+        if "BRCM20702 Hub" in usb_data:
+            self.bluetooth_chipset = "BRCM20702 Hub"
+        elif "BCM20702A0" in usb_data or "BCM2045A0" in usb_data:
+            self.bluetooth_chipset = "3rd Party Bluetooth 4.0 Hub"
+        elif "BRCM2070 Hub" in usb_data:
             self.bluetooth_chipset = "BRCM2070 Hub"
         elif "BRCM2046 Hub" in usb_data:
             self.bluetooth_chipset = "BRCM2046 Hub"
-        elif "BRCM20702 Hub" in usb_data:
-            self.bluetooth_chipset = "BRCM20702 Hub"
-        elif "Bluetooth":
+        elif "Bluetooth" in usb_data:
             self.bluetooth_chipset = "Generic"
     
     def sata_disk_probe(self):

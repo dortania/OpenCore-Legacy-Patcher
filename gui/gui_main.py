@@ -1408,10 +1408,16 @@ class wx_python_gui:
         self.smbios_button.Bind(wx.EVT_BUTTON, self.smbios_settings_menu)
         self.smbios_button.Center(wx.HORIZONTAL)
 
+        # Button: Misc Settings
+        self.misc_button = wx.Button(self.frame, label="Misc Settings",  size=(155,30))
+        self.misc_button.SetPosition(wx.Point(self.smbios_button.GetPosition().x , self.smbios_button.GetPosition().y + self.smbios_button.GetSize().height))
+        self.misc_button.Bind(wx.EVT_BUTTON, self.misc_settings_menu)
+        self.misc_button.Center(wx.HORIZONTAL)
+
         # Button: Developer Settings
         self.miscellaneous_button = wx.Button(self.frame, label="Developer Settings",  size=(155,30))
-        self.miscellaneous_button.SetPosition(wx.Point(self.smbios_button.GetPosition().x , self.smbios_button.GetPosition().y + self.smbios_button.GetSize().height))
-        self.miscellaneous_button.Bind(wx.EVT_BUTTON, self.misc_settings_menu)
+        self.miscellaneous_button.SetPosition(wx.Point(self.misc_button.GetPosition().x , self.misc_button.GetPosition().y + self.misc_button.GetSize().height))
+        self.miscellaneous_button.Bind(wx.EVT_BUTTON, self.dev_settings_menu)
         self.miscellaneous_button.Centre(wx.HORIZONTAL)
 
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu", size=(155,30))
@@ -1508,7 +1514,7 @@ class wx_python_gui:
             print("Legacy Accel mode disabled")
             self.constants.moj_cat_accel = False
     
-    def misc_settings_menu(self, event=None):
+    def dev_settings_menu(self, event=None):
         self.frame.DestroyChildren()
 
         # Header
@@ -1525,33 +1531,10 @@ class wx_python_gui:
         self.subheader.SetSize(wx.Size(self.frame.GetSize().width, 30))
         self.subheader.Centre(wx.HORIZONTAL)
 
-        # Label: Set FeatreUnlock status
-        self.feature_unlock_label = wx.StaticText(self.frame, label="Feature Unlock Status:", style=wx.ALIGN_CENTRE)
-        self.feature_unlock_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
-        self.feature_unlock_label.SetPosition(wx.Point(0, self.subheader.GetPosition().y + self.subheader.GetSize().height -5))
-        self.feature_unlock_label.Centre(wx.HORIZONTAL)
-
-        # Dropdown: Set Feature Unlock status
-        self.feature_unlock_dropdown = wx.Choice(self.frame)
-        for entry in ["Enabled", "Paritally enabled (No AirPlay/SideCar)", "Disabled"]:
-            self.feature_unlock_dropdown.Append(entry)
-        self.feature_unlock_dropdown.SetPosition(wx.Point(0, self.feature_unlock_label.GetPosition().y + self.feature_unlock_label.GetSize().height + 5))
-        if self.constants.fu_status is True:
-            if self.constants.fu_arguments is None:
-                selection = 0
-            else:
-                selection = 1
-        else:
-            selection = 2
-        self.feature_unlock_dropdown.SetSelection(selection)
-        self.feature_unlock_dropdown.Bind(wx.EVT_CHOICE, self.fu_selection_click)
-        self.feature_unlock_dropdown.Centre(wx.HORIZONTAL)
-        self.feature_unlock_dropdown.SetToolTip(wx.ToolTip("Set whether FeatureUnlock support level\nBy default, full functionality is enabled. For systems experiencing memory instability, lowering this option to disable AirPlay/Sidecar patch sets is recommended."))
-
         # Label: Set GPU Model for MXM iMacs
         self.label_model = wx.StaticText(self.frame, label="Set GPU Model for MXM iMacs:", style=wx.ALIGN_CENTRE)
         self.label_model.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
-        self.label_model.SetPosition(wx.Point(0, self.feature_unlock_dropdown.GetPosition().y + self.feature_unlock_dropdown.GetSize().height + 2))
+        self.label_model.SetPosition(wx.Point(0, self.subheader.GetPosition().y + self.subheader.GetSize().height + 2))
         self.label_model.SetSize(wx.Size(self.frame.GetSize().width, 30))
         self.label_model.Centre(wx.HORIZONTAL)
 
@@ -1568,50 +1551,14 @@ class wx_python_gui:
         self.gpu_dropdown.SetToolTip(wx.ToolTip("Configures MXM GPU Vendor logic on pre-built models\nIf you are not using MXM iMacs, please leave this setting as is."))
         if self.computer.real_model not in ["iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]:
             self.gpu_dropdown.Disable()
-
-        # Checkbox List:
-        # FireWire Boot
-        # NVMe Boot
-        # Wake on WLAN
-        # Disable Thunderbolt
-        # Set TeraScale 2 Accel
-        # Windows GMUX
-        # Hibernation Workaround
-        # Disable Battery Throttling
-        # Software Demux
-
-        # FireWire Boot
-        self.firewire_boot_checkbox = wx.CheckBox(self.frame, label="FireWire Boot")
-        self.firewire_boot_checkbox.SetValue(self.constants.firewire_boot)
-        self.firewire_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.firewire_click)
-        self.firewire_boot_checkbox.SetPosition(wx.Point(30, self.gpu_dropdown.GetPosition().y + self.gpu_dropdown.GetSize().height + 5))
-        self.firewire_boot_checkbox.SetToolTip(wx.ToolTip("Enable FireWire Boot support in macOS 10.15 and newer.\nMainly applicable for Macs with FireWire or Thunderbolt to FireWire adapters"))
-        if generate_smbios.check_firewire(self.computer.real_model) is False and not self.constants.custom_model:
-            self.firewire_boot_checkbox.Disable()
-
-        # NVMe Boot
-        self.nvme_boot_checkbox = wx.CheckBox(self.frame, label="NVMe Boot")
-        self.nvme_boot_checkbox.SetValue(self.constants.nvme_boot)
-        self.nvme_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.nvme_click)
-        self.nvme_boot_checkbox.SetPosition(wx.Point(self.firewire_boot_checkbox.GetPosition().x, self.firewire_boot_checkbox.GetPosition().y + self.firewire_boot_checkbox.GetSize().height))
-        self.nvme_boot_checkbox.SetToolTip(wx.ToolTip("Enables NVMe support in UEFI for non-native systems (ie. MacPro3,1)\nRequires OpenCore to be stored on a natively bootable volume however"))
-
-        # Wake on WLAN
-        self.wake_on_wlan_checkbox = wx.CheckBox(self.frame, label="Wake on WLAN")
-        self.wake_on_wlan_checkbox.SetValue(self.constants.enable_wake_on_wlan)
-        self.wake_on_wlan_checkbox.Bind(wx.EVT_CHECKBOX, self.wake_on_wlan_click)
-        self.wake_on_wlan_checkbox.SetPosition(wx.Point(
-            self.nvme_boot_checkbox.GetPosition().x,
-            self.nvme_boot_checkbox.GetPosition().y + self.nvme_boot_checkbox.GetSize().height))
-        self.wake_on_wlan_checkbox.SetToolTip(wx.ToolTip("Enables Wake on WLAN for Broadcom Wifi.\nBy default, Wake on WLAN is disabled to work around Apple's wake from sleep bug causing heavily degraded networking performance."))
-
+        
         # Disable Thunderbolt
         self.disable_thunderbolt_checkbox = wx.CheckBox(self.frame, label="Disable Thunderbolt")
         self.disable_thunderbolt_checkbox.SetValue(self.constants.disable_tb)
         self.disable_thunderbolt_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_tb_click)
         self.disable_thunderbolt_checkbox.SetPosition(wx.Point(
-            self.wake_on_wlan_checkbox.GetPosition().x,
-            self.wake_on_wlan_checkbox.GetPosition().y + self.wake_on_wlan_checkbox.GetSize().height))
+            30,
+            self.gpu_dropdown.GetPosition().y + self.gpu_dropdown.GetSize().height + 5))
         self.disable_thunderbolt_checkbox.SetToolTip(wx.ToolTip("Disables Thunderbolt support on MacBookPro11,x\nMainly applicable for systems that cannot boot with Thunderbolt enabled"))
         if not self.constants.custom_model and not self.computer.real_model.startswith("MacBookPro11"):
             self.disable_thunderbolt_checkbox.Disable()
@@ -2163,3 +2110,83 @@ OpenCore Legacy Patcher by default knows the most ideal
             self.constants.custom_sip_value = hex(self.sip_value)
         self.sip_label_2.SetLabel(f"Currently configured SIP: {hex(self.sip_value)}")
         self.sip_label_2.Center(wx.HORIZONTAL)
+
+    def misc_settings_menu(self, event):
+        self.frame.DestroyChildren()
+        
+        # Header
+        self.header = wx.StaticText(self.frame, label="Misc Settings", style=wx.ALIGN_CENTRE)
+        self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.header.SetPosition(wx.Point(0, 10))
+        self.header.SetSize(wx.Size(self.frame.GetSize().width, 30))
+        self.header.Centre(wx.HORIZONTAL)
+
+        # Subheader: If unfamiliar with the following settings, please do not change them.
+        self.subheader = wx.StaticText(self.frame, label="Configure settings", style=wx.ALIGN_CENTRE)
+        self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.subheader.SetPosition(wx.Point(0, self.header.GetPosition().y + self.header.GetSize().height))
+        self.subheader.SetSize(wx.Size(self.frame.GetSize().width, 30))
+        self.subheader.Centre(wx.HORIZONTAL)
+        # Subheader: , hover over options more info
+        self.subheader_2 = wx.StaticText(self.frame, label="Hover over options for more info", style=wx.ALIGN_CENTRE)
+        self.subheader_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.subheader_2.SetPosition(wx.Point(0, self.subheader.GetPosition().y + self.subheader.GetSize().height - 15))
+        self.subheader_2.SetSize(wx.Size(self.frame.GetSize().width, 30))
+        self.subheader_2.Centre(wx.HORIZONTAL)
+
+        # Label: Set FeatreUnlock status
+        self.feature_unlock_label = wx.StaticText(self.frame, label="Feature Unlock Status:", style=wx.ALIGN_CENTRE)
+        self.feature_unlock_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.feature_unlock_label.SetPosition(wx.Point(0, self.subheader_2.GetPosition().y + self.subheader_2.GetSize().height -5))
+        self.feature_unlock_label.Centre(wx.HORIZONTAL)
+
+        # Dropdown: Set Feature Unlock status
+        self.feature_unlock_dropdown = wx.Choice(self.frame)
+        for entry in ["Enabled", "Paritally enabled (No AirPlay/SideCar)", "Disabled"]:
+            self.feature_unlock_dropdown.Append(entry)
+        self.feature_unlock_dropdown.SetPosition(wx.Point(0, self.feature_unlock_label.GetPosition().y + self.feature_unlock_label.GetSize().height + 5))
+        if self.constants.fu_status is True:
+            if self.constants.fu_arguments is None:
+                selection = 0
+            else:
+                selection = 1
+        else:
+            selection = 2
+        self.feature_unlock_dropdown.SetSelection(selection)
+        self.feature_unlock_dropdown.Bind(wx.EVT_CHOICE, self.fu_selection_click)
+        self.feature_unlock_dropdown.Centre(wx.HORIZONTAL)
+        self.feature_unlock_dropdown.SetToolTip(wx.ToolTip("Set FeatureUnlock support level\nFor systems experiencing memory instability, lowering this option to disable AirPlay/Sidecar patch sets is recommended.\nFully enabling this option will unlock AirPlay to Mac and Sidecar support"))
+
+        # FireWire Boot
+        self.firewire_boot_checkbox = wx.CheckBox(self.frame, label="FireWire Boot")
+        self.firewire_boot_checkbox.SetValue(self.constants.firewire_boot)
+        self.firewire_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.firewire_click)
+        self.firewire_boot_checkbox.SetPosition(wx.Point(50, self.feature_unlock_dropdown.GetPosition().y + self.feature_unlock_dropdown.GetSize().height + 5))
+        self.firewire_boot_checkbox.SetToolTip(wx.ToolTip("Enable FireWire Boot support in macOS 10.15 and newer.\nMainly applicable for Macs with FireWire or Thunderbolt to FireWire adapters"))
+        if generate_smbios.check_firewire(self.computer.real_model) is False and not self.constants.custom_model:
+            self.firewire_boot_checkbox.Disable()
+
+        # NVMe Boot
+        self.nvme_boot_checkbox = wx.CheckBox(self.frame, label="NVMe Boot")
+        self.nvme_boot_checkbox.SetValue(self.constants.nvme_boot)
+        self.nvme_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.nvme_click)
+        self.nvme_boot_checkbox.SetPosition(wx.Point(self.firewire_boot_checkbox.GetPosition().x, self.firewire_boot_checkbox.GetPosition().y + self.firewire_boot_checkbox.GetSize().height))
+        self.nvme_boot_checkbox.SetToolTip(wx.ToolTip("Enables NVMe support in UEFI for non-native systems (ie. MacPro3,1)\nRequires OpenCore to be stored on a natively bootable volume however"))
+    
+        # Wake on WLAN
+        self.wake_on_wlan_checkbox = wx.CheckBox(self.frame, label="Wake on WLAN")
+        self.wake_on_wlan_checkbox.SetValue(self.constants.enable_wake_on_wlan)
+        self.wake_on_wlan_checkbox.Bind(wx.EVT_CHECKBOX, self.wake_on_wlan_click)
+        self.wake_on_wlan_checkbox.SetPosition(wx.Point(self.nvme_boot_checkbox.GetPosition().x, self.nvme_boot_checkbox.GetPosition().y + self.nvme_boot_checkbox.GetSize().height))
+        self.wake_on_wlan_checkbox.SetToolTip(wx.ToolTip("Enables Wake on WLAN for Broadcom Wifi.\nBy default, Wake on WLAN is disabled to work around Apple's wake from sleep bug causing heavily degraded networking performance.\nNote: This option is only applicable for BCM943224, BCM94331, BCM94360 and BCM943602 chipsets"))
+
+        # Button: return to main menu
+        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu_button.SetPosition(wx.Point(
+            self.wake_on_wlan_checkbox.GetPosition().x,
+            self.wake_on_wlan_checkbox.GetPosition().y + self.wake_on_wlan_checkbox.GetSize().height + 10))
+        self.return_to_main_menu_button.Center(wx.HORIZONTAL)
+
+        # set frame size below return to main menu button
+        self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))

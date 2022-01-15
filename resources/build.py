@@ -701,6 +701,9 @@ class BuildOpenCore:
                     if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
                         print("- Fixing Legacy Bluetooth for macOS Monterey")
                         self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
+            elif self.computer.bluetooth_chipset == "3rd Party Bluetooth 4.0 Hub":
+                print("- Detected 3rd Party Chipset")
+                self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
         elif smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM20702_v1.value:
             print("- Fixing Legacy Bluetooth for macOS Monterey")
             self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
