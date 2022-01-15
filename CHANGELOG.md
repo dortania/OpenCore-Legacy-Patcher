@@ -15,12 +15,14 @@
   - WhateverGreen 1.5.6 - release
   - Lilu 1.5.9 - release
   - gfxutil 1.8.2b - release
+  - PatcherSupportPkg 0.2.9 - release
 - Re-add Content Caching support for VMM-spoofed systems
 - Add wxPython Based GUI
   - Superceeds Obj-C Based GUI
   - Both standard and offline builds provided
 - Allow optional spoofing on native Models
   - Recommended for systems that cannot update their firmware natively (ie. dead internal drive)
+- Add Dropbox fix for non-Metal on Monterey
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach

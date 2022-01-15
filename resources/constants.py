@@ -15,7 +15,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.3.4"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.2.8"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.2.9"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link = "https://discord.gg/rqdPgH8xSN"
@@ -549,6 +549,10 @@ class Constants:
         return self.payload_apple_usr_path / Path("libexec")
     
     @property
+    def payload_apple_application_support(self):
+        return self.payload_apple_root_path / Path("Application Support")
+    
+    @property
     def payload_apple_private_path(self):
         return self.payload_apple_root_path / Path("private")
     
@@ -670,12 +674,16 @@ class Constants:
         return self.payload_apple_libexec_path / Path("Legacy-Wifi")
     
     @property
-    def legacy_wifi_etc(self):
-        return self.payload_apple_etc_path / Path("Legacy-Wifi")
+    def legacy_wifi_support(self):
+        return self.payload_apple_application_support / Path("Legacy-Wifi")
     
     @property
-    def legacy_keyboard_backlight_etc(self):
-        return self.payload_apple_etc_path / Path("Keyboard-Backlight")
+    def legacy_keyboard_backlight_support(self):
+        return self.payload_apple_application_support / Path("Keyboard-Backlight")
+    
+    @property
+    def legacy_dropbox_support(self):
+        return self.payload_apple_application_support / Path("Dropbox")
 
     sbm_values = [
         "j137ap",  #  iMacPro1,1

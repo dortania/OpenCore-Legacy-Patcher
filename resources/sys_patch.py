@@ -62,6 +62,7 @@ class PatchSysVolume:
         self.mount_libexec = f"{self.mount_location}/usr/libexec"
         self.mount_extensions_mux = f"{self.mount_location}/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns/"
         self.mount_private_etc = f"{self.mount_location_data}/private/etc"
+        self.mount_application_support = f"{self.mount_location_data}/Library/Application Support"
 
     def find_mount_root_vol(self, patch):
         self.root_mount_path = utilities.get_disk_path()
@@ -217,26 +218,6 @@ class PatchSysVolume:
             self.manual_root_patch_revert()
 
     def rebuild_snapshot(self):
-        # Grab List.txt if appropriate
-        dylib_list = self.build_skylight_plugin_list()
-        if dylib_list is not None:
-            print("- Updating SkyLightPlugins List.txt")
-            if (Path(self.mount_private_etc) / Path("SkyLightPlugins/List.txt")).exists():
-                print("- Removing existing List.txt")
-                utilities.process_status(
-                    utilities.elevated(
-                        ["rm", "-f", f"{self.mount_private_etc}/SkyLightPlugins/List.txt"],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.STDOUT,
-                    )
-                )
-            utilities.process_status(
-                utilities.elevated(
-                    ["cp", dylib_list, f"{self.mount_private_etc}/SkyLightPlugins/"],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT,
-                )
-            )
         print("- Rebuilding Kernel Cache (This may take some time)")
         if self.constants.detected_os > os_data.os_data.catalina:
             result = utilities.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -318,35 +299,7 @@ set million colour before rebooting"""
             utilities.process_status(utilities.elevated(["cp", "-R", f"{vendor_location}/{add_current_kext}", self.mount_extensions], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-    def build_skylight_plugin_list(self):
-        # ASentientBot's Skylight system support injecting additional dylibs into macOS
-        # To do so, it parses the List.txt file in '/private/etc/SkyLightPlugins/'
-        # The format of this file is:
-        #    <plugin path> : <plugin name>
-        # Parse all dylibs in /private/etc/SkyLightPlugins/, generate an appropriate List.txt
-
-        skylight_plugins = []
-        if self.constants.list_txt_path.exists():
-            self.constants.list_txt_path.unlink()
-
-        if (Path(self.mount_private_etc) / Path("SkyLightPlugins")).exists():
-            for file in (Path(self.mount_private_etc) / Path("SkyLightPlugins")).glob("*.dylib"):
-                skylight_plugins.append(file.name)
-        if len(skylight_plugins) > 0:
-            with open(self.constants.list_txt_path, "w") as f:
-                for plugin in skylight_plugins:
-                    try:
-                        path = dylib_data.shim_list.shim_pathing[plugin]
-                        print(f"- Adding {plugin} to list.txt")
-                        f.write(f"{path} : {plugin}\n")
-                    except KeyError:
-                        print(f"- Skipping {plugin}, unknown pathing")
-                        continue
-                return self.constants.list_txt_path
-        return None
         
-
     def add_brightness_patch(self):
         self.delete_old_binaries(sys_patch_data.DeleteBrightness)
         self.add_new_binaries(sys_patch_data.AddBrightness, self.constants.legacy_brightness)
@@ -374,8 +327,8 @@ set million colour before rebooting"""
         # dylib patch to resolve password crash prompt
         # Note requires ASentientBot's SkyLight to function
         # Thus Metal machines do not benefit from this patch, however install anyways as harmless 
-        print("- Merging Wireless private/etc")
-        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_etc}/", self.mount_private_etc], stdout=subprocess.PIPE)
+        print("- Merging Wireless SkyLightPlugins")
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_wifi_support}/", self.mount_application_support], stdout=subprocess.PIPE)
 
     def add_legacy_mux_patch(self):
         self.delete_old_binaries(sys_patch_data.DeleteDemux)
@@ -385,8 +338,12 @@ set million colour before rebooting"""
         )
     
     def add_legacy_keyboard_backlight_patch(self):
-        print("- Merging Backlight private/etc")
-        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_keyboard_backlight_etc}/", self.mount_private_etc], stdout=subprocess.PIPE)
+        print("- Merging Keyboard Backlight SkyLightPlugins")
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_keyboard_backlight_support}/", self.mount_application_support], stdout=subprocess.PIPE)
+    
+    def add_legacy_dropbox_patch(self):
+        print("- Merging DropboxHack SkyLightPlugins")
+        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_dropbox_support}/", self.mount_application_support], stdout=subprocess.PIPE)
 
     def gpu_accel_legacy(self):
         if self.constants.detected_os == os_data.os_data.mojave:
@@ -545,6 +502,9 @@ set million colour before rebooting"""
         utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_private_frameworks_path_legacy_drm}/", self.mount_private_frameworks], stdout=subprocess.PIPE)
 
     def gpu_accel_legacy_extended(self):
+        if self.constants.detected_os == os_data.os_data.monterey:
+            self.add_legacy_dropbox_patch()
+
         print("- Merging general legacy Frameworks")
         utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if self.constants.detected_os > os_data.os_data.big_sur:
