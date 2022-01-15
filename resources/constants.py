@@ -122,6 +122,7 @@ class Constants:
         self.custom_cpu_model_value = ""  # New CPU name within About This Mac
         self.serial_settings = "None"  #    Set SMBIOS level used
         self.override_smbios = "Default"  # Set SMBIOS model used
+        self.allow_native_spoofs = False  # Allow native models to recieve spoofs
 
         ## FeatureUnlock Settings
         self.fu_status = True   #   Enable FeatureUnlock

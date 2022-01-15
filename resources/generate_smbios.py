@@ -71,9 +71,15 @@ def generate_fw_features(model, custom):
         firmwarefeature = utilities.get_rom("firmware-features")
         if not firmwarefeature:
             print("- Failed to find FirmwareFeatures, falling back on defaults")
-            firmwarefeature = int(smbios_data.smbios_dictionary[model]["FirmwareFeatures"], 16)
+            if smbios_data.smbios_dictionary[model]["FirmwareFeatures"] is None:
+                firmwarefeature = 0
+            else:
+                firmwarefeature = int(smbios_data.smbios_dictionary[model]["FirmwareFeatures"], 16)
     else:
-        firmwarefeature = int(smbios_data.smbios_dictionary[model]["FirmwareFeatures"], 16)
+        if smbios_data.smbios_dictionary[model]["FirmwareFeatures"] is None:
+            firmwarefeature = 0
+        else:
+            firmwarefeature = int(smbios_data.smbios_dictionary[model]["FirmwareFeatures"], 16)
     firmwarefeature = update_firmware_features(firmwarefeature)
     return firmwarefeature
 

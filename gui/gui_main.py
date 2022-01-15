@@ -1915,10 +1915,22 @@ class wx_python_gui:
         self.smbios_model_dropdown.Bind(wx.EVT_CHOICE, self.smbios_model_click)
         self.smbios_model_dropdown.Center(wx.HORIZONTAL)
 
+        # Checkbox: Allow Native Spoofs
+        self.native_spoof_checkbox = wx.CheckBox(self.frame, label="Allow Native Spoofs")
+        self.native_spoof_checkbox.SetValue(self.constants.allow_native_spoofs)
+        self.native_spoof_checkbox.SetPosition(
+            wx.Point(self.smbios_model_dropdown.GetPosition().x, self.smbios_model_dropdown.GetPosition().y + self.smbios_model_dropdown.GetSize().height + 10)
+        )
+        self.native_spoof_checkbox.Bind(wx.EVT_CHECKBOX, self.native_spoof_click)
+        self.native_spoof_checkbox.Center(wx.HORIZONTAL)
+        self.native_spoof_checkbox.SetToolTip(wx.ToolTip("For native systems that cannot update their firmware, this option will allow OCLP to spoof the SMBIOS."))
+        if self.constants.allow_oc_everywhere is False:
+            self.native_spoof_checkbox.Disable()
+
         # Button: Return to Main Menu
         self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu_button.SetPosition(
-            wx.Point(self.smbios_model_dropdown.GetPosition().x, self.smbios_model_dropdown.GetPosition().y + self.smbios_model_dropdown.GetSize().height + 10)
+            wx.Point(self.native_spoof_checkbox.GetPosition().x, self.native_spoof_checkbox.GetPosition().y + self.native_spoof_checkbox.GetSize().height + 10)
         )
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
@@ -1926,7 +1938,14 @@ class wx_python_gui:
         self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
 
 
-    
+    def native_spoof_click(self, event):
+        if self.native_spoof_checkbox.GetValue():
+            print("Allow Native Spoofs Enabled")
+            self.constants.allow_native_spoofs = True
+        else:
+            print("Allow Native Spoofs Disabled")
+            self.constants.allow_native_spoofs = False
+
     def smbios_spoof_level_click(self, event=None):
         selection = self.smbios_dropdown.GetStringSelection()
         print(f"SMBIOS Spoof Level: {selection}")

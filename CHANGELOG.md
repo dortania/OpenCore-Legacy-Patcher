@@ -19,6 +19,8 @@
 - Add wxPython Based GUI
   - Superceeds Obj-C Based GUI
   - Both standard and offline builds provided
+- Allow optional spoofing on native Models
+  - Recommended for systems that cannot update their firmware natively (ie. dead internal drive)
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach

@@ -144,7 +144,7 @@ class BuildOpenCore:
         ]:
             self.enable_kext(name, version, path, check)
 
-        if self.constants.allow_oc_everywhere is False:
+        if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True:
             if self.constants.serial_settings == "None":
                 # Credit to Parrotgeek1 for boot.efi and hv_vmm_present patch sets
                 # print("- Enabling Board ID exemption patch")
@@ -384,7 +384,7 @@ class BuildOpenCore:
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
         if (
             usb_map_path.exists()
-            and self.constants.allow_oc_everywhere is False
+            and (self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True)
             and self.model not in ["Xserve2,1", "Dortania1,1"]
             and (self.model in model_array.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
@@ -395,7 +395,7 @@ class BuildOpenCore:
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
 
         if self.constants.allow_oc_everywhere is False:
-            if  self.constants.serial_settings != "None":
+            if self.constants.serial_settings != "None":
                 if self.model == "MacBookPro9,1":
                     print("- Adding AppleMuxControl Override")
                     amc_map_path = Path(self.constants.plist_folder_path) / Path("AppleMuxControl/Info.plist")
@@ -907,7 +907,10 @@ class BuildOpenCore:
         if self.constants.override_smbios == "Default":
             if self.constants.serial_settings != "None":
                 print("- Setting macOS Monterey Supported SMBIOS")
-                spoofed_model = generate_smbios.set_smbios_model_spoof(self.model)
+                if self.constants.allow_native_spoofs is True:
+                    spoofed_model = self.model
+                else:
+                    spoofed_model = generate_smbios.set_smbios_model_spoof(self.model)
         else:
             spoofed_model = self.constants.override_smbios
         print(f"- Using Model ID: {spoofed_model}")
@@ -918,7 +921,7 @@ class BuildOpenCore:
             spoofed_board = ""
         self.spoofed_model = spoofed_model
         self.spoofed_board = spoofed_board
-        if self.constants.allow_oc_everywhere is False:
+        if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True:
             self.config["#Revision"]["Spoofed-Model"] = f"{self.spoofed_model} - {self.constants.serial_settings}"
 
         # Setup menu
@@ -1175,7 +1178,7 @@ class BuildOpenCore:
 
     def build_opencore(self):
         self.build_efi()
-        if self.constants.allow_oc_everywhere is False:
+        if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True:
             self.set_smbios()
         self.cleanup()
         self.sign_files()

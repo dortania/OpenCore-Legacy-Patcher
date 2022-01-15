@@ -891,6 +891,30 @@ Supported Options:
             print("Invalid input, returning to previous menu")
             self.set_fu_settings()
     
+    def set_allow_native_spoofs(self):
+        utilities.cls()
+        utilities.header(["Allow Native Spoofs"])
+        print(
+            """
+By default OCLP will not touch the SMBIOS of native models
+to ensure a "stock-like" environment. However for systems that
+cannot update their firmware, this option will allow OCLP to
+spoof the SMBIOS.
+
+By default VMM is used to spoof the SMBIOS. Minimal and higher are
+available however not officially supported.
+            """
+        )
+        change_menu = input("Allow Native Spoofs?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.allow_native_spoofs = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.allow_native_spoofs = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.set_allow_native_spoofs()
+    
     def set_nvram_write(self):
         utilities.cls()
         utilities.header(["Set NVRAM Write"])
@@ -1088,6 +1112,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             options = [
                 [f"Set SMBIOS Spoof Level:\tCurrently {self.constants.serial_settings}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_serial],
                 [f"Set SMBIOS Spoof Model:\tCurrently {self.constants.override_smbios}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_smbios],
+                [f"Allow Native Spoofs:\tCurrently {self.constants.allow_native_spoofs}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_allow_native_spoofs],
                 [f"Set Custom name {self.constants.custom_cpu_model_value}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).custom_cpu],
             ]
 
