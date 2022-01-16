@@ -314,20 +314,29 @@ def verify_network_connection(url):
 
 def download_file(link, location, is_gui=None):
     if verify_network_connection(link):
+        short_link = os.path.basename(link)
         if Path(location).exists():
             Path(location).unlink()
+        header = requests.head(link).headers
+        try:
+            # Try to get true file
+            # ex. Github's release links provides a "fake" header
+            # Thus need to resolve to the real link
+            link = requests.head(link).headers["location"]
+            header = requests.head(link).headers
+        except KeyError:
+            pass
         try:
             # Handle cases where Content-Length has garbage or is missing
             total_file_size = int(requests.head(link).headers['Content-Length'])
         except KeyError:
             total_file_size = 0
-        if total_file_size != 0:
+        if total_file_size > 1024:
             file_size_rounded = round(total_file_size / 1024 / 1024, 2)
             file_size_string = f" of {file_size_rounded}MB"
         else:
             file_size_string = ""
         response = requests.get(link, stream=True)
-        short_link = os.path.basename(link)
         # SU Catalog's link is quite long, strip to make it bearable
         if "sucatalog.gz" in short_link:
             short_link = "sucatalog.gz"
@@ -349,7 +358,7 @@ def download_file(link, location, is_gui=None):
                     print(header)
                     print(box_string)
                     print("")
-                if total_file_size != 0:
+                if total_file_size > 1024:
                     total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
                 print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
         checksum = hashlib.sha256()
