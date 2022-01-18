@@ -12,8 +12,8 @@ import zipfile
 from pathlib import Path
 import sys
 
-from resources import constants, device_probe, utilities, generate_smbios
-from data import sip_data, sys_patch_data, model_array, os_data, smbios_data, cpu_data, dylib_data
+from resources import constants, device_probe, utilities, generate_smbios, sys_patch_download
+from data import sip_data, sys_patch_data, model_array, os_data, smbios_data, cpu_data
 
 
 class PatchSysVolume:
@@ -639,7 +639,7 @@ set million colour before rebooting"""
 
     def check_files(self):
         if Path(self.constants.payload_apple_root_path).exists():
-            print("- Found Apple Binaries")
+            print("- Found local Apple Binaries")
             if self.constants.gui_mode is False:
                 patch_input = input("Would you like to redownload?(y/n): ")
                 if patch_input in {"y", "Y", "yes", "Yes"}:
@@ -648,38 +648,14 @@ set million colour before rebooting"""
             else:
                 self.download_files()
         else:
-            print("- Apple binaries missing")
             self.download_files()
 
     def download_files(self):
-        if self.constants.detected_os == os_data.os_data.monterey:
-            os_ver = "12-Monterey"
-        elif self.constants.detected_os == os_data.os_data.big_sur:
-            os_ver = "11-Big-Sur"
-        elif self.constants.detected_os == os_data.os_data.catalina:
-            os_ver = "10.15-Catalina"
-        elif self.constants.detected_os == os_data.os_data.mojave:
-            os_ver = "10.14-Mojave"
+        if self.constants.gui_mode is False:
+            download_result, os_ver, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
         else:
-            raise Exception(f"Unsupported OS: {self.constants.detected_os}")
-        link = f"{self.constants.url_patcher_support_pkg}{self.constants.patcher_support_pkg_version}/{os_ver}.zip"
-
-        if Path(self.constants.payload_apple_root_path).exists():
-            print("- Removing old Apple Binaries folder")
-            Path(self.constants.payload_apple_root_path).unlink()
-        if Path(self.constants.payload_apple_root_path_zip).exists():
-            print("- Removing old Apple Binaries zip")
-            Path(self.constants.payload_apple_root_path_zip).unlink()
-
-        download_result = None
-        local_zip = Path(self.constants.payload_path) / f"{os_ver}.zip"
-        if Path(local_zip).exists():
-            print(f"- Found local {os_ver} zip, skipping download")
-            print(f"- Duplicating into Apple.zip")
-            shutil.copy(local_zip, self.constants.payload_apple_root_path_zip)
             download_result = True
-        else:
-            download_result = utilities.download_file(link, self.constants.payload_apple_root_path_zip)
+            os_ver, link = sys_patch_download.grab_patcher_support_pkg(self.constants).generate_pkg_link()
 
         if download_result and self.constants.payload_apple_root_path_zip.exists():
             print("- Download completed")
@@ -691,15 +667,17 @@ set million colour before rebooting"""
                 Path(self.constants.payload_apple_root_path_zip).unlink()
                 print("- Binaries downloaded to:")
                 print(self.constants.payload_path)
-                # if self.constants.gui_mode is False:
-                #     input("Press [ENTER] to continue")
+                return self.constants.payload_apple_root_path
             except zipfile.BadZipFile:
                 print("- Couldn't unzip")
-                return
+                return None
         else:
             print("- Download failed, please verify the below link works:")
             print(link)
-            input("Press [ENTER] to continue")
+        if download_result is None and self.constants.gui_mode is False:
+            print("\nIf you continue to have issues, try using the Offline builds")
+            print("located on Github next to the other builds")
+            input("Press enter to exit")
 
     def detect_gpus(self):
         gpus = self.constants.computer.gpus

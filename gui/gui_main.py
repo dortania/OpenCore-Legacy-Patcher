@@ -12,7 +12,7 @@ import wx.adv
 from wx.lib.agw import hyperlink
 import threading
 
-from resources import constants, defaults, build, install, installer, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates
+from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect
 
@@ -103,8 +103,6 @@ class wx_python_gui:
                         print("- Setting IgnoreAppUpdates to True")
                         self.constants.ignore_updates = True
                         subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher-wxpython", "IgnoreAppUpdates", "-bool", "TRUE"])
-            else:
-                print("No updates available")
         else:
             self.constants.ignore_updates = True
             print("- Ignoring App Updates due to defaults")
@@ -679,7 +677,7 @@ class wx_python_gui:
         self.subheader.Centre(wx.HORIZONTAL)
 
         patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
-        if not any(not patch.startswith("Settings") and patches[patch] is True for patch in patches):
+        if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
             print("- No applicable patches available")
             patches = []
 
@@ -687,7 +685,7 @@ class wx_python_gui:
         if patches:
             for patch in patches:
                 # Add Label for each patch
-                if (not patch.startswith("Settings") and patches[patch] is True):
+                if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                     print(f"- Adding patch: {patch} - {patches[patch]}")
                     self.patch_label = wx.StaticText(self.frame, label=f"- {patch}")
                     self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
@@ -698,6 +696,29 @@ class wx_python_gui:
                         )
                     )
                     i = i + self.patch_label.GetSize().height + 3
+            if patches["Validation: Patching Possible"] is False:
+                self.patch_label = wx.StaticText(self.frame, label="Cannot Patch due to following reasons:")
+                self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+                self.patch_label.SetPosition(
+                    wx.Point(
+                        self.subheader.GetPosition().x,
+                        self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
+                    )
+                )
+                self.patch_label.Centre(wx.HORIZONTAL)
+                i = i + self.patch_label.GetSize().height + 3
+                for patch in patches:
+                    if patch.startswith("Validation") and patches[patch] is True:
+                        print(f"- Adding check: {patch} - {patches[patch]}")
+                        self.patch_label = wx.StaticText(self.frame, label=f"- {patch.lstrip('Validation: ')}")
+                        self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+                        self.patch_label.SetPosition(
+                            wx.Point(
+                                self.subheader.GetPosition().x + 20,
+                                self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
+                            )
+                        )
+                        i = i + self.patch_label.GetSize().height + 3
         else:
             # Prompt user with no patches found
             self.patch_label = wx.StaticText(self.frame, label="No patches found")
@@ -718,12 +739,7 @@ class wx_python_gui:
                 self.patch_label.GetPosition().y + self.patch_label.GetSize().height + 10
             )
         )
-        uid = os.geteuid()
-        print(f"Effective UID: {uid}")
-        if uid == 0:
-            self.start_root_patching.Bind(wx.EVT_BUTTON, self.root_patch_start)
-        else:
-            self.start_root_patching.Bind(wx.EVT_BUTTON, self.relaunch_as_root)
+
         self.start_root_patching.Centre(wx.HORIZONTAL)
         if not patches:
             self.start_root_patching.Disable()
@@ -736,10 +752,7 @@ class wx_python_gui:
                 self.start_root_patching.GetPosition().y + self.start_root_patching.GetSize().height + 3
             )
         )
-        if uid == 0:
-            self.revert_root_patches.Bind(wx.EVT_BUTTON, self.root_patch_revert)
-        else:
-            self.revert_root_patches.Bind(wx.EVT_BUTTON, self.relaunch_as_root)
+        
         self.revert_root_patches.Centre(wx.HORIZONTAL)
         if self.constants.detected_os < os_data.os_data.big_sur:
             self.revert_root_patches.Disable()
@@ -754,6 +767,19 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
+        uid = os.geteuid()
+        if uid == 0:
+            self.start_root_patching.Bind(wx.EVT_BUTTON, self.root_patch_start)
+            self.revert_root_patches.Bind(wx.EVT_BUTTON, self.root_patch_revert)
+        else:
+            self.start_root_patching.Bind(wx.EVT_BUTTON, self.relaunch_as_root)
+            self.revert_root_patches.Bind(wx.EVT_BUTTON, self.relaunch_as_root)
+
+        if patches:
+            if patches["Validation: Patching Possible"] is False:
+                self.start_root_patching.Disable()
+                self.revert_root_patches.Disable()
+
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
     
     def root_patch_start(self, event=None):
@@ -767,7 +793,7 @@ class wx_python_gui:
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader
-        self.subheader = wx.StaticText(self.frame, label="Starting root volume patching")
+        self.subheader = wx.StaticText(self.frame, label="Preparing PatcherSupportPkg binaries")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.subheader.SetPosition(
             wx.Point(
@@ -785,6 +811,17 @@ class wx_python_gui:
                 self.subheader.GetPosition().y + self.subheader.GetSize().height + 3
             )
         )
+        self.developer_note.Centre(wx.HORIZONTAL)
+        self.frame.SetSize(-1, self.developer_note.GetPosition().y + self.developer_note.GetSize().height + 80)
+
+        # Download resources
+        sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
+        sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
+        sys.stdout=sys.__stdout__
+
+        self.subheader.SetLabel("Starting root volume patching")
+        self.developer_note.SetLabel("Starting shortly")
+        self.subheader.Centre(wx.HORIZONTAL)
         self.developer_note.Centre(wx.HORIZONTAL)
 
         # Text Box

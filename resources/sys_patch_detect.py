@@ -1,5 +1,5 @@
-from resources import constants, device_probe, utilities
-from data import model_array, os_data, smbios_data, cpu_data
+from resources import constants, device_probe, utilities, generate_smbios
+from data import model_array, os_data, smbios_data, cpu_data, sip_data
 
 class detect_root_patch:
     def __init__(self, model, versions):
@@ -27,6 +27,14 @@ class detect_root_patch:
         self.amfi_must_disable= False
         self.check_board_id= False
         self.supports_metal= False
+
+        # Validation Checks
+        self.sip_enabled = False
+        self.sbm_enabled = False
+        self.amfi_enabled = False
+        self.fv_enabled = False
+        self.dosdude_patched = False
+        self.bad_board_id = False
 
     
     def detect_gpus(self):
@@ -154,6 +162,7 @@ class detect_root_patch:
             "Graphics: Intel Ironlake": self.iron_gpu,
             "Graphics: Intel Sandy Bridge": self.sandy_gpu,
             "Graphics: Intel Ivy Bridge": self.ivy_gpu,
+            # "Graphics: Intel Ivy Bridge": True,
             "Brightness: Legacy Backlight Control": self.brightness_legacy,
             "Audio: Legacy Realtek": self.legacy_audio,
             "Networking: Legacy Wireless": self.legacy_wifi,
@@ -161,6 +170,27 @@ class detect_root_patch:
             "Miscellaneous: Legacy Keyboard Backlight": self.legacy_keyboard_backlight,
             "Settings: Requires AMFI exemption": self.amfi_must_disable,
             "Settings: Requires Board ID validation": self.check_board_id,
+            "Validation: Patching Possible": self.verify_patch_allowed(),
+            "Validation: SIP is enabled": self.sip_enabled,
+            "Validation: SBM is enabled": self.sbm_enabled,
+            "Validation: AMFI is enabled": self.amfi_enabled,
+            "Validation: FileVault is enabled": self.fv_enabled,
+            "Validation: System is dosdude1 patched": self.dosdude_patched,
+            "Validation: Board ID is unsupported": self.bad_board_id,
         }
         
         return self.root_patch_dict
+    
+    def verify_patch_allowed(self):
+        sip = sip_data.system_integrity_protection.root_patch_sip_big_sur if self.constants.detected_os > os_data.os_data.catalina else sip_data.system_integrity_protection.root_patch_sip_mojave
+        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
+
+        if self.check_board_id is True and (self.computer.reported_board_id not in self.constants.sandy_board_id and self.computer.reported_board_id not in self.constants.sandy_board_id_stock):
+            self.bad_board_id = True
+
+        if any(
+            [self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched, self.amfi_enabled if self.amfi_must_disable else False, self.bad_board_id if self.check_board_id else False]
+        ):
+            return False
+        else:
+            return True

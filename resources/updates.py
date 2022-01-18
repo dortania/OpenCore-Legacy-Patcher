@@ -61,20 +61,20 @@ class check_binary_updates:
             return False
 
     def check_binary_updates(self):
-        print("- Checking for updates...")
+        # print("- Checking for updates...")
         if self.verify_network_connection(self.binary_url):
-            print("- Network connection functional")
+            # print("- Network connection functional")
             response = requests.get(self.binary_url)
             data_set = response.json()
-            print("- Retrived latest version data")
+            # print("- Retrived latest version data")
             self.remote_version = data_set["tag_name"]
-            print(f"- Latest version: {self.remote_version}")
+            # print(f"- Latest version: {self.remote_version}")
             self.remote_version_array = self.remote_version.split(".")
             self.remote_version_array = [
                 int(x) for x in self.remote_version_array
             ]
             if self.check_if_build_newer() is True:
-                print("- Remote version is newer")
+                # print("- Remote version is newer")
                 for asset in data_set["assets"]:
                     print(f"- Found asset: {asset['name']}")
                     if self.determine_remote_type(
@@ -82,7 +82,7 @@ class check_binary_updates:
                             ) and self.determine_remote_offline_type(
                                 asset["name"]
                             ) == self.determine_local_build_type_offline():
-                        print(f"- Found matching asset: {asset['name']}")
+                        # print(f"- Found matching asset: {asset['name']}")
                         self.available_binaries.update({
                             asset['name']: {
                                 "Name":
@@ -104,8 +104,8 @@ class check_binary_updates:
                 if self.available_binaries:
                     return self.available_binaries
                 else:
-                    print("- No matching binaries available")
+                    # print("- No matching binaries available")
                     return None
-        else:
-            print("- Failed to connect to GitHub API")
+        # else:
+            # print("- Failed to connect to GitHub API")
         return None
