@@ -15,7 +15,7 @@ Once you know your model is supported, you're good to go with the rest of this g
 
 * Newer models than listed here will already natively support UEFI Windows through Boot Camp
 
-For Mac Pro and Xserve users, please be aware that Windows has troubles with automatic installation, so please refer to cdf's guide on manual installation:
+For MacPro4,1/5,1 and Xserve3,1 users, please be aware that Windows has troubles with automatic installation, so please refer to cdf's guide on manual installation:
 
 * [cdf's Mac Pro Thread](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/)
 
