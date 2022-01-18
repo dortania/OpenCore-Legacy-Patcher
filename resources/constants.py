@@ -20,6 +20,8 @@ class Constants:
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link = "https://discord.gg/rqdPgH8xSN"
         self.guide_link = "https://dortania.github.io/OpenCore-Legacy-Patcher/"
+        self.repo_link = "https://github.com/dortania/OpenCore-Legacy-Patcher"
+        self.repo_link_latest = f"{self.repo_link}/releases/tag/{self.patcher_version}"
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg

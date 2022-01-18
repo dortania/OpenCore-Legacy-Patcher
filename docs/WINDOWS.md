@@ -6,14 +6,18 @@ To install UEFI is actually super simple! All it requires is to boot Windows' In
 
 * Note: UEFI Windows is generally quite usable for Arrendale and newer models, however machines with Penryn CPUs may experience issues
 * Recommended Models:
-  * MacBookAir4,x and newer
-  * MacBookPro8,x and newer
-  * Macmini5,x and newer
-  * iMac11,x and newer
-  * MacPro4,1 and newer
-  * Xserve3,1 and newer
+  * MacBookAir4,x - 5,x
+  * MacBookPro8,x - 10,x
+  * Macmini5,x - 6,x
+  * iMac11,x - 13,x
 
 Once you know your model is supported, you're good to go with the rest of this guide
+
+* Newer models than listed here will already natively support UEFI Windows through Boot Camp
+
+For Mac Pro and Xserve users, please be aware that Windows has troubles with automatic installation, so please refer to cdf's guide on manual installation:
+
+* [cdf's Mac Pro Thread](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/)
 
 ## Disk Formatting
 

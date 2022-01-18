@@ -644,11 +644,12 @@ set million colour before rebooting"""
                 patch_input = input("Would you like to redownload?(y/n): ")
                 if patch_input in {"y", "Y", "yes", "Yes"}:
                     shutil.rmtree(Path(self.constants.payload_apple_root_path))
-                    self.download_files()
+                    output = self.download_files()
             else:
-                self.download_files()
+                output = self.download_files()
         else:
-            self.download_files()
+            output = self.download_files()
+        return output
 
     def download_files(self):
         if self.constants.gui_mode is False:
@@ -672,12 +673,14 @@ set million colour before rebooting"""
                 print("- Couldn't unzip")
                 return None
         else:
-            print("- Download failed, please verify the below link works:")
-            print(link)
-        if download_result is None and self.constants.gui_mode is False:
-            print("\nIf you continue to have issues, try using the Offline builds")
-            print("located on Github next to the other builds")
-            input("Press enter to exit")
+            if self.constants.gui_mode is True:
+                print("- Download failed, please verify the below link works:")
+                print(link)
+                print("\nIf you continue to have issues, try using the Offline builds")
+                print("located on Github next to the other builds")
+            else:
+                input("\nPress enter to continue")
+        return None
 
     def detect_gpus(self):
         gpus = self.constants.computer.gpus
@@ -905,14 +908,14 @@ set million colour before rebooting"""
             change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
         else:
             change_menu = "y"
-            print("Continuing root patching")
+            print("- Continuing root patching")
         if change_menu in ["y", "Y"]:
             print("- Continuing with Patching")
             print("- Verifying whether Root Patching possible")
             if self.verify_patch_allowed() is True:
                 print("- Patcher is capable of patching")
-                self.check_files()
-                self.find_mount_root_vol(True)
+                if self.check_files():
+                    self.find_mount_root_vol(True)
             elif self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu: ")
 

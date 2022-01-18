@@ -34,7 +34,7 @@ class wx_python_gui:
         self.WINDOW_HEIGHT_MAIN = 220
         self.WINDOW_WIDTH_BUILD = 400
         self.WINDOW_HEIGHT_BUILD = 500
-        self.WINDOW_SETTINGS_WIDTH = 230
+        self.WINDOW_SETTINGS_WIDTH = 250
         self.WINDOW_SETTINGS_HEIGHT = 320
 
         # Create Application
@@ -816,8 +816,22 @@ class wx_python_gui:
 
         # Download resources
         sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
-        sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
+        download_result, os_ver, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
         sys.stdout=sys.__stdout__
+
+        if download_result is None:
+            # Create popup window to inform user of error
+            self.popup = wx.MessageDialog(
+                self.frame, 
+                "A problem occured trying to download PatcherSupportPkg binaries\n\nIf you continue to have this error, download an Offline build from Github\nThese builds don't require a network connection to root patch", 
+                "Network Error", 
+                wx.YES_NO | wx.ICON_ERROR
+            )
+            self.popup.SetYesNoLabels("View on Github", "Ignore")
+            answer = self.popup.ShowModal()
+            if answer == wx.ID_YES:
+                webbrowser.open(self.constants.repo_link_latest)
+            self.main_menu()
 
         self.subheader.SetLabel("Starting root volume patching")
         self.developer_note.SetLabel("Starting shortly")
@@ -1383,6 +1397,35 @@ class wx_python_gui:
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
+        # Subheader
+        self.subheader = wx.StaticText(self.frame, label="Changing settings here require you")
+        self.subheader.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
+        self.subheader.SetPosition(
+            wx.Point(
+                self.header.GetPosition().x,
+                self.header.GetPosition().y + self.header.GetSize().height + 10
+            )
+        )
+        self.subheader.Centre(wx.HORIZONTAL)
+        self.subheader2 = wx.StaticText(self.frame, label="to run 'Build and Install OpenCore'")
+        self.subheader2.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
+        self.subheader2.SetPosition(
+            wx.Point(
+                self.subheader.GetPosition().x,
+                self.subheader.GetPosition().y + self.subheader.GetSize().height
+            )
+        )
+        self.subheader2.Centre(wx.HORIZONTAL)
+        self.subheader3 = wx.StaticText(self.frame, label="then reboot for changes to be applied")
+        self.subheader3.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
+        self.subheader3.SetPosition(
+            wx.Point(
+                self.subheader2.GetPosition().x,
+                self.subheader2.GetPosition().y + self.subheader2.GetSize().height
+            )
+        )
+        self.subheader3.Centre(wx.HORIZONTAL)
+
         # Dropdown
         self.dropdown_model = wx.Choice(self.frame)
         for model in model_array.SupportedSMBIOS:
@@ -1394,8 +1437,8 @@ class wx_python_gui:
         self.dropdown_model.SetSelection(self.dropdown_model.GetItems().index(self.constants.custom_model or self.computer.real_model))
         self.dropdown_model.SetPosition(
             wx.Point(
-                self.header.GetPosition().x,
-                self.header.GetPosition().y + self.header.GetSize().height + 10
+                self.subheader3.GetPosition().x,
+                self.subheader3.GetPosition().y + self.subheader3.GetSize().height + 10
             )
         )
         # Set size to largest item
@@ -1740,8 +1783,8 @@ class wx_python_gui:
         self.debug_button.Center(wx.HORIZONTAL)
         
         # Button: return to main menu
-        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
-        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
+        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.SetPosition(wx.Point(
             self.debug_button.GetPosition().x,
             self.debug_button.GetPosition().y + self.debug_button.GetSize().height + 10))
@@ -1962,11 +2005,11 @@ class wx_python_gui:
             self.native_spoof_checkbox.Disable()
 
         # Button: Return to Main Menu
-        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
         self.return_to_main_menu_button.SetPosition(
             wx.Point(self.native_spoof_checkbox.GetPosition().x, self.native_spoof_checkbox.GetPosition().y + self.native_spoof_checkbox.GetSize().height + 10)
         )
-        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
@@ -2068,11 +2111,11 @@ class wx_python_gui:
         self.launcher_script_textbox.Center(wx.HORIZONTAL)
         self.launcher_script_textbox.SetEditable(False)
 
-        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
         self.return_to_main_menu_button.SetPosition(
             wx.Point(self.launcher_script_textbox.GetPosition().x, self.launcher_script_textbox.GetPosition().y + self.launcher_script_textbox.GetSize().height + 10)
         )
-        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
         
         # Set frame below return to main menu button
@@ -2171,11 +2214,11 @@ OpenCore Legacy Patcher by default knows the most ideal
                 self.sip_checkbox.SetValue(True)
         
         # Button: returns to the main menu
-        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
         self.return_to_main_menu_button.SetPosition(
             wx.Point(self.sip_checkbox.GetPosition().x, self.sip_checkbox.GetPosition().y + self.sip_checkbox.GetSize().height + 15)
         )
-        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         # Set the frame size
@@ -2268,8 +2311,8 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.wake_on_wlan_checkbox.SetToolTip(wx.ToolTip("Enables Wake on WLAN for Broadcom Wifi.\nBy default, Wake on WLAN is disabled to work around Apple's wake from sleep bug causing heavily degraded networking performance.\nNote: This option is only applicable for BCM943224, BCM94331, BCM94360 and BCM943602 chipsets"))
 
         # Button: return to main menu
-        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Main Menu")
-        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
+        self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.SetPosition(wx.Point(
             self.wake_on_wlan_checkbox.GetPosition().x,
             self.wake_on_wlan_checkbox.GetPosition().y + self.wake_on_wlan_checkbox.GetSize().height + 10))
