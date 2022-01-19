@@ -1,6 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-import sys, os
+import sys, os, time
 sys.path.append(os.path.abspath(os.getcwd()))
 from resources import constants
 block_cipher = None
@@ -50,4 +50,5 @@ app = BUNDLE(exe,
              "LSMinimumSystemVersion": "10.10.0",
              "NSRequiresAquaSystemAppearance": False,
              "NSHighResolutionCapable": True,
+             "Build Date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
              })

@@ -4,10 +4,10 @@ OpenCore Legacy Patcher at its core is a python-based TUI/CLI based application.
 
 For developers wishing to validate mainline changes, you may use these nightly links:
 
-* [GUI (Graphical Based App)](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython/main/OpenCore-Patcher-GUI.app.zip)
-* [GUI (Graphical Based App) - Offline Variant](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython-offline/main/OpenCore-Patcher-GUI.app.zip)
+* [GUI (Graphical Based App)](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython/main/OpenCore-Patcher.app%20%28GUI%29.zip)
+* [GUI (Graphical Based App) - Offline Variant](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython-offline/main/OpenCore-Patcher.app%20%28GUI%20Offline%29.zip)
 * [TUI (Text Based App)](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app/main/OpenCore-Patcher-TUI.app.zip)
-* [TUI (Text Based App) - Offline Variant](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app/main/OpenCore-Patcher-TUI-Offline.app.zip)
+* [TUI (Text Based App) - Offline Variant](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-offline/main/OpenCore-Patcher-TUI.app%20%28Offline%29.zip)
 
 **Warning**: These binaries should not be used without first consulting the [CHANGELOG](./CHANGELOG.md). Do not distribute these links in forums, instead direct to this file.
 
