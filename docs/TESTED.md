@@ -42,6 +42,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro6,1 | ^^ | ^^ | ^^ |
 | MacBookPro6,2 | <span style="color:#30BCD5"> YES </span> | Jakeluke | - Stock model, dGPU broken <br/>- Patcher version unknown |
 | MacBookPro7,1 | ^^ | fussel132 | - Stock model <br/>-Patcher version v0.1.2 |
+| ^^ | ^^ | casey1234 | - SSD Upgrade <br/>- Patcher version 0.3.3 |
 | MacBookPro8,1 | ^^ | AvaQueen | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro8,2 | ^^ | air.man | - Stock model, dGPU disabled <br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
@@ -56,9 +57,11 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | woefi | - BCM94331CAX upgrade<br/>- Patcher version 0.0.13 |
 | ^^ | ^^ | whgmkeller | - Stock model<br/>- Patcher version 0.0.11 |
 | ^^ | ^^ | vinaypundith | - Patcher version 0.0.7 |
+| ^^ | ^^ | casey1234 | - RAM and SSD Upgrade <br/>- Patcher version 0.3.3 |
 | MacBookPro10,1 | ^^ | traviswparker | - Stock model <br/>- Patcher version 0.0.14 |
 | ^^ | ^^ | il-rollino | - Upgraded BCM94360CSAX <br/>- Patcher version 0.0.21 |
 | MacBookPro10,2 | ^^ | akidone | - Upgraded BCM94360CSAX <br/>- Patcher version 0.3.0 |
+| MacBookPro11,2 | ^^ | casey1234 | - Stock model<br/>- Patcher version 0.3.3 |
 
 ### Mac mini
 
