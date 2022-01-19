@@ -10,8 +10,19 @@ jobs:
   build:
     name: Build wxPython
     runs-on: x86_64_mojave
+    env:
+      commitmsg: ${{ github.event.head_commit.message }}
+      commitid: ${{ github.event.head_commit.id }}
+      branch: ${{ github.event.ref }}
+      commiturl: ${{ github.event.head_commit.url }}
+      commitdate: ${{ github.event.head_commit.timestamp }}
     steps:
       - uses: actions/checkout@v2
+      - run: echo Commit MSG = $commitmsg
+      - run: echo Commit ID = $commitid
+      - run: echo Branch = $branch
+      - run: echo Commit URL = $commiturl
+      - run: echo Commit Date = $commitdate
       - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher-GUI.spec
       - run: python3 ./payloads/binary.py
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
