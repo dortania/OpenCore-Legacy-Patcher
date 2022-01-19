@@ -29,9 +29,18 @@ class check_binary_updates:
         return False
 
     def check_if_build_newer(self):
-        for i in range(0, 3):
-            if self.remote_version_array[i] > self.binary_version_array[i]:
+        if self.remote_version_array[0] > self.binary_version_array[0]:
+            return True
+        elif self.remote_version_array[0] == self.binary_version_array[0]:
+            if self.remote_version_array[1] > self.binary_version_array[1]:
                 return True
+            elif self.remote_version_array[1] == self.binary_version_array[1]:
+                if self.remote_version_array[2] > self.binary_version_array[2]:
+                    return True
+                else:
+                    return False
+            else:
+                return False
         return False
 
     def determine_local_build_type(self):

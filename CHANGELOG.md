@@ -1,6 +1,6 @@
 # OpenCore Legacy Patcher changelog
 
-## 0.3.4
+## 0.4.0
 - Resolves Install USB Creation using incorrect installer
 - Resolves `installer` failing to extract InstallAssistant in older OSes
 - Resolves certain Samsung NVMe drives appearing as external on Mac Pros
@@ -11,7 +11,7 @@
 - Increment Binaries:
   - OpenCore 0.7.7 - release
   - RestrictEvents 1.0.6 - release
-  - FeatureUnlock 1.0.6 - rolling (a84ab53)
+  - FeatureUnlock 1.0.6 - rolling (9215445)
   - WhateverGreen 1.5.6 - release
   - Lilu 1.5.9 - release
   - gfxutil 1.8.2b - release
@@ -23,12 +23,10 @@
 - Allow optional spoofing on native Models
   - Recommended for systems that cannot update their firmware natively (ie. dead internal drive)
 - Add Dropbox fix for non-Metal on Monterey
-- Disable AirPlay to Mac/Sidecar patch set by default
-  - Work-around some older systems with memory instability
-  - Configurable by end user to re-enable (via FeatureUnlock setting)
 - Add App Update checks to GUI
   - If new version available, app will prompt on launch.
   - Configurable in Developer Settings
+- Resolved OS crashing on slow Macs with FeatureUnlock
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach
