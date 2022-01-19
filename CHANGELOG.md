@@ -30,6 +30,7 @@
 - Disable Windows GMUX support by default
   - Resolves brightness control issues on MacBookPro11,3 in Windows
   - Configurable in Developer Settings
+- Add Commit Data to Info.plist
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach
