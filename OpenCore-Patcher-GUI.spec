@@ -1,6 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-import sys, os, time
+import sys, os, time, subprocess
 sys.path.append(os.path.abspath(os.getcwd()))
 from resources import constants
 block_cipher = None
@@ -51,4 +51,5 @@ app = BUNDLE(exe,
              "NSRequiresAquaSystemAppearance": False,
              "NSHighResolutionCapable": True,
              "Build Date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
+             "BuildMachineOSBuild": subprocess.run("sw_vers -buildVersion".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode().strip(),
              })

@@ -10,10 +10,14 @@ jobs:
   build:
     name: Build TUI
     runs-on: x86_64_mojave
+    env:
+      branch: ${{ github.event.ref }}
+      commiturl: ${{ github.event.head_commit.url }}
+      commitdate: ${{ github.event.head_commit.timestamp }}
     steps:
       - uses: actions/checkout@v2
       - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher.spec
-      - run: python3 ./payloads/binary.py
+      - run: python3 ./payloads/binary.py $branch $commiturl $commitdate
       - run: ./after_pyinstaller.sh
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
       - run: cd dist; zip -r ../OpenCore-Patcher-TUI.app.zip OpenCore-Patcher.app
