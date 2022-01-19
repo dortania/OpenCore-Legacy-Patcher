@@ -27,6 +27,9 @@
   - If new version available, app will prompt on launch.
   - Configurable in Developer Settings
 - Resolved OS crashing on slow Macs with FeatureUnlock
+- Disable Windows GMUX support by default
+  - Resolves brightness control issues on MacBookPro11,3 in Windows
+  - Configurable in Developer Settings
 
 ## 0.3.3
 - Disable Asset Caching support with spoofless approach
