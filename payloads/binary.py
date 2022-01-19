@@ -43,10 +43,9 @@ def patch_info_plist():
         plist = plistlib.load(Path(plist_path).open("rb"))
         print("- Adding Github Dictionary")
         plist["Github"] = {
-            "Commit Message": argsv[0],
-            "Branch": argsv[1],
-            "Commit URL": argsv[2],
-            "Commit Date": argsv[3],
+            "Branch": argsv[0],
+            "Commit URL": argsv[1],
+            "Commit Date": argsv[2],
         }
         print("- Writing Plist")
         plistlib.dump(plist, Path(plist_path).open("wb"), sort_keys=True)
