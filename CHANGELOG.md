@@ -11,7 +11,7 @@
 - Increment Binaries:
   - OpenCore 0.7.7 - release
   - RestrictEvents 1.0.6 - release
-  - FeatureUnlock 1.0.6 - rolling (9215445)
+  - FeatureUnlock 1.0.6 - rolling (1d0bc7b)
   - WhateverGreen 1.5.6 - release
   - Lilu 1.5.9 - release
   - gfxutil 1.8.2b - release
