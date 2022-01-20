@@ -1312,7 +1312,7 @@ class wx_python_gui:
         self.creating_macos_installer_label.Centre(wx.HORIZONTAL)
 
         # Label: Developer Note: createinstallmedia output currently not implemented
-        self.developer_note_label = wx.StaticText(self.frame, label="\tDeveloper Note: createinstallmedia output will print after finishing\nIf Application becomes unresponsive, this is due to slow USB flash drives.\n\tPlease do not close this window until the process is complete.")
+        self.developer_note_label = wx.StaticText(self.frame, label="Developer Note: Creating macOS installers can take 30min+ on slower USB drives.")
         self.developer_note_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.developer_note_label.SetPosition(
             wx.Point(
@@ -1322,29 +1322,47 @@ class wx_python_gui:
         )
         self.developer_note_label.Centre(wx.HORIZONTAL)
 
-        # Textbox
-        # Redirect stdout to a text box
-        self.stdout_text = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
-        self.stdout_text.SetPosition(
+        # We will notify you when it's done. Do not close this window however
+        self.developer_note_label_2 = wx.StaticText(self.frame, label="We will notify you when it's done, please do not close this window however")
+        self.developer_note_label_2.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
+        self.developer_note_label_2.SetPosition(
             wx.Point(
                 self.developer_note_label.GetPosition().x,
-                self.developer_note_label.GetPosition().y + self.developer_note_label.GetSize().height + 10
+                self.developer_note_label.GetPosition().y + self.developer_note_label.GetSize().height
             )
         )
-        self.stdout_text.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
-        # Set width to same as frame
-        self.stdout_text.SetSize(
-            self.frame.GetSize().width,
-            340)
-        # Centre the text box to top of window
-        self.stdout_text.Centre(wx.HORIZONTAL)
-        self.stdout_text.SetValue("")
+        self.developer_note_label_2.Centre(wx.HORIZONTAL)
+
+        # Progress Bar
+        self.progress_bar = wx.Gauge(self.frame, range=16000, size=(-1, 20))
+        self.progress_bar.SetPosition(
+            wx.Point(
+                self.developer_note_label_2.GetPosition().x,
+                self.developer_note_label_2.GetPosition().y + self.developer_note_label_2.GetSize().height + 10
+            )
+        )
+        self.progress_bar.SetSize(
+            self.frame.GetSize().width - 40,
+            20
+        )
+        self.progress_bar.Centre(wx.HORIZONTAL)
+        self.progress_bar.SetValue(0)
+
+        self.progress_label = wx.StaticText(self.frame, label="Bytes Written: 0")
+        self.progress_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
+        self.progress_label.SetPosition(
+            wx.Point(
+                self.progress_bar.GetPosition().x,
+                self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 10
+            )
+        )
+        self.progress_label.Centre(wx.HORIZONTAL)
 
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
-                self.stdout_text.GetPosition().x,
-                self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 10
+                self.progress_label.GetPosition().x,
+                self.progress_label.GetPosition().y + self.progress_label.GetSize().height + 10
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
@@ -1363,16 +1381,41 @@ class wx_python_gui:
             print("- Starting creation script as admin")
             wx.GetApp().Yield()
             time.sleep(1)
-            args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
-            sys.stdout = menu_redirect.RedirectText(self.stdout_text, True)
-            sys.stderr = menu_redirect.RedirectText(self.stdout_text, True)
-            run.Run()._stream_output(comm=args)
+            thread = threading.Thread(target=self.start_script)
+            thread.start()
+            disk = disk[5:]
+            default_output = float(self.monitor_disk_output(disk))
+            while True:
+                time.sleep(0.1)
+                output = float(utilities.monitor_disk_output(disk))
+                bytes_written = output - default_output
+                print(bytes_written)
+                if thread.is_alive():
+                    self.progress_bar.SetValue(bytes_written)
+                    self.progress_label.SetLabel(f"Bytes Written: {round(bytes_written, 2)}MB")
+                    self.progress_label.Centre(wx.HORIZONTAL)
+                    wx.GetApp().Yield()
+                else:
+                    break
+            self.progress_bar.SetValue(16000)
+            self.progress_label.SetLabel(f"Finished Running Installer Creation Script")
+            self.progress_label.Centre(wx.HORIZONTAL)
+            
         else:
             print("- Failed to create installer script")
-        sys.stdout = self.stock_stdout
-        sys.stderr = self.stock_stderr
 
-    
+    def start_script(self):
+        args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
+        output, error, returncode = run.Run()._stream_output(comm=args)
+        if "Install media now available at" in output:
+            print("- Sucessfully created macOS installer")
+            popup_message = wx.MessageDialog(self.frame, "Sucessfully created a macOS installer!\nYou can now install OpenCore onto this drive", "Success", wx.OK)
+            popup_message.ShowModal()
+        else:
+            print("- Failed to create macOS installer")
+            popup = wx.MessageDialog(self.frame, f"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}", "Error", wx.OK | wx.ICON_ERROR)
+            popup.ShowModal()
+
     def settings_menu(self, event=None):
         # Define Menu
         # - Header: Settings

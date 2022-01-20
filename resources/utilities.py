@@ -384,6 +384,15 @@ def download_file(link, location, is_gui=None):
             print(link)
         return None
 
+def monitor_disk_output(disk):
+    # Returns MB written on drive
+    output = subprocess.check_output(["iostat", "-Id", disk])
+    output = output.decode("utf-8")
+    #  Grab second last entry (last is \n)
+    output = output.split(" ")
+    output = output[-2]
+    return output
+
 def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
     # When runnign through our GUI, we run as root, however we do not get uid 0
     # Best to assume CLI is running as root
