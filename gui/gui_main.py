@@ -1384,7 +1384,7 @@ class wx_python_gui:
             thread = threading.Thread(target=self.start_script)
             thread.start()
             disk = disk[5:]
-            default_output = float(self.monitor_disk_output(disk))
+            default_output = float(utilities.monitor_disk_output(disk))
             while True:
                 time.sleep(0.1)
                 output = float(utilities.monitor_disk_output(disk))
