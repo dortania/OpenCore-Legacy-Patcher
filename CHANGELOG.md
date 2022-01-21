@@ -1,9 +1,12 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.2
+- Resolve app crashing on some 3rd party SAS/SATA controllers
+
 ## 0.4.1
 - Add XHCI Boot Support to pre-UEFI 2.0 Macs
   - Applicable to pre-Ivy Macs with upgraded USB 3.0 controllers, allows USB 3.0 boot
-  - Credit to Jazzzny for research and testing
+  - Credit to Jazzzny for testing, [DearthnVader for original research](https://forums.macrumors.com/threads/bootable-xhci-pci-e-for-the-3-1-experimental.2217479/)
   - Drivers stripped from MacPro6,1 firmware
 - Resolve OCLP-Helper dyld crash
 
