@@ -7,53 +7,46 @@ This doc is centered around downloading and writing the macOS installer to a USB
 
 * Note: 16GB+ USB will be required for the installer
 
-## Downloading
+## Creating the installer
 
-The simplest way to download macOS installs would be to use installinstallmacos:
+With OpenCore Legacy Patcher, our new GUI includes a download menu for macOS installers. So to start off, you'll want to grab our app:
 
-```sh
-[ ! -d ~/macOS-installer/ ] && mkdir ~/macOS-installer; cd ~/macOS-installer; [ ! -f ~/macOS-installer/installinstallmacos.py ] && curl -O https://raw.githubusercontent.com/munki/macadmin-scripts/main/installinstallmacos.py ; sudo python installinstallmacos.py
-```
+* [OpenCore Legacy Patcher Release Apps](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
-* Note: On El Capitan (10.11) and older, you'll need to specify a catalog at the end of the command:
+For this guide, we'll be using the standard OpenCore-Patcher (GUI).
 
-```
---catalogurl https://swscan.apple.com/content/catalogs/others/index-11-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog
-```
+Once downloaded, open the app and you should be greeted with this menu:
 
-![](../images/munki.png)
+![OCLP GUI Main Menu](../images/OCLP-GUI-Main-Menu.png)
 
-As you can see, we get a nice list of macOS installers. If you need a particular versions of macOS, you can select it by typing the number next to it. For this example we'll choose 10:
+First we'll want to select the "Create macOS Installer" button. This will present you with 2 options:
 
-![](../images/munki-process.png)
+![](../images/OCLP-GUI-Create-Installer-Menu.png)
 
-This is going to take a while as we're downloading the entire 12GB+ macOS installer.
+For this example, we'll assume you'll need an installer. Selecting this option will download Apple's Installer Catalogs and build a list for you to choose:
 
-Once finished, you'll find in your `~/macOS-Installer/` folder a DMG containing the macOS Installer, called `Install_macOS_11.1-20C69.dmg` for example. Mount it and you'll find the installer application.
 
-* Note: We recommend to move the Install macOS.app into the `/Applications` folder, as we'll be executing commands from there.
-* Note 2: Running Cmd+Shift+G in Finder will allow you to easily jump to `~/macOS-installer`
+| Downloading | Listed Installers |
+| :--- | :--- |
+| ![OCLP GUI Installer Download Catalog](../images/OCLP-GUI-Installer-Download-Catalog.png) | ![OCLP GUI Installer Download Listed Products](../images/OCLP-GUI-Installer-Download-Listed-Products.png) |
 
-![](../images/munki-done-2.png)
+Since the patcher officially supports Big Sur and newer for patching, only those entires will be showen. For ourselves, we'll select 12.1 as that's the latest public release at the time of writing. This will download and install the macOS installer to your applications folder.
 
-![](../images/munki-dmg.png)
+| Downloading the Installer | Requesting to install | Finished Installing |
+| :--- | :--- | :--- |
+| ![OCLP GUI Installer Download Progress](../images/OCLP-GUI-Installer-Download-Progress.png) | ![OCLP GUI Installer Needs Installing](../images/OCLP-GUI-Installer-Needs-Installing.png) | ![OCLP GUI Installer Download Finished](../images/OCLP-GUI-Installer-Download-Finished.png) |
 
-## Building
+Once finished, you can proceed to write the installer onto a USB drive.
 
-Now we'll be formatting the USB to prep for both the macOS installer and OpenCore. We'll want to use macOS Extended (HFS+) with a GUID partition map(Using GUID is important for the patcher). This will create two partitions: the main `MyVolume` and a second called `EFI` which is used as a boot partition where your Mac's firmware will check for boot files. `EFI` partitions will be hidden by default, so don't worry if you don't immediately see them.
+* Note: The entire USB drive will be formatted
 
-* Note: By default, Disk Utility only shows partitions – press Cmd/Win+2 to show all devices (alternatively you can press the View button)
+| Select Downloaded Installer | Select disk to format |
+| :--- | :--- |
+| ![](../images/OCLP-GUI-Installer-Select-Local-Installer.png) | ![](../images/OCLP-GUI-Installer-Format-USB.png) |
 
-![Formatting the USB](../images/format-usb.png)
+Now the patcher will start the installer flashing!
 
-Next run the `createinstallmedia` command provided by [Apple](https://support.apple.com/en-us/HT201372). Note that the command is made for USB's formatted with the name `MyVolume`:
-
-```sh
-sudo /Applications/Install\ macOS\ Big\ Sur.app/Contents/Resources/createinstallmedia --volume /Volumes/MyVolume
-```
-
-* Note: You can also replace the `createinstallmedia` path with that of where your installer's located (same idea with the drive name).
-
-![](../images/createinstallmedia.png)
-
+| Flashing | Success Prompt | Finished Flashing |
+| :--- | :--- |
+| ![](../images/OCLP-GUI-Installer-Flashing-Process.png) | ![](../images/OCLP-GUI-Installer-Sucess-Prompt.png) | ![](../images/OCLP-GUI-Installer-Finished-Script.png) |
 # Once finished, head to [Building and installing OpenCore](./BUILD.md)
