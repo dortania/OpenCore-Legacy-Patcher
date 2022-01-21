@@ -1631,9 +1631,11 @@ class wx_python_gui:
         if self.kext_checkbox.GetValue():
             print("Kext mode enabled")
             self.constants.kext_debug = True
+            self.constants.kext_variant = "DEBUG"
         else:
             print("Kext mode disabled")
             self.constants.kext_debug = False
+            self.constants.kext_variant = "RELEASE"
     
     def oc_checkbox_click(self, event=None):
         if self.opencore_checkbox.GetValue():
