@@ -1139,7 +1139,7 @@ class wx_python_gui:
             sys.stdout = self.stock_stdout
             self.download_label.SetLabel(f"Finished Downloading {installer_name}")
             self.download_label.Centre(wx.HORIZONTAL)
-
+            wx.App.Get().Yield()
             # Update Label: 
             sys.stdout=menu_redirect.RedirectLabelAll(self.download_label)
             sys.stderr=menu_redirect.RedirectLabelAll(self.download_label)
