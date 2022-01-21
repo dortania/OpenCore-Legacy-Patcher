@@ -155,6 +155,7 @@ class Constants:
         ## Boot Volume Settings
         self.firewire_boot = False  # Allow macOS FireWire Boot
         self.nvme_boot = False  #     Allow UEFI NVMe Boot
+        self.xhci_boot = False
 
         ## Graphics Settings
         self.metal_build = False  #    Set MXM Build support
@@ -228,6 +229,10 @@ class Constants:
     @property
     def xhci_driver_path(self):
         return self.payload_path / Path("Drivers/XhciDxe.efi")
+    
+    @property
+    def usb_bus_driver_path(self):
+        return self.payload_path / Path("Drivers/UsbBusDxe.efi")
 
     @property
     def diags_launcher_path(self):

@@ -12,6 +12,12 @@ class generate_defaults:
         settings.amfi_status = True
 
         if host_is_target:
+            if settings.computer.usb_controllers and smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
+                # Pre-Ivy do not natively support XHCI boot support
+                # If we detect XHCI on older model, enable
+                for controller in settings.computer.usb_controllers:
+                    if isinstance(controller, device_probe.XHCIController):
+                        settings.xhci_boot = True
             if utilities.check_metal_support(device_probe, settings.computer) is False:
                 settings.disable_cs_lv = True
             if settings.computer.gpus: 

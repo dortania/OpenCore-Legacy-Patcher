@@ -158,6 +158,17 @@ class SATAController(PCIDevice):
 class SASController(PCIDevice):
     CLASS_CODE: ClassVar[int] = 0x010400
 
+@dataclass
+class XHCIController(PCIDevice):
+    CLASS_CODE: ClassVar[int] = 0x0c0330
+
+@dataclass
+class EHCIController(PCIDevice):
+    CLASS_CODE: ClassVar[int] = 0x0c0320
+
+@dataclass
+class OHCIController(PCIDevice):
+    CLASS_CODE: ClassVar[int] = 0x0c0310
 
 @dataclass
 class NVIDIA(GPU):
@@ -339,6 +350,7 @@ class Computer:
     igpu: Optional[GPU] = None  # Shortcut for IGPU
     dgpu: Optional[GPU] = None  # Shortcut for GFX0
     storage: list[PCIDevice] = field(default_factory=list)
+    usb_controllers: list[PCIDevice] = field(default_factory=list)
     wifi: Optional[WirelessCard] = None
     cpu: Optional[CPU] = None
     oclp_version: Optional[str] = None
@@ -354,6 +366,7 @@ class Computer:
         computer.igpu_probe()
         computer.wifi_probe()
         computer.storage_probe()
+        computer.usb_controller_probe()
         computer.smbios_probe()
         computer.cpu_probe()
         computer.bluetooth_probe()
@@ -412,6 +425,39 @@ class Computer:
                 self.wifi = vendor.from_ioregistry(device, anti_spoof=True)  # type: ignore
                 break
             ioreg.IOObjectRelease(device)
+    
+    def usb_controller_probe(self):
+        xhci_controllers = ioreg.ioiterator_to_list(
+            ioreg.IOServiceGetMatchingServices(
+                ioreg.kIOMasterPortDefault,
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(XHCIController.CLASS_CODE)[2:].zfill(8)))}]},
+                None,
+            )[1]
+        )
+        ehci_controllers = ioreg.ioiterator_to_list(
+            ioreg.IOServiceGetMatchingServices(
+                ioreg.kIOMasterPortDefault,
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(EHCIController.CLASS_CODE)[2:].zfill(8)))}]},
+                None,
+            )[1]
+        )
+        ohci_controllers  = ioreg.ioiterator_to_list(
+            ioreg.IOServiceGetMatchingServices(
+                ioreg.kIOMasterPortDefault,
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(OHCIController.CLASS_CODE)[2:].zfill(8)))}]},
+                None,
+            )[1]
+        )
+        for device in xhci_controllers:
+            self.usb_controllers.append(XHCIController.from_ioregistry(device))
+            ioreg.IOObjectRelease(device)
+        for device in ehci_controllers:
+            self.usb_controllers.append(EHCIController.from_ioregistry(device))
+            ioreg.IOObjectRelease(device)
+        for device in ohci_controllers:
+            self.usb_controllers.append(OHCIController.from_ioregistry(device))
+            ioreg.IOObjectRelease(device)
+        
 
     def storage_probe(self):
         sata_controllers = ioreg.ioiterator_to_list(

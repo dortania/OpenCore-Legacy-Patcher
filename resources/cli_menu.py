@@ -466,6 +466,33 @@ OpenCore will enable NVMe support in it's picker
             print("Returning to previous menu")
         else:
             self.allow_nvme()
+    
+    def allow_xhci(self):
+        utilities.cls()
+        utilities.header(["Allow NVMe UEFI Support"])
+        print(
+            """
+For machines not natively supporting XHCI/USB 3.o,
+this option allows you to see and boot XHCI
+drive in OpenCore's picker
+
+Not required if your machine natively supports USB 3.0
+
+Note: You must have OpenCore on a bootable volume
+first, ie. USB 2.0 or SATA drive. Once loaded,
+OpenCore will enable XHCI support in it's picker
+        """
+        )
+
+        change_menu = input("Enable XHCI Boot support?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.xhci_boot = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.xhci_boot = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.allow_xhci()
 
     def allow_wowl(self):
         utilities.cls()
@@ -1129,6 +1156,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             options = [
                 [f"Set FireWire Boot:\tCurrently {self.constants.firewire_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_firewire],
                 [f"Set NVMe Boot:\tCurrently {self.constants.nvme_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_nvme],
+                [f"Set XHCI Boot:\tCurrently {self.constants.xhci_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_xhci],
             ]
 
             for option in options:

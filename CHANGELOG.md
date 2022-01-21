@@ -1,6 +1,10 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.4.1
+- Add XHCI Boot Support to pre-UEFI 2.0 Macs
+  - Applicable to pre-Ivy Macs with upgraded USB 3.0 controllers, allows USB 3.0 boot
+  - Credit to Jazzzny for research and testing
+  - Drivers stripped from MacPro6,1 firmware
 
 ## 0.4.0
 - Resolves Install USB Creation using incorrect installer

@@ -761,6 +761,14 @@ class BuildOpenCore:
         except KeyError:
             pass
 
+        if self.constants.xhci_boot is True:
+            print("- Adding USB 3.0 Controller Patch")
+            print("- Adding XhciDxe.efi and UsbBusDxe.efi")
+            shutil.copy(self.constants.xhci_driver_path, self.constants.drivers_path)
+            shutil.copy(self.constants.usb_bus_driver_path, self.constants.drivers_path)
+            self.get_efi_binary_by_path("XhciDxe.efi", "UEFI", "Drivers")["Enabled"] = True
+            self.get_efi_binary_by_path("UsbBusDxe.efi", "UEFI", "Drivers")["Enabled"] = True
+
         # ThirdPartDrives Check
         if self.constants.allow_3rd_party_drives is True:
             for drive in ["SATA 2.5", "SATA 3.5", "mSATA"]:

@@ -1867,6 +1867,14 @@ class wx_python_gui:
             print("NVMe Disabled")
             self.constants.nvme_boot = False
     
+    def xhci_click(self, event=None):
+        if self.xhci_boot_checkbox.GetValue():
+            print("XHCI Enabled")
+            self.constants.xhci_boot = True
+        else:
+            print("XHCI Disabled")
+            self.constants.xhci_boot = False
+    
     def wake_on_wlan_click(self, event=None):
         if self.wake_on_wlan_checkbox.GetValue():
             print("Wake on WLAN Enabled")
@@ -2354,11 +2362,18 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.nvme_boot_checkbox.SetPosition(wx.Point(self.firewire_boot_checkbox.GetPosition().x, self.firewire_boot_checkbox.GetPosition().y + self.firewire_boot_checkbox.GetSize().height))
         self.nvme_boot_checkbox.SetToolTip(wx.ToolTip("Enables NVMe support in UEFI for non-native systems (ie. MacPro3,1)\nRequires OpenCore to be stored on a natively bootable volume however"))
     
+        # XHCI Boot
+        self.xhci_boot_checkbox = wx.CheckBox(self.frame, label="XHCI Boot")
+        self.xhci_boot_checkbox.SetValue(self.constants.xhci_boot)
+        self.xhci_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.xhci_click)
+        self.xhci_boot_checkbox.SetPosition(wx.Point(self.nvme_boot_checkbox.GetPosition().x, self.nvme_boot_checkbox.GetPosition().y + self.nvme_boot_checkbox.GetSize().height))
+        self.xhci_boot_checkbox.SetToolTip(wx.ToolTip("Enables XHCI/USB3.o support in UEFI for non-native systems (ie. pre-Ivy Bridge)\nRequires OpenCore to be stored on a natively bootable volume however"))
+
         # Wake on WLAN
         self.wake_on_wlan_checkbox = wx.CheckBox(self.frame, label="Wake on WLAN")
         self.wake_on_wlan_checkbox.SetValue(self.constants.enable_wake_on_wlan)
         self.wake_on_wlan_checkbox.Bind(wx.EVT_CHECKBOX, self.wake_on_wlan_click)
-        self.wake_on_wlan_checkbox.SetPosition(wx.Point(self.nvme_boot_checkbox.GetPosition().x, self.nvme_boot_checkbox.GetPosition().y + self.nvme_boot_checkbox.GetSize().height))
+        self.wake_on_wlan_checkbox.SetPosition(wx.Point(self.xhci_boot_checkbox.GetPosition().x, self.xhci_boot_checkbox.GetPosition().y + self.xhci_boot_checkbox.GetSize().height))
         self.wake_on_wlan_checkbox.SetToolTip(wx.ToolTip("Enables Wake on WLAN for Broadcom Wifi.\nBy default, Wake on WLAN is disabled to work around Apple's wake from sleep bug causing heavily degraded networking performance.\nNote: This option is only applicable for BCM943224, BCM94331, BCM94360 and BCM943602 chipsets"))
 
         # Button: return to main menu

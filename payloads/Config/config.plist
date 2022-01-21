@@ -1950,6 +1950,16 @@
 				<key>Comment</key>
 				<string></string>
 				<key>Path</key>
+				<string>UsbBusDxe.efi</string>
+				<key>Enabled</key>
+				<false/>
+				<key>Arguments</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string></string>
+				<key>Path</key>
 				<string>OpenLinuxBoot.efi</string>
 				<key>Enabled</key>
 				<false/>
