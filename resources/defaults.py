@@ -91,7 +91,7 @@ class generate_defaults:
             # users can override this in settings
             settings.allow_ts2_accel = False
         
-        if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value or model == "MacPro5,1":
+        if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value and model != "MacPro5,1":
             # Sidecar and AirPlay to Mac only blacklist Ivy and newer (as well as MacPro5,1)
             # Avoid extra patching without benefit
             settings.fu_arguments = " -disable_sidecar_mac"
