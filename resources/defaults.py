@@ -1,6 +1,6 @@
 # Generate Default Data
 from resources import utilities, device_probe, generate_smbios
-from data import model_array, smbios_data
+from data import model_array, smbios_data, cpu_data
 
 
 class generate_defaults:
@@ -90,6 +90,13 @@ class generate_defaults:
             # Users disabling TS2 most likely have a faulty dGPU
             # users can override this in settings
             settings.allow_ts2_accel = False
+        
+        if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value or model == "MacPro5,1":
+            # Sidecar and AirPlay to Mac only blacklist Ivy and newer (as well as MacPro5,1)
+            # Avoid extra patching without benefit
+            settings.fu_arguments = " -disable_sidecar_mac"
+        else:
+            settings.fu_arguments = None
 
         # Check if running in RecoveryOS
         settings.recovery_status = utilities.check_recovery()
