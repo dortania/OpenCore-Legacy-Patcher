@@ -2,35 +2,27 @@
 
 Now that we have a macOS installer, lets now build our OpenCore configuration!
 
-First Download the latest release:
+If you haven't downloaded OpenCore Patcher yet, do so now:
 
 * [OpenCore Legacy Patcher Releases](https://github.com/dortania/Opencore-Legacy-Patcher/releases)
 
 Next, run the `OpenCore-Patcher.app`:
 
-![](../images/first-run.png)
+![](../images/OCLP-GUI-Main-Menu.png)
 
-From here you have a couple important options:
+Here we'll select Build and Install OpenCore and start building:
 
-* Build OpenCore
-* Install OpenCore to USB/internal drive
-* Change Model
-* Patcher Settings
-
-If you're patching for a different machine than you're running, please select "Change Model" and enter the updated SMBIOS. For more advanced users, you may also tweak the patcher's build settings via "Patcher Settings"
-
-Now lets enter "Build OpenCore":
-
-![](../images/build-efi.png)
-
-The process should be quite quick to build, once finished you'll be plopped back to the main menu.
-
-Next lets run `Install OpenCore to USB/internal drive`:
-
-| Select Drive | Select EFI/FAT32 Partition |
+| Start Building | Finished Building |
 | :--- | :--- |
-| ![](../images/disk-start.png) | ![](../images/disk-efi.png) |
+| ![](../images/OCLP-GUI-Build-Start.png) | ![OCLP GUI Build Finished](../images/OCLP-GUI-Build-Finished.png) |
 
-* If you have issues, please ensure you install OpenCore onto a FAT32 partition to ensure your Mac is able to boot it. You will need to format your drive as GUID/GPT in Disk Utility
-  
+Once it finishes building, you'll want to select the Install OpenCore button:
+
+* If you created a macOS USB manually and don't see it listed, make sure it's either formatted as GUID/GPT or has a FAT32 partition for OpenCore to sit on
+
+
+| Select Drive | Select Partition |
+| :--- | :--- |
+| ![](../images/OCLP-GUI-EFI-Select-Disk.png) | ![](../images/OCLP-GUI-EFI-Select-Partition.png) |
+
 # Once finished, head to [Booting OpenCore and macOS](./BOOT.md)
