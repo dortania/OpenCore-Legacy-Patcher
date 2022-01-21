@@ -23,18 +23,18 @@ jobs:
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
       - run: cd dist; zip -r ../OpenCore-Patcher-TUI.app.zip OpenCore-Patcher.app
       - run: ./../sign-tui.sh
+      - run: mv ./OpenCore-Patcher-TUI.app.zip ./OpenCore-Patcher-TUI-Offline.app.zip
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: OpenCore-Patcher-TUI.app (Offline)
-          path: OpenCore-Patcher-TUI.app.zip
+          path: OpenCore-Patcher-TUI-Offline.app.zip
 
       - name: Upload to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          asset_name: OpenCore-Patcher-TUI.app (Offline)
-          file: OpenCore-Patcher-TUI.app.zip
+          file: OpenCore-Patcher-TUI-Offline.app.zip
           tag: ${{ github.ref }}
           file_glob: true
