@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.1
+
 ## 0.4.0
 - Resolves Install USB Creation using incorrect installer
 - Resolves `installer` failing to extract InstallAssistant in older OSes
