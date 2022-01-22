@@ -12,12 +12,17 @@ class generate_defaults:
         settings.amfi_status = True
 
         if host_is_target:
-            if settings.computer.usb_controllers and smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
-                # Pre-Ivy do not natively support XHCI boot support
-                # If we detect XHCI on older model, enable
-                for controller in settings.computer.usb_controllers:
-                    if isinstance(controller, device_probe.XHCIController):
-                        settings.xhci_boot = True
+            if settings.computer.usb_controllers:
+                try:
+                    if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
+                        # Pre-Ivy do not natively support XHCI boot support
+                        # If we detect XHCI on older model, enable
+                        for controller in settings.computer.usb_controllers:
+                            if isinstance(controller, device_probe.XHCIController):
+                                settings.xhci_boot = True
+                                break
+                except KeyError:
+                    pass
             if utilities.check_metal_support(device_probe, settings.computer) is False:
                 settings.disable_cs_lv = True
             if settings.computer.gpus: 
@@ -96,13 +101,15 @@ class generate_defaults:
             # Users disabling TS2 most likely have a faulty dGPU
             # users can override this in settings
             settings.allow_ts2_accel = False
-        
-        if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value and model != "MacPro5,1":
-            # Sidecar and AirPlay to Mac only blacklist Ivy and newer (as well as MacPro5,1)
-            # Avoid extra patching without benefit
-            settings.fu_arguments = " -disable_sidecar_mac"
-        else:
-            settings.fu_arguments = None
+        try:
+            if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value and model != "MacPro5,1":
+                # Sidecar and AirPlay to Mac only blacklist Ivy and newer (as well as MacPro5,1)
+                # Avoid extra patching without benefit
+                settings.fu_arguments = " -disable_sidecar_mac"
+            else:
+                settings.fu_arguments = None
+        except KeyError:
+            pass
 
         # Check if running in RecoveryOS
         settings.recovery_status = utilities.check_recovery()
