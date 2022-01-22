@@ -22,3 +22,4 @@ __pycache__/
 /docs/node_modules/
 /payloads/List.txt
 /payloads/Installer.sh
+/payloads/Info.plist

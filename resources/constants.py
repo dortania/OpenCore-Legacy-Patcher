@@ -22,6 +22,7 @@ class Constants:
         self.guide_link = "https://dortania.github.io/OpenCore-Legacy-Patcher/"
         self.repo_link = "https://github.com/dortania/OpenCore-Legacy-Patcher"
         self.repo_link_latest = f"{self.repo_link}/releases/tag/{self.patcher_version}"
+        self.copyright_date = "Copyright © 2020-2022 Dortania"
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg

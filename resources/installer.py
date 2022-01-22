@@ -99,11 +99,24 @@ def list_downloadable_macOS_installers(download_path, catalog):
                 catalog_plist["Products"][item]["ExtendedMetaInfo"]["InstallAssistantPackageIdentifiers"]["BuildManifest"]
 
                 for bm_package in catalog_plist["Products"][item]["Packages"]:
-                    if "BuildManifest.plist" in bm_package["URL"]:
-                        utilities.download_file(bm_package["URL"], (Path(download_path) / Path("BuildManifest.plist")))
-                        build_plist = plistlib.load((Path(download_path) / Path("BuildManifest.plist")).open("rb"))
-                        version = build_plist["ProductVersion"]
-                        build = build_plist["ProductBuildVersion"]
+                    if "Info.plist" in bm_package["URL"] and "InstallInfo.plist" not in bm_package["URL"]:
+                        utilities.download_file(bm_package["URL"], (Path(download_path) / Path("Info.plist")))
+                        build_plist = plistlib.load((Path(download_path) / Path("Info.plist")).open("rb"))
+                        version = build_plist["MobileAssetProperties"]["OSVersion"]
+                        build = build_plist["MobileAssetProperties"]["Build"]
+                        try:
+                            catalog_url = build_plist["MobileAssetProperties"]["BridgeVersionInfo"]["CatalogURL"]
+                            if "beta" in catalog_url:
+                                catalog_url = "PublicSeed"
+                            elif "customerseed" in catalog_url:
+                                catalog_url = "CustomerSeed"
+                            elif "seed" in catalog_url:
+                                catalog_url = "DeveloperSeed"
+                            else:
+                                catalog_url = "Unknown"
+                        except KeyError:
+                            # Assume CustomerSeed if no catalog URL is found
+                            catalog_url = "CustomerSeed"
                         for ia_package in catalog_plist["Products"][item]["Packages"]:
                             if "InstallAssistant.pkg" in ia_package["URL"]:
                                 download_link = ia_package["URL"]
@@ -118,6 +131,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
                                 "Size": size,
                                 "integrity": integrity,
                                 "Source": "Apple Inc.",
+                                "Variant": catalog_url,
                             }
                         })
             except KeyError:

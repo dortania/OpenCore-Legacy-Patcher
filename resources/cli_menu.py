@@ -1264,7 +1264,11 @@ B. Exit
                 # Add mirror of 11.2.3 for users who want it
                 options.append([f"macOS {mirror_data.Install_macOS_Big_Sur_11_2_3['Version']} ({mirror_data.Install_macOS_Big_Sur_11_2_3['Build']} - {utilities.human_fmt(mirror_data.Install_macOS_Big_Sur_11_2_3['Size'])} - {mirror_data.Install_macOS_Big_Sur_11_2_3['Source']})", lambda: self.download_install_assistant(mirror_data.Install_macOS_Big_Sur_11_2_3['Link'])])
                 for app in avalible_installers:
-                    options.append([f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']})", lambda x=app: self.download_install_assistant(avalible_installers[x]['Link'])])
+                    if avalible_installers[app]['Variant'] in ["DeveloperSeed", "PublicSeed"]:
+                        variant = " Beta"
+                    else:
+                        variant = ""
+                    options.append([f"macOS {avalible_installers[app]['Version']}{variant} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']})", lambda x=app: self.download_install_assistant(avalible_installers[x]['Link'])])
                 for option in options:
                     menu.add_menu_option(option[0], function=option[1])
             response = menu.start()

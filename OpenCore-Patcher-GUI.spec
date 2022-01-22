@@ -46,10 +46,11 @@ app = BUNDLE(exe,
              bundle_identifier="com.dortania.opencore-legacy-patcher-wxpython",
              info_plist={
              "CFBundleShortVersionString": constants.Constants().patcher_version,
-             "NSHumanReadableCopyright": "Copyright 2020-2022 Dortania",
+             "NSHumanReadableCopyright": constants.Constants().copyright_date
              "LSMinimumSystemVersion": "10.10.0",
              "NSRequiresAquaSystemAppearance": False,
              "NSHighResolutionCapable": True,
              "Build Date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
              "BuildMachineOSBuild": subprocess.run("sw_vers -buildVersion".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode().strip(),
+             "NSPrincipalClass": "NSApplication",
              })

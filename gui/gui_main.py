@@ -315,7 +315,7 @@ class wx_python_gui:
 
 
         # Copyright Label
-        self.copyright = wx.StaticText(self.frame, label="Copyright © 2020-2022 Dortania")
+        self.copyright = wx.StaticText(self.frame, label=self.constants.copyright_date)
         self.copyright.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.copyright.SetPosition(
             wx.Point(
@@ -1065,8 +1065,12 @@ class wx_python_gui:
         i = -20
         if avalible_installers:
             for app in avalible_installers:
-                print(f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']})")
-                self.install_selection = wx.Button(self.frame, label=f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])})", size=(250, 30))
+                print(f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']}) - {avalible_installers[app]['Variant']}")
+                if avalible_installers[app]['Variant'] in ["DeveloperSeed" , "PublicSeed"]:
+                    extra = " Beta"
+                else:
+                    extra = ""
+                self.install_selection = wx.Button(self.frame, label=f"macOS {avalible_installers[app]['Version']}{extra} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])})", size=(280, 30))
                 i = i + 25
                 self.install_selection.SetPosition(
                     wx.Point(
