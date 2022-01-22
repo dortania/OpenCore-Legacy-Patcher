@@ -20,7 +20,9 @@ And voila! No more USB drive required
 
 To do this, run the OpenCore Patcher and head to Patcher Settings:
 
-![](../images/settings.png)
+| GUI Settings | TUI Settings
+| :--- | :--- |
+|![](../images/OCLP-GUI-Settings-ShowPicker.png) | ![](../images/settings.png) |
 
 Here you can change different patcher settings, however the main interest is:
 
@@ -30,17 +32,35 @@ Once you've toggled them both off, build your OpenCore EFI once again and instal
 
 ## Enabling SIP
 
-For many users, SIP will be enabled by default on build. For Intel HD 4000 users, you may have noticed that SIP is disabled. This is to ensure full compatibility with macOS Monterey and allow seamless booting between it and older OSes. However for users who do not plan to boot Monterey, you can re-enable under Patcher Settings.
+For many users, SIP will be enabled by default on build. For Intel HD 4000 users, you may have noticed that SIP is partially disabled. This is to ensure full compatibility with macOS Monterey and allow seamless booting between it and older OSes. However for users who do not plan to boot Monterey, you can re-enable under Patcher Settings.
 
 Note: Machines with non-Metal GPUs cannot enable SIP in Big Sur either due to patched root volume
 
-Note 2: NVRAM may need to be reset to ensure SIP is correctly re-enabled
+::: warning 
+
+If you're unsure whether you should enable SIP, leave as-is. Systems where you have already ran the Post Install Root Patching cannot enable SIP without potentially breaking the current install. 
+
+:::
 
 ## Applying Post Install Volume Patches
 
 For users with unsupported GPUs/wifi cards, you'll need to run the Post Install Root Volume patches to regain functionality. See below on whether your hardware needs root volume patching. 
 
 * Hint: Try running the root volume patch option, the Patcher will determine and install patches only when required. So there is no harm in applying them
+
+
+| Listing Patches | Patching Finished |
+| :--- | :--- |
+| ![](../images/OCLP-GUI-Root-Patching-List.png) | ![](../images/OCLP-GUI-Root-Patching-Finished.png) |
+
+
+::: warning
+
+Root Patching requires a network connection by default to grab associated resources. If your system is having difficulties with wifi or ethernet, grab the Offline variants of the patcher on Github next to the regular apps:
+
+* [OpenCore Legacy Patcher releases](https://github.com/dortania/OpenCore-Legacy-Patcher/releases/latest)
+
+:::
 
 ::: details Unsupported GPUs in macOS Big Sur
 
@@ -76,13 +96,3 @@ For users with unsupported GPUs/wifi cards, you'll need to run the Post Install 
 * Atheros
 
 :::
-
-To apply the Post-Install Volume patches, select option #3 as shown below:
-
-![](../images/root-patch.png)
-
-And go ahead to option #1 and let the OCLP patcher apply the needed legacy video patches.
-
-![](../images/root-patcher-2.png)
-
-Reboot your system and check out the now working graphics acceleration on your legacy system. This is still Beta software.

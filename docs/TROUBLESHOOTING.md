@@ -11,8 +11,10 @@ Here are some common errors users may experience while using this patcher:
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 * [No Brightness Control](#no-brightness-control)
 * [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-Wi-Fi-on-Monterey-with-legacy-cards)
-* [No Graphics Acceleration on Intel Ivy Bridge and Nvidia Kepler GPUs](#no-graphics-acceleration-on-intel-ivy-bridge-and-nvidia-kepler-gpus)
+* [No Graphics Acceleration](#no-graphics-acceleration)
 * [Black Screen on MacBookPro11,3 in macOS Monterey](#black-screen-on-macbookpro113-in-macos-monterey)
+* [No DisplayPort Output on Mac Pros with Nvidia Kepler](#no-displayport-output-on-mac-pros-with-nvidia-kepler)
+
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
@@ -78,9 +80,12 @@ With OCLP v0.2.5, we've added support for legacy Wi-Fi on Monterey. However some
 
 To work-around, we recommend users to manually connect using the "other" option on the Wi-Fi menu bar or manually adding the network on the "Network" preference pane.
 
-## No Graphics Acceleration on Intel Ivy Bridge and Nvidia Kepler GPUs
+## No Graphics Acceleration
 
-With macOS Monterey, Apple removed Graphics Drivers for both Intel Ivy Bride and Nvidia Kepler. To re-enable acceleration, simply run the Post Install Root Volume patches.
+
+In macOS, each release generally means GPU drivers are dropped from the OS. With macOS Big Sur, currently all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and Nvidia Kepler. 
+
+To re-enable acceleration, simply run the Post Install Root Volume patches.
 
 Once rebooted, acceleration will be re-enabled as well as brightness control for laptops.
 
@@ -89,3 +94,9 @@ Once rebooted, acceleration will be re-enabled as well as brightness control for
 Due to Apple dropping Nvidia Kepler support in macOS Monterey, [MacBookPro11,3's GMUX has difficulties switching back to the iGPU to display macOS correctly.](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/522) To work-around this issue, boot the MacBookPro11,3 in Safe Mode and once macOS is installed, run OCLP's Post Install Root Patches to enable GPU Acceleration for the Nvidia dGPU.
 
 * Safe Mode can be started by holding Shift+Enter when selecting macOS Monterey in OCLP's Boot Menu.
+
+## No DisplayPort Output on Mac Pros with Nvidia Kepler
+
+If you're having troubles with DisplayPort output on Mac Pros, try enabling Minimal Spoofing in Settings -> SMBIOS Settings and rebuild/install OpenCore. This will trick macOS drivers into thinking you have a newer MacPro7,1 and play nicer.
+
+![](../images/OCLP-GUI-SMBIOS-Minimal.png)

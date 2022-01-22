@@ -1,5 +1,6 @@
 # Working Around Legacy Acceleration Issues
 
+* [Broken Background Blurs](#broken-background-blurs)
 * [Downloading older non-Metal Apps](#downloading-older-non-metal-apps)
 * [Unable to run Zoom](#unable-to-run-zoom)
 * [Unable to grant special permissions to apps (ie. Camera Access to Zoom)](#unable-to-grant-special-permissions-to-apps-ie-camera-access-to-zoom)
@@ -35,6 +36,13 @@ For those unfamiliar with what is considered a non-Metal GPU, see below chart:
 
 :::
 
+## Broken Background Blurs
+
+By default with the non-Metal acceleration patches, many background blur menus may act distorted when moving a cursor over it. With 0.4.1 and newer, users can enable a new Beta Blur feature to try and resolve the issue:
+
+![](../images/OCLP-GUI-Settings-Beta-Blur.png)
+
+Do note that enabling beta blurs can be more demanding on slower hardware
 ## Downloading older non-Metal Apps
 
 Many Apple apps now have direct reliance on Metal for proper functioning, however legacy builds of these apps still do work in Big Sur. See below for archive of many apps such as Pages, iMovie, GarageBand.
