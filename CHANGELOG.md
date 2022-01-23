@@ -2,6 +2,7 @@
 
 ## 0.4.2
 - Resolve app crashing on some 3rd party SAS/SATA controllers
+- Add Beta identifier to macOS Installer menu
 
 ## 0.4.1
 - Add XHCI Boot Support to pre-UEFI 2.0 Macs
