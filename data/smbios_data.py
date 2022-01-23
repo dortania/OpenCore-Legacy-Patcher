@@ -1546,6 +1546,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm4360,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2070,
         "Ethernet Chipset": "Broadcom",
+        "nForce Chipset": True,
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla
         ],
