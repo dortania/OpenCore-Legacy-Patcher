@@ -40,5 +40,5 @@ app = BUNDLE(exe,
          info_plist={
              "CFBundleShortVersionString": constants.Constants().patcher_version,
              "CFBundleExecutable": "MacOS/Launcher",
-             "NSHumanReadableCopyright": "Copyright 2020-2022 Dortania"
+             "NSHumanReadableCopyright": constants.Constants().copyright_date,
          })

@@ -46,7 +46,7 @@ app = BUNDLE(exe,
              bundle_identifier="com.dortania.opencore-legacy-patcher-wxpython",
              info_plist={
              "CFBundleShortVersionString": constants.Constants().patcher_version,
-             "NSHumanReadableCopyright": constants.Constants().copyright_date
+             "NSHumanReadableCopyright": constants.Constants().copyright_date,
              "LSMinimumSystemVersion": "10.10.0",
              "NSRequiresAquaSystemAppearance": False,
              "NSHighResolutionCapable": True,
