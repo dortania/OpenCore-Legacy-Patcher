@@ -174,6 +174,10 @@ class OHCIController(PCIDevice):
     CLASS_CODE: ClassVar[int] = 0x0c0310
 
 @dataclass
+class UHCIController(PCIDevice):
+    CLASS_CODE: ClassVar[int] = 0x0c0300
+
+@dataclass
 class NVIDIA(GPU):
     VENDOR_ID: ClassVar[int] = 0x10DE
 
@@ -451,6 +455,14 @@ class Computer:
                 None,
             )[1]
         )
+
+        uhci_controllers  = ioreg.ioiterator_to_list(
+            ioreg.IOServiceGetMatchingServices(
+                ioreg.kIOMasterPortDefault,
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(UHCIController.CLASS_CODE)[2:].zfill(8)))}]},
+                None,
+            )[1]
+        )
         for device in xhci_controllers:
             self.usb_controllers.append(XHCIController.from_ioregistry(device))
             ioreg.IOObjectRelease(device)
@@ -459,6 +471,9 @@ class Computer:
             ioreg.IOObjectRelease(device)
         for device in ohci_controllers:
             self.usb_controllers.append(OHCIController.from_ioregistry(device))
+            ioreg.IOObjectRelease(device)
+        for device in uhci_controllers:
+            self.usb_controllers.append(UHCIController.from_ioregistry(device))
             ioreg.IOObjectRelease(device)
         
 

@@ -179,6 +179,34 @@ class iMac:
         opencore_version=None,
     )
 
+    iMac122_Upgraded_Nvidia = device_probe.Computer(
+        real_model='iMac12,2', 
+        real_board_id='Mac-942B59F58194171B', 
+        reported_model='iMac12,2', 
+        reported_board_id='Mac-942B59F58194171B', 
+        gpus=[
+            device_probe.Intel(vendor_id=32902, device_id=258, class_code=229376, name='IGPU',  model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/IGPU@20000', pci_path='PciRoot(0x0)/Pci(0x2,0x0)'), 
+            device_probe.NVIDIA(vendor_id=4318, device_id=4092, class_code=196608, name='GFX0', model='Quadro K1000M by Nick[D]vB', acpi_path='IOACPIPlane:/_SB/PCI0@0/P0P2@10000/GFX0@0', pci_path='PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)')], 
+        igpu=device_probe.Intel(vendor_id=32902, device_id=258, class_code=229376, name='IGPU', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/IGPU@20000', pci_path='PciRoot(0x0)/Pci(0x2,0x0)'), 
+        dgpu=device_probe.NVIDIA(vendor_id=4318, device_id=4092, class_code=196608, name='GFX0', model='Quadro K1000M by Nick[D]vB', acpi_path='IOACPIPlane:/_SB/PCI0@0/P0P2@10000/GFX0@0', pci_path='PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)'), 
+        storage=[
+            device_probe.SATAController(vendor_id=32902, device_id=7170, class_code=67073, name='SATA', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/SATA@1f0002', pci_path='PciRoot(0x0)/Pci(0x1f,0x2)')
+        ], 
+        usb_controllers=[
+            device_probe.EHCIController(vendor_id=32902, device_id=7213, class_code=787232, name='EHC2', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/EHC2@1a0007', pci_path='PciRoot(0x0)/Pci(0x1a,0x7)'), 
+            device_probe.EHCIController(vendor_id=32902, device_id=7206, class_code=787232, name='EHC1', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/EHC1@1d0007', pci_path='PciRoot(0x0)/Pci(0x1d,0x7)')
+        ], 
+        wifi=device_probe.Broadcom(vendor_id=5348, device_id=17201, class_code=163840, name='ARPT', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/RP02@1c0001/ARPT@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x1)/Pci(0x0,0x0)'), 
+        cpu=device_probe.CPU(
+            name='Intel(R) Core(TM) i7-2600 CPU @ 3.40GHz', 
+            flags=['FPU', 'VME', 'DE', 'PSE', 'TSC', 'MSR', 'PAE', 'MCE', 'CX8', 'APIC', 'SEP', 'MTRR', 'PGE', 'MCA', 'CMOV', 'PAT', 'PSE36', 'CLFSH', 'DS', 'ACPI', 'MMX', 'FXSR', 'SSE', 'SSE2', 'SS', 'HTT', 'TM', 'PBE', 'SSE3', 'PCLMULQDQ', 'DTES64', 'MON', 'DSCPL', 'VMX', 'SMX', 'EST', 'TM2', 'SSSE3', 'CX16', 'TPR', 'PDCM', 'SSE4.1', 'SSE4.2', 'x2APIC', 'POPCNT', 'AES', 'PCID', 'XSAVE', 'OSXSAVE', 'TSCTMR', 'AVX1.0']
+        ),
+        oclp_version='0.3.3', 
+        opencore_version=None, 
+        bluetooth_chipset='BRCM2046 Hub', 
+        third_party_sata_ssd=True
+    )
+
     iMac151_Stock = device_probe.Computer(
         real_model='iMac15,1', 
         real_board_id='Mac-42FD25EABCABB274', 
