@@ -1195,7 +1195,7 @@ class wx_python_gui:
                         self.header.GetPosition().y + self.header.GetSize().height + i
                     )
                 )
-                self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.format_usb_menu(avalible_installers[temp]['Path']))
+                self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.format_usb_menu(avalible_installers[temp]['Short Name'], avalible_installers[temp]['Path']))
                 self.install_selection.Centre(wx.HORIZONTAL)
         else:
             print("No installers found")
@@ -1223,7 +1223,7 @@ class wx_python_gui:
 
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
     
-    def format_usb_menu(self, installer_path):
+    def format_usb_menu(self, installer_name, installer_path):
         self.frame.DestroyChildren()
         print(installer_path)
 
@@ -1268,7 +1268,7 @@ class wx_python_gui:
                         self.usb_selection_label.GetPosition().y + self.usb_selection_label.GetSize().height + i
                     )
                 )
-                self.usb_selection.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.format_usb_progress(availible_disks[temp]['identifier'], installer_path))
+                self.usb_selection.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.format_usb_progress(availible_disks[temp]['identifier'], installer_name, installer_path))
                 self.usb_selection.Centre(wx.HORIZONTAL)
         else:
             print("No disks found")
@@ -1296,11 +1296,11 @@ class wx_python_gui:
 
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
-    def format_usb_progress(self, disk, installer_path):
+    def format_usb_progress(self, disk, installer_name, installer_path):
         self.frame.DestroyChildren()
         self.frame.SetSize(500, -1)
         # Header
-        self.header = wx.StaticText(self.frame, label="Creating macOS Installer")
+        self.header = wx.StaticText(self.frame, label=f"Creating Installer: {installer_name}")
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 

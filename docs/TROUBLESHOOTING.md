@@ -14,6 +14,7 @@ Here are some common errors users may experience while using this patcher:
 * [No Graphics Acceleration](#no-graphics-acceleration)
 * [Black Screen on MacBookPro11,3 in macOS Monterey](#black-screen-on-macbookpro113-in-macos-monterey)
 * [No DisplayPort Output on Mac Pros with Nvidia Kepler](#no-displayport-output-on-mac-pros-with-nvidia-kepler)
+* [Volume Hash Mismatch Error in macOS Monterey](#volume-hash-mismatch-error-in-macos-monterey)
 
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
@@ -100,3 +101,15 @@ Due to Apple dropping Nvidia Kepler support in macOS Monterey, [MacBookPro11,3's
 If you're having troubles with DisplayPort output on Mac Pros, try enabling Minimal Spoofing in Settings -> SMBIOS Settings and rebuild/install OpenCore. This will trick macOS drivers into thinking you have a newer MacPro7,1 and play nicer.
 
 ![](../images/OCLP-GUI-SMBIOS-Minimal.png)
+
+## Volume Hash Mismatch Error in macOS Monterey
+
+A semi-common popup some users face is the "Volume Hash Mismatch" error:
+
+![](../images/Hash-Mismatch.png)
+
+What this error signifies is that the OS detects the boot volume's hash does not match to what the OS detects, this error is generally cosmetic and can be ignored. However if your system starts to crash spontaneously shortly after, you'll want to reinstall macOS fresh without importing any data at first.
+
+* Note that this bug affects native Macs as well and is not due to issues with unsupported Macs: [OSX Daily: “Volume Hash Mismatch” Error in MacOS Monterey](https://osxdaily.com/2021/11/10/volume-hash-mismatch-error-in-macos-monterey/)
+
+Additionally it can help to disable FeatureUnlock in Settings -> Misc Settings as this tool can be strenuous on systems with weaker memory stability.
