@@ -84,6 +84,11 @@ class generate_defaults:
             settings.secure_status = False  # Modified root volume
             settings.allow_fv_root = True  #  Allow FileVault on broken seal
             # settings.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
+        
+        if "Book" in model:
+            settings.set_content_caching = False
+        else:
+            settings.set_content_caching = True
 
         custom_cpu_model_value = utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
         if custom_cpu_model_value is not None:
