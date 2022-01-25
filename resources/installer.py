@@ -12,26 +12,29 @@ def list_local_macOS_installers():
 
     for application in Path("/Applications").iterdir():
         # Verify whether application has createinstallmedia
-        if (Path("/Applications") / Path(application) / Path("Contents/Resources/createinstallmedia")).exists():
-            plist = plistlib.load((Path("/Applications") / Path(application) / Path("Contents/Info.plist")).open("rb"))
-            try:
-                # Doesn't reflect true OS build, but best to report SDK in the event multiple installers are found with same version
-                app_version = plist["DTPlatformVersion"]
-                clean_name = plist["CFBundleDisplayName"]
+        try:
+            if (Path("/Applications") / Path(application) / Path("Contents/Resources/createinstallmedia")).exists():
+                plist = plistlib.load((Path("/Applications") / Path(application) / Path("Contents/Info.plist")).open("rb"))
                 try:
-                    app_sdk = plist["DTSDKBuild"]
+                    # Doesn't reflect true OS build, but best to report SDK in the event multiple installers are found with same version
+                    app_version = plist["DTPlatformVersion"]
+                    clean_name = plist["CFBundleDisplayName"]
+                    try:
+                        app_sdk = plist["DTSDKBuild"]
+                    except KeyError:
+                        app_sdk = "Unknown"
+                    application_list.update({
+                        application: {
+                            "Short Name": clean_name,
+                            "Version": app_version,
+                            "Build": app_sdk,
+                            "Path": application,
+                        }
+                    })
                 except KeyError:
-                    app_sdk = "Unknown"
-                application_list.update({
-                    application: {
-                        "Short Name": clean_name,
-                        "Version": app_version,
-                        "Build": app_sdk,
-                        "Path": application,
-                    }
-                })
-            except KeyError:
-                pass
+                    pass
+        except PermissionError:
+            pass
     return application_list
 
 def create_installer(installer_path, volume_name):
