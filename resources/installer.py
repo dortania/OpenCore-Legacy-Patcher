@@ -23,18 +23,22 @@ def list_local_macOS_installers():
                         app_sdk = plist["DTSDKBuild"]
                     except KeyError:
                         app_sdk = "Unknown"
-                    application_list.update({
-                        application: {
-                            "Short Name": clean_name,
-                            "Version": app_version,
-                            "Build": app_sdk,
-                            "Path": application,
-                        }
-                    })
+                    # Check if App Version is Catalina or older
+                    if not app_version.startswith("10."):
+                        application_list.update({
+                            application: {
+                                "Short Name": clean_name,
+                                "Version": app_version,
+                                "Build": app_sdk,
+                                "Path": application,
+                            }
+                        })
                 except KeyError:
                     pass
         except PermissionError:
             pass
+    # Sort Applications by version
+    application_list = {k: v for k, v in sorted(application_list.items(), key=lambda item: item[1]["Version"])}
     return application_list
 
 def create_installer(installer_path, volume_name):
