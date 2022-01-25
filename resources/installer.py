@@ -23,14 +23,35 @@ def list_local_macOS_installers():
                         app_sdk = plist["DTSDKBuild"]
                     except KeyError:
                         app_sdk = "Unknown"
-                    # Check if App Version is Catalina or older
-                    if not app_version.startswith("10."):
+
+                    # app_version can sometimes report GM instead of the actual version
+                    # This is a workaround to get the actual version
+                    if app_version.startswith("GM"):
+                        try:
+                            app_version = int(app_sdk[:2])
+                            if app_version < 20:
+                                app_version = f"10.{app_version - 4}"
+                            else:
+                                app_version = f"{app_version - 9}.0"
+                        except ValueError:
+                            app_version = "Unknown"
+                    # Check if App Version is High Sierra or newer
+                    can_add = False
+                    if app_version.startswith("10."):
+                        app_sub_version = app_version.split(".")[1]
+                        if int(app_sub_version) >= 13:
+                            can_add = True
+                        else:
+                            can_add = False
+                    else:
+                        can_add = True
+                    if can_add is True:
                         application_list.update({
                             application: {
-                                "Short Name": clean_name,
-                                "Version": app_version,
-                                "Build": app_sdk,
-                                "Path": application,
+                            "Short Name": clean_name,
+                            "Version": app_version,
+                            "Build": app_sdk,
+                            "Path": application,
                             }
                         })
                 except KeyError:
