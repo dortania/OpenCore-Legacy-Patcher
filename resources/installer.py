@@ -12,26 +12,54 @@ def list_local_macOS_installers():
 
     for application in Path("/Applications").iterdir():
         # Verify whether application has createinstallmedia
-        if (Path("/Applications") / Path(application) / Path("Contents/Resources/createinstallmedia")).exists():
-            plist = plistlib.load((Path("/Applications") / Path(application) / Path("Contents/Info.plist")).open("rb"))
-            try:
-                # Doesn't reflect true OS build, but best to report SDK in the event multiple installers are found with same version
-                app_version = plist["DTPlatformVersion"]
-                clean_name = plist["CFBundleDisplayName"]
+        try:
+            if (Path("/Applications") / Path(application) / Path("Contents/Resources/createinstallmedia")).exists():
+                plist = plistlib.load((Path("/Applications") / Path(application) / Path("Contents/Info.plist")).open("rb"))
                 try:
-                    app_sdk = plist["DTSDKBuild"]
+                    # Doesn't reflect true OS build, but best to report SDK in the event multiple installers are found with same version
+                    app_version = plist["DTPlatformVersion"]
+                    clean_name = plist["CFBundleDisplayName"]
+                    try:
+                        app_sdk = plist["DTSDKBuild"]
+                    except KeyError:
+                        app_sdk = "Unknown"
+
+                    # app_version can sometimes report GM instead of the actual version
+                    # This is a workaround to get the actual version
+                    if app_version.startswith("GM"):
+                        try:
+                            app_version = int(app_sdk[:2])
+                            if app_version < 20:
+                                app_version = f"10.{app_version - 4}"
+                            else:
+                                app_version = f"{app_version - 9}.0"
+                        except ValueError:
+                            app_version = "Unknown"
+                    # Check if App Version is High Sierra or newer
+                    can_add = False
+                    if app_version.startswith("10."):
+                        app_sub_version = app_version.split(".")[1]
+                        if int(app_sub_version) >= 13:
+                            can_add = True
+                        else:
+                            can_add = False
+                    else:
+                        can_add = True
+                    if can_add is True:
+                        application_list.update({
+                            application: {
+                            "Short Name": clean_name,
+                            "Version": app_version,
+                            "Build": app_sdk,
+                            "Path": application,
+                            }
+                        })
                 except KeyError:
-                    app_sdk = "Unknown"
-                application_list.update({
-                    application: {
-                        "Short Name": clean_name,
-                        "Version": app_version,
-                        "Build": app_sdk,
-                        "Path": application,
-                    }
-                })
-            except KeyError:
-                pass
+                    pass
+        except PermissionError:
+            pass
+    # Sort Applications by version
+    application_list = {k: v for k, v in sorted(application_list.items(), key=lambda item: item[1]["Version"])}
     return application_list
 
 def create_installer(installer_path, volume_name):
