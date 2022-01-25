@@ -1206,7 +1206,7 @@ class wx_python_gui:
                 # Set Position below header
                 wx.Point(
                     self.header.GetPosition().x,
-                    self.header.GetPosition().y + self.header.GetSize().height + 10
+                    self.header.GetPosition().y + self.header.GetSize().height + 15
                 )
             )
             self.install_selection.Centre(wx.HORIZONTAL)

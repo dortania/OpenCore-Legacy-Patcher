@@ -123,6 +123,17 @@ body:
     validations:
       required: true
   - type: dropdown
+    id: used-forums
+    attributes:
+      label: Have you already discussed this is a pather bug and not a macOS bug on forums and discord servers?
+      description: If no, please do not use issues for this. We'd appreciate it if users check with forums before filing. Issues are for legitimate patcher issues only.
+      multiple: true
+      options:
+        - 'true'
+        - 'false'
+    validations:
+      required: true
+  - type: dropdown
     id: 3rd-party-application
     attributes:
       label: Is this issue with a 3rd party application? 
