@@ -3,6 +3,7 @@
 ## 0.4.2
 - Resolve app crashing on some 3rd party SAS/SATA controllers
 - Add Beta identifier to macOS Installer menu
+- Resolve showing unsupported installers in Creation menu
 - Resolve Macmini4,1 HDEF pathing
 - Increment Binaries:
   - FeatureUnlock 1.0.6 - rolling (d98a31f)
