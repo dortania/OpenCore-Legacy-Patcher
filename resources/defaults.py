@@ -25,6 +25,9 @@ class generate_defaults:
                     pass
             if utilities.check_metal_support(device_probe, settings.computer) is False:
                 settings.disable_cs_lv = True
+                settings.secure_status = False
+                settings.sip_status = False
+                settings.allow_fv_root = True
             if settings.computer.gpus: 
                 for gpu in settings.computer.gpus:
                     if gpu.arch == device_probe.NVIDIA.Archs.Kepler:

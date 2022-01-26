@@ -8,6 +8,7 @@ def validate(settings):
 
     valid_dumps = [
         example_data.MacBookPro.MacBookPro92_Stock,
+        example_data.MacBookPro.MacBookPro111_Stock,
         # example_data.MacBookPro.MacBookPro171_Stock,
         # example_data.Macmini.Macmini91_Stock,
         example_data.iMac.iMac81_Stock,
@@ -22,6 +23,10 @@ def validate(settings):
         example_data.MacPro.MacPro41_Upgrade,
         example_data.MacPro.MacPro41_Modern_AMD,
         example_data.MacPro.MacPro41_51__Flashed_Modern_AMD,
+    ]
+
+    valid_dumps_native = [
+        example_data.iMac.iMac201_Stock,
     ]
 
     settings.validate = True

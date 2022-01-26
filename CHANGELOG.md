@@ -6,6 +6,7 @@
 - Resolve Macmini4,1 HDEF pathing
 - Increment Binaries:
   - FeatureUnlock 1.0.6 - rolling (d98a31f)
+- Resolve SIP and SecureBootModel not disabling by default on some non-Metal Mac Pros
 
 ## 0.4.1
 - Add XHCI Boot Support to pre-UEFI 2.0 Macs
@@ -19,7 +20,7 @@
 - Resolves `installer` failing to extract InstallAssistant in older OSes
 - Resolves certain Samsung NVMe drives appearing as external on Mac Pros
 - Add FeatureUnlock configurability 
-- Add NVRAM WriteFlash configurability for degarded/fragile systems
+- Add NVRAM WriteFlash configurability for degraded/fragile systems
 - Add `ThirdPartyDrives` quirk configurability
 - Resolve Skylight dylib injection issue
 - Increment Binaries:

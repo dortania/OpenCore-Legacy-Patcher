@@ -48,6 +48,33 @@ class MacBookPro:
         opencore_version=None,
     )
 
+    MacBookPro111_Stock = device_probe.Computer(
+        real_model='MacBookPro11,1', 
+        real_board_id='Mac-189A3D4F975D5FFC', 
+        reported_model='MacBookPro11,1', 
+        reported_board_id='Mac-189A3D4F975D5FFC', 
+        gpus=[
+            device_probe.Intel(vendor_id=32902, device_id=2606, class_code=196608, name='IGPU', model='Intel Iris', acpi_path='IOACPIPlane:/_SB/PCI0@0/IGPU@20000', pci_path='PciRoot(0x0)/Pci(0x2,0x0)')
+        ], 
+        igpu=device_probe.Intel(vendor_id=32902, device_id=2606, class_code=196608, name='IGPU', model='Intel Iris', acpi_path='IOACPIPlane:/_SB/PCI0@0/IGPU@20000', pci_path='PciRoot(0x0)/Pci(0x2,0x0)'), 
+        dgpu=None, 
+        storage=[
+            device_probe.SATAController(vendor_id=6987, device_id=37251, class_code=67073, name='SSD0', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/RP06@1c0005/SSD0@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x5)/Pci(0x0,0x0)')
+        ], 
+        usb_controllers=[
+            device_probe.XHCIController(vendor_id=32902, device_id=39985, class_code=787248, name='XHC1', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/XHC1@140000', pci_path='PciRoot(0x0)/Pci(0x14,0x0)')
+        ], 
+        wifi=device_probe.Broadcom(vendor_id=5348, device_id=17312, class_code=163840, name='ARPT', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/RP03@1c0002/ARPT@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x2)/Pci(0x0,0x0)'), 
+        cpu=device_probe.CPU(
+            name='Intel(R) Core(TM) i5-4258U CPU @ 2.40GHz', 
+            flags=['FPU', 'VME', 'DE', 'PSE', 'TSC', 'MSR', 'PAE', 'MCE', 'CX8', 'APIC', 'SEP', 'MTRR', 'PGE', 'MCA', 'CMOV', 'PAT', 'PSE36', 'CLFSH', 'DS', 'ACPI', 'MMX', 'FXSR', 'SSE', 'SSE2', 'SS', 'HTT', 'TM', 'PBE', 'SSE3', 'PCLMULQDQ', 'DTES64', 'MON', 'DSCPL', 'VMX', 'EST', 'TM2', 'SSSE3', 'FMA', 'CX16', 'TPR', 'PDCM', 'SSE4.1', 'SSE4.2', 'x2APIC', 'MOVBE', 'POPCNT', 'AES', 'PCID', 'XSAVE', 'OSXSAVE', 'SEGLIM64', 'TSCTMR', 'AVX1.0', 'RDRAND', 'F16C']
+        ), 
+        oclp_version='0.4.2', 
+        opencore_version='DBG-077-2022-01-10', 
+        bluetooth_chipset='BRCM20702 Hub', 
+        third_party_sata_ssd=False
+    )
+
     MacBookPro171_Stock = device_probe.Computer(
         # Run under Rosetta
         real_model="MacBookPro17,1",
@@ -210,7 +237,8 @@ class iMac:
     iMac151_Stock = device_probe.Computer(
         real_model='iMac15,1', 
         real_board_id='Mac-42FD25EABCABB274', 
-        reported_model='iMac15,1', reported_board_id='Mac-42FD25EABCABB274', 
+        reported_model='iMac15,1', 
+        reported_board_id='Mac-42FD25EABCABB274', 
         gpus=[
             device_probe.Intel(vendor_id=32902, device_id=1042, class_code=196608, name='IGPU', model='Intel Iris Pro', acpi_path=None, pci_path='PciRoot(0x0)/Pci(0x2,0x0)'), 
             device_probe.AMD(vendor_id=4098, device_id=26640, class_code=196608, name='GFX0', model='AMD Radeon R9 M290X', acpi_path=None, pci_path='PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)')
@@ -229,6 +257,33 @@ class iMac:
         oclp_version=None, 
         opencore_version=None, 
         bluetooth_chipset='BRCM20702 Hub', 
+        third_party_sata_ssd=False
+    )
+
+    iMac201_Stock = device_probe.Computer(
+        real_model='iMac20,1', 
+        real_board_id='Mac-CFF7D910A743CAAF', 
+        reported_model='iMac20,1', 
+        reported_board_id='Mac-CFF7D910A743CAAF', 
+        gpus=[
+            device_probe.Intel(vendor_id=32902, device_id=39880, class_code=196608, name='IGPU', model='Intel HD Graphics CFL', acpi_path='IOACPIPlane:/_SB/PCI0@0/IGPU@20000', pci_path='PciRoot(0x0)/Pci(0x2,0x0)'), 
+            device_probe.AMD(vendor_id=4098, device_id=29504, class_code=196608, name='GFX0', model='AMD Radeon Pro 5300', acpi_path='IOACPIPlane:/_SB/PCI0@0/PEG0@10000/EGP0@0/EGP1@0/GFX0@0', pci_path='PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)')
+        ], 
+        igpu=device_probe.Intel(vendor_id=32902, device_id=39880, class_code=196608, name='IGPU', model='Intel HD Graphics CFL', acpi_path='IOACPIPlane:/_SB/PCI0@0/IGPU@20000', pci_path='PciRoot(0x0)/Pci(0x2,0x0)'), 
+        dgpu=device_probe.AMD(vendor_id=4098, device_id=29504, class_code=196608, name='GFX0', model='AMD Radeon Pro 5300', acpi_path='IOACPIPlane:/_SB/PCI0@0/PEG0@10000/EGP0@0/EGP1@0/GFX0@0', pci_path='PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)'), 
+        storage=[], 
+        usb_controllers=[
+            device_probe.XHCIController(vendor_id=32902, device_id=1773, class_code=787248, name='XHC1', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/XHC1@140000', pci_path='PciRoot(0x0)/Pci(0x14,0x0)'), 
+            device_probe.XHCIController(vendor_id=32902, device_id=5612, class_code=787248, name='XHC2', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/RP05@1c0004/UPSB@0/DSB2@20000/XHC2@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x4)/Pci(0x0,0x0)/Pci(0x2,0x0)/Pci(0x0,0x0)')
+        ], 
+        wifi=device_probe.Broadcom(vendor_id=5348, device_id=17508, class_code=163840, name='ARPT', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/RP01@1c0000/ARPT@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)'), 
+        cpu=device_probe.CPU(
+            name='Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz', 
+            flags=['FPU', 'VME', 'DE', 'PSE', 'TSC', 'MSR', 'PAE', 'MCE', 'CX8', 'APIC', 'SEP', 'MTRR', 'PGE', 'MCA', 'CMOV', 'PAT', 'PSE36', 'CLFSH', 'DS', 'ACPI', 'MMX', 'FXSR', 'SSE', 'SSE2', 'SS', 'HTT', 'TM', 'PBE', 'SSE3', 'PCLMULQDQ', 'DTES64', 'MON', 'DSCPL', 'VMX', 'SMX', 'EST', 'TM2', 'SSSE3', 'FMA', 'CX16', 'TPR', 'PDCM', 'SSE4.1', 'SSE4.2', 'x2APIC', 'MOVBE', 'POPCNT', 'AES', 'PCID', 'XSAVE', 'OSXSAVE', 'SEGLIM64', 'TSCTMR', 'AVX1.0', 'RDRAND', 'F16C']
+        ), 
+        oclp_version=None, 
+        opencore_version=None, 
+        bluetooth_chipset=None, 
         third_party_sata_ssd=False
     )
 
