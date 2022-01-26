@@ -7,6 +7,7 @@
 - Increment Binaries:
   - FeatureUnlock 1.0.6 - rolling (d98a31f)
 - Resolve SIP and SecureBootModel not disabling by default on some non-Metal Mac Pros
+- Add Content Caching support configurability
 
 ## 0.4.1
 - Add XHCI Boot Support to pre-UEFI 2.0 Macs

@@ -965,6 +965,26 @@ Supported Options:
         else:
             print("Invalid input, returning to previous menu")
             self.set_nvram_write()
+    
+    def set_cc_support(self):
+        utilities.cls()
+        utilities.header(["Set Content Caching Support"])
+        print(
+            """
+On systems spoofing via VMM, Content Caching is disabled by
+default by Apple. This option allows you to mask VMM from
+AssetCache.
+            """
+        )
+        change_menu = input("Set Content Caching Support (y/n/q): ")
+        if change_menu in ["y", "Y", "yes", "Yes"]:
+            self.constants.set_content_caching = True
+        elif change_menu in ["n", "N", "no", "No"]:
+            self.constants.set_content_caching = False
+        elif change_menu in ["q", "Q", "Quit", "quit"]:
+            print("Returning to previous menu")
+        else:
+            self.set_cc_support()
 
     def credits(self):
         utilities.TUIOnlyPrint(
@@ -1192,6 +1212,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Set 3rd Party SSD Support:\tCurrently {self.constants.allow_3rd_party_drives}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_3rd_party_drices],
                 [f"Set FeatureUnlock: \tCurrently {self.constants.fu_status}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_fu_settings],
                 [f"Set NVRAM Write:\t\tCurrently {self.constants.nvram_write}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_nvram_write],
+                [f"Set Content Caching:\tCurrently {self.constants.set_content_caching}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_cc_support],
             ]
 
             for option in options:

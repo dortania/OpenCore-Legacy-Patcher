@@ -1887,6 +1887,14 @@ class wx_python_gui:
             print("Wake on WLAN Disabled")
             self.constants.enable_wake_on_wlan = False
     
+    def content_caching_click(self, event=None):
+        if self.content_caching_checkbox.GetValue():
+            print("Content Caching Enabled")
+            self.constants.set_content_caching = True
+        else:
+            print("Content Caching Disabled")
+            self.constants.set_content_caching = False
+    
     def disable_tb_click(self, event=None):
         if self.disable_thunderbolt_checkbox.GetValue():
             print("Disable Thunderbolt Enabled")
@@ -2380,12 +2388,19 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.wake_on_wlan_checkbox.SetPosition(wx.Point(self.xhci_boot_checkbox.GetPosition().x, self.xhci_boot_checkbox.GetPosition().y + self.xhci_boot_checkbox.GetSize().height))
         self.wake_on_wlan_checkbox.SetToolTip(wx.ToolTip("Enables Wake on WLAN for Broadcom Wifi.\nBy default, Wake on WLAN is disabled to work around Apple's wake from sleep bug causing heavily degraded networking performance.\nNote: This option is only applicable for BCM943224, BCM94331, BCM94360 and BCM943602 chipsets"))
 
+        # Content Caching
+        self.content_caching_checkbox = wx.CheckBox(self.frame, label="Content Caching")
+        self.content_caching_checkbox.SetValue(self.constants.set_content_caching)
+        self.content_caching_checkbox.Bind(wx.EVT_CHECKBOX, self.content_caching_click)
+        self.content_caching_checkbox.SetPosition(wx.Point(self.wake_on_wlan_checkbox.GetPosition().x, self.wake_on_wlan_checkbox.GetPosition().y + self.wake_on_wlan_checkbox.GetSize().height))
+        self.content_caching_checkbox.SetToolTip(wx.ToolTip("Enables content caching support in macOS"))
+
         # Button: return to main menu
         self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.SetPosition(wx.Point(
-            self.wake_on_wlan_checkbox.GetPosition().x,
-            self.wake_on_wlan_checkbox.GetPosition().y + self.wake_on_wlan_checkbox.GetSize().height + 10))
+            self.content_caching_checkbox.GetPosition().x,
+            self.content_caching_checkbox.GetPosition().y + self.content_caching_checkbox.GetSize().height + 10))
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         # set frame size below return to main menu button
