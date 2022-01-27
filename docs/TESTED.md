@@ -100,6 +100,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | iMac14,2 | ^^ | OKonnel | - Stock Model<br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | mibaxx | - Stock Model<br/>- Patcher version 0.0.21 |
 | iMac14,3 | No reports | N/A | N/A |
+| iMac15,1 | YES | JakubMazur | - Upgraded RAM<br/>- Upgraded Graphics (AMD Radeon R9 M295X 4 GB)<br/>- Upgraded CPU (4 GHz Quad-Core Intel Core i7)<br/>- Patcher version 0.4.1 |
 
 ### Mac Pro
 
