@@ -44,6 +44,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro7,1 | ^^ | fussel132 | - Stock model <br/>-Patcher version v0.1.2 |
 | ^^ | ^^ | casey1234 | - SSD Upgrade <br/>- Patcher version 0.3.3 |
 | MacBookPro8,1 | ^^ | AvaQueen | - Stock model <br/>- Patcher version 0.0.19 |
+| MacBookPro8,1 | yes | charly-black | - Upgraded BCM94331PCIEBT4CAX <br/>- Patcher version 0.3.1 |
 | MacBookPro8,2 | ^^ | air.man | - Stock model, dGPU disabled <br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro8,3 | ^^ | lulujyc | - Stock model, dGPU disabled <br/>- Patcher version 0.1.4 |
@@ -70,7 +71,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | Macmini3,1 | No reports | N/A | N/A |
 | Macmini4,1 | ^^ | ^^ | ^^ |
 | Macmini5,1 | ^^ | ^^ | ^^ |
-| Macmini5,2 | ^^ | ^^ | ^^ |
+| Macmini5,2 | yes | charly-black | Dual Core 2.7GHz with AMD HD6630M | Patcher Version 0.3.1
 | Macmini5,3 | ^^ | ^^ | ^^ |
 | Macmini6,1 | <span style="color:#30BCD5"> YES </span> | cicofz | - Stock model <br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | Stig124 | - Stock model <br/>- Patcher version 0.0.19 |
