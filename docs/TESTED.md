@@ -19,10 +19,10 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | SMBIOS | Tested | Tester | Comment |
 | :--- | :--- | :--- | :--- |
 | MacBookAir2,1 | No reports | N/A | N/A |
-| MacBookAir3,1 | ^^ | ^^ | ^^ |
+| MacBookAir3,1 | <span style="color:#30BCD5"> YES </span> | uvesten | - Stock Model<br/>- Patcher version 0.3.3 |
 | MacBookAir3,2 | <span style="color:#30BCD5"> YES </span> | houser42 | - Stock model <br/>- Patcher version unknown |
 | MacBookAir4,1 | No reports | N/A | N/A |
-| MacBookAir4,2 | ^^ | ^^ | ^^ |
+| MacBookAir4,2 | <span style="color:#30BCD5"> YES </span> | bdwilson1907 | - Stock Model <br/>- Patcher version 0.3.1 <br/>- Intermittent keyboard backlight|
 | MacBookAir5,1 | <span style="color:#30BCD5"> YES </span> | Ausdauersportler | - Stock Model<br/>- Patcher version 0.0.9 |
 | ^^ | ^^ | webg3 | Stock Model |
 | MacBookAir5,2 | ^^ | Bab-droid | - Stock Model<br/>- Patcher version 0.0.19 |
@@ -42,7 +42,9 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro6,1 | ^^ | ^^ | ^^ |
 | MacBookPro6,2 | <span style="color:#30BCD5"> YES </span> | Jakeluke | - Stock model, dGPU broken <br/>- Patcher version unknown |
 | MacBookPro7,1 | ^^ | fussel132 | - Stock model <br/>-Patcher version v0.1.2 |
+| ^^ | ^^ | casey1234 | - SSD Upgrade <br/>- Patcher version 0.3.3 |
 | MacBookPro8,1 | ^^ | AvaQueen | - Stock model <br/>- Patcher version 0.0.19 |
+| MacBookPro8,1 | yes | charly-black | - Upgraded BCM94331PCIEBT4CAX <br/>- Patcher version 0.3.1 |
 | MacBookPro8,2 | ^^ | air.man | - Stock model, dGPU disabled <br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | cboukouv | - Stock model <br/>- Patcher version 0.0.19 |
 | MacBookPro8,3 | ^^ | lulujyc | - Stock model, dGPU disabled <br/>- Patcher version 0.1.4 |
@@ -56,9 +58,11 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | woefi | - BCM94331CAX upgrade<br/>- Patcher version 0.0.13 |
 | ^^ | ^^ | whgmkeller | - Stock model<br/>- Patcher version 0.0.11 |
 | ^^ | ^^ | vinaypundith | - Patcher version 0.0.7 |
+| ^^ | ^^ | casey1234 | - RAM and SSD Upgrade <br/>- Patcher version 0.3.3 |
 | MacBookPro10,1 | ^^ | traviswparker | - Stock model <br/>- Patcher version 0.0.14 |
 | ^^ | ^^ | il-rollino | - Upgraded BCM94360CSAX <br/>- Patcher version 0.0.21 |
 | MacBookPro10,2 | ^^ | akidone | - Upgraded BCM94360CSAX <br/>- Patcher version 0.3.0 |
+| MacBookPro11,2 | ^^ | casey1234 | - Stock model<br/>- Patcher version 0.3.3 |
 
 ### Mac mini
 
@@ -67,7 +71,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | Macmini3,1 | No reports | N/A | N/A |
 | Macmini4,1 | ^^ | ^^ | ^^ |
 | Macmini5,1 | ^^ | ^^ | ^^ |
-| Macmini5,2 | ^^ | ^^ | ^^ |
+| Macmini5,2 | yes | charly-black | Dual Core 2.7GHz with AMD HD6630M | Patcher Version 0.3.1
 | Macmini5,3 | ^^ | ^^ | ^^ |
 | Macmini6,1 | <span style="color:#30BCD5"> YES </span> | cicofz | - Stock model <br/>- Patcher version 0.0.21 |
 | ^^ | ^^ | Stig124 | - Stock model <br/>- Patcher version 0.0.19 |
@@ -100,6 +104,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | iMac14,2 | ^^ | OKonnel | - Stock Model<br/>- Patcher version 0.0.22 |
 | ^^ | ^^ | mibaxx | - Stock Model<br/>- Patcher version 0.0.21 |
 | iMac14,3 | No reports | N/A | N/A |
+| iMac15,1 | YES | JakubMazur | - Upgraded RAM<br/>- Upgraded Graphics (AMD Radeon R9 M295X 4 GB)<br/>- Upgraded CPU (4 GHz Quad-Core Intel Core i7)<br/>- Patcher version 0.4.1 |
 
 ### Mac Pro
 
