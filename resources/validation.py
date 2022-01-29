@@ -27,6 +27,7 @@ def validate(settings):
 
     valid_dumps_native = [
         example_data.iMac.iMac201_Stock,
+        example_data.MacBookPro.MacBookPro141_SSD_Upgrade,
     ]
 
     settings.validate = True

@@ -75,6 +75,32 @@ class MacBookPro:
         third_party_sata_ssd=False
     )
 
+    MacBookPro141_SSD_Upgrade = device_probe.Computer(
+        real_model='MacBookPro14,1', 
+        real_board_id='Mac-B4831CEBD52A0C4C', 
+        reported_model='MacBookPro14,1', 
+        reported_board_id='Mac-B4831CEBD52A0C4C', 
+        gpus=[
+            device_probe.Intel(vendor_id=32902, device_id=22822, class_code=196608, name='IGPU', model='Intel Iris Plus Graphics 640', acpi_path='IOACPIPlane:/_SB/PCI0@0/IGPU@20000', pci_path='PciRoot(0x0)/Pci(0x2,0x0)')
+        ], 
+        igpu=device_probe.Intel(vendor_id=32902, device_id=22822, class_code=196608, name='IGPU', model='Intel Iris Plus Graphics 640', acpi_path='IOACPIPlane:/_SB/PCI0@0/IGPU@20000', pci_path='PciRoot(0x0)/Pci(0x2,0x0)'), 
+        dgpu=None, 
+        storage=[
+            device_probe.NVMeController(vendor_id=6535, device_id=20499, class_code=67586, name='SSD0', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/RP01@1c0000/SSD0@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)', aspm=2)
+        ], 
+        usb_controllers=[
+            device_probe.XHCIController(vendor_id=32902, device_id=40239, class_code=787248, name='XHC1', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/XHC1@140000', pci_path='PciRoot(0x0)/Pci(0x14,0x0)'), 
+            device_probe.XHCIController(vendor_id=32902, device_id=5588, class_code=787248, name='XHC2', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/RP05@1c0004/UPSB@0/DSB2@20000/XHC2@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x4)/Pci(0x0,0x0)/Pci(0x2,0x0)/Pci(0x0,0x0)')
+        ], 
+        wifi=device_probe.Broadcom(vendor_id=5348, device_id=17315, class_code=163840, name='ARPT', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/RP09@1d0000/ARPT@0', pci_path='PciRoot(0x0)/Pci(0x1d,0x0)/Pci(0x0,0x0)'), 
+        cpu=device_probe.CPU(
+            name='Intel(R) Core(TM) i5-7360U CPU @ 2.30GHz', 
+            flags=['FPU', 'VME', 'DE', 'PSE', 'TSC', 'MSR', 'PAE', 'MCE', 'CX8', 'APIC', 'SEP', 'MTRR', 'PGE', 'MCA', 'CMOV', 'PAT', 'PSE36', 'CLFSH', 'DS', 'ACPI', 'MMX', 'FXSR', 'SSE', 'SSE2', 'SS', 'HTT', 'TM', 'PBE', 'SSE3', 'PCLMULQDQ', 'DTES64', 'MON', 'DSCPL', 'VMX', 'SMX', 'EST', 'TM2', 'SSSE3', 'FMA', 'CX16', 'TPR', 'PDCM', 'SSE4.1', 'SSE4.2', 'x2APIC', 'MOVBE', 'POPCNT', 'AES', 'PCID', 'XSAVE', 'OSXSAVE', 'SEGLIM64', 'TSCTMR', 'AVX1.0', 'RDRAND', 'F16C']
+        ), oclp_version='0.4.1', 
+        opencore_version=None, 
+        bluetooth_chipset=None, 
+        third_party_sata_ssd=False)
+
     MacBookPro171_Stock = device_probe.Computer(
         # Run under Rosetta
         real_model="MacBookPro17,1",
