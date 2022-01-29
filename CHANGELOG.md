@@ -9,6 +9,8 @@
   - FeatureUnlock 1.0.6 - rolling (d98a31f)
 - Resolve SIP and SecureBootModel not disabling by default on some non-Metal Mac Pros
 - Add Content Caching support configurability
+- Limit SurPlus patchset to 20.4.0 - 21.1.0
+  - No longer required for macOS 12.1 and newer
 
 ## 0.4.1
 - Add XHCI Boot Support to pre-UEFI 2.0 Macs
