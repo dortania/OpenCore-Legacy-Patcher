@@ -36,6 +36,10 @@ For many users, SIP will be enabled by default on build. For Intel HD 4000 users
 
 Note: Machines with non-Metal GPUs cannot enable SIP in Big Sur either due to patched root volume
 
+| SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
+| :--- | :--- | :--- |
+| ![](../images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](../images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](../images/OCLP-GUI-Settings-SIP-Disabled.png) |
+
 ::: warning 
 
 If you're unsure whether you should enable SIP, leave as-is. Systems where you have already ran the Post Install Root Patching cannot enable SIP without potentially breaking the current install. 

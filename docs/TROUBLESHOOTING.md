@@ -15,6 +15,7 @@ Here are some common errors users may experience while using this patcher:
 * [Black Screen on MacBookPro11,3 in macOS Monterey](#black-screen-on-macbookpro113-in-macos-monterey)
 * [No DisplayPort Output on Mac Pros with Nvidia Kepler](#no-displayport-output-on-mac-pros-with-nvidia-kepler)
 * [Volume Hash Mismatch Error in macOS Monterey](#volume-hash-mismatch-error-in-macos-monterey)
+* [Cannot Disable SIP in recoveryOS](#cannot-disable-sip-in-recoveryos)
 
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
@@ -113,3 +114,13 @@ What this error signifies is that the OS detects the boot volume's hash does not
 * Note that this bug affects native Macs as well and is not due to issues with unsupported Macs: [OSX Daily: “Volume Hash Mismatch” Error in MacOS Monterey](https://osxdaily.com/2021/11/10/volume-hash-mismatch-error-in-macos-monterey/)
 
 Additionally it can help to disable FeatureUnlock in Settings -> Misc Settings as this tool can be strenuous on systems with weaker memory stability.
+
+## Cannot Disable SIP in recoveryOS
+
+With OCLP, the patcher will always overwrite the current SIP value on boot to ensure that users don't brick an installation after NVRAM reset. However for users wanting to disable SIP entirely, this can be done easily.
+
+Head into the GUI, Patcher Settings and toggle the bits you need disabled from SIP:
+
+| SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
+| :--- | :--- | :--- |
+| ![](../images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](../images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](../images/OCLP-GUI-Settings-SIP-Disabled.png) |
