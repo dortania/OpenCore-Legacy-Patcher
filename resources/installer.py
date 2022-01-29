@@ -106,7 +106,7 @@ def install_macOS_installer(download_path):
         return False
 
 def list_downloadable_macOS_installers(download_path, catalog):
-    avalible_apps = {}
+    available_apps = {}
     if catalog == "DeveloperSeed":
         link = "https://swscan.apple.com/content/catalogs/others/index-12seed-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
     elif catalog == "PublicSeed":
@@ -151,7 +151,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
                                 size = ia_package["Size"]
                                 integrity = ia_package["IntegrityDataURL"]
 
-                        avalible_apps.update({
+                        available_apps.update({
                             item: {
                                 "Version": version,
                                 "Build": build,
@@ -164,7 +164,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
                         })
             except KeyError:
                 pass
-    return avalible_apps
+    return available_apps
 
 def format_drive(disk_id):
     # Formats a disk for macOS install

@@ -1280,16 +1280,16 @@ B. Exit
             options = []
             title = ["Select the macOS Installer you wish to download"]
             menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
-            avalible_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "DeveloperSeed")
-            if avalible_installers:
+            available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "DeveloperSeed")
+            if available_installers:
                 # Add mirror of 11.2.3 for users who want it
                 options.append([f"macOS {mirror_data.Install_macOS_Big_Sur_11_2_3['Version']} ({mirror_data.Install_macOS_Big_Sur_11_2_3['Build']} - {utilities.human_fmt(mirror_data.Install_macOS_Big_Sur_11_2_3['Size'])} - {mirror_data.Install_macOS_Big_Sur_11_2_3['Source']})", lambda: self.download_install_assistant(mirror_data.Install_macOS_Big_Sur_11_2_3['Link'])])
-                for app in avalible_installers:
-                    if avalible_installers[app]['Variant'] in ["DeveloperSeed", "PublicSeed"]:
+                for app in available_installers:
+                    if available_installers[app]['Variant'] in ["DeveloperSeed", "PublicSeed"]:
                         variant = " Beta"
                     else:
                         variant = ""
-                    options.append([f"macOS {avalible_installers[app]['Version']}{variant} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']})", lambda x=app: self.download_install_assistant(avalible_installers[x]['Link'])])
+                    options.append([f"macOS {available_installers[app]['Version']}{variant} ({available_installers[app]['Build']} - {utilities.human_fmt(available_installers[app]['Size'])} - {available_installers[app]['Source']})", lambda x=app: self.download_install_assistant(available_installers[x]['Link'])])
                 for option in options:
                     menu.add_menu_option(option[0], function=option[1])
             response = menu.start()
@@ -1300,10 +1300,10 @@ B. Exit
             options = []
             title = ["Select the macOS Installer you wish to use"]
             menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
-            avalible_installers = installer.list_local_macOS_installers()
-            if avalible_installers:
-                for app in avalible_installers:
-                    options.append([f"{avalible_installers[app]['Short Name']}: {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']})", lambda x=app: self.list_disks(avalible_installers[x]['Path'])])
+            available_installers = installer.list_local_macOS_installers()
+            if available_installers:
+                for app in available_installers:
+                    options.append([f"{available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})", lambda x=app: self.list_disks(available_installers[x]['Path'])])
                 for option in options:
                     menu.add_menu_option(option[0], function=option[1])
             response = menu.start()

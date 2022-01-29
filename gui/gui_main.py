@@ -1036,7 +1036,7 @@ class wx_python_gui:
         self.frame.Show()
 
         # Download installer catalog
-        avalible_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "PublicSeed")
+        available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "PublicSeed")
 
         self.frame.DestroyChildren()
         sys.stdout = self.stock_stdout
@@ -1060,17 +1060,17 @@ class wx_python_gui:
 
         # Sort Installers by 'Version'
         # By default Apple adds new builds to the end of the list, so we need to sort them by version
-        avalible_installers = {k: v for k, v in sorted(avalible_installers.items(), key=lambda x: x[1]['Version'])}
+        available_installers = {k: v for k, v in sorted(available_installers.items(), key=lambda x: x[1]['Version'])}
 
         i = -20
-        if avalible_installers:
-            for app in avalible_installers:
-                print(f"macOS {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])} - {avalible_installers[app]['Source']}) - {avalible_installers[app]['Variant']}")
-                if avalible_installers[app]['Variant'] in ["DeveloperSeed" , "PublicSeed"]:
+        if available_installers:
+            for app in available_installers:
+                print(f"macOS {available_installers[app]['Version']} ({available_installers[app]['Build']} - {utilities.human_fmt(available_installers[app]['Size'])} - {available_installers[app]['Source']}) - {available_installers[app]['Variant']}")
+                if available_installers[app]['Variant'] in ["DeveloperSeed" , "PublicSeed"]:
                     extra = " Beta"
                 else:
                     extra = ""
-                self.install_selection = wx.Button(self.frame, label=f"macOS {avalible_installers[app]['Version']}{extra} ({avalible_installers[app]['Build']} - {utilities.human_fmt(avalible_installers[app]['Size'])})", size=(280, 30))
+                self.install_selection = wx.Button(self.frame, label=f"macOS {available_installers[app]['Version']}{extra} ({available_installers[app]['Build']} - {utilities.human_fmt(available_installers[app]['Size'])})", size=(280, 30))
                 i = i + 25
                 self.install_selection.SetPosition(
                     wx.Point(
@@ -1078,7 +1078,7 @@ class wx_python_gui:
                         self.subheader.GetPosition().y + self.subheader.GetSize().height + i
                     )
                 )
-                self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.download_macos_click(f"macOS {avalible_installers[temp]['Version']} ({avalible_installers[temp]['Build']})", avalible_installers[temp]['Link']))
+                self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.download_macos_click(f"macOS {available_installers[temp]['Version']} ({available_installers[temp]['Build']})", available_installers[temp]['Link']))
                 self.install_selection.Centre(wx.HORIZONTAL)
         else:
             self.install_selection = wx.StaticText(self.frame, label="No installers available")
@@ -1182,12 +1182,12 @@ class wx_python_gui:
         self.subheader.Centre(wx.HORIZONTAL)
 
         i = -7
-        avalible_installers = installer.list_local_macOS_installers()
-        if avalible_installers:
+        available_installers = installer.list_local_macOS_installers()
+        if available_installers:
             print("Installer found")
-            for app in avalible_installers:
-                print(f"{avalible_installers[app]['Short Name']}: {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']})")
-                self.install_selection = wx.Button(self.frame, label=f"{avalible_installers[app]['Short Name']}: {avalible_installers[app]['Version']} ({avalible_installers[app]['Build']})", size=(300, 30))
+            for app in available_installers:
+                print(f"{available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})")
+                self.install_selection = wx.Button(self.frame, label=f"{available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})", size=(300, 30))
                 i = i + 25
                 self.install_selection.SetPosition(
                     wx.Point(
@@ -1195,7 +1195,7 @@ class wx_python_gui:
                         self.header.GetPosition().y + self.header.GetSize().height + i
                     )
                 )
-                self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.format_usb_menu(avalible_installers[temp]['Short Name'], avalible_installers[temp]['Path']))
+                self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.format_usb_menu(available_installers[temp]['Short Name'], available_installers[temp]['Path']))
                 self.install_selection.Centre(wx.HORIZONTAL)
         else:
             print("No installers found")
@@ -1738,7 +1738,7 @@ class wx_python_gui:
         self.set_terascale_accel_checkbox.SetPosition(wx.Point(
             self.disable_thunderbolt_checkbox.GetPosition().x,
             self.disable_thunderbolt_checkbox.GetPosition().y + self.disable_thunderbolt_checkbox.GetSize().height))
-        self.set_terascale_accel_checkbox.SetToolTip(wx.ToolTip("This option will determine whether TeraScale 2 acceleration is avalible during Root Volume patching.\nOnly applicable if your system has a AMD TeraScale 2 GPU (ie. MacBookPro8,2/3)"))
+        self.set_terascale_accel_checkbox.SetToolTip(wx.ToolTip("This option will determine whether TeraScale 2 acceleration is available during Root Volume patching.\nOnly applicable if your system has a AMD TeraScale 2 GPU (ie. MacBookPro8,2/3)"))
         if self.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"]:
             self.set_terascale_accel_checkbox.Disable()
 
