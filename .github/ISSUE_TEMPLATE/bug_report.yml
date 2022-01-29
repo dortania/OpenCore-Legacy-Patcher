@@ -125,8 +125,8 @@ body:
   - type: dropdown
     id: used-forums
     attributes:
-      label: Have you already discussed this is a pather bug and not a macOS bug on forums and discord servers?
-      description: If no, please do not use issues for this. We'd appreciate it if users check with forums before filing. Issues are for legitimate patcher issues only.
+      label: Have you already verified this is a patcher bug and not a macOS bug on our discord servers?
+      description: If no, please do not use issues for this. We'd appreciate it if users check discuss with others before filing. Issues are for valid patcher issues only, not for personal troubleshooting scessions.
       multiple: true
       options:
         - 'true'
@@ -183,4 +183,4 @@ body:
   - type: textarea
     id: extra-info
     attributes:
-      label: Any Additional Information
+      label: What steps have you taken to troubleshoot this?
