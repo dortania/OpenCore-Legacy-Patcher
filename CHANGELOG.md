@@ -6,11 +6,14 @@
 - Resolve showing unsupported installers in Creation menu
 - Resolve Macmini4,1 HDEF pathing
 - Increment Binaries:
-  - FeatureUnlock 1.0.6 - rolling (d98a31f)
+  - FeatureUnlock 1.0.6 - rolling (d296645)
 - Resolve SIP and SecureBootModel not disabling by default on some non-Metal Mac Pros
 - Add Content Caching support configurability
 - Limit SurPlus patchset to 20.4.0 - 21.1.0
   - No longer required for macOS 12.1 and newer
+- Add Universal Control support for Monterey native Macs
+  - Applicable for Haswell/Broadwell
+  - Requires macOS 12.3 or newer
 
 ## 0.4.1
 - Add XHCI Boot Support to pre-UEFI 2.0 Macs
