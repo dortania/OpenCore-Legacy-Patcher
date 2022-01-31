@@ -14,6 +14,9 @@
 - Add Universal Control support for Monterey native Macs
   - Applicable for Haswell/Broadwell
   - Requires macOS 12.3 or newer
+- Fix Power Management Support in macOS 12.3 Beta 1
+  - Applicable for Sandy Bridge and older
+  - Enforces ACPI_SMC_PlatformPlugin matching
 
 ## 0.4.1
 - Add XHCI Boot Support to pre-UEFI 2.0 Macs

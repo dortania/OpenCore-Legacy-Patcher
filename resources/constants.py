@@ -68,6 +68,7 @@ class Constants:
         self.smcspoof_version = "1.0.0"  #           SMC-Spoof
         self.mce_version = "1.0.0"  #                AppleMCEReporterDisabler
         self.btspoof_version = "1.0.0"  #            Bluetooth-Spoof
+        self.aspp_override_version = "1.0.0"  #      ACPI_SMC_PlatformPlugin Override
 
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
@@ -340,6 +341,10 @@ class Constants:
     @property
     def btspoof_path(self):
         return self.payload_kexts_path / Path(f"Misc/Bluetooth-Spoof-v{self.btspoof_version}.zip")
+    
+    @property
+    def aspp_override_path(self):
+        return self.payload_kexts_path / Path(f"Misc/ASPP-Override-v{self.aspp_override_version}.zip")
 
     @property
     def nvmefix_path(self):
