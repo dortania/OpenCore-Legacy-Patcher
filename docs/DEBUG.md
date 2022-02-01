@@ -1,8 +1,6 @@
 # How to debug with OpenCore
 
-For those who've hit an odd bug and unsure if it's user error or patcher, the below will tell you how to get more verbose debug information as well as logs to help [file issues with us](https://github.com/dortania/OpenCore-Legacy-Patcher/issues)
-
-* For users who are less experienced, we recommend asking on the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN) for help.
+For those who've hit an odd bug and unsure if it's user error or patcher, we recommend asking on the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN) for help.
 
 ## Debugging yourself
 
