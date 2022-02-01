@@ -184,6 +184,7 @@ class Constants:
         self.disable_connectdrivers = False  # Disable ConnectDrivers (hibernation)
         self.allow_3rd_party_drives = True   # Allow ThridPartyDrives quirk
         self.set_content_caching = False  #    Set Content Caching
+        self.allow_nvme_fixing = True  #       Allow NVMe Kernel Space Patches
 
         self.legacy_accel_support = [
             os_data.os_data.mojave,

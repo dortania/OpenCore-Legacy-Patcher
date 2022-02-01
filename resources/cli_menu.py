@@ -467,6 +467,33 @@ OpenCore will enable NVMe support in it's picker
         else:
             self.allow_nvme()
     
+    def allow_nvme_pwr_mgmt(self):
+        utilities.cls()
+        utilities.header(["Allow NVMe Power Management Adjustments"])
+        print(
+            """
+For machines with upgraded NVMe drives, this
+option allows for better power management support
+within macOS.
+
+Note that some NVMe drives don't support macOS's
+power management settings, and can result in boot
+issues. Disable this option if you experience
+IONVMeFamily kernel panics. Mainly applicable for 
+Skylake and newer Macs.
+        """
+        )
+
+        change_menu = input("Enable NVMe Power Management?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.allow_nvme_fixing = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.allow_nvme_fixing = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.allow_nvme()
+    
     def allow_xhci(self):
         utilities.cls()
         utilities.header(["Allow NVMe UEFI Support"])
@@ -1174,9 +1201,10 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             title = ["Adjust Bootable Volume Settings"]
             menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
-                [f"Set FireWire Boot:\tCurrently {self.constants.firewire_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_firewire],
-                [f"Set NVMe Boot:\tCurrently {self.constants.nvme_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_nvme],
-                [f"Set XHCI Boot:\tCurrently {self.constants.xhci_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_xhci],
+                [f"Set FireWire Boot:\t\tCurrently {self.constants.firewire_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_firewire],
+                [f"Set XHCI Boot:\t\tCurrently {self.constants.xhci_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_xhci],
+                [f"Set NVMe Boot:\t\tCurrently {self.constants.nvme_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_nvme],
+                [f"Set NVMe Power Management:\tCurrently {self.constants.allow_nvme_fixing}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_nvme_pwr_mgmt],
             ]
 
             for option in options:

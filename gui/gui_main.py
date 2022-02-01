@@ -1871,6 +1871,14 @@ class wx_python_gui:
             print("NVMe Disabled")
             self.constants.nvme_boot = False
     
+    def nvme_power_management_click(self, event=None):
+        if self.nvme_power_management_checkbox.GetValue():
+            print("NVMe Power Management Enabled")
+            self.constants.allow_nvme_fixing = True
+        else:
+            print("NVMe Power Management Disabled")
+            self.constants.allow_nvme_fixing = False
+    
     def xhci_click(self, event=None):
         if self.xhci_boot_checkbox.GetValue():
             print("XHCI Enabled")
@@ -2366,26 +2374,33 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.firewire_boot_checkbox.SetToolTip(wx.ToolTip("Enable FireWire Boot support in macOS 10.15 and newer.\nMainly applicable for Macs with FireWire or Thunderbolt to FireWire adapters"))
         if generate_smbios.check_firewire(self.computer.real_model) is False and not self.constants.custom_model:
             self.firewire_boot_checkbox.Disable()
+        
+        # XHCI Boot
+        self.xhci_boot_checkbox = wx.CheckBox(self.frame, label="XHCI Boot")
+        self.xhci_boot_checkbox.SetValue(self.constants.xhci_boot)
+        self.xhci_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.xhci_click)
+        self.xhci_boot_checkbox.SetPosition(wx.Point(self.firewire_boot_checkbox.GetPosition().x, self.firewire_boot_checkbox.GetPosition().y + self.firewire_boot_checkbox.GetSize().height))
+        self.xhci_boot_checkbox.SetToolTip(wx.ToolTip("Enables XHCI/USB3.o support in UEFI for non-native systems (ie. pre-Ivy Bridge)\nRequires OpenCore to be stored on a natively bootable volume however"))
 
         # NVMe Boot
         self.nvme_boot_checkbox = wx.CheckBox(self.frame, label="NVMe Boot")
         self.nvme_boot_checkbox.SetValue(self.constants.nvme_boot)
         self.nvme_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.nvme_click)
-        self.nvme_boot_checkbox.SetPosition(wx.Point(self.firewire_boot_checkbox.GetPosition().x, self.firewire_boot_checkbox.GetPosition().y + self.firewire_boot_checkbox.GetSize().height))
+        self.nvme_boot_checkbox.SetPosition(wx.Point(self.xhci_boot_checkbox.GetPosition().x, self.xhci_boot_checkbox.GetPosition().y + self.xhci_boot_checkbox.GetSize().height))
         self.nvme_boot_checkbox.SetToolTip(wx.ToolTip("Enables NVMe support in UEFI for non-native systems (ie. MacPro3,1)\nRequires OpenCore to be stored on a natively bootable volume however"))
     
-        # XHCI Boot
-        self.xhci_boot_checkbox = wx.CheckBox(self.frame, label="XHCI Boot")
-        self.xhci_boot_checkbox.SetValue(self.constants.xhci_boot)
-        self.xhci_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.xhci_click)
-        self.xhci_boot_checkbox.SetPosition(wx.Point(self.nvme_boot_checkbox.GetPosition().x, self.nvme_boot_checkbox.GetPosition().y + self.nvme_boot_checkbox.GetSize().height))
-        self.xhci_boot_checkbox.SetToolTip(wx.ToolTip("Enables XHCI/USB3.o support in UEFI for non-native systems (ie. pre-Ivy Bridge)\nRequires OpenCore to be stored on a natively bootable volume however"))
+        # NVMe Power Management
+        self.nvme_power_management_checkbox = wx.CheckBox(self.frame, label="NVMe Power Management")
+        self.nvme_power_management_checkbox.SetValue(self.constants.allow_nvme_fixing)
+        self.nvme_power_management_checkbox.Bind(wx.EVT_CHECKBOX, self.nvme_power_management_click)
+        self.nvme_power_management_checkbox.SetPosition(wx.Point(self.nvme_boot_checkbox.GetPosition().x, self.nvme_boot_checkbox.GetPosition().y + self.nvme_boot_checkbox.GetSize().height))
+        self.nvme_power_management_checkbox.SetToolTip(wx.ToolTip("For machines with upgraded NVMe drives, this option allows for better power management support within macOS.\nNote that some NVMe drives don't support macOS's power management settings, and can result in boot issues. Disable this option if you experience IONVMeFamily kernel panics. Mainly applicable for Skylake and newer Macs."))
 
         # Wake on WLAN
         self.wake_on_wlan_checkbox = wx.CheckBox(self.frame, label="Wake on WLAN")
         self.wake_on_wlan_checkbox.SetValue(self.constants.enable_wake_on_wlan)
         self.wake_on_wlan_checkbox.Bind(wx.EVT_CHECKBOX, self.wake_on_wlan_click)
-        self.wake_on_wlan_checkbox.SetPosition(wx.Point(self.xhci_boot_checkbox.GetPosition().x, self.xhci_boot_checkbox.GetPosition().y + self.xhci_boot_checkbox.GetSize().height))
+        self.wake_on_wlan_checkbox.SetPosition(wx.Point(self.nvme_power_management_checkbox.GetPosition().x, self.nvme_power_management_checkbox.GetPosition().y + self.nvme_power_management_checkbox.GetSize().height))
         self.wake_on_wlan_checkbox.SetToolTip(wx.ToolTip("Enables Wake on WLAN for Broadcom Wifi.\nBy default, Wake on WLAN is disabled to work around Apple's wake from sleep bug causing heavily degraded networking performance.\nNote: This option is only applicable for BCM943224, BCM94331, BCM94360 and BCM943602 chipsets"))
 
         # Content Caching

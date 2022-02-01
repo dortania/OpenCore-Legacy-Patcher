@@ -227,7 +227,7 @@ class BuildOpenCore:
             if not self.computer.storage:
                 print("- No PCIe Storage Controllers found to fix")
 
-        if not self.constants.custom_model:
+        if not self.constants.custom_model and self.constants.allow_nvme_fixing is True:
             nvme_devices = [i for i in self.computer.storage if isinstance(i, device_probe.NVMeController)]
             for i, controller in enumerate(nvme_devices):
                 print(f"- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}")
@@ -245,11 +245,8 @@ class BuildOpenCore:
                         print("- Falling back to -nvmefaspm")
                         self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -nvmefaspm"
 
-                if (controller.vendor_id != 0x144D and controller.device_id != 0xA804 and self.model not in ["MacBookPro13,3", "MacBookPro14,3"]):
+                if (controller.vendor_id != 0x144D and controller.device_id != 0xA804):
                     # Avoid injecting NVMeFix when a native Apple NVMe drive is present
-                    # Note on 2016-2017 MacBook Pros, 15" devices used a stock Samsung SSD with IONVMeController
-                    # Technically this should be patched based on NVMeFix.kext logic, 
-                    # however Apple deemed the SSD unsupported for enhanced performance
                     # https://github.com/acidanthera/NVMeFix/blob/1.0.9/NVMeFix/NVMeFix.cpp#L220-L225
                     if self.get_kext_by_bundle_path("NVMeFix.kext")["Enabled"] is False:
                         self.enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)

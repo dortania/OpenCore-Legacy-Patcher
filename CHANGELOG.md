@@ -17,6 +17,8 @@
 - Fix Power Management Support in macOS 12.3 Beta 1
   - Applicable for Sandy Bridge and older
   - Enforces ACPI_SMC_PlatformPlugin matching
+- Add NVMe Enhanced Power Management configuration
+  - Disables NVMe adjustments on Skylake and newer Macs by default
 
 ## 0.4.1
 - Add XHCI Boot Support to pre-UEFI 2.0 Macs

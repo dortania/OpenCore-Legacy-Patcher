@@ -116,6 +116,15 @@ class generate_defaults:
                 settings.fu_arguments = " -disable_sidecar_mac"
             else:
                 settings.fu_arguments = None
+            if smbios_data.smbios_dictionary[model]["CPU Generation"] >= cpu_data.cpu_data.skylake.value:
+                # On 2016-2017 MacBook Pros, 15" devices used a stock Samsung SSD with IONVMeController
+                # Technically this should be patched based on NVMeFix.kext logic, 
+                # however Apple deemed the SSD unsupported for enhanced performance
+                # In addition, some upgraded NVMe drives still have issues with enhanced power management
+                # Safest to disable by default, allow user to configure afterwards
+                settings.allow_nvme_fixing = False
+            else:
+                settings.allow_nvme_fixing = True
         except KeyError:
             pass
 
