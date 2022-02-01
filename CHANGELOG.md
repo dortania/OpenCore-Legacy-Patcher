@@ -7,6 +7,7 @@
 - Resolve Macmini4,1 HDEF pathing
 - Increment Binaries:
   - FeatureUnlock 1.0.6 - rolling (d296645)
+  - PatcherSupportPkg 0.3.0
 - Resolve SIP and SecureBootModel not disabling by default on some non-Metal Mac Pros
 - Add Content Caching support configurability
 - Limit SurPlus patchset to 20.4.0 - 21.1.0
