@@ -212,9 +212,9 @@ class PatchSysVolume:
                 print("- Failed to revert snapshot via bless, falling back on manual restoration")
                 self.manual_root_patch_revert()
             else:
-                if (Path(self.mount_application_support) / Path("/Library/Application Support/SkylightPlugins")).exists():
+                if (Path(self.mount_application_support) / Path("SkyLightPlugins")).exists():
                     print("- Found SkylightPlugins folder, removing")
-                    utilities.process_status(utilities.elevated(["rm", "-rf", "/Library/Application Support/SkylightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                    utilities.process_status(utilities.elevated(["rm", "-rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
                 print("- Unpatching complete")
                 print("\nPlease reboot the machine for patches to take effect")
         else:

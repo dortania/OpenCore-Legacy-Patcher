@@ -20,6 +20,7 @@
   - Enforces ACPI_SMC_PlatformPlugin matching
 - Add NVMe Enhanced Power Management configuration
   - Disables NVMe adjustments on Skylake and newer Macs by default
+- Resolve Catalyst Scrolling on non-Metal GPUs
 
 ## 0.4.1
 - Add XHCI Boot Support to pre-UEFI 2.0 Macs
