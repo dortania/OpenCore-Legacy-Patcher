@@ -176,7 +176,7 @@ class detect_root_patch:
             "Validation: AMFI is enabled": self.amfi_enabled if self.amfi_must_disable else False,
             "Validation: FileVault is enabled": self.fv_enabled,
             "Validation: System is dosdude1 patched": self.dosdude_patched,
-            "Validation: Board ID is unsupported": self.bad_board_id,
+            f"Validation: Board ID is unsupported \n({self.computer.reported_board_id})": self.bad_board_id,
         }
         
         return self.root_patch_dict
