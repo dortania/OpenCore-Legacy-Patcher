@@ -101,7 +101,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 print("- Set Mojave/Catalina root patch configuration")
                 settings.moj_cat_accel = True
             print("- Set System Volume patching")
-            sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings).start_patch()
+            sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings, None).start_patch()
         elif self.args.unpatch_sys_vol:
             print("- Set System Volume unpatching")
-            sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings).start_unpatch()
+            sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings, None).start_unpatch()

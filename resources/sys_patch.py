@@ -12,40 +12,45 @@ import zipfile
 from pathlib import Path
 import sys
 
-from resources import constants, device_probe, utilities, generate_smbios, sys_patch_download
-from data import sip_data, sys_patch_data, model_array, os_data, smbios_data, cpu_data
+from resources import constants, utilities, generate_smbios, sys_patch_download, sys_patch_detect
+from data import sip_data, sys_patch_data, os_data
 
 
 class PatchSysVolume:
-    def __init__(self, model, versions):
+    def __init__(self, model, versions, hardware_details=None):
         self.model = model
         self.constants: constants.Constants() = versions
         self.computer = self.constants.computer
         self.root_mount_path = None
-        self.sip_enabled = True
-        self.sbm_enabled = True
-        self.amfi_enabled = True
-        self.fv_enabled = True
-        self.dosdude_patched = True
-        self.nvidia_legacy = False
-        self.kepler_gpu = False
-        self.amd_ts1 = False
-        self.amd_ts2 = False
-        self.iron_gpu = False
-        self.sandy_gpu = False
-        self.ivy_gpu = False
-        self.brightness_legacy = False
-        self.legacy_audio = False
-        self.legacy_wifi = False
-        self.legacy_gmux = False
-        self.legacy_keyboard_backlight = False
-        self.added_legacy_kexts = False
-        self.amfi_must_disable = False
-        self.check_board_id = False
-        self.bad_board_id = False
-        self.no_patch = True
         self.validate = False
-        self.supports_metal = False
+        self.added_legacy_kexts = False
+
+        # GUI will detect hardware patches betfore starting PatchSysVolume()
+        # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
+        if hardware_details is None:
+            hardware_details = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+        
+        self.amfi_must_disable = hardware_details["Settings: Requires AMFI exemption"]
+        self.check_board_id = hardware_details["Settings: Requires Board ID validation"]
+        self.sip_enabled = hardware_details["Validation: SIP is enabled"]
+        self.sbm_enabled = hardware_details["Validation: SBM is enabled"]
+        self.amfi_enabled = hardware_details["Validation: AMFI is enabled"]
+        self.fv_enabled = hardware_details["Validation: FileVault is enabled"]
+        self.dosdude_patched = hardware_details["Validation: System is dosdude1 patched"]
+        self.bad_board_id = hardware_details[f"Validation: Board ID is unsupported \n({self.computer.reported_board_id})"]
+
+        self.nvidia_legacy = hardware_details["Graphics: Nvidia Tesla"]
+        self.kepler_gpu = hardware_details["Graphics: Nvidia Kepler"]
+        self.amd_ts1 = hardware_details["Graphics: AMD TeraScale 1"]
+        self.amd_ts2 = hardware_details["Graphics: AMD TeraScale 2"]
+        self.iron_gpu = hardware_details["Graphics: Intel Ironlake"]
+        self.sandy_gpu = hardware_details["Graphics: Intel Sandy Bridge"]
+        self.ivy_gpu = hardware_details["Graphics: Intel Ivy Bridge"]
+        self.brightness_legacy = hardware_details["Brightness: Legacy Backlight Control"]
+        self.legacy_audio = hardware_details["Audio: Legacy Realtek"]
+        self.legacy_wifi = hardware_details["Networking: Legacy Wireless"]
+        self.legacy_gmux = hardware_details["Miscellaneous: Legacy GMUX"]
+        self.legacy_keyboard_backlight = hardware_details["Miscellaneous: Legacy Keyboard Backlight"]
 
         if self.constants.detected_os > os_data.os_data.catalina:
             # Big Sur and newer use APFS snapshots
@@ -685,123 +690,8 @@ set million colour before rebooting"""
                 input("\nPress enter to continue")
         return None
 
-    def detect_gpus(self):
-        gpus = self.constants.computer.gpus
-        if self.constants.moj_cat_accel is True:
-            non_metal_os = os_data.os_data.high_sierra
-        else:
-            non_metal_os = os_data.os_data.catalina
-        for i, gpu in enumerate(gpus):
-            if gpu.class_code and gpu.class_code != 0xFFFFFFFF:
-                print(f"- Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
-                if gpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi]:
-                    if self.constants.detected_os > non_metal_os:
-                        self.nvidia_legacy = True
-                        self.amfi_must_disable = True
-                        # self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
-                elif gpu.arch == device_probe.NVIDIA.Archs.Kepler:
-                    if self.constants.detected_os > os_data.os_data.big_sur:
-                        # Kepler drivers were dropped with Beta 7
-                        # 12.0 Beta 5: 21.0.0 - 21A5304g
-                        # 12.0 Beta 6: 21.1.0 - 21A5506j
-                        # 12.0 Beta 7: 21.1.0 - 21A5522h
-                        if self.constants.detected_os == os_data.os_data.monterey and self.constants.detected_os_minor > 0:
-                            if "21A5506j" not in self.constants.detected_os_build:
-                                self.kepler_gpu = True
-                                self.supports_metal = True
-                elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
-                    if self.constants.detected_os > non_metal_os:
-                        self.amd_ts1 = True
-                        self.amfi_must_disable = True
-                elif gpu.arch == device_probe.AMD.Archs.TeraScale_2:
-                    if self.constants.detected_os > non_metal_os:
-                        self.amd_ts2 = True
-                        self.amfi_must_disable = True
-                elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
-                    if self.constants.detected_os > non_metal_os:
-                        self.iron_gpu = True
-                        self.amfi_must_disable = True
-                elif gpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
-                    if self.constants.detected_os > non_metal_os:
-                        self.sandy_gpu = True
-                        self.amfi_must_disable = True
-                        self.check_board_id = True
-                elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
-                    if self.constants.detected_os > os_data.os_data.big_sur:
-                        self.ivy_gpu = True
-                        self.supports_metal = True
-        if self.supports_metal is True:
-            # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
-            # Main concerns are for iMac12,x with Sandy iGPU and Kepler dGPU
-            self.nvidia_legacy = False
-            self.amd_ts1 = False
-            self.amd_ts2 = False
-            self.iron_gpu = False
-            self.sandy_gpu = False
-    
-    def check_dgpu_status(self):
-        dgpu = self.constants.computer.dgpu
-        if dgpu:
-            if dgpu.class_code and dgpu.class_code == 0xFFFFFFFF:
-                # If dGPU is disabled via class-codes, assume demuxed
-                return False
-            return True
-        return False
-
-    def detect_demux(self):
-        # If GFX0 is missing, assume machine was demuxed
-        # -wegnoegpu would also trigger this, so ensure arg is not present
-        if not "-wegnoegpu" in (utilities.get_nvram("boot-args") or ""):
-            igpu = self.constants.computer.igpu
-            dgpu = self.check_dgpu_status()
-            if igpu and not dgpu:
-                return True
-        return False
-    
-    def check_legacy_keyboard_backlight(self):
-        # With Big Sur and newer, Skylight patch set unfortunately breaks native keyboard backlight
-        # Penryn Macs are able to re-enable the keyboard backlight by simply running '/usr/libexec/TouchBarServer'
-        # For Arrendale and newer, this has no effect.
-        if self.model.startswith("MacBookPro") or self.model.startswith("MacBookAir"):
-            # non-Metal MacBooks never had keyboard backlight
-            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
-                if self.constants.detected_os > os_data.os_data.catalina:
-                    return True
-        return False
 
     def detect_patch_set(self):
-        self.detect_gpus()
-        if self.model in model_array.LegacyBrightness:
-            if self.constants.detected_os > os_data.os_data.catalina:
-                self.brightness_legacy = True
-
-        if self.model in ["iMac7,1", "iMac8,1"] or (self.model in model_array.LegacyAudio and utilities.check_kext_loaded("AppleALC", self.constants.detected_os) is False):
-            # Special hack for systems with botched GOPs
-            # TL;DR: No Boot Screen breaks Lilu, therefore breaking audio
-            if self.constants.detected_os > os_data.os_data.catalina:
-                self.legacy_audio = True
-
-        if (
-            isinstance(self.constants.computer.wifi, device_probe.Broadcom)
-            and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
-        ) or (isinstance(self.constants.computer.wifi, device_probe.Atheros) and self.constants.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
-            if self.constants.detected_os > os_data.os_data.big_sur:
-                self.legacy_wifi = True
-
-        # if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
-        if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
-            # Sierra uses a legacy GMUX control method needed for dGPU switching on MacBookPro5,x
-            # Same method is also used for demuxed machines
-            # Note that MacBookPro5,x machines are extremely unstable with this patch set, so disabled until investigated further
-            # Ref: https://github.com/dortania/OpenCore-Legacy-Patcher/files/7360909/KP-b10-030.txt
-            if self.constants.detected_os > os_data.os_data.high_sierra:
-                if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
-                    # Ref: https://doslabelectronics.com/Demux.html
-                    if self.detect_demux() is True:
-                        self.legacy_gmux = True
-                else:
-                    self.legacy_gmux = True
-
         utilities.cls()
         print("The following patches will be applied:")
         if self.nvidia_legacy is True:
@@ -853,7 +743,6 @@ set million colour before rebooting"""
             sip_value = (
                 "For Hackintoshes, please set csr-active-config to '030A0000' (0xA03)\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
             )
-        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
         if self.sip_enabled is True:
             print("\nCannot patch! Please disable System Integrity Protection (SIP).")
             print("Disable SIP in Patcher Settings and Rebuild OpenCore\n")
@@ -931,3 +820,5 @@ set million colour before rebooting"""
             self.find_mount_root_vol(False)
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu")
+        elif self.constants.gui_mode is False:
+            input("\nPress [ENTER] to return to the main menu")

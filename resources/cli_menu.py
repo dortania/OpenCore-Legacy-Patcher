@@ -1078,9 +1078,9 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             no_unpatch = True
         change_menu = input("Patch System Volume?: ")
         if no_patch is not True and change_menu == "1":
-            sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
+            sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, None).start_patch()
         elif no_unpatch is not True and change_menu == "2":
-            sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_unpatch()
+            sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, None).start_unpatch()
         else:
             print("Returning to main menu")
 

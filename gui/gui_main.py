@@ -677,6 +677,7 @@ class wx_python_gui:
         self.subheader.Centre(wx.HORIZONTAL)
 
         patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+        self.patches = patches
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
             print("- No applicable patches available")
             patches = []
@@ -873,7 +874,7 @@ class wx_python_gui:
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
         self.frame.Show()
-        sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_patch()
+        sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_patch()
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
 
@@ -946,7 +947,7 @@ class wx_python_gui:
         sys.stdout = menu_redirect.RedirectText(self.text_box, True)
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
-        sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants).start_unpatch()
+        sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_unpatch()
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
 
