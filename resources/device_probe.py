@@ -76,18 +76,19 @@ class PCIDevice:
     def detect(cls, device):
         return device.vendor_id == cls.VENDOR_ID and ((device.class_code == cls.CLASS_CODE) if getattr(cls, "CLASS_CODE", None) else True)  # type: ignore  # pylint: disable=no-member
 
-    # def acpi_path(self):
-    #     # Eventually
-    #     raise NotImplementedError
-
     def populate_pci_path(self, original_entry: ioreg.io_registry_entry_t):
         # Based off gfxutil logic, seems to work.
         paths = []
         entry = original_entry
         while entry:
             if ioreg.IOObjectConformsTo(entry, "IOPCIDevice".encode()):
-                location = [hex(int(i, 16)) for i in ioreg.io_name_t_to_str(ioreg.IORegistryEntryGetLocationInPlane(entry, "IOService".encode(), None)[1]).split(",") + ["0"]]
-                paths.append(f"Pci({location[0]},{location[1]})")
+                # Virtual PCI devices provide a botched IOService path (us.electronic.kext.vusb)
+                # We only care about physical devices, so skip them
+                try:
+                    location = [hex(int(i, 16)) for i in ioreg.io_name_t_to_str(ioreg.IORegistryEntryGetLocationInPlane(entry, "IOService".encode(), None)[1]).split(",") + ["0"]]
+                    paths.append(f"Pci({location[0]},{location[1]})")
+                except ValueError:
+                    break
             elif ioreg.IOObjectConformsTo(entry, "IOACPIPlatformDevice".encode()):
                 paths.append(f"PciRoot({hex(int(ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(entry, '_UID', ioreg.kCFAllocatorDefault, ioreg.kNilOptions)) or 0))})")  # type: ignore
                 break
