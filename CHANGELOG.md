@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.3
+
 ## 0.4.2
 - Resolve app crashing on some 3rd party SAS/SATA controllers
 - Add Beta identifier to macOS Installer menu
