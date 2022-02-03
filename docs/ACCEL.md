@@ -124,12 +124,18 @@ This will disable the dGPU and allow the iGPU to function in Big Sur. Note that 
 
 ## Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)
 
+Resolved with OpenCore Legacy Patcher v0.4.2
+
+::: details Legacy Fix (prior to 0.4.2)
+
 Due to an odd bug with ATI's TeraScale 2 GPUs, many users will experience erratic/strobing colours once finished installing and rebooting into the accelerated patches. The issue stems from an incorrect assumption in the GPU drivers where it will enforce the Billion Colour space on your display. To fix, simply force your Display into a lower color depth such as a Million Colours.
 
 Applications that can set color depth are:
 
 * [SwitchResX](https://www.madrau.com)
 * [ResXtreme](https://macdownload.informer.com/resxtreme/)
+
+:::
 
 ## Unable to allow Safari Extensions
 
