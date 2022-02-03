@@ -7,7 +7,7 @@
 - Resolve Macmini4,1 HDEF pathing
 - Increment Binaries:
   - FeatureUnlock 1.0.6 - rolling (d296645)
-  - PatcherSupportPkg 0.3.0
+  - PatcherSupportPkg 0.3.1
 - Resolve SIP and SecureBootModel not disabling by default on some non-Metal Mac Pros
 - Add Content Caching support configurability
 - Limit SurPlus patchset to 20.4.0 - 21.1.0
@@ -21,6 +21,9 @@
 - Add NVMe Enhanced Power Management configuration
   - Disables NVMe adjustments on Skylake and newer Macs by default
 - Resolve Catalyst Scrolling on non-Metal GPUs
+- Add new TUI icon to differentiate between GUI
+- Resolve Color Strobing on AMD TeraScale 2 GPUs
+  - Drops reliance on ResXtreme and SwitchResX
 
 ## 0.4.1
 - Add XHCI Boot Support to pre-UEFI 2.0 Macs

@@ -274,13 +274,6 @@ class PatchSysVolume:
                 utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
-            if self.amd_ts2 is True and self.constants.allow_ts2_accel is True:
-                print(
-                    """\nPlease note that with ATI TeraScale 2 GPUs, you may experience colour strobing
-on reboot. Please use SwitchResX or ResXtreme to force 1 million colours on your
-monitor to fix this. If you are epileptic, please ask for someone to aid you or
-set million colour before rebooting"""
-                )
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to continue")
 
