@@ -84,6 +84,14 @@ def get_disk_path():
     root_mount_path = root_mount_path[:-2] if root_mount_path.count("s") > 1 else root_mount_path
     return root_mount_path
 
+def check_if_root_is_apfs_snapshot():
+    root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    try:
+        is_snapshotted = root_partition_info["APFSSnapshot"]
+    except KeyError:
+        is_snapshotted = False
+    return is_snapshotted
+
 
 def check_seal():
     # 'Snapshot Sealed' property is only listed on booted snapshots

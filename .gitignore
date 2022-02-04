@@ -23,3 +23,4 @@ __pycache__/
 /payloads/List.txt
 /payloads/Installer.sh
 /payloads/Info.plist
+/payloads/seed.plist

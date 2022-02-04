@@ -24,11 +24,16 @@ class PatchSysVolume:
         self.root_mount_path = None
         self.validate = False
         self.added_legacy_kexts = False
+        self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
 
         # GUI will detect hardware patches betfore starting PatchSysVolume()
         # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
         if hardware_details is None:
             hardware_details = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+        self.init_hardware_patches(hardware_details)
+        self.init_pathing(custom_root_mount_path=None, custom_data_mount_path=None)
+
+    def init_hardware_patches(self, hardware_details):
         
         self.amfi_must_disable = hardware_details["Settings: Requires AMFI exemption"]
         self.check_board_id = hardware_details["Settings: Requires Board ID validation"]
@@ -52,7 +57,11 @@ class PatchSysVolume:
         self.legacy_gmux = hardware_details["Miscellaneous: Legacy GMUX"]
         self.legacy_keyboard_backlight = hardware_details["Miscellaneous: Legacy Keyboard Backlight"]
 
-        if self.constants.detected_os > os_data.os_data.catalina:
+    def init_pathing(self, custom_root_mount_path=None, custom_data_mount_path=None):
+        if custom_root_mount_path and custom_data_mount_path:
+            self.mount_location = custom_root_mount_path
+            self.data_mount_location = custom_data_mount_path
+        elif self.root_supports_snapshot is True:
             # Big Sur and newer use APFS snapshots
             self.mount_location = "/System/Volumes/Update/mnt1"
             self.mount_location_data = ""
@@ -72,8 +81,11 @@ class PatchSysVolume:
     def find_mount_root_vol(self, patch):
         self.root_mount_path = utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
-            if self.constants.detected_os == os_data.os_data.catalina and self.validate is False:
-                print("- Mounting Catalina Root Volume as writable")
+            if (
+                self.constants.detected_os == os_data.os_data.catalina or 
+                (self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is False)
+            ):
+                print("- Mounting Dedicated Root Volume as writable")
                 utilities.elevated(["mount", "-uw", f"{self.mount_location}/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
@@ -81,7 +93,7 @@ class PatchSysVolume:
                 if patch is True:
                     # Root Volume unpatching is unreliable due to being a live volume
                     # Only worth while on Big Sur as '--last-sealed-snapshot' is hit or miss
-                    if self.constants.detected_os == os_data.os_data.big_sur and utilities.check_seal() is True:
+                    if self.constants.detected_os == os_data.os_data.big_sur and self.root_supports_snapshot is True and utilities.check_seal() is True:
                         self.backup_volume()
                     self.patch_root_vol()
                     return True
@@ -89,7 +101,7 @@ class PatchSysVolume:
                     self.unpatch_root_vol()
                     return True
             else:
-                if self.constants.detected_os > os_data.os_data.catalina:
+                if self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is True:
                     print("- Mounting APFS Snapshot as writable")
                     result = utilities.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                     if result.returncode == 0:
@@ -99,7 +111,7 @@ class PatchSysVolume:
                     if patch is True:
                         # Root Volume unpatching is unreliable due to being a live volume
                         # Only worth while on Big Sur as '--last-sealed-snapshot' is hit or miss
-                        if self.constants.detected_os == os_data.os_data.big_sur and utilities.check_seal() is True:
+                        if self.constants.detected_os == os_data.os_data.big_sur and self.root_supports_snapshot is True and utilities.check_seal() is True:
                             self.backup_volume()
                         self.patch_root_vol()
                         return True
@@ -207,7 +219,7 @@ class PatchSysVolume:
             print("- Could not find Extensions.zip, cannot manually unpatch root volume")
 
     def unpatch_root_vol(self):
-        if self.constants.detected_os > os_data.os_data.catalina:
+        if self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is True:
             print("- Reverting to last signed APFS snapshot")
             result = utilities.elevated(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
@@ -247,12 +259,7 @@ class PatchSysVolume:
         else:
             self.success_status = True
             print("- Successfully built new kernel cache")
-            # if self.constants.gui_mode is False:
-            #     if self.constants.detected_os > os_data.os_data.catalina:
-            #         input("Press [ENTER] to continue with snapshotting")
-            #     else:
-            #         input("Press [ENTER] to continue with kernel and dyld cache merging")
-            if self.constants.detected_os > os_data.os_data.catalina:
+            if self.root_supports_snapshot is True:
                 print("- Creating new APFS snapshot")
                 bless = utilities.elevated(
                     ["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
@@ -270,8 +277,9 @@ class PatchSysVolume:
                 if self.constants.detected_os == os_data.os_data.catalina:
                     print("- Merging kernel cache")
                     utilities.process_status(utilities.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-                print("- Merging dyld cache")
-                utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
+                if self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina]:
+                    print("- Merging dyld cache")
+                    utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
             if self.constants.gui_mode is False:
