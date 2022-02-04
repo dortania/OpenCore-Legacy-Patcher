@@ -1394,7 +1394,6 @@ class wx_python_gui:
                 time.sleep(0.1)
                 output = float(utilities.monitor_disk_output(disk))
                 bytes_written = output - default_output
-                print(bytes_written)
                 if thread.is_alive():
                     self.progress_bar.SetValue(bytes_written)
                     self.progress_label.SetLabel(f"Bytes Written: {round(bytes_written, 2)}MB")
