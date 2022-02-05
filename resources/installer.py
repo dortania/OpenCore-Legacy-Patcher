@@ -87,6 +87,7 @@ def download_install_assistant(download_path, ia_link):
     return False
 
 def install_macOS_installer(download_path):
+    print("- Extracting macOS installer from InstallAssistant.pkg\n  This may take some time")
     args = [
         "osascript",
         "-e",

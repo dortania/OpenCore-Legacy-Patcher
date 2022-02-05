@@ -320,7 +320,7 @@ def verify_network_connection(url):
     except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError, requests.exceptions.HTTPError):
         return False
 
-def download_file(link, location, is_gui=None):
+def download_file(link, location, is_gui=None, verify_checksum=False):
     if verify_network_connection(link):
         short_link = os.path.basename(link)
         if Path(location).exists():
@@ -369,13 +369,18 @@ def download_file(link, location, is_gui=None):
                 if total_file_size > 1024:
                     total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
                 print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
-        checksum = hashlib.sha256()
-        with location.open("rb") as file:
-            chunk = file.read(1024 * 1024 * 16)
-            while chunk:
-                checksum.update(chunk)
+        
+        if verify_checksum is True:
+            # Verify checksum
+            # Note that this can be quite taxing on slower Macs
+            checksum = hashlib.sha256()
+            with location.open("rb") as file:
                 chunk = file.read(1024 * 1024 * 16)
-        return checksum
+                while chunk:
+                    checksum.update(chunk)
+                    chunk = file.read(1024 * 1024 * 16)
+            return checksum
+        return True
     else:
         cls()
         header = "# Could not establish Network Connection with provided link! #"
