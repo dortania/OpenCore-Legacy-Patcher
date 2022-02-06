@@ -174,7 +174,7 @@ Please build OpenCore first!"""
                     ).start()
                 else:
                     print("An error occurred!")
-                    print(result.stderr.decode().split("\n") + [""])
+                    print(result.stderr.decode())
                 return
         partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {full_disk_identifier}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         parent_disk = partition_info["ParentWholeDisk"]
