@@ -168,9 +168,13 @@ Please build OpenCore first!"""
                 # cancelled prompt
                 return
             else:
-                utilities.TUIOnlyPrint(
-                    ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + ["", "Please report this to the devs at GitHub."]
-                ).start()
+                if self.constants.gui_mode is False:
+                    utilities.TUIOnlyPrint(
+                        ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + [""]
+                    ).start()
+                else:
+                    print("An error occurred!")
+                    print(result.stderr.decode().split("\n") + [""])
                 return
         partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {full_disk_identifier}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         parent_disk = partition_info["ParentWholeDisk"]
@@ -242,7 +246,10 @@ Please build OpenCore first!"""
                 print("\nPress [Enter] to continue.\n")
                 input()
         else:
-            utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!", "Please report this to the devs at GitHub."]).start()
+            if self.constants.gui_mode is False:
+                utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!"]).start()
+            else:
+                print("EFI failed to mount!")
 
 def rmtree_handler(func, path, exc_info):
     if exc_info[0] == FileNotFoundError:
