@@ -45,7 +45,7 @@ To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise
   * Great amounts of help debugging and code suggestions
 * [vit9696](https://github.com/vit9696)
   * Endless amount of help troubleshooting, determining fixes and writing patches
-* [ASentientBot](https://github.com/ASentientBot)
+* [ASentientBot](https://github.com/ASentientBot), [EduCovas](https://github.com/educovas) and [ASentientHedgehog](https://github.com/moosethegoose2213)
   * Legacy Acceleration Patch set and documentation
 * [cdf](https://github.com/cdf)
   * Mac Pro on OpenCore Patch set and documentation
