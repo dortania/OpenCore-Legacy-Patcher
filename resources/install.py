@@ -175,6 +175,11 @@ Please build OpenCore first!"""
                 else:
                     print("An error occurred!")
                     print(result.stderr.decode())
+
+                    # Check if we're in Safe Mode, and if so, tell user FAT32 is unsupported
+                    if utilities.check_boot_mode() == "safe_boot":
+                        print("\nSafe Mode detected. FAT32 is unsupported by macOS in this mode.")
+                        print("Please disable Safe Mode and try again.")
                 return
         partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {full_disk_identifier}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         parent_disk = partition_info["ParentWholeDisk"]

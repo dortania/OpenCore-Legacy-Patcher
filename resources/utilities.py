@@ -406,6 +406,11 @@ def monitor_disk_output(disk):
     output = output[-2]
     return output
 
+def check_boot_mode():
+    # Check whether we're in Safe Mode or not
+    sys_plist = plistlib.loads(subprocess.run(["system_profiler", "SPSoftwareDataType"], stdout=subprocess.PIPE).stdout)
+    return sys_plist[0]["_items"][0]["boot_mode"]
+
 def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
     # When runnign through our GUI, we run as root, however we do not get uid 0
     # Best to assume CLI is running as root
