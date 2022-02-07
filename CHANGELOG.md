@@ -10,6 +10,7 @@
   - Control Centre Sliders
   - Shift/missing icons
   - Hardware Cursor
+    - Note cursor images will be static (ie. beachball)
   - Quicklook dismiss/expand
 
 ## 0.4.2
