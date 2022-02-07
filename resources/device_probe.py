@@ -153,6 +153,9 @@ class NVMeController(PCIDevice):
     aspm: Optional[int] = None
     # parent_aspm: Optional[int] = None
 
+@dataclass
+class EthernetController(PCIDevice):
+    CLASS_CODE: ClassVar[int] = 0x020000
 
 @dataclass
 class SATAController(PCIDevice):
@@ -359,6 +362,7 @@ class Computer:
     dgpu: Optional[GPU] = None  # Shortcut for GFX0
     storage: list[PCIDevice] = field(default_factory=list)
     usb_controllers: list[PCIDevice] = field(default_factory=list)
+    ethernet: list[PCIDevice] = field(default_factory=list)
     wifi: Optional[WirelessCard] = None
     cpu: Optional[CPU] = None
     oclp_version: Optional[str] = None
@@ -375,6 +379,7 @@ class Computer:
         computer.wifi_probe()
         computer.storage_probe()
         computer.usb_controller_probe()
+        computer.ethernet_probe()
         computer.smbios_probe()
         computer.cpu_probe()
         computer.bluetooth_probe()
@@ -475,6 +480,18 @@ class Computer:
             ioreg.IOObjectRelease(device)
         for device in uhci_controllers:
             self.usb_controllers.append(UHCIController.from_ioregistry(device))
+            ioreg.IOObjectRelease(device)
+    
+    def ethernet_probe(self):
+        ethernet_controllers = ioreg.ioiterator_to_list(
+            ioreg.IOServiceGetMatchingServices(
+                ioreg.kIOMasterPortDefault,
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(EthernetController.CLASS_CODE)[2:].zfill(8)))}]},
+                None,
+            )[1]
+        )
+        for device in ethernet_controllers:
+            self.ethernet.append(EthernetController.from_ioregistry(device))
             ioreg.IOObjectRelease(device)
         
 

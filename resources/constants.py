@@ -15,7 +15,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.4.3"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.3.1"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.3.2"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link = "https://discord.gg/rqdPgH8xSN"
@@ -26,14 +26,14 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_commit = "b530a29 - 01-11-2022"
-        self.opencore_version = "0.7.7"
+        self.opencore_commit = "30798fb - 02-07-2022"
+        self.opencore_version = "0.7.8"
 
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
-        self.lilu_version = "1.5.9"  #               Lilu
-        self.whatevergreen_version = "1.5.6"  #      WhateverGreen
+        self.lilu_version = "1.6.0"  #               Lilu
+        self.whatevergreen_version = "1.5.7"  #      WhateverGreen
         self.airportbcrmfixup_version = "2.1.3"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC

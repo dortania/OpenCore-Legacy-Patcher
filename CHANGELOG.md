@@ -1,6 +1,16 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.4.3
+- Increment Binaries:
+  - PatcherSupportPkg 0.3.2 - release
+  - OpenCorePkg 0.7.8 - release
+  - Lilu 1.6.0 - release
+  - WhateverGreen 1.5.7 - release
+- Resolve many non-Metal issues:
+  - Control Centre Sliders
+  - Shift/missing icons
+  - Hardware Cursor
+  - Quicklook dismiss/expand
 
 ## 0.4.2
 - Resolve app crashing on some 3rd party SAS/SATA controllers
