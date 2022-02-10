@@ -12,6 +12,8 @@
   - Hardware Cursor
     - Note cursor images will be static (ie. beachball)
   - Quicklook dismiss/expand
+- Add Ethernet Controller detection to build
+- Resolve i210/i225 NIC support on pre-Ivy Macs
 
 ## 0.4.2
 - Resolve app crashing on some 3rd party SAS/SATA controllers

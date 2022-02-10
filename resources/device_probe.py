@@ -157,6 +157,11 @@ class NVMeController(PCIDevice):
 class EthernetController(PCIDevice):
     CLASS_CODE: ClassVar[int] = 0x020000
 
+    chipset: enum.Enum = field(init=False)
+
+    def __post_init__(self):
+        self.detect_chipset()
+
 @dataclass
 class SATAController(PCIDevice):
     CLASS_CODE: ClassVar[int] = 0x010601
@@ -208,6 +213,18 @@ class NVIDIA(GPU):
         else:
             self.arch = NVIDIA.Archs.Unknown
 
+@dataclass
+class NVIDIAEthernet(EthernetController):
+    VENDOR_ID: ClassVar[int] = 0x10DE
+
+    class Chipsets(enum.Enum):
+        nForceEthernet = "nForceEthernet"
+    
+    chipset: Chipsets = field(init=False)
+
+    def detect_chipset(self):
+        # nForce driver matches against Vendor ID, thus making all nForce chipsets supported
+        self.chipset = NVIDIAEthernet.Chipsets.nForceEthernet
 
 @dataclass
 class AMD(GPU):
@@ -301,6 +318,27 @@ class Intel(GPU):
         else:
             self.arch = Intel.Archs.Unknown
 
+@dataclass
+class IntelEthernet(EthernetController):
+    VENDOR_ID: ClassVar[int] = 0x8086
+
+    class Chipsets(enum.Enum):
+        AppleIntel8254XEthernet = "AppleIntel8254XEthernet Supported"
+        AppleIntelI210Ethernet = "AppleIntelI210Ethernet Supported"
+        Intel82574L = "Intel82574L Supported"
+        Unknown = "Unknown"
+    
+    chipset: Chipsets = field(init=False)
+
+    def detect_chipset(self):
+        if self.device_id in pci_data.intel_ids.AppleIntel8254XEthernet:
+            self.chipset = IntelEthernet.Chipsets.AppleIntel8254XEthernet
+        elif self.device_id in pci_data.intel_ids.AppleIntelI210Ethernet:
+            self.chipset = IntelEthernet.Chipsets.AppleIntelI210Ethernet
+        elif self.device_id in pci_data.intel_ids.Intel82574L:
+            self.chipset = IntelEthernet.Chipsets.Intel82574L
+        else:
+            self.chipset = IntelEthernet.Chipsets.Unknown
 
 @dataclass
 class Broadcom(WirelessCard):
@@ -331,6 +369,21 @@ class Broadcom(WirelessCard):
         else:
             self.chipset = Broadcom.Chipsets.Unknown
 
+@dataclass
+class BroadcomEthernet(EthernetController):
+    VENDOR_ID: ClassVar[int] = 0x14E4
+
+    class Chipsets(enum.Enum):
+        AppleBCM5701Ethernet = "AppleBCM5701Ethernet supported"
+        Unknown = "Unknown"
+    
+    chipset: Chipsets = field(init=False)
+
+    def detect_chipset(self):
+        if self.device_id in pci_data.broadcom_ids.AppleBCM5701Ethernet:
+            self.chipset = BroadcomEthernet.Chipsets.AppleBCM5701Ethernet
+        else:
+            self.chipset = BroadcomEthernet.Chipsets.Unknown
 
 @dataclass
 class Atheros(WirelessCard):
@@ -352,6 +405,56 @@ class Atheros(WirelessCard):
 
 
 @dataclass
+class Aquantia(EthernetController):
+    VENDOR_ID: ClassVar[int] = 0x1D6A
+
+    class Chipsets(enum.Enum):
+        # pylint: disable=invalid-name
+        AppleEthernetAquantiaAqtion = "AppleEthernetAquantiaAqtion supported"
+        Unknown = "Unknown"
+    
+    chipset: Chipsets = field(init=False)
+
+    def detect_chipset(self):
+        if self.device_id in pci_data.aquantia_ids.AppleEthernetAquantiaAqtion:
+            self.chipset = Aquantia.Chipsets.AppleEthernetAquantiaAqtion
+        else:
+            self.chipset = Aquantia.Chipsets.Unknown
+
+@dataclass
+class Marvell(EthernetController):
+    VENDOR_ID: ClassVar[int] = 0x11AB
+
+    class Chipsets(enum.Enum):
+        MarvelYukonEthernet = "MarvelYukonEthernet supported"
+        Unknown = "Unknown"
+    
+    chipset: Chipsets = field(init=False)
+
+    def detect_chipset(self):
+        if self.device_id in pci_data.marvell_ids.MarvelYukonEthernet:
+            self.chipset = Marvell.Chipsets.MarvelYukonEthernet
+        else:
+            self.chipset = Marvell.Chipsets.Unknown
+
+@dataclass
+class SysKonnect(EthernetController):
+    VENDOR_ID: ClassVar[int] = 0x1148
+
+    class Chipsets(enum.Enum):
+        MarvelYukonEthernet = "MarvelYukonEthernet supported"
+        Unknown = "Unknown"
+    
+    chipset: Chipsets = field(init=False)
+
+    def detect_chipset(self):
+        if self.device_id in pci_data.syskonnect_ids.MarvelYukonEthernet:
+            self.chipset = SysKonnect.Chipsets.MarvelYukonEthernet
+        else:
+            self.chipset = SysKonnect.Chipsets.Unknown
+
+
+@dataclass
 class Computer:
     real_model: Optional[str] = None
     real_board_id: Optional[str] = None
@@ -362,7 +465,7 @@ class Computer:
     dgpu: Optional[GPU] = None  # Shortcut for GFX0
     storage: list[PCIDevice] = field(default_factory=list)
     usb_controllers: list[PCIDevice] = field(default_factory=list)
-    ethernet: list[PCIDevice] = field(default_factory=list)
+    ethernet: Optional[EthernetController] = field(default_factory=list)
     wifi: Optional[WirelessCard] = None
     cpu: Optional[CPU] = None
     oclp_version: Optional[str] = None
@@ -490,10 +593,15 @@ class Computer:
                 None,
             )[1]
         )
-        for device in ethernet_controllers:
-            self.ethernet.append(EthernetController.from_ioregistry(device))
-            ioreg.IOObjectRelease(device)
+        # for device in ethernet_controllers:
+        #     self.ethernet.append(EthernetController.from_ioregistry(device))
+        #     ioreg.IOObjectRelease(device)
         
+        for device in ethernet_controllers:
+            vendor: Type[EthernetController] = PCIDevice.from_ioregistry(device).vendor_detect(inherits=EthernetController)  # type: ignore
+            if vendor:
+                self.ethernet.append(vendor.from_ioregistry(device))  # type: ignore
+            ioreg.IOObjectRelease(device)
 
     def storage_probe(self):
         sata_controllers = ioreg.ioiterator_to_list(

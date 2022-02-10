@@ -505,6 +505,24 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
+				<string>I210 Ethernet patch</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>20.0.0</string>
+				<key>BundlePath</key>
+				<string>CatalinaIntelI210Ethernet.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/CatalinaIntelI210Ethernet</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
 				<string>BCM94328 Wifi Patch</string>
 				<key>Enabled</key>
 				<false/>

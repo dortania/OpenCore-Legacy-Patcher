@@ -57,6 +57,7 @@ class Constants:
 
         ## Apple - Dortania Modified
         self.bcm570_version = "1.0.2"  #             CatalinaBCM5701Ethernet
+        self.i210_version = "1.0.0"  #               CatalinaIntelI210Ethernet
         self.corecaptureelcap_version = "1.0.1"  #   corecaptureElCap
         self.io80211elcap_version = "2.0.0"  #       IO80211ElCap
         self.io80211high_sierra_version = "1.0.1"  # IO80211HighSierra
@@ -282,6 +283,10 @@ class Constants:
     @property
     def bcm570_path(self):
         return self.payload_kexts_path / Path(f"Ethernet/CatalinaBCM5701Ethernet-v{self.bcm570_version}.zip")
+
+    @property
+    def i210_path(self):
+        return self.payload_kexts_path / Path(f"Ethernet/CatalinaIntelI210Ethernet-v{self.i210_version}.zip")
 
     @property
     def marvel_path(self):

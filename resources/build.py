@@ -126,9 +126,6 @@ class BuildOpenCore:
                 self.constants.cpufriend_path,
                 lambda: self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.allow_oc_everywhere is False and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None",
             ),
-            # Ethernet patches
-            ("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Nvidia"),
-            ("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path, lambda: smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Marvell"),
             # Legacy audio
             (
                 "AppleALC.kext",
@@ -190,12 +187,36 @@ class BuildOpenCore:
             # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
             self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path)
 
-        # Ethernet Patch Sets
-        if smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Broadcom":
-            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
-                # Required due to Big Sur's BCM5701 requiring VT-x support
-                # Applicable for pre-Ivy Bridge models
-                self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
+        if not self.constants.custom_model and self.constants.computer.ethernet:
+            for controller in self.constants.computer.ethernet:
+                if isinstance(controller, device_probe.BroadcomEthernet) and controller.chipset == device_probe.BroadcomEthernet.Chipsets.AppleBCM5701Ethernet:
+                    if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
+                        # Required due to Big Sur's BCM5701 requiring VT-D support
+                        # Applicable for pre-Ivy Bridge models
+                        if self.get_kext_by_bundle_path("CatalinaBCM5701Ethernet.kext")["Enabled"] is False:
+                            self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
+                elif isinstance(controller, device_probe.IntelEthernet) and controller.chipset == device_probe.IntelEthernet.Chipsets.AppleIntelI210Ethernet:
+                    if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
+                        # Apple's IOSkywalkFamily in DriverKit requires VT-D support
+                        # Applicable for pre-Ivy Bridge models
+                        if self.get_kext_by_bundle_path("CatalinaIntelI210Ethernet.kext")["Enabled"] is False:
+                            self.enable_kext("CatalinaIntelI210Ethernet.kext", self.constants.i210_version, self.constants.i210_path)
+                elif isinstance(controller, device_probe.NVIDIAEthernet):
+                    if self.get_kext_by_bundle_path("nForceEthernet.kext")["Enabled"] is False:
+                        self.enable_kext("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path)
+                elif isinstance(controller, device_probe.Marvell) or  isinstance(controller, device_probe.SysKonnect):
+                    if self.get_kext_by_bundle_path("MarvelYukonEthernet.kext")["Enabled"] is False:
+                        self.enable_kext("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path)
+        else:
+            if smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Broadcom":
+                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
+                    # Required due to Big Sur's BCM5701 requiring VT-D support
+                    # Applicable for pre-Ivy Bridge models
+                    self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
+            elif smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Nvidia":
+                self.enable_kext("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path)
+            elif smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Marvell":
+                self.enable_kext("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path)
 
         # i3 Ivy Bridge iMacs don't support RDRAND
         # However for prebuilt, assume they do
