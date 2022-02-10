@@ -340,8 +340,8 @@ class wx_python_gui:
         # Define Menu
         # Header: Get help with OpenCore Legacy Patcher
         # Subheader: Following resources are available:
-        # Button: Offical Guide
-        # Button: Offical Discord Server
+        # Button: Official Guide
+        # Button: Official Discord Server
 
         self.frame.DestroyChildren()
 
@@ -362,8 +362,8 @@ class wx_python_gui:
         self.subheader.Centre(wx.HORIZONTAL)
 
 
-        # Offical Guide
-        self.guide = wx.Button(self.frame, label="Offical Guide", size=(200,30))
+        # Official Guide
+        self.guide = wx.Button(self.frame, label="Official Guide", size=(200,30))
         self.guide.SetPosition(
             wx.Point(
                 self.subheader.GetPosition().x,
@@ -374,8 +374,8 @@ class wx_python_gui:
         self.guide.Bind(wx.EVT_BUTTON, lambda event: webbrowser.open(self.constants.guide_link))
         self.guide.Centre(wx.HORIZONTAL)
 
-        # Offical Discord Server
-        self.discord = wx.Button(self.frame, label="Offical Discord Server", size=(200,30))
+        # Official Discord Server
+        self.discord = wx.Button(self.frame, label="Official Discord Server", size=(200,30))
         self.discord.SetPosition(
             wx.Point(
                 self.guide.GetPosition().x,
@@ -386,7 +386,7 @@ class wx_python_gui:
         self.discord.Centre(wx.HORIZONTAL)
 
         # Overclock Button
-        self.overclock = wx.Button(self.frame, label="Offical Support Phone", size=(200,30))
+        self.overclock = wx.Button(self.frame, label="Official Support Phone", size=(200,30))
         self.overclock.SetPosition(
             wx.Point(
                 self.discord.GetPosition().x,

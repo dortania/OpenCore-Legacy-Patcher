@@ -15,7 +15,7 @@ For developers wishing to validate mainline changes, you may use these nightly l
 
 ## Getting Started
 
-To start, ensure you have python 3.6 or newer installed. Additionally ensure that they were downloaded from the offical source, [python.org](https://www.python.org/downloads/macos/).
+To start, ensure you have python 3.6 or newer installed. Additionally ensure that they were downloaded from the Official source, [python.org](https://www.python.org/downloads/macos/).
 
 * Python installations either preinstalled or provided with Xcode/Xcode Tools are unsupported due to reliablility issues
 
