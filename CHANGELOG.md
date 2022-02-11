@@ -2,7 +2,7 @@
 
 ## 0.4.3
 - Increment Binaries:
-  - PatcherSupportPkg 0.3.2 - release
+  - PatcherSupportPkg 0.3.3 - release
   - OpenCorePkg 0.7.8 - release
   - Lilu 1.6.0 - release
   - WhateverGreen 1.5.7 - release
@@ -12,6 +12,8 @@
   - Hardware Cursor
     - Note cursor images will be static (ie. beachball)
   - Quicklook dismiss/expand
+  - Keyboard Backlight
+    - Drops reliance on LabTick
 - Add Ethernet Controller detection to build
 - Resolve i210/i225 NIC support on pre-Ivy Macs
 

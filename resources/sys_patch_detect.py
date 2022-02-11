@@ -73,11 +73,13 @@ class detect_root_patch:
                     if self.constants.detected_os > non_metal_os:
                         self.iron_gpu = True
                         self.amfi_must_disable = True
+                        self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                 elif gpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
                     if self.constants.detected_os > non_metal_os:
                         self.sandy_gpu = True
                         self.amfi_must_disable = True
                         self.check_board_id = True
+                        self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         self.ivy_gpu = True
@@ -90,6 +92,7 @@ class detect_root_patch:
             self.amd_ts2 = False
             self.iron_gpu = False
             self.sandy_gpu = False
+            self.legacy_keyboard_backlight = False
     
     def check_dgpu_status(self):
         dgpu = self.constants.computer.dgpu
@@ -111,14 +114,10 @@ class detect_root_patch:
         return False
     
     def check_legacy_keyboard_backlight(self):
-        # With Big Sur and newer, Skylight patch set unfortunately breaks native keyboard backlight
-        # Penryn Macs are able to re-enable the keyboard backlight by simply running '/usr/libexec/TouchBarServer'
-        # For Arrendale and newer, this has no effect.
-        if self.model.startswith("MacBookPro") or self.model.startswith("MacBookAir"):
-            # non-Metal MacBooks never had keyboard backlight
-            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
-                if self.constants.detected_os > os_data.os_data.catalina:
-                    return True
+        # iMac12,x+ have an 'ACPI0008' device, but it's not a keyboard backlight
+        # Best to assume laptops will have a keyboard backlight
+        if self.model.startswith("MacBook"):
+            return self.constants.computer.ambient_light_sensor
         return False
 
     def detect_patch_set(self):

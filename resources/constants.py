@@ -15,7 +15,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.4.3"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.3.2"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.3.3"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link = "https://discord.gg/rqdPgH8xSN"
@@ -697,10 +697,6 @@ class Constants:
     @property
     def legacy_wifi_support(self):
         return self.payload_apple_application_support / Path("Legacy-Wifi")
-    
-    @property
-    def legacy_keyboard_backlight_support(self):
-        return self.payload_apple_application_support / Path("Keyboard-Backlight")
     
     @property
     def legacy_dropbox_support(self):

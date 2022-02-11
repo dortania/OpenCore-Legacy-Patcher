@@ -471,6 +471,7 @@ class Computer:
     oclp_version: Optional[str] = None
     opencore_version: Optional[str] = None
     bluetooth_chipset: Optional[str] = None
+    ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
 
     @staticmethod
@@ -486,6 +487,7 @@ class Computer:
         computer.smbios_probe()
         computer.cpu_probe()
         computer.bluetooth_probe()
+        computer.ambient_light_sensor_probe()
         computer.sata_disk_probe()
         return computer
 
@@ -540,6 +542,12 @@ class Computer:
             if vendor:
                 self.wifi = vendor.from_ioregistry(device, anti_spoof=True)  # type: ignore
                 break
+            ioreg.IOObjectRelease(device)
+    
+    def ambient_light_sensor_probe(self):
+        device = next(ioreg.ioiterator_to_list(ioreg.IOServiceGetMatchingServices(ioreg.kIOMasterPortDefault, ioreg.IOServiceNameMatching("ALS0".encode()), None)[1]), None)
+        if device:
+            self.ambient_light_sensor = True
             ioreg.IOObjectRelease(device)
     
     def usb_controller_probe(self):

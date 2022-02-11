@@ -229,9 +229,7 @@ class PatchSysVolume:
                 print("- Failed to revert snapshot via bless, falling back on manual restoration")
                 self.manual_root_patch_revert()
             else:
-                if (Path(self.mount_application_support) / Path("SkyLightPlugins")).exists():
-                    print("- Found SkylightPlugins folder, removing")
-                    utilities.process_status(utilities.elevated(["rm", "-rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                self.clean_skylight_plugins()
                 print("- Unpatching complete")
                 print("\nPlease reboot the machine for patches to take effect")
         else:
@@ -309,6 +307,11 @@ class PatchSysVolume:
             utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{self.mount_extensions}/{add_current_kext}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         
+    def clean_skylight_plugins(self):
+        if (Path(self.mount_application_support) / Path("SkyLightPlugins/")).exists():
+            print("- Found SkylightPlugins folder, removing")
+            utilities.process_status(utilities.elevated(["rm", "-rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
     def add_brightness_patch(self):
         self.delete_old_binaries(sys_patch_data.DeleteBrightness)
         self.add_new_binaries(sys_patch_data.AddBrightness, self.constants.legacy_brightness)
@@ -347,8 +350,10 @@ class PatchSysVolume:
         )
     
     def add_legacy_keyboard_backlight_patch(self):
-        print("- Merging Keyboard Backlight SkyLightPlugins")
-        utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.legacy_keyboard_backlight_support}/", self.mount_application_support], stdout=subprocess.PIPE)
+        print("- Enabling Keyboard Backlight delay")
+        utilities.process_status(
+            utilities.elevated(["defaults", "write", "/Library/Preferences/.GlobalPreferences.plist", "NonMetal_BacklightHack", "-bool", "true"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        )
     
     def add_legacy_dropbox_patch(self):
         print("- Merging DropboxHack SkyLightPlugins")
@@ -404,7 +409,6 @@ class PatchSysVolume:
             self.gpu_accel_legacy()
             self.add_new_binaries(sys_patch_data.AddAMDAccelLegacy, self.constants.legacy_amd_path)
         elif self.constants.detected_os in [os_data.os_data.big_sur, os_data.os_data.monterey] and self.constants.allow_ts2_accel is True:
-            # TODO: Enable for Monterey when acceleration patches proress
             print("- Installing TeraScale 2 Acceleration Kext patches for Big Sur")
             self.delete_old_binaries(sys_patch_data.DeleteAMDAccel11)
             self.delete_old_binaries(sys_patch_data.DeleteAMDAccel11TS2)
@@ -514,6 +518,9 @@ class PatchSysVolume:
         if self.constants.detected_os == os_data.os_data.monterey:
             self.add_legacy_dropbox_patch()
 
+        if self.legacy_keyboard_backlight is True:
+            self.add_legacy_keyboard_backlight_patch()
+        
         print("- Merging general legacy Frameworks")
         utilities.elevated(["rsync", "-r", "-i", "-a", f"{self.constants.payload_apple_frameworks_path_accel}/", self.mount_frameworks], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if self.constants.detected_os > os_data.os_data.big_sur:
@@ -551,6 +558,10 @@ class PatchSysVolume:
 
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")
+        
+        # Before starting, clean out old plugins
+        self.clean_skylight_plugins()
+        
         # Graphics patches
         if self.nvidia_legacy is True:
             print("- Installing legacy Nvidia Patches")
@@ -638,10 +649,6 @@ class PatchSysVolume:
         if self.legacy_gmux is True:
             print("- Installing Legacy Mux Brightness support")
             self.add_legacy_mux_patch()
-        
-        if self.legacy_keyboard_backlight is True:
-            print("- Installing Legacy Keyboard Backlight support")
-            self.add_legacy_keyboard_backlight_patch()
 
         if self.validate is False:
             self.rebuild_snapshot()
