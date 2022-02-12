@@ -120,7 +120,11 @@ The best way to achieve this is to boot Recovery (or Single User Mode if the dGP
 nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00
 ```
 
-This will disable the dGPU and allow the iGPU to function in Big Sur. Note that external display outputs are directly routed to the dGPU and therefore can no longer be used. Solutions such as a [DisplayLink Adapters](https://www.displaylink.com/products/usb-adapters) can work around this limitation in theory. However, currently the proprietary DisplayLink driver refuses to function on legacy-patched systems, either resulting in a windowserver crash loop or no output at all. 
+This will disable the dGPU and allow the iGPU to function in Big Sur. Note that external display outputs are directly routed to the dGPU and therefore can no longer be used. Solutions such as a [DisplayLink Adapters](https://www.displaylink.com/products/usb-adapters) can work around this limitation, however note that you'll need to use older drivers (5.2.6):
+
+* [DisplayLink USB Graphics Software for macOS - For Mojave and Catalina - 5.2.6](https://www.synaptics.com/products/displaylink-graphics/downloads/macos-5.2.6)
+
+Note this driver only provides partial support in macOS, full graphics acceleration is not currently available on the displays driven by DisplayLink
 
 ## Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)
 
@@ -149,7 +153,7 @@ This tool can be used to work-around this issue:
 
 By default OpenCore Legacy Patcher will assume MacBookPro8,2/3 have a faulty dGPU and disable acceleration. This is the safest option for most users as enabling dGPU acceleration on faulty Macs will result in failed booting.
 
-However if your machine does not have the dGPU disabled via NVRAM, you'll expereince a login loop. To work around this is quite simple:
+However if your machine does not have the dGPU disabled via NVRAM, you'll experience a login loop. To work around this is quite simple:
 
 1. Boot macOS in Single User Mode
     * Press Cmd+S in OpenCore's menu when you turn the Mac on
