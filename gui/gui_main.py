@@ -2423,6 +2423,9 @@ OpenCore Legacy Patcher by default knows the most ideal
 
     def non_metal_config_menu(self, event=None):
         # Configures ASB's Blur settings
+        # Check Dark Menu Bar:
+        #   defaults read ASB_DarkMenuBar
+        #   defaults write -g ASB_DarkMenuBar -bool true
         # Check Beta Blur:
         #   defaults read ASB_BlurBeta
         #   defaults write -g ASB_BlurBeta -bool true
@@ -2471,7 +2474,11 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.subheader_4.SetPosition(wx.Point(0, self.subheader_3.GetPosition().y + self.subheader_3.GetSize().height+ 5))
         self.subheader_4.Centre(wx.HORIZONTAL)
 
-        
+        is_dark_menu_bar = subprocess.run(["defaults", "read", "-g", "ASB_DarkMenuBar"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        if is_dark_menu_bar in ["1", "true"]:
+            is_dark_menu_bar = True
+        else:
+            is_dark_menu_bar = False
 
         is_blur_enabled = subprocess.run(["defaults", "read", "-g", "ASB_BlurBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
         if is_blur_enabled in ["1", "true"]:
@@ -2479,12 +2486,18 @@ OpenCore Legacy Patcher by default knows the most ideal
         else:
             is_blur_enabled = False
 
+        # Checkbox: Dark Menu Bar
+        self.dark_menu_bar_checkbox = wx.CheckBox(self.frame, label="Dark Menu Bar")
+        self.dark_menu_bar_checkbox.SetValue(is_dark_menu_bar)
+        self.dark_menu_bar_checkbox.Bind(wx.EVT_CHECKBOX, self.enable_dark_menubar_click)
+        self.dark_menu_bar_checkbox.SetPosition(wx.Point(0, self.subheader_4.GetPosition().y + self.subheader_4.GetSize().height + 10))
+        self.dark_menu_bar_checkbox.Centre(wx.HORIZONTAL)
+
         # Checkbox: Enable Beta Blur
         self.enable_beta_blur_checkbox = wx.CheckBox(self.frame, label="Enable Beta Blur")
         self.enable_beta_blur_checkbox.SetValue(is_blur_enabled)
         self.enable_beta_blur_checkbox.Bind(wx.EVT_CHECKBOX, self.enable_beta_blur_click)
-        self.enable_beta_blur_checkbox.SetPosition(wx.Point(0, self.subheader_4.GetPosition().y + self.subheader_4.GetSize().height + 10))
-        self.enable_beta_blur_checkbox.Center(wx.HORIZONTAL)
+        self.enable_beta_blur_checkbox.SetPosition(wx.Point(self.dark_menu_bar_checkbox.GetPosition().x, self.dark_menu_bar_checkbox.GetPosition().y + self.dark_menu_bar_checkbox.GetSize().height + 10))
 
         # Text: Blur Radius
         self.blur_radius_text = wx.StaticText(self.frame, label="Current Blur Radius: " + "px")
@@ -2523,6 +2536,13 @@ OpenCore Legacy Patcher by default knows the most ideal
         else:
             subprocess.run(["defaults", "write", "-g", "ASB_BlurBeta", "-bool", "false"])
         print("Beta Blur Enabled:", event.IsChecked())
+    
+    def enable_dark_menubar_click(self, event=None):
+        if event.IsChecked():
+            subprocess.run(["defaults", "write", "-g", "ASB_DarkMenuBar", "-bool", "true"])
+        else:
+            subprocess.run(["defaults", "write", "-g", "ASB_DarkMenuBar", "-bool", "false"])
+        print("Dark Menu Bar Enabled:", event.IsChecked())
     
     def blur_radius_scale_change(self, event=None):
         val = event.GetInt()
