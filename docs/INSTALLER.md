@@ -1,7 +1,6 @@
 # Download and build macOS Installers
 
-* [Downloading](#downloading)
-* [Building](#building)
+* [Creating the installer](#creating-the-installer)
 
 This doc is centered around downloading and writing the macOS installer to a USB. If you're already familiar with how to do this, you can skip.
 
@@ -24,7 +23,6 @@ First we'll want to select the "Create macOS Installer" button. This will presen
 ![](../images/OCLP-GUI-Create-Installer-Menu.png)
 
 For this example, we'll assume you'll need an installer. Selecting this option will download Apple's Installer Catalogs and build a list for you to choose:
-
 
 | Downloading | Listed Installers |
 | :--- | :--- |
@@ -49,4 +47,5 @@ Now the patcher will start the installer flashing!
 | Flashing | Success Prompt | Finished Flashing |
 | :--- | :--- |
 | ![](../images/OCLP-GUI-Installer-Flashing-Process.png) | ![](../images/OCLP-GUI-Installer-Sucess-Prompt.png) | ![](../images/OCLP-GUI-Installer-Finished-Script.png) |
+
 # Once finished, head to [Building and installing OpenCore](./BUILD.md)
