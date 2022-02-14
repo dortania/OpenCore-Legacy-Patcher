@@ -6,6 +6,7 @@
   - OpenCorePkg 0.7.8 - release
   - Lilu 1.6.0 - release
   - WhateverGreen 1.5.7 - release
+  - FeatureUnlock 1.0.7 - rolling (6a87f65)
 - Resolve many non-Metal issues:
   - Control Centre Sliders
   - Shift/missing icons
@@ -16,6 +17,7 @@
     - Drops reliance on LabTick
 - Add Ethernet Controller detection to build
 - Resolve i210/i225 NIC support on pre-Ivy Macs
+- Resolve AirPlay to Mac support on Skylake+ Macs in 12.3 Beta 2+
 
 ## 0.4.2
 - Resolve app crashing on some 3rd party SAS/SATA controllers

@@ -124,3 +124,14 @@ Head into the GUI, Patcher Settings and toggle the bits you need disabled from S
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
 | :--- | :--- | :--- |
 | ![](../images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](../images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](../images/OCLP-GUI-Settings-SIP-Disabled.png) |
+
+## Intermediate issues with USB 1.1 and Bluetooth on MacPro3,1 - MacPro5,1
+
+For those experiencing issues with USB 1.1 devices (such as mice, keyboards and bluetooth chipsets), macOS Big Sur and newer have weakened OS-side reliability for the UHCI controller in older Mac Pros.
+
+* UHCI is a USB 1.1 controller that is hooked together with the USB 2.0 ports in your system. Whenever a USB 1.1 device is detected, the UHCI controller is given ownership of the device at a hardware/firmware level.
+  * EHCI is the USB 2.0 controller in older Mac Pros
+
+Because of this, we recommend placing a USB 2.0/3.0 hub between your devices and the port on the Mac Pro. UHCI and EHCI cannot both be used at once, so using a USB hub will always force the EHCI controller on.
+
+* Alternatively, you can try cold starting the hardware and see if macOS recognizes the UHCI controller properly

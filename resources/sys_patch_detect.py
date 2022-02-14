@@ -1,5 +1,10 @@
-from resources import constants, device_probe, utilities, generate_smbios
-from data import model_array, os_data, smbios_data, cpu_data, sip_data
+# Hardware Detection Logic for Root Patching
+# Returns a dictionary of patches with boolean values
+# Used when supplying data to sys_patch.py
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+
+from resources import constants, device_probe, utilities
+from data import model_array, os_data, sip_data
 
 class detect_root_patch:
     def __init__(self, model, versions):
