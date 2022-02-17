@@ -125,7 +125,7 @@ body:
   - type: dropdown
     id: used-forums
     attributes:
-      label: Have you already verified this is a patcher bug and not a macOS bug on our discord servers?
+      label: Have you already verified this is a patcher bug and not a macOS bug/user error on our discord servers?
       description: If no, please do not use issues for this. We'd appreciate it if users check discuss with others before filing. Issues are for valid patcher issues only, not for personal troubleshooting scessions.
       multiple: true
       options:
