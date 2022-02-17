@@ -183,4 +183,4 @@ body:
   - type: textarea
     id: extra-info
     attributes:
-      label: What steps have you taken to troubleshoot this?
+      label: What steps have you taken to troubleshoot this? Please include messages from Discord, logs, and screenshots.
