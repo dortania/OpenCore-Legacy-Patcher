@@ -47,13 +47,14 @@ sudo killall -9 BlueTool bluetoothd
 
 * Broadcom BCM94328, BCM94322 and Atheros Wireless Chipsets lost support
 
-The following models lost Bluetooth support in macOS Monterey due to their legacy Wireless chipset:
+The following models lost Wifi support in macOS Monterey due to their legacy Wireless chipset:
 
 * iMac12,x and older
 * Macmini3,1 and older
 * MacBook5,x and older
 * MacBookAir2,1 and older
 * MacBookPro7,1 and older
+  * MacBookPro6,x is exempt
 * MacPro5,1 and older
 
 Note: BCM943224, BCM94331, BCM94360 and BCM943602 are still fully support by OpenCore Legacy Patcher
