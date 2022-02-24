@@ -407,6 +407,16 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "BUF0 to BUF1")["Enabled"] = True
             shutil.copy(self.constants.windows_ssdt_path, self.constants.acpi_path)
 
+        # With macOS Monterey, Apple's SDXC driver requires the system to support VT-D
+        # However pre-Ivy Bridge don't support this feature
+        # Big Sur's AppleSDXC driver only supported 14e4:16bc, so ignore other devices (avoids false positives from class code parsing)
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
+            if (
+                (self.constants.computer.sdxc_controller and not self.constants.custom_model and self.constants.computer.sdxc_controller.vendor_id == 0x14e4 and self.constants.computer.sdxc_controller.device_id == 0x16bc) or
+                (self.model.startswith("MacBookPro8") or self.model.startswith("Macmini5"))
+            ):
+                self.enable_kext("BigSurSDXC.kext", self.constants.bigsursdxc_version, self.constants.bigsursdxc_path)
+
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
         if (

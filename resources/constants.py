@@ -62,6 +62,7 @@ class Constants:
         self.io80211elcap_version = "2.0.0"  #       IO80211ElCap
         self.io80211high_sierra_version = "1.0.1"  # IO80211HighSierra
         self.io80211mojave_version = "1.0.1"  #      IO80211Mojave
+        self.bigsursdxc_version = "1.0.0"  #         BigSurSDXC
 
         ## Dortania
         ## https://github.com/dortania
@@ -299,6 +300,10 @@ class Constants:
     @property
     def mce_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleMCEReporterDisabler-v{self.mce_version}.zip")
+    
+    @property
+    def bigsursdxc_path(self):
+        return self.payload_kexts_path / Path(f"Misc/BigSurSDXC-v{self.bigsursdxc_version}.zip")
 
     @property
     def mousse_path(self):

@@ -505,6 +505,24 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
+				<string>SDXC Patch for Pre-Ivy</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>21.0.0</string>
+				<key>BundlePath</key>
+				<string>BigSurSDXC.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/BigSurSDXC</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
 				<string>I210 Ethernet patch</string>
 				<key>Enabled</key>
 				<false/>

@@ -187,6 +187,10 @@ class UHCIController(PCIDevice):
     CLASS_CODE: ClassVar[int] = 0x0c0300
 
 @dataclass
+class SDXCController(PCIDevice):
+    CLASS_CODE: ClassVar[int] = 0x080501
+
+@dataclass
 class NVIDIA(GPU):
     VENDOR_ID: ClassVar[int] = 0x10DE
 
@@ -465,6 +469,7 @@ class Computer:
     dgpu: Optional[GPU] = None  # Shortcut for GFX0
     storage: list[PCIDevice] = field(default_factory=list)
     usb_controllers: list[PCIDevice] = field(default_factory=list)
+    sdxc_controller: list[PCIDevice] = field(default_factory=list)
     ethernet: Optional[EthernetController] = field(default_factory=list)
     wifi: Optional[WirelessCard] = None
     cpu: Optional[CPU] = None
@@ -483,6 +488,7 @@ class Computer:
         computer.wifi_probe()
         computer.storage_probe()
         computer.usb_controller_probe()
+        computer.sdxc_controller_probe()
         computer.ethernet_probe()
         computer.smbios_probe()
         computer.cpu_probe()
@@ -550,6 +556,19 @@ class Computer:
             self.ambient_light_sensor = True
             ioreg.IOObjectRelease(device)
     
+    def sdxc_controller_probe(self):
+        sdxc_controllers = ioreg.ioiterator_to_list(
+            ioreg.IOServiceGetMatchingServices(
+                ioreg.kIOMasterPortDefault,
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(SDXCController.CLASS_CODE)[2:].zfill(8)))}]},
+                None,
+            )[1]
+        )
+
+        for device in sdxc_controllers:
+            self.sdxc_controller.append(SDXCController.from_ioregistry(device))
+            ioreg.IOObjectRelease(device)
+
     def usb_controller_probe(self):
         xhci_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(

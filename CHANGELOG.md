@@ -18,6 +18,7 @@
 - Add Ethernet Controller detection to build
 - Resolve i210/i225 NIC support on pre-Ivy Macs
 - Resolve AirPlay to Mac support on Skylake+ Macs in 12.3 Beta 2+
+- Resolve SDXC support in Monterey for Pre-Ivy Bridge Macs
 
 ## 0.4.2
 - Resolve app crashing on some 3rd party SAS/SATA controllers
