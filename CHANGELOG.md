@@ -19,6 +19,10 @@
 - Resolve i210/i225 NIC support on pre-Ivy Macs
 - Resolve AirPlay to Mac support on Skylake+ Macs in 12.3 Beta 2+
 - Resolve SDXC support in Monterey for Pre-Ivy Bridge Macs
+- Rename Battery Throttling option to Firmware Throttling
+  - Expands support to desktops (ie. iMacs without Displays)
+- Add XCPM disabling
+  - Forces `ACPI_SMC_PlatformPlugin` to outmatch `X86PlatformPlugin`
 
 ## 0.4.2
 - Resolve app crashing on some 3rd party SAS/SATA controllers

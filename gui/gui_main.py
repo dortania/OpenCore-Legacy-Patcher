@@ -1761,21 +1761,30 @@ class wx_python_gui:
         self.hibernation_checkbox.SetToolTip(wx.ToolTip("This will disable the ConnectDrivers in OpenCore\nRecommended to toggle if your machine is having issues with hibernation.\nMainly applicable for MacBookPro9,1 and MacBookPro10,1"))
 
         # Disable Battery Throttling
-        self.disable_battery_throttling_checkbox = wx.CheckBox(self.frame, label="Disable Battery Throttling")
+        self.disable_battery_throttling_checkbox = wx.CheckBox(self.frame, label="Disable Firmware Throttling")
         self.disable_battery_throttling_checkbox.SetValue(self.constants.disable_msr_power_ctl)
         self.disable_battery_throttling_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_battery_throttling_click)
         self.disable_battery_throttling_checkbox.SetPosition(wx.Point(
             self.hibernation_checkbox.GetPosition().x, 
             self.hibernation_checkbox.GetPosition().y + self.hibernation_checkbox.GetSize().height))
-        self.disable_battery_throttling_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable MSR Power Control on Arrendale and newer Laptops\nMainly applicable for systems with severe battery throttling"))
+        self.disable_battery_throttling_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable MSR Power Control on Arrendale and newer Macs\nMainly applicable for systems with severe throttling due to missing battery or display"))
+
+        # Disable XCPM
+        self.disable_xcpm_checkbox = wx.CheckBox(self.frame, label="Disable XCPM")
+        self.disable_xcpm_checkbox.SetValue(self.constants.disable_xcpm)
+        self.disable_xcpm_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_xcpm_click)
+        self.disable_xcpm_checkbox.SetPosition(wx.Point(
+            self.disable_battery_throttling_checkbox.GetPosition().x, 
+            self.disable_battery_throttling_checkbox.GetPosition().y + self.disable_battery_throttling_checkbox.GetSize().height))
+        self.disable_xcpm_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable XCPM on Ivy Bridge EP and newer Macs\nMainly applicable for systems with severe throttling due to missing battery or display"))
 
         # Software Demux
         self.software_demux_checkbox = wx.CheckBox(self.frame, label="Software Demux")
         self.software_demux_checkbox.SetValue(self.constants.software_demux)
         self.software_demux_checkbox.Bind(wx.EVT_CHECKBOX, self.software_demux_click)
         self.software_demux_checkbox.SetPosition(wx.Point(
-            self.disable_battery_throttling_checkbox.GetPosition().x,
-            self.disable_battery_throttling_checkbox.GetPosition().y + self.disable_battery_throttling_checkbox.GetSize().height))
+            self.disable_xcpm_checkbox.GetPosition().x,
+            self.disable_xcpm_checkbox.GetPosition().y + self.disable_xcpm_checkbox.GetSize().height))
         self.software_demux_checkbox.SetToolTip(wx.ToolTip("This will force a software based demux on MacBookPro8,2/3 aiding for better battery life\nThis will require the dGPU to be disabled via NVRAM"))
         if not self.constants.custom_model and self.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"]:
             self.software_demux_checkbox.Disable()
@@ -1942,6 +1951,14 @@ class wx_python_gui:
         else:
             print("Disable Battery Throttling Disabled")
             self.constants.disable_msr_power_ctl = False
+    
+    def disable_xcpm_click(self, event=None):
+        if self.disable_xcpm_checkbox.GetValue():
+            print("Disable XCPM Enabled")
+            self.constants.disable_xcpm = True
+        else:
+            print("Disable XCPM Disabled")
+            self.constants.disable_xcpm = False
 
     def software_demux_click(self, event=None):
         if self.software_demux_checkbox.GetValue():

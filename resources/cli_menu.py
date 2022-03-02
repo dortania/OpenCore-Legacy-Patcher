@@ -807,16 +807,16 @@ https://dortania.github.io/OpenCore-Legacy-Patcher/ACCEL.html#unable-to-switch-g
         print(
             """
 By default on Nehalem and newer Macs, the firmware will throttle if
-the battery is either dead or missing. The firmware will set
+the battery or Display is either dead or missing. The firmware will set
 'BD PROCHOT' to notify the OS the machine needs to run in an extreme
 low power mode.
 
 Enabling this option will patch 'MSR_POWER_CTL' to be unset allowing
-proper CPU behaviour as if battery is present. Note that this can cause
+proper CPU behaviour as if hardware is present. Note that this can cause
 instability in situations where the CPU is being taxed and pulls more 
-power than the PSU can supply.
+power than the laptop's PSU can supply.
 
-Note: Only supported on Nehalem and newer MacBooks (2010+)
+Note: Only supported on Nehalem and newer Macs (2010+)
         """
         )
 
@@ -829,6 +829,32 @@ Note: Only supported on Nehalem and newer MacBooks (2010+)
             print("Returning to previous menu")
         else:
             self.set_battery_throttle()
+
+    def set_xcpm(self):
+        utilities.cls()
+        utilities.header(["Disable XCPM"])
+        print(
+            """
+By default on Ivy Bridge EP and newer Macs, the system will throttle if
+the battery or Display is either dead or missing. Apple's XCPM will set
+'BD PROCHOT' to avoid damage to the system.
+
+Enabling this option will disable Apple's XNU CPU Power Management (XCPM)
+and fall back onto the older ACPI_SMC_PlatformPlugin.kext.
+
+Note: Only supported on Ivy Bridge EP and newer Macs (2013+)
+        """
+        )
+
+        change_menu = input("Disable XCPM?(y/n/q): ")
+        if change_menu in {"y", "Y", "yes", "Yes"}:
+            self.constants.disable_xcpm = True
+        elif change_menu in {"n", "N", "no", "No"}:
+            self.constants.disable_xcpm = False
+        elif change_menu in {"q", "Q", "Quit", "quit"}:
+            print("Returning to previous menu")
+        else:
+            self.set_xcpm()
 
     def set_surplus(self):
         utilities.cls()
@@ -1236,6 +1262,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 ],
                 [f"Set Hibernation Workaround:\tCurrently {self.constants.disable_connectdrivers}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_hibernation_workaround],
                 [f"Disable Battery Throttling:\tCurrently {self.constants.disable_msr_power_ctl}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_battery_throttle],
+                [f"Disable XCPM:\t\tCurrently {self.constants.disable_xcpm}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_xcpm],
                 [f"Set Software Demux:\tCurrently {self.constants.software_demux}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_software_demux],
                 [f"Set 3rd Party SSD Support:\tCurrently {self.constants.allow_3rd_party_drives}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_3rd_party_drices],
                 [f"Set FeatureUnlock: \tCurrently {self.constants.fu_status}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_fu_settings],

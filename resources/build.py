@@ -174,14 +174,17 @@ class BuildOpenCore:
                     print(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
                     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
         
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value or self.constants.disable_xcpm is True:
             # With macOS 12.3 Beta 1, Apple dropped the 'plugin-type' check within X86PlatformPlugin
             # Because of this, X86PP will match onto the CPU instead of ACPI_SMC_PlatformPlugin
             # This causes power management to break on pre-Ivy Bridge CPUs as they don't have correct
             # power management tables provided.
             # This patch will simply increase ASPP's 'IOProbeScore' to outmatch X86PP
-            print("- Fixing ACPI SMC Power Management support")
+            print("- Overriding ACPI SMC matching")
             self.enable_kext("ASPP-Override.kext", self.constants.aspp_override_version, self.constants.aspp_override_path)
+            if self.constants.disable_xcpm is True:
+                # Only inject on older OSes if user requests
+                self.get_item_by_kv(self.config["Kernel"]["Add"], "BundlePath", "ASPP-Override.kext")["MinKernel"] = ""
 
         if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
             # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
@@ -926,10 +929,10 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.filesystems.apfs")["Enabled"] = True
             # Lets us check in sys_patch.py if config supports FileVault
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
-        if self.constants.disable_msr_power_ctl is True and self.model.startswith("MacBook"):
-            print("- Disabling Battery Throttling")
+        if self.constants.disable_msr_power_ctl is True:
+            print("- Disabling Firmware Throttling")
             if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.cpu_data.nehalem.value:
-                # Nehalem and newer MacBooks force firmware throttling via MSR_POWER_CTL
+                # Nehalem and newer systems force firmware throttling via MSR_POWER_CTL
                 self.enable_kext("SimpleMSR.kext", self.constants.simplemsr_version, self.constants.simplemsr_path)
         if self.constants.disable_connectdrivers is True:
             print("- Disabling ConnectDrivers")

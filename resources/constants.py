@@ -70,7 +70,7 @@ class Constants:
         self.smcspoof_version = "1.0.0"  #           SMC-Spoof
         self.mce_version = "1.0.0"  #                AppleMCEReporterDisabler
         self.btspoof_version = "1.0.0"  #            Bluetooth-Spoof
-        self.aspp_override_version = "1.0.0"  #      ACPI_SMC_PlatformPlugin Override
+        self.aspp_override_version = "1.0.1"  #      ACPI_SMC_PlatformPlugin Override
 
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
@@ -187,6 +187,7 @@ class Constants:
         self.allow_3rd_party_drives = True   # Allow ThridPartyDrives quirk
         self.set_content_caching = False  #    Set Content Caching
         self.allow_nvme_fixing = True  #       Allow NVMe Kernel Space Patches
+        self.disable_xcpm = False  #           Disable XCPM (X86PlatformPlugin.kext)
 
         self.legacy_accel_support = [
             os_data.os_data.mojave,
