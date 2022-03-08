@@ -2721,6 +2721,36 @@ smbios_dictionary = {
             "SATA 3.5",
         ],
     },
+    # Mac Studio M1 Max
+    "Mac13,1": {
+        "Board ID": None,
+        "FirmwareFeatures": None,
+        "SecureBootModel": "j375c",
+        "CPU Generation": cpu_data.cpu_data.apple_m1_max.value,
+        "Max OS Supported": os_data.os_data.max_os,
+        "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
+        "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
+        "Ethernet Chipset": "Aquantia",
+        "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe",
+        ],
+    },
+    # Mac Studio M1 Ultra
+    "Mac13,2": {
+        "Board ID": None,
+        "FirmwareFeatures": None,
+        "SecureBootModel": "j375d",
+        "CPU Generation": cpu_data.cpu_data.apple_m1_ultra.value,
+        "Max OS Supported": os_data.os_data.max_os,
+        "Wireless Model": device_probe.Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe,
+        "Bluetooth Model": bluetooth_data.bluetooth_data.PCIe,
+        "Ethernet Chipset": "Aquantia",
+        "Stock GPUs": [],
+        "Stock Storage": [
+            "NVMe",
+        ],
+    },
     "ADP2,1": {
         "Board ID": None,
         "FirmwareFeatures": None,

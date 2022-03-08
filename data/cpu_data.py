@@ -21,3 +21,4 @@ class cpu_data(enum.IntEnum):
     apple_m1 = 114  # A14
     apple_m1_pro = 115
     apple_m1_max = 116
+    apple_m1_ultra = 117
