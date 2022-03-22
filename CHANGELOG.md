@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.4
+
 ## 0.4.3
 - Increment Binaries:
   - PatcherSupportPkg 0.3.4 - release
