@@ -274,7 +274,7 @@ class wx_python_gui:
         self.post_install.Bind(wx.EVT_BUTTON, self.root_patch_menu)
         self.post_install.Centre(wx.HORIZONTAL)
         if self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina] and self.constants.moj_cat_accel == False:
-            self.post_install.SetToolTip(wx.ToolTip("""Graphics Acceleration fro Mojave and Catalina is currently experimental. \nIf you require this feature, enable '10.14/15 Accel' in Settings."""))
+            self.post_install.SetToolTip(wx.ToolTip("""Graphics Acceleration for Mojave and Catalina is currently experimental. \nIf you require this feature, enable '10.14/15 Accel' in Settings."""))
             self.post_install.Disable()
         elif self.constants.detected_os < os_data.os_data.mojave:
             self.post_install.SetToolTip(wx.ToolTip("""Root Patching is only available for Mojave and newer."""))
