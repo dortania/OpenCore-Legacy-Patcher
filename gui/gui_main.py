@@ -2025,7 +2025,7 @@ class wx_python_gui:
         if fu_choice == "Enabled":
             self.constants.fu_status = True
             self.constants.fu_arguments = None
-        elif fu_choice == "Paritally enabled (No AirPlay/SideCar)":
+        elif fu_choice == "Partially enabled (No AirPlay/SideCar)":
             self.constants.fu_status = True
             self.constants.fu_arguments = " -disable_sidecar_mac"
         else:
@@ -2368,7 +2368,7 @@ OpenCore Legacy Patcher by default knows the most ideal
 
         # Dropdown: Set Feature Unlock status
         self.feature_unlock_dropdown = wx.Choice(self.frame)
-        for entry in ["Enabled", "Paritally enabled (No AirPlay/SideCar)", "Disabled"]:
+        for entry in ["Enabled", "Partially enabled (No AirPlay/SideCar)", "Disabled"]:
             self.feature_unlock_dropdown.Append(entry)
         self.feature_unlock_dropdown.SetPosition(wx.Point(0, self.feature_unlock_label.GetPosition().y + self.feature_unlock_label.GetSize().height + 5))
         if self.constants.fu_status is True:
