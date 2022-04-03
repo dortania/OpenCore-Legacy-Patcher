@@ -1,6 +1,7 @@
 # Generate Default Data
 from resources import utilities, device_probe, generate_smbios
 from data import model_array, smbios_data, cpu_data
+import subprocess
 
 
 class generate_defaults:
@@ -110,10 +111,10 @@ class generate_defaults:
             # users can override this in settings
             ts2_status = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
             if ts2_status in ["1", "true"]:
-                self.constants.allow_ts2_accel = True
+                settings.allow_ts2_accel = True
             else:
                 subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "TRUE"])
-                self.constants.allow_ts2_accel = False
+                settings.allow_ts2_accel = False
 
         try:
             if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value and model != "MacPro5,1":
