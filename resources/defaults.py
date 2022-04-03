@@ -108,7 +108,13 @@ class generate_defaults:
         if model in ["MacBookPro8,2", "MacBookPro8,3"]:
             # Users disabling TS2 most likely have a faulty dGPU
             # users can override this in settings
-            settings.allow_ts2_accel = False
+            ts2_status = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+            if ts2_status in ["1", "true"]:
+                self.constants.allow_ts2_accel = True
+            else:
+                subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "TRUE"])
+                self.constants.allow_ts2_accel = False
+
         try:
             if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value and model != "MacPro5,1":
                 # Sidecar and AirPlay to Mac only blacklist Ivy and newer (as well as MacPro5,1)

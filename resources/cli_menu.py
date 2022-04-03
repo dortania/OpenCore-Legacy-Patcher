@@ -690,8 +690,10 @@ handle acceleration tasks.
 
         change_menu = input("Allow TeraScale 2 Acceleration?(y/n/q): ")
         if change_menu in {"y", "Y", "yes", "Yes"}:
+            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "TRUE"])
             self.constants.allow_ts2_accel = True
         elif change_menu in {"n", "N", "no", "No"}:
+            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "FALSE"])
             self.constants.allow_ts2_accel = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
             print("Returning to previous menu")

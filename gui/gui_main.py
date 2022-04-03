@@ -1923,9 +1923,11 @@ class wx_python_gui:
     def ts2_accel_click(self, event=None):
         if self.set_terascale_accel_checkbox.GetValue():
             print("TS2 Acceleration Enabled")
+            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "TRUE"])
             self.constants.allow_ts2_accel = True
         else:
             print("TS2 Acceleration Disabled")
+            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "FALSE"])
             self.constants.allow_ts2_accel = False
     
     def windows_gmux_click(self, event=None):    

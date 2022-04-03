@@ -4,6 +4,8 @@
 - Lower SIP requirement for Root Patching
   - Sets to 0x802 (previously 0xA03)
   - Drops `CSR_ALLOW_UNTRUSTED_KEXTS` and `CSR_ALLOW_UNAPPROVED_KEXTS`
+- Remember TeraScale 2 Setting on MacBookPro8,2/3
+  - Avoids requiring toggling after first time
 
 ## 0.4.3
 - Increment Binaries:
