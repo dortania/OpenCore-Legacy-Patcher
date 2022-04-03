@@ -122,9 +122,7 @@ class system_integrity_protection:
 
     root_patch_sip_big_sur = [
         # Variables required to root patch in Big Sur and Monterey
-        "CSR_ALLOW_UNTRUSTED_KEXTS",  #            0x1
         "CSR_ALLOW_UNRESTRICTED_FS",  #            0x2   - Required to mount and edit root volume, as well as load modded platform binaries
-        "CSR_ALLOW_UNAPPROVED_KEXTS",  #           0x200
         "CSR_ALLOW_UNAUTHENTICATED_ROOT",  #       0x800 - Required to avoid KC mismatch kernel panic
     ]
 

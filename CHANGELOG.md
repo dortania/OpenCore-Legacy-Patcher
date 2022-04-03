@@ -1,6 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.4.4
+- Lower SIP requirement for Root Patching
+  - Sets to 0x802 (previously 0xA03)
+  - Drops `CSR_ALLOW_UNTRUSTED_KEXTS` and `CSR_ALLOW_UNAPPROVED_KEXTS`
 
 ## 0.4.3
 - Increment Binaries:
