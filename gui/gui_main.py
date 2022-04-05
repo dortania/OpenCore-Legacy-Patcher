@@ -22,6 +22,7 @@ class wx_python_gui:
         self.computer = self.constants.computer
         self.constants.gui_mode = True
         self.walkthrough_mode = False
+        self.finished_auto_patch = False
 
         # Backup stdout for usage with wxPython
         self.stock_stdout = sys.stdout
@@ -124,10 +125,18 @@ class wx_python_gui:
         # Show Dialog Box
         if self.dialog.ShowModal() == wx.ID_YES:
             print("Relaunching as root")
+
+            extension = ""
+            if event:
+                if event.GetEventObject().GetLabel() == "Start Root Patching":
+                    extension = " --gui_patch"
+                elif event.GetEventObject().GetLabel() == "Revert Root Patches":
+                    extension = " --gui_unpatch"
+
             if self.constants.launcher_script is None:
-                args_string = f"'{self.constants.launcher_binary}'"
+                args_string = f"'{self.constants.launcher_binary}'{extension}"
             else:
-                args_string = f"{self.constants.launcher_binary} {self.constants.launcher_script}"
+                args_string = f"{self.constants.launcher_binary} {self.constants.launcher_script}{extension}"
 
             args = [
                 "osascript",
@@ -332,6 +341,16 @@ class wx_python_gui:
                 self.copyright.GetPosition().y + self.copyright.GetSize().height + 40
             )
         )
+
+        
+        if self.finished_auto_patch is False:
+            if "--gui_patch" in sys.argv:
+                self.patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+                self.root_patch_start()
+            elif "--gui_unpatch" in sys.argv:
+                self.patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+                self.root_patch_revert()
+        self.finished_auto_patch = True
 
         if self.app.MainLoop() is None:
             self.app.MainLoop() 
@@ -874,7 +893,11 @@ class wx_python_gui:
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
         self.frame.Show()
-        sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_patch()
+        try:
+            sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_patch()
+        except Exception as e:
+            self.text_box.AppendText(f"- An internal error occured while running the Root Patcher:\n{str(e)}")
+            pass
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
 
@@ -947,7 +970,11 @@ class wx_python_gui:
         sys.stdout = menu_redirect.RedirectText(self.text_box, True)
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
-        sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_unpatch()
+        try:
+            sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_unpatch()
+        except Exception as e:
+            self.text_box.AppendText(f"- An internal error occured while running the Root Patcher:\n{str(e)}")
+            pass
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
 
