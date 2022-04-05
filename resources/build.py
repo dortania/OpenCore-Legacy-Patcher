@@ -861,9 +861,17 @@ class BuildOpenCore:
         if self.constants.custom_sip_value:
             print(f"- Setting SIP value to: {self.constants.custom_sip_value}")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = utilities.string_to_hex(self.constants.custom_sip_value.lstrip("0x"))
+            # Work-around 12.3 bug where Electron apps no longer launch with SIP lowered
+            # Unknown whether this is intended behavior or not, revisit with 12.4
+            print("- Adding ipc_control_port_options=0 to boot-args")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " ipc_control_port_options=0"
         elif self.constants.sip_status is False:
             print("- Set SIP to allow Root Volume patching")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("02080000")
+            # Work-around 12.3 bug where Electron apps no longer launch with SIP lowered
+            # Unknown whether this is intended behavior or not, revisit with 12.4
+            print("- Adding ipc_control_port_options=0 to boot-args")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " ipc_control_port_options=0"
         # if self.constants.amfi_status is False:
         #     print("- Disabling AMFI")
         #     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi_get_out_of_my_way=1"

@@ -8,6 +8,9 @@
   - Avoids requiring toggling after first time
 - Streamline GUI relaunch for Root Patch/Unpatch
   - On relaunch, GUI starts patching immediately (previously user would need to re-nagivate the menu)
+- Resolve Electron Crashing with SIP lowered on 12.3
+  - Adds `ipc_control_port_options=0` boot argument
+  - Unknown whether this is a "bug" or intentional from Apple, affects native Macs with SIP disabled
 
 ## 0.4.3
 - Increment Binaries:
