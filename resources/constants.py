@@ -105,6 +105,7 @@ class Constants:
         self.launcher_binary = None #       Determine launch binary (ie. Python vs PyInstaller)
         self.launcher_script = None  #      Determine launch file (if run via Python)
         self.ignore_updates = False  #      Ignore OCLP updates
+        self.wxpython_variant = False #     Determine if using wxPython variant
 
         ## Hardware
         self.computer: device_probe.Computer = None  # type: ignore

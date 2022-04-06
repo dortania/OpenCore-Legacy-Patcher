@@ -247,8 +247,7 @@ class PatchSysVolume:
         if result.returncode != 0 or (self.constants.detected_os < os_data.os_data.catalina and "KernelCache ID" not in result.stdout.decode()):
             self.success_status = False
             print("- Unable to build new kernel cache")
-            print("\nPlease report this to Github")
-            print("Reason for Patch Failure:")
+            print("\nReason for Patch Failure:")
             print(result.stdout.decode())
             print("")
             print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")

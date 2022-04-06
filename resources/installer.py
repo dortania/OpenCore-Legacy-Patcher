@@ -2,6 +2,7 @@
 from pathlib import Path
 import plistlib
 import subprocess
+import requests
 from resources import utilities
 
 def list_local_macOS_installers():
@@ -109,16 +110,17 @@ def install_macOS_installer(download_path):
 def list_downloadable_macOS_installers(download_path, catalog):
     available_apps = {}
     if catalog == "DeveloperSeed":
-        link = "https://swscan.apple.com/content/catalogs/others/index-12seed-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
+        link = "https://swscan.apple.com/content/catalogs/others/index-12seed-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
     elif catalog == "PublicSeed":
-        link = "https://swscan.apple.com/content/catalogs/others/index-12beta-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
+        link = "https://swscan.apple.com/content/catalogs/others/index-12beta-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
     else:
-        link = "https://swscan.apple.com/content/catalogs/others/index-12customerseed-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog.gz"
+        link = "https://swscan.apple.com/content/catalogs/others/index-12customerseed-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
     
-    # Download and unzip the catalog
-    if utilities.download_file(link, (Path(download_path) / Path("seed.sucatalog.gz"))):
-        subprocess.run(["gunzip", "-d", "-f", Path(download_path) / Path("seed.sucatalog.gz")])
-        catalog_plist = plistlib.load((Path(download_path) / Path("seed.sucatalog")).open("rb"))
+    if utilities.verify_network_connection(link) is True:
+        try:
+            catalog_plist = plistlib.loads(requests.get(link).content)
+        except plistlib.InvalidFileException:
+            return available_apps
 
         for item in catalog_plist["Products"]:
             try:
@@ -129,8 +131,10 @@ def list_downloadable_macOS_installers(download_path, catalog):
 
                 for bm_package in catalog_plist["Products"][item]["Packages"]:
                     if "Info.plist" in bm_package["URL"] and "InstallInfo.plist" not in bm_package["URL"]:
-                        utilities.download_file(bm_package["URL"], (Path(download_path) / Path("Info.plist")))
-                        build_plist = plistlib.load((Path(download_path) / Path("Info.plist")).open("rb"))
+                        try:
+                            build_plist = plistlib.loads(requests.get(bm_package["URL"]).content)
+                        except plistlib.InvalidFileException:
+                            continue
                         version = build_plist["MobileAssetProperties"]["OSVersion"]
                         build = build_plist["MobileAssetProperties"]["Build"]
                         try:

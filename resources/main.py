@@ -13,6 +13,8 @@ class OpenCoreLegacyPatcher:
     def __init__(self, launch_gui=False):
         print("- Loading...")
         self.constants = constants.Constants()
+        if launch_gui is True:
+            self.constants.wxpython_variant = True
         self.generate_base_data()
         if utilities.check_cli_args() is None:
             if launch_gui is True:

@@ -11,9 +11,13 @@
 - Resolve Electron Crashing with SIP lowered on 12.3
   - Adds `ipc_control_port_options=0` boot argument
   - Unknown whether this is a "bug" or intentional from Apple, affects native Macs with SIP disabled
-- Resolve Catalyst crashing after 1200 seconds on non-Metal
+- Resolved non-Metal issues:
+  - Catalyst crashing after 1200 seconds on non-Metal
+  - Automatic Light/Darkmode (credit @moosethegoose2213)
 - Increment Binaries:
   - PatcherSupportPkg 0.3.6 - release
+- Speed up loading available remote macOS Installers from Apple
+  - Skips writing catalogs to disk, loads into memory directly
 
 ## 0.4.3
 - Increment Binaries:

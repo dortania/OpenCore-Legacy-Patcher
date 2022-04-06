@@ -44,7 +44,7 @@ class check_binary_updates:
         return False
 
     def determine_local_build_type(self):
-        if self.constants.gui_mode is True:
+        if self.constants.wxpython_variant is True:
             return "GUI"
         else:
             return "TUI"
