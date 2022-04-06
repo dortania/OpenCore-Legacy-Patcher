@@ -884,6 +884,7 @@ class wx_python_gui:
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
+        self.return_to_main_menu.Disable()
 
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
@@ -900,6 +901,7 @@ class wx_python_gui:
             pass
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
+        self.return_to_main_menu.Enable()
 
         wx.GetApp().Yield()
     
@@ -963,6 +965,7 @@ class wx_python_gui:
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
+        self.return_to_main_menu.Disable()
 
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
@@ -977,6 +980,7 @@ class wx_python_gui:
             pass
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
+        self.return_to_main_menu.Enable()
 
         wx.GetApp().Yield()
 
@@ -1043,18 +1047,16 @@ class wx_python_gui:
         self.download_label.SetPosition(
             wx.Point(
                 self.header.GetPosition().x,
-                self.header.GetPosition().y + self.header.GetSize().height + 10
+                self.header.GetPosition().y + self.header.GetSize().height + 15
             )
         )
         self.download_label.Centre(wx.HORIZONTAL)
-        # Redirect stdout to label
-        sys.stdout=menu_redirect.RedirectLabel(self.download_label)
 
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.download_label.GetPosition().x,
-                self.download_label.GetPosition().y + self.download_label.GetSize().height + 30
+                self.download_label.GetPosition().y + self.download_label.GetSize().height + 15
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
@@ -1062,12 +1064,12 @@ class wx_python_gui:
 
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
         self.frame.Show()
+        wx.GetApp().Yield()
 
         # Download installer catalog
         available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "PublicSeed")
 
         self.frame.DestroyChildren()
-        sys.stdout = self.stock_stdout
 
         # Header
         self.header = wx.StaticText(self.frame, label="Download macOS Installer")
