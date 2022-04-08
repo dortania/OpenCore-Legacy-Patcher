@@ -13,8 +13,7 @@ class OpenCoreLegacyPatcher:
     def __init__(self, launch_gui=False):
         print("- Loading...")
         self.constants = constants.Constants()
-        if launch_gui is True:
-            self.constants.wxpython_variant = True
+        self.constants.wxpython_variant = launch_gui
         self.generate_base_data()
         if utilities.check_cli_args() is None:
             if launch_gui is True:
@@ -50,7 +49,7 @@ class OpenCoreLegacyPatcher:
                 self.constants.payload_path = sys._MEIPASS / Path("payloads")
             arguments.arguments().parse_arguments(self.constants)
         else:
-            print("- No arguments present, loading TUI")
+            print(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
 
     def main_menu(self):
         response = None
