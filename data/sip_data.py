@@ -21,7 +21,7 @@ class system_integrity_protection:
     csr_values_extended = {
         "CSR_ALLOW_UNTRUSTED_KEXTS": {
             "name": "CSR_ALLOW_UNTRUSTED_KEXTS",
-            "description": "Allows Unsigned Kexts",
+            "description": "Allows Unsigned Kexts to be hot loaded from disk",
             "introduced": os_data.os_data.el_capitan.value,
             "introduced_friendly": "El Capitan",
             "value": 0x1,
@@ -92,7 +92,7 @@ class system_integrity_protection:
         },
         "CSR_ALLOW_UNAPPROVED_KEXTS": {
             "name": "CSR_ALLOW_UNAPPROVED_KEXTS",
-            "description": "Allow Unnotarized Kexts",
+            "description": "Allow Unnotarized Kexts to be hot loaded from disk",
             "introduced": os_data.os_data.high_sierra.value,
             "introduced_friendly": "High Sierra",
             "value": 0x200,
@@ -115,9 +115,9 @@ class system_integrity_protection:
 
     root_patch_sip_mojave = [
         # Variables required to root patch in Mojave and Catalina
-        "CSR_ALLOW_UNTRUSTED_KEXTS",  #            0x1
-        "CSR_ALLOW_UNRESTRICTED_FS",  #            0x2
-        "CSR_ALLOW_UNAPPROVED_KEXTS",  #           0x200
+        "CSR_ALLOW_UNTRUSTED_KEXTS",  #            0x1   - Required for hot loading modded Kexts
+        "CSR_ALLOW_UNRESTRICTED_FS",  #            0x2   - Mount and Edit System Partitions
+        "CSR_ALLOW_UNAPPROVED_KEXTS",  #           0x200 - Required for hot loading modded Kexts
     ]
 
     root_patch_sip_big_sur = [
