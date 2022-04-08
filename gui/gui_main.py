@@ -496,10 +496,12 @@ class wx_python_gui:
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
     
     def build_start(self, event=None):
+        self.build_opencore.Disable()
         build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
         # Once finished, change build_opencore button to "Install OpenCore"
         self.build_opencore.SetLabel("🔩 Install OpenCore")
         self.build_opencore.Bind(wx.EVT_BUTTON, self.install_menu)
+        self.build_opencore.Enable()
         
         # Reset stdout
         sys.stdout = self.stock_stdout
@@ -1401,6 +1403,7 @@ class wx_python_gui:
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
+        self.return_to_main_menu.Disable()
 
         self.frame.Show()
 
@@ -1436,6 +1439,7 @@ class wx_python_gui:
             
         else:
             print("- Failed to create installer script")
+        self.return_to_main_menu.Enable()
 
     def start_script(self):
         args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
