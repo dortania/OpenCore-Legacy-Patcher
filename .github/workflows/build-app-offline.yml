@@ -38,3 +38,5 @@ jobs:
           file: OpenCore-Patcher-TUI-Offline.app.zip
           tag: ${{ github.ref }}
           file_glob: true
+      - name: Validate OpenCore
+        run: ./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --validate
