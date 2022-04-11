@@ -22,12 +22,18 @@ jobs:
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
       - run: cd dist; zip -r ../OpenCore-Patcher-wxPython.app.zip OpenCore-Patcher.app
       - run: ./../sign-wxpython.sh
+      - run: packagesbuild ./payloads/InstallPackage/OCLP-Install-Setup.pkgproj
       - run: mv ./OpenCore-Patcher-wxPython.app.zip ./OpenCore-Patcher-GUI-Offline.app.zip
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: OpenCore-Patcher.app (GUI Offline)
           path: OpenCore-Patcher-GUI-Offline.app.zip
+      - name: Upload Package to Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: OCLP-Install.pkg
+          path: ./dist/OCLP-Install.pkg
       - name: Upload to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d

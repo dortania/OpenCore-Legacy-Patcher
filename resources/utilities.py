@@ -11,7 +11,7 @@ import os
 import binascii
 import argparse
 from ctypes import CDLL, c_uint, byref
-import sys, time
+import time
 
 try:
     import requests
@@ -397,6 +397,10 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
             print(link)
         return None
 
+def grab_mount_point_from_disk(disk):
+    data = plistlib.loads(subprocess.run(f"diskutil info -plist {disk}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    return data["MountPoint"]
+
 def monitor_disk_output(disk):
     # Returns MB written on drive
     output = subprocess.check_output(["iostat", "-Id", disk])
@@ -455,8 +459,10 @@ def check_cli_args():
     # GUI args
     parser.add_argument("--gui_patch", help="Starts GUI in Root Patcher", action="store_true", required=False)
     parser.add_argument("--gui_unpatch", help="Starts GUI in Root Unpatcher", action="store_true", required=False)
+    parser.add_argument("--auto_patch", help="Check if patches are needed and prompt user", action="store_true", required=False)
+
     args = parser.parse_args()
-    if not (args.build or args.patch_sys_vol or args.unpatch_sys_vol or args.validate):
+    if not (args.build or args.patch_sys_vol or args.unpatch_sys_vol or args.validate or args.auto_patch):
         return None
     else:
         return args

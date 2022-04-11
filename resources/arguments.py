@@ -1,5 +1,5 @@
 import sys
-from resources import defaults, build, utilities, validation, sys_patch
+from resources import defaults, build, utilities, validation, sys_patch, sys_patch_auto
 from data import model_array
 
 # Generic building args
@@ -105,3 +105,6 @@ If you plan to create the USB for another machine, please select the "Change Mod
         elif self.args.unpatch_sys_vol:
             print("- Set System Volume unpatching")
             sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings, None).start_unpatch()
+        elif self.args.auto_patch:
+            print("- Set Auto patching")
+            sys_patch_auto.AutomaticSysPatch.start_auto_patch(settings)

@@ -23,6 +23,7 @@ class Constants:
         self.repo_link = "https://github.com/dortania/OpenCore-Legacy-Patcher"
         self.repo_link_latest = f"{self.repo_link}/releases/tag/{self.patcher_version}"
         self.copyright_date = "Copyright © 2020-2022 Dortania"
+        self.installer_pkg_url = f"{self.repo_link_latest}/OCLP-Install.pkg"
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
@@ -44,6 +45,7 @@ class Constants:
         self.cpufriend_version = "1.2.4"  #          CPUFriend
         self.bluetool_version = "2.6.1"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
+        self.autopkg_version = "1.0.0"  #            AutoPkgInstaller
 
         ## Apple
         ## https://www.apple.com
@@ -211,6 +213,11 @@ class Constants:
     @property
     def payload_mnt1_path(self):
         return self.payload_path / Path("mnt1")
+    
+    # Launch Agent
+    @property
+    def auto_patch_launch_agent_path(self):
+        return self.payload_path / Path("com.dortania.opencore-legacy-patcher.auto-patch.plist")
 
     # ACPI
     @property
@@ -378,6 +385,10 @@ class Constants:
     @property
     def cslvfixup_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/CSLVFixup-v{self.cslvfixup_version}.zip")
+    
+    @property
+    def autopkg_path(self):
+        return self.payload_kexts_path / Path(f"Acidanthera/AutoPkgInstaller-v{self.autopkg_version}-{self.kext_variant}.zip")
 
     @property
     def innie_path(self):
@@ -549,6 +560,14 @@ class Constants:
     @property
     def gui_path(self):
         return self.payload_path / Path("Icon/Resources.zip")
+    
+    @property
+    def postinstall_script_path(self):
+        return self.payload_path / Path("InstallPackage/postinstall")
+
+    @property
+    def installer_pkg_path(self):
+        return self.payload_path / Path("InstallPackage/OCLP-Install.pkg")
 
     # Apple Payloads Paths
 
