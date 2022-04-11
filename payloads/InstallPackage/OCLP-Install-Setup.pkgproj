@@ -235,9 +235,9 @@
 											<key>GID</key>
 											<integer>0</integer>
 											<key>PATH</key>
-											<string>/Users/mykolagrymalyuk/Developer/OpenCore-Legacy-Patcher/payloads/com.dortania.opencore-legacy-patcher.auto-patch.plist</string>
+											<string>../com.dortania.opencore-legacy-patcher.auto-patch.plist</string>
 											<key>PATH_TYPE</key>
-											<integer>0</integer>
+											<integer>1</integer>
 											<key>PERMISSIONS</key>
 											<integer>420</integer>
 											<key>TYPE</key>
