@@ -568,6 +568,10 @@ class Constants:
     @property
     def installer_pkg_path(self):
         return self.payload_path / Path("InstallPackage/OCLP-Install.pkg")
+    
+    @property
+    def installer_pkg_zip_path(self):
+        return self.payload_path / Path("InstallPackage/OCLP-Install.pkg.zip")
 
     # Apple Payloads Paths
 

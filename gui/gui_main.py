@@ -11,6 +11,7 @@ import os
 import wx.adv
 from wx.lib.agw import hyperlink
 import threading
+from pathlib import Path
 
 from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates
 from data import model_array, os_data, smbios_data, sip_data
@@ -1420,6 +1421,8 @@ class wx_python_gui:
             time.sleep(1)
             thread = threading.Thread(target=self.start_script)
             thread.start()
+            download_thread = threading.Thread(target=self.download_and_unzip_pkg)
+            download_thread.start()
             disk = disk[5:]
             default_output = float(utilities.monitor_disk_output(disk))
             while True:
@@ -1432,6 +1435,11 @@ class wx_python_gui:
                     self.progress_label.Centre(wx.HORIZONTAL)
                     wx.GetApp().Yield()
                 else:
+                    while download_thread.is_alive():
+                        # wait for download_thread to finish
+                        # though highly unlikely this thread is still alive (flashing an Installer will take a while)
+                        time.sleep(0.1)
+                    self.install_installer_pkg(disk)
                     break
             self.progress_bar.SetValue(16000)
             self.progress_label.SetLabel(f"Finished Running Installer Creation Script")
@@ -1452,6 +1460,20 @@ class wx_python_gui:
             print("- Failed to create macOS installer")
             popup = wx.MessageDialog(self.frame, f"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}", "Error", wx.OK | wx.ICON_ERROR)
             popup.ShowModal()
+
+
+    def download_and_unzip_pkg(self):
+        # Remove this URL overwrite when released
+        self.constants.installer_pkg_url = "https://github.com/khronokernel/Storage/releases/download/1.0/OCLP-Install.pkg.zip"
+        if utilities.download_file(self.constants.installer_pkg_url, self.constants.installer_pkg_zip_path):
+            subprocess.run(["unzip", "-o", self.constants.installer_pkg_zip_path, "-d", self.constants.installer_pkg_path])
+
+    def install_installer_pkg(self, disk):
+        disk = disk + "s2" # ESP sits at 1, and we know macOS will have created the main partition at 2
+        if Path(self.constants.installer_pkg_zip_path).exists():
+            path = utilities.grab_mount_point_from_disk(disk)
+            subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
+            subprocess.run(["cp", f"{self.constants.installer_pkg_path}/OCLP-Install.pkg", f"{path}/Library/Packages/"])
 
     def settings_menu(self, event=None):
         # Define Menu

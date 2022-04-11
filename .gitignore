@@ -24,3 +24,5 @@ __pycache__/
 /payloads/Installer.sh
 /payloads/Info.plist
 /payloads/seed.plist
+/payloads/InstallPackage/OCLP-Install.pkg
+/payloads/InstallPackage/OCLP-Install.pkg.zip
