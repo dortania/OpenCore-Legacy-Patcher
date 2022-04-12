@@ -284,7 +284,7 @@ class PatchSysVolume:
     def unmount_drive(self):
         # When we detect we're chainloaded in the Installer, skip unmounting
         # We have logging in place to pull additional info after we're done
-        if not "Library/InstallerSandboxes/" in self.constants.payload_path:
+        if not "Library/InstallerSandboxes/" in str(self.constants.payload_path):
             print("- Unmounting Root Volume (Don't worry if this fails)")
             utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         else:
@@ -719,7 +719,7 @@ class PatchSysVolume:
         return output
 
     def download_files(self):
-        if self.constants.gui_mode is False or (self.constants.wxpython_variant is True and "Library/InstallerSandboxes/" in self.constants.payload_path):
+        if self.constants.gui_mode is False or (self.constants.wxpython_variant is True and "Library/InstallerSandboxes/" in str(self.constants.payload_path)):
             download_result, os_ver, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
         else:
             download_result = True
