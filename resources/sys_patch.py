@@ -330,10 +330,17 @@ class PatchSysVolume:
                     utilities.process_status(utilities.elevated(["rm", "-R", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                 # Strip everything after OpenCore-Patcher.app
-                path = self.constants.launcher_binary.split("OpenCore-Patcher.app")[0] + "OpenCore-Patcher.app"
+                path = str(self.constants.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
                 print(f"- Copying {path} to /Library/Application Support/Dortania/")
                 utilities.process_status(utilities.elevated(["cp", "-R", path, "/Library/Application Support/Dortania/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            
+
+                if not Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
+                    # Sometimes the binary the user launches maye have a suffix (ie. OpenCore-Patcher 3.app)
+                    # We'll want to rename it to OpenCore-Patcher.app
+                    path = path.split("/")[-1]
+                    print(f"- Renaming {path} to OpenCore-Patcher.app")
+                    utilities.process_status(utilities.elevated(["mv", f"/Library/Application Support/Dortania/{path}", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
             # Copy over our launch agent
             print("- Copying auto-patch.plist Launch Agent to /Library/LaunchAgents/")
             if Path("/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist").exists():
