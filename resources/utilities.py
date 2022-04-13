@@ -410,6 +410,29 @@ def monitor_disk_output(disk):
     output = output[-2]
     return output
 
+
+def block_os_updaters():
+    # Disables any processes that would be likely to mess with 
+    # the root volume while we're working with it.
+    bad_processes = [
+        "softwareupdate",
+        "SoftwareUpdate",
+        "Software Update",
+        "MobileSoftwareUpdate",
+    ]
+    output = subprocess.check_output(["ps", "-ax"])
+    lines = output.splitlines()
+    for line in lines:
+        entry = line.split() 
+        pid = entry[0]
+        process_name = entry[3].decode()
+        for process in bad_processes:
+            if process in process_name:
+                if pid != "":
+                    print(f"Killing PID: {pid}")
+                    print(f"Process: {process_name}")
+                    subprocess.run(["kill", "-9", pid])
+
 def check_boot_mode():
     # Check whether we're in Safe Mode or not
     sys_plist = plistlib.loads(subprocess.run(["system_profiler", "SPSoftwareDataType"], stdout=subprocess.PIPE).stdout)
