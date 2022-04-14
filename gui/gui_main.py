@@ -1470,7 +1470,7 @@ class wx_python_gui:
 
     def install_installer_pkg(self, disk):
         disk = disk + "s2" # ESP sits at 1, and we know macOS will have created the main partition at 2
-        if Path(self.constants.installer_pkg_zip_path).exists():
+        if Path(self.constants.installer_pkg_path).exists():
             path = utilities.grab_mount_point_from_disk(disk)
             subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
             subprocess.run(["cp", f"{self.constants.installer_pkg_path}/OCLP-Install.pkg", f"{path}/Library/Packages/"])
