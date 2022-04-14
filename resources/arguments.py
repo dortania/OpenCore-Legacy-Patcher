@@ -104,7 +104,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 settings.moj_cat_accel = True
             print("- Set System Volume patching")
 
-            if "Library/InstallerSandboxes/" in str(self.constants.payload_path):
+            if "Library/InstallerSandboxes/" in str(settings.payload_path):
                 print("- Running from Installer Sandbox")
                 thread = threading.Thread(target=sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings, None).start_patch)
                 thread.start()            
