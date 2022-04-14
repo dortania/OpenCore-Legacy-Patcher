@@ -560,10 +560,6 @@ class Constants:
     @property
     def gui_path(self):
         return self.payload_path / Path("Icon/Resources.zip")
-    
-    @property
-    def postinstall_script_path(self):
-        return self.payload_path / Path("InstallPackage/postinstall")
 
     @property
     def installer_pkg_path(self):
