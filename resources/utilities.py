@@ -424,14 +424,14 @@ def block_os_updaters():
     lines = output.splitlines()
     for line in lines:
         entry = line.split() 
-        pid = entry[0]
-        process_name = entry[3].decode()
-        for process in bad_processes:
-            if process in process_name:
+        pid = entry[0].decode()
+        current_process = entry[3].decode()
+        for bad_process in bad_processes:
+            if bad_process in current_process:
                 if pid != "":
-                    print(f"Killing PID: {pid}")
-                    print(f"Process: {process_name}")
+                    print(f"- Killing Process: {pid} - {current_process.split('/')[-1]}")
                     subprocess.run(["kill", "-9", pid])
+                    break
 
 def check_boot_mode():
     # Check whether we're in Safe Mode or not
