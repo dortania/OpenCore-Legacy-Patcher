@@ -245,9 +245,9 @@ class PatchSysVolume:
         # - kextcache always returns 0, even if it fails
         # - Check the output for 'KernelCache ID' to see if the cache was successfully rebuilt
         # kmutil notes:
-        # - kmutil will return 71 on failure to build KCs
-        # - kmutil will sometimes have a stroke and return a negative value even if it succeeds
-        if result.returncode > 0 or (self.constants.detected_os < os_data.os_data.catalina and "KernelCache ID" not in result.stdout.decode()):
+        # - will return 71 on failure to build KCs
+        # - will return -10 if the volume is missing (ie. unmounted by another process)
+        if result.returncode != 0 or (self.constants.detected_os < os_data.os_data.catalina and "KernelCache ID" not in result.stdout.decode()):
             self.success_status = False
             print("- Unable to build new kernel cache")
             print(f"\nReason for Patch Failure({result.returncode}):")
@@ -258,7 +258,7 @@ class PatchSysVolume:
                 input("Press [ENTER] to continue")
         else:
             self.success_status = True
-            print(f"- Successfully built new kernel cache({result.returncode})")
+            print("- Successfully built new kernel cache")
             if self.root_supports_snapshot is True:
                 print("- Creating new APFS snapshot")
                 bless = utilities.elevated(
