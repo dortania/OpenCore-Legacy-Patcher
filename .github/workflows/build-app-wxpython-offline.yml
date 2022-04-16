@@ -34,11 +34,19 @@ jobs:
         with:
           name: OCLP-Install.pkg
           path: ./dist/OCLP-Install.pkg
-      - name: Upload to Release
+      - name: Upload Binary to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: OpenCore-Patcher-GUI-Offline.app.zip
+          tag: ${{ github.ref }}
+          file_glob: true
+      - name: Upload Package to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./dist/OCLP-Install.pkg
           tag: ${{ github.ref }}
           file_glob: true

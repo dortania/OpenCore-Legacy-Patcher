@@ -1463,9 +1463,23 @@ class wx_python_gui:
 
 
     def download_and_unzip_pkg(self):
-        # Remove this URL overwrite when released
-        self.constants.installer_pkg_url = "https://github.com/khronokernel/Storage/releases/download/1.0/OCLP-Install.pkg.zip"
-        if utilities.download_file(self.constants.installer_pkg_url, self.constants.installer_pkg_zip_path):
+        # Function's main goal is to grab the correct OCLP-Install.pkg and unzip it
+        # Note the following:
+        #   - When running a release build, pull from Github's release page with the same versioning
+        #   - When running from source/unable to find on Github, use the nightly.link variant
+        #   - If nightly also fails, fall back to the manually uploaded variant
+        link = self.constants.installer_pkg_url
+        if not utilities.validate_link(link):
+            print("- Stock Install.pkg is missing on Github, falling back to Nightly")
+            link = self.constants.installer_pkg_url_nightly
+            if not utilities.validate_link(link):
+                print("- Nightly Install.pkg is missing on Github, falling back to manual backup")
+                link = "https://github.com/khronokernel/Storage/releases/download/1.0/OCLP-Install.pkg.zip"
+                if not utilities.validate_link(link):
+                    print("- Manual backup is missing on Github, no more fallbacks remaining. Quitting")
+                    return
+        
+        if utilities.download_file(link, self.constants.installer_pkg_zip_path):
             subprocess.run(["unzip", "-o", self.constants.installer_pkg_zip_path, "-d", self.constants.installer_pkg_path])
 
     def install_installer_pkg(self, disk):
