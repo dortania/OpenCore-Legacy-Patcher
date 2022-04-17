@@ -1479,13 +1479,10 @@ class wx_python_gui:
                     print("- Manual backup is missing on Github, no more fallbacks remaining. Quitting")
                     return
 
-        if link.endswith("zip"):
-            if utilities.download_file(link, self.constants.installer_pkg_zip_path):
-                if Path(self.constants.installer_pkg_path).exists():
-                    os.remove(self.constants.installer_pkg_path)
-                subprocess.run(["unzip", "-o", self.constants.installer_pkg_zip_path, "-d", self.constants.installer_pkg_path])
-        else:
-            utilities.download_file(link, self.constants.installer_pkg_path)
+        if utilities.download_file(link, self.constants.installer_pkg_zip_path):
+            if Path(self.constants.installer_pkg_path).exists():
+                os.remove(self.constants.installer_pkg_path)
+            subprocess.run(["unzip", "-o", self.constants.installer_pkg_zip_path, "-d", self.constants.installer_pkg_path])
 
     def install_installer_pkg(self, disk):
         disk = disk + "s2" # ESP sits at 1, and we know macOS will have created the main partition at 2

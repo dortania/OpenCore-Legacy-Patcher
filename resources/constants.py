@@ -23,7 +23,7 @@ class Constants:
         self.repo_link = "https://github.com/dortania/OpenCore-Legacy-Patcher"
         self.repo_link_latest = f"{self.repo_link}/releases/tag/{self.patcher_version}"
         self.copyright_date = "Copyright © 2020-2022 Dortania"
-        self.installer_pkg_url = f"{self.repo_link_latest}/OCLP-Install.pkg"
+        self.installer_pkg_url = f"{self.repo_link_latest}/OCLP-Install.pkg.zip"
         self.installer_pkg_url_nightly = "https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython-offline/main/OCLP-Install.pkg"
 
         # OpenCore Versioning

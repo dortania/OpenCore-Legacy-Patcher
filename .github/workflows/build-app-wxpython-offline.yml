@@ -23,6 +23,7 @@ jobs:
       - run: cd dist; zip -r ../OpenCore-Patcher-wxPython.app.zip OpenCore-Patcher.app
       - run: ./../sign-wxpython.sh
       - run: packagesbuild ./payloads/InstallPackage/OCLP-Install-Setup.pkgproj
+      - run: zip -r ./OCLP-Install.pkg.zip ./dist/OCLP-Install.pkg
       - run: mv ./OpenCore-Patcher-wxPython.app.zip ./OpenCore-Patcher-GUI-Offline.app.zip
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v2
@@ -33,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: OCLP-Install.pkg
-          path: ./dist/OCLP-Install.pkg
+          file: OCLP-Install.pkg.zip
       - name: Upload Binary to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
@@ -47,6 +48,6 @@ jobs:
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./dist/OCLP-Install.pkg
+          file: OCLP-Install.pkg.zip
           tag: ${{ github.ref }}
           file_glob: true
