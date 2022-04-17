@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: OCLP-Install.pkg
-          file: OCLP-Install.pkg.zip
+          path: OCLP-Install.pkg.zip
       - name: Upload Binary to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
