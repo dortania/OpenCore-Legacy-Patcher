@@ -16,6 +16,10 @@
   - Automatic Light/Darkmode (credit @moosethegoose2213)
 - Increment Binaries:
   - PatcherSupportPkg 0.3.6 - release
+  - OpenCorePkg 0.8.0 - release
+  - FeatureUnlock 1.0.8 - release
+  - CPUFriend 1.2.5 - release
+  - WhateverGreen 1.5.8 - release
 - Speed up loading available remote macOS Installers from Apple
   - Skips writing catalogs to disk, loads into memory directly
 
