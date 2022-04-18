@@ -28,22 +28,22 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_commit = "30798fb - 02-07-2022"
-        self.opencore_version = "0.7.8"
+        self.opencore_commit = "30798fb - 04-18-2022"
+        self.opencore_version = "0.8.0"
 
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
         self.lilu_version = "1.6.0"  #               Lilu
-        self.whatevergreen_version = "1.5.7"  #      WhateverGreen
+        self.whatevergreen_version = "1.5.8"  #      WhateverGreen
         self.airportbcrmfixup_version = "2.1.3"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
         self.restrictevents_version = "1.0.6"  #     RestrictEvents
         self.restrictevents_mbp_version = "1.0.6"  # RestrictEvents blocking displaypolicyd (see RestrictEvents-MBP91.patch)
-        self.featureunlock_version = "1.0.7"  #      FeatureUnlock
+        self.featureunlock_version = "1.0.8"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
-        self.cpufriend_version = "1.2.4"  #          CPUFriend
+        self.cpufriend_version = "1.2.5"  #          CPUFriend
         self.bluetool_version = "2.6.1"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
         self.autopkg_version = "1.0.0"  #            AutoPkgInstaller
