@@ -24,6 +24,7 @@ class wx_python_gui:
         self.constants.gui_mode = True
         self.walkthrough_mode = False
         self.finished_auto_patch = False
+        self.target_disk = ""
 
         # Backup stdout for usage with wxPython
         self.stock_stdout = sys.stdout
@@ -1419,27 +1420,23 @@ class wx_python_gui:
             print("- Starting creation script as admin")
             wx.GetApp().Yield()
             time.sleep(1)
-            thread = threading.Thread(target=self.start_script)
-            thread.start()
-            download_thread = threading.Thread(target=self.download_and_unzip_pkg)
-            download_thread.start()
             disk = disk[5:]
+            self.target_disk = disk
+            install_thread = threading.Thread(target=self.start_script)
+            install_thread.start()
+            self.download_thread = threading.Thread(target=self.download_and_unzip_pkg)
+            self.download_thread.start()
             default_output = float(utilities.monitor_disk_output(disk))
             while True:
                 time.sleep(0.1)
                 output = float(utilities.monitor_disk_output(disk))
                 bytes_written = output - default_output
-                if thread.is_alive():
+                if install_thread.is_alive():
                     self.progress_bar.SetValue(bytes_written)
                     self.progress_label.SetLabel(f"Bytes Written: {round(bytes_written, 2)}MB")
                     self.progress_label.Centre(wx.HORIZONTAL)
                     wx.GetApp().Yield()
                 else:
-                    while download_thread.is_alive():
-                        # wait for download_thread to finish
-                        # though highly unlikely this thread is still alive (flashing an Installer will take a while)
-                        time.sleep(0.1)
-                    self.install_installer_pkg(disk)
                     break
             self.progress_bar.SetValue(16000)
             self.progress_label.SetLabel(f"Finished Running Installer Creation Script")
@@ -1454,6 +1451,12 @@ class wx_python_gui:
         output, error, returncode = run.Run()._stream_output(comm=args)
         if "Install media now available at" in output:
             print("- Sucessfully created macOS installer")
+            while self.download_thread.is_alive():
+                # wait for download_thread to finish
+                # though highly unlikely this thread is still alive (flashing an Installer will take a while)
+                time.sleep(0.1)
+            print("- Installing Root Patcher to drive")
+            self.install_installer_pkg(self.target_disk)
             popup_message = wx.MessageDialog(self.frame, "Sucessfully created a macOS installer!\nYou can now install OpenCore onto this drive", "Success", wx.OK)
             popup_message.ShowModal()
         else:
@@ -1481,7 +1484,7 @@ class wx_python_gui:
 
         if utilities.download_file(link, self.constants.installer_pkg_zip_path):
             if Path(self.constants.installer_pkg_path).exists():
-                os.remove(self.constants.installer_pkg_path)
+                subprocess.run(["sudo", "rm", self.constants.installer_pkg_path])
             subprocess.run(["unzip", "-o", self.constants.installer_pkg_zip_path, "-d", self.constants.installer_pkg_path])
 
     def install_installer_pkg(self, disk):
