@@ -23,9 +23,6 @@ Regarding OS support, see below:
 | HostOS | macOS 10.9 - macOS 12 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [Python 3.9 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher.command` located in the repo |
 | TargetOS | macOS 11 - macOS 12 | Refers to OSes that can be patched to run with OpenCore | May support 10.4 and newer (in a potentially broken state). No support provided. |
 
-* macOS Monterey support is currently in beta and is not recommended for everyday users.
-  * Recommend looking at the [macOS Monterey Support page](./MONTEREY-DROP.md) for a better idea of Monterey's current status
-
 ### MacBook
 
 | SMBIOS | Year | Supported | Comment |

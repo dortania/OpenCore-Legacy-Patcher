@@ -3,16 +3,26 @@
              <h1>OpenCore Legacy Patcher</h1>
 </div>
 
-A python program for building and booting [OpenCore](https://github.com/acidanthera/OpenCorePkg) on both legacy and modern Macs, see our in-depth [Guide](https://dortania.github.io/OpenCore-Legacy-Patcher/) for more information.
+A Python-based project revolving around [Acidanthera's OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) and [Lilu](https://github.com/acidanthera/Lilu) for both running and unlocking features in macOS on supported and unsupported Macs.
 
-Supported features:
+Our project's main goal is to breath new life to Macs no longer supported by Apple, allowing for the installation and usage of macOS Big Sur and newer on machines as old as 2007.
 
+----------
+
+Noteworthy features of OpenCore Legacy Patcher:
+
+* Support for macOS Big Sur and Monterey
+* Native Over the Air(OTA) System Updates
+* Supports Penryn and newer Macs
+* Full support for WPA Wifi and Personal Hotspot on BCM943224 and newer chipsets
 * System Integrity Protection, FileVault 2, .im4m Secure Boot and Vaulting
-* WPA Wifi and Personal Hotspot support
-* Native OTA OS DELTA updates on all Macs
-* Recovery OS, Safe Mode and Single-user Mode booting
+* Recovery OS, Safe Mode and Single-user Mode booting on non-native OSes
+* Unlocks features such as Sidecar and AirPlay to Mac even on native Macs
+* Enable enhanced SATA and NVMe power management on non-stock hardware
 * Zero firmware patching required (ie. APFS ROM patching)
-* GPU Switching on MacBook Pro models (2012 and newer)
+* Graphics acceleration for both Metal and non-Metal GPUs
+
+----------
 
 Note: Only clean-installs and upgrades are supported, macOS Big Sur installs already patched with other patchers, such as [Patched Sur](https://github.com/BenSova/Patched-Sur) or [bigmac](https://github.com/StarPlayrX/bigmac), cannot be used due to broken file integrity with APFS snapshots and SIP.
 
@@ -22,15 +32,21 @@ Note 2: Currently OpenCore Legacy Patcher officially supports patching to run ma
 
 * For macOS Mojave and Catalina support, we recommend the use of [dosdude1's patchers](http://dosdude1.com)
 
-## Running from source
+## Getting Started 
 
-To run the project from source, see here: [Build and run from source](./SOURCE.md)
+To start using the project, please see our in-depth guide:
+
+* [OpenCore Legacy Patcher Guide](https://dortania.github.io/OpenCore-Legacy-Patcher/)
 
 ## Support
 
 To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN). We're actively there and is the quickest way to receive help.
   
   * Please review our docs on [how to debug with OpenCore](https://dortania.github.io/OpenCore-Legacy-Patcher/DEBUG.html) to gather important information to help others with troubleshooting.
+
+## Running from source
+
+To run the project from source, see here: [Build and run from source](./SOURCE.md)
 
 ## Credits
 

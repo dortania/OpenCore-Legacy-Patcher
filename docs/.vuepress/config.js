@@ -69,7 +69,6 @@ module.exports = {
             children: [
 				'START',
 				'MODELS',
-				['BENIFITS', 'Benefits and drawbacks'],
             ]
 
         },
