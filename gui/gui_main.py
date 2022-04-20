@@ -1476,15 +1476,12 @@ class wx_python_gui:
             print("- Stock Install.pkg is missing on Github, falling back to Nightly")
             link = self.constants.installer_pkg_url_nightly
             if not utilities.validate_link(link):
-                print("- Nightly Install.pkg is missing on Github, falling back to manual backup")
-                link = "https://github.com/khronokernel/Storage/releases/download/1.0/OCLP-Install.pkg.zip"
-                if not utilities.validate_link(link):
-                    print("- Manual backup is missing on Github, no more fallbacks remaining. Quitting")
-                    return
+                print("- Nightly Install.pkg is missing on Github, exiting")
+                return
 
         if utilities.download_file(link, self.constants.installer_pkg_zip_path):
             if Path(self.constants.installer_pkg_path).exists():
-                subprocess.run(["sudo", "rm", self.constants.installer_pkg_path])
+                subprocess.run(["rm", self.constants.installer_pkg_path])
             subprocess.run(["unzip", "-o", self.constants.installer_pkg_zip_path, "-d", self.constants.installer_pkg_path])
 
     def install_installer_pkg(self, disk):
@@ -1492,7 +1489,7 @@ class wx_python_gui:
         if Path(self.constants.installer_pkg_path).exists():
             path = utilities.grab_mount_point_from_disk(disk)
             subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
-            subprocess.run(["cp", f"{self.constants.installer_pkg_path}/OCLP-Install.pkg", f"{path}/Library/Packages/"])
+            subprocess.run(["cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
 
     def settings_menu(self, event=None):
         # Define Menu

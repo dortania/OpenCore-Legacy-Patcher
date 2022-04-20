@@ -24,7 +24,7 @@ class Constants:
         self.repo_link_latest = f"{self.repo_link}/releases/tag/{self.patcher_version}"
         self.copyright_date = "Copyright © 2020-2022 Dortania"
         self.installer_pkg_url = f"{self.repo_link_latest}/OCLP-Install.pkg.zip"
-        self.installer_pkg_url_nightly = "https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython-offline/main/OCLP-Install.pkg"
+        self.installer_pkg_url_nightly = "http://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython-offline/main/OCLP-Install.pkg.zip"
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
@@ -564,11 +564,11 @@ class Constants:
 
     @property
     def installer_pkg_path(self):
-        return self.payload_path / Path("InstallPackage/OCLP-Install.pkg")
+        return self.payload_path / Path("OCLP-Install.pkg")
     
     @property
     def installer_pkg_zip_path(self):
-        return self.payload_path / Path("InstallPackage/OCLP-Install.pkg.zip")
+        return self.payload_path / Path("OCLP-Install.pkg.zip")
 
     # Apple Payloads Paths
 
