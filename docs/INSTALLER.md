@@ -28,7 +28,7 @@ For this example, we'll assume you'll need an installer. Selecting this option w
 | :--- | :--- |
 | ![OCLP GUI Installer Download Catalog](../images/OCLP-GUI-Installer-Download-Catalog.png) | ![OCLP GUI Installer Download Listed Products](../images/OCLP-GUI-Installer-Download-Listed-Products.png) |
 
-Since the patcher officially supports Big Sur and newer for patching, only those entires will be showen. For ourselves, we'll select 12.1 as that's the latest public release at the time of writing. This will download and install the macOS installer to your applications folder.
+Since the patcher officially supports Big Sur and newer for patching, only those entires will be shown. For ourselves, we'll select 12.1 as that's the latest public release at the time of writing. This will download and install the macOS installer to your applications folder.
 
 | Downloading the Installer | Requesting to install | Finished Installing |
 | :--- | :--- | :--- |
