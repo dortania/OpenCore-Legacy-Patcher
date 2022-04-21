@@ -24,6 +24,7 @@ class PatchSysVolume:
         self.validate = False
         self.added_legacy_kexts = False
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
+        self.constants.root_patcher_succeded = False # Reset Variable each time we start
 
         # GUI will detect hardware patches betfore starting PatchSysVolume()
         # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
@@ -90,10 +91,6 @@ class PatchSysVolume:
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
                 if patch is True:
-                    # Root Volume unpatching is unreliable due to being a live volume
-                    # Only worth while on Big Sur as '--last-sealed-snapshot' is hit or miss
-                    if self.constants.detected_os == os_data.os_data.big_sur and self.root_supports_snapshot is True and utilities.check_seal() is True:
-                        self.backup_volume()
                     self.patch_root_vol()
                     return True
                 else:
@@ -108,10 +105,6 @@ class PatchSysVolume:
                 if Path(self.mount_extensions).exists():
                     print("- Successfully mounted the Root Volume")
                     if patch is True:
-                        # Root Volume unpatching is unreliable due to being a live volume
-                        # Only worth while on Big Sur as '--last-sealed-snapshot' is hit or miss
-                        if self.constants.detected_os == os_data.os_data.big_sur and self.root_supports_snapshot is True and utilities.check_seal() is True:
-                            self.backup_volume()
                         self.patch_root_vol()
                         return True
                     else:
@@ -127,96 +120,6 @@ class PatchSysVolume:
             if self.constants.gui_mode is False:
                 input("- Press [ENTER] to exit: ")
 
-    def backup_volume(self):
-        for location in sys_patch_data.BackupLocations:
-            utilities.cls()
-            print("Backing up root volume before patching (This may take some time)")
-            print(f"- Attempting to backup {location}")
-            location_zip = f"{location}-Backup.zip"
-            location_zip_path = Path(self.mount_location) / Path(location_zip)
-
-            if location_zip_path.exists():
-                print(f"- Found existing {location_zip}, skipping")
-            else:
-                print(f"- Backing up {location}")
-                # cp -r ./Extensions ./Extensions-Backup
-                # ditto -c -k --sequesterRsrc --keepParent ./Extensions-Backup ./Extensions-Backup.zip
-                # rm -r ./Extensions-Backup
-
-                print("- Creating Backup folder")
-                utilities.process_status(
-                    utilities.elevated(
-                        ["cp", "-r", f"{self.mount_location}/{location}", f"{self.mount_location}/{location}-Backup"],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.STDOUT,
-                    )
-                )
-                print("- Zipping Backup folder")
-                utilities.process_status(
-                    utilities.elevated(
-                        ["ditto", "-c", "-k", "--sequesterRsrc", "--keepParent", f"{self.mount_location}/{location}-Backup", f"{self.mount_location}/{location_zip}"],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.STDOUT,
-                    )
-                )
-
-                print("- Removing Backup folder")
-                utilities.process_status(
-                    utilities.elevated(
-                        ["rm", "-r", f"{self.mount_location}/{location}-Backup"],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.STDOUT,
-                    )
-                )
-
-    def manual_root_patch_revert(self):
-        print("- Attempting to revert patches")
-        if (Path(self.mount_location) / Path("/System/Library/Extensions-Backup.zip")).exists():
-            print("- Verified manual unpatching is available")
-
-            for location in sys_patch_data.BackupLocations:
-                utilities.cls()
-                print("Reverting root volume patches (This may take some time)")
-
-                print(f"- Attempting to unpatch {location}")
-                location_zip = f"/{location}-Backup.zip"
-                location_zip_path = Path(self.mount_location) / Path(location_zip)
-                location_old_path = Path(self.mount_location) / Path(location)
-
-                if "PrivateFrameworks" in location:
-                    copy_path = Path(self.mount_location) / Path("/System/Library/PrivateFrameworks")
-                elif "Frameworks" in location:
-                    copy_path = Path(self.mount_location) / Path("/System/Library/Frameworks")
-                else:
-                    copy_path = Path(self.mount_location) / Path("/System/Library")
-
-                if location_zip_path.exists():
-                    print(f"- Found {location_zip}")
-
-                    print(f"- Unzipping {location_zip}")
-                    utilities.process_status(utilities.elevated(["unzip", location_zip_path, "-d", copy_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-                    if location_old_path.exists():
-                        print(f"- Renaming {location}")
-                        utilities.process_status(utilities.elevated(["mv", location_old_path, f"{location_old_path}-Patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-                    print(f"- Renaming {location}-Backup")
-                    utilities.process_status(utilities.elevated(["mv", f"{location_old_path}-Backup", location_old_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-                    print(f"- Removing {location_old_path}-Patched")
-                    utilities.process_status(utilities.elevated(["rm", "-r", f"{location_old_path}-Patched"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-                    # ditto will create a '__MACOSX' folder
-                    # print("- Removing __MACOSX folder")
-                    # utilities.process_status(utilities.elevated(["rm", "-r", f"{copy_path}/__MACOSX"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-                else:
-                    print(f"- Failed to find {location_zip}, unable to unpatch")
-            if self.validate is False:
-                self.rebuild_snapshot()
-        else:
-            print("- Could not find Extensions.zip, cannot manually unpatch root volume")
-
     def unpatch_root_vol(self):
         if self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is True:
             print("- Reverting to last signed APFS snapshot")
@@ -225,14 +128,12 @@ class PatchSysVolume:
                 print("- Unable to revert root volume patches")
                 print("Reason for unpatch Failure:")
                 print(result.stdout.decode())
-                print("- Failed to revert snapshot via bless, falling back on manual restoration")
-                self.manual_root_patch_revert()
+                print("- Failed to revert snapshot via Apple's 'bless' command")
             else:
                 self.clean_skylight_plugins()
+                self.constants.root_patcher_succeded = True
                 print("- Unpatching complete")
                 print("\nPlease reboot the machine for patches to take effect")
-        else:
-            self.manual_root_patch_revert()
 
     def rebuild_snapshot(self):
         print("- Rebuilding Kernel Cache (This may take some time)")
@@ -282,6 +183,7 @@ class PatchSysVolume:
                     utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
+            self.constants.root_patcher_succeded = True
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to continue")
 

@@ -76,6 +76,20 @@ class wx_python_gui:
         self.app.ExitMainLoop()
         sys.exit()
     
+    def reboot_system(self, event=None):
+        self.popup = wx.MessageDialog(
+            self.frame,
+            "Root Patcher finished successfully\n\nWould you like to reboot now?\n\nNote: This will close all open applications, remember to save them or manually reboot once you're ready",
+            "Reboot?",
+            wx.YES_NO | wx.ICON_INFORMATION
+        )
+        self.popup.SetYesNoLabels("Reboot", "Ignore")
+        answer = self.popup.ShowModal()
+        if answer == wx.ID_YES:
+            # Reboots with Count Down prompt (user can still dismiss if needed)
+            subprocess.call(['osascript', '-e', 'tell app "loginwindow" to «event aevtrrst»'])
+            sys.exit(0)
+    
     def reset_window(self):
         self.frame.DestroyChildren()
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
@@ -130,10 +144,11 @@ class wx_python_gui:
 
             extension = ""
             if event:
-                if event.GetEventObject().GetLabel() == "Start Root Patching":
-                    extension = " --gui_patch"
-                elif event.GetEventObject().GetLabel() == "Revert Root Patches":
-                    extension = " --gui_unpatch"
+                if event.GetEventObject() != wx.Menu:
+                    if event.GetEventObject().GetLabel() == "Start Root Patching":
+                        extension = " --gui_patch"
+                    elif event.GetEventObject().GetLabel() == "Revert Root Patches":
+                        extension = " --gui_unpatch"
 
             if self.constants.launcher_script is None:
                 args_string = f"'{self.constants.launcher_binary}'{extension}"
@@ -905,6 +920,9 @@ class wx_python_gui:
             pass
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
+        if self.constants.root_patcher_succeded is True:
+            print("- Root Patcher finished successfully")
+            self.reboot_system()
         self.return_to_main_menu.Enable()
 
         wx.GetApp().Yield()
@@ -984,6 +1002,9 @@ class wx_python_gui:
             pass
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
+        if self.constants.root_patcher_succeded is True:
+            print("- Root Patcher finished successfully")
+            self.reboot_system()
         self.return_to_main_menu.Enable()
 
         wx.GetApp().Yield()

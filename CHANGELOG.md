@@ -38,6 +38,10 @@
     - After OS updates, Patcher will detect whether system requires root patches and prompt you
     - Implemented via Launch Agent in `/Library/LaunchAgents`
     - OpenCore-Patcher.app will be copied to `/Library/Application Support/Dortania` for storage
+- Add Reboot Prompt in GUI after Root Patching
+- Remove manual root unpatching
+  - Removed due to reliablity issues
+  - `bless` based reversion still supported in Big Sur+
 
 ## 0.4.3
 - Increment Binaries:

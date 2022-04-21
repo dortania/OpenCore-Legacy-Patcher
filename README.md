@@ -79,6 +79,8 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
   * Catalyst that started OpenCore Legacy Patcher
 * [arter97](https://github.com/arter97/)
   * [SimpleMSR](https://github.com/arter97/SimpleMSR/) to disable firmware throttling in Nehalem+ MacBooks without batteries
+* [Mr.Macintosh](https://mrmacintosh.com)
+  * Endless hours helping architect and troubleshoot many portions of the project
 * MacRumors and Unsupported Mac Communities
   * Endless testing, reporting issues
 * Apple
