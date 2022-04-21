@@ -15,7 +15,7 @@
   - Catalyst crashing after 1200 seconds on non-Metal
   - Automatic Light/Darkmode (credit @moosethegoose2213)
 - Increment Binaries:
-  - PatcherSupportPkg 0.3.6 - release
+  - PatcherSupportPkg 0.3.7 - release
   - OpenCorePkg 0.8.0 - release
   - FeatureUnlock 1.0.8 - release
   - CPUFriend 1.2.5 - release
