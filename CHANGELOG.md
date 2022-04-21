@@ -14,6 +14,12 @@
 - Resolved non-Metal issues:
   - Catalyst crashing after 1200 seconds on non-Metal
   - Automatic Light/Darkmode (credit @moosethegoose2213)
+  - Rim improvements
+  - Trackpad swipe between pages
+  - Cycle between windows
+  - Improve Display Prefpane Image
+  - Defaults prefix change (`ASB_` -> `MORAEA_`, reopen non-Metal Settings to apply)
+  
 - Increment Binaries:
   - PatcherSupportPkg 0.3.7 - release
   - OpenCorePkg 0.8.0 - release
