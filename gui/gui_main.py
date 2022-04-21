@@ -2476,11 +2476,11 @@ OpenCore Legacy Patcher by default knows the most ideal
     def non_metal_config_menu(self, event=None):
         # Configures ASB's Blur settings
         # Check Dark Menu Bar:
-        #   defaults read ASB_DarkMenuBar
-        #   defaults write -g ASB_DarkMenuBar -bool true
+        #   defaults read Moraea_DarkMenuBar
+        #   defaults write -g Moraea_DarkMenuBar -bool true
         # Check Beta Blur:
-        #   defaults read ASB_BlurBeta
-        #   defaults write -g ASB_BlurBeta -bool true
+        #   defaults read Moraea_BlurBeta
+        #   defaults write -g Moraea_BlurBeta -bool true
         # Check Blur Radius:
         #   defaults read ASB_BlurOverride
         #   defaults write -g ASB_BlurOverride -float 30
@@ -2515,28 +2515,29 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.subheader2_2.SetPosition(wx.Point(0, self.subheader2_1.GetPosition().y + self.subheader2_1.GetSize().height))
         self.subheader2_2.Centre(wx.HORIZONTAL)
 
-        self.subheader_3 = wx.StaticText(self.frame, label="For new users, set Radius to 30px")
-        self.subheader_3.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
-        self.subheader_3.SetPosition(wx.Point(0, self.subheader2_2.GetPosition().y + self.subheader2_2.GetSize().height))
-        self.subheader_3.Centre(wx.HORIZONTAL)
-
 
         self.subheader_4 = wx.StaticText(self.frame, label="Note: Only logout and login is required to apply these settings")
         self.subheader_4.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
-        self.subheader_4.SetPosition(wx.Point(0, self.subheader_3.GetPosition().y + self.subheader_3.GetSize().height+ 5))
+        self.subheader_4.SetPosition(wx.Point(0, self.subheader2_2.GetPosition().y + self.subheader2_2.GetSize().height+ 5))
         self.subheader_4.Centre(wx.HORIZONTAL)
 
-        is_dark_menu_bar = subprocess.run(["defaults", "read", "-g", "ASB_DarkMenuBar"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        is_dark_menu_bar = subprocess.run(["defaults", "read", "-g", "Moraea_DarkMenuBar"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
         if is_dark_menu_bar in ["1", "true"]:
             is_dark_menu_bar = True
         else:
             is_dark_menu_bar = False
 
-        is_blur_enabled = subprocess.run(["defaults", "read", "-g", "ASB_BlurBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        is_blur_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_BlurBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
         if is_blur_enabled in ["1", "true"]:
             is_blur_enabled = True
         else:
             is_blur_enabled = False
+        
+        is_rim_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_RimBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        if is_rim_enabled in ["1", "true"]:
+            is_rim_enabled = True
+        else:
+            is_rim_enabled = False
 
         # Checkbox: Dark Menu Bar
         self.dark_menu_bar_checkbox = wx.CheckBox(self.frame, label="Dark Menu Bar")
@@ -2549,34 +2550,18 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.enable_beta_blur_checkbox = wx.CheckBox(self.frame, label="Enable Beta Blur")
         self.enable_beta_blur_checkbox.SetValue(is_blur_enabled)
         self.enable_beta_blur_checkbox.Bind(wx.EVT_CHECKBOX, self.enable_beta_blur_click)
-        self.enable_beta_blur_checkbox.SetPosition(wx.Point(self.dark_menu_bar_checkbox.GetPosition().x, self.dark_menu_bar_checkbox.GetPosition().y + self.dark_menu_bar_checkbox.GetSize().height + 10))
+        self.enable_beta_blur_checkbox.SetPosition(wx.Point(self.dark_menu_bar_checkbox.GetPosition().x, self.dark_menu_bar_checkbox.GetPosition().y + self.dark_menu_bar_checkbox.GetSize().height + 7))
 
-        # Text: Blur Radius
-        self.blur_radius_text = wx.StaticText(self.frame, label="Current Blur Radius: " + "px")
-        self.blur_radius_text.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
-        self.blur_radius_text.SetPosition(wx.Point(0, self.enable_beta_blur_checkbox.GetPosition().y + self.enable_beta_blur_checkbox.GetSize().height + 10))
-        self.blur_radius_text.Center(wx.HORIZONTAL)
-        
-        # Scale: Blur Radius
-        self.blur_radius_scale = wx.Slider(self.frame, value=0, minValue=0, maxValue=48, style=wx.SL_HORIZONTAL)
-        self.blur_radius_scale.Bind(wx.EVT_SCROLL, self.blur_radius_scale_change)
-        self.blur_radius_scale.SetPosition(wx.Point(0, self.blur_radius_text.GetPosition().y + self.blur_radius_text.GetSize().height + 10))
-        self.blur_radius_scale.Center(wx.HORIZONTAL)
-        self.blur_radius_scale.SetTickFreq(1)
-
-        current_blur_radius = subprocess.run(["defaults", "read", "-g", "ASB_BlurOverride"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-        try:
-            current_blur_radius = int(current_blur_radius)
-        except:
-            current_blur_radius = 30
-            subprocess.run(["defaults", "write", "-g", "ASB_BlurOverride", str(current_blur_radius)])
-        self.blur_radius_text.SetLabel("Current Blur Radius: " + str(current_blur_radius) + "px")
-        self.blur_radius_scale.SetValue(current_blur_radius)
+        # Checkbox: Enable Beta Rim
+        self.enable_beta_rim_checkbox = wx.CheckBox(self.frame, label="Enable Beta Rim")
+        self.enable_beta_rim_checkbox.SetValue(is_rim_enabled)
+        self.enable_beta_rim_checkbox.Bind(wx.EVT_CHECKBOX, self.enable_beta_rim_click)
+        self.enable_beta_rim_checkbox.SetPosition(wx.Point(self.enable_beta_blur_checkbox.GetPosition().x, self.enable_beta_blur_checkbox.GetPosition().y + self.enable_beta_blur_checkbox.GetSize().height + 7))
 
         # Button: Return to Settings
         self.return_to_settings_button = wx.Button(self.frame, label="Return to Settings")
         self.return_to_settings_button.Bind(wx.EVT_BUTTON, self.settings_menu)
-        self.return_to_settings_button.SetPosition(wx.Point(0, self.blur_radius_scale.GetPosition().y + self.blur_radius_scale.GetSize().height + 10))
+        self.return_to_settings_button.SetPosition(wx.Point(0, self.enable_beta_rim_checkbox.GetPosition().y + self.enable_beta_rim_checkbox.GetSize().height + 10))
         self.return_to_settings_button.Center(wx.HORIZONTAL)
 
         self.frame.SetSize(wx.Size(-1, self.return_to_settings_button.GetPosition().y + self.return_to_settings_button.GetSize().height + 40))
@@ -2584,21 +2569,21 @@ OpenCore Legacy Patcher by default knows the most ideal
 
     def enable_beta_blur_click(self, event=None):
         if event.IsChecked():
-            subprocess.run(["defaults", "write", "-g", "ASB_BlurBeta", "-bool", "true"])
+            subprocess.run(["defaults", "write", "-g", "Moraea_BlurBeta", "-bool", "true"])
         else:
-            subprocess.run(["defaults", "write", "-g", "ASB_BlurBeta", "-bool", "false"])
+            subprocess.run(["defaults", "write", "-g", "Moraea_BlurBeta", "-bool", "false"])
         print("Beta Blur Enabled:", event.IsChecked())
     
     def enable_dark_menubar_click(self, event=None):
         if event.IsChecked():
-            subprocess.run(["defaults", "write", "-g", "ASB_DarkMenuBar", "-bool", "true"])
+            subprocess.run(["defaults", "write", "-g", "Moraea_DarkMenuBar", "-bool", "true"])
         else:
-            subprocess.run(["defaults", "write", "-g", "ASB_DarkMenuBar", "-bool", "false"])
+            subprocess.run(["defaults", "write", "-g", "Moraea_DarkMenuBar", "-bool", "false"])
         print("Dark Menu Bar Enabled:", event.IsChecked())
     
-    def blur_radius_scale_change(self, event=None):
-        val = event.GetInt()
-        subprocess.run(["defaults", "write", "-g", "ASB_BlurOverride", "-float", str(val)])
-        print("Blur Radius:", val)  
-        self.blur_radius_text.SetLabel("Current Blur Radius: " + str(val) + "px")
-        self.blur_radius_text.Center(wx.HORIZONTAL)
+    def enable_beta_rim_click(self, event=None):
+        if event.IsChecked():
+            subprocess.run(["defaults", "write", "-g", "Moraea_RimBeta", "-bool", "true"])
+        else:
+            subprocess.run(["defaults", "write", "-g", "Moraea_RimBeta", "-bool", "false"])
+        print("Beta Rim Enabled:", event.IsChecked())
