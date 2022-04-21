@@ -19,15 +19,25 @@
   - Cycle between windows
   - Improve Display Prefpane Image
   - Defaults prefix change (`ASB_` -> `MORAEA_`, reopen non-Metal Settings to apply)
-  
 - Increment Binaries:
   - PatcherSupportPkg 0.3.7 - release
   - OpenCorePkg 0.8.0 - release
   - FeatureUnlock 1.0.8 - release
   - CPUFriend 1.2.5 - release
   - WhateverGreen 1.5.8 - release
+  - AutoPkgInstaller 1.0.0 - release
 - Speed up loading available remote macOS Installers from Apple
   - Skips writing catalogs to disk, loads into memory directly
+- Implement Automatic Patch Detection/Installation
+  - Requires GUI for usage
+  - Installations:
+    - During macOS Installer creating in-app, OCLP-Install.pkg is installed to macOS installer
+    - After running the installer with AutoPkgInstaller.kext, Root Patcher will install patches
+    - Must boot macOS Installer, does not support in-OS usage
+  - Post OS Updates:
+    - After OS updates, Patcher will detect whether system requires root patches and prompt you
+    - Implemented via Launch Agent in `/Library/LaunchAgents`
+    - OpenCore-Patcher.app will be copied to `/Library/Application Support/Dortania` for storage
 
 ## 0.4.3
 - Increment Binaries:
