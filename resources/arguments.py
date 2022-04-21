@@ -1,6 +1,8 @@
 import sys
-from resources import defaults, build, utilities, validation, sys_patch
+from resources import defaults, build, utilities, validation, sys_patch, sys_patch_auto
 from data import model_array
+import threading
+import time
 
 # Generic building args
 class arguments:
@@ -101,7 +103,19 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 print("- Set Mojave/Catalina root patch configuration")
                 settings.moj_cat_accel = True
             print("- Set System Volume patching")
-            sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings, None).start_patch()
+
+            if "Library/InstallerSandboxes/" in str(settings.payload_path):
+                print("- Running from Installer Sandbox")
+                thread = threading.Thread(target=sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings, None).start_patch)
+                thread.start()            
+                while thread.is_alive():
+                    utilities.block_os_updaters()
+                    time.sleep(1)
+            else:
+                sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings, None).start_patch()
         elif self.args.unpatch_sys_vol:
             print("- Set System Volume unpatching")
             sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings, None).start_unpatch()
+        elif self.args.auto_patch:
+            print("- Set Auto patching")
+            sys_patch_auto.AutomaticSysPatch.start_auto_patch(settings)

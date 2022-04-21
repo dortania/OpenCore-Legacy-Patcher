@@ -11,6 +11,7 @@ import os
 import wx.adv
 from wx.lib.agw import hyperlink
 import threading
+from pathlib import Path
 
 from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates
 from data import model_array, os_data, smbios_data, sip_data
@@ -23,6 +24,7 @@ class wx_python_gui:
         self.constants.gui_mode = True
         self.walkthrough_mode = False
         self.finished_auto_patch = False
+        self.target_disk = ""
 
         # Backup stdout for usage with wxPython
         self.stock_stdout = sys.stdout
@@ -1418,15 +1420,18 @@ class wx_python_gui:
             print("- Starting creation script as admin")
             wx.GetApp().Yield()
             time.sleep(1)
-            thread = threading.Thread(target=self.start_script)
-            thread.start()
             disk = disk[5:]
+            self.target_disk = disk
+            install_thread = threading.Thread(target=self.start_script)
+            install_thread.start()
+            self.download_thread = threading.Thread(target=self.download_and_unzip_pkg)
+            self.download_thread.start()
             default_output = float(utilities.monitor_disk_output(disk))
             while True:
                 time.sleep(0.1)
                 output = float(utilities.monitor_disk_output(disk))
                 bytes_written = output - default_output
-                if thread.is_alive():
+                if install_thread.is_alive():
                     self.progress_bar.SetValue(bytes_written)
                     self.progress_label.SetLabel(f"Bytes Written: {round(bytes_written, 2)}MB")
                     self.progress_label.Centre(wx.HORIZONTAL)
@@ -1446,12 +1451,45 @@ class wx_python_gui:
         output, error, returncode = run.Run()._stream_output(comm=args)
         if "Install media now available at" in output:
             print("- Sucessfully created macOS installer")
+            while self.download_thread.is_alive():
+                # wait for download_thread to finish
+                # though highly unlikely this thread is still alive (flashing an Installer will take a while)
+                time.sleep(0.1)
+            print("- Installing Root Patcher to drive")
+            self.install_installer_pkg(self.target_disk)
             popup_message = wx.MessageDialog(self.frame, "Sucessfully created a macOS installer!\nYou can now install OpenCore onto this drive", "Success", wx.OK)
             popup_message.ShowModal()
         else:
             print("- Failed to create macOS installer")
             popup = wx.MessageDialog(self.frame, f"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}", "Error", wx.OK | wx.ICON_ERROR)
             popup.ShowModal()
+
+
+    def download_and_unzip_pkg(self):
+        # Function's main goal is to grab the correct OCLP-Install.pkg and unzip it
+        # Note the following:
+        #   - When running a release build, pull from Github's release page with the same versioning
+        #   - When running from source/unable to find on Github, use the nightly.link variant
+        #   - If nightly also fails, fall back to the manually uploaded variant
+        link = self.constants.installer_pkg_url
+        if not utilities.validate_link(link):
+            print("- Stock Install.pkg is missing on Github, falling back to Nightly")
+            link = self.constants.installer_pkg_url_nightly
+            if not utilities.validate_link(link):
+                print("- Nightly Install.pkg is missing on Github, exiting")
+                return
+
+        if utilities.download_file(link, self.constants.installer_pkg_zip_path):
+            if Path(self.constants.installer_pkg_path).exists():
+                subprocess.run(["rm", self.constants.installer_pkg_path])
+            subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.installer_pkg_zip_path, self.constants.payload_path])
+
+    def install_installer_pkg(self, disk):
+        disk = disk + "s2" # ESP sits at 1, and we know macOS will have created the main partition at 2
+        if Path(self.constants.installer_pkg_path).exists():
+            path = utilities.grab_mount_point_from_disk(disk)
+            subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
+            subprocess.run(["cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
 
     def settings_menu(self, event=None):
         # Define Menu
