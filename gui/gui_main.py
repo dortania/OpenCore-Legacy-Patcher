@@ -518,11 +518,23 @@ class wx_python_gui:
         # Once finished, change build_opencore button to "Install OpenCore"
         self.build_opencore.SetLabel("🔩 Install OpenCore")
         self.build_opencore.Bind(wx.EVT_BUTTON, self.install_menu)
-        self.build_opencore.Enable()
-        
+
         # Reset stdout
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
+
+        # Throw popup asking to install OpenCore
+        self.dialog = wx.MessageDialog(
+            parent=self.frame, 
+            message=f"Would you like to install OpenCore now?",
+            caption="Finished building your OpenCore configuration!", 
+            style=wx.YES_NO | wx.ICON_QUESTION
+        )
+        self.dialog.SetYesNoLabels("Install to disk", "View build log")
+        if self.dialog.ShowModal() == wx.ID_YES:
+            self.install_menu()
+        else:
+            self.build_opencore.Enable()
     
     def install_menu(self, event=None):
         self.frame.DestroyChildren()
@@ -1487,7 +1499,7 @@ class wx_python_gui:
 
 
     def download_and_unzip_pkg(self):
-        # Function's main goal is to grab the correct OCLP-Install.pkg and unzip it
+        # Function's main goal is to grab the correct AutoPkg-Assets.pkg and unzip it
         # Note the following:
         #   - When running a release build, pull from Github's release page with the same versioning
         #   - When running from source/unable to find on Github, use the nightly.link variant
@@ -2356,10 +2368,17 @@ class wx_python_gui:
         )
         self.sip_label_2.Center(wx.HORIZONTAL)
 
+        self.sip_label_2_2 = wx.StaticText(self.frame, label=f"Currently Booted SIP: {hex(utilities.csr_dump())}")
+        self.sip_label_2_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.sip_label_2_2.SetPosition(
+            wx.Point(self.sip_label_2.GetPosition().x, self.sip_label_2.GetPosition().y + self.sip_label_2.GetSize().height + 5)
+        )
+        self.sip_label_2_2.Center(wx.HORIZONTAL)
+
         self.sip_label_3 = wx.StaticText(self.frame, label="For older Macs requiring root patching, we set SIP to\n be partially disabled (0x802) to allow root patching.")
         self.sip_label_3.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_3.SetPosition(
-            wx.Point(self.sip_label_2.GetPosition().x, self.sip_label_2.GetPosition().y + self.sip_label_2.GetSize().height + 10)
+            wx.Point(self.sip_label_2_2.GetPosition().x, self.sip_label_2_2.GetPosition().y + self.sip_label_2_2.GetSize().height + 10)
         )
         self.sip_label_3.Center(wx.HORIZONTAL)
 

@@ -6,8 +6,6 @@
   - Drops `CSR_ALLOW_UNTRUSTED_KEXTS` and `CSR_ALLOW_UNAPPROVED_KEXTS`
 - Remember TeraScale 2 Setting on MacBookPro8,2/3
   - Avoids requiring toggling after first time
-- Streamline GUI relaunch for Root Patch/Unpatch
-  - On relaunch, GUI starts patching immediately (previously user would need to re-nagivate the menu)
 - Resolve Electron Crashing with SIP lowered on 12.3
   - Adds `ipc_control_port_options=0` boot argument
   - Unknown whether this is a "bug" or intentional from Apple, affects native Macs with SIP disabled
@@ -31,14 +29,19 @@
 - Implement Automatic Patch Detection/Installation
   - Requires GUI for usage
   - Installations:
-    - During macOS Installer creating in-app, OCLP-Install.pkg is installed to macOS installer
+    - During macOS Installer creating in-app, AutoPkg-Assets.pkg is installed to macOS installer
     - After running the installer with AutoPkgInstaller.kext, Root Patcher will install patches
     - Must boot macOS Installer, does not support in-OS usage
   - Post OS Updates:
     - After OS updates, Patcher will detect whether system requires root patches and prompt you
     - Implemented via Launch Agent in `/Library/LaunchAgents`
     - OpenCore-Patcher.app will be copied to `/Library/Application Support/Dortania` for storage
-- Add Reboot Prompt in GUI after Root Patching
+- GUI Enhancements:
+  - Add Reboot Prompt after Root Patching
+  - Add Disk Installation Prompt after OpenCore Config Building
+  - Streamline GUI relaunch for Root Patch/Unpatch (remembering previous state during patching)
+  - Grey out return buttons while performing sensitive tasks
+  - Add `Currently Booted SIP` info to SIP Settings
 - Remove manual root unpatching
   - Removed due to reliablity issues
   - `bless` based reversion still supported in Big Sur+

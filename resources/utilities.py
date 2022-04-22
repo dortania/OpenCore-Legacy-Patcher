@@ -102,18 +102,24 @@ def check_seal():
         return False
 
 
-def csr_decode(os_sip):
+def csr_dump():
     # Based off sip_config.py
     # https://gist.github.com/pudquick/8b320be960e1654b908b10346272326b
     # https://opensource.apple.com/source/xnu/xnu-7195.141.2/libsyscall/wrappers/csr.c.auto.html
-    # Far more reliable than parsing csr-active-config
+    # Far more reliable than parsing NVRAM's csr-active-config (ie. user can wipe it, boot.efi can strip bits)
 
     # Note that 'csr_get_active_config' was not introduced until 10.11
-    # However this function should never be called on 10.10 or earlier
-    libsys = CDLL('/usr/lib/libSystem.dylib')
-    raw    = c_uint(0)
-    errmsg = libsys.csr_get_active_config(byref(raw))
-    sip_int = raw.value
+    try:
+        libsys = CDLL('/usr/lib/libSystem.dylib')
+        raw    = c_uint(0)
+        errmsg = libsys.csr_get_active_config(byref(raw))
+        return raw.value
+    except AttributeError:
+        return 0
+
+
+def csr_decode(os_sip):
+    sip_int = csr_dump()
     for i,  current_sip_bit in enumerate(sip_data.system_integrity_protection.csr_values):
         if sip_int & (1 << i):
             sip_data.system_integrity_protection.csr_values[current_sip_bit] = True
