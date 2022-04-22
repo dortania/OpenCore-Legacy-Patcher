@@ -79,8 +79,8 @@ class wx_python_gui:
     def reboot_system(self, event=None):
         self.popup = wx.MessageDialog(
             self.frame,
-            "Root Patcher finished successfully\n\nWould you like to reboot now?\n\nNote: This will close all open applications, remember to save them or manually reboot once you're ready",
-            "Reboot?",
+            "Root Patcher finished successfully\nWould you like to reboot now?",
+            "Reboot to apply patches?",
             wx.YES_NO | wx.ICON_INFORMATION
         )
         self.popup.SetYesNoLabels("Reboot", "Ignore")
