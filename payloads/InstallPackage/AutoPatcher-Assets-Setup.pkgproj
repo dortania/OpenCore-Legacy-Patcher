@@ -535,11 +535,11 @@
 				<key>FOLLOW_SYMBOLIC_LINKS</key>
 				<false/>
 				<key>IDENTIFIER</key>
-				<string>com.mygreatcompany.pkg.OCLP-Install</string>
+				<string>com.dortania.pkg.AutoPatcher-Assets</string>
 				<key>LOCATION</key>
 				<integer>0</integer>
 				<key>NAME</key>
-				<string>OCLP-Install</string>
+				<string>AutoPatcher-Assets</string>
 				<key>OVERWRITE_PERMISSIONS</key>
 				<false/>
 				<key>PAYLOAD_SIZE</key>
@@ -665,7 +665,7 @@
 						<key>LANGUAGE</key>
 						<string>English</string>
 						<key>VALUE</key>
-						<string>OCLP-Install</string>
+						<string>AutoPatcher-Assets</string>
 					</dict>
 				</array>
 			</dict>
@@ -859,7 +859,7 @@
 				</dict>
 			</array>
 			<key>NAME</key>
-			<string>OCLP-Install</string>
+			<string>AutoPatcher-Assets</string>
 			<key>PAYLOAD_ONLY</key>
 			<false/>
 			<key>TREAT_MISSING_PRESENTATION_DOCUMENTS_AS_WARNING</key>
