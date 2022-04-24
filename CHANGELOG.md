@@ -45,6 +45,8 @@
 - Remove manual root unpatching
   - Removed due to reliablity issues
   - `bless` based reversion still supported in Big Sur+
+- Remove Unoffical Mojave/Catalina Root Patching
+  - For TeraScale 2-based acceleration on older OSes, use v0.4.3
 
 ## 0.4.3
 - Increment Binaries:

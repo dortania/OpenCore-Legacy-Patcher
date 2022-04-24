@@ -171,7 +171,6 @@ class Constants:
         self.imac_model = "" #         Set MXM GPU model
         self.drm_support = False  #    Set iMac14,x DRM support
         self.allow_ivy_igpu = False  # Set iMac13,x iGPU support
-        self.moj_cat_accel = False  #  Set Mojave/Catalina Acceleration support
         self.allow_ts2_accel = True  # Set TeraScale 2 Acceleration support
 
         ## Miscellaneous

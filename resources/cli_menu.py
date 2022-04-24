@@ -619,34 +619,6 @@ Q. Return to previous menu
         else:
             self.latebloom_settings()
 
-    def allow_moj_cat_patch(self):
-        utilities.cls()
-        utilities.header(["Allow Root Patching on Mojave/Catalina"])
-        print(
-            """
-This is an experimental option that allows the usage of legacy acceleration
-patches in Mojave and Catalina.
-
-The main goal of this is to allow developers to better test patch sets as well
-as allow acceleration on TeraScale 2 machines. Not all features may be available
-(ie. GPU switching may not work, etc)
-
-Note: for the average user, we recommend using dosdude1's legacy patcher:
-
-- http://dosdude1.com/software.html
-        """
-        )
-
-        change_menu = input("Allow Root Patching on Mojave/Catalina?(y/n/q): ")
-        if change_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.moj_cat_accel = True
-        elif change_menu in {"n", "N", "no", "No"}:
-            self.constants.moj_cat_accel = False
-        elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
-        else:
-            self.allow_moj_cat_patch()
-
     def disable_tb(self):
         utilities.cls()
         utilities.header(["Disable Thunderbolt on 2013-14 MacBook Pros"])
@@ -1097,9 +1069,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             print(MenuOptions.monterey)
         elif self.constants.detected_os == os_data.os_data.big_sur:
             print(MenuOptions.big_sur)
-        elif self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina] and self.constants.moj_cat_accel == True:
-            print(MenuOptions.mojave_catalina)
-            no_unpatch = True
         else:
             print(MenuOptions.default)
             no_patch = True
@@ -1144,10 +1113,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 ["Boot Volume Settings", self.patcher_settings_boot],
                 ["Miscellaneous Settings", self.patcher_settings_misc],
                 ["Dump detected hardware", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).dump_hardware],
-                [
-                    f"Allow Accel on Mojave/Catalina:\tCurrently {self.constants.moj_cat_accel}",
-                    MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_moj_cat_patch,
-                ],
                 [
                     f"Allow OpenCore on native Models:\tCurrently {self.constants.allow_oc_everywhere}",
                     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_native_models,

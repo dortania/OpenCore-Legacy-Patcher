@@ -299,11 +299,11 @@ class wx_python_gui:
         )
         self.post_install.Bind(wx.EVT_BUTTON, self.root_patch_menu)
         self.post_install.Centre(wx.HORIZONTAL)
-        if self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina] and self.constants.moj_cat_accel == False:
-            self.post_install.SetToolTip(wx.ToolTip("""Graphics Acceleration for Mojave and Catalina is currently experimental. \nIf you require this feature, enable '10.14/15 Accel' in Settings."""))
+        if self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina]:
+            self.post_install.SetToolTip(wx.ToolTip("""Graphics Acceleration for Mojave and Catalina has been removed in 0.4.4 onwards.\n\nIf you require this feature, use 0.4.3 or older"""))
             self.post_install.Disable()
         elif self.constants.detected_os < os_data.os_data.mojave:
-            self.post_install.SetToolTip(wx.ToolTip("""Root Patching is only available for Mojave and newer."""))
+            self.post_install.SetToolTip(wx.ToolTip("""Root Patching is only available for Big Sur and newer."""))
             self.post_install.Disable()
 
         # Create macOS Installer
@@ -1646,13 +1646,6 @@ class wx_python_gui:
         self.bootpicker_checkbox.Bind(wx.EVT_CHECKBOX, self.show_picker_checkbox_click)
         self.bootpicker_checkbox.ToolTip = wx.ToolTip("""Shows OpenCore's Boot Picker on machine start\nToggling this off will hide the picker, and only load when holding either Option or Escape""")
 
-        # Checkbox: Allow Accel on Mojave/Catalina
-        self.accel_checkbox = wx.CheckBox(self.frame, label="Allow Accel on 10.14/15")
-        self.accel_checkbox.SetValue(self.constants.moj_cat_accel)
-        self.accel_checkbox.SetPosition(wx.Point(self.bootpicker_checkbox.GetPosition().x , self.bootpicker_checkbox.GetPosition().y + self.bootpicker_checkbox.GetSize().height))
-        self.accel_checkbox.Bind(wx.EVT_CHECKBOX, self.accel_checkbox_click)
-        self.accel_checkbox.ToolTip = wx.ToolTip("""Allows Root Patching on Mojave/Catalina\nUseful for enabling TeraScale 2 Acceleration when not provided by dosdude1's patcher""")
-
         # Buttons
         
         # Button: SIP Settings
@@ -1663,7 +1656,7 @@ class wx_python_gui:
         else:
             sip_string = "Lowered"
         self.sip_button = wx.Button(self.frame, label=f"SIP Settings ({sip_string})",  size=(155,30))
-        self.sip_button.SetPosition(wx.Point(self.accel_checkbox.GetPosition().x , self.accel_checkbox.GetPosition().y + self.accel_checkbox.GetSize().height + 10))
+        self.sip_button.SetPosition(wx.Point(self.bootpicker_checkbox.GetPosition().x , self.bootpicker_checkbox.GetPosition().y + self.bootpicker_checkbox.GetSize().height + 10))
         self.sip_button.Bind(wx.EVT_BUTTON, self.sip_config_menu)
         self.sip_button.Center(wx.HORIZONTAL)
 
@@ -1778,14 +1771,6 @@ class wx_python_gui:
         else:
             print("Show Picker mode disabled")
             self.constants.showpicker = False
-    
-    def accel_checkbox_click(self, event=None):
-        if self.accel_checkbox.GetValue():
-            print("Legacy Accel mode enabled")
-            self.constants.moj_cat_accel = True
-        else:
-            print("Legacy Accel mode disabled")
-            self.constants.moj_cat_accel = False
     
     def dev_settings_menu(self, event=None):
         self.frame.DestroyChildren()

@@ -479,7 +479,6 @@ def check_cli_args():
     parser.add_argument("--wlan", help="Enable Wake on WLAN support", action="store_true", required=False)
     # parser.add_argument("--disable_amfi", help="Disable AMFI", action="store_true", required=False)
     parser.add_argument("--moderate_smbios", help="Moderate SMBIOS Patching", action="store_true", required=False)
-    parser.add_argument("--moj_cat_accel", help="Allow Root Patching on Mojave and Catalina", action="store_true", required=False)
     parser.add_argument("--disable_tb", help="Disable Thunderbolt on 2013-2014 MacBook Pros", action="store_true", required=False)
     parser.add_argument("--force_surplus", help="Force SurPlus in all newer OSes", action="store_true", required=False)
 
