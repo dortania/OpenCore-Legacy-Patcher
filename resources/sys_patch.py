@@ -308,7 +308,7 @@ class PatchSysVolume:
     def add_legacy_keyboard_backlight_patch(self):
         print("- Enabling Keyboard Backlight delay")
         utilities.process_status(
-            utilities.elevated(["defaults", "write", "/Library/Preferences/.GlobalPreferences.plist", "NonMetal_BacklightHack", "-bool", "true"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["defaults", "write", "/Library/Preferences/.GlobalPreferences.plist", "Moraea_BacklightHack", "-bool", "true"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         )
     
     def add_legacy_dropbox_patch(self):
