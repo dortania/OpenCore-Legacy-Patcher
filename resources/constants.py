@@ -15,7 +15,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.4.4"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.3.8"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.3.9"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link = "https://discord.gg/rqdPgH8xSN"
@@ -575,6 +575,10 @@ class Constants:
     @property
     def payload_apple_root_path_zip(self):
         return self.payload_path / Path("Apple.zip")
+    
+    @property
+    def payload_universal_extensions_zip_path(self):
+        return self.payload_path / Path("Universal-Extensions.zip")
 
     @property
     def payload_apple_root_path(self):
@@ -582,7 +586,7 @@ class Constants:
 
     @property
     def payload_apple_kexts_path(self):
-        return self.payload_apple_root_path / Path("Extensions")
+        return self.payload_path / Path("Universal-Extensions")
 
     @property
     def payload_apple_coreservices_path(self):

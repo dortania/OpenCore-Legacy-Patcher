@@ -22,11 +22,12 @@ class grab_patcher_support_pkg:
             os_ver = "10.14-Mojave"
         else:
             raise Exception(f"Unsupported OS: {self.constants.detected_os}")
-        link = f"{self.constants.url_patcher_support_pkg}{self.constants.patcher_support_pkg_version}/{os_ver}.zip"
-        return os_ver, link
+        framework_link = f"{self.constants.url_patcher_support_pkg}{self.constants.patcher_support_pkg_version}/{os_ver}.zip"
+        extensions_link = f"{self.constants.url_patcher_support_pkg}{self.constants.patcher_support_pkg_version}/Universal-Extensions.zip"
+        return os_ver, extensions_link, framework_link
 
     def download_files(self):
-        os_ver, link = self.generate_pkg_link()
+        os_ver, extensions_link, framework_link = self.generate_pkg_link()
         if Path(self.constants.payload_apple_root_path).exists():
             print("- Removing old Apple Binaries folder")
             # Delete folder
@@ -36,13 +37,16 @@ class grab_patcher_support_pkg:
             Path(self.constants.payload_apple_root_path_zip).unlink()
 
         download_result = None
-        local_zip = Path(self.constants.payload_path) / f"{os_ver}.zip"
-        if Path(local_zip).exists():
+        local_framework_zip = Path(self.constants.payload_path) / f"{os_ver}.zip"
+        local_extensions_zip = Path(self.constants.payload_path) / f"Universal-Extensions.zip"
+        if Path(local_framework_zip).exists() and Path(local_extensions_zip).exists():
             print(f"- Found local {os_ver} zip, skipping download")
             print(f"- Duplicating into Apple.zip")
-            shutil.copy(local_zip, self.constants.payload_apple_root_path_zip)
+            shutil.copy(local_framework_zip, self.constants.payload_apple_root_path_zip)
             download_result = True
         else:
-            download_result = utilities.download_file(link, self.constants.payload_apple_root_path_zip)
+            print(f"- No local version found, donwloading...")
+            if utilities.download_file(extensions_link, self.constants.payload_universal_extensions_zip_path):
+                download_result = utilities.download_file(framework_link, self.constants.payload_apple_root_path_zip)
 
-        return download_result, os_ver, link
+        return download_result, os_ver, extensions_link, framework_link

@@ -867,7 +867,7 @@ class wx_python_gui:
 
         # Download resources
         sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
-        download_result, os_ver, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
+        download_result, os_ver, extensions_link, framework_link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
         sys.stdout=sys.__stdout__
 
         if download_result is None:

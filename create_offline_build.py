@@ -2,7 +2,7 @@ import subprocess
 from resources import constants
 
 patcher_support_pkg_version = constants.Constants().patcher_support_pkg_version
-binary_packages = ["11-Big-Sur", "12-Monterey"]
+binary_packages = ["11-Big-Sur", "12-Monterey", "Universal-Extensions"]
 
 for binary_package in binary_packages:
     print(f"- Downloading {binary_package}...")

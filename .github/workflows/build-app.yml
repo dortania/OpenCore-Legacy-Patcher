@@ -16,6 +16,7 @@ jobs:
       commitdate: ${{ github.event.head_commit.timestamp }}
     steps:
       - uses: actions/checkout@v2
+      - run: python3 create_offline_build.py
       - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher.spec
       - run: python3 ./payloads/binary.py $branch $commiturl $commitdate
       - run: ./after_pyinstaller.sh
@@ -36,3 +37,5 @@ jobs:
           file: OpenCore-Patcher-TUI.app.zip
           tag: ${{ github.ref }}
           file_glob: true
+      - name: Validate OpenCore
+        run: ./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --validate

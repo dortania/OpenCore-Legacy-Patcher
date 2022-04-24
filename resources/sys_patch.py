@@ -628,19 +628,21 @@ class PatchSysVolume:
 
     def download_files(self):
         if self.constants.gui_mode is False or "Library/InstallerSandboxes/" in str(self.constants.payload_path):
-            download_result, os_ver, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
+            download_result, os_ver, extensions_link, framework_link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
         else:
             download_result = True
-            os_ver, link = sys_patch_download.grab_patcher_support_pkg(self.constants).generate_pkg_link()
+            os_ver, extensions_link, framework_link = sys_patch_download.grab_patcher_support_pkg(self.constants).generate_pkg_link()
 
-        if download_result and self.constants.payload_apple_root_path_zip.exists():
+        if download_result and self.constants.payload_apple_root_path_zip.exists() and self.constants.payload_universal_extensions_zip_path.exists():
             print("- Download completed")
             print("- Unzipping download...")
             try:
                 utilities.process_status(subprocess.run(["unzip", self.constants.payload_apple_root_path_zip], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.constants.payload_path))
+                utilities.process_status(subprocess.run(["unzip", self.constants.payload_universal_extensions_zip_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=self.constants.payload_path))
                 print("- Renaming folder")
                 os.rename(self.constants.payload_path / Path(os_ver), self.constants.payload_apple_root_path)
                 Path(self.constants.payload_apple_root_path_zip).unlink()
+                Path(self.constants.payload_universal_extensions_zip_path).unlink()
                 print("- Binaries downloaded to:")
                 print(self.constants.payload_path)
                 return self.constants.payload_apple_root_path
@@ -649,8 +651,9 @@ class PatchSysVolume:
                 return None
         else:
             if self.constants.gui_mode is True:
-                print("- Download failed, please verify the below link works:")
-                print(link)
+                print("- Download failed, please verify the below links work:")
+                print(framework_link)
+                print(extensions_link)
                 print("\nIf you continue to have issues, try using the Offline builds")
                 print("located on Github next to the other builds")
             else:

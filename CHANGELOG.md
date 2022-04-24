@@ -18,7 +18,7 @@
   - Improve Display Prefpane Image
   - Defaults prefix change (`ASB_` -> `MORAEA_`, reopen non-Metal Settings to apply)
 - Increment Binaries:
-  - PatcherSupportPkg 0.3.7 - release
+  - PatcherSupportPkg 0.3.9 - release
   - OpenCorePkg 0.8.0 - release
   - FeatureUnlock 1.0.8 - release
   - CPUFriend 1.2.5 - release
@@ -47,6 +47,9 @@
   - `bless` based reversion still supported in Big Sur+
 - Remove Unoffical Mojave/Catalina Root Patching
   - For TeraScale 2-based acceleration on older OSes, use v0.4.3
+- Simplify Binary options
+  - Removes Online Patcher Variants
+  - Offline variants are now new defaults, no longer retain `Offline` suffix
 
 ## 0.4.3
 - Increment Binaries:

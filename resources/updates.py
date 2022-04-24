@@ -50,7 +50,7 @@ class check_binary_updates:
             return "TUI"
 
     def determine_local_build_type_offline(self):
-        if (Path(self.constants.payload_path) / f"12-Monterey.zip").exists():
+        if (Path(self.constants.payload_path) / "Universal-Extensions.zip").exists():
             return True
         else:
             return False
