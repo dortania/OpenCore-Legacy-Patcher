@@ -22,7 +22,7 @@ jobs:
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
       - run: cd dist; zip -r ../OpenCore-Patcher-wxPython.app.zip OpenCore-Patcher.app
       - run: ./../sign-wxpython.sh
-      - run: packagesbuild ./payloads/InstallPackage/AutoPatcher-Assets-Setup.pkgproj
+      - run: packagesbuild ./payloads/InstallPackage/AutoPkg-Assets-Setup.pkgproj
       - run: mv ./OpenCore-Patcher-wxPython.app.zip ./OpenCore-Patcher-GUI-Offline.app.zip
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v2
