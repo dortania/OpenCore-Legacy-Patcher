@@ -15,7 +15,7 @@ jobs:
       commiturl: ${{ github.event.head_commit.url }}
       commitdate: ${{ github.event.head_commit.timestamp }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: python3 create_offline_build.py
       - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher.spec
       - run: python3 ./payloads/binary.py $branch $commiturl $commitdate
@@ -24,7 +24,7 @@ jobs:
       - run: cd dist; zip -r ../OpenCore-Patcher-TUI.app.zip OpenCore-Patcher.app
       - run: ./../sign-tui.sh
       - name: Upload App to Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: OpenCore-Patcher-TUI.app
           path: OpenCore-Patcher-TUI.app.zip
