@@ -15,7 +15,7 @@ jobs:
       commiturl: ${{ github.event.head_commit.url }}
       commitdate: ${{ github.event.head_commit.timestamp }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: python3 create_offline_build.py
       - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher-GUI.spec
       - run: python3 ./payloads/binary.py $branch $commiturl $commitdate
@@ -25,12 +25,12 @@ jobs:
       - run: packagesbuild ./payloads/InstallPackage/AutoPkg-Assets-Setup.pkgproj
       - run: mv ./OpenCore-Patcher-wxPython.app.zip ./OpenCore-Patcher-GUI.app.zip
       - name: Upload App to Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: OpenCore-Patcher.app (GUI)
           path: OpenCore-Patcher-GUI.app.zip
       - name: Upload Package to Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: AutoPkg-Assets.pkg
           path: ./dist/AutoPkg-Assets.pkg
