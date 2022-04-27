@@ -42,6 +42,7 @@
   - Streamline GUI relaunch for Root Patch/Unpatch (remembering previous state during patching)
   - Grey out return buttons while performing sensitive tasks
   - Add `Currently Booted SIP` info to SIP Settings
+  - Add Disk Highlighting during Build/Install for previously installed disks
 - Remove manual root unpatching
   - Removed due to reliablity issues
   - `bless` based reversion still supported in Big Sur+

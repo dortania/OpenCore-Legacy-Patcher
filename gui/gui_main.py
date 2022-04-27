@@ -567,9 +567,26 @@ class wx_python_gui:
         )
         self.missing_disks.Centre(wx.HORIZONTAL)
 
+        self.color_note = wx.StaticText(self.frame, label="Note: Blue represent the disk OpenCore is currently booted from")
+        self.color_note.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.color_note.SetPosition(
+            wx.Point(
+                self.missing_disks.GetPosition().x,
+                self.missing_disks.GetPosition().y + self.missing_disks.GetSize().height + 5
+            )
+        )
+        self.color_note.Centre(wx.HORIZONTAL)
+
         # Request Disks Present
         list_disks = install.tui_disk_installation(self.constants).list_disks()
         if list_disks:
+            if self.constants.booted_oc_disk is not None:
+                # disk6s1 -> disk6
+                disk_root = self.constants.booted_oc_disk.strip("disk")
+                disk_root = "disk" + disk_root.split("s")[0]
+            else:
+                disk_root = None
+
             for disk in list_disks:
                 # Create a button for each disk
                 print(f"{list_disks[disk]['disk']} - {list_disks[disk]['name']} - {list_disks[disk]['size']}")
@@ -577,21 +594,25 @@ class wx_python_gui:
                 self.install_button.SetLabel(f"{list_disks[disk]['disk']} - {list_disks[disk]['name']} - {list_disks[disk]['size']}")
                 self.install_button.SetPosition(
                     wx.Point(
-                        self.missing_disks.GetPosition().x,
-                        self.missing_disks.GetPosition().y + self.missing_disks.GetSize().height + 3 + i
+                        self.color_note.GetPosition().x,
+                        self.color_note.GetPosition().y + self.color_note.GetSize().height + 3 + i
                     )
                 )
                 self.install_button.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.install_oc_disk_select(temp, list_disks))
                 self.install_button.Centre(wx.HORIZONTAL)
                 i += self.install_button.GetSize().height + 3
+                if disk_root == list_disks[disk]['disk']:
+                    # Set label colour to red
+                    self.install_button.SetForegroundColour((25, 179, 231))
+
         else:
             # Label: No disks found
             self.install_button = wx.StaticText(self.frame, label="Failed to find any applicable disks")
             self.install_button.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
             self.install_button.SetPosition(
                 wx.Point(
-                    self.missing_disks.GetPosition().x,
-                    self.missing_disks.GetPosition().y + self.missing_disks.GetSize().height + 3
+                    self.color_note.GetPosition().x,
+                    self.color_note.GetPosition().y + self.color_note.GetSize().height + 3
                 )
             )
             self.install_button.Centre(wx.HORIZONTAL)
@@ -644,6 +665,9 @@ class wx_python_gui:
             self.install_button.Bind(wx.EVT_BUTTON, lambda event, temp=partition: self.install_oc_process(temp))
             self.install_button.Centre(wx.HORIZONTAL)
             i += self.install_button.GetSize().height + 3
+            if self.constants.booted_oc_disk == list_partitions[partition]['partition']:
+                # Set label colour to red
+                self.install_button.SetForegroundColour((25, 179, 231))
         
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(

@@ -192,6 +192,7 @@ class Constants:
         self.allow_nvme_fixing = True  #       Allow NVMe Kernel Space Patches
         self.disable_xcpm = False  #           Disable XCPM (X86PlatformPlugin.kext)
         self.root_patcher_succeded = False  #  Determine if root patcher succeeded
+        self.booted_oc_disk = None  #          Determine current disk OCLP booted from
 
         self.legacy_accel_support = [
             os_data.os_data.mojave,

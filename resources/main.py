@@ -30,6 +30,7 @@ class OpenCoreLegacyPatcher:
         self.constants.computer = device_probe.Computer.probe()
         self.constants.recovery_status = utilities.check_recovery()
         self.computer = self.constants.computer
+        self.constants.booted_oc_disk = utilities.find_disk_off_uuid(utilities.clean_device_path(self.computer.opencore_path))
         launcher_script = None
         launcher_binary = sys.executable
         if "python" in launcher_binary:

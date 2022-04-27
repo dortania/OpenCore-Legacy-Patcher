@@ -403,6 +403,44 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
             print(link)
         return None
 
+def dump_constants(constants):
+    with open(os.path.join(os.path.expanduser('~'), 'Desktop', 'internal_data.txt'), 'w') as f:
+        f.write(str(vars(constants)))
+
+
+def clean_device_path(device_path: str):
+    # ex:     
+    #   'PciRoot(0x0)/Pci(0xA,0x0)/Sata(0x0,0x0,0x0)/HD(1,GPT,C0778F23-3765-4C8E-9BFA-D60C839E7D2D,0x28,0x64000)/EFI\OC\OpenCore.efi'
+    #   'PciRoot(0x0)/Pci(0x1A,0x7)/USB(0x0,0x0)/USB(0x2,0x0)/HD(2,GPT,4E929909-2074-43BA-9773-61EBC110A670,0x64800,0x38E3000)/EFI\OC\OpenCore.efi'
+    # return: 
+    #   'C0778F23-3765-4C8E-9BFA-D60C839E7D2D'
+    #   '4E929909-2074-43BA-9773-61EBC110A670'
+
+    if device_path:
+        device_path_array = device_path.split("/")
+        # we can always assume [-1] is 'EFI\OC\OpenCore.efi'
+        if len(device_path_array) >= 2:
+            device_path_stripped = device_path_array[-2]
+            device_path_root_array = device_path_stripped.split(",")
+            return device_path_root_array[2]
+    return None
+
+
+def find_disk_off_uuid(uuid):
+    # Find disk by UUID
+    disk_list = None
+    try:
+        disk_list = plistlib.loads(subprocess.run(["diskutil", "info", "-plist", uuid], stdout=subprocess.PIPE).stdout)
+    except TypeError:
+        pass
+    if disk_list:
+        try:
+            return disk_list["DeviceIdentifier"]
+        except KeyError:
+            pass
+    return None
+    
+
 def grab_mount_point_from_disk(disk):
     data = plistlib.loads(subprocess.run(f"diskutil info -plist {disk}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
     return data["MountPoint"]

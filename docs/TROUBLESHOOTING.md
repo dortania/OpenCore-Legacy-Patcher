@@ -16,6 +16,7 @@ Here are some common errors users may experience while using this patcher:
 * [No DisplayPort Output on Mac Pros with Nvidia Kepler](#no-displayport-output-on-mac-pros-with-nvidia-kepler)
 * [Volume Hash Mismatch Error in macOS Monterey](#volume-hash-mismatch-error-in-macos-monterey)
 * [Cannot Disable SIP in recoveryOS](#cannot-disable-sip-in-recoveryos)
+* [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
 
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
@@ -135,3 +136,9 @@ For those experiencing issues with USB 1.1 devices (such as mice, keyboards and 
 Because of this, we recommend placing a USB 2.0/3.0 hub between your devices and the port on the Mac Pro. UHCI and EHCI cannot both be used at once, so using a USB hub will always force the EHCI controller on.
 
 * Alternatively, you can try cold starting the hardware and see if macOS recognizes the UHCI controller properly
+
+## Stuck on "Less than a minute remaining..."
+
+A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this stange a lot of heavy cryptography is performed, which can make systems appear to be stuck when in reality they are working quite hard to finish up the installation.
+
+Be patient at this stage, do not manually reboot your machine. This will break the installation and require you to reinstall.

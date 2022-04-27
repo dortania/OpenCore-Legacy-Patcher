@@ -475,6 +475,7 @@ class Computer:
     cpu: Optional[CPU] = None
     oclp_version: Optional[str] = None
     opencore_version: Optional[str] = None
+    opencore_path: Optional[str] = None
     bluetooth_chipset: Optional[str] = None
     ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
@@ -696,6 +697,7 @@ class Computer:
         # OCLP version
         self.oclp_version = utilities.get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
         self.opencore_version = utilities.get_nvram("opencore-version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+        self.opencore_path = utilities.get_nvram("boot-path", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
 
     def cpu_probe(self):
         self.cpu = CPU(
