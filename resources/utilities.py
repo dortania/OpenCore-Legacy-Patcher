@@ -407,6 +407,29 @@ def dump_constants(constants):
     with open(os.path.join(os.path.expanduser('~'), 'Desktop', 'internal_data.txt'), 'w') as f:
         f.write(str(vars(constants)))
 
+def find_apfs_physical_volume(device):
+    # ex: disk3s1s1
+    # return: [disk0s2]
+    disk_list = None
+    physical_disks = []
+    try:
+        disk_list = plistlib.loads(subprocess.run(["diskutil", "info", "-plist", device], stdout=subprocess.PIPE).stdout)
+    except TypeError:
+        pass
+
+    if disk_list:
+        try:
+            # Note: Fusion Drive Macs return multiple APFSPhysicalStores:
+            # APFSPhysicalStores:
+            #  - 0:
+            #      APFSPhysicalStore: disk0s2
+            #  - 1:
+            #      APFSPhysicalStore: disk3s2
+            for disk in disk_list["APFSPhysicalStores"]:
+                physical_disks.append(disk["APFSPhysicalStore"])
+        except KeyError:
+            pass
+    return physical_disks
 
 def clean_device_path(device_path: str):
     # ex:     

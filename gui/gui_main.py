@@ -2,6 +2,7 @@
 # Implemented using wxPython
 # Currently Work in Progress
 
+import plistlib
 import wx
 import sys
 import webbrowser
@@ -367,7 +368,10 @@ class wx_python_gui:
             elif "--gui_unpatch" in sys.argv:
                 self.patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
                 self.root_patch_revert()
+            elif self.constants.start_build_install is True:
+                self.build_install_menu()
         self.finished_auto_patch = True
+        self.constants.start_build_install = False
 
         if self.app.MainLoop() is None:
             self.app.MainLoop() 
@@ -511,6 +515,9 @@ class wx_python_gui:
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
+
+        if self.constants.start_build_install is True:
+            self.build_start()
     
     def build_start(self, event=None):
         self.build_opencore.Disable()
@@ -1545,8 +1552,15 @@ class wx_python_gui:
         disk = disk + "s2" # ESP sits at 1, and we know macOS will have created the main partition at 2
         if Path(self.constants.installer_pkg_path).exists():
             path = utilities.grab_mount_point_from_disk(disk)
-            subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
-            subprocess.run(["cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
+            if Path(path + "/System/Library/CoreServices/SystemVersion.plist").exists():
+                kernel_version = plistlib.load(Path(path + "/System/Library/CoreServices/SystemVersion.plist").open("rb"))
+                kernel_version = kernel_version["ProductBuildVersion"]
+                kernel_version = kernel_version[:2] # Grab first 2 digits, we can assume the lowest installer to be 10.9 (XNU 13)
+                if int(kernel_version) >= os_data.os_data.big_sur:
+                    subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
+                    subprocess.run(["cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
+                else:
+                    print("- Installer unsupported, requires Big Sur or newer")
 
     def settings_menu(self, event=None):
         # Define Menu

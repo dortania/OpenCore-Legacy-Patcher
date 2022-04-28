@@ -8,9 +8,11 @@
 # If all these tests pass, start Root Patcher
 # Copyright (C) 2022, Mykola Grymalyuk
 
+import plistlib
 import subprocess
 import webbrowser
 from resources import sys_patch_detect, utilities, sys_patch_detect, updates
+from gui import gui_main
 
 class AutomaticSysPatch:
     def start_auto_patch(settings):
@@ -68,32 +70,92 @@ class AutomaticSysPatch:
                                     stderr=subprocess.STDOUT
                                 )
                         else:
-                            for entry in dict:
-                                version = dict[entry]["Version"]
-                                github_link = dict[entry]["Github Link"]
-                                print(f"- Found new version: {version}")
+                            version = dict[0]["Version"]
+                            github_link = dict[0]["Github Link"]
+                            print(f"- Found new version: {version}")
 
-                                # launch oascript to ask user if they want to apply the update
-                                # if yes, open the link in the default browser
-                                # we never want to run the root patcher if there are updates available
-                                args = [
-                                    "osascript",
-                                    "-e",
-                                    f"""display dialog "OpenCore Legacy Patcher has detected you're running without Root Patches, and would like to install them.\n\nHowever we've detected a new version of OCLP on Github. Would you like to view this?\n\nCurrent Version: {settings.patcher_version}\nRemote Version: {version}" """
-                                    f'with icon POSIX file "{settings.app_icon_path}"',
-                                ]
-                                output = subprocess.run(
-                                    args, 
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.STDOUT
-                                )
-                                if output.returncode == 0:
-                                    webbrowser.open(github_link)
+                            # launch oascript to ask user if they want to apply the update
+                            # if yes, open the link in the default browser
+                            # we never want to run the root patcher if there are updates available
+                            args = [
+                                "osascript",
+                                "-e",
+                                f"""display dialog "OpenCore Legacy Patcher has detected you're running without Root Patches, and would like to install them.\n\nHowever we've detected a new version of OCLP on Github. Would you like to view this?\n\nCurrent Version: {settings.patcher_version}\nLatest Version: {version}\n\nNote: After downloading the latest OCLP version, open the app and run the 'Post Install Root Patcher' from the main menu." """
+                                f'with icon POSIX file "{settings.app_icon_path}"',
+                            ]
+                            output = subprocess.run(
+                                args, 
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT
+                            )
+                            if output.returncode == 0:
+                                webbrowser.open(github_link)
                     else:
                         print("- Cannot run patching")
                 else:
                     print("- No patches detected")
+                    AutomaticSysPatch.determine_if_boot_matches(settings)
             else:
                 print("- Detected Snapshot seal not in tact, skipping")
+                AutomaticSysPatch.determine_if_boot_matches(settings)
         else:
             print("- Auto Patch option is not supported on TUI, please use GUI")
+    
+    def determine_if_boot_matches(settings):
+        # Goal of this function is to determine whether the user
+        # is using a USB drive to Boot OpenCore but macOS does not 
+        # reside on the same drive as the USB.
+
+        # If we determine them to be mismatched, notify the user
+        # and ask if they want to install to install to disk
+
+        print("- Determining if macOS drive matches boot drive")
+
+        if settings.booted_oc_disk:
+            root_disk = settings.booted_oc_disk.strip("disk")
+            root_disk = "disk" + root_disk.split("s")[0]
+        
+            print(f"  - Boot Drive: {settings.booted_oc_disk} ({root_disk})")
+            macOS_disk = utilities.get_disk_path()
+            print(f"  - macOS Drive: {macOS_disk}")
+            physical_stores = utilities.find_apfs_physical_volume(macOS_disk)
+            print(f"  - APFS Physical Stores: {physical_stores}")
+
+            disk_match = False
+            for disk in physical_stores:
+                if root_disk in disk:
+                    print(f"- Boot drive matches macOS drive ({disk})")
+                    disk_match = True
+                    break
+            
+            if disk_match is False:
+                # Check if OpenCore is on a USB drive
+                print("- Boot Drive does not match macOS drive, checking if OpenCore is on a USB drive")
+
+                disk_info = plistlib.loads(subprocess.run(["diskutil", "info", "-plist", root_disk], stdout=subprocess.PIPE).stdout)
+                try:
+                    if disk_info["Removable"] is True:
+                        print("- Boot Disk is removable, prompting user to install to internal")
+
+                        args = [
+                            "osascript",
+                            "-e",
+                            f"""display dialog "OpenCore Legacy Patcher has detected that you are booting OpenCore from an USB or External drive.\n\nIf you would like to boot your Mac normally without a USB drive plugged in, you can install OpenCore to the internal hard drive.\n\nWould you like to launch OpenCore Legacy Patcher and install to disk?" """
+                            f'with icon POSIX file "{settings.app_icon_path}"',
+                        ]
+                        output = subprocess.run(
+                            args, 
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT
+                        )
+                        if output.returncode == 0:
+                            print("- Launching GUI's Build/Install menu")
+                            settings.start_build_install = True
+                            gui_main.wx_python_gui(settings)
+                    else:
+                        print("- Boot Disk is not removable, skipping prompt")
+                except KeyError:
+                    print("- Unable to determine if boot disk is removable, skipping prompt")
+
+        else:
+            print("- Failed to find disk OpenCore launched from")
