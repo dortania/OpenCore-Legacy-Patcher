@@ -1499,7 +1499,6 @@ class wx_python_gui:
                 if install_thread.is_alive():
                     self.progress_bar.SetValue(bytes_written)
                     self.progress_label.SetLabel(f"Bytes Written: {round(bytes_written, 2)}MB")
-                    self.progress_label.Centre(wx.HORIZONTAL)
                     wx.GetApp().Yield()
                 else:
                     break
