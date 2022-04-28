@@ -25,6 +25,7 @@ class wx_python_gui:
         self.constants.gui_mode = True
         self.walkthrough_mode = False
         self.finished_auto_patch = False
+        self.finished_cim_process = False
         self.target_disk = ""
 
         # Backup stdout for usage with wxPython
@@ -1505,6 +1506,21 @@ class wx_python_gui:
             self.progress_bar.SetValue(16000)
             self.progress_label.SetLabel(f"Finished Running Installer Creation Script")
             self.progress_label.Centre(wx.HORIZONTAL)
+            if self.finished_cim_process is True:
+                self.finished_cim_process = False
+                # Ask if user wants to build and install OpenCore to USB
+                self.dialog = wx.MessageDialog(
+                    parent=self.frame, 
+                    message="Would you like to continue and Install OpenCore to this disk?", 
+                    caption="Sucessfully created the macOS installer!", 
+                    style=wx.YES_NO | wx.ICON_QUESTION
+                )
+                self.dialog.SetYesNoLabels("Install OpenCore to disk", "Skip")
+                responce = self.dialog.ShowModal()
+                if responce == wx.ID_YES:
+                    self.constants.start_build_install = True
+                    self.build_install_menu()
+            self.finished_cim_process = False
             
         else:
             print("- Failed to create installer script")
@@ -1521,8 +1537,7 @@ class wx_python_gui:
                 time.sleep(0.1)
             print("- Installing Root Patcher to drive")
             self.install_installer_pkg(self.target_disk)
-            popup_message = wx.MessageDialog(self.frame, "Sucessfully created a macOS installer!\nYou can now install OpenCore onto this drive", "Success", wx.OK)
-            popup_message.ShowModal()
+            self.finished_cim_process = True
         else:
             print("- Failed to create macOS installer")
             popup = wx.MessageDialog(self.frame, f"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}", "Error", wx.OK | wx.ICON_ERROR)

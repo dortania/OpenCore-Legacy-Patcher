@@ -62,7 +62,7 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
 * [vit9696](https://github.com/vit9696)
   * Endless amount of help troubleshooting, determining fixes and writing patches
 * [ASentientBot](https://github.com/ASentientBot), [EduCovas](https://github.com/educovas) and [ASentientHedgehog](https://github.com/moosethegoose2213)
-  * Legacy Acceleration Patch set and documentation
+  * Legacy Acceleration Patch set and documentation, [Moraea Organization](https://github.com/moraea)
 * [cdf](https://github.com/cdf)
   * Mac Pro on OpenCore Patch set and documentation
   * [Innie](https://github.com/cdf/Innie) and [NightShiftEnabler](https://github.com/cdf/NightShiftEnabler)
