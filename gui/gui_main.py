@@ -1553,9 +1553,8 @@ class wx_python_gui:
         if Path(self.constants.installer_pkg_path).exists():
             path = utilities.grab_mount_point_from_disk(disk)
             if Path(path + "/System/Library/CoreServices/SystemVersion.plist").exists():
-                kernel_version = plistlib.load(Path(path + "/System/Library/CoreServices/SystemVersion.plist").open("rb"))
-                kernel_version = kernel_version["ProductBuildVersion"]
-                kernel_version = kernel_version[:2] # Grab first 2 digits, we can assume the lowest installer to be 10.9 (XNU 13)
+                os_version = plistlib.load(Path(path + "/System/Library/CoreServices/SystemVersion.plist").open("rb"))
+                kernel_version = os_data.os_conversion.os_to_kernel(os_version["ProductVersion"])
                 if int(kernel_version) >= os_data.os_data.big_sur:
                     subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
                     subprocess.run(["cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])

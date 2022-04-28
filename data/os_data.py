@@ -18,3 +18,20 @@ class os_data(enum.IntEnum):
     big_sur = 20
     monterey = 21
     max_os = 99
+
+
+class os_conversion:
+
+    def os_to_kernel(os):
+        # Convert OS version to major XNU version
+        if os.startswith("10."):
+            return (int(os.split(".")[1]) + 4)
+        else:
+            return (int(os.split(".")[0]) + 9)
+
+    def kernel_to_os(kernel):
+        # Convert major XNU version to OS version
+        if kernel >= os_data.big_sur:
+            return str((kernel - 9))
+        else:
+            return str((f"10.{kernel - 4}"))

@@ -36,6 +36,8 @@
     - After OS updates, Patcher will detect whether system requires root patches and prompt you
     - Implemented via Launch Agent in `/Library/LaunchAgents`
     - OpenCore-Patcher.app will be copied to `/Library/Application Support/Dortania` for storage
+  - Notify users when OpenCore is booted from external disk not matching macOS (ie. USB installer)
+    - Disable notification via `defaults write AutoPatch_Notify_Mismatched_Disks -bool FALSE`
 - GUI Enhancements:
   - Add Reboot Prompt after Root Patching
   - Add Disk Installation Prompt after OpenCore Config Building

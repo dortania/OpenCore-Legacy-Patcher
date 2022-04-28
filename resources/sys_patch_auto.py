@@ -111,51 +111,55 @@ class AutomaticSysPatch:
 
         print("- Determining if macOS drive matches boot drive")
 
-        if settings.booted_oc_disk:
-            root_disk = settings.booted_oc_disk.strip("disk")
-            root_disk = "disk" + root_disk.split("s")[0]
-        
-            print(f"  - Boot Drive: {settings.booted_oc_disk} ({root_disk})")
-            macOS_disk = utilities.get_disk_path()
-            print(f"  - macOS Drive: {macOS_disk}")
-            physical_stores = utilities.find_apfs_physical_volume(macOS_disk)
-            print(f"  - APFS Physical Stores: {physical_stores}")
-
-            disk_match = False
-            for disk in physical_stores:
-                if root_disk in disk:
-                    print(f"- Boot drive matches macOS drive ({disk})")
-                    disk_match = True
-                    break
-            
-            if disk_match is False:
-                # Check if OpenCore is on a USB drive
-                print("- Boot Drive does not match macOS drive, checking if OpenCore is on a USB drive")
-
-                disk_info = plistlib.loads(subprocess.run(["diskutil", "info", "-plist", root_disk], stdout=subprocess.PIPE).stdout)
-                try:
-                    if disk_info["Removable"] is True:
-                        print("- Boot Disk is removable, prompting user to install to internal")
-
-                        args = [
-                            "osascript",
-                            "-e",
-                            f"""display dialog "OpenCore Legacy Patcher has detected that you are booting OpenCore from an USB or External drive.\n\nIf you would like to boot your Mac normally without a USB drive plugged in, you can install OpenCore to the internal hard drive.\n\nWould you like to launch OpenCore Legacy Patcher and install to disk?" """
-                            f'with icon POSIX file "{settings.app_icon_path}"',
-                        ]
-                        output = subprocess.run(
-                            args, 
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT
-                        )
-                        if output.returncode == 0:
-                            print("- Launching GUI's Build/Install menu")
-                            settings.start_build_install = True
-                            gui_main.wx_python_gui(settings)
-                    else:
-                        print("- Boot Disk is not removable, skipping prompt")
-                except KeyError:
-                    print("- Unable to determine if boot disk is removable, skipping prompt")
-
+        should_notify = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher", "AutoPatch_Notify_Mismatched_Disks"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        if should_notify in ["0", "false"]:
+            print("- Skipping due to user preference")
         else:
-            print("- Failed to find disk OpenCore launched from")
+            if settings.booted_oc_disk:
+                root_disk = settings.booted_oc_disk.strip("disk")
+                root_disk = "disk" + root_disk.split("s")[0]
+            
+                print(f"  - Boot Drive: {settings.booted_oc_disk} ({root_disk})")
+                macOS_disk = utilities.get_disk_path()
+                print(f"  - macOS Drive: {macOS_disk}")
+                physical_stores = utilities.find_apfs_physical_volume(macOS_disk)
+                print(f"  - APFS Physical Stores: {physical_stores}")
+
+                disk_match = False
+                for disk in physical_stores:
+                    if root_disk in disk:
+                        print(f"- Boot drive matches macOS drive ({disk})")
+                        disk_match = True
+                        break
+                
+                if disk_match is False:
+                    # Check if OpenCore is on a USB drive
+                    print("- Boot Drive does not match macOS drive, checking if OpenCore is on a USB drive")
+
+                    disk_info = plistlib.loads(subprocess.run(["diskutil", "info", "-plist", root_disk], stdout=subprocess.PIPE).stdout)
+                    try:
+                        if disk_info["Removable"] is True:
+                            print("- Boot Disk is removable, prompting user to install to internal")
+
+                            args = [
+                                "osascript",
+                                "-e",
+                                f"""display dialog "OpenCore Legacy Patcher has detected that you are booting OpenCore from an USB or External drive.\n\nIf you would like to boot your Mac normally without a USB drive plugged in, you can install OpenCore to the internal hard drive.\n\nWould you like to launch OpenCore Legacy Patcher and install to disk?" """
+                                f'with icon POSIX file "{settings.app_icon_path}"',
+                            ]
+                            output = subprocess.run(
+                                args, 
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT
+                            )
+                            if output.returncode == 0:
+                                print("- Launching GUI's Build/Install menu")
+                                settings.start_build_install = True
+                                gui_main.wx_python_gui(settings)
+                        else:
+                            print("- Boot Disk is not removable, skipping prompt")
+                    except KeyError:
+                        print("- Unable to determine if boot disk is removable, skipping prompt")
+
+            else:
+                print("- Failed to find disk OpenCore launched from")
