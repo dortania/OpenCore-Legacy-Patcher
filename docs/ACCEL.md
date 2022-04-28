@@ -12,6 +12,7 @@
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
 * [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
 * [Cannot Login on 2011 15" and 17" MacBook Pros](#cannot-login-on-2011-15-and-17-macbook-pros)
+* [Black Boxes on HD3000 iGPUs](#black-boxes-on-hd3000-igpus)
 
 The below page is for users experiencing issues with their overall usage of macOS Big Sur / macOS Monterey and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur / Monterey:
 
@@ -169,3 +170,15 @@ nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00
 # To reset, simply write zeros or NVRAM Reset your Mac
 nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%00%00%00%00
 ```
+
+## Black Boxes on HD3000 iGPUs
+
+A somewhat strange issue on Intel HD3000-based Macs, on 3rd party displays sometimes UI elements may become black and unreadable. To resolve, select either the generic `Display` or `Display P3` Color Profiles in Display Settings.
+
+* Mainly applicable for HDMI Displays, DVI and DisplayPort are generally unaffected
+* If you're inside Setup Assistant, press `Cmd` + `Option` + `Control` + `T` to launch Terminal. From there, run `open /System/Applications/System\ Preferences.app`
+
+
+| Default Color Profile | Display/Display P3 Profile |
+| :---                  | :---                       |
+| ![](../images/HD3000-Default-Colors.png) | ![](../images/HD3000-Display-Colors.png) |
