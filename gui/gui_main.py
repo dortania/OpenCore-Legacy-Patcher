@@ -1507,20 +1507,25 @@ class wx_python_gui:
             self.progress_label.Centre(wx.HORIZONTAL)
             if self.finished_cim_process is True:
                 self.finished_cim_process = False
-                # Ask if user wants to build and install OpenCore to USB
-                self.dialog = wx.MessageDialog(
-                    parent=self.frame, 
-                    message="Would you like to continue and Install OpenCore to this disk?", 
-                    caption="Sucessfully created the macOS installer!", 
-                    style=wx.YES_NO | wx.ICON_QUESTION
-                )
-                self.dialog.SetYesNoLabels("Install OpenCore to disk", "Skip")
-                responce = self.dialog.ShowModal()
-                if responce == wx.ID_YES:
-                    self.constants.start_build_install = True
-                    self.build_install_menu()
-            self.finished_cim_process = False
-            
+                # Only prompt user with option to install OC to disk if 
+                # the model is supported.
+                if self.constants.allow_oc_everywhere is False and \
+                self.constants.custom_model is None and \
+                self.computer.real_model not in model_array.SupportedSMBIOS:
+                    popup_message = wx.MessageDialog(self.frame, "Sucessfully created a macOS installer!", "Success", wx.OK)
+                    popup_message.ShowModal()
+                else:
+                    self.dialog = wx.MessageDialog(
+                        parent=self.frame, 
+                        message="Would you like to continue and Install OpenCore to this disk?", 
+                        caption="Sucessfully created the macOS installer!", 
+                        style=wx.YES_NO | wx.ICON_QUESTION
+                    )
+                    self.dialog.SetYesNoLabels("Install OpenCore to disk", "Skip")
+                    responce = self.dialog.ShowModal()
+                    if responce == wx.ID_YES:
+                        self.constants.start_build_install = True
+                        self.build_install_menu()
         else:
             print("- Failed to create installer script")
         self.return_to_main_menu.Enable()

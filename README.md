@@ -9,6 +9,10 @@ Our project's main goal is to breath new life to Macs no longer supported by App
 
 ----------
 
+![GitHub all releases](https://img.shields.io/github/downloads/dortania/OpenCore-Legacy-Patcher/total?color=white&style=plastic) ![GitHub top language](https://img.shields.io/github/languages/top/dortania/OpenCore-Legacy-Patcher?color=4B8BBE&style=plastic) ![Discord](https://img.shields.io/discord/417165963327176704?color=7289da&label=discord&style=plastic)
+
+----------
+
 Noteworthy features of OpenCore Legacy Patcher:
 
 * Support for macOS Big Sur and Monterey
