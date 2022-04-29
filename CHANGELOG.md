@@ -24,6 +24,7 @@
   - CPUFriend 1.2.5 - release
   - WhateverGreen 1.5.8 - release
   - AutoPkgInstaller 1.0.0 - release
+  - BlueToolFixup 2.6.2 - adjusted
 - Speed up loading available remote macOS Installers from Apple
   - Skips writing catalogs to disk, loads into memory directly
 - Implement Automatic Patch Detection/Installation
@@ -53,6 +54,9 @@
 - Simplify Binary options
   - Removes Online Patcher Variants
   - Offline variants are now new defaults, no longer retain `Offline` suffix
+- Resolve legacy Bluetooth Support on 12.3 beta 3
+  - Disables USB Address erroring on some pre-Bluetooth 4.0 chipsets
+  - ex. `ERROR -- Third Party Dongle has the same address as the internal module`
 
 ## 0.4.3
 - Increment Binaries:

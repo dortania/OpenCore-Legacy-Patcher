@@ -44,7 +44,7 @@ class Constants:
         self.featureunlock_version = "1.0.8"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.5"  #          CPUFriend
-        self.bluetool_version = "2.6.1"  #           BlueToolFixup (BrcmPatchRAM)
+        self.bluetool_version = "2.6.2"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
         self.autopkg_version = "1.0.0"  #            AutoPkgInstaller
 

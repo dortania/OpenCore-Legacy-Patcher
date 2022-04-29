@@ -1,0 +1,48 @@
+diff --git a/BrcmPatchRAM/BlueToolFixup.cpp b/BrcmPatchRAM/BlueToolFixup.cpp
+index a6e3c69..701a9ad 100644
+--- a/BrcmPatchRAM/BlueToolFixup.cpp
++++ b/BrcmPatchRAM/BlueToolFixup.cpp
+@@ -48,6 +48,35 @@ bool BlueToolFixup::start(IOService *provider) {
+ static const uint8_t kSkipUpdateFilePathOriginal[] = "/etc/bluetool/SkipBluetoothAutomaticFirmwareUpdate";
+ static const uint8_t kSkipUpdateFilePathPatched[]  = "/System/Library/CoreServices/boot.efi";
+ 
++
++// Workaround 12.3 Beta 3 bug where macOS will detect the Bluetooth chipset twice
++// Once and internal, and second as external dongle:
++// 'ERROR -- Third Party Dongle has the same address as the internal module'
++static const uint8_t kSkipAddressCheckOriginal[] =
++{
++    0x48, 0x8D, 0x05, 0xC5, 0x97, 0x65, 0x00, // lea rax
++    0x8B, 0x48, 0x53,                         // mov ecx
++    0x33, 0x0B,                               // xor ecx
++    0x0F, 0xB7, 0x50, 0x57,                   // movzx edx
++    0x66, 0x33, 0x53, 0x04,                   // xor dx
++    0x0F, 0xB7, 0xD2,                         // movzx edx, dx
++    0x09, 0xCA,                               // or edx, ecx
++    0x74, 0x0E,                               // je
++};
++
++static const uint8_t kSkipAddressPatched[] =
++{
++    0x48, 0x8D, 0x05, 0xC5, 0x97, 0x65, 0x00, // lea rax
++    0x8B, 0x48, 0x53,                         // mov ecx
++    0x33, 0x0B,                               // xor ecx
++    0x0F, 0xB7, 0x50, 0x57,                   // movzx edx
++    0x66, 0x33, 0x53, 0x04,                   // xor dx
++    0x0F, 0xB7, 0xD2,                         // movzx edx, dx
++    0x09, 0xCA,                               // or edx, ecx
++    0x75, 0x0E,                               // jne
++};
++
++
+ static const uint8_t kVendorCheckOriginal[] =
+ {
+     0x81, 0xFA,              // cmp edx
+@@ -131,6 +160,7 @@ static void patched_cs_validate_page(vnode_t vp, memory_object_t pager, memory_o
+         }
+         else if (strcmp(path + dirLength, "bluetoothd") == 0) {
+             searchAndPatch(data, PAGE_SIZE, path, kVendorCheckOriginal, kVendorCheckPatched);
++            searchAndPatch(data, PAGE_SIZE, path, kSkipAddressCheckOriginal, kSkipAddressPatched);
+             searchAndPatch(data, PAGE_SIZE, path, kBadChipsetCheckOriginal, kBadChipsetCheckPatched);
+             if (shouldPatchBoardId)
+                 searchAndPatch(data, PAGE_SIZE, path, boardIdsWithUSBBluetooth[0], kBoardIdSize, BaseDeviceInfo::get().boardIdentifier, kBoardIdSize);
