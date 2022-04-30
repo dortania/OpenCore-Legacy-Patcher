@@ -1102,7 +1102,7 @@ class wx_python_gui:
 
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
-    def grab_installer_data(self, event=None):
+    def grab_installer_data(self, event=None, ias=None):
         self.frame.DestroyChildren()
 
         # Header
@@ -1136,7 +1136,12 @@ class wx_python_gui:
         wx.GetApp().Yield()
 
         # Download installer catalog
-        available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "PublicSeed")
+        if ias is None:
+            print("- Downloading installer catalog...")
+            available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "PublicSeed")
+        else:
+            print("- Using existing installer catalog...")
+            available_installers = ias
 
         self.frame.DestroyChildren()
 
@@ -1156,13 +1161,12 @@ class wx_python_gui:
         )
         self.subheader.Centre(wx.HORIZONTAL)
 
-
-        # Sort Installers by 'Version'
-        # By default Apple adds new builds to the end of the list, so we need to sort them by version
-        available_installers = {k: v for k, v in sorted(available_installers.items(), key=lambda x: x[1]['Version'])}
+        available_installers_backup = available_installers.copy()
 
         i = -20
         if available_installers:
+            if ias is None:
+                available_installers = installer.only_list_newest_installers(available_installers)
             for app in available_installers:
                 print(f"macOS {available_installers[app]['Version']} ({available_installers[app]['Build']} - {utilities.human_fmt(available_installers[app]['Size'])} - {available_installers[app]['Source']}) - {available_installers[app]['Variant']}")
                 if available_installers[app]['Variant'] in ["DeveloperSeed" , "PublicSeed"]:
@@ -1191,17 +1195,32 @@ class wx_python_gui:
             self.install_selection.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
             self.install_selection.Centre(wx.HORIZONTAL)
         
+        self.load_all_installers = wx.Button(self.frame, label="Reload with all installers")
+        self.load_all_installers.SetPosition(
+            wx.Point(
+                self.install_selection.GetPosition().x,
+                self.install_selection.GetPosition().y + self.install_selection.GetSize().height + 7
+            )
+        )
+        self.load_all_installers.Bind(wx.EVT_BUTTON, lambda event: self.reload_macos_installer_catalog(ias=available_installers_backup))
+        self.load_all_installers.Centre(wx.HORIZONTAL)
+        if ias or not available_installers:
+            self.load_all_installers.Disable()
+
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
-                self.install_selection.GetPosition().x,
-                self.install_selection.GetPosition().y + self.install_selection.GetSize().height + 10
+                self.load_all_installers.GetPosition().x,
+                self.load_all_installers.GetPosition().y + self.load_all_installers.GetSize().height + 5
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+
+    def reload_macos_installer_catalog(self, event=None, ias=None):
+        self.grab_installer_data(ias=ias)
 
     def download_macos_click(self, installer_name, installer_link):
         self.frame.DestroyChildren()

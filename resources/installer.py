@@ -169,6 +169,56 @@ def list_downloadable_macOS_installers(download_path, catalog):
                         })
             except KeyError:
                 pass
+        available_apps = {k: v for k, v in sorted(available_apps.items(), key=lambda x: x[1]['Version'])}
+    return available_apps
+
+def only_list_newest_installers(available_apps):
+    # Takes a dictionary of available installers
+    # Returns a dictionary of only the newest installers
+    # This is used to avoid overwhelming the user with installer options
+
+    # Only strip OSes that we know are supported
+    supported_versions = ["10.13", "10.14", "10.15", "11", "12"]
+
+    for version in supported_versions:
+        remote_version_minor = 0
+        remote_version_security = 0
+
+        # First determine the largest version
+        for ia in available_apps:
+            if available_apps[ia]["Version"].startswith(version):
+                if available_apps[ia]["Variant"] not in ["DeveloperSeed", "PublicSeed"]:
+                    remote_version = available_apps[ia]["Version"].split(".")
+                    if remote_version[0] == "10":
+                        remote_version.pop(0)
+                        remote_version.pop(0)
+                    else:
+                        remote_version.pop(0)
+                    if int(remote_version[0]) > remote_version_minor:
+                        remote_version_minor = int(remote_version[0])
+                    if len(remote_version) > 1:
+                        if int(remote_version[1]) > remote_version_security:
+                            remote_version_security = int(remote_version[1])
+
+        # Now remove all versions that are not the largest
+        for ia in list(available_apps):
+            if available_apps[ia]["Version"].startswith(version):
+                remote_version = available_apps[ia]["Version"].split(".")
+                if remote_version[0] == "10":
+                    remote_version.pop(0)
+                    remote_version.pop(0)
+                else:
+                    remote_version.pop(0)
+                if int(remote_version[0]) < remote_version_minor:
+                    available_apps.pop(ia)
+                elif int(remote_version[0]) == remote_version_minor:
+                    if len(remote_version) > 1:
+                        if int(remote_version[1]) < remote_version_security:
+                            available_apps.pop(ia)
+                    else:
+                        if remote_version_security > 0:
+                            available_apps.pop(ia)
+
     return available_apps
 
 def format_drive(disk_id):

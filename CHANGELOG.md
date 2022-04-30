@@ -46,6 +46,7 @@
   - Grey out return buttons while performing sensitive tasks
   - Add `Currently Booted SIP` info to SIP Settings
   - Add Disk Highlighting during Build/Install for previously installed disks
+  - Only list newest installers by default (reload to show older binaries)
 - Remove manual root unpatching
   - Removed due to reliablity issues
   - `bless` based reversion still supported in Big Sur+
