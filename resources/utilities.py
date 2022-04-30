@@ -359,6 +359,7 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
         box_string = "#" * box_length
         dl = 0
         total_downloaded_string = ""
+        global clear
         with location.open("wb") as file:
             count = 0
             start = time.perf_counter()
@@ -367,11 +368,12 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
                 file.write(chunk)
                 count += len(chunk)
                 if is_gui is None:
-                    cls()
-                    print(box_string)
-                    print(header)
-                    print(box_string)
-                    print("")
+                    if clear:
+                        cls()
+                        print(box_string)
+                        print(header)
+                        print(box_string)
+                        print("")
                 if total_file_size > 1024:
                     total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
                 print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
