@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.5
+
 ## 0.4.4
 - Lower SIP requirement for Root Patching
   - Sets to 0x802 (previously 0xA03)
