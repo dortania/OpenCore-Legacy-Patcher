@@ -3,7 +3,7 @@
 # Used when supplying data to sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from resources import constants, device_probe, utilities
+from resources import constants, device_probe, utilities, generate_smbios
 from data import model_array, os_data, sip_data
 
 class detect_root_patch:
@@ -182,13 +182,52 @@ class detect_root_patch:
         
         return self.root_patch_dict
     
-    def verify_patch_allowed(self):
+    def verify_patch_allowed(self, print_errors=False):
         sip = sip_data.system_integrity_protection.root_patch_sip_big_sur if self.constants.detected_os > os_data.os_data.catalina else sip_data.system_integrity_protection.root_patch_sip_mojave
         self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
+        if sip == sip_data.system_integrity_protection.root_patch_sip_mojave:
+            sip_value = "For Hackintoshes, please set csr-active-config to '03060000' (0x603)\nFor non-OpenCore Macs, please run 'csrutil disable' in RecoveryOS"
+        else:
+            sip_value = (
+                "For Hackintoshes, please set csr-active-config to '02080000' (0x802)\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
+            )
+        if print_errors is True:
+            if self.sip_enabled is True:
+                print("\nCannot patch! Please disable System Integrity Protection (SIP).")
+                print("Disable SIP in Patcher Settings and Rebuild OpenCore\n")
+                print("Ensure the following bits are set for csr-active-config:")
+                print("\n".join(sip))
+                print(sip_value)
+
+            if self.sbm_enabled is True:
+                print("\nCannot patch! Please disable Apple Secure Boot.")
+                print("Disable SecureBootModel in Patcher Settings and Rebuild OpenCore")
+                print("For Hackintoshes, set SecureBootModel to Disabled")
+
+            if self.fv_enabled is True:
+                print("\nCannot patch! Please disable FileVault.")
+                print("For OCLP Macs, please rebuild your config with 0.2.5 or newer")
+                print("For others, Go to System Preferences -> Security and disable FileVault")
+
+            if self.amfi_enabled is True and self.amfi_must_disable is True:
+                print("\nCannot patch! Please disable AMFI.")
+                print("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
+            
+            if self.dosdude_patched is True:
+                print("\nCannot patch! Detected machine has already been patched by another patcher")
+                print("Please ensure your install is either clean or patched with OpenCore Legacy Patcher")
 
         if self.check_board_id is True and (self.computer.reported_board_id not in self.constants.sandy_board_id and self.computer.reported_board_id not in self.constants.sandy_board_id_stock):
             self.bad_board_id = True
-
+            if print_errors is True:
+                print("\nCannot patch! Board ID not supported by AppleIntelSNBGraphicsFB")
+                print(f"Detected Board ID: {self.computer.reported_board_id}")
+                print("Please ensure your Board ID is listed below:")
+                for board in self.constants.sandy_board_id:
+                    print(f"- {board} ({generate_smbios.find_model_off_board(board)})")
+                for board in self.constants.sandy_board_id_stock:
+                    print(f"- {board} ({generate_smbios.find_model_off_board(board)})")
+            
         if any(
             [self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched, self.amfi_enabled if self.amfi_must_disable else False, self.bad_board_id if self.check_board_id else False]
         ):
