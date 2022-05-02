@@ -134,9 +134,6 @@ def SystemPatchDictionary(os):
                 },
             },
             "AMD TeraScale 2": {
-                "Processes": {
-                    "defaults write com.apple.cmio CMIO_Unit_Input_ASC.DoNotUseOpenCL -bool true": False,
-                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "AMD5000Controller.kext":        "10.13.6",
@@ -191,7 +188,7 @@ def SystemPatchDictionary(os):
                         "AppleIntelHD3000GraphicsGA.plugin":       "10.13.6",
                         "AppleIntelHD3000GraphicsGLDriver.bundle": "10.13.6",
                         "AppleIntelHD3000GraphicsVADriver.bundle": "10.13.6",
-                        "AppleIntelSNBGraphicsFB.kext":            "10.13.6", # Add check for Board ID patched kext
+                        "AppleIntelSNBGraphicsFB.kext":            "10.13.6",
                         "AppleIntelSNBVA.bundle":                  "10.13.6",
                     },
                 },
