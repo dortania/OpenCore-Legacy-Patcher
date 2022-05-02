@@ -40,7 +40,7 @@
     - Implemented via Launch Agent in `/Library/LaunchAgents`
     - OpenCore-Patcher.app will be copied to `/Library/Application Support/Dortania` for storage
   - Notify users when OpenCore is booted from external disk not matching macOS (ie. USB installer)
-    - Disable notification via `defaults write AutoPatch_Notify_Mismatched_Disks -bool FALSE`
+    - Disable notification via `defaults write com.dortania.opencore-legacy-patcher AutoPatch_Notify_Mismatched_Disks -bool FALSE`
 - GUI Enhancements:
   - Add Reboot Prompt after Root Patching
   - Add Disk Installation Prompt after OpenCore Config Building
@@ -57,7 +57,7 @@
 - Simplify Binary options
   - Removes Online Patcher Variants
   - Offline variants are now new defaults, no longer retain `Offline` suffix
-- Resolve legacy Bluetooth Support on 12.3 beta 3
+- Resolve legacy Bluetooth Support on 12.4 Beta 3
   - Disables USB Address erroring on some pre-Bluetooth 4.0 chipsets
   - ex. `ERROR -- Third Party Dongle has the same address as the internal module`
 
