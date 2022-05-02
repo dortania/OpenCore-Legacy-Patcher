@@ -21,8 +21,6 @@ class PatchSysVolume:
         self.constants: constants.Constants() = versions
         self.computer = self.constants.computer
         self.root_mount_path = None
-        self.validate = False
-        self.added_legacy_kexts = False
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
         self.constants.root_patcher_succeded = False # Reset Variable each time we start
 
@@ -34,16 +32,6 @@ class PatchSysVolume:
         self.init_pathing(custom_root_mount_path=None, custom_data_mount_path=None)
 
     def init_hardware_patches(self, hardware_details):
-        
-        self.amfi_must_disable = hardware_details["Settings: Requires AMFI exemption"]
-        self.check_board_id = hardware_details["Settings: Requires Board ID validation"]
-        self.sip_enabled = hardware_details["Validation: SIP is enabled"]
-        self.sbm_enabled = hardware_details["Validation: SBM is enabled"]
-        self.amfi_enabled = hardware_details["Validation: AMFI is enabled"]
-        self.fv_enabled = hardware_details["Validation: FileVault is enabled"]
-        self.dosdude_patched = hardware_details["Validation: System is dosdude1 patched"]
-        self.bad_board_id = hardware_details[f"Validation: Board ID is unsupported \n({self.computer.reported_board_id})"]
-
         self.nvidia_legacy = hardware_details["Graphics: Nvidia Tesla"]
         self.kepler_gpu = hardware_details["Graphics: Nvidia Kepler"]
         self.amd_ts1 = hardware_details["Graphics: AMD TeraScale 1"]
@@ -312,7 +300,7 @@ class PatchSysVolume:
             required_patches.update({"Legacy Keyboard Backlight": all_hardware_patchset["Miscellaneous"]["Legacy Keyboard Backlight"]})
         
         return required_patches
-    
+
     
     def execute_patchset(self, required_patches):
         source_files_path = str(self.constants.payload_local_binaries_root_path)
@@ -535,7 +523,7 @@ class PatchSysVolume:
 
     def start_unpatch(self):
         print("- Starting Unpatch Process")
-        if sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is True:
+        if sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=True) is True:
             self.find_mount_root_vol(False)
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu")

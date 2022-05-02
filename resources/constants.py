@@ -209,11 +209,6 @@ class Constants:
     @property
     def plist_template(self):
         return self.payload_path / Path("Config/config.plist")
-
-    # Mount Location
-    @property
-    def payload_mnt1_path(self):
-        return self.payload_path / Path("mnt1")
     
     # Launch Agent
     @property
@@ -598,15 +593,6 @@ class Constants:
         "j185ap",  #  iMac20,1
         "j185fap",  # iMac20,2
         # "x86legacy",  # non-T2 Macs/VMs, Monterey's boot.efi enforces this on all Macs
-    ]
-
-    sandy_board_id = [
-        "Mac-E43C1C25D4880AD6",  # MacBookPro12,1
-        "Mac-06F11F11946D27C5",  # MacBookPro11,5
-        "Mac-9F18E312C5C2BF0B",  # MacBookAir7,1
-        "Mac-937CB26E2E02BB01",  # MacBookAir7,2
-        "Mac-35C5E08120C7EEAF",  # Macmini7,1
-        "Mac-7BA5B2D9E42DDD94",  # iMacPro1,1
     ]
 
     sandy_board_id_stock = [

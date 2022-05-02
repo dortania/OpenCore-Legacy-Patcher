@@ -30,7 +30,6 @@ class detect_root_patch:
 
         # Patch Requirements
         self.amfi_must_disable= False
-        self.check_board_id= False
         self.supports_metal= False
 
         # Validation Checks
@@ -39,7 +38,6 @@ class detect_root_patch:
         self.amfi_enabled = False
         self.fv_enabled = False
         self.dosdude_patched = False
-        self.bad_board_id = False
 
     
     def detect_gpus(self):
@@ -80,7 +78,6 @@ class detect_root_patch:
                     if self.constants.detected_os > non_metal_os:
                         self.sandy_gpu = True
                         self.amfi_must_disable = True
-                        self.check_board_id = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
                     if self.constants.detected_os > os_data.os_data.big_sur:
@@ -170,14 +167,12 @@ class detect_root_patch:
             "Miscellaneous: Legacy GMUX": self.legacy_gmux,
             "Miscellaneous: Legacy Keyboard Backlight": self.legacy_keyboard_backlight,
             "Settings: Requires AMFI exemption": self.amfi_must_disable,
-            "Settings: Requires Board ID validation": self.check_board_id,
             "Validation: Patching Possible": self.verify_patch_allowed(),
             "Validation: SIP is enabled": self.sip_enabled,
             "Validation: SBM is enabled": self.sbm_enabled,
             "Validation: AMFI is enabled": self.amfi_enabled if self.amfi_must_disable else False,
             "Validation: FileVault is enabled": self.fv_enabled,
             "Validation: System is dosdude1 patched": self.dosdude_patched,
-            f"Validation: Board ID is unsupported \n({self.computer.reported_board_id})": self.bad_board_id,
         }
         
         return self.root_patch_dict
@@ -216,20 +211,9 @@ class detect_root_patch:
             if self.dosdude_patched is True:
                 print("\nCannot patch! Detected machine has already been patched by another patcher")
                 print("Please ensure your install is either clean or patched with OpenCore Legacy Patcher")
-
-        if self.check_board_id is True and (self.computer.reported_board_id not in self.constants.sandy_board_id and self.computer.reported_board_id not in self.constants.sandy_board_id_stock):
-            self.bad_board_id = True
-            if print_errors is True:
-                print("\nCannot patch! Board ID not supported by AppleIntelSNBGraphicsFB")
-                print(f"Detected Board ID: {self.computer.reported_board_id}")
-                print("Please ensure your Board ID is listed below:")
-                for board in self.constants.sandy_board_id:
-                    print(f"- {board} ({generate_smbios.find_model_off_board(board)})")
-                for board in self.constants.sandy_board_id_stock:
-                    print(f"- {board} ({generate_smbios.find_model_off_board(board)})")
             
         if any(
-            [self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched, self.amfi_enabled if self.amfi_must_disable else False, self.bad_board_id if self.check_board_id else False]
+            [self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched, self.amfi_enabled if self.amfi_must_disable else False]
         ):
             return False
         else:
