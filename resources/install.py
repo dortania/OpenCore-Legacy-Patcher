@@ -7,7 +7,7 @@ import subprocess
 import shutil
 import os
 from pathlib import Path
-from resources import utilities, constants
+from resources import utilities, constants, tui_helpers
 from data import os_data
 
 class tui_disk_installation:
@@ -79,7 +79,7 @@ class tui_disk_installation:
         utilities.header(["Installing OpenCore to Drive"])
 
         if not self.constants.opencore_release_folder.exists():
-            utilities.TUIOnlyPrint(
+            tui_helpers.TUIOnlyPrint(
                 ["Installing OpenCore to Drive"],
                 "Press [Enter] to go back.\n",
                 [
@@ -92,7 +92,7 @@ Please build OpenCore first!"""
         print("\nDisk picker is loading...")
 
         all_disks = self.list_disks()
-        menu = utilities.TUIMenu(
+        menu = tui_helpers.TUIMenu(
             ["Select Disk"],
             "Please select the disk you would like to install OpenCore to: ",
             in_between=["Missing disks? Ensure they have an EFI or FAT32 partition."],
@@ -110,7 +110,7 @@ Please build OpenCore first!"""
         disk_identifier = "disk" + response
         selected_disk = all_disks[disk_identifier]
 
-        menu = utilities.TUIMenu(
+        menu = tui_helpers.TUIMenu(
             ["Select Partition"],
             "Please select the partition you would like to install OpenCore to: ",
             return_number_instead_of_direct_call=True,
@@ -169,7 +169,7 @@ Please build OpenCore first!"""
                 return
             else:
                 if self.constants.gui_mode is False:
-                    utilities.TUIOnlyPrint(
+                    tui_helpers.TUIOnlyPrint(
                         ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + [""]
                     ).start()
                 else:
@@ -252,7 +252,7 @@ Please build OpenCore first!"""
                 input()
         else:
             if self.constants.gui_mode is False:
-                utilities.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!"]).start()
+                tui_helpers.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!"]).start()
             else:
                 print("EFI failed to mount!")
 

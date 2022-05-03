@@ -1,6 +1,19 @@
+# Dictionary defining patch sets used during Root Volume patching (sys_patch.py)
+# Copyright (C) 2022, Mykola Grymalyuk
+
+# Schema for sys_patch_dict.py:
+# Supports 3 types of higher level keys:
+#  - Install:          Install to root volume      - Dictionary of strings with value of source
+#  - Install Non-Root: Install to data partition   - Dictionary of strings with value of source
+#  - Remove:           Files to remove             - Array of strings
+#  - Processes:        Additional processes to run - Array of strings
+
+# File Storage is based off the origin, ie. '10.13.6/System/Library/Extensions/IOSurface.kext'
+# Stubbed binaries are OS specific, this use the 'os' variable to denounce which folder to use
+
 from data import os_data
 
-def SystemPatchDictionary(os):
+def SystemPatchDictionary(os_major):
     sys_patch_dict = {
         "Graphics": {
             "Non-Metal Common": {
@@ -10,13 +23,13 @@ def SystemPatchDictionary(os):
                     },
                     "/System/Library/Frameworks": {
                         "OpenGL.framework":       "10.14.3",
-                        "CoreDisplay.framework": f"10.14.4-{os}",
-                        "IOSurface.framework":   f"10.15.7-{os}",
-                        "QuartzCore.framework":  f"10.15.7-{os}",
+                        "CoreDisplay.framework": f"10.14.4-{os_major}",
+                        "IOSurface.framework":   f"10.15.7-{os_major}",
+                        "QuartzCore.framework":  f"10.15.7-{os_major}",
                     },
                     "/System/Library/PrivateFrameworks": {
                         "GPUSupport.framework": "10.14.3",
-                        "SkyLight.framework":  f"10.14.6-{os}",
+                        "SkyLight.framework":  f"10.14.6-{os_major}",
                     },
                 },
                 "Remove": {
@@ -49,8 +62,8 @@ def SystemPatchDictionary(os):
                 },
                 "Install Non-Root": {
                     "/Library/Application Support/SkyLightPlugins": {
-                        **({ "DropboxHack.dylib": "SkyLightPlugins" } if os >= os_data.os_data.monterey else {}),
-                        **({ "DropboxHack.txt": "SkyLightPlugins" } if os >= os_data.os_data.monterey else {}),
+                        **({ "DropboxHack.dylib": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
+                        **({ "DropboxHack.txt": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
                     },
                 },
             },
@@ -85,7 +98,7 @@ def SystemPatchDictionary(os):
                         "GeForceTeslaVADriver.bundle": "10.13.6",
                         "NVDANV50HalTesla.kext":       "10.13.6",
                         "NVDAResmanTesla.kext":        "10.13.6",
-                        **({ "NVDAStartup.kext":       "12.0 Beta 6" } if os >= os_data.os_data.monterey else {})
+                        **({ "NVDAStartup.kext":       "12.0 Beta 6" } if os_major >= os_data.os_data.monterey else {})
                     },
                 },
             },
@@ -101,6 +114,29 @@ def SystemPatchDictionary(os):
                         "NVDAGK100Hal.kext":       "12.0 Beta 6",
                         "NVDAResman.kext":         "12.0 Beta 6",
                         "NVDAStartup.kext":        "12.0 Beta 6",
+                    },
+                },
+            },
+            "Nvidia Web Drivers": {
+                "Install": {
+                    "/System/Library/Extensions": {
+                        "NVDAStartupWeb.kext":            "10.13.6",
+                        "GeForceTeslaWeb.kext":           "10.13.6",
+                        "GeForceWeb.kext":                "10.13.6",
+                        "NVDAGF100HalWeb.kext":           "10.13.6",
+                        "NVDAGK100HalWeb.kext":           "10.13.6",
+                        "NVDAGM100HalWeb.kext":           "10.13.6",
+                        "NVDAGP100HalWeb.kext":           "10.13.6",
+                        "NVDANV50HalTeslaWeb.kext":       "10.13.6",
+                        "NVDAResmanTeslaWeb.kext":        "10.13.6",
+                        "NVDAResmanWeb.kext":             "10.13.6",
+                        "GeForceVADriverWeb.bundle":      "10.13.6",
+                        "GeForceAIRPluginWeb.bundle":     "10.13.6",
+                        "GeForceGLDriverWeb.bundle":      "10.13.6",
+                        "GeForceMTLDriverWeb.bundle":     "10.13.6",
+                        "GeForceTeslaGAWeb.bundle":       "10.13.6",
+                        "GeForceTeslaGLDriverWeb.bundle": "10.13.6",
+                        "GeForceTeslaVADriverWeb.bundle": "10.13.6",
                     },
                 },
             },
@@ -152,11 +188,11 @@ def SystemPatchDictionary(os):
                     },
                     "/System/Library/Frameworks": {
                         "OpenCL.framework":    "10.13.6",
-                        "IOSurface.framework": f"10.14.6-{os}",
+                        "IOSurface.framework": f"10.14.6-{os_major}",
                     },
                     "/System/Library/PrivateFrameworks": {
                         "GPUSupport.framework":    "10.13.6",
-                        "IOAccelerator.framework": f"10.13.6-{os}",
+                        "IOAccelerator.framework": f"10.13.6-{os_major}",
                     },
                 },
                 "Remove": {
@@ -250,8 +286,8 @@ def SystemPatchDictionary(os):
                 },
                 "Install Non-Root": {
                     "/Library/Application Support/SkyLightPlugins": {
-                        **({ "CoreWLAN.dylib": "SkyLightPlugins" } if os >= os_data.os_data.monterey else {}),
-                        **({ "CoreWLAN.txt": "SkyLightPlugins" } if os >= os_data.os_data.monterey else {}),
+                        **({ "CoreWLAN.dylib": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
+                        **({ "CoreWLAN.txt": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
                     },
                 },
             },

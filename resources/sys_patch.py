@@ -5,10 +5,8 @@
 #   - Temporary Work-around: sudo bless --mount /System/Volumes/Update/mnt1 --bootefi --last-sealed-snapshot
 # - Work-around battery throttling on laptops with no battery (IOPlatformPluginFamily.kext/Contents/PlugIns/ACPI_SMC_PlatformPlugin.kext/Contents/Resources/)
 
-import os
 import shutil
 import subprocess
-import zipfile
 from pathlib import Path
 
 from resources import constants, generate_smbios, utilities, sys_patch_download, sys_patch_detect
@@ -268,6 +266,7 @@ class PatchSysVolume:
             print("  - Adding Nvidia Tesla Graphics Patchset")
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Nvidia Tesla": all_hardware_patchset["Graphics"]["Nvidia Tesla"]})
+            required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
         if self.kepler_gpu is True:
             print("  - Adding Nvidia Kepler Graphics Patchset")
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
@@ -304,34 +303,7 @@ class PatchSysVolume:
     
     def execute_patchset(self, required_patches):
         source_files_path = str(self.constants.payload_local_binaries_root_path)
-        print("- Running Preflight Checks before patching")
-        # Make sure old SkyLight plugins aren't being used
-        self.clean_skylight_plugins()
-        # Make sure SNB kexts are compatible with the host
-        if "Intel Sandy Bridge" in required_patches:
-            if self.computer.reported_board_id not in self.constants.sandy_board_id_stock:
-                print(f"- Found unspported Board ID {self.computer.reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching")
-                board_to_patch = generate_smbios.determine_best_board_id_for_sandy(self.computer.reported_board_id, self.computer.gpus)
-                print(f"- Replacing {board_to_patch} with {self.computer.reported_board_id}")
-
-                board_to_patch_hex = bytes.fromhex(board_to_patch.encode('utf-8').hex())
-                reported_board_hex = bytes.fromhex(self.computer.reported_board_id.encode('utf-8').hex())
-
-                if len(board_to_patch_hex) != len(reported_board_hex):
-                    print(f"- Error: Board ID {self.computer.reported_board_id} is not the same length as {board_to_patch}")
-                    raise Exception("Host's Board ID is not the same length as the kext's Board ID, cannot patch!!!")
-                else:
-                    path = source_files_path + "10.13.6/System/Library/Extensions/AppleIntelSNBGraphicsFB.kext/Contents/MacOS/AppleIntelSNBGraphicsFB"
-                    if Path(path).exists:
-                        with open(path, 'rb') as f:
-                            data = f.read()
-                            data = data.replace(board_to_patch_hex, reported_board_hex)
-                            with open(path, 'wb') as f:
-                                f.write(data)
-                    else:
-                        raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
-
-        print("- Finished Preflight, starting patching")
+        self.preflight_checks(required_patches, source_files_path)
         for patch in required_patches:
             print("- Installing Patchset: " + patch)
             if "Remove" in required_patches[patch]:
@@ -366,6 +338,55 @@ class PatchSysVolume:
                         utilities.process_status(utilities.elevated(process_array, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
                     else:
                         utilities.process_status(subprocess.run(process_array, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+    def preflight_checks(self, required_patches, source_files_path):
+        print("- Running Preflight Checks before patching")
+
+        # Make sure old SkyLight plugins aren't being used
+        self.clean_skylight_plugins()
+        
+        # Make sure SNB kexts are compatible with the host
+        if "Intel Sandy Bridge" in required_patches:
+            if self.computer.reported_board_id not in self.constants.sandy_board_id_stock:
+                print(f"- Found unspported Board ID {self.computer.reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching")
+                board_to_patch = generate_smbios.determine_best_board_id_for_sandy(self.computer.reported_board_id, self.computer.gpus)
+                print(f"- Replacing {board_to_patch} with {self.computer.reported_board_id}")
+
+                board_to_patch_hex = bytes.fromhex(board_to_patch.encode('utf-8').hex())
+                reported_board_hex = bytes.fromhex(self.computer.reported_board_id.encode('utf-8').hex())
+
+                if len(board_to_patch_hex) != len(reported_board_hex):
+                    print(f"- Error: Board ID {self.computer.reported_board_id} is not the same length as {board_to_patch}")
+                    raise Exception("Host's Board ID is not the same length as the kext's Board ID, cannot patch!!!")
+                else:
+                    path = source_files_path + "10.13.6/System/Library/Extensions/AppleIntelSNBGraphicsFB.kext/Contents/MacOS/AppleIntelSNBGraphicsFB"
+                    if Path(path).exists:
+                        with open(path, 'rb') as f:
+                            data = f.read()
+                            data = data.replace(board_to_patch_hex, reported_board_hex)
+                            with open(path, 'wb') as f:
+                                f.write(data)
+                    else:
+                        raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
+        
+        # Check all the files are present
+         for patch in required_patches:            
+            if "Install" in required_patches[patch]:
+                for install_patch_directory in required_patches[patch]["Install"]:
+                    for install_file in required_patches[patch]["Install"][install_patch_directory]:
+                        source_file = source_files_path + "/" + required_patches[patch]['Install'][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
+                        if not Path(source_file).exists:
+                            raise Exception(f"Failed to find {source_file}")
+            
+            if "Install Non-Root" in required_patches[patch]:
+                for install_patch_directory in required_patches[patch]["Install Non-Root"]:
+                    print(f"- Handling Non-Root Installs in: {install_patch_directory}")
+                    for install_file in required_patches[patch]["Install Non-Root"][install_patch_directory]:
+                        source_file = source_files_path + "/" + required_patches[patch]['Install Non-Root'][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
+                        if not Path(source_file).exists:
+                            raise Exception(f"Failed to find {source_file}")
+                        
+        print("- Finished Preflight, starting patching")
 
     def install_new_file(self, source_folder, destination_folder, file_name):
         # .frameworks are merged
@@ -423,22 +444,18 @@ class PatchSysVolume:
 
     def download_files(self):
         if self.constants.gui_mode is False or "Library/InstallerSandboxes/" in str(self.constants.payload_path):
-            download_result, os_ver, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
+            download_result, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
         else:
             download_result = True
-            os_ver, link = sys_patch_download.grab_patcher_support_pkg(self.constants).generate_pkg_link()
+            link = sys_patch_download.grab_patcher_support_pkg(self.constants).generate_pkg_link()
 
         if download_result and self.constants.payload_local_binaries_root_path_zip.exists():
             print("- Unzipping binaries...")
-            try:
-                utilities.process_status(subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.payload_local_binaries_root_path_zip, self.constants.payload_path]))
-                print("- Renaming folder")
-                print("- Binaries downloaded to:")
-                print(self.constants.payload_path)
-                return self.constants.payload_local_binaries_root_path
-            except zipfile.BadZipFile:
-                print("- Couldn't unzip")
-                return None
+            utilities.process_status(subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.payload_local_binaries_root_path_zip, self.constants.payload_path]))
+            print("- Renaming folder")
+            print("- Binaries downloaded to:")
+            print(self.constants.payload_path)
+            return self.constants.payload_local_binaries_root_path
         else:
             if self.constants.gui_mode is True:
                 print("- Download failed, please verify the below link work:")

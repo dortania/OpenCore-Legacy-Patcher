@@ -3,7 +3,7 @@
 import sys
 import subprocess
 
-from resources import constants, install, utilities, defaults, sys_patch, installer
+from resources import constants, install, utilities, defaults, sys_patch, installer, tui_helpers
 from data import cpu_data, smbios_data, model_array, os_data, mirror_data
 
 
@@ -1014,7 +1014,7 @@ AssetCache.
             self.set_cc_support()
 
     def credits(self):
-        utilities.TUIOnlyPrint(
+        tui_helpers.TUIOnlyPrint(
             ["Credits"],
             "Press [Enter] to go back.\n",
             [
@@ -1085,7 +1085,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Advanced Patcher Settings, for developers ONLY"]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set Metal GPU Status:\t\tCurrently {self.constants.imac_vendor}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_metal],
                 [f"Set DRM Preferences:\t\tCurrently {self.constants.drm_support}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).drm_setting],
@@ -1105,7 +1105,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Patcher Settings"]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 ["Debug Settings", self.patcher_setting_debug],
                 ["Security Settings", self.patcher_settings_security],
@@ -1129,7 +1129,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Debug Settings"]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Enable Verbose Mode:\tCurrently {self.constants.verbose_debug}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_verbose],
                 [f"Enable OpenCore DEBUG:\tCurrently {self.constants.opencore_debug}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_oc],
@@ -1149,7 +1149,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Security Settings"]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 # [
                 #     f"Set Apple Mobile File Integrity (AMFI):\tCurrently {self.constants.amfi_status}",
@@ -1175,7 +1175,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust SMBIOS Settings"]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set SMBIOS Spoof Level:\tCurrently {self.constants.serial_settings}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_serial],
                 [f"Set SMBIOS Spoof Model:\tCurrently {self.constants.override_smbios}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_smbios],
@@ -1192,7 +1192,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Bootable Volume Settings"]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set FireWire Boot:\t\tCurrently {self.constants.firewire_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_firewire],
                 [f"Set XHCI Boot:\t\tCurrently {self.constants.xhci_boot}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_xhci],
@@ -1209,7 +1209,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Miscellaneous Settings"]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set ShowPicker Mode:\tCurrently {self.constants.showpicker}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_showpicker],
                 [f"Set Wake on WLAN:\t\tCurrently {self.constants.enable_wake_on_wlan}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_wowl],
@@ -1246,7 +1246,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         response = None
         while not (response and response == -1):
             title = ["Adjust Advanced Patcher Settings, for developers ONLY"]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
                 [f"Set Metal GPU Status:\t\tCurrently {self.constants.imac_vendor}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_metal],
                 [f"Set DRM Preferences:\t\tCurrently {self.constants.drm_support}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).drm_setting],
@@ -1301,7 +1301,7 @@ B. Exit
         while not (response and response == -1):
             options = []
             title = ["Select the macOS Installer you wish to download"]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "DeveloperSeed")
             if available_installers:
                 # Add mirror of 11.2.3 for users who want it
@@ -1321,7 +1321,7 @@ B. Exit
         while not (response and response == -1):
             options = []
             title = ["Select the macOS Installer you wish to use"]
-            menu = utilities.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             available_installers = installer.list_local_macOS_installers()
             if available_installers:
                 for app in available_installers:
