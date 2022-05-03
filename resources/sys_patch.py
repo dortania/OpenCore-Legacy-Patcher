@@ -370,7 +370,7 @@ class PatchSysVolume:
                         raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
         
         # Check all the files are present
-         for patch in required_patches:            
+        for patch in required_patches:            
             if "Install" in required_patches[patch]:
                 for install_patch_directory in required_patches[patch]["Install"]:
                     for install_file in required_patches[patch]["Install"][install_patch_directory]:
