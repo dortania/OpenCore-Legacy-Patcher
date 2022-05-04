@@ -21,27 +21,14 @@ class PatchSysVolume:
         self.root_mount_path = None
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
         self.constants.root_patcher_succeded = False # Reset Variable each time we start
+        self.patch_set_dictionary = {}
 
         # GUI will detect hardware patches before starting PatchSysVolume()
         # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
         if hardware_details is None:
             hardware_details = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
-        self.init_hardware_patches(hardware_details)
+        self.hardware_details = hardware_details
         self.init_pathing(custom_root_mount_path=None, custom_data_mount_path=None)
-
-    def init_hardware_patches(self, hardware_details):
-        self.nvidia_legacy = hardware_details["Graphics: Nvidia Tesla"]
-        self.kepler_gpu = hardware_details["Graphics: Nvidia Kepler"]
-        self.amd_ts1 = hardware_details["Graphics: AMD TeraScale 1"]
-        self.amd_ts2 = hardware_details["Graphics: AMD TeraScale 2"]
-        self.iron_gpu = hardware_details["Graphics: Intel Ironlake"]
-        self.sandy_gpu = hardware_details["Graphics: Intel Sandy Bridge"]
-        self.ivy_gpu = hardware_details["Graphics: Intel Ivy Bridge"]
-        self.brightness_legacy = hardware_details["Brightness: Legacy Backlight Control"]
-        self.legacy_audio = hardware_details["Audio: Legacy Realtek"]
-        self.legacy_wifi = hardware_details["Networking: Legacy Wireless"]
-        self.legacy_gmux = hardware_details["Miscellaneous: Legacy GMUX"]
-        self.legacy_keyboard_backlight = hardware_details["Miscellaneous: Legacy Keyboard Backlight"]
 
     def init_pathing(self, custom_root_mount_path=None, custom_data_mount_path=None):
         if custom_root_mount_path and custom_data_mount_path:
@@ -129,16 +116,14 @@ class PatchSysVolume:
         # - will return 31 on 'No binaries or codeless kexts were provided'
         # - will return -10 if the volume is missing (ie. unmounted by another process)
         if result.returncode != 0 or (self.constants.detected_os < os_data.os_data.catalina and "KernelCache ID" not in result.stdout.decode()):
-            self.success_status = False
             print("- Unable to build new kernel cache")
-            print(f"\nReason for Patch Failure({result.returncode}):")
+            print(f"\nReason for Patch Failure ({result.returncode}):")
             print(result.stdout.decode())
             print("")
             print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
             if self.constants.gui_mode is False:
                 input("Press [ENTER] to continue")
         else:
-            self.success_status = True
             print("- Successfully built new kernel cache")
             if self.root_supports_snapshot is True:
                 print("- Creating new APFS snapshot")
@@ -154,13 +139,6 @@ class PatchSysVolume:
                     return
                 else:
                     self.unmount_drive()
-            else:
-                if self.constants.detected_os == os_data.os_data.catalina:
-                    print("- Merging kernel cache")
-                    utilities.process_status(utilities.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-                if self.constants.detected_os in [os_data.os_data.mojave, os_data.os_data.catalina]:
-                    print("- Merging dyld cache")
-                    utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
             self.constants.root_patcher_succeded = True
@@ -236,72 +214,15 @@ class PatchSysVolume:
  
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")
-                
-        self.execute_patchset(self.generate_patchset())
+        if self.patch_set_dictionary != {}:
+            self.execute_patchset(self.patch_set_dictionary)
+        else:
+            self.execute_patchset(sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details))
 
         if self.constants.wxpython_variant is True and self.constants.detected_os >= os_data.os_data.big_sur: 
             self.install_auto_patcher_launch_agent()
 
         self.rebuild_snapshot()
-    
-    def generate_patchset(self):
-        all_hardware_patchset = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os)
-        required_patches = {}
-        
-        print("- Creating Patch Set for Booted Hardware:")
-        if self.iron_gpu is True:
-            print("  - Adding Intel Ironlake Graphics Patchset")
-            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
-            required_patches.update({"Intel Ironlake": all_hardware_patchset["Graphics"]["Intel Ironlake"]})
-        if self.sandy_gpu is True:
-            print("  - Adding Intel Sandy Bridge Graphics Patchset")
-            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
-            required_patches.update({"Legacy GVA": all_hardware_patchset["Graphics"]["Legacy GVA"]})
-            required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
-        if self.ivy_gpu is True:
-            print("  - Adding Intel Ivy Bridge Graphics Patchset")
-            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
-            required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
-        if self.nvidia_legacy is True:
-            print("  - Adding Nvidia Tesla Graphics Patchset")
-            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
-            required_patches.update({"Nvidia Tesla": all_hardware_patchset["Graphics"]["Nvidia Tesla"]})
-            required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
-        if self.kepler_gpu is True:
-            print("  - Adding Nvidia Kepler Graphics Patchset")
-            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
-            required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
-        if self.amd_ts1 is True:
-            print("  - Adding AMD TeraScale 1 Graphics Patchset")
-            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
-            required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
-            required_patches.update({"AMD TeraScale 1": all_hardware_patchset["Graphics"]["AMD TeraScale 1"]})
-        if self.amd_ts2 is True:
-            print("  - Adding AMD TeraScale 2 Graphics Patchset")
-            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
-            required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
-            required_patches.update({"AMD TeraScale 2": all_hardware_patchset["Graphics"]["AMD TeraScale 2"]})
-        if self.brightness_legacy is True:
-            print("  - Adding Legacy Brightness Patchset")
-            required_patches.update({"Legacy Brightness": all_hardware_patchset["Brightness"]["Legacy Brightness"]})
-        if self.legacy_audio is True:
-            print("  - Adding Legacy Audio Patchset")
-            if self.model in ["iMac7,1", "iMac8,1"]:
-                required_patches.update({"Legacy Realtek": all_hardware_patchset["Audio"]["Legacy Realtek"]})
-            else:
-                required_patches.update({"Legacy Non-GOP": all_hardware_patchset["Audio"]["Legacy Non-GOP"]})
-        if self.legacy_wifi is True:
-            print("  - Adding Legacy WiFi Patchset")
-            required_patches.update({"Legacy WiFi": all_hardware_patchset["Networking"]["Legacy WiFi"]})
-        if self.legacy_gmux is True:
-            print("  - Adding Legacy GMUX Patchset")
-            required_patches.update({"Legacy GMUX": all_hardware_patchset["Miscellaneous"]["Legacy GMUX"]})
-        if self.legacy_keyboard_backlight:
-            print("  - Adding Legacy Keyboard Backlight Patchset")
-            required_patches.update({"Legacy Keyboard Backlight": all_hardware_patchset["Miscellaneous"]["Legacy Keyboard Backlight"]})
-        
-        return required_patches
-
     
     def execute_patchset(self, required_patches):
         source_files_path = str(self.constants.payload_local_binaries_root_path)
@@ -389,14 +310,14 @@ class PatchSysVolume:
                 print(f"  - Found existing {file_name}, overwritting...")
                 utilities.process_status(utilities.elevated(["rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
-                print("  - Installing: " + file_name)
+                print(f"  - Installing: {file_name}")
             utilities.process_status(utilities.elevated(["cp", "-R", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
         elif file_name_str.endswith(".framework"):
             # merge with rsync
-            print("  - Installing: " + file_name)
+            print(f"  - Installing: {file_name}")
             utilities.elevated(["rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)
             utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
@@ -406,14 +327,14 @@ class PatchSysVolume:
                 print(f"  - Found existing {file_name}, overwritting...")
                 utilities.process_status(utilities.elevated(["rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
-                print("  - Installing: " + file_name)
+                print(f"  - Installing: {file_name}")
             utilities.process_status(utilities.elevated(["cp", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chmod", "755", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def remove_file(self, destination_folder, file_name):
         if Path(destination_folder + "/" + file_name).exists():
-            print("  - Removing: " + file_name)
+            print(f"  - Removing: {file_name}")
             if Path(destination_folder + "/" + file_name).is_dir():
                 utilities.process_status(utilities.elevated(["rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
@@ -444,7 +365,6 @@ class PatchSysVolume:
         if download_result and self.constants.payload_local_binaries_root_path_zip.exists():
             print("- Unzipping binaries...")
             utilities.process_status(subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.payload_local_binaries_root_path_zip, self.constants.payload_path]))
-            print("- Renaming folder")
             print("- Binaries downloaded to:")
             print(self.constants.payload_path)
             return self.constants.payload_local_binaries_root_path
@@ -458,57 +378,13 @@ class PatchSysVolume:
                 input("\nPress enter to continue")
         return None
 
-
-    def detect_patch_set(self):
-        utilities.cls()
-        print("The following patches will be applied:")
-        if self.nvidia_legacy is True:
-            print("- Add Legacy Nvidia Tesla Graphics Patch")
-        elif self.kepler_gpu is True:
-            print("- Add Legacy Nvidia Kepler Graphics Patch")
-        elif self.amd_ts1 is True:
-            print("- Add Legacy ATI TeraScale 1 Graphics Patch")
-        elif self.amd_ts2 is True:
-            print("- Add Legacy ATI TeraScale 2 Graphics Patch")
-        if self.iron_gpu is True:
-            print("- Add Legacy Intel IronLake Graphics Patch")
-        elif self.sandy_gpu is True:
-            print("- Add Legacy Intel Sandy Bridge Graphics Patch")
-        elif self.ivy_gpu is True:
-            print("- Add Legacy Intel Ivy Bridge Graphics Patch")
-        if self.brightness_legacy is True:
-            print("- Add Legacy Brightness Control")
-        if self.legacy_audio is True:
-            print("- Add legacy Audio Control")
-        if self.legacy_wifi is True:
-            print("- Add legacy WiFi Control")
-        if self.legacy_gmux is True:
-            print("- Add Legacy Mux Brightness Control")
-        if self.legacy_keyboard_backlight is True:
-            print("- Add Legacy Keyboard Backlight Control")
-
-        self.no_patch = not any(
-            [
-                self.nvidia_legacy,
-                self.kepler_gpu,
-                self.amd_ts1,
-                self.amd_ts2,
-                self.iron_gpu,
-                self.sandy_gpu,
-                self.ivy_gpu,
-                self.brightness_legacy,
-                self.legacy_audio,
-                self.legacy_wifi,
-                self.legacy_gmux,
-            ]
-        )
-
     # Entry Function
     def start_patch(self):
         print("- Starting Patch Process")
         print(f"- Determining Required Patch set for Darwin {self.constants.detected_os}")
-        self.detect_patch_set()
-        if self.no_patch is True:
+        self.patch_set_dictionary = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details)
+        
+        if self.patch_set_dictionary == {}:
             change_menu = None
             print("- No Root Patches required for your machine!")
             if self.constants.gui_mode is False:

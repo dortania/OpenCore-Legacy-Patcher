@@ -3,8 +3,8 @@
 # Used when supplying data to sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from resources import constants, device_probe, utilities, generate_smbios
-from data import model_array, os_data, sip_data
+from resources import constants, device_probe, utilities
+from data import model_array, os_data, sip_data, sys_patch_dict
 
 class detect_root_patch:
     def __init__(self, model, versions):
@@ -218,3 +218,65 @@ class detect_root_patch:
             return False
         else:
             return True
+    
+    def generate_patchset(self, hardware_details):
+        all_hardware_patchset = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os)
+        required_patches = {}
+        utilities.cls()
+        print("- The following patches will be applied:")
+        if hardware_details["Graphics: Intel Ironlake"] is True:
+            print("  - Graphics: Intel Ironlake")
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"Intel Ironlake": all_hardware_patchset["Graphics"]["Intel Ironlake"]})
+        if hardware_details["Graphics: Intel Sandy Bridge"] is True:
+            print("  - Graphics: Intel Sandy Bridge")
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"Legacy GVA": all_hardware_patchset["Graphics"]["Legacy GVA"]})
+            required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
+        if hardware_details["Graphics: Intel Ivy Bridge"] is True:
+            print("  - Graphics: Intel Ivy Bridge")
+            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
+        if hardware_details["Graphics: Nvidia Tesla"] is True:
+            print("  - Graphics: Nvidia Tesla")
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"Nvidia Tesla": all_hardware_patchset["Graphics"]["Nvidia Tesla"]})
+            required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
+        if hardware_details["Graphics: Nvidia Kepler"] is True:
+            print("  - Graphics: Nvidia Kepler")
+            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
+        if hardware_details["Graphics: AMD TeraScale 1"] is True:
+            print("  - Graphics: AMD TeraScale 1")
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
+            required_patches.update({"AMD TeraScale 1": all_hardware_patchset["Graphics"]["AMD TeraScale 1"]})
+        if hardware_details["Graphics: AMD TeraScale 2"] is True:
+            print("  - Graphics: AMD TeraScale 2")
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
+            required_patches.update({"AMD TeraScale 2": all_hardware_patchset["Graphics"]["AMD TeraScale 2"]})
+        if hardware_details["Brightness: Legacy Backlight Control"] is True:
+            print("  - Brightness: Legacy Brightness")
+            required_patches.update({"Legacy Brightness": all_hardware_patchset["Brightness"]["Legacy Brightness"]})
+        if hardware_details["Audio: Legacy Realtek"] is True:
+            if self.model in ["iMac7,1", "iMac8,1"]:
+                print("  - Audio: Legacy Realtek Audio")
+                required_patches.update({"Legacy Realtek": all_hardware_patchset["Audio"]["Legacy Realtek"]})
+            else:
+                print("  - Audio: Legacy non-GOP Audio")
+                required_patches.update({"Legacy Non-GOP": all_hardware_patchset["Audio"]["Legacy Non-GOP"]})
+        if hardware_details["Networking: Legacy Wireless"] is True:
+            print("  - Networking: Legacy WiFi")
+            required_patches.update({"Legacy WiFi": all_hardware_patchset["Networking"]["Legacy WiFi"]})
+        if hardware_details["Miscellaneous: Legacy GMUX"] is True:
+            print("  - Miscellaneous: Legacy GMUX")
+            required_patches.update({"Legacy GMUX": all_hardware_patchset["Miscellaneous"]["Legacy GMUX"]})
+        if hardware_details["Miscellaneous: Legacy Keyboard Backlight"]:
+            print("  - Miscellaneous: Legacy Keyboard Backlight")
+            required_patches.update({"Legacy Keyboard Backlight": all_hardware_patchset["Miscellaneous"]["Legacy Keyboard Backlight"]})
+
+        if not required_patches:
+            print("  - No patch sets found for booted model")
+        
+        return required_patches
