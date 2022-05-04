@@ -1,9 +1,26 @@
 # Framework for mounting and patching macOS root volume
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
-# Missing Features:
-# - Full System/Library Snapshotting (need to research how Apple achieves this)
-#   - Temporary Work-around: sudo bless --mount /System/Volumes/Update/mnt1 --bootefi --last-sealed-snapshot
-# - Work-around battery throttling on laptops with no battery (IOPlatformPluginFamily.kext/Contents/PlugIns/ACPI_SMC_PlatformPlugin.kext/Contents/Resources/)
+
+# System based off of Apple's Kernel Development Kit (KDK)
+# - https://developer.apple.com/download/all/
+
+# The system relies on mounting the APFS volume as a live read/write volume
+# We perform our required edits, then create a new snapshot for the system boot
+
+# The manual process is as follows:
+#  1. Mount the APFS volume as a read/write volume
+#     'sudo mount -o nobrowse -t apfs  /dev/disk5s5 /System/Volumes/Update/mnt1'
+#  2. Perform edits to the system (ie. create new KernelCollection)
+#     'sudo kmutil install --volume-root /System/Volumes/Update/mnt1/ --update-all'
+#  3. Create a new snapshot for the system boot
+#     'sudo bless --folder /System/Volumes/Update/mnt1/System/Library/CoreServices --bootefi --create-snapshot'
+
+# Additionally Apple's APFS snapshot system supports system rollbacks:
+#   'sudo bless --mount /System/Volumes/Update/mnt1 --bootefi --last-sealed-snapshot'
+# Note: root volume rollbacks are unstable in Big Sur due to quickly discarding the original snapshot
+# - Generally within 2~ boots, the original snapshot is discarded
+# - Monterey always preserves the original snapshot allowing for reliable rollbacks
+
 
 import shutil
 import subprocess

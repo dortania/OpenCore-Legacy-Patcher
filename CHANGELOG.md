@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.4.5
+- Refactor Root Patching System
 
 ## 0.4.4
 - Lower SIP requirement for Root Patching
