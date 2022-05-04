@@ -8,6 +8,7 @@
 # If all these tests pass, start Root Patcher
 # Copyright (C) 2022, Mykola Grymalyuk
 
+from pathlib import Path
 import plistlib
 import subprocess
 import webbrowser
@@ -163,3 +164,56 @@ class AutomaticSysPatch:
 
             else:
                 print("- Failed to find disk OpenCore launched from")
+    
+
+    def install_auto_patcher_launch_agent(settings):
+        # Installs the following:
+        #   - OpenCore-Patcher.app in /Library/Application Support/Dortania/
+        #   - com.dortania.opencore-legacy-patcher.auto-patch.plist in /Library/LaunchAgents/
+        if settings.launcher_script is None:
+            # Verify our binary isn't located in '/Library/Application Support/Dortania/'
+            # As we'd simply be duplicating ourselves
+            if not settings.launcher_binary.startswith("/Library/Application Support/Dortania/"):
+                print("- Installing Auto Patcher Launch Agent")
+            
+                if not Path("Library/Application Support/Dortania").exists():
+                    print("- Creating /Library/Application Support/Dortania/")
+                    utilities.process_status(utilities.elevated(["mkdir", "-p", "/Library/Application Support/Dortania"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+                print("- Copying OpenCore Patcher to /Library/Application Support/Dortania/")
+                if Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
+                    print("- Deleting existing OpenCore-Patcher")
+                    utilities.process_status(utilities.elevated(["rm", "-R", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+                # Strip everything after OpenCore-Patcher.app
+                path = str(settings.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
+                print(f"- Copying {path} to /Library/Application Support/Dortania/")
+                utilities.process_status(utilities.elevated(["cp", "-R", path, "/Library/Application Support/Dortania/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+                if not Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
+                    # Sometimes the binary the user launches maye have a suffix (ie. OpenCore-Patcher 3.app)
+                    # We'll want to rename it to OpenCore-Patcher.app
+                    path = path.split("/")[-1]
+                    print(f"- Renaming {path} to OpenCore-Patcher.app")
+                    utilities.process_status(utilities.elevated(["mv", f"/Library/Application Support/Dortania/{path}", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+            # Copy over our launch agent
+            print("- Copying auto-patch.plist Launch Agent to /Library/LaunchAgents/")
+            if Path("/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist").exists():
+                print("- Deleting existing auto-patch.plist")
+                utilities.process_status(utilities.elevated(["rm", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["cp", settings.auto_patch_launch_agent_path, "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+            # Set the permissions on the com.dortania.opencore-legacy-patcher.auto-patch.plist
+            print("- Setting permissions on auto-patch.plist")
+            utilities.process_status(utilities.elevated(["chmod", "644", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chown", "root:wheel", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+            # Making app alias
+            # Simply an easy way for users to notice the app
+            # If there's already an alias or exiting app, skip
+            if not Path("/Applications/OpenCore-Patcher.app").exists():
+                print("- Making app alias")
+                utilities.process_status(utilities.elevated(["ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        else:
+            print("- Skipping Auto Patcher Launch Agent, not supported when running from source")

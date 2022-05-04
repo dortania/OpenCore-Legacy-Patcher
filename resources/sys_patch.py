@@ -9,7 +9,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from resources import constants, generate_smbios, utilities, sys_patch_download, sys_patch_detect
+from resources import constants, generate_smbios, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto
 from data import os_data
 
 
@@ -97,10 +97,7 @@ class PatchSysVolume:
 
     def rebuild_snapshot(self):
         print("- Rebuilding Kernel Cache (This may take some time)")
-        if self.constants.detected_os > os_data.os_data.catalina:
-            result = utilities.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        else:
-            result = utilities.elevated(["kextcache", "-i", f"{self.mount_location}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = utilities.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         # kextcache notes:
         # - kextcache always returns 0, even if it fails
@@ -109,7 +106,7 @@ class PatchSysVolume:
         # - will return 71 on failure to build KCs
         # - will return 31 on 'No binaries or codeless kexts were provided'
         # - will return -10 if the volume is missing (ie. unmounted by another process)
-        if result.returncode != 0 or (self.constants.detected_os < os_data.os_data.catalina and "KernelCache ID" not in result.stdout.decode()):
+        if result.returncode != 0:
             print("- Unable to build new kernel cache")
             print(f"\nReason for Patch Failure ({result.returncode}):")
             print(result.stdout.decode())
@@ -144,58 +141,6 @@ class PatchSysVolume:
         utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
 
-    def install_auto_patcher_launch_agent(self):
-        # Installs the following:
-        #   - OpenCore-Patcher.app in /Library/Application Support/Dortania/
-        #   - com.dortania.opencore-legacy-patcher.auto-patch.plist in /Library/LaunchAgents/
-        if self.constants.launcher_script is None:
-            # Verify our binary isn't located in '/Library/Application Support/Dortania/'
-            # As we'd simply be duplicating ourselves
-            if not self.constants.launcher_binary.startswith("/Library/Application Support/Dortania/"):
-                print("- Installing Auto Patcher Launch Agent")
-            
-                if not Path("Library/Application Support/Dortania").exists():
-                    print("- Creating /Library/Application Support/Dortania/")
-                    utilities.process_status(utilities.elevated(["mkdir", "-p", "/Library/Application Support/Dortania"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-                print("- Copying OpenCore Patcher to /Library/Application Support/Dortania/")
-                if Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
-                    print("- Deleting existing OpenCore-Patcher")
-                    utilities.process_status(utilities.elevated(["rm", "-R", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-                # Strip everything after OpenCore-Patcher.app
-                path = str(self.constants.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
-                print(f"- Copying {path} to /Library/Application Support/Dortania/")
-                utilities.process_status(utilities.elevated(["cp", "-R", path, "/Library/Application Support/Dortania/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-                if not Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
-                    # Sometimes the binary the user launches maye have a suffix (ie. OpenCore-Patcher 3.app)
-                    # We'll want to rename it to OpenCore-Patcher.app
-                    path = path.split("/")[-1]
-                    print(f"- Renaming {path} to OpenCore-Patcher.app")
-                    utilities.process_status(utilities.elevated(["mv", f"/Library/Application Support/Dortania/{path}", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-            # Copy over our launch agent
-            print("- Copying auto-patch.plist Launch Agent to /Library/LaunchAgents/")
-            if Path("/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist").exists():
-                print("- Deleting existing auto-patch.plist")
-                utilities.process_status(utilities.elevated(["rm", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["cp", self.constants.auto_patch_launch_agent_path, "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-            # Set the permissions on the com.dortania.opencore-legacy-patcher.auto-patch.plist
-            print("- Setting permissions on auto-patch.plist")
-            utilities.process_status(utilities.elevated(["chmod", "644", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["chown", "root:wheel", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-            # Making app alias
-            # Simply an easy way for users to notice the app
-            # If there's already an alias or exiting app, skip
-            if not Path("/Applications/OpenCore-Patcher.app").exists():
-                print("- Making app alias")
-                utilities.process_status(utilities.elevated(["ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        else:
-            print("- Skipping Auto Patcher Launch Agent, not supported when running from source")
-
     def clean_skylight_plugins(self):
         if (Path(self.mount_application_support) / Path("SkyLightPlugins/")).exists():
             print("- Found SkylightPlugins folder, removing old plugins")
@@ -214,7 +159,7 @@ class PatchSysVolume:
             self.execute_patchset(sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details))
 
         if self.constants.wxpython_variant is True and self.constants.detected_os >= os_data.os_data.big_sur: 
-            self.install_auto_patcher_launch_agent()
+            sys_patch_auto.AutomaticSysPatch.install_auto_patcher_launch_agent(self.constants)
 
         self.rebuild_snapshot()
     
@@ -299,22 +244,21 @@ class PatchSysVolume:
         # .frameworks are merged
         # .kexts and .apps are deleted and replaced
         file_name_str = str(file_name)
-        if file_name_str.endswith(".kext") or file_name_str.endswith(".app") or file_name_str.endswith(".bundle") or file_name_str.endswith(".plugin"):
+
+        if file_name_str.endswith(".framework"):
+            # merge with rsync
+            print(f"  - Installing: {file_name}")
+            utilities.elevated(["rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)
+            self.fix_permissions(destination_folder + "/" + file_name)
+        elif Path(source_folder + "/" + file_name_str).is_dir():
+            # Applicable for .kext, .app, .plugin, .bundle, all of which are directories
             if Path(destination_folder + "/" + file_name).exists():
                 print(f"  - Found existing {file_name}, overwritting...")
                 utilities.process_status(utilities.elevated(["rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
                 print(f"  - Installing: {file_name}")
             utilities.process_status(utilities.elevated(["cp", "-R", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-        elif file_name_str.endswith(".framework"):
-            # merge with rsync
-            print(f"  - Installing: {file_name}")
-            utilities.elevated(["rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)
-            utilities.process_status(utilities.elevated(["chmod", "-Rf", "755", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["chown", "-Rf", "root:wheel", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            self.fix_permissions(destination_folder + "/" + file_name)
         else:
             # Assume it's an individual file, replace as normal
             if Path(destination_folder + "/" + file_name).exists():
@@ -323,8 +267,7 @@ class PatchSysVolume:
             else:
                 print(f"  - Installing: {file_name}")
             utilities.process_status(utilities.elevated(["cp", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["chmod", "755", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["chown", "root:wheel", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            self.fix_permissions(destination_folder + "/" + file_name)
 
     def remove_file(self, destination_folder, file_name):
         if Path(destination_folder + "/" + file_name).exists():
@@ -333,6 +276,17 @@ class PatchSysVolume:
                 utilities.process_status(utilities.elevated(["rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
                 utilities.process_status(utilities.elevated(["rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+
+    def fix_permissions(self, destination_file):
+        chmod_args = ["chmod", "-Rf", "755", destination_file]
+        chown_args = ["chown", "-Rf", "root:wheel", destination_file]
+        if not Path(destination_file).is_dir():
+            # Strip recursive arguments
+            chmod_args.pop(1)
+            chown_args.pop(1)
+        utilities.process_status(utilities.elevated(chmod_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(chown_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
 
     def check_files(self):
