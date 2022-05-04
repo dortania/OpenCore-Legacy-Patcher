@@ -3,7 +3,7 @@ from pathlib import Path
 import plistlib
 import subprocess
 import requests
-from resources import utilities
+from resources import utilities, tui_helpers
 
 def list_local_macOS_installers():
     # Finds all applicable macOS installers
@@ -264,7 +264,7 @@ def select_disk_to_format():
         except KeyError:
             # Avoid crashing with CDs installed
             continue
-    menu = utilities.TUIMenu(
+    menu = tui_helpers.TUIMenu(
         ["Select Disk to write the macOS Installer onto"],
         "Please select the disk you would like to install OpenCore to: ",
         in_between=["Missing drives? Verify they are 14GB+ and external (ie. USB)", "", "Ensure all data is backed up on selected drive, entire drive will be erased!"],

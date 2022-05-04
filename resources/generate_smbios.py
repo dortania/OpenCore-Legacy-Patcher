@@ -105,6 +105,13 @@ def find_model_off_board(board):
             return key
     return None
 
+def find_board_off_model(model):
+    if model in smbios_data.smbios_dictionary:
+        return smbios_data.smbios_dictionary[model]["Board ID"]
+    else:
+        return None
+
+
 def check_firewire(model):
     # MacBooks never supported FireWire
     # Pre-Thunderbolt MacBook Airs as well
@@ -117,3 +124,53 @@ def check_firewire(model):
         return False
     else:
         return True
+
+def determine_best_board_id_for_sandy(current_board_id, gpus):
+    # This function is mainly for users who are either spoofing or using hackintoshes
+    # Generally hackintosh will use whatever the latest SMBIOS is, so we need to determine
+    # the best Board ID to patch inside of AppleIntelSNBGraphicsFB
+
+    # Currently the kext supports the following models:
+    #   MacBookPro8,1 - Mac-94245B3640C91C81 (13")
+    #   MacBookPro8,2 - Mac-94245A3940C91C80 (15")
+    #   MacBookPro8,3 - Mac-942459F5819B171B (17")
+    #   MacBookAir4,1 - Mac-C08A6BB70A942AC2 (11")
+    #   MacBookAir4,2 - Mac-742912EFDBEE19B3 (13")
+    #   Macmini5,1    - Mac-8ED6AF5B48C039E1
+    #   Macmini5,2    - Mac-4BC72D62AD45599E (headless)
+    #   Macmini5,3    - Mac-7BA5B2794B2CDB12
+    #   iMac12,1      - Mac-942B5BF58194151B (headless)
+    #   iMac12,2      - Mac-942B59F58194171B (headless)
+    #   Unknown(MBP)  - Mac-94245AF5819B141B
+    #   Unknown(iMac) - Mac-942B5B3A40C91381 (headless)
+    if current_board_id:
+        model = find_model_off_board(current_board_id)
+        if model:
+            if model.startswith("MacBook"):
+                try:
+                    size = int(smbios_data.smbios_dictionary[model]["Screen Size"])
+                except KeyError:
+                    size = 13 # Assume 13 if it's missing
+                if model.startswith("MacBookPro"):
+                    if size >= 17:
+                        return find_board_off_model("MacBookPro8,3")
+                    elif size >= 15:
+                        return find_board_off_model("MacBookPro8,2")
+                    else:
+                        return find_board_off_model("MacBookPro8,1")
+                else: # MacBook and MacBookAir
+                    if size >= 13:
+                        return find_board_off_model("MacBookAir4,2")
+                    else:
+                        return find_board_off_model("MacBookAir4,1")
+            else:
+                # We're working with a desktop, so need to figure out whether the unit is running headless or not
+                if len(gpus) > 1:
+                    # More than 1 GPU detected, assume headless
+                    if model.startswith("Macmini"):
+                        return find_board_off_model("Macmini5,2")
+                    else:
+                        return find_board_off_model("iMac12,2")
+                else:
+                    return find_board_off_model("Macmini5,1")
+    return find_board_off_model("Macmini5,1") # Safest bet if we somehow don't know the model

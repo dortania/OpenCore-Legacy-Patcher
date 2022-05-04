@@ -15,7 +15,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.4.5"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.3.9"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.4.0"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link = "https://discord.gg/rqdPgH8xSN"
@@ -209,11 +209,6 @@ class Constants:
     @property
     def plist_template(self):
         return self.payload_path / Path("Config/config.plist")
-
-    # Mount Location
-    @property
-    def payload_mnt1_path(self):
-        return self.payload_path / Path("mnt1")
     
     # Launch Agent
     @property
@@ -571,167 +566,14 @@ class Constants:
         return self.payload_path / Path("AutoPkg-Assets.pkg.zip")
 
     # Apple Payloads Paths
-
     @property
-    def payload_apple_root_path_zip(self):
-        return self.payload_path / Path("Apple.zip")
+    def payload_local_binaries_root_path(self):
+        return self.payload_path / Path("Universal-Binaries")
     
     @property
-    def payload_universal_extensions_zip_path(self):
-        return self.payload_path / Path("Universal-Extensions.zip")
+    def payload_local_binaries_root_path_zip(self):
+        return self.payload_path / Path("Universal-Binaries.zip")
 
-    @property
-    def payload_apple_root_path(self):
-        return self.payload_path / Path("Apple")
-
-    @property
-    def payload_apple_kexts_path(self):
-        return self.payload_path / Path("Universal-Extensions")
-
-    @property
-    def payload_apple_coreservices_path(self):
-        return self.payload_apple_root_path / Path("CoreServices")
-
-    @property
-    def payload_apple_usr_path(self):
-        return self.payload_apple_root_path / Path("usr")
-
-    @property
-    def payload_apple_libexec_path(self):
-        return self.payload_apple_usr_path / Path("libexec")
-    
-    @property
-    def payload_apple_application_support(self):
-        return self.payload_apple_root_path / Path("Application Support")
-    
-    @property
-    def payload_apple_private_path(self):
-        return self.payload_apple_root_path / Path("private")
-    
-    @property
-    def payload_apple_etc_path(self):
-        return self.payload_apple_private_path / Path("etc")
-
-    @property
-    def payload_apple_frameworks_path(self):
-        return self.payload_apple_root_path / Path("Frameworks")
-
-    @property
-    def payload_apple_frameworks_path_accel(self):
-        return self.payload_apple_frameworks_path / Path("Graphics-Acceleration-Non-Metal")
-
-    @property
-    def payload_apple_frameworks_path_accel_ts2(self):
-        return self.payload_apple_frameworks_path / Path("Graphics-Acceleration-TeraScale-2")
-
-    @property
-    def payload_apple_frameworks_path_accel_ivy(self):
-        return self.payload_apple_frameworks_path / Path("Graphics-Acceleration-Ivy-Bridge")
-    
-    @property
-    def payload_apple_frameworks_path_accel_kepler(self):
-        return self.payload_apple_frameworks_path / Path("Graphics-Acceleration-Kepler")
-
-    @property
-    def payload_apple_lauchd_path(self):
-        return self.payload_apple_root_path / Path("LaunchDaemons")
-
-    @property
-    def payload_apple_private_frameworks_path(self):
-        return self.payload_apple_root_path / Path("PrivateFrameworks")
-
-    @property
-    def payload_apple_private_frameworks_path_accel(self):
-        return self.payload_apple_private_frameworks_path / Path("Graphics-Acceleration-Non-Metal")
-
-    @property
-    def payload_apple_private_frameworks_path_accel_ts2(self):
-        return self.payload_apple_private_frameworks_path / Path("Graphics-Acceleration-TeraScale-2")
-
-    @property
-    def payload_apple_private_frameworks_path_accel_ivy(self):
-        return self.payload_apple_private_frameworks_path / Path("Graphics-Acceleration-Ivy-Bridge")
-
-    @property
-    def payload_apple_private_frameworks_path_brightness(self):
-        return self.payload_apple_private_frameworks_path / Path("Brightness-Control")
-
-    @property
-    def payload_apple_private_frameworks_path_legacy_drm(self):
-        return self.payload_apple_private_frameworks_path / Path("Legacy-GVA")
-
-    # Apple Extensions
-    # El Capitan Extensions
-    @property
-    def audio_path(self):
-        return self.payload_apple_kexts_path / Path("Audio")
-
-    # High Sierra Extensions
-    @property
-    def audio_v2_path(self):
-        return self.payload_apple_kexts_path / Path("Audio-v2")
-
-    # GPU Kexts and Bundles
-
-    @property
-    def legacy_graphics(self):
-        return self.payload_apple_kexts_path / Path("Graphics-Acceleration")
-
-    @property
-    def legacy_nvidia_path(self):
-        return self.legacy_graphics / Path("Nvidia-Tesla")
-
-    @property
-    def legacy_nvidia_kepler_path(self):
-        return self.legacy_graphics / Path("Nvidia-Kepler")
-
-    @property
-    def legacy_amd_path(self):
-        return self.legacy_graphics / Path("AMD-TeraScale")
-
-    @property
-    def legacy_amd_path_ts2(self):
-        return self.legacy_graphics / Path("AMD-TeraScale-2")
-
-    @property
-    def legacy_intel_gen1_path(self):
-        return self.legacy_graphics / Path("Intel-Gen5-Ironlake")
-
-    @property
-    def legacy_intel_gen2_path(self):
-        return self.legacy_graphics / Path("Intel-Gen6-SandyBridge")
-
-    @property
-    def legacy_intel_gen3_path(self):
-        return self.legacy_graphics / Path("Intel-Gen7-IvyBridge")
-
-    @property
-    def legacy_general_path(self):
-        return self.legacy_graphics / Path("General-Patches")
-
-    @property
-    def legacy_brightness(self):
-        return self.payload_apple_kexts_path / Path("Brightness-Control")
-
-    @property
-    def legacy_mux_path(self):
-        return self.payload_apple_kexts_path / Path("Legacy-Mux")
-
-    @property
-    def legacy_wifi_coreservices(self):
-        return self.payload_apple_coreservices_path / Path("Legacy-Wifi")
-
-    @property
-    def legacy_wifi_libexec(self):
-        return self.payload_apple_libexec_path / Path("Legacy-Wifi")
-    
-    @property
-    def legacy_wifi_support(self):
-        return self.payload_apple_application_support / Path("Legacy-Wifi")
-    
-    @property
-    def legacy_dropbox_support(self):
-        return self.payload_apple_application_support / Path("Dropbox")
 
     sbm_values = [
         "j137ap",  #  iMacPro1,1
@@ -751,15 +593,6 @@ class Constants:
         "j185ap",  #  iMac20,1
         "j185fap",  # iMac20,2
         # "x86legacy",  # non-T2 Macs/VMs, Monterey's boot.efi enforces this on all Macs
-    ]
-
-    sandy_board_id = [
-        "Mac-E43C1C25D4880AD6",  # MacBookPro12,1
-        "Mac-06F11F11946D27C5",  # MacBookPro11,5
-        "Mac-9F18E312C5C2BF0B",  # MacBookAir7,1
-        "Mac-937CB26E2E02BB01",  # MacBookAir7,2
-        "Mac-35C5E08120C7EEAF",  # Macmini7,1
-        "Mac-7BA5B2D9E42DDD94",  # iMacPro1,1
     ]
 
     sandy_board_id_stock = [

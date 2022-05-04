@@ -6,7 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install
+from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers
 from data import model_array
 
 class OpenCoreLegacyPatcher:
@@ -79,7 +79,7 @@ class OpenCoreLegacyPatcher:
             else:
                 in_between = ["This model is supported"]
 
-            menu = utilities.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
+            menu = tui_helpers.TUIMenu(title, "Please select an option: ", in_between=in_between, auto_number=True, top_level=True)
 
             options = (
                 [["Build OpenCore", build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore]]

@@ -4,7 +4,7 @@
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 from resources import constants, device_probe, utilities
-from data import model_array, os_data, sip_data
+from data import model_array, os_data, sip_data, sys_patch_dict
 
 class detect_root_patch:
     def __init__(self, model, versions):
@@ -13,7 +13,7 @@ class detect_root_patch:
         self.computer = self.constants.computer
 
         # GPU Patch Detection
-        self.nvidia_legacy= False
+        self.nvidia_tesla= False
         self.kepler_gpu= False
         self.amd_ts1= False
         self.amd_ts2= False
@@ -30,7 +30,6 @@ class detect_root_patch:
 
         # Patch Requirements
         self.amfi_must_disable= False
-        self.check_board_id= False
         self.supports_metal= False
 
         # Validation Checks
@@ -39,7 +38,6 @@ class detect_root_patch:
         self.amfi_enabled = False
         self.fv_enabled = False
         self.dosdude_patched = False
-        self.bad_board_id = False
 
     
     def detect_gpus(self):
@@ -50,7 +48,7 @@ class detect_root_patch:
                 print(f"- Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
                 if gpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi]:
                     if self.constants.detected_os > non_metal_os:
-                        self.nvidia_legacy = True
+                        self.nvidia_tesla = True
                         self.amfi_must_disable = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                 elif gpu.arch == device_probe.NVIDIA.Archs.Kepler:
@@ -80,7 +78,6 @@ class detect_root_patch:
                     if self.constants.detected_os > non_metal_os:
                         self.sandy_gpu = True
                         self.amfi_must_disable = True
-                        self.check_board_id = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
                     if self.constants.detected_os > os_data.os_data.big_sur:
@@ -89,7 +86,7 @@ class detect_root_patch:
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
             # Main concerns are for iMac12,x with Sandy iGPU and Kepler dGPU
-            self.nvidia_legacy = False
+            self.nvidia_tesla = False
             self.amd_ts1 = False
             self.amd_ts2 = False
             self.iron_gpu = False
@@ -156,7 +153,7 @@ class detect_root_patch:
                     self.legacy_gmux = True
         
         self.root_patch_dict = {
-            "Graphics: Nvidia Tesla": self.nvidia_legacy,
+            "Graphics: Nvidia Tesla": self.nvidia_tesla,
             "Graphics: Nvidia Kepler": self.kepler_gpu,
             "Graphics: AMD TeraScale 1": self.amd_ts1,
             "Graphics: AMD TeraScale 2": self.amd_ts2,
@@ -170,28 +167,116 @@ class detect_root_patch:
             "Miscellaneous: Legacy GMUX": self.legacy_gmux,
             "Miscellaneous: Legacy Keyboard Backlight": self.legacy_keyboard_backlight,
             "Settings: Requires AMFI exemption": self.amfi_must_disable,
-            "Settings: Requires Board ID validation": self.check_board_id,
             "Validation: Patching Possible": self.verify_patch_allowed(),
             "Validation: SIP is enabled": self.sip_enabled,
             "Validation: SBM is enabled": self.sbm_enabled,
             "Validation: AMFI is enabled": self.amfi_enabled if self.amfi_must_disable else False,
             "Validation: FileVault is enabled": self.fv_enabled,
             "Validation: System is dosdude1 patched": self.dosdude_patched,
-            f"Validation: Board ID is unsupported \n({self.computer.reported_board_id})": self.bad_board_id,
         }
         
         return self.root_patch_dict
     
-    def verify_patch_allowed(self):
+    def verify_patch_allowed(self, print_errors=False):
         sip = sip_data.system_integrity_protection.root_patch_sip_big_sur if self.constants.detected_os > os_data.os_data.catalina else sip_data.system_integrity_protection.root_patch_sip_mojave
         self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
+        if sip == sip_data.system_integrity_protection.root_patch_sip_mojave:
+            sip_value = "For Hackintoshes, please set csr-active-config to '03060000' (0x603)\nFor non-OpenCore Macs, please run 'csrutil disable' in RecoveryOS"
+        else:
+            sip_value = (
+                "For Hackintoshes, please set csr-active-config to '02080000' (0x802)\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
+            )
+        if print_errors is True:
+            if self.sip_enabled is True:
+                print("\nCannot patch! Please disable System Integrity Protection (SIP).")
+                print("Disable SIP in Patcher Settings and Rebuild OpenCore\n")
+                print("Ensure the following bits are set for csr-active-config:")
+                print("\n".join(sip))
+                print(sip_value)
 
-        if self.check_board_id is True and (self.computer.reported_board_id not in self.constants.sandy_board_id and self.computer.reported_board_id not in self.constants.sandy_board_id_stock):
-            self.bad_board_id = True
+            if self.sbm_enabled is True:
+                print("\nCannot patch! Please disable Apple Secure Boot.")
+                print("Disable SecureBootModel in Patcher Settings and Rebuild OpenCore")
+                print("For Hackintoshes, set SecureBootModel to Disabled")
 
+            if self.fv_enabled is True:
+                print("\nCannot patch! Please disable FileVault.")
+                print("For OCLP Macs, please rebuild your config with 0.2.5 or newer")
+                print("For others, Go to System Preferences -> Security and disable FileVault")
+
+            if self.amfi_enabled is True and self.amfi_must_disable is True:
+                print("\nCannot patch! Please disable AMFI.")
+                print("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
+            
+            if self.dosdude_patched is True:
+                print("\nCannot patch! Detected machine has already been patched by another patcher")
+                print("Please ensure your install is either clean or patched with OpenCore Legacy Patcher")
+            
         if any(
-            [self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched, self.amfi_enabled if self.amfi_must_disable else False, self.bad_board_id if self.check_board_id else False]
+            [self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched, self.amfi_enabled if self.amfi_must_disable else False]
         ):
             return False
         else:
             return True
+    
+    def generate_patchset(self, hardware_details):
+        all_hardware_patchset = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os)
+        required_patches = {}
+        utilities.cls()
+        print("- The following patches will be applied:")
+        if hardware_details["Graphics: Intel Ironlake"] is True:
+            print("  - Graphics: Intel Ironlake")
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"Intel Ironlake": all_hardware_patchset["Graphics"]["Intel Ironlake"]})
+        if hardware_details["Graphics: Intel Sandy Bridge"] is True:
+            print("  - Graphics: Intel Sandy Bridge")
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"Legacy GVA": all_hardware_patchset["Graphics"]["Legacy GVA"]})
+            required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
+        if hardware_details["Graphics: Intel Ivy Bridge"] is True:
+            print("  - Graphics: Intel Ivy Bridge")
+            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
+        if hardware_details["Graphics: Nvidia Tesla"] is True:
+            print("  - Graphics: Nvidia Tesla")
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"Nvidia Tesla": all_hardware_patchset["Graphics"]["Nvidia Tesla"]})
+            required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
+        if hardware_details["Graphics: Nvidia Kepler"] is True:
+            print("  - Graphics: Nvidia Kepler")
+            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
+        if hardware_details["Graphics: AMD TeraScale 1"] is True:
+            print("  - Graphics: AMD TeraScale 1")
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
+            required_patches.update({"AMD TeraScale 1": all_hardware_patchset["Graphics"]["AMD TeraScale 1"]})
+        if hardware_details["Graphics: AMD TeraScale 2"] is True:
+            print("  - Graphics: AMD TeraScale 2")
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
+            required_patches.update({"AMD TeraScale 2": all_hardware_patchset["Graphics"]["AMD TeraScale 2"]})
+        if hardware_details["Brightness: Legacy Backlight Control"] is True:
+            print("  - Brightness: Legacy Brightness")
+            required_patches.update({"Legacy Brightness": all_hardware_patchset["Brightness"]["Legacy Brightness"]})
+        if hardware_details["Audio: Legacy Realtek"] is True:
+            if self.model in ["iMac7,1", "iMac8,1"]:
+                print("  - Audio: Legacy Realtek Audio")
+                required_patches.update({"Legacy Realtek": all_hardware_patchset["Audio"]["Legacy Realtek"]})
+            else:
+                print("  - Audio: Legacy non-GOP Audio")
+                required_patches.update({"Legacy Non-GOP": all_hardware_patchset["Audio"]["Legacy Non-GOP"]})
+        if hardware_details["Networking: Legacy Wireless"] is True:
+            print("  - Networking: Legacy WiFi")
+            required_patches.update({"Legacy WiFi": all_hardware_patchset["Networking"]["Legacy WiFi"]})
+        if hardware_details["Miscellaneous: Legacy GMUX"] is True:
+            print("  - Miscellaneous: Legacy GMUX")
+            required_patches.update({"Legacy GMUX": all_hardware_patchset["Miscellaneous"]["Legacy GMUX"]})
+        if hardware_details["Miscellaneous: Legacy Keyboard Backlight"]:
+            print("  - Miscellaneous: Legacy Keyboard Backlight")
+            required_patches.update({"Legacy Keyboard Backlight": all_hardware_patchset["Miscellaneous"]["Legacy Keyboard Backlight"]})
+
+        if not required_patches:
+            print("  - No patch sets found for booted model")
+        
+        return required_patches
