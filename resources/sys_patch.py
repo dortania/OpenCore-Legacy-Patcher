@@ -274,10 +274,12 @@ class PatchSysVolume:
         if self.amd_ts1 is True:
             print("  - Adding AMD TeraScale 1 Graphics Patchset")
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
             required_patches.update({"AMD TeraScale 1": all_hardware_patchset["Graphics"]["AMD TeraScale 1"]})
         if self.amd_ts2 is True:
             print("  - Adding AMD TeraScale 2 Graphics Patchset")
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
             required_patches.update({"AMD TeraScale 2": all_hardware_patchset["Graphics"]["AMD TeraScale 2"]})
         if self.brightness_legacy is True:
             print("  - Adding Legacy Brightness Patchset")
@@ -313,21 +315,18 @@ class PatchSysVolume:
                         destination_folder_path = str(self.mount_location) + remove_patch_directory
                         self.remove_file(destination_folder_path, remove_patch_file)
             
-            if "Install" in required_patches[patch]:
-                for install_patch_directory in required_patches[patch]["Install"]:
-                    print(f"- Handling Installs in: {install_patch_directory}")
-                    for install_file in required_patches[patch]["Install"][install_patch_directory]:
-                        source_folder_path = source_files_path + "/" + required_patches[patch]['Install'][install_patch_directory][install_file] + install_patch_directory
-                        destination_folder_path = str(self.mount_location) + install_patch_directory
-                        self.install_new_file(source_folder_path, destination_folder_path, install_file)
-            
-            if "Install Non-Root" in required_patches[patch]:
-                for install_patch_directory in required_patches[patch]["Install Non-Root"]:
-                    print(f"- Handling Non-Root Installs in: {install_patch_directory}")
-                    for install_file in required_patches[patch]["Install Non-Root"][install_patch_directory]:
-                        source_folder_path = source_files_path + "/" + required_patches[patch]['Install Non-Root'][install_patch_directory][install_file] + install_patch_directory
-                        destination_folder_path = str(self.mount_location_data) + install_patch_directory
-                        self.install_new_file(source_folder_path, destination_folder_path, install_file)
+
+            for method_install in ["Install", "Install Non-Root"]:
+                if method_install in required_patches[patch]:
+                    for install_patch_directory in required_patches[patch][method_install]:
+                        print(f"- Handling Installs in: {install_patch_directory}")
+                        for install_file in required_patches[patch][method_install][install_patch_directory]:
+                            source_folder_path = source_files_path + "/" + required_patches[patch][method_install][install_patch_directory][install_file] + install_patch_directory
+                            if method_install == "Install":
+                                destination_folder_path = str(self.mount_location) + install_patch_directory
+                            else:
+                                destination_folder_path = str(self.mount_location_data) + install_patch_directory
+                            self.install_new_file(source_folder_path, destination_folder_path, install_file)
 
             if "Processes" in required_patches[patch]:
                 for process in required_patches[patch]["Processes"]:
@@ -370,22 +369,15 @@ class PatchSysVolume:
                         raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
         
         # Check all the files are present
-        for patch in required_patches:            
-            if "Install" in required_patches[patch]:
-                for install_patch_directory in required_patches[patch]["Install"]:
-                    for install_file in required_patches[patch]["Install"][install_patch_directory]:
-                        source_file = source_files_path + "/" + required_patches[patch]['Install'][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
-                        if not Path(source_file).exists:
-                            raise Exception(f"Failed to find {source_file}")
-            
-            if "Install Non-Root" in required_patches[patch]:
-                for install_patch_directory in required_patches[patch]["Install Non-Root"]:
-                    print(f"- Handling Non-Root Installs in: {install_patch_directory}")
-                    for install_file in required_patches[patch]["Install Non-Root"][install_patch_directory]:
-                        source_file = source_files_path + "/" + required_patches[patch]['Install Non-Root'][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
-                        if not Path(source_file).exists:
-                            raise Exception(f"Failed to find {source_file}")
-                        
+        for patch in required_patches:
+            for method_type in ["Install", "Install Non-Root"]:
+                if method_type in required_patches[patch]:
+                    for install_patch_directory in required_patches[patch][method_type]:
+                        for install_file in required_patches[patch][method_type][install_patch_directory]:
+                            source_file = source_files_path + "/" + required_patches[patch][method_type][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
+                            if not Path(source_file).exists:
+                                raise Exception(f"Failed to find {source_file}")
+
         print("- Finished Preflight, starting patching")
 
     def install_new_file(self, source_folder, destination_folder, file_name):

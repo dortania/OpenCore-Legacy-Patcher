@@ -9,7 +9,7 @@
 #  - Processes:        Additional processes to run - Array of strings
 
 # File Storage is based off the origin, ie. '10.13.6/System/Library/Extensions/IOSurface.kext'
-# Stubbed binaries are OS specific, this use the 'os' variable to denounce which folder to use
+# Stubbed binaries are OS specific, this use the 'os_major' variable to denounce which folder to use
 
 from data import os_data
 
@@ -140,23 +140,14 @@ def SystemPatchDictionary(os_major):
                     },
                 },
             },
-            "AMD TeraScale 1": {
+            "AMD Non-Metal Common": {
                 "Install": {
                     "/System/Library/Extensions": {
-                        "AMD2400Controller.kext":        "10.13.6",
-                        "AMD2600Controller.kext":        "10.13.6",
-                        "AMD3800Controller.kext":        "10.13.6",
-                        "AMD4600Controller.kext":        "10.13.6",
-                        "AMD4800Controller.kext":        "10.13.6",
                         "AMDFramebuffer.kext":           "10.13.6",
                         "AMDLegacyFramebuffer.kext":     "10.13.6",
                         "AMDLegacySupport.kext":         "10.13.6",
                         "AMDShared.bundle":              "10.13.6",
                         "AMDSupport.kext":               "10.13.6",
-                        "ATIRadeonX2000.kext":           "10.13.6",
-                        "ATIRadeonX2000GA.plugin":       "10.13.6",
-                        "ATIRadeonX2000GLDriver.bundle": "10.13.6",
-                        "ATIRadeonX2000VADriver.bundle": "10.13.6",
                     },
                 },
                 "Remove": {
@@ -169,20 +160,31 @@ def SystemPatchDictionary(os_major):
                     ],
                 },
             },
+
+            "AMD TeraScale 1": {
+                "Install": {
+                    "/System/Library/Extensions": {
+                        "AMD2400Controller.kext":        "10.13.6",
+                        "AMD2600Controller.kext":        "10.13.6",
+                        "AMD3800Controller.kext":        "10.13.6",
+                        "AMD4600Controller.kext":        "10.13.6",
+                        "AMD4800Controller.kext":        "10.13.6",
+                        "ATIRadeonX2000.kext":           "10.13.6",
+                        "ATIRadeonX2000GA.plugin":       "10.13.6",
+                        "ATIRadeonX2000GLDriver.bundle": "10.13.6",
+                        "ATIRadeonX2000VADriver.bundle": "10.13.6",
+                    },
+                },
+            },
             "AMD TeraScale 2": {
                 "Install": {
                     "/System/Library/Extensions": {
                         "AMD5000Controller.kext":        "10.13.6",
                         "AMD6000Controller.kext":        "10.13.6",
-                        "AMDFramebuffer.kext":           "10.13.6",
-                        "AMDLegacyFramebuffer.kext":     "10.13.6",
-                        "AMDLegacySupport.kext":         "10.13.6",
                         "AMDRadeonVADriver.bundle":      "10.13.6",
                         "AMDRadeonVADriver2.bundle":     "10.13.6",
                         "AMDRadeonX3000.kext":           "10.13.6",
                         "AMDRadeonX3000GLDriver.bundle": "10.13.6",
-                        "AMDShared.bundle":              "10.13.6",
-                        "AMDSupport.kext":               "10.13.6",
                         "IOAcceleratorFamily2.kext":     "10.13.6",
                         "IOSurface.kext":                "10.14.6",
                     },
@@ -197,12 +199,7 @@ def SystemPatchDictionary(os_major):
                 },
                 "Remove": {
                     "/System/Library/Extensions": {
-                        "AppleCameraInterface.kext", # Specific to IOAccelerator downgrade
-                        "AMD7000Controller.kext",
-                        "AMD8000Controller.kext",
-                        "AMD9000Controller.kext",
-                        "AMD9500Controller.kext",
-                        "AMD10000Controller.kext",
+                        "AppleCameraInterface.kext",
                     },
                 },
             },
