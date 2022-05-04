@@ -13,7 +13,7 @@ class detect_root_patch:
         self.computer = self.constants.computer
 
         # GPU Patch Detection
-        self.nvidia_legacy= False
+        self.nvidia_tesla= False
         self.kepler_gpu= False
         self.amd_ts1= False
         self.amd_ts2= False
@@ -48,7 +48,7 @@ class detect_root_patch:
                 print(f"- Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
                 if gpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi]:
                     if self.constants.detected_os > non_metal_os:
-                        self.nvidia_legacy = True
+                        self.nvidia_tesla = True
                         self.amfi_must_disable = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                 elif gpu.arch == device_probe.NVIDIA.Archs.Kepler:
@@ -86,7 +86,7 @@ class detect_root_patch:
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
             # Main concerns are for iMac12,x with Sandy iGPU and Kepler dGPU
-            self.nvidia_legacy = False
+            self.nvidia_tesla = False
             self.amd_ts1 = False
             self.amd_ts2 = False
             self.iron_gpu = False
@@ -153,7 +153,7 @@ class detect_root_patch:
                     self.legacy_gmux = True
         
         self.root_patch_dict = {
-            "Graphics: Nvidia Tesla": self.nvidia_legacy,
+            "Graphics: Nvidia Tesla": self.nvidia_tesla,
             "Graphics: Nvidia Kepler": self.kepler_gpu,
             "Graphics: AMD TeraScale 1": self.amd_ts1,
             "Graphics: AMD TeraScale 2": self.amd_ts2,
