@@ -166,13 +166,12 @@ class BuildOpenCore:
             # Required for Lilu in 11.0+
             self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
         
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.kaby_lake.value:
-            if self.constants.fu_status is True:
-                # Enable FeatureUnlock.kext
-                self.enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
-                if self.constants.fu_arguments is not None:
-                    print(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
-                    self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
+        if self.constants.fu_status is True:
+            # Enable FeatureUnlock.kext
+            self.enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
+            if self.constants.fu_arguments is not None:
+                print(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
         
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value or self.constants.disable_xcpm is True:
             # With macOS 12.3 Beta 1, Apple dropped the 'plugin-type' check within X86PlatformPlugin
