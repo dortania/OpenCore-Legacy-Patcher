@@ -1,6 +1,10 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.4.5
+- Fix AutoPatcher.pkg download on releases
+  - Fix backported to 0.4.4 release binaries
+- Add Macmini8,1 FeatureUnlock support
+  - Drops CPU check, supports all machines
 - Refactor Root Patching System
 
 ## 0.4.4
