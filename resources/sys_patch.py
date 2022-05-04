@@ -10,7 +10,7 @@ import subprocess
 from pathlib import Path
 
 from resources import constants, generate_smbios, utilities, sys_patch_download, sys_patch_detect
-from data import os_data, sys_patch_dict
+from data import os_data
 
 
 class PatchSysVolume:
@@ -47,12 +47,6 @@ class PatchSysVolume:
     def find_mount_root_vol(self, patch):
         self.root_mount_path = utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
-            if (
-                self.constants.detected_os == os_data.os_data.catalina or 
-                (self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is False)
-            ):
-                print("- Mounting Dedicated Root Volume as writable")
-                utilities.elevated(["mount", "-uw", f"{self.mount_location}/"], stdout=subprocess.PIPE).stdout.decode().strip().encode()
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
