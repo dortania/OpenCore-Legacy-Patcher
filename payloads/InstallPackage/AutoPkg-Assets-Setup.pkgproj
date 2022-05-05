@@ -520,6 +520,8 @@
 				</dict>
 				<key>PREINSTALL_PATH</key>
 				<dict>
+					<key>PATH</key>
+					<string>/Users/mykolagrymalyuk/Developer/OpenCore-Legacy-Patcher/payloads/InstallPackage/preinstall.sh</string>
 					<key>PATH_TYPE</key>
 					<integer>0</integer>
 				</dict>

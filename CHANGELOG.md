@@ -9,6 +9,8 @@
 - Add `OpenCore-Legacy-Patcher.plist` for applied patch info
   - Located under `/System/Library/CoreServices`
   - Lists patch sets applied including files installed and removed
+- Add `preinstall` script to AutoPatcher
+  - Removes old patcher files before installing new
 
 ## 0.4.4
 - Lower SIP requirement for Root Patching
