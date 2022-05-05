@@ -804,7 +804,7 @@ class wx_python_gui:
                         i = i + self.patch_label.GetSize().height + 3
         else:
             # Prompt user with no patches found
-            self.patch_label = wx.StaticText(self.frame, label="No patches found")
+            self.patch_label = wx.StaticText(self.frame, label="No patches needed")
             self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
             self.patch_label.SetPosition(
                 wx.Point(

@@ -44,7 +44,8 @@ class OpenCoreLegacyPatcher:
         if utilities.check_cli_args() is not None:
             print("- Detected arguments, switching to CLI mode")
             self.constants.gui_mode = True  # Assumes no user interaction is required
-            if "--auto_patch" not in sys.argv:  
+            ignore_args = ["--auto_patch", "--gui_patch", "--gui_unpatch"]
+            if not any(x in sys.argv for x in ignore_args):
                 self.constants.current_path = Path.cwd()
                 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
                     print("- Rerouting payloads location")

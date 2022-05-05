@@ -25,6 +25,9 @@
 import shutil
 import subprocess
 from pathlib import Path
+from datetime import datetime
+import plistlib
+import os
 
 from resources import constants, generate_smbios, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto
 from data import os_data
@@ -167,6 +170,27 @@ class PatchSysVolume:
             print("- Creating SkylightPlugins folder")
             utilities.process_status(utilities.elevated(["mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
+    def write_patchset(self, patchset):
+        source_path = f"{self.constants.payload_path}"
+        destination_path = f"{self.mount_location}/System/Library/CoreServices"
+        file_name = "OpenCore-Legacy-Patcher.plist"
+        source_path_file = f"{source_path}/{file_name}"
+        destination_path_file = f"{destination_path}/{file_name}"
+
+        data = {
+            "OpenCore Legacy Patcher": f"v{self.constants.patcher_version}",
+            "PatcherSupportPkg": f"v{self.constants.patcher_support_pkg_version}",
+            "Time Patched": f"{datetime.now().strftime('%B %d, %Y @ %H:%M:%S')}",
+        }
+        print("- Writing patchset information to Root Volume")
+        data.update(patchset)
+        if Path(source_path_file).exists():
+            os.remove(source_path_file)
+        # Need to write to a safe location
+        plistlib.dump(data, Path(source_path_file).open("wb"), sort_keys=False)
+        if Path(destination_path_file).exists():
+            utilities.process_status(utilities.elevated(["rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        utilities.process_status(utilities.elevated(["cp", source_path_file, destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
  
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")
@@ -214,6 +238,7 @@ class PatchSysVolume:
                         utilities.process_status(utilities.elevated(process_array, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
                     else:
                         utilities.process_status(subprocess.run(process_array, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        self.write_patchset(required_patches)
 
     def preflight_checks(self, required_patches, source_files_path):
         print("- Running Preflight Checks before patching")

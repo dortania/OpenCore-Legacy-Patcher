@@ -6,6 +6,9 @@
 - Add Macmini8,1 FeatureUnlock support
   - Drops CPU check, supports all machines
 - Refactor Root Patching System
+- Add `OpenCore-Legacy-Patcher.plist` for applied patch info
+  - Located under `/System/Library/CoreServices`
+  - Lists patch sets applied including files installed and removed
 
 ## 0.4.4
 - Lower SIP requirement for Root Patching
