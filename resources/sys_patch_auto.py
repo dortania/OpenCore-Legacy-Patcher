@@ -139,8 +139,8 @@ class AutomaticSysPatch:
 
                     disk_info = plistlib.loads(subprocess.run(["diskutil", "info", "-plist", root_disk], stdout=subprocess.PIPE).stdout)
                     try:
-                        if disk_info["Removable"] is True:
-                            print("- Boot Disk is removable, prompting user to install to internal")
+                        if disk_info["Ejectable"] is True:
+                            print("- Boot Disk is ejectable, prompting user to install to internal")
 
                             args = [
                                 "osascript",
