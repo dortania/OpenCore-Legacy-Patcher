@@ -9,7 +9,7 @@
 #  - Processes:        Additional processes to run - Array of strings
 
 # File Storage is based off the origin, ie. '10.13.6/System/Library/Extensions/IOSurface.kext'
-# Stubbed binaries are OS specific, this use the 'os_major' variable to denounce which folder to use
+# Stubbed binaries are OS specific, they use the 'os_major' variable to denounce which folder to use
 
 from data import os_data
 
@@ -198,9 +198,9 @@ def SystemPatchDictionary(os_major):
                     },
                 },
                 "Remove": {
-                    "/System/Library/Extensions": {
-                        "AppleCameraInterface.kext",
-                    },
+                    "/System/Library/Extensions": [
+                        "AppleCameraInterface.kext"
+                    ],
                 },
             },
             "Intel Ironlake": {
