@@ -261,7 +261,7 @@ class PatchSysVolume:
                     raise Exception("Host's Board ID is not the same length as the kext's Board ID, cannot patch!!!")
                 else:
                     path = source_files_path + "10.13.6/System/Library/Extensions/AppleIntelSNBGraphicsFB.kext/Contents/MacOS/AppleIntelSNBGraphicsFB"
-                    if Path(path).exists:
+                    if Path(path).exists():
                         with open(path, 'rb') as f:
                             data = f.read()
                             data = data.replace(board_to_patch_hex, reported_board_hex)
@@ -277,7 +277,7 @@ class PatchSysVolume:
                     for install_patch_directory in required_patches[patch][method_type]:
                         for install_file in required_patches[patch][method_type][install_patch_directory]:
                             source_file = source_files_path + "/" + required_patches[patch][method_type][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
-                            if not Path(source_file).exists:
+                            if not Path(source_file).exists():
                                 raise Exception(f"Failed to find {source_file}")
 
         print("- Finished Preflight, starting patching")
