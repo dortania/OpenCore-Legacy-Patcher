@@ -35,3 +35,13 @@ class os_conversion:
             return str((kernel - 9))
         else:
             return str((f"10.{kernel - 4}"))
+    
+    def is_os_newer(source_major, source_minor, target_major, target_minor):
+        # Check if OS version 1 is newer than OS version 2
+        if source_major < target_major:
+            return True
+        elif source_major == target_major:
+            if source_minor < target_minor:
+                return True
+            else:
+                return False

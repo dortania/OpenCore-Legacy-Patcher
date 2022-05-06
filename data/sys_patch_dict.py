@@ -13,10 +13,14 @@
 
 from data import os_data
 
-def SystemPatchDictionary(os_major):
+def SystemPatchDictionary(os_major, os_minor):
     sys_patch_dict = {
         "Graphics": {
             "Non-Metal Common": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.big_sur,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "IOSurface.kext": "10.15.7",
@@ -68,6 +72,10 @@ def SystemPatchDictionary(os_major):
                 },
             },
             "Metal Common": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.monterey,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Frameworks": {
                         "OpenCL.framework": "11.6",
@@ -81,6 +89,10 @@ def SystemPatchDictionary(os_major):
             },
 
             "Legacy GVA": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.big_sur,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/PrivateFrameworks": {
                         "AppleGVA.framework":     "10.13.6",
@@ -90,6 +102,10 @@ def SystemPatchDictionary(os_major):
             },
 
             "Nvidia Tesla": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.mojave,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "GeForceGA.bundle":            "10.13.6",
@@ -98,11 +114,17 @@ def SystemPatchDictionary(os_major):
                         "GeForceTeslaVADriver.bundle": "10.13.6",
                         "NVDANV50HalTesla.kext":       "10.13.6",
                         "NVDAResmanTesla.kext":        "10.13.6",
-                        **({ "NVDAStartup.kext":       "12.0 Beta 6" } if os_major >= os_data.os_data.monterey else {})
+                        # Apple dropped NVDAStartup in 12.0 Beta 7 (XNU 21.1)
+                        **({ "NVDAStartup.kext":       "12.0 Beta 6" } if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 1, os_major, os_minor) else {})
                     },
                 },
             },
             "Nvidia Kepler": {
+                "OS Support": {
+                    # 12.0 beta 7 (XNU 21.1)
+                    "OS Major": os_data.os_data.monterey,
+                    "OS Minor": 1
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "GeForceAIRPlugin.bundle": "11.0 Beta 3",
@@ -118,6 +140,10 @@ def SystemPatchDictionary(os_major):
                 },
             },
             "Nvidia Web Drivers": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.mojave,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "NVDAStartupWeb.kext":            "10.13.6",
@@ -141,6 +167,10 @@ def SystemPatchDictionary(os_major):
                 },
             },
             "AMD Non-Metal Common": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.mojave,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "AMDFramebuffer.kext":           "10.13.6",
@@ -162,6 +192,10 @@ def SystemPatchDictionary(os_major):
             },
 
             "AMD TeraScale 1": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.mojave,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "AMD2400Controller.kext":        "10.13.6",
@@ -175,8 +209,25 @@ def SystemPatchDictionary(os_major):
                         "ATIRadeonX2000VADriver.bundle": "10.13.6",
                     },
                 },
+                "Remove": {
+                    "/System/Library/Extensions": [
+                        # Following removals are a work around for 0.4.3 and older root patches
+                        # Previously TS1 and TS2 patch sets were shared, now they're split off
+                        # Due to this, updating to 0.4.4 or newer can break kmutil linking
+                        "AMD5000Controller.kext",
+                        "AMD6000Controller.kext",
+                        "AMDRadeonVADriver.bundle",
+                        "AMDRadeonVADriver2.bundle",
+                        "AMDRadeonX3000.kext",
+                        "AMDRadeonX3000GLDriver.bundle",
+                    ],
+                },
             },
             "AMD TeraScale 2": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.mojave,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "AMD5000Controller.kext":        "10.13.6",
@@ -204,6 +255,10 @@ def SystemPatchDictionary(os_major):
                 },
             },
             "Intel Ironlake": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.mojave,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "AppleIntelHDGraphics.kext":           "10.13.6",
@@ -215,6 +270,10 @@ def SystemPatchDictionary(os_major):
                 },
             },
             "Intel Sandy Bridge": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.mojave,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "AppleIntelHD3000Graphics.kext":           "10.13.6",
@@ -227,6 +286,10 @@ def SystemPatchDictionary(os_major):
                 },
             },
             "Intel Ivy Bridge": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.monterey,
+                    "OS Minor": 0
+                },
                 "Processes": {
                     "defaults write com.apple.coremedia hardwareVideoDecoder -string enable": False,
                 },
@@ -245,6 +308,10 @@ def SystemPatchDictionary(os_major):
         },
         "Audio": {
             "Legacy Realtek": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.sierra,
+                    "OS Minor": 0
+                },
                 # For iMac7,1 and iMac8,1 units with legacy Realtek HD Audio
                 "Install": {
                     "/System/Library/Extensions": {
@@ -264,6 +331,10 @@ def SystemPatchDictionary(os_major):
             },
             # For Mac Pros with non-UGA/GOP GPUs
             "Legacy Non-GOP": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.mojave,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "AppleHDA.kext": "10.13.6",
@@ -273,6 +344,10 @@ def SystemPatchDictionary(os_major):
         },
         "Networking": {
             "Legacy WiFi": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.monterey,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/usr/libexec": {
                         "airportd": "11.5.2",
@@ -291,6 +366,10 @@ def SystemPatchDictionary(os_major):
         },
         "Brightness": {
             "Legacy Brightness": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.high_sierra,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "AppleBacklight.kext":       "10.12.6",
@@ -309,6 +388,10 @@ def SystemPatchDictionary(os_major):
         },
         "Miscellaneous": {
             "Legacy GMUX": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.high_sierra,
+                    "OS Minor": 0
+                },
                 "Install": {
                     "/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns": {
                         "AppleMuxControl.kext": "10.12.6",
@@ -325,6 +408,10 @@ def SystemPatchDictionary(os_major):
                 },
             },
             "Legacy Keyboard Backlight": {
+                "OS Support": {
+                    "OS Major": os_data.os_data.big_sur,
+                    "OS Minor": 0
+                },
                 "Processes": {
                     "defaults write /Library/Preferences/.GlobalPreferences.plist Moraea_BacklightHack -bool true": True,
                 },

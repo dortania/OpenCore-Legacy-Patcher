@@ -49,6 +49,11 @@ class PatchSysVolume:
             hardware_details = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
         self.hardware_details = hardware_details
         self.init_pathing(custom_root_mount_path=None, custom_data_mount_path=None)
+    
+    def __del__(self):
+        # Ensures that each time we're patching, we're using a clean repository
+        if Path(self.constants.payload_local_binaries_root_path).exists():
+            shutil.rmtree(self.constants.payload_local_binaries_root_path)
 
     def init_pathing(self, custom_root_mount_path=None, custom_data_mount_path=None):
         if custom_root_mount_path and custom_data_mount_path:
@@ -63,42 +68,32 @@ class PatchSysVolume:
             self.mount_location_data = ""
         self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
         self.mount_application_support = f"{self.mount_location_data}/Library/Application Support"
+    
 
-    def find_mount_root_vol(self, patch):
+    def mount_root_vol(self):
+        # Returns boolean if Root Volume is available
         self.root_mount_path = utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
             print(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
                 print("- Root Volume is already mounted")
-                if patch is True:
-                    self.patch_root_vol()
-                    return True
-                else:
-                    self.unpatch_root_vol()
-                    return True
+                return True
             else:
-                if self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is True:
+                if self.root_supports_snapshot is True:
                     print("- Mounting APFS Snapshot as writable")
                     result = utilities.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                     if result.returncode == 0:
                         print(f"- Mounted APFS Snapshot as writable at: {self.mount_location}")
-                if Path(self.mount_extensions).exists():
-                    print("- Successfully mounted the Root Volume")
-                    if patch is True:
-                        self.patch_root_vol()
-                        return True
+                        if Path(self.mount_extensions).exists():
+                            print("- Successfully mounted the Root Volume")
+                            return True
+                        else:
+                            print("- Root Volume appears to have unmounted unexpectedly")
                     else:
-                        self.unpatch_root_vol()
-                        return True
-                else:
-                    print("- Failed to mount the Root Volume")
-                    print("- Recommend rebooting the machine and trying to patch again")
-                    if self.constants.gui_mode is False:
-                        input("- Press [ENTER] to exit: ")
-        else:
-            print("- Could not find root volume")
-            if self.constants.gui_mode is False:
-                input("- Press [ENTER] to exit: ")
+                        print("- Unable to mount APFS Snapshot as writable")
+                        print("Reason for mount failure:")
+                        print(result.stdout.decode().strip())
+        return False
 
     def unpatch_root_vol(self):
         if self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is True:
@@ -248,30 +243,18 @@ class PatchSysVolume:
         
         # Make sure SNB kexts are compatible with the host
         if "Intel Sandy Bridge" in required_patches:
-            if self.computer.reported_board_id not in self.constants.sandy_board_id_stock:
-                print(f"- Found unspported Board ID {self.computer.reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching")
-                board_to_patch = generate_smbios.determine_best_board_id_for_sandy(self.computer.reported_board_id, self.computer.gpus)
-                print(f"- Replacing {board_to_patch} with {self.computer.reported_board_id}")
-
-                board_to_patch_hex = bytes.fromhex(board_to_patch.encode('utf-8').hex())
-                reported_board_hex = bytes.fromhex(self.computer.reported_board_id.encode('utf-8').hex())
-
-                if len(board_to_patch_hex) != len(reported_board_hex):
-                    print(f"- Error: Board ID {self.computer.reported_board_id} is not the same length as {board_to_patch}")
-                    raise Exception("Host's Board ID is not the same length as the kext's Board ID, cannot patch!!!")
-                else:
-                    path = source_files_path + "10.13.6/System/Library/Extensions/AppleIntelSNBGraphicsFB.kext/Contents/MacOS/AppleIntelSNBGraphicsFB"
-                    if Path(path).exists():
-                        with open(path, 'rb') as f:
-                            data = f.read()
-                            data = data.replace(board_to_patch_hex, reported_board_hex)
-                            with open(path, 'wb') as f:
-                                f.write(data)
-                    else:
-                        raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
+            self.snb_board_id_patch(source_files_path)
         
-        # Check all the files are present
         for patch in required_patches:
+            # Check if the patch sets support the current OS
+            if required_patches[patch]["OS Support"]["OS Major"] > self.constants.detected_os:
+                print(f"Patch set OS Major check: {required_patches[patch]['OS Support']['OS Major']} < {self.constants.detected_os}")
+                raise Exception("This patchset is not supported on this version of macOS!")
+            elif required_patches[patch]["OS Support"]["OS Minor"] > self.constants.detected_os_minor:
+                print(f"Patch set OS Minor check: {required_patches[patch]['OS Support']['OS Minor']} < {self.constants.detected_os_minor}")
+                raise Exception("This patchset is not supported on this version of macOS!")
+            
+            # Check if all files are present
             for method_type in ["Install", "Install Non-Root"]:
                 if method_type in required_patches[patch]:
                     for install_patch_directory in required_patches[patch][method_type]:
@@ -329,6 +312,35 @@ class PatchSysVolume:
             chown_args.pop(1)
         utilities.process_status(utilities.elevated(chmod_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         utilities.process_status(utilities.elevated(chown_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+
+    def snb_board_id_patch(self, source_files_path):
+        # AppleIntelSNBGraphicsFB hard codes the supported Board IDs for Sandy Bridge iGPUs
+        # Because of this, the kext errors out on unsupported systems
+        # This function simply patches in a supported Board ID, using 'determine_best_board_id_for_sandy()'
+        # to supplement the ideal Board ID
+        if self.computer.reported_board_id not in self.constants.sandy_board_id_stock:
+            print(f"- Found unspported Board ID {self.computer.reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching")
+            board_to_patch = generate_smbios.determine_best_board_id_for_sandy(self.computer.reported_board_id, self.computer.gpus)
+            print(f"- Replacing {board_to_patch} with {self.computer.reported_board_id}")
+
+            board_to_patch_hex = bytes.fromhex(board_to_patch.encode('utf-8').hex())
+            reported_board_hex = bytes.fromhex(self.computer.reported_board_id.encode('utf-8').hex())
+
+            if len(board_to_patch_hex) != len(reported_board_hex):
+                print(f"- Error: Board ID {self.computer.reported_board_id} is not the same length as {board_to_patch}")
+                raise Exception("Host's Board ID is not the same length as the kext's Board ID, cannot patch!!!")
+            else:
+                path = source_files_path + "/10.13.6/System/Library/Extensions/AppleIntelSNBGraphicsFB.kext/Contents/MacOS/AppleIntelSNBGraphicsFB"
+                if Path(path).exists():
+                    with open(path, 'rb') as f:
+                        data = f.read()
+                        data = data.replace(board_to_patch_hex, reported_board_hex)
+                        with open(path, 'wb') as f:
+                            f.write(data)
+                else:
+                    print(f"- Error: Could not find {path}")
+                    raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
 
 
     def check_files(self):
@@ -389,7 +401,14 @@ class PatchSysVolume:
             if sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is True:
                 print("- Patcher is capable of patching")
                 if self.check_files():
-                    self.find_mount_root_vol(True)
+                    if self.mount_root_vol() is True:
+                        self.patch_root_vol()
+                        if self.constants.gui_mode is False:
+                            input("\nPress [ENTER] to return to the main menu")
+                    else:
+                        print("- Recommend rebooting the machine and trying to patch again")
+                        if self.constants.gui_mode is False:
+                            input("- Press [ENTER] to exit: ")
             elif self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu: ")
 
@@ -399,8 +418,13 @@ class PatchSysVolume:
     def start_unpatch(self):
         print("- Starting Unpatch Process")
         if sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=True) is True:
-            self.find_mount_root_vol(False)
-            if self.constants.gui_mode is False:
-                input("\nPress [ENTER] to return to the main menu")
+            if self.mount_root_vol() is True:
+                self.unpatch_root_vol()
+                if self.constants.gui_mode is False:
+                    input("\nPress [ENTER] to return to the main menu")
+            else:
+                print("- Recommend rebooting the machine and trying to patch again")
+                if self.constants.gui_mode is False:
+                    input("- Press [ENTER] to exit: ")
         elif self.constants.gui_mode is False:
             input("\nPress [ENTER] to return to the main menu")

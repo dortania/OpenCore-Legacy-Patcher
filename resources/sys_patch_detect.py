@@ -220,7 +220,7 @@ class detect_root_patch:
             return True
     
     def generate_patchset(self, hardware_details):
-        all_hardware_patchset = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os)
+        all_hardware_patchset = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor)
         required_patches = {}
         utilities.cls()
         print("- The following patches will be applied:")

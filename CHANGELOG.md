@@ -6,6 +6,11 @@
 - Add Macmini8,1 FeatureUnlock support
   - Drops CPU check, supports all machines
 - Refactor Root Patching System
+  - Adds preflight checks validating patch set data and presence
+  - Adds dynamic Sandy Bridge Board ID patching
+    - Allows for unrestricted SMBIOS usage with `AppleIntelSNBGraphicsFB`
+  - Adds OpenCL downgrade for TeraScale 2
+    - Resolves VNC support (credit IronApple#2711)
 - Add `OpenCore-Legacy-Patcher.plist` for applied patch info
   - Located under `/System/Library/CoreServices`
   - Lists patch sets applied including files installed and removed
