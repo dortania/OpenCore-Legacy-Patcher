@@ -252,10 +252,14 @@ class detect_root_patch:
             required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
             required_patches.update({"AMD TeraScale 1": all_hardware_patchset["Graphics"]["AMD TeraScale 1"]})
         if hardware_details["Graphics: AMD TeraScale 2"] is True:
-            print("  - Graphics: AMD TeraScale 2")
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
             required_patches.update({"AMD TeraScale 2": all_hardware_patchset["Graphics"]["AMD TeraScale 2"]})
+            if self.constants.allow_ts2_accel is False:
+                print("  - Graphics: AMD TeraScale 2 (framebuffer)")
+                del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
+            else:
+                print("  - Graphics: AMD TeraScale 2")
         if hardware_details["Brightness: Legacy Backlight Control"] is True:
             print("  - Brightness: Legacy Brightness")
             required_patches.update({"Legacy Brightness": all_hardware_patchset["Brightness"]["Legacy Brightness"]})
