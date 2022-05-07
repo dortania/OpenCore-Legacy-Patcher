@@ -904,7 +904,8 @@ class broadcom_ids:
         0x43DC,  # BCM4355
         0x4464,  # BCM4364
         0x4488,  # BCM4377b
-        0x4425,  # Unknown
+        0x4425,  # BCM4378 (M1)
+        0x4433,  # BCM4387 (M1 Pro/Max/Ultra)
     ]
 
     AirPortBrcmNIC = [
