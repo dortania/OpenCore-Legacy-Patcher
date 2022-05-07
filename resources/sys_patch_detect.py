@@ -225,29 +225,23 @@ class detect_root_patch:
         utilities.cls()
         print("- The following patches will be applied:")
         if hardware_details["Graphics: Intel Ironlake"] is True:
-            print("  - Graphics: Intel Ironlake")
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Intel Ironlake": all_hardware_patchset["Graphics"]["Intel Ironlake"]})
         if hardware_details["Graphics: Intel Sandy Bridge"] is True:
-            print("  - Graphics: Intel Sandy Bridge")
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Legacy GVA": all_hardware_patchset["Graphics"]["Legacy GVA"]})
             required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
-            print("  - Graphics: Intel Ivy Bridge")
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
         if hardware_details["Graphics: Nvidia Tesla"] is True:
-            print("  - Graphics: Nvidia Tesla")
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Nvidia Tesla": all_hardware_patchset["Graphics"]["Nvidia Tesla"]})
             required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
         if hardware_details["Graphics: Nvidia Kepler"] is True:
-            print("  - Graphics: Nvidia Kepler")
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
         if hardware_details["Graphics: AMD TeraScale 1"] is True:
-            print("  - Graphics: AMD TeraScale 1")
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"AMD TeraScale Common": all_hardware_patchset["Graphics"]["AMD TeraScale Common"]})
             required_patches.update({"AMD TeraScale 1": all_hardware_patchset["Graphics"]["AMD TeraScale 1"]})
@@ -259,42 +253,31 @@ class detect_root_patch:
             if self.constants.allow_ts2_accel is False or self.constants.detected_os not in self.constants.legacy_accel_support:
                 # TeraScale 2 MacBooks with faulty GPUs are highly prone to crashing with AMDRadeonX3000 attached
                 # Additionally, AMDRadeonX3000 requires IOAccelerator downgrade which is not installed without 'Non-Metal IOAccelerator Common'
-                print("  - Graphics: AMD TeraScale 2 (framebuffer)")
                 del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
-            else:
-                print("  - Graphics: AMD TeraScale 2")
         if hardware_details["Brightness: Legacy Backlight Control"] is True:
-            print("  - Brightness: Legacy Brightness")
             required_patches.update({"Legacy Brightness": all_hardware_patchset["Brightness"]["Legacy Brightness"]})
         if hardware_details["Audio: Legacy Realtek"] is True:
             if self.model in ["iMac7,1", "iMac8,1"]:
-                print("  - Audio: Legacy Realtek Audio")
                 required_patches.update({"Legacy Realtek": all_hardware_patchset["Audio"]["Legacy Realtek"]})
             else:
-                print("  - Audio: Legacy non-GOP Audio")
                 required_patches.update({"Legacy Non-GOP": all_hardware_patchset["Audio"]["Legacy Non-GOP"]})
         if hardware_details["Networking: Legacy Wireless"] is True:
-            print("  - Networking: Legacy WiFi")
             required_patches.update({"Legacy WiFi": all_hardware_patchset["Networking"]["Legacy WiFi"]})
         if hardware_details["Miscellaneous: Legacy GMUX"] is True:
-            print("  - Miscellaneous: Legacy GMUX")
             required_patches.update({"Legacy GMUX": all_hardware_patchset["Miscellaneous"]["Legacy GMUX"]})
         if hardware_details["Miscellaneous: Legacy Keyboard Backlight"]:
-            print("  - Miscellaneous: Legacy Keyboard Backlight")
             required_patches.update({"Legacy Keyboard Backlight": all_hardware_patchset["Miscellaneous"]["Legacy Keyboard Backlight"]})
 
         if required_patches:
+            host_os_float = float(f"{self.constants.detected_os}.{self.constants.detected_os_minor}")
             for patch_name in list(required_patches):
-                if (
-                    required_patches[patch_name]["OS Support"]["Minimum OS Support"]["OS Major"] > self.constants.detected_os or 
-                    required_patches[patch_name]["OS Support"]["Maximum OS Support"]["OS Major"] < self.constants.detected_os
-                ):
+                patch_os_min_float = float(f'{required_patches[patch_name]["OS Support"]["Minimum OS Support"]["OS Major"]}.{required_patches[patch_name]["OS Support"]["Minimum OS Support"]["OS Minor"]}')
+                patch_os_max_float = float(f'{required_patches[patch_name]["OS Support"]["Maximum OS Support"]["OS Major"]}.{required_patches[patch_name]["OS Support"]["Maximum OS Support"]["OS Minor"]}')
+                if (host_os_float < patch_os_min_float or host_os_float > patch_os_max_float):
                     del(required_patches[patch_name])
-                elif (
-                    required_patches[patch_name]["OS Support"]["Minimum OS Support"]["OS Minor"] > self.constants.detected_os_minor or
-                    required_patches[patch_name]["OS Support"]["Maximum OS Support"]["OS Minor"] < self.constants.detected_os_minor
-                ):
-                    del(required_patches[patch_name])
+                else:
+                    if required_patches[patch_name]["Display Name"]:
+                        print(f"  - {required_patches[patch_name]['Display Name']}")
         else:
             print("  - No patch sets found for booted model")
         

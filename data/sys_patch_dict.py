@@ -21,6 +21,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
     sys_patch_dict = {
         "Graphics": {
             "Non-Metal Common": {
+                "Display Name": None,
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": non_metal_os_support[0],
@@ -84,6 +85,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             "Non-Metal IOAccelerator Common": {
                 # TeraScale 2 and Nvidia Web Drivers broke in Mojave due to mismatched structs in
                 # the IOAccelerator stack
+                "Display Name": None,
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": non_metal_os_support[0],
@@ -115,6 +117,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             },
 
             "Metal Common": {
+                "Display Name": None,
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.monterey,
@@ -138,6 +141,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             },
 
             "Legacy GVA": {
+                "Display Name": None,
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": non_metal_os_support[0],
@@ -157,6 +161,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             },
 
             "Nvidia Tesla": {
+                "Display Name": "Graphics: Nvidia Tesla",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
@@ -181,6 +186,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
             "Nvidia Kepler": {
+                "Display Name": "Graphics: Nvidia Kepler",
                 "OS Support": {
                     "Minimum OS Support": {
                         # 12.0 beta 7 (XNU 21.1)
@@ -207,6 +213,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
             "Nvidia Web Drivers": {
+                "Display Name": "Graphics: Nvidia Web Drivers",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
@@ -240,6 +247,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
             "AMD TeraScale Common": {
+                "Display Name": None,
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
@@ -271,6 +279,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             },
 
             "AMD TeraScale 1": {
+                "Display Name": "Graphics: AMD TeraScale 1",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
@@ -309,6 +318,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
             "AMD TeraScale 2": {
+                "Display Name": "Graphics: AMD TeraScale 2",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
@@ -334,6 +344,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
             "Intel Ironlake": {
+                "Display Name": "Graphics: Intel Ironlake",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
@@ -355,6 +366,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
             "Intel Sandy Bridge": {
+                "Display Name": "Graphics: Intel Sandy Bridge",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
@@ -377,6 +389,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
             "Intel Ivy Bridge": {
+                "Display Name": "Graphics: Intel Ivy Bridge",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.monterey,
@@ -405,6 +418,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
         },
         "Audio": {
             "Legacy Realtek": {
+                "Display Name": "Audio: Legacy Realtek Audio",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.sierra,
@@ -434,6 +448,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             },
             # For Mac Pros with non-UGA/GOP GPUs
             "Legacy Non-GOP": {
+                "Display Name": "Audio: Legacy non-GOP Audio",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
@@ -453,6 +468,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
         },
         "Networking": {
             "Legacy WiFi": {
+                "Display Name": "Networking: Legacy WiFi",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.monterey,
@@ -481,6 +497,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
         },
         "Brightness": {
             "Legacy Brightness": {
+                "Display Name": "Brightness: Legacy Brightness",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.high_sierra,
@@ -509,6 +526,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
         },
         "Miscellaneous": {
             "Legacy GMUX": {
+                "Display Name": "Miscellaneous: Legacy GMUX",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.high_sierra,
@@ -535,6 +553,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
             "Legacy Keyboard Backlight": {
+                "Display Name": "Miscellaneous: Legacy Keyboard Backlight",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": non_metal_os_support[0],

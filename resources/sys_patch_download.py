@@ -18,14 +18,14 @@ class grab_patcher_support_pkg:
     def download_files(self):
         link = self.generate_pkg_link()
         if Path(self.constants.payload_local_binaries_root_path).exists():
-            print("- Removing old Apple Binaries folder")
+            print("- Removing old Root Patcher Payload folder")
             # Delete folder
             shutil.rmtree(self.constants.payload_local_binaries_root_path)
 
         download_result = None
         local_zip = Path(self.constants.payload_path) / f"Universal-Binaries.zip"
         if Path(local_zip).exists():
-            print(f"- Found local {local_zip} zip, skipping download")
+            print(f"- Found local Universal-Binaries.zip, skipping download")
             download_result = True
         else:
             print(f"- No local version found, downloading...")
