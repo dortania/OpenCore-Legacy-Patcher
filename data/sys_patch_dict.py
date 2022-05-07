@@ -239,7 +239,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     },
                 },
             },
-            "AMD Non-Metal Common": {
+            "AMD TeraScale Common": {
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
