@@ -220,7 +220,7 @@ class detect_root_patch:
             return True
     
     def generate_patchset(self, hardware_details):
-        all_hardware_patchset = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor)
+        all_hardware_patchset = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor, self.constants.legacy_accel_support)
         required_patches = {}
         utilities.cls()
         print("- The following patches will be applied:")
@@ -253,9 +253,12 @@ class detect_root_patch:
             required_patches.update({"AMD TeraScale 1": all_hardware_patchset["Graphics"]["AMD TeraScale 1"]})
         if hardware_details["Graphics: AMD TeraScale 2"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"Non-Metal IOAccelerator Common": all_hardware_patchset["Graphics"]["Non-Metal IOAccelerator Common"]})
             required_patches.update({"AMD Non-Metal Common": all_hardware_patchset["Graphics"]["AMD Non-Metal Common"]})
             required_patches.update({"AMD TeraScale 2": all_hardware_patchset["Graphics"]["AMD TeraScale 2"]})
-            if self.constants.allow_ts2_accel is False:
+            if self.constants.allow_ts2_accel is False or self.constants.detected_os not in self.constants.legacy_accel_support:
+                # TeraScale 2 MacBooks with faulty GPUs are highly prone to crashing with AMDRadeonX3000 attached
+                # Additionally, AMDRadeonX3000 requires IOAccelerator downgrade which is not installed without 'Non-Metal IOAccelerator Common'
                 print("  - Graphics: AMD TeraScale 2 (framebuffer)")
                 del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
             else:
@@ -280,7 +283,19 @@ class detect_root_patch:
             print("  - Miscellaneous: Legacy Keyboard Backlight")
             required_patches.update({"Legacy Keyboard Backlight": all_hardware_patchset["Miscellaneous"]["Legacy Keyboard Backlight"]})
 
-        if not required_patches:
+        if required_patches:
+            for patch_name in list(required_patches):
+                if (
+                    required_patches[patch_name]["OS Support"]["Minimum OS Support"]["OS Major"] > self.constants.detected_os or 
+                    required_patches[patch_name]["OS Support"]["Maximum OS Support"]["OS Major"] < self.constants.detected_os
+                ):
+                    del(required_patches[patch_name])
+                elif (
+                    required_patches[patch_name]["OS Support"]["Minimum OS Support"]["OS Minor"] > self.constants.detected_os_minor or
+                    required_patches[patch_name]["OS Support"]["Maximum OS Support"]["OS Minor"] < self.constants.detected_os_minor
+                ):
+                    del(required_patches[patch_name])
+        else:
             print("  - No patch sets found for booted model")
         
         return required_patches

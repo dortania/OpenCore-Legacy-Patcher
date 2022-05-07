@@ -245,15 +245,7 @@ class PatchSysVolume:
         if "Intel Sandy Bridge" in required_patches:
             self.snb_board_id_patch(source_files_path)
         
-        for patch in required_patches:
-            # Check if the patch sets support the current OS
-            if required_patches[patch]["Minimum OS Support"]["OS Major"] > self.constants.detected_os:
-                print(f"Patch set OS Major check: {required_patches[patch]['OS Support']['OS Major']} < {self.constants.detected_os}")
-                raise Exception("This patchset is not supported on this version of macOS!")
-            elif required_patches[patch]["Minimum OS Support"]["OS Minor"] > self.constants.detected_os_minor:
-                print(f"Patch set OS Minor check: {required_patches[patch]['OS Support']['OS Minor']} < {self.constants.detected_os_minor}")
-                raise Exception("This patchset is not supported on this version of macOS!")
-            
+        for patch in required_patches:            
             # Check if all files are present
             for method_type in ["Install", "Install Non-Root"]:
                 if method_type in required_patches[patch]:

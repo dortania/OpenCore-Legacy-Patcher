@@ -2,24 +2,34 @@
 # Copyright (C) 2022, Mykola Grymalyuk
 
 # Schema for sys_patch_dict.py:
-# Supports 3 types of higher level keys:
-#  - Install:          Install to root volume      - Dictionary of strings with value of source
-#  - Install Non-Root: Install to data partition   - Dictionary of strings with value of source
-#  - Remove:           Files to remove             - Array of strings
-#  - Processes:        Additional processes to run - Array of strings
+# Supports 5 types of higher level keys:
+#  - OS Support:         Supported OSes by patchse   - Dictionary of Min/Max Kernel Major and Minor versions
+#  - Install:            Install to root volume      - Dictionary of strings with string value of source
+#  - Install Non-Root:   Install to data partition   - Dictionary of strings with string value of source
+#  - Remove:             Files to remove             - Array of strings
+#  - Processes:          Additional processes to run - Dictionary of strings with boolean value of requires root
 
 # File Storage is based off the origin, ie. '10.13.6/System/Library/Extensions/IOSurface.kext'
 # Stubbed binaries are OS specific, they use the 'os_major' variable to denounce which folder to use
 
 from data import os_data
 
-def SystemPatchDictionary(os_major, os_minor):
+def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
+    # @os_major:               XNU Kernel Major (int)
+    # @os_minor:               XNU Kernel Minor (int)
+    # @non_metal_os_support:   Array of supported OSes (XNU Kernel Majors (int))
     sys_patch_dict = {
         "Graphics": {
             "Non-Metal Common": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.big_sur,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": non_metal_os_support[0],
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": non_metal_os_support[-1],
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -71,10 +81,49 @@ def SystemPatchDictionary(os_major, os_minor):
                     },
                 },
             },
+            "Non-Metal IOAccelerator Common": {
+                # TeraScale 2 and Nvidia Web Drivers broke in Mojave due to mismatched structs in
+                # the IOAccelerator stack
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": non_metal_os_support[0],
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": non_metal_os_support[-1],
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Extensions": {
+                        "IOAcceleratorFamily2.kext":     "10.13.6",
+                        "IOSurface.kext":                "10.14.6",
+                    },
+                    "/System/Library/Frameworks": {
+                        "IOSurface.framework": f"10.14.6-{os_major}",
+                    },
+                    "/System/Library/PrivateFrameworks": {
+                        "GPUSupport.framework":    "10.13.6",
+                        "IOAccelerator.framework": f"10.13.6-{os_major}",
+                    },
+                },
+                "Remove": {
+                    "/System/Library/Extensions": [
+                        "AppleCameraInterface.kext"
+                    ],
+                },
+            },
+
             "Metal Common": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.monterey,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.monterey,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Frameworks": {
@@ -89,9 +138,15 @@ def SystemPatchDictionary(os_major, os_minor):
             },
 
             "Legacy GVA": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.big_sur,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": non_metal_os_support[0],
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/PrivateFrameworks": {
@@ -102,9 +157,15 @@ def SystemPatchDictionary(os_major, os_minor):
             },
 
             "Nvidia Tesla": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.mojave,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.mojave,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -115,15 +176,21 @@ def SystemPatchDictionary(os_major, os_minor):
                         "NVDANV50HalTesla.kext":       "10.13.6",
                         "NVDAResmanTesla.kext":        "10.13.6",
                         # Apple dropped NVDAStartup in 12.0 Beta 7 (XNU 21.1)
-                        **({ "NVDAStartup.kext":       "12.0 Beta 6" } if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 1, os_major, os_minor) else {})
+                        **({ "NVDAStartup.kext":       "12.0 Beta 6" } if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 0, os_major, os_minor) else {})
                     },
                 },
             },
             "Nvidia Kepler": {
-                "Minimum OS Support": {
-                    # 12.0 beta 7 (XNU 21.1)
-                    "OS Major": os_data.os_data.monterey,
-                    "OS Minor": 1
+                "OS Support": {
+                    "Minimum OS Support": {
+                        # 12.0 beta 7 (XNU 21.1)
+                        "OS Major": os_data.os_data.monterey,
+                        "OS Minor": 1
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -140,9 +207,15 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Nvidia Web Drivers": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.mojave,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.mojave,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -167,9 +240,15 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "AMD Non-Metal Common": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.mojave,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.mojave,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -192,9 +271,15 @@ def SystemPatchDictionary(os_major, os_minor):
             },
 
             "AMD TeraScale 1": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.mojave,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.mojave,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -224,9 +309,15 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "AMD TeraScale 2": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.mojave,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.mojave,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -236,28 +327,22 @@ def SystemPatchDictionary(os_major, os_minor):
                         "AMDRadeonVADriver2.bundle":     "10.13.6",
                         "AMDRadeonX3000.kext":           "10.13.6",
                         "AMDRadeonX3000GLDriver.bundle": "10.13.6",
-                        "IOAcceleratorFamily2.kext":     "10.13.6",
-                        "IOSurface.kext":                "10.14.6",
                     },
                     "/System/Library/Frameworks": {
                         "OpenCL.framework":    "10.13.6",
-                        "IOSurface.framework": f"10.14.6-{os_major}",
                     },
-                    "/System/Library/PrivateFrameworks": {
-                        "GPUSupport.framework":    "10.13.6",
-                        "IOAccelerator.framework": f"10.13.6-{os_major}",
-                    },
-                },
-                "Remove": {
-                    "/System/Library/Extensions": [
-                        "AppleCameraInterface.kext"
-                    ],
                 },
             },
             "Intel Ironlake": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.mojave,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.mojave,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -270,9 +355,15 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Intel Sandy Bridge": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.mojave,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.mojave,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -286,9 +377,15 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Intel Ivy Bridge": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.monterey,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.monterey,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Processes": {
                     "defaults write com.apple.coremedia hardwareVideoDecoder -string enable": False,
@@ -308,9 +405,15 @@ def SystemPatchDictionary(os_major, os_minor):
         },
         "Audio": {
             "Legacy Realtek": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.sierra,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.sierra,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 # For iMac7,1 and iMac8,1 units with legacy Realtek HD Audio
                 "Install": {
@@ -331,9 +434,15 @@ def SystemPatchDictionary(os_major, os_minor):
             },
             # For Mac Pros with non-UGA/GOP GPUs
             "Legacy Non-GOP": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.mojave,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.mojave,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -344,9 +453,15 @@ def SystemPatchDictionary(os_major, os_minor):
         },
         "Networking": {
             "Legacy WiFi": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.monterey,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.monterey,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/usr/libexec": {
@@ -366,9 +481,15 @@ def SystemPatchDictionary(os_major, os_minor):
         },
         "Brightness": {
             "Legacy Brightness": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.high_sierra,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.high_sierra,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions": {
@@ -388,9 +509,15 @@ def SystemPatchDictionary(os_major, os_minor):
         },
         "Miscellaneous": {
             "Legacy GMUX": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.high_sierra,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.high_sierra,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
                 },
                 "Install": {
                     "/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns": {
@@ -408,9 +535,15 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Legacy Keyboard Backlight": {
-                "Minimum OS Support": {
-                    "OS Major": os_data.os_data.big_sur,
-                    "OS Minor": 0
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": non_metal_os_support[0],
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": non_metal_os_support[-1],
+                        "OS Minor": 99
+                    },
                 },
                 "Processes": {
                     "defaults write /Library/Preferences/.GlobalPreferences.plist Moraea_BacklightHack -bool true": True,
