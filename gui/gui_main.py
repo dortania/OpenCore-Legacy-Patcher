@@ -2260,11 +2260,62 @@ class wx_python_gui:
         self.smbios_model_dropdown.Bind(wx.EVT_CHOICE, self.smbios_model_click)
         self.smbios_model_dropdown.Center(wx.HORIZONTAL)
 
+        # Label: Custom Serial Number
+        self.smbios_serial_label = wx.StaticText(self.frame, label="Custom Serial Number")
+        self.smbios_serial_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.smbios_serial_label.SetPosition(
+            wx.Point(self.smbios_model_dropdown.GetPosition().x, self.smbios_model_dropdown.GetPosition().y + self.smbios_model_dropdown.GetSize().height + 10)
+        )
+        self.smbios_serial_label.Center(wx.HORIZONTAL)
+
+        # Textbox: Custom Serial Number
+        self.smbios_serial_textbox = wx.TextCtrl(self.frame, style=wx.TE_CENTRE)
+        self.smbios_serial_textbox.SetPosition(
+            wx.Point(self.smbios_serial_label.GetPosition().x, self.smbios_serial_label.GetPosition().y + self.smbios_serial_label.GetSize().height + 5)
+        )
+        self.smbios_serial_textbox.SetValue(self.constants.custom_serial_number)
+        self.smbios_serial_textbox.SetSize(wx.Size(200, -1))
+        self.smbios_serial_textbox.Bind(wx.EVT_TEXT, self.smbios_serial_click)
+        self.smbios_serial_textbox.Center(wx.HORIZONTAL)
+
+        # Label: Custom Board Serial Number
+        self.smbios_board_serial_label = wx.StaticText(self.frame, label="Custom Board Serial Number")
+        self.smbios_board_serial_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.smbios_board_serial_label.SetPosition(
+            wx.Point(self.smbios_serial_textbox.GetPosition().x, self.smbios_serial_textbox.GetPosition().y + self.smbios_serial_textbox.GetSize().height + 10)
+        )
+        self.smbios_board_serial_label.Center(wx.HORIZONTAL)
+
+        # Textbox: Custom Board Serial Number
+        self.smbios_board_serial_textbox = wx.TextCtrl(self.frame, style=wx.TE_CENTRE)
+        self.smbios_board_serial_textbox.SetPosition(
+            wx.Point(self.smbios_board_serial_label.GetPosition().x, self.smbios_board_serial_label.GetPosition().y + self.smbios_board_serial_label.GetSize().height + 5)
+        )
+        self.smbios_board_serial_textbox.SetValue(self.constants.custom_board_serial_number)
+        self.smbios_board_serial_textbox.SetSize(wx.Size(200, -1))
+        self.smbios_board_serial_textbox.Bind(wx.EVT_TEXT, self.smbios_board_serial_click)
+        self.smbios_board_serial_textbox.Center(wx.HORIZONTAL)
+
+        # Button: Generate new serials
+        self.smbios_generate_button = wx.Button(self.frame, label=f"Generate S/N: {self.constants.custom_model or self.computer.real_model}")
+        self.smbios_generate_button.SetPosition(
+            wx.Point(self.smbios_board_serial_textbox.GetPosition().x, self.smbios_board_serial_textbox.GetPosition().y + self.smbios_board_serial_textbox.GetSize().height + 10)
+        )
+        self.smbios_generate_button.Center(wx.HORIZONTAL)
+        self.smbios_generate_button.Bind(wx.EVT_BUTTON, self.generate_new_serials_clicked)
+
+        if self.constants.allow_oc_everywhere is False and \
+            self.constants.custom_model is None and \
+            self.computer.real_model not in model_array.SupportedSMBIOS:
+            self.smbios_board_serial_textbox.Disable()
+            self.smbios_serial_textbox.Disable()
+            self.smbios_generate_button.Disable()
+
         # Checkbox: Allow Native Spoofs
         self.native_spoof_checkbox = wx.CheckBox(self.frame, label="Allow Native Spoofs")
         self.native_spoof_checkbox.SetValue(self.constants.allow_native_spoofs)
         self.native_spoof_checkbox.SetPosition(
-            wx.Point(self.smbios_model_dropdown.GetPosition().x, self.smbios_model_dropdown.GetPosition().y + self.smbios_model_dropdown.GetSize().height + 10)
+            wx.Point(self.smbios_generate_button.GetPosition().x, self.smbios_generate_button.GetPosition().y + self.smbios_generate_button.GetSize().height + 10)
         )
         self.native_spoof_checkbox.Bind(wx.EVT_CHECKBOX, self.native_spoof_click)
         self.native_spoof_checkbox.Center(wx.HORIZONTAL)
@@ -2282,6 +2333,21 @@ class wx_python_gui:
 
         self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
 
+    def smbios_serial_click(self, event):
+        self.constants.custom_serial_number = self.smbios_serial_textbox.GetValue()
+    
+    def smbios_board_serial_click(self, event):
+        self.constants.custom_board_serial_number = self.smbios_board_serial_textbox.GetValue()
+    
+    def generate_new_serials_clicked(self, event):
+        macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.constants.custom_model or self.computer.real_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        macserial_output = macserial_output.stdout.decode().strip().split(" | ")
+        if len(macserial_output) == 2:
+            self.smbios_serial_textbox.SetValue(macserial_output[0])
+            self.smbios_board_serial_textbox.SetValue(macserial_output[1])
+        else:
+            self.smbios_serial_textbox.SetHint("Unable to generate serials")
+            self.smbios_board_serial_textbox.SetHint("Unable to generate serials")
 
     def native_spoof_click(self, event):
         if self.native_spoof_checkbox.GetValue():

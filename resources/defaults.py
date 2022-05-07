@@ -11,8 +11,17 @@ class generate_defaults:
         settings.sip_status = True
         settings.secure_status = False  # Default false for Monterey
         settings.amfi_status = True
+        settings.custom_serial_number = ""
+        settings.custom_board_serial_number = ""
 
         if host_is_target:
+            settings.custom_serial_number = utilities.get_nvram("OCLP-Spoofed-SN", "7C436110-AB2A-4BBB-A880-FE41995C9F82", decode=True)
+            settings.custom_board_serial_number = utilities.get_nvram("OCLP-Spoofed-MLB", "7C436110-AB2A-4BBB-A880-FE41995C9F82", decode=True)
+            if settings.custom_serial_number is None or settings.custom_board_serial_number is None:
+                # If either variables are missing, we assume something is wrong with the spoofed variables and reset
+                settings.custom_serial_number = ""
+                settings.custom_board_serial_number = ""
+        
             if settings.computer.usb_controllers:
                 try:
                     if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:

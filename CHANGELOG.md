@@ -16,6 +16,8 @@
   - Lists patch sets applied including files installed and removed
 - Add `preinstall` script to AutoPatcher
   - Removes old patcher files before installing new
+- Add Serial Number Spoofing
+  - For recycled machines where MDM was mistakenly left on
 
 ## 0.4.4
 - Lower SIP requirement for Root Patching
