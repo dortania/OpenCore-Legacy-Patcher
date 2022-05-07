@@ -247,10 +247,10 @@ class PatchSysVolume:
         
         for patch in required_patches:
             # Check if the patch sets support the current OS
-            if required_patches[patch]["OS Support"]["OS Major"] > self.constants.detected_os:
+            if required_patches[patch]["Minimum OS Support"]["OS Major"] > self.constants.detected_os:
                 print(f"Patch set OS Major check: {required_patches[patch]['OS Support']['OS Major']} < {self.constants.detected_os}")
                 raise Exception("This patchset is not supported on this version of macOS!")
-            elif required_patches[patch]["OS Support"]["OS Minor"] > self.constants.detected_os_minor:
+            elif required_patches[patch]["Minimum OS Support"]["OS Minor"] > self.constants.detected_os_minor:
                 print(f"Patch set OS Minor check: {required_patches[patch]['OS Support']['OS Minor']} < {self.constants.detected_os_minor}")
                 raise Exception("This patchset is not supported on this version of macOS!")
             

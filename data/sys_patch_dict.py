@@ -17,7 +17,7 @@ def SystemPatchDictionary(os_major, os_minor):
     sys_patch_dict = {
         "Graphics": {
             "Non-Metal Common": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.big_sur,
                     "OS Minor": 0
                 },
@@ -72,7 +72,7 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Metal Common": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.monterey,
                     "OS Minor": 0
                 },
@@ -89,7 +89,7 @@ def SystemPatchDictionary(os_major, os_minor):
             },
 
             "Legacy GVA": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.big_sur,
                     "OS Minor": 0
                 },
@@ -102,7 +102,7 @@ def SystemPatchDictionary(os_major, os_minor):
             },
 
             "Nvidia Tesla": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.mojave,
                     "OS Minor": 0
                 },
@@ -120,7 +120,7 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Nvidia Kepler": {
-                "OS Support": {
+                "Minimum OS Support": {
                     # 12.0 beta 7 (XNU 21.1)
                     "OS Major": os_data.os_data.monterey,
                     "OS Minor": 1
@@ -140,7 +140,7 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Nvidia Web Drivers": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.mojave,
                     "OS Minor": 0
                 },
@@ -167,7 +167,7 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "AMD Non-Metal Common": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.mojave,
                     "OS Minor": 0
                 },
@@ -192,7 +192,7 @@ def SystemPatchDictionary(os_major, os_minor):
             },
 
             "AMD TeraScale 1": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.mojave,
                     "OS Minor": 0
                 },
@@ -224,7 +224,7 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "AMD TeraScale 2": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.mojave,
                     "OS Minor": 0
                 },
@@ -255,7 +255,7 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Intel Ironlake": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.mojave,
                     "OS Minor": 0
                 },
@@ -270,7 +270,7 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Intel Sandy Bridge": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.mojave,
                     "OS Minor": 0
                 },
@@ -286,7 +286,7 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Intel Ivy Bridge": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.monterey,
                     "OS Minor": 0
                 },
@@ -308,7 +308,7 @@ def SystemPatchDictionary(os_major, os_minor):
         },
         "Audio": {
             "Legacy Realtek": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.sierra,
                     "OS Minor": 0
                 },
@@ -331,7 +331,7 @@ def SystemPatchDictionary(os_major, os_minor):
             },
             # For Mac Pros with non-UGA/GOP GPUs
             "Legacy Non-GOP": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.mojave,
                     "OS Minor": 0
                 },
@@ -344,7 +344,7 @@ def SystemPatchDictionary(os_major, os_minor):
         },
         "Networking": {
             "Legacy WiFi": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.monterey,
                     "OS Minor": 0
                 },
@@ -366,7 +366,7 @@ def SystemPatchDictionary(os_major, os_minor):
         },
         "Brightness": {
             "Legacy Brightness": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.high_sierra,
                     "OS Minor": 0
                 },
@@ -388,7 +388,7 @@ def SystemPatchDictionary(os_major, os_minor):
         },
         "Miscellaneous": {
             "Legacy GMUX": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.high_sierra,
                     "OS Minor": 0
                 },
@@ -408,7 +408,7 @@ def SystemPatchDictionary(os_major, os_minor):
                 },
             },
             "Legacy Keyboard Backlight": {
-                "OS Support": {
+                "Minimum OS Support": {
                     "OS Major": os_data.os_data.big_sur,
                     "OS Minor": 0
                 },
