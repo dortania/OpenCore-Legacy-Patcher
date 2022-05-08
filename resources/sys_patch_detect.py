@@ -15,6 +15,7 @@ class detect_root_patch:
         # GPU Patch Detection
         self.nvidia_tesla= False
         self.kepler_gpu= False
+        self.nvidia_web= False
         self.amd_ts1= False
         self.amd_ts2= False
         self.iron_gpu= False
@@ -61,6 +62,9 @@ class detect_root_patch:
                             if "21A5506j" not in self.constants.detected_os_build:
                                 self.kepler_gpu = True
                                 self.supports_metal = True
+                elif gpu.arch in [device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
+                    if self.constants.detected_os > os_data.os_data.mojave:
+                        self.nvidia_web = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts1 = True
@@ -155,12 +159,13 @@ class detect_root_patch:
         self.root_patch_dict = {
             "Graphics: Nvidia Tesla": self.nvidia_tesla,
             "Graphics: Nvidia Kepler": self.kepler_gpu,
+            # "Graphics: Nvidia Web Drivers": self.nvidia_web,
+            "Graphics: Nvidia Web Drivers": False,
             "Graphics: AMD TeraScale 1": self.amd_ts1,
             "Graphics: AMD TeraScale 2": self.amd_ts2,
             "Graphics: Intel Ironlake": self.iron_gpu,
             "Graphics: Intel Sandy Bridge": self.sandy_gpu,
             "Graphics: Intel Ivy Bridge": self.ivy_gpu,
-            # "Graphics: Intel Ivy Bridge": True,
             "Brightness: Legacy Backlight Control": self.brightness_legacy,
             "Audio: Legacy Realtek": self.legacy_audio,
             "Networking: Legacy Wireless": self.legacy_wifi,
@@ -245,6 +250,8 @@ class detect_root_patch:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"AMD TeraScale Common": all_hardware_patchset["Graphics"]["AMD TeraScale Common"]})
             required_patches.update({"AMD TeraScale 1": all_hardware_patchset["Graphics"]["AMD TeraScale 1"]})
+        if hardware_details["Graphics: Nvidia Web Drivers"] is True:
+            required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
         if hardware_details["Graphics: AMD TeraScale 2"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Non-Metal IOAccelerator Common": all_hardware_patchset["Graphics"]["Non-Metal IOAccelerator Common"]})

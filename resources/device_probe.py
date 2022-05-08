@@ -200,6 +200,8 @@ class NVIDIA(GPU):
         Fermi = "Fermi"
         Tesla = "Tesla"
         Kepler = "Kepler"
+        Maxwell = "Maxwell"
+        Pascal = "Pascal"
         Unknown = "Unknown"
 
     arch: Archs = field(init=False)
@@ -214,6 +216,10 @@ class NVIDIA(GPU):
             self.arch = NVIDIA.Archs.Fermi
         elif self.device_id in pci_data.nvidia_ids.kepler_ids:
             self.arch = NVIDIA.Archs.Kepler
+        elif self.device_id in pci_data.nvidia_ids.maxwell_ids:
+            self.arch = NVIDIA.Archs.Maxwell
+        elif self.device_id in pci_data.nvidia_ids.pascal_ids:
+            self.arch = NVIDIA.Archs.Pascal
         else:
             self.arch = NVIDIA.Archs.Unknown
 

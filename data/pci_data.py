@@ -524,6 +524,79 @@ class nvidia_ids:
     ]
 
 
+    maxwell_ids = [
+        0x1381, # GM107 [GeForce GTX 750]
+        0x1392, # GM107 [GeForce GTX 860M]
+        0x139a, # GM107 [GeForce GTX 950M]
+        0x139b, # GM107 [GeForce GTX 960M]
+        0x13b0, # GM107 [Quadro M2000M]
+
+        0x1340, # GM108
+        0x1341, # GM108 [GeForce 840M]
+        0x1346, # GM108 [GeForce 930M]
+        0x1347, # GM108 [GeForce 940M]
+        0x134d, # GM108 [GeForce 940MX]
+
+        0x13c0, # GM204 [GeForce GTX 980]
+        0x13c2, # GM204 [GeForce GTX 970]
+        0x13d7, # GM204 [GeForce GTX 980M]
+        0x13d8, # GM204 [GeForce GTX 970M]
+        0x13d9, # GM204 [GeForce GTX 965M]
+
+        0x1401, # GM206 [GeForce GTX 960]
+        0x1407, # GM206 [GeForce GTX 750 v2]
+        0x1427, # GM206 [GeForce GTX 965M v2]
+    ]
+
+    pascal_ids = [
+        0x15f7, # GP100 [Tesla P100 PCIe 12GB]
+        0x15f8, # GP100 [Tesla P100 PCIe 16GB]
+        0x15f9, # GP100 [Tesla P100 SXM2 16GB]
+
+        0x1b00, # GP102 [GeForce TITAN X]
+        0x1b02, # GP102 [GeForce TITAN Xp]
+        0x1b06, # GP102 [GeForce GTX 1080 Ti]
+        0x1b30, # GP102 [Quadro P6000]
+        0x1b38, # GP102 [Tesla P40]
+
+        0x1b80, # GP104 [GeForce GTX 1080]
+        0x1b81, # GP104 [GeForce GTX 1070]
+        0x1b82, # GP104 [GeForce GTX 1070 Ti]
+        0x1b83, # GP104 [GeForce GTX 1060 6GB]
+        0x1b84, # GP104 [GeForce GTX 1060 3GB]
+        0x1ba0, # GP104 [GeForce GTX 1080 Mobile]
+        0x1ba1, # GP104 [GeForce GTX 1070 Mobile]
+        0x1ba2, # GP104 [GeForce GTX 1070 Mobile]
+        0x1bb0, # GP104 [Quadro P5000]
+        0x1bb3, # GP104 [Tesla P4]
+        0x1bb6, # GP104 [Quadro P5000 Mobile]
+        0x1bb7, # GP104 [Quadro P4000 Mobile]
+        0x1bb8, # GP104 [Quadro P3000 Mobile]
+        0x1be0, # GP104 [GeForce GTX 1080 Mobile]
+        0x1be1, # GP104 [GeForce GTX 1070 Mobile]
+
+        0x1c02, # GP106 [GeForce GTX 1060 3GB]
+        0x1c03, # GP106 [GeForce GTX 1060 6GB]
+        0x1c20, # GP106 [GeForce GTX 1060 Mobile]
+        0x1c23, # GP106 [GeForce GTX 1060]
+        0x1c60, # GP106 [GeForce GTX 1060 Mobile]
+        0x1c61, # GP106 [GeForce GTX 1050 Ti Mobile]
+        0x1c62, # GP106 [GeForce GTX 1050 Mobile]
+
+        0x1c81, # GP107 [GeForce GTX 1050]
+        0x1c82, # GP107 [GeForce GTX 1050 Ti]
+        0x1c83, # GP107 [GeForce GTX 1050 3GB]
+        0x1c8c, # GP107 [GeForce GTX 1050 Ti Mobile]
+        0x1c8d, # GP107 [GeForce GTX 1050 Mobile]
+        0x1c8f, # GP107 [GeForce GTX 1050 Ti Max-Q]
+        0x1c92, # GP107 [GeForce GTX 1050 Max-Q]
+
+        0x1d01, # GP108 [GeForce GT 1030]
+        0x1d10, # GP108 [GeForce MX150]
+        0x1d12, # GP108 [GeForce MX150]
+    ]
+
+
 class amd_ids:
 
     gcn_7000_ids = [
