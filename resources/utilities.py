@@ -206,6 +206,34 @@ def check_filevault_skip():
         return False
 
 
+def check_secure_boot_model():
+    sbm_byte = get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False)
+    if sbm_byte:
+        sbm_byte = sbm_byte.replace(b"\x00", b"")
+        sbm_string = sbm_byte.decode("utf-8")
+        return sbm_string
+    return None
+
+def check_ap_security_mode():
+    ap_security_mode_byte = get_nvram("ApSecurityMode", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False)
+    if ap_security_mode_byte:
+        # Ref:
+        # https://github.com/acidanthera/OpenCorePkg/blob/f7c1a3d483fa2535b6a62c25a4f04017bfeee09a/Include/Apple/Protocol/AppleImg4Verification.h#L27-L31
+        #     AppleImg4SbModeDisabled = 0,
+        #     AppleImg4SbModeMedium   = 1,
+        #     AppleImg4SbModeFull     = 2
+        return int.from_bytes(ap_security_mode_byte, byteorder="little")
+    return 0
+
+def check_secure_boot_level():
+    if check_secure_boot_model() in constants.Constants().sbm_values:
+        if check_ap_security_mode() == 2:
+            return True
+        else:
+            return False
+    return False
+
+
 def patching_status(os_sip, os):
     # Detection for Root Patching
     sip_enabled = True  #  System Integrity Protection
@@ -223,16 +251,7 @@ def patching_status(os_sip, os):
         # Catalina and older supports individually disabling Library Validation
         amfi_enabled = False
 
-    sbm_byte = get_nvram("HardwareModel", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False)
-    if sbm_byte:
-        # SecureBootModel has a ton of null bytes, so strip them out
-        sbm_string = sbm_byte.decode("utf-8")
-        if sbm_string in constants.Constants().sbm_values:
-            sbm_enabled = True
-        else:
-            sbm_enabled = False
-    else:
-        sbm_enabled = False
+    sbm_enabled = check_secure_boot_level()
 
     if os > os_data.os_data.yosemite:
         sip_enabled = csr_decode(os_sip)

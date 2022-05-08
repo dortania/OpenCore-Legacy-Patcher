@@ -485,6 +485,8 @@ class Computer:
     bluetooth_chipset: Optional[str] = None
     ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
+    secure_boot_model: Optional[str] = None
+    secure_boot_status: Optiona[int] = None
 
     @staticmethod
     def probe():
@@ -705,6 +707,9 @@ class Computer:
         self.opencore_version = utilities.get_nvram("opencore-version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
         self.opencore_path = utilities.get_nvram("boot-path", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
 
+        # SecureBoot Variables
+        self.secure_boot_model = utilities.check_secure_boot_model()
+        self.secure_boot_status = utilities.check_ap_security_mode()
     def cpu_probe(self):
         self.cpu = CPU(
             subprocess.run("sysctl machdep.cpu.brand_string".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip(),
