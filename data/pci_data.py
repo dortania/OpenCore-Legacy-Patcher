@@ -743,9 +743,11 @@ class amd_ids:
         0x73A2,  # Pro W6900X
         0x73AB,  # Pro W6800X/Pro W6800X Duo
         0x73BF,  # 6800/6800 XT / 6900 XT
+        0x73A3,  # Pro W6800
         # AMDNavi23GraphicsAccelerator
         0x73E3,  # Pro W6600
         0x73FF,  # 6600/6600 XT/6600M
+        0x73E0,  # Unknown
     ]
 
     r500_ids = [
