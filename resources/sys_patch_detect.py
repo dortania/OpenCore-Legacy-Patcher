@@ -242,7 +242,6 @@ class detect_root_patch:
         if hardware_details["Graphics: Nvidia Tesla"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Nvidia Tesla": all_hardware_patchset["Graphics"]["Nvidia Tesla"]})
-            required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
