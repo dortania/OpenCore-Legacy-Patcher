@@ -716,7 +716,7 @@ class amd_ids:
         0x66A0,  # Instinct
         0x66A1,  # Pro VII/Instinct MI50
         0x66A2,  # Unknown
-        0x66A3,  #  Pro Vega II/ Pro Vega II Duo
+        0x66A3,  # Pro Vega II/ Pro Vega II Duo
         0x66A7,  # Unknown
         0x66AF,  # VII
     ]
