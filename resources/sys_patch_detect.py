@@ -174,7 +174,7 @@ class detect_root_patch:
             "Settings: Requires AMFI exemption": self.amfi_must_disable,
             "Validation: Patching Possible": self.verify_patch_allowed(),
             "Validation: SIP is enabled": self.sip_enabled,
-            "Validation: SBM is enabled": self.sbm_enabled,
+            "Validation: SecureBootModel is enabled": self.sbm_enabled,
             "Validation: AMFI is enabled": self.amfi_enabled if self.amfi_must_disable else False,
             "Validation: FileVault is enabled": self.fv_enabled,
             "Validation: System is dosdude1 patched": self.dosdude_patched,
