@@ -486,7 +486,7 @@ class Computer:
     ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
     secure_boot_model: Optional[str] = None
-    secure_boot_status: Optiona[int] = None
+    secure_boot_policy: Optiona[int] = None
 
     @staticmethod
     def probe():
@@ -709,7 +709,7 @@ class Computer:
 
         # SecureBoot Variables
         self.secure_boot_model = utilities.check_secure_boot_model()
-        self.secure_boot_status = utilities.check_ap_security_mode()
+        self.secure_boot_policy = utilities.check_ap_security_policy()
     def cpu_probe(self):
         self.cpu = CPU(
             subprocess.run("sysctl machdep.cpu.brand_string".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip(),
