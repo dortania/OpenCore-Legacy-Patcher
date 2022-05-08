@@ -343,6 +343,8 @@ class PatchSysVolume:
                 if patch_input in {"y", "Y", "yes", "Yes"}:
                     shutil.rmtree(Path(self.constants.payload_local_binaries_root_path))
                     output = self.download_files()
+                else:
+                    output = True
             else:
                 output = self.download_files()
         else:

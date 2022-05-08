@@ -2,12 +2,13 @@
 # Copyright (C) 2022, Mykola Grymalyuk
 
 # Schema for sys_patch_dict.py:
-# Supports 5 types of higher level keys:
+# Supports 6 types of higher level keys:
 #  - OS Support:         Supported OSes by patchse   - Dictionary of Min/Max Kernel Major and Minor versions
 #  - Install:            Install to root volume      - Dictionary of strings with string value of source
 #  - Install Non-Root:   Install to data partition   - Dictionary of strings with string value of source
 #  - Remove:             Files to remove             - Array of strings
 #  - Processes:          Additional processes to run - Dictionary of strings with boolean value of requires root
+#  - Display Name:       User-friendly name          - String
 
 # File Storage is based off the origin, ie. '10.13.6/System/Library/Extensions/IOSurface.kext'
 # Stubbed binaries are OS specific, they use the 'os_major' variable to denounce which folder to use
