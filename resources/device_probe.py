@@ -486,7 +486,7 @@ class Computer:
     ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
     secure_boot_model: Optional[str] = None
-    secure_boot_policy: Optiona[int] = None
+    secure_boot_policy: Optional[int] = None
 
     @staticmethod
     def probe():
