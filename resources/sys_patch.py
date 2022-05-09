@@ -29,7 +29,7 @@ from datetime import datetime
 import plistlib
 import os
 
-from resources import constants, generate_smbios, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto
+from resources import constants, generate_smbios, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers
 from data import os_data
 
 
@@ -166,26 +166,14 @@ class PatchSysVolume:
             utilities.process_status(utilities.elevated(["mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def write_patchset(self, patchset):
-        source_path = f"{self.constants.payload_path}"
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
         file_name = "OpenCore-Legacy-Patcher.plist"
-        source_path_file = f"{source_path}/{file_name}"
         destination_path_file = f"{destination_path}/{file_name}"
-
-        data = {
-            "OpenCore Legacy Patcher": f"v{self.constants.patcher_version}",
-            "PatcherSupportPkg": f"v{self.constants.patcher_support_pkg_version}",
-            "Time Patched": f"{datetime.now().strftime('%B %d, %Y @ %H:%M:%S')}",
-        }
-        print("- Writing patchset information to Root Volume")
-        data.update(patchset)
-        if Path(source_path_file).exists():
-            os.remove(source_path_file)
-        # Need to write to a safe location
-        plistlib.dump(data, Path(source_path_file).open("wb"), sort_keys=False)
-        if Path(destination_path_file).exists():
-            utilities.process_status(utilities.elevated(["rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        utilities.process_status(utilities.elevated(["cp", source_path_file, destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        if sys_patch_helpers.sys_patch_helpers(self.constants).generate_patchset_plist(patchset, file_name):
+            print("- Writing patchset information to Root Volume")
+            if Path(destination_path_file).exists():
+                utilities.process_status(utilities.elevated(["rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["cp", f"{self.constants.payload_path}/{file_name}", destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
  
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")
@@ -243,7 +231,7 @@ class PatchSysVolume:
         
         # Make sure SNB kexts are compatible with the host
         if "Intel Sandy Bridge" in required_patches:
-            self.snb_board_id_patch(source_files_path)
+            sys_patch_helpers.sys_patch_helpers(self.constants).snb_board_id_patch(source_files_path)
         
         for patch in required_patches:            
             # Check if all files are present
@@ -304,35 +292,6 @@ class PatchSysVolume:
             chown_args.pop(1)
         utilities.process_status(utilities.elevated(chmod_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         utilities.process_status(utilities.elevated(chown_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-
-    def snb_board_id_patch(self, source_files_path):
-        # AppleIntelSNBGraphicsFB hard codes the supported Board IDs for Sandy Bridge iGPUs
-        # Because of this, the kext errors out on unsupported systems
-        # This function simply patches in a supported Board ID, using 'determine_best_board_id_for_sandy()'
-        # to supplement the ideal Board ID
-        if self.computer.reported_board_id not in self.constants.sandy_board_id_stock:
-            print(f"- Found unspported Board ID {self.computer.reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching")
-            board_to_patch = generate_smbios.determine_best_board_id_for_sandy(self.computer.reported_board_id, self.computer.gpus)
-            print(f"- Replacing {board_to_patch} with {self.computer.reported_board_id}")
-
-            board_to_patch_hex = bytes.fromhex(board_to_patch.encode('utf-8').hex())
-            reported_board_hex = bytes.fromhex(self.computer.reported_board_id.encode('utf-8').hex())
-
-            if len(board_to_patch_hex) != len(reported_board_hex):
-                print(f"- Error: Board ID {self.computer.reported_board_id} is not the same length as {board_to_patch}")
-                raise Exception("Host's Board ID is not the same length as the kext's Board ID, cannot patch!!!")
-            else:
-                path = source_files_path + "/10.13.6/System/Library/Extensions/AppleIntelSNBGraphicsFB.kext/Contents/MacOS/AppleIntelSNBGraphicsFB"
-                if Path(path).exists():
-                    with open(path, 'rb') as f:
-                        data = f.read()
-                        data = data.replace(board_to_patch_hex, reported_board_hex)
-                        with open(path, 'wb') as f:
-                            f.write(data)
-                else:
-                    print(f"- Error: Could not find {path}")
-                    raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
 
 
     def check_files(self):

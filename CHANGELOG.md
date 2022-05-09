@@ -19,6 +19,7 @@
   - Removes old patcher files before installing new
 - Add Serial Number Spoofing
   - For recycled machines where MDM was mistakenly left on
+- Add sys_patch file validation during CI
 
 ## 0.4.4
 - Lower SIP requirement for Root Patching
