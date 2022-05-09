@@ -66,6 +66,8 @@ def validate(settings):
         host_os_float = float(f"{major_kernel}.{minor_kernel}")
         for patch_subject in patchset:
             for patch_core in patchset[patch_subject]:
+                if patch_core == "Nvidia Web Drivers":
+                    continue
                 patch_os_min_float = float(f'{patchset[patch_subject][patch_core]["OS Support"]["Minimum OS Support"]["OS Major"]}.{patchset[patch_subject][patch_core]["OS Support"]["Minimum OS Support"]["OS Minor"]}')
                 patch_os_max_float = float(f'{patchset[patch_subject][patch_core]["OS Support"]["Maximum OS Support"]["OS Major"]}.{patchset[patch_subject][patch_core]["OS Support"]["Maximum OS Support"]["OS Minor"]}')
                 if (host_os_float < patch_os_min_float or host_os_float > patch_os_max_float):
@@ -76,6 +78,7 @@ def validate(settings):
                             for install_file in patchset[patch_subject][patch_core][install_type][install_directory]:
                                 source_file = str(settings.payload_local_binaries_root_path) + "/" + patchset[patch_subject][patch_core][install_type][install_directory][install_file] + install_directory + "/" + install_file
                                 if not Path(source_file).exists():
+                                    print(f"File not found: {source_file}")
                                     raise Exception(f"Failed to find {source_file}")
         
         print(f"Validating Root Patch Dictionary integrity for Darwin {major_kernel}.{minor_kernel}")
@@ -87,8 +90,7 @@ def validate(settings):
         if Path(settings.payload_local_binaries_root_path_zip).exists():
             print("Validating Root Patch File integrity")
             if not Path(settings.payload_local_binaries_root_path).exists():
-                subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", settings.payload_local_binaries_root_path_zip, settings.payload_path])
-
+                subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", settings.payload_local_binaries_root_path_zip, settings.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey]:
                 validate_root_patch_files(supported_os, 6)
             print("Validating SNB Board ID patcher")
