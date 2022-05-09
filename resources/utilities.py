@@ -217,17 +217,27 @@ def check_secure_boot_model():
 def check_ap_security_policy():
     ap_security_policy_byte = get_nvram("AppleSecureBootPolicy", "94B73556-2197-4702-82A8-3E1337DAFBFB", decode=False)
     if ap_security_policy_byte:
-        # Ref:
-        # https://github.com/acidanthera/OpenCorePkg/blob/f7c1a3d483fa2535b6a62c25a4f04017bfeee09a/Include/Apple/Protocol/AppleImg4Verification.h#L27-L31
+        # Supported Apple Secure Boot Policy values:
         #     AppleImg4SbModeDisabled = 0,
         #     AppleImg4SbModeMedium   = 1,
         #     AppleImg4SbModeFull     = 2
+        # Ref: https://github.com/acidanthera/OpenCorePkg/blob/f7c1a3d483fa2535b6a62c25a4f04017bfeee09a/Include/Apple/Protocol/AppleImg4Verification.h#L27-L31
         return int.from_bytes(ap_security_policy_byte, byteorder="little")
     return 0
 
 def check_secure_boot_level():
     if check_secure_boot_model() in constants.Constants().sbm_values:
-        if check_ap_security_policy() == 2:
+        # OpenCorePkg logic:
+        #   - If a T2 Unit is used with ApECID, will return 2
+        #   - Either x86legacy or T2 without ApECID, returns 1
+        #   - Disabled, returns 0
+        # Ref: https://github.com/acidanthera/OpenCorePkg/blob/f7c1a3d483fa2535b6a62c25a4f04017bfeee09a/Library/OcMainLib/OpenCoreUefi.c#L490-L502
+        # 
+        # Genuine Mac logic:
+        #   - On genuine non-T2 Macs, they always return 0
+        #   - T2 Macs will return based on their Starup Policy (Full(2), Medium(1), Disabled(0))
+        # Ref: https://support.apple.com/en-us/HT208198
+        if check_ap_security_policy() != 0:
             return True
         else:
             return False
