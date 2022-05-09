@@ -21,7 +21,7 @@ class sys_patch_helpers:
         # to supplement the ideal Board ID
         source_files_path = str(source_files_path)
         if self.constants.computer.reported_board_id not in self.constants.sandy_board_id_stock:
-            print(f"- Found unspported Board ID {self.constants.computer.reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching")
+            print(f"- Found unsupported Board ID {self.constants.computer.reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching")
             board_to_patch = generate_smbios.determine_best_board_id_for_sandy(self.constants.computer.reported_board_id, self.constants.computer.gpus)
             print(f"- Replacing {board_to_patch} with {self.constants.computer.reported_board_id}")
 
