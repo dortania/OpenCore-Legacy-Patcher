@@ -29,16 +29,10 @@ class PCIDevice:
     device_id: int  # The device ID of this PCI device
     class_code: int  # The class code of this PCI device - https://pci-ids.ucw.cz/read/PD
 
-    # ioregistryentry: Optional[ioreg.IORegistryEntry] = None
     name: Optional[str] = None  # Name of IORegistryEntry
     model: Optional[str] = None  # model property
     acpi_path: Optional[str] = None
     pci_path: Optional[str] = None
-
-    # def __getstate__(self):
-    #     state = self.__dict__.copy()
-    #     state.pop("ioregistryentry")
-    #     return state
 
     @classmethod
     def from_ioregistry(cls, entry: ioreg.io_registry_entry_t, anti_spoof=False):
@@ -58,13 +52,6 @@ class PCIDevice:
             device.acpi_path = properties["acpi-path"]
         device.populate_pci_path(entry)
         return device
-
-    # @staticmethod
-    # def vendor_detect_old(device):
-    #     for i in [NVIDIA, AMD]:
-    #         if i.detect(device):
-    #             return i
-    #     return None
 
     def vendor_detect(self, *, inherits: ClassVar[Any] = None, classes: list = None):
         for i in classes or itertools.chain.from_iterable([subclass.__subclasses__() for subclass in PCIDevice.__subclasses__()]):
@@ -543,7 +530,6 @@ class Computer:
         ioreg.IOObjectRelease(device)
 
     def wifi_probe(self):
-        # result = subprocess.run("ioreg -r -c IOPCIDevice -a -d2".split(), stdout=subprocess.PIPE).stdout.strip()
         devices = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
@@ -629,9 +615,6 @@ class Computer:
                 None,
             )[1]
         )
-        # for device in ethernet_controllers:
-        #     self.ethernet.append(EthernetController.from_ioregistry(device))
-        #     ioreg.IOObjectRelease(device)
         
         for device in ethernet_controllers:
             vendor: Type[EthernetController] = PCIDevice.from_ioregistry(device).vendor_detect(inherits=EthernetController)  # type: ignore
@@ -698,7 +681,6 @@ class Computer:
         ioreg.IOObjectRelease(entry)
 
         # Real model
-        # TODO: We previously had logic for OC users using iMacPro1,1 with incorrect ExposeSensitiveData. Add logic?
         self.real_model = utilities.get_nvram("oem-product", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True) or self.reported_model
         self.real_board_id = utilities.get_nvram("oem-board", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True) or self.reported_board_id
 

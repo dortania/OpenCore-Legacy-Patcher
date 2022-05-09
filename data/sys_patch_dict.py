@@ -22,7 +22,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
     sys_patch_dict = {
         "Graphics": {
             "Non-Metal Common": {
-                "Display Name": None,
+                "Display Name": "",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": non_metal_os_support[0],
@@ -86,7 +86,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             "Non-Metal IOAccelerator Common": {
                 # TeraScale 2 and Nvidia Web Drivers broke in Mojave due to mismatched structs in
                 # the IOAccelerator stack
-                "Display Name": None,
+                "Display Name": "",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": non_metal_os_support[0],
@@ -118,7 +118,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             },
 
             "Metal Common": {
-                "Display Name": None,
+                "Display Name": "",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.monterey,
@@ -142,7 +142,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             },
 
             "Legacy GVA": {
-                "Display Name": None,
+                "Display Name": "",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": non_metal_os_support[0],
@@ -248,7 +248,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
             "AMD TeraScale Common": {
-                "Display Name": None,
+                "Display Name": "",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
