@@ -1033,12 +1033,12 @@ class BuildOpenCore:
                 self.config["PlatformInfo"]["SMBIOS"]["SystemSerialNumber"] = sn
                 self.config["PlatformInfo"]["DataHub"]["SystemSerialNumber"] = sn
                 self.config["PlatformInfo"]["PlatformNVRAM"]["SystemSerialNumber"] = sn
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["OCLP-Spoofed-SN"] = sn
+                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = sn
 
                 # Board Serial Number
                 self.config["PlatformInfo"]["SMBIOS"]["BoardSerialNumber"] = mlb
                 self.config["PlatformInfo"]["PlatformNVRAM"]["BoardSerialNumber"] = mlb
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["OCLP-Spoofed-MLB"] = mlb
+                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = mlb
 
 
 
@@ -1049,8 +1049,8 @@ class BuildOpenCore:
                 print("- Adding custom serial numbers")
                 self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = self.constants.custom_serial_number
                 self.config["PlatformInfo"]["Generic"]["MLB"] = self.constants.custom_board_serial_number
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["OCLP-Spoofed-SN"] = self.constants.custom_serial_number
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["OCLP-Spoofed-MLB"] = self.constants.custom_board_serial_number
+                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = self.constants.custom_serial_number
+                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = self.constants.custom_board_serial_number
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
             self.config["PlatformInfo"]["Automatic"] = True
             self.config["PlatformInfo"]["UpdateDataHub"] = True
@@ -1081,8 +1081,8 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = sn
             self.config["PlatformInfo"]["Generic"]["MLB"] = mlb
             self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["OCLP-Spoofed-SN"] = sn
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["OCLP-Spoofed-MLB"] = mlb
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = sn
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = mlb
     
 
         if self.constants.serial_settings == "Moderate":
@@ -1117,8 +1117,8 @@ class BuildOpenCore:
                 self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
                 self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = self.constants.custom_serial_number
                 self.config["PlatformInfo"]["Generic"]["MLB"] = self.constants.custom_board_serial_number
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["OCLP-Spoofed-SN"] = self.constants.custom_serial_number
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["OCLP-Spoofed-MLB"] = self.constants.custom_board_serial_number
+                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = self.constants.custom_serial_number
+                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = self.constants.custom_board_serial_number
 
         # USB Map and CPUFriend Patching
         if (
