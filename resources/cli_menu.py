@@ -573,51 +573,6 @@ Note 2: This setting only affects iMac13,x with dGPUs
         else:
             self.allow_ivy()
 
-    def latebloom_settings(self):
-        utilities.cls()
-        utilities.header(["Set latebloom properties"])
-        print(
-            f"""
-Set latebloom properties, useful for debugging boot stalls on
-pre-Sandy Bridge Macs.
-
-Valid options:
-
-1. Set delay (currently: {self.constants.latebloom_delay}ms)
-2. Set range (currently: {self.constants.latebloom_range}ms)
-3. Set debug (currently: {bool(self.constants.latebloom_debug)})
-Q. Return to previous menu
-        """
-        )
-
-        change_menu = input("Select latebloom property(1/2/3): ")
-        if change_menu == "1":
-            try:
-                self.constants.latebloom_delay = int(input("Set delay: "))
-            except ValueError:
-                input("Invalid value, press [ENTER] to continue")
-            self.latebloom_settings()
-        elif change_menu == "2":
-            try:
-                self.constants.latebloom_range = int(input("Set range: "))
-            except ValueError:
-                input("Invalid value, press [ENTER] to continue")
-            self.latebloom_settings()
-        elif change_menu == "3":
-            try:
-                print("Currently supports either 0(False) or 1(True)")
-                latebloom_debug = int(input("Set debug(0/1): "))
-                if latebloom_debug not in [0, 1]:
-                    input("Invalid value, press [ENTER] to continue")
-                else:
-                    self.constants.latebloom_debug = latebloom_debug
-            except ValueError:
-                input("Invalid value, press [ENTER] to continue")
-            self.latebloom_settings()
-        elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
-        else:
-            self.latebloom_settings()
 
     def disable_tb(self):
         utilities.cls()

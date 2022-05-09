@@ -10,7 +10,9 @@ class arguments:
         self.args = utilities.check_cli_args()
 
     def parse_arguments(self, settings):
-        if not self.args.auto_patch:
+        if self.args.validate:
+            validation.validate(settings)
+        elif self.args.build:
             if self.args.model:
                 if self.args.model:
                     print(f"- Using custom model: {self.args.model}")
@@ -30,8 +32,6 @@ class arguments:
             if self.args.disk:
                 print(f"- Install Disk set: {self.args.disk}")
                 settings.disk = self.args.disk
-            if self.args.validate:
-                validation.validate(settings)
             if self.args.verbose:
                 print("- Set verbose configuration")
                 settings.verbose_debug = True
@@ -95,9 +95,6 @@ class arguments:
                 print("- Building for natively supported model")
                 settings.allow_oc_everywhere = True
                 settings.serial_settings = "None"
-
-        # Avoid running the root patcher if we're just building
-        if self.args.build:
             build.BuildOpenCore(settings.custom_model or settings.computer.real_model, settings).build_opencore()
         elif self.args.patch_sys_vol:
             print("- Set System Volume patching")

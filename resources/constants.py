@@ -63,8 +63,6 @@ class Constants:
         self.i210_version = "1.0.0"  #               CatalinaIntelI210Ethernet
         self.corecaptureelcap_version = "1.0.1"  #   corecaptureElCap
         self.io80211elcap_version = "2.0.0"  #       IO80211ElCap
-        self.io80211high_sierra_version = "1.0.1"  # IO80211HighSierra
-        self.io80211mojave_version = "1.0.1"  #      IO80211Mojave
         self.bigsursdxc_version = "1.0.0"  #         BigSurSDXC
 
         ## Dortania
@@ -78,7 +76,6 @@ class Constants:
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
         ## https://github.com/reenigneorcim/latebloom
-        self.latebloom_version = "0.22"  #   Latebloom
         self.mousse_version = "0.95"  #      MouSSE
         self.telemetrap_version = "1.0.0"  # telemetrap
 
@@ -140,12 +137,6 @@ class Constants:
         ## FeatureUnlock Settings
         self.fu_status = True   #   Enable FeatureUnlock
         self.fu_arguments = None  # Set FeatureUnlock arguments
-
-        ## Latebloom Settings
-        self.latebloom_status = False  # Latebloom Enabled
-        self.latebloom_delay = 0  #      Delay between each PCIe Probe
-        self.latebloom_range = 0  #      Range each delay can differ
-        self.latebloom_debug = 0  #      Debug Setting
 
         ## Security Settings
         self.apecid_support = False  #    ApECID
@@ -329,14 +320,6 @@ class Constants:
         return self.payload_kexts_path / Path(f"Wifi/IO80211ElCap-v{self.io80211elcap_version}.zip")
 
     @property
-    def io80211high_sierra_path(self):
-        return self.payload_kexts_path / Path(f"Wifi/IO80211HighSierra-v{self.io80211high_sierra_version}.zip")
-
-    @property
-    def io80211mojave_path(self):
-        return self.payload_kexts_path / Path(f"Wifi/IO80211Mojave-v{self.io80211mojave_version}.zip")
-
-    @property
     def applealc_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/AppleALC-v{self.applealc_version}-{self.kext_variant}.zip")
 
@@ -399,10 +382,6 @@ class Constants:
     @property
     def gpu_wake_path(self):
         return self.payload_kexts_path / Path(f"Misc/AMDGPUWakeHandler-v{self.gpu_wake_version}.zip")
-
-    @property
-    def latebloom_path(self):
-        return self.payload_kexts_path / Path(f"Misc/latebloom-v{self.latebloom_version}.zip")
 
     @property
     def apple_trackpad_path(self):
