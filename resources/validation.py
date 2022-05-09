@@ -92,8 +92,8 @@ def validate(settings):
             for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey]:
                 validate_root_patch_files(supported_os, 6)
         print("Validating SNB Board ID patcher")
-            settings.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
-            sys_patch_helpers.sys_patch_helpers(settings).snb_board_id_patch(settings.payload_local_binaries_root_path)
+        settings.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
+        sys_patch_helpers.sys_patch_helpers(settings).snb_board_id_patch(settings.payload_local_binaries_root_path)
         else:
             print("Skipping Root Patch File integrity validation")
 
