@@ -25,11 +25,8 @@
 import shutil
 import subprocess
 from pathlib import Path
-from datetime import datetime
-import plistlib
-import os
 
-from resources import constants, generate_smbios, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers
+from resources import constants, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers
 from data import os_data
 
 
