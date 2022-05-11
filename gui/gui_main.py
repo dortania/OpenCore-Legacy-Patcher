@@ -13,10 +13,13 @@ import wx.adv
 from wx.lib.agw import hyperlink
 import threading
 from pathlib import Path
+import binascii
+import hashlib
 
-from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates
+from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect
+        
 
 class wx_python_gui:
     def __init__(self, versions):
@@ -1202,7 +1205,7 @@ class wx_python_gui:
                         self.subheader.GetPosition().y + self.subheader.GetSize().height + i
                     )
                 )
-                self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.download_macos_click(f"macOS {available_installers[temp]['Version']} ({available_installers[temp]['Build']})", available_installers[temp]['Link']))
+                self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.download_macos_click(available_installers[temp]))
                 self.install_selection.Centre(wx.HORIZONTAL)
         else:
             self.install_selection = wx.StaticText(self.frame, label="No installers available")
@@ -1243,8 +1246,9 @@ class wx_python_gui:
     def reload_macos_installer_catalog(self, event=None, ias=None):
         self.grab_installer_data(ias=ias)
 
-    def download_macos_click(self, installer_name, installer_link):
+    def download_macos_click(self, app_dict):
         self.frame.DestroyChildren()
+        installer_name = f"macOS {app_dict['Version']} ({app_dict['Build']})"
 
         # Header
         self.header = wx.StaticText(self.frame, label=f"Downloading {installer_name}")
@@ -1277,30 +1281,116 @@ class wx_python_gui:
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         # Download macOS install data
-        if installer.download_install_assistant(self.constants.payload_path, installer_link):
+        if installer.download_install_assistant(self.constants.payload_path, app_dict['Link']):
             # Fix stdout
             sys.stdout = self.stock_stdout
             self.download_label.SetLabel(f"Finished Downloading {installer_name}")
             self.download_label.Centre(wx.HORIZONTAL)
             wx.App.Get().Yield()
-            # Update Label: 
-            sys.stdout=menu_redirect.RedirectLabelAll(self.download_label)
-            sys.stderr=menu_redirect.RedirectLabelAll(self.download_label)
-            installer.install_macOS_installer(self.constants.payload_path)
-            sys.stdout = self.stock_stdout
-            sys.stderr = self.stock_stderr
-            # Update Label:
-            self.download_label.SetLabel(f"Finished Installing {installer_name}")
-            self.download_label.Centre(wx.HORIZONTAL)
-
-            # Set Return to Main Menu into flash_installer_menu
-            self.return_to_main_menu.SetLabel("Flash Installer")
-            self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.flash_installer_menu)
-            self.return_to_main_menu.Centre(wx.HORIZONTAL)
+            self.installer_validation(apple_integrity_file_link= app_dict['integrity'])
         else:
             sys.stdout = self.stock_stdout
             self.download_label.SetLabel(f"Failed to download {installer_name}")
             self.download_label.Centre(wx.HORIZONTAL)
+
+
+    def installer_validation(self, event=None, apple_integrity_file_link=""):
+        self.frame.DestroyChildren()
+
+        # Header: Verifying InstallAssistant.pkg
+        self.header = wx.StaticText(self.frame, label="Verifying InstallAssistant.pkg")
+        self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.header.Centre(wx.HORIZONTAL)
+
+        # Label: Verifying Chunk 0 of 1200
+        self.verifying_chunk_label = wx.StaticText(self.frame, label="Verifying Chunk 0 of 1200")
+        self.verifying_chunk_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
+        self.verifying_chunk_label.SetPosition(
+            wx.Point(
+                self.header.GetPosition().x,
+                self.header.GetPosition().y + self.header.GetSize().height + 10
+            )
+        )
+        self.verifying_chunk_label.Centre(wx.HORIZONTAL)
+        
+
+        # Progress Bar
+        self.progress_bar = wx.Gauge(self.frame, range=1200, size=(300, 25))
+        self.progress_bar.SetPosition(
+            wx.Point(
+                self.verifying_chunk_label.GetPosition().x,
+                self.verifying_chunk_label.GetPosition().y + self.verifying_chunk_label.GetSize().height + 10
+            )
+        )
+        self.progress_bar.Centre(wx.HORIZONTAL)
+        
+
+        # Button: Return to Main Menu
+        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu.SetPosition(
+            wx.Point(
+                self.progress_bar.GetPosition().x,
+                self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 20
+            )
+        )
+        self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu.Centre(wx.HORIZONTAL)
+
+        self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+
+        wx.App.Get().Yield()
+        integrity_path = Path(Path(self.constants.payload_path) / Path(apple_integrity_file_link.split("/")[-1]))
+        if utilities.download_file(apple_integrity_file_link, integrity_path, verify_checksum=False):
+            # If we're unable to download the integrity file immediately after downloading the IA, there's a legitmate issue
+            # on Apple's end.
+            # Fail gracefully and just head to installing the IA.
+            apple_integrity_file = str(integrity_path)
+            chunks = integrity_verification.generate_chunklist_dict(str(apple_integrity_file))
+            max_progress = len(chunks)
+            self.progress_bar.SetValue(0)
+            self.progress_bar.SetRange(max_progress)
+
+            wx.App.Get().Yield()
+            # See integrity_verification.py for more information on the integrity verification process
+            with Path(self.constants.payload_path / Path("InstallAssistant.pkg")).open("rb") as f:
+                for chunk in chunks:
+                    status = hashlib.sha256(f.read(chunk["length"])).digest()
+                    if not status == chunk["checksum"]:
+                        print(f"Chunk {chunks.index(chunk) + 1} checksum status FAIL: chunk sum {binascii.hexlify(chunk['checksum']).decode()}, calculated sum {binascii.hexlify(status).decode()}")
+                        self.popup = wx.MessageDialog(
+                        self.frame,
+                            f"We've found that Chunk {chunks.index(chunk) + 1} of {len(chunks)} has failed the integrity check.\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)",
+                            "Corrupted Installer!",
+                            style = wx.OK | wx.ICON_EXCLAMATION
+                        )
+                        self.popup.ShowModal()
+                        self.main_menu()
+                        break
+                    else:
+                        self.progress_bar.SetValue(self.progress_bar.GetValue() + 1)
+                        self.verifying_chunk_label.SetLabel(f"Verifying Chunk {self.progress_bar.GetValue()} of {max_progress}")
+                        wx.App.Get().Yield()
+        else:
+            print("Failed to download integrity file, skipping integrity check.")
+    
+        wx.App.Get().Yield()
+        self.header.SetLabel("Installing InstallAssistant.pkg")
+        self.header.Centre(wx.HORIZONTAL)
+        self.verifying_chunk_label.SetLabel("Installing into Applications folder")
+        self.verifying_chunk_label.Centre(wx.HORIZONTAL)
+        thread_install = threading.Thread(target=installer.install_macOS_installer, args=(self.constants.payload_path,))
+        thread_install.start()
+        while thread_install.is_alive():
+            self.progress_bar.Pulse()
+            wx.App.Get().Yield()
+        
+        self.progress_bar.SetValue(self.progress_bar.GetRange())
+        self.return_to_main_menu.SetLabel("Flash Installer")
+        self.verifying_chunk_label.SetLabel("Finished extracting to Applications folder!")
+        self.verifying_chunk_label.Centre(wx.HORIZONTAL)
+        self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.flash_installer_menu)
+        self.return_to_main_menu.Centre(wx.HORIZONTAL)
+
 
     def flash_installer_menu(self, event=None):
         self.frame.DestroyChildren()

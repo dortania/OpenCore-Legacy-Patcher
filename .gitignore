@@ -28,3 +28,4 @@ __pycache__/
 /payloads/AutoPkg-Assets.pkg.zip
 /payloads/Universal-Binaries
 /payloads/OpenCore-Legacy-Patcher
+/payloads/InstallAssistant.pkg.integrityDataV1
