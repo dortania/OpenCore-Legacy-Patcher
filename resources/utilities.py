@@ -485,7 +485,6 @@ def clean_device_path(device_path: str):
         if len(device_path_array) >= 2:
             device_path_stripped = device_path_array[-2]
             device_path_root_array = device_path_stripped.split(",")
-            print(device_path_root_array)
             if len(device_path_root_array) >= 2:
                 return device_path_root_array[2]
     return None
