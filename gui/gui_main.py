@@ -584,7 +584,7 @@ class wx_python_gui:
         self.subheader.Centre(wx.HORIZONTAL)
 
         # Label: If you're missing disks, ensure they're either FAT32 or formatted as GUI/GPT
-        self.missing_disks = wx.StaticText(self.frame, label="Missing disks? Ensure they're FAT32 or formatted as GUID/GPT")
+        self.missing_disks = wx.StaticText(self.frame, label="Loading disks shortly...")
         self.missing_disks.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.missing_disks.SetPosition(
             wx.Point(
@@ -603,9 +603,41 @@ class wx_python_gui:
             )
         )
         self.color_note.Centre(wx.HORIZONTAL)
+        self.color_note.Hide()
+
+
+        # Progress Bar
+        self.progress_bar = wx.Gauge(self.frame, range=100, style=wx.GA_HORIZONTAL)
+        self.progress_bar.SetPosition(
+            wx.Point(
+                self.missing_disks.GetPosition().x,
+                self.missing_disks.GetPosition().y + self.missing_disks.GetSize().height + 5
+            )
+        )
+        self.progress_bar.SetSize(wx.Size(self.WINDOW_WIDTH_BUILD - 30, 20))
+        self.progress_bar.Centre(wx.HORIZONTAL)
+        self.progress_bar.SetValue(0)
+
+        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 40)
 
         # Request Disks Present
-        list_disks = install.tui_disk_installation(self.constants).list_disks()
+        def get_disks():
+            self.list_disks = install.tui_disk_installation(self.constants).list_disks()
+        
+        thread_disk = threading.Thread(target=get_disks)
+        thread_disk.start()
+
+
+        while thread_disk.is_alive():
+            self.progress_bar.Pulse()
+            wx.GetApp().Yield()
+        self.progress_bar.Destroy()
+        list_disks = self.list_disks
+
+        self.color_note.Show()
+        self.missing_disks.SetLabel("Missing disks? Ensure they're FAT32 or formatted as GUID/GPT")
+        self.missing_disks.Centre(wx.HORIZONTAL)
+        
         if list_disks:
             if self.constants.booted_oc_disk is not None:
                 # disk6s1 -> disk6
