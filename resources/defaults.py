@@ -122,7 +122,7 @@ class generate_defaults:
             if ts2_status in ["1", "true"]:
                 settings.allow_ts2_accel = True
             else:
-                subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "TRUE"])
+                subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "FALSE"])
                 settings.allow_ts2_accel = False
 
         try:
