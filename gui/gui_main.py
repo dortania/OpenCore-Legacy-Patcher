@@ -1145,11 +1145,22 @@ class wx_python_gui:
         )
         self.download_label.Centre(wx.HORIZONTAL)
 
+        # Progress Bar
+        self.progress_bar = wx.Gauge(self.frame, range=100, size=(200, 30))
+        self.progress_bar.SetPosition(
+            wx.Point(
+                self.download_label.GetPosition().x,
+                self.download_label.GetPosition().y + self.download_label.GetSize().height + 10
+            )
+        )
+        self.progress_bar.Centre(wx.HORIZONTAL)
+
+
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
-                self.download_label.GetPosition().x,
-                self.download_label.GetPosition().y + self.download_label.GetSize().height + 15
+                self.progress_bar.GetPosition().x,
+                self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 15
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
@@ -1161,8 +1172,17 @@ class wx_python_gui:
 
         # Download installer catalog
         if ias is None:
+            def ia():
+                self.available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "PublicSeed")
+            
             print("- Downloading installer catalog...")
-            available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "PublicSeed")
+            thread_ia = threading.Thread(target=ia)
+            thread_ia.start()
+            
+            while thread_ia.is_alive():
+                self.progress_bar.Pulse()
+                wx.GetApp().Yield()
+            available_installers = self.available_installers
         else:
             print("- Using existing installer catalog...")
             available_installers = ias
