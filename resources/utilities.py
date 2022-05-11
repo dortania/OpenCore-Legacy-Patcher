@@ -471,17 +471,23 @@ def clean_device_path(device_path: str):
     # ex:     
     #   'PciRoot(0x0)/Pci(0xA,0x0)/Sata(0x0,0x0,0x0)/HD(1,GPT,C0778F23-3765-4C8E-9BFA-D60C839E7D2D,0x28,0x64000)/EFI\OC\OpenCore.efi'
     #   'PciRoot(0x0)/Pci(0x1A,0x7)/USB(0x0,0x0)/USB(0x2,0x0)/HD(2,GPT,4E929909-2074-43BA-9773-61EBC110A670,0x64800,0x38E3000)/EFI\OC\OpenCore.efi'
+    #   'PciRoot(0x0)/Pci(0x1A,0x7)/USB(0x0,0x0)/USB(0x1,0x0)/\EFI\OC\OpenCore.efi'
     # return: 
     #   'C0778F23-3765-4C8E-9BFA-D60C839E7D2D'
     #   '4E929909-2074-43BA-9773-61EBC110A670'
+    #   'None'
 
     if device_path:
+        if not any(partition in device_path for partition in ["GPT", "MBR"]):
+            return None
         device_path_array = device_path.split("/")
         # we can always assume [-1] is 'EFI\OC\OpenCore.efi'
         if len(device_path_array) >= 2:
             device_path_stripped = device_path_array[-2]
             device_path_root_array = device_path_stripped.split(",")
-            return device_path_root_array[2]
+            print(device_path_root_array)
+            if len(device_path_root_array) >= 2:
+                return device_path_root_array[2]
     return None
 
 
