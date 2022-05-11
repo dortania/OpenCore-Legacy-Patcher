@@ -20,6 +20,8 @@
 - Add Serial Number Spoofing
   - For recycled machines where MDM was mistakenly left on
 - Add sys_patch file validation during CI
+- Add GUI Prompt for booting mismatched OpenCore configs
+  - ex. Booting MacBookPro8,1 config on MacBookPro11,1
 
 ## 0.4.4
 - Lower SIP requirement for Root Patching

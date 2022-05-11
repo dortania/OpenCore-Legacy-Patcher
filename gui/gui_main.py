@@ -66,8 +66,6 @@ class wx_python_gui:
         if current_uid == 0:
             self.file_menu.Enable(wx.ID_REDO, False)
 
-        # Spawn thread to check for updates
-        threading.Thread(target=self.check_for_updates).start()
         self.main_menu(None)
 
         wx.CallAfter(self.frame.Close)
@@ -78,11 +76,11 @@ class wx_python_gui:
         self.app.ExitMainLoop()
         sys.exit()
     
-    def reboot_system(self, event=None):
+    def reboot_system(self, event=None, message=""):
         self.popup = wx.MessageDialog(
             self.frame,
-            "Root Patcher finished successfully\nWould you like to reboot now?",
-            "Reboot to apply patches?",
+            message,
+            "Reboot to apply?",
             wx.YES_NO | wx.ICON_INFORMATION
         )
         self.popup.SetYesNoLabels("Reboot", "Ignore")
@@ -97,6 +95,24 @@ class wx_python_gui:
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
+
+    def preflight_check(self):
+        if (
+                self.constants.computer.build_model != None and 
+                self.constants.computer.build_model != self.constants.computer.real_model
+            ):
+            # Notify user they're booting an unsupported configuration
+            self.constants.start_build_install = True
+            self.popup = wx.MessageDialog(
+            self.frame,
+                f"We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.",
+                "Unsupported Configuration Detected!",
+                style = wx.OK | wx.ICON_EXCLAMATION
+            )
+            self.popup.ShowModal()
+        else:
+            # Spawn thread to check for updates
+            threading.Thread(target=self.check_for_updates).start()
     
     def check_for_updates(self, event=None):
         ignore_updates = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher-wxpython", "IgnoreAppUpdates"], capture_output=True).stdout.decode("utf-8").strip()
@@ -361,16 +377,16 @@ class wx_python_gui:
             )
         )
 
-        
+        self.preflight_check()
         if self.finished_auto_patch is False:
-            if "--gui_patch" in sys.argv:
+            if self.constants.start_build_install is True:
+                self.build_install_menu()
+            elif "--gui_patch" in sys.argv:
                 self.patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
                 self.root_patch_start()
             elif "--gui_unpatch" in sys.argv:
                 self.patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
                 self.root_patch_revert()
-            elif self.constants.start_build_install is True:
-                self.build_install_menu()
         self.finished_auto_patch = True
         self.constants.start_build_install = False
 
@@ -709,15 +725,17 @@ class wx_python_gui:
         # Centre the text box to top of window
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
-        sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
-        sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
 
         # Update frame height to right below
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 40)
 
         self.frame.Show()
 
-        install.tui_disk_installation(self.constants).install_opencore(partition)
+        sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
+        sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
+        result = install.tui_disk_installation(self.constants).install_opencore(partition)
+        sys.stdout=sys.__stdout__
+        sys.stderr=sys.__stderr__
 
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
@@ -731,6 +749,9 @@ class wx_python_gui:
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+
+        if result is True:
+            self.reboot_system(message="OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?")
 
     def root_patch_menu(self, event=None):
         # Define Menu
@@ -966,7 +987,7 @@ class wx_python_gui:
         sys.stderr = self.stock_stderr
         if self.constants.root_patcher_succeded is True:
             print("- Root Patcher finished successfully")
-            self.reboot_system()
+            self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
 
         wx.GetApp().Yield()
@@ -1048,7 +1069,7 @@ class wx_python_gui:
         sys.stderr = self.stock_stderr
         if self.constants.root_patcher_succeded is True:
             print("- Root Patcher finished successfully")
-            self.reboot_system()
+            self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
 
         wx.GetApp().Yield()

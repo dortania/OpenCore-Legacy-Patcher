@@ -207,7 +207,7 @@ Please build OpenCore first!"""
                 choice = input("\nWould you like to still install OpenCore to this drive?(y/n): ")
                 if not choice in ["y", "Y", "Yes", "yes"]:
                     subprocess.run(["diskutil", "umount", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-                    return
+                    return False
             if (mount_path / Path("EFI/OC")).exists():
                 print("- Removing preexisting EFI/OC folder")
                 shutil.rmtree(mount_path / Path("EFI/OC"), onerror=rmtree_handler)
@@ -255,6 +255,8 @@ Please build OpenCore first!"""
                 tui_helpers.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!"]).start()
             else:
                 print("EFI failed to mount!")
+            return False
+        return True
 
 def rmtree_handler(func, path, exc_info):
     if exc_info[0] == FileNotFoundError:

@@ -457,6 +457,7 @@ class Computer:
     real_board_id: Optional[str] = None
     reported_model: Optional[str] = None
     reported_board_id: Optional[str] = None
+    build_model: Optional[str] = None
     gpus: list[GPU] = field(default_factory=list)
     igpu: Optional[GPU] = None  # Shortcut for IGPU
     dgpu: Optional[GPU] = None  # Shortcut for GFX0
@@ -683,6 +684,7 @@ class Computer:
         # Real model
         self.real_model = utilities.get_nvram("oem-product", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True) or self.reported_model
         self.real_board_id = utilities.get_nvram("oem-board", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True) or self.reported_board_id
+        self.build_model = utilities.get_nvram("OCLP-Model", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
 
         # OCLP version
         self.oclp_version = utilities.get_nvram("OCLP-Version", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
