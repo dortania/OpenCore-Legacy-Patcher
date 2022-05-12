@@ -29,7 +29,7 @@ def patch_load_command():
     replace = b'\x00\x0A\x0A\x00' # 10.10 (0xA0A)
     with open(path, 'rb') as f:
         data = f.read()
-        data = data.replace(find, replace)
+        data = data.replace(find, replace, 1)
         with open(path, 'wb') as f:
             f.write(data)
 
