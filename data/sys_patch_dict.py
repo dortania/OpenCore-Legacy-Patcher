@@ -42,7 +42,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "CoreDisplay.framework": f"10.14.4-{os_major}",
                         "IOSurface.framework":   f"10.15.7-{os_major}",
                         "QuartzCore.framework":  f"10.15.7-{os_major}",
-                         **({ "WebKit.framework": "11.6" } if os_major >= os_data.os_data.monterey else {}),
+                        **({ "WebKit.framework":  "11.6" } if os_major >= os_data.os_data.monterey else {}),
                     },
                     "/System/Library/PrivateFrameworks": {
                         "GPUSupport.framework": "10.14.3",
@@ -82,6 +82,10 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         **({ "DropboxHack.dylib": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
                         **({ "DropboxHack.txt": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
                     },
+                },
+                "Processes": {
+                    # 'When Space Allows' option introduced in 12.4 (XNU 21.5)
+                    **({"defaults write com.apple.menuextra.clock ShowDate -int 1": False } if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 4, os_major, os_minor) else {}),
                 },
             },
             "Non-Metal IOAccelerator Common": {
