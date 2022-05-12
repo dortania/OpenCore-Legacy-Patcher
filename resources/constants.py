@@ -187,6 +187,7 @@ class Constants:
         self.root_patcher_succeded = False  #  Determine if root patcher succeeded
         self.booted_oc_disk = None  #          Determine current disk OCLP booted from
         self.start_build_install = False  #    Determine if build install should be started
+        self.host_is_non_metal = False  #      Determine if host is non-metal (ie. enable UI hacks)
 
         self.legacy_accel_support = [
             os_data.os_data.big_sur,

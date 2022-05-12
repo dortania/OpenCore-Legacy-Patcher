@@ -30,6 +30,8 @@ class wx_python_gui:
         self.finished_auto_patch = False
         self.finished_cim_process = False
         self.target_disk = ""
+        self.pulse_forward = False
+        self.non_metal_required = self.use_non_metal_alternative()
 
         # Backup stdout for usage with wxPython
         self.stock_stdout = sys.stdout
@@ -98,6 +100,26 @@ class wx_python_gui:
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
+    
+    def use_non_metal_alternative(self):
+        if self.constants.detected_os >= os_data.os_data.monterey:
+            if self.constants.host_is_non_metal is True:
+                return True
+        return False
+
+    def pulse_alternative(self, progress_bar):
+        if self.non_metal_required is True:
+            if progress_bar.GetValue() == 0:
+                self.pulse_forward = True
+
+            elif progress_bar.GetValue() == 100:
+                self.pulse_forward = False
+            
+            if self.pulse_forward:
+                progress_bar.SetValue(progress_bar.GetValue() + 1)
+            else:
+                progress_bar.SetValue(progress_bar.GetValue() - 1)
+            time.sleep(0.005)
 
     def preflight_check(self):
         if (
@@ -626,10 +648,11 @@ class wx_python_gui:
         
         thread_disk = threading.Thread(target=get_disks)
         thread_disk.start()
+        self.progress_bar.Pulse()
 
 
         while thread_disk.is_alive():
-            self.progress_bar.Pulse()
+            self.pulse_alternative(self.progress_bar)
             wx.GetApp().Yield()
         self.progress_bar.Destroy()
         list_disks = self.list_disks
@@ -1186,6 +1209,7 @@ class wx_python_gui:
             )
         )
         self.progress_bar.Centre(wx.HORIZONTAL)
+        self.progress_bar.Pulse()
 
 
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
@@ -1212,7 +1236,7 @@ class wx_python_gui:
             thread_ia.start()
             
             while thread_ia.is_alive():
-                self.progress_bar.Pulse()
+                self.pulse_alternative(self.progress_bar)
                 wx.GetApp().Yield()
             available_installers = self.available_installers
         else:
@@ -1432,8 +1456,8 @@ class wx_python_gui:
         self.verifying_chunk_label.Centre(wx.HORIZONTAL)
         thread_install = threading.Thread(target=installer.install_macOS_installer, args=(self.constants.payload_path,))
         thread_install.start()
+        self.progress_bar.Pulse()
         while thread_install.is_alive():
-            self.progress_bar.Pulse()
             wx.App.Get().Yield()
         
         self.progress_bar.SetValue(self.progress_bar.GetRange())

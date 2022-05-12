@@ -38,6 +38,7 @@ class generate_defaults:
                 settings.secure_status = False
                 settings.sip_status = False
                 settings.allow_fv_root = True
+                settings.host_is_non_metal = True
             if settings.computer.gpus: 
                 for gpu in settings.computer.gpus:
                     if gpu.arch == device_probe.NVIDIA.Archs.Kepler:
