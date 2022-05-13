@@ -62,7 +62,7 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
   * Logic: Sets AppleBackLight properties
   * Models: iMac11,x and iMac12,x with upgraded Nvidia Metal GPUs
 * `PciRoot(0x0)/Pci(0x2,0x0)`
-  * Reason: Disables internal GPU to fix sleep issues on upgrades iMacs
+  * Reason: Disables internal GPU to fix sleep issues on upgraded iMacs
   * Logic: Tricks macOS into thinking iGPU is a generic PCI device
   * Models: iMac12,x with upgraded Metal GPUs
 
@@ -96,7 +96,7 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
 
 ### Kernel -> Quirks
 
-* ThridPartyDrives
+* ThirdPartyDrives
   * Reason: Required to avoid Hibernation wake issues on 3rd party drives
   * Logic: Patches AppleAHCIPort.kext into support
   * Models: All models with standard SATA ports
@@ -114,7 +114,7 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
 
 ### NVRAM -> Add
 
-* `-v debug=0x100`
+* `-v keepsyms=1 debug=0x100`
   * Reason: Used to see debug info of macOS's kernel and kexts, and avoids reboots on panic
   * Logic: Adds args to NVRAM
   * Models: Only set when Verbose Boot is enabled by the user
@@ -135,6 +135,10 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
   * Reason: Fixes DRM support on models with upgraded AMD Metal GPUs
   * Logic: Adds args to NVRAM
   * Models: Models with upgraded AMD Metal GPUs
+* `-revasset`
+  * Reason: Enables Content Caching when using VMM spoofing
+  * Logic: Adds args to NVRAM
+  * Models: Any model using VMM spoofing
 
 ### UEFI -> ProtocolOverrides
 
@@ -165,6 +169,18 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 * AirportBrcmFixup
   * Reason: Patches IO80211 and co to fix networking support for unsupported cards, and fix bugs on native ones as well (ie. random degraded network performance)
   * Models: BCM943224, BCM94331, BCM94360 and BCM943602
+* BlueToolFixup
+  * Reason: Patches BlueTool to enable bluetooth functionality on Monterey
+  * Models: All models with pre-BCM94360 wireless cards or 3rd-party chipsets
+* Bluetooth-Spoof
+  * Reason: Injects extra data into certain bluetooth chipsets for recognition by the system 
+  * Models: Models with the BCM2070 or BCM2046 chipsets
+* FeatureUnlock (Night Shift)
+  * Reason: Patches CoreBrightness.framework to enable Night Shift on unsupported models
+  * Models: 2011 or older
+* FeatureUnlock (Sidecar/AirPlay)
+  * Reason: Patches SidecarCore.framework and AirPlaySupport.framework to enable Sidecar and AirPlay to Mac on unsupported models
+  * Models: All models with Metal capable GPUs
 * RestrictEvents
   * Reason: Disables memory errors on MacPro7,1
   * Models: Mac Pros and Xserves
@@ -194,7 +210,7 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
   * Reason: Translates SSE4.2 instructions to compatible code for SSE4,1 CPUs, required for AMD Metal drives
   * Models: MacPro3,1
 * telemetrap
-  * Reason: Ensures temelemtry.plugin doesn't run, required for SSE4,1 CPUs
+  * Reason: Ensures telemetry.plugin doesn't run, required for SSE4,1 CPUs
   * Models: Penryn CPUs
 
 ### Wifi
@@ -219,9 +235,6 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 * AppleIntelMCEDisabler
   * Reason: Fix dual socket support in Catalina and newer
   * Models: Mac Pros and Xserves
-* NightShiftEnabler
-  * Reason: Enables NightShift support on unsupported models
-  * Models: 2011 and older, MacBookPro9,x included
 * SMC-Spoof
   * Reason: Spoofs SMC version to 9.9999
   * Models: All models require when spoofing minimal or higher
