@@ -8,6 +8,7 @@ import enum
 import itertools
 import subprocess
 import plistlib
+from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type, Union
 
@@ -475,6 +476,8 @@ class Computer:
     third_party_sata_ssd: Optional[bool] = False
     secure_boot_model: Optional[str] = None
     secure_boot_policy: Optional[int] = None
+    oclp_sys_version: Optional[str] = None
+    oclp_sys_date: Optional[str] = None
 
     @staticmethod
     def probe():
@@ -492,6 +495,7 @@ class Computer:
         computer.bluetooth_probe()
         computer.ambient_light_sensor_probe()
         computer.sata_disk_probe()
+        computer.oclp_sys_patch_probe()
         return computer
 
     def gpu_probe(self):
@@ -734,4 +738,14 @@ class Computer:
                     # - SATA Optical Disk Drives don't report 'spsata_medium_type'
                     # - 'spsata_physical_interconnect' was not introduced till 10.9
                     continue
-        
+    
+    def oclp_sys_patch_probe(self):
+        path = Path("/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist")
+        if path.exists():
+            sys_plist = plistlib.load(path.open("rb"))
+            if sys_plist:
+                try:
+                    self.oclp_sys_version = sys_plist["OpenCore Legacy Patcher"]
+                    self.oclp_sys_date = sys_plist["Time Patched"]
+                except KeyError:
+                    pass
