@@ -112,7 +112,7 @@ If you built OpenCore with Moderate or higher SMBIOS spoofing, you'll get an err
 
 If needed, you can run it from the command line as administrator:
 
-```cmd
+```
 set __COMPAT_LAYER=WIN7RTM && start \path\to\BootCamp\Drivers\Apple\Bootcamp.msi'
 ```
 
