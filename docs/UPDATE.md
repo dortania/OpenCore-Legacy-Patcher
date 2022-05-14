@@ -17,6 +17,6 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:OCLP-Version
 ```
 
-![](../images/OCLP-Version.png)
+![](../images/oclp-version.png)
 
 From this, we can see we're running a RELEASE version of OpenCore 0.6.8 built on March 27th, 2021 with Patcher Version 0.0.20!
