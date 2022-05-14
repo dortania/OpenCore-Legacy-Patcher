@@ -60,7 +60,7 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
 * `PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)`
   * Reason: Required to ensure Brightness Control works on upgraded iMacs
   * Logic: Sets AppleBackLight properties
-  * Models: iMac11,x and iMac12,x with upgraded Nvidia Metal GPUs
+  * Models: iMac11,x and iMac12,x with upgraded NVIDIA Metal GPUs
 * `PciRoot(0x0)/Pci(0x2,0x0)`
   * Reason: Disables internal GPU to fix sleep issues on upgraded iMacs
   * Logic: Tricks macOS into thinking iGPU is a generic PCI device
@@ -188,8 +188,8 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 ### Ethernet
 
 * nForceEthernet
-  * Reason: Inject old Nvidia Ethernet kext to resolve networking in Catalina and newer
-  * Models: 2010 and older Nvidia Ethernet require
+  * Reason: Inject old NVIDIA Ethernet kext to resolve networking in Catalina and newer
+  * Models: 2010 and older NVIDIA Ethernet require
 * MarvelYukonEthernet
   * Reason: Inject old Marvel Ethernet kext to resolve networking in Catalina and newer
   * Models: 2008 and older Marvel Ethernet require
@@ -227,8 +227,8 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 ### Misc
 
 * AppleBackLightFixup
-  * Reason: Patch AppleBacklight for iMacs with Nvidia Metal GPU upgrades
-  * Models: iMac11,x, iMac12,x with upgraded Nvidia Metal GPUs
+  * Reason: Patch AppleBacklight for iMacs with NVIDIA Metal GPU upgrades
+  * Models: iMac11,x, iMac12,x with upgraded NVIDIA Metal GPUs
 * AppleIntelPIIXATA
   * Reason: Fix IDE support on MacPro3,1
   * Models: MacPro3,1
@@ -268,7 +268,7 @@ Applicable for BCM94328, BCM94322 and Atheros Wifi cards
 
 :::
 
-::: details Nvidia Kepler Graphics Acceleration Patches (12.0+)
+::: details NVIDIA Kepler Graphics Acceleration Patches (12.0+)
 
 ### Extensions
 
@@ -329,7 +329,7 @@ Applicable for BCM94328, BCM94322 and Atheros Wifi cards
 
 #### Dropped Acceleration Binaries
 
-* Nvidia Binaries
+* NVIDIA Binaries
   * GeForceGA.bundle
   * GeForceTesla.kext
     * Skip IOFree Panic - Mojave+

@@ -22,12 +22,14 @@ For those unfamiliar with what is considered a non-Metal GPU, see below chart:
 
 ::: details macOS GPU Chart
 
+Metal is Apple's in-house graphics API that acts as a replacement for OpenGL/OpenCL, introduced in 2015. With the release of macOS Mojave, every system without a Metal-capable GPU was dropped. 
+
 | Graphics Vendor | Architecture | Series | Supports Metal |
 | :--- | :--- | :--- | :--- |
 | ATI | TeraScale 1 | HD2000 - HD4000 | <span style="color:red">No</span> |
 | ^^ | TeraScale 2 | HD5000 - HD6000 | ^^ |
 | AMD | GCN (and newer) | HD7000+ | <span style="color:green">Yes</span> |
-| Nvidia | Tesla | 8000GT - GT300 |  <span style="color:red">No</span> |
+| NVIDIA | Tesla | 8000GT - GT300 |  <span style="color:red">No</span> |
 | ^^ | Fermi | GT400 - GT500 | ^^ | 
 | ^^ | Kepler | GT600 - GT700 | <span style="color:green">Yes</span> |
 | Intel | GMA | GMA900 - GMA3000 | <span style="color:red">No</span> |

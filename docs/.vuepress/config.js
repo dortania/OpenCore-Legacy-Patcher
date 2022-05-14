@@ -97,7 +97,7 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-				'MONTEREY-DROP',
+				['MONTEREY-DROP', 'macOS Monterey Support'],
             ]
         },
         {
@@ -129,6 +129,7 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
+				'ISSUES-HOLD',
 				'TESTED',
 				'TERMS',
 				'HOW',

@@ -22,11 +22,12 @@ To do this, run the OpenCore Patcher and head to Patcher Settings:
 
 | GUI Settings | TUI Settings
 | :--- | :--- |
-|![](../images/OCLP-GUI-Settings-ShowPicker.png) | ![](../images/settings.png) |
+|![](../images/OCLP-GUI-Settings-ShowPicker.png) | ![](../images/OCLP-TUI-Settings.png) |
 
 Here you can change different patcher settings, however the main interest is:
 
-* Set ShowPicker Mode
+* Show Boot Picker (GUI)
+* Set ShowPicker Mode (TUI)
 
 Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, then you can release the "ESC" key when you see the cursor arrow at the top left.
 
@@ -48,19 +49,20 @@ If you're unsure whether you should enable SIP, leave as-is. Systems where you h
 
 ## Applying Post Install Volume Patches
 
-For users with unsupported GPUs/wifi cards, you'll need to run the Post Install Root Volume patches to regain functionality. See below on whether your hardware needs root volume patching. 
+Users with OCLP v0.4.4 or higher will be prompted to install these patches after installation or whenever patches are not detected on the system. We recommend rebuilding OpenCore with the latest version of OCLP to take advantage of these new features.
 
-* Hint: Try running the root volume patch option, the Patcher will determine and install patches only when required. So there is no harm in applying them
+### Running Post Install patches manually
 
+If you're using OCLP v0.4.3 or earlier, or need to run the patcher manually, you can do so with the app. There is no harm in trying to run the Patcher, as without compatible hardware nothing will be done. You can see below on whether your hardware needs root volume patching. 
 
 | Listing Patches | Patching Finished |
 | :--- | :--- |
-| ![](../images/OCLP-GUI-Root-Patching-List.png) | ![](../images/OCLP-GUI-Root-Patching-Finished.png) |
+| ![](../images/OCLP-GUI-Root-Patch.png) | ![](../images/OCLP-GUI-Root-Patch-Finished.png) |
 
 
 ::: warning
 
-Root Patching requires a network connection by default to grab associated resources. If your system is having difficulties with wifi or ethernet, grab the Offline variants of the patcher on Github next to the regular apps:
+With OpenCore Legacy Patcher versions prior to v0.4.4, Root Patching requires a network connection by default to grab associated resources. If your system is having difficulties with wifi or ethernet, you can grab the newest release :
 
 * [OpenCore Legacy Patcher releases](https://github.com/dortania/OpenCore-Legacy-Patcher/releases/latest)
 
@@ -68,7 +70,7 @@ Root Patching requires a network connection by default to grab associated resour
 
 ::: details Unsupported GPUs in macOS Big Sur
 
-* Nvidia:
+* NVIDIA:
   * Tesla (8000 - 300 series)
 * AMD:
   * TeraScale (2000 - 6000 series)
@@ -80,7 +82,7 @@ Root Patching requires a network connection by default to grab associated resour
 
 ::: details Unsupported GPUs in macOS Monterey
 
-* Nvidia:
+* NVIDIA:
   * Tesla (8000 - 300 series)
   * Kepler (600 - 800 series)
 * AMD:

@@ -1,7 +1,5 @@
 # Download and build macOS Installers
 
-* [Creating the installer](#creating-the-installer)
-
 This doc is centered around downloading and writing the macOS installer to a USB. If you're already familiar with how to do this, you can skip.
 
 * Note: 16GB+ USB will be required for the installer

@@ -65,6 +65,21 @@ The open terminal and run `rsync` on the USB drive (replace CCCOMA_X64 with the 
 rsync -r -P /Volumes/CCCOMA_X64/ /Volumes/W10USB
 ```
 
+::: details If you get an error about install.wim
+
+One of the files, `install.wim`, may be too big for the FAT32 file system to hold. If this is the case, you should enter the commands below rather than the one above. This assumes you have `wimlib` installed, if not you can install it with [Homebrew](https://brew.sh):
+
+```
+# Copy everything but the install.wim file
+rsync -vha -P --exclude=sources/install.wim /Volumes/CCCOMA_X64/ /Volumes/W10USB
+
+# Use wimlib to split the install.wim file into a size that fits
+wimlib-imagex split /Volumes/CCCOMA_X64/sources/install.wim /Volumes/W10USB/sources/install.swm 4000
+``` 
+
+Once that's completed, you can continue.
+:::
+
 ![](../images/rsync-progess.png)
 
 Command will take some time, so sit back and get some coffee. Once finished, the root of the USB drive should look as follows:
@@ -79,14 +94,34 @@ Once done, lets reboot into OpenCore's Menu and you'll see a new Windows' entry:
 
 ![](../images/oc-windows.png)
 
-From there, install Windows as normal and you'll get a new BootCamp entry in OpenCore's picker when done!
-
-* Don't forget to run BootCamp's utilities installer as well to ensure Wifi and such are functioning correctly. This can be downloaded from the BootCamp Assistant app in macOS
+From there, install Windows as normal and you'll get a new BootCamp entry in OpenCore's picker when done! Don't forget to run BootCamp's utilities installer as well to ensure Wifi and such are functioning correctly. This can be downloaded from the BootCamp Assistant app in macOS, or with [brigadier](https://github.com/timsutton/brigadier) in Windows.
 
 ![](../images/oc-windows-done.png)
 
 ## Troubleshooting
 
+### "This version of Boot Camp is not intended for this computer model."
+
+If you built OpenCore with Moderate or higher SMBIOS spoofing, you'll get an error when trying to install Boot Camp drivers. You can solve this by either rebuilding OpenCore with a lower spoof level, or running the installer from `Drivers/Apple/BootCamp.msi`.
+
+| Setup.exe | BootCamp.msi |
+| :--- | :--- |
+| ![](../images/windows-bootcamp-error.png) | ![](../images/windows-bootcamp-msi.png) |
+
+::: details BootCamp.msi quirks
+
+If needed, you can run it from the command line as administrator:
+
+```cmd
+set __COMPAT_LAYER=WIN7RTM && start \path\to\BootCamp\Drivers\Apple\Bootcamp.msi'
+```
+
+Make sure to substitute `\path\to` with the location of the BootCamp folder.
+
+You can also open `Properties` on the file to change the compatibility to `Previous version of Windows` in case you have BootCamp 4.0 drivers (the above command does this already.)
+
+:::
+
 ### iMac12,x Bluescreen after driver installation
 
-Currently Intel's iGPU drivers for the HD 3000 series do not support UEFI booting in Windows. Recommended solution is to simply disable: [iMac 12,1 Windows 10 Boot Loop – Fix Intel Graphics issue](https://zzq.org/?p=39)
+Currently Intel's iGPU drivers for the HD 3000 series do not support UEFI booting in Windows. The recommended solution is to simply disable: [iMac 12,1 Windows 10 Boot Loop – Fix Intel Graphics issue](https://zzq.org/?p=39)

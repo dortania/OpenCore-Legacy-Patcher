@@ -34,6 +34,10 @@ From there, you'll have a log on your desktop.
 
 ## Filing an issue with us
 
+::: warning
+Currently issues have been disabled due to [current events](ISSUES-HOLD.md). You can continue to receive support in the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN), where there are active members of the community available.
+:::
+
 Now that you have proper logs, you can now [file issues with us](https://github.com/dortania/OpenCore-Legacy-Patcher/issues). Reminder we want the following info:
 
 * Model patching for (ie. MacBookPro10,1)

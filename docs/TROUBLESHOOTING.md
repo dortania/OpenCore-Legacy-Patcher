@@ -13,7 +13,7 @@ Here are some common errors users may experience while using this patcher:
 * [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-Wi-Fi-on-Monterey-with-legacy-cards)
 * [No Graphics Acceleration](#no-graphics-acceleration)
 * [Black Screen on MacBookPro11,3 in macOS Monterey](#black-screen-on-macbookpro113-in-macos-monterey)
-* [No DisplayPort Output on Mac Pros with Nvidia Kepler](#no-displayport-output-on-mac-pros-with-nvidia-kepler)
+* [No DisplayPort Output on Mac Pros with NVIDIA Kepler](#no-displayport-output-on-mac-pros-with-NVIDIA-kepler)
 * [Volume Hash Mismatch Error in macOS Monterey](#volume-hash-mismatch-error-in-macos-monterey)
 * [Cannot Disable SIP in recoveryOS](#cannot-disable-sip-in-recoveryos)
 * [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
@@ -86,19 +86,17 @@ To work-around, we recommend users to manually connect using the "other" option 
 ## No Graphics Acceleration
 
 
-In macOS, each release generally means GPU drivers are dropped from the OS. With macOS Big Sur, currently all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and Nvidia Kepler. 
+In macOS, each release generally means GPU drivers are dropped from the OS. With macOS Big Sur, currently all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and NVIDIA Kepler. 
 
-To re-enable acceleration, simply run the Post Install Root Volume patches.
-
-Once rebooted, acceleration will be re-enabled as well as brightness control for laptops.
+If you're using OCLP v0.4.4, you should have been prompted to install Root Volume patches after first boot from installation of macOS. If you need to do this manually, you can within our app. Once rebooted, acceleration will be re-enabled as well as brightness control for laptops.
 
 ## Black Screen on MacBookPro11,3 in macOS Monterey
 
-Due to Apple dropping Nvidia Kepler support in macOS Monterey, [MacBookPro11,3's GMUX has difficulties switching back to the iGPU to display macOS correctly.](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/522) To work-around this issue, boot the MacBookPro11,3 in Safe Mode and once macOS is installed, run OCLP's Post Install Root Patches to enable GPU Acceleration for the Nvidia dGPU.
+Due to Apple dropping NVIDIA Kepler support in macOS Monterey, [MacBookPro11,3's GMUX has difficulties switching back to the iGPU to display macOS correctly.](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/522) To work-around this issue, boot the MacBookPro11,3 in Safe Mode and once macOS is installed, run OCLP's Post Install Root Patches to enable GPU Acceleration for the NVIDIA dGPU.
 
 * Safe Mode can be started by holding Shift+Enter when selecting macOS Monterey in OCLP's Boot Menu.
 
-## No DisplayPort Output on Mac Pros with Nvidia Kepler
+## No DisplayPort Output on Mac Pros with NVIDIA Kepler
 
 If you're having troubles with DisplayPort output on Mac Pros, try enabling Minimal Spoofing in Settings -> SMBIOS Settings and rebuild/install OpenCore. This will trick macOS drivers into thinking you have a newer MacPro7,1 and play nicer.
 
@@ -108,7 +106,9 @@ If you're having troubles with DisplayPort output on Mac Pros, try enabling Mini
 
 A semi-common popup some users face is the "Volume Hash Mismatch" error:
 
-![](../images/Hash-Mismatch.png)
+<p align="center">
+<img src="../images/Hash-Mismatch.png">
+</p>
 
 What this error signifies is that the OS detects the boot volume's hash does not match to what the OS detects, this error is generally cosmetic and can be ignored. However if your system starts to crash spontaneously shortly after, you'll want to reinstall macOS fresh without importing any data at first.
 
@@ -139,6 +139,6 @@ Because of this, we recommend placing a USB 2.0/3.0 hub between your devices and
 
 ## Stuck on "Less than a minute remaining..."
 
-A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this stange a lot of heavy cryptography is performed, which can make systems appear to be stuck when in reality they are working quite hard to finish up the installation.
+A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this stange a lot of heavy cryptography is performed, which can make systems appear to be stuck when in reality they are working quite hard to finish up the installation. 
 
-Be patient at this stage, do not manually reboot your machine. This will break the installation and require you to reinstall.
+Because this step can take a few hours or more depending on drive speeds, be patient at this stage and do not manually reboot your machine as this will break the installation and require you to reinstall. If you think your system has stalled, press the Caps Lock key. If the light turns on, your system is busy.

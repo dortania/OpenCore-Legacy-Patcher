@@ -7,7 +7,7 @@ This is a sophisticated boot loader used to inject and patch data in memory, ins
 
 ## How do I get started?
 
-1. The first step of ensuring whether your model is support is checking here:
+1. The first step of ensuring whether your model is supported is checking here:
 
 * [Supported Models](./MODELS.md)
 
