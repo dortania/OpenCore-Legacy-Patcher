@@ -124,7 +124,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | Pri-est | Unknown | 0.0.9 | ^^ |
 | ^^ | ^^ | vinaypundith | Upgraded GTX 680<br/>Upgraded BCM94360CD | 0.0.6 | ^^ |
 | ^^ | ^^ | ParaDoX1994 | Upgraded HD 7950<br/>Stock Bluetooth card removed | 0.4.4 | ^^ |
-| MacPro4,1 | ^^ | ^^ | Unknown | 0.0.9 | ^^ |
+| MacPro4,1 | ^^ | vinaypundith | Unknown | 0.0.9 | ^^ |
 | MacPro5,1 | ^^ | woefi | Upgraded with RX 580 | 0.0.21 | ^^ |
 | ^^ | ^^ | Mabrouk Oscar | Unknown | ^^ | ^^ |
 | ^^ | ^^ | astuffedtiger | MacPro4,1 flashed to 5,1 | 0.0.18 | ^^ |
