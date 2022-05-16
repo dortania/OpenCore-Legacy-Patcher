@@ -24,6 +24,7 @@
   - Add GUI Prompt for booting mismatched OpenCore configs
     - ex. Booting MacBookPro8,1 config on MacBookPro11,1
   - Add Checksum verification to InstallAssistant.pkg download
+  - Fix showing latest 12.4 remote installers
 - Add error handling to non-standard/malformed OpenCore Boot Path
 - Non-Metal Enhancements:
   - Add work-around to double clock bug introduced in macOS 12.4

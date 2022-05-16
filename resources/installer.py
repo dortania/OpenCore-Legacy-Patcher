@@ -196,6 +196,7 @@ def only_list_newest_installers(available_apps):
                         remote_version.pop(0)
                     if int(remote_version[0]) > remote_version_minor:
                         remote_version_minor = int(remote_version[0])
+                        remote_version_security = 0 # Reset as new minor version found
                     if len(remote_version) > 1:
                         if int(remote_version[1]) > remote_version_security:
                             remote_version_security = int(remote_version[1])
