@@ -85,7 +85,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
                 "Processes": {
                     # 'When Space Allows' option introduced in 12.4 (XNU 21.5)
-                    **({"defaults write com.apple.menuextra.clock ShowDate -int 1": False } if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 4, os_major, os_minor) else {}),
+                    **({"defaults write /Library/Preferences/.GlobalPreferences.plist ShowDate -int 1": True } if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 4, os_major, os_minor) else {}),
                 },
             },
             "Non-Metal IOAccelerator Common": {

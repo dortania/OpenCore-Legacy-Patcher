@@ -213,11 +213,12 @@ class PatchSysVolume:
                 for process in required_patches[patch]["Processes"]:
                     # Some processes need sudo, however we cannot directly call sudo in some scenarios
                     # Instead, call elevated funtion is string's boolean is True
-                    process_array = process.split(" ")
                     if required_patches[patch]["Processes"][process] is True:
-                        utilities.process_status(utilities.elevated(process_array, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                        print(f"- Running Process as Root:\n{process}")
+                        utilities.process_status(utilities.elevated(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
                     else:
-                        utilities.process_status(subprocess.run(process_array, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                        print(f"- Running Process:\n{process}")
+                        utilities.process_status(subprocess.run(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
         self.write_patchset(required_patches)
 
     def preflight_checks(self, required_patches, source_files_path):
