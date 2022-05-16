@@ -881,6 +881,36 @@ class wx_python_gui:
                             )
                         )
                         i = i + self.patch_label.GetSize().height + 3
+            else:
+                if self.constants.computer.oclp_sys_version and self.constants.computer.oclp_sys_date:
+                    date = self.constants.computer.oclp_sys_date.split(" @")
+                    if len(date) == 2:
+                        date = date[0]
+                    else:
+                        date = ""
+                    patch_text = f"{self.constants.computer.oclp_sys_version}, {date}"
+
+                    self.patch_label = wx.StaticText(self.frame, label="Root Volume last patched:")
+                    self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+                    self.patch_label.SetPosition(
+                        wx.Point(
+                            self.subheader.GetPosition().x,
+                            self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
+                        )
+                    )
+                    self.patch_label.Centre(wx.HORIZONTAL)
+                    i = i + self.patch_label.GetSize().height + 3
+
+                    self.patch_label = wx.StaticText(self.frame, label=patch_text)
+                    self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+                    self.patch_label.SetPosition(
+                        wx.Point(
+                            self.subheader.GetPosition().x + 20,
+                            self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
+                        )
+                    )
+                    self.patch_label.Centre(wx.HORIZONTAL)
+                    i = i + self.patch_label.GetSize().height + 3
         else:
             # Prompt user with no patches found
             self.patch_label = wx.StaticText(self.frame, label="No patches needed")
