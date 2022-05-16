@@ -545,34 +545,6 @@ be prepared if enabling.
         else:
             self.allow_wowl()
 
-    def allow_ivy(self):
-        utilities.cls()
-        utilities.header(["Allow Ivy iMac iGPU"])
-        print(
-            """
-For iMac13,x systems with a Nvidia dGPU, the iGPU is disabled by default to
-allow Delta Updates, FileVault, SIP and such on macOS Monterey. However due to
-this, DRM and QuickSync support may be broken.
-
-Users can choose to override this option but be aware SIP must be
-disabled to run root patches to fix DRM and QuickSync.
-
-Note: This does not apply for Big Sur, the iGPU can be renabled without
-consequence
-Note 2: This setting only affects iMac13,x with dGPUs
-        """
-        )
-
-        change_menu = input("Allow Ivy iMac iGPU?(y/n/q): ")
-        if change_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.allow_ivy_igpu = True
-        elif change_menu in {"n", "N", "no", "No"}:
-            self.constants.allow_ivy_igpu = False
-        elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
-        else:
-            self.allow_ivy()
-
 
     def disable_tb(self):
         utilities.cls()
@@ -1168,7 +1140,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             options = [
                 [f"Set ShowPicker Mode:\tCurrently {self.constants.showpicker}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_showpicker],
                 [f"Set Wake on WLAN:\t\tCurrently {self.constants.enable_wake_on_wlan}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_wowl],
-                [f"Set Ivy iMac iGPU:\t\tCurrently {self.constants.allow_ivy_igpu}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).allow_ivy],
                 [
                     f"Set TeraScale 2 Accel:\tCurrently {self.constants.allow_ts2_accel}",
                     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).terascale_2_accel,
