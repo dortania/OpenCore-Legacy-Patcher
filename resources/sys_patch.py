@@ -215,7 +215,7 @@ class PatchSysVolume:
                     # Instead, call elevated funtion is string's boolean is True
                     if required_patches[patch]["Processes"][process] is True:
                         print(f"- Running Process as Root:\n{process}")
-                        utilities.process_status(utilities.elevated(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
+                        utilities.process_status(utilities.elevated(process.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
                     else:
                         print(f"- Running Process:\n{process}")
                         utilities.process_status(subprocess.run(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
