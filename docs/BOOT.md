@@ -14,9 +14,14 @@ Now that you've loaded OpenCore, now select Install macOS:
 
 ![](../images/oc-boot.png)
 
-After plenty of verbose booting, you will reach the installer screen! From there it's just like any normal macOS install. For an example of how the boot process looks, see the following video:
+You will soon reach the installer screen! If you enabled verbose mode when building OCLP, a lot of text will run across the screen. From there it's just like any normal macOS install. For an example of how the boot process looks, see the following video:
 
 * [OpenCore Legacy Patcher Boot Process](https://www.youtube.com/watch?v=AN3zsbQV_n4)
+
+If your Mac is looping back into the beginning of the setup after the first reboot, turn it off, start it again and hold `Option`. This time select the option with a grey hard disk icon, it can say "macOS Installer" or the name you gave the disk during the installer process. Keep repeating this step after every reboot if necessary.
+
+![](../images/oclp-stuck-firstreboot.png)
+
 
 ::: warning 
 
@@ -25,3 +30,4 @@ After plenty of verbose booting, you will reach the installer screen! From there
 :::
 
 # Once installed and booting, head to [Post-Installation](./POST-INSTALL.md)
+
