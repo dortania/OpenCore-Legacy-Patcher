@@ -28,6 +28,11 @@
 - Add error handling to non-standard/malformed OpenCore Boot Path
 - Non-Metal Enhancements:
   - Add work-around to double clock bug introduced in macOS 12.4
+  - Resolve non-functioning Dismiss buttons bug introduced in macOS 12.4
+  - Refresh Status Bar when item length changes
+  - Add smoother transition for auto appearance
+- Increment Binaries:
+  - PatcherSupportPkg 0.4.1 - release
 
 ## 0.4.4
 - Lower SIP requirement for Root Patching
