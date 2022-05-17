@@ -1452,30 +1452,33 @@ class wx_python_gui:
             # Fail gracefully and just head to installing the IA.
             apple_integrity_file = str(integrity_path)
             chunks = integrity_verification.generate_chunklist_dict(str(apple_integrity_file))
-            max_progress = len(chunks)
-            self.progress_bar.SetValue(0)
-            self.progress_bar.SetRange(max_progress)
+            if chunks:
+                max_progress = len(chunks)
+                self.progress_bar.SetValue(0)
+                self.progress_bar.SetRange(max_progress)
 
-            wx.App.Get().Yield()
-            # See integrity_verification.py for more information on the integrity verification process
-            with Path(self.constants.payload_path / Path("InstallAssistant.pkg")).open("rb") as f:
-                for chunk in chunks:
-                    status = hashlib.sha256(f.read(chunk["length"])).digest()
-                    if not status == chunk["checksum"]:
-                        print(f"Chunk {chunks.index(chunk) + 1} checksum status FAIL: chunk sum {binascii.hexlify(chunk['checksum']).decode()}, calculated sum {binascii.hexlify(status).decode()}")
-                        self.popup = wx.MessageDialog(
-                        self.frame,
-                            f"We've found that Chunk {chunks.index(chunk) + 1} of {len(chunks)} has failed the integrity check.\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)",
-                            "Corrupted Installer!",
-                            style = wx.OK | wx.ICON_EXCLAMATION
-                        )
-                        self.popup.ShowModal()
-                        self.main_menu()
-                        break
-                    else:
-                        self.progress_bar.SetValue(self.progress_bar.GetValue() + 1)
-                        self.verifying_chunk_label.SetLabel(f"Verifying Chunk {self.progress_bar.GetValue()} of {max_progress}")
-                        wx.App.Get().Yield()
+                wx.App.Get().Yield()
+                # See integrity_verification.py for more information on the integrity verification process
+                with Path(self.constants.payload_path / Path("InstallAssistant.pkg")).open("rb") as f:
+                    for chunk in chunks:
+                        status = hashlib.sha256(f.read(chunk["length"])).digest()
+                        if not status == chunk["checksum"]:
+                            print(f"Chunk {chunks.index(chunk) + 1} checksum status FAIL: chunk sum {binascii.hexlify(chunk['checksum']).decode()}, calculated sum {binascii.hexlify(status).decode()}")
+                            self.popup = wx.MessageDialog(
+                            self.frame,
+                                f"We've found that Chunk {chunks.index(chunk) + 1} of {len(chunks)} has failed the integrity check.\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)",
+                                "Corrupted Installer!",
+                                style = wx.OK | wx.ICON_EXCLAMATION
+                            )
+                            self.popup.ShowModal()
+                            self.main_menu()
+                            break
+                        else:
+                            self.progress_bar.SetValue(self.progress_bar.GetValue() + 1)
+                            self.verifying_chunk_label.SetLabel(f"Verifying Chunk {self.progress_bar.GetValue()} of {max_progress}")
+                            wx.App.Get().Yield()
+            else:
+                print("Invalid integrity file provided")
         else:
             print("Failed to download integrity file, skipping integrity check.")
     

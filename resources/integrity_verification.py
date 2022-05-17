@@ -13,6 +13,7 @@ CHUNK_LENGTH = 4 + 32
 def generate_chunklist_dict(chunklist):
     chunklist = Path(chunklist).read_bytes() if isinstance(chunklist, str) else chunklist
 
+    # Ref: https://github.com/apple-oss-distributions/xnu/blob/xnu-8020.101.4/bsd/kern/chunklist.h#L59-L69
     header = {
         "magic":       chunklist[:4],
         "length":      int.from_bytes(chunklist[4:8], "little"),
@@ -24,6 +25,9 @@ def generate_chunklist_dict(chunklist):
         "sigOffset":   int.from_bytes(chunklist[28:36], "little")
     }
 
+    if header["magic"] != b"CNKL":
+        return None
+
     all_chunks = chunklist[header["chunkOffset"]:header["chunkOffset"]+header["chunkCount"]*CHUNK_LENGTH]
     chunks = [{"length": int.from_bytes(all_chunks[i:i+4], "little"), "checksum": all_chunks[i+4:i+CHUNK_LENGTH]} for i in range(0, len(all_chunks), CHUNK_LENGTH)]
 
@@ -32,6 +36,8 @@ def generate_chunklist_dict(chunklist):
 
 def chunk(file_path, chunklist, verbose):
     chunks = generate_chunklist_dict(chunklist)
+    if chunks is None:
+        return False
     with Path(file_path).open("rb") as f:
         for chunk in chunks:
             status = hashlib.sha256(f.read(chunk["length"])).digest()
