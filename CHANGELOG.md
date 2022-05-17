@@ -1,5 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.6
+- Fix Bluetooth support in 12.4 Release
+  - Fix backported to 0.4.4 release
+
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases
   - Fix backported to 0.4.4 release binaries
