@@ -2,6 +2,7 @@
 
 ## 0.4.6
 - Fix Bluetooth support in 12.4 Release
+  - Applicable for BCM2046 and BCM2070 chipsets
   - Fix backported to 0.4.4 release
 
 ## 0.4.5
