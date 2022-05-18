@@ -271,7 +271,7 @@ class detect_root_patch:
             required_patches.update({"Legacy WiFi": all_hardware_patchset["Networking"]["Legacy WiFi"]})
         if hardware_details["Miscellaneous: Legacy GMUX"] is True:
             required_patches.update({"Legacy GMUX": all_hardware_patchset["Miscellaneous"]["Legacy GMUX"]})
-        if hardware_details["Miscellaneous: Legacy Keyboard Backlight"]:
+        if hardware_details["Miscellaneous: Legacy Keyboard Backlight"] is True:
             required_patches.update({"Legacy Keyboard Backlight": all_hardware_patchset["Miscellaneous"]["Legacy Keyboard Backlight"]})
 
         if required_patches:
