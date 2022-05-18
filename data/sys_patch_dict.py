@@ -80,7 +80,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 "Install Non-Root": {
                     "/Library/Application Support/SkyLightPlugins": {
                         **({ "DropboxHack.dylib": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
-                        **({ "DropboxHack.txt": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
+                        **({ "DropboxHack.txt":   "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
                     },
                 },
                 "Processes": {
@@ -109,9 +109,10 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     },
                     "/System/Library/Frameworks": {
                         "IOSurface.framework": f"10.14.6-{os_major}",
+                        "OpenCL.framework":     "10.13.6",
                     },
                     "/System/Library/PrivateFrameworks": {
-                        "GPUSupport.framework":    "10.13.6",
+                        "GPUSupport.framework":     "10.13.6",
                         "IOAccelerator.framework": f"10.13.6-{os_major}",
                     },
                 },
@@ -367,9 +368,6 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "AMDRadeonVADriver2.bundle":     "10.13.6",
                         "AMDRadeonX3000.kext":           "10.13.6",
                         "AMDRadeonX3000GLDriver.bundle": "10.13.6",
-                    },
-                    "/System/Library/Frameworks": {
-                        "OpenCL.framework":    "10.13.6",
                     },
                 },
             },
