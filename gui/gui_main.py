@@ -823,8 +823,6 @@ class wx_python_gui:
         # Button: Start Root Patching
         # Button: Revert Root Patches
         # Button: Return to Main Menu
-        while self.constants.unpack_thread.is_alive():
-            time.sleep(0.1)
         self.frame.DestroyChildren()
 
         # Header
@@ -1010,7 +1008,22 @@ class wx_python_gui:
             )
         )
         self.developer_note.Centre(wx.HORIZONTAL)
-        self.frame.SetSize(-1, self.developer_note.GetPosition().y + self.developer_note.GetSize().height + 80)
+
+        self.progress_bar_new = wx.Gauge(self.frame, range=100, size=(200, 10))
+        self.progress_bar_new.SetPosition(
+            wx.Point(
+                self.developer_note.GetPosition().x,
+                self.developer_note.GetPosition().y + self.developer_note.GetSize().height + 10
+            )
+        )
+        self.progress_bar_new.SetValue(0)
+        self.progress_bar_new.Centre(wx.HORIZONTAL)
+        self.progress_bar_new.Pulse()
+
+        self.frame.SetSize(-1, self.progress_bar_new.GetPosition().y + self.progress_bar_new.GetSize().height + 60)
+        self.frame.Show()
+        while self.constants.unpack_thread.is_alive():
+            wx.GetApp().Yield()
 
         # Download resources
         sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
@@ -1154,6 +1167,8 @@ class wx_python_gui:
         sys.stdout = menu_redirect.RedirectText(self.text_box, True)
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
+        while self.constants.unpack_thread.is_alive():
+            time.sleep(0.1)
         try:
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_unpatch()
         except Exception as e:

@@ -1,6 +1,7 @@
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 from __future__ import print_function
+import plistlib
 
 import subprocess
 import sys
@@ -46,6 +47,7 @@ class OpenCoreLegacyPatcher:
         self.constants.launcher_script = launcher_script
         self.constants.unpack_thread = threading.Thread(target=self.reroute_payloads)
         self.constants.unpack_thread.start()
+
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
 
         if utilities.check_cli_args() is not None:
@@ -67,7 +69,7 @@ class OpenCoreLegacyPatcher:
             print("- Running in Binary GUI mode, switching to tmp directory")
             self.temp_dir = tempfile.TemporaryDirectory()
             print(f"- New payloads location: {self.temp_dir.name}")
-            # hdiutil create ./tmp.dmg -megabytes 32000 -ov -volname "payloads" -fs HFS+ -srcfolder ./payloads -megabytes 32000
+            # hdiutil create ./tmp.dmg -megabytes 32000 -format UDZO -ov -volname "payloads" -fs HFS+ -srcfolder ./payloads -passphrase password -encryption
             # hdiutil convert ./tmp.dmg -format UDZO -o payloads.dmg
 
             # hdiutil attach ./payloads.dmg -mountpoint tmp -nobrowse
@@ -76,7 +78,7 @@ class OpenCoreLegacyPatcher:
             print("- Creating payloads directory")
             Path(self.temp_dir.name / Path("payloads")).mkdir(parents=True, exist_ok=True)
 
-            use_zip = True
+            use_zip = False
             # unzip payloads.zip to payloads directory
 
             if use_zip is True:
@@ -86,22 +88,18 @@ class OpenCoreLegacyPatcher:
                     print(f"- Unzipped payloads.zip successfully: {self.temp_dir.name}")
                     self.constants.current_path = Path(self.temp_dir.name)
                     self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
-                    print(f"self.constants.current_path: {self.constants.current_path}")
-                    print(f"self.constants.payload_path: {self.constants.payload_path}")
                 else:
                     print("- Failed to unzip payloads.zip, skipping")
                     print(f"Output: {output.stdout.decode('utf-8')}")
                     print(f"Return code: {output.returncode}")
             else:
-                output = subprocess.run(["hdiutil", "attach", f"{self.constants.payload_path}.dmg", "-mountpoint", Path(self.temp_dir.name / Path("payloads")), "-nobrowse", "-shadow", Path(self.temp_dir.name / Path("payloads_overlay"))], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                self.clean_up()
+                output = subprocess.run(["hdiutil", "attach", f"{self.constants.payload_path}.dmg", "-mountpoint", Path(self.temp_dir.name / Path("payloads")), "-nobrowse", "-shadow", Path(self.temp_dir.name / Path("payloads_overlay")), "-passphrase", "password"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 if output.returncode == 0:
                     print("- Mounted payloads.dmg")
                     self.constants.current_path = Path(self.temp_dir.name)
                     self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
-                    print(f"self.constants.current_path: {self.constants.current_path}")
-                    print(f"self.constants.payload_path: {self.constants.payload_path}")
                     atexit.register(self.clean_up)
-
                 else:
                     print("- Failed to mount payloads.dmg")
                     print(f"Output: {output.stdout.decode()}")
@@ -110,17 +108,14 @@ class OpenCoreLegacyPatcher:
                     sys.exit(1)
 
     def clean_up(self):
-        output = subprocess.run(["hdiutil", "detach", f"{self.temp_dir.name}/payloads"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if output.returncode == 0:
-            print("- Unmounted payloads.dmg successfully")
-        else:
-            print("- Failed to unmount payloads.dmg, sleeping for 1 seconds and trying again")
-            time.sleep(1)
-            output = subprocess.run(["hdiutil", "detach", f"{self.temp_dir.name}/payloads"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            if output.returncode == 0:
-                print("- Unmounted payloads.dmg successfully")
-            else:
-                print("- Failed to unmount payloads.dmg, skipping")
+        # Grab info on all dmgs mounted
+        dmg_info = subprocess.run(["hdiutil", "info", "-plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        dmg_info = plistlib.loads(dmg_info.stdout)
+
+        for image in dmg_info["images"]:
+            if image["image-path"].endswith("payloads.dmg"):
+                print(f"- Unmounting payloads.dmg")
+                subprocess.run(["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def main_menu(self):
