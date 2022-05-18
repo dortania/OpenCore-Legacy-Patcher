@@ -29,3 +29,4 @@ __pycache__/
 /payloads/Universal-Binaries
 /payloads/OpenCore-Legacy-Patcher
 /payloads/InstallAssistant.pkg.integrityDataV1
+/payloads.dmg
