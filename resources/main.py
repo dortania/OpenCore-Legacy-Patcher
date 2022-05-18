@@ -4,7 +4,11 @@ from __future__ import print_function
 
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
+import atexit
+import time
+import threading
 
 from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers
 from data import model_array
@@ -40,7 +44,10 @@ class OpenCoreLegacyPatcher:
                 launcher_script = launcher_script.replace("/resources/main.py", "/OpenCore-Patcher-GUI.command")
         self.constants.launcher_binary = launcher_binary
         self.constants.launcher_script = launcher_script
+        self.constants.unpack_thread = threading.Thread(target=self.reroute_payloads)
+        self.constants.unpack_thread.start()
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
+
         if utilities.check_cli_args() is not None:
             print("- Detected arguments, switching to CLI mode")
             self.constants.gui_mode = True  # Assumes no user interaction is required
@@ -53,6 +60,66 @@ class OpenCoreLegacyPatcher:
             arguments.arguments().parse_arguments(self.constants)
         else:
             print(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
+
+    def reroute_payloads(self):
+        # if self.constants.launcher_binary and self.constants.wxpython_variant is True and not self.constants.launcher_script:
+        if True:
+            print("- Running in Binary GUI mode, switching to tmp directory")
+            self.temp_dir = tempfile.TemporaryDirectory()
+            print(f"- New payloads location: {self.temp_dir.name}")
+            # hdiutil create ./tmp.dmg -megabytes 32000 -ov -volname "payloads" -fs HFS+ -srcfolder ./payloads -megabytes 32000
+            # hdiutil convert ./tmp.dmg -format UDZO -o payloads.dmg
+
+            # hdiutil attach ./payloads.dmg -mountpoint tmp -nobrowse
+
+            # create payloads directory
+            print("- Creating payloads directory")
+            Path(self.temp_dir.name / Path("payloads")).mkdir(parents=True, exist_ok=True)
+
+            use_zip = False
+            # unzip payloads.zip to payloads directory
+
+            if use_zip is True:
+                print("- Unzipping payloads.zip")
+                output = subprocess.run(["unzip", "-o", "-q", "-d", self.temp_dir.name, f"{self.constants.payload_path}.zip"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                if output.returncode == 0:
+                    print(f"- Unzipped payloads.zip successfully: {self.temp_dir.name}")
+                    self.constants.current_path = Path(self.temp_dir.name)
+                    self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
+                    print(f"self.constants.current_path: {self.constants.current_path}")
+                    print(f"self.constants.payload_path: {self.constants.payload_path}")
+                else:
+                    print("- Failed to unzip payloads.zip, skipping")
+            else:
+                output = subprocess.run(["hdiutil", "attach", f"{self.constants.payload_path}.dmg", "-mountpoint", Path(self.temp_dir.name / Path("payloads")), "-nobrowse", "-shadow", Path(self.temp_dir.name / Path("payloads_overlay"))], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                if output.returncode == 0:
+                    print("- Mounted payloads.dmg")
+                    self.constants.current_path = Path(self.temp_dir.name)
+                    self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
+                    print(f"self.constants.current_path: {self.constants.current_path}")
+                    print(f"self.constants.payload_path: {self.constants.payload_path}")
+                    atexit.register(self.clean_up)
+
+                else:
+                    print("- Failed to mount payloads.dmg")
+                    print(f"Output: {output.stdout.decode()}")
+                    print(f"Return Code: {output.returncode}")
+                    print("- Exiting...")
+                    sys.exit(1)
+
+    def clean_up(self):
+        output = subprocess.run(["hdiutil", "detach", f"{self.temp_dir.name}/payloads"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if output.returncode == 0:
+            print("- Unmounted payloads.dmg successfully")
+        else:
+            print("- Failed to unmount payloads.dmg, sleeping for 1 seconds and trying again")
+            time.sleep(1)
+            output = subprocess.run(["hdiutil", "detach", f"{self.temp_dir.name}/payloads"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if output.returncode == 0:
+                print("- Unmounted payloads.dmg successfully")
+            else:
+                print("- Failed to unmount payloads.dmg, skipping")
+
 
     def main_menu(self):
         response = None

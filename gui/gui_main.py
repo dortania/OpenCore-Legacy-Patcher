@@ -563,6 +563,10 @@ class wx_python_gui:
     
     def build_start(self, event=None):
         self.build_opencore.Disable()
+
+        while self.constants.unpack_thread.is_alive():
+            time.sleep(0.1)
+
         build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
         # Once finished, change build_opencore button to "Install OpenCore"
         self.build_opencore.SetLabel("🔩 Install OpenCore")
@@ -819,6 +823,8 @@ class wx_python_gui:
         # Button: Start Root Patching
         # Button: Revert Root Patches
         # Button: Return to Main Menu
+        while self.constants.unpack_thread.is_alive():
+            time.sleep(0.1)
         self.frame.DestroyChildren()
 
         # Header

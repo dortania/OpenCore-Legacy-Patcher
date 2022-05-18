@@ -106,6 +106,7 @@ class Constants:
         self.launcher_script = None  #      Determine launch file (if run via Python)
         self.ignore_updates = False  #      Ignore OCLP updates
         self.wxpython_variant = False #     Determine if using wxPython variant
+        self.unpack_thread = None  #        Determine if unpack thread finished
 
         ## Hardware
         self.computer: device_probe.Computer = None  # type: ignore
