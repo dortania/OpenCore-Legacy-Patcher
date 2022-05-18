@@ -103,8 +103,9 @@ class wx_python_gui:
     
     def use_non_metal_alternative(self):
         if self.constants.detected_os >= os_data.os_data.monterey:
-            if self.constants.host_is_non_metal is True:
-                return True
+            if Path("/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/SkyLightOld.dylib").exists():
+                if self.constants.host_is_non_metal is True:
+                    return True
         return False
 
     def pulse_alternative(self, progress_bar):
@@ -1009,20 +1010,21 @@ class wx_python_gui:
         )
         self.developer_note.Centre(wx.HORIZONTAL)
 
-        self.progress_bar_new = wx.Gauge(self.frame, range=100, size=(200, 10))
-        self.progress_bar_new.SetPosition(
+        self.progress_bar = wx.Gauge(self.frame, range=100, size=(200, 10))
+        self.progress_bar.SetPosition(
             wx.Point(
                 self.developer_note.GetPosition().x,
                 self.developer_note.GetPosition().y + self.developer_note.GetSize().height + 10
             )
         )
-        self.progress_bar_new.SetValue(0)
-        self.progress_bar_new.Centre(wx.HORIZONTAL)
-        self.progress_bar_new.Pulse()
+        self.progress_bar.SetValue(0)
+        self.progress_bar.Centre(wx.HORIZONTAL)
+        self.progress_bar.Pulse()
 
-        self.frame.SetSize(-1, self.progress_bar_new.GetPosition().y + self.progress_bar_new.GetSize().height + 60)
+        self.frame.SetSize(-1, self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 60)
         self.frame.Show()
         while self.constants.unpack_thread.is_alive():
+            self.pulse_alternative(self.progress_bar)
             wx.GetApp().Yield()
 
         # Download resources
