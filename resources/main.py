@@ -76,12 +76,12 @@ class OpenCoreLegacyPatcher:
             print("- Creating payloads directory")
             Path(self.temp_dir.name / Path("payloads")).mkdir(parents=True, exist_ok=True)
 
-            use_zip = False
+            use_zip = True
             # unzip payloads.zip to payloads directory
 
             if use_zip is True:
                 print("- Unzipping payloads.zip")
-                output = subprocess.run(["unzip", "-o", "-q", "-d", self.temp_dir.name, f"{self.constants.payload_path}.zip"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                output = subprocess.run(["unzip",  "-P", "password", "-o", "-q", "-d", self.temp_dir.name, f"{self.constants.payload_path}.zip"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 if output.returncode == 0:
                     print(f"- Unzipped payloads.zip successfully: {self.temp_dir.name}")
                     self.constants.current_path = Path(self.temp_dir.name)
@@ -90,6 +90,8 @@ class OpenCoreLegacyPatcher:
                     print(f"self.constants.payload_path: {self.constants.payload_path}")
                 else:
                     print("- Failed to unzip payloads.zip, skipping")
+                    print(f"Output: {output.stdout.decode('utf-8')}")
+                    print(f"Return code: {output.returncode}")
             else:
                 output = subprocess.run(["hdiutil", "attach", f"{self.constants.payload_path}.dmg", "-mountpoint", Path(self.temp_dir.name / Path("payloads")), "-nobrowse", "-shadow", Path(self.temp_dir.name / Path("payloads_overlay"))], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 if output.returncode == 0:

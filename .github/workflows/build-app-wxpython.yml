@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: python3 create_offline_build.py
-      - run: zip -r payloads.zip payloads
+      - run: zip -P password -r payloads.zip payloads
       - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/pyinstaller OpenCore-Patcher-GUI.spec
       - run: python3 ./payloads/binary.py $branch $commiturl $commitdate
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
