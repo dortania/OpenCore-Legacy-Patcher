@@ -122,6 +122,30 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
+            "Non-Metal Enforcement": {
+                # Forces Metal kexts from High Sierra to run in the fallback non-Metal mode
+                # Verified functional with HD4000 and Iris Plus 655
+                # Only used for internal development purposes, not suitable for end users
+
+                # Note: Metal kexts in High Sierra rely on IOAccelerator, thus 'Non-Metal IOAccelerator Common'
+                # is needed for proper linking
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": non_metal_os_support[0],
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": non_metal_os_support[-1],
+                        "OS Minor": 99
+                    },
+                },
+                "Processes": {
+                    "defaults write /Library/Preferences/com.apple.CoreDisplay useMetal -boolean no": True,
+                    "defaults write /Library/Preferences/com.apple.CoreDisplay useIOP -boolean no":   True,
+                },
+            },
+
             "Metal Common": {
                 "Display Name": "",
                 "OS Support": {
