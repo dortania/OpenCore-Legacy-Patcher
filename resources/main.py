@@ -59,53 +59,39 @@ class OpenCoreLegacyPatcher:
                 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
                     print("- Rerouting payloads location")
                     self.constants.payload_path = sys._MEIPASS / Path("payloads")
+                print("- Waiting for payloads to unpack...")
+                while self.constants.unpack_thread.is_alive():
+                    time.sleep(0.1)
             arguments.arguments().parse_arguments(self.constants)
         else:
             print(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
 
     def reroute_payloads(self):
-        # if self.constants.launcher_binary and self.constants.wxpython_variant is True and not self.constants.launcher_script:
-        if True:
+        if self.constants.launcher_binary and self.constants.wxpython_variant is True and not self.constants.launcher_script:
             print("- Running in Binary GUI mode, switching to tmp directory")
             self.temp_dir = tempfile.TemporaryDirectory()
             print(f"- New payloads location: {self.temp_dir.name}")
-            # hdiutil create ./tmp.dmg -megabytes 32000 -format UDZO -ov -volname "payloads" -fs HFS+ -srcfolder ./payloads -passphrase password -encryption
-            # hdiutil convert ./tmp.dmg -format UDZO -o payloads.dmg
-
-            # hdiutil attach ./payloads.dmg -mountpoint tmp -nobrowse
-
-            # create payloads directory
             print("- Creating payloads directory")
             Path(self.temp_dir.name / Path("payloads")).mkdir(parents=True, exist_ok=True)
-
-            use_zip = False
-            # unzip payloads.zip to payloads directory
-
-            if use_zip is True:
-                print("- Unzipping payloads.zip")
-                output = subprocess.run(["unzip",  "-P", "password", "-o", "-q", "-d", self.temp_dir.name, f"{self.constants.payload_path}.zip"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                if output.returncode == 0:
-                    print(f"- Unzipped payloads.zip successfully: {self.temp_dir.name}")
-                    self.constants.current_path = Path(self.temp_dir.name)
-                    self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
-                else:
-                    print("- Failed to unzip payloads.zip, skipping")
-                    print(f"Output: {output.stdout.decode('utf-8')}")
-                    print(f"Return code: {output.returncode}")
+            self.clean_up()
+            output = subprocess.run(
+                [
+                    "hdiutil", "attach", "-noverify", f"{self.constants.payload_path}.dmg", "-mountpoint", Path(self.temp_dir.name / Path("payloads")), 
+                    "-nobrowse", "-shadow", Path(self.temp_dir.name / Path("payloads_overlay")), "-passphrase", "password"
+                ],
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            )
+            if output.returncode == 0:
+                print("- Mounted payloads.dmg")
+                self.constants.current_path = Path(self.temp_dir.name)
+                self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
+                atexit.register(self.clean_up)
             else:
-                self.clean_up()
-                output = subprocess.run(["hdiutil", "attach", f"{self.constants.payload_path}.dmg", "-mountpoint", Path(self.temp_dir.name / Path("payloads")), "-nobrowse", "-shadow", Path(self.temp_dir.name / Path("payloads_overlay")), "-passphrase", "password"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                if output.returncode == 0:
-                    print("- Mounted payloads.dmg")
-                    self.constants.current_path = Path(self.temp_dir.name)
-                    self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
-                    atexit.register(self.clean_up)
-                else:
-                    print("- Failed to mount payloads.dmg")
-                    print(f"Output: {output.stdout.decode()}")
-                    print(f"Return Code: {output.returncode}")
-                    print("- Exiting...")
-                    sys.exit(1)
+                print("- Failed to mount payloads.dmg")
+                print(f"Output: {output.stdout.decode()}")
+                print(f"Return Code: {output.returncode}")
+                print("- Exiting...")
+                sys.exit(1)
 
     def clean_up(self):
         # Grab info on all dmgs mounted
