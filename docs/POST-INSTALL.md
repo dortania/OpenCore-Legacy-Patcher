@@ -51,6 +51,11 @@ If you're unsure whether you should enable SIP, leave as-is. Systems where you h
 
 Users with OCLP v0.4.4 or higher will be prompted to install these patches after installation or whenever patches are not detected on the system. We recommend rebuilding OpenCore with the latest version of OCLP to take advantage of these new features.
 
+In v0.4.5 a new indicator was added to help users to see if, when and on what version the system was root patched. Note that the "Available patches" section above this does not track the status and will always show the patches that are available, whether they're installed or not.
+
+![](../images/OCLP-GUI-Root-Patch-Status.png) 
+
+
 ### Running Post Install patches manually
 
 If you're using OCLP v0.4.3 or earlier, or need to run the patcher manually, you can do so with the app. There is no harm in trying to run the Patcher, as without compatible hardware nothing will be done. You can see below on whether your hardware needs root volume patching. 
