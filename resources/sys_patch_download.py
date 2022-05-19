@@ -23,8 +23,7 @@ class grab_patcher_support_pkg:
             shutil.rmtree(self.constants.payload_local_binaries_root_path)
 
         download_result = None
-        local_zip = Path(self.constants.payload_path) / f"Universal-Binaries.zip"
-        if Path(local_zip).exists():
+        if Path(self.constants.payload_local_binaries_root_path_zip).exists():
             print(f"- Found local Universal-Binaries.zip, skipping download")
             download_result = True
         else:

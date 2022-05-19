@@ -103,8 +103,9 @@ class wx_python_gui:
     
     def use_non_metal_alternative(self):
         if self.constants.detected_os >= os_data.os_data.monterey:
-            if self.constants.host_is_non_metal is True:
-                return True
+            if Path("/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/SkyLightOld.dylib").exists():
+                if self.constants.host_is_non_metal is True:
+                    return True
         return False
 
     def pulse_alternative(self, progress_bar):
@@ -563,6 +564,10 @@ class wx_python_gui:
     
     def build_start(self, event=None):
         self.build_opencore.Disable()
+
+        while self.constants.unpack_thread.is_alive():
+            time.sleep(0.1)
+
         build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
         # Once finished, change build_opencore button to "Install OpenCore"
         self.build_opencore.SetLabel("🔩 Install OpenCore")
@@ -1004,7 +1009,23 @@ class wx_python_gui:
             )
         )
         self.developer_note.Centre(wx.HORIZONTAL)
-        self.frame.SetSize(-1, self.developer_note.GetPosition().y + self.developer_note.GetSize().height + 80)
+
+        self.progress_bar = wx.Gauge(self.frame, range=100, size=(200, 10))
+        self.progress_bar.SetPosition(
+            wx.Point(
+                self.developer_note.GetPosition().x,
+                self.developer_note.GetPosition().y + self.developer_note.GetSize().height + 10
+            )
+        )
+        self.progress_bar.SetValue(0)
+        self.progress_bar.Centre(wx.HORIZONTAL)
+        self.progress_bar.Pulse()
+
+        self.frame.SetSize(-1, self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 60)
+        self.frame.Show()
+        while self.constants.unpack_thread.is_alive():
+            self.pulse_alternative(self.progress_bar)
+            wx.GetApp().Yield()
 
         # Download resources
         sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
@@ -1148,6 +1169,8 @@ class wx_python_gui:
         sys.stdout = menu_redirect.RedirectText(self.text_box, True)
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
+        while self.constants.unpack_thread.is_alive():
+            time.sleep(0.1)
         try:
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_unpatch()
         except Exception as e:
@@ -1265,7 +1288,7 @@ class wx_python_gui:
             thread_ia = threading.Thread(target=ia)
             thread_ia.start()
             
-            while thread_ia.is_alive():
+            while thread_ia.is_alive() or self.constants.unpack_thread.is_alive():
                 self.pulse_alternative(self.progress_bar)
                 wx.GetApp().Yield()
             available_installers = self.available_installers

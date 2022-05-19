@@ -4,6 +4,8 @@
 - Fix Bluetooth support in 12.4 Release
   - Applicable for BCM2046 and BCM2070 chipsets
   - Fix backported to 0.4.5 release
+- GUI Enhancements:
+  - Greatly improve GUI load times (300-800% on average)
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases

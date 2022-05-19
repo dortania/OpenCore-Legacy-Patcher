@@ -5,8 +5,10 @@ from __future__ import print_function
 import subprocess
 import sys
 from pathlib import Path
+import time
+import threading
 
-from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers
+from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads
 from data import model_array
 
 class OpenCoreLegacyPatcher:
@@ -40,19 +42,28 @@ class OpenCoreLegacyPatcher:
                 launcher_script = launcher_script.replace("/resources/main.py", "/OpenCore-Patcher-GUI.command")
         self.constants.launcher_binary = launcher_binary
         self.constants.launcher_script = launcher_script
+        self.constants.unpack_thread = threading.Thread(target=reroute_payloads.reroute_payloads(self.constants).setup_tmp_disk_image)
+        self.constants.unpack_thread.start()
+
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
+
         if utilities.check_cli_args() is not None:
             print("- Detected arguments, switching to CLI mode")
             self.constants.gui_mode = True  # Assumes no user interaction is required
             ignore_args = ["--auto_patch", "--gui_patch", "--gui_unpatch"]
             if not any(x in sys.argv for x in ignore_args):
                 self.constants.current_path = Path.cwd()
+                self.constants.cli_mode = True
                 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
                     print("- Rerouting payloads location")
                     self.constants.payload_path = sys._MEIPASS / Path("payloads")
+                print("- Waiting for payloads to unpack...")
+                while self.constants.unpack_thread.is_alive():
+                    time.sleep(0.1)
             arguments.arguments().parse_arguments(self.constants)
         else:
             print(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
+
 
     def main_menu(self):
         response = None
