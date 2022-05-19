@@ -75,7 +75,7 @@ class wx_python_gui:
 
         wx.CallAfter(self.frame.Close)
     
-    def OnCloseFrame(self, event):
+    def OnCloseFrame(self, event=None):
         self.frame.SetTransparent(0)
         wx.GetApp().Yield()
         self.frame.DestroyChildren()
@@ -95,7 +95,7 @@ class wx_python_gui:
         if answer == wx.ID_YES:
             # Reboots with Count Down prompt (user can still dismiss if needed)
             subprocess.call(['osascript', '-e', 'tell app "loginwindow" to «event aevtrrst»'])
-            sys.exit(0)
+            self.OnCloseFrame(event)
     
     def reset_window(self):
         self.frame.DestroyChildren()
@@ -205,6 +205,7 @@ class wx_python_gui:
         if self.dialog.ShowModal() == wx.ID_YES:
             print("Relaunching as root")
 
+            timer_val = 5
             extension = ""
             if event:
                 if event.GetEventObject() != wx.Menu:
@@ -236,7 +237,7 @@ class wx_python_gui:
             self.header.Centre(wx.HORIZONTAL)
 
             # Add count down label
-            self.countdown_label = wx.StaticText(self.frame, label="Closing old process in 15 seconds")
+            self.countdown_label = wx.StaticText(self.frame, label=f"Closing old process in {timer_val} seconds")
             self.countdown_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
             # Set below header
             self.countdown_label.SetPosition(
@@ -272,7 +273,6 @@ class wx_python_gui:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT
             )
-            timer_val = 15
             while True:
                 wx.GetApp().Yield()
                 self.countdown_label.SetLabel(f"Closing old process in {timer_val} seconds")
@@ -281,7 +281,7 @@ class wx_python_gui:
                 if timer_val == 0:
                     break
             # Close Current Application
-            self.frame.Close()
+            self.OnCloseFrame(event)
     
     def not_yet_implemented_menu(self, event=None):
         self.frame.DestroyChildren()
