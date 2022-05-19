@@ -107,6 +107,23 @@ class wx_python_gui:
                 if self.constants.host_is_non_metal is True:
                     return True
         return False
+    
+    def is_unpack_finished(self):
+        if not self.constants.unpack_thread.is_alive():
+            if Path(self.constants.payload_path).exists():
+                return True
+            else:
+                # Raise error to end program
+                self.popup = wx.MessageDialog(
+                    self.frame,
+                    f"During unpacking of our internal files, we seemed to have encountered an error.\n\nIf you keep seeing this error, please try redownloading the application.",
+                    "Internal Error occured!",
+                    style = wx.OK | wx.ICON_EXCLAMATION
+                )
+                self.popup.ShowModal()
+                self.frame.Freeze()
+                self.OnCloseFrame(None)
+        return False
 
     def pulse_alternative(self, progress_bar):
         if self.non_metal_required is True:
@@ -565,7 +582,7 @@ class wx_python_gui:
     def build_start(self, event=None):
         self.build_opencore.Disable()
 
-        while self.constants.unpack_thread.is_alive():
+        while self.is_unpack_finished() is False:
             time.sleep(0.1)
 
         build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
@@ -1023,7 +1040,7 @@ class wx_python_gui:
 
         self.frame.SetSize(-1, self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 60)
         self.frame.Show()
-        while self.constants.unpack_thread.is_alive():
+        while self.is_unpack_finished() is False:
             self.pulse_alternative(self.progress_bar)
             wx.GetApp().Yield()
 
@@ -1169,7 +1186,7 @@ class wx_python_gui:
         sys.stdout = menu_redirect.RedirectText(self.text_box, True)
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
-        while self.constants.unpack_thread.is_alive():
+        while self.is_unpack_finished() is False:
             time.sleep(0.1)
         try:
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_unpatch()
@@ -1288,7 +1305,7 @@ class wx_python_gui:
             thread_ia = threading.Thread(target=ia)
             thread_ia.start()
             
-            while thread_ia.is_alive() or self.constants.unpack_thread.is_alive():
+            while thread_ia.is_alive() or self.is_unpack_finished() is False:
                 self.pulse_alternative(self.progress_bar)
                 wx.GetApp().Yield()
             available_installers = self.available_installers

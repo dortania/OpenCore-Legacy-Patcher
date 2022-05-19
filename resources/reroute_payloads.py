@@ -42,8 +42,6 @@ class reroute_payloads:
                 print("- Failed to mount payloads.dmg")
                 print(f"Output: {output.stdout.decode()}")
                 print(f"Return Code: {output.returncode}")
-                print("- Exiting...")
-                sys.exit(1)
 
     def unmount_active_dmgs(self):
         # Find all DMGs that are mounted, and forcefully unmount them
