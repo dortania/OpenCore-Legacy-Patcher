@@ -1288,7 +1288,7 @@ class wx_python_gui:
             thread_ia = threading.Thread(target=ia)
             thread_ia.start()
             
-            while thread_ia.is_alive():
+            while thread_ia.is_alive() or self.constants.unpack_thread.is_alive():
                 self.pulse_alternative(self.progress_bar)
                 wx.GetApp().Yield()
             available_installers = self.available_installers

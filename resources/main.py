@@ -1,17 +1,14 @@
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 from __future__ import print_function
-import plistlib
 
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
-import atexit
 import time
 import threading
 
-from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers
+from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads
 from data import model_array
 
 class OpenCoreLegacyPatcher:
@@ -45,7 +42,7 @@ class OpenCoreLegacyPatcher:
                 launcher_script = launcher_script.replace("/resources/main.py", "/OpenCore-Patcher-GUI.command")
         self.constants.launcher_binary = launcher_binary
         self.constants.launcher_script = launcher_script
-        self.constants.unpack_thread = threading.Thread(target=self.reroute_payloads)
+        self.constants.unpack_thread = threading.Thread(target=reroute_payloads.reroute_payloads(self.constants).setup_tmp_disk_image)
         self.constants.unpack_thread.start()
 
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
@@ -65,43 +62,6 @@ class OpenCoreLegacyPatcher:
             arguments.arguments().parse_arguments(self.constants)
         else:
             print(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
-
-    def reroute_payloads(self):
-        if self.constants.launcher_binary and self.constants.wxpython_variant is True and not self.constants.launcher_script:
-            print("- Running in Binary GUI mode, switching to tmp directory")
-            self.temp_dir = tempfile.TemporaryDirectory()
-            print(f"- New payloads location: {self.temp_dir.name}")
-            print("- Creating payloads directory")
-            Path(self.temp_dir.name / Path("payloads")).mkdir(parents=True, exist_ok=True)
-            self.clean_up()
-            output = subprocess.run(
-                [
-                    "hdiutil", "attach", "-noverify", f"{self.constants.payload_path}.dmg", "-mountpoint", Path(self.temp_dir.name / Path("payloads")), 
-                    "-nobrowse", "-shadow", Path(self.temp_dir.name / Path("payloads_overlay")), "-passphrase", "password"
-                ],
-                stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-            )
-            if output.returncode == 0:
-                print("- Mounted payloads.dmg")
-                self.constants.current_path = Path(self.temp_dir.name)
-                self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
-                atexit.register(self.clean_up)
-            else:
-                print("- Failed to mount payloads.dmg")
-                print(f"Output: {output.stdout.decode()}")
-                print(f"Return Code: {output.returncode}")
-                print("- Exiting...")
-                sys.exit(1)
-
-    def clean_up(self):
-        # Grab info on all dmgs mounted
-        dmg_info = subprocess.run(["hdiutil", "info", "-plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        dmg_info = plistlib.loads(dmg_info.stdout)
-
-        for image in dmg_info["images"]:
-            if image["image-path"].endswith("payloads.dmg"):
-                print(f"- Unmounting payloads.dmg")
-                subprocess.run(["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def main_menu(self):
