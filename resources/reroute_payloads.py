@@ -37,13 +37,13 @@ class reroute_payloads:
                 print("- Mounted payloads.dmg")
                 self.constants.current_path = Path(self.temp_dir.name)
                 self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
-                atexit.register(self.unmount_active_dmgs)
+                atexit.register(self.unmount_active_dmgs, unmount_all_active=False)
             else:
                 print("- Failed to mount payloads.dmg")
                 print(f"Output: {output.stdout.decode()}")
                 print(f"Return Code: {output.returncode}")
 
-    def unmount_active_dmgs(self):
+    def unmount_active_dmgs(self, unmount_all_active=True):
         # Find all DMGs that are mounted, and forcefully unmount them
         # If our disk image was previously mounted, we need to unmount it to use again
         # This can happen if we crash during a previous scession, however 'atexit' class should hopefully avoid this 
@@ -52,8 +52,18 @@ class reroute_payloads:
 
         for image in dmg_info["images"]:
             if image["image-path"].endswith("payloads.dmg"):
-                print(f"- Unmounting payloads.dmg")
-                subprocess.run(
-                    ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"], 
-                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-                )
+                if unmount_all_active is False:
+                    # Check that only our personal payloads.dmg is unmounted
+                    if "shadow-path" in image:
+                        if self.temp_dir.name in image["shadow-path"]:
+                            print("- Unmounting personal payloads.dmg")
+                            subprocess.run(
+                                ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"], 
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+                            )
+                else:
+                    print(f"- Unmounting payloads.dmg at: {image['system-entities'][0]['dev-entry']}")
+                    subprocess.run(
+                        ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"], 
+                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+                    )
