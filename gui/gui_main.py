@@ -76,6 +76,8 @@ class wx_python_gui:
         wx.CallAfter(self.frame.Close)
     
     def OnCloseFrame(self, event):
+        self.frame.SetTransparent(0)
+        wx.GetApp().Yield()
         self.frame.DestroyChildren()
         self.frame.Destroy()
         self.app.ExitMainLoop()
