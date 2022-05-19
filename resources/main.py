@@ -57,7 +57,8 @@ class OpenCoreLegacyPatcher:
                 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
                     print("- Rerouting payloads location")
                     self.constants.payload_path = sys._MEIPASS / Path("payloads")
-                print("- Waiting for payloads to unpack...")
+            ignore_args = ignore_args.pop(0)
+            if not any(x in sys.argv for x in ignore_args):
                 while self.constants.unpack_thread.is_alive():
                     time.sleep(0.1)
             arguments.arguments().parse_arguments(self.constants)
