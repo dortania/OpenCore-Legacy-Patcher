@@ -6,6 +6,8 @@
   - Fix backported to 0.4.5 release
 - GUI Enhancements:
   - Greatly improve GUI load times (300-800% on average)
+  - Resolve failing to find new updates
+- Resolve failing to find binaries with `--patch_sys_vol` argument
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases
