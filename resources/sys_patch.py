@@ -309,7 +309,7 @@ class PatchSysVolume:
         return output
 
     def download_files(self):
-        if self.constants.gui_mode is False or "Library/InstallerSandboxes/" in str(self.constants.payload_path):
+        if self.constants.cli_mode is True:
             download_result, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
         else:
             download_result = True

@@ -107,6 +107,7 @@ class Constants:
         self.ignore_updates = False  #      Ignore OCLP updates
         self.wxpython_variant = False #     Determine if using wxPython variant
         self.unpack_thread = None  #        Determine if unpack thread finished
+        self.cli_mode = False  #            Determine if running in CLI mode
 
         ## Hardware
         self.computer: device_probe.Computer = None  # type: ignore

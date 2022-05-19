@@ -53,6 +53,7 @@ class OpenCoreLegacyPatcher:
             ignore_args = ["--auto_patch", "--gui_patch", "--gui_unpatch"]
             if not any(x in sys.argv for x in ignore_args):
                 self.constants.current_path = Path.cwd()
+                self.constants.cli_mode = True
                 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
                     print("- Rerouting payloads location")
                     self.constants.payload_path = sys._MEIPASS / Path("payloads")
