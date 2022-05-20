@@ -242,6 +242,10 @@ class detect_root_patch:
         if hardware_details["Graphics: Nvidia Tesla"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Nvidia Tesla": all_hardware_patchset["Graphics"]["Nvidia Tesla"]})
+        if hardware_details["Graphics: Nvidia Web Drivers"] is True:
+            required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"Non-Metal IOAccelerator Common": all_hardware_patchset["Graphics"]["Non-Metal IOAccelerator Common"]})
+            required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
@@ -249,8 +253,6 @@ class detect_root_patch:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"AMD TeraScale Common": all_hardware_patchset["Graphics"]["AMD TeraScale Common"]})
             required_patches.update({"AMD TeraScale 1": all_hardware_patchset["Graphics"]["AMD TeraScale 1"]})
-        if hardware_details["Graphics: Nvidia Web Drivers"] is True:
-            required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
         if hardware_details["Graphics: AMD TeraScale 2"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Non-Metal IOAccelerator Common": all_hardware_patchset["Graphics"]["Non-Metal IOAccelerator Common"]})

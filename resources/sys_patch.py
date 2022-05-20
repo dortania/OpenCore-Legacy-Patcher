@@ -21,6 +21,9 @@
 # - Generally within 2~ boots, the original snapshot is discarded
 # - Monterey always preserves the original snapshot allowing for reliable rollbacks
 
+# Alternative to mounting via 'mount', Apple's update system uses 'mount_apfs' directly
+#   '/sbin/mount_apfs -R /dev/disk5s5 /System/Volumes/Update/mnt1'
+
 
 import shutil
 import subprocess
@@ -39,6 +42,7 @@ class PatchSysVolume:
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
         self.constants.root_patcher_succeded = False # Reset Variable each time we start
         self.patch_set_dictionary = {}
+        self.needs_kmutil_exemptions = False # For '/Library/Extensions' rebuilds
 
         # GUI will detect hardware patches before starting PatchSysVolume()
         # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
@@ -109,7 +113,17 @@ class PatchSysVolume:
 
     def rebuild_snapshot(self):
         print("- Rebuilding Kernel Cache (This may take some time)")
-        result = utilities.elevated(["kmutil", "install", "--volume-root", self.mount_location, "--update-all"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+        args = ["kmutil", "install", "--volume-root", self.mount_location, "--update-all"]
+
+        if self.needs_kmutil_exemptions is True:
+            # When installing to '/Library/Extensions', following args skip kext consent 
+            # prompt in System Preferences when SIP's disabled
+            print("- Disabling auth checks in kmutil")
+            args.append("--no-authentication")
+            args.append("--no-authorization")
+
+        result = utilities.elevated(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         # kextcache notes:
         # - kextcache always returns 0, even if it fails
@@ -206,6 +220,8 @@ class PatchSysVolume:
                             if method_install == "Install":
                                 destination_folder_path = str(self.mount_location) + install_patch_directory
                             else:
+                                if install_patch_directory == "/Library/Extensions":
+                                    self.needs_kmutil_exemptions = True
                                 destination_folder_path = str(self.mount_location_data) + install_patch_directory
                             self.install_new_file(source_folder_path, destination_folder_path, install_file)
 

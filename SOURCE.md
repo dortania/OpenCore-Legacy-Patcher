@@ -30,6 +30,16 @@ cd ./OpenCore-Legacy-Patcher
 pip3 install -r requirements.txt
 ```
 
+If you have installation error, see following troubleshooting options:
+
+* Use Python 3.9
+  * Currently our build server uses py3.9 for generating binaries used in releases
+* Use .whl snapshots for installing additional dependancies
+  * [wxPython 4.1.1 wheel for py3.9](https://files.pythonhosted.org/packages/2c/a8/7027e8ca3ba20dc2ed2acd556e31941cb44097ab87d6f81d646a79de4eab/wxPython-4.1.1-cp39-cp39-macosx_10_10_x86_64.whl)
+  * [PyObjc 8.5 wheel for py3](https://files.pythonhosted.org/packages/69/3d/786f379dd669a078cf0c4a686e242c9b643071c23367bfbd3d9a7eb589ec/pyobjc-8.5-py3-none-any.whl)
+  * [Requests 2.27.1 for py2/py3](https://files.pythonhosted.org/packages/2d/61/08076519c80041bc0ffa1a8af0cbd3bf3e2b62af10435d269a9d0f40564d/requests-2.27.1-py2.py3-none-any.whl)
+
+
 ## Running OpenCore Legacy Patcher
 
 To run the project from source, simply invoke via python3:

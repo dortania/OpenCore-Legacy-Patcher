@@ -257,23 +257,34 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
                 "Install": {
                     "/System/Library/Extensions": {
-                        "NVDAStartupWeb.kext":            "10.13.6",
-                        "GeForceTeslaWeb.kext":           "10.13.6",
-                        "GeForceWeb.kext":                "10.13.6",
-                        "NVDAGF100HalWeb.kext":           "10.13.6",
-                        "NVDAGK100HalWeb.kext":           "10.13.6",
-                        "NVDAGM100HalWeb.kext":           "10.13.6",
-                        "NVDAGP100HalWeb.kext":           "10.13.6",
-                        "NVDANV50HalTeslaWeb.kext":       "10.13.6",
-                        "NVDAResmanTeslaWeb.kext":        "10.13.6",
-                        "NVDAResmanWeb.kext":             "10.13.6",
-                        "GeForceVADriverWeb.bundle":      "10.13.6",
-                        "GeForceAIRPluginWeb.bundle":     "10.13.6",
-                        "GeForceGLDriverWeb.bundle":      "10.13.6",
-                        "GeForceMTLDriverWeb.bundle":     "10.13.6",
-                        "GeForceTeslaGAWeb.bundle":       "10.13.6",
-                        "GeForceTeslaGLDriverWeb.bundle": "10.13.6",
-                        "GeForceTeslaVADriverWeb.bundle": "10.13.6",
+                        "GeForceAIRPluginWeb.bundle":     "WebDriver-387.10.10.10.40.140",
+                        "GeForceGLDriverWeb.bundle":      "WebDriver-387.10.10.10.40.140",
+                        "GeForceMTLDriverWeb.bundle":     "WebDriver-387.10.10.10.40.140",
+                        "GeForceVADriverWeb.bundle":      "WebDriver-387.10.10.10.40.140",
+
+                        # Tesla-only files
+                        "GeForceTeslaGAWeb.bundle":       "WebDriver-387.10.10.10.40.140",
+                        "GeForceTeslaGLDriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
+                        "GeForceTeslaVADriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
+                    },
+                },
+                "Install Non-Root": {
+                     "/Library/Extensions": {
+                        "GeForceWeb.kext":                "WebDriver-387.10.10.10.40.140",
+                        "NVDAGF100HalWeb.kext":           "WebDriver-387.10.10.10.40.140",
+                        "NVDAGK100HalWeb.kext":           "WebDriver-387.10.10.10.40.140",
+                        "NVDAGM100HalWeb.kext":           "WebDriver-387.10.10.10.40.140",
+                        "NVDAGP100HalWeb.kext":           "WebDriver-387.10.10.10.40.140",
+                        "NVDAResmanWeb.kext":             "WebDriver-387.10.10.10.40.140",
+                        "NVDAStartupWeb.kext":            "WebDriver-387.10.10.10.40.140",
+
+                        # Tesla-only files
+                        "GeForceTeslaWeb.kext":           "WebDriver-387.10.10.10.40.140",
+                        "NVDANV50HalTeslaWeb.kext":       "WebDriver-387.10.10.10.40.140",
+                        "NVDAResmanTeslaWeb.kext":        "WebDriver-387.10.10.10.40.140",
+                    },
+                    "/Library/PreferencePanes": {
+                        "NVIDIA Driver Manager.prefPane": "WebDriver-387.10.10.10.40.140",
                     },
                 },
             },
