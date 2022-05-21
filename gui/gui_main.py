@@ -72,6 +72,10 @@ class wx_python_gui:
         self.settings_menu_frame = None
         self.create_macos_frame = None
         self.grab_installer_data_frame = None
+        self.build_modal_frame = None
+        self.install_modal_frame = None
+
+        self.root_patch_modal_frame = None
 
         if current_uid == 0:
             self.file_menu.Enable(wx.ID_REDO, False)
@@ -107,6 +111,49 @@ class wx_python_gui:
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
+        self.reset_all_modals()
+    
+    def reset_settings_modal_frame(self):
+        if not self.settings_menu_frame:
+            self.settings_menu_frame = wx.Dialog(self.frame)
+        else:
+            self.settings_menu_frame.DestroyChildren()
+            self.settings_menu_frame.Close()
+    
+    def reset_create_macos_modal_frame(self):
+        if not self.create_macos_frame:
+            self.create_macos_frame = wx.Dialog(self.frame)
+        else:
+            self.create_macos_frame.DestroyChildren()
+            self.create_macos_frame.Close()
+    
+    def reset_create_installer_modal_frame(self):
+        if not self.grab_installer_data_frame:
+            self.grab_installer_data_frame = wx.Dialog(self.frame)
+        else:
+            self.grab_installer_data_frame.DestroyChildren()
+            self.grab_installer_data_frame.Close()
+    
+    def reset_build_modal_frame(self):
+        if not self.build_modal_frame:
+            self.build_modal_frame = wx.Dialog(self.frame)
+        else:
+            self.build_modal_frame.DestroyChildren()
+            self.build_modal_frame.Close()
+    
+    def reset_install_modal_frame(self):
+        if not self.install_modal_frame:
+            self.install_modal_frame = wx.Dialog(self.frame)
+        else:
+            self.install_modal_frame.DestroyChildren()
+            self.install_modal_frame.Close()
+    
+    def reset_root_patch_modal_frame(self):
+        if not self.root_patch_modal_frame:
+            self.root_patch_modal_frame = wx.Dialog(self.frame)
+        else:
+            self.root_patch_modal_frame.DestroyChildren()
+            self.root_patch_modal_frame.Close()
     
     def use_non_metal_alternative(self):
         if self.constants.detected_os >= os_data.os_data.monterey:
@@ -288,6 +335,14 @@ class wx_python_gui:
             # Close Current Application
             self.OnCloseFrame(event)
     
+    def reset_all_modals(self):
+        self.reset_settings_modal_frame()
+        self.reset_create_macos_modal_frame()
+        self.reset_create_installer_modal_frame()
+        self.reset_build_modal_frame()
+        self.reset_install_modal_frame()
+        self.reset_root_patch_modal_frame()
+    
     def not_yet_implemented_menu(self, event=None):
         self.frame.DestroyChildren()
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
@@ -320,10 +375,6 @@ class wx_python_gui:
 
         # Reset Data in the event of re-run
         self.reset_window()
-        self.reset_settings_modal_frame()
-        self.reset_create_macos_modal_frame()
-        self.reset_create_installer_modal_frame()
-
 
         # Set header text
         self.frame.SetTitle(f"OpenCore Legacy Patcher")
@@ -534,16 +585,16 @@ class wx_python_gui:
         # - Textbox: stdout
         # - Button: Return to Main Menu
 
-        self.frame.DestroyChildren()
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.WINDOW_HEIGHT_BUILD)
+        self.reset_build_modal_frame()
+        self.build_modal_frame.SetSize(self.WINDOW_WIDTH_BUILD, self.WINDOW_HEIGHT_BUILD + 10)
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Build and Install OpenCore")
+        self.header = wx.StaticText(self.build_modal_frame, label="Build and Install OpenCore", pos=(10,10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader
-        self.subheader = wx.StaticText(self.frame, label=f"Model: {self.constants.custom_model or self.computer.real_model}")
+        self.subheader = wx.StaticText(self.build_modal_frame, label=f"Model: {self.constants.custom_model or self.computer.real_model}")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader.SetPosition(
             wx.Point(
@@ -554,7 +605,7 @@ class wx_python_gui:
         self.subheader.Centre(wx.HORIZONTAL)
 
         # Build OpenCore
-        self.build_opencore = wx.Button(self.frame, label="🔨 Build OpenCore", size=(150,30))
+        self.build_opencore = wx.Button(self.build_modal_frame, label="🔨 Build OpenCore", size=(150,30))
         self.build_opencore.SetPosition(
             wx.Point(
                 self.header.GetPosition().x,
@@ -566,7 +617,7 @@ class wx_python_gui:
 
         # Textbox
         # Redirect stdout to a text box
-        self.stdout_text = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.stdout_text = wx.TextCtrl(self.build_modal_frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.stdout_text.SetPosition(wx.Point(self.build_opencore.GetPosition().x, self.build_opencore.GetPosition().y + self.build_opencore.GetSize().height + 10))
         self.stdout_text.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
         # Set width to same as frame
@@ -577,7 +628,7 @@ class wx_python_gui:
         sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
         sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.build_modal_frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.stdout_text.GetPosition().x,
@@ -586,6 +637,8 @@ class wx_python_gui:
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
+
+        self.build_modal_frame.ShowWindowModal()
 
         if self.constants.start_build_install is True:
             self.build_start()
@@ -607,7 +660,7 @@ class wx_python_gui:
 
         # Throw popup asking to install OpenCore
         self.dialog = wx.MessageDialog(
-            parent=self.frame, 
+            parent=self.build_modal_frame, 
             message=f"Would you like to install OpenCore now?",
             caption="Finished building your OpenCore configuration!", 
             style=wx.YES_NO | wx.ICON_QUESTION
@@ -620,6 +673,7 @@ class wx_python_gui:
     
     def install_menu(self, event=None):
         self.frame.DestroyChildren()
+        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
         i = 0
         
         # Header
@@ -673,7 +727,7 @@ class wx_python_gui:
         self.progress_bar.Centre(wx.HORIZONTAL)
         self.progress_bar.SetValue(0)
 
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 40)
+        self.frame.SetSize(-1, self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 40)
 
         # Request Disks Present
         def get_disks():
@@ -798,29 +852,28 @@ class wx_python_gui:
 
     def install_oc_process(self, partition):
         print(f"Installing OpenCore to {partition}")
-        self.frame.DestroyChildren()
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.WINDOW_HEIGHT_BUILD)
+        self.reset_install_modal_frame()
+        self.install_modal_frame.SetSize(self.WINDOW_WIDTH_BUILD - 20, self.WINDOW_HEIGHT_BUILD)
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Install OpenCore")
+        self.header = wx.StaticText(self.install_modal_frame, label="Install OpenCore", pos=(10,10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Textbox
         # Redirect stdout to a text box
-        self.stdout_text = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.stdout_text = wx.TextCtrl(self.install_modal_frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.stdout_text.SetPosition(wx.Point(self.header.GetPosition().x, self.header.GetPosition().y + self.header.GetSize().height + 10))
         self.stdout_text.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
         # Set width to same as frame
-        self.stdout_text.SetSize(self.WINDOW_WIDTH_BUILD, 340)
+        self.stdout_text.SetSize(self.WINDOW_WIDTH_BUILD - 40, 240)
         # Centre the text box to top of window
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
 
         # Update frame height to right below
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 40)
-
-        self.frame.Show()
+        self.install_modal_frame.SetSize(-1, self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 40)
+        self.install_modal_frame.ShowWindowModal()
 
         sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
         sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
@@ -828,7 +881,7 @@ class wx_python_gui:
         sys.stdout=sys.__stdout__
         sys.stderr=sys.__stderr__
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.install_modal_frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.stdout_text.GetPosition().x,
@@ -839,7 +892,7 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.install_modal_frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 20)
 
         if result is True:
             self.reboot_system(message="OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?")
@@ -1009,11 +1062,10 @@ class wx_python_gui:
     
     def root_patch_start(self, event=None):
         self.frame.DestroyChildren()
-
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Root Patching")
+        self.header = wx.StaticText(self.frame, label="Root Patching", pos=(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
@@ -1063,7 +1115,7 @@ class wx_python_gui:
         if download_result is None:
             # Create popup window to inform user of error
             self.popup = wx.MessageDialog(
-                self.frame, 
+                self.root_patch_modal_frame, 
                 "A problem occured trying to download PatcherSupportPkg binaries\n\nIf you continue to have this error, download an Offline build from Github\nThese builds don't require a network connection to root patch", 
                 "Network Error", 
                 wx.YES_NO | wx.ICON_ERROR
@@ -1074,13 +1126,36 @@ class wx_python_gui:
                 webbrowser.open(self.constants.repo_link_latest)
             self.main_menu()
 
-        self.subheader.SetLabel("Starting root volume patching")
-        self.developer_note.SetLabel("Starting shortly")
+        self.reset_root_patch_modal_frame()
+
+        # Header
+        self.header = wx.StaticText(self.root_patch_modal_frame, label="Root Patching", pos=(10, 10))
+        self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.header.Centre(wx.HORIZONTAL)
+
+        # Subheader
+        self.subheader = wx.StaticText(self.root_patch_modal_frame, label="Starting root volume patching")
+        self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.subheader.SetPosition(
+            wx.Point(
+                self.header.GetPosition().x,
+                self.header.GetPosition().y + self.header.GetSize().height + 10
+            )
+        )
         self.subheader.Centre(wx.HORIZONTAL)
+
+        self.developer_note = wx.StaticText(self.root_patch_modal_frame, label="Starting shortly")
+        self.developer_note.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.developer_note.SetPosition(
+            wx.Point(
+                self.subheader.GetPosition().x,
+                self.subheader.GetPosition().y + self.subheader.GetSize().height + 3
+            )
+        )
         self.developer_note.Centre(wx.HORIZONTAL)
 
         # Text Box
-        self.text_box = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.text_box = wx.TextCtrl(self.root_patch_modal_frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.text_box.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.text_box.SetPosition(
             wx.Point(
@@ -1090,13 +1165,13 @@ class wx_python_gui:
         )
         self.text_box.SetSize(
             wx.Size(
-                self.frame.GetSize().width - 10,
-                self.frame.GetSize().height + self.text_box.GetPosition().y + 80
+                self.root_patch_modal_frame.GetSize().width - 10,
+                self.root_patch_modal_frame.GetSize().height + self.text_box.GetPosition().y + 80
             )
         )
         self.text_box.Centre(wx.HORIZONTAL)
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.root_patch_modal_frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.text_box.GetPosition().x,
@@ -1107,14 +1182,12 @@ class wx_python_gui:
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
         self.return_to_main_menu.Disable()
 
-        self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
-
-        wx.GetApp().Yield()
+        self.root_patch_modal_frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         sys.stdout = menu_redirect.RedirectText(self.text_box, True)
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
+        self.root_patch_modal_frame.ShowWindowModal()
         wx.GetApp().Yield()
-        self.frame.Show()
         try:
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_patch()
         except Exception as e:
@@ -1130,20 +1203,19 @@ class wx_python_gui:
         wx.GetApp().Yield()
     
     def root_patch_revert(self, event=None):
-        self.frame.DestroyChildren()
-
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
+        self.reset_root_patch_modal_frame()
+        self.root_patch_modal_frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Revert Root Patches")
+        self.header = wx.StaticText(self.root_patch_modal_frame, label="Revert Root Patches", pos=(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader
         if self.constants.detected_os == os_data.os_data.big_sur:
-            self.subheader = wx.StaticText(self.frame, label="Currently experimental in Big Sur")
+            self.subheader = wx.StaticText(self.root_patch_modal_frame, label="Currently experimental in Big Sur")
         else:
-            self.subheader = wx.StaticText(self.frame, label="Reverting to last sealed snapshot")
+            self.subheader = wx.StaticText(self.root_patch_modal_frame, label="Reverting to last sealed snapshot")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.subheader.SetPosition(
             wx.Point(
@@ -1153,7 +1225,7 @@ class wx_python_gui:
         )
         self.subheader.Centre(wx.HORIZONTAL)
 
-        self.developer_note = wx.StaticText(self.frame, label="Starting shortly")
+        self.developer_note = wx.StaticText(self.root_patch_modal_frame, label="Starting shortly")
         self.developer_note.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.developer_note.SetPosition(
             wx.Point(
@@ -1164,7 +1236,7 @@ class wx_python_gui:
         self.developer_note.Centre(wx.HORIZONTAL)
 
         # Text Box
-        self.text_box = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.text_box = wx.TextCtrl(self.root_patch_modal_frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.text_box.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.text_box.SetPosition(
             wx.Point(
@@ -1174,13 +1246,13 @@ class wx_python_gui:
         )
         self.text_box.SetSize(
             wx.Size(
-                self.frame.GetSize().width - 10,
-                self.frame.GetSize().height + self.text_box.GetPosition().y + 80
+                self.root_patch_modal_frame.GetSize().width - 10,
+                self.root_patch_modal_frame.GetSize().height + self.text_box.GetPosition().y + 80
             )
         )
         self.text_box.Centre(wx.HORIZONTAL)
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.root_patch_modal_frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.text_box.GetPosition().x,
@@ -1191,12 +1263,13 @@ class wx_python_gui:
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
         self.return_to_main_menu.Disable()
 
-        self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.root_patch_modal_frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         # Start reverting root patches
         sys.stdout = menu_redirect.RedirectText(self.text_box, True)
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
+        self.root_patch_modal_frame.ShowWindowModal()
         while self.is_unpack_finished() is False:
             time.sleep(0.1)
         try:
@@ -1210,7 +1283,6 @@ class wx_python_gui:
             print("- Root Patcher finished successfully")
             self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
-
         wx.GetApp().Yield()
 
     def create_macos_menu(self, event=None):
@@ -1220,8 +1292,6 @@ class wx_python_gui:
         #   - Download macOS Installer
         #   - Use existing macOS Installer
         #   - Return to Main Menu
-
-        # self.frame.DestroyChildren()
 
         self.reset_create_macos_modal_frame()
         self.create_macos_frame.SetSize(self.WINDOW_WIDTH_MAIN - 20 , -1)
@@ -1883,26 +1953,6 @@ class wx_python_gui:
                 else:
                     print("- Installer unsupported, requires Big Sur or newer")
 
-    def reset_settings_modal_frame(self):
-        if not self.settings_menu_frame:
-            self.settings_menu_frame = wx.Dialog(self.frame)
-        else:
-            self.settings_menu_frame.DestroyChildren()
-            self.settings_menu_frame.Close()
-    
-    def reset_create_macos_modal_frame(self):
-        if not self.create_macos_frame:
-            self.create_macos_frame = wx.Dialog(self.frame)
-        else:
-            self.create_macos_frame.DestroyChildren()
-            self.create_macos_frame.Close()
-    
-    def reset_create_installer_modal_frame(self):
-        if not self.grab_installer_data_frame:
-            self.grab_installer_data_frame = wx.Dialog(self.frame)
-        else:
-            self.grab_installer_data_frame.DestroyChildren()
-            self.grab_installer_data_frame.Close()
 
     def settings_menu(self, event=None):
         # Define Menu
@@ -1924,8 +1974,6 @@ class wx_python_gui:
         # Create Menu
         self.reset_settings_modal_frame()
 
-
-        # self.frame.DestroyChildren()
         self.settings_menu_frame.SetSize(self.WINDOW_SETTINGS_WIDTH, self.WINDOW_SETTINGS_HEIGHT)
         self.settings_menu_frame.SetTitle("Settings")
 
