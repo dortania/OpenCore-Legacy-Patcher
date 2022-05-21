@@ -41,7 +41,7 @@ Note: Machines with non-Metal GPUs cannot enable SIP in Big Sur either due to pa
 | :--- | :--- | :--- |
 | ![](../images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](../images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](../images/OCLP-GUI-Settings-SIP-Disabled.png) |
 
-::: warning 
+:::warning 
 
 If you're unsure whether you should enable SIP, leave as-is. Systems where you have already ran the Post Install Root Patching cannot enable SIP without potentially breaking the current install. 
 
@@ -49,11 +49,22 @@ If you're unsure whether you should enable SIP, leave as-is. Systems where you h
 
 ## Applying Post Install Volume Patches
 
-Users with OCLP v0.4.4 or higher will be prompted to install these patches after installation or whenever patches are not detected on the system. We recommend rebuilding OpenCore with the latest version of OCLP to take advantage of these new features.
+Post Install Volume Patches, sometimes also called root patches, are patches that have to be installed on disk for some older Macs to gain back functionality.
 
-In v0.4.5 a new indicator was added to help users to see if, when and on what version the system was root patched. Note that the "Available patches" section above this does not track the status and will always show the patches that are available, whether they're installed or not.
+OCLP v0.4.4 and higher include an autopatcher, which will automatically root patch your system but **only if the USB install media was created within OCLP.**
 
-![](../images/OCLP-GUI-Root-Patch-Status.png) 
+Users with OCLP v0.4.4 or higher will also be prompted to install these patches after macOS updates or whenever patches are not detected on the system. We recommend rebuilding OpenCore with the latest version of OCLP to take advantage of these new features.
+
+
+
+In OCLP v0.4.5 a new indicator was added to help users to see if, when and on what version the system was root patched. Note that the "Available patches" section above this does not track the status and will always show the patches that are available, whether they're installed or not.
+
+| Automatic install prompt in 0.4.4+ | Last patched status in 0.4.5+ |
+| :--- | :--- |
+| ![](../images/OCLP-GUI-root-patch-update.png) | ![](../images/OCLP-GUI-Root-Patch-Status.png)  |
+
+
+
 
 
 ### Running Post Install patches manually
@@ -65,7 +76,7 @@ If you're using OCLP v0.4.3 or earlier, or need to run the patcher manually, you
 | ![](../images/OCLP-GUI-Root-Patch.png) | ![](../images/OCLP-GUI-Root-Patch-Finished.png) |
 
 
-::: warning
+:::warning
 
 With OpenCore Legacy Patcher versions prior to v0.4.4, Root Patching requires a network connection by default to grab associated resources. If your system is having difficulties with wifi or ethernet, you can grab the newest release :
 
@@ -73,7 +84,7 @@ With OpenCore Legacy Patcher versions prior to v0.4.4, Root Patching requires a 
 
 :::
 
-::: details Unsupported GPUs in macOS Big Sur
+:::details Unsupported GPUs in macOS Big Sur
 
 * NVIDIA:
   * Tesla (8000 - 300 series)
@@ -85,7 +96,7 @@ With OpenCore Legacy Patcher versions prior to v0.4.4, Root Patching requires a 
 
 :::
 
-::: details Unsupported GPUs in macOS Monterey
+:::details Unsupported GPUs in macOS Monterey
 
 * NVIDIA:
   * Tesla (8000 - 300 series)
@@ -99,7 +110,7 @@ With OpenCore Legacy Patcher versions prior to v0.4.4, Root Patching requires a 
 
 :::
 
-::: details Unsupported Wireless Cards in macOS Monterey
+:::details Unsupported Wireless Cards in macOS Monterey
 
 * Broadcom:
   * BCM94328

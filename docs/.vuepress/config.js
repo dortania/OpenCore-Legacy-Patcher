@@ -112,6 +112,7 @@ module.exports = {
 				'UNINSTALL',
 				'ICNS',
 				'WINDOWS',
+				'UNIVERSALCONTROL',
             ]
         },
         {
