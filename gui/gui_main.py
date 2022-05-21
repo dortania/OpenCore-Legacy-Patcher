@@ -164,7 +164,7 @@ class wx_python_gui:
     
     def is_unpack_finished(self):
         if not self.constants.unpack_thread.is_alive():
-            if Path(self.constants.payload_path).exists():
+            if Path(self.constants.payload_kexts_path).exists():
                 return True
             else:
                 # Raise error to end program
