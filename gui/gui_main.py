@@ -1227,7 +1227,7 @@ class wx_python_gui:
         self.create_macos_frame.SetSize(self.WINDOW_WIDTH_MAIN - 20 , -1)
 
         # Header
-        self.header = wx.StaticText(self.create_macos_frame, label="Create macOS Installer")
+        self.header = wx.StaticText(self.create_macos_frame, label="Create macOS Installer", pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
@@ -1333,7 +1333,7 @@ class wx_python_gui:
         self.grab_installer_data_frame.SetSize(self.WINDOW_WIDTH_MAIN - 20, -1)
 
         # Header
-        self.header = wx.StaticText(self.grab_installer_data_frame, label="Download macOS Installer")
+        self.header = wx.StaticText(self.grab_installer_data_frame, label="Download macOS Installer", pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
@@ -1930,7 +1930,7 @@ class wx_python_gui:
         self.settings_menu_frame.SetTitle("Settings")
 
         # Header
-        self.header = wx.StaticText(self.settings_menu_frame, label="Settings")
+        self.header = wx.StaticText(self.settings_menu_frame, label="Settings", pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.SetPosition((-1, 5))
         self.header.Centre(wx.HORIZONTAL)
@@ -2164,7 +2164,7 @@ class wx_python_gui:
         self.reset_settings_modal_frame()
 
         # Header
-        self.header = wx.StaticText(self.settings_menu_frame, label="Developer Settings", style=wx.ALIGN_CENTRE)
+        self.header = wx.StaticText(self.settings_menu_frame, label="Developer Settings", style=wx.ALIGN_CENTRE, pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.SetPosition(wx.Point(0, 10))
         self.header.SetSize(wx.Size(self.settings_menu_frame.GetSize().width, 30))
@@ -2640,7 +2640,7 @@ class wx_python_gui:
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
-        self.settings_menu_frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
+        self.settings_menu_frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
         self.settings_menu_frame.ShowWindowModal()
 
     def smbios_serial_click(self, event):
@@ -2763,7 +2763,7 @@ class wx_python_gui:
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
         
         # Set settings_menu_frame below return to main menu button
-        self.settings_menu_frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
+        self.settings_menu_frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
         self.settings_menu_frame.ShowWindowModal()
 
     
@@ -2772,7 +2772,7 @@ class wx_python_gui:
         self.settings_menu_frame.SetSize(wx.Size(400, 600))
 
         # Title: Configure SIP
-        self.configure_sip_title = wx.StaticText(self.settings_menu_frame, label="Configure SIP")
+        self.configure_sip_title = wx.StaticText(self.settings_menu_frame, label="Configure SIP", pos=wx.Point(10, 10))
         self.configure_sip_title.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.configure_sip_title.Center(wx.HORIZONTAL)
 
@@ -2874,7 +2874,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         # Set the settings_menu_frame size
-        self.settings_menu_frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
+        self.settings_menu_frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
         self.settings_menu_frame.ShowWindowModal()
 
     def update_sip_value(self, event):
@@ -2898,7 +2898,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.reset_settings_modal_frame()
         
         # Header
-        self.header = wx.StaticText(self.settings_menu_frame, label="Misc Settings", style=wx.ALIGN_CENTRE)
+        self.header = wx.StaticText(self.settings_menu_frame, label="Misc Settings", style=wx.ALIGN_CENTRE, pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.SetPosition(wx.Point(0, 10))
         self.header.SetSize(wx.Size(self.settings_menu_frame.GetSize().width, 30))
@@ -2993,7 +2993,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         # set settings_menu_frame size below return to main menu button
-        self.settings_menu_frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
+        self.settings_menu_frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
         self.settings_menu_frame.ShowWindowModal()
 
     def non_metal_config_menu(self, event=None):
@@ -3013,7 +3013,7 @@ OpenCore Legacy Patcher by default knows the most ideal
 
         # Header 1: Configure non-Metal Settings
 
-        self.header_1 = wx.StaticText(self.settings_menu_frame, label="Configure non-Metal Settings")
+        self.header_1 = wx.StaticText(self.settings_menu_frame, label="Configure non-Metal Settings", pos=wx.Point(10, 10))
         self.header_1.SetFont(wx.Font(16, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header_1.Centre(wx.HORIZONTAL)
 
@@ -3087,7 +3087,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.return_to_settings_button.SetPosition(wx.Point(0, self.enable_beta_rim_checkbox.GetPosition().y + self.enable_beta_rim_checkbox.GetSize().height + 10))
         self.return_to_settings_button.Center(wx.HORIZONTAL)
 
-        self.settings_menu_frame.SetSize(wx.Size(-1, self.return_to_settings_button.GetPosition().y + self.return_to_settings_button.GetSize().height + 40))
+        self.settings_menu_frame.SetSize(wx.Size(-1, self.return_to_settings_button.GetPosition().y + self.return_to_settings_button.GetSize().height + 20))
         self.settings_menu_frame.ShowWindowModal()
 
     def enable_beta_blur_click(self, event=None):
