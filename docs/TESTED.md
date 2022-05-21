@@ -51,7 +51,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro6,2 | <span style="color:#30BCD5"> YES </span> | Jakeluke | Stock | Unknown | dGPU broken |
 | MacBookPro7,1 | ^^ | fussel132 | ^^ | 0.1.2 | N/A
 | ^^ | ^^ | casey1234 | Upgraded | 0.3.3 | Upgraded SSD |
-| MacBookPro8,1 | <span style="color:#30BCD5"> YES </span> | AvaQueen | Stock | 0.0.19 | ^^ |
+| MacBookPro8,1 | <span style="color:#30BCD5"> YES </span> | AvaQueen | Stock | 0.0.19 | N/A |
 | MacBookPro8,1 | ^^ | charly-black | Upgraded | 0.3.1 | Upgraded BCM94331PCIEBT4CAX |
 | MacBookPro8,2 | ^^ | air.man | Stock | 0.0.22 | dGPU disabled |
 | ^^ | ^^ | cboukouv | ^^ | 0.0.19 | N/A |
@@ -68,7 +68,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | vinaypundith | Unknown | 0.0.7 | ^^ |
 | ^^ | ^^ | casey1234 | Upgraded | 0.3.3 | Upgraded RAM and SSD |
 | ^^ | ^^ | crystall1nedev | Upgraded | 0.4.4 | ^^ |
-| MacBookPro10,1 | <span style="color:#30BCD5"> YES </span> | traviswparker | Stock | 0.0.14 | ^^ |
+| MacBookPro10,1 | <span style="color:#30BCD5"> YES </span> | traviswparker | Stock | 0.0.14 | N/A |
 | ^^ | ^^ | il-rollino | Upgraded | 0.0.21 | Upgraded BCM94360CSAX |
 | MacBookPro10,2 | ^^ | akidone | ^^ | 0.3.0 | ^^ |
 | MacBookPro11,1 | <span style="color:#30BCD5"> YES </span> | ParaDoX1994 | Stock | 0.4.4 | N/A |
