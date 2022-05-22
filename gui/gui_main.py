@@ -67,6 +67,9 @@ class wx_python_gui:
         self.frame.Bind(wx.EVT_MENU, self.OnCloseFrame, id=wx.ID_EXIT)
         self.frame.Bind(wx.EVT_MENU, self.relaunch_as_root, id=wx.ID_REDO)
         self.frame.SetMenuBar(self.menubar)
+        
+        # Modal Frames
+        self.frame_modal = None
 
         if current_uid == 0:
             self.file_menu.Enable(wx.ID_REDO, False)
@@ -102,6 +105,14 @@ class wx_python_gui:
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
+        self.reset_frame_modal()
+    
+    def reset_frame_modal(self):
+        if not self.frame_modal:
+            self.frame_modal = wx.Dialog(self.frame)
+        else:
+            self.frame_modal.DestroyChildren()
+            self.frame_modal.Close()
     
     def use_non_metal_alternative(self):
         if self.constants.detected_os >= os_data.os_data.monterey:
@@ -112,7 +123,7 @@ class wx_python_gui:
     
     def is_unpack_finished(self):
         if not self.constants.unpack_thread.is_alive():
-            if Path(self.constants.payload_path).exists():
+            if Path(self.constants.payload_kexts_path).exists():
                 return True
             else:
                 # Raise error to end program
@@ -445,15 +456,16 @@ class wx_python_gui:
         # Button: Official Guide
         # Button: Official Discord Server
 
-        self.frame.DestroyChildren()
+        self.reset_frame_modal()
+        self.frame_modal.SetSize((self.WINDOW_WIDTH_MAIN - 40,-1))
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Patcher Resources")
+        self.header = wx.StaticText(self.frame_modal, label="Patcher Resources", pos=(10,10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader
-        self.subheader = wx.StaticText(self.frame, label="Following resources are available:")
+        self.subheader = wx.StaticText(self.frame_modal, label="Following resources are available:")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader.SetPosition(
             wx.Point(
@@ -465,7 +477,7 @@ class wx_python_gui:
 
 
         # Official Guide
-        self.guide = wx.Button(self.frame, label="Official Guide", size=(200,30))
+        self.guide = wx.Button(self.frame_modal, label="Official Guide", size=(200,30))
         self.guide.SetPosition(
             wx.Point(
                 self.subheader.GetPosition().x,
@@ -477,7 +489,7 @@ class wx_python_gui:
         self.guide.Centre(wx.HORIZONTAL)
 
         # Official Discord Server
-        self.discord = wx.Button(self.frame, label="Official Discord Server", size=(200,30))
+        self.discord = wx.Button(self.frame_modal, label="Official Discord Server", size=(200,30))
         self.discord.SetPosition(
             wx.Point(
                 self.guide.GetPosition().x,
@@ -488,7 +500,7 @@ class wx_python_gui:
         self.discord.Centre(wx.HORIZONTAL)
 
         # Overclock Button
-        self.overclock = wx.Button(self.frame, label="Official Support Phone", size=(200,30))
+        self.overclock = wx.Button(self.frame_modal, label="Official Support Phone", size=(200,30))
         self.overclock.SetPosition(
             wx.Point(
                 self.discord.GetPosition().x,
@@ -499,7 +511,7 @@ class wx_python_gui:
         self.overclock.Centre(wx.HORIZONTAL)
 
 
-        self.return_to_main = wx.Button(self.frame, label="Return to Main Menu", size=(150,30))
+        self.return_to_main = wx.Button(self.frame_modal, label="Return to Main Menu", size=(150,30))
         self.return_to_main.SetPosition(
             wx.Point(
                 self.overclock.GetPosition().x,
@@ -510,12 +522,13 @@ class wx_python_gui:
         self.return_to_main.Centre(wx.HORIZONTAL)
 
         # Set Window Size to below Copyright Label
-        self.frame.SetSize(
+        self.frame_modal.SetSize(
             (
                 -1,
                 self.return_to_main.GetPosition().y + self.return_to_main.GetSize().height + 40
             )
         )
+        self.frame_modal.ShowWindowModal()
     
     def build_install_menu(self, event=None):
         # Define Menu
@@ -525,16 +538,16 @@ class wx_python_gui:
         # - Textbox: stdout
         # - Button: Return to Main Menu
 
-        self.frame.DestroyChildren()
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.WINDOW_HEIGHT_BUILD)
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD, self.WINDOW_HEIGHT_BUILD + 10)
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Build and Install OpenCore")
+        self.header = wx.StaticText(self.frame_modal, label="Build and Install OpenCore", pos=(10,10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader
-        self.subheader = wx.StaticText(self.frame, label=f"Model: {self.constants.custom_model or self.computer.real_model}")
+        self.subheader = wx.StaticText(self.frame_modal, label=f"Model: {self.constants.custom_model or self.computer.real_model}")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader.SetPosition(
             wx.Point(
@@ -545,7 +558,7 @@ class wx_python_gui:
         self.subheader.Centre(wx.HORIZONTAL)
 
         # Build OpenCore
-        self.build_opencore = wx.Button(self.frame, label="🔨 Build OpenCore", size=(150,30))
+        self.build_opencore = wx.Button(self.frame_modal, label="🔨 Build OpenCore", size=(150,30))
         self.build_opencore.SetPosition(
             wx.Point(
                 self.header.GetPosition().x,
@@ -557,7 +570,7 @@ class wx_python_gui:
 
         # Textbox
         # Redirect stdout to a text box
-        self.stdout_text = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.stdout_text = wx.TextCtrl(self.frame_modal, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.stdout_text.SetPosition(wx.Point(self.build_opencore.GetPosition().x, self.build_opencore.GetPosition().y + self.build_opencore.GetSize().height + 10))
         self.stdout_text.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
         # Set width to same as frame
@@ -568,7 +581,7 @@ class wx_python_gui:
         sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
         sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.stdout_text.GetPosition().x,
@@ -577,6 +590,8 @@ class wx_python_gui:
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
+
+        self.frame_modal.ShowWindowModal()
 
         if self.constants.start_build_install is True:
             self.build_start()
@@ -598,7 +613,7 @@ class wx_python_gui:
 
         # Throw popup asking to install OpenCore
         self.dialog = wx.MessageDialog(
-            parent=self.frame, 
+            parent=self.frame_modal, 
             message=f"Would you like to install OpenCore now?",
             caption="Finished building your OpenCore configuration!", 
             style=wx.YES_NO | wx.ICON_QUESTION
@@ -611,6 +626,7 @@ class wx_python_gui:
     
     def install_menu(self, event=None):
         self.frame.DestroyChildren()
+        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
         i = 0
         
         # Header
@@ -664,7 +680,7 @@ class wx_python_gui:
         self.progress_bar.Centre(wx.HORIZONTAL)
         self.progress_bar.SetValue(0)
 
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 40)
+        self.frame.SetSize(-1, self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 40)
 
         # Request Disks Present
         def get_disks():
@@ -789,29 +805,28 @@ class wx_python_gui:
 
     def install_oc_process(self, partition):
         print(f"Installing OpenCore to {partition}")
-        self.frame.DestroyChildren()
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.WINDOW_HEIGHT_BUILD)
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD - 20, self.WINDOW_HEIGHT_BUILD)
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Install OpenCore")
+        self.header = wx.StaticText(self.frame_modal, label="Install OpenCore", pos=(10,10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Textbox
         # Redirect stdout to a text box
-        self.stdout_text = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.stdout_text = wx.TextCtrl(self.frame_modal, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.stdout_text.SetPosition(wx.Point(self.header.GetPosition().x, self.header.GetPosition().y + self.header.GetSize().height + 10))
         self.stdout_text.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
         # Set width to same as frame
-        self.stdout_text.SetSize(self.WINDOW_WIDTH_BUILD, 340)
+        self.stdout_text.SetSize(self.WINDOW_WIDTH_BUILD - 40, 240)
         # Centre the text box to top of window
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
 
         # Update frame height to right below
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 40)
-
-        self.frame.Show()
+        self.frame_modal.SetSize(-1, self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 40)
+        self.frame_modal.ShowWindowModal()
 
         sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
         sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
@@ -819,7 +834,7 @@ class wx_python_gui:
         sys.stdout=sys.__stdout__
         sys.stderr=sys.__stderr__
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.stdout_text.GetPosition().x,
@@ -830,7 +845,7 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 20)
 
         if result is True:
             self.reboot_system(message="OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?")
@@ -843,15 +858,16 @@ class wx_python_gui:
         # Button: Start Root Patching
         # Button: Revert Root Patches
         # Button: Return to Main Menu
-        self.frame.DestroyChildren()
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD - 40, -1)
 
         # Header
-        self.header = wx.StaticText(self.frame, label=f"Post-Install Menu")
+        self.header = wx.StaticText(self.frame_modal, label=f"Post-Install Menu", pos=(10,10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader
-        self.subheader = wx.StaticText(self.frame, label="Available patches for system:")
+        self.subheader = wx.StaticText(self.frame_modal, label="Available patches for system:")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.subheader.SetPosition(
             wx.Point(
@@ -873,7 +889,7 @@ class wx_python_gui:
                 # Add Label for each patch
                 if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                     print(f"- Adding patch: {patch} - {patches[patch]}")
-                    self.patch_label = wx.StaticText(self.frame, label=f"- {patch}")
+                    self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch}")
                     self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
                     self.patch_label.SetPosition(
                         wx.Point(
@@ -883,7 +899,7 @@ class wx_python_gui:
                     )
                     i = i + self.patch_label.GetSize().height + 3
             if patches["Validation: Patching Possible"] is False:
-                self.patch_label = wx.StaticText(self.frame, label="Cannot Patch due to following reasons:")
+                self.patch_label = wx.StaticText(self.frame_modal, label="Cannot Patch due to following reasons:")
                 self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
                 self.patch_label.SetPosition(
                     wx.Point(
@@ -896,7 +912,7 @@ class wx_python_gui:
                 for patch in patches:
                     if patch.startswith("Validation") and patches[patch] is True:
                         print(f"- Adding check: {patch} - {patches[patch]}")
-                        self.patch_label = wx.StaticText(self.frame, label=f"- {patch.lstrip('Validation: ')}")
+                        self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch.lstrip('Validation: ')}")
                         self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
                         self.patch_label.SetPosition(
                             wx.Point(
@@ -914,7 +930,7 @@ class wx_python_gui:
                         date = ""
                     patch_text = f"{self.constants.computer.oclp_sys_version}, {date}"
 
-                    self.patch_label = wx.StaticText(self.frame, label="Root Volume last patched:")
+                    self.patch_label = wx.StaticText(self.frame_modal, label="Root Volume last patched:")
                     self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
                     self.patch_label.SetPosition(
                         wx.Point(
@@ -925,7 +941,7 @@ class wx_python_gui:
                     self.patch_label.Centre(wx.HORIZONTAL)
                     i = i + self.patch_label.GetSize().height + 3
 
-                    self.patch_label = wx.StaticText(self.frame, label=patch_text)
+                    self.patch_label = wx.StaticText(self.frame_modal, label=patch_text)
                     self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
                     self.patch_label.SetPosition(
                         wx.Point(
@@ -937,7 +953,7 @@ class wx_python_gui:
                     i = i + self.patch_label.GetSize().height + 3
         else:
             # Prompt user with no patches found
-            self.patch_label = wx.StaticText(self.frame, label="No patches needed")
+            self.patch_label = wx.StaticText(self.frame_modal, label="No patches needed")
             self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
             self.patch_label.SetPosition(
                 wx.Point(
@@ -948,7 +964,7 @@ class wx_python_gui:
             self.patch_label.Centre(wx.HORIZONTAL)
         
         # Start Root Patching
-        self.start_root_patching = wx.Button(self.frame, label="Start Root Patching", size=(170, -1))
+        self.start_root_patching = wx.Button(self.frame_modal, label="Start Root Patching", size=(170, -1))
         self.start_root_patching.SetPosition(
             wx.Point(
                 self.patch_label.GetPosition().x,
@@ -961,7 +977,7 @@ class wx_python_gui:
             self.start_root_patching.Disable()
 
         # Revert Root Patches
-        self.revert_root_patches = wx.Button(self.frame, label="Revert Root Patches", size=(170, -1))
+        self.revert_root_patches = wx.Button(self.frame_modal, label="Revert Root Patches", size=(170, -1))
         self.revert_root_patches.SetPosition(
             wx.Point(
                 self.start_root_patching.GetPosition().x,
@@ -973,7 +989,7 @@ class wx_python_gui:
         if self.constants.detected_os < os_data.os_data.big_sur:
             self.revert_root_patches.Disable()
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.revert_root_patches.GetPosition().x,
@@ -996,15 +1012,15 @@ class wx_python_gui:
                 self.start_root_patching.Disable()
                 self.revert_root_patches.Disable()
 
-        self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
-    
+        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.ShowWindowModal()
+
     def root_patch_start(self, event=None):
         self.frame.DestroyChildren()
-
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Root Patching")
+        self.header = wx.StaticText(self.frame, label="Root Patching", pos=(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
@@ -1054,7 +1070,7 @@ class wx_python_gui:
         if download_result is None:
             # Create popup window to inform user of error
             self.popup = wx.MessageDialog(
-                self.frame, 
+                self.frame_modal, 
                 "A problem occured trying to download PatcherSupportPkg binaries\n\nIf you continue to have this error, download an Offline build from Github\nThese builds don't require a network connection to root patch", 
                 "Network Error", 
                 wx.YES_NO | wx.ICON_ERROR
@@ -1065,13 +1081,36 @@ class wx_python_gui:
                 webbrowser.open(self.constants.repo_link_latest)
             self.main_menu()
 
-        self.subheader.SetLabel("Starting root volume patching")
-        self.developer_note.SetLabel("Starting shortly")
+        self.reset_frame_modal()
+
+        # Header
+        self.header = wx.StaticText(self.frame_modal, label="Root Patching", pos=(10, 10))
+        self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.header.Centre(wx.HORIZONTAL)
+
+        # Subheader
+        self.subheader = wx.StaticText(self.frame_modal, label="Starting root volume patching")
+        self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.subheader.SetPosition(
+            wx.Point(
+                self.header.GetPosition().x,
+                self.header.GetPosition().y + self.header.GetSize().height + 10
+            )
+        )
         self.subheader.Centre(wx.HORIZONTAL)
+
+        self.developer_note = wx.StaticText(self.frame_modal, label="Starting shortly")
+        self.developer_note.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.developer_note.SetPosition(
+            wx.Point(
+                self.subheader.GetPosition().x,
+                self.subheader.GetPosition().y + self.subheader.GetSize().height + 3
+            )
+        )
         self.developer_note.Centre(wx.HORIZONTAL)
 
         # Text Box
-        self.text_box = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.text_box = wx.TextCtrl(self.frame_modal, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.text_box.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.text_box.SetPosition(
             wx.Point(
@@ -1081,13 +1120,13 @@ class wx_python_gui:
         )
         self.text_box.SetSize(
             wx.Size(
-                self.frame.GetSize().width - 10,
-                self.frame.GetSize().height + self.text_box.GetPosition().y + 80
+                self.frame_modal.GetSize().width - 10,
+                self.frame_modal.GetSize().height + self.text_box.GetPosition().y + 80
             )
         )
         self.text_box.Centre(wx.HORIZONTAL)
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.text_box.GetPosition().x,
@@ -1098,14 +1137,12 @@ class wx_python_gui:
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
         self.return_to_main_menu.Disable()
 
-        self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
-
-        wx.GetApp().Yield()
+        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         sys.stdout = menu_redirect.RedirectText(self.text_box, True)
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
+        self.frame_modal.ShowWindowModal()
         wx.GetApp().Yield()
-        self.frame.Show()
         try:
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_patch()
         except Exception as e:
@@ -1121,20 +1158,19 @@ class wx_python_gui:
         wx.GetApp().Yield()
     
     def root_patch_revert(self, event=None):
-        self.frame.DestroyChildren()
-
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD, -1)
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Revert Root Patches")
+        self.header = wx.StaticText(self.frame_modal, label="Revert Root Patches", pos=(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader
         if self.constants.detected_os == os_data.os_data.big_sur:
-            self.subheader = wx.StaticText(self.frame, label="Currently experimental in Big Sur")
+            self.subheader = wx.StaticText(self.frame_modal, label="Currently experimental in Big Sur")
         else:
-            self.subheader = wx.StaticText(self.frame, label="Reverting to last sealed snapshot")
+            self.subheader = wx.StaticText(self.frame_modal, label="Reverting to last sealed snapshot")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.subheader.SetPosition(
             wx.Point(
@@ -1144,7 +1180,7 @@ class wx_python_gui:
         )
         self.subheader.Centre(wx.HORIZONTAL)
 
-        self.developer_note = wx.StaticText(self.frame, label="Starting shortly")
+        self.developer_note = wx.StaticText(self.frame_modal, label="Starting shortly")
         self.developer_note.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.developer_note.SetPosition(
             wx.Point(
@@ -1155,7 +1191,7 @@ class wx_python_gui:
         self.developer_note.Centre(wx.HORIZONTAL)
 
         # Text Box
-        self.text_box = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.text_box = wx.TextCtrl(self.frame_modal, style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.text_box.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.text_box.SetPosition(
             wx.Point(
@@ -1165,13 +1201,13 @@ class wx_python_gui:
         )
         self.text_box.SetSize(
             wx.Size(
-                self.frame.GetSize().width - 10,
-                self.frame.GetSize().height + self.text_box.GetPosition().y + 80
+                self.frame_modal.GetSize().width - 10,
+                self.frame_modal.GetSize().height + self.text_box.GetPosition().y + 80
             )
         )
         self.text_box.Centre(wx.HORIZONTAL)
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.text_box.GetPosition().x,
@@ -1182,12 +1218,13 @@ class wx_python_gui:
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
         self.return_to_main_menu.Disable()
 
-        self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         # Start reverting root patches
         sys.stdout = menu_redirect.RedirectText(self.text_box, True)
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
+        self.frame_modal.ShowWindowModal()
         while self.is_unpack_finished() is False:
             time.sleep(0.1)
         try:
@@ -1201,7 +1238,6 @@ class wx_python_gui:
             print("- Root Patcher finished successfully")
             self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
-
         wx.GetApp().Yield()
 
     def create_macos_menu(self, event=None):
@@ -1212,15 +1248,16 @@ class wx_python_gui:
         #   - Use existing macOS Installer
         #   - Return to Main Menu
 
-        self.frame.DestroyChildren()
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(self.WINDOW_WIDTH_MAIN - 20 , -1)
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Create macOS Installer")
+        self.header = wx.StaticText(self.frame_modal, label="Create macOS Installer", pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Button: Download macOS Installer
-        self.download_macos_installer = wx.Button(self.frame, label="Download macOS Installer", size=(200, 30))
+        self.download_macos_installer = wx.Button(self.frame_modal, label="Download macOS Installer", size=(200, 30))
         self.download_macos_installer.SetPosition(
             wx.Point(
                 self.header.GetPosition().x,
@@ -1231,7 +1268,7 @@ class wx_python_gui:
         self.download_macos_installer.Centre(wx.HORIZONTAL)
 
         # Button: Use existing macOS Installer
-        self.use_existing_macos_installer = wx.Button(self.frame, label="Use existing macOS Installer", size=(200, 30))
+        self.use_existing_macos_installer = wx.Button(self.frame_modal, label="Use existing macOS Installer", size=(200, 30))
         self.use_existing_macos_installer.SetPosition(
             wx.Point(
                 self.download_macos_installer.GetPosition().x,
@@ -1241,7 +1278,7 @@ class wx_python_gui:
         self.use_existing_macos_installer.Bind(wx.EVT_BUTTON, self.flash_installer_menu)
         self.use_existing_macos_installer.Centre(wx.HORIZONTAL)
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.use_existing_macos_installer.GetPosition().x,
@@ -1251,7 +1288,8 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.ShowWindowModal()
 
     def grab_installer_data(self, event=None, ias=None):
         self.frame.DestroyChildren()
@@ -1315,15 +1353,16 @@ class wx_python_gui:
             print("- Using existing installer catalog...")
             available_installers = ias
 
-        self.frame.DestroyChildren()
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(self.WINDOW_WIDTH_MAIN - 20, -1)
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Download macOS Installer")
+        self.header = wx.StaticText(self.frame_modal, label="Download macOS Installer", pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader:
-        self.subheader = wx.StaticText(self.frame, label="Installers currently available from Apple:")
+        self.subheader = wx.StaticText(self.frame_modal, label="Installers currently available from Apple:")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader.SetPosition(
             wx.Point(
@@ -1345,7 +1384,7 @@ class wx_python_gui:
                     extra = " Beta"
                 else:
                     extra = ""
-                self.install_selection = wx.Button(self.frame, label=f"macOS {available_installers[app]['Version']}{extra} ({available_installers[app]['Build']} - {utilities.human_fmt(available_installers[app]['Size'])})", size=(280, 30))
+                self.install_selection = wx.Button(self.frame_modal, label=f"macOS {available_installers[app]['Version']}{extra} ({available_installers[app]['Build']} - {utilities.human_fmt(available_installers[app]['Size'])})", size=(280, 30))
                 i = i + 25
                 self.install_selection.SetPosition(
                     wx.Point(
@@ -1356,7 +1395,7 @@ class wx_python_gui:
                 self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.download_macos_click(available_installers[temp]))
                 self.install_selection.Centre(wx.HORIZONTAL)
         else:
-            self.install_selection = wx.StaticText(self.frame, label="No installers available")
+            self.install_selection = wx.StaticText(self.frame_modal, label="No installers available")
             i = i + 25
             self.install_selection.SetPosition(
                 wx.Point(
@@ -1367,7 +1406,7 @@ class wx_python_gui:
             self.install_selection.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
             self.install_selection.Centre(wx.HORIZONTAL)
         
-        self.load_all_installers = wx.Button(self.frame, label="Reload with all installers")
+        self.load_all_installers = wx.Button(self.frame_modal, label="Reload with all installers")
         self.load_all_installers.SetPosition(
             wx.Point(
                 self.install_selection.GetPosition().x,
@@ -1379,7 +1418,7 @@ class wx_python_gui:
         if ias or not available_installers:
             self.load_all_installers.Disable()
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.load_all_installers.GetPosition().x,
@@ -1389,7 +1428,8 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.ShowWindowModal()
 
     def reload_macos_installer_catalog(self, event=None, ias=None):
         self.grab_installer_data(ias=ias)
@@ -1867,6 +1907,7 @@ class wx_python_gui:
                 else:
                     print("- Installer unsupported, requires Big Sur or newer")
 
+
     def settings_menu(self, event=None):
         # Define Menu
         # - Header: Settings
@@ -1882,17 +1923,22 @@ class wx_python_gui:
         #   - Developer Settings
         # - Return to Main Menu
 
-        self.frame.DestroyChildren()
-        self.frame.SetSize(self.WINDOW_SETTINGS_WIDTH, self.WINDOW_SETTINGS_HEIGHT)
-        self.frame.SetTitle("Settings")
+        # Create wxDialog and have Settings menu be WindowModal
+
+        # Create Menu
+        self.reset_frame_modal()
+
+        self.frame_modal.SetSize(self.WINDOW_SETTINGS_WIDTH, self.WINDOW_SETTINGS_HEIGHT)
+        self.frame_modal.SetTitle("Settings")
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Settings")
+        self.header = wx.StaticText(self.frame_modal, label="Settings", pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.header.SetPosition((-1, 5))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader
-        self.subheader = wx.StaticText(self.frame, label="Changing settings here require you")
+        self.subheader = wx.StaticText(self.frame_modal, label="Changing settings here require you")
         self.subheader.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.subheader.SetPosition(
             wx.Point(
@@ -1901,7 +1947,7 @@ class wx_python_gui:
             )
         )
         self.subheader.Centre(wx.HORIZONTAL)
-        self.subheader2 = wx.StaticText(self.frame, label="to run 'Build and Install OpenCore'")
+        self.subheader2 = wx.StaticText(self.frame_modal, label="to run 'Build and Install OpenCore'")
         self.subheader2.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.subheader2.SetPosition(
             wx.Point(
@@ -1910,7 +1956,7 @@ class wx_python_gui:
             )
         )
         self.subheader2.Centre(wx.HORIZONTAL)
-        self.subheader3 = wx.StaticText(self.frame, label="then reboot for changes to be applied")
+        self.subheader3 = wx.StaticText(self.frame_modal, label="then reboot for changes to be applied")
         self.subheader3.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.subheader3.SetPosition(
             wx.Point(
@@ -1921,7 +1967,7 @@ class wx_python_gui:
         self.subheader3.Centre(wx.HORIZONTAL)
 
         # Dropdown
-        self.dropdown_model = wx.Choice(self.frame)
+        self.dropdown_model = wx.Choice(self.frame_modal)
         for model in model_array.SupportedSMBIOS:
             self.dropdown_model.Append(model)
         if self.computer.real_model not in self.dropdown_model.GetItems():
@@ -1948,42 +1994,42 @@ class wx_python_gui:
 
         # Checkboxes
         # Checkbox: Allow native models
-        self.checkbox_allow_native_models = wx.CheckBox(self.frame, label="Allow native models")
+        self.checkbox_allow_native_models = wx.CheckBox(self.frame_modal, label="Allow native models")
         self.checkbox_allow_native_models.SetValue(self.constants.allow_oc_everywhere)
         self.checkbox_allow_native_models.SetPosition(wx.Point(self.dropdown_model.GetPosition().x, self.dropdown_model.GetPosition().y + self.dropdown_model.GetSize().height + 10))
         self.checkbox_allow_native_models.Bind(wx.EVT_CHECKBOX, self.allow_native_models_click)
         self.checkbox_allow_native_models.ToolTip = wx.ToolTip("""Select to allow OpenCore to be installed on native models\nGenerally used for enabling OS features Apple locks out of native Macs\nie. AirPlay to Mac, Sidecar.""")
 
         # Checkbox: Verbose
-        self.verbose_checkbox = wx.CheckBox(self.frame, label="Verbose")
+        self.verbose_checkbox = wx.CheckBox(self.frame_modal, label="Verbose")
         self.verbose_checkbox.SetValue(self.constants.verbose_debug)
         self.verbose_checkbox.SetPosition(wx.Point(self.checkbox_allow_native_models.GetPosition().x, self.checkbox_allow_native_models.GetPosition().y + self.checkbox_allow_native_models.GetSize().height))
         self.verbose_checkbox.Bind(wx.EVT_CHECKBOX, self.verbose_checkbox_click)
         self.verbose_checkbox.ToolTip = wx.ToolTip("""Add -v (verbose) to boot-args during build""")
 
         # Checkbox: Kext Debug
-        self.kext_checkbox = wx.CheckBox(self.frame, label="Kext Debug")
+        self.kext_checkbox = wx.CheckBox(self.frame_modal, label="Kext Debug")
         self.kext_checkbox.SetValue(self.constants.kext_debug)
         self.kext_checkbox.SetPosition(wx.Point(self.verbose_checkbox.GetPosition().x , self.verbose_checkbox.GetPosition().y + self.verbose_checkbox.GetSize().height))
         self.kext_checkbox.Bind(wx.EVT_CHECKBOX, self.kext_checkbox_click)
         self.kext_checkbox.ToolTip = wx.ToolTip("""Enables additional kext logging, including expanded message buffer""")
 
         # Checkbox: OpenCore Debug
-        self.opencore_checkbox = wx.CheckBox(self.frame, label="OpenCore Debug")
+        self.opencore_checkbox = wx.CheckBox(self.frame_modal, label="OpenCore Debug")
         self.opencore_checkbox.SetValue(self.constants.opencore_debug)
         self.opencore_checkbox.SetPosition(wx.Point(self.kext_checkbox.GetPosition().x , self.kext_checkbox.GetPosition().y + self.kext_checkbox.GetSize().height))
         self.opencore_checkbox.Bind(wx.EVT_CHECKBOX, self.oc_checkbox_click)
         self.opencore_checkbox.ToolTip = wx.ToolTip("""Enables OpenCore logging, can heavily impact boot times""")
 
         # Checkbox: SecureBootModel
-        self.secureboot_checkbox = wx.CheckBox(self.frame, label="SecureBootModel")
+        self.secureboot_checkbox = wx.CheckBox(self.frame_modal, label="SecureBootModel")
         self.secureboot_checkbox.SetValue(self.constants.secure_status)
         self.secureboot_checkbox.SetPosition(wx.Point(self.opencore_checkbox.GetPosition().x , self.opencore_checkbox.GetPosition().y + self.opencore_checkbox.GetSize().height))
         self.secureboot_checkbox.Bind(wx.EVT_CHECKBOX, self.secureboot_checkbox_click)
         self.secureboot_checkbox.ToolTip = wx.ToolTip("""Sets SecureBootModel, useful for models spoofing T2 Macs to get OTA updates""")
 
         # Checkbox: Show Boot Picker
-        self.bootpicker_checkbox = wx.CheckBox(self.frame, label="Show Boot Picker")
+        self.bootpicker_checkbox = wx.CheckBox(self.frame_modal, label="Show Boot Picker")
         self.bootpicker_checkbox.SetValue(self.constants.showpicker)
         self.bootpicker_checkbox.SetPosition(wx.Point(self.secureboot_checkbox.GetPosition().x , self.secureboot_checkbox.GetPosition().y + self.secureboot_checkbox.GetSize().height))
         self.bootpicker_checkbox.Bind(wx.EVT_CHECKBOX, self.show_picker_checkbox_click)
@@ -1998,36 +2044,36 @@ class wx_python_gui:
             sip_string = "Enabled"
         else:
             sip_string = "Lowered"
-        self.sip_button = wx.Button(self.frame, label=f"SIP Settings ({sip_string})",  size=(155,30))
+        self.sip_button = wx.Button(self.frame_modal, label=f"SIP Settings ({sip_string})",  size=(155,30))
         self.sip_button.SetPosition(wx.Point(self.bootpicker_checkbox.GetPosition().x , self.bootpicker_checkbox.GetPosition().y + self.bootpicker_checkbox.GetSize().height + 10))
         self.sip_button.Bind(wx.EVT_BUTTON, self.sip_config_menu)
         self.sip_button.Center(wx.HORIZONTAL)
 
         # Button: SMBIOS Settings
-        self.smbios_button = wx.Button(self.frame, label="SMBIOS Settings",  size=(155,30))
+        self.smbios_button = wx.Button(self.frame_modal, label="SMBIOS Settings",  size=(155,30))
         self.smbios_button.SetPosition(wx.Point(self.sip_button.GetPosition().x , self.sip_button.GetPosition().y + self.sip_button.GetSize().height))
         self.smbios_button.Bind(wx.EVT_BUTTON, self.smbios_settings_menu)
         self.smbios_button.Center(wx.HORIZONTAL)
 
         # Button: Misc Settings
-        self.misc_button = wx.Button(self.frame, label="Misc Settings",  size=(155,30))
+        self.misc_button = wx.Button(self.frame_modal, label="Misc Settings",  size=(155,30))
         self.misc_button.SetPosition(wx.Point(self.smbios_button.GetPosition().x , self.smbios_button.GetPosition().y + self.smbios_button.GetSize().height))
         self.misc_button.Bind(wx.EVT_BUTTON, self.misc_settings_menu)
         self.misc_button.Center(wx.HORIZONTAL)
 
         # Button: non-Metal Settings
-        self.nonmetal_button = wx.Button(self.frame, label="Non-Metal Settings",  size=(155,30))
+        self.nonmetal_button = wx.Button(self.frame_modal, label="Non-Metal Settings",  size=(155,30))
         self.nonmetal_button.SetPosition(wx.Point(self.misc_button.GetPosition().x , self.misc_button.GetPosition().y + self.misc_button.GetSize().height))
         self.nonmetal_button.Bind(wx.EVT_BUTTON, self.non_metal_config_menu)
         self.nonmetal_button.Center(wx.HORIZONTAL)
 
         # Button: Developer Settings
-        self.miscellaneous_button = wx.Button(self.frame, label="Developer Settings",  size=(155,30))
+        self.miscellaneous_button = wx.Button(self.frame_modal, label="Developer Settings",  size=(155,30))
         self.miscellaneous_button.SetPosition(wx.Point(self.nonmetal_button.GetPosition().x , self.nonmetal_button.GetPosition().y + self.nonmetal_button.GetSize().height))
         self.miscellaneous_button.Bind(wx.EVT_BUTTON, self.dev_settings_menu)
         self.miscellaneous_button.Centre(wx.HORIZONTAL)
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu", size=(155,30))
+        self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu", size=(155,30))
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.miscellaneous_button.GetPosition().x,
@@ -2038,8 +2084,9 @@ class wx_python_gui:
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
         # Set frame size to below return_to_main_menu button
-        self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
-    
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40))
+        self.frame_modal.ShowWindowModal()
+
     def model_choice_click(self, event=None):
         user_choice = self.dropdown_model.GetStringSelection()
         if user_choice == self.computer.real_model:
@@ -2116,31 +2163,31 @@ class wx_python_gui:
             self.constants.showpicker = False
     
     def dev_settings_menu(self, event=None):
-        self.frame.DestroyChildren()
+        self.reset_frame_modal()
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Developer Settings", style=wx.ALIGN_CENTRE)
+        self.header = wx.StaticText(self.frame_modal, label="Developer Settings", style=wx.ALIGN_CENTRE, pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.SetPosition(wx.Point(0, 10))
-        self.header.SetSize(wx.Size(self.frame.GetSize().width, 30))
+        self.header.SetSize(wx.Size(self.frame_modal.GetSize().width, 30))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader: If unfamiliar with the following settings, please do not change them.
-        self.subheader = wx.StaticText(self.frame, label="Do not change if unfamiliar", style=wx.ALIGN_CENTRE)
+        self.subheader = wx.StaticText(self.frame_modal, label="Do not change if unfamiliar", style=wx.ALIGN_CENTRE)
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader.SetPosition(wx.Point(0, self.header.GetPosition().y + self.header.GetSize().height))
-        self.subheader.SetSize(wx.Size(self.frame.GetSize().width, 30))
+        self.subheader.SetSize(wx.Size(self.frame_modal.GetSize().width, 30))
         self.subheader.Centre(wx.HORIZONTAL)
 
         # Label: Set GPU Model for MXM iMacs
-        self.label_model = wx.StaticText(self.frame, label="Set GPU Model for MXM iMacs:", style=wx.ALIGN_CENTRE)
+        self.label_model = wx.StaticText(self.frame_modal, label="Set GPU Model for MXM iMacs:", style=wx.ALIGN_CENTRE)
         self.label_model.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.label_model.SetPosition(wx.Point(0, self.subheader.GetPosition().y + self.subheader.GetSize().height + 2))
-        self.label_model.SetSize(wx.Size(self.frame.GetSize().width, 30))
+        self.label_model.SetSize(wx.Size(self.frame_modal.GetSize().width, 30))
         self.label_model.Centre(wx.HORIZONTAL)
 
         # Dropdown: GPU Model
-        self.gpu_dropdown = wx.Choice(self.frame)
+        self.gpu_dropdown = wx.Choice(self.frame_modal)
         for gpu in ["None", "Nvidia Kepler", "AMD GCN", "AMD Polaris"]:
             self.gpu_dropdown.Append(gpu)
         self.gpu_dropdown.SetSelection(0)
@@ -2154,7 +2201,7 @@ class wx_python_gui:
             self.gpu_dropdown.Disable()
         
         # Disable Thunderbolt
-        self.disable_thunderbolt_checkbox = wx.CheckBox(self.frame, label="Disable Thunderbolt")
+        self.disable_thunderbolt_checkbox = wx.CheckBox(self.frame_modal, label="Disable Thunderbolt")
         self.disable_thunderbolt_checkbox.SetValue(self.constants.disable_tb)
         self.disable_thunderbolt_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_tb_click)
         self.disable_thunderbolt_checkbox.SetPosition(wx.Point(
@@ -2164,7 +2211,7 @@ class wx_python_gui:
         if not self.constants.custom_model and not self.computer.real_model.startswith("MacBookPro11"):
             self.disable_thunderbolt_checkbox.Disable()
         # Set TeraScale 2 Accel
-        self.set_terascale_accel_checkbox = wx.CheckBox(self.frame, label="Set TeraScale 2 Accel")
+        self.set_terascale_accel_checkbox = wx.CheckBox(self.frame_modal, label="Set TeraScale 2 Accel")
         self.set_terascale_accel_checkbox.SetValue(self.constants.allow_ts2_accel)
         self.set_terascale_accel_checkbox.Bind(wx.EVT_CHECKBOX, self.ts2_accel_click)
         self.set_terascale_accel_checkbox.SetPosition(wx.Point(
@@ -2175,7 +2222,7 @@ class wx_python_gui:
             self.set_terascale_accel_checkbox.Disable()
 
         # Windows GMUX
-        self.windows_gmux_checkbox = wx.CheckBox(self.frame, label="Windows GMUX")
+        self.windows_gmux_checkbox = wx.CheckBox(self.frame_modal, label="Windows GMUX")
         self.windows_gmux_checkbox.SetValue(self.constants.dGPU_switch)
         self.windows_gmux_checkbox.Bind(wx.EVT_CHECKBOX, self.windows_gmux_click)
         self.windows_gmux_checkbox.SetPosition(wx.Point(
@@ -2184,7 +2231,7 @@ class wx_python_gui:
         self.windows_gmux_checkbox.SetToolTip(wx.ToolTip("Enable this option to allow usage of the hardware GMUX to switch between Intel and Nvidia/AMD GPUs in Windows."))
 
         # Hibernation Workaround
-        self.hibernation_checkbox = wx.CheckBox(self.frame, label="Hibernation Workaround")
+        self.hibernation_checkbox = wx.CheckBox(self.frame_modal, label="Hibernation Workaround")
         self.hibernation_checkbox.SetValue(self.constants.disable_connectdrivers)
         self.hibernation_checkbox.Bind(wx.EVT_CHECKBOX, self.hibernation_click)
         self.hibernation_checkbox.SetPosition(wx.Point(
@@ -2193,7 +2240,7 @@ class wx_python_gui:
         self.hibernation_checkbox.SetToolTip(wx.ToolTip("This will disable the ConnectDrivers in OpenCore\nRecommended to toggle if your machine is having issues with hibernation.\nMainly applicable for MacBookPro9,1 and MacBookPro10,1"))
 
         # Disable Battery Throttling
-        self.disable_battery_throttling_checkbox = wx.CheckBox(self.frame, label="Disable Firmware Throttling")
+        self.disable_battery_throttling_checkbox = wx.CheckBox(self.frame_modal, label="Disable Firmware Throttling")
         self.disable_battery_throttling_checkbox.SetValue(self.constants.disable_msr_power_ctl)
         self.disable_battery_throttling_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_battery_throttling_click)
         self.disable_battery_throttling_checkbox.SetPosition(wx.Point(
@@ -2202,7 +2249,7 @@ class wx_python_gui:
         self.disable_battery_throttling_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable MSR Power Control on Arrendale and newer Macs\nMainly applicable for systems with severe throttling due to missing battery or display"))
 
         # Disable XCPM
-        self.disable_xcpm_checkbox = wx.CheckBox(self.frame, label="Disable XCPM")
+        self.disable_xcpm_checkbox = wx.CheckBox(self.frame_modal, label="Disable XCPM")
         self.disable_xcpm_checkbox.SetValue(self.constants.disable_xcpm)
         self.disable_xcpm_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_xcpm_click)
         self.disable_xcpm_checkbox.SetPosition(wx.Point(
@@ -2211,7 +2258,7 @@ class wx_python_gui:
         self.disable_xcpm_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable XCPM on Ivy Bridge EP and newer Macs\nMainly applicable for systems with severe throttling due to missing battery or display"))
 
         # Software Demux
-        self.software_demux_checkbox = wx.CheckBox(self.frame, label="Software Demux")
+        self.software_demux_checkbox = wx.CheckBox(self.frame_modal, label="Software Demux")
         self.software_demux_checkbox.SetValue(self.constants.software_demux)
         self.software_demux_checkbox.Bind(wx.EVT_CHECKBOX, self.software_demux_click)
         self.software_demux_checkbox.SetPosition(wx.Point(
@@ -2222,7 +2269,7 @@ class wx_python_gui:
             self.software_demux_checkbox.Disable()
 
         # Disable CPUFriend
-        self.disable_cpu_friend_checkbox = wx.CheckBox(self.frame, label="Disable CPUFriend")
+        self.disable_cpu_friend_checkbox = wx.CheckBox(self.frame_modal, label="Disable CPUFriend")
         self.disable_cpu_friend_checkbox.SetValue(self.constants.disallow_cpufriend)
         self.disable_cpu_friend_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_cpu_friend_click)
         self.disable_cpu_friend_checkbox.SetPosition(wx.Point(
@@ -2233,7 +2280,7 @@ class wx_python_gui:
             self.disable_cpu_friend_checkbox.Disable()
 
         # AppleALC Usage
-        self.apple_alc_checkbox = wx.CheckBox(self.frame, label="AppleALC Usage")
+        self.apple_alc_checkbox = wx.CheckBox(self.frame_modal, label="AppleALC Usage")
         self.apple_alc_checkbox.SetValue(self.constants.set_alc_usage)
         self.apple_alc_checkbox.Bind(wx.EVT_CHECKBOX, self.apple_alc_click)
         self.apple_alc_checkbox.SetPosition(wx.Point(
@@ -2242,7 +2289,7 @@ class wx_python_gui:
         self.apple_alc_checkbox.SetToolTip(wx.ToolTip("This will set whether AppleALC is allowed to be used during config building.\nMainly applicable for MacPro3,1s that do not have boot screen support, thus preventing AppleALC from working."))
 
         # Set WriteFlash
-        self.set_writeflash_checkbox = wx.CheckBox(self.frame, label="Set NVRAM WriteFlash")
+        self.set_writeflash_checkbox = wx.CheckBox(self.frame_modal, label="Set NVRAM WriteFlash")
         self.set_writeflash_checkbox.SetValue(self.constants.nvram_write)
         self.set_writeflash_checkbox.Bind(wx.EVT_CHECKBOX, self.set_writeflash_click)
         self.set_writeflash_checkbox.SetPosition(wx.Point(
@@ -2250,7 +2297,7 @@ class wx_python_gui:
             self.apple_alc_checkbox.GetPosition().y + self.apple_alc_checkbox.GetSize().height))
         self.set_writeflash_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore is allowed to write to hardware NVRAM.\nDisable this option if your system has degraded or fragile NVRAM."))
         # Set Enhanced 3rd Party SSD
-        self.set_enhanced_3rd_party_ssd_checkbox = wx.CheckBox(self.frame, label="Enhanced SSD Support")
+        self.set_enhanced_3rd_party_ssd_checkbox = wx.CheckBox(self.frame_modal, label="Enhanced SSD Support")
         self.set_enhanced_3rd_party_ssd_checkbox.SetValue(self.constants.allow_3rd_party_drives)
         self.set_enhanced_3rd_party_ssd_checkbox.Bind(wx.EVT_CHECKBOX, self.set_enhanced_3rd_party_ssd_click)
         self.set_enhanced_3rd_party_ssd_checkbox.SetPosition(wx.Point(
@@ -2261,7 +2308,7 @@ class wx_python_gui:
             self.set_enhanced_3rd_party_ssd_checkbox.Disable()
         
         # Set Ignore App Updates
-        self.set_ignore_app_updates_checkbox = wx.CheckBox(self.frame, label="Ignore App Updates")
+        self.set_ignore_app_updates_checkbox = wx.CheckBox(self.frame_modal, label="Ignore App Updates")
         self.set_ignore_app_updates_checkbox.SetValue(self.constants.ignore_updates)
         self.set_ignore_app_updates_checkbox.Bind(wx.EVT_CHECKBOX, self.set_ignore_app_updates_click)
         self.set_ignore_app_updates_checkbox.SetPosition(wx.Point(
@@ -2271,7 +2318,7 @@ class wx_python_gui:
 
         
         # Button: Developer Debug Info
-        self.debug_button = wx.Button(self.frame, label="Developer Debug Info")
+        self.debug_button = wx.Button(self.frame_modal, label="Developer Debug Info")
         self.debug_button.Bind(wx.EVT_BUTTON, self.additional_info_menu)
         self.debug_button.SetPosition(wx.Point(
             self.set_ignore_app_updates_checkbox.GetPosition().x,
@@ -2279,16 +2326,18 @@ class wx_python_gui:
         self.debug_button.Center(wx.HORIZONTAL)
         
         # Button: return to main menu
-        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
+        self.return_to_main_menu_button = wx.Button(self.frame_modal, label="Return to Settings")
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.SetPosition(wx.Point(
             self.debug_button.GetPosition().x,
             self.debug_button.GetPosition().y + self.debug_button.GetSize().height + 10))
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
-        # set frame size below return to main menu button
-        self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
-    
+        # set frame_modal size below return to main menu button
+        
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
+        self.frame_modal.ShowWindowModal()
+
     def set_ignore_app_updates_click(self, event):
         self.constants.ignore_updates = self.set_ignore_app_updates_checkbox.GetValue()
         if self.constants.ignore_updates is True:
@@ -2475,15 +2524,15 @@ class wx_python_gui:
             self.constants.nvram_write = False
 
     def smbios_settings_menu(self, event=None):
-        self.frame.DestroyChildren()
+        self.reset_frame_modal()
 
         # Header: SMBIOS Settings
-        self.smbios_settings_header = wx.StaticText(self.frame, label="SMBIOS Settings", pos=wx.Point(10, 10))
+        self.smbios_settings_header = wx.StaticText(self.frame_modal, label="SMBIOS Settings", pos=wx.Point(10, 10))
         self.smbios_settings_header.SetFont(wx.Font(16, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.smbios_settings_header.Center(wx.HORIZONTAL)
 
         # Label: SMBIOS Spoof Level
-        self.smbios_spoof_level_label = wx.StaticText(self.frame, label="SMBIOS Spoof Level")
+        self.smbios_spoof_level_label = wx.StaticText(self.frame_modal, label="SMBIOS Spoof Level")
         self.smbios_spoof_level_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.smbios_spoof_level_label.SetPosition(
             wx.Point(self.smbios_settings_header.GetPosition().x, self.smbios_settings_header.GetPosition().y + self.smbios_settings_header.GetSize().height + 10)
@@ -2491,7 +2540,7 @@ class wx_python_gui:
         self.smbios_spoof_level_label.Center(wx.HORIZONTAL)
 
         # Dropdown: SMBIOS Spoof Level
-        self.smbios_dropdown = wx.Choice(self.frame)
+        self.smbios_dropdown = wx.Choice(self.frame_modal)
         self.smbios_dropdown.SetPosition(
             wx.Point(self.smbios_spoof_level_label.GetPosition().x, self.smbios_spoof_level_label.GetPosition().y + self.smbios_spoof_level_label.GetSize().height + 10)
         )
@@ -2501,7 +2550,7 @@ class wx_python_gui:
         self.smbios_dropdown.Center(wx.HORIZONTAL)
 
         # Label: SMBIOS Spoof Model
-        self.smbios_spoof_model_label = wx.StaticText(self.frame, label="SMBIOS Spoof Model")
+        self.smbios_spoof_model_label = wx.StaticText(self.frame_modal, label="SMBIOS Spoof Model")
         self.smbios_spoof_model_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.smbios_spoof_model_label.SetPosition(
             wx.Point(self.smbios_dropdown.GetPosition().x, self.smbios_dropdown.GetPosition().y + self.smbios_dropdown.GetSize().height + 10)
@@ -2509,7 +2558,7 @@ class wx_python_gui:
         self.smbios_spoof_model_label.Center(wx.HORIZONTAL)
 
         # Dropdown: SMBIOS Spoof Model
-        self.smbios_model_dropdown = wx.Choice(self.frame)
+        self.smbios_model_dropdown = wx.Choice(self.frame_modal)
         self.smbios_model_dropdown.SetPosition(
             wx.Point(self.smbios_spoof_model_label.GetPosition().x, self.smbios_spoof_model_label.GetPosition().y + self.smbios_spoof_model_label.GetSize().height + 10)
         )
@@ -2523,7 +2572,7 @@ class wx_python_gui:
         self.smbios_model_dropdown.Center(wx.HORIZONTAL)
 
         # Label: Custom Serial Number
-        self.smbios_serial_label = wx.StaticText(self.frame, label="Custom Serial Number")
+        self.smbios_serial_label = wx.StaticText(self.frame_modal, label="Custom Serial Number")
         self.smbios_serial_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.smbios_serial_label.SetPosition(
             wx.Point(self.smbios_model_dropdown.GetPosition().x, self.smbios_model_dropdown.GetPosition().y + self.smbios_model_dropdown.GetSize().height + 10)
@@ -2531,7 +2580,7 @@ class wx_python_gui:
         self.smbios_serial_label.Center(wx.HORIZONTAL)
 
         # Textbox: Custom Serial Number
-        self.smbios_serial_textbox = wx.TextCtrl(self.frame, style=wx.TE_CENTRE)
+        self.smbios_serial_textbox = wx.TextCtrl(self.frame_modal, style=wx.TE_CENTRE)
         self.smbios_serial_textbox.SetPosition(
             wx.Point(self.smbios_serial_label.GetPosition().x, self.smbios_serial_label.GetPosition().y + self.smbios_serial_label.GetSize().height + 5)
         )
@@ -2541,7 +2590,7 @@ class wx_python_gui:
         self.smbios_serial_textbox.Center(wx.HORIZONTAL)
 
         # Label: Custom Board Serial Number
-        self.smbios_board_serial_label = wx.StaticText(self.frame, label="Custom Board Serial Number")
+        self.smbios_board_serial_label = wx.StaticText(self.frame_modal, label="Custom Board Serial Number")
         self.smbios_board_serial_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.smbios_board_serial_label.SetPosition(
             wx.Point(self.smbios_serial_textbox.GetPosition().x, self.smbios_serial_textbox.GetPosition().y + self.smbios_serial_textbox.GetSize().height + 10)
@@ -2549,7 +2598,7 @@ class wx_python_gui:
         self.smbios_board_serial_label.Center(wx.HORIZONTAL)
 
         # Textbox: Custom Board Serial Number
-        self.smbios_board_serial_textbox = wx.TextCtrl(self.frame, style=wx.TE_CENTRE)
+        self.smbios_board_serial_textbox = wx.TextCtrl(self.frame_modal, style=wx.TE_CENTRE)
         self.smbios_board_serial_textbox.SetPosition(
             wx.Point(self.smbios_board_serial_label.GetPosition().x, self.smbios_board_serial_label.GetPosition().y + self.smbios_board_serial_label.GetSize().height + 5)
         )
@@ -2559,7 +2608,7 @@ class wx_python_gui:
         self.smbios_board_serial_textbox.Center(wx.HORIZONTAL)
 
         # Button: Generate new serials
-        self.smbios_generate_button = wx.Button(self.frame, label=f"Generate S/N: {self.constants.custom_model or self.computer.real_model}")
+        self.smbios_generate_button = wx.Button(self.frame_modal, label=f"Generate S/N: {self.constants.custom_model or self.computer.real_model}")
         self.smbios_generate_button.SetPosition(
             wx.Point(self.smbios_board_serial_textbox.GetPosition().x, self.smbios_board_serial_textbox.GetPosition().y + self.smbios_board_serial_textbox.GetSize().height + 10)
         )
@@ -2574,7 +2623,7 @@ class wx_python_gui:
             self.smbios_generate_button.Disable()
 
         # Checkbox: Allow Native Spoofs
-        self.native_spoof_checkbox = wx.CheckBox(self.frame, label="Allow Native Spoofs")
+        self.native_spoof_checkbox = wx.CheckBox(self.frame_modal, label="Allow Native Spoofs")
         self.native_spoof_checkbox.SetValue(self.constants.allow_native_spoofs)
         self.native_spoof_checkbox.SetPosition(
             wx.Point(self.smbios_generate_button.GetPosition().x, self.smbios_generate_button.GetPosition().y + self.smbios_generate_button.GetSize().height + 10)
@@ -2586,14 +2635,15 @@ class wx_python_gui:
             self.native_spoof_checkbox.Disable()
 
         # Button: Return to Main Menu
-        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
+        self.return_to_main_menu_button = wx.Button(self.frame_modal, label="Return to Settings")
         self.return_to_main_menu_button.SetPosition(
             wx.Point(self.native_spoof_checkbox.GetPosition().x, self.native_spoof_checkbox.GetPosition().y + self.native_spoof_checkbox.GetSize().height + 10)
         )
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
-        self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
+        self.frame_modal.ShowWindowModal()
 
     def smbios_serial_click(self, event):
         self.constants.custom_serial_number = self.smbios_serial_textbox.GetValue()
@@ -2630,16 +2680,16 @@ class wx_python_gui:
         self.constants.override_smbios = selection
     
     def additional_info_menu(self, event=None):
-        self.frame.DestroyChildren()
-        self.frame.SetSize(wx.Size(500, -1))
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(wx.Size(500, -1))
 
         # Header: Additional Info
-        self.additional_info_header = wx.StaticText(self.frame, label="Developer Debug Info", pos=wx.Point(10, 10))
+        self.additional_info_header = wx.StaticText(self.frame_modal, label="Developer Debug Info", pos=wx.Point(10, 10))
         self.additional_info_header.SetFont(wx.Font(16, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.additional_info_header.Center(wx.HORIZONTAL)
 
         # Label: Real User ID
-        self.real_user_id_label = wx.StaticText(self.frame, label=f"Current UID: {os.getuid()} - ({os.geteuid()})")
+        self.real_user_id_label = wx.StaticText(self.frame_modal, label=f"Current UID: {os.getuid()} - ({os.geteuid()})")
         self.real_user_id_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.real_user_id_label.SetPosition(
             wx.Point(self.additional_info_header.GetPosition().x, self.additional_info_header.GetPosition().y + self.additional_info_header.GetSize().height + 10)
@@ -2647,7 +2697,7 @@ class wx_python_gui:
         self.real_user_id_label.Center(wx.HORIZONTAL)
 
         # Label: Model Dump
-        self.model_dump_label = wx.StaticText(self.frame, label="Model Dump")
+        self.model_dump_label = wx.StaticText(self.frame_modal, label="Model Dump")
         self.model_dump_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.model_dump_label.SetPosition(
             wx.Point(self.real_user_id_label.GetPosition().x, self.real_user_id_label.GetPosition().y + self.real_user_id_label.GetSize().height + 10)
@@ -2655,14 +2705,14 @@ class wx_python_gui:
         self.model_dump_label.Center(wx.HORIZONTAL)
 
         # Textbox: Model Dump
-        self.model_dump_textbox = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE, pos=wx.Point(self.model_dump_label.GetPosition().x, self.model_dump_label.GetPosition().y + self.model_dump_label.GetSize().height + 10))
+        self.model_dump_textbox = wx.TextCtrl(self.frame_modal, style=wx.TE_MULTILINE, pos=wx.Point(self.model_dump_label.GetPosition().x, self.model_dump_label.GetPosition().y + self.model_dump_label.GetSize().height + 10))
         self.model_dump_textbox.SetValue(str(self.constants.computer))
         self.model_dump_textbox.SetPosition(
             wx.Point(self.model_dump_label.GetPosition().x, self.model_dump_label.GetPosition().y + self.model_dump_label.GetSize().height + 10)
         )
         self.model_dump_textbox.SetSize(
             wx.Size(
-                self.frame.GetSize().width - 5, 
+                self.frame_modal.GetSize().width - 5, 
                 self.model_dump_textbox.GetSize().height + self.model_dump_textbox.GetSize().height
             )
         )
@@ -2672,7 +2722,7 @@ class wx_python_gui:
         
 
         # Label: Launcher Binary
-        self.launcher_binary_label = wx.StaticText(self.frame, label="Launcher Binary")
+        self.launcher_binary_label = wx.StaticText(self.frame_modal, label="Launcher Binary")
         self.launcher_binary_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.launcher_binary_label.SetPosition(
             wx.Point(self.model_dump_textbox.GetPosition().x, self.model_dump_textbox.GetPosition().y + self.model_dump_textbox.GetSize().height + 10)
@@ -2680,17 +2730,17 @@ class wx_python_gui:
         self.launcher_binary_label.Center(wx.HORIZONTAL)
 
         # Textbox: Launcher Binary
-        self.launcher_binary_textbox = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE, pos=wx.Point(self.launcher_binary_label.GetPosition().x, self.launcher_binary_label.GetPosition().y + self.launcher_binary_label.GetSize().height + 10))
+        self.launcher_binary_textbox = wx.TextCtrl(self.frame_modal, style=wx.TE_MULTILINE, pos=wx.Point(self.launcher_binary_label.GetPosition().x, self.launcher_binary_label.GetPosition().y + self.launcher_binary_label.GetSize().height + 10))
         self.launcher_binary_textbox.SetValue(self.constants.launcher_binary)
         self.launcher_binary_textbox.SetPosition(
             wx.Point(self.launcher_binary_label.GetPosition().x, self.launcher_binary_label.GetPosition().y + self.launcher_binary_label.GetSize().height + 10)
         )
-        self.launcher_binary_textbox.SetSize(wx.Size(self.frame.GetSize().width - 5, 50))
+        self.launcher_binary_textbox.SetSize(wx.Size(self.frame_modal.GetSize().width - 5, 50))
         self.launcher_binary_textbox.Center(wx.HORIZONTAL)
         self.launcher_binary_textbox.SetEditable(False)
 
         # Label: Launcher Script
-        self.launcher_script_label = wx.StaticText(self.frame, label="Launcher Script")
+        self.launcher_script_label = wx.StaticText(self.frame_modal, label="Payload Location")
         self.launcher_script_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.launcher_script_label.SetPosition(
             wx.Point(self.launcher_binary_textbox.GetPosition().x, self.launcher_binary_textbox.GetPosition().y + self.launcher_binary_textbox.GetSize().height + 10)
@@ -2698,38 +2748,39 @@ class wx_python_gui:
         self.launcher_script_label.Center(wx.HORIZONTAL)
 
         # Textbox: Launcher Script
-        self.launcher_script_textbox = wx.TextCtrl(self.frame, style=wx.TE_MULTILINE, pos=wx.Point(self.launcher_script_label.GetPosition().x, self.launcher_script_label.GetPosition().y + self.launcher_script_label.GetSize().height + 10))
-        self.launcher_script_textbox.SetValue(str(self.constants.launcher_script))
+        self.launcher_script_textbox = wx.TextCtrl(self.frame_modal, style=wx.TE_MULTILINE, pos=wx.Point(self.launcher_script_label.GetPosition().x, self.launcher_script_label.GetPosition().y + self.launcher_script_label.GetSize().height + 10))
+        self.launcher_script_textbox.SetValue(str(self.constants.payload_path))
         self.launcher_script_textbox.SetPosition(
             wx.Point(self.launcher_script_label.GetPosition().x, self.launcher_script_label.GetPosition().y + self.launcher_script_label.GetSize().height + 10)
         )
-        self.launcher_script_textbox.SetSize(wx.Size(self.frame.GetSize().width - 5, 60))
+        self.launcher_script_textbox.SetSize(wx.Size(self.frame_modal.GetSize().width - 5, 60))
         self.launcher_script_textbox.Center(wx.HORIZONTAL)
         self.launcher_script_textbox.SetEditable(False)
 
-        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
+        self.return_to_main_menu_button = wx.Button(self.frame_modal, label="Return to Settings")
         self.return_to_main_menu_button.SetPosition(
             wx.Point(self.launcher_script_textbox.GetPosition().x, self.launcher_script_textbox.GetPosition().y + self.launcher_script_textbox.GetSize().height + 10)
         )
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
         
-        # Set frame below return to main menu button
-        self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
+        # Set frame_modal below return to main menu button
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
+        self.frame_modal.ShowWindowModal()
 
     
     def sip_config_menu(self, event=None):
-        self.frame.DestroyChildren()
-        self.frame.SetSize(wx.Size(400, 600))
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(wx.Size(400, 600))
 
         # Title: Configure SIP
-        self.configure_sip_title = wx.StaticText(self.frame, label="Configure SIP")
+        self.configure_sip_title = wx.StaticText(self.frame_modal, label="Configure SIP", pos=wx.Point(10, 10))
         self.configure_sip_title.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.configure_sip_title.Center(wx.HORIZONTAL)
 
         # Label: Flip indivdual bits corresponding to XNU's csr.h
         # If you're unfamiliar with how SIP works, do not touch this menu
-        self.sip_label = wx.StaticText(self.frame, label="Flip indivdual bits corresponding to")
+        self.sip_label = wx.StaticText(self.frame_modal, label="Flip indivdual bits corresponding to")
         self.sip_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label.SetPosition(
             wx.Point(-1, self.configure_sip_title.GetPosition().y + self.configure_sip_title.GetSize().height + 10)
@@ -2740,7 +2791,7 @@ class wx_python_gui:
         )
         
         hyperlink_label = hyperlink.HyperLinkCtrl(
-            self.frame,
+            self.frame_modal,
             -1, 
             "XNU's csr.h", 
             pos=(self.sip_label.GetPosition().x + self.sip_label.GetSize().width, self.sip_label.GetPosition().y), 
@@ -2755,35 +2806,35 @@ class wx_python_gui:
         else:
             self.sip_value = 0x802
         
-        self.sip_label_2 = wx.StaticText(self.frame, label=f"Currently configured SIP: {hex(self.sip_value)}")
+        self.sip_label_2 = wx.StaticText(self.frame_modal, label=f"Currently configured SIP: {hex(self.sip_value)}")
         self.sip_label_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.sip_label_2.SetPosition(
             wx.Point(self.sip_label.GetPosition().x, self.sip_label.GetPosition().y + self.sip_label.GetSize().height + 10)
         )
         self.sip_label_2.Center(wx.HORIZONTAL)
 
-        self.sip_label_2_2 = wx.StaticText(self.frame, label=f"Currently Booted SIP: {hex(utilities.csr_dump())}")
+        self.sip_label_2_2 = wx.StaticText(self.frame_modal, label=f"Currently Booted SIP: {hex(utilities.csr_dump())}")
         self.sip_label_2_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_2_2.SetPosition(
             wx.Point(self.sip_label_2.GetPosition().x, self.sip_label_2.GetPosition().y + self.sip_label_2.GetSize().height + 5)
         )
         self.sip_label_2_2.Center(wx.HORIZONTAL)
 
-        self.sip_label_3 = wx.StaticText(self.frame, label="For older Macs requiring root patching, we set SIP to\n be partially disabled (0x802) to allow root patching.")
+        self.sip_label_3 = wx.StaticText(self.frame_modal, label="For older Macs requiring root patching, we set SIP to\n be partially disabled (0x802) to allow root patching.")
         self.sip_label_3.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_3.SetPosition(
             wx.Point(self.sip_label_2_2.GetPosition().x, self.sip_label_2_2.GetPosition().y + self.sip_label_2_2.GetSize().height + 10)
         )
         self.sip_label_3.Center(wx.HORIZONTAL)
 
-        self.sip_label_4 = wx.StaticText(self.frame, label="This value (0x802) corresponds to the following bits in csr.h:")
+        self.sip_label_4 = wx.StaticText(self.frame_modal, label="This value (0x802) corresponds to the following bits in csr.h:")
         self.sip_label_4.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_4.SetPosition(
             wx.Point(self.sip_label_3.GetPosition().x, self.sip_label_3.GetPosition().y + self.sip_label_3.GetSize().height + 5)
         )
         self.sip_label_4.Center(wx.HORIZONTAL)
 
-        self.sip_label_5 = wx.StaticText(self.frame, label="   0x2     - CSR_ALLOW_UNRESTRICTED_FS\n   0x800 - CSR_ALLOW_UNAUTHENTICATED_ROOT")
+        self.sip_label_5 = wx.StaticText(self.frame_modal, label="   0x2     - CSR_ALLOW_UNRESTRICTED_FS\n   0x800 - CSR_ALLOW_UNAUTHENTICATED_ROOT")
         self.sip_label_5.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_5.SetPosition(
             wx.Point(self.sip_label_4.GetPosition().x, self.sip_label_4.GetPosition().y + self.sip_label_4.GetSize().height + 7)
@@ -2796,7 +2847,7 @@ OpenCore Legacy Patcher by default knows the most ideal
      understand the consequences. Reckless usage of this
                menu can break your installation.
 """
-        self.sip_label_6 = wx.StaticText(self.frame, label=warning_string)
+        self.sip_label_6 = wx.StaticText(self.frame_modal, label=warning_string)
         self.sip_label_6.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_6.SetPosition(
             wx.Point(self.sip_label_5.GetPosition().x, self.sip_label_5.GetPosition().y + self.sip_label_5.GetSize().height - 10)
@@ -2805,7 +2856,7 @@ OpenCore Legacy Patcher by default knows the most ideal
 
         i = -10
         for sip_bit in sip_data.system_integrity_protection.csr_values_extended:
-            self.sip_checkbox = wx.CheckBox(self.frame, label=sip_data.system_integrity_protection.csr_values_extended[sip_bit]["name"])
+            self.sip_checkbox = wx.CheckBox(self.frame_modal, label=sip_data.system_integrity_protection.csr_values_extended[sip_bit]["name"])
             self.sip_checkbox.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
             self.sip_checkbox.SetToolTip(f'Description: {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["description"]}\nValue: {hex(sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"])}\nIntroduced in: macOS {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["introduced_friendly"]}')
             self.sip_checkbox.SetPosition(
@@ -2817,16 +2868,17 @@ OpenCore Legacy Patcher by default knows the most ideal
                 self.sip_checkbox.SetValue(True)
         
         # Button: returns to the main menu
-        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
+        self.return_to_main_menu_button = wx.Button(self.frame_modal, label="Return to Settings")
         self.return_to_main_menu_button.SetPosition(
             wx.Point(self.sip_checkbox.GetPosition().x, self.sip_checkbox.GetPosition().y + self.sip_checkbox.GetSize().height + 15)
         )
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
-        # Set the frame size
-        self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
-    
+        # Set the frame_modal size
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
+        self.frame_modal.ShowWindowModal()
+
     def update_sip_value(self, event):
         dict = sip_data.system_integrity_protection.csr_values_extended[event.GetEventObject().GetLabel()]
         if event.GetEventObject().GetValue() is True:
@@ -2845,36 +2897,36 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.sip_label_2.Center(wx.HORIZONTAL)
 
     def misc_settings_menu(self, event):
-        self.frame.DestroyChildren()
+        self.reset_frame_modal()
         
         # Header
-        self.header = wx.StaticText(self.frame, label="Misc Settings", style=wx.ALIGN_CENTRE)
+        self.header = wx.StaticText(self.frame_modal, label="Misc Settings", style=wx.ALIGN_CENTRE, pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.SetPosition(wx.Point(0, 10))
-        self.header.SetSize(wx.Size(self.frame.GetSize().width, 30))
+        self.header.SetSize(wx.Size(self.frame_modal.GetSize().width, 30))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader: If unfamiliar with the following settings, please do not change them.
-        self.subheader = wx.StaticText(self.frame, label="Configure settings", style=wx.ALIGN_CENTRE)
+        self.subheader = wx.StaticText(self.frame_modal, label="Configure settings", style=wx.ALIGN_CENTRE)
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader.SetPosition(wx.Point(0, self.header.GetPosition().y + self.header.GetSize().height))
-        self.subheader.SetSize(wx.Size(self.frame.GetSize().width, 30))
+        self.subheader.SetSize(wx.Size(self.frame_modal.GetSize().width, 30))
         self.subheader.Centre(wx.HORIZONTAL)
         # Subheader: , hover over options more info
-        self.subheader_2 = wx.StaticText(self.frame, label="Hover over options for more info", style=wx.ALIGN_CENTRE)
+        self.subheader_2 = wx.StaticText(self.frame_modal, label="Hover over options for more info", style=wx.ALIGN_CENTRE)
         self.subheader_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader_2.SetPosition(wx.Point(0, self.subheader.GetPosition().y + self.subheader.GetSize().height - 15))
-        self.subheader_2.SetSize(wx.Size(self.frame.GetSize().width, 30))
+        self.subheader_2.SetSize(wx.Size(self.frame_modal.GetSize().width, 30))
         self.subheader_2.Centre(wx.HORIZONTAL)
 
         # Label: Set FeatreUnlock status
-        self.feature_unlock_label = wx.StaticText(self.frame, label="Feature Unlock Status:", style=wx.ALIGN_CENTRE)
+        self.feature_unlock_label = wx.StaticText(self.frame_modal, label="Feature Unlock Status:", style=wx.ALIGN_CENTRE)
         self.feature_unlock_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.feature_unlock_label.SetPosition(wx.Point(0, self.subheader_2.GetPosition().y + self.subheader_2.GetSize().height -5))
         self.feature_unlock_label.Centre(wx.HORIZONTAL)
 
         # Dropdown: Set Feature Unlock status
-        self.feature_unlock_dropdown = wx.Choice(self.frame)
+        self.feature_unlock_dropdown = wx.Choice(self.frame_modal)
         for entry in ["Enabled", "Partially enabled (No AirPlay/SideCar)", "Disabled"]:
             self.feature_unlock_dropdown.Append(entry)
         self.feature_unlock_dropdown.SetPosition(wx.Point(0, self.feature_unlock_label.GetPosition().y + self.feature_unlock_label.GetSize().height + 5))
@@ -2891,7 +2943,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.feature_unlock_dropdown.SetToolTip(wx.ToolTip("Set FeatureUnlock support level\nFor systems experiencing memory instability, lowering this option to disable AirPlay/Sidecar patch sets is recommended.\nFully enabling this option will unlock AirPlay to Mac and Sidecar support"))
 
         # FireWire Boot
-        self.firewire_boot_checkbox = wx.CheckBox(self.frame, label="FireWire Boot")
+        self.firewire_boot_checkbox = wx.CheckBox(self.frame_modal, label="FireWire Boot")
         self.firewire_boot_checkbox.SetValue(self.constants.firewire_boot)
         self.firewire_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.firewire_click)
         self.firewire_boot_checkbox.SetPosition(wx.Point(50, self.feature_unlock_dropdown.GetPosition().y + self.feature_unlock_dropdown.GetSize().height + 5))
@@ -2900,50 +2952,51 @@ OpenCore Legacy Patcher by default knows the most ideal
             self.firewire_boot_checkbox.Disable()
         
         # XHCI Boot
-        self.xhci_boot_checkbox = wx.CheckBox(self.frame, label="XHCI Boot")
+        self.xhci_boot_checkbox = wx.CheckBox(self.frame_modal, label="XHCI Boot")
         self.xhci_boot_checkbox.SetValue(self.constants.xhci_boot)
         self.xhci_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.xhci_click)
         self.xhci_boot_checkbox.SetPosition(wx.Point(self.firewire_boot_checkbox.GetPosition().x, self.firewire_boot_checkbox.GetPosition().y + self.firewire_boot_checkbox.GetSize().height))
         self.xhci_boot_checkbox.SetToolTip(wx.ToolTip("Enables XHCI/USB3.o support in UEFI for non-native systems (ie. pre-Ivy Bridge)\nRequires OpenCore to be stored on a natively bootable volume however"))
 
         # NVMe Boot
-        self.nvme_boot_checkbox = wx.CheckBox(self.frame, label="NVMe Boot")
+        self.nvme_boot_checkbox = wx.CheckBox(self.frame_modal, label="NVMe Boot")
         self.nvme_boot_checkbox.SetValue(self.constants.nvme_boot)
         self.nvme_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.nvme_click)
         self.nvme_boot_checkbox.SetPosition(wx.Point(self.xhci_boot_checkbox.GetPosition().x, self.xhci_boot_checkbox.GetPosition().y + self.xhci_boot_checkbox.GetSize().height))
         self.nvme_boot_checkbox.SetToolTip(wx.ToolTip("Enables NVMe support in UEFI for non-native systems (ie. MacPro3,1)\nRequires OpenCore to be stored on a natively bootable volume however"))
     
         # NVMe Power Management
-        self.nvme_power_management_checkbox = wx.CheckBox(self.frame, label="NVMe Power Management")
+        self.nvme_power_management_checkbox = wx.CheckBox(self.frame_modal, label="NVMe Power Management")
         self.nvme_power_management_checkbox.SetValue(self.constants.allow_nvme_fixing)
         self.nvme_power_management_checkbox.Bind(wx.EVT_CHECKBOX, self.nvme_power_management_click)
         self.nvme_power_management_checkbox.SetPosition(wx.Point(self.nvme_boot_checkbox.GetPosition().x, self.nvme_boot_checkbox.GetPosition().y + self.nvme_boot_checkbox.GetSize().height))
         self.nvme_power_management_checkbox.SetToolTip(wx.ToolTip("For machines with upgraded NVMe drives, this option allows for better power management support within macOS.\nNote that some NVMe drives don't support macOS's power management settings, and can result in boot issues. Disable this option if you experience IONVMeFamily kernel panics. Mainly applicable for Skylake and newer Macs."))
 
         # Wake on WLAN
-        self.wake_on_wlan_checkbox = wx.CheckBox(self.frame, label="Wake on WLAN")
+        self.wake_on_wlan_checkbox = wx.CheckBox(self.frame_modal, label="Wake on WLAN")
         self.wake_on_wlan_checkbox.SetValue(self.constants.enable_wake_on_wlan)
         self.wake_on_wlan_checkbox.Bind(wx.EVT_CHECKBOX, self.wake_on_wlan_click)
         self.wake_on_wlan_checkbox.SetPosition(wx.Point(self.nvme_power_management_checkbox.GetPosition().x, self.nvme_power_management_checkbox.GetPosition().y + self.nvme_power_management_checkbox.GetSize().height))
         self.wake_on_wlan_checkbox.SetToolTip(wx.ToolTip("Enables Wake on WLAN for Broadcom Wifi.\nBy default, Wake on WLAN is disabled to work around Apple's wake from sleep bug causing heavily degraded networking performance.\nNote: This option is only applicable for BCM943224, BCM94331, BCM94360 and BCM943602 chipsets"))
 
         # Content Caching
-        self.content_caching_checkbox = wx.CheckBox(self.frame, label="Content Caching")
+        self.content_caching_checkbox = wx.CheckBox(self.frame_modal, label="Content Caching")
         self.content_caching_checkbox.SetValue(self.constants.set_content_caching)
         self.content_caching_checkbox.Bind(wx.EVT_CHECKBOX, self.content_caching_click)
         self.content_caching_checkbox.SetPosition(wx.Point(self.wake_on_wlan_checkbox.GetPosition().x, self.wake_on_wlan_checkbox.GetPosition().y + self.wake_on_wlan_checkbox.GetSize().height))
         self.content_caching_checkbox.SetToolTip(wx.ToolTip("Enables content caching support in macOS"))
 
         # Button: return to main menu
-        self.return_to_main_menu_button = wx.Button(self.frame, label="Return to Settings")
+        self.return_to_main_menu_button = wx.Button(self.frame_modal, label="Return to Settings")
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.SetPosition(wx.Point(
             self.content_caching_checkbox.GetPosition().x,
             self.content_caching_checkbox.GetPosition().y + self.content_caching_checkbox.GetSize().height + 10))
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
-        # set frame size below return to main menu button
-        self.frame.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
+        # set frame_modal size below return to main menu button
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
+        self.frame_modal.ShowWindowModal()
 
     def non_metal_config_menu(self, event=None):
         # Configures ASB's Blur settings
@@ -2957,38 +3010,38 @@ OpenCore Legacy Patcher by default knows the most ideal
         #   defaults read ASB_BlurOverride
         #   defaults write -g ASB_BlurOverride -float 30
 
-        self.frame.DestroyChildren()
-        self.frame.SetSize(wx.Size(400, 300))
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(wx.Size(400, 300))
 
         # Header 1: Configure non-Metal Settings
 
-        self.header_1 = wx.StaticText(self.frame, label="Configure non-Metal Settings")
+        self.header_1 = wx.StaticText(self.frame_modal, label="Configure non-Metal Settings", pos=wx.Point(10, 10))
         self.header_1.SetFont(wx.Font(16, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header_1.Centre(wx.HORIZONTAL)
 
-        self.subheader = wx.StaticText(self.frame, label="Below settings apply to systems that have installed")
+        self.subheader = wx.StaticText(self.frame_modal, label="Below settings apply to systems that have installed")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader.SetPosition(wx.Point(0, self.header_1.GetPosition().y + self.header_1.GetSize().height + 5))
         self.subheader.Centre(wx.HORIZONTAL)
 
-        self.subheader_2 = wx.StaticText(self.frame, label="non-metal acceleration patches.")
+        self.subheader_2 = wx.StaticText(self.frame_modal, label="non-metal acceleration patches.")
         self.subheader_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader_2.SetPosition(wx.Point(0, self.subheader.GetPosition().y + self.subheader.GetSize().height))
         self.subheader_2.Centre(wx.HORIZONTAL)
 
         # This menu will allow you to enable Beta Blur features resolving some of the UI distortions experienced with non-Metal
-        self.subheader2_1 = wx.StaticText(self.frame, label="This menu will allow you to enable Beta Blur features resolving")
+        self.subheader2_1 = wx.StaticText(self.frame_modal, label="This menu will allow you to enable Beta Blur features resolving")
         self.subheader2_1.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader2_1.SetPosition(wx.Point(0, self.subheader_2.GetPosition().y + self.subheader_2.GetSize().height + 5))
         self.subheader2_1.Centre(wx.HORIZONTAL)
 
-        self.subheader2_2 = wx.StaticText(self.frame, label="some of the UI distortions experienced with non-metal GPUs.")
+        self.subheader2_2 = wx.StaticText(self.frame_modal, label="some of the UI distortions experienced with non-metal GPUs.")
         self.subheader2_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader2_2.SetPosition(wx.Point(0, self.subheader2_1.GetPosition().y + self.subheader2_1.GetSize().height))
         self.subheader2_2.Centre(wx.HORIZONTAL)
 
 
-        self.subheader_4 = wx.StaticText(self.frame, label="Note: Only logout and login is required to apply these settings")
+        self.subheader_4 = wx.StaticText(self.frame_modal, label="Note: Only logout and login is required to apply these settings")
         self.subheader_4.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader_4.SetPosition(wx.Point(0, self.subheader2_2.GetPosition().y + self.subheader2_2.GetSize().height+ 5))
         self.subheader_4.Centre(wx.HORIZONTAL)
@@ -3012,32 +3065,32 @@ OpenCore Legacy Patcher by default knows the most ideal
             is_rim_enabled = False
 
         # Checkbox: Dark Menu Bar
-        self.dark_menu_bar_checkbox = wx.CheckBox(self.frame, label="Dark Menu Bar")
+        self.dark_menu_bar_checkbox = wx.CheckBox(self.frame_modal, label="Dark Menu Bar")
         self.dark_menu_bar_checkbox.SetValue(is_dark_menu_bar)
         self.dark_menu_bar_checkbox.Bind(wx.EVT_CHECKBOX, self.enable_dark_menubar_click)
         self.dark_menu_bar_checkbox.SetPosition(wx.Point(0, self.subheader_4.GetPosition().y + self.subheader_4.GetSize().height + 10))
         self.dark_menu_bar_checkbox.Centre(wx.HORIZONTAL)
 
         # Checkbox: Enable Beta Blur
-        self.enable_beta_blur_checkbox = wx.CheckBox(self.frame, label="Enable Beta Blur")
+        self.enable_beta_blur_checkbox = wx.CheckBox(self.frame_modal, label="Enable Beta Blur")
         self.enable_beta_blur_checkbox.SetValue(is_blur_enabled)
         self.enable_beta_blur_checkbox.Bind(wx.EVT_CHECKBOX, self.enable_beta_blur_click)
         self.enable_beta_blur_checkbox.SetPosition(wx.Point(self.dark_menu_bar_checkbox.GetPosition().x, self.dark_menu_bar_checkbox.GetPosition().y + self.dark_menu_bar_checkbox.GetSize().height + 7))
 
         # Checkbox: Enable Beta Rim
-        self.enable_beta_rim_checkbox = wx.CheckBox(self.frame, label="Enable Beta Rim")
+        self.enable_beta_rim_checkbox = wx.CheckBox(self.frame_modal, label="Enable Beta Rim")
         self.enable_beta_rim_checkbox.SetValue(is_rim_enabled)
         self.enable_beta_rim_checkbox.Bind(wx.EVT_CHECKBOX, self.enable_beta_rim_click)
         self.enable_beta_rim_checkbox.SetPosition(wx.Point(self.enable_beta_blur_checkbox.GetPosition().x, self.enable_beta_blur_checkbox.GetPosition().y + self.enable_beta_blur_checkbox.GetSize().height + 7))
 
         # Button: Return to Settings
-        self.return_to_settings_button = wx.Button(self.frame, label="Return to Settings")
+        self.return_to_settings_button = wx.Button(self.frame_modal, label="Return to Settings")
         self.return_to_settings_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_settings_button.SetPosition(wx.Point(0, self.enable_beta_rim_checkbox.GetPosition().y + self.enable_beta_rim_checkbox.GetSize().height + 10))
         self.return_to_settings_button.Center(wx.HORIZONTAL)
 
-        self.frame.SetSize(wx.Size(-1, self.return_to_settings_button.GetPosition().y + self.return_to_settings_button.GetSize().height + 40))
-
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_settings_button.GetPosition().y + self.return_to_settings_button.GetSize().height + 20))
+        self.frame_modal.ShowWindowModal()
 
     def enable_beta_blur_click(self, event=None):
         if event.IsChecked():
