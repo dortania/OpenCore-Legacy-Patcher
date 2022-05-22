@@ -117,7 +117,8 @@ class wx_python_gui:
             # If the previous frame was a modal, the new frame will anchor onto it
             # instead of the core frame
             # Calling ShowWithoutActivating() resets the frame position
-            self.frame_modal.ShowWithoutActivating()
+            if self.constants.detected_os >= os_data.os_data.big_sur:
+                self.frame_modal.ShowWithoutActivating()
     
     def use_non_metal_alternative(self):
         if self.constants.detected_os >= os_data.os_data.monterey:

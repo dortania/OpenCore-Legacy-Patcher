@@ -1,6 +1,7 @@
 import wx
 import webbrowser
 from resources import constants
+from data import os_data
 
 class gui_help_menu:
     def __init__(self, versions, frame, frame_modal):
@@ -18,7 +19,8 @@ class gui_help_menu:
         else:
             self.frame_modal.DestroyChildren()
             self.frame_modal.Close()
-            self.frame_modal.ShowWithoutActivating()
+            if self.constants.detected_os >= os_data.os_data.big_sur:
+                self.frame_modal.ShowWithoutActivating()
 
     def help_menu(self, event=None):
         # Define Menu
