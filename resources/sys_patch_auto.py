@@ -156,7 +156,7 @@ class AutomaticSysPatch:
                             if output.returncode == 0:
                                 print("- Launching GUI's Build/Install menu")
                                 settings.start_build_install = True
-                                gui_main.wx_python_gui(settings)
+                                gui_main.wx_python_gui(settings).main_menu(None)
                         else:
                             print("- Boot Disk is not removable, skipping prompt")
                     except KeyError:

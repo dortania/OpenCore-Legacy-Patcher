@@ -21,7 +21,7 @@ class OpenCoreLegacyPatcher:
             if launch_gui is True:
                 utilities.disable_cls()
                 from gui import gui_main
-                gui_main.wx_python_gui(self.constants)
+                gui_main.wx_python_gui(self.constants).main_menu(None)
             else:
                 self.main_menu()
 

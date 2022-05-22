@@ -18,11 +18,11 @@ import hashlib
 
 from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification
 from data import model_array, os_data, smbios_data, sip_data
-from gui import menu_redirect
+from gui import menu_redirect, gui_help
         
 
 class wx_python_gui:
-    def __init__(self, versions):
+    def __init__(self, versions, frame=None, frame_modal=None):
         self.constants: constants.Constants = versions
         self.computer = self.constants.computer
         self.constants.gui_mode = True
@@ -49,34 +49,33 @@ class wx_python_gui:
 
         # Create Application
         self.app = wx.App()
-        self.frame = wx.Frame(
-            None, title="OpenCore Legacy Patcher", 
-            size=(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN),
-            style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
-        )
-        self.frame.Centre(~wx.MAXIMIZE_BOX)
-        self.frame.Show()
-        self.frame.Bind(wx.EVT_CLOSE, self.OnCloseFrame)
-
-        # Create Menubar (allows Cmd+Q usage)
-        self.menubar = wx.MenuBar()
-        self.file_menu = wx.Menu()
-        self.file_menu.Append(wx.ID_EXIT, "Quit", "Quit Application" )
-        self.file_menu.Append(wx.ID_REDO, f"Relaunch as Root (UID: {int(current_uid)})", "Relaunch OpenCore Legacy Patcher as Root")
-        self.menubar.Append(self.file_menu, "File")
-        self.frame.Bind(wx.EVT_MENU, self.OnCloseFrame, id=wx.ID_EXIT)
-        self.frame.Bind(wx.EVT_MENU, self.relaunch_as_root, id=wx.ID_REDO)
-        self.frame.SetMenuBar(self.menubar)
+        if frame is None:
+            self.frame = wx.Frame(
+                None, title="OpenCore Legacy Patcher", 
+                size=(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN),
+                style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
+            )
+            self.frame.Centre(~wx.MAXIMIZE_BOX)
+            self.frame.Show()
+            self.frame.Bind(wx.EVT_CLOSE, self.OnCloseFrame)
+            # Create Menubar (allows Cmd+Q usage)
+            self.menubar = wx.MenuBar()
+            self.file_menu = wx.Menu()
+            self.file_menu.Append(wx.ID_EXIT, "Quit", "Quit Application" )
+            self.file_menu.Append(wx.ID_REDO, f"Relaunch as Root (UID: {int(current_uid)})", "Relaunch OpenCore Legacy Patcher as Root")
+            self.menubar.Append(self.file_menu, "File")
+            self.frame.Bind(wx.EVT_MENU, self.OnCloseFrame, id=wx.ID_EXIT)
+            self.frame.Bind(wx.EVT_MENU, self.relaunch_as_root, id=wx.ID_REDO)
+            self.frame.SetMenuBar(self.menubar)
+        else:
+            self.frame = frame
         
         # Modal Frames
-        self.frame_modal = None
+        self.frame_modal = frame_modal
 
         if current_uid == 0:
             self.file_menu.Enable(wx.ID_REDO, False)
 
-        self.main_menu(None)
-
-        wx.CallAfter(self.frame.Close)
     
     def OnCloseFrame(self, event=None):
         self.frame.SetTransparent(0)
@@ -416,7 +415,7 @@ class wx_python_gui:
                 self.settings.GetPosition().y + self.settings.GetSize().height
             )
         )
-        self.help_button.Bind(wx.EVT_BUTTON, self.help_menu)
+        self.help_button.Bind(wx.EVT_BUTTON, gui_help.gui_help_menu(self.constants, self.frame, self.frame_modal).help_menu)
         self.help_button.Centre(wx.HORIZONTAL)
 
 
