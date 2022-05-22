@@ -105,7 +105,7 @@ class wx_python_gui:
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
-        self.reset_all_modals()
+        self.reset_frame_modal()
     
     def reset_frame_modal(self):
         if not self.frame_modal:
@@ -293,9 +293,6 @@ class wx_python_gui:
                     break
             # Close Current Application
             self.OnCloseFrame(event)
-    
-    def reset_all_modals(self):
-        self.reset_frame_modal()
     
     def not_yet_implemented_menu(self, event=None):
         self.frame.DestroyChildren()

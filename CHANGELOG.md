@@ -7,6 +7,8 @@
 - GUI Enhancements:
   - Greatly improve GUI load times (300-800% on average)
   - Resolve failing to find new updates
+  - Implement Modal Sheets for longer windows
+    - Avoids UI elements getting under the dock
 - Resolve failing to find binaries with `--patch_sys_vol` argument
 
 ## 0.4.5
