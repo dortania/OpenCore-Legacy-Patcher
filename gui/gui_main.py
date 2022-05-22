@@ -113,6 +113,12 @@ class wx_python_gui:
         else:
             self.frame_modal.DestroyChildren()
             self.frame_modal.Close()
+
+            # This is a hack to fix window sizing issues
+            # If the previous frame was a modal, the new frame will anchor onto it
+            # instead of the core frame
+            # Calling ShowWithoutActivating() resets the frame position
+            self.frame_modal.ShowWithoutActivating()
     
     def use_non_metal_alternative(self):
         if self.constants.detected_os >= os_data.os_data.monterey:
@@ -129,7 +135,7 @@ class wx_python_gui:
                 # Raise error to end program
                 self.popup = wx.MessageDialog(
                     self.frame,
-                    f"During unpacking of our internal files, we seemed to have encountered an error.\n\nIf you keep seeing this error, please try redownloading the application.",
+                    f"During unpacking of our internal files, we seemed to have encountered an error.\n\nIf you keep seeing this error, please try rebooting and redownloading the application.",
                     "Internal Error occured!",
                     style = wx.OK | wx.ICON_EXCLAMATION
                 )
@@ -845,7 +851,7 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 20)
+        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         if result is True:
             self.reboot_system(message="OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?")
@@ -1518,7 +1524,7 @@ class wx_python_gui:
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.progress_bar.GetPosition().x,
-                self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 20
+                self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 40
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
@@ -1928,7 +1934,7 @@ class wx_python_gui:
         # Create Menu
         self.reset_frame_modal()
 
-        self.frame_modal.SetSize(self.WINDOW_SETTINGS_WIDTH, self.WINDOW_SETTINGS_HEIGHT)
+        self.frame_modal.SetSize(wx.Size(self.WINDOW_SETTINGS_WIDTH, self.WINDOW_SETTINGS_HEIGHT))
         self.frame_modal.SetTitle("Settings")
 
         # Header
@@ -2335,7 +2341,7 @@ class wx_python_gui:
 
         # set frame_modal size below return to main menu button
         
-        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
 
     def set_ignore_app_updates_click(self, event):
@@ -2642,7 +2648,7 @@ class wx_python_gui:
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
-        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
 
     def smbios_serial_click(self, event):
@@ -2765,7 +2771,7 @@ class wx_python_gui:
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
         
         # Set frame_modal below return to main menu button
-        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
 
     
@@ -2775,7 +2781,7 @@ class wx_python_gui:
 
         # Title: Configure SIP
         self.configure_sip_title = wx.StaticText(self.frame_modal, label="Configure SIP", pos=wx.Point(10, 10))
-        self.configure_sip_title.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.configure_sip_title.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.configure_sip_title.Center(wx.HORIZONTAL)
 
         # Label: Flip indivdual bits corresponding to XNU's csr.h
@@ -2876,7 +2882,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         # Set the frame_modal size
-        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
 
     def update_sip_value(self, event):
@@ -2995,7 +3001,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         # set frame_modal size below return to main menu button
-        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 20))
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
 
     def non_metal_config_menu(self, event=None):
@@ -3089,7 +3095,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.return_to_settings_button.SetPosition(wx.Point(0, self.enable_beta_rim_checkbox.GetPosition().y + self.enable_beta_rim_checkbox.GetSize().height + 10))
         self.return_to_settings_button.Center(wx.HORIZONTAL)
 
-        self.frame_modal.SetSize(wx.Size(-1, self.return_to_settings_button.GetPosition().y + self.return_to_settings_button.GetSize().height + 20))
+        self.frame_modal.SetSize(wx.Size(-1, self.return_to_settings_button.GetPosition().y + self.return_to_settings_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
 
     def enable_beta_blur_click(self, event=None):
