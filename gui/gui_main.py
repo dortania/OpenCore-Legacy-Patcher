@@ -746,12 +746,21 @@ class wx_python_gui:
             self.install_button.Centre(wx.HORIZONTAL)
             
 
-        
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
-        self.return_to_main_menu.SetPosition(
+        self.reload_button = wx.Button(self.frame, label="Search for Disks Again", size=(150,-1))
+        self.reload_button.SetPosition(
             wx.Point(
                 self.install_button.GetPosition().x,
                 self.install_button.GetPosition().y + self.install_button.GetSize().height + 10
+            )
+        )
+        self.reload_button.Bind(wx.EVT_BUTTON, self.install_menu)
+        self.reload_button.Centre(wx.HORIZONTAL)
+
+        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu", size=(150,-1))
+        self.return_to_main_menu.SetPosition(
+            wx.Point(
+                self.reload_button.GetPosition().x,
+                self.reload_button.GetPosition().y + self.reload_button.GetSize().height + 7.5
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
@@ -854,7 +863,7 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 20)
 
         if result is True:
             self.reboot_system(message="OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?")
