@@ -861,15 +861,16 @@ class wx_python_gui:
         # Button: Start Root Patching
         # Button: Revert Root Patches
         # Button: Return to Main Menu
-        self.frame.DestroyChildren()
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD - 40, -1)
 
         # Header
-        self.header = wx.StaticText(self.frame, label=f"Post-Install Menu")
+        self.header = wx.StaticText(self.frame_modal, label=f"Post-Install Menu", pos=(10,10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader
-        self.subheader = wx.StaticText(self.frame, label="Available patches for system:")
+        self.subheader = wx.StaticText(self.frame_modal, label="Available patches for system:")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.subheader.SetPosition(
             wx.Point(
@@ -891,7 +892,7 @@ class wx_python_gui:
                 # Add Label for each patch
                 if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                     print(f"- Adding patch: {patch} - {patches[patch]}")
-                    self.patch_label = wx.StaticText(self.frame, label=f"- {patch}")
+                    self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch}")
                     self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
                     self.patch_label.SetPosition(
                         wx.Point(
@@ -901,7 +902,7 @@ class wx_python_gui:
                     )
                     i = i + self.patch_label.GetSize().height + 3
             if patches["Validation: Patching Possible"] is False:
-                self.patch_label = wx.StaticText(self.frame, label="Cannot Patch due to following reasons:")
+                self.patch_label = wx.StaticText(self.frame_modal, label="Cannot Patch due to following reasons:")
                 self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
                 self.patch_label.SetPosition(
                     wx.Point(
@@ -914,7 +915,7 @@ class wx_python_gui:
                 for patch in patches:
                     if patch.startswith("Validation") and patches[patch] is True:
                         print(f"- Adding check: {patch} - {patches[patch]}")
-                        self.patch_label = wx.StaticText(self.frame, label=f"- {patch.lstrip('Validation: ')}")
+                        self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch.lstrip('Validation: ')}")
                         self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
                         self.patch_label.SetPosition(
                             wx.Point(
@@ -932,7 +933,7 @@ class wx_python_gui:
                         date = ""
                     patch_text = f"{self.constants.computer.oclp_sys_version}, {date}"
 
-                    self.patch_label = wx.StaticText(self.frame, label="Root Volume last patched:")
+                    self.patch_label = wx.StaticText(self.frame_modal, label="Root Volume last patched:")
                     self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
                     self.patch_label.SetPosition(
                         wx.Point(
@@ -943,7 +944,7 @@ class wx_python_gui:
                     self.patch_label.Centre(wx.HORIZONTAL)
                     i = i + self.patch_label.GetSize().height + 3
 
-                    self.patch_label = wx.StaticText(self.frame, label=patch_text)
+                    self.patch_label = wx.StaticText(self.frame_modal, label=patch_text)
                     self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
                     self.patch_label.SetPosition(
                         wx.Point(
@@ -955,7 +956,7 @@ class wx_python_gui:
                     i = i + self.patch_label.GetSize().height + 3
         else:
             # Prompt user with no patches found
-            self.patch_label = wx.StaticText(self.frame, label="No patches needed")
+            self.patch_label = wx.StaticText(self.frame_modal, label="No patches needed")
             self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
             self.patch_label.SetPosition(
                 wx.Point(
@@ -966,7 +967,7 @@ class wx_python_gui:
             self.patch_label.Centre(wx.HORIZONTAL)
         
         # Start Root Patching
-        self.start_root_patching = wx.Button(self.frame, label="Start Root Patching", size=(170, -1))
+        self.start_root_patching = wx.Button(self.frame_modal, label="Start Root Patching", size=(170, -1))
         self.start_root_patching.SetPosition(
             wx.Point(
                 self.patch_label.GetPosition().x,
@@ -979,7 +980,7 @@ class wx_python_gui:
             self.start_root_patching.Disable()
 
         # Revert Root Patches
-        self.revert_root_patches = wx.Button(self.frame, label="Revert Root Patches", size=(170, -1))
+        self.revert_root_patches = wx.Button(self.frame_modal, label="Revert Root Patches", size=(170, -1))
         self.revert_root_patches.SetPosition(
             wx.Point(
                 self.start_root_patching.GetPosition().x,
@@ -991,7 +992,7 @@ class wx_python_gui:
         if self.constants.detected_os < os_data.os_data.big_sur:
             self.revert_root_patches.Disable()
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.revert_root_patches.GetPosition().x,
@@ -1014,8 +1015,9 @@ class wx_python_gui:
                 self.start_root_patching.Disable()
                 self.revert_root_patches.Disable()
 
-        self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
-    
+        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.ShowWindowModal()
+
     def root_patch_start(self, event=None):
         self.frame.DestroyChildren()
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
