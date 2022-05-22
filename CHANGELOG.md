@@ -9,6 +9,7 @@
   - Resolve failing to find new updates
   - Implement Modal Sheets for longer windows
     - Avoids UI elements getting under the dock
+  - Add return to disk when selecting partitions
 - Resolve failing to find binaries with `--patch_sys_vol` argument
 
 ## 0.4.5

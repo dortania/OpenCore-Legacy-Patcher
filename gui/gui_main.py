@@ -760,16 +760,18 @@ class wx_python_gui:
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
     
     def install_oc_disk_select(self, disk, disk_data):
-        self.frame.DestroyChildren()
+        self.reset_frame_modal()
+        self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD - 40, -1)
+
         i = 0
 
         # Header
-        self.header = wx.StaticText(self.frame, label="Install OpenCore")
+        self.header = wx.StaticText(self.frame_modal, label="Install OpenCore", pos=(10,10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader: Select Partition to install OpenCore onto
-        self.subheader = wx.StaticText(self.frame, label="Select Partition to install OpenCore onto")
+        self.subheader = wx.StaticText(self.frame_modal, label="Select Partition to install OpenCore onto")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.subheader.SetPosition(
             wx.Point(
@@ -782,7 +784,7 @@ class wx_python_gui:
         list_partitions = install.tui_disk_installation(self.constants).list_partitions(disk, disk_data)
         for partition in list_partitions:
             print(f"{list_partitions[partition]['partition']} - {list_partitions[partition]['name']} - {list_partitions[partition]['size']}")
-            self.install_button = wx.Button(self.frame, label=partition, size=(300,30))
+            self.install_button = wx.Button(self.frame_modal, label=partition, size=(300,30))
             self.install_button.SetLabel(f"{list_partitions[partition]['partition']} - {list_partitions[partition]['name']} - {list_partitions[partition]['size']}")
             self.install_button.SetPosition(
                 wx.Point(
@@ -797,17 +799,18 @@ class wx_python_gui:
                 # Set label colour to red
                 self.install_button.SetForegroundColour((25, 179, 231))
         
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
+        self.return_to_main_menu = wx.Button(self.frame_modal, label="Return")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.install_button.GetPosition().x,
                 self.install_button.GetPosition().y + self.install_button.GetSize().height + 10
             )
         )
-        self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
+        self.return_to_main_menu.Bind(wx.EVT_BUTTON, lambda event: self.frame_modal.Close())
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.ShowWindowModal()
 
     def install_oc_process(self, partition):
         print(f"Installing OpenCore to {partition}")
@@ -1143,7 +1146,7 @@ class wx_python_gui:
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
         self.return_to_main_menu.Disable()
 
-        self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         sys.stdout = menu_redirect.RedirectText(self.text_box, True)
         sys.stderr = menu_redirect.RedirectText(self.text_box, True)
