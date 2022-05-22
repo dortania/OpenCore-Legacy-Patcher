@@ -1091,6 +1091,7 @@ class wx_python_gui:
             self.main_menu()
 
         self.reset_frame_modal()
+        self.frame_modal.SetSize(-1, self.WINDOW_HEIGHT_MAIN)
 
         # Header
         self.header = wx.StaticText(self.frame_modal, label="Root Patching", pos=(10, 10))
