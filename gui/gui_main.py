@@ -599,8 +599,7 @@ class wx_python_gui:
 
         self.frame_modal.ShowWindowModal()
 
-        if self.constants.start_build_install is True:
-            self.build_start()
+        self.build_start()
     
     def build_start(self, event=None):
         self.build_opencore.Disable()
