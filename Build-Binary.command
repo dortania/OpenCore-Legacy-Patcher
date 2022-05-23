@@ -43,11 +43,11 @@ class create_binary:
         parser.add_argument('--branch', type=str, help='Git branch name')
         parser.add_argument('--commit', type=str, help='Git commit URL')
         parser.add_argument('--commit_date', type=str, help='Git commit date')
+        parser.add_argument('--reset_binaries', action='store_true', help='Force redownload and imaging of payloads')
         args = parser.parse_args()
         return args
     
     def setup_pathing(self):
-        # /Library/Frameworks/Python.framework/Versions/3.9/bin/python3
         python_path = sys.executable
         python_binary = python_path.split("/")[-1]
         python_bin_dir = python_path.strip(python_binary)
@@ -56,7 +56,6 @@ class create_binary:
         if not Path(pyinstaller_path).exists():
             print(f"  - pyinstaller not found:\n\t{pyinstaller_path}")
             raise Exception("pyinstaller not found")
-        print(f"  - pyinstaller found:\n\t{pyinstaller_path}")
         
         self.pyinstaller_path = pyinstaller_path
     
@@ -110,8 +109,19 @@ class create_binary:
 
         for resource in required_resources:
             if Path(f"./payloads/{resource}").exists():
-                print(f"  - {resource} already exists, skipping download")
-                continue
+                if self.args.reset_binaries:
+                    print(f"  - Removing old {resource}")
+                    rm_output = subprocess.run(
+                        ["rm", "-rf", f"./payloads/{resource}"], 
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                    )
+                    if rm_output.returncode != 0:
+                        print("- Remove failed")
+                        print(rm_output.stderr.decode('utf-8'))
+                        raise Exception("Remove failed")
+                else:
+                    print(f"  - {resource} already exists, skipping download")
+                    continue
             print(f"  - Downloading {resource}...")
 
             download_result = subprocess.run(
@@ -139,8 +149,19 @@ class create_binary:
 
     def generate_paylods_dmg(self):
         if Path("./payloads.dmg").exists():
-            print("  - payloads.dmg already exists, skipping creation")
-            return
+            if self.args.reset_binaries:
+                print("  - Removing old payloads.dmg")
+                rm_output = subprocess.run(
+                    ["rm", "-rf", "./payloads.dmg"], 
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                )
+                if rm_output.returncode != 0:
+                    print("- Remove failed")
+                    print(rm_output.stderr.decode('utf-8'))
+                    raise Exception("Remove failed")
+            else:
+                print("  - payloads.dmg already exists, skipping creation")
+                return
         print("  - Generating DMG...")
         dmg_output = subprocess.run([
             'hdiutil', 'create', './payloads.dmg',

@@ -76,10 +76,11 @@ The main goal of generating prebuilt binaries is to strip the requirement of a l
 pip3 install pyinstaller
 # Move into project directory
 cd ~/Developer/OpenCore-Legacy-Patcher/
-# Create the pyinstaller based Application (replace OpenCore-Patcher.spec with OpenCore-Patcher-GUI.spec for GUI binary)
-pyinstaller OpenCore-Patcher.spec
-# Post PyInstaller clean up (only for the TUI)
-./after_pyinstaller.sh
+# Create the pyinstaller based Application
+# Optional Arguments
+#    '--build_tui':          Create TUI vairant
+#    '--reset_binaries':     Redownload and generate support files
+python3 Build-Binary.command
 # Open build folder
 open ./dist/
 ```
