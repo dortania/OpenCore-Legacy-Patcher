@@ -745,7 +745,7 @@ class wx_python_gui:
             self.install_button.Centre(wx.HORIZONTAL)
             
 
-        self.reload_button = wx.Button(self.frame, label="Search for Disks Again", size=(150,-1))
+        self.reload_button = wx.Button(self.frame, label="Search for Disks Again", size=(170,-1))
         self.reload_button.SetPosition(
             wx.Point(
                 self.install_button.GetPosition().x,
@@ -755,7 +755,7 @@ class wx_python_gui:
         self.reload_button.Bind(wx.EVT_BUTTON, self.install_menu)
         self.reload_button.Centre(wx.HORIZONTAL)
 
-        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu", size=(150,-1))
+        self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu", size=(170,-1))
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.reload_button.GetPosition().x,
