@@ -1,19 +1,10 @@
-# Handle misc CLI menu options
+# PyObjc Handling for IOKit
 # Copyright (C) 2020-2022, Dhinak G
 
 from __future__ import annotations
 
 from typing import NewType, Union
-import subprocess
-
-try:
-    import objc
-except ImportError:
-    subprocess.run(["pip3", "install", "pyobjc"], stdout=subprocess.PIPE)
-    try:
-        import objc
-    except ImportError:
-        raise Exception("Missing PyObjc library!\nPlease run the following before starting OCLP:\npip3 install pyobjc")
+import objc
 
 from CoreFoundation import CFRelease, kCFAllocatorDefault  # type: ignore # pylint: disable=no-name-in-module
 from Foundation import NSBundle  # type: ignore # pylint: disable=no-name-in-module

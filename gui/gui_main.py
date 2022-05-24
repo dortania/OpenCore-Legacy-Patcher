@@ -1463,7 +1463,7 @@ class wx_python_gui:
         self.header.Centre(wx.HORIZONTAL)
         
         # Label: Download...
-        self.download_label = wx.StaticText(self.frame, label="Downloading...")
+        self.download_label = wx.StaticText(self.frame, label="Starting download shortly...")
         self.download_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
         self.download_label.SetPosition(
             wx.Point(
@@ -1485,6 +1485,7 @@ class wx_python_gui:
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+        wx.GetApp().Yield()
 
         # Download macOS install data
         if installer.download_install_assistant(self.constants.payload_path, app_dict['Link']):
