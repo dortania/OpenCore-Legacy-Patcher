@@ -11,6 +11,7 @@
     - Avoids UI elements getting under the dock
   - Add return to disk when selecting partitions
   - Add "Search for disks again" option during OpenCore Install
+  - Prevent Idle Sleep while running long processes (ie. downloading, flashing)
 - Resolve failing to find binaries with `--patch_sys_vol` argument
 
 ## 0.4.5

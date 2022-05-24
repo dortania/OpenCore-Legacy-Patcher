@@ -12,15 +12,8 @@ import binascii
 import argparse
 from ctypes import CDLL, c_uint, byref
 import time
-
-try:
-    import requests
-except ImportError:
-    subprocess.run(["pip3", "install", "requests"], stdout=subprocess.PIPE)
-    try:
-        import requests
-    except ImportError:
-        raise Exception("Missing requests library!\nPlease run the following before starting OCLP:\npip3 install requests")
+import atexit
+import requests
 
 from resources import constants, ioreg
 from data import sip_data, os_data
@@ -135,6 +128,23 @@ def csr_decode(os_sip):
 def friendly_hex(integer: int):
     return "{:02X}".format(integer)
 
+sleep_process = None
+
+def disable_sleep_while_running():
+    global sleep_process
+    print("- Disabling Idle Sleep")
+    if sleep_process is None:
+        # If sleep_process is active, we'll just keep it running
+        sleep_process = subprocess.Popen(["caffeinate", "-d", "-i", "-s"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Ensures that if we don't properly close the process, 'atexit' will for us
+    atexit.register(enable_sleep_after_running)
+
+def enable_sleep_after_running():
+    global sleep_process
+    if sleep_process:
+        print("- Re-enabling Idle Sleep")
+        sleep_process.kill()
+        sleep_process = None
 
 def amfi_status():
     amfi_1 = "amfi_get_out_of_my_way=0x1"
@@ -362,6 +372,7 @@ def verify_network_connection(url):
 
 def download_file(link, location, is_gui=None, verify_checksum=False):
     if verify_network_connection(link):
+        disable_sleep_while_running()
         short_link = os.path.basename(link)
         if Path(location).exists():
             Path(location).unlink()
@@ -421,7 +432,9 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
                 while chunk:
                     checksum.update(chunk)
                     chunk = file.read(1024 * 1024 * 16)
+            enable_sleep_after_running()
             return checksum
+        enable_sleep_after_running()
         return True
     else:
         cls()

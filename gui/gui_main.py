@@ -105,6 +105,9 @@ class wx_python_gui:
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
         self.reset_frame_modal()
+
+        # Re-enable sleep if we failed to do so before returning to the main menu
+        utilities.enable_sleep_after_running()
     
     def reset_frame_modal(self):
         if not self.frame_modal:
@@ -1551,6 +1554,7 @@ class wx_python_gui:
             # If we're unable to download the integrity file immediately after downloading the IA, there's a legitmate issue
             # on Apple's end.
             # Fail gracefully and just head to installing the IA.
+            utilities.disable_sleep_while_running()
             apple_integrity_file = str(integrity_path)
             chunks = integrity_verification.generate_chunklist_dict(str(apple_integrity_file))
             if chunks:
@@ -1600,6 +1604,7 @@ class wx_python_gui:
         self.verifying_chunk_label.Centre(wx.HORIZONTAL)
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.flash_installer_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
+        utilities.enable_sleep_after_running()
 
 
     def flash_installer_menu(self, event=None):
@@ -1871,6 +1876,7 @@ class wx_python_gui:
         self.return_to_main_menu.Enable()
 
     def start_script(self):
+        utilities.disable_sleep_while_running()
         args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
         output, error, returncode = run.Run()._stream_output(comm=args)
         if "Install media now available at" in output:
@@ -1886,6 +1892,7 @@ class wx_python_gui:
             print("- Failed to create macOS installer")
             popup = wx.MessageDialog(self.frame, f"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}", "Error", wx.OK | wx.ICON_ERROR)
             popup.ShowModal()
+        utilities.enable_sleep_after_running()
 
 
     def download_and_unzip_pkg(self):
@@ -1908,6 +1915,8 @@ class wx_python_gui:
             path = self.constants.installer_pkg_path
 
         if utilities.download_file(link, path):
+            # Download thread will re-enable Idle Sleep after downloading
+            utilities.disable_sleep_while_running()
             if str(path).endswith(".zip"):
                 if Path(self.constants.installer_pkg_path).exists():
                     subprocess.run(["rm", self.constants.installer_pkg_path])
