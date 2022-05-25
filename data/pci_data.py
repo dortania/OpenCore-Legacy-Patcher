@@ -530,6 +530,7 @@ class nvidia_ids:
         0x139a,  # GM107 [GeForce GTX 950M]
         0x139b,  # GM107 [GeForce GTX 960M]
         0x13b0,  # GM107 [Quadro M2000M]
+        0x13BB,  # GM107 [Quadro K620]
 
         0x1340,  # GM108
         0x1341,  # GM108 [GeForce 840M]
