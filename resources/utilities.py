@@ -197,6 +197,8 @@ def check_metal_support(device_probe, computer):
                 (gpu.arch in [
                     device_probe.NVIDIA.Archs.Tesla, 
                     device_probe.NVIDIA.Archs.Fermi, 
+                    device_probe.NVIDIA.Archs.Maxwell,
+                    device_probe.NVIDIA.Archs.Pascal,
                     device_probe.AMD.Archs.TeraScale_1, 
                     device_probe.AMD.Archs.TeraScale_2, 
                     device_probe.Intel.Archs.Iron_Lake, 

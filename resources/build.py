@@ -689,6 +689,12 @@ class BuildOpenCore:
                             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
                             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
+                            if device.arch in [device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
+                                print("- Adding Web Driver Patches")
+                                self.config["DeviceProperties"]["Add"][device.pci_path].update({"disable-metal": 1, "force-compat": 1})
+                                if "nvda_drv_vrl=1" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
+                                    self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " nvda_drv_vrl=1"
+
                     else:
                         print(f"- Failed to find Device path for dGPU {i + 1}")
                         if isinstance(device, device_probe.AMD):
@@ -705,6 +711,10 @@ class BuildOpenCore:
                                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -wegtree agdpmod=vit9696"
                             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
                             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
+                            if device.arch in [device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
+                                if "ngfxgl=1 ngfxcompat=1 nvda_drv_vrl=1" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
+                                    print("- Adding Web Driver Patches")
+                                    self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " ngfxgl=1 ngfxcompat=1 nvda_drv_vrl=1"
 
                 if not self.computer.gpus:
                     print("- No socketed dGPU found")

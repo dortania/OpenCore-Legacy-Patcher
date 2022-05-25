@@ -123,6 +123,26 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
+            "Non-Metal CoreDisplay Common": {
+                # Nvidia Web Drivers require an older build of CoreDisplay
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": non_metal_os_support[0],
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": non_metal_os_support[-1],
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Frameworks": {
+                        "CoreDisplay.framework": f"10.13.6-{os_major}",
+                    },
+                },
+            },
+
             "Non-Metal Enforcement": {
                 # Forces Metal kexts from High Sierra to run in the fallback non-Metal mode
                 # Verified functional with HD4000 and Iris Plus 655

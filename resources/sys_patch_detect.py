@@ -65,6 +65,7 @@ class detect_root_patch:
                 elif gpu.arch in [device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
                     if self.constants.detected_os > os_data.os_data.mojave:
                         self.nvidia_web = True
+                        self.amfi_must_disable = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts1 = True
@@ -91,6 +92,7 @@ class detect_root_patch:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
             # Main concerns are for iMac12,x with Sandy iGPU and Kepler dGPU
             self.nvidia_tesla = False
+            self.nvidia_web = False
             self.amd_ts1 = False
             self.amd_ts2 = False
             self.iron_gpu = False
@@ -159,8 +161,8 @@ class detect_root_patch:
         self.root_patch_dict = {
             "Graphics: Nvidia Tesla": self.nvidia_tesla,
             "Graphics: Nvidia Kepler": self.kepler_gpu,
-            # "Graphics: Nvidia Web Drivers": self.nvidia_web,
-            "Graphics: Nvidia Web Drivers": False,
+            "Graphics: Nvidia Web Drivers": self.nvidia_web,
+            # "Graphics: Nvidia Web Drivers": False,
             "Graphics: AMD TeraScale 1": self.amd_ts1,
             "Graphics: AMD TeraScale 2": self.amd_ts2,
             "Graphics: Intel Ironlake": self.iron_gpu,
@@ -245,7 +247,9 @@ class detect_root_patch:
         if hardware_details["Graphics: Nvidia Web Drivers"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Non-Metal IOAccelerator Common": all_hardware_patchset["Graphics"]["Non-Metal IOAccelerator Common"]})
+            required_patches.update({"Non-Metal CoreDisplay Common": all_hardware_patchset["Graphics"]["Non-Metal CoreDisplay Common"]})
             required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
+            required_patches.update({"Non-Metal Enforcement": all_hardware_patchset["Graphics"]["Non-Metal Enforcement"]})
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
