@@ -62,6 +62,7 @@ class create_binary:
     def preflight_processes(self):
         print("- Starting preflight processes")
         self.setup_pathing()
+        self.delete_extra_binaries()
         self.download_resources()
         if not self.args.build_tui:
             # payloads.dmg is only needed for GUI builds
@@ -100,6 +101,17 @@ class create_binary:
             print(build_result.stderr.decode('utf-8'))
             raise Exception("Build failed")
 
+    def delete_extra_binaries(self):
+        delete_files = [
+            "AutoPkg-Assets.pkg",
+            "AutoPkg-Assets.pkg.zip",
+            "InstallAssistant.pkg",
+        ]
+        print("- Deleting extra binaries...")
+        for file in Path("payloads").glob(pattern="*"):
+            if file.name in delete_files:
+                print(f"  - Deleting {file.name}")
+                file.unlink()
 
     def download_resources(self):
         patcher_support_pkg_version = constants.Constants().patcher_support_pkg_version
@@ -107,6 +119,7 @@ class create_binary:
             "Universal-Binaries.zip"
         ]
 
+        print("- Downloading required resources...")
         for resource in required_resources:
             if Path(f"./payloads/{resource}").exists():
                 if self.args.reset_binaries:

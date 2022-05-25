@@ -1631,7 +1631,7 @@ class wx_python_gui:
             print("Installer found")
             for app in available_installers:
                 print(f"{available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})")
-                self.install_selection = wx.Button(self.frame, label=f"{available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})", size=(300, 30))
+                self.install_selection = wx.Button(self.frame, label=f"{available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})", size=(320, 30))
                 i = i + 25
                 self.install_selection.SetPosition(
                     wx.Point(
