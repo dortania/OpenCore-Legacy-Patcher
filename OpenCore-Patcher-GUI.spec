@@ -47,7 +47,7 @@ coll = COLLECT(exe,
 app = BUNDLE(coll,
              name='OpenCore-Patcher.app',
              icon="payloads/OC-Patcher.icns",
-             bundle_identifier="com.dortania.opencore-legacy-patcher-wxpython",
+             bundle_identifier="com.dortania.opencore-legacy-patcher",
              info_plist={
                 "CFBundleShortVersionString": constants.Constants().patcher_version,
                 "NSHumanReadableCopyright": constants.Constants().copyright_date,

@@ -180,7 +180,7 @@ class wx_python_gui:
             threading.Thread(target=self.check_for_updates).start()
     
     def check_for_updates(self, event=None):
-        ignore_updates = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher-wxpython", "IgnoreAppUpdates"], capture_output=True).stdout.decode("utf-8").strip()
+        ignore_updates = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates"], capture_output=True).stdout.decode("utf-8").strip()
         if ignore_updates not in ["1", "True", "TRUE"]:
             self.constants.ignore_updates = False
             dict = updates.check_binary_updates(self.constants).check_binary_updates()
@@ -202,7 +202,7 @@ class wx_python_gui:
                     elif responce == wx.ID_NO:
                         print("- Setting IgnoreAppUpdates to True")
                         self.constants.ignore_updates = True
-                        subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher-wxpython", "IgnoreAppUpdates", "-bool", "TRUE"])
+                        subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "TRUE"])
         else:
             self.constants.ignore_updates = True
             print("- Ignoring App Updates due to defaults")
@@ -2369,9 +2369,9 @@ class wx_python_gui:
     def set_ignore_app_updates_click(self, event):
         self.constants.ignore_updates = self.set_ignore_app_updates_checkbox.GetValue()
         if self.constants.ignore_updates is True:
-            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher-wxpython", "IgnoreAppUpdates", "-bool", "TRUE"])
+            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "TRUE"])
         else:
-            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher-wxpython", "IgnoreAppUpdates", "-bool", "FALSE"])
+            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "FALSE"])
 
     def firewire_click(self, event=None):
         if self.firewire_boot_checkbox.GetValue():
