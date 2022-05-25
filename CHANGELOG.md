@@ -13,6 +13,8 @@
   - Add "Search for disks again" option during OpenCore Install
   - Prevent Idle Sleep while running long processes (ie. downloading, flashing)
 - Resolve failing to find binaries with `--patch_sys_vol` argument
+- Downgrade AppleFSCompressionTypeZlib to 12.3.1 on pre-Sandy Bridge Macs
+  - Resolves ZLib decompression kernel panics on 12.4 and newer
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases

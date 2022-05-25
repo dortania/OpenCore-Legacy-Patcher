@@ -57,6 +57,7 @@ class Constants:
         self.apple_trackpad = "1.0.1"  #       AppleUSBTrackpad
         self.apple_isight_version = "1.0.0"  # AppleiSight
         self.apple_raid_version = "1.0.0"  #   AppleRAIDCard
+        self.apfs_zlib_version = "12.3.1"  #   NoAVXFSCompressionTypeZlib
 
         ## Apple - Dortania Modified
         self.bcm570_version = "1.0.2"  #             CatalinaBCM5701Ethernet
@@ -304,6 +305,10 @@ class Constants:
     @property
     def bigsursdxc_path(self):
         return self.payload_kexts_path / Path(f"Misc/BigSurSDXC-v{self.bigsursdxc_version}.zip")
+    
+    @property
+    def apfs_zlib_path(self):
+        return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-v{self.apfs_zlib_version}.zip")
 
     @property
     def mousse_path(self):
