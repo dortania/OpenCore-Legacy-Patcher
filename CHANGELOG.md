@@ -12,6 +12,7 @@
   - Add return to disk when selecting partitions
   - Add "Search for disks again" option during OpenCore Install
   - Prevent Idle Sleep while running long processes (ie. downloading, flashing)
+  - Start OpenCore build automatically when entering Build menu
 - Resolve failing to find binaries with `--patch_sys_vol` argument
 - Downgrade AppleFSCompressionTypeZlib to 12.3.1 on pre-Sandy Bridge Macs
   - Resolves ZLib decompression kernel panics on 12.4 and newer
