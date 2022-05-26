@@ -694,6 +694,8 @@ class BuildOpenCore:
                                 self.config["DeviceProperties"]["Add"][device.pci_path].update({"disable-metal": 1, "force-compat": 1})
                                 if "nvda_drv_vrl=1" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
                                     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " nvda_drv_vrl=1"
+                                if self.get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is False:
+                                    self.enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
 
                     else:
                         print(f"- Failed to find Device path for dGPU {i + 1}")
@@ -715,6 +717,8 @@ class BuildOpenCore:
                                 if "ngfxgl=1 ngfxcompat=1 nvda_drv_vrl=1" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
                                     print("- Adding Web Driver Patches")
                                     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " ngfxgl=1 ngfxcompat=1 nvda_drv_vrl=1"
+                                if self.get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is False:
+                                    self.enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
 
                 if not self.computer.gpus:
                     print("- No socketed dGPU found")
