@@ -13,33 +13,38 @@ class detect_root_patch:
         self.computer = self.constants.computer
 
         # GPU Patch Detection
-        self.nvidia_tesla= False
-        self.kepler_gpu= False
-        self.nvidia_web= False
-        self.amd_ts1= False
-        self.amd_ts2= False
-        self.iron_gpu= False
-        self.sandy_gpu= False
-        self.ivy_gpu= False
+        self.nvidia_tesla = False
+        self.kepler_gpu   = False
+        self.nvidia_web   = False
+        self.amd_ts1      = False
+        self.amd_ts2      = False
+        self.iron_gpu     = False
+        self.sandy_gpu    = False
+        self.ivy_gpu      = False
 
         # Misc Patch Detection
-        self.brightness_legacy= False
-        self.legacy_audio= False
-        self.legacy_wifi= False
-        self.legacy_gmux= False
-        self.legacy_keyboard_backlight= False
+        self.brightness_legacy         = False
+        self.legacy_audio              = False
+        self.legacy_wifi               = False
+        self.legacy_gmux               = False
+        self.legacy_keyboard_backlight = False
 
         # Patch Requirements
-        self.amfi_must_disable= False
-        self.supports_metal= False
+        self.amfi_must_disable   = False
+        self.supports_metal      = False
+        self.needs_nv_web_checks = False        
 
         # Validation Checks
-        self.sip_enabled = False
-        self.sbm_enabled = False
-        self.amfi_enabled = False
-        self.fv_enabled = False
+        self.sip_enabled     = False
+        self.sbm_enabled     = False
+        self.amfi_enabled    = False
+        self.fv_enabled      = False
         self.dosdude_patched = False
 
+        self.missing_whatever_green = False
+        self.missing_nv_web_nvram   = False
+        self.missing_nv_web_opengl  = False
+        self.missing_nv_compat      = False
     
     def detect_gpus(self):
         gpus = self.constants.computer.gpus
@@ -47,7 +52,7 @@ class detect_root_patch:
         for i, gpu in enumerate(gpus):
             if gpu.class_code and gpu.class_code != 0xFFFFFFFF:
                 print(f"- Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
-                if gpu.arch in [device_probe.NVIDIA.Archs.Tesla, device_probe.NVIDIA.Archs.Fermi]:
+                if gpu.arch in [device_probe.NVIDIA.Archs.Tesla]:
                     if self.constants.detected_os > non_metal_os:
                         self.nvidia_tesla = True
                         self.amfi_must_disable = True
@@ -62,10 +67,11 @@ class detect_root_patch:
                             if "21A5506j" not in self.constants.detected_os_build:
                                 self.kepler_gpu = True
                                 self.supports_metal = True
-                elif gpu.arch in [device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
+                elif gpu.arch in [device_probe.NVIDIA.Archs.Fermi, device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
                     if self.constants.detected_os > os_data.os_data.mojave:
                         self.nvidia_web = True
                         self.amfi_must_disable = True
+                        self.needs_nv_web_checks = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts1 = True
@@ -125,6 +131,44 @@ class detect_root_patch:
             return self.constants.computer.ambient_light_sensor
         return False
 
+    def check_nv_web_nvram(self):
+        # First check boot-args, then dedicated nvram variable
+        nv_on = utilities.get_nvram("boot-args")
+        if nv_on:
+            if "nvda_drv_vrl" in nv_on:
+                return True
+        nv_on = utilities.get_nvram("nvda_drv")
+        if nv_on:
+            return True
+        return False
+
+    def check_nv_web_opengl(self):
+        # First check boot-args, then whether property exists on GPU
+        nv_on = utilities.get_nvram("boot-args")
+        if nv_on:
+            if "ngfxgl" in nv_on:
+                return True
+        for gpu in self.constants.computer.gpus:
+            if isinstance(gpu, device_probe.NVIDIA):
+                if gpu.disable_metal:
+                    return True
+        return False
+
+    def check_nv_compat(self):
+        # Check for 'nv_web' in boot-args, then whether property exists on GPU
+        nv_on = utilities.get_nvram("boot-args")
+        if nv_on:
+            if "ngfxcompat" in nv_on:
+                return True
+        for gpu in self.constants.computer.gpus:
+            if isinstance(gpu, device_probe.NVIDIA):
+                if gpu.force_compatible:
+                    return True
+        return False
+    
+    def check_whatevergreen(self):
+        return utilities.check_kext_loaded("WhateverGreen", self.constants.detected_os)
+
     def detect_patch_set(self):
         self.detect_gpus()
         if self.model in model_array.LegacyBrightness:
@@ -159,27 +203,31 @@ class detect_root_patch:
                     self.legacy_gmux = True
         
         self.root_patch_dict = {
-            "Graphics: Nvidia Tesla": self.nvidia_tesla,
-            "Graphics: Nvidia Kepler": self.kepler_gpu,
-            "Graphics: Nvidia Web Drivers": self.nvidia_web,
-            # "Graphics: Nvidia Web Drivers": False,
-            "Graphics: AMD TeraScale 1": self.amd_ts1,
-            "Graphics: AMD TeraScale 2": self.amd_ts2,
-            "Graphics: Intel Ironlake": self.iron_gpu,
-            "Graphics: Intel Sandy Bridge": self.sandy_gpu,
-            "Graphics: Intel Ivy Bridge": self.ivy_gpu,
-            "Brightness: Legacy Backlight Control": self.brightness_legacy,
-            "Audio: Legacy Realtek": self.legacy_audio,
-            "Networking: Legacy Wireless": self.legacy_wifi,
-            "Miscellaneous: Legacy GMUX": self.legacy_gmux,
-            "Miscellaneous: Legacy Keyboard Backlight": self.legacy_keyboard_backlight,
-            "Settings: Requires AMFI exemption": self.amfi_must_disable,
-            "Validation: Patching Possible": self.verify_patch_allowed(),
-            "Validation: SIP is enabled": self.sip_enabled,
-            "Validation: SecureBootModel is enabled": self.sbm_enabled,
-            "Validation: AMFI is enabled": self.amfi_enabled if self.amfi_must_disable else False,
-            "Validation: FileVault is enabled": self.fv_enabled,
-            "Validation: System is dosdude1 patched": self.dosdude_patched,
+            "Graphics: Nvidia Tesla":                      self.nvidia_tesla,
+            "Graphics: Nvidia Kepler":                     self.kepler_gpu,
+            "Graphics: Nvidia Web Drivers":                self.nvidia_web,
+            "Graphics: AMD TeraScale 1":                   self.amd_ts1,
+            "Graphics: AMD TeraScale 2":                   self.amd_ts2,
+            "Graphics: Intel Ironlake":                    self.iron_gpu,
+            "Graphics: Intel Sandy Bridge":                self.sandy_gpu,
+            "Graphics: Intel Ivy Bridge":                  self.ivy_gpu,
+            "Brightness: Legacy Backlight Control":        self.brightness_legacy,
+            "Audio: Legacy Realtek":                       self.legacy_audio,
+            "Networking: Legacy Wireless":                 self.legacy_wifi,
+            "Miscellaneous: Legacy GMUX":                  self.legacy_gmux,
+            "Miscellaneous: Legacy Keyboard Backlight":    self.legacy_keyboard_backlight,
+            "Settings: Requires AMFI exemption":           self.amfi_must_disable,
+            "Validation: Patching Possible":               self.verify_patch_allowed(),
+            "Validation: SIP is enabled":                  self.sip_enabled,
+            "Validation: SecureBootModel is enabled":      self.sbm_enabled,
+            "Validation: AMFI is enabled":                 self.amfi_enabled if self.amfi_must_disable else False,
+            "Validation: FileVault is enabled":            self.fv_enabled,
+            "Validation: System is dosdude1 patched":      self.dosdude_patched,
+            "Validation: WhateverGreen.kext missing":      self.missing_whatever_green if self.nvidia_web is True else False,
+            "Validation: Force OpenGL property missing":   self.missing_nv_web_opengl  if self.nvidia_web is True else False,
+            "Validation: Force compat property missing":   self.missing_nv_compat      if self.nvidia_web is True else False,
+            "Validation: nvda_drv(_vrl) variable missing": self.missing_nv_web_nvram   if self.nvidia_web is True else False,
+
         }
         
         return self.root_patch_dict
@@ -187,6 +235,13 @@ class detect_root_patch:
     def verify_patch_allowed(self, print_errors=False):
         sip = sip_data.system_integrity_protection.root_patch_sip_big_sur if self.constants.detected_os > os_data.os_data.catalina else sip_data.system_integrity_protection.root_patch_sip_mojave
         self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
+        
+        if self.nvidia_web is True:
+            self.missing_nv_web_nvram   = not self.check_nv_web_nvram()
+            self.missing_nv_web_opengl  = not self.check_nv_web_opengl()
+            self.missing_nv_compat      = not self.check_nv_compat()
+            self.missing_whatever_green = not self.check_whatevergreen()
+        
         if sip == sip_data.system_integrity_protection.root_patch_sip_mojave:
             sip_value = "For Hackintoshes, please set csr-active-config to '03060000' (0x603)\nFor non-OpenCore Macs, please run 'csrutil disable' in RecoveryOS"
         else:
@@ -219,8 +274,38 @@ class detect_root_patch:
                 print("\nCannot patch! Detected machine has already been patched by another patcher")
                 print("Please ensure your install is either clean or patched with OpenCore Legacy Patcher")
             
+            if self.nvidia_web is True:
+                if self.missing_nv_web_opengl is True:
+                    print("\nCannot patch! Force OpenGL property missing")
+                    print("Please ensure ngfxgl=1 is set in boot-args")
+                
+                if self.missing_nv_compat is True:
+                    print("\nCannot patch! Force Nvidia compatibility property missing")
+                    print("Please ensure ngfxcompat=1 is set in boot-args")
+                
+                if self.missing_nv_web_nvram is True:
+                    print("\nCannot patch! nvda_drv(_vrl) variable missing")
+                    print("Please ensure nvda_drv_vrl=1 is set in boot-args")
+                
+                if self.missing_whatever_green is True:
+                    print("\nCannot patch! WhateverGreen.kext missing")
+                    print("Please ensure WhateverGreen.kext is installed")
+                
+            
         if any(
-            [self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched, self.amfi_enabled if self.amfi_must_disable else False]
+            [
+                # General patch checks
+                self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched,
+
+                # non-Metal specific
+                self.amfi_enabled if self.amfi_must_disable else False,
+
+                # Web Driver specific
+                self.missing_nv_web_nvram   if self.nvidia_web else False,
+                self.missing_nv_web_opengl  if self.nvidia_web else False,
+                self.missing_nv_compat      if self.nvidia_web else False,
+                self.missing_whatever_green if self.nvidia_web else False,
+            ]
         ):
             return False
         else:

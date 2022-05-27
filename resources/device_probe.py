@@ -30,10 +30,12 @@ class PCIDevice:
     device_id: int  # The device ID of this PCI device
     class_code: int  # The class code of this PCI device - https://pci-ids.ucw.cz/read/PD
 
-    name: Optional[str] = None  # Name of IORegistryEntry
-    model: Optional[str] = None  # model property
-    acpi_path: Optional[str] = None
-    pci_path: Optional[str] = None
+    name:             Optional[str]  = None  # Name of IORegistryEntry
+    model:            Optional[str]  = None  # model property
+    acpi_path:        Optional[str]  = None  # ACPI Device Path
+    pci_path:         Optional[str]  = None  # PCI Device Path
+    disable_metal:    Optional[bool] = False # 'disable-metal' property
+    force_compatible: Optional[bool] = False # 'force-compat' property
 
     @classmethod
     def from_ioregistry(cls, entry: ioreg.io_registry_entry_t, anti_spoof=False):
@@ -51,6 +53,10 @@ class PCIDevice:
             device.model = model
         if "acpi-path" in properties:
             device.acpi_path = properties["acpi-path"]
+        if "disable-metal" in properties:
+            device.disable_metal = True
+        if "force-compat" in properties:
+            device.force_compatible = True
         device.populate_pci_path(entry)
         return device
 

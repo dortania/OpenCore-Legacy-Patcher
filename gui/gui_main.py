@@ -932,11 +932,11 @@ class wx_python_gui:
                 for patch in patches:
                     if patch.startswith("Validation") and patches[patch] is True:
                         print(f"- Adding check: {patch} - {patches[patch]}")
-                        self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch.lstrip('Validation: ')}")
+                        self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch[12:]}")
                         self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
                         self.patch_label.SetPosition(
                             wx.Point(
-                                self.subheader.GetPosition().x + 20,
+                                self.subheader.GetPosition().x,
                                 self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
                             )
                         )
