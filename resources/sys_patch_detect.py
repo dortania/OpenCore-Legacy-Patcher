@@ -135,7 +135,7 @@ class detect_root_patch:
         # First check boot-args, then dedicated nvram variable
         nv_on = utilities.get_nvram("boot-args")
         if nv_on:
-            if "nvda_drv_vrl" in nv_on:
+            if "nvda_drv_vrl=" in nv_on:
                 return True
         nv_on = utilities.get_nvram("nvda_drv")
         if nv_on:
@@ -146,11 +146,11 @@ class detect_root_patch:
         # First check boot-args, then whether property exists on GPU
         nv_on = utilities.get_nvram("boot-args")
         if nv_on:
-            if "ngfxgl" in nv_on:
+            if "ngfxgl=" in nv_on:
                 return True
         for gpu in self.constants.computer.gpus:
             if isinstance(gpu, device_probe.NVIDIA):
-                if gpu.disable_metal:
+                if gpu.disable_metal is True:
                     return True
         return False
 
@@ -158,11 +158,11 @@ class detect_root_patch:
         # Check for 'nv_web' in boot-args, then whether property exists on GPU
         nv_on = utilities.get_nvram("boot-args")
         if nv_on:
-            if "ngfxcompat" in nv_on:
+            if "ngfxcompat=" in nv_on:
                 return True
         for gpu in self.constants.computer.gpus:
             if isinstance(gpu, device_probe.NVIDIA):
-                if gpu.force_compatible:
+                if gpu.force_compatible is True:
                     return True
         return False
     

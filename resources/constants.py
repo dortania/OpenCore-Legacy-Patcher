@@ -190,6 +190,7 @@ class Constants:
         self.booted_oc_disk = None  #          Determine current disk OCLP booted from
         self.start_build_install = False  #    Determine if build install should be started
         self.host_is_non_metal = False  #      Determine if host is non-metal (ie. enable UI hacks)
+        self.needs_to_open_preferences = False  # Determine if preferences need to be opened
 
         self.legacy_accel_support = [
             os_data.os_data.big_sur,

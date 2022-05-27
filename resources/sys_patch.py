@@ -41,6 +41,7 @@ class PatchSysVolume:
         self.root_mount_path = None
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
         self.constants.root_patcher_succeded = False # Reset Variable each time we start
+        self.constants.needs_to_open_preferences = False
         self.patch_set_dictionary = {}
         self.needs_kmutil_exemptions = False # For '/Library/Extensions' rebuilds
 
@@ -120,9 +121,10 @@ class PatchSysVolume:
             if self.needs_kmutil_exemptions is True:
                 # When installing to '/Library/Extensions', following args skip kext consent 
                 # prompt in System Preferences when SIP's disabled
-                print("- Disabling auth checks in kmutil")
+                print("  (You will get a prompt by System Preferences, ignore for now)")
                 args.append("--no-authentication")
                 args.append("--no-authorization")
+                self.constants.needs_to_open_preferences = True # Notify in GUI to open System Preferences
         else:
             args = ["kextcache", "-i", f"{self.mount_location}/"]
 
@@ -163,6 +165,8 @@ class PatchSysVolume:
                     self.unmount_drive()
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
+            if self.needs_kmutil_exemptions is True:
+                print("Note: Apple will require you to open System Preferences -> Security to\nallow the new kernel extensions to be loaded")
             self.constants.root_patcher_succeded = True
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to continue")

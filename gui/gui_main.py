@@ -1173,7 +1173,27 @@ class wx_python_gui:
         sys.stderr = self.stock_stderr
         if self.constants.root_patcher_succeded is True:
             print("- Root Patcher finished successfully")
-            self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
+            if self.constants.needs_to_open_preferences is True:
+                # Create dialog box to open System Preferences -> Security and Privacy
+                self.popup = wx.MessageDialog(
+                    self.frame_modal,
+                    "We just finished installing the patches to your Root Volume!\n\nHowever, Apple requires users to manually approve the kernel extensions installed before they can be used next reboot.\n\nWould you like to open System Preferences?",
+                    "Open System Preferences?",
+                    wx.YES_NO | wx.ICON_INFORMATION
+                )
+                self.popup.SetYesNoLabels("Open System Preferences", "Ignore")
+                answer = self.popup.ShowModal()
+                if answer == wx.ID_YES:
+                    subprocess.Popen(
+                        [
+                            "osascript", "-e", 
+                            'tell app "System Preferences" to reveal anchor "General" of pane id "com.apple.preference.security"'
+                        ]
+                    )
+                    time.sleep(5)
+                    self.OnCloseFrame(None)
+            else:
+                self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
 
         wx.GetApp().Yield()
