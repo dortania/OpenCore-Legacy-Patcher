@@ -114,14 +114,17 @@ class PatchSysVolume:
     def rebuild_snapshot(self):
         print("- Rebuilding Kernel Cache (This may take some time)")
 
-        args = ["kmutil", "install", "--volume-root", self.mount_location, "--update-all"]
+        if self.constants.detected_os > os_data.os_data.catalina:
+            args = ["kmutil", "install", "--volume-root", self.mount_location, "--update-all"]
 
-        if self.needs_kmutil_exemptions is True:
-            # When installing to '/Library/Extensions', following args skip kext consent 
-            # prompt in System Preferences when SIP's disabled
-            print("- Disabling auth checks in kmutil")
-            args.append("--no-authentication")
-            args.append("--no-authorization")
+            if self.needs_kmutil_exemptions is True:
+                # When installing to '/Library/Extensions', following args skip kext consent 
+                # prompt in System Preferences when SIP's disabled
+                print("- Disabling auth checks in kmutil")
+                args.append("--no-authentication")
+                args.append("--no-authorization")
+        else:
+            args = ["kextcache", "-i", f"{self.mount_location}/"]
 
         result = utilities.elevated(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
@@ -132,7 +135,7 @@ class PatchSysVolume:
         # - will return 71 on failure to build KCs
         # - will return 31 on 'No binaries or codeless kexts were provided'
         # - will return -10 if the volume is missing (ie. unmounted by another process)
-        if result.returncode != 0:
+        if result.returncode != 0 or (self.constants.detected_os < os_data.os_data.catalina and "KernelCache ID" not in result.stdout.decode()):
             print("- Unable to build new kernel cache")
             print(f"\nReason for Patch Failure ({result.returncode}):")
             print(result.stdout.decode())
@@ -142,6 +145,8 @@ class PatchSysVolume:
                 input("Press [ENTER] to continue")
         else:
             print("- Successfully built new kernel cache")
+            self.update_preboot_kernel_cache()
+            self.rebuild_dyld_shared_cache()
             if self.root_supports_snapshot is True:
                 print("- Creating new APFS snapshot")
                 bless = utilities.elevated(
@@ -166,6 +171,15 @@ class PatchSysVolume:
         print("- Unmounting Root Volume (Don't worry if this fails)")
         utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
+    def rebuild_dyld_shared_cache(self):
+        if self.constants.detected_os <= os_data.os_data.catalina:
+            print("- Rebuilding dyld shared cache")
+            utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
+
+    def update_preboot_kernel_cache(self):
+        if self.constants.detected_os == os_data.os_data.catalina:
+            print("- Rebuilding preboot kernel cache")
+            utilities.process_status(utilities.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def clean_skylight_plugins(self):
         if (Path(self.mount_application_support) / Path("SkyLightPlugins/")).exists():

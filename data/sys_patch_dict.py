@@ -303,9 +303,12 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "NVDANV50HalTeslaWeb.kext":       "WebDriver-387.10.10.10.40.140",
                         "NVDAResmanTeslaWeb.kext":        "WebDriver-387.10.10.10.40.140",
                     },
-                    "/Library/PreferencePanes": {
-                        "NVIDIA Driver Manager.prefPane": "WebDriver-387.10.10.10.40.140",
-                    },
+
+                    # Nvidia's control panel crashes on 10.14+
+                    # For us, no real point in using it so ignore
+                    # "/Library/PreferencePanes": {
+                    #     "NVIDIA Driver Manager.prefPane": "WebDriver-387.10.10.10.40.140",
+                    # },
                 },
             },
             "AMD TeraScale Common": {
