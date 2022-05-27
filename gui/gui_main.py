@@ -1184,14 +1184,18 @@ class wx_python_gui:
                 self.popup.SetYesNoLabels("Open System Preferences", "Ignore")
                 answer = self.popup.ShowModal()
                 if answer == wx.ID_YES:
-                    subprocess.Popen(
+                    output =subprocess.run(
                         [
                             "osascript", "-e", 
-                            'tell app "System Preferences" to reveal anchor "General" of pane id "com.apple.preference.security"'
-                        ]
+                            'tell app "System Preferences" to reveal anchor "General" of pane id "com.apple.preference.security"',
+                            "-e", 'tell app "System Preferences" to activate',
+                        ],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE
                     )
-                    time.sleep(5)
-                    self.OnCloseFrame(None)
+                    if output.returncode == 0:
+                        time.sleep(5)
+                        self.OnCloseFrame(None)
             else:
                 self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
