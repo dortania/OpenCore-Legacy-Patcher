@@ -15,7 +15,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.4.6"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.5.0"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.5.1"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link = "https://discord.gg/rqdPgH8xSN"
@@ -167,6 +167,7 @@ class Constants:
         self.imac_model = "" #         Set MXM GPU model
         self.drm_support = False  #    Set iMac14,x DRM support
         self.allow_ts2_accel = True  # Set TeraScale 2 Acceleration support
+        self.force_nv_web = False  #   Force Nvidia Web Drivers on Tesla and Kepler
 
         ## Miscellaneous
         self.disallow_cpufriend = False  #     Disable CPUFriend

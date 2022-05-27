@@ -52,12 +52,12 @@ class detect_root_patch:
         for i, gpu in enumerate(gpus):
             if gpu.class_code and gpu.class_code != 0xFFFFFFFF:
                 print(f"- Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
-                if gpu.arch in [device_probe.NVIDIA.Archs.Tesla]:
+                if gpu.arch in [device_probe.NVIDIA.Archs.Tesla] and self.constants.force_nv_web is False:
                     if self.constants.detected_os > non_metal_os:
                         self.nvidia_tesla = True
                         self.amfi_must_disable = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
-                elif gpu.arch == device_probe.NVIDIA.Archs.Kepler:
+                elif gpu.arch == device_probe.NVIDIA.Archs.Kepler and self.constants.force_nv_web is False:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         # Kepler drivers were dropped with Beta 7
                         # 12.0 Beta 5: 21.0.0 - 21A5304g
@@ -67,7 +67,13 @@ class detect_root_patch:
                             if "21A5506j" not in self.constants.detected_os_build:
                                 self.kepler_gpu = True
                                 self.supports_metal = True
-                elif gpu.arch in [device_probe.NVIDIA.Archs.Fermi, device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
+                elif gpu.arch in [
+                    device_probe.NVIDIA.Archs.Tesla,
+                    device_probe.NVIDIA.Archs.Fermi,
+                    device_probe.NVIDIA.Archs.Kepler,
+                    device_probe.NVIDIA.Archs.Maxwell, 
+                    device_probe.NVIDIA.Archs.Pascal,
+                ] and self.constants.force_nv_web is True:
                     if self.constants.detected_os > os_data.os_data.mojave:
                         self.nvidia_web = True
                         self.amfi_must_disable = True
