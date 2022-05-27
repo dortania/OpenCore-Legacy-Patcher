@@ -2,7 +2,7 @@
 # New users may not realize OS updates remove our patches, so we try and run when nessasary
 # Conditions for running:
 #   - Verify running GUI (TUI users can write their own scripts)
-#   - Verify the Snapshot Seal is in tact (if not, assume user is running patches)
+#   - Verify the Snapshot Seal is intact (if not, assume user is running patches)
 #   - Verify this model needs patching (if not, assume user upgraded hardware and OCLP was not removed)
 #   - Verify there are no updates for OCLP (ensure we have the latest patch sets)
 # If all these tests pass, start Root Patcher
@@ -20,7 +20,7 @@ class AutomaticSysPatch:
         print("- Starting Automatic Patching")
         if settings.wxpython_variant is True:
             if utilities.check_seal() is True:
-                print("- Detected Snapshot seal in tact, detecting patches")
+                print("- Detected Snapshot seal intact, detecting patches")
                 patches = sys_patch_detect.detect_root_patch(settings.computer.real_model, settings).detect_patch_set()
                 if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
                     patches = []
@@ -97,7 +97,7 @@ class AutomaticSysPatch:
                     print("- No patches detected")
                     AutomaticSysPatch.determine_if_boot_matches(settings)
             else:
-                print("- Detected Snapshot seal not in tact, skipping")
+                print("- Detected Snapshot seal not intact, skipping")
                 AutomaticSysPatch.determine_if_boot_matches(settings)
         else:
             print("- Auto Patch option is not supported on TUI, please use GUI")
