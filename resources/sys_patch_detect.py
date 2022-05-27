@@ -168,6 +168,26 @@ class detect_root_patch:
     
     def check_whatevergreen(self):
         return utilities.check_kext_loaded("WhateverGreen", self.constants.detected_os)
+    
+    def check_sip(self):
+        if self.constants.detected_os > os_data.os_data.catalina:
+            if self.nvidia_web is True:
+                sip = sip_data.system_integrity_protection.root_patch_sip_big_sur_3rd_part_kexts
+                sip_hex = "0xA03"
+                sip_value = (
+                    f"For Hackintoshes, please set csr-active-config to '030A0000' ({sip_hex})\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
+                )
+            else:
+                sip = sip_data.system_integrity_protection.root_patch_sip_big_sur
+                sip_hex = "0x802"
+                sip_value = (
+                    f"For Hackintoshes, please set csr-active-config to '02080000' ({sip_hex})\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
+                )
+        else:
+            sip = sip_data.system_integrity_protection.root_patch_sip_mojave
+            sip_hex = "0x603"
+            sip_value = f"For Hackintoshes, please set csr-active-config to '03060000' ({sip_hex})\nFor non-OpenCore Macs, please run 'csrutil disable' in RecoveryOS"
+        return (sip, sip_value, sip_hex)
 
     def detect_patch_set(self):
         self.detect_gpus()
@@ -218,7 +238,8 @@ class detect_root_patch:
             "Miscellaneous: Legacy Keyboard Backlight":    self.legacy_keyboard_backlight,
             "Settings: Requires AMFI exemption":           self.amfi_must_disable,
             "Validation: Patching Possible":               self.verify_patch_allowed(),
-            "Validation: SIP is enabled":                  self.sip_enabled,
+            f"Validation: SIP is enabled (Required: {self.check_sip()[2]} or higher)":  self.sip_enabled,
+            f"Validation: Currently Booted SIP: ({hex(utilities.csr_dump())})":         self.sip_enabled,
             "Validation: SecureBootModel is enabled":      self.sbm_enabled,
             "Validation: AMFI is enabled":                 self.amfi_enabled if self.amfi_must_disable else False,
             "Validation: FileVault is enabled":            self.fv_enabled,
@@ -233,7 +254,10 @@ class detect_root_patch:
         return self.root_patch_dict
     
     def verify_patch_allowed(self, print_errors=False):
-        sip = sip_data.system_integrity_protection.root_patch_sip_big_sur if self.constants.detected_os > os_data.os_data.catalina else sip_data.system_integrity_protection.root_patch_sip_mojave
+        sip_dict = self.check_sip()
+        sip = sip_dict[0]
+        sip_value = sip_dict[1]
+
         self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
         
         if self.nvidia_web is True:
@@ -241,13 +265,7 @@ class detect_root_patch:
             self.missing_nv_web_opengl  = not self.check_nv_web_opengl()
             self.missing_nv_compat      = not self.check_nv_compat()
             self.missing_whatever_green = not self.check_whatevergreen()
-        
-        if sip == sip_data.system_integrity_protection.root_patch_sip_mojave:
-            sip_value = "For Hackintoshes, please set csr-active-config to '03060000' (0x603)\nFor non-OpenCore Macs, please run 'csrutil disable' in RecoveryOS"
-        else:
-            sip_value = (
-                "For Hackintoshes, please set csr-active-config to '02080000' (0x802)\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
-            )
+
         if print_errors is True:
             if self.sip_enabled is True:
                 print("\nCannot patch! Please disable System Integrity Protection (SIP).")
