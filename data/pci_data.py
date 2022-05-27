@@ -543,6 +543,7 @@ class nvidia_ids:
         0x13d7,  # GM204 [GeForce GTX 980M]
         0x13d8,  # GM204 [GeForce GTX 970M]
         0x13d9,  # GM204 [GeForce GTX 965M]
+        0x13F1,  # GM204 [Quadro M4000]
 
         0x1401,  # GM206 [GeForce GTX 960]
         0x1407,  # GM206 [GeForce GTX 750 v2]

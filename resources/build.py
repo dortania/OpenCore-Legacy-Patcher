@@ -689,7 +689,7 @@ class BuildOpenCore:
                             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
                             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
-                            if device.arch in [device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
+                            if device.arch in [device_probe.NVIDIA.Archs.Fermi, device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
                                 print("- Adding Web Driver Patches")
                                 self.config["DeviceProperties"]["Add"][device.pci_path].update({"disable-metal": 1, "force-compat": 1})
                                 if self.get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is False:
@@ -714,7 +714,7 @@ class BuildOpenCore:
                                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -wegtree agdpmod=vit9696"
                             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
                             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
-                            if device.arch in [device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
+                            if device.arch in [device_probe.NVIDIA.Archs.Fermi, device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
                                 print("- Adding Web Driver Patches")
                                 if "ngfxgl=1 ngfxcompat=1" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
                                     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " ngfxgl=1 ngfxcompat=1"

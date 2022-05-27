@@ -47,7 +47,7 @@ class generate_defaults:
                         settings.amfi_status = True
                         settings.allow_fv_root = True  #  Allow FileVault on broken seal
                         break
-                    elif gpu.arch in [device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
+                    elif gpu.arch in [device_probe.NVIDIA.Archs.Fermi, device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
                         settings.custom_sip_value = "0xA03"
                         break
             if (
