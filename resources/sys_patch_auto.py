@@ -12,7 +12,7 @@ from pathlib import Path
 import plistlib
 import subprocess
 import webbrowser
-from resources import sys_patch_detect, utilities, sys_patch_detect, updates
+from resources import sys_patch_detect, utilities, sys_patch_detect, updates, global_settings
 from gui import gui_main
 
 class AutomaticSysPatch:
@@ -112,8 +112,8 @@ class AutomaticSysPatch:
 
         print("- Determining if macOS drive matches boot drive")
 
-        should_notify = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher", "AutoPatch_Notify_Mismatched_Disks"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-        if should_notify in ["0", "false"]:
+        should_notify = global_settings.global_settings().read_property("AutoPatch_Notify_Mismatched_Disks")
+        if should_notify is False:
             print("- Skipping due to user preference")
         else:
             if settings.booted_oc_disk:
