@@ -180,7 +180,7 @@ class wx_python_gui:
             threading.Thread(target=self.check_for_updates).start()
     
     def check_for_updates(self, event=None):
-        ignore_updates = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates"], capture_output=True).stdout.decode("utf-8").strip()
+        ignore_updates = subprocess.run(["defaults", "read", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates"], capture_output=True).stdout.decode("utf-8").strip()
         if ignore_updates not in ["1", "True", "TRUE"]:
             self.constants.ignore_updates = False
             dict = updates.check_binary_updates(self.constants).check_binary_updates()
@@ -202,7 +202,7 @@ class wx_python_gui:
                     elif responce == wx.ID_NO:
                         print("- Setting IgnoreAppUpdates to True")
                         self.constants.ignore_updates = True
-                        subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "TRUE"])
+                        subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "TRUE"])
         else:
             self.constants.ignore_updates = True
             print("- Ignoring App Updates due to defaults")
@@ -2403,9 +2403,9 @@ class wx_python_gui:
     def set_ignore_app_updates_click(self, event):
         self.constants.ignore_updates = self.set_ignore_app_updates_checkbox.GetValue()
         if self.constants.ignore_updates is True:
-            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "TRUE"])
+            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "TRUE"])
         else:
-            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "FALSE"])
+            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "FALSE"])
 
     def firewire_click(self, event=None):
         if self.firewire_boot_checkbox.GetValue():
@@ -2466,21 +2466,21 @@ class wx_python_gui:
     def ts2_accel_click(self, event=None):
         if self.set_terascale_accel_checkbox.GetValue():
             print("TS2 Acceleration Enabled")
-            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "TRUE"])
+            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "TRUE"])
             self.constants.allow_ts2_accel = True
         else:
             print("TS2 Acceleration Disabled")
-            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "FALSE"])
+            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "FALSE"])
             self.constants.allow_ts2_accel = False
     
     def force_web_drivers_click(self, event=None):
         if self.force_web_drivers_checkbox.GetValue():
             print("Force Web Drivers Enabled")
-            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "TRUE"])
+            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "TRUE"])
             self.constants.force_nv_web = True
         else:
             print("Force Web Drivers Disabled")
-            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "FALSE"])
+            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "FALSE"])
             self.constants.force_nv_web = False
 
     def windows_gmux_click(self, event=None):    

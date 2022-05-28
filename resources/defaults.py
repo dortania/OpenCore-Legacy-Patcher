@@ -122,11 +122,11 @@ class generate_defaults:
         if model in ["MacBookPro8,2", "MacBookPro8,3"]:
             # Users disabling TS2 most likely have a faulty dGPU
             # users can override this in settings
-            ts2_status = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+            ts2_status = subprocess.run(["defaults", "read", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
             if ts2_status in ["1", "true"]:
                 settings.allow_ts2_accel = True
             else:
-                subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "FALSE"])
+                subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "FALSE"])
                 settings.allow_ts2_accel = False
 
         try:
@@ -174,9 +174,9 @@ class generate_defaults:
             pass
 
         
-        nv_web_status = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher", "Force_Web_Drivers"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        nv_web_status = subprocess.run(["defaults", "read", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "Force_Web_Drivers"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
         if nv_web_status in ["1", "true"]:
             settings.force_nv_web = True
         else:
-            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "FALSE"])
+            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "FALSE"])
             settings.force_nv_web = False

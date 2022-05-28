@@ -112,7 +112,7 @@ class AutomaticSysPatch:
 
         print("- Determining if macOS drive matches boot drive")
 
-        should_notify = subprocess.run(["defaults", "read", "com.dortania.opencore-legacy-patcher", "AutoPatch_Notify_Mismatched_Disks"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        should_notify = subprocess.run(["defaults", "read", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "AutoPatch_Notify_Mismatched_Disks"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
         if should_notify in ["0", "false"]:
             print("- Skipping due to user preference")
         else:
