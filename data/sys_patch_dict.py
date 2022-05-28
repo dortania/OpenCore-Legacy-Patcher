@@ -313,6 +313,13 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "com.nvidia.nvroothelper.plist":  "WebDriver-387.10.10.10.40.140",
                     },
                 },
+                "Remove": {
+                    "/System/Library/Extensions": [
+                        # Due to how late the Auxiliary cache loads, NVDAStartup will match first and then the Web Driver kexts.
+                        # This has no effect for Maxwell and Pascal, however for development purposes, Tesla and Kepler are partially supported.
+                        "NVDAStartup.kext",
+                    ],
+                },
             },
             "AMD TeraScale Common": {
                 "Display Name": "",

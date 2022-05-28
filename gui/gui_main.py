@@ -2273,13 +2273,23 @@ class wx_python_gui:
         if self.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"]:
             self.set_terascale_accel_checkbox.Disable()
 
+        # Force Web Drivers in Tesla/Kepler
+        self.force_web_drivers_checkbox = wx.CheckBox(self.frame_modal, label="Force Web Drivers")
+        self.force_web_drivers_checkbox.SetValue(self.constants.force_nv_web)
+        self.force_web_drivers_checkbox.Bind(wx.EVT_CHECKBOX, self.force_web_drivers_click)
+        self.force_web_drivers_checkbox.SetPosition(wx.Point(
+            self.disable_thunderbolt_checkbox.GetPosition().x,
+            self.set_terascale_accel_checkbox.GetPosition().y + self.set_terascale_accel_checkbox.GetSize().height))
+        self.force_web_drivers_checkbox.SetToolTip(wx.ToolTip("This option will force Nvidia Web Driver support onto Nvidia Tesla and Kepler GPUs. This should only be used for development purposes."))
+       
+
         # Windows GMUX
         self.windows_gmux_checkbox = wx.CheckBox(self.frame_modal, label="Windows GMUX")
         self.windows_gmux_checkbox.SetValue(self.constants.dGPU_switch)
         self.windows_gmux_checkbox.Bind(wx.EVT_CHECKBOX, self.windows_gmux_click)
         self.windows_gmux_checkbox.SetPosition(wx.Point(
-            self.set_terascale_accel_checkbox.GetPosition().x,
-            self.set_terascale_accel_checkbox.GetPosition().y + self.set_terascale_accel_checkbox.GetSize().height))
+            self.force_web_drivers_checkbox.GetPosition().x,
+            self.force_web_drivers_checkbox.GetPosition().y + self.force_web_drivers_checkbox.GetSize().height))
         self.windows_gmux_checkbox.SetToolTip(wx.ToolTip("Enable this option to allow usage of the hardware GMUX to switch between Intel and Nvidia/AMD GPUs in Windows."))
 
         # Hibernation Workaround
@@ -2463,6 +2473,16 @@ class wx_python_gui:
             subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "FALSE"])
             self.constants.allow_ts2_accel = False
     
+    def force_web_drivers_click(self, event=None):
+        if self.force_web_drivers_checkbox.GetValue():
+            print("Force Web Drivers Enabled")
+            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "TRUE"])
+            self.constants.force_nv_web = True
+        else:
+            print("Force Web Drivers Disabled")
+            subprocess.run(["defaults", "write", "com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "FALSE"])
+            self.constants.force_nv_web = False
+
     def windows_gmux_click(self, event=None):    
         if self.windows_gmux_checkbox.GetValue():
             print("Windows GMUX Enabled")
