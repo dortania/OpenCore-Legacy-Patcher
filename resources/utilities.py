@@ -147,8 +147,11 @@ def enable_sleep_after_running():
         sleep_process = None
 
 def amfi_status():
-    amfi_1 = "amfi_get_out_of_my_way=0x1"
-    amfi_2 = "amfi_get_out_of_my_way=1"
+    amfi_args = [
+        "amfi_get_out_of_my_way=0x1",
+        "amfi_get_out_of_my_way=1",
+        "amfi=128",
+    ]
 
     oclp_guid = get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False)
     if oclp_guid:
@@ -156,8 +159,9 @@ def amfi_status():
             return False
     boot_args = get_nvram("boot-args", decode=False)
     if boot_args:
-        if amfi_1 in boot_args or amfi_2 in boot_args:
-            return False
+        for arg in amfi_args:
+            if arg in boot_args:
+                return False
     return True
 
 
