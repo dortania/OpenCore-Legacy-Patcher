@@ -198,7 +198,7 @@ class PatchSysVolume:
     def delete_nonmetal_enforcement(self):
         use_metal = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", "useMetal"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
         use_iop = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", "useIOP"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-        if use_metal or use_iop in ["1", "true"]:
+        if use_metal or use_iop in ["0", "false", "1", "true"]:
             print("- Removing non-Metal Enforcement Preferences")
             utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", "useMetal"])
             utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", "useIOP"])
