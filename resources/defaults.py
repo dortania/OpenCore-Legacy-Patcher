@@ -173,10 +173,6 @@ class generate_defaults:
         except KeyError:
             pass
 
-        
-        nv_web_status = subprocess.run(["defaults", "read", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "Force_Web_Drivers"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-        if nv_web_status in ["1", "true"]:
+        nv_web_status = global_settings.global_settings().read_property("Force_Web_Drivers")
+        if nv_web_status is True:
             settings.force_nv_web = True
-        else:
-            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "FALSE"])
-            settings.force_nv_web = False

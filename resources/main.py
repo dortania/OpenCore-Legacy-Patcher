@@ -46,7 +46,6 @@ class OpenCoreLegacyPatcher:
         self.constants.unpack_thread.start()
 
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
-        global_settings.global_settings().convert_defaults_to_global_settings()
 
         if utilities.check_cli_args() is not None:
             print("- Detected arguments, switching to CLI mode")

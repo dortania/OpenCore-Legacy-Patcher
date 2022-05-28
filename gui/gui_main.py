@@ -2476,11 +2476,11 @@ class wx_python_gui:
     def force_web_drivers_click(self, event=None):
         if self.force_web_drivers_checkbox.GetValue():
             print("Force Web Drivers Enabled")
-            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "TRUE"])
+            global_settings.global_settings().write_property("Force_Web_Drivers", True)
             self.constants.force_nv_web = True
         else:
             print("Force Web Drivers Disabled")
-            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "Force_Web_Drivers", "-bool", "FALSE"])
+            global_settings.global_settings().write_property("Force_Web_Drivers", False)
             self.constants.force_nv_web = False
 
     def windows_gmux_click(self, event=None):    
