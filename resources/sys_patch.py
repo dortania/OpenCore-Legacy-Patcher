@@ -200,8 +200,8 @@ class PatchSysVolume:
         use_iop = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", "useIOP"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
         if use_metal or use_iop in ["1", "true"]:
             print("- Removing non-Metal Enforcement Preferences")
-            subprocess.run(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", "useMetal"])
-            subprocess.run(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", "useIOP"])
+            utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", "useMetal"])
+            utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", "useIOP"])
 
     def write_patchset(self, patchset):
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
