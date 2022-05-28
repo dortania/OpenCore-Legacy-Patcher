@@ -108,6 +108,7 @@ class PatchSysVolume:
                 print("- Failed to revert snapshot via Apple's 'bless' command")
             else:
                 self.clean_skylight_plugins()
+                self.delete_nonmetal_enforcement()
                 self.constants.root_patcher_succeded = True
                 print("- Unpatching complete")
                 print("\nPlease reboot the machine for patches to take effect")
@@ -193,6 +194,14 @@ class PatchSysVolume:
         else:
             print("- Creating SkylightPlugins folder")
             utilities.process_status(utilities.elevated(["mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+    
+    def delete_nonmetal_enforcement(self):
+        use_metal = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", "useMetal"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        use_iop = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", "useIOP"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        if use_metal or use_iop in ["1", "true"]:
+            print("- Removing non-Metal Enforcement Preferences")
+            utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", "useMetal"])
+            utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", "useIOP"])
 
     def write_patchset(self, patchset):
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
@@ -260,6 +269,8 @@ class PatchSysVolume:
 
         # Make sure old SkyLight plugins aren't being used
         self.clean_skylight_plugins()
+        # Make sure non-Metal Enforcement preferences are not present
+        self.delete_nonmetal_enforcement()
         
         # Make sure SNB kexts are compatible with the host
         if "Intel Sandy Bridge" in required_patches:
