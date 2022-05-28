@@ -150,16 +150,15 @@ def amfi_status():
     amfi_1 = "amfi_get_out_of_my_way=0x1"
     amfi_2 = "amfi_get_out_of_my_way=1"
 
-    if get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False):
-        if "-allow_amfi" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True):
+    oclp_guid = get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False)
+    if oclp_guid:
+        if "-allow_amfi" in oclp_guid:
             return False
-        else:
-            return True
-    elif get_nvram("boot-args", decode=False):
-        if amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False):
+    boot_args = get_nvram("boot-args", decode=False)
+    if boot_args:
+        if amfi_1 in boot_args or amfi_2 in boot_args:
             return False
-    else:
-        return True
+    return True
 
 
 def check_kext_loaded(kext_name, os_version):
