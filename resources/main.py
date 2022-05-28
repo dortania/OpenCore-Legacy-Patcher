@@ -8,7 +8,7 @@ from pathlib import Path
 import time
 import threading
 
-from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads
+from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads, global_settings
 from data import model_array
 
 class OpenCoreLegacyPatcher:
@@ -46,6 +46,7 @@ class OpenCoreLegacyPatcher:
         self.constants.unpack_thread.start()
 
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
+        global_settings.global_settings().convert_defaults_to_global_settings()
 
         if utilities.check_cli_args() is not None:
             print("- Detected arguments, switching to CLI mode")

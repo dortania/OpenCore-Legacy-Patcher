@@ -1,5 +1,5 @@
 # Generate Default Data
-from resources import utilities, device_probe, generate_smbios
+from resources import utilities, device_probe, generate_smbios, global_settings
 from data import model_array, smbios_data, cpu_data
 import subprocess
 
@@ -122,11 +122,11 @@ class generate_defaults:
         if model in ["MacBookPro8,2", "MacBookPro8,3"]:
             # Users disabling TS2 most likely have a faulty dGPU
             # users can override this in settings
-            ts2_status = subprocess.run(["defaults", "read", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-            if ts2_status in ["1", "true"]:
+            ts2_status = global_settings.global_settings().read_property("MacBookPro_TeraScale_2_Accel")
+            if ts2_status is True:
                 settings.allow_ts2_accel = True
             else:
-                subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "FALSE"])
+                global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", False)
                 settings.allow_ts2_accel = False
 
         try:

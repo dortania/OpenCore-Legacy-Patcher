@@ -16,7 +16,7 @@ from pathlib import Path
 import binascii
 import hashlib
 
-from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification
+from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification, global_settings
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect, gui_help
         
@@ -180,8 +180,8 @@ class wx_python_gui:
             threading.Thread(target=self.check_for_updates).start()
     
     def check_for_updates(self, event=None):
-        ignore_updates = subprocess.run(["defaults", "read", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates"], capture_output=True).stdout.decode("utf-8").strip()
-        if ignore_updates not in ["1", "True", "TRUE"]:
+        ignore_updates = global_settings.global_settings().read_property("IgnoreAppUpdates")
+        if ignore_updates is not True:
             self.constants.ignore_updates = False
             dict = updates.check_binary_updates(self.constants).check_binary_updates()
             if dict:
@@ -202,7 +202,7 @@ class wx_python_gui:
                     elif responce == wx.ID_NO:
                         print("- Setting IgnoreAppUpdates to True")
                         self.constants.ignore_updates = True
-                        subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "TRUE"])
+                        global_settings.global_settings().write_property("IgnoreAppUpdates", True)
         else:
             self.constants.ignore_updates = True
             print("- Ignoring App Updates due to defaults")
@@ -2403,9 +2403,9 @@ class wx_python_gui:
     def set_ignore_app_updates_click(self, event):
         self.constants.ignore_updates = self.set_ignore_app_updates_checkbox.GetValue()
         if self.constants.ignore_updates is True:
-            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "TRUE"])
+            global_settings.write_property("IgnoreAppUpdates", True)
         else:
-            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "IgnoreAppUpdates", "-bool", "FALSE"])
+            global_settings.write_property("IgnoreAppUpdates", False)
 
     def firewire_click(self, event=None):
         if self.firewire_boot_checkbox.GetValue():
@@ -2466,11 +2466,11 @@ class wx_python_gui:
     def ts2_accel_click(self, event=None):
         if self.set_terascale_accel_checkbox.GetValue():
             print("TS2 Acceleration Enabled")
-            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "TRUE"])
+            global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", True)
             self.constants.allow_ts2_accel = True
         else:
             print("TS2 Acceleration Disabled")
-            subprocess.run(["defaults", "write", "~/Library/Preferences/com.dortania.opencore-legacy-patcher", "MacBookPro_TeraScale_2_Accel", "-bool", "FALSE"])
+            global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", False)
             self.constants.allow_ts2_accel = False
     
     def force_web_drivers_click(self, event=None):
