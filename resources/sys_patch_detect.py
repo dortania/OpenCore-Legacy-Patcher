@@ -322,13 +322,13 @@ class detect_root_patch:
                 self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched,
 
                 # non-Metal specific
-                self.amfi_enabled if self.amfi_must_disable else False,
+                self.amfi_enabled if self.amfi_must_disable is True else False,
 
                 # Web Driver specific
-                self.missing_nv_web_nvram   if self.nvidia_web else False,
-                self.missing_nv_web_opengl  if self.nvidia_web else False,
-                self.missing_nv_compat      if self.nvidia_web else False,
-                self.missing_whatever_green if self.nvidia_web else False,
+                self.missing_nv_web_nvram   if self.nvidia_web is True  else False,
+                self.missing_nv_web_opengl  if self.nvidia_web is True  else False,
+                self.missing_nv_compat      if self.nvidia_web is True  else False,
+                self.missing_whatever_green if self.nvidia_web is True  else False,
             ]
         ):
             return False
