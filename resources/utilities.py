@@ -157,7 +157,7 @@ def amfi_status():
     if oclp_guid:
         if "-allow_amfi" in oclp_guid:
             return False
-    boot_args = get_nvram("boot-args", decode=False)
+    boot_args = get_nvram("boot-args", decode=True)
     if boot_args:
         for arg in amfi_args:
             if arg in boot_args:
@@ -215,10 +215,11 @@ def check_metal_support(device_probe, computer):
 
 def check_filevault_skip():
     # Check whether we can skip FileVault check with Root Patching
-    if get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False) and "-allow_fv" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True):
-        return True
-    else:
-        return False
+    nvram = get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+    if nvram:
+        if "-allow_fv" in nvram:
+            return True
+    return False
 
 
 def check_secure_boot_model():

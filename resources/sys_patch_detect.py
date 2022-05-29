@@ -123,7 +123,7 @@ class detect_root_patch:
     def detect_demux(self):
         # If GFX0 is missing, assume machine was demuxed
         # -wegnoegpu would also trigger this, so ensure arg is not present
-        if not "-wegnoegpu" in (utilities.get_nvram("boot-args") or ""):
+        if not "-wegnoegpu" in (utilities.get_nvram("boot-args", decode=True) or ""):
             igpu = self.constants.computer.igpu
             dgpu = self.check_dgpu_status()
             if igpu and not dgpu:
@@ -139,7 +139,7 @@ class detect_root_patch:
 
     def check_nv_web_nvram(self):
         # First check boot-args, then dedicated nvram variable
-        nv_on = utilities.get_nvram("boot-args")
+        nv_on = utilities.get_nvram("boot-args", decode=True)
         if nv_on:
             if "nvda_drv_vrl=" in nv_on:
                 return True
@@ -150,7 +150,7 @@ class detect_root_patch:
 
     def check_nv_web_opengl(self):
         # First check boot-args, then whether property exists on GPU
-        nv_on = utilities.get_nvram("boot-args")
+        nv_on = utilities.get_nvram("boot-args", decode=True)
         if nv_on:
             if "ngfxgl=" in nv_on:
                 return True
@@ -162,7 +162,7 @@ class detect_root_patch:
 
     def check_nv_compat(self):
         # Check for 'nv_web' in boot-args, then whether property exists on GPU
-        nv_on = utilities.get_nvram("boot-args")
+        nv_on = utilities.get_nvram("boot-args", decode=True)
         if nv_on:
             if "ngfxcompat=" in nv_on:
                 return True
