@@ -73,7 +73,7 @@ class detect_root_patch:
                     device_probe.NVIDIA.Archs.Kepler,
                     device_probe.NVIDIA.Archs.Maxwell, 
                     device_probe.NVIDIA.Archs.Pascal,
-                ] and self.constants.force_nv_web is True:
+                ]:
                     if self.constants.detected_os > os_data.os_data.mojave:
                         self.nvidia_web = True
                         self.amfi_must_disable = True
