@@ -345,8 +345,11 @@ def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
 
     value = ioreg.corefoundation_to_native(value)
 
-    if decode and isinstance(value, bytes):
-        value = value.strip(b"\0").decode()
+    if decode:
+        if isinstance(value, bytes):
+            value = value.strip(b"\0").decode()
+        elif isinstance(value, str):
+            value = value.strip("\0")
     return value
 
 
