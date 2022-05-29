@@ -153,7 +153,7 @@ def amfi_status():
         "amfi=128",
     ]
 
-    oclp_guid = get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False)
+    oclp_guid = get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
     if oclp_guid:
         if "-allow_amfi" in oclp_guid:
             return False
