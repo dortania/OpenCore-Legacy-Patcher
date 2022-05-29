@@ -2369,9 +2369,9 @@ class wx_python_gui:
     def set_ignore_app_updates_click(self, event):
         self.constants.ignore_updates = self.set_ignore_app_updates_checkbox.GetValue()
         if self.constants.ignore_updates is True:
-            global_settings.write_property("IgnoreAppUpdates", True)
+            global_settings.global_settings().write_property("IgnoreAppUpdates", True)
         else:
-            global_settings.write_property("IgnoreAppUpdates", False)
+            global_settings.global_settings().write_property("IgnoreAppUpdates", False)
 
     def firewire_click(self, event=None):
         if self.firewire_boot_checkbox.GetValue():
