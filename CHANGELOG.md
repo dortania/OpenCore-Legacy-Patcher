@@ -17,6 +17,7 @@
 - Resolve failing to find binaries with `--patch_sys_vol` argument
 - Downgrade AppleFSCompressionTypeZlib to 12.3.1 on pre-Sandy Bridge Macs
   - Resolves ZLib decompression kernel panics on 12.4 and newer
+- Resolve AppleGVACore crashing on MacBookPro11,3 in Monterey 12.4+
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases

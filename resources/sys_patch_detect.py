@@ -249,6 +249,11 @@ class detect_root_patch:
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
+            for gpu in self.constants.computer.gpus:
+                if gpu.arch == device_probe.Intel.Archs.Haswell:
+                    required_patches.update({"GVA Work-Around": all_hardware_patchset["Graphics"]["GVA Work-Around"]})
+            if "GVA Work-Around" not in required_patches:
+                required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
         if hardware_details["Graphics: AMD TeraScale 1"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"AMD TeraScale Common": all_hardware_patchset["Graphics"]["AMD TeraScale Common"]})
