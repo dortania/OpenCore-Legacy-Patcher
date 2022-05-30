@@ -123,6 +123,26 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
+            "Non-Metal CoreDisplay Common": {
+                # Nvidia Web Drivers require an older build of CoreDisplay
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": non_metal_os_support[0],
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": non_metal_os_support[-1],
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Frameworks": {
+                        "CoreDisplay.framework": f"10.13.6-{os_major}",
+                    },
+                },
+            },
+
             "Non-Metal Enforcement": {
                 # Forces Metal kexts from High Sierra to run in the fallback non-Metal mode
                 # Verified functional with HD4000 and Iris Plus 655
@@ -324,9 +344,25 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "NVDANV50HalTeslaWeb.kext":       "WebDriver-387.10.10.10.40.140",
                         "NVDAResmanTeslaWeb.kext":        "WebDriver-387.10.10.10.40.140",
                     },
-                    "/Library/PreferencePanes": {
-                        "NVIDIA Driver Manager.prefPane": "WebDriver-387.10.10.10.40.140",
-                    },
+
+                    # Disabled due to issues with Pref pane stripping 'nvda_drv' NVRAM 
+                    # variables
+                    # "/Library/PreferencePanes": {
+                    #     "NVIDIA Driver Manager.prefPane": "WebDriver-387.10.10.10.40.140",
+                    # },
+                    #  "/Library/LaunchAgents": {
+                    #     "com.nvidia.nvagent.plist":       "WebDriver-387.10.10.10.40.140",
+                    # },
+                    # "/Library/LaunchDaemons": {
+                    #     "com.nvidia.nvroothelper.plist":  "WebDriver-387.10.10.10.40.140",
+                    # },
+                },
+                "Remove": {
+                    "/System/Library/Extensions": [
+                        # Due to how late the Auxiliary cache loads, NVDAStartup will match first and then the Web Driver kexts.
+                        # This has no effect for Maxwell and Pascal, however for development purposes, Tesla and Kepler are partially supported.
+                        "NVDAStartup.kext",
+                    ],
                 },
             },
             "AMD TeraScale Common": {

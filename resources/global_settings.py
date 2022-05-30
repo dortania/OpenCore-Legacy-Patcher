@@ -13,6 +13,7 @@ class global_settings:
         self.global_settings_folder = "/Users/Shared"
         self.global_settings_plist = f"{self.global_settings_folder}/{self.file_name}"
         self.generate_settings_file()
+        self.convert_defaults_to_global_settings()
     
     def generate_settings_file(self):
         if Path(self.global_settings_plist).exists():

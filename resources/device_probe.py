@@ -30,10 +30,12 @@ class PCIDevice:
     device_id: int  # The device ID of this PCI device
     class_code: int  # The class code of this PCI device - https://pci-ids.ucw.cz/read/PD
 
-    name: Optional[str] = None  # Name of IORegistryEntry
-    model: Optional[str] = None  # model property
-    acpi_path: Optional[str] = None
-    pci_path: Optional[str] = None
+    name:             Optional[str]  = None  # Name of IORegistryEntry
+    model:            Optional[str]  = None  # model property
+    acpi_path:        Optional[str]  = None  # ACPI Device Path
+    pci_path:         Optional[str]  = None  # PCI Device Path
+    disable_metal:    Optional[bool] = False # 'disable-metal' property
+    force_compatible: Optional[bool] = False # 'force-compat' property
 
     @classmethod
     def from_ioregistry(cls, entry: ioreg.io_registry_entry_t, anti_spoof=False):
@@ -51,6 +53,10 @@ class PCIDevice:
             device.model = model
         if "acpi-path" in properties:
             device.acpi_path = properties["acpi-path"]
+        if "disable-metal" in properties:
+            device.disable_metal = True
+        if "force-compat" in properties:
+            device.force_compatible = True
         device.populate_pci_path(entry)
         return device
 
@@ -478,6 +484,7 @@ class Computer:
     secure_boot_policy: Optional[int] = None
     oclp_sys_version: Optional[str] = None
     oclp_sys_date: Optional[str] = None
+    firmware_vendor: Optional[str] = None
 
     @staticmethod
     def probe():
@@ -698,6 +705,13 @@ class Computer:
         # SecureBoot Variables
         self.secure_boot_model = utilities.check_secure_boot_model()
         self.secure_boot_policy = utilities.check_ap_security_policy()
+
+        # Firmware Vendor
+        firmware_vendor = utilities.get_firmware_vendor(decode=False)
+        if isinstance(firmware_vendor, bytes):
+            firmware_vendor = str(firmware_vendor.replace(b"\x00", b"").decode("utf-8"))
+        self.firmware_vendor = firmware_vendor
+
     def cpu_probe(self):
         self.cpu = CPU(
             subprocess.run("sysctl machdep.cpu.brand_string".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip(),

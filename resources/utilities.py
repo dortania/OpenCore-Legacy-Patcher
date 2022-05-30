@@ -147,19 +147,22 @@ def enable_sleep_after_running():
         sleep_process = None
 
 def amfi_status():
-    amfi_1 = "amfi_get_out_of_my_way=0x1"
-    amfi_2 = "amfi_get_out_of_my_way=1"
+    amfi_args = [
+        "amfi_get_out_of_my_way=0x1",
+        "amfi_get_out_of_my_way=1",
+        "amfi=128",
+    ]
 
-    if get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False):
-        if "-allow_amfi" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True):
+    oclp_guid = get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+    if oclp_guid:
+        if "-allow_amfi" in oclp_guid:
             return False
-        else:
-            return True
-    elif get_nvram("boot-args", decode=False):
-        if amfi_1 in get_nvram("boot-args", decode=False) or amfi_2 in get_nvram("boot-args", decode=False):
-            return False
-    else:
-        return True
+    boot_args = get_nvram("boot-args", decode=True)
+    if boot_args:
+        for arg in amfi_args:
+            if arg in boot_args:
+                return False
+    return True
 
 
 def check_kext_loaded(kext_name, os_version):
@@ -197,6 +200,8 @@ def check_metal_support(device_probe, computer):
                 (gpu.arch in [
                     device_probe.NVIDIA.Archs.Tesla, 
                     device_probe.NVIDIA.Archs.Fermi, 
+                    device_probe.NVIDIA.Archs.Maxwell,
+                    device_probe.NVIDIA.Archs.Pascal,
                     device_probe.AMD.Archs.TeraScale_1, 
                     device_probe.AMD.Archs.TeraScale_2, 
                     device_probe.Intel.Archs.Iron_Lake, 
@@ -210,10 +215,11 @@ def check_metal_support(device_probe, computer):
 
 def check_filevault_skip():
     # Check whether we can skip FileVault check with Root Patching
-    if get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=False) and "-allow_fv" in get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True):
-        return True
-    else:
-        return False
+    nvram = get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+    if nvram:
+        if "-allow_fv" in nvram:
+            return True
+    return False
 
 
 def check_secure_boot_model():
@@ -339,8 +345,11 @@ def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
 
     value = ioreg.corefoundation_to_native(value)
 
-    if decode and isinstance(value, bytes):
-        value = value.strip(b"\0").decode()
+    if decode:
+        if isinstance(value, bytes):
+            value = value.strip(b"\0").decode()
+        elif isinstance(value, str):
+            value = value.strip("\0")
     return value
 
 
@@ -362,6 +371,21 @@ def get_rom(variable: str, *, decode: bool = False):
         value = value.strip(b"\0").decode()
     return value
 
+def get_firmware_vendor(*, decode: bool = False):
+    efi = ioreg.IORegistryEntryFromPath(ioreg.kIOMasterPortDefault, "IODeviceTree:/efi".encode())
+    value = ioreg.IORegistryEntryCreateCFProperty(efi, "firmware-vendor", ioreg.kCFAllocatorDefault, ioreg.kNilOptions)
+    ioreg.IOObjectRelease(efi)
+
+    if not value:
+        return None
+
+    value = ioreg.corefoundation_to_native(value)
+    if decode:
+        if isinstance(value, bytes):
+            value = value.strip(b"\0").decode()
+        elif isinstance(value, str):
+            value = value.strip("\0")
+    return value
 
 def verify_network_connection(url):
     try:

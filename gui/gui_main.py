@@ -164,7 +164,8 @@ class wx_python_gui:
     def preflight_check(self):
         if (
                 self.constants.computer.build_model != None and 
-                self.constants.computer.build_model != self.constants.computer.real_model
+                self.constants.computer.build_model != self.constants.computer.real_model and
+                self.constants.host_is_hackintosh is False
             ):
             # Notify user they're booting an unsupported configuration
             self.constants.start_build_install = True
@@ -366,9 +367,16 @@ class wx_python_gui:
         self.build_install.Centre(wx.HORIZONTAL)
         
         # Disable button if real_model not in model_array.SupportedSMBIOS
-        if self.constants.allow_oc_everywhere is False and \
-            self.constants.custom_model is None and \
-            self.computer.real_model not in model_array.SupportedSMBIOS:
+        if (
+            (
+                self.constants.allow_oc_everywhere is False and \
+                self.constants.custom_model is None and \
+                self.computer.real_model not in model_array.SupportedSMBIOS
+            ) or (
+                self.constants.custom_model is None and \
+                self.constants.host_is_hackintosh is True
+            )
+        ):
             self.build_install.Disable()
             self.build_install.SetToolTip(wx.ToolTip("""If building for a native Mac model, \nselect 'Allow Native Models' in Settings.\nIf building for another Mac, change model in Settings"""))
 
@@ -932,11 +940,11 @@ class wx_python_gui:
                 for patch in patches:
                     if patch.startswith("Validation") and patches[patch] is True:
                         print(f"- Adding check: {patch} - {patches[patch]}")
-                        self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch.lstrip('Validation: ')}")
+                        self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch[12:]}")
                         self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
                         self.patch_label.SetPosition(
                             wx.Point(
-                                self.subheader.GetPosition().x + 20,
+                                self.subheader.GetPosition().x,
                                 self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
                             )
                         )
@@ -1173,7 +1181,30 @@ class wx_python_gui:
         sys.stderr = self.stock_stderr
         if self.constants.root_patcher_succeded is True:
             print("- Root Patcher finished successfully")
-            self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
+            if self.constants.needs_to_open_preferences is True:
+                # Create dialog box to open System Preferences -> Security and Privacy
+                self.popup = wx.MessageDialog(
+                    self.frame_modal,
+                    "We just finished installing the patches to your Root Volume!\n\nHowever, Apple requires users to manually approve the kernel extensions installed before they can be used next reboot.\n\nWould you like to open System Preferences?",
+                    "Open System Preferences?",
+                    wx.YES_NO | wx.ICON_INFORMATION
+                )
+                self.popup.SetYesNoLabels("Open System Preferences", "Ignore")
+                answer = self.popup.ShowModal()
+                if answer == wx.ID_YES:
+                    output =subprocess.run(
+                        [
+                            "osascript", "-e", 
+                            'tell app "System Preferences" to reveal anchor "General" of pane id "com.apple.preference.security"',
+                            "-e", 'tell app "System Preferences" to activate',
+                        ],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE
+                    )
+                    time.sleep(5)
+                    self.OnCloseFrame(None)
+            else:
+                self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
 
         wx.GetApp().Yield()
@@ -1854,9 +1885,16 @@ class wx_python_gui:
                 self.finished_cim_process = False
                 # Only prompt user with option to install OC to disk if 
                 # the model is supported.
-                if self.constants.allow_oc_everywhere is False and \
-                self.constants.custom_model is None and \
-                self.computer.real_model not in model_array.SupportedSMBIOS:
+                if (
+                    (
+                        self.constants.allow_oc_everywhere is False and \
+                        self.constants.custom_model is None and \
+                        self.computer.real_model not in model_array.SupportedSMBIOS
+                    ) or (
+                        self.constants.custom_model is None and \
+                        self.constants.host_is_hackintosh is True
+                    )
+                ):
                     popup_message = wx.MessageDialog(self.frame, "Sucessfully created a macOS installer!", "Success", wx.OK)
                     popup_message.ShowModal()
                 else:
@@ -2249,13 +2287,23 @@ class wx_python_gui:
         if self.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"]:
             self.set_terascale_accel_checkbox.Disable()
 
+        # Force Web Drivers in Tesla/Kepler
+        self.force_web_drivers_checkbox = wx.CheckBox(self.frame_modal, label="Force Web Drivers")
+        self.force_web_drivers_checkbox.SetValue(self.constants.force_nv_web)
+        self.force_web_drivers_checkbox.Bind(wx.EVT_CHECKBOX, self.force_web_drivers_click)
+        self.force_web_drivers_checkbox.SetPosition(wx.Point(
+            self.disable_thunderbolt_checkbox.GetPosition().x,
+            self.set_terascale_accel_checkbox.GetPosition().y + self.set_terascale_accel_checkbox.GetSize().height))
+        self.force_web_drivers_checkbox.SetToolTip(wx.ToolTip("This option will force Nvidia Web Driver support onto Nvidia Tesla and Kepler GPUs. This should only be used for development purposes."))
+       
+
         # Windows GMUX
         self.windows_gmux_checkbox = wx.CheckBox(self.frame_modal, label="Windows GMUX")
         self.windows_gmux_checkbox.SetValue(self.constants.dGPU_switch)
         self.windows_gmux_checkbox.Bind(wx.EVT_CHECKBOX, self.windows_gmux_click)
         self.windows_gmux_checkbox.SetPosition(wx.Point(
-            self.set_terascale_accel_checkbox.GetPosition().x,
-            self.set_terascale_accel_checkbox.GetPosition().y + self.set_terascale_accel_checkbox.GetSize().height))
+            self.force_web_drivers_checkbox.GetPosition().x,
+            self.force_web_drivers_checkbox.GetPosition().y + self.force_web_drivers_checkbox.GetSize().height))
         self.windows_gmux_checkbox.SetToolTip(wx.ToolTip("Enable this option to allow usage of the hardware GMUX to switch between Intel and Nvidia/AMD GPUs in Windows."))
 
         # Hibernation Workaround
@@ -2439,6 +2487,16 @@ class wx_python_gui:
             global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", False)
             self.constants.allow_ts2_accel = False
     
+    def force_web_drivers_click(self, event=None):
+        if self.force_web_drivers_checkbox.GetValue():
+            print("Force Web Drivers Enabled")
+            global_settings.global_settings().write_property("Force_Web_Drivers", True)
+            self.constants.force_nv_web = True
+        else:
+            print("Force Web Drivers Disabled")
+            global_settings.global_settings().write_property("Force_Web_Drivers", False)
+            self.constants.force_nv_web = False
+
     def windows_gmux_click(self, event=None):    
         if self.windows_gmux_checkbox.GetValue():
             print("Windows GMUX Enabled")

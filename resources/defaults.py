@@ -1,6 +1,6 @@
 # Generate Default Data
 from resources import utilities, device_probe, generate_smbios, global_settings
-from data import model_array, smbios_data, cpu_data
+from data import model_array, smbios_data, cpu_data, os_data
 import subprocess
 
 
@@ -39,6 +39,20 @@ class generate_defaults:
                 settings.sip_status = False
                 settings.allow_fv_root = True
                 settings.host_is_non_metal = True
+
+                # If a Mac is non-Metal based, Beta Blur is highly recommended
+                # However on lower end hardware, users may prefer the performance benefits without
+                if not model.startswith("MacBook") and settings.detected_os >= os_data.os_data.big_sur:
+                    non_metal_args = [
+                        "Moraea_BlurBeta",
+                        "Moraea_RimBeta",
+                    ]
+                    for arg in non_metal_args:
+                        # If user explicitly set the blur, don't override
+                        arg_result = subprocess.run(["defaults", "read", "-g", arg], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+                        if arg_result not in ["true", "1", "false", "0"]:
+                            subprocess.run(["defaults", "write", "-g", arg, "-bool", "TRUE"])
+
             if settings.computer.gpus: 
                 for gpu in settings.computer.gpus:
                     if gpu.arch == device_probe.NVIDIA.Archs.Kepler:
@@ -46,6 +60,9 @@ class generate_defaults:
                         settings.sip_status = False
                         settings.amfi_status = True
                         settings.allow_fv_root = True  #  Allow FileVault on broken seal
+                        break
+                    elif gpu.arch in [device_probe.NVIDIA.Archs.Fermi, device_probe.NVIDIA.Archs.Maxwell, device_probe.NVIDIA.Archs.Pascal]:
+                        settings.custom_sip_value = "0xA03"
                         break
             if (
                 isinstance(settings.computer.wifi, device_probe.Broadcom)
@@ -169,3 +186,7 @@ class generate_defaults:
                     settings.force_vmm = False
         except KeyError:
             pass
+
+        nv_web_status = global_settings.global_settings().read_property("Force_Web_Drivers")
+        if nv_web_status is True:
+            settings.force_nv_web = True

@@ -41,6 +41,7 @@ class PatchSysVolume:
         self.root_mount_path = None
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
         self.constants.root_patcher_succeded = False # Reset Variable each time we start
+        self.constants.needs_to_open_preferences = False
         self.patch_set_dictionary = {}
         self.needs_kmutil_exemptions = False # For '/Library/Extensions' rebuilds
 
@@ -107,6 +108,7 @@ class PatchSysVolume:
                 print("- Failed to revert snapshot via Apple's 'bless' command")
             else:
                 self.clean_skylight_plugins()
+                self.delete_nonmetal_enforcement()
                 self.constants.root_patcher_succeded = True
                 print("- Unpatching complete")
                 print("\nPlease reboot the machine for patches to take effect")
@@ -114,14 +116,18 @@ class PatchSysVolume:
     def rebuild_snapshot(self):
         print("- Rebuilding Kernel Cache (This may take some time)")
 
-        args = ["kmutil", "install", "--volume-root", self.mount_location, "--update-all"]
+        if self.constants.detected_os > os_data.os_data.catalina:
+            args = ["kmutil", "install", "--volume-root", self.mount_location, "--update-all"]
 
-        if self.needs_kmutil_exemptions is True:
-            # When installing to '/Library/Extensions', following args skip kext consent 
-            # prompt in System Preferences when SIP's disabled
-            print("- Disabling auth checks in kmutil")
-            args.append("--no-authentication")
-            args.append("--no-authorization")
+            if self.needs_kmutil_exemptions is True:
+                # When installing to '/Library/Extensions', following args skip kext consent 
+                # prompt in System Preferences when SIP's disabled
+                print("  (You will get a prompt by System Preferences, ignore for now)")
+                args.append("--no-authentication")
+                args.append("--no-authorization")
+                self.constants.needs_to_open_preferences = True # Notify in GUI to open System Preferences
+        else:
+            args = ["kextcache", "-i", f"{self.mount_location}/"]
 
         result = utilities.elevated(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
@@ -132,7 +138,7 @@ class PatchSysVolume:
         # - will return 71 on failure to build KCs
         # - will return 31 on 'No binaries or codeless kexts were provided'
         # - will return -10 if the volume is missing (ie. unmounted by another process)
-        if result.returncode != 0:
+        if result.returncode != 0 or (self.constants.detected_os < os_data.os_data.catalina and "KernelCache ID" not in result.stdout.decode()):
             print("- Unable to build new kernel cache")
             print(f"\nReason for Patch Failure ({result.returncode}):")
             print(result.stdout.decode())
@@ -142,6 +148,8 @@ class PatchSysVolume:
                 input("Press [ENTER] to continue")
         else:
             print("- Successfully built new kernel cache")
+            self.update_preboot_kernel_cache()
+            self.rebuild_dyld_shared_cache()
             if self.root_supports_snapshot is True:
                 print("- Creating new APFS snapshot")
                 bless = utilities.elevated(
@@ -158,6 +166,8 @@ class PatchSysVolume:
                     self.unmount_drive()
             print("- Patching complete")
             print("\nPlease reboot the machine for patches to take effect")
+            if self.needs_kmutil_exemptions is True:
+                print("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
             self.constants.root_patcher_succeded = True
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to continue")
@@ -166,6 +176,15 @@ class PatchSysVolume:
         print("- Unmounting Root Volume (Don't worry if this fails)")
         utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
+    def rebuild_dyld_shared_cache(self):
+        if self.constants.detected_os <= os_data.os_data.catalina:
+            print("- Rebuilding dyld shared cache")
+            utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
+
+    def update_preboot_kernel_cache(self):
+        if self.constants.detected_os == os_data.os_data.catalina:
+            print("- Rebuilding preboot kernel cache")
+            utilities.process_status(utilities.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def clean_skylight_plugins(self):
         if (Path(self.mount_application_support) / Path("SkyLightPlugins/")).exists():
@@ -175,6 +194,13 @@ class PatchSysVolume:
         else:
             print("- Creating SkylightPlugins folder")
             utilities.process_status(utilities.elevated(["mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+    
+    def delete_nonmetal_enforcement(self):
+        for arg in ["useMetal", "useIOP"]:
+            result = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+            if result in ["0", "false", "1", "true"]:
+                print(f"- Removing non-Metal Enforcement Preference: {arg}")
+                utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
 
     def write_patchset(self, patchset):
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
@@ -242,6 +268,8 @@ class PatchSysVolume:
 
         # Make sure old SkyLight plugins aren't being used
         self.clean_skylight_plugins()
+        # Make sure non-Metal Enforcement preferences are not present
+        self.delete_nonmetal_enforcement()
         
         # Make sure SNB kexts are compatible with the host
         if "Intel Sandy Bridge" in required_patches:
