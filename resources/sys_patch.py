@@ -196,12 +196,11 @@ class PatchSysVolume:
             utilities.process_status(utilities.elevated(["mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
     
     def delete_nonmetal_enforcement(self):
-        use_metal = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", "useMetal"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-        use_iop = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", "useIOP"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-        if use_metal or use_iop in ["0", "false", "1", "true"]:
-            print("- Removing non-Metal Enforcement Preferences")
-            utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", "useMetal"])
-            utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", "useIOP"])
+        for arg in ["useMetal", "useIOP"]:
+            result = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+            if result in ["0", "false", "1", "true"]:
+                print(f"- Removing non-Metal Enforcement Preference: {arg}")
+                utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
 
     def write_patchset(self, patchset):
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
