@@ -475,3 +475,50 @@ class MacPro:
         oclp_version="0.2.5", 
         opencore_version="REL-071-2021-07-02"
     )
+
+    MacPro41_51_Flashed_NVIDIA_WEB_DRIVERS = device_probe.Computer(
+        real_model='MacPro5,1', 
+        real_board_id='Mac-F221BEC8', 
+        reported_model='MacPro5,1', 
+        reported_board_id='Mac-F221BEC8', 
+        build_model='MacPro5,1', 
+        gpus=[
+            device_probe.NVIDIA(vendor_id=4318, device_id=5051, class_code=196608, name='GFX0', model='NVIDIA Quadro K620', acpi_path='IOACPIPlane:/_SB/PCI0@0/IOU0@30000/PXS1@ffff', pci_path='PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)', disable_metal=True, force_compatible=True)
+        ], 
+        igpu=None, 
+        dgpu=device_probe.NVIDIA(vendor_id=4318, device_id=5051, class_code=196608, name='GFX0', model='NVIDIA Quadro K620', acpi_path='IOACPIPlane:/_SB/PCI0@0/IOU0@30000/PXS1@ffff', pci_path='PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)', disable_metal=True, force_compatible=True), 
+        storage=[
+            device_probe.SATAController(vendor_id=32902, device_id=14882, class_code=67073, name='SATA', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/SATA@1f0002', pci_path='PciRoot(0x0)/Pci(0x1f,0x2)', disable_metal=False, force_compatible=False)
+        ], 
+        usb_controllers=[
+            device_probe.EHCIController(vendor_id=32902, device_id=14908, class_code=787232, name='EHC2', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/EHC2@1a0007', pci_path='PciRoot(0x0)/Pci(0x1a,0x7)', disable_metal=False, force_compatible=False), 
+            device_probe.EHCIController(vendor_id=32902, device_id=14906, class_code=787232, name='EHC1', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/EHC1@1d0007', pci_path='PciRoot(0x0)/Pci(0x1d,0x7)', disable_metal=False, force_compatible=False), 
+            device_probe.UHCIController(vendor_id=32902, device_id=14903, class_code=787200, name='UHC4', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/UHC4@1a0000', pci_path='PciRoot(0x0)/Pci(0x1a,0x0)', disable_metal=False, force_compatible=False), 
+            device_probe.UHCIController(vendor_id=32902, device_id=14904, class_code=787200, name='UHC5', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/UHC5@1a0001', pci_path='PciRoot(0x0)/Pci(0x1a,0x1)', disable_metal=False, force_compatible=False), 
+            device_probe.UHCIController(vendor_id=32902, device_id=14905, class_code=787200, name='UHC6', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/UHC6@1a0002', pci_path='PciRoot(0x0)/Pci(0x1a,0x2)', disable_metal=False, force_compatible=False), 
+            device_probe.UHCIController(vendor_id=32902, device_id=14900, class_code=787200, name='UHC1', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/UHC1@1d0000', pci_path='PciRoot(0x0)/Pci(0x1d,0x0)', disable_metal=False, force_compatible=False), 
+            device_probe.UHCIController(vendor_id=32902, device_id=14901, class_code=787200, name='UHC2', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/UHC2@1d0001', pci_path='PciRoot(0x0)/Pci(0x1d,0x1)', disable_metal=False, force_compatible=False), 
+            device_probe.UHCIController(vendor_id=32902, device_id=14902, class_code=787200, name='UHC3', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/UHC3@1d0002', pci_path='PciRoot(0x0)/Pci(0x1d,0x2)', disable_metal=False, force_compatible=False)
+        ], 
+        sdxc_controller=[], 
+        ethernet=[
+            device_probe.IntelEthernet(vendor_id=32902, device_id=4342, class_code=131072, name='ETH1', model='Intel 82574L', acpi_path='IOACPIPlane:/_SB/PCI0@0/RP04@1c0003/ETH1@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x3)/Pci(0x0,0x0)', disable_metal=False, force_compatible=False), 
+            device_probe.IntelEthernet(vendor_id=32902, device_id=4342, class_code=131072, name='ETH0', model='Intel 82574L', acpi_path='IOACPIPlane:/_SB/PCI0@0/RP03@1c0002/ETH0@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x2)/Pci(0x0,0x0)', disable_metal=False, force_compatible=False)
+        ], 
+        wifi=None, 
+        cpu=device_probe.CPU(
+            name='Intel(R) Xeon(R) CPU           X5670  @ 2.93GHz', 
+            flags=['FPU', 'VME', 'DE', 'PSE', 'TSC', 'MSR', 'PAE', 'MCE', 'CX8', 'APIC', 'SEP', 'MTRR', 'PGE', 'MCA', 'CMOV', 'PAT', 'PSE36', 'CLFSH', 'DS', 'ACPI', 'MMX', 'FXSR', 'SSE', 'SSE2', 'SS', 'HTT', 'TM', 'PBE', 'SSE3', 'PCLMULQDQ', 'DTES64', 'MON', 'DSCPL', 'VMX', 'SMX', 'EST', 'TM2', 'SSSE3', 'CX16', 'TPR', 'PDCM', 'SSE4.1', 'SSE4.2', 'POPCNT', 'AES', 'PCID']
+        ), 
+        oclp_version='0.4.6', 
+        opencore_version='REL-080-2022-04-18', 
+        opencore_path='PciRoot(0x0)/Pci(0x1D,0x7)/USB(0x4,0x0)/HD(2,GPT,AEC1E933-C311-40E2-BBCE-FC4B14BCD770,0x64800,0x38E3000)/EFI\\OC\\OpenCore.efi', 
+        bluetooth_chipset='BRCM2046 Hub', 
+        ambient_light_sensor=False, 
+        third_party_sata_ssd=True, 
+        secure_boot_model='x86legacyap', 
+        secure_boot_policy=0, 
+        oclp_sys_version='v0.4.6', 
+        oclp_sys_date='September 03, 2019 @ 23:13:43', 
+        firmware_vendor='Apple'
+    )
