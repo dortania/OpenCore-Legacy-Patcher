@@ -33,6 +33,9 @@ class OpenCoreLegacyPatcher:
         self.constants.recovery_status = utilities.check_recovery()
         self.computer = self.constants.computer
         self.constants.booted_oc_disk = utilities.find_disk_off_uuid(utilities.clean_device_path(self.computer.opencore_path))
+        if self.constants.computer.firmware_vendor:
+            if self.constants.computer.firmware_vendor != "Apple":
+                self.constants.host_is_hackintosh = True
         launcher_script = None
         launcher_binary = sys.executable
         if "python" in launcher_binary:

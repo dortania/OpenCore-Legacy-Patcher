@@ -371,6 +371,21 @@ def get_rom(variable: str, *, decode: bool = False):
         value = value.strip(b"\0").decode()
     return value
 
+def get_firmware_vendor(*, decode: bool = False):
+    efi = ioreg.IORegistryEntryFromPath(ioreg.kIOMasterPortDefault, "IODeviceTree:/efi".encode())
+    value = ioreg.IORegistryEntryCreateCFProperty(efi, "firmware-vendor", ioreg.kCFAllocatorDefault, ioreg.kNilOptions)
+    ioreg.IOObjectRelease(efi)
+
+    if not value:
+        return None
+
+    value = ioreg.corefoundation_to_native(value)
+    if decode:
+        if isinstance(value, bytes):
+            value = value.strip(b"\0").decode()
+        elif isinstance(value, str):
+            value = value.strip("\0")
+    return value
 
 def verify_network_connection(url):
     try:

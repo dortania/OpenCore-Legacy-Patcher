@@ -484,6 +484,7 @@ class Computer:
     secure_boot_policy: Optional[int] = None
     oclp_sys_version: Optional[str] = None
     oclp_sys_date: Optional[str] = None
+    firmware_vendor: Optional[str] = None
 
     @staticmethod
     def probe():
@@ -704,6 +705,13 @@ class Computer:
         # SecureBoot Variables
         self.secure_boot_model = utilities.check_secure_boot_model()
         self.secure_boot_policy = utilities.check_ap_security_policy()
+
+        # Firmware Vendor
+        firmware_vendor = utilities.get_firmware_vendor(decode=False)
+        if isinstance(firmware_vendor, bytes):
+            firmware_vendor = str(firmware_vendor.replace(b"\x00", b"").decode("utf-8"))
+        self.firmware_vendor = firmware_vendor
+
     def cpu_probe(self):
         self.cpu = CPU(
             subprocess.run("sysctl machdep.cpu.brand_string".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip(),

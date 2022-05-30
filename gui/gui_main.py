@@ -164,7 +164,8 @@ class wx_python_gui:
     def preflight_check(self):
         if (
                 self.constants.computer.build_model != None and 
-                self.constants.computer.build_model != self.constants.computer.real_model
+                self.constants.computer.build_model != self.constants.computer.real_model and
+                self.constants.host_is_hackintosh is False
             ):
             # Notify user they're booting an unsupported configuration
             self.constants.start_build_install = True
@@ -366,9 +367,16 @@ class wx_python_gui:
         self.build_install.Centre(wx.HORIZONTAL)
         
         # Disable button if real_model not in model_array.SupportedSMBIOS
-        if self.constants.allow_oc_everywhere is False and \
-            self.constants.custom_model is None and \
-            self.computer.real_model not in model_array.SupportedSMBIOS:
+        if (
+            (
+                self.constants.allow_oc_everywhere is False and \
+                self.constants.custom_model is None and \
+                self.computer.real_model not in model_array.SupportedSMBIOS
+            ) or (
+                self.constants.custom_model is None and \
+                self.constants.host_is_hackintosh is True
+            )
+        ):
             self.build_install.Disable()
             self.build_install.SetToolTip(wx.ToolTip("""If building for a native Mac model, \nselect 'Allow Native Models' in Settings.\nIf building for another Mac, change model in Settings"""))
 
@@ -1877,9 +1885,16 @@ class wx_python_gui:
                 self.finished_cim_process = False
                 # Only prompt user with option to install OC to disk if 
                 # the model is supported.
-                if self.constants.allow_oc_everywhere is False and \
-                self.constants.custom_model is None and \
-                self.computer.real_model not in model_array.SupportedSMBIOS:
+                if (
+                    (
+                        self.constants.allow_oc_everywhere is False and \
+                        self.constants.custom_model is None and \
+                        self.computer.real_model not in model_array.SupportedSMBIOS
+                    ) or (
+                        self.constants.custom_model is None and \
+                        self.constants.host_is_hackintosh is True
+                    )
+                ):
                     popup_message = wx.MessageDialog(self.frame, "Sucessfully created a macOS installer!", "Success", wx.OK)
                     popup_message.ShowModal()
                 else:
