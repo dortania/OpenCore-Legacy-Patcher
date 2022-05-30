@@ -1193,9 +1193,8 @@ class wx_python_gui:
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE
                     )
-                    if output.returncode == 0:
-                        time.sleep(5)
-                        self.OnCloseFrame(None)
+                    time.sleep(5)
+                    self.OnCloseFrame(None)
             else:
                 self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
