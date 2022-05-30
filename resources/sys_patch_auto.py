@@ -115,6 +115,8 @@ class AutomaticSysPatch:
         should_notify = global_settings.global_settings().read_property("AutoPatch_Notify_Mismatched_Disks")
         if should_notify is False:
             print("- Skipping due to user preference")
+        elif settings.host_is_hackintosh is True:
+            print("- Skipping due to hackintosh")
         else:
             if settings.booted_oc_disk:
                 root_disk = settings.booted_oc_disk.strip("disk")
