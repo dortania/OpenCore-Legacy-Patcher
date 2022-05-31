@@ -42,7 +42,7 @@ class generate_defaults:
 
                 # If a Mac is non-Metal based, Beta Blur is highly recommended
                 if settings.detected_os >= os_data.os_data.big_sur:
-                    for arg in ["Moraea_BlurBeta", "Moraea_RimBeta"]:
+                    for arg in ["Moraea_BlurBeta"]:
                         # If user explicitly set the blur, don't override
                         arg_result = subprocess.run(["defaults", "read", "-g", arg], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
                         if arg_result not in ["true", "1", "false", "0"]:
