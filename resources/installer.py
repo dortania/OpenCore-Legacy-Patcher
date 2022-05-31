@@ -337,7 +337,18 @@ def generate_installer_creation_script(script_location, installer_path, disk):
     # Implemnting this into a single installer.sh script allows us to only call
     # OCLP-Helper once to avoid nagging the user about permissions
 
+    additional_args = ""
+
     createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
+    plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))
+    if Path(plist_path).exists():
+        plist = plistlib.load(Path(plist_path).open("rb"))
+        if "DTPlatformVersion" in plist:
+            platform_version = plist["DTPlatformVersion"]
+            platform_version = platform_version.split(".")[0]
+            if platform_version[0] == "10":
+                if int(platform_version[1]) < 13:
+                    additional_args = f" --applicationpath '{installer_path}'"
 
     if script_location.exists():
         script_location.unlink()
@@ -347,7 +358,9 @@ def generate_installer_creation_script(script_location, installer_path, disk):
         script.write(f'''#!/bin/bash
 erase_disk='diskutil eraseDisk HFS+ OCLP-Installer {disk}'
 if $erase_disk; then
-    "{createinstallmedia_path}" --volume /Volumes/OCLP-Installer --nointeraction
+    "{createinstallmedia_path}" --volume /Volumes/OCLP-Installer --nointeraction{additional_args}
 fi
         ''')
-    return True
+    if Path(script_location).exists():
+        return True
+    return False
