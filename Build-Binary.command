@@ -51,7 +51,17 @@ class create_binary:
         python_path = sys.executable
         python_binary = python_path.split("/")[-1]
         python_bin_dir = python_path.strip(python_binary)
-        pyinstaller_path = f"{python_bin_dir}pyinstaller"
+
+        # macOS (using Python installed by homebrew (e.g. brew))
+        if f"/usr/local/opt/python@3." in sys.executable:
+            print(f"\t* NOTE: home(brew) python3 detected; using (sys.exec_prefix, python_path) ==> {sys.exec_prefix, python_path}")
+            # - under brew, pip3 will install pyinstall at:
+            #   /usr/local/lib/python3.9/site-packages/pyinstaller
+            #   and /usr/local/bin/pyinstaller stub to load and run.
+
+            pyinstaller_path = f"/usr/local/bin/pyinstaller"
+        else:
+            pyinstaller_path = f"{python_bin_dir}pyinstaller"
 
         if not Path(pyinstaller_path).exists():
             print(f"  - pyinstaller not found:\n\t{pyinstaller_path}")
