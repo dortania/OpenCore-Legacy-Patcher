@@ -1194,13 +1194,16 @@ class wx_python_gui:
                 if answer == wx.ID_YES:
                     output =subprocess.run(
                         [
-                            "osascript", "-e", 
-                            'tell app "System Preferences" to reveal anchor "General" of pane id "com.apple.preference.security"',
-                            "-e", 'tell app "System Preferences" to activate',
+                            "osascript", "-e",
+                            'tell app "System Preferences" to activate',
+                            "-e", 'tell app "System Preferences" to reveal anchor "General" of pane id "com.apple.preference.security"',
                         ],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE
                     )
+                    if output.returncode != 0:
+                        # Some form of fallback if unaccelerated state errors out
+                        subprocess.run(["open", "-a", "System Preferences"])
                     time.sleep(5)
                     self.OnCloseFrame(None)
             else:
