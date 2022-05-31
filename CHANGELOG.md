@@ -20,6 +20,8 @@
 - Resolve AppleGVACore crashing on MacBookPro11,3 in Monterey 12.4+
 - Add Nvidia Web Driver support for Maxwell and Pascal
   - Currently running in OpenGL mode, [non-Metal issues](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) applicable
+- Enable Beta Blur and Rim settings on non-Metal by default
+  - For slower hardware, disabling may slightly improve performance
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases

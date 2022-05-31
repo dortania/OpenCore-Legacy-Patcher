@@ -41,13 +41,8 @@ class generate_defaults:
                 settings.host_is_non_metal = True
 
                 # If a Mac is non-Metal based, Beta Blur is highly recommended
-                # However on lower end hardware, users may prefer the performance benefits without
-                if not model.startswith("MacBook") and settings.detected_os >= os_data.os_data.big_sur:
-                    non_metal_args = [
-                        "Moraea_BlurBeta",
-                        "Moraea_RimBeta",
-                    ]
-                    for arg in non_metal_args:
+                if settings.detected_os >= os_data.os_data.big_sur:
+                    for arg in ["Moraea_BlurBeta", "Moraea_RimBeta"]:
                         # If user explicitly set the blur, don't override
                         arg_result = subprocess.run(["defaults", "read", "-g", arg], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
                         if arg_result not in ["true", "1", "false", "0"]:
