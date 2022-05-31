@@ -32,6 +32,7 @@ class wx_python_gui:
         self.target_disk = ""
         self.pulse_forward = False
         self.non_metal_required = self.use_non_metal_alternative()
+        self.hyperlink_colour = (25, 179, 231)
 
         # Backup stdout for usage with wxPython
         self.stock_stdout = sys.stdout
@@ -741,7 +742,7 @@ class wx_python_gui:
                 i += self.install_button.GetSize().height + 3
                 if disk_root == list_disks[disk]['disk']:
                     # Set label colour to red
-                    self.install_button.SetForegroundColour((25, 179, 231))
+                    self.install_button.SetForegroundColour(self.hyperlink_colour)
 
         else:
             # Label: No disks found
@@ -816,7 +817,7 @@ class wx_python_gui:
             i += self.install_button.GetSize().height + 3
             if self.constants.booted_oc_disk == list_partitions[partition]['partition']:
                 # Set label colour to red
-                self.install_button.SetForegroundColour((25, 179, 231))
+                self.install_button.SetForegroundColour(self.hyperlink_colour)
 
         self.return_to_main_menu = wx.Button(self.frame_modal, label="Return")
         self.return_to_main_menu.SetPosition(
@@ -2815,7 +2816,13 @@ class wx_python_gui:
             self.commit_url_hyperlink.SetPosition(
                 wx.Point(self.commit_url_label.GetPosition().x + self.commit_url_label.GetSize().width, self.commit_url_label.GetPosition().y)
             )
-            self.commit_url_hyperlink.SetForegroundColour((25, 179, 231))
+            self.commit_url_hyperlink.SetForegroundColour(self.hyperlink_colour)
+            self.commit_url_hyperlink.SetColours(
+                link=self.hyperlink_colour,
+                visited=self.hyperlink_colour,
+                rollover=self.hyperlink_colour,
+            )
+
         else:
             self.commit_url_label.Label = f"URL:  Not applicable"
 
@@ -2920,7 +2927,12 @@ class wx_python_gui:
             pos=(self.sip_label.GetPosition().x + self.sip_label.GetSize().width, self.sip_label.GetPosition().y),
             URL="https://github.com/apple/darwin-xnu/blob/main/bsd/sys/csr.h",
         )
-        hyperlink_label.SetForegroundColour((25, 179, 231))
+        hyperlink_label.SetForegroundColour(self.hyperlink_colour)
+        hyperlink_label.SetColours(
+            link=self.hyperlink_colour,
+            visited=self.hyperlink_colour,
+            rollover=self.hyperlink_colour,
+        )
 
         if self.constants.custom_sip_value is not None:
             self.sip_value = int(self.constants.custom_sip_value, 16)
