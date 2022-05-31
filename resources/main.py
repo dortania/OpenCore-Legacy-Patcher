@@ -8,7 +8,7 @@ from pathlib import Path
 import time
 import threading
 
-from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads, global_settings
+from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads, commit_info
 from data import model_array
 
 class OpenCoreLegacyPatcher:
@@ -47,6 +47,7 @@ class OpenCoreLegacyPatcher:
         self.constants.launcher_script = launcher_script
         self.constants.unpack_thread = threading.Thread(target=reroute_payloads.reroute_payloads(self.constants).setup_tmp_disk_image)
         self.constants.unpack_thread.start()
+        self.constants.commit_info = commit_info.commit_info(self.constants.launcher_binary).generate_commit_info()
 
         defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
 

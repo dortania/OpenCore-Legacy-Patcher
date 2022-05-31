@@ -193,6 +193,7 @@ class Constants:
         self.host_is_non_metal = False  #      Determine if host is non-metal (ie. enable UI hacks)
         self.needs_to_open_preferences = False  # Determine if preferences need to be opened
         self.host_is_hackintosh = False #     Determine if host is Hackintosh
+        self.commit_info = (None, None, None)
 
         self.legacy_accel_support = [
             os_data.os_data.big_sur,

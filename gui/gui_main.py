@@ -2785,11 +2785,45 @@ class wx_python_gui:
         )
         self.real_user_id_label.Center(wx.HORIZONTAL)
 
+
+        commit_dict = self.constants.commit_info
+        # Label: Built from Branch:
+        self.built_from_branch_label = wx.StaticText(self.frame_modal, label=f"Branch: {commit_dict[0]}")
+        self.built_from_branch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.built_from_branch_label.SetPosition(
+            wx.Point(self.real_user_id_label.GetPosition().x, self.real_user_id_label.GetPosition().y + self.real_user_id_label.GetSize().height + 10)
+        )
+        self.built_from_branch_label.Center(wx.HORIZONTAL)
+
+        # Label: Built on: (Date)
+        self.built_on_label = wx.StaticText(self.frame_modal, label=f"Date: {commit_dict[1]}")
+        self.built_on_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.built_on_label.SetPosition(
+            wx.Point(self.built_from_branch_label.GetPosition().x, self.built_from_branch_label.GetPosition().y + self.built_from_branch_label.GetSize().height + 10)
+        )
+
+        # Label: Commit URL: (hyperlink)
+        self.commit_url_label = wx.StaticText(self.frame_modal, label=f"URL:  ")
+        self.commit_url_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.commit_url_label.SetPosition(
+            wx.Point(self.built_on_label.GetPosition().x, self.built_on_label.GetPosition().y + self.built_on_label.GetSize().height + 10)
+        )
+
+        # Hyperlink to the right of commit_url_label
+        if commit_dict[2] != "":
+            self.commit_url_hyperlink = hyperlink.HyperLinkCtrl(self.frame_modal, id=wx.ID_ANY, label=f"Link", URL=f"{commit_dict[2]}")
+            self.commit_url_hyperlink.SetPosition(
+                wx.Point(self.commit_url_label.GetPosition().x + self.commit_url_label.GetSize().width, self.commit_url_label.GetPosition().y)
+            )
+            self.commit_url_hyperlink.SetForegroundColour((25, 179, 231))
+        else:
+            self.commit_url_label.Label = f"URL:  Not applicable"
+
         # Label: Model Dump
         self.model_dump_label = wx.StaticText(self.frame_modal, label="Model Dump")
         self.model_dump_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.model_dump_label.SetPosition(
-            wx.Point(self.real_user_id_label.GetPosition().x, self.real_user_id_label.GetPosition().y + self.real_user_id_label.GetSize().height + 10)
+            wx.Point(self.commit_url_label.GetPosition().x, self.commit_url_label.GetPosition().y + self.commit_url_label.GetSize().height + 10)
         )
         self.model_dump_label.Center(wx.HORIZONTAL)
 

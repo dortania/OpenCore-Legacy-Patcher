@@ -11,6 +11,7 @@
 # Copyright (C) 2022 - Mykola Grymalyuk
 
 from pathlib import Path
+import time
 import argparse
 import os
 import subprocess
@@ -204,15 +205,21 @@ class create_binary:
 
     def add_commit_data(self):
         if not self.args.branch and not self.args.commit and not self.args.commit_date:
-            print("  - No commit data provided, skipping")
-            return
+            print("  - No commit data provided, adding source info")
+            branch = "Built from source"
+            commit_url = ""
+            commit_date = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        else:
+            branch = self.args.branch
+            commit_url = self.args.commit
+            commit_date = self.args.commit_date
         print("  - Adding commit data to Info.plist")
         plist_path = Path("./dist/OpenCore-Patcher.app/Contents/Info.plist")
         plist = plistlib.load(Path(plist_path).open("rb"))
         plist["Github"] = {
-            "Branch": self.args.branch,
-            "Commit URL": self.args.commit,
-            "Commit Date": self.args.commit_date
+            "Branch": branch,
+            "Commit URL": commit_url,
+            "Commit Date": commit_date,
         }
         plistlib.dump(plist, Path(plist_path).open("wb"), sort_keys=True)
 
