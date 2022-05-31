@@ -60,7 +60,7 @@ def validate(settings):
                 raise Exception(f"Validation failed for predefined model: {settings.computer.real_model}")
             else:
                 print(f"Validation succeeded for predefined model: {settings.computer.real_model}")
-    
+
 
     def validate_root_patch_files(major_kernel, minor_kernel):
         patchset = sys_patch_dict.SystemPatchDictionary(major_kernel, minor_kernel, settings.legacy_accel_support)
@@ -79,12 +79,12 @@ def validate(settings):
                                 if not Path(source_file).exists():
                                     print(f"File not found: {source_file}")
                                     raise Exception(f"Failed to find {source_file}")
-        
+
         print(f"Validating Root Patch Dictionary integrity for Darwin {major_kernel}.{minor_kernel}")
         if not sys_patch_helpers.sys_patch_helpers(settings).generate_patchset_plist(patchset, "OpenCore-Legacy-Patcher"):
             raise Exception("Failed to generate patchset plist")
 
-    
+
     def validate_sys_patch():
         if Path(settings.payload_local_binaries_root_path_zip).exists():
             print("Validating Root Patch File integrity")

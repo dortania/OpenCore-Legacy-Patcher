@@ -46,7 +46,7 @@ class create_binary:
         parser.add_argument('--reset_binaries', action='store_true', help='Force redownload and imaging of payloads')
         args = parser.parse_args()
         return args
-    
+
     def setup_pathing(self):
         python_path = sys.executable
         python_binary = python_path.split("/")[-1]
@@ -66,9 +66,9 @@ class create_binary:
         if not Path(pyinstaller_path).exists():
             print(f"  - pyinstaller not found:\n\t{pyinstaller_path}")
             raise Exception("pyinstaller not found")
-        
+
         self.pyinstaller_path = pyinstaller_path
-    
+
     def preflight_processes(self):
         print("- Starting preflight processes")
         self.setup_pathing()
@@ -77,26 +77,26 @@ class create_binary:
         if not self.args.build_tui:
             # payloads.dmg is only needed for GUI builds
             self.generate_paylods_dmg()
-    
+
     def postflight_processes(self):
         print("- Starting postflight processes")
         if self.args.build_tui:
             self.move_launcher()
         self.patch_load_command()
         self.add_commit_data()
-        
+
     def build_binary(self):
         if Path(f"./dist/OpenCore-Patcher.app").exists():
             print("- Found OpenCore-Patcher.app, removing...")
             rm_output = subprocess.run(
-                ["rm", "-rf", "./dist/OpenCore-Patcher.app"], 
+                ["rm", "-rf", "./dist/OpenCore-Patcher.app"],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
             if rm_output.returncode != 0:
                 print("- Remove failed")
                 print(rm_output.stderr.decode('utf-8'))
                 raise Exception("Remove failed")
-        
+
 
         if self.args.build_tui:
             print("- Building TUI binary...")
@@ -104,7 +104,7 @@ class create_binary:
         else:
             print("- Building GUI binary...")
             build_args = [self.pyinstaller_path, "./OpenCore-Patcher-GUI.spec", "--noconfirm"]
-        
+
         build_result = subprocess.run(build_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if build_result.returncode != 0:
             print("- Build failed")
@@ -135,7 +135,7 @@ class create_binary:
                 if self.args.reset_binaries:
                     print(f"  - Removing old {resource}")
                     rm_output = subprocess.run(
-                        ["rm", "-rf", f"./payloads/{resource}"], 
+                        ["rm", "-rf", f"./payloads/{resource}"],
                         stdout=subprocess.PIPE, stderr=subprocess.PIPE
                     )
                     if rm_output.returncode != 0:
@@ -149,7 +149,7 @@ class create_binary:
 
             download_result = subprocess.run(
                 [
-                    "curl", "-LO", 
+                    "curl", "-LO",
                     f"https://github.com/dortania/PatcherSupportPkg/releases/download/{patcher_support_pkg_version}/{resource}"
                 ],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -175,7 +175,7 @@ class create_binary:
             if self.args.reset_binaries:
                 print("  - Removing old payloads.dmg")
                 rm_output = subprocess.run(
-                    ["rm", "-rf", "./payloads.dmg"], 
+                    ["rm", "-rf", "./payloads.dmg"],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE
                 )
                 if rm_output.returncode != 0:
@@ -199,7 +199,7 @@ class create_binary:
             print("  - DMG generation failed")
             print(dmg_output.stderr.decode('utf-8'))
             raise Exception("DMG generation failed")
-        
+
         print("  - DMG generation complete")
 
     def add_commit_data(self):
@@ -215,17 +215,17 @@ class create_binary:
             "Commit Date": self.args.commit_date
         }
         plistlib.dump(plist, Path(plist_path).open("wb"), sort_keys=True)
-    
+
     def patch_load_command(self):
         # Patches LC_VERSION_MIN_MACOSX in Load Command to report 10.10
         #
         # By default Pyinstaller will create binaries supporting 10.13+
         # However this limitation is entirely arbitrary for our libraries
         # and instead we're able to support 10.10 without issues.
-        # 
+        #
         # To verify set version:
         #   otool -l ./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher
-        # 
+        #
         #       cmd LC_VERSION_MIN_MACOSX
         #   cmdsize 16
         #   version 10.13
@@ -243,7 +243,7 @@ class create_binary:
     def move_launcher(self):
         print("  - Adding TUI launcher")
         mv_output = subprocess.run(
-            ["cp", "./payloads/launcher.sh", "./dist/OpenCore-Patcher.app/Contents/MacOS/Launcher"], 
+            ["cp", "./payloads/launcher.sh", "./dist/OpenCore-Patcher.app/Contents/MacOS/Launcher"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         if mv_output.returncode != 0:

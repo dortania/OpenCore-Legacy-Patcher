@@ -19,7 +19,7 @@ import hashlib
 from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification, global_settings
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect, gui_help
-        
+
 
 class wx_python_gui:
     def __init__(self, versions, frame=None, frame_modal=None):
@@ -51,7 +51,7 @@ class wx_python_gui:
         self.app = wx.App()
         if frame is None:
             self.frame = wx.Frame(
-                None, title="OpenCore Legacy Patcher", 
+                None, title="OpenCore Legacy Patcher",
                 size=(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN),
                 style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
             )
@@ -69,14 +69,14 @@ class wx_python_gui:
             self.frame.SetMenuBar(self.menubar)
         else:
             self.frame = frame
-        
+
         # Modal Frames
         self.frame_modal = frame_modal
 
         if current_uid == 0:
             self.file_menu.Enable(wx.ID_REDO, False)
 
-    
+
     def OnCloseFrame(self, event=None):
         self.frame.SetTransparent(0)
         wx.GetApp().Yield()
@@ -84,7 +84,7 @@ class wx_python_gui:
         self.frame.Destroy()
         self.app.ExitMainLoop()
         sys.exit()
-    
+
     def reboot_system(self, event=None, message=""):
         self.popup = wx.MessageDialog(
             self.frame,
@@ -98,7 +98,7 @@ class wx_python_gui:
             # Reboots with Count Down prompt (user can still dismiss if needed)
             subprocess.call(['osascript', '-e', 'tell app "loginwindow" to «event aevtrrst»'])
             self.OnCloseFrame(event)
-    
+
     def reset_window(self):
         self.frame.DestroyChildren()
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
@@ -108,7 +108,7 @@ class wx_python_gui:
 
         # Re-enable sleep if we failed to do so before returning to the main menu
         utilities.enable_sleep_after_running()
-    
+
     def reset_frame_modal(self):
         if not self.frame_modal:
             self.frame_modal = wx.Dialog(self.frame)
@@ -122,14 +122,14 @@ class wx_python_gui:
             # Calling ShowWithoutActivating() resets the frame position
             if self.constants.detected_os >= os_data.os_data.big_sur:
                 self.frame_modal.ShowWithoutActivating()
-    
+
     def use_non_metal_alternative(self):
         if self.constants.detected_os >= os_data.os_data.monterey:
             if Path("/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/SkyLightOld.dylib").exists():
                 if self.constants.host_is_non_metal is True:
                     return True
         return False
-    
+
     def is_unpack_finished(self):
         if not self.constants.unpack_thread.is_alive():
             if Path(self.constants.payload_kexts_path).exists():
@@ -154,7 +154,7 @@ class wx_python_gui:
 
             elif progress_bar.GetValue() == 100:
                 self.pulse_forward = False
-            
+
             if self.pulse_forward:
                 progress_bar.SetValue(progress_bar.GetValue() + 1)
             else:
@@ -163,7 +163,7 @@ class wx_python_gui:
 
     def preflight_check(self):
         if (
-                self.constants.computer.build_model != None and 
+                self.constants.computer.build_model != None and
                 self.constants.computer.build_model != self.constants.computer.real_model and
                 self.constants.host_is_hackintosh is False
             ):
@@ -179,7 +179,7 @@ class wx_python_gui:
         else:
             # Spawn thread to check for updates
             threading.Thread(target=self.check_for_updates).start()
-    
+
     def check_for_updates(self, event=None):
         ignore_updates = global_settings.global_settings().read_property("IgnoreAppUpdates")
         if ignore_updates is not True:
@@ -191,9 +191,9 @@ class wx_python_gui:
                     github_link = dict[entry]["Github Link"]
                     print(f"New version: {version}")
                     self.dialog = wx.MessageDialog(
-                        parent=self.frame, 
-                        message=f"Current Version: {self.constants.patcher_version}\nNew version: {version}\nWould you like to view?", 
-                        caption="Update Available for OpenCore Legacy Patcher!", 
+                        parent=self.frame,
+                        message=f"Current Version: {self.constants.patcher_version}\nNew version: {version}\nWould you like to view?",
+                        caption="Update Available for OpenCore Legacy Patcher!",
                         style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
                     )
                     self.dialog.SetYesNoCancelLabels("View on Github", "Always Ignore", "Ignore Once")
@@ -207,7 +207,7 @@ class wx_python_gui:
         else:
             self.constants.ignore_updates = True
             print("- Ignoring App Updates due to defaults")
-    
+
     def relaunch_as_root(self, event=None):
 
         # Add Dialog Box asking if it's ok to relaunch as root
@@ -290,7 +290,7 @@ class wx_python_gui:
 
             wx.GetApp().Yield()
             subprocess.Popen(
-                args, 
+                args,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT
             )
@@ -303,7 +303,7 @@ class wx_python_gui:
                     break
             # Close Current Application
             self.OnCloseFrame(event)
-    
+
     def not_yet_implemented_menu(self, event=None):
         self.frame.DestroyChildren()
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
@@ -349,7 +349,7 @@ class wx_python_gui:
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader.SetPosition(
             wx.Point(
-                self.header.GetPosition().x, 
+                self.header.GetPosition().x,
                 self.header.GetPosition().y + self.header.GetSize().height + 5
             )
         )
@@ -365,7 +365,7 @@ class wx_python_gui:
         )
         self.build_install.Bind(wx.EVT_BUTTON, self.build_install_menu)
         self.build_install.Centre(wx.HORIZONTAL)
-        
+
         # Disable button if real_model not in model_array.SupportedSMBIOS
         if (
             (
@@ -412,7 +412,7 @@ class wx_python_gui:
         self.settings = wx.Button(self.frame, label="Settings", size=(200,30))
         self.settings.SetPosition(
             wx.Point(
-                self.create_installer.GetPosition().x, 
+                self.create_installer.GetPosition().x,
                 self.create_installer.GetPosition().y + self.create_installer.GetSize().height
             )
         )
@@ -464,8 +464,8 @@ class wx_python_gui:
         self.constants.start_build_install = False
 
         if self.app.MainLoop() is None:
-            self.app.MainLoop() 
-    
+            self.app.MainLoop()
+
     def help_menu(self, event=None):
         # Define Menu
         # Header: Get help with OpenCore Legacy Patcher
@@ -546,7 +546,7 @@ class wx_python_gui:
             )
         )
         self.frame_modal.ShowWindowModal()
-    
+
     def build_install_menu(self, event=None):
         # Define Menu
         # - Header: Build and Install OpenCore
@@ -611,7 +611,7 @@ class wx_python_gui:
         self.frame_modal.ShowWindowModal()
 
         self.build_start()
-    
+
     def build_start(self, event=None):
         self.build_opencore.Disable()
 
@@ -629,9 +629,9 @@ class wx_python_gui:
 
         # Throw popup asking to install OpenCore
         self.dialog = wx.MessageDialog(
-            parent=self.frame_modal, 
+            parent=self.frame_modal,
             message=f"Would you like to install OpenCore now?",
-            caption="Finished building your OpenCore configuration!", 
+            caption="Finished building your OpenCore configuration!",
             style=wx.YES_NO | wx.ICON_QUESTION
         )
         self.dialog.SetYesNoLabels("Install to disk", "View build log")
@@ -639,12 +639,12 @@ class wx_python_gui:
             self.install_menu()
         else:
             self.build_opencore.Enable()
-    
+
     def install_menu(self, event=None):
         self.frame.DestroyChildren()
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
         i = 0
-        
+
         # Header
         self.header = wx.StaticText(self.frame, label="Install OpenCore")
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
@@ -701,7 +701,7 @@ class wx_python_gui:
         # Request Disks Present
         def get_disks():
             self.list_disks = install.tui_disk_installation(self.constants).list_disks()
-        
+
         thread_disk = threading.Thread(target=get_disks)
         thread_disk.start()
         self.progress_bar.Pulse()
@@ -716,7 +716,7 @@ class wx_python_gui:
         self.color_note.Show()
         self.missing_disks.SetLabel("Missing disks? Ensure they're FAT32 or formatted as GUID/GPT")
         self.missing_disks.Centre(wx.HORIZONTAL)
-        
+
         if list_disks:
             if self.constants.booted_oc_disk is not None:
                 # disk6s1 -> disk6
@@ -754,7 +754,7 @@ class wx_python_gui:
                 )
             )
             self.install_button.Centre(wx.HORIZONTAL)
-            
+
 
         self.reload_button = wx.Button(self.frame, label="Search for Disks Again", size=(170,-1))
         self.reload_button.SetPosition(
@@ -777,7 +777,7 @@ class wx_python_gui:
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
         self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
-    
+
     def install_oc_disk_select(self, disk, disk_data):
         self.reset_frame_modal()
         self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD - 40, -1)
@@ -817,7 +817,7 @@ class wx_python_gui:
             if self.constants.booted_oc_disk == list_partitions[partition]['partition']:
                 # Set label colour to red
                 self.install_button.SetForegroundColour((25, 179, 231))
-        
+
         self.return_to_main_menu = wx.Button(self.frame_modal, label="Return")
         self.return_to_main_menu.SetPosition(
             wx.Point(
@@ -868,7 +868,7 @@ class wx_python_gui:
                 self.stdout_text.GetPosition().x,
                 self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 10
 
-            )   
+            )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
@@ -990,7 +990,7 @@ class wx_python_gui:
                 )
             )
             self.patch_label.Centre(wx.HORIZONTAL)
-        
+
         # Start Root Patching
         self.start_root_patching = wx.Button(self.frame_modal, label="Start Root Patching", size=(170, -1))
         self.start_root_patching.SetPosition(
@@ -1012,7 +1012,7 @@ class wx_python_gui:
                 self.start_root_patching.GetPosition().y + self.start_root_patching.GetSize().height + 3
             )
         )
-        
+
         self.revert_root_patches.Centre(wx.HORIZONTAL)
         if self.constants.detected_os < os_data.os_data.big_sur:
             self.revert_root_patches.Disable()
@@ -1098,9 +1098,9 @@ class wx_python_gui:
         if download_result is None:
             # Create popup window to inform user of error
             self.popup = wx.MessageDialog(
-                self.frame_modal, 
-                "A problem occured trying to download PatcherSupportPkg binaries\n\nIf you continue to have this error, download an Offline build from Github\nThese builds don't require a network connection to root patch", 
-                "Network Error", 
+                self.frame_modal,
+                "A problem occured trying to download PatcherSupportPkg binaries\n\nIf you continue to have this error, download an Offline build from Github\nThese builds don't require a network connection to root patch",
+                "Network Error",
                 wx.YES_NO | wx.ICON_ERROR
             )
             self.popup.SetYesNoLabels("View on Github", "Ignore")
@@ -1211,7 +1211,7 @@ class wx_python_gui:
         self.return_to_main_menu.Enable()
 
         wx.GetApp().Yield()
-    
+
     def root_patch_revert(self, event=None):
         self.reset_frame_modal()
         self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD, -1)
@@ -1395,11 +1395,11 @@ class wx_python_gui:
         if ias is None:
             def ia():
                 self.available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "PublicSeed")
-            
+
             print("- Downloading installer catalog...")
             thread_ia = threading.Thread(target=ia)
             thread_ia.start()
-            
+
             while thread_ia.is_alive() or self.is_unpack_finished() is False:
                 self.pulse_alternative(self.progress_bar)
                 wx.GetApp().Yield()
@@ -1460,7 +1460,7 @@ class wx_python_gui:
             )
             self.install_selection.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
             self.install_selection.Centre(wx.HORIZONTAL)
-        
+
         self.load_all_installers = wx.Button(self.frame_modal, label="Reload with all installers")
         self.load_all_installers.SetPosition(
             wx.Point(
@@ -1498,7 +1498,7 @@ class wx_python_gui:
         self.frame.SetSize(self.header.GetSize().width + 200, -1)
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
-        
+
         # Label: Download...
         self.download_label = wx.StaticText(self.frame, label="Starting download shortly...")
         self.download_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
@@ -1556,7 +1556,7 @@ class wx_python_gui:
             )
         )
         self.verifying_chunk_label.Centre(wx.HORIZONTAL)
-        
+
 
         # Progress Bar
         self.progress_bar = wx.Gauge(self.frame, range=1200, size=(300, 25))
@@ -1567,7 +1567,7 @@ class wx_python_gui:
             )
         )
         self.progress_bar.Centre(wx.HORIZONTAL)
-        
+
 
         # Button: Return to Main Menu
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
@@ -1620,7 +1620,7 @@ class wx_python_gui:
                 print("Invalid integrity file provided")
         else:
             print("Failed to download integrity file, skipping integrity check.")
-    
+
         wx.App.Get().Yield()
         self.header.SetLabel("Installing InstallAssistant.pkg")
         self.header.Centre(wx.HORIZONTAL)
@@ -1631,7 +1631,7 @@ class wx_python_gui:
         self.progress_bar.Pulse()
         while thread_install.is_alive():
             wx.App.Get().Yield()
-        
+
         self.progress_bar.SetValue(self.progress_bar.GetRange())
         self.return_to_main_menu.SetLabel("Flash Installer")
         self.verifying_chunk_label.SetLabel("Finished extracting to Applications folder!")
@@ -1700,7 +1700,7 @@ class wx_python_gui:
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
-    
+
     def format_usb_menu(self, installer_name, installer_path):
         self.frame.DestroyChildren()
         print(installer_path)
@@ -1886,7 +1886,7 @@ class wx_python_gui:
             self.progress_label.Centre(wx.HORIZONTAL)
             if self.finished_cim_process is True:
                 self.finished_cim_process = False
-                # Only prompt user with option to install OC to disk if 
+                # Only prompt user with option to install OC to disk if
                 # the model is supported.
                 if (
                     (
@@ -1902,9 +1902,9 @@ class wx_python_gui:
                     popup_message.ShowModal()
                 else:
                     self.dialog = wx.MessageDialog(
-                        parent=self.frame, 
-                        message="Would you like to continue and Install OpenCore to this disk?", 
-                        caption="Sucessfully created the macOS installer!", 
+                        parent=self.frame,
+                        message="Would you like to continue and Install OpenCore to this disk?",
+                        caption="Sucessfully created the macOS installer!",
                         style=wx.YES_NO | wx.ICON_QUESTION
                     )
                     self.dialog.SetYesNoLabels("Install OpenCore to disk", "Skip")
@@ -2105,7 +2105,7 @@ class wx_python_gui:
         self.bootpicker_checkbox.ToolTip = wx.ToolTip("""Shows OpenCore's Boot Picker on machine start\nToggling this off will hide the picker, and only load when holding either Option or Escape""")
 
         # Buttons
-        
+
         # Button: SIP Settings
         if self.constants.custom_sip_value:
             sip_string = "Custom"
@@ -2178,7 +2178,7 @@ class wx_python_gui:
             print("Disallow Native Models")
             self.constants.allow_oc_everywhere = False
             self.constants.serial_settings = "Minimal"
-  
+
     def verbose_checkbox_click(self, event=None):
         if self.verbose_checkbox.GetValue():
             print("Verbose mode enabled")
@@ -2186,7 +2186,7 @@ class wx_python_gui:
         else:
             print("Verbose mode disabled")
             self.constants.verbose_debug = False
-    
+
     def kext_checkbox_click(self, event=None):
         if self.kext_checkbox.GetValue():
             print("Kext mode enabled")
@@ -2196,7 +2196,7 @@ class wx_python_gui:
             print("Kext mode disabled")
             self.constants.kext_debug = False
             self.constants.kext_variant = "RELEASE"
-    
+
     def oc_checkbox_click(self, event=None):
         if self.opencore_checkbox.GetValue():
             print("OC mode enabled")
@@ -2206,7 +2206,7 @@ class wx_python_gui:
             print("OC mode disabled")
             self.constants.opencore_debug = False
             self.constants.opencore_build = "RELEASE"
-    
+
     def sip_checkbox_click(self, event=None):
         if self.sip_checkbox.GetValue():
             print("SIP mode enabled")
@@ -2214,7 +2214,7 @@ class wx_python_gui:
         else:
             print("SIP mode disabled")
             self.constants.sip_status = False
-    
+
     def secureboot_checkbox_click(self, event=None):
         if self.secureboot_checkbox.GetValue():
             print("SecureBoot mode enabled")
@@ -2222,7 +2222,7 @@ class wx_python_gui:
         else:
             print("SecureBoot mode disabled")
             self.constants.secure_status = False
-    
+
     def show_picker_checkbox_click(self, event=None):
         if self.bootpicker_checkbox.GetValue():
             print("Show Picker mode enabled")
@@ -2230,7 +2230,7 @@ class wx_python_gui:
         else:
             print("Show Picker mode disabled")
             self.constants.showpicker = False
-    
+
     def dev_settings_menu(self, event=None):
         self.reset_frame_modal()
 
@@ -2261,14 +2261,14 @@ class wx_python_gui:
             self.gpu_dropdown.Append(gpu)
         self.gpu_dropdown.SetSelection(0)
         self.gpu_dropdown.SetPosition(wx.Point(
-            self.label_model.GetPosition().x, 
+            self.label_model.GetPosition().x,
             self.label_model.GetPosition().y + self.label_model.GetSize().height / 1.5))
         self.gpu_dropdown.Bind(wx.EVT_CHOICE, self.gpu_selection_click)
         self.gpu_dropdown.Centre(wx.HORIZONTAL)
         self.gpu_dropdown.SetToolTip(wx.ToolTip("Configures MXM GPU Vendor logic on pre-built models\nIf you are not using MXM iMacs, please leave this setting as is."))
         if self.computer.real_model not in ["iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]:
             self.gpu_dropdown.Disable()
-        
+
         # Disable Thunderbolt
         self.disable_thunderbolt_checkbox = wx.CheckBox(self.frame_modal, label="Disable Thunderbolt")
         self.disable_thunderbolt_checkbox.SetValue(self.constants.disable_tb)
@@ -2298,7 +2298,7 @@ class wx_python_gui:
             self.disable_thunderbolt_checkbox.GetPosition().x,
             self.set_terascale_accel_checkbox.GetPosition().y + self.set_terascale_accel_checkbox.GetSize().height))
         self.force_web_drivers_checkbox.SetToolTip(wx.ToolTip("This option will force Nvidia Web Driver support onto Nvidia Tesla and Kepler GPUs. This should only be used for development purposes."))
-       
+
 
         # Windows GMUX
         self.windows_gmux_checkbox = wx.CheckBox(self.frame_modal, label="Windows GMUX")
@@ -2314,7 +2314,7 @@ class wx_python_gui:
         self.hibernation_checkbox.SetValue(self.constants.disable_connectdrivers)
         self.hibernation_checkbox.Bind(wx.EVT_CHECKBOX, self.hibernation_click)
         self.hibernation_checkbox.SetPosition(wx.Point(
-            self.windows_gmux_checkbox.GetPosition().x, 
+            self.windows_gmux_checkbox.GetPosition().x,
             self.windows_gmux_checkbox.GetPosition().y + self.windows_gmux_checkbox.GetSize().height))
         self.hibernation_checkbox.SetToolTip(wx.ToolTip("This will disable the ConnectDrivers in OpenCore\nRecommended to toggle if your machine is having issues with hibernation.\nMainly applicable for MacBookPro9,1 and MacBookPro10,1"))
 
@@ -2323,7 +2323,7 @@ class wx_python_gui:
         self.disable_battery_throttling_checkbox.SetValue(self.constants.disable_msr_power_ctl)
         self.disable_battery_throttling_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_battery_throttling_click)
         self.disable_battery_throttling_checkbox.SetPosition(wx.Point(
-            self.hibernation_checkbox.GetPosition().x, 
+            self.hibernation_checkbox.GetPosition().x,
             self.hibernation_checkbox.GetPosition().y + self.hibernation_checkbox.GetSize().height))
         self.disable_battery_throttling_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable MSR Power Control on Arrendale and newer Macs\nMainly applicable for systems with severe throttling due to missing battery or display"))
 
@@ -2332,7 +2332,7 @@ class wx_python_gui:
         self.disable_xcpm_checkbox.SetValue(self.constants.disable_xcpm)
         self.disable_xcpm_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_xcpm_click)
         self.disable_xcpm_checkbox.SetPosition(wx.Point(
-            self.disable_battery_throttling_checkbox.GetPosition().x, 
+            self.disable_battery_throttling_checkbox.GetPosition().x,
             self.disable_battery_throttling_checkbox.GetPosition().y + self.disable_battery_throttling_checkbox.GetSize().height))
         self.disable_xcpm_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable XCPM on Ivy Bridge EP and newer Macs\nMainly applicable for systems with severe throttling due to missing battery or display"))
 
@@ -2363,7 +2363,7 @@ class wx_python_gui:
         self.apple_alc_checkbox.SetValue(self.constants.set_alc_usage)
         self.apple_alc_checkbox.Bind(wx.EVT_CHECKBOX, self.apple_alc_click)
         self.apple_alc_checkbox.SetPosition(wx.Point(
-            self.disable_cpu_friend_checkbox.GetPosition().x, 
+            self.disable_cpu_friend_checkbox.GetPosition().x,
             self.disable_cpu_friend_checkbox.GetPosition().y + self.disable_cpu_friend_checkbox.GetSize().height))
         self.apple_alc_checkbox.SetToolTip(wx.ToolTip("This will set whether AppleALC is allowed to be used during config building.\nMainly applicable for MacPro3,1s that do not have boot screen support, thus preventing AppleALC from working."))
 
@@ -2385,7 +2385,7 @@ class wx_python_gui:
         self.set_enhanced_3rd_party_ssd_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore is allowed to force Apple Vendor on 3rd Party SATA SSDs\nSome benefits from this patch include better SSD performance, TRIM support and hibernation support.\nDisable this option if your SSD does not support TRIM correctly"))
         if self.computer.third_party_sata_ssd is False and not self.constants.custom_model:
             self.set_enhanced_3rd_party_ssd_checkbox.Disable()
-        
+
         # Set Ignore App Updates
         self.set_ignore_app_updates_checkbox = wx.CheckBox(self.frame_modal, label="Ignore App Updates")
         self.set_ignore_app_updates_checkbox.SetValue(self.constants.ignore_updates)
@@ -2395,7 +2395,7 @@ class wx_python_gui:
             self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().y + self.set_enhanced_3rd_party_ssd_checkbox.GetSize().height))
         self.set_ignore_app_updates_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore will ignore App Updates on launch.\nEnable this option if you do not want to be prompted for App Updates"))
 
-        
+
         # Button: Developer Debug Info
         self.debug_button = wx.Button(self.frame_modal, label="Developer Debug Info")
         self.debug_button.Bind(wx.EVT_BUTTON, self.additional_info_menu)
@@ -2403,7 +2403,7 @@ class wx_python_gui:
             self.set_ignore_app_updates_checkbox.GetPosition().x,
             self.set_ignore_app_updates_checkbox.GetPosition().y + self.set_ignore_app_updates_checkbox.GetSize().height + 5))
         self.debug_button.Center(wx.HORIZONTAL)
-        
+
         # Button: return to main menu
         self.return_to_main_menu_button = wx.Button(self.frame_modal, label="Return to Settings")
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
@@ -2413,7 +2413,7 @@ class wx_python_gui:
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         # set frame_modal size below return to main menu button
-        
+
         self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
 
@@ -2431,7 +2431,7 @@ class wx_python_gui:
         else:
             print("Firewire Disabled")
             self.constants.firewire_boot = False
-    
+
     def nvme_click(self, event=None):
         if self.nvme_boot_checkbox.GetValue():
             print("NVMe Enabled")
@@ -2439,7 +2439,7 @@ class wx_python_gui:
         else:
             print("NVMe Disabled")
             self.constants.nvme_boot = False
-    
+
     def nvme_power_management_click(self, event=None):
         if self.nvme_power_management_checkbox.GetValue():
             print("NVMe Power Management Enabled")
@@ -2447,7 +2447,7 @@ class wx_python_gui:
         else:
             print("NVMe Power Management Disabled")
             self.constants.allow_nvme_fixing = False
-    
+
     def xhci_click(self, event=None):
         if self.xhci_boot_checkbox.GetValue():
             print("XHCI Enabled")
@@ -2455,7 +2455,7 @@ class wx_python_gui:
         else:
             print("XHCI Disabled")
             self.constants.xhci_boot = False
-    
+
     def wake_on_wlan_click(self, event=None):
         if self.wake_on_wlan_checkbox.GetValue():
             print("Wake on WLAN Enabled")
@@ -2463,7 +2463,7 @@ class wx_python_gui:
         else:
             print("Wake on WLAN Disabled")
             self.constants.enable_wake_on_wlan = False
-    
+
     def content_caching_click(self, event=None):
         if self.content_caching_checkbox.GetValue():
             print("Content Caching Enabled")
@@ -2471,7 +2471,7 @@ class wx_python_gui:
         else:
             print("Content Caching Disabled")
             self.constants.set_content_caching = False
-    
+
     def disable_tb_click(self, event=None):
         if self.disable_thunderbolt_checkbox.GetValue():
             print("Disable Thunderbolt Enabled")
@@ -2479,7 +2479,7 @@ class wx_python_gui:
         else:
             print("Disable Thunderbolt Disabled")
             self.constants.disable_tb = False
-    
+
     def ts2_accel_click(self, event=None):
         if self.set_terascale_accel_checkbox.GetValue():
             print("TS2 Acceleration Enabled")
@@ -2489,7 +2489,7 @@ class wx_python_gui:
             print("TS2 Acceleration Disabled")
             global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", False)
             self.constants.allow_ts2_accel = False
-    
+
     def force_web_drivers_click(self, event=None):
         if self.force_web_drivers_checkbox.GetValue():
             print("Force Web Drivers Enabled")
@@ -2500,22 +2500,22 @@ class wx_python_gui:
             global_settings.global_settings().write_property("Force_Web_Drivers", False)
             self.constants.force_nv_web = False
 
-    def windows_gmux_click(self, event=None):    
+    def windows_gmux_click(self, event=None):
         if self.windows_gmux_checkbox.GetValue():
             print("Windows GMUX Enabled")
             self.constants.dGPU_switch = True
         else:
             print("Windows GMUX Disabled")
             self.constants.dGPU_switch = False
-    
-    def hibernation_click(self, event=None):    
+
+    def hibernation_click(self, event=None):
         if self.hibernation_checkbox.GetValue():
             print("Hibernation Enabled")
             self.constants.disable_connectdrivers = True
         else:
             print("Hibernation Disabled")
             self.constants.disable_connectdrivers = False
-    
+
     def disable_battery_throttling_click(self, event=None):
         if self.disable_battery_throttling_checkbox.GetValue():
             print("Disable Battery Throttling Enabled")
@@ -2523,7 +2523,7 @@ class wx_python_gui:
         else:
             print("Disable Battery Throttling Disabled")
             self.constants.disable_msr_power_ctl = False
-    
+
     def disable_xcpm_click(self, event=None):
         if self.disable_xcpm_checkbox.GetValue():
             print("Disable XCPM Enabled")
@@ -2547,7 +2547,7 @@ class wx_python_gui:
         else:
             print("Disable CPUFriend Disabled")
             self.constants.disallow_cpufriend = False
-    
+
     def apple_alc_click(self, event=None):
         if self.apple_alc_checkbox.GetValue():
             print("AppleALC Usage Enabled")
@@ -2555,7 +2555,7 @@ class wx_python_gui:
         else:
             print("AppleALC Usage Disabled")
             self.constants.set_alc_usage = False
-    
+
     def set_enhanced_3rd_party_ssd_click(self, event=None):
         if self.set_enhanced_3rd_party_ssd_checkbox.GetValue():
             print("Enhanced 3rd Party SSDs Enabled")
@@ -2588,10 +2588,10 @@ class wx_python_gui:
         else:
             self.constants.imac_vendor = "None"
             self.constants.metal_build = False
-        
+
         print(f"GPU Vendor: {self.constants.imac_vendor}")
         print(f"GPU Model: {self.constants.imac_model}")
-    
+
     def fu_selection_click(self, event=None):
         fu_choice =  self.feature_unlock_dropdown.GetStringSelection()
         if fu_choice == "Enabled":
@@ -2603,7 +2603,7 @@ class wx_python_gui:
         else:
             self.constants.fu_status = False
             self.constants.fu_arguments = None
-    
+
     def set_writeflash_click(self, event=None):
         if self.set_writeflash_checkbox.GetValue():
             print("Write Flash Enabled")
@@ -2736,10 +2736,10 @@ class wx_python_gui:
 
     def smbios_serial_click(self, event):
         self.constants.custom_serial_number = self.smbios_serial_textbox.GetValue()
-    
+
     def smbios_board_serial_click(self, event):
         self.constants.custom_board_serial_number = self.smbios_board_serial_textbox.GetValue()
-    
+
     def generate_new_serials_clicked(self, event):
         macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.constants.custom_model or self.computer.real_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         macserial_output = macserial_output.stdout.decode().strip().split(" | ")
@@ -2762,12 +2762,12 @@ class wx_python_gui:
         selection = self.smbios_dropdown.GetStringSelection()
         print(f"SMBIOS Spoof Level: {selection}")
         self.constants.serial_settings = selection
-    
+
     def smbios_model_click(self, event=None):
         selection = self.smbios_model_dropdown.GetStringSelection()
         print(f"SMBIOS Spoof Model: {selection}")
         self.constants.override_smbios = selection
-    
+
     def additional_info_menu(self, event=None):
         self.reset_frame_modal()
         self.frame_modal.SetSize(wx.Size(500, -1))
@@ -2801,14 +2801,14 @@ class wx_python_gui:
         )
         self.model_dump_textbox.SetSize(
             wx.Size(
-                self.frame_modal.GetSize().width - 5, 
+                self.frame_modal.GetSize().width - 5,
                 self.model_dump_textbox.GetSize().height + self.model_dump_textbox.GetSize().height
             )
         )
         self.model_dump_textbox.Center(wx.HORIZONTAL)
         self.model_dump_textbox.SetEditable(False)
-        
-        
+
+
 
         # Label: Launcher Binary
         self.launcher_binary_label = wx.StaticText(self.frame_modal, label="Launcher Binary")
@@ -2852,12 +2852,12 @@ class wx_python_gui:
         )
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
-        
+
         # Set frame_modal below return to main menu button
         self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
 
-    
+
     def sip_config_menu(self, event=None):
         self.reset_frame_modal()
         self.frame_modal.SetSize(wx.Size(400, 600))
@@ -2878,12 +2878,12 @@ class wx_python_gui:
         self.sip_label.SetPosition(
             wx.Point(self.sip_label.GetPosition().x - 25, -1)
         )
-        
+
         hyperlink_label = hyperlink.HyperLinkCtrl(
             self.frame_modal,
-            -1, 
-            "XNU's csr.h", 
-            pos=(self.sip_label.GetPosition().x + self.sip_label.GetSize().width, self.sip_label.GetPosition().y), 
+            -1,
+            "XNU's csr.h",
+            pos=(self.sip_label.GetPosition().x + self.sip_label.GetSize().width, self.sip_label.GetPosition().y),
             URL="https://github.com/apple/darwin-xnu/blob/main/bsd/sys/csr.h",
         )
         hyperlink_label.SetForegroundColour((25, 179, 231))
@@ -2894,7 +2894,7 @@ class wx_python_gui:
             self.sip_value = 0x00
         else:
             self.sip_value = 0x802
-        
+
         self.sip_label_2 = wx.StaticText(self.frame_modal, label=f"Currently configured SIP: {hex(self.sip_value)}")
         self.sip_label_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.sip_label_2.SetPosition(
@@ -2932,7 +2932,7 @@ class wx_python_gui:
 
         warning_string = """
 OpenCore Legacy Patcher by default knows the most ideal
- SIP value for your system. Override this value only if you 
+ SIP value for your system. Override this value only if you
      understand the consequences. Reckless usage of this
                menu can break your installation.
 """
@@ -2955,7 +2955,7 @@ OpenCore Legacy Patcher by default knows the most ideal
             self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.update_sip_value)
             if self.sip_value & sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"] == sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"]:
                 self.sip_checkbox.SetValue(True)
-        
+
         # Button: returns to the main menu
         self.return_to_main_menu_button = wx.Button(self.frame_modal, label="Return to Settings")
         self.return_to_main_menu_button.SetPosition(
@@ -2987,7 +2987,7 @@ OpenCore Legacy Patcher by default knows the most ideal
 
     def misc_settings_menu(self, event):
         self.reset_frame_modal()
-        
+
         # Header
         self.header = wx.StaticText(self.frame_modal, label="Misc Settings", style=wx.ALIGN_CENTRE, pos=wx.Point(10, 10))
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
@@ -3039,7 +3039,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.firewire_boot_checkbox.SetToolTip(wx.ToolTip("Enable FireWire Boot support in macOS 10.15 and newer.\nMainly applicable for Macs with FireWire or Thunderbolt to FireWire adapters"))
         if generate_smbios.check_firewire(self.computer.real_model) is False and not self.constants.custom_model:
             self.firewire_boot_checkbox.Disable()
-        
+
         # XHCI Boot
         self.xhci_boot_checkbox = wx.CheckBox(self.frame_modal, label="XHCI Boot")
         self.xhci_boot_checkbox.SetValue(self.constants.xhci_boot)
@@ -3053,7 +3053,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.nvme_boot_checkbox.Bind(wx.EVT_CHECKBOX, self.nvme_click)
         self.nvme_boot_checkbox.SetPosition(wx.Point(self.xhci_boot_checkbox.GetPosition().x, self.xhci_boot_checkbox.GetPosition().y + self.xhci_boot_checkbox.GetSize().height))
         self.nvme_boot_checkbox.SetToolTip(wx.ToolTip("Enables NVMe support in UEFI for non-native systems (ie. MacPro3,1)\nRequires OpenCore to be stored on a natively bootable volume however"))
-    
+
         # NVMe Power Management
         self.nvme_power_management_checkbox = wx.CheckBox(self.frame_modal, label="NVMe Power Management")
         self.nvme_power_management_checkbox.SetValue(self.constants.allow_nvme_fixing)
@@ -3146,7 +3146,7 @@ OpenCore Legacy Patcher by default knows the most ideal
             is_blur_enabled = True
         else:
             is_blur_enabled = False
-        
+
         is_rim_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_RimBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
         if is_rim_enabled in ["1", "true"]:
             is_rim_enabled = True
@@ -3187,14 +3187,14 @@ OpenCore Legacy Patcher by default knows the most ideal
         else:
             subprocess.run(["defaults", "write", "-g", "Moraea_BlurBeta", "-bool", "false"])
         print("Beta Blur Enabled:", event.IsChecked())
-    
+
     def enable_dark_menubar_click(self, event=None):
         if event.IsChecked():
             subprocess.run(["defaults", "write", "-g", "Moraea_DarkMenuBar", "-bool", "true"])
         else:
             subprocess.run(["defaults", "write", "-g", "Moraea_DarkMenuBar", "-bool", "false"])
         print("Dark Menu Bar Enabled:", event.IsChecked())
-    
+
     def enable_beta_rim_click(self, event=None):
         if event.IsChecked():
             subprocess.run(["defaults", "write", "-g", "Moraea_RimBeta", "-bool", "true"])

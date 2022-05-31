@@ -25,10 +25,10 @@ class reroute_payloads:
             self.unmount_active_dmgs()
             output = subprocess.run(
                 [
-                    "hdiutil", "attach", "-noverify", f"{self.constants.payload_path}.dmg", 
-                    "-mountpoint", Path(self.temp_dir.name / Path("payloads")), 
-                    "-nobrowse", 
-                    "-shadow", Path(self.temp_dir.name / Path("payloads_overlay")), 
+                    "hdiutil", "attach", "-noverify", f"{self.constants.payload_path}.dmg",
+                    "-mountpoint", Path(self.temp_dir.name / Path("payloads")),
+                    "-nobrowse",
+                    "-shadow", Path(self.temp_dir.name / Path("payloads_overlay")),
                     "-passphrase", "password"
                 ],
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT
@@ -46,7 +46,7 @@ class reroute_payloads:
     def unmount_active_dmgs(self, unmount_all_active=True):
         # Find all DMGs that are mounted, and forcefully unmount them
         # If our disk image was previously mounted, we need to unmount it to use again
-        # This can happen if we crash during a previous scession, however 'atexit' class should hopefully avoid this 
+        # This can happen if we crash during a previous scession, however 'atexit' class should hopefully avoid this
         dmg_info = subprocess.run(["hdiutil", "info", "-plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         dmg_info = plistlib.loads(dmg_info.stdout)
 
@@ -58,12 +58,12 @@ class reroute_payloads:
                         if self.temp_dir.name in image["shadow-path"]:
                             print("- Unmounting personal payloads.dmg")
                             subprocess.run(
-                                ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"], 
+                                ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT
                             )
                 else:
                     print(f"- Unmounting payloads.dmg at: {image['system-entities'][0]['dev-entry']}")
                     subprocess.run(
-                        ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"], 
+                        ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT
                     )

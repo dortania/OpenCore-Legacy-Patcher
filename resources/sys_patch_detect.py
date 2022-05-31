@@ -32,7 +32,7 @@ class detect_root_patch:
         # Patch Requirements
         self.amfi_must_disable   = False
         self.supports_metal      = False
-        self.needs_nv_web_checks = False        
+        self.needs_nv_web_checks = False
 
         # Validation Checks
         self.sip_enabled     = False
@@ -45,7 +45,7 @@ class detect_root_patch:
         self.missing_nv_web_nvram   = False
         self.missing_nv_web_opengl  = False
         self.missing_nv_compat      = False
-    
+
     def detect_gpus(self):
         gpus = self.constants.computer.gpus
         non_metal_os = os_data.os_data.catalina
@@ -71,7 +71,7 @@ class detect_root_patch:
                     device_probe.NVIDIA.Archs.Tesla,
                     device_probe.NVIDIA.Archs.Fermi,
                     device_probe.NVIDIA.Archs.Kepler,
-                    device_probe.NVIDIA.Archs.Maxwell, 
+                    device_probe.NVIDIA.Archs.Maxwell,
                     device_probe.NVIDIA.Archs.Pascal,
                 ]:
                     if self.constants.detected_os > os_data.os_data.mojave:
@@ -110,7 +110,7 @@ class detect_root_patch:
             self.iron_gpu = False
             self.sandy_gpu = False
             self.legacy_keyboard_backlight = False
-    
+
     def check_dgpu_status(self):
         dgpu = self.constants.computer.dgpu
         if dgpu:
@@ -129,7 +129,7 @@ class detect_root_patch:
             if igpu and not dgpu:
                 return True
         return False
-    
+
     def check_legacy_keyboard_backlight(self):
         # iMac12,x+ have an 'ACPI0008' device, but it's not a keyboard backlight
         # Best to assume laptops will have a keyboard backlight
@@ -171,10 +171,10 @@ class detect_root_patch:
                 if gpu.force_compatible is True:
                     return True
         return False
-    
+
     def check_whatevergreen(self):
         return utilities.check_kext_loaded("WhateverGreen", self.constants.detected_os)
-    
+
     def check_sip(self):
         if self.constants.detected_os > os_data.os_data.catalina:
             if self.nvidia_web is True:
@@ -227,7 +227,7 @@ class detect_root_patch:
                         self.legacy_gmux = True
                 else:
                     self.legacy_gmux = True
-        
+
         self.root_patch_dict = {
             "Graphics: Nvidia Tesla":                      self.nvidia_tesla,
             "Graphics: Nvidia Kepler":                     self.kepler_gpu,
@@ -256,16 +256,16 @@ class detect_root_patch:
             "Validation: nvda_drv(_vrl) variable missing": self.missing_nv_web_nvram   if self.nvidia_web is True else False,
 
         }
-        
+
         return self.root_patch_dict
-    
+
     def verify_patch_allowed(self, print_errors=False):
         sip_dict = self.check_sip()
         sip = sip_dict[0]
         sip_value = sip_dict[1]
 
         self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
-        
+
         if self.nvidia_web is True:
             self.missing_nv_web_nvram   = not self.check_nv_web_nvram()
             self.missing_nv_web_opengl  = not self.check_nv_web_opengl()
@@ -293,29 +293,29 @@ class detect_root_patch:
             if self.amfi_enabled is True and self.amfi_must_disable is True:
                 print("\nCannot patch! Please disable AMFI.")
                 print("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
-            
+
             if self.dosdude_patched is True:
                 print("\nCannot patch! Detected machine has already been patched by another patcher")
                 print("Please ensure your install is either clean or patched with OpenCore Legacy Patcher")
-            
+
             if self.nvidia_web is True:
                 if self.missing_nv_web_opengl is True:
                     print("\nCannot patch! Force OpenGL property missing")
                     print("Please ensure ngfxgl=1 is set in boot-args")
-                
+
                 if self.missing_nv_compat is True:
                     print("\nCannot patch! Force Nvidia compatibility property missing")
                     print("Please ensure ngfxcompat=1 is set in boot-args")
-                
+
                 if self.missing_nv_web_nvram is True:
                     print("\nCannot patch! nvda_drv(_vrl) variable missing")
                     print("Please ensure nvda_drv_vrl=1 is set in boot-args")
-                
+
                 if self.missing_whatever_green is True:
                     print("\nCannot patch! WhateverGreen.kext missing")
                     print("Please ensure WhateverGreen.kext is installed")
-                
-            
+
+
         if any(
             [
                 # General patch checks
@@ -334,7 +334,7 @@ class detect_root_patch:
             return False
         else:
             return True
-    
+
     def generate_patchset(self, hardware_details):
         all_hardware_patchset = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor, self.constants.legacy_accel_support)
         required_patches = {}
@@ -406,5 +406,5 @@ class detect_root_patch:
                         print(f"  - {required_patches[patch_name]['Display Name']}")
         else:
             print("  - No patch sets found for booted model")
-        
+
         return required_patches

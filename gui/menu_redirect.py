@@ -11,10 +11,10 @@ class RedirectText(object):
         wx.GetApp().Yield()
         if self.sleep:
             time.sleep(0.01)
-    
+
     def fileno(self):
         return 1
-    
+
     def flush(self):
         pass
 
@@ -28,7 +28,7 @@ class RedirectLabel(object):
             self.out.Centre(wx.HORIZONTAL)
         wx.GetApp().Yield()
         time.sleep(0.01)
-    
+
     def flush(self):
         pass
 

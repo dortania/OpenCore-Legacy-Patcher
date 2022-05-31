@@ -12,7 +12,7 @@ class sys_patch_helpers:
 
     def __init__(self, constants):
         self.constants = constants
-    
+
 
     def snb_board_id_patch(self, source_files_path):
         # AppleIntelSNBGraphicsFB hard codes the supported Board IDs for Sandy Bridge iGPUs
@@ -43,7 +43,7 @@ class sys_patch_helpers:
                     print(f"- Error: Could not find {path}")
                     raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
 
-    
+
     def generate_patchset_plist(self, patchset, file_name):
         source_path = f"{self.constants.payload_path}"
         source_path_file = f"{source_path}/{file_name}"

@@ -44,7 +44,7 @@ class AutomaticSysPatch:
                             warning_str = ""
                             if utilities.verify_network_connection("https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest") is False:
                                 warning_str = f"""\n\nWARNING: We're unable to verify whether there are any new releases of OpenCore Legacy Patcher on Github. Be aware that you may be using an outdated version for this OS. If you're unsure, verify on Github that OpenCore Legacy Patcher {settings.patcher_version} is the latest official release"""
-                            
+
                             args = [
                                 "osascript",
                                 "-e",
@@ -52,7 +52,7 @@ class AutomaticSysPatch:
                                 f'with icon POSIX file "{settings.app_icon_path}"',
                             ]
                             output = subprocess.run(
-                                args, 
+                                args,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT
                             )
@@ -66,7 +66,7 @@ class AutomaticSysPatch:
                                     " without altering line endings"
                                 ]
                                 subprocess.run(
-                                    args, 
+                                    args,
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.STDOUT
                                 )
@@ -85,7 +85,7 @@ class AutomaticSysPatch:
                                 f'with icon POSIX file "{settings.app_icon_path}"',
                             ]
                             output = subprocess.run(
-                                args, 
+                                args,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT
                             )
@@ -101,10 +101,10 @@ class AutomaticSysPatch:
                 AutomaticSysPatch.determine_if_boot_matches(settings)
         else:
             print("- Auto Patch option is not supported on TUI, please use GUI")
-    
+
     def determine_if_boot_matches(settings):
         # Goal of this function is to determine whether the user
-        # is using a USB drive to Boot OpenCore but macOS does not 
+        # is using a USB drive to Boot OpenCore but macOS does not
         # reside on the same drive as the USB.
 
         # If we determine them to be mismatched, notify the user
@@ -121,7 +121,7 @@ class AutomaticSysPatch:
             if settings.booted_oc_disk:
                 root_disk = settings.booted_oc_disk.strip("disk")
                 root_disk = "disk" + root_disk.split("s")[0]
-            
+
                 print(f"  - Boot Drive: {settings.booted_oc_disk} ({root_disk})")
                 macOS_disk = utilities.get_disk_path()
                 print(f"  - macOS Drive: {macOS_disk}")
@@ -134,7 +134,7 @@ class AutomaticSysPatch:
                         print(f"- Boot drive matches macOS drive ({disk})")
                         disk_match = True
                         break
-                
+
                 if disk_match is False:
                     # Check if OpenCore is on a USB drive
                     print("- Boot Drive does not match macOS drive, checking if OpenCore is on a USB drive")
@@ -151,7 +151,7 @@ class AutomaticSysPatch:
                                 f'with icon POSIX file "{settings.app_icon_path}"',
                             ]
                             output = subprocess.run(
-                                args, 
+                                args,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT
                             )
@@ -166,7 +166,7 @@ class AutomaticSysPatch:
 
             else:
                 print("- Failed to find disk OpenCore launched from")
-    
+
 
     def install_auto_patcher_launch_agent(settings):
         # Installs the following:
@@ -177,7 +177,7 @@ class AutomaticSysPatch:
             # As we'd simply be duplicating ourselves
             if not settings.launcher_binary.startswith("/Library/Application Support/Dortania/"):
                 print("- Installing Auto Patcher Launch Agent")
-            
+
                 if not Path("Library/Application Support/Dortania").exists():
                     print("- Creating /Library/Application Support/Dortania/")
                     utilities.process_status(utilities.elevated(["mkdir", "-p", "/Library/Application Support/Dortania"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))

@@ -60,7 +60,7 @@ class tui_disk_installation:
         selected_disk = supported_disks[disk_identifier]
 
         supported_partitions = {}
-        
+
         for partition in selected_disk["partitions"]:
             if selected_disk["partitions"][partition]["fs"] not in ("msdos", "EFI"):
                 continue
@@ -130,7 +130,7 @@ Please build OpenCore first!"""
         response = menu.start()
 
         if response == -1:
-            return        
+            return
         self.install_opencore(f"{disk_identifier}s{response}")
 
     def install_opencore(self, full_disk_identifier):
@@ -147,7 +147,7 @@ Please build OpenCore first!"""
             ):
                 return True
             return False
-        
+
         # TODO: Apple Script fails in Yosemite(?) and older
         args = [
             "osascript",
@@ -241,7 +241,7 @@ Please build OpenCore first!"""
             else:
                 print("- Adding Internal Drive icon")
                 shutil.copy(self.constants.icon_path_internal, mount_path)
-            
+
             print("- Cleaning install location")
             if not self.constants.recovery_status:
                 print("- Unmounting EFI partition")

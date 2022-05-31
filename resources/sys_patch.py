@@ -51,7 +51,7 @@ class PatchSysVolume:
             hardware_details = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
         self.hardware_details = hardware_details
         self.init_pathing(custom_root_mount_path=None, custom_data_mount_path=None)
-    
+
     def __del__(self):
         # Ensures that each time we're patching, we're using a clean repository
         if Path(self.constants.payload_local_binaries_root_path).exists():
@@ -70,7 +70,7 @@ class PatchSysVolume:
             self.mount_location_data = ""
         self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
         self.mount_application_support = f"{self.mount_location_data}/Library/Application Support"
-    
+
 
     def mount_root_vol(self):
         # Returns boolean if Root Volume is available
@@ -120,7 +120,7 @@ class PatchSysVolume:
             args = ["kmutil", "install", "--volume-root", self.mount_location, "--update-all"]
 
             if self.needs_kmutil_exemptions is True:
-                # When installing to '/Library/Extensions', following args skip kext consent 
+                # When installing to '/Library/Extensions', following args skip kext consent
                 # prompt in System Preferences when SIP's disabled
                 print("  (You will get a prompt by System Preferences, ignore for now)")
                 args.append("--no-authentication")
@@ -194,7 +194,7 @@ class PatchSysVolume:
         else:
             print("- Creating SkylightPlugins folder")
             utilities.process_status(utilities.elevated(["mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-    
+
     def delete_nonmetal_enforcement(self):
         for arg in ["useMetal", "useIOP"]:
             result = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
@@ -211,7 +211,7 @@ class PatchSysVolume:
             if Path(destination_path_file).exists():
                 utilities.process_status(utilities.elevated(["rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["cp", f"{self.constants.payload_path}/{file_name}", destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
- 
+
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")
         if self.patch_set_dictionary != {}:
@@ -219,11 +219,11 @@ class PatchSysVolume:
         else:
             self.execute_patchset(sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details))
 
-        if self.constants.wxpython_variant is True and self.constants.detected_os >= os_data.os_data.big_sur: 
+        if self.constants.wxpython_variant is True and self.constants.detected_os >= os_data.os_data.big_sur:
             sys_patch_auto.AutomaticSysPatch.install_auto_patcher_launch_agent(self.constants)
 
         self.rebuild_snapshot()
-    
+
     def execute_patchset(self, required_patches):
         source_files_path = str(self.constants.payload_local_binaries_root_path)
         self.preflight_checks(required_patches, source_files_path)
@@ -235,7 +235,7 @@ class PatchSysVolume:
                     for remove_patch_file in required_patches[patch]["Remove"][remove_patch_directory]:
                         destination_folder_path = str(self.mount_location) + remove_patch_directory
                         self.remove_file(destination_folder_path, remove_patch_file)
-            
+
 
             for method_install in ["Install", "Install Non-Root"]:
                 if method_install in required_patches[patch]:
@@ -270,12 +270,12 @@ class PatchSysVolume:
         self.clean_skylight_plugins()
         # Make sure non-Metal Enforcement preferences are not present
         self.delete_nonmetal_enforcement()
-        
+
         # Make sure SNB kexts are compatible with the host
         if "Intel Sandy Bridge" in required_patches:
             sys_patch_helpers.sys_patch_helpers(self.constants).snb_board_id_patch(source_files_path)
-        
-        for patch in required_patches:            
+
+        for patch in required_patches:
             # Check if all files are present
             for method_type in ["Install", "Install Non-Root"]:
                 if method_type in required_patches[patch]:
@@ -380,7 +380,7 @@ class PatchSysVolume:
         print("- Starting Patch Process")
         print(f"- Determining Required Patch set for Darwin {self.constants.detected_os}")
         self.patch_set_dictionary = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details)
-        
+
         if self.patch_set_dictionary == {}:
             change_menu = None
             print("- No Root Patches required for your machine!")

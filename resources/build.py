@@ -53,7 +53,7 @@ class BuildOpenCore:
         else:
             print("- Adding Internal Drive icon")
             shutil.copy(self.constants.icon_path_internal, self.constants.opencore_release_folder)
-    
+
     def chainload_diags(self):
         Path(self.constants.opencore_release_folder / Path("System/Library/CoreServices/.diagnostics/Drivers/HardwareDrivers")).mkdir(parents=True, exist_ok=True)
         if self.constants.boot_efi is True:
@@ -147,7 +147,7 @@ class BuildOpenCore:
                 # Credit to Parrotgeek1 for boot.efi and hv_vmm_present patch sets
                 # print("- Enabling Board ID exemption patch")
                 # self.get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Skip Board ID check")["Enabled"] = True
-                
+
                 print("- Enabling VMM exemption patch")
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2)")["Enabled"] = True
@@ -166,14 +166,14 @@ class BuildOpenCore:
         if self.get_kext_by_bundle_path("Lilu.kext")["Enabled"] is True:
             # Required for Lilu in 11.0+
             self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
-        
+
         if self.constants.fu_status is True:
             # Enable FeatureUnlock.kext
             self.enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
             if self.constants.fu_arguments is not None:
                 print(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
-        
+
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value or self.constants.disable_xcpm is True:
             # With macOS 12.3 Beta 1, Apple dropped the 'plugin-type' check within X86PlatformPlugin
             # Because of this, X86PP will match onto the CPU instead of ACPI_SMC_PlatformPlugin
@@ -240,7 +240,7 @@ class BuildOpenCore:
         # In macOS 12.4 and 12.5 Beta 1, Apple added AVX1.0 usage in AppleFSCompressionTypeZlib
         # Pre-Sandy Bridge CPUs don't support AVX1.0, thus we'll downgrade the kext to 12.3.1's
         # Currently a (hopefully) temporary workaround for the issue, proper fix needs to be investigated
-        # Ref: 
+        # Ref:
         #    https://forums.macrumors.com/threads/macos-12-monterey-on-unsupported-macs-thread.2299557/post-31120235
         #    https://forums.macrumors.com/threads/monterand-probably-the-start-of-an-ongoing-saga.2320479/post-31123553
 
@@ -398,7 +398,7 @@ class BuildOpenCore:
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
             print("- Adding IOHIDFamily patch")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.iokit.IOHIDFamily")["Enabled"] = True
-        
+
         # Legacy iSight patches
         try:
             if smbios_data.smbios_dictionary[self.model]["Legacy iSight"] is True:
@@ -467,7 +467,7 @@ class BuildOpenCore:
                     Path(self.constants.agdp_contents_folder).mkdir()
                     shutil.copy(agdp_map_path, self.constants.agdp_contents_folder)
                     self.get_kext_by_bundle_path("AGDP-Override.kext")["Enabled"] = True
-        
+
         if self.constants.serial_settings != "None":
             # AGPM Patch
             if self.model in model_array.DualGPUPatch:
@@ -534,7 +534,7 @@ class BuildOpenCore:
             self.enable_kext("IOFireWireSBP2.kext", self.constants.fw_kext, self.constants.fw_sbp2_path)
             self.enable_kext("IOFireWireSerialBusProtocolTransport.kext", self.constants.fw_kext, self.constants.fw_bus_path)
             self.get_kext_by_bundle_path("IOFireWireFamily.kext/Contents/PlugIns/AppleFWOHCI.kext")["Enabled"] = True
-    
+
 
         def backlight_path_detection(self):
             if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
@@ -863,7 +863,7 @@ class BuildOpenCore:
                         print("- Adding SATA Hibernation Patch")
                         self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
                         break
-        
+
         # Apple RAID Card check
         if not self.constants.custom_model:
             if self.computer.storage:
@@ -1124,7 +1124,7 @@ class BuildOpenCore:
             self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = sn
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = mlb
-    
+
 
         if self.constants.serial_settings == "Moderate":
             print("- Using Moderate SMBIOS patching")
@@ -1148,7 +1148,7 @@ class BuildOpenCore:
                 print("- Detected UEFI 1.2 or older Mac, updating BoardProduct")
                 self.config["PlatformInfo"]["DataHub"]["BoardProduct"] = self.spoofed_board
                 self.config["PlatformInfo"]["UpdateDataHub"] = True
-            
+
             if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
                 print("- Adding custom serial numbers")
                 self.config["PlatformInfo"]["Automatic"] = True

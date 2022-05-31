@@ -115,7 +115,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
         link = "https://swscan.apple.com/content/catalogs/others/index-12beta-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
     else:
         link = "https://swscan.apple.com/content/catalogs/others/index-12customerseed-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
-    
+
     if utilities.verify_network_connection(link) is True:
         try:
             catalog_plist = plistlib.loads(requests.get(link).content)
@@ -287,7 +287,7 @@ def select_disk_to_format():
 
     if response == -1:
         return None
-    
+
     return response
 
 

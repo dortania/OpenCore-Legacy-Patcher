@@ -223,7 +223,7 @@ class NVIDIAEthernet(EthernetController):
 
     class Chipsets(enum.Enum):
         nForceEthernet = "nForceEthernet"
-    
+
     chipset: Chipsets = field(init=False)
 
     def detect_chipset(self):
@@ -331,7 +331,7 @@ class IntelEthernet(EthernetController):
         AppleIntelI210Ethernet = "AppleIntelI210Ethernet Supported"
         Intel82574L = "Intel82574L Supported"
         Unknown = "Unknown"
-    
+
     chipset: Chipsets = field(init=False)
 
     def detect_chipset(self):
@@ -380,7 +380,7 @@ class BroadcomEthernet(EthernetController):
     class Chipsets(enum.Enum):
         AppleBCM5701Ethernet = "AppleBCM5701Ethernet supported"
         Unknown = "Unknown"
-    
+
     chipset: Chipsets = field(init=False)
 
     def detect_chipset(self):
@@ -416,7 +416,7 @@ class Aquantia(EthernetController):
         # pylint: disable=invalid-name
         AppleEthernetAquantiaAqtion = "AppleEthernetAquantiaAqtion supported"
         Unknown = "Unknown"
-    
+
     chipset: Chipsets = field(init=False)
 
     def detect_chipset(self):
@@ -432,7 +432,7 @@ class Marvell(EthernetController):
     class Chipsets(enum.Enum):
         MarvelYukonEthernet = "MarvelYukonEthernet supported"
         Unknown = "Unknown"
-    
+
     chipset: Chipsets = field(init=False)
 
     def detect_chipset(self):
@@ -448,7 +448,7 @@ class SysKonnect(EthernetController):
     class Chipsets(enum.Enum):
         MarvelYukonEthernet = "MarvelYukonEthernet supported"
         Unknown = "Unknown"
-    
+
     chipset: Chipsets = field(init=False)
 
     def detect_chipset(self):
@@ -556,13 +556,13 @@ class Computer:
                 self.wifi = vendor.from_ioregistry(device, anti_spoof=True)  # type: ignore
                 break
             ioreg.IOObjectRelease(device)
-    
+
     def ambient_light_sensor_probe(self):
         device = next(ioreg.ioiterator_to_list(ioreg.IOServiceGetMatchingServices(ioreg.kIOMasterPortDefault, ioreg.IOServiceNameMatching("ALS0".encode()), None)[1]), None)
         if device:
             self.ambient_light_sensor = True
             ioreg.IOObjectRelease(device)
-    
+
     def sdxc_controller_probe(self):
         sdxc_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
@@ -618,7 +618,7 @@ class Computer:
         for device in uhci_controllers:
             self.usb_controllers.append(UHCIController.from_ioregistry(device))
             ioreg.IOObjectRelease(device)
-    
+
     def ethernet_probe(self):
         ethernet_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
@@ -627,7 +627,7 @@ class Computer:
                 None,
             )[1]
         )
-        
+
         for device in ethernet_controllers:
             vendor: Type[EthernetController] = PCIDevice.from_ioregistry(device).vendor_detect(inherits=EthernetController)  # type: ignore
             if vendor:
@@ -658,7 +658,7 @@ class Computer:
         for device in sata_controllers:
             self.storage.append(SATAController.from_ioregistry(device))
             ioreg.IOObjectRelease(device)
-        
+
         for device in sas_controllers:
             self.storage.append(SASController.from_ioregistry(device))
             ioreg.IOObjectRelease(device)
@@ -730,7 +730,7 @@ class Computer:
             self.bluetooth_chipset = "BRCM2046 Hub"
         elif "Bluetooth" in usb_data:
             self.bluetooth_chipset = "Generic"
-    
+
     def sata_disk_probe(self):
         # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'
         # Determine whether SATA SSD is present and Apple-made
@@ -748,11 +748,11 @@ class Computer:
                                 # Bail out of loop as we only need to know if there are any third-party SSDs present
                                 break
                 except KeyError:
-                    # Notes: 
+                    # Notes:
                     # - SATA Optical Disk Drives don't report 'spsata_medium_type'
                     # - 'spsata_physical_interconnect' was not introduced till 10.9
                     continue
-    
+
     def oclp_sys_patch_probe(self):
         path = Path("/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist")
         if path.exists():

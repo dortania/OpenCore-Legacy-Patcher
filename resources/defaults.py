@@ -21,7 +21,7 @@ class generate_defaults:
                 # If either variables are missing, we assume something is wrong with the spoofed variables and reset
                 settings.custom_serial_number = ""
                 settings.custom_board_serial_number = ""
-        
+
             if settings.computer.usb_controllers:
                 try:
                     if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
@@ -48,7 +48,7 @@ class generate_defaults:
                         if arg_result not in ["true", "1", "false", "0"]:
                             subprocess.run(["defaults", "write", "-g", arg, "-bool", "TRUE"])
 
-            if settings.computer.gpus: 
+            if settings.computer.gpus:
                 for gpu in settings.computer.gpus:
                     if gpu.arch == device_probe.NVIDIA.Archs.Kepler:
                         # 12.0 (B7+): Kepler are now unsupported
@@ -67,7 +67,7 @@ class generate_defaults:
                 settings.sip_status = False
                 settings.allow_fv_root = True  #  Allow FileVault on broken seal
 
-            if settings.computer.gpus: 
+            if settings.computer.gpus:
                 for gpu in settings.computer.gpus:
                     if gpu.arch in [
                         device_probe.AMD.Archs.Legacy_GCN_7000,
@@ -110,7 +110,7 @@ class generate_defaults:
             settings.secure_status = False  # Modified root volume
             settings.allow_fv_root = True  #  Allow FileVault on broken seal
             # settings.amfi_status = True  #  Signed bundles, Don't need to explicitly set currently
-        
+
         if "Book" in model:
             settings.set_content_caching = False
         else:
@@ -147,7 +147,7 @@ class generate_defaults:
                 settings.fu_arguments = None
             if smbios_data.smbios_dictionary[model]["CPU Generation"] >= cpu_data.cpu_data.skylake.value:
                 # On 2016-2017 MacBook Pros, 15" devices used a stock Samsung SSD with IONVMeController
-                # Technically this should be patched based on NVMeFix.kext logic, 
+                # Technically this should be patched based on NVMeFix.kext logic,
                 # however Apple deemed the SSD unsupported for enhanced performance
                 # In addition, some upgraded NVMe drives still have issues with enhanced power management
                 # Safest to disable by default, allow user to configure afterwards

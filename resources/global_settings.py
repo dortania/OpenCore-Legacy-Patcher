@@ -14,7 +14,7 @@ class global_settings:
         self.global_settings_plist = f"{self.global_settings_folder}/{self.file_name}"
         self.generate_settings_file()
         self.convert_defaults_to_global_settings()
-    
+
     def generate_settings_file(self):
         if Path(self.global_settings_plist).exists():
             return
@@ -25,7 +25,7 @@ class global_settings:
         if property_name in plist:
             return plist[property_name]
         return None
-    
+
     def write_property(self, property_name, property_value):
         plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
         plist[property_name] = property_value

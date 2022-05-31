@@ -198,13 +198,13 @@ def check_metal_support(device_probe, computer):
         for gpu in computer.gpus:
             if (
                 (gpu.arch in [
-                    device_probe.NVIDIA.Archs.Tesla, 
-                    device_probe.NVIDIA.Archs.Fermi, 
+                    device_probe.NVIDIA.Archs.Tesla,
+                    device_probe.NVIDIA.Archs.Fermi,
                     device_probe.NVIDIA.Archs.Maxwell,
                     device_probe.NVIDIA.Archs.Pascal,
-                    device_probe.AMD.Archs.TeraScale_1, 
-                    device_probe.AMD.Archs.TeraScale_2, 
-                    device_probe.Intel.Archs.Iron_Lake, 
+                    device_probe.AMD.Archs.TeraScale_1,
+                    device_probe.AMD.Archs.TeraScale_2,
+                    device_probe.Intel.Archs.Iron_Lake,
                     device_probe.Intel.Archs.Sandy_Bridge
                     ]
                 )
@@ -248,7 +248,7 @@ def check_secure_boot_level():
         #   - Either x86legacy or T2 without ApECID, returns 1
         #   - Disabled, returns 0
         # Ref: https://github.com/acidanthera/OpenCorePkg/blob/f7c1a3d483fa2535b6a62c25a4f04017bfeee09a/Library/OcMainLib/OpenCoreUefi.c#L490-L502
-        # 
+        #
         # Genuine Mac logic:
         #   - On genuine non-T2 Macs, they always return 0
         #   - T2 Macs will return based on their Starup Policy (Full(2), Medium(1), Disabled(0))
@@ -446,7 +446,7 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
                 if total_file_size > 1024:
                     total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
                 print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
-        
+
         if verify_checksum is True:
             # Verify checksum
             # Note that this can be quite taxing on slower Macs
@@ -505,11 +505,11 @@ def find_apfs_physical_volume(device):
     return physical_disks
 
 def clean_device_path(device_path: str):
-    # ex:     
+    # ex:
     #   'PciRoot(0x0)/Pci(0xA,0x0)/Sata(0x0,0x0,0x0)/HD(1,GPT,C0778F23-3765-4C8E-9BFA-D60C839E7D2D,0x28,0x64000)/EFI\OC\OpenCore.efi'
     #   'PciRoot(0x0)/Pci(0x1A,0x7)/USB(0x0,0x0)/USB(0x2,0x0)/HD(2,GPT,4E929909-2074-43BA-9773-61EBC110A670,0x64800,0x38E3000)/EFI\OC\OpenCore.efi'
     #   'PciRoot(0x0)/Pci(0x1A,0x7)/USB(0x0,0x0)/USB(0x1,0x0)/\EFI\OC\OpenCore.efi'
-    # return: 
+    # return:
     #   'C0778F23-3765-4C8E-9BFA-D60C839E7D2D'
     #   '4E929909-2074-43BA-9773-61EBC110A670'
     #   'None'
@@ -540,7 +540,7 @@ def find_disk_off_uuid(uuid):
         except KeyError:
             pass
     return None
-    
+
 
 def grab_mount_point_from_disk(disk):
     data = plistlib.loads(subprocess.run(f"diskutil info -plist {disk}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
@@ -567,7 +567,7 @@ def validate_link(link):
         return False
 
 def block_os_updaters():
-    # Disables any processes that would be likely to mess with 
+    # Disables any processes that would be likely to mess with
     # the root volume while we're working with it.
     bad_processes = [
         "softwareupdate",
@@ -578,7 +578,7 @@ def block_os_updaters():
     output = subprocess.check_output(["ps", "-ax"])
     lines = output.splitlines()
     for line in lines:
-        entry = line.split() 
+        entry = line.split()
         pid = entry[0].decode()
         current_process = entry[3].decode()
         for bad_process in bad_processes:

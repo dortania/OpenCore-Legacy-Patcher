@@ -113,7 +113,7 @@ class Run:
             stderr = comm.get("stderr", False)
             mess   = comm.get("message", None)
             show   = comm.get("show",   False)
-            
+
             if not mess == None:
                 print(mess)
 
@@ -129,7 +129,7 @@ class Run:
                         args.insert(0, out[0].replace("\n", "")) # add to start of list
                     elif type(args) is str:
                         args = out[0].replace("\n", "") + " " + args # add to start of string
-            
+
             if show:
                 print(" ".join(args))
 

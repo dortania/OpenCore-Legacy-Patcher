@@ -36,7 +36,7 @@ Note 2: Currently OpenCore Legacy Patcher officially supports patching to run ma
 
 * For macOS Mojave and Catalina support, we recommend the use of [dosdude1's patchers](http://dosdude1.com)
 
-## Getting Started 
+## Getting Started
 
 To start using the project, please see our in-depth guide:
 
@@ -45,7 +45,7 @@ To start using the project, please see our in-depth guide:
 ## Support
 
 To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN). We're actively there and is the quickest way to receive help.
-  
+
   * Please review our docs on [how to debug with OpenCore](https://dortania.github.io/OpenCore-Legacy-Patcher/DEBUG.html) to gather important information to help others with troubleshooting.
 
 ## Running from source

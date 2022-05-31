@@ -102,4 +102,3 @@ class gui_help_menu:
             )
         )
         self.frame_modal.ShowWindowModal()
-    

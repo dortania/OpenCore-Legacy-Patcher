@@ -178,7 +178,7 @@
 - Resolves Install USB Creation using incorrect installer
 - Resolves `installer` failing to extract InstallAssistant in older OSes
 - Resolves certain Samsung NVMe drives appearing as external on Mac Pros
-- Add FeatureUnlock configurability 
+- Add FeatureUnlock configurability
 - Add NVRAM WriteFlash configurability for degraded/fragile systems
 - Add `ThirdPartyDrives` quirk configurability
 - Resolve Skylight dylib injection issue
@@ -229,7 +229,7 @@
 - Resolve rare memory corruption due to FeatureUnlock
 - Raise SurPlus MaxKernel to 21.99.99
 - Fix Content Caching with spoofless usage
-- Allow disabling of ConnectDrivers 
+- Allow disabling of ConnectDrivers
   - Aid with Hibernation on MacBookPro9,1/MacBookPro10,1
 - Add legacy iSight patch
   - Applicable for MacBook4,1/5,2

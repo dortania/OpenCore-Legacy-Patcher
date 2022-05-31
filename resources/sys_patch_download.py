@@ -10,7 +10,7 @@ class grab_patcher_support_pkg:
 
     def __init__(self, constants):
         self.constants = constants
-    
+
     def generate_pkg_link(self):
         link = f"{self.constants.url_patcher_support_pkg}{self.constants.patcher_support_pkg_version}/Universal-Binaries.zip"
         return link

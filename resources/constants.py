@@ -179,7 +179,7 @@ class Constants:
         self.force_latest_psp = False  #       Force latest PatcherSupportPkg
         self.disable_msr_power_ctl = False  #  Disable MSR Power Control (missing battery throttling)
         self.software_demux = False  #         Enable Software Demux patch set
-        self.force_vmm = False  #              Force VMM patch 
+        self.force_vmm = False  #              Force VMM patch
         self.custom_sip_value = None  #        Set custom SIP value
         self.walkthrough = False  #            Enable Walkthrough
         self.disable_connectdrivers = False  # Disable ConnectDrivers (hibernation)
@@ -208,7 +208,7 @@ class Constants:
     @property
     def plist_template(self):
         return self.payload_path / Path("Config/config.plist")
-    
+
     # Launch Agent
     @property
     def auto_patch_launch_agent_path(self):
@@ -222,7 +222,7 @@ class Constants:
     @property
     def windows_ssdt_path(self):
         return self.payload_path / Path("ACPI/SSDT-PCI.aml")
-    
+
     @property
     def demux_ssdt_path(self):
         return self.payload_path / Path("ACPI/SSDT-DGPU.aml")
@@ -239,7 +239,7 @@ class Constants:
     @property
     def xhci_driver_path(self):
         return self.payload_path / Path("Drivers/XhciDxe.efi")
-    
+
     @property
     def usb_bus_driver_path(self):
         return self.payload_path / Path("Drivers/UsbBusDxe.efi")
@@ -247,11 +247,11 @@ class Constants:
     @property
     def diags_launcher_path(self):
         return self.payload_path / Path("Drivers/diags.efi")
-    
+
     @property
     def list_txt_path(self):
         return self.payload_path / Path("List.txt")
-    
+
     @property
     def installer_sh_path(self):
         return self.payload_path / Path("Installer.sh")
@@ -304,11 +304,11 @@ class Constants:
     @property
     def mce_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleMCEReporterDisabler-v{self.mce_version}.zip")
-    
+
     @property
     def bigsursdxc_path(self):
         return self.payload_kexts_path / Path(f"Misc/BigSurSDXC-v{self.bigsursdxc_version}.zip")
-    
+
     @property
     def apfs_zlib_path(self):
         return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-v{self.apfs_zlib_version}.zip")
@@ -352,7 +352,7 @@ class Constants:
     @property
     def btspoof_path(self):
         return self.payload_kexts_path / Path(f"Misc/Bluetooth-Spoof-v{self.btspoof_version}.zip")
-    
+
     @property
     def aspp_override_path(self):
         return self.payload_kexts_path / Path(f"Misc/ASPP-Override-v{self.aspp_override_version}.zip")
@@ -376,7 +376,7 @@ class Constants:
     @property
     def cslvfixup_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/CSLVFixup-v{self.cslvfixup_version}.zip")
-    
+
     @property
     def autopkg_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/AutoPkgInstaller-v{self.autopkg_version}-{self.kext_variant}.zip")
@@ -384,11 +384,11 @@ class Constants:
     @property
     def innie_path(self):
         return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}.zip")
-    
+
     @property
     def simplemsr_path(self):
         return self.payload_kexts_path / Path(f"Misc/SimpleMSR-v{self.simplemsr_version}.zip")
-    
+
     @property
     def gpu_wake_path(self):
         return self.payload_kexts_path / Path(f"Misc/AMDGPUWakeHandler-v{self.gpu_wake_version}.zip")
@@ -396,11 +396,11 @@ class Constants:
     @property
     def apple_trackpad_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleUSBTrackpad-v{self.apple_trackpad}.zip")
-    
+
     @property
     def apple_isight_path(self):
         return self.payload_kexts_path / Path(f"Misc/LegacyUSBVideoSupport-v{self.apple_isight_version}.zip")
-    
+
     @property
     def apple_raid_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleRAIDCard-v{self.apple_raid_version}.zip")
@@ -518,7 +518,7 @@ class Constants:
     @property
     def ocvalidate_path(self):
         return self.payload_path / Path(f"Tools/ocvalidate-{self.opencore_version}")
-    
+
     @property
     def oclp_helper_path(self):
         return self.payload_path / Path("Tools/OCLP-Helper")
@@ -551,7 +551,7 @@ class Constants:
     @property
     def installer_pkg_path(self):
         return self.payload_path / Path("AutoPkg-Assets.pkg")
-    
+
     @property
     def installer_pkg_zip_path(self):
         return self.payload_path / Path("AutoPkg-Assets.pkg.zip")
@@ -560,7 +560,7 @@ class Constants:
     @property
     def payload_local_binaries_root_path(self):
         return self.payload_path / Path("Universal-Binaries")
-    
+
     @property
     def payload_local_binaries_root_path_zip(self):
         return self.payload_path / Path("Universal-Binaries.zip")

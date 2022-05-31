@@ -102,7 +102,7 @@ class arguments:
             if "Library/InstallerSandboxes/" in str(settings.payload_path):
                 print("- Running from Installer Sandbox")
                 thread = threading.Thread(target=sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings, None).start_patch)
-                thread.start()            
+                thread.start()
                 while thread.is_alive():
                     utilities.block_os_updaters()
                     time.sleep(1)

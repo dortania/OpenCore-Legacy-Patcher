@@ -67,7 +67,7 @@ Valid Options:
 1. None (stock GPU)
 2. Nvidia Kepler
 3. AMD Polaris
-4. AMD Legacy GCN 
+4. AMD Legacy GCN
 Q. Return to previous menu
 
 Note: Patcher will detect whether hardware has been upgraded regardless, this
@@ -466,7 +466,7 @@ OpenCore will enable NVMe support in it's picker
             print("Returning to previous menu")
         else:
             self.allow_nvme()
-    
+
     def allow_nvme_pwr_mgmt(self):
         utilities.cls()
         utilities.header(["Allow NVMe Power Management Adjustments"])
@@ -479,7 +479,7 @@ within macOS.
 Note that some NVMe drives don't support macOS's
 power management settings, and can result in boot
 issues. Disable this option if you experience
-IONVMeFamily kernel panics. Mainly applicable for 
+IONVMeFamily kernel panics. Mainly applicable for
 Skylake and newer Macs.
         """
         )
@@ -493,7 +493,7 @@ Skylake and newer Macs.
             print("Returning to previous menu")
         else:
             self.allow_nvme()
-    
+
     def allow_xhci(self):
         utilities.cls()
         utilities.header(["Allow NVMe UEFI Support"])
@@ -554,7 +554,7 @@ be prepared if enabling.
 Some 2013-14 MacBook Pro's have issues with the built-in thunderbolt,
 resulting in kernel panics and random shutdowns.
 
-To alliviate, you can disable the thunderbolt controller on MacBookPro11,x 
+To alliviate, you can disable the thunderbolt controller on MacBookPro11,x
 machines with this option.
 
 Note: This option only works on MacBookPro11,x, file an issue if you know of
@@ -650,7 +650,7 @@ for Windows may prefer to only work with the dGPU and eGPU active.
             print("Returning to previous menu")
         else:
             self.dGPU_switch_support()
-    
+
     def set_3rd_party_drices(self):
         utilities.cls()
         utilities.header(["Set enhanced 3rd Party SSD Support"])
@@ -673,7 +673,7 @@ TRIM is not ideal.
             print("Returning to previous menu")
         else:
             self.set_3rd_party_drices()
-    
+
     def set_software_demux(self):
         utilities.cls()
         utilities.header(["Set Software Demux"])
@@ -701,7 +701,7 @@ https://dortania.github.io/OpenCore-Legacy-Patcher/ACCEL.html#unable-to-switch-g
             print("Returning to previous menu")
         else:
             self.set_software_demux()
-    
+
     def set_battery_throttle(self):
         utilities.cls()
         utilities.header(["Disable Firmware Throttling"])
@@ -714,7 +714,7 @@ low power mode.
 
 Enabling this option will patch 'MSR_POWER_CTL' to be unset allowing
 proper CPU behaviour as if hardware is present. Note that this can cause
-instability in situations where the CPU is being taxed and pulls more 
+instability in situations where the CPU is being taxed and pulls more
 power than the laptop's PSU can supply.
 
 Note: Only supported on Nehalem and newer Macs (2010+)
@@ -766,7 +766,7 @@ By default OCLP will only allow SurPlus to be used on Big Sur and Monterey.
 This is for safety reasons in the event newer OSes may break compatibility
 and result in boot loops.
 
-Enabling this option will allow SurPlus to have no MaxKernel set, and 
+Enabling this option will allow SurPlus to have no MaxKernel set, and
 therefore allow it to run on anything newer than 11.2.3. However if you
 do toggle this setting, ensure you have a known-good OS to return to in
 the event there's issues.
@@ -782,17 +782,17 @@ the event there's issues.
             print("Returning to previous menu")
         else:
             self.set_surplus()
-    
+
     def set_hibernation_workaround(self):
         utilities.cls()
         utilities.header(["Set Hibernation Workaround"])
         print(
             """
 For users with Hibernation issues, you can flip this option to disable certain
-OpenCore settings that may affect the stability of Hibernation. Namely 
+OpenCore settings that may affect the stability of Hibernation. Namely
 OpenCore's ConnectDrivers option.
 
-Flipping this setting will disable automatic loading of additional drives in 
+Flipping this setting will disable automatic loading of additional drives in
 OpenCore's boot menu other than what was booted.
 
 Note: This option should only be flipped under the following circumstances:
@@ -813,7 +813,7 @@ Note: This option should only be flipped under the following circumstances:
             print("Returning to previous menu")
         else:
             self.set_hibernation_workaround()
-    
+
     def set_custom_sip_value(self):
         utilities.cls()
         utilities.header(["Set Custom SIP Value"])
@@ -835,7 +835,7 @@ To disable SIP outright, set it to 0xFEF
         except ValueError:
             print("Invalid input, returning to previous menu")
             self.set_custom_sip_value()
-    
+
     def set_fu_settings(self):
         utilities.cls()
         utilities.header(["Set FeatureUnlock Settings"])
@@ -871,7 +871,7 @@ Supported Options:
         else:
             print("Invalid input, returning to previous menu")
             self.set_fu_settings()
-    
+
     def set_allow_native_spoofs(self):
         utilities.cls()
         utilities.header(["Allow Native Spoofs"])
@@ -895,7 +895,7 @@ available however not officially supported.
             print("Returning to previous menu")
         else:
             self.set_allow_native_spoofs()
-    
+
     def set_nvram_write(self):
         utilities.cls()
         utilities.header(["Set NVRAM Write"])
@@ -919,7 +919,7 @@ Supported Options:
         else:
             print("Invalid input, returning to previous menu")
             self.set_nvram_write()
-    
+
     def set_cc_support(self):
         utilities.cls()
         utilities.header(["Set Content Caching Support"])
@@ -1187,7 +1187,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 menu.add_menu_option(option[0], function=option[1])
 
             response = menu.start()
-    
+
     def download_macOS(self):
         utilities.cls()
         utilities.header(["Create macOS installer"])
@@ -1221,7 +1221,7 @@ B. Exit
             print("Failed to start download")
             input("Press any key to continue...")
 
-    
+
     def download_macOS_installer(self):
         response = None
         while not (response and response == -1):
@@ -1241,7 +1241,7 @@ B. Exit
                 for option in options:
                     menu.add_menu_option(option[0], function=option[1])
             response = menu.start()
-    
+
     def find_local_installer(self):
         response = None
         while not (response and response == -1):
@@ -1255,7 +1255,7 @@ B. Exit
                 for option in options:
                     menu.add_menu_option(option[0], function=option[1])
             response = menu.start()
-    
+
     def list_disks(self, installer_path):
         disk = installer.select_disk_to_format()
         if disk != None:

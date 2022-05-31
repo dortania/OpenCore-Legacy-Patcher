@@ -8,7 +8,7 @@ class shim_list:
     shim_legacy_accel = [
         "CoreWLAN.dylib",
     ]
- 
+
     shim_legacy_accel_keyboard = [
         "BacklightFixup.dylib",
     ]

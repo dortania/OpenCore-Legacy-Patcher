@@ -345,7 +345,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "NVDAResmanTeslaWeb.kext":        "WebDriver-387.10.10.10.40.140",
                     },
 
-                    # Disabled due to issues with Pref pane stripping 'nvda_drv' NVRAM 
+                    # Disabled due to issues with Pref pane stripping 'nvda_drv' NVRAM
                     # variables
                     # "/Library/PreferencePanes": {
                     #     "NVIDIA Driver Manager.prefPane": "WebDriver-387.10.10.10.40.140",
