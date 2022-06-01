@@ -1,7 +1,6 @@
 # Download PatcherSupportPkg for usage with Root Patching
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from data import os_data
 from resources import utilities
 from pathlib import Path
 import shutil

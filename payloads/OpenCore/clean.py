@@ -9,7 +9,6 @@
 # - Zip folders
 # TODO:
 # - Download latest builds from dortania.github.io
-from __future__ import print_function
 
 import subprocess
 from pathlib import Path

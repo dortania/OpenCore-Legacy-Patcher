@@ -1,7 +1,5 @@
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from __future__ import print_function
-
 import subprocess
 import sys
 from pathlib import Path

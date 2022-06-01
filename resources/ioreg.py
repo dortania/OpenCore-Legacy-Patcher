@@ -1,8 +1,6 @@
 # PyObjc Handling for IOKit
 # Copyright (C) 2020-2022, Dhinak G
 
-from __future__ import annotations
-
 from typing import NewType, Union
 import objc
 

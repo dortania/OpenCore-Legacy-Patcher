@@ -8,11 +8,15 @@
 # We perform our required edits, then create a new snapshot for the system boot
 
 # The manual process is as follows:
-#  1. Mount the APFS volume as a read/write volume
+#  1. Find the Root Volume
+#     'diskutil info / | grep "Device Node:"'
+#  2. Convert Snapshot Device Node to Root Volume Device Node
+#     /dev/disk3s1s1 -> /dev/disk3s1 (strip last 's1')
+#  3. Mount the APFS volume as a read/write volume
 #     'sudo mount -o nobrowse -t apfs  /dev/disk5s5 /System/Volumes/Update/mnt1'
-#  2. Perform edits to the system (ie. create new KernelCollection)
+#  4. Perform edits to the system (ie. create new KernelCollection)
 #     'sudo kmutil install --volume-root /System/Volumes/Update/mnt1/ --update-all'
-#  3. Create a new snapshot for the system boot
+#  5. Create a new snapshot for the system boot
 #     'sudo bless --folder /System/Volumes/Update/mnt1/System/Library/CoreServices --bootefi --create-snapshot'
 
 # Additionally Apple's APFS snapshot system supports system rollbacks:

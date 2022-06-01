@@ -1,6 +1,5 @@
 # Commands for building the EFI and SMBIOS
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
-from __future__ import print_function
 
 import binascii
 import copy
@@ -1003,6 +1002,11 @@ class BuildOpenCore:
             # Ensure this is done at the end so all previous RestrictEvents patches are applied
             # RestrictEvents and EFICheckDisabler will confilict if both are injected
             self.enable_kext("EFICheckDisabler.kext", self.constants.restrictevents_version, self.constants.efi_disabler_path)
+        if self.constants.set_vmm_cpuid is True:
+            # Should be unneeded with our sysctl VMM patch, however for reference purposes we'll leave it here
+            # Ref: https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/
+            self.config["Kernel"]["Emulate"]["Cpuid1Data"] = binascii.unhexlify("00000000000000000000008000000000")
+            self.config["Kernel"]["Emulate"]["Cpuid1Mask"] = binascii.unhexlify("00000000000000000000008000000000")
 
     def set_smbios(self):
         spoofed_model = self.model

@@ -1,7 +1,6 @@
 # Handle misc CLI menu options
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 import sys
-import subprocess
 
 from resources import constants, install, utilities, defaults, sys_patch, installer, tui_helpers, global_settings
 from data import cpu_data, smbios_data, model_array, os_data, mirror_data

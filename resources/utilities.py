@@ -1,5 +1,4 @@
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymaluk
-from __future__ import print_function
 
 import hashlib
 import math

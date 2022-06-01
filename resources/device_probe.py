@@ -1,8 +1,6 @@
 # Hardware probing
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from __future__ import annotations
-
 import binascii
 import enum
 import itertools

@@ -2,8 +2,6 @@
 # Define Files
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from __future__ import print_function
-
 from pathlib import Path
 from typing import Optional
 
@@ -194,6 +192,7 @@ class Constants:
         self.needs_to_open_preferences = False  # Determine if preferences need to be opened
         self.host_is_hackintosh = False #     Determine if host is Hackintosh
         self.commit_info = (None, None, None)
+        self.set_vmm_cpuid = False  #          Set VMM bit inside CPUID
 
         self.legacy_accel_support = [
             os_data.os_data.big_sur,
