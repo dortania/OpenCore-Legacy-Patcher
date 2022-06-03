@@ -22,6 +22,9 @@
   - Currently running in OpenGL mode, [non-Metal issues](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) applicable
 - Enable Beta Blur settings on non-Metal by default
   - For slower hardware, disabling may slightly improve performance
+- Deprecate TUI support
+  - Users may still manually run from source for future builds
+  - Binaries will no longer be provided on future release
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases
