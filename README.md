@@ -85,6 +85,8 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
   * [SimpleMSR](https://github.com/arter97/SimpleMSR/) to disable firmware throttling in Nehalem+ MacBooks without batteries
 * [Mr.Macintosh](https://mrmacintosh.com)
   * Endless hours helping architect and troubleshoot many portions of the project
+* [flagers](https://github.com/flagersgit)
+  * Aid with Nvidia Web Driver research and development
 * MacRumors and Unsupported Mac Communities
   * Endless testing, reporting issues
 * Apple
