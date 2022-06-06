@@ -152,11 +152,11 @@ class BuildOpenCore:
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2)")["Enabled"] = True
 
                 # Patch HW_BID to OC_BID
-                # Set OC_BID to MacPro6,1 Board ID (Mac-F60DEB81FF30ACF6)
+                # Set OC_BID to iMac18,1 Board ID (Mac-F60DEB81FF30ACF6)
                 # Goal is to only allow OS booting through OCLP, otherwise failing
                 print("- Enabling HW_BID reroute")
                 self.get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Reroute HW_BID to OC_BID")["Enabled"] = True
-                self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["OC_BID"] = "Mac-F60DEB81FF30ACF6"
+                self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["OC_BID"] = "Mac-BE088AF8C5EB4FA2"
                 self.config["NVRAM"]["Delete"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"] += ["OC_BID"]
             else:
                 print("- Enabling SMC exemption patch")
