@@ -121,7 +121,10 @@ class PatchSysVolume:
         print("- Rebuilding Kernel Cache (This may take some time)")
 
         if self.constants.detected_os > os_data.os_data.catalina:
-            args = ["kmutil", "install", "--volume-root", self.mount_location, "--update-all"]
+            if self.constants.detected_os >= os_data.os_data.ventura:
+                args = ["kmutil", "create", "--volume-root", self.mount_location, "--update-all"]
+            else:
+                args = ["kmutil", "install", "--volume-root", self.mount_location, "--update-all"]
 
             if self.needs_kmutil_exemptions is True:
                 # When installing to '/Library/Extensions', following args skip kext consent
