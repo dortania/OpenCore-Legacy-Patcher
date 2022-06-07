@@ -459,6 +459,27 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     },
                 },
             },
+            "AMD Legacy GCN": {
+                "Display Name": "Graphics: AMD Legacy GCN",
+                 "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install Reference": {
+                    "/System/Library/Extensions": {
+                        "AMD7000Controller.kext": "12.4",
+                        "AMD8000Controller.kext": "12.4",
+                        "AMD9000Controller.kext": "12.4",
+                        "AMDRadeonX4000.kext":    "12.4",
+                    },
+                },
+            },
             "Intel Ironlake": {
                 "Display Name": "Graphics: Intel Ironlake",
                 "OS Support": {
@@ -528,6 +549,75 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "AppleIntelHD4000Graphics.kext":            "11.4",
                         "AppleIntelIVBVA.bundle":                   "11.4",
                         "AppleIntelGraphicsShared.bundle":          "11.4", # libIGIL-Metal.dylib pulled from 11.0 Beta 6
+                    },
+                },
+            },
+            "Intel Haswell": {
+                "Display Name": "Graphics: Intel Haswell",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install Reference": {
+                    "/System/Library/Extensions": {
+                        "AppleIntelFramebufferAzul.kext":           "12.4",
+                        "AppleIntelHD5000Graphics.kext":            "12.4",
+                        "AppleIntelHD5000GraphicsGLDriver.bundle":  "11.0 Beta 6",
+                        "AppleIntelHD5000GraphicsMTLDriver.bundle": "11.0 Beta 6",
+                        "AppleIntelHD5000GraphicsVADriver.bundle":  "11.0 Beta 6",
+                        "AppleIntelHSWVA.bundle":                   "11.0 Beta 6",
+                    },
+                },
+            },
+            "Intel Broadwell": {
+                "Display Name": "Graphics: Intel Broadwell",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install Reference": {
+                    "/System/Library/Extensions": {
+                        "AppleIntelBDWGraphics.kext":            "12.4",
+                        "AppleIntelBDWGraphicsFramebuffer.kext": "12.4",
+                        "AppleIntelBDWGraphicsGLDriver.bundle":  "11.0 Beta 6",
+                        "AppleIntelBDWGraphicsMTLDriver.bundle": "11.0 Beta 6",
+                        "AppleIntelBDWGraphicsVADriver.bundle":  "11.0 Beta 6",
+                        "AppleIntelBDWGraphicsVAME.bundle":      "11.0 Beta 6",
+                    },
+                },
+            },
+            "Intel Skylake": {
+                "Display Name": "Graphics: Intel Skylake",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install Reference": {
+                    "/System/Library/Extensions": {
+                        "AppleIntelSKLGraphics.kext":            "12.4",
+                        "AppleIntelSKLGraphicsFramebuffer.kext": "12.4",
+                        "AppleIntelSKLGraphicsGLDriver.bundle":  "11.0 Beta 6",
+                        "AppleIntelSKLGraphicsMTLDriver.bundle": "11.0 Beta 6",
+                        "AppleIntelSKLGraphicsVADriver.bundle":  "11.0 Beta 6",
+                        "AppleIntelSKLGraphicsVAME.bundle":      "11.0 Beta 6",
                     },
                 },
             },
