@@ -25,6 +25,7 @@
 - Deprecate TUI support
   - Users may still manually run from source for future builds
   - Binaries will no longer be provided on future release
+- Switch boot.efi model patch to iMac18,1
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases
