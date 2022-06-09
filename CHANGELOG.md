@@ -27,6 +27,13 @@
   - Binaries will no longer be provided on future release
 - Switch boot.efi model patch to iMac18,1
 - Resolve pre-Force Touch Trackpad support in Ventura
+- Add Ventura-dropped Models:
+  - MacPro6,1
+  - Macmini7,1
+  - iMac16,x, iMac17,1
+  - MacBook9,1
+  - MacBookAir7,x
+  - MacBookPro11,4/5, MacBookPro12,1, MacBookPro13,x
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases

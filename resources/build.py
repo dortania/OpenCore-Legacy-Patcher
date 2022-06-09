@@ -520,7 +520,7 @@ class BuildOpenCore:
                             "use-layout-id": 1,
                         }
                     self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
-            elif self.model.startswith("MacPro") or self.model.startswith("Xserve"):
+            elif (self.model.startswith("MacPro") and self.model != "MacPro6,1") or self.model.startswith("Xserve"):
                 # Used to enable Audio support for non-standard dGPUs
                 self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
 
