@@ -34,6 +34,7 @@
   - MacBook9,1
   - MacBookAir7,x
   - MacBookPro11,4/5, MacBookPro12,1, MacBookPro13,x
+- Add Ventura Software Catalog parsing
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases

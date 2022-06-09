@@ -1395,7 +1395,7 @@ class wx_python_gui:
         # Download installer catalog
         if ias is None:
             def ia():
-                self.available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "PublicSeed")
+                self.available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "DeveloperSeed")
 
             print("- Downloading installer catalog...")
             thread_ia = threading.Thread(target=ia)
