@@ -765,6 +765,15 @@ class BuildOpenCore:
             # Add AMDGPUWakeHandler
             self.enable_kext("AMDGPUWakeHandler.kext", self.constants.gpu_wake_version, self.constants.gpu_wake_path)
 
+        # Pre-Force Touch trackpad support for macOS Ventura
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.skylake.value:
+            if self.model.startswith("MacBook"):
+                # These units got force touch early, so ignore them
+                if self.model not in ["MacBookPro11,4", "MacBookPro11,5", "MacBook8,1"]:
+                    self.enable_kext("AppleUSBTopCase.kext", self.constants.topcase_version, self.constants.top_case_path)
+                    self.enable_kext("AppleUSBMultitouch.kext", self.constants.multitouch_version, self.constants.multitouch_path)
+
+
         # Bluetooth Detection
         if not self.constants.custom_model and self.computer.bluetooth_chipset:
             if self.computer.bluetooth_chipset in ["BRCM2070 Hub", "BRCM2046 Hub"]:
@@ -840,6 +849,23 @@ class BuildOpenCore:
             self.chainload_diags()
         except KeyError:
             pass
+
+        # With macOS 13, Ventura, Apple removed the Skylake graphics stack. However due to the lack of inovation
+        # with the Kaby lake and Coffee Lake iGPUs, we're able to spoof ourselves to natively support them
+
+        # Currently the following iGPUs we need to be considerate of:
+        # - HD530 (mobile):  0x191B0006
+
+
+        # | GPU      | Model            | Device ID | Platform ID | New Device ID | New Platform ID |
+        # | -------- | ---------------- | --------- | ----------- | ------------- | --------------- |
+        # | HD 515   | MacBook9,1       | 0x191E    | 0x131E0003  |
+        # | Iris 540 | MacBookPro13,1/2 | 0x1926    | 0x19160002  | 0x5926        | 0x59260002
+        # | HD 530   | MacBookPro13,3   | 0x191B    | 0x191B0006  | 0x591B        | 0x591B0006      |
+        # | HD 530   | iMac17,1         | 0x1912    | 0x19120001  | 0x5912        | 0x59120003      |
+
+
+
 
         if self.constants.xhci_boot is True:
             print("- Adding USB 3.0 Controller Patch")
