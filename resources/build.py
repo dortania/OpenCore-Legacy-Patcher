@@ -765,15 +765,6 @@ class BuildOpenCore:
             # Add AMDGPUWakeHandler
             self.enable_kext("AMDGPUWakeHandler.kext", self.constants.gpu_wake_version, self.constants.gpu_wake_path)
 
-        # Pre-Force Touch trackpad support for macOS Ventura
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.skylake.value:
-            if self.model.startswith("MacBook"):
-                # These units got force touch early, so ignore them
-                if self.model not in ["MacBookPro11,4", "MacBookPro11,5", "MacBook8,1"]:
-                    self.enable_kext("AppleUSBTopCase.kext", self.constants.topcase_version, self.constants.top_case_path)
-                    self.enable_kext("AppleUSBMultitouch.kext", self.constants.multitouch_version, self.constants.multitouch_path)
-
-
         # Bluetooth Detection
         if not self.constants.custom_model and self.computer.bluetooth_chipset:
             if self.computer.bluetooth_chipset in ["BRCM2070 Hub", "BRCM2046 Hub"]:
