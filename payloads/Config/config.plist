@@ -1267,7 +1267,61 @@
 				<key>Enabled</key>
 				<false/>
 				<key>ExecutablePath</key>
-				<string>Contents/MacOS/AppleUSBTopCase</string>
+				<string></string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>22.0.0</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
+				<string>AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCButtons.kext</string>
+				<key>Comment</key>
+				<string>AppleUSBTCButtons</string>
+				<key>Enabled</key>
+				<false/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AppleUSBTCButtons</string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>22.0.0</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
+				<string>AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext</string>
+				<key>Comment</key>
+				<string>AppleUSBTCKeyboard</string>
+				<key>Enabled</key>
+				<false/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AppleUSBTCKeyboard</string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>22.0.0</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
+				<string>AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyEventDriver.kext</string>
+				<key>Comment</key>
+				<string>AppleUSBTCKeyEventDriver</string>
+				<key>Enabled</key>
+				<false/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AppleUSBTCKeyEventDriver</string>
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
