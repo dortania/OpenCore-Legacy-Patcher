@@ -36,7 +36,7 @@ Regarding OS support, see below:
 | MacBook6,1 | Late 2009 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> |
 | MacBook7,1 | Mid 2010 | ^^ | ^^ |
 | MacBook8,1 | Mid 2015 | ^^ | <span style="color:green"> Everything is supported</span> |
-| MacBook9,1 | Mid 2016 | <span style="color:red"> NO </span> | See [Ventura](VENTURA-DROP) for more information. |
+| MacBook9,1 | Mid 2016 | <span style="color:red"> NO </span> | See [Ventura](VENTURA-DROP) for more information.<br/>Works for FeatureUnlock in Monterey and lower. |
 
 ### MacBook Air
 
@@ -53,7 +53,7 @@ Regarding OS support, see below:
 | MacBookAir6,1 | Mid 2013, Early 2014 | ^^ | ^^ |
 | MacBookAir6,2 | ^^ | ^^ | ^^ |
 | MacBookAir7,1 | Mid 2015 | ^^ | ^^ |
-| MacBookAir7,2 | Mid 2015, Mid 2017 | <span style="color:red"> NO </span> | See [Ventura](VENTURA-DROP) for more information. |
+| MacBookAir7,2 | Mid 2015, Mid 2017 | <span style="color:red"> NO </span> | See [Ventura](VENTURA-DROP) for more information.<br/>Works for FeatureUnlock in Monterey and lower. |
 
 ### MacBook Pro
 
@@ -83,7 +83,7 @@ Regarding OS support, see below:
 | MacBookPro11,1 | Late 2013, Mid 2014 | ^^ | ^^ |
 | MacBookPro11,2 | ^^ | ^^ | ^^ |
 | MacBookPro11,3 | ^^ | ^^ | ^^ |
-| MacBookPro11,4 | Late 2015 | <span style="color:red"> NO </span> | See [Ventura](VENTURA-DROP) for more information. |
+| MacBookPro11,4 | Late 2015 | <span style="color:red"> NO </span> | See [Ventura](VENTURA-DROP) for more information.<br/>Works for FeatureUnlock in Monterey and lower. |
 | MacBookPro11,5 | ^^ | ^^ | ^^ |
 | MacBookPro12,1 | Early 2015 | ^^ | ^^ |
 | MacBookPro13,1 | Late 2016 | ^^ | ^^ |
@@ -103,7 +103,7 @@ Regarding OS support, see below:
 | Macmini5,3 | ^^ | ^^ | ^^ |
 | Macmini6,1 | Late 2012 | ^^ | <span style="color:green"> Everything is supported</span> |
 | Macmini6,2 | ^^ | ^^ | ^^ |
-| Macmini7,1 | Late 2014 | <span style="color:red"> NO </span> | See [Ventura](VENTURA-DROP) for more information. |
+| Macmini7,1 | Late 2014 | <span style="color:red"> NO </span> | See [Ventura](VENTURA-DROP) for more information.<br/>Works for FeatureUnlock in Monterey and lower. |
 
 ### iMac
 
@@ -131,7 +131,7 @@ Regarding OS support, see below:
 | iMac14,3 | ^^ | ^^ | ^^ |
 | iMac14,4 | Mid 2014 | ^^ | ^^ |
 | iMac15,1 | Late 2014, Mid 2015 | ^^ | ^^ | 
-| iMac16,1 | Late 2015 | <span style="color:red"> NO </span> | See [Ventura](VENTURA-DROP) for more information. |
+| iMac16,1 | Late 2015 | <span style="color:red"> NO </span> | See [Ventura](VENTURA-DROP) for more information.<br/>Works for FeatureUnlock in Monterey and lower. |
 | iMac16,2 | ^^ | ^^ | ^^ |
 | iMac17,1 | ^^ | ^^ | ^^ |
 * For iMac10,1 through iMac12,x, we highly recommend users upgrade the GPU to a Metal supported model. See here for more information: [iMac late 2009 to Mid 2011 Graphics Card Upgrade Guide](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857)
