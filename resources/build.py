@@ -776,7 +776,6 @@ class BuildOpenCore:
                     self.get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyEventDriver.kext")["Enabled"] = True
                     self.enable_kext("AppleUSBMultitouch.kext", self.constants.multitouch_version, self.constants.multitouch_path)
 
-
         # Bluetooth Detection
         if not self.constants.custom_model and self.computer.bluetooth_chipset:
             if self.computer.bluetooth_chipset in ["BRCM2070 Hub", "BRCM2046 Hub"]:
