@@ -359,6 +359,7 @@ class detect_root_patch:
             [
                 # General patch checks
                 self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched,
+                self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura else False,
 
                 # non-Metal specific
                 self.amfi_enabled if self.amfi_must_disable is True else False,
