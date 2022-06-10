@@ -2,6 +2,12 @@
 
 To aid users in troubleshooting, we've compiled a list of users who've reported success with OpenCore Legacy patcher as well as the version used. This should aid users in verifying whether issues with the patcher are regression-related with newer versions.
 
+::: warning 
+
+If your issues are related to macOS Ventura, see the [Ventura](VENTURA-DROP.md) page.
+
+:::
+
 ::: details MacBook
 
 | SMBIOS | Tested | Tester | Model | Version | Comment |
@@ -14,6 +20,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | Jazzzny | ^^ | ^^ | ^^ |
 | ^^ | ^^ | AlexSakha67 | ^^ | 0.0.20 | ^^ |
 | MacBook8,1 | <span style="color:red"> NO </span> | N/A | N/A | N/A | ^^ |
+| MacBook9,1 | ^^ | ^^ | ^^ | ^^ | ^^ |
 
 :::
 
@@ -33,6 +40,8 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | cboukouv | ^^ | 0.0.21 | ^^ |
 | MacBookAir6,1 | <span style="color:red"> NO </span> | N/A | N/A | N/A | N/A |
 | MacBookAir6,2 | ^^ | ^^ | ^^ | ^^ | ^^ |
+| MacBookAir7,1 | ^^ | ^^ | ^^ | ^^ | ^^ |
+| MacBookAir7,2 | ^^ | ^^ | ^^ | ^^ | ^^ |
 
 :::
 
@@ -51,16 +60,16 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacBookPro6,2 | <span style="color:#30BCD5"> YES </span> | Jakeluke | Stock | Unknown | dGPU broken |
 | MacBookPro7,1 | ^^ | fussel132 | ^^ | 0.1.2 | N/A
 | ^^ | ^^ | casey1234 | Upgraded | 0.3.3 | Upgraded SSD |
-| MacBookPro8,1 | <span style="color:#30BCD5"> YES </span> | AvaQueen | Stock | 0.0.19 | N/A |
+| MacBookPro8,1 | ^^ | AvaQueen | Stock | 0.0.19 | N/A |
 | MacBookPro8,1 | ^^ | charly-black | Upgraded | 0.3.1 | Upgraded BCM94331PCIEBT4CAX |
 | MacBookPro8,2 | ^^ | air.man | Stock | 0.0.22 | dGPU disabled |
 | ^^ | ^^ | cboukouv | ^^ | 0.0.19 | N/A |
 | MacBookPro8,3 | ^^ | lulujyc | ^^  | 0.1.4 | dGPU disabled |
-| MacBookPro9,1 | <span style="color:#30BCD5"> YES </span>| jbdamiano | Stock | 0.0.19 | N/A |
+| MacBookPro9,1 | ^^ | jbdamiano | Stock | 0.0.19 | N/A |
 | ^^ | ^^ | dennes544 | ^^ | ^^ | ^^ |
 | ^^ | ^^ | cgrazy | ^^ | ^^ | ^^ |
 | ^^ | ^^ | LIPA85 | ^^ | ^^ | ^^ |
-| MacBookPro9,2 | <span style="color:#30BCD5"> YES </span> | alexx17xx | ^^ | ^^ | ^^ |
+| MacBookPro9,2 | ^^ | alexx17xx | ^^ | ^^ | ^^ |
 | ^^ | ^^ | Arvxistanx | ^^ | ^^ | ^^ |
 | ^^ | ^^ | CyberDroid1 | ^^ | 0.0.16 | ^^ | 
 | ^^ | ^^ | woefi | Upgraded | 0.0.13 | Upgraded BCM94331CAX |
@@ -68,12 +77,19 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | vinaypundith | Unknown | 0.0.7 | ^^ |
 | ^^ | ^^ | casey1234 | Upgraded | 0.3.3 | Upgraded RAM and SSD |
 | ^^ | ^^ | crystall1nedev | Upgraded | 0.4.4 | ^^ |
-| MacBookPro10,1 | <span style="color:#30BCD5"> YES </span> | traviswparker | Stock | 0.0.14 | N/A |
+| MacBookPro10,1 | ^^ | traviswparker | Stock | 0.0.14 | N/A |
 | ^^ | ^^ | il-rollino | Upgraded | 0.0.21 | Upgraded BCM94360CSAX |
 | MacBookPro10,2 | ^^ | akidone | ^^ | 0.3.0 | ^^ |
-| MacBookPro11,1 | <span style="color:#30BCD5"> YES </span> | ParaDoX1994 | Stock | 0.4.4 | N/A |
+| MacBookPro11,1 | ^^ | ParaDoX1994 | Stock | 0.4.4 | N/A |
 | MacBookPro11,2 | ^^ | casey1234 | ^^ | 0.3.3 | ^^ |
-| MacBookPro11,3 | <span style="color:red"> NO </span> | N/A | N/A | N/A | N/A |
+| MacBookPro11,3 | ^^ | Hzlph | Stock | 0.4.5 | N/A |
+| MacBookPro11,4 | <span style="color:red"> NO </span> | N/A | N/A | N/A | N/A | 
+| MacBookPro11,5 | ^^ | ^^ | ^^ | ^^ | ^^ |
+| MacBookPro12,1 | ^^ | ^^ | ^^ | ^^ | ^^ |
+| MacBookPro13,1 | ^^ | ^^ | ^^ | ^^ | ^^ |
+| MacBookPro13,2 | ^^ | ^^ | ^^ | ^^ | ^^ |
+| MacBookPro13,3 | ^^ | ^^ | ^^ | ^^ | ^^ |
+
 :::
 
 ::: details Mac mini
@@ -93,7 +109,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^| ^^ | MykolaG | ^^ | 0.4.5 | ^^ |
 | Macmini6,2 | ^^  | Shelbs | ^^ | 0.0.16 | ^^ |
 | Macmini7,1 | <span style="color:#30BCD5"> YES </span> | MykolaG | ^^ | 0.4.5 | ^^ |
-| Macmini8,1 | ^^ | ^^ | ^^ | 0.4.5 | ^^ |
+
 :::
 
 ::: details iMac
@@ -123,6 +139,10 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | mibaxx | ^^ | 0.0.21 | ^^ |
 | iMac14,3 | ^^ | StupeFied | ^^ | 0.4.5 | ^^ |
 | iMac15,1 | <span style="color:#30BCD5"> YES </span> | JakubMazur | Upgraded | 0.4.1 | Upgraded RAM, Radeon R9 M295X and Quad-Core Intel Core i7 |
+| iMac16,1 | <span style="color:red"> NO </span> | N/A | N/A | N/A | N/A |
+| iMac16,2 | ^^ | ^^ | ^^ | ^^ | ^^ |
+| iMac17,1 | ^^ | ^^ | ^^ | ^^ | ^^ |
+
 :::
 
 ::: details Mac Pro
@@ -141,4 +161,6 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | MacPro5,1 | ^^ | woefi | Upgraded | 0.0.21 | Upgraded with RX 580. |
 | ^^ | ^^ | Mabrouk Oscar | Unknown | ^^ | N/A |
 | ^^ | ^^ | astuffedtiger | Flashed | 0.0.18 | MacPro4,1 flashed to 5,1 |
+| MacPro6,1 | <span style="color:red"> NO </span> | N/A | N/A | N/A | N/A |
+
 :::
