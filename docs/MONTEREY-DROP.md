@@ -2,7 +2,8 @@
 
 With OpenCore Legacy Patcher v0.1.7 and newer, we've implemented macOS Monterey support for users. Please note that Apple has dropped a lot of hardware with this release as well as broken many of our previous patch sets. This page will be used to inform users regarding current issues and will be updated as new patch sets are developed and added to our patcher.
  
-[See the stauts of OCLP and macOS Ventura](VENTURA-DROP)
+[See the status of OCLP and macOS Ventura](VENTURA-DROP)
+
 ## Newly dropped hardware
 
 With Monterey, Apple continues their their somewhat ruthless march of dropping Intel hardware. This release saw the removal, and thus addition into OpenCore Legacy Patcher, of the following models:
