@@ -3,6 +3,7 @@
 # Used when supplying data to sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
+from pathlib import Path
 from resources import constants, device_probe, utilities
 from data import model_array, os_data, sip_data, sys_patch_dict
 
@@ -13,14 +14,18 @@ class detect_root_patch:
         self.computer = self.constants.computer
 
         # GPU Patch Detection
-        self.nvidia_tesla = False
-        self.kepler_gpu   = False
-        self.nvidia_web   = False
-        self.amd_ts1      = False
-        self.amd_ts2      = False
-        self.iron_gpu     = False
-        self.sandy_gpu    = False
-        self.ivy_gpu      = False
+        self.nvidia_tesla  = False
+        self.kepler_gpu    = False
+        self.nvidia_web    = False
+        self.amd_ts1       = False
+        self.amd_ts2       = False
+        self.iron_gpu      = False
+        self.sandy_gpu     = False
+        self.ivy_gpu       = False
+        self.haswell_gpu   = False
+        self.broadwell_gpu = False
+        self.skylake_gpu   = False
+        self.legacy_gcn    = False
 
         # Misc Patch Detection
         self.brightness_legacy         = False
@@ -40,6 +45,7 @@ class detect_root_patch:
         self.amfi_enabled    = False
         self.fv_enabled      = False
         self.dosdude_patched = False
+        self.missing_kdk     = False
 
         self.missing_whatever_green = False
         self.missing_nv_web_nvram   = False
@@ -86,6 +92,14 @@ class detect_root_patch:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts2 = True
                         self.amfi_must_disable = True
+                elif gpu.arch in [
+                    device_probe.AMD.Archs.Legacy_GCN_7000,
+                    device_probe.AMD.Archs.Legacy_GCN_8000,
+                    device_probe.AMD.Archs.Legacy_GCN_9000,
+                ]:
+                    if self.constants.detected_os > os_data.os_data.monterey:
+                        self.legacy_gcn = True
+                        self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
                     if self.constants.detected_os > non_metal_os:
                         self.iron_gpu = True
@@ -99,6 +113,18 @@ class detect_root_patch:
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         self.ivy_gpu = True
+                        self.supports_metal = True
+                elif gpu.arch == device_probe.Intel.Archs.Haswell:
+                    if self.constants.detected_os > os_data.os_data.monterey:
+                        self.haswell_gpu = True
+                        self.supports_metal = True
+                elif gpu.arch == device_probe.Intel.Archs.Broadwell:
+                    if self.constants.detected_os > os_data.os_data.monterey:
+                        self.broadwell_gpu = True
+                        self.supports_metal = True
+                elif gpu.arch == device_probe.Intel.Archs.Skylake:
+                    if self.constants.detected_os > os_data.os_data.monterey:
+                        self.skylake_gpu = True
                         self.supports_metal = True
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
@@ -175,6 +201,14 @@ class detect_root_patch:
     def check_whatevergreen(self):
         return utilities.check_kext_loaded("WhateverGreen", self.constants.detected_os)
 
+    def check_kdk(self):
+        if Path("/Library/Developer/KDKs").exists():
+            for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
+                # We don't want to support mismatched KDKs
+                if self.constants.detected_os_build in kdk_folder.name:
+                    return True
+        return False
+
     def check_sip(self):
         if self.constants.detected_os > os_data.os_data.catalina:
             if self.nvidia_web is True:
@@ -234,9 +268,13 @@ class detect_root_patch:
             "Graphics: Nvidia Web Drivers":                self.nvidia_web,
             "Graphics: AMD TeraScale 1":                   self.amd_ts1,
             "Graphics: AMD TeraScale 2":                   self.amd_ts2,
+            "Graphics: AMD Legacy GCN":                    False, # self.legacy_gcn,
             "Graphics: Intel Ironlake":                    self.iron_gpu,
             "Graphics: Intel Sandy Bridge":                self.sandy_gpu,
             "Graphics: Intel Ivy Bridge":                  self.ivy_gpu,
+            "Graphics: Intel Haswell":                     False, # self.haswell_gpu,
+            "Graphics: Intel Broadwell":                   False, # self.broadwell_gpu,
+            "Graphics: Intel Skylake":                     False, # self.skylake_gpu,
             "Brightness: Legacy Backlight Control":        self.brightness_legacy,
             "Audio: Legacy Realtek":                       self.legacy_audio,
             "Networking: Legacy Wireless":                 self.legacy_wifi,
@@ -254,7 +292,7 @@ class detect_root_patch:
             "Validation: Force OpenGL property missing":   self.missing_nv_web_opengl  if self.nvidia_web is True else False,
             "Validation: Force compat property missing":   self.missing_nv_compat      if self.nvidia_web is True else False,
             "Validation: nvda_drv(_vrl) variable missing": self.missing_nv_web_nvram   if self.nvidia_web is True else False,
-
+            f"Validation: Kernel Debug Kit missing (need {self.constants.detected_os_build})": self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura else False,
         }
 
         return self.root_patch_dict
@@ -265,6 +303,7 @@ class detect_root_patch:
         sip_value = sip_dict[1]
 
         self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
+        self.missing_kdk = not self.check_kdk()
 
         if self.nvidia_web is True:
             self.missing_nv_web_nvram   = not self.check_nv_web_nvram()
@@ -350,6 +389,15 @@ class detect_root_patch:
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
+        if hardware_details["Graphics: Intel Haswell"] is True:
+            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
+        if hardware_details["Graphics: Intel Broadwell"] is True:
+            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Intel Broadwell": all_hardware_patchset["Graphics"]["Intel Broadwell"]})
+        if hardware_details["Graphics: Intel Skylake"] is True:
+            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Intel Skylake": all_hardware_patchset["Graphics"]["Intel Skylake"]})
         if hardware_details["Graphics: Nvidia Tesla"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Nvidia Tesla": all_hardware_patchset["Graphics"]["Nvidia Tesla"]})

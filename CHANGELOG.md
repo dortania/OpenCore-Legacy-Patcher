@@ -25,16 +25,18 @@
 - Deprecate TUI support
   - Users may still manually run from source for future builds
   - Binaries will no longer be provided on future release
-- Switch boot.efi model patch to iMac18,1
-- Resolve pre-Force Touch Trackpad support in Ventura
-- Add Ventura-dropped Models:
-  - MacPro6,1
-  - Macmini7,1
-  - iMac16,x, iMac17,1
-  - MacBook9,1
-  - MacBookAir7,x
-  - MacBookPro11,4/5, MacBookPro12,1, MacBookPro13,x
-- Add Ventura Software Catalog parsing
+- Ventura Specific Updates:
+  - Switch boot.efi model patch to iMac18,1
+  - Resolve pre-Force Touch Trackpad support in Ventura
+  - Add Ventura-dropped Models:
+    - MacPro6,1
+    - Macmini7,1
+    - iMac16,x, iMac17,1
+    - MacBook9,1
+    - MacBookAir7,x
+    - MacBookPro11,4/5, MacBookPro12,1, MacBookPro13,x
+  - Add Ventura Software Catalog parsing
+  - Add Kernel Debug Kit checks to Ventura root patching
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases

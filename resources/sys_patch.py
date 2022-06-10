@@ -1,7 +1,7 @@
 # Framework for mounting and patching macOS root volume
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-# System based off of Apple's Kernel Development Kit (KDK)
+# System based off of Apple's Kernel Debug Kit (KDK)
 # - https://developer.apple.com/download/all/
 
 # The system relies on mounting the APFS volume as a live read/write volume
