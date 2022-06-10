@@ -37,3 +37,25 @@ Term | Description
 **32-Bit Firmware**   | The bit number of a Firmware determines how much data the firmware can address. In some older Macs, it's common to have a 64-Bit CPU can have a 32-Bit firmware<br/>- 32-Bit Firmwares were only supported up-to Mac OS X 10.7, Lion.
 **SSE Instructions**   | Also known as **S**IMD **S**ingle-Precision Floating-Point **I**nstructions,  these are defined as instruction sets supported by your CPU. In macOS, there are a certain number of instruction sets required for normal operation: <br/>- SSE3: Required for all Intel CPUs since Mac OS X 10.4, Tiger <br/>- SSSE3: Required for all Intel 64-Bit CPUs since Mac OS X 10.6, Snow Leopard  <br/>- SSE4.1: Required for all Intel CPUs since macOS 10.12, Sierra
 ---
+
+# CPU Instructions
+
+## SSE
+
+Also known as **S**IMD **S**ingle-Precision Floating-Point **I**nstructions, these instructions help to increase performance when applying the same operations to multiple data points, such as graphics processing. 
+
+* **SSE3** is required for Intel CPUs on Mac OS X 10.4 Tiger and later  
+* **SSSE3** is required for 64-bit Intel CPUs on Mac OS X 10.6 Snow Leopard and later  
+* **SSE4.1** is required for Intel CPUs on macOS 10.12 Sierra and later  
+* **SSE4.2** is required for Intel CPUs on macOS 10.14 Mojave and later  
+  * SSE4.1 users can bypass this with [telemetrap](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/post-28447707)  
+  * Newer AMD drivers also depend on SSE4.2, see [here](https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/) for details  
+
+## AVX
+
+Also known as **A**dvanced **V**ector E**x**tensions, these instructions help allow for more parallel calculations to be performed, and quicker.
+
+* **AVX** is required for some operations with Intel CPUs on macOS 12.4 Monterey
+  * `AppleFSCompressionTypeZlib` is a prime example.
+* **AVX2** is required for Intel CPUs on macOS 13.0 Ventura
+  * Booting with a non-AVX2 dyld cache is possible, but extremely unstable
