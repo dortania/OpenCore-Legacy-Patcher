@@ -58,6 +58,8 @@ class Constants:
         self.apfs_zlib_version = "12.3.1"  #   NoAVXFSCompressionTypeZlib
         self.multitouch_version = "1.0.0"  #   AppleUSBMultitouch
         self.topcase_version = "1.0.0"  #      AppleUSBTopCase
+        self.intel_82574l_version = "1.0.0" #  Intel82574L
+        self.intel_8254x_version = "1.0.0" #   AppleIntel8254XEthernet
 
         ## Apple - Dortania Modified
         self.bcm570_version = "1.0.2"  #             CatalinaBCM5701Ethernet
@@ -302,6 +304,14 @@ class Constants:
     @property
     def nforce_path(self):
         return self.payload_kexts_path / Path(f"Ethernet/nForceEthernet-v{self.nforce_version}.zip")
+
+    @property
+    def intel_82574l_path(self):
+        return self.payload_kexts_path / Path(f"Ethernet/Intel82574L-v{self.intel_82574l_version}.zip")
+
+    @property
+    def intel_8254x_path(self):
+        return self.payload_kexts_path / Path(f"Ethernet/AppleIntel8254XEthernet-v{self.intel_8254x_version}.zip")
 
     @property
     def mce_path(self):

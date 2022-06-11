@@ -14,6 +14,7 @@
   - Add Ventura Software Catalog parsing
   - Add Kernel Debug Kit checks to Ventura root patching
   - Add USB map injection for dropped models
+  - Resolve Ethernet support on MacPro3,1-5,1
 
 ## 0.4.6
 - Fix Bluetooth support in 12.4 Release
