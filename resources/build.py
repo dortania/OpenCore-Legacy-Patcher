@@ -221,7 +221,7 @@ class BuildOpenCore:
             elif smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Marvell":
                 self.enable_kext("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path)
             elif smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Intel 80003ES2LAN":
-                self.enable_kext("Intel82574L", self.constants.intel_82574l_version, self.constants.intel_82574l_path)
+                self.enable_kext("Intel82574L.kext", self.constants.intel_82574l_version, self.constants.intel_82574l_path)
             elif smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Intel 82574L":
                 self.enable_kext("AppleIntel8254XEthernet.kext", self.constants.intel_8254x_version, self.constants.intel_8254x_path)
 
