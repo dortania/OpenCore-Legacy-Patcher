@@ -1601,7 +1601,7 @@
 				<key>Base</key>
 				<string></string>
 				<key>Comment</key>
-				<string>Reroute kern.hv_vmm_present patch (2)</string>
+				<string>Reroute kern.hv_vmm_present patch (2) Legacy</string>
 				<key>Count</key>
 				<integer>1</integer>
 				<key>Enabled</key>
@@ -1615,11 +1615,41 @@
 				<key>Mask</key>
 				<data></data>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>21.99.99</string>
 				<key>MinKernel</key>
 				<string>20.4.0</string>
 				<key>Replace</key>
 				<data>AGh2X2Rpc2FibGUAZGlyZWN0X2hhbmRvZmYA</data>
+				<key>ReplaceMask</key>
+				<data></data>
+				<key>Skip</key>
+				<integer>0</integer>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Base</key>
+				<string></string>
+				<key>Comment</key>
+				<string>Reroute kern.hv_vmm_present patch (2) Ventura</string>
+				<key>Count</key>
+				<integer>1</integer>
+				<key>Enabled</key>
+				<false/>
+				<key>Find</key>
+				<data>Ym9vdCBzZXNzaW9uIFVVSUQAaHZfdm1tX3ByZXNlbnQA</data>
+				<key>Identifier</key>
+				<string>kernel</string>
+				<key>Limit</key>
+				<integer>0</integer>
+				<key>Mask</key>
+				<data></data>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>22.0.0</string>
+				<key>Replace</key>
+				<data>Ym9vdCBzZXNzaW9uIFVVSUQAZGlyZWN0X2hhbmRvZmYA</data>
 				<key>ReplaceMask</key>
 				<data></data>
 				<key>Skip</key>

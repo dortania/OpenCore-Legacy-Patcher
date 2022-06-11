@@ -149,7 +149,8 @@ class BuildOpenCore:
 
                 print("- Enabling VMM exemption patch")
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
-                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2)")["Enabled"] = True
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Legacy")["Enabled"] = True
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Ventura")["Enabled"] = True
 
                 # Patch HW_BID to OC_BID
                 # Set OC_BID to iMac18,1 Board ID (Mac-F60DEB81FF30ACF6)
