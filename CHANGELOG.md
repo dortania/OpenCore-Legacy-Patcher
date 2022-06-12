@@ -16,7 +16,7 @@
   - Add USB map injection for dropped models
   - Resolve Ethernet support on MacPro3,1-5,1
   - Fix VMM patch set
-  - Allow dyld sharred cache swapping on pre-Haswell
+  - Allow dyld shared cache swapping on pre-Haswell
 
 ## 0.4.6
 - Fix Bluetooth support in 12.4 Release
