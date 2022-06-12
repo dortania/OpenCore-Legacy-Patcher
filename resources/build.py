@@ -1017,9 +1017,12 @@ class BuildOpenCore:
             # This is however hidden behind kern.development, thus we patch _apfs_filevault_allowed to always return true
             # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
             print("- Allowing FileVault on Root Patched systems")
-            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.filesystems.apfs")["Enabled"] = True
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Force FileVault on Broken Seal")["Enabled"] = True
             # Lets us check in sys_patch.py if config supports FileVault
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
+            print("- Allowing swapped dyld shared cache in Ventura")
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Root Hash validation")["Enabled"] = True
         if self.constants.disable_msr_power_ctl is True:
             print("- Disabling Firmware Throttling")
             if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.cpu_data.nehalem.value:
