@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.5.0
+
 ## 0.4.6
 - Fix Bluetooth support in 12.4 Release
   - Applicable for BCM2046 and BCM2070 chipsets
@@ -25,6 +27,7 @@
 - Deprecate TUI support
   - Users may still manually run from source for future builds
   - Binaries will no longer be provided on future release
+- Switch boot.efi model patch to iMac18,1
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases

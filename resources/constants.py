@@ -12,7 +12,7 @@ from data import os_data
 class Constants:
     def __init__(self):
         # Patcher Versioning
-        self.patcher_version = "0.4.6"  # OpenCore-Legacy-Patcher
+        self.patcher_version = "0.5.0"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version = "0.5.1"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
@@ -56,6 +56,8 @@ class Constants:
         self.apple_isight_version = "1.0.0"  # AppleiSight
         self.apple_raid_version = "1.0.0"  #   AppleRAIDCard
         self.apfs_zlib_version = "12.3.1"  #   NoAVXFSCompressionTypeZlib
+        self.multitouch_version = "1.0.0"  #   AppleUSBMultitouch
+        self.topcase_version = "1.0.0"  #      AppleUSBTopCase
 
         ## Apple - Dortania Modified
         self.bcm570_version = "1.0.2"  #             CatalinaBCM5701Ethernet
@@ -312,6 +314,14 @@ class Constants:
     @property
     def apfs_zlib_path(self):
         return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-v{self.apfs_zlib_version}.zip")
+
+    @property
+    def multitouch_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleUSBMultitouch-v{self.multitouch_version}.zip")
+
+    @property
+    def top_case_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleUSBTopCase-v{self.topcase_version}.zip")
 
     @property
     def mousse_path(self):

@@ -1046,7 +1046,7 @@ class wx_python_gui:
 
     def root_patch_start(self, event=None):
         self.frame.DestroyChildren()
-        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, -1)
+        self.frame.SetSize(self.WINDOW_WIDTH_BUILD, self.WINDOW_HEIGHT_MAIN)
 
         # Header
         self.header = wx.StaticText(self.frame, label="Root Patching", pos=(10, 10))
@@ -1215,7 +1215,7 @@ class wx_python_gui:
 
     def root_patch_revert(self, event=None):
         self.reset_frame_modal()
-        self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD, -1)
+        self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD, self.WINDOW_HEIGHT_MAIN)
 
         # Header
         self.header = wx.StaticText(self.frame_modal, label="Revert Root Patches", pos=(10, 10))
@@ -1258,7 +1258,7 @@ class wx_python_gui:
         self.text_box.SetSize(
             wx.Size(
                 self.frame_modal.GetSize().width - 10,
-                self.frame_modal.GetSize().height + self.text_box.GetPosition().y + 80
+                self.frame_modal.GetSize().height + self.text_box.GetPosition().y + 10
             )
         )
         self.text_box.Centre(wx.HORIZONTAL)

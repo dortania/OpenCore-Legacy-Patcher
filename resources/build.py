@@ -152,11 +152,11 @@ class BuildOpenCore:
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2)")["Enabled"] = True
 
                 # Patch HW_BID to OC_BID
-                # Set OC_BID to MacPro6,1 Board ID (Mac-F60DEB81FF30ACF6)
+                # Set OC_BID to iMac18,1 Board ID (Mac-F60DEB81FF30ACF6)
                 # Goal is to only allow OS booting through OCLP, otherwise failing
                 print("- Enabling HW_BID reroute")
                 self.get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Reroute HW_BID to OC_BID")["Enabled"] = True
-                self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["OC_BID"] = "Mac-F60DEB81FF30ACF6"
+                self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["OC_BID"] = "Mac-BE088AF8C5EB4FA2"
                 self.config["NVRAM"]["Delete"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"] += ["OC_BID"]
             else:
                 print("- Enabling SMC exemption patch")
@@ -841,6 +841,23 @@ class BuildOpenCore:
         except KeyError:
             pass
 
+        # With macOS 13, Ventura, Apple removed the Skylake graphics stack. However due to the lack of inovation
+        # with the Kaby lake and Coffee Lake iGPUs, we're able to spoof ourselves to natively support them
+
+        # Currently the following iGPUs we need to be considerate of:
+        # - HD530 (mobile):  0x191B0006
+
+
+        # | GPU      | Model            | Device ID | Platform ID | New Device ID | New Platform ID |
+        # | -------- | ---------------- | --------- | ----------- | ------------- | --------------- |
+        # | HD 515   | MacBook9,1       | 0x191E    | 0x131E0003  |
+        # | Iris 540 | MacBookPro13,1/2 | 0x1926    | 0x19160002  | 0x5926        | 0x59260002
+        # | HD 530   | MacBookPro13,3   | 0x191B    | 0x191B0006  | 0x591B        | 0x591B0006      |
+        # | HD 530   | iMac17,1         | 0x1912    | 0x19120001  | 0x5912        | 0x59120003      |
+
+
+
+
         if self.constants.xhci_boot is True:
             print("- Adding USB 3.0 Controller Patch")
             print("- Adding XhciDxe.efi and UsbBusDxe.efi")
@@ -886,6 +903,8 @@ class BuildOpenCore:
             # Disabled due to macOS Monterey crashing shortly after kernel init
             # Use DebugEnhancer.kext instead
             # self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " msgbuf=1048576"
+        print("- Enable Beta Lilu support")
+        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -lilubetaall"
         if self.constants.opencore_debug is True:
             print("- Enabling DEBUG OpenCore")
             self.config["Misc"]["Debug"]["Target"] = 0x43
