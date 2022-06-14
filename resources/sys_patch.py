@@ -28,6 +28,9 @@
 # Alternative to mounting via 'mount', Apple's update system uses 'mount_apfs' directly
 #   '/sbin/mount_apfs -R /dev/disk5s5 /System/Volumes/Update/mnt1'
 
+# With macOS Ventura, you will also need to install the KDK onto root if you plan to use kmutil
+# This is because Apple removed on-disk binaries (ref: https://github.com/dortania/OpenCore-Legacy-Patcher/issues/998)
+#   'sudo ditto /Library/Developer/KDKs/<KDK Version>/System /System/Volumes/Update/mnt1/System'
 
 import shutil
 import subprocess
@@ -100,6 +103,26 @@ class PatchSysVolume:
                         print("Reason for mount failure:")
                         print(result.stdout.decode().strip())
         return False
+
+    def merge_kdk_with_root(self):
+        if self.constants.detected_os < os_data.os_data.ventura:
+            return
+        kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present()
+        if kdk_path is None:
+            print("- Unable to find Kernel Debug Kit")
+            raise Exception("Unable to find Kernel Debug Kit")
+        print(f"- Found KDK at: {kdk_path}")
+        print("- Merging KDK with Root Volume")
+        utilities.elevated(
+            ["ditto", f"{kdk_path}/System", f"{self.mount_location}/System"],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        )
+        # During reversing, we found that kmutil uses this path to determine whether the KDK was successfully merged
+        # Best to verify now before we cause any damage
+        if not (Path(self.mount_location) / Path("/System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
+            print("- Unable to merge KDK with Root Volume")
+            raise Exception("Unable to merge KDK with Root Volume")
+        print("- Successfully merged KDK with Root Volume")
 
     def unpatch_root_vol(self):
         if self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is True:
@@ -291,6 +314,9 @@ class PatchSysVolume:
                             source_file = source_files_path + "/" + required_patches[patch][method_type][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
                             if not Path(source_file).exists():
                                 raise Exception(f"Failed to find {source_file}")
+
+        # Ensure KDK is properly installed
+        self.merge_kdk_with_root()
 
         print("- Finished Preflight, starting patching")
 

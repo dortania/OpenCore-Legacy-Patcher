@@ -3,8 +3,7 @@
 # Used when supplying data to sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from pathlib import Path
-from resources import constants, device_probe, utilities
+from resources import constants, device_probe, utilities, sys_patch_helpers
 from data import model_array, os_data, sip_data, sys_patch_dict
 
 class detect_root_patch:
@@ -202,12 +201,9 @@ class detect_root_patch:
         return utilities.check_kext_loaded("WhateverGreen", self.constants.detected_os)
 
     def check_kdk(self):
-        if Path("/Library/Developer/KDKs").exists():
-            for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
-                # We don't want to support mismatched KDKs
-                if self.constants.detected_os_build in kdk_folder.name:
-                    return True
-        return False
+        if sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present() is None:
+            return False
+        return True
 
     def check_sip(self):
         if self.constants.detected_os > os_data.os_data.catalina:

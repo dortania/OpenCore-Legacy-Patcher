@@ -61,3 +61,13 @@ class sys_patch_helpers:
         if Path(source_path_file).exists():
             return True
         return False
+
+
+    def determine_kdk_present(self):
+        # Check if KDK is present
+        if Path("/Library/Developer/KDKs").exists():
+            for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
+                # We don't want to support mismatched KDKs
+                if self.constants.detected_os_build in kdk_folder.name:
+                    return kdk_folder
+        return None
