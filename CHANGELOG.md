@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
-## 0.5.0
+## 0.4.7
+- Fix crashing on defaults parsing
 
 ## 0.4.6
 - Fix Bluetooth support in 12.4 Release
