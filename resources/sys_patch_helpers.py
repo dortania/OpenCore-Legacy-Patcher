@@ -69,5 +69,7 @@ class sys_patch_helpers:
             for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
                 # We don't want to support mismatched KDKs
                 if self.constants.detected_os_build in kdk_folder.name:
-                    return kdk_folder
+                    # Verify that the KDK is valid
+                    if (Path(kdk_folder) / Path("/System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
+                        return kdk_folder
         return None
