@@ -51,6 +51,7 @@ class PatchSysVolume:
         self.constants.needs_to_open_preferences = False
         self.patch_set_dictionary = {}
         self.needs_kmutil_exemptions = False # For '/Library/Extensions' rebuilds
+        self.kdk_path = None
 
         # GUI will detect hardware patches before starting PatchSysVolume()
         # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
@@ -111,15 +112,16 @@ class PatchSysVolume:
         if kdk_path is None:
             print("- Unable to find Kernel Debug Kit")
             raise Exception("Unable to find Kernel Debug Kit")
+        self.kdk_path = kdk_path
         print(f"- Found KDK at: {kdk_path}")
         print("- Merging KDK with Root Volume")
         utilities.elevated(
-            ["ditto", f"{kdk_path}/System", f"{self.mount_location}/System"],
+            ["ditto", f"{kdk_path}/System/Library/Library/Extensions", f"{self.mount_location}/System/Library/Library/Extensions"],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )
         # During reversing, we found that kmutil uses this path to determine whether the KDK was successfully merged
         # Best to verify now before we cause any damage
-        if not (Path(self.mount_location) / Path("/System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
+        if not (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
             print("- Unable to merge KDK with Root Volume")
             raise Exception("Unable to merge KDK with Root Volume")
         print("- Successfully merged KDK with Root Volume")

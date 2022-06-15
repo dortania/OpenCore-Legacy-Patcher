@@ -190,7 +190,7 @@ class AutomaticSysPatch:
                 # Strip everything after OpenCore-Patcher.app
                 path = str(settings.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
                 print(f"- Copying {path} to /Library/Application Support/Dortania/")
-                utilities.process_status(utilities.elevated(["cp", "-R", path, "/Library/Application Support/Dortania/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["ditto", path, "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                 if not Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
                     # Sometimes the binary the user launches maye have a suffix (ie. OpenCore-Patcher 3.app)

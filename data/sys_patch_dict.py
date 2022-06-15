@@ -42,7 +42,8 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "CoreDisplay.framework": f"10.14.4-{os_major}",
                         "IOSurface.framework":   f"10.15.7-{os_major}",
                         "QuartzCore.framework":  f"10.15.7-{os_major}",
-                        **({ "WebKit.framework":  "11.6" } if os_major >= os_data.os_data.monterey else {}),
+                        # Ventura breaks with this patch
+                        **({ "WebKit.framework":  "11.6" } if os_major == os_data.os_data.monterey else {}),
                     },
                     "/System/Library/PrivateFrameworks": {
                         "GPUSupport.framework": "10.14.3",
