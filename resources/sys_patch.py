@@ -116,7 +116,7 @@ class PatchSysVolume:
         print(f"- Found KDK at: {kdk_path}")
         print("- Merging KDK with Root Volume")
         utilities.elevated(
-            ["ditto", f"{kdk_path}/System/Library/Library/Extensions", f"{self.mount_location}/System/Library/Library/Extensions"],
+            ["ditto", f"{kdk_path}/System/Library/Extensions", f"{self.mount_location}/System/Library/Extensions"],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )
         # During reversing, we found that kmutil uses this path to determine whether the KDK was successfully merged
