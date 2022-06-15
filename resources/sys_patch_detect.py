@@ -73,7 +73,6 @@ class detect_root_patch:
                                 self.kepler_gpu = True
                                 self.supports_metal = True
                 elif gpu.arch in [
-                    device_probe.NVIDIA.Archs.Tesla,
                     device_probe.NVIDIA.Archs.Fermi,
                     device_probe.NVIDIA.Archs.Kepler,
                     device_probe.NVIDIA.Archs.Maxwell,

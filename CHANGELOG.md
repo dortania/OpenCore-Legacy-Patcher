@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
-## 0.5.0
+## 0.4.7
+- Fix crashing on defaults parsing
 - Ventura Specific Updates:
   - Switch boot.efi model patch to iMac18,1
   - Resolve pre-Force Touch Trackpad support in Ventura

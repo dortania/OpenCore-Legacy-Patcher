@@ -18,7 +18,10 @@ class global_settings:
     def generate_settings_file(self):
         if Path(self.global_settings_plist).exists():
             return
-        plistlib.dump({"Developed by Dortania": True,}, Path(self.global_settings_plist).open("wb"))
+        try:
+            plistlib.dump({"Developed by Dortania": True,}, Path(self.global_settings_plist).open("wb"))
+        except PermissionError:
+            print("- Permission error: Unable to write to global settings file")
 
     def read_property(self, property_name):
         if Path(self.global_settings_plist).exists():
@@ -31,7 +34,10 @@ class global_settings:
         if Path(self.global_settings_plist).exists():
             plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
             plist[property_name] = property_value
-            plistlib.dump(plist, Path(self.global_settings_plist).open("wb"))
+            try:
+                plistlib.dump(plist, Path(self.global_settings_plist).open("wb"))
+            except PermissionError:
+                print("- Failed to write to global settings file")
 
 
     def convert_defaults_to_global_settings(self):
