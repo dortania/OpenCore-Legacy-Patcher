@@ -12,7 +12,7 @@ from data import os_data
 class Constants:
     def __init__(self):
         # Patcher Versioning
-        self.patcher_version = "0.4.7"  # OpenCore-Legacy-Patcher
+        self.patcher_version = "0.4.8"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version = "0.5.1"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
