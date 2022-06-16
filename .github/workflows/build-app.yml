@@ -16,7 +16,7 @@ jobs:
       commitdate: ${{ github.event.head_commit.timestamp }}
     steps:
       - uses: actions/checkout@v3
-      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/python3 Build-Binary.command --build_tui --reset_binaries --branch ${{ env.branch }} --commit ${{ env.commiturl }} --commit_date ${{ env.commitdate }}
+      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/python3 Build-Binary.command --build_tui --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}"
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
       - run: cd dist; zip -r ../OpenCore-Patcher-TUI.app.zip OpenCore-Patcher.app
       - run: ./../sign-tui.sh
@@ -26,13 +26,5 @@ jobs:
           name: OpenCore-Patcher-TUI.app
           path: OpenCore-Patcher-TUI.app.zip
 
-      - name: Upload to Release
-        if: github.event_name == 'release'
-        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: OpenCore-Patcher-TUI.app.zip
-          tag: ${{ github.ref }}
-          file_glob: true
       - name: Validate OpenCore
         run: ./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --validate

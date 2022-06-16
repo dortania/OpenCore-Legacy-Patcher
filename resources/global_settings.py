@@ -56,4 +56,7 @@ class global_settings:
                 return
 
             # delete defaults plist
-            Path(defaults_path).unlink()
+            try:
+                Path(defaults_path).unlink()
+            except PermissionError:
+                print("- Permission error: Unable to delete defaults plist")
