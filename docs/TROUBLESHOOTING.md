@@ -2,7 +2,7 @@
 
 Here are some common errors users may experience while using this patcher:
 
-* [OpenCore Legacy Patcher not launching](#opencore-legacy-pather-not-launching)
+* [OpenCore Legacy Patcher not launching](#opencore-legacy-patcher-not-launching)
 * [Stuck on `This version of Mac OS X is not supported on this platform`](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
