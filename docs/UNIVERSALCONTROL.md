@@ -44,17 +44,18 @@ Other requirements:
 ### Table of models
 
 This table shows which models do and don't support Universal Control out of box (OOB) and what is required to gain support.
+Note: For AirPort upgrades, only the best/newest cards are listed.
 
 ::: details MacBook
 
 |   SMBIOS   | WiFi/BT version | UC OOB  | Comment |
 |------------|-----------------|------------|---------|
-| MacBook4,1 | Wi-Fi 4 / BT 2.0 EDR |  <span style="color:red"> NO </span> | Use the Mac Pro Wi-Fi upgrade kit to upgrade to BCM94360 |
-| MacBook5,1 | ^^ |  ^^ | ^^ |
-| MacBook5,2 | WiFi 4 / BT 2.1 EDR  | ^^ | ^^ |
-| MacBook6,1 | ^^ | ^^ | Upgrade to BCM94360 |
+| MacBook4,1 | Wi-Fi 4 / BT 2.0 EDR |  <span style="color:red"> NO </span> | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM94360CS2 card  |
+| MacBook5,1 | ^^ |  ^^ | <span style="color:red"> Use a Broadcom USB Bluetooth 4.0+ Dongle </span> |
+| MacBook5,2 | WiFi 4 / BT 2.1 EDR  | ^^ | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM94360CS2 card  |
+| MacBook6,1 | WiFi 4 + BT 4.0 | <span style="color:#30BCD5"> YES </span> | Universal Control will work. |
 | MacBook7,1 | ^^ | ^^ | ^^ |
-| MacBook8,1 | WiFi 5 + BT 4.0 | <span style="color:#30BCD5"> YES </span> | Universal Control will work. |
+| MacBook8,1 | WiFi 4 + BT 4.2 | ^^ | ^^ |
 
 :::
 
@@ -62,8 +63,8 @@ This table shows which models do and don't support Universal Control out of box 
 
 | SMBIOS | WiFi/BT version | UC OOB  | Comment |
 |--------|-----------------|------------|---------|
-| MacBookAir2,1 | Wi-Fi 4 / BT 2.1 EDR | <span style="color:red"> NO </span> | Replace the card with BCM94360 and disconnect/disable the BT module. |
-| MacBookAir3,1 | ^^ | ^^ | ^^ |
+| MacBookAir2,1 | Wi-Fi 4 / BT 2.1 EDR | <span style="color:red"> NO </span> | Use a Broadcom USB Bluetooth 4.0+ Dongle |
+| MacBookAir3,1 | ^^ | ^^ | Replace stock AirPort card with a BCM94360CS2 card |
 | MacBookAir3,2 | ^^ | ^^ | ^^ |
 | MacBookAir4,1 | Wi-Fi 4 +  BT 4.0 | <span style="color:#30BCD5"> YES </span> | Universal Control will work. |
 | MacBookAir4,2 | ^^ | ^^ | ^^ |
@@ -81,16 +82,16 @@ This table shows which models do and don't support Universal Control out of box 
 
 | SMBIOS | WiFi/BT version | UC OOB   | Comment |
 |--------|-----------------|-------------|---------|
-| MacBookPro4,1 | Wi-Fi 4   /   BT 2.1 EDR | <span style="color:red"> NO </span> | Use the Mac Pro Wi-Fi upgrade kit to upgrade to BCM94360 |
-| MacBookPro5,1 | ^^ | ^^ | Upgrading to BCM94331 requires some heavy case hardware modifications, so instead use a USB BT 4.0 dongle |
+| MacBookPro4,1 | Wi-Fi 4   /   BT 2.1 EDR | <span style="color:red"> NO </span> | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM94360CS2 card |
+| MacBookPro5,1 | ^^ | ^^ | Use a Broadcom USB Bluetooth 4.0+ Dongle |
 | MacBookPro5,2 | ^^ | ^^ | ^^ |
 | MacBookPro5,3 | ^^ | ^^ | ^^ |
 | MacBookPro5,4 | ^^ | ^^ | ^^ |
 | MacBookPro5,5 | ^^ | ^^ | ^^ |
 | MacBookPro6,1 | ^^ | ^^ | ^^ |
-| MacBookPro6,2 | ^^ | ^^ | ^^ |
-| MacBookPro7,1 | ^^ | ^^ | ^^ |
-| MacBookPro8,1 | Wi-Fi 4 + BT 2.1 EDR | ^^ | Upgrade to BCM94331 |
+| MacBookPro6,2 | ^^ | ^^ | Replace stock AirPort card with a BCM94331PCIEBT4CAX/BCM94331PCIEBT4 card |
+| MacBookPro7,1 | ^^ | ^^ | Use a Broadcom USB Bluetooth 4.0+ Dongle |
+| MacBookPro8,1 | Wi-Fi 4 + BT 2.1 EDR | ^^ | Replace stock AirPort card with a BCM94331PCIEBT4CAX/BCM94331PCIEBT4 card |
 | MacBookPro8,2 | ^^ | ^^ | ^^ |
 | MacBookPro9,1 | Wi-Fi 4 + BT 4.0 | <span style="color:#30BCD5"> YES </span> | Universal Control will work. |
 | MacBookPro9,2 | ^^ | ^^ | ^^ |
@@ -108,8 +109,8 @@ This table shows which models do and don't support Universal Control out of box 
 
 | SMBIOS | WiFi/BT version | UC OOB | Comment |
 |--------|-----------------|------------|---------|
-| Macmini3,1 | Wi-Fi 4 + BT 2.1 EDR  |  <span style="color:red"> NO </span>  | Upgrade requires some heavy electrical and case modifications, so instead used a USB BT 4.0 dongle. |
-| Macmini4,1 | ^^ |  ^^ | Upgrade to BCM94360. |
+| Macmini3,1 | Wi-Fi 4 + BT 2.1 EDR  |  <span style="color:red"> NO </span>  | Upgrade requires some heavy electrical and case modifications, so instead used a Broadcom USB Bluetooth 4.0+ Dongle. |
+| Macmini4,1 | ^^ |  ^^ | Replace stock AirPort card with a BCM94331PCIEBT4CAX/BCM94331PCIEBT4 card |
 | Macmini5,1 | Wi-Fi 4 + BT 4.0 | <span style="color:#30BCD5"> YES </span> | Universal Control will work. |
 | Macmini5,2 | ^^ | ^^ | ^^ |
 | Macmini5,3 | ^^ | ^^ | ^^ |
@@ -124,7 +125,7 @@ This table shows which models do and don't support Universal Control out of box 
 
 |  SMBIOS  | WiFi/BT version | UC OOB | Comment |
 |----------|-----------------|------------|---------|
-| iMac7,1  | Wi-Fi 4 + BT 2.0 EDR  | <span style="color:red"> NO </span> | Use the Mac Pro Wi-Fi upgrade kit to upgrade to BCM94360 (soldering required for BT)
+| iMac7,1  | Wi-Fi 4 + BT 2.0 EDR  | <span style="color:red"> NO </span> | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM943602CD card
 | iMac8,1  | ^^ | ^^ | ^^ |
 | iMac9,1  | Wi-Fi 4 / BT 2.1 EDR  | ^^ | ^^ |
 | iMac10,1 | ^^ | ^^ | ^^ |
@@ -150,8 +151,8 @@ This table shows which models do and don't support Universal Control out of box 
 
 | SMBIOS    | WiFi/BT version | UC OOB  | Comment |
 |-----------|-----------------|---------|---------|
-| MacPro3,1 | Wi-Fi 4 + BT 2.0 EDR | <span style="color:red"> NO </span> | Use the Mac Pro Wi-Fi upgrade kit to upgrade to BCM94360. |
-| MacPro4,1 | Wi-Fi 4 + BT 2.1 EDR | ^^ | Use the Mac Pro Wi-Fi upgrade kit to upgrade to BCM94360 (soldering required for BT) |
+| MacPro3,1 | Wi-Fi 4 + BT 2.0 EDR | <span style="color:red"> NO </span> | Replace stock AirPort card with an mPCIE Adapter board with a BCM943602CD card |
+| MacPro4,1 | Wi-Fi 4 + BT 2.1 EDR | ^^ | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM943602CD card |
 | MacPro5,1 | ^^ | ^^ | ^^ |
 | MacPro6,1 | Wi-Fi 5 + BT 4.0 | ^^ | Hardware supports UC. <br> [**Spoofing required.**](#blacklisted-models) |
 
@@ -159,6 +160,17 @@ This table shows which models do and don't support Universal Control out of box 
 
 
 ::: 
+
+
+:::details Xserve ;p
+
+| SMBIOS    | WiFi/BT version | UC OOB  | Comment |
+|-----------|-----------------|---------|---------|
+| Xserve2,1 | N/A | <span style="color:red"> NO </span> | Install a PCIe BCM943602CD card |
+| Xserve3,1 | ^^ | ^^ | ^^ |
+
+::: 
+
 ## Blacklisted models
 
 The following models are blacklisted from using Universal Control by Apple:
