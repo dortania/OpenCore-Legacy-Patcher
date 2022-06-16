@@ -53,9 +53,9 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 | MacBook4,1 | Wi-Fi 4 / BT 2.0 EDR |  <span style="color:red"> NO </span> | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM94360CS2 card  |
 | MacBook5,1 | ^^ |  ^^ | <span style="color:red"> Use a Broadcom USB Bluetooth 4.0+ Dongle </span> |
 | MacBook5,2 | WiFi 4 / BT 2.1 EDR  | ^^ | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM94360CS2 card  |
-| MacBook6,1 | WiFi 4 + BT 4.0 | <span style="color:#30BCD5"> YES </span> | Universal Control will work. |
+| MacBook6,1 | ^^ | ^^ | Replace stock AirPort card with a BCM94331PCIEBT4CAX/BCM94331PCIEBT4 card |
 | MacBook7,1 | ^^ | ^^ | ^^ |
-| MacBook8,1 | WiFi 4 + BT 4.2 | ^^ | ^^ |
+| MacBook8,1 | WiFi 4 + BT 4.2 | <span style="color:#30BCD5"> YES </span> | Universal Control will work. |
 
 :::
 
@@ -110,7 +110,7 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 | SMBIOS | WiFi/BT version | UC OOB | Comment |
 |--------|-----------------|------------|---------|
 | Macmini3,1 | Wi-Fi 4 + BT 2.1 EDR  |  <span style="color:red"> NO </span>  | Upgrade requires some heavy electrical and case modifications, so instead used a Broadcom USB Bluetooth 4.0+ Dongle. |
-| Macmini4,1 | ^^ |  ^^ | Replace stock AirPort card with a BCM94331PCIEBT4CAX/BCM94331PCIEBT4 card |
+| Macmini4,1 | ^^ |  ^^ | ^^ |
 | Macmini5,1 | Wi-Fi 4 + BT 4.0 | <span style="color:#30BCD5"> YES </span> | Universal Control will work. |
 | Macmini5,2 | ^^ | ^^ | ^^ |
 | Macmini5,3 | ^^ | ^^ | ^^ |
@@ -125,14 +125,14 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 
 |  SMBIOS  | WiFi/BT version | UC OOB | Comment |
 |----------|-----------------|------------|---------|
-| iMac7,1  | Wi-Fi 4 + BT 2.0 EDR  | <span style="color:red"> NO </span> | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM943602CD card
+| iMac7,1  | Wi-Fi 4 + BT 2.0 EDR  | <span style="color:red"> NO </span> | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM94360CD card
 | iMac8,1  | ^^ | ^^ | ^^ |
 | iMac9,1  | Wi-Fi 4 / BT 2.1 EDR  | ^^ | ^^ |
 | iMac10,1 | ^^ | ^^ | ^^ |
 | iMac11,1 | ^^ | ^^ | ^^ |
 | iMac11,2 | ^^ | ^^ | ^^ |
 | iMac11,3 | ^^ | ^^ | ^^ |
-| iMac12,1 | ^^ | ^^ | ^^ |
+| iMac12,1 | ^^ | ^^ | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM943602CD card
 | iMac12,2 | ^^ | ^^ | ^^ |
 | iMac13,1 | Wi-Fi 4 + BT 4.0 | <span style="color:#30BCD5"> YES </span> | Universal Control will work. |
 | iMac13,2 | ^^ | ^^ | ^^ |
