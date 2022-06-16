@@ -26,7 +26,11 @@ Here are some common errors users may experience while using this patcher:
 
 If the application won't launch (e.g. icon will bounce in the Dock), there are a couple things you can try. 
 
-First you can delete `com.dortania.opencore-legacy-patcher.plist` in `~/Library/Preferences/` and see if that solves the issue. Alternatively you can try launching OCLP via Terminal by typing `/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher`, make sure you've moved the app to `/Applications` before this.
+First you can delete `com.dortania.opencore-legacy-patcher.plist` in `~/Library/Preferences/` and see if that solves the issue. Alternatively you can try launching OCLP via Terminal by typing the following command, make sure you've moved the app to `/Applications` before this.
+
+```sh
+/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher 
+```
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
