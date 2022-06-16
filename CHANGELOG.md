@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.8
+
 ## 0.4.7
 - Fix crashing on defaults parsing
 
