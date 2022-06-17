@@ -147,9 +147,19 @@ class PatchSysVolume:
 
         if self.constants.detected_os > os_data.os_data.catalina:
             if self.constants.detected_os >= os_data.os_data.ventura:
-                args = ["kmutil", "create", "--volume-root", self.mount_location, "--update-all"]
+                args = [
+                    "kmutil", "create",
+                    "--volume-root", self.mount_location,
+                    "--update-all",
+                    "--allow-missing-kdk",
+                    "--variant-suffix", "release"
+                ]
             else:
-                args = ["kmutil", "install", "--volume-root", self.mount_location, "--update-all"]
+                args = [
+                    "kmutil", "install",
+                    "--volume-root", self.mount_location,
+                    "--update-all"
+                ]
 
             if self.needs_kmutil_exemptions is True:
                 # When installing to '/Library/Extensions', following args skip kext consent
