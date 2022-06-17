@@ -1,5 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.8
+- Ensure Apple Silicon-specific installers are not listed
+  - ie. M2 specific build (21F2092)
+
 ## 0.4.7
 - Fix crashing on defaults parsing
 - Ventura Specific Updates:

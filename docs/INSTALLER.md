@@ -28,6 +28,14 @@ For this example, we'll assume you'll need an installer. Selecting this option w
 
 Since the patcher officially supports Big Sur and newer for patching, only those entires will be shown. For ourselves, we'll select 12.1 as that's the latest public release at the time of writing. This will download and install the macOS installer to your applications folder.
 
+::: warning
+
+With the release of the M2 MacBooks, Apple made an Apple Silicon only installer labeled "macOS 12.4 (21F2092 - 11.7GB)". Trying to boot this on Intel will not work.
+
+Instead, download "macOS 12.4 (21F79 - 12.1GB)" or newer.
+
+:::
+
 | Downloading the Installer | Requesting to install | Finished Installing |
 | :--- | :--- | :--- |
 | ![OCLP GUI Installer Download Progress](../images/OCLP-GUI-Installer-Download-Progress.png) | ![OCLP GUI Installer Needs Installing](../images/OCLP-GUI-Installer-Needs-Installing.png) | ![OCLP GUI Installer Download Finished](../images/OCLP-GUI-Installer-Download-Finished.png) |
