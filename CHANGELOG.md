@@ -22,6 +22,7 @@
   - Resolve Ethernet support on MacPro3,1-5,1
   - Fix VMM patch set
   - Allow dyld shared cache swapping on pre-Haswell
+  - Add USB1.1 injection for pre-Ivy bridge units
 
 ## 0.4.6
 - Fix Bluetooth support in 12.4 Release

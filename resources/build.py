@@ -886,6 +886,26 @@ class BuildOpenCore:
             self.get_efi_binary_by_path("XhciDxe.efi", "UEFI", "Drivers")["Enabled"] = True
             self.get_efi_binary_by_path("UsbBusDxe.efi", "UEFI", "Drivers")["Enabled"] = True
 
+        # Add UHCI/OHCI drivers
+        if not self.constants.custom_model:
+            if self.constants.computer.usb_controllers:
+                for controller in self.constants.computer.usb_controllers:
+                    if isinstance(controller, device_probe.UHCIController) or isinstance(controller, device_probe.OHCIController):
+                        print("- Adding UHCI/OHCI USB support")
+                        shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
+                        self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCI.kext")["Enabled"] = True
+                        self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
+                        self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
+                        self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
+        else:
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
+                print("- Adding UHCI/OHCI USB support")
+                shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
+                self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCI.kext")["Enabled"] = True
+                self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
+                self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
+                self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
+
         # ThirdPartDrives Check
         if self.constants.allow_3rd_party_drives is True:
             for drive in ["SATA 2.5", "SATA 3.5", "mSATA"]:

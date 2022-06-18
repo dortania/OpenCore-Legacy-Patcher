@@ -60,6 +60,7 @@ class Constants:
         self.topcase_version = "1.0.0"  #      AppleUSBTopCase
         self.intel_82574l_version = "1.0.0" #  Intel82574L
         self.intel_8254x_version = "1.0.0" #   AppleIntel8254XEthernet
+        self.apple_usb_11_injector = "1.0.0" # AppleUSBUHCI/OHCI
 
         ## Apple - Dortania Modified
         self.bcm570_version = "1.0.2"  #             CatalinaBCM5701Ethernet
@@ -312,6 +313,10 @@ class Constants:
     @property
     def intel_8254x_path(self):
         return self.payload_kexts_path / Path(f"Ethernet/AppleIntel8254XEthernet-v{self.intel_8254x_version}.zip")
+
+    @property
+    def apple_usb_11_injector_path(self):
+        return self.payload_kexts_path / Path(f"USB/USB1.1-Injector-v{self.apple_usb_11_injector}.zip")
 
     @property
     def mce_path(self):
