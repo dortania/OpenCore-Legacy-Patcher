@@ -146,20 +146,32 @@ class PatchSysVolume:
         print("- Rebuilding Kernel Cache (This may take some time)")
 
         if self.constants.detected_os > os_data.os_data.catalina:
+            args = [
+                "kmutil",
+                "install",
+                "--volume-root", self.mount_location,
+                # Build Boot, Sys and Aux KC
+                "--update-all",
+                # If multiple kernels found, only build release KCs
+                "--variant-suffix", "release",
+            ]
+
             if self.constants.detected_os >= os_data.os_data.ventura:
-                args = [
-                    "kmutil", "create",
-                    "--volume-root", self.mount_location,
-                    "--update-all",
-                    "--allow-missing-kdk",
-                    "--variant-suffix", "release"
-                ]
-            else:
-                args = [
-                    "kmutil", "install",
-                    "--volume-root", self.mount_location,
-                    "--update-all"
-                ]
+                # With Ventura, we're required to provide a KDK in some form
+                # to rebuild the Kernel Cache
+                #
+                # However since we already merged the KDK onto root with 'ditto',
+                # We can add '--allow-missing-kdk' to skip parsing the KDK
+                #
+                # This allows us to only delete/overwrite kexts inside of
+                # /System/Library/Extensions and not the entire KDK
+                args.append("--allow-missing-kdk")
+
+                # 'install' and '--update-all' cannot be used together in Ventura.
+                # kmutil will request the usage of 'create' instead:
+                #     Warning: kmutil install's usage of --update-all is deprecated.
+                #              Use kmutil create --update-install instead'
+                args[1] = "create"
 
             if self.needs_kmutil_exemptions is True:
                 # When installing to '/Library/Extensions', following args skip kext consent
