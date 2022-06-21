@@ -183,7 +183,8 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 "Install": {
                     "/System/Library/Frameworks": {
                         "OpenCL.framework": "11.6",
-                        "WebKit.framework": "11.6",
+                        # Ventura breaks with this patch
+                        **({ "WebKit.framework":  "11.6" } if os_major == os_data.os_data.monterey else {}),
                     },
                 },
             },
