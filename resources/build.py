@@ -994,7 +994,8 @@ class BuildOpenCore:
             if self.constants.force_vmm is True:
                 print("- Forcing VMM patchset to support OTA updates")
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
-                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2)")["Enabled"] = True
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Legacy")["Enabled"] = True
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Ventura")["Enabled"] = True
         if self.constants.serial_settings in ["Moderate", "Advanced"]:
             print("- Enabling USB Rename Patches")
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "XHC1 to SHC1")["Enabled"] = True
