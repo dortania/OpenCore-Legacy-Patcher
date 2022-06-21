@@ -198,12 +198,19 @@ class BuildOpenCore:
                         # Applicable for pre-Ivy Bridge models
                         if self.get_kext_by_bundle_path("CatalinaBCM5701Ethernet.kext")["Enabled"] is False:
                             self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
-                elif isinstance(controller, device_probe.IntelEthernet) and controller.chipset == device_probe.IntelEthernet.Chipsets.AppleIntelI210Ethernet:
+                elif isinstance(controller, device_probe.IntelEthernet):
                     if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
                         # Apple's IOSkywalkFamily in DriverKit requires VT-D support
                         # Applicable for pre-Ivy Bridge models
-                        if self.get_kext_by_bundle_path("CatalinaIntelI210Ethernet.kext")["Enabled"] is False:
-                            self.enable_kext("CatalinaIntelI210Ethernet.kext", self.constants.i210_version, self.constants.i210_path)
+                        if controller.chipset == device_probe.IntelEthernet.Chipsets.AppleIntelI210Ethernet:
+                            if self.get_kext_by_bundle_path("CatalinaIntelI210Ethernet.kext")["Enabled"] is False:
+                                self.enable_kext("CatalinaIntelI210Ethernet.kext", self.constants.i210_version, self.constants.i210_path)
+                        elif controller.chipset == device_probe.IntelEthernet.Chipsets.AppleIntel8254XEthernet:
+                            if self.get_kext_by_bundle_path("AppleIntel8254XEthernet.kext")["Enabled"] is False:
+                                self.enable_kext("AppleIntel8254XEthernet.kext", self.constants.intel_8254x_version, self.constants.intel_8254x_path)
+                        elif controller.chipset == device_probe.IntelEthernet.Chipsets.Intel82574L:
+                            if self.get_kext_by_bundle_path("Intel82574L.kext")["Enabled"] is False:
+                                self.enable_kext("Intel82574L.kext", self.constants.intel_82574l_version, self.constants.intel_82574l_path)
                 elif isinstance(controller, device_probe.NVIDIAEthernet):
                     if self.get_kext_by_bundle_path("nForceEthernet.kext")["Enabled"] is False:
                         self.enable_kext("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path)
@@ -898,6 +905,7 @@ class BuildOpenCore:
                         self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
                         self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
                         self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
+                        break
         else:
             if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
                 print("- Adding UHCI/OHCI USB support")
