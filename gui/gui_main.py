@@ -231,10 +231,13 @@ class wx_python_gui:
             extension = ""
             if event:
                 if event.GetEventObject() != wx.Menu:
-                    if event.GetEventObject().GetLabel() == "Start Root Patching":
-                        extension = " --gui_patch"
-                    elif event.GetEventObject().GetLabel() == "Revert Root Patches":
-                        extension = " --gui_unpatch"
+                    try:
+                        if event.GetEventObject().GetLabel() == "Start Root Patching":
+                            extension = " --gui_patch"
+                        elif event.GetEventObject().GetLabel() == "Revert Root Patches":
+                            extension = " --gui_unpatch"
+                    except TypeError:
+                        pass
 
             if self.constants.launcher_script is None:
                 args_string = f"'{self.constants.launcher_binary}'{extension}"
