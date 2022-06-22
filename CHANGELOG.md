@@ -3,9 +3,6 @@
 ## 0.4.8
 - Ensure Apple Silicon-specific installers are not listed
   - ie. M2 specific build (21F2092)
-
-## 0.4.7
-- Fix crashing on defaults parsing
 - Ventura Specific Updates:
   - Switch boot.efi model patch to iMac18,1
   - Resolve pre-Force Touch Trackpad support in Ventura
@@ -23,6 +20,12 @@
   - Fix VMM patch set
   - Allow dyld shared cache swapping on pre-Haswell
   - Add USB1.1 injection for pre-Ivy bridge units
+- Increment Binaries:
+  - Lilu 1.6.1 rolling (8542170)
+  - FeatureUnlock 1.0.9 rolling (b7c1dd0)
+
+## 0.4.7
+- Fix crashing on defaults parsing
 
 ## 0.4.6
 - Fix Bluetooth support in 12.4 Release

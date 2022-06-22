@@ -2814,7 +2814,7 @@ smbios_dictionary = {
         # Apple Silicon Virtual Machine
         "Board ID": None,
         "FirmwareFeatures": None,
-        "SecureBootModel": "vma1macos",
+        "SecureBootModel": "vma1",
         "CPU Generation": cpu_data.cpu_data.apple_m1.value,
         "Max OS Supported": os_data.os_data.max_os,
         "Wireless Model": None,

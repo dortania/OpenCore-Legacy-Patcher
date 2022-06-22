@@ -32,14 +32,14 @@ class Constants:
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
-        self.lilu_version = "1.6.0"  #               Lilu
+        self.lilu_version = "1.6.1"  #               Lilu
         self.whatevergreen_version = "1.5.8"  #      WhateverGreen
         self.airportbcrmfixup_version = "2.1.3"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
         self.restrictevents_version = "1.0.6"  #     RestrictEvents
         self.restrictevents_mbp_version = "1.0.6"  # RestrictEvents blocking displaypolicyd (see RestrictEvents-MBP91.patch)
-        self.featureunlock_version = "1.0.8"  #      FeatureUnlock
+        self.featureunlock_version = "1.0.9"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.5"  #          CPUFriend
         self.bluetool_version = "2.6.2"  #           BlueToolFixup (BrcmPatchRAM)
