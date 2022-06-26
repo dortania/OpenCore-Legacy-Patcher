@@ -135,6 +135,9 @@ def list_downloadable_macOS_installers(download_path, catalog):
                             build_plist = plistlib.loads(requests.get(bm_package["URL"]).content)
                         except plistlib.InvalidFileException:
                             continue
+                        # Ensure Apple Silicon specific Installers are not listed
+                        if "VMM-x86_64" not in build_plist["MobileAssetProperties"]["SupportedDeviceModels"]:
+                            continue
                         version = build_plist["MobileAssetProperties"]["OSVersion"]
                         build = build_plist["MobileAssetProperties"]["Build"]
                         try:
