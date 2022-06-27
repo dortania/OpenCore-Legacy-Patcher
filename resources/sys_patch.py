@@ -108,6 +108,10 @@ class PatchSysVolume:
     def merge_kdk_with_root(self):
         if self.constants.detected_os < os_data.os_data.ventura:
             return
+        if (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
+            # Assume KDK is already merged
+            return
+
         kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present()
         if kdk_path is None:
             print("- Unable to find Kernel Debug Kit")
@@ -116,14 +120,16 @@ class PatchSysVolume:
         print(f"- Found KDK at: {kdk_path}")
         print("- Merging KDK with Root Volume")
         utilities.elevated(
+            # Only merge '/System/Library/Extensions'
+            # 'Kernels' and 'KernelSupport' is wasted space for root patching (we don't care above dev kernels)
             ["ditto", f"{kdk_path}/System/Library/Extensions", f"{self.mount_location}/System/Library/Extensions"],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )
         # During reversing, we found that kmutil uses this path to determine whether the KDK was successfully merged
         # Best to verify now before we cause any damage
         if not (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
-            print("- Unable to merge KDK with Root Volume")
-            raise Exception("Unable to merge KDK with Root Volume")
+            print("- Failed to merge KDK with Root Volume")
+            raise Exception("Failed to merge KDK with Root Volume")
         print("- Successfully merged KDK with Root Volume")
 
     def unpatch_root_vol(self):
@@ -204,27 +210,34 @@ class PatchSysVolume:
             print("- Successfully built new kernel cache")
             self.update_preboot_kernel_cache()
             self.rebuild_dyld_shared_cache()
-            if self.root_supports_snapshot is True:
-                print("- Creating new APFS snapshot")
-                bless = utilities.elevated(
-                    ["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-                )
-                if bless.returncode != 0:
-                    print("- Unable to create new snapshot")
-                    print("Reason for snapshot failure:")
-                    print(bless.stdout.decode())
-                    if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
-                        print("- This is an APFS bug with Monterey! Perform a clean installation to ensure your APFS volume is built correctly")
-                    return
-                else:
-                    self.unmount_drive()
-            print("- Patching complete")
-            print("\nPlease reboot the machine for patches to take effect")
-            if self.needs_kmutil_exemptions is True:
-                print("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
-            self.constants.root_patcher_succeded = True
-            if self.constants.gui_mode is False:
-                input("\nPress [ENTER] to continue")
+            if self.create_new_apfs_snapshot() is True:
+                print("- Patching complete")
+                print("\nPlease reboot the machine for patches to take effect")
+                if self.needs_kmutil_exemptions is True:
+                    print("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
+                self.constants.root_patcher_succeded = True
+                if self.constants.gui_mode is False:
+                    input("\nPress [ENTER] to continue")
+
+    def create_new_apfs_snapshot(self):
+        if self.root_supports_snapshot is True:
+            print("- Creating new APFS snapshot")
+            bless = utilities.elevated(
+                [
+                    "bless",
+                    "--folder", f"{self.mount_location}/System/Library/CoreServices",
+                    "--bootefi", "--create-snapshot"
+                ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            )
+            if bless.returncode != 0:
+                print("- Unable to create new snapshot")
+                print("Reason for snapshot failure:")
+                print(bless.stdout.decode())
+                if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
+                    print("- This is an APFS bug with Monterey! Perform a clean installation to ensure your APFS volume is built correctly")
+                return False
+            self.unmount_drive()
+        return True
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
