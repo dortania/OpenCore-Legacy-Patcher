@@ -3,6 +3,7 @@
 ## 0.4.8
 - Ensure Apple Silicon-specific installers are not listed
   - ie. M2 specific build (21F2092)
+- Avoid adding OpenCore icon in boot picker if Windows bootloader on same partition
 
 ## 0.4.7
 - Fix crashing on defaults parsing
