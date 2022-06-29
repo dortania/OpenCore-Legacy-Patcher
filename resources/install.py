@@ -229,18 +229,22 @@ Please build OpenCore first!"""
                 Path(mount_path / Path("EFI/BOOT")).mkdir()
                 shutil.move(mount_path / Path("System/Library/CoreServices/boot.efi"), mount_path / Path("EFI/BOOT/BOOTx64.efi"))
                 shutil.rmtree(mount_path / Path("System"), onerror=rmtree_handler)
-            if determine_sd_card(sd_type) is True:
-                print("- Adding SD Card icon")
-                shutil.copy(self.constants.icon_path_sd, mount_path)
-            elif ssd_type is True:
-                print("- Adding SSD icon")
-                shutil.copy(self.constants.icon_path_ssd, mount_path)
-            elif disk_type == "USB":
-                print("- Adding External USB Drive icon")
-                shutil.copy(self.constants.icon_path_external, mount_path)
+            # Due to how OpenCore processes on-volume icons, Windows may appear as OC's icon
+            if (mount_path / Path("EFI/Microsoft")).exists():
+                print("- Windows Boot Loader detected, skipping volume icon")
             else:
-                print("- Adding Internal Drive icon")
-                shutil.copy(self.constants.icon_path_internal, mount_path)
+                if determine_sd_card(sd_type) is True:
+                    print("- Adding SD Card icon")
+                    shutil.copy(self.constants.icon_path_sd, mount_path)
+                elif ssd_type is True:
+                    print("- Adding SSD icon")
+                    shutil.copy(self.constants.icon_path_ssd, mount_path)
+                elif disk_type == "USB":
+                    print("- Adding External USB Drive icon")
+                    shutil.copy(self.constants.icon_path_external, mount_path)
+                else:
+                    print("- Adding Internal Drive icon")
+                    shutil.copy(self.constants.icon_path_internal, mount_path)
 
             print("- Cleaning install location")
             if not self.constants.recovery_status:

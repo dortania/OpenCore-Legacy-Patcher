@@ -3,6 +3,7 @@
 ## 0.4.8
 - Ensure Apple Silicon-specific installers are not listed
   - ie. M2 specific build (21F2092)
+- Avoid adding OpenCore icon in boot picker if Windows bootloader on same partition
 - Ventura Specific Updates:
   - Switch boot.efi model patch to iMac18,1
   - Resolve pre-Force Touch Trackpad support in Ventura
