@@ -2175,6 +2175,21 @@ class wx_python_gui:
 
     def allow_native_models_click(self, event=None):
         if self.checkbox_allow_native_models.GetValue():
+            # Throw a prompt warning about this
+            dlg = wx.MessageDialog(self.frame_modal, "This option should only be used if your Mac natively supports the OSes you wish to run.\n\nIf you are currently running an unsupported OS, this option will break booting. Only toggle for enabling OS features on a native Mac.\n\nAre you sure you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
+            if dlg.ShowModal() == wx.ID_NO:
+                self.checkbox_allow_native_models.SetValue(False)
+                return
+            # If the system is running an unsupported OS, throw a second warning
+            if self.constants.computer.real_model in smbios_data.smbios_dictionary:
+                if self.constants.detected_os > smbios_data.smbios_dictionary[self.constants.computer.real_model]["Max OS Supported"]:
+                    chassis_type = "aluminum"
+                    if self.constants.computer.real_model in ["MacBook4,1", "MacBook5,2", "MacBook6,1", "MacBook7,1"]:
+                        chassis_type = "plastic"
+                    dlg = wx.MessageDialog(self.frame_modal, f"This model, {self.constants.computer.real_model}, does not natively support macOS {os_data.os_conversion.kernel_to_os(self.constants.detected_os)}, {os_data.os_conversion.convert_kernel_to_marketing_name(self.constants.detected_os)}. The last native OS was macOS {os_data.os_conversion.kernel_to_os(smbios_data.smbios_dictionary[self.constants.computer.real_model]['Max OS Supported'])}, {os_data.os_conversion.convert_kernel_to_marketing_name(smbios_data.smbios_dictionary[self.constants.computer.real_model]['Max OS Supported'])}\n\nToggling this option will breaking booting on this OS. Are you absolutely certain this is desired?\n\nYou may end up with a nice {chassis_type} brick 🧱", "Are you certain?", wx.YES_NO | wx.ICON_WARNING)
+                    if dlg.ShowModal() == wx.ID_NO:
+                        self.checkbox_allow_native_models.SetValue(False)
+                        return
             print("Allow Native Models")
             self.constants.allow_oc_everywhere = True
             self.constants.serial_settings = "None"

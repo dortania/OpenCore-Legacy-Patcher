@@ -346,7 +346,12 @@ def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
 
     if decode:
         if isinstance(value, bytes):
-            value = value.strip(b"\0").decode()
+            try:
+                value = value.strip(b"\0").decode()
+            except UnicodeDecodeError:
+                # Some sceanrios the firmware will throw garbage in
+                # ie. iMac12,2 with FireWire boot-path
+                value = None
         elif isinstance(value, str):
             value = value.strip("\0")
     return value
