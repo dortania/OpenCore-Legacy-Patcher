@@ -3,6 +3,7 @@ from pathlib import Path
 import plistlib
 import subprocess
 import requests
+import tempfile
 from resources import utilities, tui_helpers
 
 def list_local_macOS_installers():
@@ -349,16 +350,16 @@ def generate_installer_creation_script(tmp_location, installer_path, disk):
 
     # To resolve, we'll copy into our temp directory and run from there
 
-    # Remove all installers from tmp
-    for file in Path(tmp_location).glob(pattern="*"):
-        if (Path(file) / Path("Contents/Resources/createinstallmedia")).exists():
-            subprocess.run(["rm", "-rf", file])
+    # Create a new tmp directory
+    # Our current one is a disk image, thus CoW will not work
+    ia_tmp = tempfile.mkdtemp()
+    print(f"Creating temporary directory at {ia_tmp}")
 
     # Copy installer to tmp (use CoW to avoid extra disk writes)
-    subprocess.run(["cp", "-cR", installer_path, tmp_location])
+    subprocess.run(["cp", "-cR", installer_path, ia_tmp])
 
     # Adjust installer_path to point to the copied installer
-    installer_path = Path(tmp_location) / Path(Path(installer_path).name)
+    installer_path = Path(ia_tmp) / Path(Path(installer_path).name)
 
     createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
     plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))
