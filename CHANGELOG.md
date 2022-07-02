@@ -5,6 +5,8 @@
   - ie. M2 specific build (21F2092)
 - Avoid adding OpenCore icon in boot picker if Windows bootloader on same partition
 - Add error-handling to corrupt/non-standard NVRAM variables
+- Add warning prompt when using 'Allow native models'
+  - Attempt to avoid misuse of option
 
 ## 0.4.7
 - Fix crashing on defaults parsing

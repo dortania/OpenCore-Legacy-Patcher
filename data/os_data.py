@@ -3,22 +3,26 @@ import enum
 
 class os_data(enum.IntEnum):
     # OS Versions, Based off Major Kernel Version
-    tiger = 8
-    leopard = 9
-    snow_leopard = 10
-    lion = 11
+    cheetah =       4 # Actually 1.3.1
+    puma =          5
+    jaguar =        6
+    panther =       7
+    tiger =         8
+    leopard =       9
+    snow_leopard =  10
+    lion =          11
     mountain_lion = 12
-    mavericks = 13
-    yosemite = 14
-    el_capitan = 15
-    sierra = 16
-    high_sierra = 17
-    mojave = 18
-    catalina = 19
-    big_sur = 20
-    monterey = 21
-    ventura = 22
-    max_os = 99
+    mavericks =     13
+    yosemite =      14
+    el_capitan =    15
+    sierra =        16
+    high_sierra =   17
+    mojave =        18
+    catalina =      19
+    big_sur =       20
+    monterey =      21
+    ventura =       22
+    max_os =        99
 
 
 class os_conversion:
@@ -46,3 +50,31 @@ class os_conversion:
                 return True
             else:
                 return False
+
+    def convert_kernel_to_marketing_name(kernel):
+        # Convert major XNU version to Marketing Name
+        try:
+            # Find os_data enum name
+            os_name = os_data(kernel).name
+
+            # Remove "_" from the string
+            os_name = os_name.replace("_", " ")
+
+            # Upper case the first letter of each word
+            os_name = os_name.title()
+        except ValueError:
+            # Handle cases where no enum value exists
+            # Pass kernel_to_os() as a substitute for a proper OS name
+            os_name = os_conversion.kernel_to_os(kernel)
+
+        return os_name
+
+    def convert_marketing_name_to_kernel(marketing_name):
+        # Convert Marketing Name to major XNU version
+        try:
+            # Find os_data enum value
+            os_kernel = os_data[marketing_name.lower().replace(" ", "_")]
+        except KeyError:
+            os_kernel = 0
+
+        return int(os_kernel)
