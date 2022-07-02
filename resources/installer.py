@@ -354,8 +354,8 @@ def generate_installer_creation_script(tmp_location, installer_path, disk):
         if (Path(file) / Path("Contents/Resources/createinstallmedia")).exists():
             subprocess.run(["rm", "-rf", file])
 
-    # Copy installer to tmp
-    subprocess.run(["cp", "-R", installer_path, tmp_location])
+    # Copy installer to tmp (use CoW to avoid extra disk writes)
+    subprocess.run(["cp", "-cR", installer_path, tmp_location])
 
     # Adjust installer_path to point to the copied installer
     installer_path = Path(tmp_location) / Path(Path(installer_path).name)
