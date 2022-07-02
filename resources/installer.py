@@ -332,7 +332,7 @@ def list_disk_to_format():
     return list_disks
 
 
-def generate_installer_creation_script(script_location, installer_path, disk):
+def generate_installer_creation_script(tmp_location, installer_path, disk):
     # Creates installer.sh to be piped to OCLP-Helper and run as admin
     # Goals:
     # - Format provided disk as HFS+ GPT
@@ -341,6 +341,24 @@ def generate_installer_creation_script(script_location, installer_path, disk):
     # OCLP-Helper once to avoid nagging the user about permissions
 
     additional_args = ""
+    script_location = Path(tmp_location) / Path("Installer.sh")
+
+    # Due to a bug in createinstallmedia, running from '/Applications' may sometimes error:
+    #   'Failed to extract AssetData/boot/Firmware/Manifests/InstallerBoot/*'
+    # This affects native Macs as well even when manually invoking createinstallmedia
+
+    # To resolve, we'll copy into our temp directory and run from there
+
+    # Remove all installers from tmp
+    for file in Path(tmp_location).glob(pattern="*"):
+        if (Path(file) / Path("Contents/Resources/createinstallmedia")).exists():
+            subprocess.run(["rm", "-rf", file])
+
+    # Copy installer to tmp
+    subprocess.run(["cp", "-R", installer_path, tmp_location])
+
+    # Adjust installer_path to point to the copied installer
+    installer_path = Path(tmp_location) / Path(Path(installer_path).name)
 
     createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
     plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))

@@ -31,6 +31,7 @@ class wx_python_gui:
         self.finished_cim_process = False
         self.target_disk = ""
         self.pulse_forward = False
+        self.prepare_result = False
         self.non_metal_required = self.use_non_metal_alternative()
         self.hyperlink_colour = (25, 179, 231)
 
@@ -1832,9 +1833,8 @@ class wx_python_gui:
             20
         )
         self.progress_bar.Centre(wx.HORIZONTAL)
-        self.progress_bar.SetValue(0)
 
-        self.progress_label = wx.StaticText(self.frame, label="Bytes Written: 0")
+        self.progress_label = wx.StaticText(self.frame, label="Preparing files, beginning shortly...")
         self.progress_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.progress_label.SetPosition(
             wx.Point(
@@ -1863,7 +1863,19 @@ class wx_python_gui:
         print("- Creating installer.sh script")
         print(f"- Disk: {disk}")
         print(f"- Installer: {installer_path}")
-        if installer.generate_installer_creation_script(self.constants.installer_sh_path, installer_path, disk):
+
+        self.prepare_script_thread = threading.Thread(target=self.prepare_script, args=(installer_path,disk))
+        self.prepare_script_thread.start()
+        self.progress_bar.Pulse()
+
+        while self.prepare_script_thread.is_alive():
+            self.pulse_alternative(self.progress_bar)
+            wx.GetApp().Yield()
+
+        self.progress_bar.SetValue(0)
+        if self.prepare_result is True:
+            self.progress_label.SetLabel("Bytes Written: 0")
+            self.progress_label.Centre(wx.HORIZONTAL)
             print("- Sucessfully generated creation script")
             print("- Starting creation script as admin")
             wx.GetApp().Yield()
@@ -1918,7 +1930,14 @@ class wx_python_gui:
                         self.build_install_menu()
         else:
             print("- Failed to create installer script")
+            self.progress_label.SetLabel("Failed to copy files to tmp directory")
+            self.progress_label.Centre(wx.HORIZONTAL)
+            popup_message = wx.MessageDialog(self.frame, "Failed to prepare the base files for installer creation.\n\nPlease ensure you have 20GB~ free on-disk before starting to ensure the installer has enough room to work.", "Error", wx.OK)
+            popup_message.ShowModal()
         self.return_to_main_menu.Enable()
+
+    def prepare_script(self, installer_path, disk):
+        self.prepare_result = installer.generate_installer_creation_script(self.constants.payload_path, installer_path, disk)
 
     def start_script(self):
         utilities.disable_sleep_while_running()
