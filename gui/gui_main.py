@@ -2779,6 +2779,10 @@ class wx_python_gui:
         self.constants.custom_board_serial_number = self.smbios_board_serial_textbox.GetValue()
 
     def generate_new_serials_clicked(self, event):
+        # Throw pop up warning about misusing this feature
+        dlg = wx.MessageDialog(self.frame_modal, "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nDortania does not condone the use of our software on stolen devices.", "Warning", wx.YES_NO | wx.ICON_WARNING)
+        if dlg.ShowModal() == wx.ID_NO:
+            return
         macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.constants.custom_model or self.computer.real_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         macserial_output = macserial_output.stdout.decode().strip().split(" | ")
         if len(macserial_output) == 2:

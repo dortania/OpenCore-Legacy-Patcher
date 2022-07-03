@@ -1181,6 +1181,8 @@ class BuildOpenCore:
                 self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
                 self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = self.constants.custom_serial_number
                 self.config["PlatformInfo"]["Generic"]["MLB"] = self.constants.custom_board_serial_number
+                self.config["PlatformInfo"]["Generic"]["MaxBIOSVersion"] = False
+                self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
                 self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = self.constants.custom_serial_number
                 self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = self.constants.custom_board_serial_number
 
