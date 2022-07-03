@@ -332,6 +332,8 @@ def list_disk_to_format():
         })
     return list_disks
 
+# Create global tmp directory
+tmp_dir = tempfile.TemporaryDirectory()
 
 def generate_installer_creation_script(tmp_location, installer_path, disk):
     # Creates installer.sh to be piped to OCLP-Helper and run as admin
@@ -352,8 +354,13 @@ def generate_installer_creation_script(tmp_location, installer_path, disk):
 
     # Create a new tmp directory
     # Our current one is a disk image, thus CoW will not work
-    ia_tmp = tempfile.mkdtemp()
+    global tmp_dir
+    ia_tmp = tmp_dir.name
+
     print(f"Creating temporary directory at {ia_tmp}")
+    # Delete all files in tmp_dir
+    for file in Path(ia_tmp).glob("*"):
+        subprocess.run(["rm", "-rf", str(file)])
 
     # Copy installer to tmp (use CoW to avoid extra disk writes)
     subprocess.run(["cp", "-cR", installer_path, ia_tmp])

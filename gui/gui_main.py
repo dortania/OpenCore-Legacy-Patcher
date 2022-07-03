@@ -1872,7 +1872,6 @@ class wx_python_gui:
             self.pulse_alternative(self.progress_bar)
             wx.GetApp().Yield()
 
-        self.progress_bar.SetValue(0)
         if self.prepare_result is True:
             self.progress_label.SetLabel("Bytes Written: 0")
             self.progress_label.Centre(wx.HORIZONTAL)
@@ -1887,6 +1886,7 @@ class wx_python_gui:
             self.download_thread = threading.Thread(target=self.download_and_unzip_pkg)
             self.download_thread.start()
             default_output = float(utilities.monitor_disk_output(disk))
+            self.progress_bar.SetValue(0)
             while True:
                 time.sleep(0.1)
                 output = float(utilities.monitor_disk_output(disk))
