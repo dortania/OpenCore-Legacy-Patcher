@@ -28,20 +28,23 @@ class sys_patch_helpers:
             board_to_patch_hex = bytes.fromhex(board_to_patch.encode('utf-8').hex())
             reported_board_hex = bytes.fromhex(self.constants.computer.reported_board_id.encode('utf-8').hex())
 
-            if len(board_to_patch_hex) != len(reported_board_hex):
-                print(f"- Error: Board ID {self.constants.computer.reported_board_id} is not the same length as {board_to_patch}")
-                raise Exception("Host's Board ID is not the same length as the kext's Board ID, cannot patch!!!")
+            if len(board_to_patch_hex) > len(reported_board_hex):
+                # Pad the reported Board ID with zeros to match the length of the board to patch
+                reported_board_hex = reported_board_hex + bytes(len(board_to_patch_hex) - len(reported_board_hex))
+            elif len(board_to_patch_hex) < len(reported_board_hex):
+                print(f"- Error: Board ID {self.constants.computer.reported_board_id} is longer than {board_to_patch}")
+                raise Exception("Host's Board ID is longer than the kext's Board ID, cannot patch!!!")
+
+            path = source_files_path + "/10.13.6/System/Library/Extensions/AppleIntelSNBGraphicsFB.kext/Contents/MacOS/AppleIntelSNBGraphicsFB"
+            if Path(path).exists():
+                with open(path, 'rb') as f:
+                    data = f.read()
+                    data = data.replace(board_to_patch_hex, reported_board_hex)
+                    with open(path, 'wb') as f:
+                        f.write(data)
             else:
-                path = source_files_path + "/10.13.6/System/Library/Extensions/AppleIntelSNBGraphicsFB.kext/Contents/MacOS/AppleIntelSNBGraphicsFB"
-                if Path(path).exists():
-                    with open(path, 'rb') as f:
-                        data = f.read()
-                        data = data.replace(board_to_patch_hex, reported_board_hex)
-                        with open(path, 'wb') as f:
-                            f.write(data)
-                else:
-                    print(f"- Error: Could not find {path}")
-                    raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
+                print(f"- Error: Could not find {path}")
+                raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
 
 
     def generate_patchset_plist(self, patchset, file_name):
