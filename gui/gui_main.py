@@ -31,6 +31,7 @@ class wx_python_gui:
         self.finished_cim_process = False
         self.target_disk = ""
         self.pulse_forward = False
+        self.prepare_result = False
         self.non_metal_required = self.use_non_metal_alternative()
         self.hyperlink_colour = (25, 179, 231)
 
@@ -1832,9 +1833,8 @@ class wx_python_gui:
             20
         )
         self.progress_bar.Centre(wx.HORIZONTAL)
-        self.progress_bar.SetValue(0)
 
-        self.progress_label = wx.StaticText(self.frame, label="Bytes Written: 0")
+        self.progress_label = wx.StaticText(self.frame, label="Preparing files, beginning shortly...")
         self.progress_label.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.progress_label.SetPosition(
             wx.Point(
@@ -1863,7 +1863,18 @@ class wx_python_gui:
         print("- Creating installer.sh script")
         print(f"- Disk: {disk}")
         print(f"- Installer: {installer_path}")
-        if installer.generate_installer_creation_script(self.constants.installer_sh_path, installer_path, disk):
+
+        self.prepare_script_thread = threading.Thread(target=self.prepare_script, args=(installer_path,disk))
+        self.prepare_script_thread.start()
+        self.progress_bar.Pulse()
+
+        while self.prepare_script_thread.is_alive():
+            self.pulse_alternative(self.progress_bar)
+            wx.GetApp().Yield()
+
+        if self.prepare_result is True:
+            self.progress_label.SetLabel("Bytes Written: 0")
+            self.progress_label.Centre(wx.HORIZONTAL)
             print("- Sucessfully generated creation script")
             print("- Starting creation script as admin")
             wx.GetApp().Yield()
@@ -1875,6 +1886,7 @@ class wx_python_gui:
             self.download_thread = threading.Thread(target=self.download_and_unzip_pkg)
             self.download_thread.start()
             default_output = float(utilities.monitor_disk_output(disk))
+            self.progress_bar.SetValue(0)
             while True:
                 time.sleep(0.1)
                 output = float(utilities.monitor_disk_output(disk))
@@ -1918,7 +1930,14 @@ class wx_python_gui:
                         self.build_install_menu()
         else:
             print("- Failed to create installer script")
+            self.progress_label.SetLabel("Failed to copy files to tmp directory")
+            self.progress_label.Centre(wx.HORIZONTAL)
+            popup_message = wx.MessageDialog(self.frame, "Failed to prepare the base files for installer creation.\n\nPlease ensure you have 20GB~ free on-disk before starting to ensure the installer has enough room to work.", "Error", wx.OK)
+            popup_message.ShowModal()
         self.return_to_main_menu.Enable()
+
+    def prepare_script(self, installer_path, disk):
+        self.prepare_result = installer.generate_installer_creation_script(self.constants.payload_path, installer_path, disk)
 
     def start_script(self):
         utilities.disable_sleep_while_running()
@@ -2175,6 +2194,21 @@ class wx_python_gui:
 
     def allow_native_models_click(self, event=None):
         if self.checkbox_allow_native_models.GetValue():
+            # Throw a prompt warning about this
+            dlg = wx.MessageDialog(self.frame_modal, "This option should only be used if your Mac natively supports the OSes you wish to run.\n\nIf you are currently running an unsupported OS, this option will break booting. Only toggle for enabling OS features on a native Mac.\n\nAre you sure you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
+            if dlg.ShowModal() == wx.ID_NO:
+                self.checkbox_allow_native_models.SetValue(False)
+                return
+            # If the system is running an unsupported OS, throw a second warning
+            if self.constants.computer.real_model in smbios_data.smbios_dictionary:
+                if self.constants.detected_os > smbios_data.smbios_dictionary[self.constants.computer.real_model]["Max OS Supported"]:
+                    chassis_type = "aluminum"
+                    if self.constants.computer.real_model in ["MacBook4,1", "MacBook5,2", "MacBook6,1", "MacBook7,1"]:
+                        chassis_type = "plastic"
+                    dlg = wx.MessageDialog(self.frame_modal, f"This model, {self.constants.computer.real_model}, does not natively support macOS {os_data.os_conversion.kernel_to_os(self.constants.detected_os)}, {os_data.os_conversion.convert_kernel_to_marketing_name(self.constants.detected_os)}. The last native OS was macOS {os_data.os_conversion.kernel_to_os(smbios_data.smbios_dictionary[self.constants.computer.real_model]['Max OS Supported'])}, {os_data.os_conversion.convert_kernel_to_marketing_name(smbios_data.smbios_dictionary[self.constants.computer.real_model]['Max OS Supported'])}\n\nToggling this option will breaking booting on this OS. Are you absolutely certain this is desired?\n\nYou may end up with a nice {chassis_type} brick 🧱", "Are you certain?", wx.YES_NO | wx.ICON_WARNING)
+                    if dlg.ShowModal() == wx.ID_NO:
+                        self.checkbox_allow_native_models.SetValue(False)
+                        return
             print("Allow Native Models")
             self.constants.allow_oc_everywhere = True
             self.constants.serial_settings = "None"
@@ -2745,6 +2779,10 @@ class wx_python_gui:
         self.constants.custom_board_serial_number = self.smbios_board_serial_textbox.GetValue()
 
     def generate_new_serials_clicked(self, event):
+        # Throw pop up warning about misusing this feature
+        dlg = wx.MessageDialog(self.frame_modal, "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nDortania does not condone the use of our software on stolen devices.", "Warning", wx.YES_NO | wx.ICON_WARNING)
+        if dlg.ShowModal() == wx.ID_NO:
+            return
         macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.constants.custom_model or self.computer.real_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         macserial_output = macserial_output.stdout.decode().strip().split(" | ")
         if len(macserial_output) == 2:
