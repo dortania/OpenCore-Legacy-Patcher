@@ -3,6 +3,7 @@ from pathlib import Path
 import plistlib
 import subprocess
 import requests
+import tempfile
 from resources import utilities, tui_helpers
 
 def list_local_macOS_installers():
@@ -331,8 +332,10 @@ def list_disk_to_format():
         })
     return list_disks
 
+# Create global tmp directory
+tmp_dir = tempfile.TemporaryDirectory()
 
-def generate_installer_creation_script(script_location, installer_path, disk):
+def generate_installer_creation_script(tmp_location, installer_path, disk):
     # Creates installer.sh to be piped to OCLP-Helper and run as admin
     # Goals:
     # - Format provided disk as HFS+ GPT
@@ -341,6 +344,29 @@ def generate_installer_creation_script(script_location, installer_path, disk):
     # OCLP-Helper once to avoid nagging the user about permissions
 
     additional_args = ""
+    script_location = Path(tmp_location) / Path("Installer.sh")
+
+    # Due to a bug in createinstallmedia, running from '/Applications' may sometimes error:
+    #   'Failed to extract AssetData/boot/Firmware/Manifests/InstallerBoot/*'
+    # This affects native Macs as well even when manually invoking createinstallmedia
+
+    # To resolve, we'll copy into our temp directory and run from there
+
+    # Create a new tmp directory
+    # Our current one is a disk image, thus CoW will not work
+    global tmp_dir
+    ia_tmp = tmp_dir.name
+
+    print(f"Creating temporary directory at {ia_tmp}")
+    # Delete all files in tmp_dir
+    for file in Path(ia_tmp).glob("*"):
+        subprocess.run(["rm", "-rf", str(file)])
+
+    # Copy installer to tmp (use CoW to avoid extra disk writes)
+    subprocess.run(["cp", "-cR", installer_path, ia_tmp])
+
+    # Adjust installer_path to point to the copied installer
+    installer_path = Path(ia_tmp) / Path(Path(installer_path).name)
 
     createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
     plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))

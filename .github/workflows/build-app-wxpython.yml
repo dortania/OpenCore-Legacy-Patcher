@@ -11,9 +11,9 @@ jobs:
     name: Build wxPython
     runs-on: x86_64_mojave
     env:
-      branch: ${{ github.event.ref }}
-      commiturl: ${{ github.event.head_commit.url }}
-      commitdate: ${{ github.event.head_commit.timestamp }}
+      branch: ${{ github.ref }}
+      commiturl: ${{ github.event.head_commit.url }}${{ github.event.release.html_url }}
+      commitdate: ${{ github.event.head_commit.timestamp }}${{ github.event.release.published_at }}
     steps:
       - uses: actions/checkout@v3
       - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}"

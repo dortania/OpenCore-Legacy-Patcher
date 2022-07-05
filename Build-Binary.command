@@ -123,6 +123,9 @@ class create_binary:
             if file.name in delete_files:
                 print(f"  - Deleting {file.name}")
                 file.unlink()
+            elif (Path(file) / Path("Contents/Resources/createinstallmedia")).exists():
+                print(f"  - Deleting {file}")
+                subprocess.run(["rm", "-rf", file])
 
     def download_resources(self):
         patcher_support_pkg_version = constants.Constants().patcher_support_pkg_version

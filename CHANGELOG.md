@@ -7,6 +7,8 @@
 - Add error-handling to corrupt/non-standard NVRAM variables
 - Add warning prompt when using 'Allow native models'
   - Attempt to avoid misuse of option
+- Work-around `Failed to extract AssetData` during installer creation
+  - Apple bug, resolved by using CoW into a different directory than `/Applications`
 - Ventura Specific Updates:
   - Switch boot.efi model patch to iMac18,1
   - Resolve pre-Force Touch Trackpad support in Ventura
