@@ -1404,12 +1404,54 @@ class BuildOpenCore:
                 print("- Missing Command Line tools, skipping Vault for saftey reasons")
                 print("- Install via 'xcode-select --install' and rerun OCLP if you wish to vault this config")
 
+    def validate_pathing(self):
+        print("- Validating generated config")
+        if not Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")):
+            print("- OpenCore config file missing!!!")
+            raise Exception("OpenCore config file missing")
+        
+        config_plist = plistlib.load(Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")).open("rb"))
+
+        for acpi in config_plist["ACPI"]["Add"]:
+            # print(f"    - Validating {acpi['Path']}")
+            if not Path(self.constants.opencore_release_folder / Path("EFI/OC/ACPI") / Path(acpi["Path"])).exists():
+                print(f"  - Missing ACPI Table: {acpi['Path']}")
+                raise Exception(f"Missing ACPI Table: {acpi['Path']}")
+
+        for kext in config_plist["Kernel"]["Add"]:
+            # print(f"    - Validating {kext['BundlePath']}")
+            kext_path = Path(self.constants.opencore_release_folder / Path("EFI/OC/Kexts") / Path(kext["BundlePath"]))
+            kext_binary_path = Path(kext_path / Path(kext["ExecutablePath"]))
+            kext_plist_path = Path(kext_path / Path(kext["PlistPath"]))
+            if not kext_path.exists():
+                print(f"- Missing kext: {kext_path}")
+                raise Exception(f"Missing {kext_path}")
+            if not kext_binary_path.exists():
+                print(f"- Missing {kext['BundlePath']}'s binary: {kext_binary_path}")
+                raise Exception(f"Missing {kext_binary_path}")
+            if not kext_plist_path.exists():
+                print(f"- Missing {kext['BundlePath']}'s plist: {kext_plist_path}")
+                raise Exception(f"Missing {kext_plist_path}")
+        
+        for tool in config_plist["Misc"]["Tools"]:
+            # print(f"    - Validating {tool['Path']}")
+            if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools") / Path(tool["Path"])).exists():
+                print(f"  - Missing tool: {tool['Path']}")
+                raise Exception(f"Missing tool: {tool['Path']}")
+
+        for driver in config_plist["UEFI"]["Drivers"]:
+            # print(f"    - Validating {driver['Path']}")
+            if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers") / Path(driver["Path"])).exists():
+                print(f"  - Missing driver: {driver['Path']}")
+                raise Exception(f"Missing driver: {driver['Path']}")
+
     def build_opencore(self):
         self.build_efi()
         if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True or (self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != ""):
             self.set_smbios()
         self.cleanup()
         self.sign_files()
+        self.validate_pathing()
         print("")
         print(f"Your OpenCore EFI for {self.model} has been built at:")
         print(f"    {self.constants.opencore_release_folder}")
