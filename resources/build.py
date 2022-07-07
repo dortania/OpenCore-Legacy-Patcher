@@ -1351,28 +1351,19 @@ class BuildOpenCore:
     def cleanup(self):
         print("- Cleaning up files")
         # Remove unused entries
-        # TODO: Consolidate into a single for loop
-        for entry in list(self.config["ACPI"]["Add"]):
-            if not entry["Enabled"]:
-                self.config["ACPI"]["Add"].remove(entry)
-        for entry in list(self.config["ACPI"]["Patch"]):
-            if not entry["Enabled"]:
-                self.config["ACPI"]["Patch"].remove(entry)
-        for entry in list(self.config["Booter"]["Patch"]):
-            if not entry["Enabled"]:
-                self.config["Booter"]["Patch"].remove(entry)
-        for entry in list(self.config["Kernel"]["Add"]):
-            if not entry["Enabled"]:
-                self.config["Kernel"]["Add"].remove(entry)
-        for entry in list(self.config["Kernel"]["Patch"]):
-            if not entry["Enabled"]:
-                self.config["Kernel"]["Patch"].remove(entry)
-        for entry in list(self.config["Misc"]["Tools"]):
-            if not entry["Enabled"]:
-                self.config["Misc"]["Tools"].remove(entry)
-        for entry in list(self.config["UEFI"]["Drivers"]):
-            if not entry["Enabled"]:
-                self.config["UEFI"]["Drivers"].remove(entry)
+        entries_to_clean = {
+            "ACPI":   ["Add", "Delete", "Patch"],
+            "Booter": ["Patch"],
+            "Kernel": ["Add", "Block", "Force", "Patch"],
+            "Misc":   ["Tools"],
+            "UEFI":   ["Drivers"],
+        }
+
+        for entry in entries_to_clean:
+            for sub_entry in entries_to_clean[entry]:
+                for item in list(self.config[entry][sub_entry]):
+                    if item["Enabled"] is False:
+                        self.config[entry][sub_entry].remove(item)
 
         plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
         for kext in self.constants.kexts_path.rglob("*.zip"):
@@ -1409,7 +1400,7 @@ class BuildOpenCore:
         if not Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")):
             print("- OpenCore config file missing!!!")
             raise Exception("OpenCore config file missing")
-        
+
         config_plist = plistlib.load(Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")).open("rb"))
 
         for acpi in config_plist["ACPI"]["Add"]:
@@ -1432,7 +1423,7 @@ class BuildOpenCore:
             if not kext_plist_path.exists():
                 print(f"- Missing {kext['BundlePath']}'s plist: {kext_plist_path}")
                 raise Exception(f"Missing {kext_plist_path}")
-        
+
         for tool in config_plist["Misc"]["Tools"]:
             # print(f"    - Validating {tool['Path']}")
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools") / Path(tool["Path"])).exists():
