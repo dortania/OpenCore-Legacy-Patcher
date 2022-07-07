@@ -27,7 +27,8 @@
   - Allow dyld shared cache swapping on pre-Haswell
   - Add USB1.1 injection for pre-Ivy bridge units
 - Increment Binaries:
-  - Lilu 1.6.1 rolling (8542170)
+  - OpenCorePkg 0.8.3 rolling (30acb57)
+  - Lilu 1.6.2 rolling (2ff83c6)
   - FeatureUnlock 1.0.9 rolling (b7c1dd0)
 
 ## 0.4.7
