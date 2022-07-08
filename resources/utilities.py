@@ -93,6 +93,10 @@ def check_seal():
     else:
         return False
 
+def check_filesystem_type():
+    # Expected to return 'apfs' or 'hfs'
+    filesystem_type = plistlib.loads(subprocess.run(["diskutil", "info", "-plist", "/"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    return filesystem_type["FilesystemType"]
 
 def csr_dump():
     # Based off sip_config.py

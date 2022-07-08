@@ -363,10 +363,17 @@ def generate_installer_creation_script(tmp_location, installer_path, disk):
         subprocess.run(["rm", "-rf", str(file)])
 
     # Copy installer to tmp (use CoW to avoid extra disk writes)
-    subprocess.run(["cp", "-cR", installer_path, ia_tmp])
+    args = ["cp", "-cR", installer_path, ia_tmp]
+    if utilities.check_filesystem_type() != "apfs":
+        # HFS+ disks do not support CoW
+        args[1] = "-R"
+    subprocess.run(args)
 
     # Adjust installer_path to point to the copied installer
     installer_path = Path(ia_tmp) / Path(Path(installer_path).name)
+    if not Path(installer_path).exists():
+        print(f"Failed to copy installer to {ia_tmp}")
+        return False
 
     createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
     plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))
