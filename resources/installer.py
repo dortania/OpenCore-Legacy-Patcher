@@ -207,6 +207,11 @@ def only_list_newest_installers(available_apps):
 
         # Now remove all versions that are not the largest
         for ia in list(available_apps):
+            if available_apps[ia]["Variant"] in ["DeveloperSeed", "PublicSeed"]:
+                # Remove Beta builds from default listing
+                available_apps.pop(ia)
+                continue
+
             if available_apps[ia]["Version"].startswith(version):
                 remote_version = available_apps[ia]["Version"].split(".")
                 if remote_version[0] == "10":
