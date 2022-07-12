@@ -9,6 +9,8 @@
   - Attempt to avoid misuse of option
 - Work-around `Failed to extract AssetData` during installer creation
   - Apple bug, resolved by using CoW into a different directory than `/Applications`
+- Avoid listing beta installers in downloader
+- Warn about downloading macOS Ventura installers, unsupported by current patcher
 
 ## 0.4.7
 - Fix crashing on defaults parsing
