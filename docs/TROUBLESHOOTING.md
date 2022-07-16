@@ -2,6 +2,7 @@
 
 Here are some common errors users may experience while using this patcher:
 
+* [OpenCore Legacy Patcher not launching](#opencore-legacy-patcher-not-launching)
 * [Stuck on `This version of Mac OS X is not supported on this platform`](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
@@ -19,6 +20,15 @@ Here are some common errors users may experience while using this patcher:
 * [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
 * [No acceleration after a Metal GPU swap on Mac Pro](#no-acceleration-after-a-metal-gpu-swap-on-mac-pro)
 
+
+
+## OpenCore Legacy Patcher not launching
+
+If the application won't launch (e.g. icon will bounce in the Dock), try launching OCLP via Terminal by typing the following command, make sure you've moved the app to `/Applications` before this.
+
+```sh
+/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher 
+```
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
 
