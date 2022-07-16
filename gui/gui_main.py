@@ -1887,7 +1887,7 @@ class wx_python_gui:
         if self.prepare_result is True:
             self.progress_label.SetLabel("Bytes Written: 0")
             self.progress_label.Centre(wx.HORIZONTAL)
-            print("- Sucessfully generated creation script")
+            print("- Successfully generated creation script")
             print("- Starting creation script as admin")
             wx.GetApp().Yield()
             time.sleep(1)
@@ -1926,13 +1926,13 @@ class wx_python_gui:
                         self.constants.host_is_hackintosh is True
                     )
                 ):
-                    popup_message = wx.MessageDialog(self.frame, "Sucessfully created a macOS installer!", "Success", wx.OK)
+                    popup_message = wx.MessageDialog(self.frame, "Successfully created a macOS installer!", "Success", wx.OK)
                     popup_message.ShowModal()
                 else:
                     self.dialog = wx.MessageDialog(
                         parent=self.frame,
                         message="Would you like to continue and Install OpenCore to this disk?",
-                        caption="Sucessfully created the macOS installer!",
+                        caption="Successfully created the macOS installer!",
                         style=wx.YES_NO | wx.ICON_QUESTION
                     )
                     self.dialog.SetYesNoLabels("Install OpenCore to disk", "Skip")
@@ -1956,7 +1956,7 @@ class wx_python_gui:
         args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
         output, error, returncode = run.Run()._stream_output(comm=args)
         if "Install media now available at" in output:
-            print("- Sucessfully created macOS installer")
+            print("- Successfully created macOS installer")
             while self.download_thread.is_alive():
                 # wait for download_thread to finish
                 # though highly unlikely this thread is still alive (flashing an Installer will take a while)
