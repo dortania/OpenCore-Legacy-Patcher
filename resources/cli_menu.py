@@ -857,7 +857,7 @@ Supported Options:
 3. Disable FeatureUnlock
             """
         )
-        change_menu = input("Set FeatreUnlock (ie. 1): ")
+        change_menu = input("Set FeatureUnlock (ie. 1): ")
         if change_menu == "1":
             self.constants.fu_status = True
             self.constants.fu_arguments = None

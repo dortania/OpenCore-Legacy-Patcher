@@ -44,7 +44,7 @@ class PatchSysVolume:
         self.computer = self.constants.computer
         self.root_mount_path = None
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
-        self.constants.root_patcher_succeded = False # Reset Variable each time we start
+        self.constants.root_patcher_succeeded = False # Reset Variable each time we start
         self.constants.needs_to_open_preferences = False
         self.patch_set_dictionary = {}
         self.needs_kmutil_exemptions = False # For '/Library/Extensions' rebuilds
@@ -113,7 +113,7 @@ class PatchSysVolume:
             else:
                 self.clean_skylight_plugins()
                 self.delete_nonmetal_enforcement()
-                self.constants.root_patcher_succeded = True
+                self.constants.root_patcher_succeeded = True
                 print("- Unpatching complete")
                 print("\nPlease reboot the machine for patches to take effect")
 
@@ -172,7 +172,7 @@ class PatchSysVolume:
             print("\nPlease reboot the machine for patches to take effect")
             if self.needs_kmutil_exemptions is True:
                 print("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
-            self.constants.root_patcher_succeded = True
+            self.constants.root_patcher_succeeded = True
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to continue")
 

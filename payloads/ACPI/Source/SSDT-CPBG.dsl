@@ -1,4 +1,4 @@
-/* Disable the non-existant Co-processor Bridge found on Arrendale, Lynnfield and Clarkdale Macs.
+/* Disable the non-existant Co-processor Bridge found on Arrandale, Lynnfield and Clarkdale Macs.
  * IOPCIFamily in macOS 11.0 up-to 11.2 was unable to handle ACPI probing when device was not present,
  * therefore kernel panicing the machine.
  *

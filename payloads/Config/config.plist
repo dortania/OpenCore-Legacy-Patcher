@@ -19,7 +19,7 @@
 				<key>Enabled</key>
 				<false/>
 				<key>Comment</key>
-				<string>Patch CPBG for Arrendale, Lynnfield and Clarkdale</string>
+				<string>Patch CPBG for Arrandale, Lynnfield and Clarkdale</string>
 				<key>Path</key>
 				<string>SSDT-CPBG.aml</string>
 			</dict>

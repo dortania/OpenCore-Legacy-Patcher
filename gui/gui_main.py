@@ -141,7 +141,7 @@ class wx_python_gui:
                 self.popup = wx.MessageDialog(
                     self.frame,
                     f"During unpacking of our internal files, we seemed to have encountered an error.\n\nIf you keep seeing this error, please try rebooting and redownloading the application.",
-                    "Internal Error occured!",
+                    "Internal Error occurred!",
                     style = wx.OK | wx.ICON_EXCLAMATION
                 )
                 self.popup.ShowModal()
@@ -199,10 +199,10 @@ class wx_python_gui:
                         style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
                     )
                     self.dialog.SetYesNoCancelLabels("View on Github", "Always Ignore", "Ignore Once")
-                    responce = self.dialog.ShowModal()
-                    if responce == wx.ID_YES:
+                    response = self.dialog.ShowModal()
+                    if response == wx.ID_YES:
                         webbrowser.open(github_link)
-                    elif responce == wx.ID_NO:
+                    elif response == wx.ID_NO:
                         print("- Setting IgnoreAppUpdates to True")
                         self.constants.ignore_updates = True
                         global_settings.global_settings().write_property("IgnoreAppUpdates", True)
@@ -1104,7 +1104,7 @@ class wx_python_gui:
             # Create popup window to inform user of error
             self.popup = wx.MessageDialog(
                 self.frame_modal,
-                "A problem occured trying to download PatcherSupportPkg binaries\n\nIf you continue to have this error, download an Offline build from Github\nThese builds don't require a network connection to root patch",
+                "A problem occurred trying to download PatcherSupportPkg binaries\n\nIf you continue to have this error, download an Offline build from Github\nThese builds don't require a network connection to root patch",
                 "Network Error",
                 wx.YES_NO | wx.ICON_ERROR
             )
@@ -1180,11 +1180,11 @@ class wx_python_gui:
         try:
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_patch()
         except Exception as e:
-            self.text_box.AppendText(f"- An internal error occured while running the Root Patcher:\n{str(e)}")
+            self.text_box.AppendText(f"- An internal error occurred while running the Root Patcher:\n{str(e)}")
             pass
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
-        if self.constants.root_patcher_succeded is True:
+        if self.constants.root_patcher_succeeded is True:
             print("- Root Patcher finished successfully")
             if self.constants.needs_to_open_preferences is True:
                 # Create dialog box to open System Preferences -> Security and Privacy
@@ -1290,11 +1290,11 @@ class wx_python_gui:
         try:
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_unpatch()
         except Exception as e:
-            self.text_box.AppendText(f"- An internal error occured while running the Root Patcher:\n{str(e)}")
+            self.text_box.AppendText(f"- An internal error occurred while running the Root Patcher:\n{str(e)}")
             pass
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
-        if self.constants.root_patcher_succeded is True:
+        if self.constants.root_patcher_succeeded is True:
             print("- Root Patcher finished successfully")
             self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
@@ -1602,7 +1602,7 @@ class wx_python_gui:
         wx.App.Get().Yield()
         integrity_path = Path(Path(self.constants.payload_path) / Path(apple_integrity_file_link.split("/")[-1]))
         if utilities.download_file(apple_integrity_file_link, integrity_path, verify_checksum=False):
-            # If we're unable to download the integrity file immediately after downloading the IA, there's a legitmate issue
+            # If we're unable to download the integrity file immediately after downloading the IA, there's a legitimate issue
             # on Apple's end.
             # Fail gracefully and just head to installing the IA.
             utilities.disable_sleep_while_running()
@@ -1936,8 +1936,8 @@ class wx_python_gui:
                         style=wx.YES_NO | wx.ICON_QUESTION
                     )
                     self.dialog.SetYesNoLabels("Install OpenCore to disk", "Skip")
-                    responce = self.dialog.ShowModal()
-                    if responce == wx.ID_YES:
+                    response = self.dialog.ShowModal()
+                    if response == wx.ID_YES:
                         self.constants.start_build_install = True
                         self.build_install_menu()
         else:
@@ -2016,7 +2016,7 @@ class wx_python_gui:
         # Define Menu
         # - Header: Settings
         # - Dropdown: Model
-        # - Chechboxes:
+        # - Checkboxes:
         #   - Verbose
         #   - Kext Debug
         #   - OpenCore Debug
@@ -2375,7 +2375,7 @@ class wx_python_gui:
         self.disable_battery_throttling_checkbox.SetPosition(wx.Point(
             self.hibernation_checkbox.GetPosition().x,
             self.hibernation_checkbox.GetPosition().y + self.hibernation_checkbox.GetSize().height))
-        self.disable_battery_throttling_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable MSR Power Control on Arrendale and newer Macs\nMainly applicable for systems with severe throttling due to missing battery or display"))
+        self.disable_battery_throttling_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable MSR Power Control on Arrandale and newer Macs\nMainly applicable for systems with severe throttling due to missing battery or display"))
 
         # Disable XCPM
         self.disable_xcpm_checkbox = wx.CheckBox(self.frame_modal, label="Disable XCPM")
@@ -3107,7 +3107,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.subheader_2.SetSize(wx.Size(self.frame_modal.GetSize().width, 30))
         self.subheader_2.Centre(wx.HORIZONTAL)
 
-        # Label: Set FeatreUnlock status
+        # Label: Set FeatureUnlock status
         self.feature_unlock_label = wx.StaticText(self.frame_modal, label="Feature Unlock Status:", style=wx.ALIGN_CENTRE)
         self.feature_unlock_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.feature_unlock_label.SetPosition(wx.Point(0, self.subheader_2.GetPosition().y + self.subheader_2.GetSize().height -5))

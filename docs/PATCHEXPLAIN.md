@@ -17,7 +17,7 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
 ### ACPI -> Add
 
 * SSDT-CPBG
-  * Reason: Resolves Kernel Panic on Arrendale Macs in early Big Sur builds
+  * Reason: Resolves Kernel Panic on Arrandale Macs in early Big Sur builds
   * Logic: Disable dummy CPBG device in ACPI
   * Models: MacBookPro6,x and iMac11,x
 * SSDT-PCI
@@ -28,7 +28,7 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
   * Reason: Allows for software based deMUX disabling dGPUs in 2011 MacBook Pros
   * Logic: Sends power down request to dGPU via ACPI
   * Models: MacBookPro8,2 and MacBookPro8,3 with dead dGPUs
- 
+
 ### ACPI -> Patch
 
 * `EHCx` and `XHC1` Patches
@@ -39,13 +39,13 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
   * Reason: To be paired with SSDT-PCI
 * `_INI` to `XINI` Patch
   * Reason: To be paired with SSDT-DGPU
-  
+
 ### Booter -> Patch
 
 * Reroute `HW_BID` to `OC_BID`
   * Reason: Allows macOS installers to be used on unsupported models
   * Logic: Reroutes Board ID macOS checks to custom variable
-  * Models: All systems using VMM spoofing 
+  * Models: All systems using VMM spoofing
 
 ### Booter -> Quirks
 
@@ -146,7 +146,7 @@ Below is a run down of the main logic OpenCore Legacy Patcher uses to gain nativ
   * Reason: Used for proper output on machines with UGA firmware but GOP GPU
   * Logic: Provide GOP protocol instances on top of UGA protocol instances
   * Models: MacPro3,1, MacBook4,1 iMac7,1-8,1
-  
+
 :::
 
 ## Injected Kext
@@ -173,7 +173,7 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
   * Reason: Patches BlueTool to enable bluetooth functionality on Monterey
   * Models: All models with pre-BCM94360 wireless cards or 3rd-party chipsets
 * Bluetooth-Spoof
-  * Reason: Injects extra data into certain bluetooth chipsets for recognition by the system 
+  * Reason: Injects extra data into certain bluetooth chipsets for recognition by the system
   * Models: Models with the BCM2070 or BCM2046 chipsets
 * FeatureUnlock (Night Shift)
   * Reason: Patches CoreBrightness.framework to enable Night Shift on unsupported models
