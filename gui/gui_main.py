@@ -1750,12 +1750,12 @@ class wx_python_gui:
         self.usb_selection_label.Centre(wx.HORIZONTAL)
 
         i = -15
-        availible_disks = installer.list_disk_to_format()
-        if availible_disks:
+        available_disks = installer.list_disk_to_format()
+        if available_disks:
             print("Disks found")
-            for disk in availible_disks:
-                print(f"{disk}: {availible_disks[disk]['name']} - {availible_disks[disk]['size']}")
-                self.usb_selection = wx.Button(self.frame, label=f"{disk} - {availible_disks[disk]['name']} - {utilities.human_fmt(availible_disks[disk]['size'])}", size=(300, 30))
+            for disk in available_disks:
+                print(f"{disk}: {available_disks[disk]['name']} - {available_disks[disk]['size']}")
+                self.usb_selection = wx.Button(self.frame, label=f"{disk} - {available_disks[disk]['name']} - {utilities.human_fmt(available_disks[disk]['size'])}", size=(300, 30))
                 i = i + 25
                 self.usb_selection.SetPosition(
                     wx.Point(
@@ -1763,7 +1763,7 @@ class wx_python_gui:
                         self.usb_selection_label.GetPosition().y + self.usb_selection_label.GetSize().height + i
                     )
                 )
-                self.usb_selection.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.format_usb_progress(availible_disks[temp]['identifier'], installer_name, installer_path))
+                self.usb_selection.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.format_usb_progress(available_disks[temp]['identifier'], installer_name, installer_path))
                 self.usb_selection.Centre(wx.HORIZONTAL)
         else:
             print("No disks found")
