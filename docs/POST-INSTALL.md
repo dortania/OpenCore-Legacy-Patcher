@@ -14,7 +14,7 @@ Once you've installed macOS through OpenCore, you can boot up and go through the
 * Install OpenCore to internal drive
 * Reboot holding Option, and select the internal EFI
 
-And voila! No more USB drive required
+And voila! No more USB drive required.
 
 ## Booting seamlessly without Verbose or OpenCore Picker
 
@@ -29,13 +29,13 @@ Here you can change different patcher settings, however the main interest is:
 * Show Boot Picker (GUI)
 * Set ShowPicker Mode (TUI)
 
-Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, then you can release the "ESC" key when you see the cursor arrow at the top left.
+Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, and then you can release the "ESC" key when you see the cursor arrow at the top left.
 
 ## Enabling SIP
 
 For many users, SIP will be enabled by default on build. For Intel HD 4000 users, you may have noticed that SIP is partially disabled. This is to ensure full compatibility with macOS Monterey and allow seamless booting between it and older OSes. However for users who do not plan to boot Monterey, you can re-enable under Patcher Settings.
 
-Note: Machines with non-Metal GPUs cannot enable SIP in Big Sur either due to patched root volume
+Note: Machines with non-Metal GPUs cannot enable SIP in Big Sur either, due to having a patched root volume
 
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
 | :--- | :--- | :--- |
@@ -43,13 +43,13 @@ Note: Machines with non-Metal GPUs cannot enable SIP in Big Sur either due to pa
 
 :::warning 
 
-If you're unsure whether you should enable SIP, leave as-is. Systems where you have already ran the Post Install Root Patching cannot enable SIP without potentially breaking the current install. 
+If you're unsure whether you should enable SIP, leave it as-is. Systems where you have already ran the Post Install Root Patching cannot enable SIP without potentially breaking the current install. 
 
 :::
 
 ## Applying Post Install Volume Patches
 
-Post Install Volume Patches, sometimes also called root patches, are patches that have to be installed on disk for some older Macs to gain back functionality.
+Post Install Volume Patches, sometimes also called root patches, are patches that have to be installed to disk for some older Macs to gain back functionality.
 
 OCLP v0.4.4 and higher include an autopatcher, which will automatically root patch your system but **only if the USB install media was created within OCLP.**
 
@@ -69,7 +69,7 @@ In OCLP v0.4.5 a new indicator was added to help users to see if, when and on wh
 
 ### Running Post Install patches manually
 
-If you're using OCLP v0.4.3 or earlier, or need to run the patcher manually, you can do so with the app. There is no harm in trying to run the Patcher, as without compatible hardware nothing will be done. You can see below on whether your hardware needs root volume patching. 
+If you're using OCLP v0.4.3 or earlier, or need to run the patcher manually, you can do so with the app. There is no harm in trying to run the Patcher, as without compatible hardware, nothing will be done. You can see below on whether your hardware needs root volume patching or not. 
 
 | Listing Patches | Patching Finished |
 | :--- | :--- |
@@ -78,7 +78,7 @@ If you're using OCLP v0.4.3 or earlier, or need to run the patcher manually, you
 
 :::warning
 
-With OpenCore Legacy Patcher versions prior to v0.4.4, Root Patching requires a network connection by default to grab associated resources. If your system is having difficulties with wifi or ethernet, you can grab the newest release :
+With OpenCore Legacy Patcher versions prior to v0.4.4, Root Patching requires a network connection by default to grab associated resources. If your system is having difficulties with Wi-Fi or ethernet, you can grab the newest release :
 
 * [OpenCore Legacy Patcher releases](https://github.com/dortania/OpenCore-Legacy-Patcher/releases/latest)
 

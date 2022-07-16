@@ -18,7 +18,7 @@ The below page is for users experiencing issues with their overall usage of macO
 
 * Intel 3rd and 4th Gen - GMA series
 
-For those unfamiliar with what is considered a non-Metal GPU, see below chart:
+For those unfamiliar with what is considered a non-Metal GPU, see the chart below:
 
 ::: details macOS GPU Chart
 
@@ -105,9 +105,9 @@ Workaround: Press some combination of Tab, or Tab and then Shift-Tab, or just Sh
 
 ## Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer
 
-Unfortunately a very well known issue the community is investigating, current known solution is to simply downgrade to 11.2.3 or older until a proper fix can be found. Additionally logging out and logging in can resolve the issue without requiring a reboot
+Unfortunately a very well known issue that the community is investigating. A currently known solution is to downgrade to macOS 11.2.3 or older until a proper fix can be found. Additionally logging out and logging in can resolve the issue without requiring a reboot.
 
-* Note, this issue should be exclusive to TeraScale 1 GPUs (ie. HD2000-4000). TeraScale 2 GPUs should not exhibit this issue
+* Note, this issue should be exclusive to TeraScale 1 GPUs (ie. HD2000-4000). TeraScale 2 GPUs should not exhibit this issue.
 
 In the event Apple removes 11.2.3 from their catalogue, we've provided a mirror below:
 
@@ -123,11 +123,11 @@ The best way to achieve this is to boot Recovery (or Single User Mode if the dGP
 nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00
 ```
 
-This will disable the dGPU and allow the iGPU to function in Big Sur. Note that external display outputs are directly routed to the dGPU and therefore can no longer be used. Solutions such as a [DisplayLink Adapters](https://www.displaylink.com/products/usb-adapters) can work around this limitation, however note that you'll need to use older drivers (5.2.6):
+This will disable the dGPU and allow the iGPU to function in Big Sur. Note that external display outputs are directly routed to the dGPU and therefore can no longer be used. Solutions such as  [DisplayLink Adapters](https://www.displaylink.com/products/usb-adapters) can work around this limitation, however, note that you'll need to use older drivers (5.2.6):
 
 * [DisplayLink USB Graphics Software for macOS - For Mojave and Catalina - 5.2.6](https://www.synaptics.com/products/displaylink-graphics/downloads/macos-5.2.6)
 
-Note this driver only provides partial support in macOS, full graphics acceleration is not currently available on the displays driven by DisplayLink
+Note: This driver only provides partial support in macOS, full graphics acceleration is not currently available on displays driven by DisplayLink.
 
 ## Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)
 
@@ -135,7 +135,7 @@ Resolved with OpenCore Legacy Patcher v0.4.2
 
 ::: details Legacy Fix (prior to 0.4.2)
 
-Due to an odd bug with ATI's TeraScale 2 GPUs, many users will experience erratic/strobing colours once finished installing and rebooting into the accelerated patches. The issue stems from an incorrect assumption in the GPU drivers where it will enforce the Billion Colour space on your display. To fix, simply force your Display into a lower color depth such as a Million Colours.
+Due to an odd bug with ATI's TeraScale 2 GPUs, many users will experience erratic/strobing colours once finished installing accelerated patches and rebooting into macOS. The issue stems from an incorrect assumption in the GPU drivers where it will enforce the Billion Colour space on your display. To fix, simply force your Display into a lower color depth such as Million Colours.
 
 Applications that can set color depth are:
 
@@ -146,15 +146,15 @@ Applications that can set color depth are:
 
 ## Unable to allow Safari Extensions
 
-Due to an bug on the legacy acceleration patches, users won't be able to enable Safari Extensions
+Due to a bug in the legacy acceleration patches, users won't be able to enable Safari Extensions.
 
-This tool can be used to work-around this issue:
+The following tool can be used to work-around this issue:
 
 * [Non-Metal Safari Extensions](https://github.com/moosethegoose2213/Non-Metal-Safari-Extensions/)
 
 ## Cannot Login on 2011 15" and 17" MacBook Pros
 
-By default OpenCore Legacy Patcher will assume MacBookPro8,2/3 have a faulty dGPU and disable acceleration. This is the safest option for most users as enabling dGPU acceleration on faulty Macs will result in failed booting.
+By default, OpenCore Legacy Patcher will assume MacBookPro8,2/3 have a faulty dGPU and disable acceleration. This is the safest option for most users as enabling dGPU acceleration on faulty Macs will result in failed booting.
 
 However if your machine does not have the dGPU disabled via NVRAM, you'll experience a login loop. To work around this is quite simple:
 
@@ -178,7 +178,7 @@ nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%00%00%00%00
 
 A somewhat strange issue on Intel HD3000-based Macs, on 3rd party displays sometimes UI elements may become black and unreadable. To resolve, select either the generic `Display` or `Display P3` Color Profiles in Display Settings.
 
-* Mainly applicable for HDMI Displays, DVI and DisplayPort are generally unaffected
+* Mainly applicable for HDMI Displays, DVI and DisplayPort are generally unaffected.
 * If you're inside Setup Assistant, press `Cmd` + `Option` + `Control` + `T` to launch Terminal. From there, run `open /System/Applications/System\ Preferences.app`
 
 

@@ -1,8 +1,8 @@
 # Universal Control on unsupported Macs
 
-Introduced in macOS 12 Monterey, Universal Control is a feature that allows a Mac to control other Macs and/or iPads, share input devices, and share files across them simultaneously. With OpenCore and FeatureUnlock, Universal Control can be unlocked for most unsupported Macs, so long as they meet the technical requirements.
+Introduced in macOS 12 Monterey, Universal Control is a feature that allows a Mac to control other Macs and/or iPads, share input devices, and share files across them simultaneously. With OpenCore and FeatureUnlock, Universal Control can be unlocked for most unsupported Macs, as long as they meet the technical requirements listed on this page.
 
-* Note: Following page is primarily for hobbiests, no proper support is provided outside of Discord support (see bottom of page)
+* Note: The following page is primarily for tinkerers, no proper support is provided outside of Discord support (see bottom of page).
 
 ## Enabling Universal Control
 
@@ -14,7 +14,7 @@ If you meet all the requirements, in most cases you can go to Display Preference
 | ![](../images/UC-enable-1.png) | ![OCLP GUI Build Finished](../images/UC-enable-2.png) |
 
 
-Most Macs 2011 and above should work out of the box. However, older Macs like 2008-2011 MacBook Pro's require upgrading to a newer Wi-Fi/Bluetooth card. More info in the [requirements section.](#requirements-for-universal-control)
+Most Mac models from 2011 and above should work out of the box. However, older Macs like the 2008-2011 MacBook Pros require upgrading the Wi-Fi/Bluetooth card to a newer model. More info in the [requirements section.](#requirements-for-universal-control)
 
 Some Monterey-native models are blacklisted, check the [blacklisted models section](#blacklisted-models) for more info.
 
@@ -28,22 +28,22 @@ Technical requirements:
 * iPadOS 15.4 or newer (if applicable)
 * OpenCore Legacy Patcher 0.4.3 or newer
 
-Check the [table of models](#table-of-models) below whether you need to upgrade hardware and exactly what hardware is required to be changed based on the offending Macs. Refer for help on how to upgrade the Wi-Fi card on older 2008-2011 models on the Discord channel [#hardware](https://discord.gg/rqdPgH8xSN) if required.
+Check the [table of models](#table-of-models) below to see whether you need to upgrade hardware and exactly what hardware is required to be changed based on the offending Macs listed. For help on how to upgrade the Wi-Fi card in older 2008-2011 models, refer to the Discord channel [#hardware](https://discord.gg/rqdPgH8xSN) if required.
 
 
 
 Other requirements:
 
-* All devices signed into the same iCloud account.
-* Two Factor Authentication enabled with your Apple ID.
-* Bluetooth and WiFi enabled, neither needs to be connected so long as they are enabled.
+* All devices are signed into the same iCloud account.
+* Two Factor Authentication is enabled with your Apple ID.
+* Bluetooth and WiFi are enabled. Neither needs to be connected, leaving them enabled is sufficient.
 * Handoff turned on from iCloud settings.
-* The devices in question to be in close proximity.
+* The devices in question are in close proximity.
 
 
 ### Table of models
 
-This table shows which models do and don't support Universal Control out of box (OOB) and what is required to gain support.
+This table shows which models do and do not support Universal Control out of box (OOB) and what is required to gain support.
 Note: For AirPort upgrades, only the best/newest cards are listed.
 
 ::: details MacBook
@@ -183,9 +183,9 @@ The following models are blacklisted from using Universal Control by Apple:
 - Macmini7,x - Mac mini 2014
 - MacPro6,x - Mac Pro Late 2013
 
-The hardware in these models is capable but due to blacklisting, the only solution to use Universal Control on the models above is to spoof their SMBIOS. SMBIOS spoofing essentially fools some aspects of macOS to think they are running on a different machine. 
+The hardware in these models are capable of supporting Universal Control, but due to blacklisting, the only solution to use Universal Control on these models is to spoof their SMBIOS. SMBIOS spoofing essentially fools some aspects of macOS to think they are running on a different machine. 
 
-With SMBIOS Spoofing, the Universal Control handshake recognizes a different SMBIOS and thus grants a blacklisted Mac to connect to other iPads and Macs with Universal Control.
+With SMBIOS Spoofing, the Universal Control handshake recognizes a different SMBIOS and thus grants a blacklisted Mac to connect to other Macs and iPads with Universal Control.
 
 | Situation | Condition | Solution |
 |-----------|-----------|---------|
@@ -196,7 +196,7 @@ With SMBIOS Spoofing, the Universal Control handshake recognizes a different SMB
 
 :::warning
 
-Before we continue, please keep in mind SMBIOS Spoofing is an advanced feature of OpenCore, that with reckless usage of it, could potentially screw things around and leave your installation non-working. Once you boot into a spoofed state, it is highly recommended you stay spoofed, and avoid booting macOS without OpenCore.
+Before we continue, please keep in mind that SMBIOS Spoofing is an advanced feature of OpenCore. Reckless usage of it could potentially break important functionality and leave your installation in a non-working state. Once you boot into a spoofed state, it is highly recommended that you stay spoofed, and avoid booting macOS without OpenCore.
 
 :::
 
@@ -204,9 +204,9 @@ Before we continue, please keep in mind SMBIOS Spoofing is an advanced feature o
 
 Firstly, run the GUI version of OpenCore Legacy Patcher, go to **Settings** and tick **Allow native models**.
 
-**Note:** Unless you are building OpenCore on a different machine than it's targeted for, **do not** change the model in this main settings view. It is important to understand that OCLP targets this model regardless of what you may have spoofed to, as your Mac is still what the Native SMBIOS shows.
+**Note:** Unless you are building OpenCore on a different machine than it's targeted for, **do not** change the model in the main settings view. It is important to understand that OCLP targets this model regardless of what you may have spoofed to, as your Mac is still what the Native SMBIOS shows.
 
-Secondly, go to **SMBIOS Settings**, tick **Allow Native Spoofs**, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model to **one next to your native model in the table for spoofed models below.**
+Secondly, go to **SMBIOS Settings**, tick **Allow Native Spoofs**, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model to **one listed next to your native model in the table for spoofed models below.**
 
 
 ::: details Table for spoofed models (click to expand)
@@ -232,8 +232,8 @@ Any model after the list of officially blacklisted Macs should be supported, but
 | ![](../images/OCLP-allow-native-models.png) | ![](../images/OCLP-smbios-settings.png) |
 
 
-Build and install OpenCore again, reboot back to the OS. Enable Universal Control as explained in [Enabling Universal Control section.](#enabling-universal-control)
+Build and install OpenCore again, and reboot back to the OS. Enable Universal Control as explained in the [Enabling Universal Control section.](#enabling-universal-control)
 
 
 
-You should now be prompted to log back into iCloud by your Mac. This means you were successful, otherwise, verify you are correctly following the steps listed above, or else ask on the Discord group for assistance on [#misc-help](https://discord.gg/rqdPgH8xSN).
+You should now be prompted to log back into iCloud by your Mac. If you get this prompt, you have successfully configured SMBIOS spoofing. Otherwise, verify that you have correctly followed the steps listed above, or ask on the Discord server for further assistance in [#misc-help](https://discord.gg/rqdPgH8xSN).
