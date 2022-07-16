@@ -1,6 +1,6 @@
 # Alternative to Apple's 'defaults' tool
 # Store data in '/Users/Shared'
-# This is to ensure compatibility when running wihout a user
+# This is to ensure compatibility when running without a user
 # ie. during automated patching
 
 from pathlib import Path

@@ -304,7 +304,7 @@ class PatchSysVolume:
         elif Path(source_folder + "/" + file_name_str).is_dir():
             # Applicable for .kext, .app, .plugin, .bundle, all of which are directories
             if Path(destination_folder + "/" + file_name).exists():
-                print(f"  - Found existing {file_name}, overwritting...")
+                print(f"  - Found existing {file_name}, overwriting...")
                 utilities.process_status(utilities.elevated(["rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
                 print(f"  - Installing: {file_name}")
@@ -313,7 +313,7 @@ class PatchSysVolume:
         else:
             # Assume it's an individual file, replace as normal
             if Path(destination_folder + "/" + file_name).exists():
-                print(f"  - Found existing {file_name}, overwritting...")
+                print(f"  - Found existing {file_name}, overwriting...")
                 utilities.process_status(utilities.elevated(["rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
                 print(f"  - Installing: {file_name}")

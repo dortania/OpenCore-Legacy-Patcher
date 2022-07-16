@@ -1,4 +1,4 @@
-# Reoute binaries to tmp directory, and mount a disk image of the payloads
+# Reroute binaries to tmp directory, and mount a disk image of the payloads
 # Implements a shadowfile to avoid direct writes to the dmg
 # Copyright (C) 2022, Mykola Grymalyuk
 
@@ -46,7 +46,7 @@ class reroute_payloads:
     def unmount_active_dmgs(self, unmount_all_active=True):
         # Find all DMGs that are mounted, and forcefully unmount them
         # If our disk image was previously mounted, we need to unmount it to use again
-        # This can happen if we crash during a previous scession, however 'atexit' class should hopefully avoid this
+        # This can happen if we crash during a previous secession, however 'atexit' class should hopefully avoid this
         dmg_info = subprocess.run(["hdiutil", "info", "-plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         dmg_info = plistlib.loads(dmg_info.stdout)
 

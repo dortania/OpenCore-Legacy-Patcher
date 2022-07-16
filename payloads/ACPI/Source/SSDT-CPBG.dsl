@@ -1,9 +1,9 @@
-/* Disable the non-existant Co-processor Bridge found on Arrandale, Lynnfield and Clarkdale Macs.
+/* Disable the non-existent Co-processor Bridge found on Arrandale, Lynnfield and Clarkdale Macs.
  * IOPCIFamily in macOS 11.0 up-to 11.2 was unable to handle ACPI probing when device was not present,
- * therefore kernel panicing the machine.
+ * therefore kernel panicking the machine.
  *
  * This SSDT reports the device as disabled avoiding the probing.
- * Not required for macOS 11.2 and newer, however recommended to alliviate pottential issues
+ * Not required for macOS 11.2 and newer, however recommended to alleviate potential issues
  */
 DefinitionBlock ("", "SSDT", 2, "DRTNIA", "CPBGoff", 0x00001000)
 {

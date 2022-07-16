@@ -27,7 +27,7 @@ Here are some common errors users may experience while using this patcher:
 If the application won't launch (e.g. icon will bounce in the Dock), try launching OCLP via Terminal by typing the following command, make sure you've moved the app to `/Applications` before this.
 
 ```sh
-/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher 
+/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher
 ```
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
@@ -149,7 +149,7 @@ Because of this, we recommend placing a USB 2.0/3.0 hub between your devices and
 
 ## Stuck on "Less than a minute remaining..."
 
-A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this stage, a lot of heavy cryptography is performed, which can make systems appear to be stuck. In reality they are working quite hard to finish up the installation. 
+A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this stage, a lot of heavy cryptography is performed, which can make systems appear to be stuck. In reality they are working quite hard to finish up the installation.
 
 Because this step can take a few hours or more depending on drive speeds, be patient at this stage and do not manually power off or reboot your machine as this will break the installation and require you to reinstall. If you think your system has stalled, press the Caps Lock key. If the light turns on, your system is busy.
 

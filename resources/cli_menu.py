@@ -171,7 +171,7 @@ Note: For security reasons, OpenShell will be disabled when Vault is set.
         utilities.cls()
         utilities.header(["Set System Integrity protection"])
         print(
-            f"""SIP is used to ensure proper secuirty measures are set,
+            f"""SIP is used to ensure proper security measures are set,
 however to patch the root volume this must be lowered partially.
 Only disable is absolutely necessary. SIP value = 0x802
 
@@ -553,7 +553,7 @@ be prepared if enabling.
 Some 2013-14 MacBook Pro's have issues with the built-in thunderbolt,
 resulting in kernel panics and random shutdowns.
 
-To alliviate, you can disable the thunderbolt controller on MacBookPro11,x
+To alleviate, you can disable the thunderbolt controller on MacBookPro11,x
 machines with this option.
 
 Note: This option only works on MacBookPro11,x, file an issue if you know of
@@ -650,7 +650,7 @@ for Windows may prefer to only work with the dGPU and eGPU active.
         else:
             self.dGPU_switch_support()
 
-    def set_3rd_party_drices(self):
+    def set_3rd_party_drives(self):
         utilities.cls()
         utilities.header(["Set enhanced 3rd Party SSD Support"])
         print(
@@ -671,7 +671,7 @@ TRIM is not ideal.
         elif change_menu in {"q", "Q", "Quit", "quit"}:
             print("Returning to previous menu")
         else:
-            self.set_3rd_party_drices()
+            self.set_3rd_party_drives()
 
     def set_software_demux(self):
         utilities.cls()
@@ -795,7 +795,7 @@ Flipping this setting will disable automatic loading of additional drives in
 OpenCore's boot menu other than what was booted.
 
 Note: This option should only be flipped under the following circumstances:
-      - You are experincing wake failures from hibernation
+      - You are experiencing wake failures from hibernation
       - You are only using 1 disk in your system for booting (ie. no RAID)
       - OpenCore is installed on the same disk as the OS
       - Your system has an Intel iGPU and Nvidia dGPU
@@ -1156,7 +1156,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 [f"Disable Battery Throttling:\tCurrently {self.constants.disable_msr_power_ctl}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_battery_throttle],
                 [f"Disable XCPM:\t\tCurrently {self.constants.disable_xcpm}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_xcpm],
                 [f"Set Software Demux:\tCurrently {self.constants.software_demux}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_software_demux],
-                [f"Set 3rd Party SSD Support:\tCurrently {self.constants.allow_3rd_party_drives}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_3rd_party_drices],
+                [f"Set 3rd Party SSD Support:\tCurrently {self.constants.allow_3rd_party_drives}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_3rd_party_drives],
                 [f"Set FeatureUnlock: \tCurrently {self.constants.fu_status}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_fu_settings],
                 [f"Set NVRAM Write:\t\tCurrently {self.constants.nvram_write}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_nvram_write],
                 [f"Set Content Caching:\tCurrently {self.constants.set_content_caching}", MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_cc_support],

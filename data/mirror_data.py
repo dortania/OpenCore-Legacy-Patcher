@@ -1,4 +1,4 @@
-# Mirrors of Apple's InstallAssistant.ppkg
+# Mirrors of Apple's InstallAssistant.pkg
 # Currently only listing important Installers no longer on Apple's servers
 
 Install_macOS_Big_Sur_11_2_3 = {

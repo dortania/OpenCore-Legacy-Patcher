@@ -345,7 +345,7 @@ def generate_installer_creation_script(tmp_location, installer_path, disk):
     # Goals:
     # - Format provided disk as HFS+ GPT
     # - Run createinstallmedia on provided disk
-    # Implemnting this into a single installer.sh script allows us to only call
+    # Implementing this into a single installer.sh script allows us to only call
     # OCLP-Helper once to avoid nagging the user about permissions
 
     additional_args = ""

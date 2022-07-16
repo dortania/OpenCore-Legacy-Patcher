@@ -118,7 +118,7 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 | Macmini6,2 | ^^ | ^^ | ^^ |
 | Macmini7,1 | Wi-Fi 5 + BT 4.0 | <span style="color:red"> NO </span> | Hardware supports UC. <br> [**Spoofing required.**](#blacklisted-models) |
 
-::: 
+:::
 
 
 :::details iMac
@@ -145,7 +145,7 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 | iMac16,1 | Wi-Fi 5 + BT 4.2 | <span style="color:red"> NO </span> | Hardware supports UC. <br> [**Spoofing required.**](#blacklisted-models) |
 | iMac16,2 | ^^ | ^^ | ^^ |
 
-::: 
+:::
 
 :::details Mac Pro
 
@@ -159,7 +159,7 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 * Note: Some older Mac Pro configurations may not have shipped with a WiFi card in the base model
 
 
-::: 
+:::
 
 
 :::details Xserve ;p
@@ -169,7 +169,7 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 | Xserve2,1 | N/A | <span style="color:red"> NO </span> | Install a PCIe BCM943602CD card |
 | Xserve3,1 | ^^ | ^^ | ^^ |
 
-::: 
+:::
 
 ## Blacklisted models
 
@@ -220,8 +220,8 @@ Any model after the list of officially blacklisted Macs should be supported, but
 |-------------|---------------|--------------|--------|-----------|
 | MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 | <span style="color:#30BCD5"> YES </span> | Hzlph |
 | MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro13,1 | ^^ | ^^ |
-| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro13,3 | ^^ | ^^ 
-| iMac Late 2015 21" | iMac16,x | iMac18,2 | ^^ | ^^ 
+| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro13,3 | ^^ | ^^
+| iMac Late 2015 21" | iMac16,x | iMac18,2 | ^^ | ^^
 | Mac mini Late 2014  | Macmini7,x | MacMini8,1 | <span style="color:red"> NO </span> | N/A |
 | Mac Pro Late 2013 | MacPro6,x | MacPro7,1 | <span style="color:#30BCD5"> YES </span> | Crystall1nedev |
 
