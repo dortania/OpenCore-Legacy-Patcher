@@ -16,14 +16,14 @@ Term | Description
 --- | ---
 **OpenCore**   | The new hotness on the scene, made with security in mind by the [Acidanthera team](https://github.com/acidanthera), has faster booting and lighter weight than previous boot managers. Supports many native Mac features such as SIP, FileVault, Secure Boot, etc
 **ACPI**   | Tables defined in your firmware defining your hardware and different methods, tied directly to how IOKit/IOService handles device setup
-**NVRAM**   | Non-volitile storage, where many variables are stored including default boot options, Hibernation keys, Secure Boot information, etc
+**NVRAM**   | Non-volatile storage, where many variables are stored including default boot options, Hibernation keys, Secure Boot information, etc
 ---
 Term | Description
 --- | ---
 **XNU**    | Also known as **X** is **N**ot **U**nix, XNU is referred to as macOS's "kernel" and the heart of what makes macOS tick
 **Kexts**   | Also known as **K**ernel **Ext**ensions, are macOS's drivers. They're used to perform different tasks like device drivers or for a different purpose (in this patcher) like patching the OS, injecting information or running tasks.
 **KernelCollection**   | Also known as the ImmutableKernel and PrelinkedKernel, this is a bundle of the kernel(XNU) and kernel extensions(Kexts) that we use to boot macOS. This is also what OpenCore patches in memory to allow us to have a seamless experience <br/>- PrelinkedKernel: Default caching system since 10.7 <br/>- ImmutableKernel: Secure Boot based caching system since 10.13 <br/>- KernelCollection: Merge of both Prelinked and ImmutableKernel's since macOS 11, Big Sur
-**IOKit**   | Backbone of how Kernel Extentions (Kexts) probe and attach onto hardware, starts quickly after kernel initates
+**IOKit**   | Backbone of how Kernel Extensions (Kexts) probe and attach onto hardware, starts quickly after kernel initiates
 **WindowServer**   | Backbone of the GUI interface in macOS, one of the first userfacing userspace programs to kick-in
 **OTA**   | Short for **O**ver **T**he **A**ir, refers to native OS updates via System Preferences like a supported Mac
 **DELTA**   | Often used with OTA, refers to OS updates that much smaller than full installers (generally ~3GB), note Deltas require the root volume to be unmodified otherwise ~12GB updates will occur.

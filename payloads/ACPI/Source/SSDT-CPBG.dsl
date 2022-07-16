@@ -3,7 +3,7 @@
  * therefore kernel panicing the machine.
  *
  * This SSDT reports the device as disabled avoiding the probing.
- * Not required for macOS 11.2 and newer, however recommended to alliviate pottential issues
+ * Not required for macOS 11.2 and newer, however recommended to alleviate pottential issues
  */
 DefinitionBlock ("", "SSDT", 2, "DRTNIA", "CPBGoff", 0x00001000)
 {

@@ -2,7 +2,7 @@
 
 Introduced in macOS 12 Monterey, Universal Control is a feature that allows a Mac to control other Macs and/or iPads, share input devices, and share files across them simultaneously. With OpenCore and FeatureUnlock, Universal Control can be unlocked for most unsupported Macs, so long as they meet the technical requirements.
 
-* Note: Following page is primarily for hobbiests, no proper support is provided outside of Discord support (see bottom of page)
+* Note: Following page is primarily for hobbyists, no proper support is provided outside of Discord support (see bottom of page)
 
 ## Enabling Universal Control
 
@@ -118,7 +118,7 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 | Macmini6,2 | ^^ | ^^ | ^^ |
 | Macmini7,1 | Wi-Fi 5 + BT 4.0 | <span style="color:red"> NO </span> | Hardware supports UC. <br> [**Spoofing required.**](#blacklisted-models) |
 
-::: 
+:::
 
 
 :::details iMac
@@ -145,7 +145,7 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 | iMac16,1 | Wi-Fi 5 + BT 4.2 | <span style="color:red"> NO </span> | Hardware supports UC. <br> [**Spoofing required.**](#blacklisted-models) |
 | iMac16,2 | ^^ | ^^ | ^^ |
 
-::: 
+:::
 
 :::details Mac Pro
 
@@ -159,7 +159,7 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 * Note: Some older Mac Pro configurations may not have shipped with a WiFi card in the base model
 
 
-::: 
+:::
 
 
 :::details Xserve ;p
@@ -169,7 +169,7 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 | Xserve2,1 | N/A | <span style="color:red"> NO </span> | Install a PCIe BCM943602CD card |
 | Xserve3,1 | ^^ | ^^ | ^^ |
 
-::: 
+:::
 
 ## Blacklisted models
 
@@ -183,7 +183,7 @@ The following models are blacklisted from using Universal Control by Apple:
 - Macmini7,x - Mac mini 2014
 - MacPro6,x - Mac Pro Late 2013
 
-The hardware in these models is capable but due to blacklisting, the only solution to use Universal Control on the models above is to spoof their SMBIOS. SMBIOS spoofing essentially fools some aspects of macOS to think they are running on a different machine. 
+The hardware in these models is capable but due to blacklisting, the only solution to use Universal Control on the models above is to spoof their SMBIOS. SMBIOS spoofing essentially fools some aspects of macOS to think they are running on a different machine.
 
 With SMBIOS Spoofing, the Universal Control handshake recognizes a different SMBIOS and thus grants a blacklisted Mac to connect to other iPads and Macs with Universal Control.
 
@@ -220,8 +220,8 @@ Any model after the list of officially blacklisted Macs should be supported, but
 |-------------|---------------|--------------|--------|-----------|
 | MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 | <span style="color:#30BCD5"> YES </span> | Hzlph |
 | MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro13,1 | ^^ | ^^ |
-| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro13,3 | ^^ | ^^ 
-| iMac Late 2015 21" | iMac16,x | iMac18,2 | ^^ | ^^ 
+| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro13,3 | ^^ | ^^
+| iMac Late 2015 21" | iMac16,x | iMac18,2 | ^^ | ^^
 | Mac mini Late 2014  | Macmini7,x | MacMini8,1 | <span style="color:red"> NO </span> | N/A |
 | Mac Pro Late 2013 | MacPro6,x | MacPro7,1 | <span style="color:#30BCD5"> YES </span> | Crystall1nedev |
 

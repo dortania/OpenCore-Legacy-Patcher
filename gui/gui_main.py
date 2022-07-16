@@ -2961,9 +2961,9 @@ class wx_python_gui:
         self.configure_sip_title.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.configure_sip_title.Center(wx.HORIZONTAL)
 
-        # Label: Flip indivdual bits corresponding to XNU's csr.h
+        # Label: Flip individual bits corresponding to XNU's csr.h
         # If you're unfamiliar with how SIP works, do not touch this menu
-        self.sip_label = wx.StaticText(self.frame_modal, label="Flip indivdual bits corresponding to")
+        self.sip_label = wx.StaticText(self.frame_modal, label="Flip individual bits corresponding to")
         self.sip_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label.SetPosition(
             wx.Point(-1, self.configure_sip_title.GetPosition().y + self.configure_sip_title.GetSize().height + 10)

@@ -27,7 +27,7 @@ Here are some common errors users may experience while using this patcher:
 If the application won't launch (e.g. icon will bounce in the Dock), try launching OCLP via Terminal by typing the following command, make sure you've moved the app to `/Applications` before this.
 
 ```sh
-/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher 
+/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher
 ```
 
 ## Stuck on `This version of Mac OS X is not supported on this platform`
@@ -97,7 +97,7 @@ To work-around, we recommend users to manually connect using the "other" option 
 ## No Graphics Acceleration
 
 
-In macOS, each release generally means GPU drivers are dropped from the OS. With macOS Big Sur, currently all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and NVIDIA Kepler. 
+In macOS, each release generally means GPU drivers are dropped from the OS. With macOS Big Sur, currently all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and NVIDIA Kepler.
 
 If you're using OCLP v0.4.4, you should have been prompted to install Root Volume patches after first boot from installation of macOS. If you need to do this manually, you can within our app. Once rebooted, acceleration will be re-enabled as well as brightness control for laptops.
 
@@ -150,7 +150,7 @@ Because of this, we recommend placing a USB 2.0/3.0 hub between your devices and
 
 ## Stuck on "Less than a minute remaining..."
 
-A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this stange a lot of heavy cryptography is performed, which can make systems appear to be stuck when in reality they are working quite hard to finish up the installation. 
+A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this strange a lot of heavy cryptography is performed, which can make systems appear to be stuck when in reality they are working quite hard to finish up the installation.
 
 Because this step can take a few hours or more depending on drive speeds, be patient at this stage and do not manually reboot your machine as this will break the installation and require you to reinstall. If you think your system has stalled, press the Caps Lock key. If the light turns on, your system is busy.
 
@@ -158,7 +158,7 @@ Because this step can take a few hours or more depending on drive speeds, be pat
 
 If you finished installing Monterey with the original card installed (to see bootpicker for example) and swapped your GPU to a Metal supported one, you may notice that you're missing acceleration. To fix this, open OCLP and revert root patches to get your Metal-supported GPU work again.
 
-Alternatively, you can remove "AutoPkg-Assets.pkg" from /Library/Packages on the USB drive before proceeding with the installation. To see the folder, enable hidden files with `Command` + `Shift` + `.` 
+Alternatively, you can remove "AutoPkg-Assets.pkg" from /Library/Packages on the USB drive before proceeding with the installation. To see the folder, enable hidden files with `Command` + `Shift` + `.`
 
 The reason for this is that the autopatcher will assume you will be using the original card and therefore does non-metal patching, which includes removing some drivers for other cards. This causes Metal cards to not accelerate when swapped.
 
