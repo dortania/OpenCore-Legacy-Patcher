@@ -4,15 +4,15 @@
  * hardware modifications.
  *
  * Notes:
- *       - SSDT must be used in conjuction with '_INI' to 'XINI' patch
+ *       - SSDT must be used in conjunction with '_INI' to 'XINI' patch
  *         to reroute PCI0 initialization.
- * 
+ *
  *       - AMD drivers in macOS may still attempt to attach and kernel
  *         panic. Disable the dGPU with class-code/device-id spoof or
  *         with '-wegnoegpu'.
  *
  *       - dGPU will reactivate with sleep-wake, additional process
- *         is needed to disable the dGPU. 
+ *         is needed to disable the dGPU.
  *         - ie. AMDGPUWakeHandler.kext for macOS
  *
  * Ref:
@@ -30,13 +30,13 @@ DefinitionBlock ("", "SSDT", 2, "DRTNIA", "dGPU_OFF", 0x00001000)
         OperationRegion (IOGP, SystemIO, 0x0700, 0x51)
         Field (IOGP, ByteAcc, NoLock, Preserve)
         {
-            Offset (0x10), 
-            P710,   8, 
-            Offset (0x28), 
-            P728,   8, 
-            Offset (0x40), 
-            P740,   8, 
-            Offset (0x50), 
+            Offset (0x10),
+            P710,   8,
+            Offset (0x28),
+            P728,   8,
+            Offset (0x40),
+            P740,   8,
+            Offset (0x50),
             P750,   8
         }
 
@@ -90,7 +90,7 @@ DefinitionBlock ("", "SSDT", 2, "DRTNIA", "dGPU_OFF", 0x00001000)
                     Store (0x07D9, OSYS)
                 }
             }
-            
+
             // Disables dGPU
             Store ("Requesting dGPU power off", Debug)
             P728 = One  // Switch select

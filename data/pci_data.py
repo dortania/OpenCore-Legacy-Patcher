@@ -1,6 +1,6 @@
 # Array of Device IDs for different devices
 class nvidia_ids:
-    # Courteous of envytools as well as Macrumors:
+    # Courteous of envytools as well as MacRumors:
     # https://envytools.readthedocs.io/en/latest/hw/pciid.html
     # https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/
     # https://pci-ids.ucw.cz/read/PC/10de
