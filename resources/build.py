@@ -1019,7 +1019,7 @@ class BuildOpenCore:
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -revasset"
         if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
             # Ensure this is done at the end so all previous RestrictEvents patches are applied
-            # RestrictEvents and EFICheckDisabler will confilict if both are injected
+            # RestrictEvents and EFICheckDisabler will conflict if both are injected
             self.enable_kext("EFICheckDisabler.kext", self.constants.restrictevents_version, self.constants.efi_disabler_path)
         if self.constants.set_vmm_cpuid is True:
             # Should be unneeded with our sysctl VMM patch, however for reference purposes we'll leave it here
@@ -1161,8 +1161,8 @@ class BuildOpenCore:
             minimal_serial_patch(self)
         else:
             # Update DataHub to resolve Lilu Race Condition
-            # macOS Monterey will somtimes not present the boardIdentifier in the DeviceTree on UEFI 1.2 or older Mac,
-            # Thus resulting in an infitinte loop as Lilu tries to request the Board ID
+            # macOS Monterey will sometimes not present the boardIdentifier in the DeviceTree on UEFI 1.2 or older Mac,
+            # Thus resulting in an infinite loop as Lilu tries to request the Board ID
             # To resolve this, set PlatformInfo -> DataHub -> BoardProduct and enable UpdateDataHub
 
             # Note 1: Only apply if system is UEFI 1.2, this is generally Ivy Bridge and older, excluding MacPro6,1
@@ -1339,7 +1339,7 @@ class BuildOpenCore:
     def sign_files(self):
         if self.constants.vault is True:
             if utilities.check_command_line_tools() is True:
-                # sign.command checks for the existance of '/usr/bin/strings' however does not verify whether it's executable
+                # sign.command checks for the existence of '/usr/bin/strings' however does not verify whether it's executable
                 # sign.command will continue to run and create an unbootable OpenCore.efi due to the missing strings binary
                 # macOS has dummy binaries that just reroute to the actual binaries after you install Xcode's Command Line Tools
                 print("- Vaulting EFI")
