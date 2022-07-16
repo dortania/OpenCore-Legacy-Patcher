@@ -1,5 +1,5 @@
 # Installation of OpenCore files to ESP
-# Usage soley for TUI
+# Usage solely for TUI
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 import plistlib
