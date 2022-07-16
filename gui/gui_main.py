@@ -1495,6 +1495,18 @@ class wx_python_gui:
         self.grab_installer_data(ias=ias)
 
     def download_macos_click(self, app_dict):
+
+        try:
+            app_major = app_dict['Version'].split(".")[0]
+            if float(app_major) > self.constants.os_support:
+                # Throw pop up warning OCLP does not support this OS
+                os =  os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(app_major))
+                dlg = wx.MessageDialog(self.frame_modal, f"OpenCore Legacy patcher currently does not support macOS {os}. We highly recommend you select an older installer.\n\nThe newest version we officially support is macOS {os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(str(self.constants.os_support)))}\n\nWould you still want to continue downloading macOS {os}?", "Unsupported OS", wx.YES_NO | wx.ICON_WARNING)
+                if dlg.ShowModal() == wx.ID_NO:
+                    return
+        except ValueError:
+            pass
+
         self.frame.DestroyChildren()
         installer_name = f"macOS {app_dict['Version']} ({app_dict['Build']})"
 
@@ -1738,12 +1750,12 @@ class wx_python_gui:
         self.usb_selection_label.Centre(wx.HORIZONTAL)
 
         i = -15
-        availible_disks = installer.list_disk_to_format()
-        if availible_disks:
+        available_disks = installer.list_disk_to_format()
+        if available_disks:
             print("Disks found")
-            for disk in availible_disks:
-                print(f"{disk}: {availible_disks[disk]['name']} - {availible_disks[disk]['size']}")
-                self.usb_selection = wx.Button(self.frame, label=f"{disk} - {availible_disks[disk]['name']} - {utilities.human_fmt(availible_disks[disk]['size'])}", size=(300, 30))
+            for disk in available_disks:
+                print(f"{disk}: {available_disks[disk]['name']} - {available_disks[disk]['size']}")
+                self.usb_selection = wx.Button(self.frame, label=f"{disk} - {available_disks[disk]['name']} - {utilities.human_fmt(available_disks[disk]['size'])}", size=(300, 30))
                 i = i + 25
                 self.usb_selection.SetPosition(
                     wx.Point(
@@ -1751,7 +1763,7 @@ class wx_python_gui:
                         self.usb_selection_label.GetPosition().y + self.usb_selection_label.GetSize().height + i
                     )
                 )
-                self.usb_selection.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.format_usb_progress(availible_disks[temp]['identifier'], installer_name, installer_path))
+                self.usb_selection.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.format_usb_progress(available_disks[temp]['identifier'], installer_name, installer_path))
                 self.usb_selection.Centre(wx.HORIZONTAL)
         else:
             print("No disks found")
@@ -1875,7 +1887,7 @@ class wx_python_gui:
         if self.prepare_result is True:
             self.progress_label.SetLabel("Bytes Written: 0")
             self.progress_label.Centre(wx.HORIZONTAL)
-            print("- Sucessfully generated creation script")
+            print("- Successfully generated creation script")
             print("- Starting creation script as admin")
             wx.GetApp().Yield()
             time.sleep(1)
@@ -1914,13 +1926,13 @@ class wx_python_gui:
                         self.constants.host_is_hackintosh is True
                     )
                 ):
-                    popup_message = wx.MessageDialog(self.frame, "Sucessfully created a macOS installer!", "Success", wx.OK)
+                    popup_message = wx.MessageDialog(self.frame, "Successfully created a macOS installer!", "Success", wx.OK)
                     popup_message.ShowModal()
                 else:
                     self.dialog = wx.MessageDialog(
                         parent=self.frame,
                         message="Would you like to continue and Install OpenCore to this disk?",
-                        caption="Sucessfully created the macOS installer!",
+                        caption="Successfully created the macOS installer!",
                         style=wx.YES_NO | wx.ICON_QUESTION
                     )
                     self.dialog.SetYesNoLabels("Install OpenCore to disk", "Skip")
@@ -1944,7 +1956,7 @@ class wx_python_gui:
         args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
         output, error, returncode = run.Run()._stream_output(comm=args)
         if "Install media now available at" in output:
-            print("- Sucessfully created macOS installer")
+            print("- Successfully created macOS installer")
             while self.download_thread.is_alive():
                 # wait for download_thread to finish
                 # though highly unlikely this thread is still alive (flashing an Installer will take a while)
