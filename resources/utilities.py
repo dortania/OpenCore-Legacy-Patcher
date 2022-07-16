@@ -1,4 +1,4 @@
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymaluk
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 import hashlib
 import math
@@ -93,6 +93,10 @@ def check_seal():
     else:
         return False
 
+def check_filesystem_type():
+    # Expected to return 'apfs' or 'hfs'
+    filesystem_type = plistlib.loads(subprocess.run(["diskutil", "info", "-plist", "/"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    return filesystem_type["FilesystemType"]
 
 def csr_dump():
     # Based off sip_config.py
@@ -250,7 +254,7 @@ def check_secure_boot_level():
         #
         # Genuine Mac logic:
         #   - On genuine non-T2 Macs, they always return 0
-        #   - T2 Macs will return based on their Starup Policy (Full(2), Medium(1), Disabled(0))
+        #   - T2 Macs will return based on their Startup Policy (Full(2), Medium(1), Disabled(0))
         # Ref: https://support.apple.com/en-us/HT208198
         if check_ap_security_policy() != 0:
             return True
@@ -598,7 +602,7 @@ def check_boot_mode():
     return sys_plist[0]["_items"][0]["boot_mode"]
 
 def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
-    # When runnign through our GUI, we run as root, however we do not get uid 0
+    # When running through our GUI, we run as root, however we do not get uid 0
     # Best to assume CLI is running as root
     if os.getuid() == 0 or check_cli_args() is not None:
         return subprocess.run(*args, **kwargs)

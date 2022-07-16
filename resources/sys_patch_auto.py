@@ -193,7 +193,7 @@ class AutomaticSysPatch:
                 utilities.process_status(utilities.elevated(["ditto", path, "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                 if not Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
-                    # Sometimes the binary the user launches maye have a suffix (ie. OpenCore-Patcher 3.app)
+                    # Sometimes the binary the user launches may have a suffix (ie. OpenCore-Patcher 3.app)
                     # We'll want to rename it to OpenCore-Patcher.app
                     path = path.split("/")[-1]
                     print(f"- Renaming {path} to OpenCore-Patcher.app")

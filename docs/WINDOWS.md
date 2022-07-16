@@ -4,7 +4,7 @@
 
 To install UEFI is actually super simple! All it requires is to boot Windows' Installer through OpenCore to force a UEFI setup. Here we'll be going a bit more step by step in the process including partitioning and such.
 
-* Note: UEFI Windows is generally quite usable for Arrendale and newer models, however machines with Penryn CPUs may experience issues
+* Note: UEFI Windows is generally quite usable for Arrandale and newer models, however machines with Penryn CPUs may experience issues
 * Recommended Models:
   * MacBookAir4,x - 5,x
   * MacBookPro8,x - 10,x
@@ -75,7 +75,7 @@ rsync -vha -P --exclude=sources/install.wim /Volumes/CCCOMA_X64/ /Volumes/W10USB
 
 # Use wimlib to split the install.wim file into a size that fits
 wimlib-imagex split /Volumes/CCCOMA_X64/sources/install.wim /Volumes/W10USB/sources/install.swm 4000
-``` 
+```
 
 Once that's completed, you can continue.
 :::

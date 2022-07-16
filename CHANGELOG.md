@@ -9,6 +9,8 @@
   - Attempt to avoid misuse of option
 - Work-around `Failed to extract AssetData` during installer creation
   - Apple bug, resolved by using CoW into a different directory than `/Applications`
+- Avoid listing beta installers in downloader
+- Warn about downloading macOS Ventura installers, unsupported by current patcher
 - Ventura Specific Updates:
   - Switch boot.efi model patch to iMac18,1
   - Resolve pre-Force Touch Trackpad support in Ventura
@@ -290,7 +292,7 @@
 - Allow for setting custom SIP values via TUI
 - Drop `CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE` requirement for root patching
   - Lowers default SIP Disabled value to 0xA03
-- Update Legacy GMUX patchset to latest Sierra Secuirty Update
+- Update Legacy GMUX patchset to latest Sierra security Update
   - [Source](https://github.com/HackintoshHD/mbp5x-instant-gpu-switching)
 - Fix non-Metal acceleration crashing on 12.0.1
   - Yes Apple adding a notch broke our accel patches

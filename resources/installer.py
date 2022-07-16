@@ -207,6 +207,11 @@ def only_list_newest_installers(available_apps):
 
         # Now remove all versions that are not the largest
         for ia in list(available_apps):
+            if available_apps[ia]["Variant"] in ["DeveloperSeed", "PublicSeed"]:
+                # Remove Beta builds from default listing
+                available_apps.pop(ia)
+                continue
+
             if available_apps[ia]["Version"].startswith(version):
                 remote_version = available_apps[ia]["Version"].split(".")
                 if remote_version[0] == "10":
@@ -340,7 +345,7 @@ def generate_installer_creation_script(tmp_location, installer_path, disk):
     # Goals:
     # - Format provided disk as HFS+ GPT
     # - Run createinstallmedia on provided disk
-    # Implemnting this into a single installer.sh script allows us to only call
+    # Implementing this into a single installer.sh script allows us to only call
     # OCLP-Helper once to avoid nagging the user about permissions
 
     additional_args = ""
@@ -363,10 +368,17 @@ def generate_installer_creation_script(tmp_location, installer_path, disk):
         subprocess.run(["rm", "-rf", str(file)])
 
     # Copy installer to tmp (use CoW to avoid extra disk writes)
-    subprocess.run(["cp", "-cR", installer_path, ia_tmp])
+    args = ["cp", "-cR", installer_path, ia_tmp]
+    if utilities.check_filesystem_type() != "apfs":
+        # HFS+ disks do not support CoW
+        args[1] = "-R"
+    subprocess.run(args)
 
     # Adjust installer_path to point to the copied installer
     installer_path = Path(ia_tmp) / Path(Path(installer_path).name)
+    if not Path(installer_path).exists():
+        print(f"Failed to copy installer to {ia_tmp}")
+        return False
 
     createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
     plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))

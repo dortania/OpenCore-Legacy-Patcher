@@ -126,7 +126,7 @@ body:
     id: used-forums
     attributes:
       label: Have you already verified this is a patcher bug and not a macOS bug/user error on our discord servers?
-      description: If no, please do not use issues for this. We'd appreciate it if users check discuss with others before filing. Issues are for valid patcher issues only, not for personal troubleshooting scessions.
+      description: If no, please do not use issues for this. We'd appreciate it if users check discuss with others before filing. Issues are for valid patcher issues only, not for personal troubleshooting secessions.
       multiple: true
       options:
         - 'true'
@@ -136,7 +136,7 @@ body:
   - type: dropdown
     id: 3rd-party-application
     attributes:
-      label: Is this issue with a 3rd party application? 
+      label: Is this issue with a 3rd party application?
       description: If yes, please move discussions onto forums. We're unable to dedicate time to working on every single application that may be broken in macOS. Only file issues if you have a fix you'd like to add to our project
       multiple: true
       options:

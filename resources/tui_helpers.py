@@ -1,4 +1,4 @@
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymaluk
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 from resources import utilities
 
 class TUIMenu:

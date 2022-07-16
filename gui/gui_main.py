@@ -141,7 +141,7 @@ class wx_python_gui:
                 self.popup = wx.MessageDialog(
                     self.frame,
                     f"During unpacking of our internal files, we seemed to have encountered an error.\n\nIf you keep seeing this error, please try rebooting and redownloading the application.",
-                    "Internal Error occured!",
+                    "Internal Error occurred!",
                     style = wx.OK | wx.ICON_EXCLAMATION
                 )
                 self.popup.ShowModal()
@@ -199,10 +199,10 @@ class wx_python_gui:
                         style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
                     )
                     self.dialog.SetYesNoCancelLabels("View on Github", "Always Ignore", "Ignore Once")
-                    responce = self.dialog.ShowModal()
-                    if responce == wx.ID_YES:
+                    response = self.dialog.ShowModal()
+                    if response == wx.ID_YES:
                         webbrowser.open(github_link)
-                    elif responce == wx.ID_NO:
+                    elif response == wx.ID_NO:
                         print("- Setting IgnoreAppUpdates to True")
                         self.constants.ignore_updates = True
                         global_settings.global_settings().write_property("IgnoreAppUpdates", True)
@@ -1104,7 +1104,7 @@ class wx_python_gui:
             # Create popup window to inform user of error
             self.popup = wx.MessageDialog(
                 self.frame_modal,
-                "A problem occured trying to download PatcherSupportPkg binaries\n\nIf you continue to have this error, download an Offline build from Github\nThese builds don't require a network connection to root patch",
+                "A problem occurred trying to download PatcherSupportPkg binaries\n\nIf you continue to have this error, download an Offline build from Github\nThese builds don't require a network connection to root patch",
                 "Network Error",
                 wx.YES_NO | wx.ICON_ERROR
             )
@@ -1180,11 +1180,11 @@ class wx_python_gui:
         try:
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_patch()
         except Exception as e:
-            self.text_box.AppendText(f"- An internal error occured while running the Root Patcher:\n{str(e)}")
+            self.text_box.AppendText(f"- An internal error occurred while running the Root Patcher:\n{str(e)}")
             pass
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
-        if self.constants.root_patcher_succeded is True:
+        if self.constants.root_patcher_succeeded is True:
             print("- Root Patcher finished successfully")
             if self.constants.needs_to_open_preferences is True:
                 # Create dialog box to open System Preferences -> Security and Privacy
@@ -1290,11 +1290,11 @@ class wx_python_gui:
         try:
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, self.patches).start_unpatch()
         except Exception as e:
-            self.text_box.AppendText(f"- An internal error occured while running the Root Patcher:\n{str(e)}")
+            self.text_box.AppendText(f"- An internal error occurred while running the Root Patcher:\n{str(e)}")
             pass
         sys.stdout = self.stock_stdout
         sys.stderr = self.stock_stderr
-        if self.constants.root_patcher_succeded is True:
+        if self.constants.root_patcher_succeeded is True:
             print("- Root Patcher finished successfully")
             self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
@@ -1495,6 +1495,18 @@ class wx_python_gui:
         self.grab_installer_data(ias=ias)
 
     def download_macos_click(self, app_dict):
+
+        try:
+            app_major = app_dict['Version'].split(".")[0]
+            if float(app_major) > self.constants.os_support:
+                # Throw pop up warning OCLP does not support this OS
+                os =  os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(app_major))
+                dlg = wx.MessageDialog(self.frame_modal, f"OpenCore Legacy patcher currently does not support macOS {os}. We highly recommend you select an older installer.\n\nThe newest version we officially support is macOS {os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(str(self.constants.os_support)))}\n\nWould you still want to continue downloading macOS {os}?", "Unsupported OS", wx.YES_NO | wx.ICON_WARNING)
+                if dlg.ShowModal() == wx.ID_NO:
+                    return
+        except ValueError:
+            pass
+
         self.frame.DestroyChildren()
         installer_name = f"macOS {app_dict['Version']} ({app_dict['Build']})"
 
@@ -1590,7 +1602,7 @@ class wx_python_gui:
         wx.App.Get().Yield()
         integrity_path = Path(Path(self.constants.payload_path) / Path(apple_integrity_file_link.split("/")[-1]))
         if utilities.download_file(apple_integrity_file_link, integrity_path, verify_checksum=False):
-            # If we're unable to download the integrity file immediately after downloading the IA, there's a legitmate issue
+            # If we're unable to download the integrity file immediately after downloading the IA, there's a legitimate issue
             # on Apple's end.
             # Fail gracefully and just head to installing the IA.
             utilities.disable_sleep_while_running()
@@ -1738,12 +1750,12 @@ class wx_python_gui:
         self.usb_selection_label.Centre(wx.HORIZONTAL)
 
         i = -15
-        availible_disks = installer.list_disk_to_format()
-        if availible_disks:
+        available_disks = installer.list_disk_to_format()
+        if available_disks:
             print("Disks found")
-            for disk in availible_disks:
-                print(f"{disk}: {availible_disks[disk]['name']} - {availible_disks[disk]['size']}")
-                self.usb_selection = wx.Button(self.frame, label=f"{disk} - {availible_disks[disk]['name']} - {utilities.human_fmt(availible_disks[disk]['size'])}", size=(300, 30))
+            for disk in available_disks:
+                print(f"{disk}: {available_disks[disk]['name']} - {available_disks[disk]['size']}")
+                self.usb_selection = wx.Button(self.frame, label=f"{disk} - {available_disks[disk]['name']} - {utilities.human_fmt(available_disks[disk]['size'])}", size=(300, 30))
                 i = i + 25
                 self.usb_selection.SetPosition(
                     wx.Point(
@@ -1751,7 +1763,7 @@ class wx_python_gui:
                         self.usb_selection_label.GetPosition().y + self.usb_selection_label.GetSize().height + i
                     )
                 )
-                self.usb_selection.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.format_usb_progress(availible_disks[temp]['identifier'], installer_name, installer_path))
+                self.usb_selection.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.format_usb_progress(available_disks[temp]['identifier'], installer_name, installer_path))
                 self.usb_selection.Centre(wx.HORIZONTAL)
         else:
             print("No disks found")
@@ -1875,7 +1887,7 @@ class wx_python_gui:
         if self.prepare_result is True:
             self.progress_label.SetLabel("Bytes Written: 0")
             self.progress_label.Centre(wx.HORIZONTAL)
-            print("- Sucessfully generated creation script")
+            print("- Successfully generated creation script")
             print("- Starting creation script as admin")
             wx.GetApp().Yield()
             time.sleep(1)
@@ -1914,18 +1926,18 @@ class wx_python_gui:
                         self.constants.host_is_hackintosh is True
                     )
                 ):
-                    popup_message = wx.MessageDialog(self.frame, "Sucessfully created a macOS installer!", "Success", wx.OK)
+                    popup_message = wx.MessageDialog(self.frame, "Successfully created a macOS installer!", "Success", wx.OK)
                     popup_message.ShowModal()
                 else:
                     self.dialog = wx.MessageDialog(
                         parent=self.frame,
                         message="Would you like to continue and Install OpenCore to this disk?",
-                        caption="Sucessfully created the macOS installer!",
+                        caption="Successfully created the macOS installer!",
                         style=wx.YES_NO | wx.ICON_QUESTION
                     )
                     self.dialog.SetYesNoLabels("Install OpenCore to disk", "Skip")
-                    responce = self.dialog.ShowModal()
-                    if responce == wx.ID_YES:
+                    response = self.dialog.ShowModal()
+                    if response == wx.ID_YES:
                         self.constants.start_build_install = True
                         self.build_install_menu()
         else:
@@ -1944,7 +1956,7 @@ class wx_python_gui:
         args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
         output, error, returncode = run.Run()._stream_output(comm=args)
         if "Install media now available at" in output:
-            print("- Sucessfully created macOS installer")
+            print("- Successfully created macOS installer")
             while self.download_thread.is_alive():
                 # wait for download_thread to finish
                 # though highly unlikely this thread is still alive (flashing an Installer will take a while)
@@ -2004,7 +2016,7 @@ class wx_python_gui:
         # Define Menu
         # - Header: Settings
         # - Dropdown: Model
-        # - Chechboxes:
+        # - Checkboxes:
         #   - Verbose
         #   - Kext Debug
         #   - OpenCore Debug
@@ -2363,7 +2375,7 @@ class wx_python_gui:
         self.disable_battery_throttling_checkbox.SetPosition(wx.Point(
             self.hibernation_checkbox.GetPosition().x,
             self.hibernation_checkbox.GetPosition().y + self.hibernation_checkbox.GetSize().height))
-        self.disable_battery_throttling_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable MSR Power Control on Arrendale and newer Macs\nMainly applicable for systems with severe throttling due to missing battery or display"))
+        self.disable_battery_throttling_checkbox.SetToolTip(wx.ToolTip("This will forcefully disable MSR Power Control on Arrandale and newer Macs\nMainly applicable for systems with severe throttling due to missing battery or display"))
 
         # Disable XCPM
         self.disable_xcpm_checkbox = wx.CheckBox(self.frame_modal, label="Disable XCPM")
@@ -2949,9 +2961,9 @@ class wx_python_gui:
         self.configure_sip_title.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.configure_sip_title.Center(wx.HORIZONTAL)
 
-        # Label: Flip indivdual bits corresponding to XNU's csr.h
+        # Label: Flip individual bits corresponding to XNU's csr.h
         # If you're unfamiliar with how SIP works, do not touch this menu
-        self.sip_label = wx.StaticText(self.frame_modal, label="Flip indivdual bits corresponding to")
+        self.sip_label = wx.StaticText(self.frame_modal, label="Flip individual bits corresponding to")
         self.sip_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label.SetPosition(
             wx.Point(-1, self.configure_sip_title.GetPosition().y + self.configure_sip_title.GetSize().height + 10)
@@ -3095,7 +3107,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.subheader_2.SetSize(wx.Size(self.frame_modal.GetSize().width, 30))
         self.subheader_2.Centre(wx.HORIZONTAL)
 
-        # Label: Set FeatreUnlock status
+        # Label: Set FeatureUnlock status
         self.feature_unlock_label = wx.StaticText(self.frame_modal, label="Feature Unlock Status:", style=wx.ALIGN_CENTRE)
         self.feature_unlock_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.feature_unlock_label.SetPosition(wx.Point(0, self.subheader_2.GetPosition().y + self.subheader_2.GetSize().height -5))

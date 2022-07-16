@@ -47,7 +47,7 @@ class PatchSysVolume:
         self.computer = self.constants.computer
         self.root_mount_path = None
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
-        self.constants.root_patcher_succeded = False # Reset Variable each time we start
+        self.constants.root_patcher_succeeded = False # Reset Variable each time we start
         self.constants.needs_to_open_preferences = False
         self.patch_set_dictionary = {}
         self.needs_kmutil_exemptions = False # For '/Library/Extensions' rebuilds
@@ -144,7 +144,7 @@ class PatchSysVolume:
             else:
                 self.clean_skylight_plugins()
                 self.delete_nonmetal_enforcement()
-                self.constants.root_patcher_succeded = True
+                self.constants.root_patcher_succeeded = True
                 print("- Unpatching complete")
                 print("\nPlease reboot the machine for patches to take effect")
 
@@ -370,7 +370,7 @@ class PatchSysVolume:
         elif Path(source_folder + "/" + file_name_str).is_dir():
             # Applicable for .kext, .app, .plugin, .bundle, all of which are directories
             if Path(destination_folder + "/" + file_name).exists():
-                print(f"  - Found existing {file_name}, overwritting...")
+                print(f"  - Found existing {file_name}, overwriting...")
                 utilities.process_status(utilities.elevated(["rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
                 print(f"  - Installing: {file_name}")
@@ -379,7 +379,7 @@ class PatchSysVolume:
         else:
             # Assume it's an individual file, replace as normal
             if Path(destination_folder + "/" + file_name).exists():
-                print(f"  - Found existing {file_name}, overwritting...")
+                print(f"  - Found existing {file_name}, overwriting...")
                 utilities.process_status(utilities.elevated(["rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
                 print(f"  - Installing: {file_name}")
