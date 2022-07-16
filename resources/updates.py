@@ -62,7 +62,7 @@ class check_binary_updates:
             # print("- Network connection functional")
             response = requests.get(self.binary_url)
             data_set = response.json()
-            # print("- Retrived latest version data")
+            # print("- Retrieved latest version data")
             self.remote_version = data_set["tag_name"]
             # print(f"- Latest version: {self.remote_version}")
             self.remote_version_array = self.remote_version.split(".")
