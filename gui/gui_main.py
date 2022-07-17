@@ -2709,6 +2709,8 @@ class wx_python_gui:
         self.smbios_model_dropdown.SetStringSelection(self.constants.override_smbios)
         self.smbios_model_dropdown.Bind(wx.EVT_CHOICE, self.smbios_model_click)
         self.smbios_model_dropdown.Center(wx.HORIZONTAL)
+        if self.smbios_dropdown.GetStringSelection() == "None":
+            self.smbios_model_dropdown.Disable()
 
         # Label: Custom Serial Number
         self.smbios_serial_label = wx.StaticText(self.frame_modal, label="Custom Serial Number")
@@ -2813,9 +2815,19 @@ class wx_python_gui:
             self.constants.allow_native_spoofs = False
 
     def smbios_spoof_level_click(self, event=None):
+        # Throw pop up warning about misusing this feature
         selection = self.smbios_dropdown.GetStringSelection()
+        if selection != "None":
+            dlg = wx.MessageDialog(self.frame_modal, "This option should only be used when you need to change the machine's SMBIOS data.\n\nMisuse of this option can break OS functionality. Only use if you absolutely understand the need for this setting", "Warning", wx.YES_NO | wx.ICON_WARNING)
+            if dlg.ShowModal() == wx.ID_NO:
+                self.smbios_dropdown.SetStringSelection(self.constants.serial_settings)
+                return
         print(f"SMBIOS Spoof Level: {selection}")
         self.constants.serial_settings = selection
+        if selection == "None":
+            self.smbios_model_dropdown.Disable()
+        else:
+            self.smbios_model_dropdown.Enable()
 
     def smbios_model_click(self, event=None):
         selection = self.smbios_model_dropdown.GetStringSelection()
