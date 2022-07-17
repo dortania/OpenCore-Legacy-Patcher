@@ -348,6 +348,7 @@ class detect_root_patch:
             required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
             required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
         if hardware_details["Graphics: Nvidia Tesla"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
@@ -360,12 +361,15 @@ class detect_root_patch:
             required_patches.update({"Non-Metal Enforcement": all_hardware_patchset["Graphics"]["Non-Metal Enforcement"]})
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
             for gpu in self.constants.computer.gpus:
+                # Handle mixed GPU situations (ie. MacBookPro11,3: Haswell iGPU + Kepler dGPU)
                 if gpu.arch == device_probe.Intel.Archs.Haswell:
+                    if "Modern GVA" in required_patches:
+                        del(required_patches["Modern GVA"])
                     required_patches.update({"GVA Work-Around": all_hardware_patchset["Graphics"]["GVA Work-Around"]})
-            if "GVA Work-Around" not in required_patches:
-                required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
+                    break
         if hardware_details["Graphics: AMD TeraScale 1"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"AMD TeraScale Common": all_hardware_patchset["Graphics"]["AMD TeraScale Common"]})

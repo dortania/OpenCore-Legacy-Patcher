@@ -11,6 +11,8 @@
   - Apple bug, resolved by using CoW into a different directory than `/Applications`
 - Avoid listing beta installers in downloader
 - Warn about downloading macOS Ventura installers, unsupported by current patcher
+- Fix AppleGVA regression introduced in 0.4.6
+  - Applicable for Ivy Bridge-only systems
 
 ## 0.4.7
 - Fix crashing on defaults parsing
