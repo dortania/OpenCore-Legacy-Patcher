@@ -8,7 +8,7 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
 
 ## OpenCore Settings
 
-Below is a run down of the main logic OpenCore Legacy Patcher uses to gain native support in macOS. Note OpenCore's configuration is documented within [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) as well as an online version provided by us:
+Below is a run down of the main logic OpenCore Legacy Patcher uses to gain native support in macOS. Note that OpenCore's configuration is documented within [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) as well as on an online version provided by us:
 
 * [OpenCorePkg Online Docs](https://dortania.github.io/docs/latest/Configuration.html)
 

@@ -1,6 +1,6 @@
 # Supported Models
 
-Any hardware supporting SSE4.1 CPU and 64-Bit firmware work on this patcher. To check your hardware model, run the below command on the applicable machine in terminal:
+Any hardware supporting SSE4.1 CPU and 64-Bit firmware work on this patcher. To check your hardware model, run the following command on the applicable machine in the terminal:
 
 ```bash
 system_profiler SPHardwareDataType | grep 'Model Identifier'
