@@ -2207,7 +2207,7 @@ class wx_python_gui:
     def allow_native_models_click(self, event=None):
         if self.checkbox_allow_native_models.GetValue():
             # Throw a prompt warning about this
-            dlg = wx.MessageDialog(self.frame_modal, "This option should only be used if your Mac natively supports the OSes you wish to run.\n\nIf you are currently running an unsupported OS, this option will break booting. Only toggle for enabling OS features on a native Mac.\n\nAre you sure you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
+            dlg = wx.MessageDialog(self.frame_modal, "This option should only be used if your Mac natively supports the OSes you wish to run.\n\nIf you are currently running an unsupported OS, this option will break booting. Only toggle for enabling OS features on a native Mac.\n\nAre you certain you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
             if dlg.ShowModal() == wx.ID_NO:
                 self.checkbox_allow_native_models.SetValue(False)
                 return
@@ -2794,7 +2794,7 @@ class wx_python_gui:
 
     def generate_new_serials_clicked(self, event):
         # Throw pop up warning about misusing this feature
-        dlg = wx.MessageDialog(self.frame_modal, "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nDortania does not condone the use of our software on stolen devices.", "Warning", wx.YES_NO | wx.ICON_WARNING)
+        dlg = wx.MessageDialog(self.frame_modal, "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nDortania does not condone the use of our software on stolen devices.\n\nAre you certain you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
         if dlg.ShowModal() == wx.ID_NO:
             return
         macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.constants.custom_model or self.computer.real_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -2818,7 +2818,7 @@ class wx_python_gui:
         # Throw pop up warning about misusing this feature
         selection = self.smbios_dropdown.GetStringSelection()
         if selection != "None":
-            dlg = wx.MessageDialog(self.frame_modal, "This option should only be used when you need to change the machine's SMBIOS data.\n\nMisuse of this option can break OS functionality. Only use if you absolutely understand the need for this setting", "Warning", wx.YES_NO | wx.ICON_WARNING)
+            dlg = wx.MessageDialog(self.frame_modal, "This option should only be used when you need to change the machine's SMBIOS data.\n\nMisuse of this option can break OS functionality. Only use if you absolutely understand the need for this setting\n\nAre you certain you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
             if dlg.ShowModal() == wx.ID_NO:
                 self.smbios_dropdown.SetStringSelection(self.constants.serial_settings)
                 return
