@@ -1,6 +1,6 @@
 # How to debug with OpenCore
 
-For those who've hit an odd bug and unsure if it's user error or a patcher error, we recommend asking on the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN) for help.
+For those who've hit an odd bug and unsure if it's user error or within the patcher, we recommend asking on the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN) for help.
 
 ## Debugging yourself
 
