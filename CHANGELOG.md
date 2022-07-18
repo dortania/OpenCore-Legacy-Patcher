@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.9
+
 ## 0.4.8
 - Ensure Apple Silicon-specific installers are not listed
   - ie. M2 specific build (21F2092)
@@ -91,11 +93,11 @@
   - Unknown whether this is a "bug" or intentional from Apple, affects native Macs with SIP disabled
 - Resolved non-Metal issues:
   - Catalyst crashing after 1200 seconds on non-Metal
-  - Automatic Light/Darkmode (credit @moosethegoose2213)
+  - Automatic Light/Dark mode (credit @moosethegoose2213)
   - Rim improvements
   - Trackpad swipe between pages
   - Cycle between windows
-  - Improve Display Prefpane Image
+  - Improve Display Preference pane Image
   - Defaults prefix change (`ASB_` -> `MORAEA_`, reopen non-Metal Settings to apply)
 - Increment Binaries:
   - PatcherSupportPkg 0.3.9 - release
@@ -128,9 +130,9 @@
   - Add Disk Highlighting during Build/Install for previously installed disks
   - Only list newest installers by default (reload to show older binaries)
 - Remove manual root unpatching
-  - Removed due to reliablity issues
+  - Removed due to reliability issues
   - `bless` based reversion still supported in Big Sur+
-- Remove Unoffical Mojave/Catalina Root Patching
+- Remove Unofficial Mojave/Catalina Root Patching
   - For TeraScale 2-based acceleration on older OSes, use v0.4.3
 - Simplify Binary options
   - Removes Online Patcher Variants
@@ -150,7 +152,7 @@
   - Control Centre Sliders
   - Shift/missing icons
   - Hardware Cursor
-    - Note cursor images will be static (ie. beachball)
+    - Note cursor images will be static (ie. beach ball)
   - Quicklook dismiss/expand
   - Keyboard Backlight
     - Drops reliance on LabTick
@@ -213,7 +215,7 @@
   - PatcherSupportPkg 0.2.9 - release
 - Re-add Content Caching support for VMM-spoofed systems
 - Add wxPython Based GUI
-  - Superceeds Obj-C Based GUI
+  - Supersedes Obj-C Based GUI
   - Both standard and offline builds provided
 - Allow optional spoofing on native Models
   - Recommended for systems that cannot update their firmware natively (ie. dead internal drive)
@@ -374,7 +376,7 @@
   - Applicable for BRCM2046 and BRCM2070 chipsets
 - Disable Library Validation allowing for AMFI usage
   - Remove reliance on amfi_get_out_of_my_way=1
-- Add Kepler Accleration Patches for Monterey Beta 7 and newer
+- Add Kepler Acceleration Patches for Monterey Beta 7 and newer
 - Add FirmwareFeature upgrading to all Models
   - Fixes Monterey Beta 7 installation issues
 - Add iMac7,1 USB map
@@ -438,7 +440,7 @@
   - RestrictEvents 1.0.3 rolling (3773ce2 - 06-20-2021)
   - SidecarFixup 1.0.2 rolling (2c29166 - 06-21-2021)
   - PatcherSupportPkg 0.0.18
-- Allow AirPlay to Mac support on Skylake - Coffeelake Macs
+- Allow AirPlay to Mac support on Skylake - Coffee Lake Macs
 
 ## 0.1.9
 
@@ -659,7 +661,7 @@
   - OpenCore 9cd61bb (0.6.8 rolling - 2021-03-27)
 - Add Mavericks and newer .app support
 - Refactor USB map building, fixes USB 3.0 displaying as USB 2.0
-- Fix blackscreen on MacBookPro9,1
+- Fix black screen on MacBookPro9,1
 - Update RestrictEvents with custom build (1.0.1)
   - Blocks `/usr/libexec/displaypolicyd` on MacBookPro9,1 to ensure smooth GPU switching
 - Add custom SD Card icon
