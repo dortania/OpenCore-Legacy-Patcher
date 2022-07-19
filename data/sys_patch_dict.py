@@ -277,7 +277,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     },
                 },
             },
-            "Nvidia Kepler": {
+            "Nvidia Kepler (Kernel Space)": {
                 "Display Name": "Graphics: Nvidia Kepler",
                 "OS Support": {
                     "Minimum OS Support": {
@@ -292,15 +292,40 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
                 "Install": {
                     "/System/Library/Extensions": {
-                        "GeForceAIRPlugin.bundle": "11.0 Beta 3",
-                        "GeForceGLDriver.bundle":  "11.0 Beta 3",
-                        "GeForceMTLDriver.bundle": "11.0 Beta 3",
                         "GeForce.kext":            "12.0 Beta 6",
-                        "GeForceVADriver.bundle":  "12.0 Beta 6",
                         "NVDAGF100Hal.kext":       "12.0 Beta 6",
                         "NVDAGK100Hal.kext":       "12.0 Beta 6",
                         "NVDAResman.kext":         "12.0 Beta 6",
                         "NVDAStartup.kext":        "12.0 Beta 6",
+                    },
+                },
+            },
+            # With macOS 12.5 Beta 3, Apple broke Metal rendering with Kepler
+            # Specifically, MPSImage/MPSCore stall out trying to render the desktop.
+            # This will eventually trigger the watchdog, and kick the user back to the login screen.
+            #
+            # Reference
+            # - https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1004
+            "Nvidia Kepler (Userspace)": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        # 12.0 beta 7 (XNU 21.1)
+                        "OS Major": os_data.os_data.monterey,
+                        "OS Minor": 1
+                    },
+                    "Maximum OS Support": {
+                        # 12.5 (XNU 21.6)
+                        "OS Major": os_data.os_data.monterey,
+                        "OS Minor": 6
+                    },
+                },
+                "Install": {
+                    "/System/Library/Extensions": {
+                        "GeForceAIRPlugin.bundle": "11.0 Beta 3",
+                        "GeForceGLDriver.bundle":  "11.0 Beta 3",
+                        "GeForceMTLDriver.bundle": "11.0 Beta 3",
+                        "GeForceVADriver.bundle":  "12.0 Beta 6",
                     },
                 },
             },

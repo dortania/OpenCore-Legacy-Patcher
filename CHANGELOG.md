@@ -1,6 +1,11 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.4.9
+- Split Kepler userspace and kernel space patches
+  - Only installs kernel space patches on 12.5 and newer
+  - Avoids lock out of user, however breaks graphics acceleration
+  - Install 12.4 or older for full graphics acceleration on Kepler
+  - Reference: [macOS 12.5: Nvidia Kepler and WindowServer crashing #1004](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1004)
 
 ## 0.4.8
 - Ensure Apple Silicon-specific installers are not listed
