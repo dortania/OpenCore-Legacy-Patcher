@@ -317,7 +317,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     "Maximum OS Support": {
                         # 12.5 (XNU 21.6)
                         "OS Major": os_data.os_data.monterey,
-                        "OS Minor": 6
+                        "OS Minor": 5
                     },
                 },
                 "Install": {
