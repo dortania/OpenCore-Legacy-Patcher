@@ -80,7 +80,7 @@ def validate(settings):
                                     print(f"File not found: {source_file}")
                                     raise Exception(f"Failed to find {source_file}")
 
-        print(f"Validating Root Patch Dictionary integrity for Darwin {major_kernel}.{minor_kernel}")
+        print(f"- Validating against Darwin {major_kernel}.{minor_kernel}")
         if not sys_patch_helpers.sys_patch_helpers(settings).generate_patchset_plist(patchset, "OpenCore-Legacy-Patcher"):
             raise Exception("Failed to generate patchset plist")
 
@@ -91,12 +91,13 @@ def validate(settings):
             if not Path(settings.payload_local_binaries_root_path).exists():
                 subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", settings.payload_local_binaries_root_path_zip, settings.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey]:
-                validate_root_patch_files(supported_os, 6)
+                for i in range(0, 10):
+                    validate_root_patch_files(supported_os, i)
             print("Validating SNB Board ID patcher")
             settings.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
             sys_patch_helpers.sys_patch_helpers(settings).snb_board_id_patch(settings.payload_local_binaries_root_path)
         else:
-            print("Skipping Root Patch File integrity validation")
+            print("- Skipping Root Patch File integrity validation")
 
     # First run is with default settings
     build_prebuilt()
