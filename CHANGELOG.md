@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.10
+
 ## 0.4.9
 - Split Kepler userspace and kernel space patches
   - Only installs kernel space patches on 12.5 and newer
