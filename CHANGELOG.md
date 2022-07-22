@@ -1,16 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
-## 0.4.8
-- Ensure Apple Silicon-specific installers are not listed
-  - ie. M2 specific build (21F2092)
-- Avoid adding OpenCore icon in boot picker if Windows bootloader on same partition
-- Add error-handling to corrupt/non-standard NVRAM variables
-- Add warning prompt when using 'Allow native models'
-  - Attempt to avoid misuse of option
-- Work-around `Failed to extract AssetData` during installer creation
-  - Apple bug, resolved by using CoW into a different directory than `/Applications`
-- Avoid listing beta installers in downloader
-- Warn about downloading macOS Ventura installers, unsupported by current patcher
+## 0.4.10
+
+
 - Ventura Specific Updates:
   - Switch boot.efi model patch to iMac18,1
   - Resolve pre-Force Touch Trackpad support in Ventura
@@ -33,6 +25,27 @@
   - OpenCorePkg 0.8.3 rolling (30acb57)
   - Lilu 1.6.2 rolling (2ff83c6)
   - FeatureUnlock 1.0.9 rolling (b7c1dd0)
+
+## 0.4.9
+- Split Kepler userspace and kernel space patches
+  - Only installs kernel space patches on 12.5 and newer
+  - Avoids lock out of user, however breaks graphics acceleration
+  - Install 12.4 or older for full graphics acceleration on Kepler
+  - Reference: [macOS 12.5: Nvidia Kepler and WindowServer crashing #1004](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1004)
+
+## 0.4.8
+- Ensure Apple Silicon-specific installers are not listed
+  - ie. M2 specific build (21F2092)
+- Avoid adding OpenCore icon in boot picker if Windows bootloader on same partition
+- Add error-handling to corrupt/non-standard NVRAM variables
+- Add warning prompt when using 'Allow native models'
+  - Attempt to avoid misuse of option
+- Work-around `Failed to extract AssetData` during installer creation
+  - Apple bug, resolved by using CoW into a different directory than `/Applications`
+- Avoid listing beta installers in downloader
+- Warn about downloading macOS Ventura installers, unsupported by current patcher
+- Fix AppleGVA regression introduced in 0.4.6
+  - Applicable for Ivy Bridge-only systems
 
 ## 0.4.7
 - Fix crashing on defaults parsing
@@ -110,11 +123,11 @@
   - Unknown whether this is a "bug" or intentional from Apple, affects native Macs with SIP disabled
 - Resolved non-Metal issues:
   - Catalyst crashing after 1200 seconds on non-Metal
-  - Automatic Light/Darkmode (credit @moosethegoose2213)
+  - Automatic Light/Dark mode (credit @moosethegoose2213)
   - Rim improvements
   - Trackpad swipe between pages
   - Cycle between windows
-  - Improve Display Prefpane Image
+  - Improve Display Preference pane Image
   - Defaults prefix change (`ASB_` -> `MORAEA_`, reopen non-Metal Settings to apply)
 - Increment Binaries:
   - PatcherSupportPkg 0.3.9 - release
@@ -147,9 +160,9 @@
   - Add Disk Highlighting during Build/Install for previously installed disks
   - Only list newest installers by default (reload to show older binaries)
 - Remove manual root unpatching
-  - Removed due to reliablity issues
+  - Removed due to reliability issues
   - `bless` based reversion still supported in Big Sur+
-- Remove Unoffical Mojave/Catalina Root Patching
+- Remove Unofficial Mojave/Catalina Root Patching
   - For TeraScale 2-based acceleration on older OSes, use v0.4.3
 - Simplify Binary options
   - Removes Online Patcher Variants
@@ -169,7 +182,7 @@
   - Control Centre Sliders
   - Shift/missing icons
   - Hardware Cursor
-    - Note cursor images will be static (ie. beachball)
+    - Note cursor images will be static (ie. beach ball)
   - Quicklook dismiss/expand
   - Keyboard Backlight
     - Drops reliance on LabTick
@@ -232,7 +245,7 @@
   - PatcherSupportPkg 0.2.9 - release
 - Re-add Content Caching support for VMM-spoofed systems
 - Add wxPython Based GUI
-  - Superceeds Obj-C Based GUI
+  - Supersedes Obj-C Based GUI
   - Both standard and offline builds provided
 - Allow optional spoofing on native Models
   - Recommended for systems that cannot update their firmware natively (ie. dead internal drive)
@@ -393,7 +406,7 @@
   - Applicable for BRCM2046 and BRCM2070 chipsets
 - Disable Library Validation allowing for AMFI usage
   - Remove reliance on amfi_get_out_of_my_way=1
-- Add Kepler Accleration Patches for Monterey Beta 7 and newer
+- Add Kepler Acceleration Patches for Monterey Beta 7 and newer
 - Add FirmwareFeature upgrading to all Models
   - Fixes Monterey Beta 7 installation issues
 - Add iMac7,1 USB map
@@ -457,7 +470,7 @@
   - RestrictEvents 1.0.3 rolling (3773ce2 - 06-20-2021)
   - SidecarFixup 1.0.2 rolling (2c29166 - 06-21-2021)
   - PatcherSupportPkg 0.0.18
-- Allow AirPlay to Mac support on Skylake - Coffeelake Macs
+- Allow AirPlay to Mac support on Skylake - Coffee Lake Macs
 
 ## 0.1.9
 
@@ -678,7 +691,7 @@
   - OpenCore 9cd61bb (0.6.8 rolling - 2021-03-27)
 - Add Mavericks and newer .app support
 - Refactor USB map building, fixes USB 3.0 displaying as USB 2.0
-- Fix blackscreen on MacBookPro9,1
+- Fix black screen on MacBookPro9,1
 - Update RestrictEvents with custom build (1.0.1)
   - Blocks `/usr/libexec/displaypolicyd` on MacBookPro9,1 to ensure smooth GPU switching
 - Add custom SD Card icon

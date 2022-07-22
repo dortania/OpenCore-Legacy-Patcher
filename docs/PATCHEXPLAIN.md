@@ -8,7 +8,7 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
 
 ## OpenCore Settings
 
-Below is a run down of the main logic OpenCore Legacy Patcher uses to gain native support in macOS. Note OpenCore's configuration is documented within [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) as well as an online version provided by us:
+Below is a run down of the main logic OpenCore Legacy Patcher uses to gain native support in macOS. Note that OpenCore's configuration is documented within [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) as well as on an online version provided by us:
 
 * [OpenCorePkg Online Docs](https://dortania.github.io/docs/latest/Configuration.html)
 
@@ -195,7 +195,7 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
   * Models: 2008 and older Marvel Ethernet require
 * CatalinaBCM5701Ethernet
   * Reason: Inject old Broadcom Ethernet kext to resolve networking in Big Sur
-  * Logic: Patch out conflicting symbols to not colide existing BCM5701Ethernet
+  * Logic: Patch out conflicting symbols to not collide existing BCM5701Ethernet
   * Models: 2011 and older Broadcom Ethernet require
 
 ### Maps
@@ -217,11 +217,11 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 
 * IO80211HighSierra
   * Reason: Re-inject Atheros wifi drivers from High Sierra
-  * Logic: Patch out conflicting symbols to not colide existing IO80211Family
+  * Logic: Patch out conflicting symbols to not collide existing IO80211Family
   * Models: Atheros cards
 * IO80211Mojave
   * Reason: Re-inject Broadcom wifi drivers from Mojave
-  * Logic: Patch out conflicting symbols to not colide existing IO80211Family
+  * Logic: Patch out conflicting symbols to not collide existing IO80211Family
   * Models: BCM94322
 
 ### Misc

@@ -1,6 +1,6 @@
 /* Removes PCI0's 32-bit Allocation Limitation to resolve PCIe device support on Sandy and
  * Ivy Bridge Macs, mainly applicable for Audio and eGPU support.
- * BUF0 to BUF1 patch required to override exisiting BuffObj in DSDT.
+ * BUF0 to BUF1 patch required to override existing BuffObj in DSDT.
  *
  * Source:
  * https://egpu.io/forums/pc-setup/fix-dsdt-override-to-correct-error-12/

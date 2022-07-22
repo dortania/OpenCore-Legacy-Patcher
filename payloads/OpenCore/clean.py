@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Simple script to delete unnessary files from OpenCore and move into place
+# Simple script to delete unnecessary files from OpenCore and move into place
 # To use, simply :
 # - Download an OpenCore build
 # - Place the X64 folder in the /payloads/OpenCore folder

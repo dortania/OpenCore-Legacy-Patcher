@@ -2207,7 +2207,7 @@ class wx_python_gui:
     def allow_native_models_click(self, event=None):
         if self.checkbox_allow_native_models.GetValue():
             # Throw a prompt warning about this
-            dlg = wx.MessageDialog(self.frame_modal, "This option should only be used if your Mac natively supports the OSes you wish to run.\n\nIf you are currently running an unsupported OS, this option will break booting. Only toggle for enabling OS features on a native Mac.\n\nAre you sure you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
+            dlg = wx.MessageDialog(self.frame_modal, "This option should only be used if your Mac natively supports the OSes you wish to run.\n\nIf you are currently running an unsupported OS, this option will break booting. Only toggle for enabling OS features on a native Mac.\n\nAre you certain you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
             if dlg.ShowModal() == wx.ID_NO:
                 self.checkbox_allow_native_models.SetValue(False)
                 return
@@ -2339,6 +2339,7 @@ class wx_python_gui:
         self.set_terascale_accel_checkbox.SetToolTip(wx.ToolTip("This option will determine whether TeraScale 2 acceleration is available during Root Volume patching.\nOnly applicable if your system has a AMD TeraScale 2 GPU (ie. MacBookPro8,2/3)"))
         if self.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"]:
             self.set_terascale_accel_checkbox.Disable()
+            self.set_terascale_accel_checkbox.SetValue(False)
 
         # Force Web Drivers in Tesla/Kepler
         self.force_web_drivers_checkbox = wx.CheckBox(self.frame_modal, label="Force Web Drivers")
@@ -2709,6 +2710,8 @@ class wx_python_gui:
         self.smbios_model_dropdown.SetStringSelection(self.constants.override_smbios)
         self.smbios_model_dropdown.Bind(wx.EVT_CHOICE, self.smbios_model_click)
         self.smbios_model_dropdown.Center(wx.HORIZONTAL)
+        if self.smbios_dropdown.GetStringSelection() == "None":
+            self.smbios_model_dropdown.Disable()
 
         # Label: Custom Serial Number
         self.smbios_serial_label = wx.StaticText(self.frame_modal, label="Custom Serial Number")
@@ -2792,7 +2795,7 @@ class wx_python_gui:
 
     def generate_new_serials_clicked(self, event):
         # Throw pop up warning about misusing this feature
-        dlg = wx.MessageDialog(self.frame_modal, "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nDortania does not condone the use of our software on stolen devices.", "Warning", wx.YES_NO | wx.ICON_WARNING)
+        dlg = wx.MessageDialog(self.frame_modal, "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nDortania does not condone the use of our software on stolen devices.\n\nAre you certain you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
         if dlg.ShowModal() == wx.ID_NO:
             return
         macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.constants.custom_model or self.computer.real_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -2813,9 +2816,19 @@ class wx_python_gui:
             self.constants.allow_native_spoofs = False
 
     def smbios_spoof_level_click(self, event=None):
+        # Throw pop up warning about misusing this feature
         selection = self.smbios_dropdown.GetStringSelection()
+        if selection != "None":
+            dlg = wx.MessageDialog(self.frame_modal, "This option should only be used when you need to change the machine's SMBIOS data.\n\nMisuse of this option can break OS functionality. Only use if you absolutely understand the need for this setting\n\nAre you certain you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
+            if dlg.ShowModal() == wx.ID_NO:
+                self.smbios_dropdown.SetStringSelection(self.constants.serial_settings)
+                return
         print(f"SMBIOS Spoof Level: {selection}")
         self.constants.serial_settings = selection
+        if selection == "None":
+            self.smbios_model_dropdown.Disable()
+        else:
+            self.smbios_model_dropdown.Enable()
 
     def smbios_model_click(self, event=None):
         selection = self.smbios_model_dropdown.GetStringSelection()
