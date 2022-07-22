@@ -2339,6 +2339,7 @@ class wx_python_gui:
         self.set_terascale_accel_checkbox.SetToolTip(wx.ToolTip("This option will determine whether TeraScale 2 acceleration is available during Root Volume patching.\nOnly applicable if your system has a AMD TeraScale 2 GPU (ie. MacBookPro8,2/3)"))
         if self.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"]:
             self.set_terascale_accel_checkbox.Disable()
+            self.set_terascale_accel_checkbox.SetValue(False)
 
         # Force Web Drivers in Tesla/Kepler
         self.force_web_drivers_checkbox = wx.CheckBox(self.frame_modal, label="Force Web Drivers")
