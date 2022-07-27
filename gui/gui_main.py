@@ -1501,7 +1501,7 @@ class wx_python_gui:
             if float(app_major) > self.constants.os_support:
                 # Throw pop up warning OCLP does not support this OS
                 os =  os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(app_major))
-                dlg = wx.MessageDialog(self.frame_modal, f"OpenCore Legacy patcher currently does not support macOS {os}. We highly recommend you select an older installer.\n\nThe newest version we officially support is macOS {os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(str(self.constants.os_support)))}\n\nWould you still want to continue downloading macOS {os}?", "Unsupported OS", wx.YES_NO | wx.ICON_WARNING)
+                dlg = wx.MessageDialog(self.frame_modal, f"OpenCore Legacy Patcher currently does not support macOS {os}. We highly recommend you select an older installer.\n\nThe newest version we officially support is macOS {os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(str(self.constants.os_support)))}\n\nWould you still want to continue downloading macOS {os}?", "Unsupported OS", wx.YES_NO | wx.ICON_WARNING)
                 if dlg.ShowModal() == wx.ID_NO:
                     return
         except ValueError:
