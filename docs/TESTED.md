@@ -1,6 +1,6 @@
 # Tested Models on OpenCore Legacy Patcher
 
-To aid users in troubleshooting, we've compiled a list of users who've reported success with OpenCore Legacy patcher as well as the version used. This should aid users in verifying whether issues with the patcher are regression-related with newer versions.
+To aid users in troubleshooting, we've compiled a list of users who've reported success with OpenCore Legacy Patcher as well as the version used. This should aid users in verifying whether issues with the patcher are regression-related with newer versions.
 
 ::: details MacBook
 
@@ -20,7 +20,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 ::: details MacBook Air
 
 | SMBIOS | Tested | Tester | Model | Version | Comment |
-| :--- | :--- | :--- | :--- | :--- | :--- | 
+| :--- | :--- | :--- | :--- | :--- | :--- |
 | MacBookAir2,1 | <span style="color:#30BCD5"> YES </span> | Bruno | Stock | 0.4.5 | Slow to the point of being unusable. |
 | MacBookAir3,1 | ^^ | uvesten | Stock | 0.3.3 | N/A |
 | MacBookAir3,2 | ^^ | houser42 | ^^ | Unknown | ^^ |
@@ -39,12 +39,12 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 ::: details MacBook Pro
 
 | SMBIOS | Tested | Tester | Model | Version | Comment |
-| :--- | :--- | :--- | :--- | :--- | :--- | 
+| :--- | :--- | :--- | :--- | :--- | :--- |
 | MacBookPro4,1 | <span style="color:#30BCD5"> YES </span> | cboukouv | Stock | 0.0.19 | N/A |
 | MacBookPro5,1 | ^^ | GURU_Jasho#5736 | ^^ | 0.0.21 | ^^ |
 | MacBookPro5,2 | ^^ | hvds | ^^ | ^^ | ^^ |
 | MacBookPro5,3 | ^^ | kommtzeitkonrad | ^^ | 0.0.22 | ^^ |
-| MacBookPro5,4 | <span style="color:red"> NO </span> | N/A | N/A | N/A | ^^ | 
+| MacBookPro5,4 | <span style="color:red"> NO </span> | N/A | N/A | N/A | ^^ |
 | MacBookPro5,5 | <span style="color:#30BCD5"> YES </span> | ASentientHedgehog | Stock | - | ^^ |
 | ^^ | ^^ | ParaDoX1994 | Stock | 0.4.5 | Camera/Bluetooth not working (connector broken) |
 | MacBookPro6,1 | <span style="color:red"> NO </span> | N/A | N/A | N/A | N/A |
@@ -62,7 +62,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 | ^^ | ^^ | LIPA85 | ^^ | ^^ | ^^ |
 | MacBookPro9,2 | <span style="color:#30BCD5"> YES </span> | alexx17xx | ^^ | ^^ | ^^ |
 | ^^ | ^^ | Arvxistanx | ^^ | ^^ | ^^ |
-| ^^ | ^^ | CyberDroid1 | ^^ | 0.0.16 | ^^ | 
+| ^^ | ^^ | CyberDroid1 | ^^ | 0.0.16 | ^^ |
 | ^^ | ^^ | woefi | Upgraded | 0.0.13 | Upgraded BCM94331CAX |
 | ^^ | ^^ | whgmkeller | Stock | 0.0.11 | N/A |
 | ^^ | ^^ | vinaypundith | Unknown | 0.0.7 | ^^ |
@@ -79,13 +79,13 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 ::: details Mac mini
 
 | SMBIOS | Tested | Tester | Model | Version | Comment |
-| :--- | :--- | :--- | :--- | :--- | :--- | 
+| :--- | :--- | :--- | :--- | :--- | :--- |
 | Macmini3,1 | <span style="color:#30BCD5"> YES </span> | ASentientHedgehog | Stock | N/A | N/A |
 | Macmini4,1 | <span style="color:#30BCD5"> YES </span> | Towster15#6369 | ^^ | 0.4.4 | Does not have internal SATA cable, booted and installed to SSD over USB 2.0 instead |
 | ^^ | ^^ | MykolaG | ^^ | 0.4.5 | SD card reader possibly broken. |
 | Macmini5,1 | <span style="color:#30BCD5"> YES </span> | MykolaG | ^^ | 0.4.5 | N/A |
 | Macmini5,2 | ^^ | charly-black | ^^ | 0.3.1 | ^^ |
-| ^^ | ^^ | MykolaG | ^^ | 0.4.5 | SD card reader possibly broken. | 
+| ^^ | ^^ | MykolaG | ^^ | 0.4.5 | SD card reader possibly broken. |
 | Macmini5,3 | <span style="color:red"> NO </span> | N/A |  N/A | N/A | N/A |
 | Macmini6,1 | <span style="color:#30BCD5"> YES </span> | cicofz | Stock | 0.0.21 | ^^ |
 | ^^ | ^^ | Stig124 | ^^ | 0.0.19 | ^^ |
@@ -99,7 +99,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 ::: details iMac
 
 | SMBIOS | Tested | Tester | Model | Version | Comment |
-| :--- | :--- | :--- | :--- | :--- | :--- | 
+| :--- | :--- | :--- | :--- | :--- | :--- |
 | iMac7,1 | <span style="color:#30BCD5"> YES </span> | lulujyc | Upgraded | 0.3.1 | Upgraded with BCM94352HMB <br><br> The USB 1.1 controller is unstable on Big Sur+, using USB hubs (forcing USB 2.0) can fix unrecognized keyboard/ mouse. |
 | iMac8,1 | <span style="color:#30BCD5"> YES </span> | EduCovas | Stock | 0.0.21 | N/A |
 | iMac9,1 | <span style="color:#30BCD5"> YES </span> | Allanrfox | ^^ | ^^ | ^^ |
@@ -128,7 +128,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 ::: details Mac Pro
 
 | SMBIOS | Tested | Tester | Model | Version | Comment |
-| :--- | :--- | :--- | :--- | :--- | :--- | 
+| :--- | :--- | :--- | :--- | :--- | :--- |
 | MacPro3,1 | <span style="color:#30BCD5"> YES </span> | MykolaG | Upgraded | 0.1.6 | Upgraded RX 470 and BCM94360CD.<br/>Stock Bluetooth card removed. |
 | ^^ | ^^ | christiann | ^^ | 0.0.21 | Upgraded RX 560 and BCM94322.<br/>Stock Bluetooth card removed. |
 | ^^ | ^^ | gw463 | ^^ | 0.0.22 | Upgraded GTX 680 and BCM94360 |
