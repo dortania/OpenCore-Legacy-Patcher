@@ -1,6 +1,7 @@
 # Additional support functions for sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
+from data import os_data
 from resources import generate_smbios
 from pathlib import Path
 from datetime import datetime
@@ -66,12 +67,35 @@ class sys_patch_helpers:
         return False
 
 
-    def determine_kdk_present(self):
+    def determine_kdk_present(self, match_closest=False):
         # Check if KDK is present
-        if Path("/Library/Developer/KDKs").exists():
+        # If 'match_closest' is True, will provide the closest match to the reported KDK
+
+        kdk_array = []
+
+        if not Path("/Library/Developer/KDKs").exists():
+            return None
+
+
+        for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
+            # Ensure direct match
+            if kdk_folder.name.endswith(f"{self.constants.detected_os_build}.kdk"):
+                # Verify that the KDK is valid
+                if (kdk_folder / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
+                    return kdk_folder
+            if match_closest is True:
+                # ex: KDK_13.0_22A5266r.kdk -> 22A5266r.kdk -> 22A5266r
+                build = kdk_folder.name.split("_")[2].split(".")[0]
+                if build.startswith(str(self.constants.detected_os)):
+                    kdk_array.append(build)
+
+        kdk_array = ['22A5295i', '22A5295h', '22A5286j', '22A5266r', '22A70']
+
+        if match_closest is True:
+            result = os_data.os_conversion.find_largest_build(kdk_array)
+            print(f"- Closest KDK match: {result}")
             for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
-                # We don't want to support mismatched KDKs
-                if self.constants.detected_os_build in kdk_folder.name:
+                if kdk_folder.name.endswith(f"{result}.kdk"):
                     # Verify that the KDK is valid
                     if (kdk_folder / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
                         return kdk_folder
