@@ -35,6 +35,10 @@ All of these models now have support in OpenCore Legacy Patcher.
 
 ## Current Monterey Issues
 
+### Kepler Metal driver issues on 12.5
+
+Due to a change in the Metal Performance Shader subframeworks with macOS 12.5 beta 3 and newer, Macs with Kepler GPUs running the display will have issues during startup or on login. Currently the only recommended workaround is to downgrade to 12.4.
+
 ### MacBookPro11,3 booting issue without Kepler acceleration
 
 Due to the display being routed through the NVIDIA Kepler card and macOS being rendered on the Intel iGPU, users have been experiencing issues booting without post-install patches applied ([see here for more info](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/522).) Currently the only workaround is to install the patches in safe mode, by holding down `Shift+Enter` when you select macOS in the OCLP boot picker.
