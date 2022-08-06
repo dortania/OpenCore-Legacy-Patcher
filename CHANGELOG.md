@@ -2,11 +2,6 @@
 
 ## 0.4.11
 
-## 0.4.10
-- Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer
-- Increment Binaries:
-  - PatcherSupportPkg 0.5.2 - release
-
 
 - Ventura Specific Updates:
   - Switch boot.efi model patch to iMac18,1
@@ -30,6 +25,11 @@
   - OpenCorePkg 0.8.3 rolling (30acb57)
   - Lilu 1.6.2 rolling (2ff83c6)
   - FeatureUnlock 1.0.9 rolling (b7c1dd0)
+
+## 0.4.10
+- Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer
+- Increment Binaries:
+  - PatcherSupportPkg 0.5.2 - release
 
 ## 0.4.9
 - Split Kepler userspace and kernel space patches
