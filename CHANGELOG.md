@@ -1,6 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.4.10
+- Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer
+- Increment Binaries:
+  - PatcherSupportPkg 0.5.2 - release
 
 ## 0.4.9
 - Split Kepler userspace and kernel space patches

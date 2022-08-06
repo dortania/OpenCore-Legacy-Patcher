@@ -362,8 +362,7 @@ class detect_root_patch:
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
-            required_patches.update({"Nvidia Kepler (Kernel Space)": all_hardware_patchset["Graphics"]["Nvidia Kepler (Kernel Space)"]})
-            required_patches.update({"Nvidia Kepler (Userspace)": all_hardware_patchset["Graphics"]["Nvidia Kepler (Userspace)"]})
+            required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
             for gpu in self.constants.computer.gpus:
                 # Handle mixed GPU situations (ie. MacBookPro11,3: Haswell iGPU + Kepler dGPU)
                 if gpu.arch == device_probe.Intel.Archs.Haswell:
