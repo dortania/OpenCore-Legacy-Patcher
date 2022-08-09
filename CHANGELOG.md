@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.4.11
+- Enable AppleMCEReporterDisabler whenever spoofing affected SMBIOS
+  - ie. iMacPro1,1, MacPro6,1 and MacPro7,1
 
 ## 0.4.10
 - Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer
