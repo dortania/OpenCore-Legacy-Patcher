@@ -13,6 +13,7 @@ from ctypes import CDLL, c_uint, byref
 import time
 import atexit
 import requests
+import shutil
 
 from resources import constants, ioreg
 from data import sip_data, os_data
@@ -549,6 +550,11 @@ def find_disk_off_uuid(uuid):
             pass
     return None
 
+def get_free_space(disk=None):
+    if disk is None:
+        disk = "/"
+    total, used, free = shutil.disk_usage("/")
+    return free
 
 def grab_mount_point_from_disk(disk):
     data = plistlib.loads(subprocess.run(f"diskutil info -plist {disk}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())

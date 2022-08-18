@@ -1511,6 +1511,14 @@ class wx_python_gui:
         except ValueError:
             pass
 
+        # Ensure we have space to both download and extract the installer
+        host_space = utilities.get_free_space()
+        needed_space = app_dict['Size'] * 2
+        if host_space < needed_space:
+            dlg = wx.MessageDialog(self.frame_modal, f"You do not have enough free space to download and extract this installer. Please free up some space and try again\n\n{utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required", "Insufficient Space", wx.OK | wx.ICON_WARNING)
+            dlg.ShowModal()
+            return
+
         self.frame.DestroyChildren()
         installer_name = f"macOS {app_dict['Version']} ({app_dict['Build']})"
 

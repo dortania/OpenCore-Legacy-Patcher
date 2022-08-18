@@ -372,6 +372,13 @@ def generate_installer_creation_script(tmp_location, installer_path, disk):
     if utilities.check_filesystem_type() != "apfs":
         # HFS+ disks do not support CoW
         args[1] = "-R"
+        # Ensure we have enough space for the duplication
+        space_available = utilities.get_free_space()
+        space_needed = Path(ia_tmp).stat().st_size
+        if space_available < space_needed:
+            print("Not enough free space to create installer.sh")
+            print(f"{utilities.human_fmt(space_available)} available, {utilities.human_fmt(space_needed)} required")
+            return False
     subprocess.run(args)
 
     # Adjust installer_path to point to the copied installer
