@@ -1,6 +1,11 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.4.11
+- Enable AppleMCEReporterDisabler whenever spoofing affected SMBIOS
+  - ie. iMacPro1,1, MacPro6,1 and MacPro7,1
+- Verify host's disk space before downloading macOS Installers
+- Remove duplicate OS builds in macOS downloader
+  - Avoids Apple's odd bug of publishing 2 different 12.5.1 products
 
 
 - Ventura Specific Updates:

@@ -112,7 +112,6 @@ class BuildOpenCore:
             ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in model_array.MacPro),
             ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None"),
             # CPU patches
-            ("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path, lambda: (self.model.startswith("MacPro") or self.model.startswith("Xserve")) and self.constants.serial_settings != "None"),
             ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value),
             (
                 "telemetrap.kext",
@@ -166,6 +165,16 @@ class BuildOpenCore:
         if self.get_kext_by_bundle_path("Lilu.kext")["Enabled"] is True:
             # Required for Lilu in 11.0+
             self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
+
+        if self.constants.serial_settings != "None":
+            # AppleMCEReporter is very picky about which models attach to the kext
+            # Commonly it will kernel panic on multi-socket systems, however even on single-socket systems it may cause instability
+            # To avoid any issues, we'll disable it if the spoof is set to an affected SMBIOS
+            affected_smbios = ["MacPro6,1", "MacPro7,1", "iMacPro1,1"]
+            if self.model not in affected_smbios:
+                # If MacPro6,1 host spoofs, we can safely enable it
+                if self.constants.override_smbios in affected_smbios or generate_smbios.set_smbios_model_spoof(self.model) in affected_smbios:
+                    self.enable_kext("AppleMCEReporterDisabler.kext", self.constants.mce_version, self.constants.mce_path)
 
         if self.constants.fu_status is True:
             # Enable FeatureUnlock.kext

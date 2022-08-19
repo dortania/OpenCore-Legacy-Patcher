@@ -19,4 +19,4 @@ def detect_kernel_minor():
 def detect_kernel_build():
     # Return OS build
     # Example Output: 21A5522h (string)
-    return subprocess.run("sw_vers -buildVersion".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode().strip()
+    return subprocess.run("sw_vers -buildVersion".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode().split("\n")[0]

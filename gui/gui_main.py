@@ -881,7 +881,11 @@ class wx_python_gui:
         self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 20)
 
         if result is True:
-            self.reboot_system(message="OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?")
+            if not self.constants.custom_model:
+                self.reboot_system(message="OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?")
+            else:
+                popup_message = wx.MessageDialog(self.frame,f"OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the {self.constants.custom_model}, reboot, hold the Option key and select OpenCore/Boot EFI's option.", "Success", wx.OK)
+                popup_message.ShowModal()
 
     def root_patch_menu(self, event=None):
         # Define Menu
@@ -1506,6 +1510,14 @@ class wx_python_gui:
                     return
         except ValueError:
             pass
+
+        # Ensure we have space to both download and extract the installer
+        host_space = utilities.get_free_space()
+        needed_space = app_dict['Size'] * 2
+        if host_space < needed_space:
+            dlg = wx.MessageDialog(self.frame_modal, f"You do not have enough free space to download and extract this installer. Please free up some space and try again\n\n{utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required", "Insufficient Space", wx.OK | wx.ICON_WARNING)
+            dlg.ShowModal()
+            return
 
         self.frame.DestroyChildren()
         installer_name = f"macOS {app_dict['Version']} ({app_dict['Build']})"
