@@ -29,8 +29,10 @@ bad_drivers = [
     "OpenNtfsDxe.efi",
     "OpenPartitionDxe.efi",
     "OpenUsbKbDxe.efi",
+    "OpenVariableRuntimeDxe.efi",
     "Ps2KeyboardDxe.efi",
     "Ps2MouseDxe.efi",
+    "ToggleSipEntry.efi",
     "UsbMouseDxe.efi",
     "XhciDxe.efi",
 ]

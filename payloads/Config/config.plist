@@ -2058,8 +2058,6 @@
 			<key>FA4CE28D-B62F-4C99-9CC3-6815686E30F9</key>
 			<array/>
 		</dict>
-		<key>LegacyEnable</key>
-		<false/>
 		<key>LegacyOverwrite</key>
 		<false/>
 		<key>LegacySchema</key>
@@ -2290,6 +2288,8 @@
 				<false/>
 				<key>Arguments</key>
 				<string></string>
+				<key>LoadEarly</key>
+				<true/>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -2300,6 +2300,8 @@
 				<false/>
 				<key>Arguments</key>
 				<string></string>
+				<key>LoadEarly</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -2310,6 +2312,8 @@
 				<false/>
 				<key>Arguments</key>
 				<string></string>
+				<key>LoadEarly</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -2320,6 +2324,8 @@
 				<false/>
 				<key>Arguments</key>
 				<string></string>
+				<key>LoadEarly</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -2330,6 +2336,8 @@
 				<false/>
 				<key>Arguments</key>
 				<string></string>
+				<key>LoadEarly</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -2340,6 +2348,8 @@
 				<false/>
 				<key>Arguments</key>
 				<string></string>
+				<key>LoadEarly</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -2350,16 +2360,8 @@
 				<false/>
 				<key>Arguments</key>
 				<string></string>
-			</dict>
-			<dict>
-				<key>Comment</key>
-				<string></string>
-				<key>Path</key>
-				<string>ToggleSipEntry.efi</string>
-				<key>Enabled</key>
-				<true/>
-				<key>Arguments</key>
-				<string></string>
+				<key>LoadEarly</key>
+				<false/>
 			</dict>
 		</array>
 		<key>Input</key>

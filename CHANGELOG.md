@@ -27,9 +27,9 @@
   - Add USB1.1 injection for pre-Ivy bridge units
   - Fix MouSSE/SSE4,2 emulation in macOS 13.0 Beta 3 (22A5295h)
 - Increment Binaries:
-  - OpenCorePkg 0.8.3 rolling (30acb57)
-  - Lilu 1.6.2 rolling (2ff83c6)
-  - FeatureUnlock 1.0.9 rolling (b7c1dd0)
+  - OpenCorePkg 0.8.3 release
+  - Lilu 1.6.2 release
+  - FeatureUnlock 1.0.9 release
 
 ## 0.4.10
 - Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer
