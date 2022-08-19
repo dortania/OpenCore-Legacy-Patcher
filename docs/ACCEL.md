@@ -163,8 +163,7 @@ However if your machine does not have the dGPU disabled via NVRAM, you'll experi
 2. When command line prompt appears, enter the dGPU disabler argument (at the bottom)
 3. Reboot and patched macOS should work normally
 4. If you still want to use the dGPU, run OpenCore Legacy Patcher and enable TS2 Acceleration from settings. Then root patch your Mac again
-    * TUI: `Patcher Settings -> Misc Settings -> TeraScale 2 Accel`
-    * GUI: `Patcher Settings -> Developer Settings -> Set TeraScale 2 Accel`
+     `Patcher Settings -> Developer Settings -> Set TeraScale 2 Accel`
 5. Either Reset NVRAM or set `gpu-power-prefs` to zeros to re-enable the dGPU
 
 ```sh
