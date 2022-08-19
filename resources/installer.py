@@ -187,6 +187,7 @@ def only_list_newest_installers(available_apps):
     for version in supported_versions:
         remote_version_minor = 0
         remote_version_security = 0
+        os_builds = []
 
         # First determine the largest version
         for ia in available_apps:
@@ -221,13 +222,25 @@ def only_list_newest_installers(available_apps):
                     remote_version.pop(0)
                 if int(remote_version[0]) < remote_version_minor:
                     available_apps.pop(ia)
-                elif int(remote_version[0]) == remote_version_minor:
+                    continue
+                if int(remote_version[0]) == remote_version_minor:
                     if len(remote_version) > 1:
                         if int(remote_version[1]) < remote_version_security:
                             available_apps.pop(ia)
+                            continue
                     else:
                         if remote_version_security > 0:
                             available_apps.pop(ia)
+                            continue
+
+                # Remove duplicate builds
+                #   ex.  macOS 12.5.1 has 2 builds in the Software Update Catalog
+                #   ref: https://twitter.com/classicii_mrmac/status/1560357471654379522
+                if available_apps[ia]["Build"] in os_builds:
+                    available_apps.pop(ia)
+                    continue
+
+                os_builds.append(available_apps[ia]["Build"])
 
     return available_apps
 
