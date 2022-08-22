@@ -68,7 +68,10 @@ class detect_root_patch:
                         # 12.0 Beta 5: 21.0.0 - 21A5304g
                         # 12.0 Beta 6: 21.1.0 - 21A5506j
                         # 12.0 Beta 7: 21.1.0 - 21A5522h
-                        if self.constants.detected_os == os_data.os_data.monterey and self.constants.detected_os_minor > 0:
+                        if self.constants.detected_os >= os_data.os_data.ventura:
+                            self.kepler_gpu = True
+                            self.supports_metal = True
+                        elif self.constants.detected_os == os_data.os_data.monterey and self.constants.detected_os_minor > 0:
                             if "21A5506j" not in self.constants.detected_os_build:
                                 self.kepler_gpu = True
                                 self.supports_metal = True
@@ -240,7 +243,7 @@ class detect_root_patch:
             isinstance(self.constants.computer.wifi, device_probe.Broadcom)
             and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
         ) or (isinstance(self.constants.computer.wifi, device_probe.Atheros) and self.constants.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
-            if self.constants.detected_os > os_data.os_data.big_sur:
+            if os_data.os_data.ventura > self.constants.detected_os > os_data.os_data.big_sur:
                 self.legacy_wifi = True
 
         # if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
@@ -263,13 +266,13 @@ class detect_root_patch:
             "Graphics: Nvidia Web Drivers":                self.nvidia_web,
             "Graphics: AMD TeraScale 1":                   self.amd_ts1,
             "Graphics: AMD TeraScale 2":                   self.amd_ts2,
-            "Graphics: AMD Legacy GCN":                    False, # self.legacy_gcn,
+            "Graphics: AMD Legacy GCN":                    self.legacy_gcn,
             "Graphics: Intel Ironlake":                    self.iron_gpu,
             "Graphics: Intel Sandy Bridge":                self.sandy_gpu,
             "Graphics: Intel Ivy Bridge":                  self.ivy_gpu,
-            "Graphics: Intel Haswell":                     False, # self.haswell_gpu,
-            "Graphics: Intel Broadwell":                   False, # self.broadwell_gpu,
-            "Graphics: Intel Skylake":                     False, # self.skylake_gpu,
+            "Graphics: Intel Haswell":                     self.haswell_gpu,
+            "Graphics: Intel Broadwell":                   self.broadwell_gpu,
+            "Graphics: Intel Skylake":                     self.skylake_gpu,
             "Brightness: Legacy Backlight Control":        self.brightness_legacy,
             "Audio: Legacy Realtek":                       self.legacy_audio,
             "Networking: Legacy Wireless":                 self.legacy_wifi,
@@ -384,13 +387,16 @@ class detect_root_patch:
             required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
             required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
             required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
         if hardware_details["Graphics: Intel Haswell"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
             required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
         if hardware_details["Graphics: Intel Broadwell"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
             required_patches.update({"Intel Broadwell": all_hardware_patchset["Graphics"]["Intel Broadwell"]})
         if hardware_details["Graphics: Intel Skylake"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
@@ -406,6 +412,7 @@ class detect_root_patch:
             required_patches.update({"Non-Metal Enforcement": all_hardware_patchset["Graphics"]["Non-Metal Enforcement"]})
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
             required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
             for gpu in self.constants.computer.gpus:
@@ -428,6 +435,9 @@ class detect_root_patch:
                 # TeraScale 2 MacBooks with faulty GPUs are highly prone to crashing with AMDRadeonX3000 attached
                 # Additionally, AMDRadeonX3000 requires IOAccelerator downgrade which is not installed without 'Non-Metal IOAccelerator Common'
                 del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
+        if hardware_details["Graphics: AMD Legacy GCN"] is True:
+            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"AMD Legacy GCN": all_hardware_patchset["Graphics"]["AMD Legacy GCN"]})
         if hardware_details["Brightness: Legacy Backlight Control"] is True:
             required_patches.update({"Legacy Brightness": all_hardware_patchset["Brightness"]["Legacy Brightness"]})
         if hardware_details["Audio: Legacy Realtek"] is True:

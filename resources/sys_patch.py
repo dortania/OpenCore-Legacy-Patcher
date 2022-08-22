@@ -215,7 +215,7 @@ class PatchSysVolume:
                 print("\nPlease reboot the machine for patches to take effect")
                 if self.needs_kmutil_exemptions is True:
                     print("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
-                self.constants.root_patcher_succeded = True
+                self.constants.root_patcher_succeeded = True
                 if self.constants.gui_mode is False:
                     input("\nPress [ENTER] to continue")
 

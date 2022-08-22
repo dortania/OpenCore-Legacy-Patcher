@@ -185,6 +185,33 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OpenCL.framework": "11.6",
                         # Ventura breaks with this patch
                         **({ "WebKit.framework":  "11.6" } if os_major == os_data.os_data.monterey else {}),
+
+                        # Ventura Metal patches
+                        **({ "Metal.framework":                   "12.5" } if os_major >= os_data.os_data.ventura else {}),
+                        **({ "MetalPerformanceShaders.framework": "12.5" } if os_major >= os_data.os_data.ventura else {}),
+                    },
+                    "/System/Library/Sandbox/Profiles": {
+                        **({ "com.apple.mtlcompilerservice.sb": "12.5" } if os_major >= os_data.os_data.ventura else {}),
+                    }
+                },
+            },
+
+            "Metal 1 Common": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/PrivateFrameworks": {
+                        "MTLCompiler.framework": "12.5",
+                        "GPUCompiler.framework": "12.5",
                     },
                 },
             },
@@ -477,13 +504,29 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 99
                     },
                 },
-                "Install Reference": {
+                "Install": {
                     "/System/Library/Extensions": {
-                        "AMD7000Controller.kext": "12.4",
-                        "AMD8000Controller.kext": "12.4",
-                        "AMD9000Controller.kext": "12.4",
-                        "AMDRadeonX4000.kext":    "12.4",
+                        "AMD7000Controller.kext":        "12.5",
+                        "AMD8000Controller.kext":        "12.5",
+                        "AMD9000Controller.kext":        "12.5",
+                        "AMDRadeonX4000.kext":           "12.5",
+                        "AMDRadeonX4000HWServices.kext": "12.5",
+                        "AMDFramebuffer.kext":           "12.5",
+                        "AMDSupport.kext":               "12.5",
+
+                        "AMDRadeonX4000GLDriver.bundle": "12.5",
+                        "AMDMTLBronzeDriver.bundle":     "12.5",
+                        "AMDShared.bundle":              "12.5",
                     },
+                },
+                "Remove": {
+                    "/System/Library/Extensions": [
+                        # Due to downgraded AMDSupport.kext
+                        # In the future, we will have to downgrade the entire AMD stack
+                        # to support non-AVX2.0 machines with Polaris or newer
+                        "AMD9500Controller.kext",
+                        "AMD10000Controller.kext",
+                    ],
                 },
             },
             "Intel Ironlake": {
@@ -570,14 +613,15 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 99
                     },
                 },
-                "Install Reference": {
+                "Install": {
                     "/System/Library/Extensions": {
-                        "AppleIntelFramebufferAzul.kext":           "12.4",
-                        "AppleIntelHD5000Graphics.kext":            "12.4",
-                        "AppleIntelHD5000GraphicsGLDriver.bundle":  "11.0 Beta 6",
-                        "AppleIntelHD5000GraphicsMTLDriver.bundle": "11.0 Beta 6",
-                        "AppleIntelHD5000GraphicsVADriver.bundle":  "11.0 Beta 6",
-                        "AppleIntelHSWVA.bundle":                   "11.0 Beta 6",
+                        "AppleIntelFramebufferAzul.kext":           "12.5",
+                        "AppleIntelHD5000Graphics.kext":            "12.5",
+                        "AppleIntelHD5000GraphicsGLDriver.bundle":  "12.5",
+                        "AppleIntelHD5000GraphicsMTLDriver.bundle": "12.5",
+                        "AppleIntelHD5000GraphicsVADriver.bundle":  "12.5",
+                        "AppleIntelHSWVA.bundle":                   "12.5",
+                        "AppleIntelGraphicsShared.bundle":          "12.5",
                     },
                 },
             },
@@ -593,14 +637,15 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 99
                     },
                 },
-                "Install Reference": {
+                "Install": {
                     "/System/Library/Extensions": {
-                        "AppleIntelBDWGraphics.kext":            "12.4",
-                        "AppleIntelBDWGraphicsFramebuffer.kext": "12.4",
-                        "AppleIntelBDWGraphicsGLDriver.bundle":  "11.0 Beta 6",
-                        "AppleIntelBDWGraphicsMTLDriver.bundle": "11.0 Beta 6",
-                        "AppleIntelBDWGraphicsVADriver.bundle":  "11.0 Beta 6",
-                        "AppleIntelBDWGraphicsVAME.bundle":      "11.0 Beta 6",
+                        "AppleIntelBDWGraphics.kext":            "12.5",
+                        "AppleIntelBDWGraphicsFramebuffer.kext": "12.5",
+                        "AppleIntelBDWGraphicsGLDriver.bundle":  "12.5",
+                        "AppleIntelBDWGraphicsMTLDriver.bundle": "12.5",
+                        "AppleIntelBDWGraphicsVADriver.bundle":  "12.5",
+                        "AppleIntelBDWGraphicsVAME.bundle":      "12.5",
+                        "AppleIntelGraphicsShared.bundle":       "12.5",
                     },
                 },
             },
@@ -616,14 +661,15 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 99
                     },
                 },
-                "Install Reference": {
+                "Install": {
                     "/System/Library/Extensions": {
-                        "AppleIntelSKLGraphics.kext":            "12.4",
-                        "AppleIntelSKLGraphicsFramebuffer.kext": "12.4",
-                        "AppleIntelSKLGraphicsGLDriver.bundle":  "11.0 Beta 6",
-                        "AppleIntelSKLGraphicsMTLDriver.bundle": "11.0 Beta 6",
-                        "AppleIntelSKLGraphicsVADriver.bundle":  "11.0 Beta 6",
-                        "AppleIntelSKLGraphicsVAME.bundle":      "11.0 Beta 6",
+                        "AppleIntelSKLGraphics.kext":            "12.5",
+                        "AppleIntelSKLGraphicsFramebuffer.kext": "12.5",
+                        "AppleIntelSKLGraphicsGLDriver.bundle":  "12.5",
+                        "AppleIntelSKLGraphicsMTLDriver.bundle": "12.5",
+                        "AppleIntelSKLGraphicsVADriver.bundle":  "12.5",
+                        "AppleIntelSKLGraphicsVAME.bundle":      "12.5",
+                        "AppleIntelGraphicsShared.bundle":       "12.5",
                     },
                 },
             },
@@ -687,7 +733,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 0
                     },
                     "Maximum OS Support": {
-                        "OS Major": os_data.os_data.max_os,
+                        "OS Major": os_data.os_data.monterey,
                         "OS Minor": 99
                     },
                 },

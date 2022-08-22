@@ -168,7 +168,10 @@ ModernGPU = [
     "iMac16,1",  # Intel 6000
     "iMac16,2",  # Intel 6000
     "iMac17,1",  # Intel Skylake + GCN1
-    "MacPro6,1",  # GCN 1
+    "MacPro3,1", # Lacks AVX2.0
+    "MacPro4,1", # Lacks AVX2.0
+    "MacPro5,1", # Lacks AVX2.0
+    "MacPro6,1", # GCN 1
 ]
 
 LegacyGPU = [

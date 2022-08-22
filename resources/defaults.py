@@ -89,7 +89,7 @@ class generate_defaults:
             # Assume 2009+ machines have Polaris on pre-builts (internal testing)
             # Hardware Detection will never hit this
             settings.serial_settings = "Minimal"
-        elif model in model_array.LegacyGPU:
+        elif model in model_array.LegacyGPU or model in model_array.ModernGPU:
             settings.disable_cs_lv = True
 
         if model in model_array.LegacyGPU:

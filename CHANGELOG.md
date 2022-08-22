@@ -1,6 +1,6 @@
 # OpenCore Legacy Patcher changelog
 
-## 0.4.11
+## 0.5.0
 - Enable AppleMCEReporterDisabler whenever spoofing affected SMBIOS
   - ie. iMacPro1,1, MacPro6,1 and MacPro7,1
 - Verify host's disk space before downloading macOS Installers
@@ -24,12 +24,12 @@
   - Resolve Ethernet support on MacPro3,1-5,1
   - Fix VMM patch set
   - Allow dyld shared cache swapping on pre-Haswell
-  - Add USB1.1 injection for pre-Ivy bridge units
   - Fix MouSSE/SSE4,2 emulation in macOS 13.0 Beta 3 (22A5295h)
 - Increment Binaries:
   - OpenCorePkg 0.8.3 release
-  - Lilu 1.6.2 release
+  - Lilu 1.6.2 - release
   - FeatureUnlock 1.0.9 release
+  - PatcherSupportPkg 0.6.0 - release
 
 ## 0.4.10
 - Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer
