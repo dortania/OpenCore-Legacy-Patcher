@@ -333,7 +333,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     },
                     "/System/Library/Frameworks": {
                         # XNU 21.6 (macOS 12.5)
-                        **({ "Metal.framework": "12.5 Beta 2"} if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 5, os_major, os_minor) else {})
+                        **({ "Metal.framework": "12.5 Beta 2"} if (os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 5, os_major, os_minor) and os_major < os_data.os_data.ventura) else {})
                     },
                 },
             },

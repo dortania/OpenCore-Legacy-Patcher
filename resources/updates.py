@@ -35,7 +35,9 @@ class check_binary_updates:
             self.remote_version_array.append(0)
 
         for i in range(0, len(self.remote_version_array)):
-            if self.remote_version_array[i] > self.binary_version_array[i]:
+            if int(self.remote_version_array[i]) < int(self.binary_version_array[i]):
+                break
+            elif int(self.remote_version_array[i]) > int(self.binary_version_array[i]):
                 return True
 
         return False
