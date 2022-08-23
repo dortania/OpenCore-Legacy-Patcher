@@ -173,7 +173,7 @@ Note: For security reasons, OpenShell will be disabled when Vault is set.
         print(
             f"""SIP is used to ensure proper security measures are set,
 however to patch the root volume this must be lowered partially.
-Only disable is absolutely necessary. SIP value = 0x802
+Only disable is absolutely necessary. SIP value = 0xA03
 
 Valid options:
 

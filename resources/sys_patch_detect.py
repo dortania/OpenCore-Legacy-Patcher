@@ -213,7 +213,7 @@ class detect_root_patch:
 
     def check_sip(self):
         if self.constants.detected_os > os_data.os_data.catalina:
-            if self.nvidia_web is True:
+            if self.nvidia_web is True or self.constants.detected_os >= os_data.os_data.ventura:
                 sip = sip_data.system_integrity_protection.root_patch_sip_big_sur_3rd_part_kexts
                 sip_hex = "0xA03"
                 sip_value = (
