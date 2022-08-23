@@ -138,6 +138,10 @@ class detect_root_patch:
             self.sandy_gpu = False
             self.legacy_keyboard_backlight = False
 
+            if self.constants.detected_os >= os_data.os_data.ventura:
+                # All root patches in Ventura require AMFI disabled
+                self.amfi_must_disable = True
+
     def check_dgpu_status(self):
         dgpu = self.constants.computer.dgpu
         if dgpu:
