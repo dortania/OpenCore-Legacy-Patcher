@@ -227,7 +227,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 0
                     },
                     "Maximum OS Support": {
-                        "OS Major": os_data.os_data.max_os,
+                        "OS Major": os_data.os_data.monterey,
                         "OS Minor": 99
                     },
                 },
@@ -241,7 +241,9 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
-            "Modern GVA": {
+            # For GPUs last natively supported in Catalina/Big Sur
+            # Restores DRM support
+            "Catalina GVA": {
                 "Display Name": "",
                 "OS Support": {
                     "Minimum OS Support": {
@@ -261,7 +263,29 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
-            "Legacy GVA": {
+            # For GPUs last natively supported in Monterey
+            # Restores DRM support
+            "Monterey GVA": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/PrivateFrameworks": {
+                        "AppleGVA.framework":     "12.5",
+                        "AppleGVACore.framework": "12.5",
+                    },
+                },
+            },
+
+            "High Sierra GVA": {
                 "Display Name": "",
                 "OS Support": {
                     "Minimum OS Support": {

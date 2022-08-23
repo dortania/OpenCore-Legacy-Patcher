@@ -25,11 +25,15 @@
   - Fix VMM patch set
   - Allow dyld shared cache swapping on pre-Haswell
   - Fix MouSSE/SSE4,2 emulation in macOS 13.0 Beta 3 (22A5295h)
+  - Graphics Acceleration for legacy Metal GPUs
+    - Intel: Ivy Bridge, Haswell, Broadwell and Skylake
+    - Nvidia: Kepler
+    - AMD: GCN 1 through 3
 - Increment Binaries:
   - OpenCorePkg 0.8.3 release
   - Lilu 1.6.2 - release
   - FeatureUnlock 1.0.9 release
-  - PatcherSupportPkg 0.6.0 - release
+  - PatcherSupportPkg 0.6.1 - release
 
 ## 0.4.10
 - Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer

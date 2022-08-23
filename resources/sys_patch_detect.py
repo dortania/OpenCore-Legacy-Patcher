@@ -387,23 +387,26 @@ class detect_root_patch:
             required_patches.update({"Intel Ironlake": all_hardware_patchset["Graphics"]["Intel Ironlake"]})
         if hardware_details["Graphics: Intel Sandy Bridge"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
-            required_patches.update({"Legacy GVA": all_hardware_patchset["Graphics"]["Legacy GVA"]})
+            required_patches.update({"High Sierra GVA": all_hardware_patchset["Graphics"]["High Sierra GVA"]})
             required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
-            required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
+            required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
         if hardware_details["Graphics: Intel Haswell"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
+            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
         if hardware_details["Graphics: Intel Broadwell"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
+            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Intel Broadwell": all_hardware_patchset["Graphics"]["Intel Broadwell"]})
         if hardware_details["Graphics: Intel Skylake"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Intel Skylake": all_hardware_patchset["Graphics"]["Intel Skylake"]})
         if hardware_details["Graphics: Nvidia Tesla"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
@@ -417,13 +420,13 @@ class detect_root_patch:
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
-            required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
+            required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
             for gpu in self.constants.computer.gpus:
                 # Handle mixed GPU situations (ie. MacBookPro11,3: Haswell iGPU + Kepler dGPU)
                 if gpu.arch == device_probe.Intel.Archs.Haswell:
-                    if "Modern GVA" in required_patches:
-                        del(required_patches["Modern GVA"])
+                    if "Catalina GVA" in required_patches:
+                        del(required_patches["Catalina GVA"])
                     required_patches.update({"GVA Work-Around": all_hardware_patchset["Graphics"]["GVA Work-Around"]})
                     break
         if hardware_details["Graphics: AMD TeraScale 1"] is True:
@@ -441,6 +444,7 @@ class detect_root_patch:
                 del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
         if hardware_details["Graphics: AMD Legacy GCN"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"AMD Legacy GCN": all_hardware_patchset["Graphics"]["AMD Legacy GCN"]})
         if hardware_details["Brightness: Legacy Backlight Control"] is True:
             required_patches.update({"Legacy Brightness": all_hardware_patchset["Brightness"]["Legacy Brightness"]})
@@ -458,6 +462,11 @@ class detect_root_patch:
 
         if required_patches:
             host_os_float = float(f"{self.constants.detected_os}.{self.constants.detected_os_minor}")
+
+            # Prioritize Monterey GVA patches
+            if "Catalina GVA" in required_patches and "Monterey GVA" in required_patches:
+                del(required_patches["Catalina GVA"])
+
             for patch_name in list(required_patches):
                 patch_os_min_float = float(f'{required_patches[patch_name]["OS Support"]["Minimum OS Support"]["OS Major"]}.{required_patches[patch_name]["OS Support"]["Minimum OS Support"]["OS Minor"]}')
                 patch_os_max_float = float(f'{required_patches[patch_name]["OS Support"]["Maximum OS Support"]["OS Major"]}.{required_patches[patch_name]["OS Support"]["Maximum OS Support"]["OS Minor"]}')
