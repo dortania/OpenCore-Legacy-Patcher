@@ -150,17 +150,19 @@ def enable_sleep_after_running():
         sleep_process.kill()
         sleep_process = None
 
-def amfi_status():
+def amfi_status(fully_disabled=False):
     amfi_args = [
         "amfi_get_out_of_my_way=0x1",
         "amfi_get_out_of_my_way=1",
         "amfi=128",
     ]
 
-    oclp_guid = get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
-    if oclp_guid:
-        if "-allow_amfi" in oclp_guid:
-            return False
+    if fully_disabled is False:
+        # Library Validation based patch
+        oclp_guid = get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
+        if oclp_guid:
+            if "-allow_amfi" in oclp_guid:
+                return False
     boot_args = get_nvram("boot-args", decode=True)
     if boot_args:
         for arg in amfi_args:
@@ -276,7 +278,10 @@ def patching_status(os_sip, os):
     gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
     if os > os_data.os_data.catalina:
-        amfi_enabled = amfi_status()
+        requires_full_amfi = False
+        if os >= os_data.os_data.ventura:
+            requires_full_amfi = True
+        amfi_enabled = amfi_status(fully_disabled=requires_full_amfi)
     else:
         # Catalina and older supports individually disabling Library Validation
         amfi_enabled = False
