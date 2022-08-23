@@ -81,8 +81,11 @@ def validate(settings):
                                     raise Exception(f"Failed to find {source_file}")
 
         print(f"- Validating against Darwin {major_kernel}.{minor_kernel}")
-        if not sys_patch_helpers.sys_patch_helpers(settings).generate_patchset_plist(patchset, "OpenCore-Legacy-Patcher"):
+        if not sys_patch_helpers.sys_patch_helpers(settings).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist"):
             raise Exception("Failed to generate patchset plist")
+
+        # Remove the plist file after validation
+        Path(settings.payload_path / f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist").unlink()
 
 
     def validate_sys_patch():
@@ -90,7 +93,7 @@ def validate(settings):
             print("Validating Root Patch File integrity")
             if not Path(settings.payload_local_binaries_root_path).exists():
                 subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", settings.payload_local_binaries_root_path_zip, settings.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey]:
+            for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura]:
                 for i in range(0, 10):
                     validate_root_patch_files(supported_os, i)
             print("Validating SNB Board ID patcher")
@@ -99,26 +102,31 @@ def validate(settings):
         else:
             print("- Skipping Root Patch File integrity validation")
 
-    # First run is with default settings
-    build_prebuilt()
-    build_dumps()
-    # Second run, flip all settings
-    settings.verbose_debug = True
-    settings.opencore_debug = True
-    settings.opencore_build = "DEBUG"
-    settings.kext_debug = True
-    settings.kext_variant = "DEBUG"
-    settings.kext_debug = True
-    settings.showpicker = False
-    settings.sip_status = False
-    settings.secure_status = True
-    settings.firewire_boot = True
-    settings.nvme_boot = True
-    settings.enable_wake_on_wlan = True
-    settings.disable_tb = True
-    settings.force_surplus = True
-    settings.software_demux = True
-    settings.serial_settings = "Minimal"
-    build_prebuilt()
-    build_dumps()
+
+    def validate_configs():
+        # First run is with default settings
+        build_prebuilt()
+        build_dumps()
+        # Second run, flip all settings
+        settings.verbose_debug = True
+        settings.opencore_debug = True
+        settings.opencore_build = "DEBUG"
+        settings.kext_debug = True
+        settings.kext_variant = "DEBUG"
+        settings.kext_debug = True
+        settings.showpicker = False
+        settings.sip_status = False
+        settings.secure_status = True
+        settings.firewire_boot = True
+        settings.nvme_boot = True
+        settings.enable_wake_on_wlan = True
+        settings.disable_tb = True
+        settings.force_surplus = True
+        settings.software_demux = True
+        settings.serial_settings = "Minimal"
+        build_prebuilt()
+        build_dumps()
+
+
+    validate_configs()
     validate_sys_patch()

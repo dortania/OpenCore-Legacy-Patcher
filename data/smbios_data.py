@@ -2299,7 +2299,8 @@ smbios_dictionary = {
         "5K Display": True,
         "Stock GPUs": [
             device_probe.Intel.Archs.Skylake,
-            device_probe.AMD.Archs.Legacy_GCN_9000,
+            device_probe.AMD.Archs.Legacy_GCN_8000,
+            # System also shipped with Legacy_GCN_9000 (ie. R9 M395X)
         ],
         "Stock Storage": [
             "SATA 3.5",

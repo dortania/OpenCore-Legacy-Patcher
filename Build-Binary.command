@@ -117,13 +117,17 @@ class create_binary:
             "AutoPkg-Assets.pkg",
             "AutoPkg-Assets.pkg.zip",
             "InstallAssistant.pkg",
+            "InstallAssistant.pkg.integrityDataV1",
         ]
         print("- Deleting extra binaries...")
         for file in Path("payloads").glob(pattern="*"):
-            if file.name in delete_files:
+            if file.name in delete_files or file.name.startswith("OpenCore-Legacy-Patcher"):
                 print(f"  - Deleting {file.name}")
                 file.unlink()
             elif (Path(file) / Path("Contents/Resources/createinstallmedia")).exists():
+                print(f"  - Deleting {file}")
+                subprocess.run(["rm", "-rf", file])
+            elif Path(file).is_dir() and file.name == "Universal-Binaries":
                 print(f"  - Deleting {file}")
                 subprocess.run(["rm", "-rf", file])
 
