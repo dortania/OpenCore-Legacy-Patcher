@@ -89,7 +89,7 @@ class generate_defaults:
             # Assume 2009+ machines have Polaris on pre-builts (internal testing)
             # Hardware Detection will never hit this
             settings.serial_settings = "Minimal"
-        elif model in model_array.LegacyGPU or model in model_array.ModernGPU:
+        elif model in model_array.LegacyGPU:
             settings.disable_cs_lv = True
 
         if model in model_array.LegacyGPU:
@@ -185,3 +185,6 @@ class generate_defaults:
         nv_web_status = global_settings.global_settings().read_property("Force_Web_Drivers")
         if nv_web_status is True:
             settings.force_nv_web = True
+
+        if model in model_array.ModernGPU:
+            settings.disable_cs_lv = True
