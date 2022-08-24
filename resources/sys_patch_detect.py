@@ -3,6 +3,7 @@
 # Used when supplying data to sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
+import subprocess
 from resources import constants, device_probe, utilities, sys_patch_helpers
 from data import model_array, os_data, sip_data, sys_patch_dict
 
@@ -99,6 +100,9 @@ class detect_root_patch:
                     device_probe.AMD.Archs.Legacy_GCN_9000,
                 ]:
                     if self.constants.detected_os > os_data.os_data.monterey:
+                        translated = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()
+                        if translated:
+                            continue
                         self.legacy_gcn = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
