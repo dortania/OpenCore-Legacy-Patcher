@@ -38,6 +38,7 @@
   - Lilu 1.6.2 - release
   - FeatureUnlock 1.0.9 release
   - PatcherSupportPkg 0.6.1 - release
+  - BrcmPatchRAM 2.6.3 - release
 
 ## 0.4.10
 - Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer
