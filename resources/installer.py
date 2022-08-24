@@ -47,6 +47,14 @@ def list_local_macOS_installers():
                             can_add = False
                     else:
                         can_add = True
+
+                    # Check SharedSupport.dmg's data
+                    results = parse_sharedsupport_version(Path("/Applications") / Path(application)/ Path("Contents/SharedSupport/SharedSupport.dmg"))
+                    if results[0] is not None:
+                        app_sdk = results[0]
+                    if results[1] is not None:
+                        app_version = results[1]
+
                     if can_add is True:
                         application_list.update({
                             application: {
@@ -63,6 +71,46 @@ def list_local_macOS_installers():
     # Sort Applications by version
     application_list = {k: v for k, v in sorted(application_list.items(), key=lambda item: item[1]["Version"])}
     return application_list
+
+def parse_sharedsupport_version(sharedsupport_path):
+    detected_build =     None
+    detected_os =        None
+    sharedsupport_path = Path(sharedsupport_path)
+
+    if not sharedsupport_path.exists():
+        return (detected_build, detected_os)
+
+    if not sharedsupport_path.name.endswith(".dmg"):
+        return (detected_build, detected_os)
+
+
+    # Create temporary directory to extract SharedSupport.dmg to
+    with tempfile.TemporaryDirectory() as tmpdir:
+        output = subprocess.run(
+            [
+                "hdiutil", "attach", "-noverify", sharedsupport_path,
+                "-mountpoint", tmpdir,
+                "-nobrowse",
+            ],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        )
+        if output.returncode != 0:
+            return (detected_build, detected_os)
+
+        ss_info = Path("SFR/com_apple_MobileAsset_SFRSoftwareUpdate/com_apple_MobileAsset_SFRSoftwareUpdate.xml")
+
+        if Path(tmpdir / ss_info).exists():
+            plist = plistlib.load((tmpdir / ss_info).open("rb"))
+            if "Build" in plist["Assets"][0]:
+                detected_build = plist["Assets"][0]["Build"]
+            if "OSVersion" in plist["Assets"][0]:
+                detected_os = plist["Assets"][0]["OSVersion"]
+
+        # Unmount SharedSupport.dmg
+        output = subprocess.run(["hdiutil", "detach", tmpdir], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    return (detected_build, detected_os)
+
 
 def create_installer(installer_path, volume_name):
     # Creates a macOS installer
