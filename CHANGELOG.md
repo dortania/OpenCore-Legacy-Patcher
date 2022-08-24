@@ -6,6 +6,8 @@
 - Verify host's disk space before downloading macOS Installers
 - Remove duplicate OS builds in macOS downloader
   - Avoids Apple's odd bug of publishing 2 different 12.5.1 products
+- Implement deeper macOS installer parsing
+  - Provides better version detection than Apple provides in .app
 
 
 - Ventura Specific Updates:

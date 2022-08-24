@@ -1678,7 +1678,7 @@ class wx_python_gui:
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         self.header.Centre(wx.HORIZONTAL)
         # Subheader: Installers found in /Applications
-        self.subheader = wx.StaticText(self.frame, label="Installers found in Applications folder")
+        self.subheader = wx.StaticText(self.frame, label="Searching for Installers in /Applications")
         self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.subheader.SetPosition(
             wx.Point(
@@ -1688,12 +1688,46 @@ class wx_python_gui:
         )
         self.subheader.Centre(wx.HORIZONTAL)
 
+        self.available_installers = None
+
+        # Spawn thread to get list of installers
+        def get_installers():
+            self.available_installers = installer.list_local_macOS_installers()
+
+        thread_get_installers = threading.Thread(target=get_installers)
+        thread_get_installers.start()
+
+        # Progress bar
+        self.progress_bar = wx.Gauge(self.frame, range=100, size=(self.WINDOW_WIDTH_MAIN - 50, -1))
+        self.progress_bar.SetPosition(
+            wx.Point(
+                self.header.GetPosition().x,
+                self.subheader.GetPosition().y + self.subheader.GetSize().height + 10
+            )
+        )
+        self.progress_bar.Centre(wx.HORIZONTAL)
+        self.progress_bar.Pulse()
+
+        # Set window size
+        self.frame.SetSize(-1, self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 40)
+
+        while thread_get_installers.is_alive():
+            self.pulse_alternative(self.progress_bar)
+            wx.App.Get().Yield()
+
+        # Remove progress bar
+        self.progress_bar.Destroy()
+
+        self.subheader.SetLabel("Installers found in Applications folder")
+        self.subheader.Centre(wx.HORIZONTAL)
+
+        available_installers = self.available_installers
+
         i = -7
-        available_installers = installer.list_local_macOS_installers()
         if available_installers:
-            print("Installer found")
+            print("Installer(s) found:")
             for app in available_installers:
-                print(f"{available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})")
+                print(f"- {available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})")
                 self.install_selection = wx.Button(self.frame, label=f"{available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})", size=(320, 30))
                 i = i + 25
                 self.install_selection.SetPosition(
