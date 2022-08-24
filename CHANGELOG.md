@@ -30,6 +30,7 @@
     - Nvidia: Kepler
     - AMD: GCN 1 through 3
   - Raise SIP requirement to 0xA03 for root patching
+  - Add Ventura Boot Picker icons
 - Increment Binaries:
   - OpenCorePkg 0.8.3 release
   - Lilu 1.6.2 - release
