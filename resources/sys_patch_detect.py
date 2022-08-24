@@ -356,6 +356,10 @@ class detect_root_patch:
                     print("\nCannot patch! WhateverGreen.kext missing")
                     print("Please ensure WhateverGreen.kext is installed")
 
+            if self.amfi_must_disable is True:
+                if self.missing_kdk is True:
+                    print("\nCannot patch! Kernel Debug Kit missing")
+                    print(f"Please ensure the correct KDK is installed (required: {self.constants.detected_os_build})")
 
         if any(
             [
