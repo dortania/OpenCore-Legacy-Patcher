@@ -327,6 +327,24 @@ class PatchSysVolume:
         plist_data["OSBundleRequired"] = "Auxiliary"
         plistlib.dump(plist_data, plist_path.open("wb"))
 
+        # Verify whether the user needs to authenticate in System Preferences
+        # Specifically under 'private/var/db/KernelManagement/AuxKC/CurrentAuxKC/com.apple.kcgen.instructions.plist'
+        #    ["kextsToBuild"][i]:
+        #       ["bundlePathMainOS"] = /Library/Extensions/Test.kext
+        #       ["cdHash"] =           Bundle's CDHash (random on ad-hoc signed, static on dev signed)
+        #       ["teamID"] =           Team ID (blank on ad-hoc signed)
+        # To grab the CDHash of a kext, run 'codesign -dvvv <kext_path>'
+        try:
+            aux_cache_path = Path(self.mount_location_data) / Path("private/var/db/KernelManagement/AuxKC/CurrentAuxKC/com.apple.kcgen.instructions.plist")
+            if Path(aux_cache_path).exists():
+                    aux_cache_data = plistlib.load((aux_cache_path).open("rb"))
+                    for kext in aux_cache_data["kextsToBuild"]:
+                        if "bundlePathMainOS" in kext:
+                            if kext["bundlePathMainOS"] == f"/Library/Extensions/{install_file}":
+                                return updated_install_location
+        except PermissionError:
+            pass
+
         self.constants.needs_to_open_preferences = True
 
         return updated_install_location
