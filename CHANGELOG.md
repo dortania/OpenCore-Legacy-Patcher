@@ -8,6 +8,7 @@
   - Avoids Apple's odd bug of publishing 2 different 12.5.1 products
 - Implement deeper macOS installer parsing
   - Provides better version detection than Apple provides in .app
+- Ensure WhateverGreen is always installed on Mac Pro configurations
 
 
 - Ventura Specific Updates:

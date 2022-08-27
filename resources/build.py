@@ -740,6 +740,8 @@ class BuildOpenCore:
                 print("- Adding Mac Pro, Xserve DRM patches")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " shikigva=128 unfairgva=1 -wegtree"
 
+            if not self.get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
+                self.enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
 
         if not self.constants.custom_model:
             for i, device in enumerate(self.computer.gpus):
