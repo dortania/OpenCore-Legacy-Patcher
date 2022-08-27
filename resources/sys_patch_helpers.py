@@ -89,8 +89,6 @@ class sys_patch_helpers:
                 if build.startswith(str(self.constants.detected_os)):
                     kdk_array.append(build)
 
-        kdk_array = ['22A5295i', '22A5295h', '22A5286j', '22A5266r', '22A70']
-
         if match_closest is True:
             result = os_data.os_conversion.find_largest_build(kdk_array)
             print(f"- Closest KDK match: {result}")
