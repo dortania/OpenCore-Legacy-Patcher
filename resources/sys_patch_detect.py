@@ -38,6 +38,7 @@ class detect_root_patch:
         self.amfi_must_disable   = False
         self.supports_metal      = False
         self.needs_nv_web_checks = False
+        self.requires_root_kc    = False
 
         # Validation Checks
         self.sip_enabled     = False
@@ -63,6 +64,7 @@ class detect_root_patch:
                         self.nvidia_tesla = True
                         self.amfi_must_disable = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.NVIDIA.Archs.Kepler and self.constants.force_nv_web is False:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         # Kepler drivers were dropped with Beta 7
@@ -86,14 +88,17 @@ class detect_root_patch:
                         self.nvidia_web = True
                         self.amfi_must_disable = True
                         self.needs_nv_web_checks = True
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts1 = True
                         self.amfi_must_disable = True
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_2:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts2 = True
                         self.amfi_must_disable = True
+                        self.requires_root_kc = True
                 elif gpu.arch in [
                     device_probe.AMD.Archs.Legacy_GCN_7000,
                     device_probe.AMD.Archs.Legacy_GCN_8000,
@@ -105,16 +110,19 @@ class detect_root_patch:
                             continue
                         self.legacy_gcn = True
                         self.supports_metal = True
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
                     if self.constants.detected_os > non_metal_os:
                         self.iron_gpu = True
                         self.amfi_must_disable = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
                     if self.constants.detected_os > non_metal_os:
                         self.sandy_gpu = True
                         self.amfi_must_disable = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         self.ivy_gpu = True
@@ -287,6 +295,7 @@ class detect_root_patch:
             "Miscellaneous: Legacy GMUX":                  self.legacy_gmux,
             "Miscellaneous: Legacy Keyboard Backlight":    self.legacy_keyboard_backlight,
             "Settings: Requires AMFI exemption":           self.amfi_must_disable,
+            "Settings: Supports Auxiliary Cache":          not self.requires_root_kc,
             "Validation: Patching Possible":               self.verify_patch_allowed(),
             f"Validation: SIP is enabled (Required: {self.check_sip()[2]} or higher)":  self.sip_enabled,
             f"Validation: Currently Booted SIP: ({hex(utilities.csr_dump())})":         self.sip_enabled,
@@ -309,7 +318,8 @@ class detect_root_patch:
         sip_value = sip_dict[1]
 
         self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
-        self.missing_kdk = not self.check_kdk()
+        if self.requires_root_kc is True:
+            self.missing_kdk = not self.check_kdk()
 
         if self.nvidia_web is True:
             self.missing_nv_web_nvram   = not self.check_nv_web_nvram()
@@ -360,10 +370,9 @@ class detect_root_patch:
                     print("\nCannot patch! WhateverGreen.kext missing")
                     print("Please ensure WhateverGreen.kext is installed")
 
-            if self.amfi_must_disable is True:
-                if self.missing_kdk is True:
-                    print("\nCannot patch! Kernel Debug Kit missing")
-                    print(f"Please ensure the correct KDK is installed (required: {self.constants.detected_os_build})")
+            if self.missing_kdk is True:
+                print("\nCannot patch! Kernel Debug Kit missing")
+                print(f"Please ensure the correct KDK is installed (required: {self.constants.detected_os_build})")
 
         if any(
             [
@@ -399,17 +408,17 @@ class detect_root_patch:
             required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
-            required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
+            required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
         if hardware_details["Graphics: Intel Haswell"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
-            required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
+            required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
         if hardware_details["Graphics: Intel Broadwell"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
-            required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
+            required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Intel Broadwell": all_hardware_patchset["Graphics"]["Intel Broadwell"]})
         if hardware_details["Graphics: Intel Skylake"] is True:
@@ -427,7 +436,7 @@ class detect_root_patch:
             required_patches.update({"Non-Metal Enforcement": all_hardware_patchset["Graphics"]["Non-Metal Enforcement"]})
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
-            required_patches.update({"Metal 1 Common": all_hardware_patchset["Graphics"]["Metal 1 Common"]})
+            required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
             for gpu in self.constants.computer.gpus:
