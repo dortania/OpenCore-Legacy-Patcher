@@ -196,7 +196,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
-            "Metal 1 Common": {
+            "Metal 3802 Common": {
                 "Display Name": "",
                 "OS Support": {
                     "Minimum OS Support": {
