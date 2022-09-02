@@ -700,7 +700,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
         },
         "Audio": {
             "Legacy Realtek": {
-                "Display Name": "Audio: Legacy Realtek Audio",
+                "Display Name": "Audio: Legacy Realtek",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.sierra,
@@ -730,7 +730,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             },
             # For Mac Pros with non-UGA/GOP GPUs
             "Legacy Non-GOP": {
-                "Display Name": "Audio: Legacy non-GOP Audio",
+                "Display Name": "Audio: Legacy non-GOP",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.mojave,
@@ -749,8 +749,8 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             },
         },
         "Networking": {
-            "Legacy WiFi": {
-                "Display Name": "Networking: Legacy WiFi",
+            "Legacy Wireless": {
+                "Display Name": "Networking: Legacy Wireless",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.monterey,
@@ -778,8 +778,8 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
             },
         },
         "Brightness": {
-            "Legacy Brightness": {
-                "Display Name": "Brightness: Legacy Brightness",
+            "Legacy Backlight Control": {
+                "Display Name": "Brightness: Legacy Backlight Control",
                 "OS Support": {
                     "Minimum OS Support": {
                         "OS Major": os_data.os_data.high_sierra,
