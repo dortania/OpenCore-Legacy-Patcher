@@ -482,6 +482,7 @@ class Computer:
     secure_boot_policy: Optional[int] = None
     oclp_sys_version: Optional[str] = None
     oclp_sys_date: Optional[str] = None
+    oclp_sys_url: Optional[str] = None
     firmware_vendor: Optional[str] = None
 
     @staticmethod
@@ -756,8 +757,9 @@ class Computer:
         if path.exists():
             sys_plist = plistlib.load(path.open("rb"))
             if sys_plist:
-                try:
+                if "OpenCore Legacy Patcher" in sys_plist:
                     self.oclp_sys_version = sys_plist["OpenCore Legacy Patcher"]
+                if "Time Patched" in sys_plist:
                     self.oclp_sys_date = sys_plist["Time Patched"]
-                except KeyError:
-                    pass
+                if "Commit URL" in sys_plist:
+                    self.oclp_sys_url = sys_plist["Commit URL"]
