@@ -887,6 +887,44 @@ class wx_python_gui:
                 popup_message = wx.MessageDialog(self.frame,f"OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the {self.constants.custom_model}, reboot, hold the Option key and select OpenCore/Boot EFI's option.", "Success", wx.OK)
                 popup_message.ShowModal()
 
+    def check_if_new_patches_needed(self, patches):
+        # Check if there's any new patches for the user to install
+        # Newer users will assume the root patch menu will present missing patches.
+        # Thus we'll need to see if the exact same OCLP build was used already
+        if self.constants.commit_info[0] in ["Running from source", "Built from source"]:
+            return True
+
+        if self.constants.computer.oclp_sys_url != self.constants.commit_info[2]:
+            # If commits are different, assume patches are as well
+            return True
+
+        oclp_plist = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
+        if not Path(oclp_plist).exists():
+            # If it doesn't exist, no patches were ever installed
+            # ie. all patches applicable
+            return True
+
+        oclp_plist_data = plistlib.load(open(oclp_plist, "rb"))
+        for patch in patches:
+            if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
+                # Patches should share the same name as the plist key
+                # See sys_patch_dict.py for more info
+                patch_installed = False
+                for key in oclp_plist_data:
+                    if "Display Name" not in oclp_plist_data[key]:
+                        continue
+                    if oclp_plist_data[key]["Display Name"] == patch:
+                        patch_installed = True
+                        break
+
+                if patch_installed is False:
+                    print(f"- Patch {patch} not installed")
+                    return True
+
+        print("- No new patches detected for system")
+        return False
+
+
     def root_patch_menu(self, event=None):
         # Define Menu
         # Header: Post-Install Menu
@@ -920,21 +958,38 @@ class wx_python_gui:
             print("- No applicable patches available")
             patches = []
 
+        # Check if OCLP has already applied the same patches
+        no_new_patches = False
+        if patches:
+            no_new_patches = not self.check_if_new_patches_needed(patches)
+
         i = 0
         if patches:
-            for patch in patches:
-                # Add Label for each patch
-                if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
-                    print(f"- Adding patch: {patch} - {patches[patch]}")
-                    self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch}")
-                    self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
-                    self.patch_label.SetPosition(
-                        wx.Point(
-                            self.subheader.GetPosition().x,
-                            self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
+            if no_new_patches is False:
+                for patch in patches:
+                    # Add Label for each patch
+                    if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
+                        print(f"- Adding patch: {patch} - {patches[patch]}")
+                        self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch}")
+                        self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+                        self.patch_label.SetPosition(
+                            wx.Point(
+                                self.subheader.GetPosition().x,
+                                self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
+                            )
                         )
+                        i = i + self.patch_label.GetSize().height + 3
+            else:
+                self.patch_label = wx.StaticText(self.frame_modal, label=f"All applicable patches already installed")
+                self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+                self.patch_label.SetPosition(
+                    wx.Point(
+                        self.subheader.GetPosition().x,
+                        self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
                     )
-                    i = i + self.patch_label.GetSize().height + 3
+                )
+                i = i + self.patch_label.GetSize().height + 3
+                self.patch_label.Centre(wx.HORIZONTAL)
             if patches["Validation: Patching Possible"] is False:
                 self.patch_label = wx.StaticText(self.frame_modal, label="Cannot Patch due to following reasons:")
                 self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
@@ -1002,6 +1057,8 @@ class wx_python_gui:
 
         # Start Root Patching
         self.start_root_patching = wx.Button(self.frame_modal, label="Start Root Patching", size=(170, -1))
+        if no_new_patches is True:
+            self.start_root_patching.Label = "Reinstall Root Patches"
         self.start_root_patching.SetPosition(
             wx.Point(
                 self.patch_label.GetPosition().x,
