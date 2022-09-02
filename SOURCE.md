@@ -26,7 +26,7 @@ cd ~/Developer
 git clone https://github.com/dortania/OpenCore-Legacy-Patcher
 # Move into Project directory
 cd ./OpenCore-Legacy-Patcher
-# Install Python dependancies used by the project
+# Install Python dependencies used by the project
 pip3 install -r requirements.txt
 ```
 
