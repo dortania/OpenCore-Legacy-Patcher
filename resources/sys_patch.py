@@ -149,6 +149,7 @@ class PatchSysVolume:
             else:
                 self.clean_skylight_plugins()
                 self.delete_nonmetal_enforcement()
+                self.clean_auxiliary_kc()
                 self.constants.root_patcher_succeeded = True
                 print("- Unpatching complete")
                 print("\nPlease reboot the machine for patches to take effect")
@@ -281,6 +282,32 @@ class PatchSysVolume:
                 print(f"- Removing non-Metal Enforcement Preference: {arg}")
                 utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
 
+    def clean_auxiliary_kc(self):
+        # When reverting root volume patches, the AuxKC will still retain the UUID
+        # it was built against. Thus when Boot/SysKC are reverted, Aux will break
+        # To resolve this, delete all installed kexts in /L*/E* and rebuild the AuxKC
+        # We can verify our binaries based off the OpenCore-Legacy-Patcher.plist file
+        if self.constants.detected_os < os_data.os_data.big_sur:
+            return
+
+        oclp_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
+        if not Path(oclp_path).exists():
+            return
+
+        print("- Cleaning Auxiliary Kernel Collection")
+        oclp_plist_data = plistlib.load(Path(oclp_path).open("rb"))
+
+        for key in oclp_plist_data:
+            if "Install" not in oclp_plist_data[key]:
+                continue
+            for location in oclp_plist_data[key]["Install"]:
+                if not location.endswith("Extensions"):
+                    continue
+                for file in oclp_plist_data[key]["Install"][location]:
+                    if not file.endswith(".kext"):
+                        continue
+                    self.remove_file("/Library/Extensions", file)
+
     def write_patchset(self, patchset):
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
         file_name = "OpenCore-Legacy-Patcher.plist"
@@ -408,6 +435,8 @@ class PatchSysVolume:
         self.clean_skylight_plugins()
         # Make sure non-Metal Enforcement preferences are not present
         self.delete_nonmetal_enforcement()
+        # Make sure we clean old kexts in /L*/E* that are not in the patchset
+        self.clean_auxiliary_kc()
 
         # Make sure SNB kexts are compatible with the host
         if "Intel Sandy Bridge" in required_patches:
