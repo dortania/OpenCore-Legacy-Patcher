@@ -339,7 +339,7 @@ class PatchSysVolume:
 
         updated_install_location = str(self.mount_location_data) + "/Library/Extensions"
 
-        print(f"- Adding AuxKC support to {install_file}")
+        print(f"  - Adding AuxKC support to {install_file}")
         plist_path = Path(Path(source_folder_path) / Path(install_file) / Path("Contents/Info.plist"))
         plist_data = plistlib.load((plist_path).open("rb"))
 
@@ -373,10 +373,12 @@ class PatchSysVolume:
             for kext in aux_cache_data["kextsToBuild"]:
                 if "bundlePathMainOS" in aux_cache_data["kextsToBuild"][kext]:
                     if aux_cache_data["kextsToBuild"][kext]["bundlePathMainOS"] == f"/Library/Extensions/{kext_name}":
-                        self.constants.needs_to_open_preferences = True # Notify in GUI to open System Preferences
                         return
         except PermissionError:
             pass
+
+        print(f"  - {kext_name} requires authentication in System Preferences")
+        self.constants.needs_to_open_preferences = True # Notify in GUI to open System Preferences
 
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")

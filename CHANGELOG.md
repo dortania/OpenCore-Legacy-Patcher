@@ -34,6 +34,8 @@
     - AMD: GCN 1 through 3
   - Raise SIP requirement to 0xA03 for root patching
   - Add Ventura Boot Picker icons
+  - Implement KDK-less root patching for Metal Intel and Nvidia GPUs
+    - AMD GCN will still require a KDK installed for patching
 - Increment Binaries:
   - OpenCorePkg 0.8.3 release
   - Lilu 1.6.2 - release
