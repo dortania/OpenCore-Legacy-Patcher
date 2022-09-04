@@ -206,7 +206,6 @@ class PatchSysVolume:
                 print("  (You will get a prompt by System Preferences, ignore for now)")
                 args.append("--no-authentication")
                 args.append("--no-authorization")
-                self.constants.needs_to_open_preferences = True # Notify in GUI to open System Preferences
         else:
             args = ["kextcache", "-i", f"{self.mount_location}/"]
 
@@ -354,6 +353,11 @@ class PatchSysVolume:
         plist_data["OSBundleRequired"] = "Auxiliary"
         plistlib.dump(plist_data, plist_path.open("wb"))
 
+        self.check_kexts_needs_authentication(install_file)
+
+        return updated_install_location
+
+    def check_kexts_needs_authentication(self, kext_name):
         # Verify whether the user needs to authenticate in System Preferences
         # Specifically under 'private/var/db/KernelManagement/AuxKC/CurrentAuxKC/com.apple.kcgen.instructions.plist'
         #    ["kextsToBuild"][i]:
@@ -363,18 +367,16 @@ class PatchSysVolume:
         # To grab the CDHash of a kext, run 'codesign -dvvv <kext_path>'
         try:
             aux_cache_path = Path(self.mount_location_data) / Path("/private/var/db/KernelExtensionManagement/AuxKC/CurrentAuxKC/com.apple.kcgen.instructions.plist")
-            if aux_cache_path.exists():
-                aux_cache_data = plistlib.load((aux_cache_path).open("rb"))
-                for kext in aux_cache_data["kextsToBuild"]:
-                    if "bundlePathMainOS" in aux_cache_data["kextsToBuild"][kext]:
-                        if aux_cache_data["kextsToBuild"][kext]["bundlePathMainOS"] == f"/Library/Extensions/{install_file}":
-                            return updated_install_location
+            if not aux_cache_path.exists():
+                return
+            aux_cache_data = plistlib.load((aux_cache_path).open("rb"))
+            for kext in aux_cache_data["kextsToBuild"]:
+                if "bundlePathMainOS" in aux_cache_data["kextsToBuild"][kext]:
+                    if aux_cache_data["kextsToBuild"][kext]["bundlePathMainOS"] == f"/Library/Extensions/{kext_name}":
+                        self.constants.needs_to_open_preferences = True # Notify in GUI to open System Preferences
+                        return
         except PermissionError:
             pass
-
-        self.constants.needs_to_open_preferences = True
-
-        return updated_install_location
 
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")
@@ -412,6 +414,7 @@ class PatchSysVolume:
                             else:
                                 if install_patch_directory == "/Library/Extensions":
                                     self.needs_kmutil_exemptions = True
+                                    self.check_kexts_needs_authentication(install_file)
                                 destination_folder_path = str(self.mount_location_data) + install_patch_directory
 
                             updated_destination_folder_path = self.add_auxkc_support(install_file, source_folder_path, install_patch_directory, destination_folder_path)
