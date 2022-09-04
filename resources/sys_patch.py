@@ -403,9 +403,9 @@ class PatchSysVolume:
 
             for method_install in ["Install", "Install Non-Root"]:
                 if method_install in required_patches[patch]:
-                    for install_patch_directory in required_patches[patch][method_install]:
+                    for install_patch_directory in list(required_patches[patch][method_install]):
                         print(f"- Handling Installs in: {install_patch_directory}")
-                        for install_file in required_patches[patch][method_install][install_patch_directory]:
+                        for install_file in list(required_patches[patch][method_install][install_patch_directory]):
                             source_folder_path = source_files_path + "/" + required_patches[patch][method_install][install_patch_directory][install_file] + install_patch_directory
                             if method_install == "Install":
                                 destination_folder_path = str(self.mount_location) + install_patch_directory
@@ -413,7 +413,18 @@ class PatchSysVolume:
                                 if install_patch_directory == "/Library/Extensions":
                                     self.needs_kmutil_exemptions = True
                                 destination_folder_path = str(self.mount_location_data) + install_patch_directory
-                            destination_folder_path = self.add_auxkc_support(install_file, source_folder_path, install_patch_directory, destination_folder_path)
+
+                            updated_destination_folder_path = self.add_auxkc_support(install_file, source_folder_path, install_patch_directory, destination_folder_path)
+
+                            if destination_folder_path != updated_destination_folder_path:
+                                # Update required_patches to reflect the new destination folder path
+                                if updated_destination_folder_path not in required_patches[patch][method_install]:
+                                    required_patches[patch][method_install].update({updated_destination_folder_path: {}})
+                                required_patches[patch][method_install][updated_destination_folder_path].update({install_file: required_patches[patch][method_install][install_patch_directory][install_file]})
+                                required_patches[patch][method_install][install_patch_directory].pop(install_file)
+
+                                destination_folder_path = updated_destination_folder_path
+
                             self.install_new_file(source_folder_path, destination_folder_path, install_file)
 
             if "Processes" in required_patches[patch]:
