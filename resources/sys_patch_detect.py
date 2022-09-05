@@ -418,7 +418,6 @@ class detect_root_patch:
             required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
         if hardware_details["Graphics: Intel Broadwell"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
-            required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Intel Broadwell": all_hardware_patchset["Graphics"]["Intel Broadwell"]})
         if hardware_details["Graphics: Intel Skylake"] is True:
