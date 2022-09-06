@@ -76,6 +76,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "GeForce.kext",
                         "IOAcceleratorFamily2.kext",
                         "IOGPUFamily.kext",
+                        "AppleAfterburner.kext",
                     ],
                 },
                 "Install Non-Root": {
