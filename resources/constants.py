@@ -44,7 +44,7 @@ class Constants:
         self.cpufriend_version = "1.2.5"  #          CPUFriend
         self.bluetool_version = "2.6.3"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
-        self.autopkg_version = "1.0.0"  #            AutoPkgInstaller
+        self.autopkg_version = "1.0.1"  #            AutoPkgInstaller
 
         ## Apple
         ## https://www.apple.com
@@ -202,6 +202,7 @@ class Constants:
         self.legacy_accel_support = [
             os_data.os_data.big_sur,
             os_data.os_data.monterey,
+            os_data.os_data.ventura,
         ]
 
     # Payload Location
