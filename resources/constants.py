@@ -202,7 +202,6 @@ class Constants:
         self.legacy_accel_support = [
             os_data.os_data.big_sur,
             os_data.os_data.monterey,
-            os_data.os_data.ventura,
         ]
 
     # Payload Location
