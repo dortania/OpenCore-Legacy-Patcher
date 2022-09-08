@@ -2415,7 +2415,7 @@ class wx_python_gui:
         self.gpu_dropdown.SetSelection(0)
         self.gpu_dropdown.SetPosition(wx.Point(
             self.label_model.GetPosition().x,
-            self.label_model.GetPosition().y + self.label_model.GetSize().height / 1.5))
+            int(self.label_model.GetPosition().y + self.label_model.GetSize().height / 1.5)))
         self.gpu_dropdown.Bind(wx.EVT_CHOICE, self.gpu_selection_click)
         self.gpu_dropdown.Centre(wx.HORIZONTAL)
         self.gpu_dropdown.SetToolTip(wx.ToolTip("Configures MXM GPU Vendor logic on pre-built models\nIf you are not using MXM iMacs, please leave this setting as is."))
