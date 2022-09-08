@@ -191,12 +191,11 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         **({ "Metal.framework":                   "12.5" } if os_major >= os_data.os_data.ventura else {}),
                         **({ "MetalPerformanceShaders.framework": "12.5" } if os_major >= os_data.os_data.ventura else {}),
                     },
-                    "/System/Library/Sandbox/Profiles": {
-                        **({ "com.apple.mtlcompilerservice.sb": "12.5" } if os_major >= os_data.os_data.ventura else {}),
-                    }
                 },
             },
 
+            # Intel Ivy Bridge, Haswell and Nvidia Kepler are Metal 3802-based GPUs
+            # Due to this, we need to re-add 3802 compiler support to the Metal stack
             "Metal 3802 Common": {
                 "Display Name": "",
                 "OS Support": {
@@ -210,10 +209,16 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     },
                 },
                 "Install": {
-                    "/System/Library/PrivateFrameworks": {
-                        "MTLCompiler.framework": "12.5",
-                        "GPUCompiler.framework": "12.5",
+                    "/System/Library/Frameworks": {
+                        **({ "Metal.framework": "12.5-3802" } if os_major >= os_data.os_data.ventura else {}),
                     },
+                    "/System/Library/PrivateFrameworks": {
+                        "MTLCompiler.framework": "12.5-3802",
+                        "GPUCompiler.framework": "12.5-3802",
+                    },
+                    "/System/Library/Sandbox/Profiles": {
+                        **({ "com.apple.mtlcompilerservice.sb": "12.5-3802" } if os_major >= os_data.os_data.ventura else {}),
+                    }
                 },
             },
 
