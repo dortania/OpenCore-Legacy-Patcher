@@ -407,21 +407,21 @@ class detect_root_patch:
             required_patches.update({"High Sierra GVA": all_hardware_patchset["Graphics"]["High Sierra GVA"]})
             required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
-            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Miscellaneous Metal Common": all_hardware_patchset["Graphics"]["Miscellaneous Metal Common"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
         if hardware_details["Graphics: Intel Haswell"] is True:
-            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Miscellaneous Metal Common": all_hardware_patchset["Graphics"]["Miscellaneous Metal Common"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
         if hardware_details["Graphics: Intel Broadwell"] is True:
-            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Miscellaneous Metal Common": all_hardware_patchset["Graphics"]["Miscellaneous Metal Common"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Intel Broadwell": all_hardware_patchset["Graphics"]["Intel Broadwell"]})
         if hardware_details["Graphics: Intel Skylake"] is True:
-            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Miscellaneous Metal Common": all_hardware_patchset["Graphics"]["Miscellaneous Metal Common"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Intel Skylake": all_hardware_patchset["Graphics"]["Intel Skylake"]})
         if hardware_details["Graphics: Nvidia Tesla"] is True:
@@ -436,6 +436,7 @@ class detect_root_patch:
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Miscellaneous Metal Common": all_hardware_patchset["Graphics"]["Miscellaneous Metal Common"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
             for gpu in self.constants.computer.gpus:
@@ -460,6 +461,7 @@ class detect_root_patch:
                 del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
         if hardware_details["Graphics: AMD Legacy GCN"] is True:
             required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Miscellaneous Metal Common": all_hardware_patchset["Graphics"]["Miscellaneous Metal Common"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"AMD Legacy GCN": all_hardware_patchset["Graphics"]["AMD Legacy GCN"]})
         if hardware_details["Brightness: Legacy Backlight Control"] is True:

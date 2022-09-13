@@ -169,7 +169,31 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
+            # AMD GCN and Nvidia Kepler require Metal Downgrade in Ventura
+            # The patches are required due to struct issues in the Metal stack
+            # - AMD GCN will break on BronzeMtlDevice
+            # - See Nvidia Kepler patchset for more info
             "Metal Common": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Frameworks": {
+                        "Metal.framework":                   "12.5",
+                        "MetalPerformanceShaders.framework": "12.5",
+                    },
+                },
+            },
+
+            "Miscellaneous Metal Common": {
                 "Display Name": "",
                 "OS Support": {
                     "Minimum OS Support": {
@@ -186,10 +210,6 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OpenCL.framework": "11.6",
                         # Ventura breaks with this patch
                         **({ "WebKit.framework":  "11.6" } if os_major == os_data.os_data.monterey else {}),
-
-                        # Ventura Metal patches
-                        **({ "Metal.framework":                   "12.5" } if os_major >= os_data.os_data.ventura else {}),
-                        **({ "MetalPerformanceShaders.framework": "12.5" } if os_major >= os_data.os_data.ventura else {}),
                     },
                 },
             },
