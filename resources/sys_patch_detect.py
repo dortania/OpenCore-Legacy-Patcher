@@ -225,11 +225,17 @@ class detect_root_patch:
 
     def check_sip(self):
         if self.constants.detected_os > os_data.os_data.catalina:
-            if self.nvidia_web is True or self.constants.detected_os >= os_data.os_data.ventura:
+            if self.nvidia_web is True:
                 sip = sip_data.system_integrity_protection.root_patch_sip_big_sur_3rd_part_kexts
                 sip_hex = "0xA03"
                 sip_value = (
                     f"For Hackintoshes, please set csr-active-config to '030A0000' ({sip_hex})\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
+                )
+            elif self.constants.detected_os >= os_data.os_data.ventura:
+                sip = sip_data.system_integrity_protection.root_patch_sip_ventura
+                sip_hex = "0x803"
+                sip_value = (
+                    f"For Hackintoshes, please set csr-active-config to '03080000' ({sip_hex})\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
                 )
             else:
                 sip = sip_data.system_integrity_protection.root_patch_sip_big_sur

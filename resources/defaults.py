@@ -125,8 +125,6 @@ class generate_defaults:
         if "-v" in (utilities.get_nvram("boot-args") or ""):
             settings.verbose_debug = True
 
-        if utilities.amfi_status() is False:
-            settings.amfi_status = False
 
         if model in ["MacBookPro8,2", "MacBookPro8,3"]:
             # Users disabling TS2 most likely have a faulty dGPU

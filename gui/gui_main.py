@@ -3108,7 +3108,7 @@ class wx_python_gui:
         elif self.constants.sip_status is True:
             self.sip_value = 0x00
         else:
-            self.sip_value = 0xA03
+            self.sip_value = 0x803
 
         self.sip_label_2 = wx.StaticText(self.frame_modal, label=f"Currently configured SIP: {hex(self.sip_value)}")
         self.sip_label_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
@@ -3124,21 +3124,21 @@ class wx_python_gui:
         )
         self.sip_label_2_2.Center(wx.HORIZONTAL)
 
-        self.sip_label_3 = wx.StaticText(self.frame_modal, label="For older Macs requiring root patching, we set SIP to\n be partially disabled (0xA03) to allow root patching.")
+        self.sip_label_3 = wx.StaticText(self.frame_modal, label="For older Macs requiring root patching, we set SIP to\n be partially disabled (0x803) to allow root patching.")
         self.sip_label_3.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_3.SetPosition(
             wx.Point(self.sip_label_2_2.GetPosition().x, self.sip_label_2_2.GetPosition().y + self.sip_label_2_2.GetSize().height + 10)
         )
         self.sip_label_3.Center(wx.HORIZONTAL)
 
-        self.sip_label_4 = wx.StaticText(self.frame_modal, label="This value (0xA03) corresponds to the following bits in csr.h:")
+        self.sip_label_4 = wx.StaticText(self.frame_modal, label="This value (0x803) corresponds to the following bits in csr.h:")
         self.sip_label_4.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_4.SetPosition(
             wx.Point(self.sip_label_3.GetPosition().x, self.sip_label_3.GetPosition().y + self.sip_label_3.GetSize().height + 5)
         )
         self.sip_label_4.Center(wx.HORIZONTAL)
 
-        self.sip_label_5 = wx.StaticText(self.frame_modal, label="      0x1  - CSR_ALLOW_UNTRUSTED_KEXTS\n      0x2  - CSR_ALLOW_UNRESTRICTED_FS\n   0x200 - CSR_ALLOW_UNAPPROVED_KEXTS\n   0x800 - CSR_ALLOW_UNAUTHENTICATED_ROOT")
+        self.sip_label_5 = wx.StaticText(self.frame_modal, label="      0x1  - CSR_ALLOW_UNTRUSTED_KEXTS\n      0x2  - CSR_ALLOW_UNRESTRICTED_FS\n   0x800 - CSR_ALLOW_UNAUTHENTICATED_ROOT")
         self.sip_label_5.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_5.SetPosition(
             wx.Point(self.sip_label_4.GetPosition().x, self.sip_label_4.GetPosition().y + self.sip_label_4.GetSize().height + 7)
@@ -3192,7 +3192,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         if hex(self.sip_value) == "0x0":
             self.constants.custom_sip_value = None
             self.constants.sip_status = True
-        elif hex(self.sip_value) == "0xA03":
+        elif hex(self.sip_value) == "0x803":
             self.constants.custom_sip_value = None
             self.constants.sip_status = False
         else:

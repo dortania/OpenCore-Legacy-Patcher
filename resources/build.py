@@ -995,7 +995,7 @@ class BuildOpenCore:
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = utilities.string_to_hex(self.constants.custom_sip_value.lstrip("0x"))
             elif self.constants.sip_status is False:
                 print("- Set SIP to allow Root Volume patching")
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("030A0000")
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("03080000")
 
         # if self.constants.amfi_status is False:
         #     print("- Disabling AMFI")
@@ -1004,8 +1004,9 @@ class BuildOpenCore:
             print("- Disabling Library Validation")
             # In Ventura, LV patch broke. For now, add AMFI arg
             # Before merging into mainline, this needs to be resolved
-            # self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Library Validation Enforcement")["Enabled"] = True
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi_get_out_of_my_way=0x1"
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Library Validation Enforcement")["Enabled"] = True
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable _csr_check() in _vnode_check_signature")["Enabled"] = True
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi=0x2"
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_amfi"
             # CSLVFixup simply patches out __RESTRICT and __restrict out of the Music.app Binary
             # Ref: https://pewpewthespells.com/blog/blocking_code_injection_on_ios_and_os_x.html
