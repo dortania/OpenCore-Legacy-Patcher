@@ -168,20 +168,32 @@ class PatchSysVolume:
                     input("\nPress [ENTER] to continue")
 
     def rebuild_kernel_collection(self):
-        if self.skip_root_kmutil_requirement is True:
-            return True
-
         print("- Rebuilding Kernel Cache (This may take some time)")
         if self.constants.detected_os > os_data.os_data.catalina:
-            args = [
-                "kmutil",
-                "install",
-                "--volume-root", self.mount_location,
+            # Base Arguments
+            args = ["kmutil", "install"]
+
+            if self.skip_root_kmutil_requirement is True:
+                # Only rebuild the Auxiliary Kernel Collection
+                args.append("--new")
+                args.append("aux")
+
+                args.append("--boot-path")
+                args.append(f"{self.mount_location}/System/Library/KernelCollections/BootKernelExtensions.kc")
+
+                args.append("--system-path")
+                args.append(f"{self.mount_location}/System/Library/KernelCollections/SystemKernelExtensions.kc")
+            else:
+                # Rebuild Boot, System and Auxiliary Kernel Collections
+                args.append("--volume-root")
+                args.append(self.mount_location)
+
                 # Build Boot, Sys and Aux KC
-                "--update-all",
+                args.append("--update-all")
+
                 # If multiple kernels found, only build release KCs
-                "--variant-suffix", "release",
-            ]
+                args.append("--variant-suffix")
+                args.append("release")
 
             if self.constants.detected_os >= os_data.os_data.ventura:
                 # With Ventura, we're required to provide a KDK in some form
@@ -227,6 +239,22 @@ class PatchSysVolume:
             if self.constants.gui_mode is False:
                 input("Press [ENTER] to continue")
             return False
+
+        if self.skip_root_kmutil_requirement is True:
+            # Force rebuild the Auxiliary KC
+            result = utilities.elevated(["killall", "syspolicyd", "kernelmanagerd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                print("- Unable to remove kernel extension policy files")
+                print(f"\nReason for Patch Failure ({result.returncode}):")
+                print(result.stdout.decode())
+                print("")
+                print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
+                if self.constants.gui_mode is False:
+                    input("Press [ENTER] to continue")
+                return False
+
+            for file in ["KextPolicy", "KextPolicy-shm", "KextPolicy-wal"]:
+                self.remove_file("/private/var/db/SystemPolicyConfiguration/", file)
 
         print("- Successfully built new kernel cache")
         return True
