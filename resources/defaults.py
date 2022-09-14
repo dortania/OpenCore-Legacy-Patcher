@@ -34,7 +34,10 @@ class generate_defaults:
                 except KeyError:
                     pass
             if utilities.check_metal_support(device_probe, settings.computer) is False:
-                settings.disable_cs_lv = True
+                for gpu in settings.computer.gpus:
+                    if isinstance(gpu, device_probe.AMD) or isinstance(gpu, device_probe.NVIDIA):
+                        settings.disable_cs_lv = True
+                        break
                 settings.secure_status = False
                 settings.sip_status = False
                 settings.allow_fv_root = True
@@ -185,4 +188,11 @@ class generate_defaults:
             settings.force_nv_web = True
 
         if model in model_array.ModernGPU:
-            settings.disable_cs_lv = True
+            for gpu in smbios_data.smbios_dictionary[model]["Stock GPUs"]:
+                if gpu in [
+                    device_probe.NVIDIA.Archs.Kepler,
+                    device_probe.AMD.Archs.Legacy_GCN_7000,
+                    device_probe.AMD.Archs.Legacy_GCN_8000,
+                    device_probe.AMD.Archs.Legacy_GCN_9000,
+                ]:
+                    settings.disable_cs_lv = True

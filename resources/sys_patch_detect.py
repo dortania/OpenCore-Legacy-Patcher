@@ -71,13 +71,17 @@ class detect_root_patch:
                         # 12.0 Beta 5: 21.0.0 - 21A5304g
                         # 12.0 Beta 6: 21.1.0 - 21A5506j
                         # 12.0 Beta 7: 21.1.0 - 21A5522h
-                        if self.constants.detected_os >= os_data.os_data.ventura:
+                        if (
+                            self.constants.detected_os >= os_data.os_data.ventura or
+                            (
+                                "21A5506j" not in self.constants.detected_os_build and
+                                self.constants.detected_os == os_data.os_data.monterey and
+                                self.constants.detected_os_minor > 0
+                            )
+                        ):
                             self.kepler_gpu = True
                             self.supports_metal = True
-                        elif self.constants.detected_os == os_data.os_data.monterey and self.constants.detected_os_minor > 0:
-                            if "21A5506j" not in self.constants.detected_os_build:
-                                self.kepler_gpu = True
-                                self.supports_metal = True
+                            self.amfi_must_disable = True
                 elif gpu.arch in [
                     device_probe.NVIDIA.Archs.Fermi,
                     device_probe.NVIDIA.Archs.Kepler,
@@ -111,6 +115,7 @@ class detect_root_patch:
                         self.legacy_gcn = True
                         self.supports_metal = True
                         self.requires_root_kc = True
+                        self.amfi_must_disable = True
                 elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
                     if self.constants.detected_os > non_metal_os:
                         self.iron_gpu = True
@@ -150,9 +155,6 @@ class detect_root_patch:
             self.sandy_gpu = False
             self.legacy_keyboard_backlight = False
 
-            if self.constants.detected_os >= os_data.os_data.ventura:
-                # All root patches in Ventura require AMFI disabled
-                self.amfi_must_disable = True
 
     def check_dgpu_status(self):
         dgpu = self.constants.computer.dgpu
