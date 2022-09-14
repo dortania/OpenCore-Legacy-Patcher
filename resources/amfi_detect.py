@@ -93,6 +93,7 @@ class amfi_configuration_detection:
 
     def check_config(self, level):
         # Levels:
+        # - 0: No checks
         # - 1. Library Validation (Monterey and Older)
         # - 2. Library Validation and Signature Checks (Ventura and Newer)
         # - 3. Disable all AMFI checks
