@@ -250,21 +250,12 @@ def patching_status(os_sip, os):
     # Detection for Root Patching
     sip_enabled = True  #  System Integrity Protection
     sbm_enabled = True  #  Secure Boot Status (SecureBootModel)
-    amfi_enabled = True  # Apple Mobile File Integrity
     fv_enabled = True  #   FileVault
     dosdude_patched = True
 
     gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
     gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
-    if os > os_data.os_data.catalina:
-        amfi_level = 1
-        if os >= os_data.os_data.ventura:
-            amfi_level = 2
-        amfi_enabled = not amfi_detect.amfi_configuration_detection().check_config(amfi_level)
-    else:
-        # Catalina and older supports individually disabling Library Validation
-        amfi_enabled = False
 
     sbm_enabled = check_secure_boot_level()
 
@@ -284,7 +275,7 @@ def patching_status(os_sip, os):
     if not (Path(gen6_kext).exists() and Path(gen7_kext).exists()):
         dosdude_patched = False
 
-    return sip_enabled, sbm_enabled, amfi_enabled, fv_enabled, dosdude_patched
+    return sip_enabled, sbm_enabled, fv_enabled, dosdude_patched
 
 
 clear = True

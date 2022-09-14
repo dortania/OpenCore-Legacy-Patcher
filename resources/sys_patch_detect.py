@@ -4,7 +4,7 @@
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 import subprocess
-from resources import constants, device_probe, utilities, sys_patch_helpers
+from resources import constants, device_probe, utilities, sys_patch_helpers, amfi_detect
 from data import model_array, os_data, sip_data, sys_patch_dict
 
 class detect_root_patch:
@@ -36,6 +36,7 @@ class detect_root_patch:
 
         # Patch Requirements
         self.amfi_must_disable   = False
+        self.amfi_shim_bins      = False
         self.supports_metal      = False
         self.needs_nv_web_checks = False
         self.requires_root_kc    = False
@@ -63,6 +64,7 @@ class detect_root_patch:
                     if self.constants.detected_os > non_metal_os:
                         self.nvidia_tesla = True
                         self.amfi_must_disable = True
+                        self.amfi_shim_bins = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.NVIDIA.Archs.Kepler and self.constants.force_nv_web is False:
@@ -81,7 +83,9 @@ class detect_root_patch:
                         ):
                             self.kepler_gpu = True
                             self.supports_metal = True
-                            self.amfi_must_disable = True
+                            if self.constants.detected_os > os_data.os_data.ventura:
+                                self.amfi_must_disable = True
+                                self.amfi_shim_bins = True
                 elif gpu.arch in [
                     device_probe.NVIDIA.Archs.Fermi,
                     device_probe.NVIDIA.Archs.Kepler,
@@ -91,17 +95,20 @@ class detect_root_patch:
                     if self.constants.detected_os > os_data.os_data.mojave:
                         self.nvidia_web = True
                         self.amfi_must_disable = True
+                        self.amfi_shim_bins = True
                         self.needs_nv_web_checks = True
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts1 = True
                         self.amfi_must_disable = True
+                        self.amfi_shim_bins = True
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_2:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts2 = True
                         self.amfi_must_disable = True
+                        self.amfi_shim_bins = True
                         self.requires_root_kc = True
                 elif gpu.arch in [
                     device_probe.AMD.Archs.Legacy_GCN_7000,
@@ -115,34 +122,46 @@ class detect_root_patch:
                         self.legacy_gcn = True
                         self.supports_metal = True
                         self.requires_root_kc = True
-                        self.amfi_must_disable = True
+                        if self.constants.detected_os > os_data.os_data.ventura:
+                            self.amfi_must_disable = True
+                            self.amfi_shim_bins = True
                 elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
                     if self.constants.detected_os > non_metal_os:
                         self.iron_gpu = True
                         self.amfi_must_disable = True
+                        self.amfi_shim_bins = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
                     if self.constants.detected_os > non_metal_os:
                         self.sandy_gpu = True
                         self.amfi_must_disable = True
+                        self.amfi_shim_bins = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         self.ivy_gpu = True
+                        if self.constants.detected_os > os_data.os_data.ventura:
+                            self.amfi_must_disable = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Haswell:
                     if self.constants.detected_os > os_data.os_data.monterey:
                         self.haswell_gpu = True
+                        if self.constants.detected_os > os_data.os_data.ventura:
+                            self.amfi_must_disable = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Broadwell:
                     if self.constants.detected_os > os_data.os_data.monterey:
                         self.broadwell_gpu = True
+                        if self.constants.detected_os > os_data.os_data.ventura:
+                            self.amfi_must_disable = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Skylake:
                     if self.constants.detected_os > os_data.os_data.monterey:
                         self.skylake_gpu = True
+                        if self.constants.detected_os > os_data.os_data.ventura:
+                            self.amfi_must_disable = True
                         self.supports_metal = True
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
@@ -320,12 +339,25 @@ class detect_root_patch:
 
         return self.root_patch_dict
 
+    def get_amfi_level_needed(self):
+        if self.amfi_must_disable is True:
+            if self.constants.detected_os > os_data.os_data.catalina:
+                if self.constants.detected_os >= os_data.os_data.ventura:
+                    if self.amfi_shim_bins is True:
+                        # Currently we require AMFI outright disabled
+                        # in Ventura to work with shim'd binaries
+                        return 3
+                return 1
+        return 0
+
     def verify_patch_allowed(self, print_errors=False):
         sip_dict = self.check_sip()
         sip = sip_dict[0]
         sip_value = sip_dict[1]
 
-        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
+        self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
+        self.amfi_enabled = amfi_detect.amfi_configuration_detection().check_config(self.get_amfi_level_needed())
+
         if self.requires_root_kc is True:
             self.missing_kdk = not self.check_kdk()
 

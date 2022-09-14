@@ -95,13 +95,16 @@ class amfi_configuration_detection:
         # Levels:
         # - 1. Library Validation (Monterey and Older)
         # - 2. Library Validation and Signature Checks (Ventura and Newer)
+        # - 3. Disable all AMFI checks
 
-        if level > 2 or level < 1:
-            raise ValueError("Invalid AMFI Configuration Level")
+        if level == 0:
+            return True
 
         if level == 1:
             return self.SKIP_LIBRARY_VALIDATION
         if level == 2:
             return bool(self.SKIP_LIBRARY_VALIDATION and self.AMFI_ALLOW_INVALID_SIGNATURE)
+        if level == 3:
+            return self.AMFI_ALLOW_EVERYTHING
 
         return False
