@@ -151,6 +151,7 @@ class Constants:
         self.secure_status = False  #     Secure Boot Model
         self.vault = False  #             EFI Vault
         self.disable_cs_lv = False  #     Disable Library validation
+        self.disable_amfi = False  #      Disable AMFI
 
         ## OS Settings
         self.os_support = 12.0

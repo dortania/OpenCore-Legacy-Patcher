@@ -1006,7 +1006,8 @@ class BuildOpenCore:
             # Before merging into mainline, this needs to be resolved
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Library Validation Enforcement")["Enabled"] = True
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable _csr_check() in _vnode_check_signature")["Enabled"] = True
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi=0x80"
+            if self.constants.disable_amfi is True:
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi=0x80"
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_amfi"
             # CSLVFixup simply patches out __RESTRICT and __restrict out of the Music.app Binary
             # Ref: https://pewpewthespells.com/blog/blocking_code_injection_on_ios_and_os_x.html
