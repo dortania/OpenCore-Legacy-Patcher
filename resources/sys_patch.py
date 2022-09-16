@@ -296,6 +296,10 @@ class PatchSysVolume:
         # .kexts and .apps are deleted and replaced
         file_name_str = str(file_name)
 
+        if not Path(destination_folder).exists():
+            print(f"  - Skipping {file_name}, cannot locate {source_folder}")
+            return
+
         if file_name_str.endswith(".framework"):
             # merge with rsync
             print(f"  - Installing: {file_name}")

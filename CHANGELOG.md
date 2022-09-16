@@ -9,6 +9,9 @@
 - Implement deeper macOS installer parsing
   - Provides better version detection than Apple provides in .app
 - Ensure WhateverGreen is always installed on Mac Pro configurations
+- Resolve Safari 16 rendering in macOS 12.6
+- Increment Binaries:
+  - PatcherSupportPkg 0.5.3 - release
 
 ## 0.4.10
 - Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer

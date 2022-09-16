@@ -49,6 +49,11 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "SkyLight.framework":  f"10.14.6-{os_major}",
                     },
                 },
+                "Install Non-Root": {
+                    "/Library/Apple/System/Library/StagedFrameworks/Safari": {
+                        **({ "WebKit.framework":  "11.6" } if os_major >= os_data.os_data.monterey else {}),
+                    },
+                },
                 "Remove": {
                     "/System/Library/Extensions": [
                         "AMDRadeonX4000.kext",
@@ -183,6 +188,11 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     "/System/Library/Frameworks": {
                         "OpenCL.framework": "11.6",
                         "WebKit.framework": "11.6",
+                    },
+                },
+                "Install Non-Root": {
+                    "/Library/Apple/System/Library/StagedFrameworks/Safari": {
+                        "WebKit.framework":  "11.6"
                     },
                 },
             },
