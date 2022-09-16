@@ -39,6 +39,7 @@
   - Add Ventura Boot Picker icons
   - Implement KDK-less root patching for Metal Intel and Nvidia GPUs
     - AMD GCN will still require a KDK installed for patching
+  - Resolve OpenCL support for legacy Metal Intel iGPUs
 - Increment Binaries:
   - OpenCorePkg 0.8.3 release
   - Lilu 1.6.2 - release
