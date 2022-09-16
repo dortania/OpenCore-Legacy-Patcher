@@ -42,17 +42,10 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "CoreDisplay.framework": f"10.14.4-{os_major}",
                         "IOSurface.framework":   f"10.15.7-{os_major}",
                         "QuartzCore.framework":  f"10.15.7-{os_major}",
-                        # Ventura breaks with this patch
-                        **({ "WebKit.framework":  "11.6" } if os_major == os_data.os_data.monterey else {}),
                     },
                     "/System/Library/PrivateFrameworks": {
                         "GPUSupport.framework": "10.14.3",
                         "SkyLight.framework":  f"10.14.6-{os_major}",
-                    },
-                },
-                "Install Non-Root": {
-                    "/Library/Apple/System/Library/StagedFrameworks/Safari": {
-                        **({ "WebKit.framework":  "11.6" } if os_major >= os_data.os_data.monterey else {}),
                     },
                 },
                 "Remove": {
@@ -198,7 +191,10 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
-            "Miscellaneous Metal Common": {
+            # Monterey has a WebKit sandboxing issue where many UI elements fail to render
+            # This patch simple replaces the sandbox profile with one supporting our GPUs
+            # Note: Neither Big Sur nor Ventura have this issue
+            "WebKit Monterey Common": {
                 "Display Name": "",
                 "OS Support": {
                     "Minimum OS Support": {
@@ -206,15 +202,13 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 0
                     },
                     "Maximum OS Support": {
-                        "OS Major": os_data.os_data.max_os,
+                        "OS Major": os_data.os_data.monterey,
                         "OS Minor": 99
                     },
                 },
                 "Install": {
                     "/System/Library/Frameworks": {
-                        "OpenCL.framework": "11.6",
-                        # Ventura breaks with this patch
-                        **({ "WebKit.framework":  "11.6" } if os_major == os_data.os_data.monterey else {}),
+                        "WebKit.framework":  "11.6"
                     },
                 },
                 "Install Non-Root": {
@@ -337,6 +331,44 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     "/System/Library/PrivateFrameworks": {
                         "AppleGVA.framework":     "10.13.6",
                         "AppleGVACore.framework": "10.15.7",
+                    },
+                },
+            },
+
+            "Big Sur OpenCL": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.monterey,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Frameworks": {
+                        "OpenCL.framework": "11.6",
+                    },
+                },
+            },
+
+            "Monterey OpenCL": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Frameworks": {
+                        "OpenCL.framework": "12.5",
                     },
                 },
             },
