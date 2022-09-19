@@ -11,7 +11,8 @@
 - Ensure WhateverGreen is always installed on Mac Pro configurations
 - Resolve Safari 16 rendering in macOS 12.6
 - Increment Binaries:
-  - PatcherSupportPkg 0.5.3 - release
+  - PatcherSupportPkg 0.5.4 - release
+- Resolve Nvidia OpenCL support in Monterey
 
 ## 0.4.10
 - Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer
