@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.4.12
+
 ## 0.4.11
 - Enable AppleMCEReporterDisabler whenever spoofing affected SMBIOS
   - ie. iMacPro1,1, MacPro6,1 and MacPro7,1
