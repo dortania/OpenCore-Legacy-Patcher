@@ -1,19 +1,6 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.5.0
-- Enable AppleMCEReporterDisabler whenever spoofing affected SMBIOS
-  - ie. iMacPro1,1, MacPro6,1 and MacPro7,1
-- Verify host's disk space before downloading macOS Installers
-- Remove duplicate OS builds in macOS downloader
-  - Avoids Apple's odd bug of publishing 2 different 12.5.1 products
-- Implement deeper macOS installer parsing
-  - Provides better version detection than Apple provides in .app
-- Ensure WhateverGreen is always installed on Mac Pro configurations
-- Resolve Safari 16 rendering in macOS 12.6
-- Increment Binaries:
-  - PatcherSupportPkg 0.5.3 - release
-
-
 - Ventura Specific Updates:
   - Switch boot.efi model patch to iMac18,1
   - Resolve pre-Force Touch Trackpad support in Ventura
@@ -47,6 +34,22 @@
   - PatcherSupportPkg 0.6.5 - release
   - BrcmPatchRAM 2.6.3 - release
   - AutoPkgInstaller 1.0.1 - release
+
+## 0.4.12
+
+## 0.4.11
+- Enable AppleMCEReporterDisabler whenever spoofing affected SMBIOS
+  - ie. iMacPro1,1, MacPro6,1 and MacPro7,1
+- Verify host's disk space before downloading macOS Installers
+- Remove duplicate OS builds in macOS downloader
+  - Avoids Apple's odd bug of publishing 2 different 12.5.1 products
+- Implement deeper macOS installer parsing
+  - Provides better version detection than Apple provides in .app
+- Ensure WhateverGreen is always installed on Mac Pro configurations
+- Resolve Safari 16 rendering in macOS 12.6
+- Increment Binaries:
+  - PatcherSupportPkg 0.5.4 - release
+- Resolve Nvidia OpenCL support in Monterey
 
 ## 0.4.10
 - Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer
