@@ -49,7 +49,7 @@
 - Resolve Safari 16 rendering in macOS 12.6
 - Increment Binaries:
   - PatcherSupportPkg 0.5.4 - release
-- Resolve Nvidia OpenCL support in Monterey
+- Add missing OpenCL resources for Nvidia GPUs
 
 ## 0.4.10
 - Resolve Nvidia Kepler support in macOS 12.5 Beta 3 and newer
