@@ -56,6 +56,7 @@ class Constants:
         self.apple_isight_version = "1.0.0"  # AppleiSight
         self.apple_raid_version = "1.0.0"  #   AppleRAIDCard
         self.apfs_zlib_version = "12.3.1"  #   NoAVXFSCompressionTypeZlib
+        self.apfs_zlib_v2_version = "12.6"  #  NoAVXFSCompressionTypeZlib (patched with AVXpel)
         self.multitouch_version = "1.0.0"  #   AppleUSBMultitouch
         self.topcase_version = "1.0.0"  #      AppleUSBTopCase
         self.intel_82574l_version = "1.0.0" #  Intel82574L
@@ -330,6 +331,10 @@ class Constants:
     @property
     def apfs_zlib_path(self):
         return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-v{self.apfs_zlib_version}.zip")
+
+    @property
+    def apfs_zlib_v2_path(self):
+        return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-AVXpel-v{self.apfs_zlib_v2_version}.zip")
 
     @property
     def multitouch_path(self):

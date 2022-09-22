@@ -268,6 +268,7 @@ class BuildOpenCore:
         # To verify the non-AVX kext is used, check IOService for 'com_apple_AppleFSCompression_NoAVXCompressionTypeZlib'
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
             self.enable_kext("NoAVXFSCompressionTypeZlib.kext", self.constants.apfs_zlib_version, self.constants.apfs_zlib_path)
+            self.enable_kext("NoAVXFSCompressionTypeZlib-AVXpel.kext", self.constants.apfs_zlib_v2_version, self.constants.apfs_zlib_v2_path)
 
         if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in model_array.MacPro):
             # Use Innie's same logic:
