@@ -1232,7 +1232,7 @@ B. Exit
                 # Add mirror of 11.2.3 for users who want it
                 options.append([f"macOS {mirror_data.Install_macOS_Big_Sur_11_2_3['Version']} ({mirror_data.Install_macOS_Big_Sur_11_2_3['Build']} - {utilities.human_fmt(mirror_data.Install_macOS_Big_Sur_11_2_3['Size'])} - {mirror_data.Install_macOS_Big_Sur_11_2_3['Source']})", lambda: self.download_install_assistant(mirror_data.Install_macOS_Big_Sur_11_2_3['Link'])])
                 for app in available_installers:
-                    if available_installers[app]['Variant'] in ["DeveloperSeed", "PublicSeed"]:
+                    if available_installers[app]['Variant'] in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
                         variant = " Beta"
                     else:
                         variant = ""
