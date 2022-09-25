@@ -1072,6 +1072,7 @@ class BuildOpenCore:
             # Lets us check in sys_patch.py if config supports FileVault
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
+            self.enable_kext("CryptexFixup.kext", self.constants.cryptexfixup_version, self.constants.cryptexfixup_path)
             print("- Allowing swapped dyld shared cache in Ventura")
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Root Hash validation")["Enabled"] = True
         if self.constants.disable_msr_power_ctl is True:

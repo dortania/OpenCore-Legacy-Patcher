@@ -45,6 +45,7 @@ class Constants:
         self.bluetool_version = "2.6.3"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
         self.autopkg_version = "1.0.1"  #            AutoPkgInstaller
+        self.cryptexfixup_version = "1.0.0"  #       CryptexFixup
 
         ## Apple
         ## https://www.apple.com
@@ -411,6 +412,10 @@ class Constants:
     @property
     def autopkg_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/AutoPkgInstaller-v{self.autopkg_version}-{self.kext_variant}.zip")
+
+    @property
+    def cryptexfixup_path(self):
+        return self.payload_kexts_path / Path(f"Acidanthera/CryptexFixup-v{self.cryptexfixup_version}-{self.kext_variant}.zip")
 
     @property
     def innie_path(self):
