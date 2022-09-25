@@ -600,6 +600,10 @@ class Constants:
     @property
     def payload_local_binaries_root_path_zip(self):
         return self.payload_path / Path("Universal-Binaries.zip")
+    
+    @property
+    def kdk_download_path(self):
+        return self.payload_path / Path("KDK.dmg")
 
 
     sbm_values = [

@@ -1,13 +1,16 @@
 # Additional support functions for sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
+import subprocess
+import tempfile
 from data import os_data
-from resources import generate_smbios
+from resources import generate_smbios, utilities
 from pathlib import Path
 from datetime import datetime
 import plistlib
 import os
 
+from resources import constants
 
 class sys_patch_helpers:
 
@@ -67,6 +70,24 @@ class sys_patch_helpers:
             return True
         return False
 
+    def download_and_install_kdk(self, version: str, build: str):
+        # Note: cannot do lazy matching as we don't store old version/build numbers nor can we enumerate KDKs from the portal
+        URL_TEMPLATE = f"https://download.developer.apple.com/macOS/Kernel_Debug_Kit_{version}_build_{build}/Kernel_Debug_Kit_{version}_build_{build}.dmg"
+
+        print(f"- Downloading Apple KDK for macOS {version} build {build}")
+        if utilities.download_apple_developer_portal(URL_TEMPLATE, self.constants.kdk_download_path):
+            print("- Successfully downloaded KDK, installing")
+            # Set up a new temporary directory to mount the KDK to
+            with tempfile.TemporaryDirectory() as mount_point:
+                utilities.process_status(subprocess.run(["hdiutil", "attach", self.constants.kdk_download_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                # Install the KDK
+                utilities.process_status(utilities.elevated(["installer", "-pkg", f"{mount_point}/KDK.pkg", "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)  # Do not really care if this fails
+            print("- Successfully installed KDK")
+            return True
+        else:
+            print("- Failed to download KDK")
+            return False
 
     def determine_kdk_present(self, match_closest=False):
         # Check if KDK is present
