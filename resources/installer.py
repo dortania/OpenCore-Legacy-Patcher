@@ -163,7 +163,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
     elif catalog == "PublicSeed":
         link = "https://swscan.apple.com/content/catalogs/others/index-13beta-13-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
     else:
-        link = "https://swscan.apple.com/content/catalogs/others/index-13customerseed-13-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
+        link = "https://swscan.apple.com/content/catalogs/others/index-13-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
 
     if utilities.verify_network_connection(link) is True:
         try:
@@ -198,10 +198,10 @@ def list_downloadable_macOS_installers(download_path, catalog):
                             elif "seed" in catalog_url:
                                 catalog_url = "DeveloperSeed"
                             else:
-                                catalog_url = "Unknown"
+                                catalog_url = "Public"
                         except KeyError:
-                            # Assume CustomerSeed if no catalog URL is found
-                            catalog_url = "CustomerSeed"
+                            # Assume Public if no catalog URL is found
+                            catalog_url = "Public"
                         for ia_package in catalog_plist["Products"][item]["Packages"]:
                             if "InstallAssistant.pkg" in ia_package["URL"]:
                                 download_link = ia_package["URL"]
@@ -240,7 +240,7 @@ def only_list_newest_installers(available_apps):
         # First determine the largest version
         for ia in available_apps:
             if available_apps[ia]["Version"].startswith(version):
-                if available_apps[ia]["Variant"] not in ["DeveloperSeed", "PublicSeed"]:
+                if available_apps[ia]["Variant"] not in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
                     remote_version = available_apps[ia]["Version"].split(".")
                     if remote_version[0] == "10":
                         remote_version.pop(0)
@@ -256,7 +256,7 @@ def only_list_newest_installers(available_apps):
 
         # Now remove all versions that are not the largest
         for ia in list(available_apps):
-            if available_apps[ia]["Variant"] in ["DeveloperSeed", "PublicSeed"]:
+            if available_apps[ia]["Variant"] in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
                 # Remove Beta builds from default listing
                 available_apps.pop(ia)
                 continue
