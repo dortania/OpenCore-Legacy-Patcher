@@ -18,6 +18,8 @@ import shutil
 from resources import constants, ioreg
 from data import sip_data, os_data
 
+SESSION = requests.Session()
+
 
 def hexswap(input_hex: str):
     hex_pairs = [input_hex[i : i + 2] for i in range(0, len(input_hex), 2)]
@@ -398,7 +400,7 @@ def get_firmware_vendor(*, decode: bool = False):
 
 def verify_network_connection(url):
     try:
-        response = requests.head(url, timeout=5)
+        response = SESSION.head(url, timeout=5)
         return True
     except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError, requests.exceptions.HTTPError):
         return False
@@ -409,18 +411,18 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
         short_link = os.path.basename(link)
         if Path(location).exists():
             Path(location).unlink()
-        header = requests.head(link).headers
+        header = SESSION.head(link).headers
         try:
             # Try to get true file
             # ex. Github's release links provides a "fake" header
             # Thus need to resolve to the real link
-            link = requests.head(link).headers["location"]
-            header = requests.head(link).headers
+            link = SESSION.head(link).headers["location"]
+            header = SESSION.head(link).headers
         except KeyError:
             pass
         try:
             # Handle cases where Content-Length has garbage or is missing
-            total_file_size = int(requests.head(link).headers['Content-Length'])
+            total_file_size = int(SESSION.head(link).headers['Content-Length'])
         except KeyError:
             total_file_size = 0
         if total_file_size > 1024:
@@ -428,7 +430,7 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
             file_size_string = f" of {file_size_rounded}MB"
         else:
             file_size_string = ""
-        response = requests.get(link, stream=True)
+        response = SESSION.get(link, stream=True)
         # SU Catalog's link is quite long, strip to make it bearable
         if "sucatalog.gz" in short_link:
             short_link = "sucatalog.gz"
@@ -572,7 +574,7 @@ def monitor_disk_output(disk):
 def validate_link(link):
     # Check if link is 404
     try:
-        response = requests.head(link, timeout=5)
+        response = SESSION.head(link, timeout=5)
         if response.status_code == 404:
             return False
         else:
