@@ -167,7 +167,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
 
     if utilities.verify_network_connection(link) is True:
         try:
-            catalog_plist = plistlib.loads(requests.get(link).content)
+            catalog_plist = plistlib.loads(utilities.SESSION.get(link).content)
         except plistlib.InvalidFileException:
             return available_apps
 
@@ -181,7 +181,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
                 for bm_package in catalog_plist["Products"][item]["Packages"]:
                     if "Info.plist" in bm_package["URL"] and "InstallInfo.plist" not in bm_package["URL"]:
                         try:
-                            build_plist = plistlib.loads(requests.get(bm_package["URL"]).content)
+                            build_plist = plistlib.loads(utilities.SESSION.get(bm_package["URL"]).content)
                         except plistlib.InvalidFileException:
                             continue
                         # Ensure Apple Silicon specific Installers are not listed
