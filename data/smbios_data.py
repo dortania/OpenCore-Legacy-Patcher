@@ -1014,7 +1014,7 @@ smbios_dictionary = {
         "Screen Size": 13,
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
-            device_probe.NVIDIA.Archs.Kepler
+            device_probe.Intel.Archs.Ivy_Bridge,
         ],
         "Stock Storage": [
             "SATA 2.5",
@@ -1050,7 +1050,7 @@ smbios_dictionary = {
         "Screen Size": 13,
         "Ethernet Chipset": None,
         "Stock GPUs": [
-            device_probe.NVIDIA.Archs.Kepler
+            device_probe.Intel.Archs.Ivy_Bridge,
         ],
         "Stock Storage": [
             "mSATA",
