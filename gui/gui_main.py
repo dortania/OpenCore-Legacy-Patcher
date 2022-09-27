@@ -1249,7 +1249,7 @@ class wx_python_gui:
             print("- Root Patcher finished successfully")
             if self.constants.needs_to_open_preferences is True:
                 if self.constants.detected_os >= os_data.os_data.ventura:
-                    self.reboot_system(message="Root Patcher finished successfully!\nIf you were prompted to open System Preferences to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?")
+                    self.reboot_system(message="Root Patcher finished successfully!\nIf you were prompted to open System Settings to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?")
                 else:
                     # Create dialog box to open System Preferences -> Security and Privacy
                     self.popup = wx.MessageDialog(
@@ -1503,7 +1503,7 @@ class wx_python_gui:
             if ias is None:
                 available_installers = installer.only_list_newest_installers(available_installers)
             for app in available_installers:
-                print(f"macOS {available_installers[app]['Version']} ({available_installers[app]['Build']} - {utilities.human_fmt(available_installers[app]['Size'])} - {available_installers[app]['Source']}) - {available_installers[app]['Variant']}")
+                print(f"macOS {available_installers[app]['Version']} ({available_installers[app]['Build']}):\n  - Size: {utilities.human_fmt(available_installers[app]['Size'])}\n  - Source: {available_installers[app]['Source']}\n  - Variant: {available_installers[app]['Variant']}\n  - Link: {available_installers[app]['Link']}\n")
                 if available_installers[app]['Variant'] in ["DeveloperSeed" , "PublicSeed"]:
                     extra = " Beta"
                 else:

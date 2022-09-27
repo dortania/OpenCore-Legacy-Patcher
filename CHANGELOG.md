@@ -36,6 +36,7 @@
   - PatcherSupportPkg 0.6.5 - release
   - BrcmPatchRAM 2.6.3 - release
   - AutoPkgInstaller 1.0.1 - release
+  - CryptexFixup 1.0.0 - rolling (1e41456)
 
 ## 0.4.12
 
