@@ -204,6 +204,9 @@ class AutomaticSysPatch:
             if Path("/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist").exists():
                 print("- Deleting existing auto-patch.plist")
                 utilities.process_status(utilities.elevated(["rm", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            if not Path("/Library/LaunchAgents/").exists():
+                print("- Creating /Library/LaunchAgents/")
+                utilities.process_status(utilities.elevated(["mkdir", "-p", "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["cp", settings.auto_patch_launch_agent_path, "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
             # Set the permissions on the com.dortania.opencore-legacy-patcher.auto-patch.plist
