@@ -114,11 +114,19 @@ class detect_root_patch:
                     device_probe.AMD.Archs.Legacy_GCN_7000,
                     device_probe.AMD.Archs.Legacy_GCN_8000,
                     device_probe.AMD.Archs.Legacy_GCN_9000,
+                    device_probe.AMD.Archs.Polaris,
                 ]:
                     if self.constants.detected_os > os_data.os_data.monterey:
                         translated = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()
                         if translated:
                             continue
+
+                        if gpu.arch == device_probe.AMD.Archs.Polaris:
+                            # Check if host supports AVX2.0
+                            # If not, enable legacy GCN patch
+                            if "AVX2" in self.constants.computer.cpu.leafs:
+                                continue
+
                         self.legacy_gcn = True
                         self.supports_metal = True
                         self.requires_root_kc = True
@@ -173,7 +181,7 @@ class detect_root_patch:
             self.iron_gpu = False
             self.sandy_gpu = False
             self.legacy_keyboard_backlight = False
-        
+
         if self.constants.detected_os <= os_data.os_data.monterey:
             # Always assume Root KC requirement on Monterey and older
             self.requires_root_kc = True

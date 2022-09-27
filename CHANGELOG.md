@@ -22,6 +22,8 @@
     - Intel: Ivy Bridge, Haswell, Broadwell and Skylake
     - Nvidia: Kepler
     - AMD: GCN 1 through 3
+    - AMD: Polaris (on pre-AVX2.0 systems)
+      - Boot in safe mode to avoid stock driver loading
   - Raise SIP requirement to 0x803 for root patching
   - Add Ventura Boot Picker icons
   - Implement KDK-less root patching for Metal Intel and Nvidia GPUs
@@ -33,7 +35,7 @@
   - OpenCorePkg 0.8.3 release
   - Lilu 1.6.2 - release
   - FeatureUnlock 1.0.9 release
-  - PatcherSupportPkg 0.6.5 - release
+  - PatcherSupportPkg 0.6.6 - release
   - BrcmPatchRAM 2.6.3 - release
   - AutoPkgInstaller 1.0.1 - release
   - CryptexFixup 1.0.0 - rolling (1e41456)

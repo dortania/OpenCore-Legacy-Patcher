@@ -601,6 +601,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "AMD7000Controller.kext":        "12.5",
                         "AMD8000Controller.kext":        "12.5",
                         "AMD9000Controller.kext":        "12.5",
+                        "AMD9500Controller.kext":        "12.5",
                         "AMDRadeonX4000.kext":           "12.5",
                         "AMDRadeonX4000HWServices.kext": "12.5",
                         "AMDFramebuffer.kext":           "12.5",
@@ -615,8 +616,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     "/System/Library/Extensions": [
                         # Due to downgraded AMDSupport.kext
                         # In the future, we will have to downgrade the entire AMD stack
-                        # to support non-AVX2.0 machines with Polaris or newer
-                        "AMD9500Controller.kext",
+                        # to support non-AVX2.0 machines with Vega or newer
                         "AMD10000Controller.kext",
                     ],
                 },
