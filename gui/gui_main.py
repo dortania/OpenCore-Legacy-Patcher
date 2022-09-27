@@ -775,7 +775,7 @@ class wx_python_gui:
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.reload_button.GetPosition().x,
-                self.reload_button.GetPosition().y + self.reload_button.GetSize().height + 7.5
+                self.reload_button.GetPosition().y + self.reload_button.GetSize().height + 8
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
