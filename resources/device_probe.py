@@ -18,6 +18,7 @@ from data import pci_data
 class CPU:
     name: str
     flags: list[str]
+    leafs: list[str]
 
 
 @dataclass
@@ -715,7 +716,15 @@ class Computer:
         self.cpu = CPU(
             subprocess.run("sysctl machdep.cpu.brand_string".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip(),
             subprocess.run("sysctl machdep.cpu.features".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip().split(" "),
+            self.cpu_get_leafs(),
         )
+
+    def cpu_get_leafs(self):
+        leafs = []
+        result = subprocess.run("sysctl machdep.cpu.leaf7_features".split(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        if result.returncode == 0:
+            leafs.append(result.stdout.decode().partition(": ")[2].strip().split(" "))
+        return leafs
 
     def bluetooth_probe(self):
         usb_data: str = subprocess.run("system_profiler SPUSBDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
