@@ -2543,15 +2543,35 @@ class wx_python_gui:
         if self.computer.third_party_sata_ssd is False and not self.constants.custom_model:
             self.set_enhanced_3rd_party_ssd_checkbox.Disable()
 
+        # Disable Library Validation
+        self.disable_library_validation_checkbox = wx.CheckBox(self.frame_modal, label="Disable Library Validation")
+        self.disable_library_validation_checkbox.SetValue(self.constants.disable_cs_lv)
+        self.disable_library_validation_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_library_validation_click)
+        self.disable_library_validation_checkbox.SetPosition(wx.Point(
+            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().x,
+            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().y + self.set_enhanced_3rd_party_ssd_checkbox.GetSize().height
+        ))
+
+        # Disable AMFI
+        self.disable_amfi_checkbox = wx.CheckBox(self.frame_modal, label="Disable AMFI")
+        self.disable_amfi_checkbox.SetValue(self.constants.disable_amfi)
+        self.disable_amfi_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_amfi_click)
+        self.disable_amfi_checkbox.SetPosition(wx.Point(
+            self.disable_library_validation_checkbox.GetPosition().x,
+            self.disable_library_validation_checkbox.GetPosition().y + self.disable_library_validation_checkbox.GetSize().height
+        ))
+        if self.constants.disable_cs_lv is False:
+            self.disable_amfi_checkbox.Disable()
+
+
         # Set Ignore App Updates
         self.set_ignore_app_updates_checkbox = wx.CheckBox(self.frame_modal, label="Ignore App Updates")
         self.set_ignore_app_updates_checkbox.SetValue(self.constants.ignore_updates)
         self.set_ignore_app_updates_checkbox.Bind(wx.EVT_CHECKBOX, self.set_ignore_app_updates_click)
         self.set_ignore_app_updates_checkbox.SetPosition(wx.Point(
-            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().x,
-            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().y + self.set_enhanced_3rd_party_ssd_checkbox.GetSize().height))
+            self.disable_amfi_checkbox.GetPosition().x,
+            self.disable_amfi_checkbox.GetPosition().y + self.disable_amfi_checkbox.GetSize().height))
         self.set_ignore_app_updates_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore will ignore App Updates on launch.\nEnable this option if you do not want to be prompted for App Updates"))
-
 
         # Button: Developer Debug Info
         self.debug_button = wx.Button(self.frame_modal, label="Developer Debug Info")
@@ -2573,6 +2593,24 @@ class wx_python_gui:
 
         self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
+
+    def disable_library_validation_click(self, event):
+        if self.disable_library_validation_checkbox.GetValue():
+            print("Disable Library Validation")
+            self.disable_amfi_checkbox.Enable()
+            self.constants.disable_cs_lv = True
+        else:
+            print("Enable Library Validation")
+            self.disable_amfi_checkbox.Disable()
+            self.constants.disable_cs_lv = False
+
+    def disable_amfi_click(self, event):
+        if self.disable_amfi_checkbox.GetValue():
+            print("Disable AMFI")
+            self.constants.disable_amfi = True
+        else:
+            print("Enable AMFI")
+            self.constants.disable_amfi = False
 
     def set_ignore_app_updates_click(self, event):
         self.constants.ignore_updates = self.set_ignore_app_updates_checkbox.GetValue()
