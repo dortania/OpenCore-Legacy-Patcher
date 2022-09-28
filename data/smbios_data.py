@@ -2608,7 +2608,8 @@ smbios_dictionary = {
         "Ethernet Chipset": "Intel 82574L",
         "Socketed GPUs": "PCIe",
         "Stock GPUs": [
-            device_probe.NVIDIA.Archs.Tesla
+            device_probe.NVIDIA.Archs.Tesla,
+            device_probe.AMD.Archs.Polaris,
         ],
         "Stock Storage": [
             "SATA 3.5",
@@ -2625,7 +2626,8 @@ smbios_dictionary = {
         "Ethernet Chipset": "Intel 82574L",
         "Socketed GPUs": "PCIe",
         "Stock GPUs": [
-            device_probe.AMD.Archs.TeraScale_2
+            device_probe.AMD.Archs.TeraScale_2,
+            device_probe.AMD.Archs.Polaris,
         ],
         "Stock Storage": [
             "SATA 3.5",

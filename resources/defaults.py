@@ -196,5 +196,8 @@ class generate_defaults:
                     device_probe.AMD.Archs.Legacy_GCN_7000,
                     device_probe.AMD.Archs.Legacy_GCN_8000,
                     device_probe.AMD.Archs.Legacy_GCN_9000,
+                    device_probe.AMD.Archs.Polaris,
                 ]:
+                    if gpu == device_probe.AMD.Archs.Polaris and smbios_data.smbios_dictionary[model]["CPU Generation"] >= cpu_data.cpu_data.haswell.value:
+                        continue
                     settings.disable_amfi = True
