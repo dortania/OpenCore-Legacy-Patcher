@@ -1000,9 +1000,14 @@ class BuildOpenCore:
                 print("- Set SIP to allow Root Volume patching")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("03080000")
 
-        # if self.constants.amfi_status is False:
-        #     print("- Disabling AMFI")
-        #     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi_get_out_of_my_way=1"
+            # apfs.kext has an undocumented boot-arg that allows FileVault usage on broken APFS seals (-arv_allow_fv)
+            # This is however hidden behind kern.development, thus we patch _apfs_filevault_allowed to always return true
+            # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
+            print("- Allowing FileVault on Root Patched systems")
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Force FileVault on Broken Seal")["Enabled"] = True
+            # Lets us check in sys_patch.py if config supports FileVault
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
+
         if self.constants.disable_cs_lv is True:
             print("- Disabling Library Validation")
             # In Ventura, LV patch broke. For now, add AMFI arg
@@ -1063,14 +1068,6 @@ class BuildOpenCore:
             # Haswell and Broadwell MacBooks lock out the VMX bit if booting UEFI Windows
             print("- Enabling VMX Bit for non-macOS OSes")
             self.config["UEFI"]["Quirks"]["EnableVmx"] = True
-        if self.constants.allow_fv_root is True:
-            # apfs.kext has an undocumented boot-arg that allows FileVault usage on broken APFS seals (-arv_allow_fv)
-            # This is however hidden behind kern.development, thus we patch _apfs_filevault_allowed to always return true
-            # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
-            print("- Allowing FileVault on Root Patched systems")
-            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Force FileVault on Broken Seal")["Enabled"] = True
-            # Lets us check in sys_patch.py if config supports FileVault
-            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
             print("- Enabling Rosetta Cryptex support in Ventura")
             self.enable_kext("CryptexFixup.kext", self.constants.cryptexfixup_version, self.constants.cryptexfixup_path)

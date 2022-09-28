@@ -53,7 +53,7 @@ class OpenCoreLegacyPatcher:
             branch = branch.replace("refs/heads/", "")
             self.constants.installer_pkg_url_nightly = self.constants.installer_pkg_url_nightly.replace("main", branch)
 
-        defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
+        defaults.generate_defaults(self.computer.real_model, True, self.constants)
 
         if utilities.check_cli_args() is not None:
             print("- Detected arguments, switching to CLI mode")

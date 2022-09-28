@@ -983,7 +983,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 print("\n".join(model_array.SupportedSMBIOS))
                 input("\nPress [ENTER] to continue")
         else:
-            defaults.generate_defaults.probe(self.constants.custom_model, False, self.constants)
+            defaults.generate_defaults(self.constants.custom_model, False, self.constants)
 
     def PatchVolume(self):
         utilities.cls()

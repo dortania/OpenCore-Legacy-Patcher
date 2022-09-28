@@ -160,7 +160,6 @@ class Constants:
         self.detected_os = 0  #        Major Kernel Version
         self.detected_os_minor = 0  #  Minor Kernel Version
         self.detected_os_build = ""  # OS Build
-        self.allow_fv_root = False  #  Allow FileVault on broken sealed snapshots
 
         ## Boot Volume Settings
         self.firewire_boot = False  # Allow macOS FireWire Boot
@@ -600,7 +599,7 @@ class Constants:
     @property
     def payload_local_binaries_root_path_zip(self):
         return self.payload_path / Path("Universal-Binaries.zip")
-    
+
     @property
     def kdk_download_path(self):
         return self.payload_path / Path("KDK.dmg")

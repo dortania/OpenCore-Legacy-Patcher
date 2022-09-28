@@ -2302,11 +2302,11 @@ class wx_python_gui:
         if user_choice == self.computer.real_model:
             print(f"Using Real Model: {user_choice}")
             self.constants.custom_model = None
-            defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
+            defaults.generate_defaults(self.computer.real_model, True, self.constants)
         else:
             print(f"Using Custom Model: {user_choice}")
             self.constants.custom_model = user_choice
-            defaults.generate_defaults.probe(self.constants.custom_model, False, self.constants)
+            defaults.generate_defaults(self.constants.custom_model, False, self.constants)
         # Reload Settings
         self.settings_menu(None)
 
