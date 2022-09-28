@@ -170,6 +170,8 @@ class generate_defaults:
                 device_probe.AMD.Archs.Legacy_GCN_8000,
                 device_probe.AMD.Archs.Legacy_GCN_9000,
                 device_probe.AMD.Archs.Polaris,
+                device_probe.AMD.Archs.Vega,
+                device_probe.AMD.Archs.Navi,
             ]:
                 if gpu in [
                         device_probe.AMD.Archs.Legacy_GCN_7000,
@@ -191,7 +193,11 @@ class generate_defaults:
                             self.constants.serial_settings = "Minimal"
 
                 # See if system can use the native AMD stack in Ventura
-                if gpu == device_probe.AMD.Archs.Polaris:
+                if gpu in [
+                    device_probe.AMD.Archs.Polaris,
+                    device_probe.AMD.Archs.Vega,
+                    device_probe.AMD.Archs.Navi,
+                ]:
                     if self.host_is_target:
                         if "AVX2" in self.constants.computer.cpu.leafs:
                             continue

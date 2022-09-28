@@ -117,8 +117,7 @@ class detect_root_patch:
                     device_probe.AMD.Archs.Polaris,
                 ]:
                     if self.constants.detected_os > os_data.os_data.monterey:
-                        translated = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()
-                        if translated:
+                        if self.constants.computer.rosetta_active is True:
                             continue
 
                         if gpu.arch == device_probe.AMD.Archs.Polaris:
