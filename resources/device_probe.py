@@ -485,6 +485,7 @@ class Computer:
     oclp_sys_date: Optional[str] = None
     oclp_sys_url: Optional[str] = None
     firmware_vendor: Optional[str] = None
+    rosetta_active: Optional[bool] = False
 
     @staticmethod
     def probe():
@@ -503,6 +504,7 @@ class Computer:
         computer.ambient_light_sensor_probe()
         computer.sata_disk_probe()
         computer.oclp_sys_patch_probe()
+        computer.check_rosetta()
         return computer
 
     def gpu_probe(self):
@@ -772,3 +774,10 @@ class Computer:
                     self.oclp_sys_date = sys_plist["Time Patched"]
                 if "Commit URL" in sys_plist:
                     self.oclp_sys_url = sys_plist["Commit URL"]
+
+    def check_rosetta(self):
+        result = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()
+        if result:
+            self.rosetta_active = True
+        else:
+            self.rosetta_active = False

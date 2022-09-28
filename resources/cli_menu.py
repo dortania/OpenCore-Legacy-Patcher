@@ -222,24 +222,6 @@ Q. Return to previous menu
         else:
             self.change_sbm()
 
-    def set_amfi(self):
-        utilities.cls()
-        utilities.header(["Set AMFI"])
-        print(
-            """Required for Root Patching non-Metal GPUs
-in macOS Big Sur. Without this, will receive kernel panic once
-Patcher finishes installing legacy acceleration patches.
-        """
-        )
-        change_menu = input("Disable AMFI(y/n/q): ")
-        if change_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.amfi_status = False
-        elif change_menu in {"n", "N", "no", "No"}:
-            self.constants.amfi_status = True
-        elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
-        else:
-            self.set_amfi()
 
     def bootstrap_setting(self):
         utilities.cls()
@@ -1077,10 +1059,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             title = ["Adjust Security Settings"]
             menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
-                # [
-                #     f"Set Apple Mobile File Integrity (AMFI):\tCurrently {self.constants.amfi_status}",
-                #     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_amfi,
-                # ],
                 [
                     f"Set System Integrity Protection (SIP):\tCurrently {self.constants.custom_sip_value or self.constants.sip_status}",
                     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_sip,

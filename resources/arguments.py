@@ -66,9 +66,6 @@ class arguments:
             if self.args.nvme:
                 print("- Set NVMe Boot configuration")
                 settings.nvme_boot = True
-            # if self.args.disable_amfi:
-            #     print("- Set Disable AMFI configuration")
-            #     settings.amfi_status = False
             if self.args.wlan:
                 print("- Set Wake on WLAN configuration")
                 settings.enable_wake_on_wlan = True

@@ -14,7 +14,6 @@ class generate_defaults:
         # Reset Variables
         self.constants.sip_status =    True
         self.constants.secure_status = False
-        self.constants.amfi_status =   True
         self.constants.disable_cs_lv = False
         self.constants.disable_amfi  = False
 
@@ -180,6 +179,12 @@ class generate_defaults:
                         device_probe.AMD.Archs.Vega,
                         device_probe.AMD.Archs.Navi,
                 ]:
+                    if gpu == device_probe.AMD.Archs.Legacy_GCN_7000:
+                        # Check if we're running in Rosetta
+                        if self.host_is_target:
+                            if self.constants.computer.rosetta_active is True:
+                                continue
+
                     # Allow H.265 on AMD
                     if self.model in smbios_data.smbios_dictionary:
                         if "Socketed GPUs" in smbios_data.smbios_dictionary[self.model]:

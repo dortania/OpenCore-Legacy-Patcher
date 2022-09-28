@@ -148,7 +148,6 @@ class Constants:
 
         ## Security Settings
         self.apecid_support = False  #    ApECID
-        self.amfi_status = True  #        Apple Mobile File Integrity
         self.sip_status = True  #         System Integrity Protection
         self.secure_status = False  #     Secure Boot Model
         self.vault = False  #             EFI Vault
