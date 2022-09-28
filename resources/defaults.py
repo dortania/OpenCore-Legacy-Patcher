@@ -157,6 +157,9 @@ class generate_defaults:
 
         for gpu in gpu_dict:
             if self.host_is_target:
+                if gpu.class_code:
+                    if gpu.class_code == 0xFFFFFFFF:
+                        continue
                 gpu = gpu.arch
 
             # Legacy Metal Logic

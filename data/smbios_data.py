@@ -1103,6 +1103,7 @@ smbios_dictionary = {
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell,
+            device_probe.NVIDIA.Archs.Kepler,
         ],
         "Stock Storage": [
             "NVMe",
@@ -2137,7 +2138,6 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.Intel.Archs.Ivy_Bridge,
-            device_probe.NVIDIA.Archs.Kepler,
         ],
         "Stock Storage": [
             "SATA 3.5",
@@ -2155,7 +2155,6 @@ smbios_dictionary = {
         "Ethernet Chipset": "Broadcom",
         "Stock GPUs": [
             device_probe.Intel.Archs.Haswell,
-            device_probe.NVIDIA.Archs.Kepler,
         ],
         "Stock Storage": [
             "SATA 3.5",
@@ -2300,7 +2299,7 @@ smbios_dictionary = {
         "Stock GPUs": [
             device_probe.Intel.Archs.Skylake,
             device_probe.AMD.Archs.Legacy_GCN_8000,
-            # System also shipped with Legacy_GCN_9000 (ie. R9 M395X)
+            device_probe.AMD.Archs.Legacy_GCN_9000,
         ],
         "Stock Storage": [
             "SATA 3.5",
@@ -2319,6 +2318,7 @@ smbios_dictionary = {
         "5K Display": True,
         "Stock GPUs": [
             device_probe.Intel.Archs.Skylake,
+            device_probe.AMD.Archs.Legacy_GCN_8000,
             device_probe.AMD.Archs.Legacy_GCN_9000,
         ],
         "Stock Storage": [
@@ -2338,6 +2338,7 @@ smbios_dictionary = {
         "5K Display": True,
         "Stock GPUs": [
             device_probe.Intel.Archs.Skylake,
+            device_probe.AMD.Archs.Legacy_GCN_8000,
             device_probe.AMD.Archs.Legacy_GCN_9000,
         ],
         "Stock Storage": [
@@ -2590,7 +2591,9 @@ smbios_dictionary = {
         "Ethernet Chipset": "Intel 80003ES2LAN",
         "Socketed GPUs": "PCIe",
         "Stock GPUs": [
-            device_probe.AMD.Archs.TeraScale_1
+            device_probe.AMD.Archs.TeraScale_1,
+            device_probe.AMD.Archs.Polaris,
+
         ],
         "Stock Storage": [
             "SATA 3.5",
