@@ -34,10 +34,7 @@ class generate_defaults:
                 except KeyError:
                     pass
             if utilities.check_metal_support(device_probe, settings.computer) is False:
-                for gpu in settings.computer.gpus:
-                    if isinstance(gpu, device_probe.AMD) or isinstance(gpu, device_probe.NVIDIA):
-                        settings.disable_amfi = True
-                        break
+                settings.disable_amfi = True
                 settings.disable_cs_lv = True
                 settings.secure_status = False
                 settings.sip_status = False
@@ -95,6 +92,7 @@ class generate_defaults:
             settings.serial_settings = "Minimal"
         elif model in model_array.LegacyGPU:
             settings.disable_cs_lv = True
+            settings.disable_amfi = True
 
         if model in model_array.LegacyGPU:
             if host_is_target and utilities.check_metal_support(device_probe, settings.computer) is True:
