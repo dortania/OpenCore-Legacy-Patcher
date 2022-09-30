@@ -37,7 +37,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from resources import constants, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers
+from resources import constants, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers, kdk_handler
 from data import os_data
 
 
@@ -117,7 +117,15 @@ class PatchSysVolume:
             # Assume KDK is already merged
             return
 
-        kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present()
+        kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=False)
+        if kdk_path is None:
+            if not self.constants.kdk_download_path.exists():
+                kdk_result, error_msg = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
+                if kdk_result is False:
+                    raise Exception(f"Unable to download KDK: {error_msg}")
+            sys_patch_helpers.sys_patch_helpers(self.constants).install_kdk()
+
+        kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=True)
         if kdk_path is None:
             print("- Unable to find Kernel Debug Kit")
             raise Exception("Unable to find Kernel Debug Kit")

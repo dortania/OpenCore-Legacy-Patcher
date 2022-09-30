@@ -129,9 +129,8 @@ class detect_root_patch:
                         self.legacy_gcn = True
                         self.supports_metal = True
                         self.requires_root_kc = True
-                        if self.constants.detected_os > os_data.os_data.ventura:
-                            self.amfi_must_disable = True
-                            self.amfi_shim_bins = True
+                        self.amfi_must_disable = True
+                        self.amfi_shim_bins = True
                 elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
                     if self.constants.detected_os > non_metal_os:
                         self.iron_gpu = True
@@ -149,26 +148,23 @@ class detect_root_patch:
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         self.ivy_gpu = True
-                        if self.constants.detected_os > os_data.os_data.ventura:
+                        if self.constants.detected_os >= os_data.os_data.ventura:
                             self.amfi_must_disable = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Haswell:
                     if self.constants.detected_os > os_data.os_data.monterey:
                         self.haswell_gpu = True
-                        if self.constants.detected_os > os_data.os_data.ventura:
-                            self.amfi_must_disable = True
+                        self.amfi_must_disable = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Broadwell:
                     if self.constants.detected_os > os_data.os_data.monterey:
                         self.broadwell_gpu = True
-                        if self.constants.detected_os > os_data.os_data.ventura:
-                            self.amfi_must_disable = True
+                        self.amfi_must_disable = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Skylake:
                     if self.constants.detected_os > os_data.os_data.monterey:
                         self.skylake_gpu = True
-                        if self.constants.detected_os > os_data.os_data.ventura:
-                            self.amfi_must_disable = True
+                        self.amfi_must_disable = True
                         self.supports_metal = True
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
@@ -184,6 +180,9 @@ class detect_root_patch:
         if self.constants.detected_os <= os_data.os_data.monterey:
             # Always assume Root KC requirement on Monterey and older
             self.requires_root_kc = True
+        else:
+            if self.requires_root_kc is True:
+                self.missing_kdk = not self.check_kdk()
 
 
     def check_dgpu_status(self):
@@ -334,6 +333,7 @@ class detect_root_patch:
             "Miscellaneous: Legacy Keyboard Backlight":    self.legacy_keyboard_backlight,
             "Settings: Requires AMFI exemption":           self.amfi_must_disable,
             "Settings: Supports Auxiliary Cache":          not self.requires_root_kc,
+            "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,
             "Validation: Patching Possible":               self.verify_patch_allowed(),
             f"Validation: SIP is enabled (Required: {self.check_sip()[2]} or higher)":  self.sip_enabled,
             f"Validation: Currently Booted SIP: ({hex(utilities.csr_dump())})":         self.sip_enabled,
@@ -345,7 +345,6 @@ class detect_root_patch:
             "Validation: Force OpenGL property missing":   self.missing_nv_web_opengl  if self.nvidia_web is True else False,
             "Validation: Force compat property missing":   self.missing_nv_compat      if self.nvidia_web is True else False,
             "Validation: nvda_drv(_vrl) variable missing": self.missing_nv_web_nvram   if self.nvidia_web is True else False,
-            f"Validation: Kernel Debug Kit missing (need {self.constants.detected_os_build})": self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura else False,
         }
 
         return self.root_patch_dict
@@ -367,11 +366,7 @@ class detect_root_patch:
         sip_value = sip_dict[1]
 
         self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
-        self.amfi_enabled = amfi_detect.amfi_configuration_detection().check_config(self.get_amfi_level_needed())
-
-        if self.constants.detected_os >= os_data.os_data.ventura:
-            if self.requires_root_kc is True:
-                self.missing_kdk = not self.check_kdk()
+        self.amfi_enabled = not amfi_detect.amfi_configuration_detection().check_config(self.get_amfi_level_needed())
 
         if self.nvidia_web is True:
             self.missing_nv_web_nvram   = not self.check_nv_web_nvram()
@@ -422,15 +417,10 @@ class detect_root_patch:
                     print("\nCannot patch! WhateverGreen.kext missing")
                     print("Please ensure WhateverGreen.kext is installed")
 
-            if self.missing_kdk is True:
-                print("\nCannot patch! Kernel Debug Kit missing")
-                print(f"Please ensure the correct KDK is installed (required: {self.constants.detected_os_build})")
-
         if any(
             [
                 # General patch checks
                 self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched,
-                self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura else False,
 
                 # non-Metal specific
                 self.amfi_enabled if self.amfi_must_disable is True else False,

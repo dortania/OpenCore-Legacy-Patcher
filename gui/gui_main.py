@@ -16,7 +16,7 @@ from pathlib import Path
 import binascii
 import hashlib
 
-from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification, global_settings
+from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect, gui_help
 
@@ -1156,6 +1156,8 @@ class wx_python_gui:
             self.pulse_alternative(self.progress_bar)
             wx.GetApp().Yield()
 
+        self.progress_bar.Hide()
+
         # Download resources
         sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
         download_result, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
@@ -1174,6 +1176,28 @@ class wx_python_gui:
             if answer == wx.ID_YES:
                 webbrowser.open(self.constants.repo_link_latest)
             self.main_menu()
+
+        if self.patches["Settings: Kernel Debug Kit missing"] is True:
+            # Download KDK (if needed)
+            self.subheader.SetLabel("Downloading Kernel Debug Kit")
+            self.subheader.Centre(wx.HORIZONTAL)
+            self.developer_note.SetLabel("Starting shortly")
+
+            sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
+            kdk_result, error_msg = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
+            sys.stdout=sys.__stdout__
+
+            if kdk_result is False:
+                # Create popup window to inform user of error
+                self.popup = wx.MessageDialog(
+                    self.frame,
+                    f"A problem occurred trying to download the Kernel Debug Kit:\n\n{error_msg}",
+                    "Kernel Debug Kit",
+                    wx.ICON_ERROR
+                )
+                self.popup.ShowModal()
+                self.finished_auto_patch = True
+                self.main_menu()
 
         self.reset_frame_modal()
         self.frame_modal.SetSize(-1, self.WINDOW_HEIGHT_MAIN)
