@@ -1,5 +1,5 @@
+# Kernel Debug Kit downloader
 
-from multiprocessing.spawn import is_forking
 from pathlib import Path
 import requests, urllib
 from resources import utilities
