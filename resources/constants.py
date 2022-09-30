@@ -156,9 +156,10 @@ class Constants:
 
         ## OS Settings
         self.os_support = 12.0
-        self.detected_os = 0  #        Major Kernel Version
-        self.detected_os_minor = 0  #  Minor Kernel Version
-        self.detected_os_build = ""  # OS Build
+        self.detected_os = 0  #          Major Kernel Version
+        self.detected_os_minor = 0  #    Minor Kernel Version
+        self.detected_os_build = ""  #   OS Build
+        self.detected_os_version = ""  # OS Version
 
         ## Boot Volume Settings
         self.firewire_boot = False  # Allow macOS FireWire Boot
