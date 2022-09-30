@@ -31,6 +31,9 @@
   - Resolve OpenCL support for legacy Metal Intel iGPUs
   - Implement Automatic Rosetta Cryptex installation on OS installs and updates
     - Drops need for manual OS.dmg swapping on pre-Haswell
+  - Implement automatic Kernel Debug Kit downloader for systems requiring Boot/SysKC rebuilding
+    - ex. AMD GCN
+    - Relies on N-1 system for when matching KDK is not present
 - Increment Binaries:
   - OpenCorePkg 0.8.3 release
   - Lilu 1.6.2 - release

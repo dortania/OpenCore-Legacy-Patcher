@@ -118,6 +118,7 @@ class create_binary:
             "AutoPkg-Assets.pkg.zip",
             "InstallAssistant.pkg",
             "InstallAssistant.pkg.integrityDataV1",
+            "KDK.dmg",
         ]
         print("- Deleting extra binaries...")
         for file in Path("payloads").glob(pattern="*"):
