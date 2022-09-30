@@ -2446,7 +2446,8 @@ class wx_python_gui:
         self.gpu_dropdown.Bind(wx.EVT_CHOICE, self.gpu_selection_click)
         self.gpu_dropdown.Centre(wx.HORIZONTAL)
         self.gpu_dropdown.SetToolTip(wx.ToolTip("Configures MXM GPU Vendor logic on pre-built models\nIf you are not using MXM iMacs, please leave this setting as is."))
-        if self.computer.real_model not in ["iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]:
+        models = ["iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]
+        if (not self.constants.custom_model and self.computer.real_model not in models) or (self.constants.custom_model and self.constants.custom_model not in models):
             self.gpu_dropdown.Disable()
 
         # Disable Thunderbolt

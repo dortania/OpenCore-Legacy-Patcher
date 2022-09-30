@@ -170,8 +170,9 @@ class kernel_debug_kit_handler:
         return False, error_msg
 
     def is_kdk_installed(self, build):
-        for file in Path("/Library/Developer/KDKs").iterdir():
-            if file.is_dir():
-                if build in file.name:
-                    return True
+        if Path("/Library/Developer/KDKs").exists():
+            for file in Path("/Library/Developer/KDKs").iterdir():
+                if file.is_dir():
+                    if build in file.name:
+                        return True
         return False
