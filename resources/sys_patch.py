@@ -128,7 +128,7 @@ class PatchSysVolume:
 
         kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=False, override_build=downloaded_kdk)
         if kdk_path is None:
-            print("- Unable to find Kernel Debug Kit")
+            print(f"- Unable to find Kernel Debug Kit: {downloaded_kdk}")
             raise Exception("Unable to find Kernel Debug Kit")
         self.kdk_path = kdk_path
         print(f"- Found KDK at: {kdk_path}")

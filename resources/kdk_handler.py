@@ -174,6 +174,6 @@ class kernel_debug_kit_handler:
         if Path("/Library/Developer/KDKs").exists():
             for file in Path("/Library/Developer/KDKs").iterdir():
                 if file.is_dir():
-                    if build in file.name:
+                    if file.name.endswith(f"{build}.kdk"):
                         return True
         return False
