@@ -34,7 +34,7 @@ class kernel_debug_kit_handler:
 
         if results.status_code != 200:
             print(" - Could not fetch database")
-            return None
+            return None, ""
 
         results = results.json()
 
@@ -83,7 +83,7 @@ class kernel_debug_kit_handler:
 
         if newest_build["date"] != "":
             print(f"- Closest match: {newest_build['version']} build {newest_build['build']}")
-            return self.generate_kdk_link(newest_build["version"], newest_build["build"]), newest_build["build"]
+            return self.generate_kdk_link(newest_build["version"], newest_build["build"])
 
         print(" - Could not find a match")
         return None, ""
