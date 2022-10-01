@@ -71,6 +71,9 @@ class sys_patch_helpers:
         return False
 
     def install_kdk(self):
+        if not self.constants.kdk_download_path.exists():
+            return
+
         print(f"- Installing downloaded KDK (this may take a while)")
         with tempfile.TemporaryDirectory() as mount_point:
             utilities.process_status(subprocess.run(["hdiutil", "attach", self.constants.kdk_download_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
@@ -80,11 +83,15 @@ class sys_patch_helpers:
         print("- Successfully installed KDK")
 
 
-    def determine_kdk_present(self, match_closest=False):
+    def determine_kdk_present(self, match_closest=False, override_build=None):
         # Check if KDK is present
         # If 'match_closest' is True, will provide the closest match to the reported KDK
 
         kdk_array = []
+
+        search_build = self.constants.detected_os
+        if override_build:
+            search_build = override_build
 
         if not Path("/Library/Developer/KDKs").exists():
             return None
@@ -92,19 +99,19 @@ class sys_patch_helpers:
 
         for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
             # Ensure direct match
-            if kdk_folder.name.endswith(f"{self.constants.detected_os_build}.kdk"):
+            if kdk_folder.name.endswith(f"{search_build}.kdk"):
                 # Verify that the KDK is valid
                 if (kdk_folder / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
                     return kdk_folder
             if match_closest is True:
                 # ex: KDK_13.0_22A5266r.kdk -> 22A5266r.kdk -> 22A5266r
                 build = kdk_folder.name.split("_")[2].split(".")[0]
-                if build.startswith(str(self.constants.detected_os)):
+                if build.startswith(str(search_build)):
                     kdk_array.append(build)
 
         if match_closest is True:
             result = os_data.os_conversion.find_largest_build(kdk_array)
-            print(f"- Closest KDK match: {result}")
+            print(f"- Closest KDK match to {search_build}: {result}")
             for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
                 if kdk_folder.name.endswith(f"{result}.kdk"):
                     # Verify that the KDK is valid

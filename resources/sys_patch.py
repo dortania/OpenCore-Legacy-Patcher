@@ -117,15 +117,16 @@ class PatchSysVolume:
             # Assume KDK is already merged
             return
 
+        downloaded_kdk = None
         kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=False)
         if kdk_path is None:
             if not self.constants.kdk_download_path.exists():
-                kdk_result, error_msg = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
+                kdk_result, error_msg, downloaded_kdk = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
                 if kdk_result is False:
                     raise Exception(f"Unable to download KDK: {error_msg}")
             sys_patch_helpers.sys_patch_helpers(self.constants).install_kdk()
 
-        kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=True)
+        kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=False, override_build=downloaded_kdk)
         if kdk_path is None:
             print("- Unable to find Kernel Debug Kit")
             raise Exception("Unable to find Kernel Debug Kit")

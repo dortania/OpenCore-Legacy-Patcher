@@ -1184,7 +1184,7 @@ class wx_python_gui:
             self.developer_note.SetLabel("Starting shortly")
 
             sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
-            kdk_result, error_msg = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
+            kdk_result, error_msg, detected_build = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
             sys.stdout=sys.__stdout__
 
             if kdk_result is False:

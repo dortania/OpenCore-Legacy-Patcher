@@ -93,7 +93,7 @@ class kernel_debug_kit_handler:
         # Note: cannot do lazy matching as we don't store old version/build numbers nor can we enumerate KDKs from the portal
         URL_TEMPLATE = f"https://download.developer.apple.com/macOS/Kernel_Debug_Kit_{version}_build_{build}/Kernel_Debug_Kit_{version}_build_{build}.dmg"
 
-        return URL_TEMPLATE
+        return URL_TEMPLATE, build
 
 
     def verify_apple_developer_portal(self, link):
@@ -129,45 +129,46 @@ class kernel_debug_kit_handler:
 
     def download_kdk(self, version: str, build: str):
         error_msg = ""
+        detected_build = build
 
         if self.is_kdk_installed(build) is True:
             print(" - KDK is already installed")
-            return True, error_msg
+            return True, error_msg, detected_build
 
         # Note: cannot do lazy matching as we don't store old version/build numbers nor can we enumerate KDKs from the portal
-        URL_TEMPLATE = self.generate_kdk_link(version, build)
+        URL_TEMPLATE, detected_build = self.generate_kdk_link(version, build)
 
         print(f"- Downloading Apple KDK for macOS {version} build {build}")
         result = self.verify_apple_developer_portal(URL_TEMPLATE)
         if result == 2:
             error_msg = "Could not contact Apple download servers"
-            return False, error_msg
+            return False, error_msg, ""
         elif result == 0:
             print(" - Downloading KDK")
         elif result == 1:
             print(" - Could not find KDK, finding closest match")
-            URL_TEMPLATE, closest_build = self.get_closest_match(version, build)
+            URL_TEMPLATE, detected_build = self.get_closest_match(version, build)
 
-            if self.is_kdk_installed(closest_build) is True:
-                return True, error_msg
+            if self.is_kdk_installed(detected_build) is True:
+                return True, error_msg, detected_build
             if URL_TEMPLATE is None:
                 error_msg = "Could not find KDK for host, nor closest match"
-                return False, error_msg
+                return False, error_msg, ""
             result = self.verify_apple_developer_portal(URL_TEMPLATE)
             if result == 2:
                 error_msg = "Could not contact Apple download servers"
-                return False, error_msg
+                return False, error_msg, ""
             elif result == 0:
                 print(" - Downloading KDK")
             elif result == 1:
                 print(" - Could not find KDK")
                 error_msg = "Could not find KDK for host on Apple's servers, nor closest match"
-                return False, error_msg
+                return False, error_msg, ""
 
         if utilities.download_apple_developer_portal(URL_TEMPLATE, self.constants.kdk_download_path):
-            return True, error_msg
+            return True, error_msg, detected_build
         error_msg = "Failed to download KDK"
-        return False, error_msg
+        return False, error_msg, ""
 
     def is_kdk_installed(self, build):
         if Path("/Library/Developer/KDKs").exists():
