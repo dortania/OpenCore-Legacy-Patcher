@@ -400,6 +400,11 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
         if total_file_size > 1024:
             file_size_rounded = round(total_file_size / 1024 / 1024, 2)
             file_size_string = f" of {file_size_rounded}MB"
+
+            # Check if we have enough space
+            if total_file_size > get_free_space():
+                print(f"Not enough space to download {base_name} ({file_size_rounded}MB)")
+                return False
         else:
             file_size_string = ""
 
