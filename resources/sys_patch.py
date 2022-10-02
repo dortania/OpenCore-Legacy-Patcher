@@ -471,7 +471,7 @@ class PatchSysVolume:
             if "Processes" in required_patches[patch]:
                 for process in required_patches[patch]["Processes"]:
                     # Some processes need sudo, however we cannot directly call sudo in some scenarios
-                    # Instead, call elevated funtion is string's boolean is True
+                    # Instead, call elevated funtion if string's boolean is True
                     if required_patches[patch]["Processes"][process] is True:
                         print(f"- Running Process as Root:\n{process}")
                         utilities.process_status(utilities.elevated(process.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT))

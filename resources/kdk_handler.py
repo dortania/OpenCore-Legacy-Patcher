@@ -50,7 +50,7 @@ class kernel_debug_kit_handler:
                     date = variant["released"]
 
                     if version != host_version:
-                        # Check if this is a secuirty update (ie. 13.0.1)
+                        # Check if this is a security update (ie. 13.0.1)
                         version_split = version.split(".")
                         host_version_split = host_version.split(".")
                         if len(version_split) >= 2 and len(host_version_split) >= 2:
