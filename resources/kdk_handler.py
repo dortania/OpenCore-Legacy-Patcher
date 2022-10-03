@@ -11,8 +11,6 @@ import requests
 from resources import utilities
 from resources.constants import Constants
 
-SESSION = requests.Session()
-
 
 class kernel_debug_kit_handler:
     def __init__(self, constants: Constants):
@@ -23,7 +21,7 @@ class kernel_debug_kit_handler:
 
         print("- Fetching available KDKs")
 
-        results = SESSION.get(KDK_API_LINK, headers={"User-Agent": f"OCLP/{self.constants.patcher_version}"})
+        results = utilities.SESSION.get(KDK_API_LINK, headers={"User-Agent": f"OCLP/{self.constants.patcher_version}"})
 
         if results.status_code != 200:
             print(" - Could not fetch KDK list")
@@ -43,7 +41,7 @@ class kernel_debug_kit_handler:
 
         print(f"- Checking closest match for: {host_version} build {host_build}")
 
-        results = SESSION.get(OS_DATABASE_LINK)
+        results = utilities.SESSION.get(OS_DATABASE_LINK)
 
         if results.status_code != 200:
             print(" - Could not fetch database")
@@ -85,7 +83,7 @@ class kernel_debug_kit_handler:
         token_url = urllib.parse.urlunparse(urllib.parse.urlparse(TOKEN_URL_BASE)._replace(query=urllib.parse.urlencode({"path": remote_path})))
 
         try:
-            response = SESSION.get(token_url, timeout=5)
+            response = utilities.SESSION.get(token_url, timeout=5)
         except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
             print(" - Could not contact Apple download servers")
             return 2
@@ -102,12 +100,11 @@ class kernel_debug_kit_handler:
         return 0
 
     def download_kdk(self, version: str, build: str):
-        error_msg = ""
         detected_build = build
 
         if self.is_kdk_installed(build) is True:
             print(" - KDK is already installed")
-            return True, error_msg, detected_build
+            return True, "", detected_build
 
         download_link = None
         closest_match_download_link = None
@@ -140,11 +137,10 @@ class kernel_debug_kit_handler:
             print(" - Could not find KDK, finding closest match")
 
             if self.is_kdk_installed(closest_build) is True:
-                return True, error_msg, closest_build
+                return True, "", closest_build
 
             if closest_match_download_link is None:
-                error_msg = "Could not find KDK for host, nor closest match"
-                return False, error_msg, ""
+                return False, "Could not find KDK for host, nor closest match", ""
 
             result = self.verify_apple_developer_portal(closest_match_download_link)
 
@@ -153,19 +149,15 @@ class kernel_debug_kit_handler:
                 download_link = closest_match_download_link
             elif result == 1:
                 print(" - Could not find KDK")
-                error_msg = "Could not find KDK for host on Apple's servers, nor closest match"
-                return False, error_msg, ""
+                return False, "Could not find KDK for host on Apple's servers, nor closest match", ""
             elif result == 2:
-                error_msg = "Could not contact Apple download servers"
-                return False, error_msg, ""
+                return False, "Could not contact Apple download servers", ""
         elif result == 2:
-            error_msg = "Could not contact Apple download servers"
-            return False, error_msg, ""
+            return False, "Could not contact Apple download servers", ""
 
         if utilities.download_apple_developer_portal(download_link, self.constants.kdk_download_path):
-            return True, error_msg, detected_build
-        error_msg = "Failed to download KDK"
-        return False, error_msg, ""
+            return True, "", detected_build
+        return False, "Failed to download KDK", ""
 
     def is_kdk_installed(self, build):
         if Path("/Library/Developer/KDKs").exists():
