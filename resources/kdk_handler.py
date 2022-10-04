@@ -1,9 +1,10 @@
 # Kernel Debug Kit downloader
 
 import datetime
-from typing import cast
+import re
 import urllib.parse
 from pathlib import Path
+from typing import cast
 
 import packaging.version
 import requests
@@ -24,10 +25,10 @@ class kernel_debug_kit_handler:
         results = utilities.SESSION.get(KDK_API_LINK, headers={"User-Agent": f"OCLP/{self.constants.patcher_version}"})
 
         if results.status_code != 200:
-            print(" - Could not fetch KDK list")
+            print("- Could not fetch KDK list")
             return None
 
-        return results.json().sort(key=lambda x: (packaging.version.parse(x["version"]), datetime.datetime.fromisoformat(x["date"])), reverse=True)
+        return sorted(results.json(), key=lambda x: (packaging.version.parse(x["version"]), datetime.datetime.fromisoformat(x["date"])), reverse=True)
 
     def get_closest_match_legacy(self, host_version: str, host_build: str):
         # Get the closest match to the provided version
@@ -44,27 +45,34 @@ class kernel_debug_kit_handler:
         results = utilities.SESSION.get(OS_DATABASE_LINK)
 
         if results.status_code != 200:
-            print(" - Could not fetch database")
-            return None, ""
+            print("- Could not fetch database")
+            return None, "", ""
 
         macos_builds = [i for i in results.json()["ios"] if i["osType"] == "macOS"]
-        macos_builds.sort(key=lambda x: (packaging.version.parse(x["version"]), datetime.datetime.fromisoformat(x["released"])), reverse=True)
+        # If the version is borked, put it at the bottom of the list
+        # Would omit it, but can't do that in this lambda
+        macos_builds.sort(key=lambda x: (packaging.version.parse(re.match(r"\d+\.\d+", x["version"]).group() if re.match(r"\d+\.\d+", x["version"]) else "0.0.0"), datetime.datetime.fromisoformat(x["released"])), reverse=True)  # type: ignore
 
         # Iterate through, find build that is closest to the host version
         # Use date to determine which is closest
         for build_info in macos_builds:
             if build_info["osType"] == "macOS":
-                version = cast(packaging.version.Version, packaging.version.parse(build_info["version"]))
-                if version == parsed_host_version:
+                raw_version = re.match(r"\d+\.\d+", build_info["version"])
+                if not raw_version:
+                    # Skip if version is borked
+                    continue
+                version = cast(packaging.version.Version, packaging.version.parse(raw_version.group()))
+                build = build_info["build"]
+                if build == host_build:
                     # Skip, as we want the next closest match
                     continue
                 elif version <= parsed_host_version and version.major == parsed_host_version.major and version.minor == parsed_host_version.minor:
                     # The KDK list is already sorted by date then version, so the first match is the closest
-                    print(f"- Closest match: {build_info['version']} build {build_info['build']}")
-                    return self.generate_kdk_link(build_info["version"], build_info["build"]), build_info["build"]
+                    print(f"- Closest match: {version} build {build}")
+                    return self.generate_kdk_link(str(version), build), str(version), build
 
-        print(" - Could not find a match")
-        return None, ""
+        print("- Could not find a match")
+        return None, "", ""
 
     def generate_kdk_link(self, version: str, build: str):
         return f"https://download.developer.apple.com/macOS/Kernel_Debug_Kit_{version}_build_{build}/Kernel_Debug_Kit_{version}_build_{build}.dmg"
@@ -85,17 +93,17 @@ class kernel_debug_kit_handler:
         try:
             response = utilities.SESSION.get(token_url, timeout=5)
         except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
-            print(" - Could not contact Apple download servers")
+            print("- Could not contact Apple download servers")
             return 2
 
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError:
             if response.status_code == 400 and "The path specified is invalid" in response.text:
-                print(" - File does not exist on Apple download servers")
+                print("- File does not exist on Apple download servers")
                 return 1
             else:
-                print(" - Could not request download authorization from Apple download servers")
+                print("- Could not request download authorization from Apple download servers")
                 return 2
         return 0
 
@@ -103,11 +111,12 @@ class kernel_debug_kit_handler:
         detected_build = build
 
         if self.is_kdk_installed(build) is True:
-            print(" - KDK is already installed")
+            print("- KDK is already installed")
             return True, "", detected_build
 
         download_link = None
         closest_match_download_link = None
+        closest_version = ""
         closest_build = ""
 
         kdk_list = self.get_available_kdks()
@@ -118,23 +127,24 @@ class kernel_debug_kit_handler:
             for kdk in kdk_list:
                 kdk_version = cast(packaging.version.Version, packaging.version.parse(kdk["version"]))
                 if kdk["build"] == build:
-                    download_link = kdk["download_url"]
+                    download_link = kdk["url"]
                 elif not closest_match_download_link and kdk_version <= parsed_version and kdk_version.major == parsed_version.major and kdk_version.minor == parsed_version.minor:
                     # The KDK list is already sorted by date then version, so the first match is the closest
-                    closest_match_download_link = kdk["download_url"]
+                    closest_match_download_link = kdk["url"]
+                    closest_version = kdk["version"]
                     closest_build = kdk["build"]
         else:
-            print(" - Could not fetch KDK list, falling back to brute force")
+            print("- Could not fetch KDK list, falling back to brute force")
             download_link = self.generate_kdk_link(version, build)
-            closest_match_download_link, closest_build = self.get_closest_match_legacy(version, build)
+            closest_match_download_link, closest_version, closest_build = self.get_closest_match_legacy(version, build)
 
         print(f"- Downloading Apple KDK for macOS {version} build {build}")
         # download_link is None if no matching KDK is found, so we'll fall back to the closest match
         result = self.verify_apple_developer_portal(download_link) if download_link else 1
         if result == 0:
-            print(" - Downloading KDK")
+            print("- Downloading KDK")
         elif result == 1:
-            print(" - Could not find KDK, finding closest match")
+            print("- Could not find KDK, finding closest match")
 
             if self.is_kdk_installed(closest_build) is True:
                 return True, "", closest_build
@@ -142,13 +152,14 @@ class kernel_debug_kit_handler:
             if closest_match_download_link is None:
                 return False, "Could not find KDK for host, nor closest match", ""
 
+            print(f"- Closest match: {closest_version} build {closest_build}")
             result = self.verify_apple_developer_portal(closest_match_download_link)
 
             if result == 0:
-                print(" - Downloading KDK")
+                print("- Downloading KDK")
                 download_link = closest_match_download_link
             elif result == 1:
-                print(" - Could not find KDK")
+                print("- Could not find KDK")
                 return False, "Could not find KDK for host on Apple's servers, nor closest match", ""
             elif result == 2:
                 return False, "Could not contact Apple download servers", ""
