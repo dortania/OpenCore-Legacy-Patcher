@@ -51,15 +51,20 @@ class sys_patch_helpers:
                 raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
 
 
-    def generate_patchset_plist(self, patchset, file_name):
+    def generate_patchset_plist(self, patchset, file_name, kdk_used):
         source_path = f"{self.constants.payload_path}"
         source_path_file = f"{source_path}/{file_name}"
+
+        kdk_string = "Not applicable"
+        if kdk_used:
+            kdk_string = kdk_used
 
         data = {
             "OpenCore Legacy Patcher": f"v{self.constants.patcher_version}",
             "PatcherSupportPkg": f"v{self.constants.patcher_support_pkg_version}",
             "Time Patched": f"{datetime.now().strftime('%B %d, %Y @ %H:%M:%S')}",
-            "Commit URL": f"{self.constants.commit_info[2]}"
+            "Commit URL": f"{self.constants.commit_info[2]}",
+            "Kernel Debug Kit Used": f"{kdk_string}",
         }
         data.update(patchset)
         if Path(source_path_file).exists():

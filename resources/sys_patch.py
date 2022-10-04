@@ -348,7 +348,7 @@ class PatchSysVolume:
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
         file_name = "OpenCore-Legacy-Patcher.plist"
         destination_path_file = f"{destination_path}/{file_name}"
-        if sys_patch_helpers.sys_patch_helpers(self.constants).generate_patchset_plist(patchset, file_name):
+        if sys_patch_helpers.sys_patch_helpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path):
             print("- Writing patchset information to Root Volume")
             if Path(destination_path_file).exists():
                 utilities.process_status(utilities.elevated(["rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))

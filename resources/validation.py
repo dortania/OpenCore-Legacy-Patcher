@@ -81,7 +81,7 @@ def validate(settings):
                                     raise Exception(f"Failed to find {source_file}")
 
         print(f"- Validating against Darwin {major_kernel}.{minor_kernel}")
-        if not sys_patch_helpers.sys_patch_helpers(settings).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist"):
+        if not sys_patch_helpers.sys_patch_helpers(settings).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None):
             raise Exception("Failed to generate patchset plist")
 
         # Remove the plist file after validation
