@@ -35,6 +35,18 @@ bad_drivers = [
     "ToggleSipEntry.efi",
     "UsbMouseDxe.efi",
     "XhciDxe.efi",
+    "Udp4Dxe.efi",
+    "TcpDxe.efi",
+    "SnpDxe.efi",
+    "MnpDxe.efi",
+    "Ip4Dxe.efi",
+    "HttpUtilitiesDxe.efi",
+    "HttpDxe.efi",
+    "HttpBootDxe.efi",
+    "DpcDxe.efi",
+    "DnsDxe.efi",
+    "Dhcp4Dxe.efi",
+    "ArpDxe.efi",
 ]
 
 bad_tools = [

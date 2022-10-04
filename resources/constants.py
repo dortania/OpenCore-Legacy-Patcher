@@ -26,8 +26,8 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_commit = "30acb57 - 07-07-2022"
-        self.opencore_version = "0.8.3"
+        self.opencore_commit = "c14b2ab - 10-04-2022"
+        self.opencore_version = "0.8.5"
 
         # Kext Versioning
         ## Acidanthera
@@ -42,7 +42,7 @@ class Constants:
         self.featureunlock_version = "1.0.9"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.5"  #          CPUFriend
-        self.bluetool_version = "2.6.3"  #           BlueToolFixup (BrcmPatchRAM)
+        self.bluetool_version = "2.6.4"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
         self.autopkg_version = "1.0.1"  #            AutoPkgInstaller
         self.cryptexfixup_version = "1.0.0"  #       CryptexFixup

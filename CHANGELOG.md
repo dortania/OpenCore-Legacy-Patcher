@@ -35,11 +35,11 @@
     - ex. AMD GCN
     - Relies on N-1 system for when matching KDK is not present
 - Increment Binaries:
-  - OpenCorePkg 0.8.3 release
+  - OpenCorePkg 0.8.5 release
   - Lilu 1.6.2 - release
   - FeatureUnlock 1.0.9 release
   - PatcherSupportPkg 0.6.6 - release
-  - BrcmPatchRAM 2.6.3 - release
+  - BrcmPatchRAM 2.6.4 - release
   - AutoPkgInstaller 1.0.1 - release
   - CryptexFixup 1.0.0 - release
 

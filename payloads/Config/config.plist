@@ -2051,6 +2051,8 @@
 				<false/>
 				<key>TextMode</key>
 				<false/>
+				<key>FullNvramAccess</key>
+				<false/>
 			</dict>
 			<dict>
 				<key>Arguments</key>
@@ -2071,6 +2073,8 @@
 				<false/>
 				<key>TextMode</key>
 				<true/>
+				<key>FullNvramAccess</key>
+				<false/>
 			</dict>
 		</array>
 	</dict>
@@ -2355,7 +2359,7 @@
 				<key>Arguments</key>
 				<string></string>
 				<key>LoadEarly</key>
-				<true/>
+				<false/>
 			</dict>
 			<dict>
 				<key>Comment</key>
@@ -2422,6 +2426,18 @@
 				<string></string>
 				<key>Path</key>
 				<string>OpenLinuxBoot.efi</string>
+				<key>Enabled</key>
+				<false/>
+				<key>Arguments</key>
+				<string></string>
+				<key>LoadEarly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string></string>
+				<key>Path</key>
+				<string>ResetNvramEntry.efi</string>
 				<key>Enabled</key>
 				<false/>
 				<key>Arguments</key>
