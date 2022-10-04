@@ -27,7 +27,7 @@ class kernel_debug_kit_handler:
             print(" - Could not fetch KDK list")
             return None
 
-        return results.json().sort(key=lambda x: (packaging.version.parse(x["version"]), datetime.datetime.fromisoformat(x["date"])), reversed=True)
+        return results.json().sort(key=lambda x: (packaging.version.parse(x["version"]), datetime.datetime.fromisoformat(x["date"])), reverse=True)
 
     def get_closest_match_legacy(self, host_version: str, host_build: str):
         # Get the closest match to the provided version
