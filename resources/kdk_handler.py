@@ -37,6 +37,7 @@ class kernel_debug_kit_handler:
         # Note: AppleDB is manually updated, so this is not a perfect solution
 
         OS_DATABASE_LINK = "https://api.appledb.dev/main.json"
+        VERSION_PATTERN = re.compile(r"\d+\.\d+(\.\d+)?")
 
         parsed_host_version = cast(packaging.version.Version, packaging.version.parse(host_version))
 
@@ -51,13 +52,13 @@ class kernel_debug_kit_handler:
         macos_builds = [i for i in results.json()["ios"] if i["osType"] == "macOS"]
         # If the version is borked, put it at the bottom of the list
         # Would omit it, but can't do that in this lambda
-        macos_builds.sort(key=lambda x: (packaging.version.parse(re.match(r"\d+\.\d+", x["version"]).group() if re.match(r"\d+\.\d+", x["version"]) else "0.0.0"), datetime.datetime.fromisoformat(x["released"])), reverse=True)  # type: ignore
+        macos_builds.sort(key=lambda x: (packaging.version.parse(VERSION_PATTERN.match(x["version"]).group() if VERSION_PATTERN.match(x["version"]) else "0.0.0"), datetime.datetime.fromisoformat(x["released"])), reverse=True)  # type: ignore
 
         # Iterate through, find build that is closest to the host version
         # Use date to determine which is closest
         for build_info in macos_builds:
             if build_info["osType"] == "macOS":
-                raw_version = re.match(r"\d+\.\d+", build_info["version"])
+                raw_version = VERSION_PATTERN.match(build_info["version"])
                 if not raw_version:
                     # Skip if version is borked
                     continue
