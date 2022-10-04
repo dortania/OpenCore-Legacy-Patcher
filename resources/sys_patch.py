@@ -136,7 +136,7 @@ class PatchSysVolume:
         utilities.elevated(
             # Only merge '/System/Library/Extensions'
             # 'Kernels' and 'KernelSupport' is wasted space for root patching (we don't care above dev kernels)
-            ["ditto", f"{kdk_path}/System/Library/Extensions", f"{self.mount_location}/System/Library/Extensions"],
+            ["rsync", "-r", "-i", "-a", f"{kdk_path}/System/Library/Extensions/", f"{self.mount_location}/System/Library/Extensions"],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )
         # During reversing, we found that kmutil uses this path to determine whether the KDK was successfully merged
