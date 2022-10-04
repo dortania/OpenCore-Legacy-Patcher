@@ -610,8 +610,11 @@ def block_os_updaters():
 
 def check_boot_mode():
     # Check whether we're in Safe Mode or not
-    sys_plist = plistlib.loads(subprocess.run(["system_profiler", "SPSoftwareDataType"], stdout=subprocess.PIPE).stdout)
-    return sys_plist[0]["_items"][0]["boot_mode"]
+    try:
+        sys_plist = plistlib.loads(subprocess.run(["system_profiler", "SPSoftwareDataType"], stdout=subprocess.PIPE).stdout)
+        return sys_plist[0]["_items"][0]["boot_mode"]
+    except (KeyError, TypeError, plistlib.InvalidFileException):
+        return None
 
 def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
     # When running through our GUI, we run as root, however we do not get uid 0
