@@ -142,7 +142,7 @@ class kernel_debug_kit_handler:
             download_link = self.generate_kdk_link(version, build)
             closest_match_download_link, closest_version, closest_build = self.get_closest_match_legacy(version, build)
 
-        print(f"- Downloading Apple KDK for macOS {version} build {build}")
+        print(f"- Checking for KDK matching macOS {version} build {build}")
         # download_link is None if no matching KDK is found, so we'll fall back to the closest match
         result = self.verify_apple_developer_portal(download_link) if download_link else 1
         if result == 0:
@@ -151,11 +151,14 @@ class kernel_debug_kit_handler:
             print("- Could not find KDK, finding closest match")
 
             if self.is_kdk_installed(closest_build) is True:
+                print(f"- Closet Build ({closest_build}) already installed")
                 self.remove_unused_kdks(closest_build)
                 return True, "", closest_build
 
             if closest_match_download_link is None:
-                return False, "Could not find KDK for host, nor closest match", ""
+                msg = "Could not find KDK for host, nor closest match"
+                print(f"- {msg}")
+                return False, msg, ""
 
             print(f"- Closest match: {closest_version} build {closest_build}")
             result = self.verify_apple_developer_portal(closest_match_download_link)
@@ -164,17 +167,24 @@ class kernel_debug_kit_handler:
                 print("- Downloading KDK")
                 download_link = closest_match_download_link
             elif result == 1:
-                print("- Could not find KDK")
-                return False, "Could not find KDK for host on Apple's servers, nor closest match", ""
+                msg = "Could not find KDK for host on Apple's servers, nor closest match"
+                print(f"- {msg}")
+                return False, msg, ""
             elif result == 2:
-                return False, "Could not contact Apple download servers", ""
+                msg = "Could not contact Apple download servers"
+                print(f"- {msg}")
+                return False, msg, ""
         elif result == 2:
-            return False, "Could not contact Apple download servers", ""
+            msg = "Could not contact Apple download servers"
+            print(f"- {msg}")
+            return False, msg, ""
 
         if utilities.download_apple_developer_portal(download_link, self.constants.kdk_download_path):
             self.remove_unused_kdks(detected_build)
             return True, "", detected_build
-        return False, "Failed to download KDK", ""
+        msg = "Failed to download KDK"
+        print(f"- {msg}")
+        return False, msg, ""
 
     def is_kdk_installed(self, build):
         if Path("/Library/Developer/KDKs").exists():
@@ -191,7 +201,7 @@ class kernel_debug_kit_handler:
         if not Path("/Library/Developer/KDKs").exists():
             return
 
-        print("- Removing unused KDKs")
+        print("- Cleaning unused KDKs")
         for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
             if kdk_folder.is_dir():
                 if kdk_folder.name.endswith(".kdk"):
