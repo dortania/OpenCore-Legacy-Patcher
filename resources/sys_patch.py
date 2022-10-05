@@ -122,19 +122,19 @@ class PatchSysVolume:
                 if kdk_result is False:
                     raise Exception(f"Unable to download KDK: {error_msg}")
             sys_patch_helpers.sys_patch_helpers(self.constants).install_kdk()
-        else:
-            oclp_plist = Path(self.mount_location) / Path("/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist")
-            if (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists() and oclp_plist.exists():
-                # KDK was already merged, check if the KDK used is the same as the one we're using
-                # If not, we'll rsync over with the new KDK
-                try:
-                    oclp_plist_data = plistlib.load(open(oclp_plist, "rb"))
-                    if "Kernel Debug Kit Used" in oclp_plist_data:
-                        if oclp_plist_data["Kernel Debug Kit Used"] == kdk_path:
-                            print("- Matching KDK determined to already be merged, skipping")
-                            return
-                except:
-                    pass
+
+        oclp_plist = Path("/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist")
+        if (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists() and oclp_plist.exists():
+            # KDK was already merged, check if the KDK used is the same as the one we're using
+            # If not, we'll rsync over with the new KDK
+            try:
+                oclp_plist_data = plistlib.load(open(oclp_plist, "rb"))
+                if "Kernel Debug Kit Used" in oclp_plist_data:
+                    if oclp_plist_data["Kernel Debug Kit Used"] == str(kdk_path):
+                        print("- Matching KDK determined to already be merged, skipping")
+                        return
+            except:
+                pass
 
         kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=True, override_build=downloaded_kdk)
         if kdk_path is None:
