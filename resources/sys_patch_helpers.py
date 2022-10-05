@@ -80,6 +80,15 @@ class sys_patch_helpers:
             return
 
         print(f"- Installing downloaded KDK (this may take a while)")
+
+        print("  - Verifying Checksum of KDK")
+        # hdiutil verify ./KDK.dmg
+        result = subprocess.run(["hdiutil", "verify", self.constants.kdk_download_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if result.returncode != 0:
+            print(f"Error: Kernel Debug Kit checksum verification failed!")
+            print(f"Output: {result.stderr}")
+            raise Exception("Kernel Debug Kit checksum verification failed!")
+
         with tempfile.TemporaryDirectory() as mount_point:
             utilities.process_status(subprocess.run(["hdiutil", "attach", self.constants.kdk_download_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             # Install the KDK
