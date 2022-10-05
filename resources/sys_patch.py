@@ -122,8 +122,7 @@ class PatchSysVolume:
                 if kdk_result is False:
                     raise Exception(f"Unable to download KDK: {error_msg}")
             sys_patch_helpers.sys_patch_helpers(self.constants).install_kdk()
-
-        kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=True, override_build=downloaded_kdk)
+            kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=True, override_build=downloaded_kdk)
 
         oclp_plist = Path("/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist")
         if (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists() and oclp_plist.exists():
