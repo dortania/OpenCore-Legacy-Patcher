@@ -94,7 +94,7 @@ class sys_patch_helpers:
 
         kdk_array = []
 
-        search_build = self.constants.detected_os
+        search_build = self.constants.detected_os_build
         if override_build:
             search_build = override_build
 
