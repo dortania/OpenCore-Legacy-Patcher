@@ -1397,6 +1397,27 @@ class BuildOpenCore:
             for i in self.constants.build_path.rglob("__MACOSX"):
                 shutil.rmtree(i)
 
+        # Remove unused plugins inside of kexts
+        # Following plugins are sometimes unused as there's different variants machines need
+        known_unused_plugins = [
+            "AirPortBrcm4331.kext",
+            "AirPortAtheros40.kext",
+            "AppleAirPortBrcm43224.kext",
+            "AirPortBrcm4360_Injector.kext",
+            "AirPortBrcmNIC_Injector.kext"
+        ]
+        for kext in Path(self.constants.opencore_release_folder / Path("EFI/OC/Kexts")).glob("*.kext"):
+            for plugin in Path(kext / "Contents/PlugIns/").glob("*.kext"):
+                should_remove = True
+                for enabled_kexts in self.config["Kernel"]["Add"]:
+                    if enabled_kexts["BundlePath"].endswith(plugin.name):
+                        should_remove = False
+                        break
+                if should_remove:
+                    if plugin.name not in known_unused_plugins:
+                        raise Exception(f" - Unknown plugin found: {plugin.name}")
+                    shutil.rmtree(plugin)
+
         Path(self.constants.opencore_zip_copied).unlink()
 
     def sign_files(self):
@@ -1451,6 +1472,18 @@ class BuildOpenCore:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers") / Path(driver["Path"])).exists():
                 print(f"  - Missing driver: {driver['Path']}")
                 raise Exception(f"Missing driver: {driver['Path']}")
+
+        # Validating local files
+        # Validate Tools
+        for tool_files in Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools")).glob("*"):
+            if tool_files.name not in [x["Path"] for x in config_plist["Misc"]["Tools"]]:
+                print(f"  - Missing tool from config: {tool_files.name}")
+                raise Exception(f"Missing tool from config: {tool_files.name}")
+
+        for driver_file in Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers")).glob("*"):
+            if driver_file.name not in [x["Path"] for x in config_plist["UEFI"]["Drivers"]]:
+                print(f"- Found extra driver: {driver_file.name}")
+                raise Exception(f"Found extra driver: {driver_file.name}")
 
     def build_opencore(self):
         self.build_efi()
