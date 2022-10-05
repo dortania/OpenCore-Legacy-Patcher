@@ -197,4 +197,4 @@ class kernel_debug_kit_handler:
                 if kdk_folder.name.endswith(".kdk"):
                     if not kdk_folder.name.endswith(f"{exclude_build}.kdk"):
                         print(f"  - Removing {kdk_folder.name}")
-                        utilities.elevated(["sudo", "rm", "-rf", kdk_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                        utilities.elevated(["rm", "-rf", kdk_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
