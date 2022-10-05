@@ -9,6 +9,8 @@ from typing import cast
 import packaging.version
 import requests
 
+import subprocess
+
 from resources import utilities
 from resources.constants import Constants
 
@@ -111,8 +113,9 @@ class kernel_debug_kit_handler:
     def download_kdk(self, version: str, build: str):
         detected_build = build
 
-        if self.is_kdk_installed(build) is True:
+        if self.is_kdk_installed(detected_build) is True:
             print("- KDK is already installed")
+            self.remove_unused_kdks(detected_build)
             return True, "", detected_build
 
         download_link = None
@@ -148,6 +151,7 @@ class kernel_debug_kit_handler:
             print("- Could not find KDK, finding closest match")
 
             if self.is_kdk_installed(closest_build) is True:
+                self.remove_unused_kdks(closest_build)
                 return True, "", closest_build
 
             if closest_match_download_link is None:
@@ -168,6 +172,7 @@ class kernel_debug_kit_handler:
             return False, "Could not contact Apple download servers", ""
 
         if utilities.download_apple_developer_portal(download_link, self.constants.kdk_download_path):
+            self.remove_unused_kdks(detected_build)
             return True, "", detected_build
         return False, "Failed to download KDK", ""
 
@@ -178,3 +183,18 @@ class kernel_debug_kit_handler:
                     if file.name.endswith(f"{build}.kdk"):
                         return True
         return False
+
+    def remove_unused_kdks(self, exclude_build):
+        if self.constants.should_nuke_kdks is False:
+            return
+
+        if not Path("/Library/Developer/KDKs").exists():
+            return
+
+        print("- Removing unused KDKs")
+        for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
+            if kdk_folder.is_dir():
+                if kdk_folder.name.endswith(".kdk"):
+                    if not kdk_folder.name.endswith(f"{exclude_build}.kdk"):
+                        print(f"  - Removing {kdk_folder.name}")
+                        utilities.elevated(["sudo", "rm", "-rf", kdk_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

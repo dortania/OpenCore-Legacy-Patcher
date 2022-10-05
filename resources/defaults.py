@@ -69,6 +69,10 @@ class generate_defaults:
         if global_settings.global_settings().read_property("Force_Web_Drivers") is True:
             self.constants.force_nv_web = True
 
+        result = global_settings.global_settings().read_property("ShouldNukeKDKs")
+        if result is False:
+            self.constants.should_nuke_kdks = False
+
     def smbios_probe(self):
         if not self.host_is_target:
             if self.model in ["MacPro4,1", "MacPro5,1"]:

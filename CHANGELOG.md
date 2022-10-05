@@ -34,6 +34,7 @@
   - Implement automatic Kernel Debug Kit downloader for systems requiring Boot/SysKC rebuilding
     - ex. AMD GCN
     - Relies on N-1 system for when matching KDK is not present
+  - Delete unused KDKs in `/Library/Developer/KDKs` during root patching
 - Increment Binaries:
   - OpenCorePkg 0.8.5 release
   - Lilu 1.6.2 - release

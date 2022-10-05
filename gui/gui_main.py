@@ -2589,13 +2589,24 @@ class wx_python_gui:
             self.disable_amfi_checkbox.Disable()
 
 
+        # Delete Unused KDKs during patching
+        self.delete_unused_kdks_checkbox = wx.CheckBox(self.frame_modal, label="Delete Unused KDKs")
+        self.delete_unused_kdks_checkbox.SetValue(self.constants.should_nuke_kdks)
+        self.delete_unused_kdks_checkbox.Bind(wx.EVT_CHECKBOX, self.delete_unused_kdks_click)
+        self.delete_unused_kdks_checkbox.SetPosition(wx.Point(
+            self.disable_amfi_checkbox.GetPosition().x,
+            self.disable_amfi_checkbox.GetPosition().y + self.disable_amfi_checkbox.GetSize().height
+        ))
+        self.delete_unused_kdks_checkbox.SetToolTip(wx.ToolTip("This will delete unused KDKs during root patching.\nThis will save space on your drive, however can be disabled if you wish to keep KDKs installed."))
+
+
         # Set Ignore App Updates
         self.set_ignore_app_updates_checkbox = wx.CheckBox(self.frame_modal, label="Ignore App Updates")
         self.set_ignore_app_updates_checkbox.SetValue(self.constants.ignore_updates)
         self.set_ignore_app_updates_checkbox.Bind(wx.EVT_CHECKBOX, self.set_ignore_app_updates_click)
         self.set_ignore_app_updates_checkbox.SetPosition(wx.Point(
-            self.disable_amfi_checkbox.GetPosition().x,
-            self.disable_amfi_checkbox.GetPosition().y + self.disable_amfi_checkbox.GetSize().height))
+            self.delete_unused_kdks_checkbox.GetPosition().x,
+            self.delete_unused_kdks_checkbox.GetPosition().y + self.delete_unused_kdks_checkbox.GetSize().height))
         self.set_ignore_app_updates_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore will ignore App Updates on launch.\nEnable this option if you do not want to be prompted for App Updates"))
 
         # Button: Developer Debug Info
@@ -2618,6 +2629,15 @@ class wx_python_gui:
 
         self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
+
+    def delete_unused_kdks_click(self, event):
+        if self.delete_unused_kdks_checkbox.GetValue() is True:
+            print("Nuke KDKs enabled")
+            self.constants.should_nuke_kdks = True
+        else:
+            print("Nuke KDKs disabled")
+            self.constants.should_nuke_kdks = False
+        global_settings.global_settings().write_property("ShouldNukeKDKs", self.constants.should_nuke_kdks)
 
     def disable_library_validation_click(self, event):
         if self.disable_library_validation_checkbox.GetValue():

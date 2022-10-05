@@ -114,6 +114,7 @@ class Constants:
         self.wxpython_variant = False #     Determine if using wxPython variant
         self.unpack_thread = None  #        Determine if unpack thread finished
         self.cli_mode = False  #            Determine if running in CLI mode
+        self.should_nuke_kdks = True  #       Determine if KDKs should be nuked if unused in /L*/D*/KDKs
 
         ## Hardware
         self.computer: device_probe.Computer = None  # type: ignore
