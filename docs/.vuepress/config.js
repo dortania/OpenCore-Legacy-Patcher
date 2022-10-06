@@ -101,6 +101,14 @@ module.exports = {
             ]
         },
         {
+            title: 'macOS Ventura',
+            collapsable: false,
+            sidebarDepth: 1,
+            children: [
+				['VENTURA-DROP', 'macOS Ventura Support'],
+            ]
+        },
+        {
             title: 'Misc',
             collapsable: false,
             sidebarDepth: 1,
