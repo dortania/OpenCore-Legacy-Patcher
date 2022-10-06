@@ -1,11 +1,10 @@
 ![](../images/ventura.png)
 
-With OpenCore Legacy Patcher 0.5.0, support for macOS Ventura has been implemented for most Metal supported Macs. This page informs users of the current status and will be updated as new patch sets are developed and added to our patcher.
-
+With OpenCore Legacy Patcher 0.5.0, support for macOS Ventura has been implemented for most Metal capable Macs. This page informs users of the current status and will be updated as new patch sets are developed and added to our patcher.
 
 ## Newly dropped hardware
 
-Ventura's release has dropped a huge amount of Intel hardware, requiring support for the following models to be added into OpenCore Legacy Patcher:
+Ventura's release dropped a huge amount of Intel hardware, requiring support for the following models to be added into OpenCore Legacy Patcher:
 
 * iMac16,1 (21.5-inch, Late 2015)
 * iMac16,2 (21.5-inch 4K, Late 2015)
@@ -20,8 +19,6 @@ Ventura's release has dropped a huge amount of Intel hardware, requiring support
 * MacBookPro13,2 (13-inch, Late 2016)
 * MacBookPro13,3 (15-inch, Late 2016)
 * MacPro6,1 (Late 2013)
-
-
 
 ## Current status
 
