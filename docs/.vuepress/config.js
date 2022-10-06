@@ -93,19 +93,20 @@ module.exports = {
 
         },
         {
-            title: 'macOS Monterey',
-            collapsable: false,
-            sidebarDepth: 1,
-            children: [
-				['MONTEREY-DROP', 'macOS Monterey Support'],
-            ]
-        },
-        {
             title: 'macOS Ventura',
             collapsable: false,
             sidebarDepth: 1,
             children: [
 				['VENTURA-DROP', 'macOS Ventura Support'],
+            ]
+        },      
+		  
+	{
+            title: 'macOS Monterey',
+            collapsable: false,
+            sidebarDepth: 1,
+            children: [
+				['MONTEREY-DROP', 'macOS Monterey Support'],
             ]
         },
         {
