@@ -725,7 +725,7 @@ class Computer:
         leafs = []
         result = subprocess.run("sysctl machdep.cpu.leaf7_features".split(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
         if result.returncode == 0:
-            leafs.append(result.stdout.decode().partition(": ")[2].strip().split(" "))
+            return result.stdout.decode().partition(": ")[2].strip().split(" ")
         return leafs
 
     def bluetooth_probe(self):
