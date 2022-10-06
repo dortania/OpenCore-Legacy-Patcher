@@ -187,10 +187,22 @@ class kernel_debug_kit_handler:
         return False, msg, ""
 
     def is_kdk_installed(self, build):
+        kexts_to_check = [
+            "System.kext/PlugIns/Libkern.kext/Libkern",
+            "apfs.kext/Contents/MacOS/apfs",
+            "IOUSBHostFamily.kext/Contents/MacOS/IOUSBHostFamily",
+            "AMDRadeonX6000.kext/Contents/MacOS/AMDRadeonX6000",
+        ]
+
         if Path("/Library/Developer/KDKs").exists():
             for file in Path("/Library/Developer/KDKs").iterdir():
                 if file.is_dir():
                     if file.name.endswith(f"{build}.kdk"):
+                        for kext in kexts_to_check:
+                            if not Path(f"/Library/Developer/KDKs/{file}/System/Library/Extensions/{kext}").exists():
+                                print("- Corrupted KDK found, removing")
+                                utilities.elevated(["rm", "-rf", file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                                return False
                         return True
         return False
 
