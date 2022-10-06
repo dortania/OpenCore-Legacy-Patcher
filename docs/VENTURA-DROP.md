@@ -1,11 +1,11 @@
 ![](../images/ventura.png)
 
-With OpenCore Legacy Patcher 0.5.0, support for macOS Ventura has been implemented for Metal capable Macs.
+With OpenCore Legacy Patcher 0.5.0, support for macOS Ventura has been implemented for most Metal supported Macs. This page informs users of the current status and will be updated as new patch sets are developed and added to our patcher.
 
 
 ## Newly dropped hardware
 
-Ventura's release yet again dropped a huge amount of Intel hardware, requiring support for the following models to be added into OpenCore Legacy Patcher:
+Ventura's release has dropped a huge amount of Intel hardware, requiring support for the following models to be added into OpenCore Legacy Patcher:
 
 * iMac16,1 (21.5-inch, Late 2015)
 * iMac16,2 (21.5-inch 4K, Late 2015)
@@ -33,13 +33,14 @@ Refer to [this GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher
 
 BCM94328, BCM94322 and Atheros WiFi cards will not function under Ventura, as Ventura has broken legacy WiFi patches.
 
+## Ivy Bridge and older CPU support (Pre-AVX 2.0)
+
+OpenCore Legacy Patcher supports booting and updates on these machines, a way to implement automatic dyld cache swap was added. However, power management is currently not functional.
+
+* Note: AVX 2.0 is required for Vega and Navi drivers, making these cards non-functional under Ventura when a Pre-AVX 2.0 CPU is used, which includes all classic Mac Pros. Therefore Polaris is the newest architecture functional with these machines.
 
 ## Non-Metal support
 
-Apple has changed the graphics stack significantly to support new features (such as Stage Manager) by adding a new layer called WindowManager, breaking all previous patches. 
-Therefore an estimated time for non-Metal support cannot be provided, as this has created a much greater challenge.
+Currently not supported. Apple has changed the graphics stack significantly to support new features (such as Stage Manager) by adding a new layer called WindowManager, breaking all previous patches. 
+Therefore an estimated time for non-Metal support cannot be provided, as this has created a much greater challenge. 
 
-## Pre-AVX 2.0
-
-OpenCore Legacy Patcher fully supports booting and updates on these machines, a way to implement automatic dyld cache swap was added. 
-However, AVX 2.0 is still required for Vega and Navi drivers, meaning these cards won't function under Ventura when a Pre-AVX 2.0 CPU is used.
