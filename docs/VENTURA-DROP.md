@@ -22,7 +22,7 @@ Ventura's release dropped a huge amount of Intel hardware, requiring support for
 
 ## Current status
 
-For the most part, Ventura is usable on all Metal supported Macs, having only a few minor known issues. Refer to [this pull request](https://github.com/dortania/OpenCore-Legacy-Patcher/pull/999) and [this GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/998#issuecomment-1222926337) to see up-to-date status and information about issues with Ventura. 
+For the most part, Ventura is usable on all Metal supported Macs, having only a few minor known issues. Refer to [this pull request](https://github.com/dortania/OpenCore-Legacy-Patcher/pull/999) and [this GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008#issue-1400530902) to see up-to-date status and information about issues with Ventura. 
 
 Currently the only machine unable to boot is the Mac Pro Late 2013, having an issue with display initialization. More information [here](https://github.com/acidanthera/bugtracker/issues/2126).
 
