@@ -40,7 +40,7 @@
   - OpenCorePkg 0.8.5 release
   - Lilu 1.6.2 - release
   - FeatureUnlock 1.0.9 release
-  - PatcherSupportPkg 0.6.7 - release
+  - PatcherSupportPkg 0.6.8 - release
   - BrcmPatchRAM 2.6.4 - release
   - AutoPkgInstaller 1.0.1 - release
   - CryptexFixup 1.0.0 - release
