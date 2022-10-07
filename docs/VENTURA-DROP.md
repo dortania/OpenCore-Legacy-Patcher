@@ -22,12 +22,11 @@ Ventura's release dropped a huge amount of Intel hardware, requiring support for
 
 ## Current status
 
-For the most part, Ventura is usable on all Metal supported Macs (2012 and newer), having only a few minor known issues. However, 2012 Macs with Ivy Bridge currently have non-functional power management.
+Ventura is mostly usable on all Metal capable Macs (2012 and newer), having only a few minor known issues. However, 2012 Macs with Ivy Bridge currently have non-functional power management, leading to higher energy consumption. A display init issue affecting the Mac Pro Late 2013 (MacPro6,1) is currently making it unable to boot Ventura, more information [here](https://github.com/acidanthera/bugtracker/issues/2126).
 
 Refer to [this pull request](https://github.com/dortania/OpenCore-Legacy-Patcher/pull/999) and [this GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008#issue-1400530902) to see up-to-date status and information about issues with Ventura. 
 
-Currently the Mac Pro Late 2013 is unable to boot Ventura, having an issue with display initialization. More information [here](https://github.com/acidanthera/bugtracker/issues/2126).
-
+The team is doing their best to investigate the following issues, however no estimated time can be provided.
 
 
 ### Currently broken hardware
@@ -36,7 +35,7 @@ BCM94328, BCM94322 and Atheros WiFi cards will not function under Ventura, as Ve
 
 ## Ivy Bridge and older CPU support (Pre-AVX 2.0)
 
-OpenCore Legacy Patcher supports booting and updates on these machines, a way to implement automatic dyld cache swap was added. However, power management is currently not functional which means the CPU and GPU may constantly run on higher clocks, causing more energy consumption.
+OpenCore Legacy Patcher supports booting and updates on these machines, a way to implement automatic dyld cache swap was added. However as previously stated, power management is currently non-functional which means the CPU and GPU may constantly run on higher clocks, causing more energy consumption, battery drain and higher temperatures.
 
 * Note: AVX 2.0 is required for Vega and Navi drivers, making these cards non-functional under Ventura when a Pre-AVX 2.0 CPU is used, which includes all classic Mac Pros. Therefore Polaris is the newest architecture functional with these machines.
 
