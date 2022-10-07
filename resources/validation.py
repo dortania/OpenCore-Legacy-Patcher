@@ -12,6 +12,7 @@ def validate(settings):
         example_data.MacBookPro.MacBookPro111_Stock,
         example_data.MacBookPro.MacBookPro133_Stock,
         # example_data.MacBookPro.MacBookPro171_Stock,
+        example_data.Macmini.Macmini52_Stock,
         example_data.Macmini.Macmini61_Stock,
         example_data.Macmini.Macmini71_Stock,
         # example_data.Macmini.Macmini91_Stock,

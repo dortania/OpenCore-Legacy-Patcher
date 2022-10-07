@@ -169,6 +169,53 @@ class MacBookPro:
 
 class Macmini:
 
+    Macmini52_Stock = device_probe.Computer(
+        real_model='Macmini5,2',
+        real_board_id='Mac-4BC72D62AD45599E',
+        reported_model='Macmini5,2',
+        reported_board_id='Mac-4BC72D62AD45599E',
+        build_model='Macmini5,2',
+        gpus=[
+            device_probe.Intel(vendor_id=32902, device_id=294, class_code=229376, name='IGPU', model='Intel HD Graphics 3000', acpi_path='IOACPIPlane:/_SB/PCI0@0/IGPU@20000', pci_path='PciRoot(0x0)/Pci(0x2,0x0)', disable_metal=False, force_compatible=False),
+            device_probe.AMD(vendor_id=4098, device_id=26433, class_code=196608, name='GFX0', model='AMD Radeon HD 6630M', acpi_path='IOACPIPlane:/_SB/PCI0@0/P0P2@10000/GFX0@0', pci_path='PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)', disable_metal=False, force_compatible=False)],
+        igpu=device_probe.Intel(vendor_id=32902, device_id=294, class_code=229376, name='IGPU', model='Intel HD Graphics 3000', acpi_path='IOACPIPlane:/_SB/PCI0@0/IGPU@20000', pci_path='PciRoot(0x0)/Pci(0x2,0x0)', disable_metal=False, force_compatible=False),
+        dgpu=device_probe.AMD(vendor_id=4098, device_id=26433, class_code=196608, name='GFX0', model='AMD Radeon HD 6630M', acpi_path='IOACPIPlane:/_SB/PCI0@0/P0P2@10000/GFX0@0', pci_path='PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)', disable_metal=False, force_compatible=False),
+        storage=[
+            device_probe.SATAController(vendor_id=32902, device_id=7171, class_code=67073, name='SATA', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/SATA@1f0002', pci_path='PciRoot(0x0)/Pci(0x1f,0x2)', disable_metal=False, force_compatible=False)
+        ],
+        usb_controllers=[
+            device_probe.EHCIController(vendor_id=32902, device_id=7213, class_code=787232, name='EHC2', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/EHC2@1a0007', pci_path='PciRoot(0x0)/Pci(0x1a,0x7)', disable_metal=False, force_compatible=False),
+            device_probe.EHCIController(vendor_id=32902, device_id=7206, class_code=787232, name='EHC1', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/EHC1@1d0007', pci_path='PciRoot(0x0)/Pci(0x1d,0x7)', disable_metal=False, force_compatible=False),
+            device_probe.UHCIController(vendor_id=32902, device_id=7212, class_code=787200, name='UHC5', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/UHC5@1a0000', pci_path='PciRoot(0x0)/Pci(0x1a,0x0)', disable_metal=False, force_compatible=False),
+            device_probe.UHCIController(vendor_id=32902, device_id=7207, class_code=787200, name='UHC1', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/UHC1@1d0000', pci_path='PciRoot(0x0)/Pci(0x1d,0x0)', disable_metal=False, force_compatible=False)
+        ],
+        sdxc_controller=[
+            device_probe.SDXCController(vendor_id=5348, device_id=5820, class_code=525569, name='SDXC', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/RP01@1c0000/SDXC@1', pci_path='PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x1)', disable_metal=False, force_compatible=False)
+        ],
+        ethernet=[
+            device_probe.BroadcomEthernet(vendor_id=5348, device_id=5812, class_code=131072, name='GIGE', model='Broadcom 57765-B0', acpi_path='IOACPIPlane:/_SB/PCI0@0/RP01@1c0000/GIGE@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x0)/Pci(0x0,0x0)', disable_metal=False, force_compatible=False)
+        ],
+        wifi=device_probe.Broadcom(vendor_id=5348, device_id=17201, class_code=163840, name='ARPT', model=None, acpi_path='IOACPIPlane:/_SB/PCI0@0/RP02@1c0001/ARPT@0', pci_path='PciRoot(0x0)/Pci(0x1c,0x1)/Pci(0x0,0x0)', disable_metal=False, force_compatible=False),
+        cpu=device_probe.CPU(
+            name='Intel(R) Core(TM) i5-2520M CPU @ 2.50GHz',
+            flags=['FPU', 'VME', 'DE', 'PSE', 'TSC', 'MSR', 'PAE', 'MCE', 'CX8', 'APIC', 'SEP', 'MTRR', 'PGE', 'MCA', 'CMOV', 'PAT', 'PSE36', 'CLFSH', 'DS', 'ACPI', 'MMX', 'FXSR', 'SSE', 'SSE2', 'SS', 'HTT', 'TM', 'PBE', 'SSE3', 'PCLMULQDQ', 'DTES64', 'MON', 'DSCPL', 'VMX', 'SMX', 'EST', 'TM2', 'SSSE3', 'CX16', 'TPR', 'PDCM', 'SSE4.1', 'SSE4.2', 'x2APIC', 'POPCNT', 'AES', 'PCID', 'XSAVE', 'OSXSAVE', 'TSCTMR', 'AVX1.0'],
+            leafs=['']
+        ),
+        oclp_version='0.5.0',
+        opencore_version='REL-083-2022-08-01',
+        opencore_path='PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x0,0x0,0x0)/HD(1,GPT,D011D782-7E9A-459B-905D-9DA8D6494A53,0x28,0x64000)/EFI\\OC\\OpenCore.efi',
+        bluetooth_chipset='BRCM20702 Hub',
+        ambient_light_sensor=False,
+        third_party_sata_ssd=True,
+        secure_boot_model='x86legacyap',
+        secure_boot_policy=0,
+        oclp_sys_version='v0.4.11',
+        oclp_sys_date='October 06, 2022 @ 10:06:53',
+        oclp_sys_url=None,
+        firmware_vendor='Apple',
+        rosetta_active=False
+    )
+
     Macmini61_Stock = device_probe.Computer(
         real_model='Macmini6,1',
         real_board_id='Mac-031AEE4D24BFF0B1',
