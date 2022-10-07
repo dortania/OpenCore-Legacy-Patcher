@@ -446,10 +446,22 @@ class BuildOpenCore:
             shutil.copy(self.constants.windows_ssdt_path, self.constants.acpi_path)
 
         # In macOS Ventura, Apple dropped AppleIntelCPUPowerManagement* kexts as they're unused on Haswell+
-        # However re-injecting the AICPUPM kexts is not enough, as Apple had 'intel_cpupm_matching' stripped from the kernel:
-        # https://github.com/apple-oss-distributions/xnu/blob/e7776783b89a353188416a9a346c6cdb4928faad/osfmk/i386/pal_routines.h#L153-L163
+        # However re-injecting the AICPUPM kexts is not enough, as Ventura changed how 'intel_cpupm_matching' is set:
+        #    https://github.com/apple-oss-distributions/xnu/blob/e7776783b89a353188416a9a346c6cdb4928faad/osfmk/i386/pal_routines.h#L153-L163
         #
-        # To resolve, AICPUPM.kext was modified to no longer check for the presence of 'intel_cpupm_matching'
+        # Specifically Apple has this logic for power management:
+        #  - 0: Kext Based Power Management
+        #  - 3: Kernel Based Power Management (For Haswell+ and Virtual Machines)
+        #  - 4: Generic Virtual Machine Power Management
+        #
+        # Apple determines which to use by verifying whether 'plugin-type' exists in ACPI (with a value of 1 for Haswell, 2 for VMs)
+        # By default however, the plugin-type is not set, and thus the default value of '0' is used
+        #    https://github.com/apple-oss-distributions/xnu/blob/e7776783b89a353188416a9a346c6cdb4928faad/osfmk/i386/pal_native.h#L62
+        #
+        # With Ventura, Apple no longer sets '0' as the default value, and instead sets it to '3'
+        # This breaks AppleIntelCPUPowerManagement.kext matching as it no longer matches against the correct criteria
+        #
+        # To resolve, we patched AICPUPM to attach regardless of the value of 'intel_cpupm_matching'
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
             print("- Enabling legacy power management support")
             self.enable_kext("AppleIntelCPUPowerManagement.kext", self.constants.aicpupm_version, self.constants.aicpupm_path)
