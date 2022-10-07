@@ -445,6 +445,16 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "BUF0 to BUF1")["Enabled"] = True
             shutil.copy(self.constants.windows_ssdt_path, self.constants.acpi_path)
 
+        # In macOS Ventura, Apple dropped AppleIntelCPUPowerManagement* kexts as they're unused on Haswell+
+        # However re-injecting the AICPUPM kexts is not enough, as Apple had 'intel_cpupm_matching' stripped from the kernel:
+        # https://github.com/apple-oss-distributions/xnu/blob/e7776783b89a353188416a9a346c6cdb4928faad/osfmk/i386/pal_routines.h#L153-L163
+        #
+        # To resolve, AICPUPM.kext was modified to no longer check for the presence of 'intel_cpupm_matching'
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
+            print("- Enabling legacy power management support")
+            self.enable_kext("AppleIntelCPUPowerManagement.kext", self.constants.aicpupm_version, self.constants.aicpupm_path)
+            self.enable_kext("AppleIntelCPUPowerManagementClient.kext", self.constants.aicpupm_version, self.constants.aicpupm_client_path)
+
         # With macOS Monterey, Apple's SDXC driver requires the system to support VT-D
         # However pre-Ivy Bridge don't support this feature
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:

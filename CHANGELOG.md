@@ -35,6 +35,7 @@
     - ex. AMD GCN
     - Relies on N-1 system for when matching KDK is not present
   - Delete unused KDKs in `/Library/Developer/KDKs` during root patching
+  - Resolve Power Management support for Ivy Bridge and older
 - Increment Binaries:
   - OpenCorePkg 0.8.5 release
   - Lilu 1.6.2 - release

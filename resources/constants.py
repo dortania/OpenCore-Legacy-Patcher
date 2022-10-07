@@ -63,6 +63,7 @@ class Constants:
         self.intel_82574l_version = "1.0.0" #  Intel82574L
         self.intel_8254x_version = "1.0.0" #   AppleIntel8254XEthernet
         self.apple_usb_11_injector = "1.0.0" # AppleUSBUHCI/OHCI
+        self.aicpupm_version = "1.0.0" #       AppleIntelCPUPowerManagement/Client
 
         ## Apple - Dortania Modified
         self.bcm570_version = "1.0.2"  #             CatalinaBCM5701Ethernet
@@ -320,6 +321,14 @@ class Constants:
     @property
     def apple_usb_11_injector_path(self):
         return self.payload_kexts_path / Path(f"USB/USB1.1-Injector-v{self.apple_usb_11_injector}.zip")
+
+    @property
+    def aicpupm_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleIntelCPUPowerManagement-v{self.aicpupm_version}.zip")
+
+    @property
+    def aicpupm_client_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleIntelCPUPowerManagementClient-v{self.aicpupm_version}.zip")
 
     @property
     def mce_path(self):
