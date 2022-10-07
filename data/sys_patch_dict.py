@@ -373,6 +373,27 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
+            # In Ventura, Apple added AVX2.0 code to the OpenCL/GL compilers
+            "AMD OpenCL": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Frameworks": {
+                        "OpenCL.framework": "12.5 non-AVX2.0",
+                        "OpenGL.framework": "12.5 non-AVX2.0",
+                    },
+                },
+            },
+
             "Nvidia Tesla": {
                 "Display Name": "Graphics: Nvidia Tesla",
                 "OS Support": {

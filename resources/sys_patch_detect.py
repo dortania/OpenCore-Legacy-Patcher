@@ -516,6 +516,8 @@ class detect_root_patch:
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"AMD Legacy GCN": all_hardware_patchset["Graphics"]["AMD Legacy GCN"]})
+            if "AVX2" not in self.constants.computer.cpu.leafs:
+                required_patches.update({"AMD OpenCL": all_hardware_patchset["Graphics"]["AMD OpenCL"]})
         if hardware_details["Brightness: Legacy Backlight Control"] is True:
             required_patches.update({"Legacy Backlight Control": all_hardware_patchset["Brightness"]["Legacy Backlight Control"]})
         if hardware_details["Audio: Legacy Realtek"] is True:
