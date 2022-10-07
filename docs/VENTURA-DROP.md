@@ -26,7 +26,7 @@ Ventura is mostly usable on all Metal capable Macs (2012 and newer), having only
 
 Refer to [this pull request](https://github.com/dortania/OpenCore-Legacy-Patcher/pull/999) and [this GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008#issue-1400530902) to see up-to-date status and information about issues with Ventura. 
 
-The team is doing their best to investigate the following issues, however no estimated time can be provided.
+The team is doing their best to investigate and fix the aforementioned issues, however no estimated time can be provided.
 
 
 ### Currently broken hardware
