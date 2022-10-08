@@ -180,6 +180,13 @@ class kernel_debug_kit_handler:
             return False, msg, ""
 
         if utilities.download_apple_developer_portal(download_link, self.constants.kdk_download_path):
+            result = subprocess.run(["hdiutil", "verify", self.constants.kdk_download_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            if result.returncode != 0:
+                print(f"Error: Kernel Debug Kit checksum verification failed!")
+                print(f"Output: {result.stderr}")
+                msg = "Kernel Debug Kit checksum verification failed, please try again.\n\nIf this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)"
+                print(f"- {msg}")
+                return False, msg, ""
             self.remove_unused_kdks(detected_build)
             return True, "", detected_build
         msg = "Failed to download KDK"
