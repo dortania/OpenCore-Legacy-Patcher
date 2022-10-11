@@ -234,14 +234,14 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
                 "Install": {
                     "/System/Library/Frameworks": {
-                        **({ "Metal.framework": "12.5-3802" } if os_major >= os_data.os_data.ventura else {}),
+                        "Metal.framework": "12.5-3802",
                     },
                     "/System/Library/PrivateFrameworks": {
                         "MTLCompiler.framework": "12.5-3802",
                         "GPUCompiler.framework": "12.5-3802",
                     },
                     "/System/Library/Sandbox/Profiles": {
-                        **({ "com.apple.mtlcompilerservice.sb": "12.5-3802" } if os_major >= os_data.os_data.ventura else {}),
+                        "com.apple.mtlcompilerservice.sb": "12.5-3802",
                     }
                 },
             },
