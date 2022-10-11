@@ -494,7 +494,6 @@ class detect_root_patch:
                 if gpu.arch == device_probe.Intel.Archs.Haswell:
                     if "Catalina GVA" in required_patches:
                         del(required_patches["Catalina GVA"])
-                    required_patches.update({"GVA Work-Around": all_hardware_patchset["Graphics"]["GVA Work-Around"]})
                     break
         if hardware_details["Graphics: AMD TeraScale 1"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})

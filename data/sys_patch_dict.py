@@ -246,31 +246,6 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
-            # Resolve AppleGVACore crashing on MacBookPro11,3 due to mixed GPU combo
-            # ie. native Haswell iGPU + non-native Kepler dGPU
-            # This can be remove after 0.4.6 release, as 0.4.5 downgrades to 10.15.7
-            "GVA Work-Around": {
-                "Display Name": "",
-                "OS Support": {
-                    "Minimum OS Support": {
-                        "OS Major": os_data.os_data.monterey,
-                        "OS Minor": 0
-                    },
-                    "Maximum OS Support": {
-                        "OS Major": os_data.os_data.monterey,
-                        "OS Minor": 99
-                    },
-                },
-                "Remove": {
-                    "/System/Library/PrivateFrameworks/AppleGVA.framework/Versions/A": [
-                        "AppleGVA",
-                    ],
-                    "/System/Library/PrivateFrameworks/AppleGVACore.framework/Versions/A": [
-                        "AppleGVACore",
-                    ],
-                },
-            },
-
             # For GPUs last natively supported in Catalina/Big Sur
             # Restores DRM support
             "Catalina GVA": {
