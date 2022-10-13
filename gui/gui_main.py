@@ -1583,17 +1583,29 @@ class wx_python_gui:
         self.grab_installer_data(ias=ias)
 
     def download_macos_click(self, app_dict):
-
-        try:
-            app_major = app_dict['Version'].split(".")[0]
-            if float(app_major) > self.constants.os_support:
-                # Throw pop up warning OCLP does not support this OS
-                os =  os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(app_major))
-                dlg = wx.MessageDialog(self.frame_modal, f"OpenCore Legacy Patcher currently does not support macOS {os}. We highly recommend you select an older installer.\n\nThe newest version we officially support is macOS {os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(str(self.constants.os_support)))}\n\nWould you still want to continue downloading macOS {os}?", "Unsupported OS", wx.YES_NO | wx.ICON_WARNING)
-                if dlg.ShowModal() == wx.ID_NO:
-                    return
-        except ValueError:
-            pass
+        # Unsupported Models include:
+        #   - USB 1.1 machines (Penryn, MacPro3,1-5,1)
+        #   - VBIOS Boot Issue (MacPro6,1)
+        #   - Non-Metal GPUs
+        model = self.constants.custom_model or self.constants.computer.real_model
+        if model in model_array.LegacyGPU or model in ["MacPro3,1", "MacPro4,1", "MacPro5,1", "MacPro6,1"]:
+            try:
+                app_major = app_dict['Version'].split(".")[0]
+                if float(app_major) > self.constants.os_support:
+                    # Throw pop up warning OCLP does not support this OS
+                    os =  os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(app_major))
+                    dlg = wx.MessageDialog(self.frame_modal, f"OpenCore Legacy Patcher currently does not support macOS {os} on your machine ({model}).\n\nThe newest version we officially support is macOS {os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(str(self.constants.os_support)))}. For more information, see the associated Ventura Github Issue.\n\nWould you still want to continue downloading macOS {os}?", "Unsupported OS", style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION)
+                    dlg.SetYesNoCancelLabels("View Github Issue", "Download Anyways", "Cancel")
+                    result = dlg.ShowModal()
+                    if result == wx.ID_YES:
+                        webbrowser.open("https://github.com/dortania/OpenCore-Legacy-Patcher/issues/998")
+                        return
+                    elif result == wx.ID_NO:
+                        pass
+                    else:
+                        return
+            except ValueError:
+                pass
 
         # Ensure we have space to both download and extract the installer
         host_space = utilities.get_free_space()
