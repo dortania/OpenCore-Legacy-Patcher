@@ -218,7 +218,6 @@ class generate_defaults:
                 self.constants.disable_cs_lv = True
 
                 if gpu in [
-                    device_probe.NVIDIA.Archs.Kepler,
                     device_probe.AMD.Archs.Legacy_GCN_7000,
                     device_probe.AMD.Archs.Legacy_GCN_8000,
                     device_probe.AMD.Archs.Legacy_GCN_9000,
