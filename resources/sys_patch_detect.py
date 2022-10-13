@@ -83,9 +83,8 @@ class detect_root_patch:
                         ):
                             self.kepler_gpu = True
                             self.supports_metal = True
-                            if self.constants.detected_os > os_data.os_data.ventura:
+                            if self.constants.detected_os >= os_data.os_data.ventura:
                                 self.amfi_must_disable = True
-                                self.amfi_shim_bins = True
                 elif gpu.arch in [
                     device_probe.NVIDIA.Archs.Fermi,
                     device_probe.NVIDIA.Archs.Kepler,
@@ -482,7 +481,7 @@ class detect_root_patch:
             required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
             required_patches.update({"Non-Metal Enforcement": all_hardware_patchset["Graphics"]["Non-Metal Enforcement"]})
         if hardware_details["Graphics: Nvidia Kepler"] is True:
-            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Revert Metal Downgrade": all_hardware_patchset["Graphics"]["Revert Metal Downgrade"]})
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})

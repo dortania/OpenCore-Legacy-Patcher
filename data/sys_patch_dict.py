@@ -79,8 +79,10 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
                 "Install Non-Root": {
                     "/Library/Application Support/SkyLightPlugins": {
-                        **({ "DropboxHack.dylib": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
-                        **({ "DropboxHack.txt":   "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
+                        **({ "DropboxHack.dylib":    "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
+                        **({ "DropboxHack.txt":      "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
+                        **({ "CatalystButton.dylib": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
+                        **({ "CatalystButton.txt":   "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
                     },
                 },
                 "Processes": {
@@ -188,6 +190,33 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "Metal.framework":                   "12.5",
                         "MetalPerformanceShaders.framework": "12.5",
                     },
+                },
+            },
+
+            # Temporary work-around for Kepler GPUs on Ventura
+            # We removed the reliance on Metal.framework downgrade, however the new Kepler
+            # patchset breaks with the old Metal. Thus we need to ensure stock variant is used
+            # Remove this when OCLP is merged onto mainline
+            "Revert Metal Downgrade": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 99
+                    },
+                },
+                "Remove": {
+                    "/System/Library/Frameworks/Metal.framework/Versions/A/": [
+                        "Metal",
+                        "MetalOld.dylib",
+                    ],
+                    "/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSCore.framework/Versions/A": [
+                        "MPSCore",
+                    ],
                 },
             },
 
@@ -416,7 +445,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "NVDAStartup.kext":        "12.0 Beta 6",
                         "GeForceAIRPlugin.bundle": "11.0 Beta 3",
                         "GeForceGLDriver.bundle":  "11.0 Beta 3",
-                        "GeForceMTLDriver.bundle": "11.0 Beta 3",
+                        "GeForceMTLDriver.bundle": "11.0 Beta 3" if os_major <= os_data.os_data.monterey else f"11.0 Beta 3-{os_major}",
                         "GeForceVADriver.bundle":  "12.0 Beta 6",
                     },
                     "/System/Library/Frameworks": {
