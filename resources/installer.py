@@ -230,7 +230,7 @@ def only_list_newest_installers(available_apps):
     # This is used to avoid overwhelming the user with installer options
 
     # Only strip OSes that we know are supported
-    supported_versions = ["10.13", "10.14", "10.15", "11", "12"]
+    supported_versions = ["10.13", "10.14", "10.15", "11", "12", "13"]
 
     for version in supported_versions:
         remote_version_minor = 0
@@ -256,9 +256,8 @@ def only_list_newest_installers(available_apps):
 
         # Now remove all versions that are not the largest
         for ia in list(available_apps):
+            # Don't use Beta builds to determine latest version
             if available_apps[ia]["Variant"] in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
-                # Remove Beta builds from default listing
-                available_apps.pop(ia)
                 continue
 
             if available_apps[ia]["Version"].startswith(version):
@@ -289,6 +288,15 @@ def only_list_newest_installers(available_apps):
                     continue
 
                 os_builds.append(available_apps[ia]["Build"])
+
+    # Final passthrough
+    # Remove Betas if there's a non-beta version available
+    for ia in list(available_apps):
+        if available_apps[ia]["Variant"] in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
+            for ia2 in available_apps:
+                if available_apps[ia2]["Version"].split(".")[0] == available_apps[ia]["Version"].split(".")[0] and available_apps[ia2]["Variant"] not in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
+                    available_apps.pop(ia)
+                    break
 
     return available_apps
 
