@@ -220,6 +220,9 @@ class kernel_debug_kit_handler:
         if not Path("/Library/Developer/KDKs").exists():
             return
 
+        if exclude_build == "":
+            return
+
         print("- Cleaning unused KDKs")
         for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
             if kdk_folder.is_dir():
