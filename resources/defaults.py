@@ -217,14 +217,6 @@ class generate_defaults:
                 self.constants.secure_status = False
                 self.constants.disable_cs_lv = True
 
-                if gpu in [
-                    device_probe.AMD.Archs.Legacy_GCN_7000,
-                    device_probe.AMD.Archs.Legacy_GCN_8000,
-                    device_probe.AMD.Archs.Legacy_GCN_9000,
-                    device_probe.AMD.Archs.Polaris,
-                ]:
-                    self.constants.disable_amfi = True
-
             # Non-Metal Logic
             elif gpu in [
                 device_probe.Intel.Archs.Iron_Lake,
@@ -239,7 +231,9 @@ class generate_defaults:
                 self.constants.sip_status = False
                 self.constants.secure_status = False
                 self.constants.disable_cs_lv = True
-                self.constants.disable_amfi = True
+                if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                    # Only disable AMFI if we officially support Ventura
+                    self.constants.disable_amfi = True
 
                 if self.host_is_target:
                     self.constants.host_is_non_metal = True

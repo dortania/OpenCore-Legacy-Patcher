@@ -130,3 +130,15 @@ class sys_patch_helpers:
                     if (kdk_folder / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
                         return kdk_folder
         return None
+
+
+    def disable_window_server_caching(self):
+        # On legacy GCN GPUs, the WindowServer cache generated creates
+        # corrupted Opaque shaders.
+        # To work-around this, we disable WindowServer caching
+        # And force macOS into properly generating the Opaque shaders
+        print("- Disabling WindowServer Caching")
+        # Invoke via 'bash -c' to resolve pathing
+        utilities.elevated(["bash", "-c", "rm -rf /private/var/folders/*/*/*/WindowServer/com.apple.WindowServer"])
+        # Disable writing to WindowServer folder
+        utilities.elevated(["bash", "-c", "chflags uchg /private/var/folders/*/*/*/WindowServer"])

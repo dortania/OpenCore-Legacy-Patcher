@@ -293,7 +293,7 @@ class PatchSysVolume:
                 print("Reason for snapshot failure:")
                 print(bless.stdout.decode())
                 if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
-                    print("- This is an APFS bug with Monterey! Perform a clean installation to ensure your APFS volume is built correctly")
+                    print("- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly")
                 return False
             self.unmount_drive()
         return True
@@ -488,6 +488,8 @@ class PatchSysVolume:
                     else:
                         print(f"- Running Process:\n{process}")
                         utilities.process_status(subprocess.run(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
+        if "AMD Legacy GCN" in required_patches:
+            sys_patch_helpers.sys_patch_helpers(self.constants).disable_window_server_caching()
         self.write_patchset(required_patches)
 
     def preflight_checks(self, required_patches, source_files_path):

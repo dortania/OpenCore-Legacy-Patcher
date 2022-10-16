@@ -64,7 +64,8 @@ class detect_root_patch:
                     if self.constants.detected_os > non_metal_os:
                         self.nvidia_tesla = True
                         self.amfi_must_disable = True
-                        self.amfi_shim_bins = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.NVIDIA.Archs.Kepler and self.constants.force_nv_web is False:
@@ -94,20 +95,23 @@ class detect_root_patch:
                     if self.constants.detected_os > os_data.os_data.mojave:
                         self.nvidia_web = True
                         self.amfi_must_disable = True
-                        self.amfi_shim_bins = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
                         self.needs_nv_web_checks = True
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts1 = True
                         self.amfi_must_disable = True
-                        self.amfi_shim_bins = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_2:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts2 = True
                         self.amfi_must_disable = True
-                        self.amfi_shim_bins = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
                         self.requires_root_kc = True
                 elif gpu.arch in [
                     device_probe.AMD.Archs.Legacy_GCN_7000,
@@ -129,19 +133,20 @@ class detect_root_patch:
                         self.supports_metal = True
                         self.requires_root_kc = True
                         self.amfi_must_disable = True
-                        self.amfi_shim_bins = True
                 elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
                     if self.constants.detected_os > non_metal_os:
                         self.iron_gpu = True
                         self.amfi_must_disable = True
-                        self.amfi_shim_bins = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
                     if self.constants.detected_os > non_metal_os:
                         self.sandy_gpu = True
                         self.amfi_must_disable = True
-                        self.amfi_shim_bins = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
@@ -510,7 +515,7 @@ class detect_root_patch:
                 # Additionally, AMDRadeonX3000 requires IOAccelerator downgrade which is not installed without 'Non-Metal IOAccelerator Common'
                 del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
         if hardware_details["Graphics: AMD Legacy GCN"] is True:
-            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
+            required_patches.update({"Revert Metal Downgrade": all_hardware_patchset["Graphics"]["Revert Metal Downgrade"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"AMD Legacy GCN": all_hardware_patchset["Graphics"]["AMD Legacy GCN"]})

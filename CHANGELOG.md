@@ -36,7 +36,8 @@
     - Relies on N-1 system for when matching KDK is not present
   - Delete unused KDKs in `/Library/Developer/KDKs` during root patching
   - Resolve Power Management support for Ivy Bridge and older
-  - Drop AMFI requirement for Nvidia Kepler
+  - Drop AMFI requirement for Nvidia Kepler and AMD GCN 1-3
+  - Resolve numerous AMD GCN 1-3 issues (ex. Photos.app, Screen Saver, etc.)
 - Add work-around to Catalyst Buttons not responding on non-Metal in macOS Monterey
 - Increment Binaries:
   - OpenCorePkg 0.8.5 release

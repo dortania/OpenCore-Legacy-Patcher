@@ -24,7 +24,11 @@ class kernel_debug_kit_handler:
 
         print("- Fetching available KDKs")
 
-        results = utilities.SESSION.get(KDK_API_LINK, headers={"User-Agent": f"OCLP/{self.constants.patcher_version}"})
+        try:
+            results = utilities.SESSION.get(KDK_API_LINK, headers={"User-Agent": f"OCLP/{self.constants.patcher_version}"})
+        except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
+            print("- Could not contact KDK API")
+            return None
 
         if results.status_code != 200:
             print("- Could not fetch KDK list")
@@ -45,7 +49,11 @@ class kernel_debug_kit_handler:
 
         print(f"- Checking closest match for: {host_version} build {host_build}")
 
-        results = utilities.SESSION.get(OS_DATABASE_LINK)
+        try:
+            results = utilities.SESSION.get(OS_DATABASE_LINK)
+        except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
+            print("- Could not contact AppleDB")
+            return None, "", ""
 
         if results.status_code != 200:
             print("- Could not fetch database")

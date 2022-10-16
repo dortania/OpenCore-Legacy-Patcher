@@ -377,7 +377,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
-            # In Ventura, Apple added AVX2.0 code to the OpenCL/GL compilers
+            # In Ventura, Apple added AVX2.0 code to AMD's OpenCL/GL compilers
             "AMD OpenCL": {
                 "Display Name": "",
                 "OS Support": {
