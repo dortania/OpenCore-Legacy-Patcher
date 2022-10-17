@@ -48,11 +48,11 @@ As mentioned above, users of the Late 2013 Trash Can Mac Pro (MacPro6,1) current
 
 * [2013 Mac Pro and macOS Ventura Boot Issues #1009](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1009)
 
-### AMD Polaris, Vega and Navi support on pre-2013 Mac Pros
+### AMD Polaris, Vega and Navi support on pre-2013 Mac Pros and pre-2012 iMacs
 
-For users with 2008 to 2012 Mac Pros (MacPro3,1-5,1), keep in mind macOS Ventura now requires [AVX2.0 support in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura officially with these GPUs.
+For users with 2008 to 2012 Mac Pros (MacPro3,1-5,1) and 2009 to 2011 iMacs (iMac9,1-12,2), keep in mind macOS Ventura now requires [AVX2.0 support in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura officially with these GPUs.
 
-* CPUs supporting AVX2.0 are Haswell or newer, which no pre-2019 Mac Pro can be upgraded with.
+* CPUs supporting AVX2.0 are Haswell or newer, which no pre-2019 Mac Pros can be upgraded with.
 
 Currently at this time, OpenCore Legacy Patcher only supports patching the AMD Polaris Graphics stack to no longer require AVX2.0. However due to lack of hardware on-hand, we cannot support AMD Vega or Navi on Ventura.
 
