@@ -33,7 +33,7 @@ For older hardware, see below sections:
 
 * [Currently Unsupported/Broken Hardware in Ventura](#currently-unsupportedbroken-hardware-in-ventura)
   * [Late 2013 Mac Pro Boot Issues](#late-2013-mac-pro-boot-issues)
-  * [AMD Polaris, Vega and Navi support on pre-2013 Mac Pros](#amd-polaris-vega-and-navi-support-on-pre-2013-mac-pros)
+  * [AMD Polaris, Vega and Navi support on pre-2013 Mac Pros](#amd-polaris-vega-and-navi-support-on-pre-2013-mac-pros-and-pre-2012-imacs)
   * [Non-Metal Graphics Acceleration](#non-metal-graphics-acceleration)
   * [Legacy Wireless Support](#legacy-wireless-support)
   * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
