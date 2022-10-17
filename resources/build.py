@@ -981,6 +981,12 @@ class BuildOpenCore:
             # Namely due to Xserve2,1 being limited to 10.7, thus no hardware detection
             self.enable_kext("AppleRAIDCard.kext", self.constants.apple_raid_version, self.constants.apple_raid_path)
 
+        # Force Output support PC VBIOS on Mac Pros
+        if self.constants.force_output_support is True:
+            print("- Forcing GOP Support")
+            self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+            self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
+
         # DEBUG Settings
         if self.constants.verbose_debug is True:
             print("- Enabling Verbose boot")

@@ -169,12 +169,13 @@ class Constants:
         self.xhci_boot = False
 
         ## Graphics Settings
-        self.metal_build = False  #    Set MXM Build support
-        self.imac_vendor = "None"  #   Set MXM GPU vendor
-        self.imac_model = "" #         Set MXM GPU model
-        self.drm_support = False  #    Set iMac14,x DRM support
-        self.allow_ts2_accel = True  # Set TeraScale 2 Acceleration support
-        self.force_nv_web = False  #   Force Nvidia Web Drivers on Tesla and Kepler
+        self.metal_build = False  #          Set MXM Build support
+        self.imac_vendor = "None"  #         Set MXM GPU vendor
+        self.imac_model = "" #               Set MXM GPU model
+        self.drm_support = False  #          Set iMac14,x DRM support
+        self.allow_ts2_accel = True  #       Set TeraScale 2 Acceleration support
+        self.force_nv_web = False  #         Force Nvidia Web Drivers on Tesla and Kepler
+        self.force_output_support = False  # Force Output support for Mac Pros with PC VBIOS
 
         ## Miscellaneous
         self.disallow_cpufriend = False  #     Disable CPUFriend
