@@ -123,7 +123,6 @@ class kernel_debug_kit_handler:
 
         if self.is_kdk_installed(detected_build) is True:
             print("- KDK is already installed")
-            self.remove_unused_kdks(detected_build)
             return True, "", detected_build
 
         download_link = None
@@ -160,7 +159,6 @@ class kernel_debug_kit_handler:
 
             if self.is_kdk_installed(closest_build) is True:
                 print(f"- Closet Build ({closest_build}) already installed")
-                self.remove_unused_kdks(closest_build)
                 return True, "", closest_build
 
             if closest_match_download_link is None:
