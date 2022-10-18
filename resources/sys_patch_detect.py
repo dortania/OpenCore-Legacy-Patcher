@@ -342,7 +342,7 @@ class detect_root_patch:
             f"Validation: SIP is enabled (Required: {self.check_sip()[2]} or higher)":  self.sip_enabled,
             f"Validation: Currently Booted SIP: ({hex(utilities.csr_dump())})":         self.sip_enabled,
             "Validation: SecureBootModel is enabled":      self.sbm_enabled,
-            "Validation: AMFI is enabled":                 self.amfi_enabled if self.amfi_must_disable is True else False,
+            f"Validation: {'AMFI' if self.constants.host_is_hackintosh is True or self.get_amfi_level_needed() > 2 else 'Library Validation'} is enabled":                 self.amfi_enabled if self.amfi_must_disable is True else False,
             "Validation: FileVault is enabled":            self.fv_enabled,
             "Validation: System is dosdude1 patched":      self.dosdude_patched,
             "Validation: WhateverGreen.kext missing":      self.missing_whatever_green if self.nvidia_web is True else False,
