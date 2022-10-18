@@ -648,11 +648,11 @@ class BuildOpenCore:
             if not self.get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
                 # Ensure WEG is enabled as we need if for Backlight patching
                 self.enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
-            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1}
+            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
             if self.constants.custom_model and self.model == "iMac11,2":
                 # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
                 # Set both properties when we cannot run hardware detection
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 128, "unfairgva": 1}
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
             if self.model in ["iMac12,1", "iMac12,2"]:
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
@@ -667,34 +667,25 @@ class BuildOpenCore:
                 if self.computer.dgpu.arch == device_probe.AMD.Archs.Legacy_GCN_7000:
                     print("- Adding Legacy GCN Power Gate Patches")
                     self.config["DeviceProperties"]["Add"][backlight_path].update({
-                        "rebuild-device-tree": 1,
                         "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
                         "CAIL,CAIL_DisableGfxCGPowerGating": 1,
                         "CAIL,CAIL_DisableUVDPowerGating": 1,
                         "CAIL,CAIL_DisableVCEPowerGating": 1,
-                        "agdpmod": "pikera",
-                        "enable-gva-support": 1
                     })
             if self.constants.imac_model == "Legacy GCN":
                 print("- Adding Legacy GCN Power Gate Patches")
                 self.config["DeviceProperties"]["Add"][backlight_path].update({
-                    "rebuild-device-tree": 1,
                     "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
                     "CAIL,CAIL_DisableGfxCGPowerGating": 1,
                     "CAIL,CAIL_DisableUVDPowerGating": 1,
                     "CAIL,CAIL_DisableVCEPowerGating": 1,
-                    "agdpmod": "pikera",
-                    "enable-gva-support": 1
                 })
                 if self.model == "iMac11,2":
                     self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"].update({
-                        "rebuild-device-tree": 1,
                         "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
                         "CAIL,CAIL_DisableGfxCGPowerGating": 1,
                         "CAIL,CAIL_DisableUVDPowerGating": 1,
                         "CAIL,CAIL_DisableVCEPowerGating": 1,
-                        "agdpmod": "pikera",
-                        "enable-gva-support": 1
                     })
 
         # Check GPU Vendor
