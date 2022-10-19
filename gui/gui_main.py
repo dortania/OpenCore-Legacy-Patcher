@@ -2120,12 +2120,9 @@ class wx_python_gui:
         #   - When running from source/unable to find on Github, use the nightly.link variant
         #   - If nightly also fails, fall back to the manually uploaded variant
         link = self.constants.installer_pkg_url
-        if not utilities.validate_link(link):
+        if utilities.validate_link(link) is False:
             print("- Stock Install.pkg is missing on Github, falling back to Nightly")
             link = self.constants.installer_pkg_url_nightly
-            if not utilities.validate_link(link):
-                print("- Nightly Install.pkg is missing on Github, exiting")
-                return
 
         if link.endswith(".zip"):
             path = self.constants.installer_pkg_zip_path
