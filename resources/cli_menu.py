@@ -173,7 +173,7 @@ Note: For security reasons, OpenShell will be disabled when Vault is set.
         print(
             f"""SIP is used to ensure proper security measures are set,
 however to patch the root volume this must be lowered partially.
-Only disable is absolutely necessary. SIP value = 0x802
+Only disable is absolutely necessary. SIP value = 0x803
 
 Valid options:
 
@@ -222,24 +222,6 @@ Q. Return to previous menu
         else:
             self.change_sbm()
 
-    def set_amfi(self):
-        utilities.cls()
-        utilities.header(["Set AMFI"])
-        print(
-            """Required for Root Patching non-Metal GPUs
-in macOS Big Sur. Without this, will receive kernel panic once
-Patcher finishes installing legacy acceleration patches.
-        """
-        )
-        change_menu = input("Disable AMFI(y/n/q): ")
-        if change_menu in {"y", "Y", "yes", "Yes"}:
-            self.constants.amfi_status = False
-        elif change_menu in {"n", "N", "no", "No"}:
-            self.constants.amfi_status = True
-        elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
-        else:
-            self.set_amfi()
 
     def bootstrap_setting(self):
         utilities.cls()
@@ -819,7 +801,7 @@ Note: This option should only be flipped under the following circumstances:
         print(
             """
 By default OCLP will use the SIP value of 0x00 as the enabled and
-0xA03 for machines that require root patching. For users who wish
+0x803 for machines that require root patching. For users who wish
 to flip additional bits in SIP may use this option.
 
 To disable SIP outright, set it to 0xFEF
@@ -983,7 +965,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
                 print("\n".join(model_array.SupportedSMBIOS))
                 input("\nPress [ENTER] to continue")
         else:
-            defaults.generate_defaults.probe(self.constants.custom_model, False, self.constants)
+            defaults.generate_defaults(self.constants.custom_model, False, self.constants)
 
     def PatchVolume(self):
         utilities.cls()
@@ -1077,10 +1059,6 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
             title = ["Adjust Security Settings"]
             menu = tui_helpers.TUIMenu(title, "Please select an option: ", auto_number=True, top_level=True)
             options = [
-                # [
-                #     f"Set Apple Mobile File Integrity (AMFI):\tCurrently {self.constants.amfi_status}",
-                #     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).set_amfi,
-                # ],
                 [
                     f"Set System Integrity Protection (SIP):\tCurrently {self.constants.custom_sip_value or self.constants.sip_status}",
                     MenuOptions(self.constants.custom_model or self.constants.computer.real_model, self.constants).change_sip,

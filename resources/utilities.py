@@ -14,8 +14,9 @@ import time
 import atexit
 import requests
 import shutil
+import urllib.parse
 
-from resources import constants, ioreg
+from resources import constants, ioreg, amfi_detect
 from data import sip_data, os_data
 
 SESSION = requests.Session()
@@ -152,24 +153,6 @@ def enable_sleep_after_running():
         sleep_process.kill()
         sleep_process = None
 
-def amfi_status():
-    amfi_args = [
-        "amfi_get_out_of_my_way=0x1",
-        "amfi_get_out_of_my_way=1",
-        "amfi=128",
-    ]
-
-    oclp_guid = get_nvram("OCLP-Settings", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
-    if oclp_guid:
-        if "-allow_amfi" in oclp_guid:
-            return False
-    boot_args = get_nvram("boot-args", decode=True)
-    if boot_args:
-        for arg in amfi_args:
-            if arg in boot_args:
-                return False
-    return True
-
 
 def check_kext_loaded(kext_name, os_version):
     if os_version > os_data.os_data.catalina:
@@ -270,18 +253,12 @@ def patching_status(os_sip, os):
     # Detection for Root Patching
     sip_enabled = True  #  System Integrity Protection
     sbm_enabled = True  #  Secure Boot Status (SecureBootModel)
-    amfi_enabled = True  # Apple Mobile File Integrity
     fv_enabled = True  #   FileVault
     dosdude_patched = True
 
     gen6_kext = "/System/Library/Extension/AppleIntelHDGraphics.kext"
     gen7_kext = "/System/Library/Extension/AppleIntelHD3000Graphics.kext"
 
-    if os > os_data.os_data.catalina:
-        amfi_enabled = amfi_status()
-    else:
-        # Catalina and older supports individually disabling Library Validation
-        amfi_enabled = False
 
     sbm_enabled = check_secure_boot_level()
 
@@ -301,7 +278,7 @@ def patching_status(os_sip, os):
     if not (Path(gen6_kext).exists() and Path(gen7_kext).exists()):
         dosdude_patched = False
 
-    return sip_enabled, sbm_enabled, amfi_enabled, fv_enabled, dosdude_patched
+    return sip_enabled, sbm_enabled, fv_enabled, dosdude_patched
 
 
 clear = True
@@ -400,7 +377,7 @@ def get_firmware_vendor(*, decode: bool = False):
 
 def verify_network_connection(url):
     try:
-        response = SESSION.head(url, timeout=5)
+        response = SESSION.head(url, timeout=5, allow_redirects=True)
         return True
     except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError, requests.exceptions.HTTPError):
         return False
@@ -408,33 +385,36 @@ def verify_network_connection(url):
 def download_file(link, location, is_gui=None, verify_checksum=False):
     if verify_network_connection(link):
         disable_sleep_while_running()
-        short_link = os.path.basename(link)
+        base_name = Path(link).name
+
         if Path(location).exists():
             Path(location).unlink()
-        header = SESSION.head(link).headers
-        try:
-            # Try to get true file
-            # ex. Github's release links provides a "fake" header
-            # Thus need to resolve to the real link
-            link = SESSION.head(link).headers["location"]
-            header = SESSION.head(link).headers
-        except KeyError:
-            pass
+
+        head_response = SESSION.head(link, allow_redirects=True)
         try:
             # Handle cases where Content-Length has garbage or is missing
-            total_file_size = int(SESSION.head(link).headers['Content-Length'])
+            total_file_size = int(head_response.headers['Content-Length'])
         except KeyError:
             total_file_size = 0
+
         if total_file_size > 1024:
             file_size_rounded = round(total_file_size / 1024 / 1024, 2)
             file_size_string = f" of {file_size_rounded}MB"
+
+            # Check if we have enough space
+            if total_file_size > get_free_space():
+                print(f"Not enough space to download {base_name} ({file_size_rounded}MB)")
+                return False
         else:
             file_size_string = ""
+
         response = SESSION.get(link, stream=True)
+
         # SU Catalog's link is quite long, strip to make it bearable
-        if "sucatalog.gz" in short_link:
-            short_link = "sucatalog.gz"
-        header = f"# Downloading: {short_link} #"
+        if "sucatalog.gz" in base_name:
+            base_name = "sucatalog.gz"
+
+        header = f"# Downloading: {base_name} #"
         box_length = len(header)
         box_string = "#" * box_length
         dl = 0
@@ -486,6 +466,30 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
         else:
             print(link)
         return None
+
+
+def download_apple_developer_portal(link, location, is_gui=None, verify_checksum=False):
+    TOKEN_URL_BASE = "https://developerservices2.apple.com/services/download?path="
+    remote_path = urllib.parse.urlparse(link).path
+    token_url = urllib.parse.urlunparse(urllib.parse.urlparse(TOKEN_URL_BASE)._replace(query=urllib.parse.urlencode({"path": remote_path})))
+
+    try:
+        response = SESSION.get(token_url, timeout=5)
+    except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
+        print(" - Could not contact Apple download servers")
+        return None
+
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        if response.status_code == 400 and "The path specified is invalid" in response.text:
+            print(" - File does not exist on Apple download servers")
+        else:
+            print(" - Could not request download authorization from Apple download servers")
+        return None
+
+    return download_file(link, location, is_gui, verify_checksum)
+
 
 def dump_constants(constants):
     with open(os.path.join(os.path.expanduser('~'), 'Desktop', 'internal_data.txt'), 'w') as f:
@@ -574,7 +578,7 @@ def monitor_disk_output(disk):
 def validate_link(link):
     # Check if link is 404
     try:
-        response = SESSION.head(link, timeout=5)
+        response = SESSION.head(link, timeout=5, allow_redirects=True)
         if response.status_code == 404:
             return False
         else:
@@ -606,8 +610,11 @@ def block_os_updaters():
 
 def check_boot_mode():
     # Check whether we're in Safe Mode or not
-    sys_plist = plistlib.loads(subprocess.run(["system_profiler", "SPSoftwareDataType"], stdout=subprocess.PIPE).stdout)
-    return sys_plist[0]["_items"][0]["boot_mode"]
+    try:
+        sys_plist = plistlib.loads(subprocess.run(["system_profiler", "SPSoftwareDataType"], stdout=subprocess.PIPE).stdout)
+        return sys_plist[0]["_items"][0]["boot_mode"]
+    except (KeyError, TypeError, plistlib.InvalidFileException):
+        return None
 
 def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
     # When running through our GUI, we run as root, however we do not get uid 0

@@ -26,7 +26,8 @@ class OpenCoreLegacyPatcher:
     def generate_base_data(self):
         self.constants.detected_os = os_probe.detect_kernel_major()
         self.constants.detected_os_minor = os_probe.detect_kernel_minor()
-        self.constants.detected_os_build = os_probe.detect_kernel_build()
+        self.constants.detected_os_build = os_probe.detect_os_build()
+        self.constants.detected_os_version = os_probe.detect_os_version()
         self.constants.computer = device_probe.Computer.probe()
         self.constants.recovery_status = utilities.check_recovery()
         self.computer = self.constants.computer
@@ -47,7 +48,13 @@ class OpenCoreLegacyPatcher:
         self.constants.unpack_thread.start()
         self.constants.commit_info = commit_info.commit_info(self.constants.launcher_binary).generate_commit_info()
 
-        defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
+        # Now that we have commit info, update nightly link
+        if self.constants.commit_info[0] not in ["Running from source", "Built from source"]:
+            branch = self.constants.commit_info[0]
+            branch = branch.replace("refs/heads/", "")
+            self.constants.installer_pkg_url_nightly = self.constants.installer_pkg_url_nightly.replace("main", branch)
+
+        defaults.generate_defaults(self.computer.real_model, True, self.constants)
 
         if utilities.check_cli_args() is not None:
             print("- Detected arguments, switching to CLI mode")

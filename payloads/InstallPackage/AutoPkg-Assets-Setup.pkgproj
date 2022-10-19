@@ -583,6 +583,43 @@
 				<key>SHARED_SETTINGS_FOR_ALL_APPAREANCES</key>
 				<true/>
 			</dict>
+			<key>INSTALLATION TYPE</key>
+			<dict>
+				<key>HIERARCHIES</key>
+				<dict>
+					<key>INSTALLER</key>
+					<dict>
+						<key>LIST</key>
+						<array>
+							<dict>
+								<key>CHILDREN</key>
+								<array/>
+								<key>DESCRIPTION</key>
+								<array/>
+								<key>OPTIONS</key>
+								<dict>
+									<key>HIDDEN</key>
+									<false/>
+									<key>STATE</key>
+									<integer>1</integer>
+								</dict>
+								<key>PACKAGE_UUID</key>
+								<string>4312D78E-7981-41F2-A0E9-5C7E11AC61C5</string>
+								<key>TITLE</key>
+								<array/>
+								<key>TYPE</key>
+								<integer>0</integer>
+								<key>UUID</key>
+								<string>B3E23E4E-EF8D-4C21-933E-03C8187D415B</string>
+							</dict>
+						</array>
+						<key>REMOVED</key>
+						<dict/>
+					</dict>
+				</dict>
+				<key>MODE</key>
+				<integer>0</integer>
+			</dict>
 			<key>INSTALLATION_STEPS</key>
 			<array>
 				<dict>
@@ -645,7 +682,19 @@
 			<key>INTRODUCTION</key>
 			<dict>
 				<key>LOCALIZATIONS</key>
-				<array/>
+				<array>
+					<dict>
+						<key>LANGUAGE</key>
+						<string>English</string>
+						<key>VALUE</key>
+						<dict>
+							<key>PATH</key>
+							<string>intro.txt</string>
+							<key>PATH_TYPE</key>
+							<integer>1</integer>
+						</dict>
+					</dict>
+				</array>
 			</dict>
 			<key>LICENSE</key>
 			<dict>
@@ -655,6 +704,11 @@
 				<integer>0</integer>
 			</dict>
 			<key>README</key>
+			<dict>
+				<key>LOCALIZATIONS</key>
+				<array/>
+			</dict>
+			<key>SUMMARY</key>
 			<dict>
 				<key>LOCALIZATIONS</key>
 				<array/>
@@ -675,7 +729,65 @@
 		<key>PROJECT_REQUIREMENTS</key>
 		<dict>
 			<key>LIST</key>
-			<array/>
+			<array>
+				<dict>
+					<key>BEHAVIOR</key>
+					<integer>3</integer>
+					<key>DICTIONARY</key>
+					<dict>
+						<key>IC_REQUIREMENT_FILES_CONDITION</key>
+						<integer>1</integer>
+						<key>IC_REQUIREMENT_FILES_DISK_TYPE</key>
+						<integer>0</integer>
+						<key>IC_REQUIREMENT_FILES_LIST</key>
+						<array>
+							<string>/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist</string>
+						</array>
+						<key>IC_REQUIREMENT_FILES_SELECTOR</key>
+						<integer>0</integer>
+					</dict>
+					<key>IC_REQUIREMENT_CHECK_TYPE</key>
+					<integer>1</integer>
+					<key>IDENTIFIER</key>
+					<string>fr.whitebox.Packages.requirement.files</string>
+					<key>MESSAGE</key>
+					<array>
+						<dict>
+							<key>LANGUAGE</key>
+							<string>English</string>
+							<key>VALUE</key>
+							<string>AutoPkg-Assets.pkg should never be used by end-users manually, please use the OpenCore-Patcher.app listed on Github</string>
+						</dict>
+					</array>
+					<key>NAME</key>
+					<string>Files</string>
+					<key>STATE</key>
+					<true/>
+				</dict>
+				<dict>
+					<key>BEHAVIOR</key>
+					<integer>3</integer>
+					<key>DICTIONARY</key>
+					<dict>
+						<key>IC_REQUIREMENT_OS_DISK_TYPE</key>
+						<integer>0</integer>
+						<key>IC_REQUIREMENT_OS_DISTRIBUTION_TYPE</key>
+						<integer>0</integer>
+						<key>IC_REQUIREMENT_OS_MINIMUM_VERSION</key>
+						<integer>110000</integer>
+					</dict>
+					<key>IC_REQUIREMENT_CHECK_TYPE</key>
+					<integer>1</integer>
+					<key>IDENTIFIER</key>
+					<string>fr.whitebox.Packages.requirement.os</string>
+					<key>MESSAGE</key>
+					<array/>
+					<key>NAME</key>
+					<string>Operating System</string>
+					<key>STATE</key>
+					<true/>
+				</dict>
+			</array>
 			<key>RESOURCES</key>
 			<array/>
 			<key>ROOT_VOLUME_ONLY</key>

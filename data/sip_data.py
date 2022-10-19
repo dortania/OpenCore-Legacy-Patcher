@@ -134,6 +134,14 @@ class system_integrity_protection:
         "CSR_ALLOW_UNAPPROVED_KEXTS",  #           0x200 - Required for Aux Cache in Big Sur+
     ]
 
+    root_patch_sip_ventura = [
+        # Variables required to root patch in Ventura
+        "CSR_ALLOW_UNTRUSTED_KEXTS",  #            0x1   - Required for Aux Cache in Big Sur+
+        "CSR_ALLOW_UNRESTRICTED_FS",  #            0x2   - Required to mount and edit root volume, as well as load modded platform binaries
+        "CSR_ALLOW_UNAUTHENTICATED_ROOT",  #       0x800 - Required to avoid KC mismatch kernel panic
+    ]
+
+
     # CSR_ALLOW_EXECUTABLE_POLICY_OVERRIDE (introduced with Mojave):
     # This bit is quite strange and was originally assumed to be required for modded platform binaries
     # However after extensive testing, this doesn't seem true. In addition, this bit is never flipped via

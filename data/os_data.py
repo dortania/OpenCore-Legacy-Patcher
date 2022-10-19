@@ -1,3 +1,4 @@
+from curses.ascii import isdigit
 import enum
 
 
@@ -78,3 +79,69 @@ class os_conversion:
             os_kernel = 0
 
         return int(os_kernel)
+
+
+    def find_largest_build(build_array):
+        # Find the newest version within an array of versions
+        # These builds will have both numbers and letters in the version
+        # ex:
+        # [
+        #    "22A5295i",
+        #    "22A5266r",
+        #    "22A5286j",
+        #    "22A5295h",
+        # ]
+
+        max_length =        0  # Length of the longest build
+        build_array_split = [] # 'build_array', converted into individual array of elements
+        final_build =       "" # Largest determined build
+
+
+        # Convert strings to arrays
+        for build in build_array:
+            list_build = list(build)
+            if len(list_build) > max_length:
+                max_length = len(list_build)
+            build_array_split.append(list_build)
+
+        # Pad out each array to same length
+        for build in build_array_split:
+            while len(build) < max_length:
+                build.append("0")
+
+        # Convert all letters to int using ord()
+        for build in build_array_split:
+            for entry in build:
+                if not entry.isdigit():
+                    build[build.index(entry)] = ord(entry)
+
+        for build_outer_loop in build_array_split:
+            for build_inner_loop in list(build_array_split):
+                for i in range(len(build_outer_loop)):
+                    # remove any builds that are not the largest
+                    if int(build_outer_loop[i]) > int(build_inner_loop[i]):
+                        build_array_split.remove(build_inner_loop)
+                        break
+                    if int(build_outer_loop[i]) < int(build_inner_loop[i]):
+                        break
+
+        # Convert array back to string
+        for entry in build_array_split[0]:
+            # Since we split per character, we know that anything above 9 is a letter
+            if int(entry) > 9:
+                # revert back to letter
+                final_build += chr(entry)
+            else:
+                final_build += str(entry)
+
+        # Since we pad with 0s, we need to next determine how many 0s to remove
+        for build in build_array:
+            if final_build.startswith(build):
+                # Handle cases where Apple added a letter to the build
+                # ex. "22A5295" vs "22A5295"
+                remaining_strings = final_build.split(build)[1]
+                # If all remaining strings are 0s, then we can remove the 0s
+                if all(char == "0" for char in remaining_strings):
+                    final_build = build
+
+        return final_build

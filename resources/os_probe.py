@@ -16,7 +16,13 @@ def detect_kernel_minor():
     return int(platform.uname().release.partition(".")[2].partition(".")[0])
 
 
-def detect_kernel_build():
+def detect_os_version():
+    # Return OS version
+    # Example Output: 12.0 (string)
+    return subprocess.run("sw_vers -productVersion".split(), stdout=subprocess.PIPE).stdout.decode().strip()
+
+
+def detect_os_build():
     # Return OS build
     # Example Output: 21A5522h (string)
-    return subprocess.run("sw_vers -buildVersion".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode().split("\n")[0]
+    return subprocess.run("sw_vers -buildVersion".split(), stdout=subprocess.PIPE).stdout.decode().strip()

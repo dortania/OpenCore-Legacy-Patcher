@@ -22,7 +22,7 @@ class reroute_payloads:
             print(f"- New payloads location: {self.temp_dir.name}")
             print("- Creating payloads directory")
             Path(self.temp_dir.name / Path("payloads")).mkdir(parents=True, exist_ok=True)
-            self.unmount_active_dmgs()
+            self.unmount_active_dmgs(unmount_all_active=False)
             output = subprocess.run(
                 [
                     "hdiutil", "attach", "-noverify", f"{self.constants.payload_path}.dmg",

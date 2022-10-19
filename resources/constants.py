@@ -12,8 +12,8 @@ from data import os_data
 class Constants:
     def __init__(self):
         # Patcher Versioning
-        self.patcher_version = "0.4.12"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.5.4"  #  PatcherSupportPkg
+        self.patcher_version = "0.5.0"  # OpenCore-Legacy-Patcher
+        self.patcher_support_pkg_version = "0.7.1"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link = "https://discord.gg/rqdPgH8xSN"
@@ -26,25 +26,26 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_commit = "30798fb - 04-18-2022"
-        self.opencore_version = "0.8.0"
+        self.opencore_commit = "c14b2ab - 10-04-2022"
+        self.opencore_version = "0.8.5"
 
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
-        self.lilu_version = "1.6.0"  #               Lilu
+        self.lilu_version = "1.6.2"  #               Lilu
         self.whatevergreen_version = "1.5.8"  #      WhateverGreen
         self.airportbcrmfixup_version = "2.1.3"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
         self.restrictevents_version = "1.0.6"  #     RestrictEvents
         self.restrictevents_mbp_version = "1.0.6"  # RestrictEvents blocking displaypolicyd (see RestrictEvents-MBP91.patch)
-        self.featureunlock_version = "1.0.8"  #      FeatureUnlock
+        self.featureunlock_version = "1.0.9"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.4"  #      DebugEnhancer
         self.cpufriend_version = "1.2.5"  #          CPUFriend
-        self.bluetool_version = "2.6.2"  #           BlueToolFixup (BrcmPatchRAM)
+        self.bluetool_version = "2.6.4"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
-        self.autopkg_version = "1.0.0"  #            AutoPkgInstaller
+        self.autopkg_version = "1.0.1"  #            AutoPkgInstaller
+        self.cryptexfixup_version = "1.0.0"  #       CryptexFixup
 
         ## Apple
         ## https://www.apple.com
@@ -56,8 +57,13 @@ class Constants:
         self.apple_isight_version = "1.0.0"  # AppleiSight
         self.apple_raid_version = "1.0.0"  #   AppleRAIDCard
         self.apfs_zlib_version = "12.3.1"  #   NoAVXFSCompressionTypeZlib
+        self.apfs_zlib_v2_version = "12.6"  #  NoAVXFSCompressionTypeZlib (patched with AVXpel)
         self.multitouch_version = "1.0.0"  #   AppleUSBMultitouch
         self.topcase_version = "1.0.0"  #      AppleUSBTopCase
+        self.intel_82574l_version = "1.0.0" #  Intel82574L
+        self.intel_8254x_version = "1.0.0" #   AppleIntel8254XEthernet
+        self.apple_usb_11_injector = "1.0.0" # AppleUSBUHCI/OHCI
+        self.aicpupm_version = "1.0.0" #       AppleIntelCPUPowerManagement/Client
 
         ## Apple - Dortania Modified
         self.bcm570_version = "1.0.2"  #             CatalinaBCM5701Ethernet
@@ -77,8 +83,8 @@ class Constants:
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
         ## https://github.com/reenigneorcim/latebloom
-        self.mousse_version = "0.95"  #      MouSSE
-        self.telemetrap_version = "1.0.0"  # telemetrap
+        self.mousse_version = "0.95-Dortania"  # MouSSE
+        self.telemetrap_version = "1.0.0"  #     telemetrap
 
         ## cdf
         ## https://github.com/cdf/Innie
@@ -109,6 +115,7 @@ class Constants:
         self.wxpython_variant = False #     Determine if using wxPython variant
         self.unpack_thread = None  #        Determine if unpack thread finished
         self.cli_mode = False  #            Determine if running in CLI mode
+        self.should_nuke_kdks = True  #       Determine if KDKs should be nuked if unused in /L*/D*/KDKs
 
         ## Hardware
         self.computer: device_probe.Computer = None  # type: ignore
@@ -143,18 +150,18 @@ class Constants:
 
         ## Security Settings
         self.apecid_support = False  #    ApECID
-        self.amfi_status = True  #        Apple Mobile File Integrity
         self.sip_status = True  #         System Integrity Protection
         self.secure_status = False  #     Secure Boot Model
         self.vault = False  #             EFI Vault
         self.disable_cs_lv = False  #     Disable Library validation
+        self.disable_amfi = False  #      Disable AMFI
 
         ## OS Settings
         self.os_support = 12.0
-        self.detected_os = 0  #        Major Kernel Version
-        self.detected_os_minor = 0  #  Minor Kernel Version
-        self.detected_os_build = ""  # OS Build
-        self.allow_fv_root = False  #  Allow FileVault on broken sealed snapshots
+        self.detected_os = 0  #          Major Kernel Version
+        self.detected_os_minor = 0  #    Minor Kernel Version
+        self.detected_os_build = ""  #   OS Build
+        self.detected_os_version = ""  # OS Version
 
         ## Boot Volume Settings
         self.firewire_boot = False  # Allow macOS FireWire Boot
@@ -162,12 +169,13 @@ class Constants:
         self.xhci_boot = False
 
         ## Graphics Settings
-        self.metal_build = False  #    Set MXM Build support
-        self.imac_vendor = "None"  #   Set MXM GPU vendor
-        self.imac_model = "" #         Set MXM GPU model
-        self.drm_support = False  #    Set iMac14,x DRM support
-        self.allow_ts2_accel = True  # Set TeraScale 2 Acceleration support
-        self.force_nv_web = False  #   Force Nvidia Web Drivers on Tesla and Kepler
+        self.metal_build = False  #          Set MXM Build support
+        self.imac_vendor = "None"  #         Set MXM GPU vendor
+        self.imac_model = "" #               Set MXM GPU model
+        self.drm_support = False  #          Set iMac14,x DRM support
+        self.allow_ts2_accel = True  #       Set TeraScale 2 Acceleration support
+        self.force_nv_web = False  #         Force Nvidia Web Drivers on Tesla and Kepler
+        self.force_output_support = False  # Force Output support for Mac Pros with PC VBIOS
 
         ## Miscellaneous
         self.disallow_cpufriend = False  #     Disable CPUFriend
@@ -304,6 +312,26 @@ class Constants:
         return self.payload_kexts_path / Path(f"Ethernet/nForceEthernet-v{self.nforce_version}.zip")
 
     @property
+    def intel_82574l_path(self):
+        return self.payload_kexts_path / Path(f"Ethernet/Intel82574L-v{self.intel_82574l_version}.zip")
+
+    @property
+    def intel_8254x_path(self):
+        return self.payload_kexts_path / Path(f"Ethernet/AppleIntel8254XEthernet-v{self.intel_8254x_version}.zip")
+
+    @property
+    def apple_usb_11_injector_path(self):
+        return self.payload_kexts_path / Path(f"USB/USB1.1-Injector-v{self.apple_usb_11_injector}.zip")
+
+    @property
+    def aicpupm_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleIntelCPUPowerManagement-v{self.aicpupm_version}.zip")
+
+    @property
+    def aicpupm_client_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleIntelCPUPowerManagementClient-v{self.aicpupm_version}.zip")
+
+    @property
     def mce_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleMCEReporterDisabler-v{self.mce_version}.zip")
 
@@ -314,6 +342,10 @@ class Constants:
     @property
     def apfs_zlib_path(self):
         return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-v{self.apfs_zlib_version}.zip")
+
+    @property
+    def apfs_zlib_v2_path(self):
+        return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-AVXpel-v{self.apfs_zlib_v2_version}.zip")
 
     @property
     def multitouch_path(self):
@@ -390,6 +422,10 @@ class Constants:
     @property
     def autopkg_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/AutoPkgInstaller-v{self.autopkg_version}-{self.kext_variant}.zip")
+
+    @property
+    def cryptexfixup_path(self):
+        return self.payload_kexts_path / Path(f"Acidanthera/CryptexFixup-v{self.cryptexfixup_version}-{self.kext_variant}.zip")
 
     @property
     def innie_path(self):
@@ -574,6 +610,10 @@ class Constants:
     @property
     def payload_local_binaries_root_path_zip(self):
         return self.payload_path / Path("Universal-Binaries.zip")
+
+    @property
+    def kdk_download_path(self):
+        return self.payload_path / Path("KDK.dmg")
 
 
     sbm_values = [
