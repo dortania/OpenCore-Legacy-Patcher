@@ -123,6 +123,7 @@ class kernel_debug_kit_handler:
 
         if self.is_kdk_installed(detected_build) is True:
             print("- KDK is already installed")
+            self.remove_unused_kdks(exclude_builds=[detected_build])
             return True, "", detected_build
 
         download_link = None
@@ -159,6 +160,7 @@ class kernel_debug_kit_handler:
 
             if self.is_kdk_installed(closest_build) is True:
                 print(f"- Closet Build ({closest_build}) already installed")
+                self.remove_unused_kdks(exclude_builds=[detected_build, closest_build])
                 return True, "", closest_build
 
             if closest_match_download_link is None:
@@ -180,6 +182,10 @@ class kernel_debug_kit_handler:
                 msg = "Could not contact Apple download servers"
                 print(f"- {msg}")
                 return False, msg, ""
+            else:
+                msg = "Unknown error"
+                print(f"- {msg}")
+                return False, msg, ""
         elif result == 2:
             msg = "Could not contact Apple download servers"
             print(f"- {msg}")
@@ -193,7 +199,7 @@ class kernel_debug_kit_handler:
                 msg = "Kernel Debug Kit checksum verification failed, please try again.\n\nIf this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)"
                 print(f"- {msg}")
                 return False, msg, ""
-            self.remove_unused_kdks(detected_build)
+            self.remove_unused_kdks(exclude_builds=[detected_build, closest_build])
             return True, "", detected_build
         msg = "Failed to download KDK"
         print(f"- {msg}")
@@ -212,27 +218,33 @@ class kernel_debug_kit_handler:
                 if file.is_dir():
                     if file.name.endswith(f"{build}.kdk"):
                         for kext in kexts_to_check:
-                            if not Path(f"/Library/Developer/KDKs/{file}/System/Library/Extensions/{kext}").exists():
-                                print("- Corrupted KDK found, removing")
+                            if not Path(f"{file}/System/Library/Extensions/{kext}").exists():
+                                print(f"- Corrupted KDK found, removing due to missing: {file}/System/Library/Extensions/{kext}")
                                 utilities.elevated(["rm", "-rf", file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                                 return False
                         return True
         return False
 
-    def remove_unused_kdks(self, exclude_build):
+    def remove_unused_kdks(self, exclude_builds=[]):
         if self.constants.should_nuke_kdks is False:
             return
 
         if not Path("/Library/Developer/KDKs").exists():
             return
 
-        if exclude_build == "":
+        if exclude_builds == []:
             return
 
         print("- Cleaning unused KDKs")
         for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
             if kdk_folder.is_dir():
                 if kdk_folder.name.endswith(".kdk"):
-                    if not kdk_folder.name.endswith(f"{exclude_build}.kdk"):
-                        print(f"  - Removing {kdk_folder.name}")
-                        utilities.elevated(["rm", "-rf", kdk_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                    should_remove = True
+                    for build in exclude_builds:
+                        if build != "" and kdk_folder.name.endswith(f"{build}.kdk"):
+                            should_remove = False
+                            break
+                    if should_remove is False:
+                        continue
+                    print(f"  - Removing {kdk_folder.name}")
+                    utilities.elevated(["rm", "-rf", kdk_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
