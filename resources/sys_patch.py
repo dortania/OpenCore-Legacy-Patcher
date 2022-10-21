@@ -1,7 +1,7 @@
 # Framework for mounting and patching macOS root volume
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-# System based off of Apple's Kernel Development Kit (KDK)
+# System based off of Apple's Kernel Debug Kit (KDK)
 # - https://developer.apple.com/download/all/
 
 # The system relies on mounting the APFS volume as a live read/write volume
@@ -28,12 +28,16 @@
 # Alternative to mounting via 'mount', Apple's update system uses 'mount_apfs' directly
 #   '/sbin/mount_apfs -R /dev/disk5s5 /System/Volumes/Update/mnt1'
 
+# With macOS Ventura, you will also need to install the KDK onto root if you plan to use kmutil
+# This is because Apple removed on-disk binaries (ref: https://github.com/dortania/OpenCore-Legacy-Patcher/issues/998)
+#   'sudo ditto /Library/Developer/KDKs/<KDK Version>/System /System/Volumes/Update/mnt1/System'
 
+import plistlib
 import shutil
 import subprocess
 from pathlib import Path
 
-from resources import constants, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers
+from resources import constants, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers, kdk_handler
 from data import os_data
 
 
@@ -48,6 +52,7 @@ class PatchSysVolume:
         self.constants.needs_to_open_preferences = False
         self.patch_set_dictionary = {}
         self.needs_kmutil_exemptions = False # For '/Library/Extensions' rebuilds
+        self.kdk_path = None
 
         # GUI will detect hardware patches before starting PatchSysVolume()
         # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
@@ -55,6 +60,8 @@ class PatchSysVolume:
             hardware_details = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
         self.hardware_details = hardware_details
         self.init_pathing(custom_root_mount_path=None, custom_data_mount_path=None)
+
+        self.skip_root_kmutil_requirement = self.hardware_details["Settings: Supports Auxiliary Cache"]
 
     def __del__(self):
         # Ensures that each time we're patching, we're using a clean repository
@@ -101,6 +108,54 @@ class PatchSysVolume:
                         print(result.stdout.decode().strip())
         return False
 
+    def merge_kdk_with_root(self):
+        if self.skip_root_kmutil_requirement is True:
+            return
+        if self.constants.detected_os < os_data.os_data.ventura:
+            return
+
+        downloaded_kdk = None
+        kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=False)
+        if kdk_path is None:
+            if not self.constants.kdk_download_path.exists():
+                kdk_result, error_msg, downloaded_kdk = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
+                if kdk_result is False:
+                    raise Exception(f"Unable to download KDK: {error_msg}")
+            sys_patch_helpers.sys_patch_helpers(self.constants).install_kdk()
+            kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=True, override_build=downloaded_kdk)
+
+        oclp_plist = Path("/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist")
+        if (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists() and oclp_plist.exists():
+            # KDK was already merged, check if the KDK used is the same as the one we're using
+            # If not, we'll rsync over with the new KDK
+            try:
+                oclp_plist_data = plistlib.load(open(oclp_plist, "rb"))
+                if "Kernel Debug Kit Used" in oclp_plist_data:
+                    if oclp_plist_data["Kernel Debug Kit Used"] == str(kdk_path):
+                        print("- Matching KDK determined to already be merged, skipping")
+                        return
+            except:
+                pass
+
+        if kdk_path is None:
+            print(f"- Unable to find Kernel Debug Kit: {downloaded_kdk}")
+            raise Exception("Unable to find Kernel Debug Kit")
+        self.kdk_path = kdk_path
+        print(f"- Found KDK at: {kdk_path}")
+        print("- Merging KDK with Root Volume")
+        utilities.elevated(
+            # Only merge '/System/Library/Extensions'
+            # 'Kernels' and 'KernelSupport' is wasted space for root patching (we don't care above dev kernels)
+            ["rsync", "-r", "-i", "-a", f"{kdk_path}/System/Library/Extensions/", f"{self.mount_location}/System/Library/Extensions"],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        )
+        # During reversing, we found that kmutil uses this path to determine whether the KDK was successfully merged
+        # Best to verify now before we cause any damage
+        if not (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
+            print("- Failed to merge KDK with Root Volume")
+            raise Exception("Failed to merge KDK with Root Volume")
+        print("- Successfully merged KDK with Root Volume")
+
     def unpatch_root_vol(self):
         if self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is True:
             print("- Reverting to last signed APFS snapshot")
@@ -113,15 +168,68 @@ class PatchSysVolume:
             else:
                 self.clean_skylight_plugins()
                 self.delete_nonmetal_enforcement()
+                self.clean_auxiliary_kc()
                 self.constants.root_patcher_succeeded = True
                 print("- Unpatching complete")
                 print("\nPlease reboot the machine for patches to take effect")
 
     def rebuild_snapshot(self):
-        print("- Rebuilding Kernel Cache (This may take some time)")
+        if self.rebuild_kernel_collection() is True:
+            self.update_preboot_kernel_cache()
+            self.rebuild_dyld_shared_cache()
+            if self.create_new_apfs_snapshot() is True:
+                print("- Patching complete")
+                print("\nPlease reboot the machine for patches to take effect")
+                if self.needs_kmutil_exemptions is True:
+                    print("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
+                self.constants.root_patcher_succeeded = True
+                if self.constants.gui_mode is False:
+                    input("\nPress [ENTER] to continue")
 
+    def rebuild_kernel_collection(self):
+        print("- Rebuilding Kernel Cache (This may take some time)")
         if self.constants.detected_os > os_data.os_data.catalina:
-            args = ["kmutil", "install", "--volume-root", self.mount_location, "--update-all"]
+            # Base Arguments
+            args = ["kmutil", "install"]
+
+            if self.skip_root_kmutil_requirement is True:
+                # Only rebuild the Auxiliary Kernel Collection
+                args.append("--new")
+                args.append("aux")
+
+                args.append("--boot-path")
+                args.append(f"{self.mount_location}/System/Library/KernelCollections/BootKernelExtensions.kc")
+
+                args.append("--system-path")
+                args.append(f"{self.mount_location}/System/Library/KernelCollections/SystemKernelExtensions.kc")
+            else:
+                # Rebuild Boot, System and Auxiliary Kernel Collections
+                args.append("--volume-root")
+                args.append(self.mount_location)
+
+                # Build Boot, Sys and Aux KC
+                args.append("--update-all")
+
+                # If multiple kernels found, only build release KCs
+                args.append("--variant-suffix")
+                args.append("release")
+
+            if self.constants.detected_os >= os_data.os_data.ventura:
+                # With Ventura, we're required to provide a KDK in some form
+                # to rebuild the Kernel Cache
+                #
+                # However since we already merged the KDK onto root with 'ditto',
+                # We can add '--allow-missing-kdk' to skip parsing the KDK
+                #
+                # This allows us to only delete/overwrite kexts inside of
+                # /System/Library/Extensions and not the entire KDK
+                args.append("--allow-missing-kdk")
+
+                # 'install' and '--update-all' cannot be used together in Ventura.
+                # kmutil will request the usage of 'create' instead:
+                #     Warning: kmutil install's usage of --update-all is deprecated.
+                #              Use kmutil create --update-install instead'
+                args[1] = "create"
 
             if self.needs_kmutil_exemptions is True:
                 # When installing to '/Library/Extensions', following args skip kext consent
@@ -129,7 +237,6 @@ class PatchSysVolume:
                 print("  (You will get a prompt by System Preferences, ignore for now)")
                 args.append("--no-authentication")
                 args.append("--no-authorization")
-                self.constants.needs_to_open_preferences = True # Notify in GUI to open System Preferences
         else:
             args = ["kextcache", "-i", f"{self.mount_location}/"]
 
@@ -150,31 +257,46 @@ class PatchSysVolume:
             print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
             if self.constants.gui_mode is False:
                 input("Press [ENTER] to continue")
-        else:
-            print("- Successfully built new kernel cache")
-            self.update_preboot_kernel_cache()
-            self.rebuild_dyld_shared_cache()
-            if self.root_supports_snapshot is True:
-                print("- Creating new APFS snapshot")
-                bless = utilities.elevated(
-                    ["bless", "--folder", f"{self.mount_location}/System/Library/CoreServices", "--bootefi", "--create-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-                )
-                if bless.returncode != 0:
-                    print("- Unable to create new snapshot")
-                    print("Reason for snapshot failure:")
-                    print(bless.stdout.decode())
-                    if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
-                        print("- This is an APFS bug with Monterey! Perform a clean installation to ensure your APFS volume is built correctly")
-                    return
-                else:
-                    self.unmount_drive()
-            print("- Patching complete")
-            print("\nPlease reboot the machine for patches to take effect")
-            if self.needs_kmutil_exemptions is True:
-                print("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
-            self.constants.root_patcher_succeeded = True
-            if self.constants.gui_mode is False:
-                input("\nPress [ENTER] to continue")
+            return False
+
+        if self.skip_root_kmutil_requirement is True:
+            # Force rebuild the Auxiliary KC
+            result = utilities.elevated(["killall", "syspolicyd", "kernelmanagerd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                print("- Unable to remove kernel extension policy files")
+                print(f"\nReason for Patch Failure ({result.returncode}):")
+                print(result.stdout.decode())
+                print("")
+                print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
+                if self.constants.gui_mode is False:
+                    input("Press [ENTER] to continue")
+                return False
+
+            for file in ["KextPolicy", "KextPolicy-shm", "KextPolicy-wal"]:
+                self.remove_file("/private/var/db/SystemPolicyConfiguration/", file)
+
+        print("- Successfully built new kernel cache")
+        return True
+
+    def create_new_apfs_snapshot(self):
+        if self.root_supports_snapshot is True:
+            print("- Creating new APFS snapshot")
+            bless = utilities.elevated(
+                [
+                    "bless",
+                    "--folder", f"{self.mount_location}/System/Library/CoreServices",
+                    "--bootefi", "--create-snapshot"
+                ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            )
+            if bless.returncode != 0:
+                print("- Unable to create new snapshot")
+                print("Reason for snapshot failure:")
+                print(bless.stdout.decode())
+                if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
+                    print("- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly")
+                return False
+            self.unmount_drive()
+        return True
 
     def unmount_drive(self):
         print("- Unmounting Root Volume (Don't worry if this fails)")
@@ -206,15 +328,103 @@ class PatchSysVolume:
                 print(f"- Removing non-Metal Enforcement Preference: {arg}")
                 utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
 
+    def clean_auxiliary_kc(self):
+        # When reverting root volume patches, the AuxKC will still retain the UUID
+        # it was built against. Thus when Boot/SysKC are reverted, Aux will break
+        # To resolve this, delete all installed kexts in /L*/E* and rebuild the AuxKC
+        # We can verify our binaries based off the OpenCore-Legacy-Patcher.plist file
+        if self.constants.detected_os < os_data.os_data.big_sur:
+            return
+
+        oclp_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
+        if not Path(oclp_path).exists():
+            return
+
+        print("- Cleaning Auxiliary Kernel Collection")
+        oclp_plist_data = plistlib.load(Path(oclp_path).open("rb"))
+
+        for key in oclp_plist_data:
+            if "Install" not in oclp_plist_data[key]:
+                continue
+            for location in oclp_plist_data[key]["Install"]:
+                if not location.endswith("Extensions"):
+                    continue
+                for file in oclp_plist_data[key]["Install"][location]:
+                    if not file.endswith(".kext"):
+                        continue
+                    self.remove_file("/Library/Extensions", file)
+
     def write_patchset(self, patchset):
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
         file_name = "OpenCore-Legacy-Patcher.plist"
         destination_path_file = f"{destination_path}/{file_name}"
-        if sys_patch_helpers.sys_patch_helpers(self.constants).generate_patchset_plist(patchset, file_name):
+        if sys_patch_helpers.sys_patch_helpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path):
             print("- Writing patchset information to Root Volume")
             if Path(destination_path_file).exists():
                 utilities.process_status(utilities.elevated(["rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["cp", f"{self.constants.payload_path}/{file_name}", destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+    def add_auxkc_support(self, install_file, source_folder_path, install_patch_directory, destination_folder_path):
+        # In macOS Ventura, KDKs are required to build new Boot and System KCs
+        # However for some patch sets, we're able to use the Auxiliary KCs with '/Library/Extensions'
+
+        # kernelmanagerd determines which kext is installed by their 'OSBundleRequired' entry
+        # If a kext is labeled as 'OSBundleRequired: Root' or 'OSBundleRequired: Safe Boot',
+        # kernelmanagerd will require the kext to be installed in the Boot/SysKC
+
+        # Additionally, kexts starting with 'com.apple.' are not natively allowed to be installed
+        # in the AuxKC. So we need to explicitly set our 'OSBundleRequired' to 'Auxiliary'
+
+        if self.skip_root_kmutil_requirement is False:
+            return destination_folder_path
+        if not install_file.endswith(".kext"):
+            return destination_folder_path
+        if install_patch_directory != "/System/Library/Extensions":
+            return destination_folder_path
+        if self.constants.detected_os < os_data.os_data.ventura:
+            return destination_folder_path
+
+        updated_install_location = str(self.mount_location_data) + "/Library/Extensions"
+
+        print(f"  - Adding AuxKC support to {install_file}")
+        plist_path = Path(Path(source_folder_path) / Path(install_file) / Path("Contents/Info.plist"))
+        plist_data = plistlib.load((plist_path).open("rb"))
+
+        # Check if we need to update the 'OSBundleRequired' entry
+        if not plist_data["CFBundleIdentifier"].startswith("com.apple."):
+            return updated_install_location
+        if "OSBundleRequired" in plist_data:
+            if plist_data["OSBundleRequired"] == "Auxiliary":
+                return updated_install_location
+
+        plist_data["OSBundleRequired"] = "Auxiliary"
+        plistlib.dump(plist_data, plist_path.open("wb"))
+
+        self.check_kexts_needs_authentication(install_file)
+
+        return updated_install_location
+
+    def check_kexts_needs_authentication(self, kext_name):
+        # Verify whether the user needs to authenticate in System Preferences
+        # Specifically under 'private/var/db/KernelManagement/AuxKC/CurrentAuxKC/com.apple.kcgen.instructions.plist'
+        #    ["kextsToBuild"][i]:
+        #       ["bundlePathMainOS"] = /Library/Extensions/Test.kext
+        #       ["cdHash"] =           Bundle's CDHash (random on ad-hoc signed, static on dev signed)
+        #       ["teamID"] =           Team ID (blank on ad-hoc signed)
+        # To grab the CDHash of a kext, run 'codesign -dvvv <kext_path>'
+        try:
+            aux_cache_path = Path(self.mount_location_data) / Path("/private/var/db/KernelExtensionManagement/AuxKC/CurrentAuxKC/com.apple.kcgen.instructions.plist")
+            if aux_cache_path.exists():
+                aux_cache_data = plistlib.load((aux_cache_path).open("rb"))
+                for kext in aux_cache_data["kextsToBuild"]:
+                    if "bundlePathMainOS" in aux_cache_data["kextsToBuild"][kext]:
+                        if aux_cache_data["kextsToBuild"][kext]["bundlePathMainOS"] == f"/Library/Extensions/{kext_name}":
+                            return
+        except PermissionError:
+            pass
+
+        print(f"  - {kext_name} requires authentication in System Preferences")
+        self.constants.needs_to_open_preferences = True # Notify in GUI to open System Preferences
 
     def patch_root_vol(self):
         print(f"- Running patches for {self.model}")
@@ -243,28 +453,43 @@ class PatchSysVolume:
 
             for method_install in ["Install", "Install Non-Root"]:
                 if method_install in required_patches[patch]:
-                    for install_patch_directory in required_patches[patch][method_install]:
+                    for install_patch_directory in list(required_patches[patch][method_install]):
                         print(f"- Handling Installs in: {install_patch_directory}")
-                        for install_file in required_patches[patch][method_install][install_patch_directory]:
+                        for install_file in list(required_patches[patch][method_install][install_patch_directory]):
                             source_folder_path = source_files_path + "/" + required_patches[patch][method_install][install_patch_directory][install_file] + install_patch_directory
                             if method_install == "Install":
                                 destination_folder_path = str(self.mount_location) + install_patch_directory
                             else:
                                 if install_patch_directory == "/Library/Extensions":
                                     self.needs_kmutil_exemptions = True
+                                    self.check_kexts_needs_authentication(install_file)
                                 destination_folder_path = str(self.mount_location_data) + install_patch_directory
+
+                            updated_destination_folder_path = self.add_auxkc_support(install_file, source_folder_path, install_patch_directory, destination_folder_path)
+
+                            if destination_folder_path != updated_destination_folder_path:
+                                # Update required_patches to reflect the new destination folder path
+                                if updated_destination_folder_path not in required_patches[patch][method_install]:
+                                    required_patches[patch][method_install].update({updated_destination_folder_path: {}})
+                                required_patches[patch][method_install][updated_destination_folder_path].update({install_file: required_patches[patch][method_install][install_patch_directory][install_file]})
+                                required_patches[patch][method_install][install_patch_directory].pop(install_file)
+
+                                destination_folder_path = updated_destination_folder_path
+
                             self.install_new_file(source_folder_path, destination_folder_path, install_file)
 
             if "Processes" in required_patches[patch]:
                 for process in required_patches[patch]["Processes"]:
                     # Some processes need sudo, however we cannot directly call sudo in some scenarios
-                    # Instead, call elevated funtion is string's boolean is True
+                    # Instead, call elevated funtion if string's boolean is True
                     if required_patches[patch]["Processes"][process] is True:
                         print(f"- Running Process as Root:\n{process}")
                         utilities.process_status(utilities.elevated(process.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
                     else:
                         print(f"- Running Process:\n{process}")
                         utilities.process_status(subprocess.run(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
+        if "AMD Legacy GCN" in required_patches:
+            sys_patch_helpers.sys_patch_helpers(self.constants).disable_window_server_caching()
         self.write_patchset(required_patches)
 
     def preflight_checks(self, required_patches, source_files_path):
@@ -274,6 +499,8 @@ class PatchSysVolume:
         self.clean_skylight_plugins()
         # Make sure non-Metal Enforcement preferences are not present
         self.delete_nonmetal_enforcement()
+        # Make sure we clean old kexts in /L*/E* that are not in the patchset
+        self.clean_auxiliary_kc()
 
         # Make sure SNB kexts are compatible with the host
         if "Intel Sandy Bridge" in required_patches:
@@ -288,6 +515,9 @@ class PatchSysVolume:
                             source_file = source_files_path + "/" + required_patches[patch][method_type][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
                             if not Path(source_file).exists():
                                 raise Exception(f"Failed to find {source_file}")
+
+        # Ensure KDK is properly installed
+        self.merge_kdk_with_root()
 
         print("- Finished Preflight, starting patching")
 

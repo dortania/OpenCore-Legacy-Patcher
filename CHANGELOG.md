@@ -1,5 +1,54 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.5.0
+- Ventura Specific Updates:
+  - Switch boot.efi model patch to iMac18,1
+  - Resolve pre-Force Touch Trackpad support in Ventura
+  - Add Ventura-dropped Models:
+    - MacPro6,1
+    - Macmini7,1
+    - iMac16,x, iMac17,1
+    - MacBook9,1
+    - MacBookAir7,x
+    - MacBookPro11,4/5, MacBookPro12,1, MacBookPro13,x
+  - Add Ventura Software Catalog parsing
+  - Add Kernel Debug Kit checks to Ventura root patching
+  - Add USB map injection for dropped models
+  - Resolve Ethernet support on MacPro3,1-5,1
+  - Fix VMM patch set
+  - Allow dyld shared cache swapping on pre-Haswell
+  - Fix MouSSE/SSE4,2 emulation in macOS 13.0 Beta 3 (22A5295h)
+  - Graphics Acceleration for legacy Metal GPUs
+    - Intel: Ivy Bridge, Haswell, Broadwell and Skylake
+    - Nvidia: Kepler
+    - AMD: GCN 1 through 3
+    - AMD: Polaris (on pre-AVX2.0 systems)
+      - Boot in safe mode to avoid stock driver loading
+  - Raise SIP requirement to 0x803 for root patching
+  - Add Ventura Boot Picker icons
+  - Implement KDK-less root patching for Metal Intel and Nvidia GPUs
+    - AMD GCN will still require a KDK installed for patching
+  - Resolve OpenCL support for legacy Metal GPUs
+  - Implement Automatic Rosetta Cryptex installation on OS installs and updates
+    - Drops need for manual OS.dmg swapping on pre-Haswell
+  - Implement automatic Kernel Debug Kit downloader for systems requiring Boot/SysKC rebuilding
+    - ex. AMD GCN
+    - Relies on N-1 system for when matching KDK is not present
+  - Delete unused KDKs in `/Library/Developer/KDKs` during root patching
+  - Resolve Power Management support for Ivy Bridge and older
+  - Drop AMFI requirement for Nvidia Kepler and AMD GCN 1-3
+  - Resolve numerous AMD GCN 1-3 issues (ex. Photos.app, Screen Saver, etc.)
+- Add work-around to Catalyst Buttons not responding on non-Metal in macOS Monterey
+- Re-export OpenCanopy icons to better support Haswell and newer Macs
+- Increment Binaries:
+  - OpenCorePkg 0.8.5 release
+  - Lilu 1.6.2 - release
+  - FeatureUnlock 1.0.9 release
+  - PatcherSupportPkg 0.7.1 - release
+  - BrcmPatchRAM 2.6.4 - release
+  - AutoPkgInstaller 1.0.1 - release
+  - CryptexFixup 1.0.0 - release
+
 ## 0.4.12
 
 ## 0.4.11
@@ -70,7 +119,6 @@
 - Deprecate TUI support
   - Users may still manually run from source for future builds
   - Binaries will no longer be provided on future release
-- Switch boot.efi model patch to iMac18,1
 
 ## 0.4.5
 - Fix AutoPatcher.pkg download on releases

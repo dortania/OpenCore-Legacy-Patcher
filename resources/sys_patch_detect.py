@@ -3,7 +3,8 @@
 # Used when supplying data to sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from resources import constants, device_probe, utilities
+import subprocess
+from resources import constants, device_probe, utilities, sys_patch_helpers, amfi_detect
 from data import model_array, os_data, sip_data, sys_patch_dict
 
 class detect_root_patch:
@@ -13,14 +14,18 @@ class detect_root_patch:
         self.computer = self.constants.computer
 
         # GPU Patch Detection
-        self.nvidia_tesla = False
-        self.kepler_gpu   = False
-        self.nvidia_web   = False
-        self.amd_ts1      = False
-        self.amd_ts2      = False
-        self.iron_gpu     = False
-        self.sandy_gpu    = False
-        self.ivy_gpu      = False
+        self.nvidia_tesla  = False
+        self.kepler_gpu    = False
+        self.nvidia_web    = False
+        self.amd_ts1       = False
+        self.amd_ts2       = False
+        self.iron_gpu      = False
+        self.sandy_gpu     = False
+        self.ivy_gpu       = False
+        self.haswell_gpu   = False
+        self.broadwell_gpu = False
+        self.skylake_gpu   = False
+        self.legacy_gcn    = False
 
         # Misc Patch Detection
         self.brightness_legacy         = False
@@ -31,8 +36,10 @@ class detect_root_patch:
 
         # Patch Requirements
         self.amfi_must_disable   = False
+        self.amfi_shim_bins      = False
         self.supports_metal      = False
         self.needs_nv_web_checks = False
+        self.requires_root_kc    = False
 
         # Validation Checks
         self.sip_enabled     = False
@@ -40,6 +47,7 @@ class detect_root_patch:
         self.amfi_enabled    = False
         self.fv_enabled      = False
         self.dosdude_patched = False
+        self.missing_kdk     = False
 
         self.missing_whatever_green = False
         self.missing_nv_web_nvram   = False
@@ -56,17 +64,28 @@ class detect_root_patch:
                     if self.constants.detected_os > non_metal_os:
                         self.nvidia_tesla = True
                         self.amfi_must_disable = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.NVIDIA.Archs.Kepler and self.constants.force_nv_web is False:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         # Kepler drivers were dropped with Beta 7
                         # 12.0 Beta 5: 21.0.0 - 21A5304g
                         # 12.0 Beta 6: 21.1.0 - 21A5506j
                         # 12.0 Beta 7: 21.1.0 - 21A5522h
-                        if self.constants.detected_os == os_data.os_data.monterey and self.constants.detected_os_minor > 0:
-                            if "21A5506j" not in self.constants.detected_os_build:
-                                self.kepler_gpu = True
-                                self.supports_metal = True
+                        if (
+                            self.constants.detected_os >= os_data.os_data.ventura or
+                            (
+                                "21A5506j" not in self.constants.detected_os_build and
+                                self.constants.detected_os == os_data.os_data.monterey and
+                                self.constants.detected_os_minor > 0
+                            )
+                        ):
+                            self.kepler_gpu = True
+                            self.supports_metal = True
+                            if self.constants.detected_os >= os_data.os_data.ventura:
+                                self.amfi_must_disable = True
                 elif gpu.arch in [
                     device_probe.NVIDIA.Archs.Fermi,
                     device_probe.NVIDIA.Archs.Kepler,
@@ -76,28 +95,80 @@ class detect_root_patch:
                     if self.constants.detected_os > os_data.os_data.mojave:
                         self.nvidia_web = True
                         self.amfi_must_disable = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
                         self.needs_nv_web_checks = True
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts1 = True
                         self.amfi_must_disable = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_2:
                     if self.constants.detected_os > non_metal_os:
                         self.amd_ts2 = True
+                        self.amfi_must_disable = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
+                        self.requires_root_kc = True
+                elif gpu.arch in [
+                    device_probe.AMD.Archs.Legacy_GCN_7000,
+                    device_probe.AMD.Archs.Legacy_GCN_8000,
+                    device_probe.AMD.Archs.Legacy_GCN_9000,
+                    device_probe.AMD.Archs.Polaris,
+                ]:
+                    if self.constants.detected_os > os_data.os_data.monterey:
+                        if self.constants.computer.rosetta_active is True:
+                            continue
+
+                        if gpu.arch == device_probe.AMD.Archs.Polaris:
+                            # Check if host supports AVX2.0
+                            # If not, enable legacy GCN patch
+                            if "AVX2" in self.constants.computer.cpu.leafs:
+                                continue
+
+                        self.legacy_gcn = True
+                        self.supports_metal = True
+                        self.requires_root_kc = True
                         self.amfi_must_disable = True
                 elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
                     if self.constants.detected_os > non_metal_os:
                         self.iron_gpu = True
                         self.amfi_must_disable = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
                     if self.constants.detected_os > non_metal_os:
                         self.sandy_gpu = True
                         self.amfi_must_disable = True
+                        if os_data.os_data.ventura in self.constants.legacy_accel_support:
+                            self.amfi_shim_bins = True
                         self.legacy_keyboard_backlight = self.check_legacy_keyboard_backlight()
+                        self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         self.ivy_gpu = True
+                        if self.constants.detected_os >= os_data.os_data.ventura:
+                            self.amfi_must_disable = True
+                        self.supports_metal = True
+                elif gpu.arch == device_probe.Intel.Archs.Haswell:
+                    if self.constants.detected_os > os_data.os_data.monterey:
+                        self.haswell_gpu = True
+                        self.amfi_must_disable = True
+                        self.supports_metal = True
+                elif gpu.arch == device_probe.Intel.Archs.Broadwell:
+                    if self.constants.detected_os > os_data.os_data.monterey:
+                        self.broadwell_gpu = True
+                        self.amfi_must_disable = True
+                        self.supports_metal = True
+                elif gpu.arch == device_probe.Intel.Archs.Skylake:
+                    if self.constants.detected_os > os_data.os_data.monterey:
+                        self.skylake_gpu = True
+                        self.amfi_must_disable = True
                         self.supports_metal = True
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
@@ -109,6 +180,14 @@ class detect_root_patch:
             self.iron_gpu = False
             self.sandy_gpu = False
             self.legacy_keyboard_backlight = False
+
+        if self.constants.detected_os <= os_data.os_data.monterey:
+            # Always assume Root KC requirement on Monterey and older
+            self.requires_root_kc = True
+        else:
+            if self.requires_root_kc is True:
+                self.missing_kdk = not self.check_kdk()
+
 
     def check_dgpu_status(self):
         dgpu = self.constants.computer.dgpu
@@ -174,6 +253,11 @@ class detect_root_patch:
     def check_whatevergreen(self):
         return utilities.check_kext_loaded("WhateverGreen", self.constants.detected_os)
 
+    def check_kdk(self):
+        if sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present() is None:
+            return False
+        return True
+
     def check_sip(self):
         if self.constants.detected_os > os_data.os_data.catalina:
             if self.nvidia_web is True:
@@ -181,6 +265,12 @@ class detect_root_patch:
                 sip_hex = "0xA03"
                 sip_value = (
                     f"For Hackintoshes, please set csr-active-config to '030A0000' ({sip_hex})\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
+                )
+            elif self.constants.detected_os >= os_data.os_data.ventura:
+                sip = sip_data.system_integrity_protection.root_patch_sip_ventura
+                sip_hex = "0x803"
+                sip_value = (
+                    f"For Hackintoshes, please set csr-active-config to '03080000' ({sip_hex})\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
                 )
             else:
                 sip = sip_data.system_integrity_protection.root_patch_sip_big_sur
@@ -210,7 +300,7 @@ class detect_root_patch:
             isinstance(self.constants.computer.wifi, device_probe.Broadcom)
             and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
         ) or (isinstance(self.constants.computer.wifi, device_probe.Atheros) and self.constants.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
-            if self.constants.detected_os > os_data.os_data.big_sur:
+            if os_data.os_data.ventura > self.constants.detected_os > os_data.os_data.big_sur:
                 self.legacy_wifi = True
 
         # if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
@@ -233,37 +323,54 @@ class detect_root_patch:
             "Graphics: Nvidia Web Drivers":                self.nvidia_web,
             "Graphics: AMD TeraScale 1":                   self.amd_ts1,
             "Graphics: AMD TeraScale 2":                   self.amd_ts2,
+            "Graphics: AMD Legacy GCN":                    self.legacy_gcn,
             "Graphics: Intel Ironlake":                    self.iron_gpu,
             "Graphics: Intel Sandy Bridge":                self.sandy_gpu,
             "Graphics: Intel Ivy Bridge":                  self.ivy_gpu,
+            "Graphics: Intel Haswell":                     self.haswell_gpu,
+            "Graphics: Intel Broadwell":                   self.broadwell_gpu,
+            "Graphics: Intel Skylake":                     self.skylake_gpu,
             "Brightness: Legacy Backlight Control":        self.brightness_legacy,
             "Audio: Legacy Realtek":                       self.legacy_audio,
             "Networking: Legacy Wireless":                 self.legacy_wifi,
             "Miscellaneous: Legacy GMUX":                  self.legacy_gmux,
             "Miscellaneous: Legacy Keyboard Backlight":    self.legacy_keyboard_backlight,
             "Settings: Requires AMFI exemption":           self.amfi_must_disable,
+            "Settings: Supports Auxiliary Cache":          not self.requires_root_kc,
+            "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,
             "Validation: Patching Possible":               self.verify_patch_allowed(),
             f"Validation: SIP is enabled (Required: {self.check_sip()[2]} or higher)":  self.sip_enabled,
             f"Validation: Currently Booted SIP: ({hex(utilities.csr_dump())})":         self.sip_enabled,
             "Validation: SecureBootModel is enabled":      self.sbm_enabled,
-            "Validation: AMFI is enabled":                 self.amfi_enabled if self.amfi_must_disable is True else False,
+            f"Validation: {'AMFI' if self.constants.host_is_hackintosh is True or self.get_amfi_level_needed() > 2 else 'Library Validation'} is enabled":                 self.amfi_enabled if self.amfi_must_disable is True else False,
             "Validation: FileVault is enabled":            self.fv_enabled,
             "Validation: System is dosdude1 patched":      self.dosdude_patched,
             "Validation: WhateverGreen.kext missing":      self.missing_whatever_green if self.nvidia_web is True else False,
             "Validation: Force OpenGL property missing":   self.missing_nv_web_opengl  if self.nvidia_web is True else False,
             "Validation: Force compat property missing":   self.missing_nv_compat      if self.nvidia_web is True else False,
             "Validation: nvda_drv(_vrl) variable missing": self.missing_nv_web_nvram   if self.nvidia_web is True else False,
-
         }
 
         return self.root_patch_dict
+
+    def get_amfi_level_needed(self):
+        if self.amfi_must_disable is True:
+            if self.constants.detected_os > os_data.os_data.catalina:
+                if self.constants.detected_os >= os_data.os_data.ventura:
+                    if self.amfi_shim_bins is True:
+                        # Currently we require AMFI outright disabled
+                        # in Ventura to work with shim'd binaries
+                        return 3
+                return 1
+        return 0
 
     def verify_patch_allowed(self, print_errors=False):
         sip_dict = self.check_sip()
         sip = sip_dict[0]
         sip_value = sip_dict[1]
 
-        self.sip_enabled, self.sbm_enabled, self.amfi_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
+        self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
+        self.amfi_enabled = not amfi_detect.amfi_configuration_detection().check_config(self.get_amfi_level_needed())
 
         if self.nvidia_web is True:
             self.missing_nv_web_nvram   = not self.check_nv_web_nvram()
@@ -314,7 +421,6 @@ class detect_root_patch:
                     print("\nCannot patch! WhateverGreen.kext missing")
                     print("Please ensure WhateverGreen.kext is installed")
 
-
         if any(
             [
                 # General patch checks
@@ -341,57 +447,89 @@ class detect_root_patch:
         print("- The following patches will be applied:")
         if hardware_details["Graphics: Intel Ironlake"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"Intel Ironlake": all_hardware_patchset["Graphics"]["Intel Ironlake"]})
         if hardware_details["Graphics: Intel Sandy Bridge"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
-            required_patches.update({"Legacy GVA": all_hardware_patchset["Graphics"]["Legacy GVA"]})
+            required_patches.update({"High Sierra GVA": all_hardware_patchset["Graphics"]["High Sierra GVA"]})
+            required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
-            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
-            required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
+            required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
+            required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
+            required_patches.update({"Big Sur OpenCL": all_hardware_patchset["Graphics"]["Big Sur OpenCL"]})
+            required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
+        if hardware_details["Graphics: Intel Haswell"] is True:
+            required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
+            required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
+            required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
+        if hardware_details["Graphics: Intel Broadwell"] is True:
+            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
+            required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
+            required_patches.update({"Intel Broadwell": all_hardware_patchset["Graphics"]["Intel Broadwell"]})
+        if hardware_details["Graphics: Intel Skylake"] is True:
+            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
+            required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
+            required_patches.update({"Intel Skylake": all_hardware_patchset["Graphics"]["Intel Skylake"]})
         if hardware_details["Graphics: Nvidia Tesla"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"Nvidia Tesla": all_hardware_patchset["Graphics"]["Nvidia Tesla"]})
         if hardware_details["Graphics: Nvidia Web Drivers"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Non-Metal IOAccelerator Common": all_hardware_patchset["Graphics"]["Non-Metal IOAccelerator Common"]})
             required_patches.update({"Non-Metal CoreDisplay Common": all_hardware_patchset["Graphics"]["Non-Metal CoreDisplay Common"]})
+            required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"Nvidia Web Drivers": all_hardware_patchset["Graphics"]["Nvidia Web Drivers"]})
             required_patches.update({"Non-Metal Enforcement": all_hardware_patchset["Graphics"]["Non-Metal Enforcement"]})
         if hardware_details["Graphics: Nvidia Kepler"] is True:
-            required_patches.update({"Metal Common": all_hardware_patchset["Graphics"]["Metal Common"]})
-            required_patches.update({"Modern GVA": all_hardware_patchset["Graphics"]["Modern GVA"]})
+            required_patches.update({"Revert Metal Downgrade": all_hardware_patchset["Graphics"]["Revert Metal Downgrade"]})
+            required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
+            required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
+            required_patches.update({"Big Sur OpenCL": all_hardware_patchset["Graphics"]["Big Sur OpenCL"]})
+            required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"Nvidia Kepler": all_hardware_patchset["Graphics"]["Nvidia Kepler"]})
             for gpu in self.constants.computer.gpus:
                 # Handle mixed GPU situations (ie. MacBookPro11,3: Haswell iGPU + Kepler dGPU)
                 if gpu.arch == device_probe.Intel.Archs.Haswell:
-                    if "Modern GVA" in required_patches:
-                        del(required_patches["Modern GVA"])
-                    required_patches.update({"GVA Work-Around": all_hardware_patchset["Graphics"]["GVA Work-Around"]})
+                    if "Catalina GVA" in required_patches:
+                        del(required_patches["Catalina GVA"])
                     break
         if hardware_details["Graphics: AMD TeraScale 1"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
+            required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"AMD TeraScale Common": all_hardware_patchset["Graphics"]["AMD TeraScale Common"]})
             required_patches.update({"AMD TeraScale 1": all_hardware_patchset["Graphics"]["AMD TeraScale 1"]})
         if hardware_details["Graphics: AMD TeraScale 2"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"Non-Metal IOAccelerator Common": all_hardware_patchset["Graphics"]["Non-Metal IOAccelerator Common"]})
+            required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"AMD TeraScale Common": all_hardware_patchset["Graphics"]["AMD TeraScale Common"]})
             required_patches.update({"AMD TeraScale 2": all_hardware_patchset["Graphics"]["AMD TeraScale 2"]})
             if self.constants.allow_ts2_accel is False or self.constants.detected_os not in self.constants.legacy_accel_support:
                 # TeraScale 2 MacBooks with faulty GPUs are highly prone to crashing with AMDRadeonX3000 attached
                 # Additionally, AMDRadeonX3000 requires IOAccelerator downgrade which is not installed without 'Non-Metal IOAccelerator Common'
                 del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
+        if hardware_details["Graphics: AMD Legacy GCN"] is True:
+            required_patches.update({"Revert Metal Downgrade": all_hardware_patchset["Graphics"]["Revert Metal Downgrade"]})
+            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
+            required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
+            required_patches.update({"AMD Legacy GCN": all_hardware_patchset["Graphics"]["AMD Legacy GCN"]})
+            if "AVX2" not in self.constants.computer.cpu.leafs:
+                required_patches.update({"AMD OpenCL": all_hardware_patchset["Graphics"]["AMD OpenCL"]})
         if hardware_details["Brightness: Legacy Backlight Control"] is True:
-            required_patches.update({"Legacy Brightness": all_hardware_patchset["Brightness"]["Legacy Brightness"]})
+            required_patches.update({"Legacy Backlight Control": all_hardware_patchset["Brightness"]["Legacy Backlight Control"]})
         if hardware_details["Audio: Legacy Realtek"] is True:
             if self.model in ["iMac7,1", "iMac8,1"]:
                 required_patches.update({"Legacy Realtek": all_hardware_patchset["Audio"]["Legacy Realtek"]})
             else:
                 required_patches.update({"Legacy Non-GOP": all_hardware_patchset["Audio"]["Legacy Non-GOP"]})
         if hardware_details["Networking: Legacy Wireless"] is True:
-            required_patches.update({"Legacy WiFi": all_hardware_patchset["Networking"]["Legacy WiFi"]})
+            required_patches.update({"Legacy Wireless": all_hardware_patchset["Networking"]["Legacy Wireless"]})
         if hardware_details["Miscellaneous: Legacy GMUX"] is True:
             required_patches.update({"Legacy GMUX": all_hardware_patchset["Miscellaneous"]["Legacy GMUX"]})
         if hardware_details["Miscellaneous: Legacy Keyboard Backlight"] is True:
@@ -399,6 +537,11 @@ class detect_root_patch:
 
         if required_patches:
             host_os_float = float(f"{self.constants.detected_os}.{self.constants.detected_os_minor}")
+
+            # Prioritize Monterey GVA patches
+            if "Catalina GVA" in required_patches and "Monterey GVA" in required_patches:
+                del(required_patches["Catalina GVA"])
+
             for patch_name in list(required_patches):
                 patch_os_min_float = float(f'{required_patches[patch_name]["OS Support"]["Minimum OS Support"]["OS Major"]}.{required_patches[patch_name]["OS Support"]["Minimum OS Support"]["OS Minor"]}')
                 patch_os_max_float = float(f'{required_patches[patch_name]["OS Support"]["Maximum OS Support"]["OS Major"]}.{required_patches[patch_name]["OS Support"]["Maximum OS Support"]["OS Minor"]}')

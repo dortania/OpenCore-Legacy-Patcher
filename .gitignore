@@ -30,3 +30,5 @@ __pycache__/
 /payloads/OpenCore-Legacy-Patcher
 /payloads/InstallAssistant.pkg.integrityDataV1
 /payloads.dmg
+/payloads/OpenCore-Legacy-Patcher-*.plist
+/payloads/KDK.dmg

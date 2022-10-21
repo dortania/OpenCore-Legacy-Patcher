@@ -148,7 +148,8 @@ class BuildOpenCore:
 
                 print("- Enabling VMM exemption patch")
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
-                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2)")["Enabled"] = True
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Legacy")["Enabled"] = True
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Ventura")["Enabled"] = True
 
                 # Patch HW_BID to OC_BID
                 # Set OC_BID to iMac18,1 Board ID (Mac-F60DEB81FF30ACF6)
@@ -206,12 +207,19 @@ class BuildOpenCore:
                         # Applicable for pre-Ivy Bridge models
                         if self.get_kext_by_bundle_path("CatalinaBCM5701Ethernet.kext")["Enabled"] is False:
                             self.enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
-                elif isinstance(controller, device_probe.IntelEthernet) and controller.chipset == device_probe.IntelEthernet.Chipsets.AppleIntelI210Ethernet:
+                elif isinstance(controller, device_probe.IntelEthernet):
                     if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
                         # Apple's IOSkywalkFamily in DriverKit requires VT-D support
                         # Applicable for pre-Ivy Bridge models
-                        if self.get_kext_by_bundle_path("CatalinaIntelI210Ethernet.kext")["Enabled"] is False:
-                            self.enable_kext("CatalinaIntelI210Ethernet.kext", self.constants.i210_version, self.constants.i210_path)
+                        if controller.chipset == device_probe.IntelEthernet.Chipsets.AppleIntelI210Ethernet:
+                            if self.get_kext_by_bundle_path("CatalinaIntelI210Ethernet.kext")["Enabled"] is False:
+                                self.enable_kext("CatalinaIntelI210Ethernet.kext", self.constants.i210_version, self.constants.i210_path)
+                        elif controller.chipset == device_probe.IntelEthernet.Chipsets.AppleIntel8254XEthernet:
+                            if self.get_kext_by_bundle_path("AppleIntel8254XEthernet.kext")["Enabled"] is False:
+                                self.enable_kext("AppleIntel8254XEthernet.kext", self.constants.intel_8254x_version, self.constants.intel_8254x_path)
+                        elif controller.chipset == device_probe.IntelEthernet.Chipsets.Intel82574L:
+                            if self.get_kext_by_bundle_path("Intel82574L.kext")["Enabled"] is False:
+                                self.enable_kext("Intel82574L.kext", self.constants.intel_82574l_version, self.constants.intel_82574l_path)
                 elif isinstance(controller, device_probe.NVIDIAEthernet):
                     if self.get_kext_by_bundle_path("nForceEthernet.kext")["Enabled"] is False:
                         self.enable_kext("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path)
@@ -228,6 +236,11 @@ class BuildOpenCore:
                 self.enable_kext("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path)
             elif smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Marvell":
                 self.enable_kext("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path)
+            elif smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Intel 80003ES2LAN":
+                self.enable_kext("AppleIntel8254XEthernet.kext", self.constants.intel_8254x_version, self.constants.intel_8254x_path)
+            elif smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Intel 82574L":
+                self.enable_kext("Intel82574L.kext", self.constants.intel_82574l_version, self.constants.intel_82574l_path)
+
 
         # i3 Ivy Bridge iMacs don't support RDRAND
         # However for prebuilt, assume they do
@@ -255,6 +268,7 @@ class BuildOpenCore:
         # To verify the non-AVX kext is used, check IOService for 'com_apple_AppleFSCompression_NoAVXCompressionTypeZlib'
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
             self.enable_kext("NoAVXFSCompressionTypeZlib.kext", self.constants.apfs_zlib_version, self.constants.apfs_zlib_path)
+            self.enable_kext("NoAVXFSCompressionTypeZlib-AVXpel.kext", self.constants.apfs_zlib_v2_version, self.constants.apfs_zlib_v2_path)
 
         if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in model_array.MacPro):
             # Use Innie's same logic:
@@ -431,6 +445,28 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "BUF0 to BUF1")["Enabled"] = True
             shutil.copy(self.constants.windows_ssdt_path, self.constants.acpi_path)
 
+        # In macOS Ventura, Apple dropped AppleIntelCPUPowerManagement* kexts as they're unused on Haswell+
+        # However re-injecting the AICPUPM kexts is not enough, as Ventura changed how 'intel_cpupm_matching' is set:
+        #    https://github.com/apple-oss-distributions/xnu/blob/e7776783b89a353188416a9a346c6cdb4928faad/osfmk/i386/pal_routines.h#L153-L163
+        #
+        # Specifically Apple has this logic for power management:
+        #  - 0: Kext Based Power Management
+        #  - 3: Kernel Based Power Management (For Haswell+ and Virtual Machines)
+        #  - 4: Generic Virtual Machine Power Management
+        #
+        # Apple determines which to use by verifying whether 'plugin-type' exists in ACPI (with a value of 1 for Haswell, 2 for VMs)
+        # By default however, the plugin-type is not set, and thus the default value of '0' is used
+        #    https://github.com/apple-oss-distributions/xnu/blob/e7776783b89a353188416a9a346c6cdb4928faad/osfmk/i386/pal_native.h#L62
+        #
+        # With Ventura, Apple no longer sets '0' as the default value, and instead sets it to '3'
+        # This breaks AppleIntelCPUPowerManagement.kext matching as it no longer matches against the correct criteria
+        #
+        # To resolve, we patched AICPUPM to attach regardless of the value of 'intel_cpupm_matching'
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
+            print("- Enabling legacy power management support")
+            self.enable_kext("AppleIntelCPUPowerManagement.kext", self.constants.aicpupm_version, self.constants.aicpupm_path)
+            self.enable_kext("AppleIntelCPUPowerManagementClient.kext", self.constants.aicpupm_version, self.constants.aicpupm_client_path)
+
         # With macOS Monterey, Apple's SDXC driver requires the system to support VT-D
         # However pre-Ivy Bridge don't support this feature
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
@@ -443,13 +479,17 @@ class BuildOpenCore:
             usb_map_path.exists()
             and (self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True)
             and self.model not in ["Xserve2,1", "Dortania1,1"]
-            and (self.model in model_array.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
+            and (
+                (self.model in model_array.Missing_USB_Map or self.model in model_array.Missing_USB_Map_Ventura)
+                or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
             print("- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
             self.get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
+            if self.model in model_array.Missing_USB_Map_Ventura and self.constants.serial_settings not in ["Moderate", "Advanced"]:
+                self.get_kext_by_bundle_path("USB-Map.kext")["MinKernel"] = "22.0.0"
 
         if self.constants.allow_oc_everywhere is False:
             if self.constants.serial_settings != "None":
@@ -531,7 +571,7 @@ class BuildOpenCore:
                             "use-layout-id": 1,
                         }
                     self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
-            elif self.model.startswith("MacPro") or self.model.startswith("Xserve"):
+            elif (self.model.startswith("MacPro") and self.model != "MacPro6,1") or self.model.startswith("Xserve"):
                 # Used to enable Audio support for non-standard dGPUs
                 self.enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
 
@@ -608,11 +648,11 @@ class BuildOpenCore:
             if not self.get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
                 # Ensure WEG is enabled as we need if for Backlight patching
                 self.enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
-            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1}
+            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
             if self.constants.custom_model and self.model == "iMac11,2":
                 # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
                 # Set both properties when we cannot run hardware detection
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 128, "unfairgva": 1}
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
             if self.model in ["iMac12,1", "iMac12,2"]:
                 print("- Disabling unsupported iGPU")
                 self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
@@ -627,34 +667,25 @@ class BuildOpenCore:
                 if self.computer.dgpu.arch == device_probe.AMD.Archs.Legacy_GCN_7000:
                     print("- Adding Legacy GCN Power Gate Patches")
                     self.config["DeviceProperties"]["Add"][backlight_path].update({
-                        "rebuild-device-tree": 1,
                         "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
                         "CAIL,CAIL_DisableGfxCGPowerGating": 1,
                         "CAIL,CAIL_DisableUVDPowerGating": 1,
                         "CAIL,CAIL_DisableVCEPowerGating": 1,
-                        "agdpmod": "pikera",
-                        "enable-gva-support": 1
                     })
             if self.constants.imac_model == "Legacy GCN":
                 print("- Adding Legacy GCN Power Gate Patches")
                 self.config["DeviceProperties"]["Add"][backlight_path].update({
-                    "rebuild-device-tree": 1,
                     "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
                     "CAIL,CAIL_DisableGfxCGPowerGating": 1,
                     "CAIL,CAIL_DisableUVDPowerGating": 1,
                     "CAIL,CAIL_DisableVCEPowerGating": 1,
-                    "agdpmod": "pikera",
-                    "enable-gva-support": 1
                 })
                 if self.model == "iMac11,2":
                     self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"].update({
-                        "rebuild-device-tree": 1,
                         "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
                         "CAIL,CAIL_DisableGfxCGPowerGating": 1,
                         "CAIL,CAIL_DisableUVDPowerGating": 1,
                         "CAIL,CAIL_DisableVCEPowerGating": 1,
-                        "agdpmod": "pikera",
-                        "enable-gva-support": 1
                     })
 
         # Check GPU Vendor
@@ -778,12 +809,24 @@ class BuildOpenCore:
             # Add AMDGPUWakeHandler
             self.enable_kext("AMDGPUWakeHandler.kext", self.constants.gpu_wake_version, self.constants.gpu_wake_path)
 
+        # Pre-Force Touch trackpad support for macOS Ventura
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.skylake.value:
+            if self.model.startswith("MacBook"):
+                # These units got force touch early, so ignore them
+                if self.model not in ["MacBookPro11,4", "MacBookPro11,5", "MacBook8,1"]:
+                    self.enable_kext("AppleUSBTopCase.kext", self.constants.topcase_version, self.constants.top_case_path)
+                    self.get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCButtons.kext")["Enabled"] = True
+                    self.get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext")["Enabled"] = True
+                    self.get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyEventDriver.kext")["Enabled"] = True
+                    self.enable_kext("AppleUSBMultitouch.kext", self.constants.multitouch_version, self.constants.multitouch_path)
+
         # Bluetooth Detection
         if not self.constants.custom_model and self.computer.bluetooth_chipset:
             if self.computer.bluetooth_chipset in ["BRCM2070 Hub", "BRCM2046 Hub"]:
                 print("- Fixing Legacy Bluetooth for macOS Monterey")
                 self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
                 self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -btlfxallowanyaddr"
             elif self.computer.bluetooth_chipset == "BRCM20702 Hub":
                 # BCM94331 can include either BCM2070 or BRCM20702 v1 Bluetooth chipsets
                 # Note Monterey only natively supports BRCM20702 v2 (found with BCM94360)
@@ -801,6 +844,7 @@ class BuildOpenCore:
             print("- Fixing Legacy Bluetooth for macOS Monterey")
             self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
             if smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM2070.value:
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -btlfxallowanyaddr"
                 self.enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
 
         if self.constants.nvme_boot is True:
@@ -815,6 +859,7 @@ class BuildOpenCore:
         self.get_efi_binary_by_path("OpenCanopy.efi", "UEFI", "Drivers")["Enabled"] = True
         self.get_efi_binary_by_path("OpenRuntime.efi", "UEFI", "Drivers")["Enabled"] = True
         self.get_efi_binary_by_path("OpenLinuxBoot.efi", "UEFI", "Drivers")["Enabled"] = True
+        self.get_efi_binary_by_path("ResetNvramEntry.efi", "UEFI", "Drivers")["Enabled"] = True
         # Exfat check
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
             # Sandy Bridge and newer Macs natively support ExFat
@@ -879,6 +924,27 @@ class BuildOpenCore:
             self.get_efi_binary_by_path("XhciDxe.efi", "UEFI", "Drivers")["Enabled"] = True
             self.get_efi_binary_by_path("UsbBusDxe.efi", "UEFI", "Drivers")["Enabled"] = True
 
+        # Add UHCI/OHCI drivers
+        if not self.constants.custom_model:
+            if self.constants.computer.usb_controllers:
+                for controller in self.constants.computer.usb_controllers:
+                    if isinstance(controller, device_probe.UHCIController) or isinstance(controller, device_probe.OHCIController):
+                        print("- Adding UHCI/OHCI USB support")
+                        shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
+                        self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCI.kext")["Enabled"] = True
+                        self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
+                        self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
+                        self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
+                        break
+        else:
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
+                print("- Adding UHCI/OHCI USB support")
+                shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
+                self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCI.kext")["Enabled"] = True
+                self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
+                self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
+                self.get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
+
         # ThirdPartDrives Check
         if self.constants.allow_3rd_party_drives is True:
             for drive in ["SATA 2.5", "SATA 3.5", "mSATA"]:
@@ -905,6 +971,12 @@ class BuildOpenCore:
             # For XServes, assume RAID is present
             # Namely due to Xserve2,1 being limited to 10.7, thus no hardware detection
             self.enable_kext("AppleRAIDCard.kext", self.constants.apple_raid_version, self.constants.apple_raid_path)
+
+        # Force Output support PC VBIOS on Mac Pros
+        if self.constants.force_output_support is True:
+            print("- Forcing GOP Support")
+            self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+            self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
         # DEBUG Settings
         if self.constants.verbose_debug is True:
@@ -946,14 +1018,24 @@ class BuildOpenCore:
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = utilities.string_to_hex(self.constants.custom_sip_value.lstrip("0x"))
             elif self.constants.sip_status is False:
                 print("- Set SIP to allow Root Volume patching")
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("02080000")
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = binascii.unhexlify("03080000")
 
-        # if self.constants.amfi_status is False:
-        #     print("- Disabling AMFI")
-        #     self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi_get_out_of_my_way=1"
+            # apfs.kext has an undocumented boot-arg that allows FileVault usage on broken APFS seals (-arv_allow_fv)
+            # This is however hidden behind kern.development, thus we patch _apfs_filevault_allowed to always return true
+            # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
+            print("- Allowing FileVault on Root Patched systems")
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Force FileVault on Broken Seal")["Enabled"] = True
+            # Lets us check in sys_patch.py if config supports FileVault
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
+
         if self.constants.disable_cs_lv is True:
             print("- Disabling Library Validation")
+            # In Ventura, LV patch broke. For now, add AMFI arg
+            # Before merging into mainline, this needs to be resolved
             self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Library Validation Enforcement")["Enabled"] = True
+            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable _csr_check() in _vnode_check_signature")["Enabled"] = True
+            if self.constants.disable_amfi is True:
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi=0x80"
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_amfi"
             # CSLVFixup simply patches out __RESTRICT and __restrict out of the Music.app Binary
             # Ref: https://pewpewthespells.com/blog/blocking_code_injection_on_ios_and_os_x.html
@@ -964,7 +1046,8 @@ class BuildOpenCore:
             if self.constants.force_vmm is True:
                 print("- Forcing VMM patchset to support OTA updates")
                 self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
-                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2)")["Enabled"] = True
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Legacy")["Enabled"] = True
+                self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Ventura")["Enabled"] = True
         if self.constants.serial_settings in ["Moderate", "Advanced"]:
             print("- Enabling USB Rename Patches")
             self.get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "XHC1 to SHC1")["Enabled"] = True
@@ -1005,14 +1088,9 @@ class BuildOpenCore:
             # Haswell and Broadwell MacBooks lock out the VMX bit if booting UEFI Windows
             print("- Enabling VMX Bit for non-macOS OSes")
             self.config["UEFI"]["Quirks"]["EnableVmx"] = True
-        if self.constants.allow_fv_root is True:
-            # apfs.kext has an undocumented boot-arg that allows FileVault usage on broken APFS seals (-arv_allow_fv)
-            # This is however hidden behind kern.development, thus we patch _apfs_filevault_allowed to always return true
-            # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
-            print("- Allowing FileVault on Root Patched systems")
-            self.get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.filesystems.apfs")["Enabled"] = True
-            # Lets us check in sys_patch.py if config supports FileVault
-            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
+            print("- Enabling Rosetta Cryptex support in Ventura")
+            self.enable_kext("CryptexFixup.kext", self.constants.cryptexfixup_version, self.constants.cryptexfixup_path)
         if self.constants.disable_msr_power_ctl is True:
             print("- Disabling Firmware Throttling")
             if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.cpu_data.nehalem.value:
@@ -1203,7 +1281,7 @@ class BuildOpenCore:
         if (
             self.constants.allow_oc_everywhere is False
             and self.model not in ["Xserve2,1", "Dortania1,1"]
-            and (self.model in model_array.Missing_USB_Map or self.constants.serial_settings in ["Moderate", "Advanced"])
+            and ((self.model in model_array.Missing_USB_Map or self.model in model_array.Missing_USB_Map_Ventura) or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
             map_config = plistlib.load(Path(new_map_ls).open("rb"))
@@ -1308,28 +1386,19 @@ class BuildOpenCore:
     def cleanup(self):
         print("- Cleaning up files")
         # Remove unused entries
-        # TODO: Consolidate into a single for loop
-        for entry in list(self.config["ACPI"]["Add"]):
-            if not entry["Enabled"]:
-                self.config["ACPI"]["Add"].remove(entry)
-        for entry in list(self.config["ACPI"]["Patch"]):
-            if not entry["Enabled"]:
-                self.config["ACPI"]["Patch"].remove(entry)
-        for entry in list(self.config["Booter"]["Patch"]):
-            if not entry["Enabled"]:
-                self.config["Booter"]["Patch"].remove(entry)
-        for entry in list(self.config["Kernel"]["Add"]):
-            if not entry["Enabled"]:
-                self.config["Kernel"]["Add"].remove(entry)
-        for entry in list(self.config["Kernel"]["Patch"]):
-            if not entry["Enabled"]:
-                self.config["Kernel"]["Patch"].remove(entry)
-        for entry in list(self.config["Misc"]["Tools"]):
-            if not entry["Enabled"]:
-                self.config["Misc"]["Tools"].remove(entry)
-        for entry in list(self.config["UEFI"]["Drivers"]):
-            if not entry["Enabled"]:
-                self.config["UEFI"]["Drivers"].remove(entry)
+        entries_to_clean = {
+            "ACPI":   ["Add", "Delete", "Patch"],
+            "Booter": ["Patch"],
+            "Kernel": ["Add", "Block", "Force", "Patch"],
+            "Misc":   ["Tools"],
+            "UEFI":   ["Drivers"],
+        }
+
+        for entry in entries_to_clean:
+            for sub_entry in entries_to_clean[entry]:
+                for item in list(self.config[entry][sub_entry]):
+                    if item["Enabled"] is False:
+                        self.config[entry][sub_entry].remove(item)
 
         plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
         for kext in self.constants.kexts_path.rglob("*.zip"):
@@ -1347,6 +1416,27 @@ class BuildOpenCore:
             for i in self.constants.build_path.rglob("__MACOSX"):
                 shutil.rmtree(i)
 
+        # Remove unused plugins inside of kexts
+        # Following plugins are sometimes unused as there's different variants machines need
+        known_unused_plugins = [
+            "AirPortBrcm4331.kext",
+            "AirPortAtheros40.kext",
+            "AppleAirPortBrcm43224.kext",
+            "AirPortBrcm4360_Injector.kext",
+            "AirPortBrcmNIC_Injector.kext"
+        ]
+        for kext in Path(self.constants.opencore_release_folder / Path("EFI/OC/Kexts")).glob("*.kext"):
+            for plugin in Path(kext / "Contents/PlugIns/").glob("*.kext"):
+                should_remove = True
+                for enabled_kexts in self.config["Kernel"]["Add"]:
+                    if enabled_kexts["BundlePath"].endswith(plugin.name):
+                        should_remove = False
+                        break
+                if should_remove:
+                    if plugin.name not in known_unused_plugins:
+                        raise Exception(f" - Unknown plugin found: {plugin.name}")
+                    shutil.rmtree(plugin)
+
         Path(self.constants.opencore_zip_copied).unlink()
 
     def sign_files(self):
@@ -1361,12 +1451,66 @@ class BuildOpenCore:
                 print("- Missing Command Line tools, skipping Vault for saftey reasons")
                 print("- Install via 'xcode-select --install' and rerun OCLP if you wish to vault this config")
 
+    def validate_pathing(self):
+        print("- Validating generated config")
+        if not Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")):
+            print("- OpenCore config file missing!!!")
+            raise Exception("OpenCore config file missing")
+
+        config_plist = plistlib.load(Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")).open("rb"))
+
+        for acpi in config_plist["ACPI"]["Add"]:
+            # print(f"    - Validating {acpi['Path']}")
+            if not Path(self.constants.opencore_release_folder / Path("EFI/OC/ACPI") / Path(acpi["Path"])).exists():
+                print(f"  - Missing ACPI Table: {acpi['Path']}")
+                raise Exception(f"Missing ACPI Table: {acpi['Path']}")
+
+        for kext in config_plist["Kernel"]["Add"]:
+            # print(f"    - Validating {kext['BundlePath']}")
+            kext_path = Path(self.constants.opencore_release_folder / Path("EFI/OC/Kexts") / Path(kext["BundlePath"]))
+            kext_binary_path = Path(kext_path / Path(kext["ExecutablePath"]))
+            kext_plist_path = Path(kext_path / Path(kext["PlistPath"]))
+            if not kext_path.exists():
+                print(f"- Missing kext: {kext_path}")
+                raise Exception(f"Missing {kext_path}")
+            if not kext_binary_path.exists():
+                print(f"- Missing {kext['BundlePath']}'s binary: {kext_binary_path}")
+                raise Exception(f"Missing {kext_binary_path}")
+            if not kext_plist_path.exists():
+                print(f"- Missing {kext['BundlePath']}'s plist: {kext_plist_path}")
+                raise Exception(f"Missing {kext_plist_path}")
+
+        for tool in config_plist["Misc"]["Tools"]:
+            # print(f"    - Validating {tool['Path']}")
+            if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools") / Path(tool["Path"])).exists():
+                print(f"  - Missing tool: {tool['Path']}")
+                raise Exception(f"Missing tool: {tool['Path']}")
+
+        for driver in config_plist["UEFI"]["Drivers"]:
+            # print(f"    - Validating {driver['Path']}")
+            if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers") / Path(driver["Path"])).exists():
+                print(f"  - Missing driver: {driver['Path']}")
+                raise Exception(f"Missing driver: {driver['Path']}")
+
+        # Validating local files
+        # Validate Tools
+        for tool_files in Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools")).glob("*"):
+            if tool_files.name not in [x["Path"] for x in config_plist["Misc"]["Tools"]]:
+                print(f"  - Missing tool from config: {tool_files.name}")
+                raise Exception(f"Missing tool from config: {tool_files.name}")
+
+        for driver_file in Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers")).glob("*"):
+            if driver_file.name not in [x["Path"] for x in config_plist["UEFI"]["Drivers"]]:
+                print(f"- Found extra driver: {driver_file.name}")
+                raise Exception(f"Found extra driver: {driver_file.name}")
+
     def build_opencore(self):
         self.build_efi()
         if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True or (self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != ""):
             self.set_smbios()
         self.cleanup()
         self.sign_files()
+        self.validate_pathing()
         print("")
         print(f"Your OpenCore EFI for {self.model} has been built at:")
         print(f"    {self.constants.opencore_release_folder}")

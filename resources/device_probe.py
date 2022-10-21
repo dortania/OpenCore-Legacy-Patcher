@@ -18,6 +18,7 @@ from data import pci_data
 class CPU:
     name: str
     flags: list[str]
+    leafs: list[str]
 
 
 @dataclass
@@ -482,7 +483,9 @@ class Computer:
     secure_boot_policy: Optional[int] = None
     oclp_sys_version: Optional[str] = None
     oclp_sys_date: Optional[str] = None
+    oclp_sys_url: Optional[str] = None
     firmware_vendor: Optional[str] = None
+    rosetta_active: Optional[bool] = False
 
     @staticmethod
     def probe():
@@ -501,6 +504,7 @@ class Computer:
         computer.ambient_light_sensor_probe()
         computer.sata_disk_probe()
         computer.oclp_sys_patch_probe()
+        computer.check_rosetta()
         return computer
 
     def gpu_probe(self):
@@ -714,7 +718,15 @@ class Computer:
         self.cpu = CPU(
             subprocess.run("sysctl machdep.cpu.brand_string".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip(),
             subprocess.run("sysctl machdep.cpu.features".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip().split(" "),
+            self.cpu_get_leafs(),
         )
+
+    def cpu_get_leafs(self):
+        leafs = []
+        result = subprocess.run("sysctl machdep.cpu.leaf7_features".split(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        if result.returncode == 0:
+            return result.stdout.decode().partition(": ")[2].strip().split(" ")
+        return leafs
 
     def bluetooth_probe(self):
         usb_data: str = subprocess.run("system_profiler SPUSBDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
@@ -756,8 +768,16 @@ class Computer:
         if path.exists():
             sys_plist = plistlib.load(path.open("rb"))
             if sys_plist:
-                try:
+                if "OpenCore Legacy Patcher" in sys_plist:
                     self.oclp_sys_version = sys_plist["OpenCore Legacy Patcher"]
+                if "Time Patched" in sys_plist:
                     self.oclp_sys_date = sys_plist["Time Patched"]
-                except KeyError:
-                    pass
+                if "Commit URL" in sys_plist:
+                    self.oclp_sys_url = sys_plist["Commit URL"]
+
+    def check_rosetta(self):
+        result = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()
+        if result:
+            self.rosetta_active = True
+        else:
+            self.rosetta_active = False

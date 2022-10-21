@@ -8,6 +8,7 @@ SupportedSMBIOS = [
     "MacBook6,1",
     "MacBook7,1",
     "MacBook8,1",
+    "MacBook9,1",
     # MacBook Air
     "MacBookAir2,1",
     "MacBookAir3,1",
@@ -18,6 +19,8 @@ SupportedSMBIOS = [
     "MacBookAir5,2",
     "MacBookAir6,1",
     "MacBookAir6,2",
+    "MacBookAir7,1",
+    "MacBookAir7,2",
     # MacBook Pro
     "MacBookPro4,1",
     "MacBookPro5,1",
@@ -38,6 +41,12 @@ SupportedSMBIOS = [
     "MacBookPro11,1",
     "MacBookPro11,2",
     "MacBookPro11,3",
+    "MacBookPro11,4",
+    "MacBookPro11,5",
+    "MacBookPro12,1",
+    "MacBookPro13,1",
+    "MacBookPro13,2",
+    "MacBookPro13,3",
     # Mac Mini
     "Macmini3,1",
     "Macmini4,1",
@@ -46,6 +55,7 @@ SupportedSMBIOS = [
     "Macmini5,3",
     "Macmini6,1",
     "Macmini6,2",
+    "Macmini7,1",
     # iMac
     "iMac7,1",
     "iMac8,1",
@@ -64,10 +74,14 @@ SupportedSMBIOS = [
     "iMac14,3",
     "iMac14,4",
     "iMac15,1",
+    "iMac16,1",
+    "iMac16,2",
+    "iMac17,1",
     # Mac Pro
     "MacPro3,1",
     "MacPro4,1",
     "MacPro5,1",
+    "MacPro6,1",
     # Xserve
     "Xserve2,1",
     "Xserve3,1",
@@ -119,21 +133,45 @@ LegacyAudio = [
 # GPU
 
 ModernGPU = [
+    "MacBook8,1", # Intel 6000
+    "MacBook9,1", # Intel Skylake
     "MacBookAir5,1",  # Intel 4000
     "MacBookAir5,2",  # Intel 4000
+    "MacBookAir6,1",  # Intel 5000
+    "MacBookAir6,2",  # Intel 5000
+    "MacBookAir7,1",  # Intel 6000
+    "MacBookAir7,2",  # Intel 6000
     "MacBookPro9,1",  # Intel 4000 + Nvidia 650M
     "MacBookPro9,2",  # Intel 4000
     "MacBookPro10,1",  # Intel 4000 + Nvidia 650M
     "MacBookPro10,2",  # Intel 4000
+    "MacBookPro11,1",  # Intel 5000
+    "MacBookPro11,2",  # Intel 5000
     "MacBookPro11,3",  # Intel 5000 + Nvidia Kepler
+    "MacBookPro11,4",  # Intel 5000
+    "MacBookPro11,5",  # Intel 5000 + GCN 1
+    "MacBookPro12,1",  # Intel 6000
+    "MacBookPro13,1",  # Intel Skylake
+    "MacBookPro13,2",  # Intel Skylake
+    "MacBookPro13,3",  # Intel Skylake
     "Macmini6,1",  # Intel 4000
     "Macmini6,2",  # Intel 4000
+    "Macmini7,1",  # Intel 5000
     "iMac13,1",  # Intel 4000
     "iMac13,2",  # Intel 4000 + Nvidia Kepler
     "iMac13,3",  # Intel 4000
     "iMac14,1",  # Intel 5000 + Nvidia Kepler
     "iMac14,2",  # Intel 5000 + Nvidia Kepler
     "iMac14,3",  # Intel 5000 + Nvidia Kepler
+    "iMac14,4",  # Intel 5000
+    "iMac15,1",  # Intel 5000 + GCN 1
+    "iMac16,1",  # Intel 6000
+    "iMac16,2",  # Intel 6000
+    "iMac17,1",  # Intel Skylake + GCN1
+    "MacPro3,1", # Lacks AVX2.0
+    "MacPro4,1", # Lacks AVX2.0
+    "MacPro5,1", # Lacks AVX2.0
+    "MacPro6,1", # GCN 1
 ]
 
 LegacyGPU = [
@@ -276,4 +314,40 @@ Missing_USB_Map = [
     "MacPro4,1",
     "Xserve2,1",
     "Xserve3,1",
+]
+
+Missing_USB_Map_Ventura = [
+    "MacBook8,1",
+    "MacBookAir5,1",
+    "MacBookAir5,2",
+    "MacBookAir6,1",
+    "MacBookAir6,2",
+    "MacBookAir7,1",
+    "MacBookAir7,2",
+    "MacBookPro9,1",
+    "MacBookPro9,2",
+    "MacBookPro10,1",
+    "MacBookPro10,2",
+    "MacBookPro11,1",
+    "MacBookPro11,2",
+    "MacBookPro11,3",
+    "MacBookPro11,4",
+    "MacBookPro11,5",
+    "MacBookPro12,1",
+    "MacPro5,1",
+    "MacPro6,1",
+    "Macmini6,1",
+    "Macmini6,2",
+    "Macmini7,1",
+    "iMac13,1",
+    "iMac13,2",
+    "iMac14,1",
+    "iMac14,2",
+    "iMac14,3",
+    "iMac14,4",
+    "iMac15,1",
+    "iMac15,2",
+    "iMac16,1",
+    "iMac16,2",
+    "iMac17,1",
 ]

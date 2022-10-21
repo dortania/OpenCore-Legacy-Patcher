@@ -17,7 +17,7 @@ class arguments:
                 if self.args.model:
                     print(f"- Using custom model: {self.args.model}")
                     settings.custom_model = self.args.model
-                    defaults.generate_defaults.probe(settings.custom_model, False, settings)
+                    defaults.generate_defaults(settings.custom_model, False, settings)
                 elif settings.computer.real_model not in model_array.SupportedSMBIOS and settings.allow_oc_everywhere is False:
                     print(
                         """Your model is not supported by this patcher for running unsupported OSes!"
@@ -27,7 +27,7 @@ class arguments:
                     sys.exit(1)
                 else:
                     print(f"- Using detected model: {settings.computer.real_model}")
-                    defaults.generate_defaults.probe(settings.custom_model, True, settings)
+                    defaults.generate_defaults(settings.custom_model, True, settings)
 
             if self.args.disk:
                 print(f"- Install Disk set: {self.args.disk}")
@@ -66,9 +66,6 @@ class arguments:
             if self.args.nvme:
                 print("- Set NVMe Boot configuration")
                 settings.nvme_boot = True
-            # if self.args.disable_amfi:
-            #     print("- Set Disable AMFI configuration")
-            #     settings.amfi_status = False
             if self.args.wlan:
                 print("- Set Wake on WLAN configuration")
                 settings.enable_wake_on_wlan = True

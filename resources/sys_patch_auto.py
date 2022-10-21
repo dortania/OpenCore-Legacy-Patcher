@@ -190,7 +190,7 @@ class AutomaticSysPatch:
                 # Strip everything after OpenCore-Patcher.app
                 path = str(settings.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
                 print(f"- Copying {path} to /Library/Application Support/Dortania/")
-                utilities.process_status(utilities.elevated(["cp", "-R", path, "/Library/Application Support/Dortania/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["ditto", path, "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                 if not Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
                     # Sometimes the binary the user launches may have a suffix (ie. OpenCore-Patcher 3.app)
@@ -204,6 +204,9 @@ class AutomaticSysPatch:
             if Path("/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist").exists():
                 print("- Deleting existing auto-patch.plist")
                 utilities.process_status(utilities.elevated(["rm", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            if not Path("/Library/LaunchAgents/").exists():
+                print("- Creating /Library/LaunchAgents/")
+                utilities.process_status(utilities.elevated(["mkdir", "-p", "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["cp", settings.auto_patch_launch_agent_path, "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
             # Set the permissions on the com.dortania.opencore-legacy-patcher.auto-patch.plist

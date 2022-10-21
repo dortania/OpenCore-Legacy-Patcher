@@ -16,7 +16,7 @@ from pathlib import Path
 import binascii
 import hashlib
 
-from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification, global_settings
+from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect, gui_help
 
@@ -233,7 +233,7 @@ class wx_python_gui:
             if event:
                 if event.GetEventObject() != wx.Menu:
                     try:
-                        if event.GetEventObject().GetLabel() == "Start Root Patching":
+                        if event.GetEventObject().GetLabel() in ["Start Root Patching", "Reinstall Root Patches"]:
                             extension = " --gui_patch"
                         elif event.GetEventObject().GetLabel() == "Revert Root Patches":
                             extension = " --gui_unpatch"
@@ -775,7 +775,7 @@ class wx_python_gui:
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.reload_button.GetPosition().x,
-                self.reload_button.GetPosition().y + self.reload_button.GetSize().height + 7.5
+                self.reload_button.GetPosition().y + self.reload_button.GetSize().height + 8
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
@@ -887,6 +887,44 @@ class wx_python_gui:
                 popup_message = wx.MessageDialog(self.frame,f"OpenCore has finished installing to disk.\n\nYou can eject the drive, insert it into the {self.constants.custom_model}, reboot, hold the Option key and select OpenCore/Boot EFI's option.", "Success", wx.OK)
                 popup_message.ShowModal()
 
+    def check_if_new_patches_needed(self, patches):
+        # Check if there's any new patches for the user to install
+        # Newer users will assume the root patch menu will present missing patches.
+        # Thus we'll need to see if the exact same OCLP build was used already
+        if self.constants.commit_info[0] in ["Running from source", "Built from source"]:
+            return True
+
+        if self.constants.computer.oclp_sys_url != self.constants.commit_info[2]:
+            # If commits are different, assume patches are as well
+            return True
+
+        oclp_plist = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
+        if not Path(oclp_plist).exists():
+            # If it doesn't exist, no patches were ever installed
+            # ie. all patches applicable
+            return True
+
+        oclp_plist_data = plistlib.load(open(oclp_plist, "rb"))
+        for patch in patches:
+            if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
+                # Patches should share the same name as the plist key
+                # See sys_patch_dict.py for more info
+                patch_installed = False
+                for key in oclp_plist_data:
+                    if "Display Name" not in oclp_plist_data[key]:
+                        continue
+                    if oclp_plist_data[key]["Display Name"] == patch:
+                        patch_installed = True
+                        break
+
+                if patch_installed is False:
+                    print(f"- Patch {patch} not installed")
+                    return True
+
+        print("- No new patches detected for system")
+        return False
+
+
     def root_patch_menu(self, event=None):
         # Define Menu
         # Header: Post-Install Menu
@@ -920,21 +958,38 @@ class wx_python_gui:
             print("- No applicable patches available")
             patches = []
 
+        # Check if OCLP has already applied the same patches
+        no_new_patches = False
+        if patches:
+            no_new_patches = not self.check_if_new_patches_needed(patches)
+
         i = 0
         if patches:
-            for patch in patches:
-                # Add Label for each patch
-                if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
-                    print(f"- Adding patch: {patch} - {patches[patch]}")
-                    self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch}")
-                    self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
-                    self.patch_label.SetPosition(
-                        wx.Point(
-                            self.subheader.GetPosition().x,
-                            self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
+            if no_new_patches is False:
+                for patch in patches:
+                    # Add Label for each patch
+                    if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
+                        print(f"- Adding patch: {patch} - {patches[patch]}")
+                        self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch}")
+                        self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+                        self.patch_label.SetPosition(
+                            wx.Point(
+                                self.subheader.GetPosition().x,
+                                self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
+                            )
                         )
+                        i = i + self.patch_label.GetSize().height + 3
+            else:
+                self.patch_label = wx.StaticText(self.frame_modal, label=f"All applicable patches already installed")
+                self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+                self.patch_label.SetPosition(
+                    wx.Point(
+                        self.subheader.GetPosition().x,
+                        self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
                     )
-                    i = i + self.patch_label.GetSize().height + 3
+                )
+                i = i + self.patch_label.GetSize().height + 3
+                self.patch_label.Centre(wx.HORIZONTAL)
             if patches["Validation: Patching Possible"] is False:
                 self.patch_label = wx.StaticText(self.frame_modal, label="Cannot Patch due to following reasons:")
                 self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
@@ -1002,6 +1057,8 @@ class wx_python_gui:
 
         # Start Root Patching
         self.start_root_patching = wx.Button(self.frame_modal, label="Start Root Patching", size=(170, -1))
+        if no_new_patches is True:
+            self.start_root_patching.Label = "Reinstall Root Patches"
         self.start_root_patching.SetPosition(
             wx.Point(
                 self.patch_label.GetPosition().x,
@@ -1099,6 +1156,8 @@ class wx_python_gui:
             self.pulse_alternative(self.progress_bar)
             wx.GetApp().Yield()
 
+        self.progress_bar.Hide()
+
         # Download resources
         sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
         download_result, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
@@ -1117,6 +1176,28 @@ class wx_python_gui:
             if answer == wx.ID_YES:
                 webbrowser.open(self.constants.repo_link_latest)
             self.main_menu()
+
+        if self.patches["Settings: Kernel Debug Kit missing"] is True:
+            # Download KDK (if needed)
+            self.subheader.SetLabel("Downloading Kernel Debug Kit")
+            self.subheader.Centre(wx.HORIZONTAL)
+            self.developer_note.SetLabel("Starting shortly")
+
+            sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
+            kdk_result, error_msg, detected_build = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
+            sys.stdout=sys.__stdout__
+
+            if kdk_result is False:
+                # Create popup window to inform user of error
+                self.popup = wx.MessageDialog(
+                    self.frame,
+                    f"A problem occurred trying to download the Kernel Debug Kit:\n\n{error_msg}",
+                    "Kernel Debug Kit",
+                    wx.ICON_ERROR
+                )
+                self.popup.ShowModal()
+                self.finished_auto_patch = True
+                self.main_menu()
 
         self.reset_frame_modal()
         self.frame_modal.SetSize(-1, self.WINDOW_HEIGHT_MAIN)
@@ -1191,30 +1272,33 @@ class wx_python_gui:
         if self.constants.root_patcher_succeeded is True:
             print("- Root Patcher finished successfully")
             if self.constants.needs_to_open_preferences is True:
-                # Create dialog box to open System Preferences -> Security and Privacy
-                self.popup = wx.MessageDialog(
-                    self.frame_modal,
-                    "We just finished installing the patches to your Root Volume!\n\nHowever, Apple requires users to manually approve the kernel extensions installed before they can be used next reboot.\n\nWould you like to open System Preferences?",
-                    "Open System Preferences?",
-                    wx.YES_NO | wx.ICON_INFORMATION
-                )
-                self.popup.SetYesNoLabels("Open System Preferences", "Ignore")
-                answer = self.popup.ShowModal()
-                if answer == wx.ID_YES:
-                    output =subprocess.run(
-                        [
-                            "osascript", "-e",
-                            'tell app "System Preferences" to activate',
-                            "-e", 'tell app "System Preferences" to reveal anchor "General" of pane id "com.apple.preference.security"',
-                        ],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE
+                if self.constants.detected_os >= os_data.os_data.ventura:
+                    self.reboot_system(message="Root Patcher finished successfully!\nIf you were prompted to open System Settings to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?")
+                else:
+                    # Create dialog box to open System Preferences -> Security and Privacy
+                    self.popup = wx.MessageDialog(
+                        self.frame_modal,
+                        "We just finished installing the patches to your Root Volume!\n\nHowever, Apple requires users to manually approve the kernel extensions installed before they can be used next reboot.\n\nWould you like to open System Preferences?",
+                        "Open System Preferences?",
+                        wx.YES_NO | wx.ICON_INFORMATION
                     )
-                    if output.returncode != 0:
-                        # Some form of fallback if unaccelerated state errors out
-                        subprocess.run(["open", "-a", "System Preferences"])
-                    time.sleep(5)
-                    self.OnCloseFrame(None)
+                    self.popup.SetYesNoLabels("Open System Preferences", "Ignore")
+                    answer = self.popup.ShowModal()
+                    if answer == wx.ID_YES:
+                        output =subprocess.run(
+                            [
+                                "osascript", "-e",
+                                'tell app "System Preferences" to activate',
+                                "-e", 'tell app "System Preferences" to reveal anchor "General" of pane id "com.apple.preference.security"',
+                            ],
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE
+                        )
+                        if output.returncode != 0:
+                            # Some form of fallback if unaccelerated state errors out
+                            subprocess.run(["open", "-a", "System Preferences"])
+                        time.sleep(5)
+                        self.OnCloseFrame(None)
             else:
                 self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
@@ -1403,7 +1487,7 @@ class wx_python_gui:
         # Download installer catalog
         if ias is None:
             def ia():
-                self.available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "PublicSeed")
+                self.available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "DeveloperSeed")
 
             print("- Downloading installer catalog...")
             thread_ia = threading.Thread(target=ia)
@@ -1443,7 +1527,7 @@ class wx_python_gui:
             if ias is None:
                 available_installers = installer.only_list_newest_installers(available_installers)
             for app in available_installers:
-                print(f"macOS {available_installers[app]['Version']} ({available_installers[app]['Build']} - {utilities.human_fmt(available_installers[app]['Size'])} - {available_installers[app]['Source']}) - {available_installers[app]['Variant']}")
+                print(f"macOS {available_installers[app]['Version']} ({available_installers[app]['Build']}):\n  - Size: {utilities.human_fmt(available_installers[app]['Size'])}\n  - Source: {available_installers[app]['Source']}\n  - Variant: {available_installers[app]['Variant']}\n  - Link: {available_installers[app]['Link']}\n")
                 if available_installers[app]['Variant'] in ["DeveloperSeed" , "PublicSeed"]:
                     extra = " Beta"
                 else:
@@ -1499,17 +1583,29 @@ class wx_python_gui:
         self.grab_installer_data(ias=ias)
 
     def download_macos_click(self, app_dict):
-
-        try:
-            app_major = app_dict['Version'].split(".")[0]
-            if float(app_major) > self.constants.os_support:
-                # Throw pop up warning OCLP does not support this OS
-                os =  os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(app_major))
-                dlg = wx.MessageDialog(self.frame_modal, f"OpenCore Legacy Patcher currently does not support macOS {os}. We highly recommend you select an older installer.\n\nThe newest version we officially support is macOS {os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(str(self.constants.os_support)))}\n\nWould you still want to continue downloading macOS {os}?", "Unsupported OS", wx.YES_NO | wx.ICON_WARNING)
-                if dlg.ShowModal() == wx.ID_NO:
-                    return
-        except ValueError:
-            pass
+        # Unsupported Models include:
+        #   - USB 1.1 machines (Penryn, MacPro3,1-5,1)
+        #   - VBIOS Boot Issue (MacPro6,1)
+        #   - Non-Metal GPUs
+        model = self.constants.custom_model or self.constants.computer.real_model
+        if model in model_array.LegacyGPU or model in ["MacPro3,1", "MacPro4,1", "MacPro5,1", "MacPro6,1"]:
+            try:
+                app_major = app_dict['Version'].split(".")[0]
+                if float(app_major) > self.constants.os_support:
+                    # Throw pop up warning OCLP does not support this OS
+                    os =  os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(app_major))
+                    dlg = wx.MessageDialog(self.frame_modal, f"OpenCore Legacy Patcher currently does not support macOS {os} on your machine ({model}).\n\nThe newest version we officially support is macOS {os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(str(self.constants.os_support)))}. For more information, see the associated Ventura Github Issue.\n\nWould you still want to continue downloading macOS {os}?", "Unsupported OS", style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION)
+                    dlg.SetYesNoCancelLabels("View Github Issue", "Download Anyways", "Cancel")
+                    result = dlg.ShowModal()
+                    if result == wx.ID_YES:
+                        webbrowser.open("https://github.com/dortania/OpenCore-Legacy-Patcher/issues/998")
+                        return
+                    elif result == wx.ID_NO:
+                        pass
+                    else:
+                        return
+            except ValueError:
+                pass
 
         # Ensure we have space to both download and extract the installer
         host_space = utilities.get_free_space()
@@ -2024,12 +2120,9 @@ class wx_python_gui:
         #   - When running from source/unable to find on Github, use the nightly.link variant
         #   - If nightly also fails, fall back to the manually uploaded variant
         link = self.constants.installer_pkg_url
-        if not utilities.validate_link(link):
+        if utilities.validate_link(link) is False:
             print("- Stock Install.pkg is missing on Github, falling back to Nightly")
             link = self.constants.installer_pkg_url_nightly
-            if not utilities.validate_link(link):
-                print("- Nightly Install.pkg is missing on Github, exiting")
-                return
 
         if link.endswith(".zip"):
             path = self.constants.installer_pkg_zip_path
@@ -2242,11 +2335,11 @@ class wx_python_gui:
         if user_choice == self.computer.real_model:
             print(f"Using Real Model: {user_choice}")
             self.constants.custom_model = None
-            defaults.generate_defaults.probe(self.computer.real_model, True, self.constants)
+            defaults.generate_defaults(self.computer.real_model, True, self.constants)
         else:
             print(f"Using Custom Model: {user_choice}")
             self.constants.custom_model = user_choice
-            defaults.generate_defaults.probe(self.constants.custom_model, False, self.constants)
+            defaults.generate_defaults(self.constants.custom_model, False, self.constants)
         # Reload Settings
         self.settings_menu(None)
 
@@ -2362,7 +2455,8 @@ class wx_python_gui:
         self.gpu_dropdown.Bind(wx.EVT_CHOICE, self.gpu_selection_click)
         self.gpu_dropdown.Centre(wx.HORIZONTAL)
         self.gpu_dropdown.SetToolTip(wx.ToolTip("Configures MXM GPU Vendor logic on pre-built models\nIf you are not using MXM iMacs, please leave this setting as is."))
-        if self.computer.real_model not in ["iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]:
+        models = ["iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]
+        if (not self.constants.custom_model and self.computer.real_model not in models) or (self.constants.custom_model and self.constants.custom_model not in models):
             self.gpu_dropdown.Disable()
 
         # Disable Thunderbolt
@@ -2483,15 +2577,46 @@ class wx_python_gui:
         if self.computer.third_party_sata_ssd is False and not self.constants.custom_model:
             self.set_enhanced_3rd_party_ssd_checkbox.Disable()
 
+        # Disable Library Validation
+        self.disable_library_validation_checkbox = wx.CheckBox(self.frame_modal, label="Disable Library Validation")
+        self.disable_library_validation_checkbox.SetValue(self.constants.disable_cs_lv)
+        self.disable_library_validation_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_library_validation_click)
+        self.disable_library_validation_checkbox.SetPosition(wx.Point(
+            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().x,
+            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().y + self.set_enhanced_3rd_party_ssd_checkbox.GetSize().height
+        ))
+
+        # Disable AMFI
+        self.disable_amfi_checkbox = wx.CheckBox(self.frame_modal, label="Disable AMFI")
+        self.disable_amfi_checkbox.SetValue(self.constants.disable_amfi)
+        self.disable_amfi_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_amfi_click)
+        self.disable_amfi_checkbox.SetPosition(wx.Point(
+            self.disable_library_validation_checkbox.GetPosition().x,
+            self.disable_library_validation_checkbox.GetPosition().y + self.disable_library_validation_checkbox.GetSize().height
+        ))
+        if self.constants.disable_cs_lv is False:
+            self.disable_amfi_checkbox.Disable()
+
+
+        # Delete Unused KDKs during patching
+        self.delete_unused_kdks_checkbox = wx.CheckBox(self.frame_modal, label="Delete Unused KDKs")
+        self.delete_unused_kdks_checkbox.SetValue(self.constants.should_nuke_kdks)
+        self.delete_unused_kdks_checkbox.Bind(wx.EVT_CHECKBOX, self.delete_unused_kdks_click)
+        self.delete_unused_kdks_checkbox.SetPosition(wx.Point(
+            self.disable_amfi_checkbox.GetPosition().x,
+            self.disable_amfi_checkbox.GetPosition().y + self.disable_amfi_checkbox.GetSize().height
+        ))
+        self.delete_unused_kdks_checkbox.SetToolTip(wx.ToolTip("This will delete unused KDKs during root patching.\nThis will save space on your drive, however can be disabled if you wish to keep KDKs installed."))
+
+
         # Set Ignore App Updates
         self.set_ignore_app_updates_checkbox = wx.CheckBox(self.frame_modal, label="Ignore App Updates")
         self.set_ignore_app_updates_checkbox.SetValue(self.constants.ignore_updates)
         self.set_ignore_app_updates_checkbox.Bind(wx.EVT_CHECKBOX, self.set_ignore_app_updates_click)
         self.set_ignore_app_updates_checkbox.SetPosition(wx.Point(
-            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().x,
-            self.set_enhanced_3rd_party_ssd_checkbox.GetPosition().y + self.set_enhanced_3rd_party_ssd_checkbox.GetSize().height))
+            self.delete_unused_kdks_checkbox.GetPosition().x,
+            self.delete_unused_kdks_checkbox.GetPosition().y + self.delete_unused_kdks_checkbox.GetSize().height))
         self.set_ignore_app_updates_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore will ignore App Updates on launch.\nEnable this option if you do not want to be prompted for App Updates"))
-
 
         # Button: Developer Debug Info
         self.debug_button = wx.Button(self.frame_modal, label="Developer Debug Info")
@@ -2513,6 +2638,33 @@ class wx_python_gui:
 
         self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
+
+    def delete_unused_kdks_click(self, event):
+        if self.delete_unused_kdks_checkbox.GetValue() is True:
+            print("Nuke KDKs enabled")
+            self.constants.should_nuke_kdks = True
+        else:
+            print("Nuke KDKs disabled")
+            self.constants.should_nuke_kdks = False
+        global_settings.global_settings().write_property("ShouldNukeKDKs", self.constants.should_nuke_kdks)
+
+    def disable_library_validation_click(self, event):
+        if self.disable_library_validation_checkbox.GetValue():
+            print("Disable Library Validation")
+            self.disable_amfi_checkbox.Enable()
+            self.constants.disable_cs_lv = True
+        else:
+            print("Enable Library Validation")
+            self.disable_amfi_checkbox.Disable()
+            self.constants.disable_cs_lv = False
+
+    def disable_amfi_click(self, event):
+        if self.disable_amfi_checkbox.GetValue():
+            print("Disable AMFI")
+            self.constants.disable_amfi = True
+        else:
+            print("Enable AMFI")
+            self.constants.disable_amfi = False
 
     def set_ignore_app_updates_click(self, event):
         self.constants.ignore_updates = self.set_ignore_app_updates_checkbox.GetValue()
@@ -3051,7 +3203,7 @@ class wx_python_gui:
         elif self.constants.sip_status is True:
             self.sip_value = 0x00
         else:
-            self.sip_value = 0x802
+            self.sip_value = 0x803
 
         self.sip_label_2 = wx.StaticText(self.frame_modal, label=f"Currently configured SIP: {hex(self.sip_value)}")
         self.sip_label_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
@@ -3067,21 +3219,21 @@ class wx_python_gui:
         )
         self.sip_label_2_2.Center(wx.HORIZONTAL)
 
-        self.sip_label_3 = wx.StaticText(self.frame_modal, label="For older Macs requiring root patching, we set SIP to\n be partially disabled (0x802) to allow root patching.")
+        self.sip_label_3 = wx.StaticText(self.frame_modal, label="For older Macs requiring root patching, we set SIP to\n be partially disabled (0x803) to allow root patching.")
         self.sip_label_3.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_3.SetPosition(
             wx.Point(self.sip_label_2_2.GetPosition().x, self.sip_label_2_2.GetPosition().y + self.sip_label_2_2.GetSize().height + 10)
         )
         self.sip_label_3.Center(wx.HORIZONTAL)
 
-        self.sip_label_4 = wx.StaticText(self.frame_modal, label="This value (0x802) corresponds to the following bits in csr.h:")
+        self.sip_label_4 = wx.StaticText(self.frame_modal, label="This value (0x803) corresponds to the following bits in csr.h:")
         self.sip_label_4.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_4.SetPosition(
             wx.Point(self.sip_label_3.GetPosition().x, self.sip_label_3.GetPosition().y + self.sip_label_3.GetSize().height + 5)
         )
         self.sip_label_4.Center(wx.HORIZONTAL)
 
-        self.sip_label_5 = wx.StaticText(self.frame_modal, label="   0x2     - CSR_ALLOW_UNRESTRICTED_FS\n   0x800 - CSR_ALLOW_UNAUTHENTICATED_ROOT")
+        self.sip_label_5 = wx.StaticText(self.frame_modal, label="      0x1  - CSR_ALLOW_UNTRUSTED_KEXTS\n      0x2  - CSR_ALLOW_UNRESTRICTED_FS\n   0x800 - CSR_ALLOW_UNAUTHENTICATED_ROOT")
         self.sip_label_5.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_5.SetPosition(
             wx.Point(self.sip_label_4.GetPosition().x, self.sip_label_4.GetPosition().y + self.sip_label_4.GetSize().height + 7)
@@ -3135,7 +3287,7 @@ OpenCore Legacy Patcher by default knows the most ideal
         if hex(self.sip_value) == "0x0":
             self.constants.custom_sip_value = None
             self.constants.sip_status = True
-        elif hex(self.sip_value) == "0x802":
+        elif hex(self.sip_value) == "0x803":
             self.constants.custom_sip_value = None
             self.constants.sip_status = False
         else:
