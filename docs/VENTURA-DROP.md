@@ -37,7 +37,7 @@ For older hardware, see below sections:
   * [Non-Metal Graphics Acceleration](#non-metal-graphics-acceleration)
   * [Legacy Wireless Support](#legacy-wireless-support)
   * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
-  * [Ethernet support](#Ethernet)
+  * [Mac Pro 2008 Ethernet issue](#mac-pro-2008-ethernet-issue)
 
 The team is doing their best to investigate and fix the aforementioned issues, however no estimated time can be provided.
 
@@ -149,5 +149,5 @@ For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed i
 
 :::
 
-### Ethernet
+### Mac Pro 2008 Ethernet issue
 MacPro3,1 suffers from Ethernet driver dying after returning from sleep. Workaround is to use a USB Ethernet adapter or disable sleep.
