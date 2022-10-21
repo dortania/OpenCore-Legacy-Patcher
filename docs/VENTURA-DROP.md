@@ -130,7 +130,7 @@ Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully support by
 
 ### USB 1.1 (OHCI/UHCI) Support
 
-For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed in macOS Ventura. Which USB1.1 may seem unimportant, it handles many important devies on your system. These include:
+For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed in macOS Ventura. While USB1.1 may seem unimportant, it handles many important devies on your system. These include:
 
 * Keyboard and Trackpad for laptops
 * IR Receivers
