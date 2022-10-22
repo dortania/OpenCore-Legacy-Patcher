@@ -126,7 +126,11 @@ class detect_root_patch:
                         if gpu.arch == device_probe.AMD.Archs.Polaris:
                             # Check if host supports AVX2.0
                             # If not, enable legacy GCN patch
-                            if "AVX2" in self.constants.computer.cpu.leafs:
+                            # MacBookPro13,3 does include an unsupported framebuffer, thus we'll patch to ensure
+                            # full compatibility (namely power states, etc)
+                            # Reference: https://github.com/dortania/bugtracker/issues/292
+                            # TODO: Probe framebuffer families further
+                            if "AVX2" in self.constants.computer.cpu.leafs and self.model != "MacBookPro13,3":
                                 continue
 
                         self.legacy_gcn = True
