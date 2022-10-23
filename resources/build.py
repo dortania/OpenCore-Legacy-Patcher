@@ -967,8 +967,8 @@ class BuildOpenCore:
                         # AppleRAIDCard.kext only supports pci106b,8a
                         self.enable_kext("AppleRAIDCard.kext", self.constants.apple_raid_version, self.constants.apple_raid_path)
                         break
-        elif self.model.startswith("XServe"):
-            # For XServes, assume RAID is present
+        elif self.model.startswith("Xserve"):
+            # For Xserves, assume RAID is present
             # Namely due to Xserve2,1 being limited to 10.7, thus no hardware detection
             self.enable_kext("AppleRAIDCard.kext", self.constants.apple_raid_version, self.constants.apple_raid_path)
 
