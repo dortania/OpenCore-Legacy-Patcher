@@ -8,10 +8,6 @@ Main sections of help we'd appreciate:
 
 * Donating any Mac you own
   * Does require SSE4,1 CPU to test on Sierra and newer however
-* Donating any spare SATA SSDs
-  * Having extra SSDs on hand allows us to quickly and easily test specific builds of macOS without having to wipe drives and reinstall as much
-* Aiding by buying items in our Amazon Wishlist
-  * Currently we have a few members within Dortania testing so we recommend messaging the email listed below to see which member at the time would require something purchased the most
 
 Additionally, hardware info dumps are greatly beneficial for us to determine what patches a machine might need:
 
