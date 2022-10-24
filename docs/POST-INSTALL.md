@@ -33,9 +33,9 @@ Once you've toggled them both off, build your OpenCore EFI once again and instal
 
 ## Enabling SIP
 
-For many users, SIP will be enabled by default on build. For Intel HD 4000 users, you may have noticed that SIP is partially disabled. This is to ensure full compatibility with macOS Monterey and allow seamless booting between it and older OSes. However for users who do not plan to boot Monterey, you can re-enable under Patcher Settings.
+For many users, SIP will be lowered by default on build. For Intel HD 4000 users, you may have noticed that SIP is partially disabled. This is to ensure full compatibility with macOS Monterey and allow seamless booting between it and older OSes. However for users who do not plan to boot Monterey, you can re-enable under Patcher Settings.
 
-Note: Machines with non-Metal GPUs cannot enable SIP in Big Sur either, due to having a patched root volume
+Note: Machines running macOS Ventura or systems with non-Metal GPUs cannot enable SIP outright, due to having a patched root volume. Enabling will brick the installation.
 
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
 | :--- | :--- | :--- |
