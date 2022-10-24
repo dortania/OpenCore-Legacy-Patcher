@@ -78,15 +78,22 @@ If you're using OCLP v0.4.3 or earlier, or need to run the patcher manually, you
 
 :::warning
 
-With OpenCore Legacy Patcher versions prior to v0.4.4, Root Patching requires a network connection by default to grab associated resources. If your system is having difficulties with Wi-Fi or ethernet, you can grab the newest release :
+With macOS Ventura and Macs with AMD Legacy GCN GPUs (ie. Metal), Root Patching requires a network connection to grab Apple's Kernel Debug Kit to start root patching. If your system is unable to connect to the internet, you can manually download a KDK from Apple's site:
 
-* [OpenCore Legacy Patcher releases](https://github.com/dortania/OpenCore-Legacy-Patcher/releases/latest)
+* [Apple's Developer Download Page](https://developer.apple.com/download/all/?q=Kernel%20Debug%20Kit)
+
+Grab the closet Kernel Debug Kit to the OS you installed, and install it to the machine running Ventura.
+
+Machines that require this are those with AMD Metal dGPUs:
+* 2008 - 2013 Mac Pros (MacPro3,1 - 6,1)
+* 2009 - 2016 iMacs (iMac10,1 - 17,1)
+* 2015 15" MacBook Pro with a dGPU (MacBookPro11,5)
 
 :::
 
 Below entires represent GPUs no longer natively supported, ie. requiring root volume patch with OpenCore Legacy Patcher:
 
-:::details Unsupported GPUs in macOS Big Sur
+:::details GPUs requiring patching in macOS Big Sur
 
 * NVIDIA:
   * Tesla (8000 - 300 series)
@@ -98,7 +105,7 @@ Below entires represent GPUs no longer natively supported, ie. requiring root vo
 
 :::
 
-:::details Unsupported GPUs in macOS Monterey
+:::details GPUs requiring patching in macOS Monterey
 
 * NVIDIA:
   * Tesla (8000 - 300 series)
@@ -112,11 +119,26 @@ Below entires represent GPUs no longer natively supported, ie. requiring root vo
 
 :::
 
-:::details Unsupported Wireless Cards in macOS Monterey
+:::details Wireless Cards requiring patching in macOS Monterey
 
 * Broadcom:
   * BCM94328
   * BCM94322
 * Atheros
+
+:::
+
+:::details GPUs requiring patching in macOS Ventura
+
+* NVIDIA:
+  * Kepler (600 - 800 series)
+* AMD:
+  * GCN 1-3 (7000 - R9 series)
+  * Polaris (RX 4xx/5xx series, if CPU lacks AVX2)
+* Intel:
+  * Ivy Bridge (4000 series)
+  * Haswell (4400, 4600, 5000 series)
+  * Broadwell (6000 series)
+  * Skylake (500 series)
 
 :::

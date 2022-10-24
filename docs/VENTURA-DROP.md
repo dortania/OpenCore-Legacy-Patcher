@@ -29,6 +29,8 @@ Overall, macOS Ventura is useable on most Metal-capable machines (ie. 2012 and n
 * The sole exception for 2012+ hardware support in Ventura is the Late 2013, Trash Can Mac Pro. Currently we're in the process of researching and developing patches for this unit, however at this time the machine is not bootable on Ventura.
   * More information can be found here: [2013 Mac Pro and macOS Ventura Boot Issues #1009](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1009)
 
+<img width="512" alt="" src="../images/OCLP-050-Initial-Support.png">
+
 For older hardware, see below sections:
 
 * [Currently Unsupported/Broken Hardware in Ventura](#currently-unsupportedbroken-hardware-in-ventura)
