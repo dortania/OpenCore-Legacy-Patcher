@@ -41,9 +41,9 @@ Note: Machines with non-Metal GPUs cannot enable SIP in Big Sur either, due to h
 | :--- | :--- | :--- |
 | ![](../images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](../images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](../images/OCLP-GUI-Settings-SIP-Disabled.png) |
 
-:::warning 
+:::warning
 
-If you're unsure whether you should enable SIP, leave it as-is. Systems where you have already ran the Post Install Root Patching cannot enable SIP without potentially breaking the current install. 
+If you're unsure whether you should enable SIP, leave it as-is. Systems where you have already ran the Post Install Root Patching cannot enable SIP without potentially breaking the current install.
 
 :::
 
@@ -69,7 +69,7 @@ In OCLP v0.4.5 a new indicator was added to help users to see if, when and on wh
 
 ### Running Post Install patches manually
 
-If you're using OCLP v0.4.3 or earlier, or need to run the patcher manually, you can do so with the app. There is no harm in trying to run the Patcher, as without compatible hardware, nothing will be done. You can see below on whether your hardware needs root volume patching or not. 
+If you're using OCLP v0.4.3 or earlier, or need to run the patcher manually, you can do so with the app. There is no harm in trying to run the Patcher, as without compatible hardware, nothing will be done. You can see below on whether your hardware needs root volume patching or not.
 
 | Listing Patches | Patching Finished |
 | :--- | :--- |
@@ -83,6 +83,8 @@ With OpenCore Legacy Patcher versions prior to v0.4.4, Root Patching requires a 
 * [OpenCore Legacy Patcher releases](https://github.com/dortania/OpenCore-Legacy-Patcher/releases/latest)
 
 :::
+
+Below entires represent GPUs no longer natively supported, ie. requiring root volume patch with OpenCore Legacy Patcher:
 
 :::details Unsupported GPUs in macOS Big Sur
 

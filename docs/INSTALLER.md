@@ -22,19 +22,13 @@ First we'll want to select the "Create macOS Installer" button. This will presen
 
 For this example, we'll assume you'll need an installer. Selecting this option will download Apple's Installer Catalogs and build a list for you to choose:
 
-| Downloading | Listed Installers |
-| :--- | :--- |
-| ![OCLP GUI Installer Download Catalog](../images/OCLP-GUI-Installer-Download-Catalog.png) | ![OCLP GUI Installer Download Listed Products](../images/OCLP-GUI-Installer-Download-Listed-Products.png) |
+| Downloading | Listed Installers | Unsupported Installer |
+| :--- | :--- | :--- |
+| ![OCLP GUI Installer Download Catalog](../images/OCLP-GUI-Installer-Download-Catalog.png) | ![OCLP GUI Installer Download Listed Products](../images/OCLP-GUI-Installer-Download-Listed-Products.png) | ![](../images/OCLP-GUI-Installer-Download-Unsupported.png)
 
-Since the patcher officially supports Big Sur and newer for patching, only those entires will be shown. For ourselves, we'll select 12.1 as that's the latest public release at the time of writing. This will download and install the macOS installer to your applications folder.
+Since the patcher officially supports Big Sur and newer for patching, only those entires will be shown. For ourselves, we'll select macOS 12 as that's the latest public release at the time of writing. This will download and install the macOS installer to your applications folder.
 
-::: warning
-
-With the release of the M2 MacBooks, Apple made an Apple Silicon only installer labeled "macOS 12.4 (21F2092 - 11.7GB)". Trying to boot this on Intel will not work.
-
-Instead, download "macOS 12.4 (21F79 - 12.1GB)" or newer.
-
-:::
+* Note that some machines (namely 2012 and older) may not be currently supported on macOS Ventura. If you see this prompt, you'll need to use an older version of macOS.
 
 | Downloading the Installer | Requesting to install | Finished Installing |
 | :--- | :--- | :--- |
