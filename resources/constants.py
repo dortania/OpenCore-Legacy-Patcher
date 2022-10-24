@@ -45,7 +45,7 @@ class Constants:
         self.bluetool_version = "2.6.4"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
         self.autopkg_version = "1.0.1"  #            AutoPkgInstaller
-        self.cryptexfixup_version = "1.0.0"  #       CryptexFixup
+        self.cryptexfixup_version = "1.0.1"  #       CryptexFixup
 
         ## Apple
         ## https://www.apple.com
