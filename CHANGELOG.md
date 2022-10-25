@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.5.1
+
 ## 0.5.0
 - Ventura Specific Updates:
   - Switch boot.efi model patch to iMac18,1
