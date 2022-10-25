@@ -437,7 +437,7 @@ class BuildOpenCore:
             self.get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
 
-        if cpu_data.cpu_data.sandy_bridge <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
+        if cpu_data.cpu_data.sandy_bridge <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value and self.model != "MacPro6,1":
             # Based on: https://egpu.io/forums/pc-setup/fix-dsdt-override-to-correct-error-12/
             # Applicable for Sandy and Ivy Bridge Macs
             print("- Enabling Windows 10 UEFI Audio support")
