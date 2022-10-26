@@ -204,6 +204,7 @@ class Constants:
         self.host_is_hackintosh = False #     Determine if host is Hackintosh
         self.commit_info = (None, None, None)
         self.set_vmm_cpuid = False  #          Set VMM bit inside CPUID
+        self.oc_timeout = 5  #                 Set OpenCore timeout
 
         self.legacy_accel_support = [
             os_data.os_data.big_sur,

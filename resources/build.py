@@ -1007,6 +1007,9 @@ class BuildOpenCore:
         else:
             print("- Hiding OpenCore picker")
             self.config["Misc"]["Boot"]["ShowPicker"] = False
+        if self.constants.oc_timeout != 5:
+            print(f"- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds")
+            self.config["Misc"]["Boot"]["Timeout"] = self.constants.oc_timeout
         if self.constants.vault is True:
             print("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"

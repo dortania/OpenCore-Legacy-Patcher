@@ -2459,13 +2459,29 @@ class wx_python_gui:
         if (not self.constants.custom_model and self.computer.real_model not in models) or (self.constants.custom_model and self.constants.custom_model not in models):
             self.gpu_dropdown.Disable()
 
+        # OpenCore Picker Timeout (using wxSpinCtrl)
+        # Label: Picker Timeout
+        self.label_timeout = wx.StaticText(self.frame_modal, label="Picker Timeout (seconds):", style=wx.ALIGN_CENTRE)
+        self.label_timeout.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.label_timeout.SetPosition(wx.Point(0, self.gpu_dropdown.GetPosition().y + self.gpu_dropdown.GetSize().height + 2))
+        self.label_timeout.SetSize(wx.Size(self.frame_modal.GetSize().width, 30))
+        self.label_timeout.Centre(wx.HORIZONTAL)
+
+        # Picker Timeout
+        self.timeout_spinner = wx.SpinCtrl(self.frame_modal, value=f"{self.constants.oc_timeout}", min=0, max=60)
+        self.timeout_spinner.SetPosition(wx.Point(
+            self.label_timeout.GetPosition().x,
+            int(self.label_timeout.GetPosition().y + self.label_timeout.GetSize().height / 2)))
+        self.timeout_spinner.Bind(wx.EVT_SPINCTRL, self.timeout_spinner_click)
+        self.timeout_spinner.Centre(wx.HORIZONTAL)
+
         # Disable Thunderbolt
         self.disable_thunderbolt_checkbox = wx.CheckBox(self.frame_modal, label="Disable Thunderbolt")
         self.disable_thunderbolt_checkbox.SetValue(self.constants.disable_tb)
         self.disable_thunderbolt_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_tb_click)
         self.disable_thunderbolt_checkbox.SetPosition(wx.Point(
             30,
-            self.gpu_dropdown.GetPosition().y + self.gpu_dropdown.GetSize().height + 5))
+            self.timeout_spinner.GetPosition().y + self.timeout_spinner.GetSize().height + 5))
         self.disable_thunderbolt_checkbox.SetToolTip(wx.ToolTip("Disables Thunderbolt support on MacBookPro11,x\nMainly applicable for systems that cannot boot with Thunderbolt enabled"))
         if not self.constants.custom_model and not self.computer.real_model.startswith("MacBookPro11"):
             self.disable_thunderbolt_checkbox.Disable()
@@ -2638,6 +2654,9 @@ class wx_python_gui:
 
         self.frame_modal.SetSize(wx.Size(-1, self.return_to_main_menu_button.GetPosition().y + self.return_to_main_menu_button.GetSize().height + 40))
         self.frame_modal.ShowWindowModal()
+
+    def timeout_spinner_click(self, event):
+        self.constants.oc_timeout = self.timeout_spinner.GetValue()
 
     def delete_unused_kdks_click(self, event):
         if self.delete_unused_kdks_checkbox.GetValue() is True:
