@@ -127,7 +127,7 @@ The following machines shipped stock with these cards:
 
 :::
 
-Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully support by OpenCore Legacy Patcher. Consider upgrading to these cards if possible.
+Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported by OpenCore Legacy Patcher. Consider upgrading to these cards if possible.
 
 
 ### USB 1.1 (OHCI/UHCI) Support

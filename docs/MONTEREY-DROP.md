@@ -1,7 +1,7 @@
 ![](../images/macos-monterey.png)
 
 With OpenCore Legacy Patcher v0.1.7 and newer, we've implemented beta macOS Monterey support for users. Please note that Apple has dropped a lot of hardware with this release as well as broken many of our previous patch sets. This page will be used to inform users regarding current issues and will be updated as new patch sets are developed and added to our patcher.
- 
+
 ## Newly dropped hardware
 
 With Monterey, Apple continues their their somewhat ruthless march of dropping Intel hardware. This release saw the removal, and thus addition into OpenCore Legacy Patcher, of the following models:
@@ -29,7 +29,7 @@ With Monterey, Apple continues their their somewhat ruthless march of dropping I
 * MacBook Pro (Retina, 13-inch, Mid 2014)
 * MacBook Pro (Retina, 15-inch, Mid 2014)
 
-::: 
+:::
 
 All of these models now have support in OpenCore Legacy Patcher.
 
@@ -43,7 +43,7 @@ Due to the display being routed through the NVIDIA Kepler card and macOS being r
 
 ::: details iMac15,1 5K Display Output Issue (Resolved in 0.3.2 and newer)
 
-* Documentation: 
+* Documentation:
   * [5K iMac and UEFI: Fixing the dreaded output limitation](https://khronokernel.github.io/macos/2021/12/08/5K-UEFI.html)
 * Associated Github Issue:
   * [5k Output issues on iMac15,1 (27" 5k iMac - 2014) #359](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/359)
@@ -79,7 +79,7 @@ The following models lost Wifi support in macOS Monterey due to their legacy Wir
   * MacBookPro6,x is exempt
 * MacPro5,1 and older
 
-Note: BCM943224, BCM94331, BCM94360 and BCM943602 are still fully support by OpenCore Legacy Patcher
+Note: BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported by OpenCore Legacy Patcher
 
 :::
 
@@ -96,7 +96,7 @@ The following models lost Bluetooth support in macOS Monterey due to their legac
 * MacBookPro8,1 and older
 * MacPro5,1 and older
 
-Note: Native BRCM20702 and BRCM20703 are still fully support by OpenCore Legacy Patcher
+Note: Native BRCM20702 and BRCM20703 are still fully supported by OpenCore Legacy Patcher
 
 ::: details Dropped Firmwares
 
