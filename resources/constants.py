@@ -71,6 +71,7 @@ class Constants:
         self.corecaptureelcap_version = "1.0.1"  #   corecaptureElCap
         self.io80211elcap_version = "2.0.0"  #       IO80211ElCap
         self.bigsursdxc_version = "1.0.0"  #         BigSurSDXC
+        self.monterey_ahci_version = "1.0.0"  #      CatalinaAHCI
 
         ## Dortania
         ## https://github.com/dortania
@@ -338,6 +339,10 @@ class Constants:
     @property
     def bigsursdxc_path(self):
         return self.payload_kexts_path / Path(f"Misc/BigSurSDXC-v{self.bigsursdxc_version}.zip")
+
+    @property
+    def monterey_ahci_path(self):
+        return self.payload_kexts_path / Path(f"Misc/MonteAHCIPort-v{self.monterey_ahci_version}.zip")
 
     @property
     def apfs_zlib_path(self):

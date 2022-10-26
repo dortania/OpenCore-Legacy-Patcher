@@ -875,6 +875,13 @@ class BuildOpenCore:
         except KeyError:
             pass
 
+        # MacBookAir6,x ship with an AHCI over PCIe SSD model 'APPLE SSD TS0128F' and 'APPLE SSD TS0256F'
+        # This controller is not supported properly in macOS Ventura, instead populating itself as 'Media' with no partitions
+        # To work-around this, use Monterey's AppleAHCI driver to force
+        if self.model in ["MacBookAir6,1", "MacBookAir6,2"]:
+            print("- Enabling AHCI SSD patch")
+            self.enable_kext("MonteAHCIPort.kext", self.constants.monterey_ahci_version, self.constants.monterey_ahci_path)
+
         # Check if model has 5K display
         # Apple has 2 modes for display handling on 5K iMacs and iMac Pro
         # If at any point in the boot chain an "unsupported" entry is loaded, the firmware will tell the

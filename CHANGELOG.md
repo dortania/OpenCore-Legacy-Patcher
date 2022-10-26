@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.5.1
+- Add support for `APPLE SSD TS0128F/256F` SSDs in macOS Ventura
+  - ie. stock SSD found in MacBookAir6,x
 
 ## 0.5.0
 - Ventura Specific Updates:
