@@ -3,6 +3,8 @@
 ## 0.5.1
 - Add support for `APPLE SSD TS0128F/256F` SSDs in macOS Ventura
   - ie. stock SSD found in MacBookAir6,x
+- Lax KDK N-1 logic to allow 1 minor version difference
+  - ex. Allow 13.0 KDK on 13.1
 
 ## 0.5.0
 - Ventura Specific Updates:

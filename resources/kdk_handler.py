@@ -140,7 +140,7 @@ class kernel_debug_kit_handler:
                 kdk_version = cast(packaging.version.Version, packaging.version.parse(kdk["version"]))
                 if kdk["build"] == build:
                     download_link = kdk["url"]
-                elif not closest_match_download_link and kdk_version <= parsed_version and kdk_version.major == parsed_version.major and kdk_version.minor == parsed_version.minor:
+                elif not closest_match_download_link and kdk_version <= parsed_version and kdk_version.major == parsed_version.major and (kdk_version.minor == parsed_version.minor or kdk_version.minor == parsed_version.minor - 1):
                     # The KDK list is already sorted by date then version, so the first match is the closest
                     closest_match_download_link = kdk["url"]
                     closest_version = kdk["version"]
