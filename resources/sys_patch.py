@@ -36,6 +36,7 @@ import plistlib
 import shutil
 import subprocess
 from pathlib import Path
+from datetime import datetime
 
 from resources import constants, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers, kdk_handler
 from data import os_data
@@ -353,6 +354,15 @@ class PatchSysVolume:
                     if not file.endswith(".kext"):
                         continue
                     self.remove_file("/Library/Extensions", file)
+
+        # Handle situations where users migrated from older OSes with a lot of garbage in /L*/E*
+        # ex. Nvidia Web Drivers, NetUSB, dosdude1's patches, etc.
+        # Delete if file's age is older than October 2021 (year before Ventura)
+        if self.constants.detected_os < os_data.os_data.ventura:
+            return
+        for file in Path("/Library/Extensions").glob("*.kext"):
+            if datetime.fromtimestamp(file.stat().st_mtime) < datetime(2021, 10, 1):
+                self.remove_file("/Library/Extensions", file.name)
 
     def write_patchset(self, patchset):
         destination_path = f"{self.mount_location}/System/Library/CoreServices"

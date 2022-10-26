@@ -5,6 +5,8 @@
   - ie. stock SSD found in MacBookAir6,x
 - Lax KDK N-1 logic to allow 1 minor version difference
   - ex. Allow 13.0 KDK on 13.1
+- Clean out `/Library/Extensions` on KDK-less root patches
+  - Ensures old, incompatible kexts are not linked against
 
 ## 0.5.0
 - Ventura Specific Updates:
