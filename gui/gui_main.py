@@ -1588,7 +1588,7 @@ class wx_python_gui:
         #   - VBIOS Boot Issue (MacPro6,1)
         #   - Non-Metal GPUs
         model = self.constants.custom_model or self.constants.computer.real_model
-        if model in model_array.LegacyGPU or model in ["MacPro3,1", "MacPro4,1", "MacPro5,1", "MacPro6,1"]:
+        if model in model_array.LegacyGPU or model in ["MacPro3,1", "MacPro4,1", "MacPro5,1"]:
             try:
                 app_major = app_dict['Version'].split(".")[0]
                 if float(app_major) > self.constants.os_support:

@@ -9,6 +9,9 @@
   - Ensures old, incompatible kexts are not linked against
   - Old kexts are relocated to `/Library/Relocated Extensions`
 - Add OpenCore Picker timeout selection
+- Partially resolve MacPro6,1 support
+  - Allows for install and usage of 2013 Mac Pros on Ventura
+  - Currently CPU Power Management is not supported
 
 ## 0.5.0
 - Ventura Specific Updates:
