@@ -1585,7 +1585,6 @@ class wx_python_gui:
     def download_macos_click(self, app_dict):
         # Unsupported Models include:
         #   - USB 1.1 machines (Penryn, MacPro3,1-5,1)
-        #   - VBIOS Boot Issue (MacPro6,1)
         #   - Non-Metal GPUs
         model = self.constants.custom_model or self.constants.computer.real_model
         if model in model_array.LegacyGPU or model in ["MacPro3,1", "MacPro4,1", "MacPro5,1"]:
