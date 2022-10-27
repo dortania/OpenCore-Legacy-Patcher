@@ -7,6 +7,7 @@
   - ex. Allow 13.0 KDK on 13.1
 - Clean out `/Library/Extensions` on KDK-less root patches
   - Ensures old, incompatible kexts are not linked against
+  - Old kexts are relocated to `/Library/Relocated Extensions`
 - Add OpenCore Picker timeout selection
 
 ## 0.5.0

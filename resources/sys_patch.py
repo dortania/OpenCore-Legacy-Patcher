@@ -357,12 +357,18 @@ class PatchSysVolume:
 
         # Handle situations where users migrated from older OSes with a lot of garbage in /L*/E*
         # ex. Nvidia Web Drivers, NetUSB, dosdude1's patches, etc.
-        # Delete if file's age is older than October 2021 (year before Ventura)
+        # Move if file's age is older than October 2021 (year before Ventura)
         if self.constants.detected_os < os_data.os_data.ventura:
             return
+
+        relocation_path = "/Library/Relocated Extensions"
+        if not Path(relocation_path).exists():
+            utilities.elevated(["mkdir", relocation_path])
+
         for file in Path("/Library/Extensions").glob("*.kext"):
             if datetime.fromtimestamp(file.stat().st_mtime) < datetime(2021, 10, 1):
-                self.remove_file("/Library/Extensions", file.name)
+                print(f"  - Relocating {file.name} kext to {relocation_path}")
+                utilities.elevated(["mv", file, relocation_path])
 
     def write_patchset(self, patchset):
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
