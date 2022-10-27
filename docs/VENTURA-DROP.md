@@ -26,16 +26,12 @@ Ventura's release dropped a large amount of Intel hardware, thus requiring the u
 
 Overall, macOS Ventura is useable on most Metal-capable machines (ie. 2012 and newer). The graphics patches implemented have near feature parity to macOS Monterey, with patches still being under heavy development. See [Legacy Metal Graphics Support and macOS Ventura #1008](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) issue for more information.
 
-* The sole exception for 2012+ hardware support in Ventura is the Late 2013, Trash Can Mac Pro. Currently we're in the process of researching and developing patches for this unit, however at this time the machine is not bootable on Ventura.
-  * More information can be found here: [2013 Mac Pro and macOS Ventura Boot Issues #1009](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1009)
-
-<img width="625" alt="" src="../images/OCLP-050-Initial-Support.png">
+<img width="625" alt="" src="../images/OCLP-051-Initial-Support.png">
 
 For older hardware, see below sections:
 
 * [Currently Unsupported/Broken Hardware in Ventura](#currently-unsupportedbroken-hardware-in-ventura)
-  * [Late 2013 Mac Pro Boot Issues](#late-2013-mac-pro-boot-issues)
-  * [AMD Polaris, Vega and Navi support on pre-2013 Mac Pros and pre-2012 iMacs](#amd-polaris-vega-and-navi-support-on-pre-2013-mac-pros-and-pre-2012-imacs)
+  * [AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs](#amd-polaris-vega-and-navi-support-on-pre-2019-mac-pros-and-pre-2012-imacs)
   * [Non-Metal Graphics Acceleration](#non-metal-graphics-acceleration)
   * [Legacy Wireless Support](#legacy-wireless-support)
   * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
@@ -45,15 +41,9 @@ The team is doing their best to investigate and fix the aforementioned issues, h
 
 ## Currently Unsupported/Broken Hardware in Ventura
 
-### Late 2013 Mac Pro Boot Issues
+### AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs
 
-As mentioned above, users of the Late 2013 Trash Can Mac Pro (MacPro6,1) currently cannot boot macOS Ventura. This issue is still being actively researched, however no overall time estimate can be given. See below for more information:
-
-* [2013 Mac Pro and macOS Ventura Boot Issues #1009](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1009)
-
-### AMD Polaris, Vega and Navi support on pre-2013 Mac Pros and pre-2012 iMacs
-
-For users with 2008 to 2012 Mac Pros (MacPro3,1-5,1) and 2009 to 2011 iMacs (iMac9,1-12,2), keep in mind macOS Ventura now requires [AVX2.0 support in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura officially with these GPUs.
+For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMac9,1-12,2), keep in mind macOS Ventura now requires [AVX2.0 support in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura officially with these GPUs.
 
 * CPUs supporting AVX2.0 are Haswell or newer, which no pre-2019 Mac Pros can be upgraded with.
 
@@ -152,4 +142,5 @@ For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed i
 :::
 
 ### Ethernet issue with Early 2008 Mac Pro
+
 MacPro3,1 suffers from Ethernet driver dying after returning from sleep, current workaround is to use a USB Ethernet adapter or disable sleep.

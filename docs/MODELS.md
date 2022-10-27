@@ -148,7 +148,7 @@ Regarding OS support, see below:
 | MacPro3,1 | Early 2008 | <span style="color:#30BCD5"> YES - Monterey and older</span> | - Potential boot issues with built-in USB 1.1 ports (recommend using a USB 2.0 hub or dedicated USB PCIe controller) <br/>- Potential boot issues with stock Bluetooth card, recommend removing to avoid kernel panics |
 | MacPro4,1 | Early 2009 | ^^ | - Everything is supported as long as GPU is Metal capable <br/> - Supports macOS Monterey and older ([Ventura support in development](./VENTURA-DROP.md)) |
 | MacPro5,1 | Mid-2010, Mid-2012 | ^^ | ^^ |
-| MacPro6,1 | Late 2013 | <span style="color:red"> NO </span> | Unsupported, [currently under active development](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1009) |
+| MacPro6,1 | Late 2013 | ^^ | - CPU Power Management currently unsupported<br/> - No DRM support |
 
 ### Xserve
 
