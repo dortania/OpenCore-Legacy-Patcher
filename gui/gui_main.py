@@ -183,9 +183,13 @@ class wx_python_gui:
             threading.Thread(target=self.check_for_updates).start()
 
     def check_for_updates(self, event=None):
+        if self.constants.has_checked_updates is True:
+            return
+
         ignore_updates = global_settings.global_settings().read_property("IgnoreAppUpdates")
         if ignore_updates is not True:
             self.constants.ignore_updates = False
+            self.constants.has_checked_updates = True
             dict = updates.check_binary_updates(self.constants).check_binary_updates()
             if dict:
                 for entry in dict:
