@@ -1,5 +1,7 @@
 ::: warning
-This guide was made before Ventura's release and was written with Monterey in mind. The spoofing options may cause issues with Ventura like leave it in an unbootable state, proceed with your own discretion. Universal Control hasn't been extensively tested under Ventura.
+This guide was made before Ventura's release and was written with Monterey in mind. The spoofing options may cause issues with Ventura like leave it in an unbootable state, proceed with your own discretion. 
+
+Universal Control hasn't been extensively tested under Ventura.
 :::
 
 
