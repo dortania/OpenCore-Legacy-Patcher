@@ -1,3 +1,8 @@
+::: warning
+This guide was made before Ventura's release and was written with Monterey in mind. The spoofing options may cause issues with Ventura like leave it in an unbootable state, proceed with your own discretion. Universal Control hasn't been extensively tested under Ventura.
+:::
+
+
 # Universal Control on unsupported Macs
 
 Introduced in macOS 12 Monterey, Universal Control is a feature that allows a Mac to control other Macs and/or iPads, share input devices, and share files across them simultaneously. With OpenCore and FeatureUnlock, Universal Control can be unlocked for most unsupported Macs, as long as they meet the technical requirements listed on this page.
