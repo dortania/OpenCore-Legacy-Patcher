@@ -46,13 +46,6 @@ class generate_defaults:
                 self.constants.allow_ts2_accel = False
 
         if self.model in smbios_data.smbios_dictionary:
-            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value and self.model != "MacPro5,1":
-                # Sidecar and AirPlay to Mac only blacklist Ivy and newer (as well as MacPro5,1)
-                # Avoid extra patching without benefit
-                self.constants.fu_arguments = " -disable_sidecar_mac"
-            else:
-                self.constants.fu_arguments = None
-
             if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.cpu_data.skylake.value:
                 # On 2016-2017 MacBook Pros, 15" devices used a stock Samsung SSD with IONVMeController
                 # Technically this should be patched based on NVMeFix.kext logic,

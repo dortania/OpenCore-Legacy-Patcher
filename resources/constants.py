@@ -39,7 +39,7 @@ class Constants:
         self.applealc_version = "1.6.3"  #           AppleALC
         self.restrictevents_version = "1.0.6"  #     RestrictEvents
         self.restrictevents_mbp_version = "1.0.6"  # RestrictEvents blocking displaypolicyd (see RestrictEvents-MBP91.patch)
-        self.featureunlock_version = "1.0.9"  #      FeatureUnlock
+        self.featureunlock_version = "1.1.0"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.7"  #      DebugEnhancer
         self.cpufriend_version = "1.2.5"  #          CPUFriend
         self.bluetool_version = "2.6.4"  #           BlueToolFixup (BrcmPatchRAM)
