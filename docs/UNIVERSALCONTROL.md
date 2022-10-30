@@ -1,9 +1,3 @@
-::: warning
-This guide was made before Ventura's release and was written with Monterey in mind. The spoofing options may cause issues with Ventura like leave it in an unbootable state, proceed with your own discretion. 
-
-Universal Control hasn't been extensively tested under Ventura.
-:::
-
 
 # Universal Control on unsupported Macs
 
@@ -210,6 +204,10 @@ Before we continue, please keep in mind that SMBIOS Spoofing is an advanced feat
 ### How to spoof
 
 Firstly, run the GUI version of OpenCore Legacy Patcher, go to **Settings** and tick **Allow native models**.
+
+::: warning
+If you're running Ventura, do NOT enable **Allow native models* as it will break boot. Proceed directly to the second step.
+:::
 
 **Note:** Unless you are building OpenCore on a different machine than it's targeted for, **do not** change the model in the main settings view. It is important to understand that OCLP targets this model regardless of what you may have spoofed to, as your Mac is still what the Native SMBIOS shows.
 
