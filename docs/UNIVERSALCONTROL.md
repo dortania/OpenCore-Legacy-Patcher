@@ -203,11 +203,12 @@ Before we continue, please keep in mind that SMBIOS Spoofing is an advanced feat
 
 ### How to spoof
 
+::: warning
+If you're running Ventura, do NOT enable **Allow native models** or **Allow Native Spoofs** as it will break boot. Use only SMBIOS Spoof Level and Spoof Model settings.
+:::
+
 Firstly, run the GUI version of OpenCore Legacy Patcher, go to **Settings** and tick **Allow native models**.
 
-::: warning
-If you're running Ventura, do NOT enable **Allow native models* as it will break boot. Proceed directly to the second step.
-:::
 
 **Note:** Unless you are building OpenCore on a different machine than it's targeted for, **do not** change the model in the main settings view. It is important to understand that OCLP targets this model regardless of what you may have spoofed to, as your Mac is still what the Native SMBIOS shows.
 
