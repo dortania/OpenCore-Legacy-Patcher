@@ -65,6 +65,7 @@ class sys_patch_helpers:
             "Time Patched": f"{datetime.now().strftime('%B %d, %Y @ %H:%M:%S')}",
             "Commit URL": f"{self.constants.commit_info[2]}",
             "Kernel Debug Kit Used": f"{kdk_string}",
+            "OS Version": f"{self.constants.detected_os}.{self.constants.detected_os_minor} ({self.constants.detected_os_build})",
         }
         data.update(patchset)
         if Path(source_path_file).exists():

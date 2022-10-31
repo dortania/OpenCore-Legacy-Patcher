@@ -14,18 +14,19 @@ class detect_root_patch:
         self.computer = self.constants.computer
 
         # GPU Patch Detection
-        self.nvidia_tesla  = False
-        self.kepler_gpu    = False
-        self.nvidia_web    = False
-        self.amd_ts1       = False
-        self.amd_ts2       = False
-        self.iron_gpu      = False
-        self.sandy_gpu     = False
-        self.ivy_gpu       = False
-        self.haswell_gpu   = False
-        self.broadwell_gpu = False
-        self.skylake_gpu   = False
-        self.legacy_gcn    = False
+        self.nvidia_tesla   = False
+        self.kepler_gpu     = False
+        self.nvidia_web     = False
+        self.amd_ts1        = False
+        self.amd_ts2        = False
+        self.iron_gpu       = False
+        self.sandy_gpu      = False
+        self.ivy_gpu        = False
+        self.haswell_gpu    = False
+        self.broadwell_gpu  = False
+        self.skylake_gpu    = False
+        self.legacy_gcn     = False
+        self.legacy_polaris = False
 
         # Misc Patch Detection
         self.brightness_legacy         = False
@@ -130,10 +131,14 @@ class detect_root_patch:
                             # full compatibility (namely power states, etc)
                             # Reference: https://github.com/dortania/bugtracker/issues/292
                             # TODO: Probe framebuffer families further
-                            if "AVX2" in self.constants.computer.cpu.leafs and self.model != "MacBookPro13,3":
-                                continue
-
-                        self.legacy_gcn = True
+                            if self.model != "MacBookPro13,3":
+                                if "AVX2" in self.constants.computer.cpu.leafs:
+                                    continue
+                                self.legacy_polaris = True
+                            else:
+                                self.legacy_gcn = True
+                        else:
+                            self.legacy_gcn = True
                         self.supports_metal = True
                         self.requires_root_kc = True
                         self.amfi_must_disable = True
@@ -184,6 +189,13 @@ class detect_root_patch:
             self.iron_gpu = False
             self.sandy_gpu = False
             self.legacy_keyboard_backlight = False
+
+        if self.legacy_polaris is True and self.legacy_gcn is True:
+            # We can only support one or the other due to the nature of relying
+            # on portions of the native AMD stack for Polaris
+            # Thus we'll prioritize legacy GCN due to being the internal card
+            # ex. MacPro6,1 and MacBookPro11,5 with eGPUs
+            self.legacy_polaris = False
 
         if self.constants.detected_os <= os_data.os_data.monterey:
             # Always assume Root KC requirement on Monterey and older
@@ -328,6 +340,7 @@ class detect_root_patch:
             "Graphics: AMD TeraScale 1":                   self.amd_ts1,
             "Graphics: AMD TeraScale 2":                   self.amd_ts2,
             "Graphics: AMD Legacy GCN":                    self.legacy_gcn,
+            "Graphics: AMD Legacy Polaris":                self.legacy_polaris,
             "Graphics: Intel Ironlake":                    self.iron_gpu,
             "Graphics: Intel Sandy Bridge":                self.sandy_gpu,
             "Graphics: Intel Ivy Bridge":                  self.ivy_gpu,
@@ -518,11 +531,14 @@ class detect_root_patch:
                 # TeraScale 2 MacBooks with faulty GPUs are highly prone to crashing with AMDRadeonX3000 attached
                 # Additionally, AMDRadeonX3000 requires IOAccelerator downgrade which is not installed without 'Non-Metal IOAccelerator Common'
                 del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
-        if hardware_details["Graphics: AMD Legacy GCN"] is True:
+        if hardware_details["Graphics: AMD Legacy GCN"] is True or hardware_details["Graphics: AMD Legacy Polaris"] is True:
             required_patches.update({"Revert Metal Downgrade": all_hardware_patchset["Graphics"]["Revert Metal Downgrade"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
-            required_patches.update({"AMD Legacy GCN": all_hardware_patchset["Graphics"]["AMD Legacy GCN"]})
+            if hardware_details["Graphics: AMD Legacy GCN"] is True:
+                required_patches.update({"AMD Legacy GCN": all_hardware_patchset["Graphics"]["AMD Legacy GCN"]})
+            else:
+                required_patches.update({"AMD Legacy Polaris": all_hardware_patchset["Graphics"]["AMD Legacy Polaris"]})
             if "AVX2" not in self.constants.computer.cpu.leafs:
                 required_patches.update({"AMD OpenCL": all_hardware_patchset["Graphics"]["AMD OpenCL"]})
         if hardware_details["Brightness: Legacy Backlight Control"] is True:

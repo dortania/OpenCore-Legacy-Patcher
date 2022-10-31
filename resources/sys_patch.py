@@ -506,7 +506,7 @@ class PatchSysVolume:
                     else:
                         print(f"- Running Process:\n{process}")
                         utilities.process_status(subprocess.run(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
-        if "AMD Legacy GCN" in required_patches:
+        if "AMD Legacy GCN" in required_patches or "AMD Legacy Polaris" in required_patches:
             sys_patch_helpers.sys_patch_helpers(self.constants).disable_window_server_caching()
         self.write_patchset(required_patches)
 

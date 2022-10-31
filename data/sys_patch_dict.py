@@ -649,6 +649,30 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     ],
                 },
             },
+            # Used only for AMD Polaris with host lacking AVX2.0
+            # Note missing framebuffers are not restored (ex. 'ATY,Berbice')
+            "AMD Legacy Polaris": {
+                "Display Name": "Graphics: AMD Legacy Polaris",
+                 "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Extensions": {
+                        "AMDRadeonX4000.kext":           "12.5",
+
+                        "AMDRadeonX4000GLDriver.bundle": "12.5",
+                        "AMDMTLBronzeDriver.bundle":     "12.5",
+                        "AMDShared.bundle":              "12.5",
+                    },
+                },
+            },
             "Intel Ironlake": {
                 "Display Name": "Graphics: Intel Ironlake",
                 "OS Support": {
