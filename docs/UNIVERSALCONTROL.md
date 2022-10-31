@@ -1,3 +1,4 @@
+
 # Universal Control on unsupported Macs
 
 Introduced in macOS 12 Monterey, Universal Control is a feature that allows a Mac to control other Macs and/or iPads, share input devices, and share files across them simultaneously. With OpenCore and FeatureUnlock, Universal Control can be unlocked for most unsupported Macs, as long as they meet the technical requirements listed on this page.
@@ -202,7 +203,12 @@ Before we continue, please keep in mind that SMBIOS Spoofing is an advanced feat
 
 ### How to spoof
 
+::: warning
+If you're running Ventura, do NOT enable **Allow native models** or **Allow Native Spoofs** as it will break boot. Use only SMBIOS Spoof Level and Spoof Model settings.
+:::
+
 Firstly, run the GUI version of OpenCore Legacy Patcher, go to **Settings** and tick **Allow native models**.
+
 
 **Note:** Unless you are building OpenCore on a different machine than it's targeted for, **do not** change the model in the main settings view. It is important to understand that OCLP targets this model regardless of what you may have spoofed to, as your Mac is still what the Native SMBIOS shows.
 
