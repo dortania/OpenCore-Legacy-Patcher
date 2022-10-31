@@ -366,11 +366,16 @@ class PatchSysVolume:
             utilities.elevated(["mkdir", relocation_path])
 
         for file in Path("/Library/Extensions").glob("*.kext"):
-            if datetime.fromtimestamp(file.stat().st_mtime) < datetime(2021, 10, 1):
-                print(f"  - Relocating {file.name} kext to {relocation_path}")
-                if Path(relocation_path) / Path(file.name).exists():
-                    utilities.elevated(["rm", "-Rf", relocation_path / Path(file.name)])
-                utilities.elevated(["mv", file, relocation_path])
+            try:
+                if datetime.fromtimestamp(file.stat().st_mtime) < datetime(2021, 10, 1):
+                    print(f"  - Relocating {file.name} kext to {relocation_path}")
+                    if Path(relocation_path) / Path(file.name).exists():
+                        utilities.elevated(["rm", "-Rf", relocation_path / Path(file.name)])
+                    utilities.elevated(["mv", file, relocation_path])
+            except:
+                # Some users have the most cursed /L*/E* folders
+                # ex. Symlinks pointing to symlinks pointing to dead files
+                pass
 
     def write_patchset(self, patchset):
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
