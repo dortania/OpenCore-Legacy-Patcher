@@ -138,27 +138,8 @@ class sys_patch_helpers:
         # corrupted Opaque shaders.
         # To work-around this, we disable WindowServer caching
         # And force macOS into properly generating the Opaque shaders
-        if self.constants.detected_os < os_data.os_data.ventura:
-            return
         print("- Disabling WindowServer Caching")
         # Invoke via 'bash -c' to resolve pathing
         utilities.elevated(["bash", "-c", "rm -rf /private/var/folders/*/*/*/WindowServer/com.apple.WindowServer"])
         # Disable writing to WindowServer folder
         utilities.elevated(["bash", "-c", "chflags uchg /private/var/folders/*/*/*/WindowServer"])
-
-    def disable_mediaanalysisd(self):
-        # On macOS Ventura, mediaanalysisd now hard locks the system when
-        # it runs in the background processing photos. The purpose is to
-        # build a database of keywords per image, however uses Metal 2
-        # features that are unsupported on Metal 1
-        # Thus, we write lock mediaanalysisd's defaults file to avoid it
-        # from finding the Photo Library
-        if self.constants.detected_os < os_data.os_data.ventura:
-            return
-        print("- Disabling mediaanalysisd")
-        media_pathing = Path("~/Library/Preferences/com.apple.mediaanalysisd.plist").expanduser()
-        if media_pathing.exists():
-            utilities.elevated(["rm", "-f", media_pathing])
-        utilities.elevated(["touch", media_pathing])
-        # Write lock the file
-        utilities.elevated(["chflags", "uchg", media_pathing])
