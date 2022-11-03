@@ -291,7 +291,7 @@ class Constants:
 
     @property
     def efi_disabler_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/EFICheckDisabler-v{self.restrictevents_version}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/EFICheckDisabler.zip")
 
     @property
     def bcm570_path(self):

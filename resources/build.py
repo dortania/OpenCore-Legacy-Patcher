@@ -1136,7 +1136,7 @@ class BuildOpenCore:
         if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
             # Ensure this is done at the end so all previous RestrictEvents patches are applied
             # RestrictEvents and EFICheckDisabler will conflict if both are injected
-            self.enable_kext("EFICheckDisabler.kext", self.constants.restrictevents_version, self.constants.efi_disabler_path)
+            self.enable_kext("EFICheckDisabler.kext", "", self.constants.efi_disabler_path)
         if self.constants.set_vmm_cpuid is True:
             # Should be unneeded with our sysctl VMM patch, however for reference purposes we'll leave it here
             # Ref: https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/
