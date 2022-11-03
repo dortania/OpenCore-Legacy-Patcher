@@ -109,16 +109,9 @@ class BuildOpenCore:
             # Essential kexts
             ("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path, lambda: True),
             ("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path, lambda: self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None"),
-            ("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path, lambda: self.model in model_array.MacPro),
             ("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path, lambda: self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None"),
             # CPU patches
             ("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path, lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value),
-            (
-                "telemetrap.kext",
-                self.constants.telemetrap_version,
-                self.constants.telemetrap_path,
-                lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value,
-            ),
             (
                 "CPUFriend.kext",
                 self.constants.cpufriend_version,
@@ -194,10 +187,6 @@ class BuildOpenCore:
             if self.constants.disable_xcpm is True:
                 # Only inject on older OSes if user requests
                 self.get_item_by_kv(self.config["Kernel"]["Add"], "BundlePath", "ASPP-Override.kext")["MinKernel"] = ""
-
-        if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
-            # Modded RestrictEvents with displaypolicyd blocked to fix dGPU switching
-            self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_mbp_version, self.constants.restrictevents_mbp_path)
 
         if not self.constants.custom_model and self.constants.computer.ethernet:
             for controller in self.constants.computer.ethernet:
@@ -917,23 +906,6 @@ class BuildOpenCore:
         except KeyError:
             pass
 
-        # With macOS 13, Ventura, Apple removed the Skylake graphics stack. However due to the lack of inovation
-        # with the Kaby lake and Coffee Lake iGPUs, we're able to spoof ourselves to natively support them
-
-        # Currently the following iGPUs we need to be considerate of:
-        # - HD530 (mobile):  0x191B0006
-
-
-        # | GPU      | Model            | Device ID | Platform ID | New Device ID | New Platform ID |
-        # | -------- | ---------------- | --------- | ----------- | ------------- | --------------- |
-        # | HD 515   | MacBook9,1       | 0x191E    | 0x131E0003  |
-        # | Iris 540 | MacBookPro13,1/2 | 0x1926    | 0x19160002  | 0x5926        | 0x59260002
-        # | HD 530   | MacBookPro13,3   | 0x191B    | 0x191B0006  | 0x591B        | 0x591B0006      |
-        # | HD 530   | iMac17,1         | 0x1912    | 0x19120001  | 0x5912        | 0x59120003      |
-
-
-
-
         if self.constants.xhci_boot is True:
             print("- Adding USB 3.0 Controller Patch")
             print("- Adding XhciDxe.efi and UsbBusDxe.efi")
@@ -995,6 +967,44 @@ class BuildOpenCore:
             print("- Forcing GOP Support")
             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
+
+        # RestrictEvents handling
+        block_args = ""
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
+            block_args += "telemetry,"
+        if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
+            block_args += "gmux,"
+        if self.model in model_array.MacPro:
+            block_args += "pcie,"
+        gpu_dict = []
+        if not self.constants.custom_model:
+            gpu_dict = self.constants.computer.gpus
+        else:
+            if self.model in smbios_data.smbios_dictionary:
+                gpu_dict = smbios_data.smbios_dictionary[self.model]["Stock GPUs"]
+        for gpu in gpu_dict:
+            if gpu in [
+                device_probe.Intel.Archs.Ivy_Bridge,
+                device_probe.Intel.Archs.Haswell,
+                device_probe.NVIDIA.Archs.Kepler,
+            ]:
+                block_args += "media,"
+                break
+        if block_args.endswith(","):
+            block_args = block_args[:-1]
+
+        if block_args != "":
+            print(f"- Setting RestrictEvents block arguments: {block_args}")
+            if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
+                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revblock"] = block_args
+
+        if self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True and self.constants.set_content_caching is True:
+            # Add Content Caching patch
+            print("- Fixing Content Caching support")
+            if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
+                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revpatch"] = "asset"
 
         # DEBUG Settings
         if self.constants.verbose_debug is True:
@@ -1123,12 +1133,6 @@ class BuildOpenCore:
         if self.constants.nvram_write is False:
             print("- Disabling Hardware NVRAM Write")
             self.config["NVRAM"]["WriteFlash"] = False
-        if self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True and self.constants.set_content_caching is True:
-            # Add Content Caching patch
-            print("- Fixing Content Caching support")
-            if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
-                self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -revasset"
         if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
             # Ensure this is done at the end so all previous RestrictEvents patches are applied
             # RestrictEvents and EFICheckDisabler will conflict if both are injected
