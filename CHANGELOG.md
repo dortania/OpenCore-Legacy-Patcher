@@ -1,10 +1,13 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.5.2
-- Resolve AMD Polaris external display output support
-  - AMD Polaris and legacy GCN cannot be mixed in the same system
-    - Legacy GCN support will be prioritized when both are present
-    - AMD Polaris GPU can still be used headless for rendering with legacy GCN (ex. [macOS: Prefer External GPU option](https://support.apple.com/en-ca/HT208544))
+- Ventura Specific Updates:
+  - Resolve AMD Polaris external display output support
+    - AMD Polaris and legacy GCN cannot be mixed in the same system
+      - Legacy GCN support will be prioritized when both are present
+      - AMD Polaris GPU can still be used headless for rendering with legacy GCN (ex. [macOS: Prefer External GPU option](https://support.apple.com/en-ca/HT208544))
+- Work-around MacPro6,1 and Lilu race condition
+  - Ensure Model and Board ID are set correctly before Lilu loads
 - Increment Binaries:
   - AirPortBrcmFixup 2.1.6 - release
   - DebugEnhancer 1.0.7 - release

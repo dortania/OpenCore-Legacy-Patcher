@@ -1277,9 +1277,9 @@ class BuildOpenCore:
             # Thus resulting in an infinite loop as Lilu tries to request the Board ID
             # To resolve this, set PlatformInfo -> DataHub -> BoardProduct and enable UpdateDataHub
 
-            # Note 1: Only apply if system is UEFI 1.2, this is generally Ivy Bridge and older, excluding MacPro6,1
+            # Note 1: Only apply if system is UEFI 1.2, this is generally Ivy Bridge and older
             # Note 2: Flipping 'UEFI -> ProtocolOverrides -> DataHub' will break hibernation
-            if (smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value and self.model != "MacPro6,1"):
+            if (smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value and self.model):
                 print("- Detected UEFI 1.2 or older Mac, updating BoardProduct")
                 self.config["PlatformInfo"]["DataHub"]["BoardProduct"] = self.spoofed_board
                 self.config["PlatformInfo"]["UpdateDataHub"] = True
