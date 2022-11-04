@@ -12,7 +12,7 @@
   - AirPortBrcmFixup 2.1.6 - release
   - DebugEnhancer 1.0.7 - release
   - FeatureUnlock 1.1.0 - rolling (2bb3c50)
-  - RestrictEvents 1.0.9 - rolling (17b0f18)
+  - RestrictEvents 1.0.9 - rolling (39076c4)
 
 ## 0.5.1
 - Add support for `APPLE SSD TS0128F/256F` SSDs in macOS Ventura

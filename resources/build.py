@@ -118,6 +118,12 @@ class BuildOpenCore:
                 self.constants.cpufriend_path,
                 lambda: self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None",
             ),
+            (
+                "telemetrap.kext",
+                self.constants.telemetrap_version,
+                self.constants.telemetrap_path,
+                lambda: smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value,
+            ),
             # Legacy audio
             (
                 "AppleALC.kext",
@@ -970,11 +976,10 @@ class BuildOpenCore:
 
         # RestrictEvents handling
         block_args = ""
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
-            block_args += "telemetry,"
         if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
             block_args += "gmux,"
         if self.model in model_array.MacPro:
+            print("- Disabling memory error reporting")
             block_args += "pcie,"
         gpu_dict = []
         if not self.constants.custom_model:
@@ -988,6 +993,7 @@ class BuildOpenCore:
                 device_probe.Intel.Archs.Haswell,
                 device_probe.NVIDIA.Archs.Kepler,
             ]:
+                print("- Disabling mediaanalysisd")
                 block_args += "media,"
                 break
         if block_args.endswith(","):
@@ -999,12 +1005,23 @@ class BuildOpenCore:
                 self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revblock"] = block_args
 
+        patch_args = ""
         if self.get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True and self.constants.set_content_caching is True:
-            # Add Content Caching patch
             print("- Fixing Content Caching support")
+            patch_args += "content-caching,"
+
+        if patch_args.endswith(","):
+            patch_args = patch_args[:-1]
+
+        if block_args != "" and patch_args == "":
+            # Disable unneeded Userspace patching (cs_validate_page is quite expensive)
+            patch_args = "none"
+
+        if patch_args != "":
+            print(f"- Setting RestrictEvents patch arguments: {patch_args}")
             if self.get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
                 self.enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
-            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revpatch"] = "asset"
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revpatch"] = patch_args
 
         # DEBUG Settings
         if self.constants.verbose_debug is True:
