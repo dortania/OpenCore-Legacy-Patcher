@@ -988,6 +988,8 @@ class BuildOpenCore:
             if self.model in smbios_data.smbios_dictionary:
                 gpu_dict = smbios_data.smbios_dictionary[self.model]["Stock GPUs"]
         for gpu in gpu_dict:
+            if not self.constants.custom_model:
+                gpu = gpu.arch
             if gpu in [
                 device_probe.Intel.Archs.Ivy_Bridge,
                 device_probe.Intel.Archs.Haswell,
