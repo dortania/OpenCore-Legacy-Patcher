@@ -37,8 +37,7 @@ class Constants:
         self.airportbcrmfixup_version = "2.1.6"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
-        self.restrictevents_version = "1.0.6"  #     RestrictEvents
-        self.restrictevents_mbp_version = "1.0.6"  # RestrictEvents blocking displaypolicyd (see RestrictEvents-MBP91.patch)
+        self.restrictevents_version = "1.0.9"  #     RestrictEvents
         self.featureunlock_version = "1.1.0"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.7"  #      DebugEnhancer
         self.cpufriend_version = "1.2.5"  #          CPUFriend
@@ -292,11 +291,7 @@ class Constants:
 
     @property
     def efi_disabler_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/EFICheckDisabler-v{self.restrictevents_version}.zip")
-
-    @property
-    def restrictevents_mbp_path(self):
-        return self.payload_kexts_path / Path(f"Acidanthera/RestrictEvents-MBP91-v{self.restrictevents_mbp_version}-{self.kext_variant}.zip")
+        return self.payload_kexts_path / Path(f"Acidanthera/EFICheckDisabler.zip")
 
     @property
     def bcm570_path(self):
