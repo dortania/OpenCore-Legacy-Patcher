@@ -6,13 +6,15 @@
     - AMD Polaris and legacy GCN cannot be mixed in the same system
       - Legacy GCN support will be prioritized when both are present
       - AMD Polaris GPU can still be used headless for rendering with legacy GCN (ex. [macOS: Prefer External GPU option](https://support.apple.com/en-ca/HT208544))
+  - Disables unsupported `mediaanalysisd` on Ivy Bridge and Haswell
+    - Alleviates kernel panic on Ivy Bridge and Haswell when on prolonged idle
 - Work-around MacPro6,1 and Lilu race condition
   - Ensure Model and Board ID are set correctly before Lilu loads
 - Increment Binaries:
   - AirPortBrcmFixup 2.1.6 - release
   - DebugEnhancer 1.0.7 - release
   - FeatureUnlock 1.1.0 - rolling (2bb3c50)
-  - RestrictEvents 1.0.9 - rolling (39076c4)
+  - RestrictEvents 1.0.9 - rolling (5535237)
 
 ## 0.5.1
 - Add support for `APPLE SSD TS0128F/256F` SSDs in macOS Ventura
