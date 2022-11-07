@@ -12,9 +12,13 @@
   - Ensure Model and Board ID are set correctly before Lilu loads
 - Increment Binaries:
   - AirPortBrcmFixup 2.1.6 - release
+  - AppleALC 1.7.6 - release
+  - CryptexFixup 1.0.1 - release
   - DebugEnhancer 1.0.7 - release
-  - FeatureUnlock 1.1.0 - rolling (2bb3c50)
-  - RestrictEvents 1.0.9 - rolling (5535237)
+  - FeatureUnlock 1.1.0 - release
+  - OpenCorePkg 0.8.6 - release
+  - RestrictEvents 1.0.9 - release
+  - WhateverGreen 1.6.1 - release
 
 ## 0.5.1
 - Add support for `APPLE SSD TS0128F/256F` SSDs in macOS Ventura
