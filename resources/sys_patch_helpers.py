@@ -148,7 +148,9 @@ class sys_patch_helpers:
 
 
     def remove_news_widgets(self):
-        # On Metal 1 GPUs, News 
+        # On Ivy Bridge and Haswell iGPUs, RenderBox will crash the News Widgets in
+        # Notification Centre. To ensure users can access Notifications normally,
+        # we manually remove all News Widgets
         if self.constants.detected_os < os_data.os_data.ventura:
             return
         print("- Parsing Notification Centre Widgets")
@@ -175,7 +177,7 @@ class sys_patch_helpers:
                                     continue
                                 if not b'com.apple.news' in sub_data[sub_entry][2]:
                                     continue
-                                print(f"  - Found News Widget to remove: {sub_data[sub_entry][2]}")
+                                print(f"  - Found News Widget to remove: {sub_data[sub_entry][2].decode('ascii')}")
                                 data["widgets"]["instances"].remove(widget)
                                 did_find = True
         if did_find:
