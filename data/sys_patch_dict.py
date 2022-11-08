@@ -730,9 +730,6 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 99
                     },
                 },
-                "Processes": {
-                    "defaults write com.apple.coremedia hardwareVideoDecoder -string enable": False,
-                },
                 "Install": {
                     "/System/Library/Extensions": {
                         "AppleIntelHD4000GraphicsGLDriver.bundle":  "11.0 Beta 6",
