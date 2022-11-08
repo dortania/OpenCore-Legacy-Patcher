@@ -10,7 +10,7 @@ from datetime import datetime
 import plistlib
 import os
 
-from resources import constants
+from resources import constants, bplist
 
 class sys_patch_helpers:
 
@@ -138,8 +138,47 @@ class sys_patch_helpers:
         # corrupted Opaque shaders.
         # To work-around this, we disable WindowServer caching
         # And force macOS into properly generating the Opaque shaders
+        if self.constants.detected_os < os_data.os_data.ventura:
+             return
         print("- Disabling WindowServer Caching")
         # Invoke via 'bash -c' to resolve pathing
         utilities.elevated(["bash", "-c", "rm -rf /private/var/folders/*/*/*/WindowServer/com.apple.WindowServer"])
         # Disable writing to WindowServer folder
         utilities.elevated(["bash", "-c", "chflags uchg /private/var/folders/*/*/*/WindowServer"])
+
+
+    def remove_news_widgets(self):
+        # On Metal 1 GPUs, News 
+        if self.constants.detected_os < os_data.os_data.ventura:
+            return
+        print("- Parsing Notification Centre Widgets")
+        file_path = "~/Library/Containers/com.apple.notificationcenterui/Data/Library/Preferences/com.apple.notificationcenterui.plist"
+        file_path = Path(file_path).expanduser()
+
+        if not file_path.exists():
+            print("  - Defaults file not found, skipping")
+            return
+
+        did_find = False
+        with open(file_path, "rb") as f:
+            data = plistlib.load(f)
+            if "widgets" in data:
+                if "instances" in data["widgets"]:
+                    for widget in list(data["widgets"]["instances"]):
+                        widget_data = bplist.BPListReader(widget).parse()
+                        for entry in widget_data:
+                            if not 'widget' in entry:
+                                continue
+                            sub_data = bplist.BPListReader(widget_data[entry]).parse()
+                            for sub_entry in sub_data:
+                                if not '$object' in sub_entry:
+                                    continue
+                                if not b'com.apple.news' in sub_data[sub_entry][2]:
+                                    continue
+                                print(f"  - Found News Widget to remove: {sub_data[sub_entry][2]}")
+                                data["widgets"]["instances"].remove(widget)
+                                did_find = True
+        if did_find:
+            with open(file_path, "wb") as f:
+                plistlib.dump(data, f, sort_keys=False)
+            subprocess.run(["killall", "NotificationCenter"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
