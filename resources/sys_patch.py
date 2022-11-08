@@ -511,8 +511,10 @@ class PatchSysVolume:
                     else:
                         print(f"- Running Process:\n{process}")
                         utilities.process_status(subprocess.run(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
-        if "AMD Legacy GCN" in required_patches or "AMD Legacy Polaris" in required_patches:
+        if any(x in required_patches for x in ["AMD Legacy GCN", "AMD Legacy Polaris"]):
             sys_patch_helpers.sys_patch_helpers(self.constants).disable_window_server_caching()
+        if any(x in required_patches for x in ["Intel Ivy Bridge", "Intel Haswell"]):
+            sys_patch_helpers.sys_patch_helpers(self.constants).remove_news_widgets()
         self.write_patchset(required_patches)
 
     def preflight_checks(self, required_patches, source_files_path):

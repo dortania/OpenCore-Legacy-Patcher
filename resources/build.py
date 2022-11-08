@@ -1035,8 +1035,6 @@ class BuildOpenCore:
             # Disabled due to macOS Monterey crashing shortly after kernel init
             # Use DebugEnhancer.kext instead
             # self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " msgbuf=1048576"
-        print("- Enable Beta Lilu support")
-        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -lilubetaall"
         if self.constants.opencore_debug is True:
             print("- Enabling DEBUG OpenCore")
             self.config["Misc"]["Debug"]["Target"] = 0x43
