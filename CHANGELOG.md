@@ -12,6 +12,8 @@
     - Alleviates Notification Centre Crashing
 - Work-around MacPro6,1 and Lilu race condition
   - Ensure Model and Board ID are set correctly before Lilu loads
+- Publish Application Version in UI header
+  - Allows for easier identification of version when reporting issues
 - Increment Binaries:
   - AirPortBrcmFixup 2.1.6 - release
   - AppleALC 1.7.6 - release

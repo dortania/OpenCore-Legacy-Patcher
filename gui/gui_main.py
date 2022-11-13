@@ -53,7 +53,7 @@ class wx_python_gui:
         self.app = wx.App()
         if frame is None:
             self.frame = wx.Frame(
-                None, title="OpenCore Legacy Patcher",
+                None, title=f"OpenCore Legacy Patcher ({self.constants.patcher_version})",
                 size=(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN),
                 style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
             )
@@ -347,7 +347,7 @@ class wx_python_gui:
         self.reset_window()
 
         # Set header text
-        self.frame.SetTitle(f"OpenCore Legacy Patcher")
+        self.frame.SetTitle(f"OpenCore Legacy Patcher ({self.constants.patcher_version})")
         # Header
         self.header = wx.StaticText(self.frame, label=f"OpenCore Legacy Patcher v{self.constants.patcher_version}")
         self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
