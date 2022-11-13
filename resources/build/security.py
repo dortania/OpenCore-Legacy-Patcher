@@ -2,6 +2,8 @@
 from resources import constants, utilities
 from resources.build import support
 
+import binascii
+
 
 class build_security:
 

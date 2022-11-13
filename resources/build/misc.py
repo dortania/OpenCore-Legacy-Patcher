@@ -40,6 +40,9 @@ class build_misc:
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
 
     def restrict_events_handling(self):
+        # RestrictEvents handling
+        # - revpatch: Process patching
+        # - revblock: Process blocking
         block_args = ""
         if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
             block_args += "gmux,"
@@ -105,8 +108,7 @@ class build_misc:
         if self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
             support.build_support(self.model, self.constants, self.config).enable_kext("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path)
 
-        # CPUFriend
-        if self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.serial_settings != "None":
+            # CPUFriendDataProvider handling
             pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
             if not pp_map_path.exists():
                 raise Exception(f"{pp_map_path} does not exist!!! Please file an issue stating file is missing for {self.model}.")
@@ -179,10 +181,12 @@ class build_misc:
 
 
     def debug_handling(self):
-        # DEBUG Settings
+        # DEBUG Settings (OpenCorePkg and Kernel Space)
+
         if self.constants.verbose_debug is True:
             print("- Enabling Verbose boot")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -v"
+
         if self.constants.kext_debug is True:
             print("- Enabling DEBUG Kexts")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -liludbgall liludump=90"
@@ -190,13 +194,16 @@ class build_misc:
             # Use DebugEnhancer.kext instead
             # self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " msgbuf=1048576"
             support.build_support(self.model, self.constants, self.config).enable_kext("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path)
+
         if self.constants.opencore_debug is True:
             print("- Enabling DEBUG OpenCore")
             self.config["Misc"]["Debug"]["Target"] = 0x43
             self.config["Misc"]["Debug"]["DisplayLevel"] = 0x80000042
 
     def general_oc_handling(self):
-        # Add OpenCanopy
+        # OpenCorePkg Settings
+
+        # OpenCanopy Settings (GUI)
         print("- Adding OpenCanopy GUI")
         shutil.rmtree(self.constants.resources_path, onerror=self.rmtree_handler)
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
@@ -205,13 +212,13 @@ class build_misc:
         support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("OpenLinuxBoot.efi", "UEFI", "Drivers")["Enabled"] = True
         support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("ResetNvramEntry.efi", "UEFI", "Drivers")["Enabled"] = True
 
-
         if self.constants.showpicker is True:
             print("- Enabling ShowPicker")
             self.config["Misc"]["Boot"]["ShowPicker"] = True
         else:
             print("- Hiding OpenCore picker")
             self.config["Misc"]["Boot"]["ShowPicker"] = False
+
         if self.constants.oc_timeout != 5:
             print(f"- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds")
             self.config["Misc"]["Boot"]["Timeout"] = self.constants.oc_timeout

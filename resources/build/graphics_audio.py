@@ -26,117 +26,14 @@ class build_graphics_audio:
         if self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None":
             support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
 
-
-        def backlight_path_detection(self):
-            if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
-                self.gfx0_path = self.computer.dgpu.pci_path
-                print(f"- Found GFX0 Device Path: {self.gfx0_path}")
-            else:
-                if not self.constants.custom_model:
-                    print("- Failed to find GFX0 Device path, falling back on known logic")
-                if self.model in ["iMac11,1", "iMac11,3"]:
-                    self.gfx0_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
-                elif self.model == "iMac10,1":
-                    self.gfx0_path = "PciRoot(0x0)/Pci(0xc,0x0)/Pci(0x0,0x0)"
-                else:
-                    self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
-
-        def nvidia_patch(self, backlight_path):
-            if not support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
-                # Ensure WEG is enabled as we need if for Backlight patching
-                support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
-            if self.model in ["iMac11,1", "iMac11,2", "iMac11,3", "iMac10,1"]:
-                print("- Adding Nvidia Brightness Control and DRM patches")
-                self.config["DeviceProperties"]["Add"][backlight_path] = {
-                    "applbkl": binascii.unhexlify("01000000"),
-                    "@0,backlight-control": binascii.unhexlify("01000000"),
-                    "@0,built-in": binascii.unhexlify("01000000"),
-                    "shikigva": 256,
-                    "agdpmod": "vit9696",
-                }
-                if self.constants.custom_model and self.model == "iMac11,2":
-                    # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
-                    # Set both properties when we cannot run hardware detection
-                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {
-                        "applbkl": binascii.unhexlify("01000000"),
-                        "@0,backlight-control": binascii.unhexlify("01000000"),
-                        "@0,built-in": binascii.unhexlify("01000000"),
-                        "shikigva": 256,
-                        "agdpmod": "vit9696",
-                    }
-            elif self.model in ["iMac12,1", "iMac12,2"]:
-                print("- Adding Nvidia Brightness Control and DRM patches")
-                self.config["DeviceProperties"]["Add"][backlight_path] = {
-                    "applbkl": binascii.unhexlify("01000000"),
-                    "@0,backlight-control": binascii.unhexlify("01000000"),
-                    "@0,built-in": binascii.unhexlify("01000000"),
-                    "shikigva": 256,
-                    "agdpmod": "vit9696",
-                }
-                print("- Disabling unsupported iGPU")
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
-                    "name": binascii.unhexlify("23646973706C6179"),
-                    "IOName": "#display",
-                    "class-code": binascii.unhexlify("FFFFFFFF"),
-                }
-            shutil.copy(self.constants.backlight_injector_path, self.constants.kexts_path)
-            support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("BacklightInjector.kext")["Enabled"] = True
-            self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
-            self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
-
-        def amd_patch(self, backlight_path):
-            print("- Adding AMD DRM patches")
-            if not support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
-                # Ensure WEG is enabled as we need if for Backlight patching
-                support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
-            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
-            if self.constants.custom_model and self.model == "iMac11,2":
-                # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
-                # Set both properties when we cannot run hardware detection
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
-            if self.model in ["iMac12,1", "iMac12,2"]:
-                print("- Disabling unsupported iGPU")
-                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
-                    "name": binascii.unhexlify("23646973706C6179"),
-                    "IOName": "#display",
-                    "class-code": binascii.unhexlify("FFFFFFFF"),
-                }
-            elif self.model == "iMac10,1":
-                if support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("AAAMouSSE.kext")["Enabled"] is False:
-                    support.build_support(self.model, self.constants, self.config).enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
-            if self.computer and self.computer.dgpu:
-                if self.computer.dgpu.arch == device_probe.AMD.Archs.Legacy_GCN_7000:
-                    print("- Adding Legacy GCN Power Gate Patches")
-                    self.config["DeviceProperties"]["Add"][backlight_path].update({
-                        "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
-                        "CAIL,CAIL_DisableGfxCGPowerGating": 1,
-                        "CAIL,CAIL_DisableUVDPowerGating": 1,
-                        "CAIL,CAIL_DisableVCEPowerGating": 1,
-                    })
-            if self.constants.imac_model == "Legacy GCN":
-                print("- Adding Legacy GCN Power Gate Patches")
-                self.config["DeviceProperties"]["Add"][backlight_path].update({
-                    "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
-                    "CAIL,CAIL_DisableGfxCGPowerGating": 1,
-                    "CAIL,CAIL_DisableUVDPowerGating": 1,
-                    "CAIL,CAIL_DisableVCEPowerGating": 1,
-                })
-                if self.model == "iMac11,2":
-                    self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"].update({
-                        "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
-                        "CAIL,CAIL_DisableGfxCGPowerGating": 1,
-                        "CAIL,CAIL_DisableUVDPowerGating": 1,
-                        "CAIL,CAIL_DisableVCEPowerGating": 1,
-                    })
-
         # Check GPU Vendor
         if self.constants.metal_build is True:
-            backlight_path_detection(self)
+            self.backlight_path_detection(self)
             print("- Adding Metal GPU patches on request")
             if self.constants.imac_vendor == "AMD":
-                amd_patch(self, self.gfx0_path)
+                self.amd_patch(self, self.gfx0_path)
             elif self.constants.imac_vendor == "Nvidia":
-                nvidia_patch(self, self.gfx0_path)
+                self.nvidia_patch(self, self.gfx0_path)
             else:
                 print("- Failed to find vendor")
         elif not self.constants.custom_model and self.model in model_array.LegacyGPU and self.computer.dgpu:
@@ -149,11 +46,11 @@ class build_graphics_audio:
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:
-                backlight_path_detection(self)
-                amd_patch(self, self.gfx0_path)
+                self.backlight_path_detection(self)
+                self.amd_patch(self, self.gfx0_path)
             elif self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
-                backlight_path_detection(self)
-                nvidia_patch(self, self.gfx0_path)
+                self.backlight_path_detection(self)
+                self.nvidia_patch(self, self.gfx0_path)
         if self.model in model_array.MacPro:
             if not self.constants.custom_model:
                 for i, device in enumerate(self.computer.gpus):
@@ -278,6 +175,108 @@ class build_graphics_audio:
                     # Ensure that agdpmod is applied to iMac14,x with iGPU only
                     self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {"agdpmod": "vit9696"}
 
+    def backlight_path_detection(self):
+        if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
+            self.gfx0_path = self.computer.dgpu.pci_path
+            print(f"- Found GFX0 Device Path: {self.gfx0_path}")
+        else:
+            if not self.constants.custom_model:
+                print("- Failed to find GFX0 Device path, falling back on known logic")
+            if self.model in ["iMac11,1", "iMac11,3"]:
+                self.gfx0_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
+            elif self.model == "iMac10,1":
+                self.gfx0_path = "PciRoot(0x0)/Pci(0xc,0x0)/Pci(0x0,0x0)"
+            else:
+                self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
+
+    def nvidia_patch(self, backlight_path):
+        if not support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
+            # Ensure WEG is enabled as we need if for Backlight patching
+            support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
+        if self.model in ["iMac11,1", "iMac11,2", "iMac11,3", "iMac10,1"]:
+            print("- Adding Nvidia Brightness Control and DRM patches")
+            self.config["DeviceProperties"]["Add"][backlight_path] = {
+                "applbkl": binascii.unhexlify("01000000"),
+                "@0,backlight-control": binascii.unhexlify("01000000"),
+                "@0,built-in": binascii.unhexlify("01000000"),
+                "shikigva": 256,
+                "agdpmod": "vit9696",
+            }
+            if self.constants.custom_model and self.model == "iMac11,2":
+                # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
+                # Set both properties when we cannot run hardware detection
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {
+                    "applbkl": binascii.unhexlify("01000000"),
+                    "@0,backlight-control": binascii.unhexlify("01000000"),
+                    "@0,built-in": binascii.unhexlify("01000000"),
+                    "shikigva": 256,
+                    "agdpmod": "vit9696",
+                }
+        elif self.model in ["iMac12,1", "iMac12,2"]:
+            print("- Adding Nvidia Brightness Control and DRM patches")
+            self.config["DeviceProperties"]["Add"][backlight_path] = {
+                "applbkl": binascii.unhexlify("01000000"),
+                "@0,backlight-control": binascii.unhexlify("01000000"),
+                "@0,built-in": binascii.unhexlify("01000000"),
+                "shikigva": 256,
+                "agdpmod": "vit9696",
+            }
+            print("- Disabling unsupported iGPU")
+            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
+                "name": binascii.unhexlify("23646973706C6179"),
+                "IOName": "#display",
+                "class-code": binascii.unhexlify("FFFFFFFF"),
+            }
+        shutil.copy(self.constants.backlight_injector_path, self.constants.kexts_path)
+        support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("BacklightInjector.kext")["Enabled"] = True
+        self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
+        self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
+
+    def amd_patch(self, backlight_path):
+        print("- Adding AMD DRM patches")
+        if not support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
+            # Ensure WEG is enabled as we need if for Backlight patching
+            support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
+        self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
+        if self.constants.custom_model and self.model == "iMac11,2":
+            # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
+            # Set both properties when we cannot run hardware detection
+            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
+        if self.model in ["iMac12,1", "iMac12,2"]:
+            print("- Disabling unsupported iGPU")
+            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
+                "name": binascii.unhexlify("23646973706C6179"),
+                "IOName": "#display",
+                "class-code": binascii.unhexlify("FFFFFFFF"),
+            }
+        elif self.model == "iMac10,1":
+            if support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("AAAMouSSE.kext")["Enabled"] is False:
+                support.build_support(self.model, self.constants, self.config).enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
+        if self.computer and self.computer.dgpu:
+            if self.computer.dgpu.arch == device_probe.AMD.Archs.Legacy_GCN_7000:
+                print("- Adding Legacy GCN Power Gate Patches")
+                self.config["DeviceProperties"]["Add"][backlight_path].update({
+                    "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
+                    "CAIL,CAIL_DisableGfxCGPowerGating": 1,
+                    "CAIL,CAIL_DisableUVDPowerGating": 1,
+                    "CAIL,CAIL_DisableVCEPowerGating": 1,
+                })
+        if self.constants.imac_model == "Legacy GCN":
+            print("- Adding Legacy GCN Power Gate Patches")
+            self.config["DeviceProperties"]["Add"][backlight_path].update({
+                "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
+                "CAIL,CAIL_DisableGfxCGPowerGating": 1,
+                "CAIL,CAIL_DisableUVDPowerGating": 1,
+                "CAIL,CAIL_DisableVCEPowerGating": 1,
+            })
+            if self.model == "iMac11,2":
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"].update({
+                    "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
+                    "CAIL,CAIL_DisableGfxCGPowerGating": 1,
+                    "CAIL,CAIL_DisableUVDPowerGating": 1,
+                    "CAIL,CAIL_DisableVCEPowerGating": 1,
+                })
+
 
     def audio_handling(self):
         if (self.model in model_array.LegacyAudio or self.model in model_array.MacPro) and self.constants.set_alc_usage is True:
@@ -331,7 +330,12 @@ class build_graphics_audio:
             shutil.copy(self.constants.demux_ssdt_path, self.constants.acpi_path)
             # Disable dGPU
             # IOACPIPlane:/_SB/PCI0@0/P0P2@10000/GFX0@0
-            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {"class-code": binascii.unhexlify("FFFFFFFF"), "device-id": binascii.unhexlify("FFFF0000"), "IOName": "Dortania Disabled Card", "name": "Dortania Disabled Card"}
+            self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = {
+                "class-code": binascii.unhexlify("FFFFFFFF"),
+                "device-id": binascii.unhexlify("FFFF0000"),
+                "IOName": "Dortania Disabled Card",
+                "name": "Dortania Disabled Card"
+            }
             self.config["DeviceProperties"]["Delete"]["PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"] = ["class-code", "device-id", "IOName", "name"]
             # Add AMDGPUWakeHandler
             support.build_support(self.model, self.constants, self.config).enable_kext("AMDGPUWakeHandler.kext", self.constants.gpu_wake_version, self.constants.gpu_wake_path)
