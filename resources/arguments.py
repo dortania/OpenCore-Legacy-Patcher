@@ -93,7 +93,7 @@ class arguments:
                 print("- Building for natively supported model")
                 settings.allow_oc_everywhere = True
                 settings.serial_settings = "None"
-            build.BuildOpenCore(settings.custom_model or settings.computer.real_model, settings).build_opencore()
+            build.build_opencore(settings.custom_model or settings.computer.real_model, settings).build_opencore()
         elif self.args.patch_sys_vol:
             print("- Set System Volume patching")
 

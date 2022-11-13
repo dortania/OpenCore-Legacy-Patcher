@@ -23,7 +23,7 @@ def rmtree_handler(func, path, exc_info):
     raise  # pylint: disable=misplaced-bare-raise
 
 
-class BuildOpenCore:
+class build_opencore:
     def __init__(self, model, versions):
         self.model = model
         self.config = None
@@ -155,12 +155,6 @@ class BuildOpenCore:
         graphics_audio.build_graphics_audio(self.model, self.constants, self.config).build()
         bluetooth.build_bluetooth(self.model, self.constants, self.config).build()
         storage.build_storage(self.model, self.constants, self.config).build()
-
-
-
-
-
-
 
         # CPUFriend
         if self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.serial_settings != "None":
