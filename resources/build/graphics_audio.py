@@ -23,6 +23,10 @@ class build_graphics_audio:
         self.firmware_handling()
 
     def graphics_handling(self):
+        if self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None":
+            support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
+
+
         def backlight_path_detection(self):
             if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
                 self.gfx0_path = self.computer.dgpu.pci_path
