@@ -1,12 +1,10 @@
 # Commands for building the EFI and SMBIOS
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-import binascii
 import copy
 import pickle
 import plistlib
 import shutil
-import subprocess
 import zipfile
 from pathlib import Path
 from datetime import date
@@ -73,9 +71,11 @@ class build_opencore:
         self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Version"] = f"{self.constants.patcher_version}"
         self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Model"] = self.model
 
+        # Set Lilu and co.
         support.build_support(self.model, self.constants, self.config).enable_kext("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path)
         self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
 
+        # Call support functions
         firmware.build_firmware(self.model, self.constants, self.config).build()
         wired.build_wired(self.model, self.constants, self.config).build()
         wireless.build_wireless(self.model, self.constants, self.config).build()

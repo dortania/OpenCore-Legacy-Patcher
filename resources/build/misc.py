@@ -1,5 +1,5 @@
 
-from resources import constants, device_probe, utilities, generate_smbios
+from resources import constants, device_probe, generate_smbios
 from resources.build import support
 from data import model_array, smbios_data, cpu_data
 

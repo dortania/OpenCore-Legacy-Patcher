@@ -1,7 +1,6 @@
 
-from resources import constants, device_probe, utilities
+from resources import constants, utilities
 from resources.build import support
-from data import model_array, smbios_data, cpu_data
 
 
 class build_security:
