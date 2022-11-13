@@ -28,12 +28,12 @@ class build_graphics_audio:
 
         # Check GPU Vendor
         if self.constants.metal_build is True:
-            self.backlight_path_detection(self)
+            self.backlight_path_detection()
             print("- Adding Metal GPU patches on request")
             if self.constants.imac_vendor == "AMD":
-                self.amd_patch(self, self.gfx0_path)
+                self.amd_patch(self.gfx0_path)
             elif self.constants.imac_vendor == "Nvidia":
-                self.nvidia_patch(self, self.gfx0_path)
+                self.nvidia_patch(self.gfx0_path)
             else:
                 print("- Failed to find vendor")
         elif not self.constants.custom_model and self.model in model_array.LegacyGPU and self.computer.dgpu:
@@ -46,11 +46,11 @@ class build_graphics_audio:
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:
-                self.backlight_path_detection(self)
-                self.amd_patch(self, self.gfx0_path)
+                self.backlight_path_detection()
+                self.amd_patch(self.gfx0_path)
             elif self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
-                self.backlight_path_detection(self)
-                self.nvidia_patch(self, self.gfx0_path)
+                self.backlight_path_detection()
+                self.nvidia_patch(self.gfx0_path)
         if self.model in model_array.MacPro:
             if not self.constants.custom_model:
                 for i, device in enumerate(self.computer.gpus):
