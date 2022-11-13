@@ -82,19 +82,13 @@ class build_opencore:
         graphics_audio.build_graphics_audio(self.model, self.constants, self.config).build()
         bluetooth.build_bluetooth(self.model, self.constants, self.config).build()
         storage.build_storage(self.model, self.constants, self.config).build()
-        misc.build_misc(self.model, self.constants, self.config).build()
         smbios.build_smbios(self.model, self.constants, self.config).build()
         security.build_security(self.model, self.constants, self.config).build()
+        misc.build_misc(self.model, self.constants, self.config).build()
 
         if self.constants.validate is False:
             print("- Adding bootmgfw.efi BlessOverride")
             self.config["Misc"]["BlessOverride"] += ["\\EFI\\Microsoft\\Boot\\bootmgfw.efi"]
-
-        if support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
-            # Ensure this is done at the end so all previous RestrictEvents patches are applied
-            # RestrictEvents and EFICheckDisabler will conflict if both are injected
-            support.build_support(self.model, self.constants, self.config).enable_kext("EFICheckDisabler.kext", "", self.constants.efi_disabler_path)
-
 
     def build_opencore(self):
         self.build_efi()

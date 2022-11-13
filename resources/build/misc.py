@@ -103,6 +103,11 @@ class build_misc:
             if support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
                 support.build_support(self.model, self.constants, self.config).enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
 
+        if support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
+            # Ensure this is done at the end so all previous RestrictEvents patches are applied
+            # RestrictEvents and EFICheckDisabler will conflict if both are injected
+            support.build_support(self.model, self.constants, self.config).enable_kext("EFICheckDisabler.kext", "", self.constants.efi_disabler_path)
+
 
     def cpu_friend_handling(self):
         if self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":

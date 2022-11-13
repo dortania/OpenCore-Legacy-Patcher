@@ -15,17 +15,24 @@ class build_firmware:
 
 
     def build(self):
+        self.cpu_compatibility_handling()
         self.power_management_handling()
         self.acpi_handling()
         self.firmware_driver_handling()
         self.firmware_compatibility_handling()
-        self.cpu_compatibility_handling()
+
 
     def power_management_handling(self):
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+        if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
+            return
+
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
             # In macOS Ventura, Apple dropped AppleIntelCPUPowerManagement* kexts as they're unused on Haswell+
             # However re-injecting the AICPUPM kexts is not enough, as Ventura changed how 'intel_cpupm_matching' is set:
-            #    https://github.com/apple-oss-distributions/xnu/blob/e7776783b89a353188416a9a346c6cdb4928faad/osfmk/i386/pal_routines.h#L153-L163
+            #    macOS 12.5: https://github.com/apple-oss-distributions/xnu/blob/xnu-8020.140.41/osfmk/i386/pal_routines.h#L153-L163
+            #    macOS 13.0: https://github.com/apple-oss-distributions/xnu/blob/xnu-8792.41.9/osfmk/i386/pal_routines.h#L153-L164
             #
             # Specifically Apple has this logic for power management:
             #  - 0: Kext Based Power Management
@@ -61,9 +68,17 @@ class build_firmware:
             # Nehalem and newer systems force firmware throttling via MSR_POWER_CTL
             support.build_support(self.model, self.constants, self.config).enable_kext("SimpleMSR.kext", self.constants.simplemsr_version, self.constants.simplemsr_path)
 
+
     def acpi_handling(self):
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+        if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
+            return
+
+        # Resolves Big Sur support for consumer Nehalem
+        # CPBG device in ACPI is a Co-Processor Bridge Device, which is not actually physically present
+        # IOPCIFamily will error when enumerating this device, thus we'll power it off via _STA (has no effect in older OSes)
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.nehalem.value and not (self.model.startswith("MacPro") or self.model.startswith("Xserve")):
-            # Applicable for consumer Nehalem
             print("- Adding SSDT-CPBG.aml")
             support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
@@ -76,11 +91,21 @@ class build_firmware:
             support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "BUF0 to BUF1")["Enabled"] = True
             shutil.copy(self.constants.windows_ssdt_path, self.constants.acpi_path)
 
+
     def cpu_compatibility_handling(self):
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+        if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
+            return
+
+        # SSE4,1 support (ie. Penryn)
+        # Required for macOS Mojave and newer
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
             support.build_support(self.model, self.constants, self.config).enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
             support.build_support(self.model, self.constants, self.config).enable_kext("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path)
 
+        # Force Rosetta Cryptex installation in macOS Ventura
+        # Restores support for CPUs lacking AVX2.0 support
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
             print("- Enabling Rosetta Cryptex support in Ventura")
             support.build_support(self.model, self.constants, self.config).enable_kext("CryptexFixup.kext", self.constants.cryptexfixup_version, self.constants.cryptexfixup_path)
@@ -113,15 +138,18 @@ class build_firmware:
             support.build_support(self.model, self.constants, self.config).enable_kext("NoAVXFSCompressionTypeZlib.kext", self.constants.apfs_zlib_version, self.constants.apfs_zlib_path)
             support.build_support(self.model, self.constants, self.config).enable_kext("NoAVXFSCompressionTypeZlib-AVXpel.kext", self.constants.apfs_zlib_v2_version, self.constants.apfs_zlib_v2_path)
 
-         # HID patches
+        # HID patches
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
             print("- Adding IOHIDFamily patch")
             support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.iokit.IOHIDFamily")["Enabled"] = True
 
 
-
     def firmware_driver_handling(self):
         # Firmware Drivers (Drivers/*.efi)
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+        if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
+            return
 
         # Exfat check
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
@@ -144,6 +172,7 @@ class build_firmware:
             shutil.copy(self.constants.usb_bus_driver_path, self.constants.drivers_path)
             support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("XhciDxe.efi", "UEFI", "Drivers")["Enabled"] = True
             support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("UsbBusDxe.efi", "UEFI", "Drivers")["Enabled"] = True
+
 
     def firmware_compatibility_handling(self):
         self.dual_dp_handling()
@@ -172,10 +201,12 @@ class build_firmware:
             print("- Enabling VMX Bit for non-macOS OSes")
             self.config["UEFI"]["Quirks"]["EnableVmx"] = True
 
-
+        # Works-around Hibernation bug where connecting all firmware drivers breaks the transition from S4
+        # Mainly applicable for MacBookPro9,1
         if self.constants.disable_connectdrivers is True:
             print("- Disabling ConnectDrivers")
             self.config["UEFI"]["ConnectDrivers"] = False
+
         if self.constants.nvram_write is False:
             print("- Disabling Hardware NVRAM Write")
             self.config["NVRAM"]["WriteFlash"] = False

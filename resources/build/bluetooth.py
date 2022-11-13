@@ -10,6 +10,7 @@ class build_bluetooth:
         self.config = config
         self.computer = self.constants.computer
 
+
     def build(self):
         # Bluetooth patches
         if not self.constants.custom_model and self.computer.bluetooth_chipset:
