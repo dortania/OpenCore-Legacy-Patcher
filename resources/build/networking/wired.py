@@ -10,12 +10,14 @@ class build_wired:
         self.config = config
         self.computer = self.constants.computer
 
+
     def build(self):
         # Check if Ethernet was detected, otherwise fall back to assumptions (mainly for 2011 MacBook Airs and TB Ethernet)
         if not self.constants.custom_model and self.constants.computer.ethernet:
             self.on_model()
         else:
             self.prebuilt_assumption()
+
 
     def on_model(self):
         # On-model hardware detection
@@ -43,6 +45,7 @@ class build_wired:
                 support.build_support(self.model, self.constants, self.config).enable_kext("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path)
             elif isinstance(controller, device_probe.Marvell) or isinstance(controller, device_probe.SysKonnect):
                 support.build_support(self.model, self.constants, self.config).enable_kext("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path)
+
 
     def prebuilt_assumption(self):
         # Stock hardware assumptions
