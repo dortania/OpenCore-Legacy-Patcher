@@ -1,5 +1,6 @@
 import sys
-from resources import defaults, build, utilities, validation, sys_patch, sys_patch_auto
+from resources import defaults, utilities, validation, sys_patch, sys_patch_auto
+from resources.build import build
 from data import model_array
 import threading
 import time

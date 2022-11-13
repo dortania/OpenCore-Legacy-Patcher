@@ -16,7 +16,8 @@ from pathlib import Path
 import binascii
 import hashlib
 
-from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
+from resources import constants, defaults, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
+from resources.build import build
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect, gui_help
 

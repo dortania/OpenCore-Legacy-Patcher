@@ -6,7 +6,8 @@ from pathlib import Path
 import time
 import threading
 
-from resources import build, cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads, commit_info
+from resources import cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads, commit_info
+from resources.build import build
 from data import model_array
 
 class OpenCoreLegacyPatcher:
