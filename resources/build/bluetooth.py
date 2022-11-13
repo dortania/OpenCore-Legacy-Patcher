@@ -25,7 +25,7 @@ class build_bluetooth:
                 if self.computer.wifi:
                     if self.computer.wifi.chipset == device_probe.Broadcom.Chipsets.AirPortBrcm4360:
                         print("- Fixing Legacy Bluetooth for macOS Monterey")
-                        self.enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
+                        support.build_support(self.model, self.constants, self.config).enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
             elif self.computer.bluetooth_chipset == "3rd Party Bluetooth 4.0 Hub":
                 print("- Detected 3rd Party Chipset")
                 support.build_support(self.model, self.constants, self.config).enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)

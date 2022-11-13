@@ -19,6 +19,7 @@ class build_graphics_audio:
 
     def build(self):
         self.graphics_handling()
+        self.audio_handling()
         self.firmware_handling()
 
     def graphics_handling(self):
