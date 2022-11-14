@@ -44,6 +44,7 @@ class build_smbios:
 
     def set_smbios(self):
         spoofed_model = self.model
+
         if self.constants.override_smbios == "Default":
             if self.constants.serial_settings != "None":
                 print("- Setting macOS Monterey Supported SMBIOS")
@@ -54,13 +55,16 @@ class build_smbios:
         else:
             spoofed_model = self.constants.override_smbios
         print(f"- Using Model ID: {spoofed_model}")
-        try:
-            spoofed_board = smbios_data.smbios_dictionary[spoofed_model]["Board ID"]
-            print(f"- Using Board ID: {spoofed_board}")
-        except KeyError:
-            spoofed_board = ""
+
+        spoofed_board = ""
+        if spoofed_model in smbios_data.smbios_dictionary:
+            if "Board ID" in smbios_data.smbios_dictionary[spoofed_model]:
+                spoofed_board = smbios_data.smbios_dictionary[spoofed_model]["Board ID"]
+        print(f"- Using Board ID: {spoofed_board}")
+
         self.spoofed_model = spoofed_model
         self.spoofed_board = spoofed_board
+
         if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True:
             self.config["#Revision"]["Spoofed-Model"] = f"{self.spoofed_model} - {self.constants.serial_settings}"
 

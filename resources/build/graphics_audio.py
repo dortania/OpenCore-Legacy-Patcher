@@ -219,10 +219,9 @@ class build_graphics_audio:
                 # Xserves and MacPro4,1 are exceptions
                 # iMac7,1 and iMac8,1 require AppleHDA/IOAudioFamily downgrade
                 if not (self.model.startswith("Xserve") or self.model in ["MacPro4,1", "iMac7,1", "iMac8,1"]):
-                    try:
-                        smbios_data.smbios_dictionary[self.model]["nForce Chipset"]
+                    if "nForce Chipset" in smbios_data.smbios_dictionary[self.model]:
                         hdef_path = "PciRoot(0x0)/Pci(0x8,0x0)"
-                    except KeyError:
+                    else:
                         hdef_path = "PciRoot(0x0)/Pci(0x1b,0x0)"
                     # In AppleALC, MacPro3,1's original layout is already in use, forcing layout 13 instead
                     if self.model == "MacPro3,1":

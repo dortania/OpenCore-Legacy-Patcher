@@ -47,7 +47,6 @@ class build_support:
             # Check failed
             return
 
-        # Is the kext already enabled?
         if kext["Enabled"] is True:
             return
 
