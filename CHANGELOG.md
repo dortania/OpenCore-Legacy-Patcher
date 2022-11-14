@@ -14,6 +14,8 @@
   - Ensure Model and Board ID are set correctly before Lilu loads
 - Publish Application Version in UI header
   - Allows for easier identification of version when reporting issues
+- Drop usage of `HW_BID` rerouting in boot.efi
+  - Patch out PlatformSupport.plist instead, allows for less maintenance overall
 - Increment Binaries:
   - AirPortBrcmFixup 2.1.6 - release
   - AppleALC 1.7.6 - release

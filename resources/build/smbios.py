@@ -17,27 +17,17 @@ class build_smbios:
         if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True:
             if self.constants.serial_settings == "None":
                 # Credit to Parrotgeek1 for boot.efi and hv_vmm_present patch sets
-                # print("- Enabling Board ID exemption patch")
-                # support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Skip Board ID check")["Enabled"] = True
+                print("- Enabling Board ID exemption patch")
+                support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Skip Board ID check")["Enabled"] = True
 
                 print("- Enabling VMM exemption patch")
                 support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
                 support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Legacy")["Enabled"] = True
                 support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Ventura")["Enabled"] = True
-
-                # Patch HW_BID to OC_BID
-                # Set OC_BID to iMac18,1 Board ID (Mac-F60DEB81FF30ACF6)
-                # Goal is to only allow OS booting through OCLP, otherwise failing
-                print("- Enabling HW_BID reroute")
-                support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Reroute HW_BID to OC_BID")["Enabled"] = True
-                self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["OC_BID"] = "Mac-BE088AF8C5EB4FA2"
-                self.config["NVRAM"]["Delete"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"] += ["OC_BID"]
             else:
                 print("- Enabling SMC exemption patch")
                 support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
                 support.build_support(self.model, self.constants, self.config).enable_kext("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path)
-
-
 
         if self.constants.serial_settings in ["Moderate", "Advanced"]:
             print("- Enabling USB Rename Patches")
@@ -48,6 +38,7 @@ class build_smbios:
         if self.model == self.constants.override_smbios:
             print("- Adding -no_compat_check")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -no_compat_check"
+
 
     def set_smbios(self):
         spoofed_model = self.model
