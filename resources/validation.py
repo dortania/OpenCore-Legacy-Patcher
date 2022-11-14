@@ -1,5 +1,6 @@
 import subprocess
-from resources import build, sys_patch_helpers
+from resources.sys_patch import sys_patch_helpers
+from resources.build import build
 from data import example_data, model_array, sys_patch_dict, os_data
 from pathlib import Path
 
@@ -42,7 +43,7 @@ def validate(settings):
         for model in model_array.SupportedSMBIOS:
             print(f"Validating predefined model: {model}")
             settings.custom_model = model
-            build.BuildOpenCore(settings.custom_model, settings).build_opencore()
+            build.build_opencore(settings.custom_model, settings).build_opencore()
             result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 print("Error on build!")
@@ -56,7 +57,7 @@ def validate(settings):
             settings.computer = model
             settings.custom_model = ""
             print(f"Validating dumped model: {settings.computer.real_model}")
-            build.BuildOpenCore(settings.computer.real_model, settings).build_opencore()
+            build.build_opencore(settings.computer.real_model, settings).build_opencore()
             result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 print("Error on build!")

@@ -1,5 +1,7 @@
 import sys
-from resources import defaults, build, utilities, validation, sys_patch, sys_patch_auto
+from resources import defaults, utilities, validation
+from resources.sys_patch import sys_patch, sys_patch_auto
+from resources.build import build
 from data import model_array
 import threading
 import time
@@ -92,7 +94,7 @@ class arguments:
                 print("- Building for natively supported model")
                 settings.allow_oc_everywhere = True
                 settings.serial_settings = "None"
-            build.BuildOpenCore(settings.custom_model or settings.computer.real_model, settings).build_opencore()
+            build.build_opencore(settings.custom_model or settings.computer.real_model, settings).build_opencore()
         elif self.args.patch_sys_vol:
             print("- Set System Volume patching")
 

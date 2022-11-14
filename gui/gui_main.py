@@ -16,7 +16,9 @@ from pathlib import Path
 import binascii
 import hashlib
 
-from resources import constants, defaults, build, install, installer, sys_patch_download, utilities, sys_patch_detect, sys_patch, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
+from resources import constants, defaults, install, installer, utilities, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
+from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch
+from resources.build import build
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect, gui_help
 
@@ -627,7 +629,7 @@ class wx_python_gui:
         while self.is_unpack_finished() is False:
             time.sleep(0.1)
 
-        build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
+        build.build_opencore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
         # Once finished, change build_opencore button to "Install OpenCore"
         self.build_opencore.SetLabel("🔩 Install OpenCore")
         self.build_opencore.Bind(wx.EVT_BUTTON, self.install_menu)

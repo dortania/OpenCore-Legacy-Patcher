@@ -2,7 +2,8 @@
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 import sys
 
-from resources import constants, install, utilities, defaults, sys_patch, installer, tui_helpers, global_settings
+from resources import constants, install, utilities, defaults, installer, tui_helpers, global_settings
+from resources.sys_patch import sys_patch
 from data import cpu_data, smbios_data, model_array, os_data, mirror_data
 
 

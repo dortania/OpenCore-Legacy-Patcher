@@ -38,7 +38,9 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 
-from resources import constants, utilities, sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers, kdk_handler
+from resources import constants, utilities, kdk_handler
+from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers
+
 from data import os_data
 
 
