@@ -277,6 +277,12 @@ class build_graphics_audio:
             self.config["UEFI"]["Quirks"]["ForgeUefiSupport"] = True
             self.config["UEFI"]["Quirks"]["ReloadOptionRoms"] = True
 
+        # AMD GOP VBIOS injection for AMD GCN 1-4 GPUs
+        if self.constants.gop_injection is True:
+            print("- Adding AMDGOP.efi")
+            shutil.copy(self.constants.amd_gop_driver_path, self.constants.drivers_path)
+            support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("AMDGOP.efi", "UEFI", "Drivers")["Enabled"] = True
+
     def spoof_handling(self):
         if self.constants.serial_settings == "None":
             return

@@ -2505,6 +2505,18 @@
 				<key>LoadEarly</key>
 				<false/>
 			</dict>
+			<dict>
+				<key>Comment</key>
+				<string></string>
+				<key>Path</key>
+				<string>AMDGOP.efi</string>
+				<key>Enabled</key>
+				<false/>
+				<key>Arguments</key>
+				<string></string>
+				<key>LoadEarly</key>
+				<false/>
+			</dict>
 		</array>
 		<key>Input</key>
 		<dict>

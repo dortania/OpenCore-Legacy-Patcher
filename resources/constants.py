@@ -177,6 +177,7 @@ class Constants:
         self.allow_ts2_accel = True  #       Set TeraScale 2 Acceleration support
         self.force_nv_web = False  #         Force Nvidia Web Drivers on Tesla and Kepler
         self.force_output_support = False  # Force Output support for Mac Pros with PC VBIOS
+        self.gop_injection = False  #        Set GOP Injection support
 
         ## Miscellaneous
         self.disallow_cpufriend = False  #     Disable CPUFriend
@@ -247,6 +248,10 @@ class Constants:
     @property
     def exfat_legacy_driver_path(self):
         return self.payload_path / Path("Drivers/ExFatDxeLegacy.efi")
+
+    @property
+    def amd_gop_driver_path(self):
+        return self.payload_path / Path("Drivers/AMDGOP.efi")
 
     @property
     def xhci_driver_path(self):

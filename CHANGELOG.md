@@ -16,6 +16,8 @@
   - Allows for easier identification of version when reporting issues
 - Drop usage of `HW_BID` rerouting in boot.efi
   - Patch out PlatformSupport.plist instead, allows for less maintenance overall
+- Add support for AMD GOP injection (AMDGOP.efi)
+  - For MXM iMacs and Mac Pros with GPU VBIOS lacking GOP support (ie. no UEFI output even after OC loads)
 - Increment Binaries:
   - AirPortBrcmFixup 2.1.6 - release
   - AppleALC 1.7.6 - release
