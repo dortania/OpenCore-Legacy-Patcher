@@ -1,5 +1,5 @@
 import subprocess
-from resources import sys_patch_helpers
+from resources.sys_patch import sys_patch_helpers
 from resources.build import build
 from data import example_data, model_array, sys_patch_dict, os_data
 from pathlib import Path

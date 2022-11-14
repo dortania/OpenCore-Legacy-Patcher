@@ -3,8 +3,8 @@
 # Used when supplying data to sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-import subprocess
-from resources import constants, device_probe, utilities, sys_patch_helpers, amfi_detect
+from resources import constants, device_probe, utilities, amfi_detect
+from resources.sys_patch import sys_patch_helpers
 from data import model_array, os_data, sip_data, sys_patch_dict
 
 class detect_root_patch:

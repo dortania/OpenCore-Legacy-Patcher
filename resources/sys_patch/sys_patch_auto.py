@@ -12,7 +12,8 @@ from pathlib import Path
 import plistlib
 import subprocess
 import webbrowser
-from resources import sys_patch_detect, utilities, sys_patch_detect, updates, global_settings
+from resources import utilities, updates, global_settings
+from resources.sys_patch import sys_patch_detect
 from gui import gui_main
 
 class AutomaticSysPatch:
