@@ -140,7 +140,6 @@ class build_support:
                     if item["Enabled"] is False:
                         self.config[entry][sub_entry].remove(item)
 
-        plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
         for kext in self.constants.kexts_path.rglob("*.zip"):
             with zipfile.ZipFile(kext) as zip_file:
                 zip_file.extractall(self.constants.kexts_path)

@@ -62,116 +62,16 @@ class build_smbios:
         if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True:
             self.config["#Revision"]["Spoofed-Model"] = f"{self.spoofed_model} - {self.constants.serial_settings}"
 
-        # Setup menu
-        def minimal_serial_patch(self):
-            # Generate Firmware Features
-            fw_feature = generate_smbios.generate_fw_features(self.model, self.constants.custom_model)
-            # fw_feature = self.patch_firmware_feature()
-            fw_feature = hex(fw_feature).lstrip("0x").rstrip("L").strip()
-            print(f"- Setting Firmware Feature: {fw_feature}")
-            fw_feature = utilities.string_to_hex(fw_feature)
-
-            # FirmwareFeatures
-            self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeatures"] = fw_feature
-            self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeaturesMask"] = fw_feature
-            self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeatures"] = fw_feature
-            self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeaturesMask"] = fw_feature
-
-            # Board ID
-            self.config["PlatformInfo"]["DataHub"]["BoardProduct"] = self.spoofed_board
-            self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
-            self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
-
-            # Model (ensures tables are not mismatched, even if we're not spoofing)
-            self.config["PlatformInfo"]["DataHub"]["SystemProductName"] = self.model
-            self.config["PlatformInfo"]["SMBIOS"]["SystemProductName"] = self.model
-            self.config["PlatformInfo"]["SMBIOS"]["BoardVersion"] = self.model
-
-            # ProcessorType (when RestrictEvent's CPU naming is used)
-            if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
-                self.config["PlatformInfo"]["SMBIOS"]["ProcessorType"] = 1537
-
-            # Avoid incorrect Firmware Updates
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
-            self.config["PlatformInfo"]["SMBIOS"]["BIOSVersion"] = "9999.999.999.999.999"
-
-            # Update tables
-            self.config["PlatformInfo"]["UpdateNVRAM"] = True
-            self.config["PlatformInfo"]["UpdateSMBIOS"] = True
-            self.config["PlatformInfo"]["UpdateDataHub"] = True
-
-            if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
-                print("- Adding custom serial numbers")
-                sn = self.constants.custom_serial_number
-                mlb = self.constants.custom_board_serial_number
-
-                # Serial Number
-                self.config["PlatformInfo"]["SMBIOS"]["ChassisSerialNumber"] = sn
-                self.config["PlatformInfo"]["SMBIOS"]["SystemSerialNumber"] = sn
-                self.config["PlatformInfo"]["DataHub"]["SystemSerialNumber"] = sn
-                self.config["PlatformInfo"]["PlatformNVRAM"]["SystemSerialNumber"] = sn
-                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = sn
-
-                # Board Serial Number
-                self.config["PlatformInfo"]["SMBIOS"]["BoardSerialNumber"] = mlb
-                self.config["PlatformInfo"]["PlatformNVRAM"]["BoardSerialNumber"] = mlb
-                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = mlb
-
-
-
-        def moderate_serial_patch(self):
-            if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
-                self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
-            if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
-                print("- Adding custom serial numbers")
-                self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = self.constants.custom_serial_number
-                self.config["PlatformInfo"]["Generic"]["MLB"] = self.constants.custom_board_serial_number
-                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = self.constants.custom_serial_number
-                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = self.constants.custom_board_serial_number
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
-            self.config["PlatformInfo"]["Automatic"] = True
-            self.config["PlatformInfo"]["UpdateDataHub"] = True
-            self.config["PlatformInfo"]["UpdateNVRAM"] = True
-            self.config["PlatformInfo"]["UpdateSMBIOS"] = True
-            self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
-            self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
-
-        def advanced_serial_patch(self):
-            if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
-                self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
-            if self.constants.custom_serial_number == "" or self.constants.custom_board_serial_number == "":
-                macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                macserial_output = macserial_output.stdout.decode().strip().split(" | ")
-                sn = macserial_output[0]
-                mlb = macserial_output[1]
-            else:
-                sn = self.constants.custom_serial_number
-                mlb = self.constants.custom_board_serial_number
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
-            self.config["PlatformInfo"]["Automatic"] = True
-            self.config["PlatformInfo"]["UpdateDataHub"] = True
-            self.config["PlatformInfo"]["UpdateNVRAM"] = True
-            self.config["PlatformInfo"]["UpdateSMBIOS"] = True
-            self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
-            self.config["PlatformInfo"]["Generic"]["ROM"] = binascii.unhexlify("0016CB445566")
-            self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
-            self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = sn
-            self.config["PlatformInfo"]["Generic"]["MLB"] = mlb
-            self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
-            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = sn
-            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = mlb
-
-
         if self.constants.serial_settings == "Moderate":
             print("- Using Moderate SMBIOS patching")
-            moderate_serial_patch(self)
+            self.moderate_serial_patch()
         elif self.constants.serial_settings == "Advanced":
             print("- Using Advanced SMBIOS patching")
-            advanced_serial_patch(self)
+            self.advanced_serial_patch()
         elif self.constants.serial_settings == "Minimal":
             print("- Using Minimal SMBIOS patching")
             self.spoofed_model = self.model
-            minimal_serial_patch(self)
+            self.minimal_serial_patch()
         else:
             # Update DataHub to resolve Lilu Race Condition
             # macOS Monterey will sometimes not present the boardIdentifier in the DeviceTree on UEFI 1.2 or older Mac,
@@ -270,3 +170,102 @@ class build_smbios:
                     if not entry.startswith(self.spoofed_board):
                         agdp_config["IOKitPersonalities"]["AppleGraphicsDevicePolicy"]["ConfigMap"].pop(entry)
                 plistlib.dump(agdp_config, Path(new_agdp_ls).open("wb"), sort_keys=True)
+
+
+    def minimal_serial_patch(self):
+        # Generate Firmware Features
+        fw_feature = generate_smbios.generate_fw_features(self.model, self.constants.custom_model)
+        # fw_feature = self.patch_firmware_feature()
+        fw_feature = hex(fw_feature).lstrip("0x").rstrip("L").strip()
+        print(f"- Setting Firmware Feature: {fw_feature}")
+        fw_feature = utilities.string_to_hex(fw_feature)
+
+        # FirmwareFeatures
+        self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeatures"] = fw_feature
+        self.config["PlatformInfo"]["PlatformNVRAM"]["FirmwareFeaturesMask"] = fw_feature
+        self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeatures"] = fw_feature
+        self.config["PlatformInfo"]["SMBIOS"]["FirmwareFeaturesMask"] = fw_feature
+
+        # Board ID
+        self.config["PlatformInfo"]["DataHub"]["BoardProduct"] = self.spoofed_board
+        self.config["PlatformInfo"]["PlatformNVRAM"]["BID"] = self.spoofed_board
+        self.config["PlatformInfo"]["SMBIOS"]["BoardProduct"] = self.spoofed_board
+
+        # Model (ensures tables are not mismatched, even if we're not spoofing)
+        self.config["PlatformInfo"]["DataHub"]["SystemProductName"] = self.model
+        self.config["PlatformInfo"]["SMBIOS"]["SystemProductName"] = self.model
+        self.config["PlatformInfo"]["SMBIOS"]["BoardVersion"] = self.model
+
+        # ProcessorType (when RestrictEvent's CPU naming is used)
+        if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
+            self.config["PlatformInfo"]["SMBIOS"]["ProcessorType"] = 1537
+
+        # Avoid incorrect Firmware Updates
+        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
+        self.config["PlatformInfo"]["SMBIOS"]["BIOSVersion"] = "9999.999.999.999.999"
+
+        # Update tables
+        self.config["PlatformInfo"]["UpdateNVRAM"] = True
+        self.config["PlatformInfo"]["UpdateSMBIOS"] = True
+        self.config["PlatformInfo"]["UpdateDataHub"] = True
+
+        if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
+            print("- Adding custom serial numbers")
+            sn = self.constants.custom_serial_number
+            mlb = self.constants.custom_board_serial_number
+
+            # Serial Number
+            self.config["PlatformInfo"]["SMBIOS"]["ChassisSerialNumber"] = sn
+            self.config["PlatformInfo"]["SMBIOS"]["SystemSerialNumber"] = sn
+            self.config["PlatformInfo"]["DataHub"]["SystemSerialNumber"] = sn
+            self.config["PlatformInfo"]["PlatformNVRAM"]["SystemSerialNumber"] = sn
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = sn
+
+            # Board Serial Number
+            self.config["PlatformInfo"]["SMBIOS"]["BoardSerialNumber"] = mlb
+            self.config["PlatformInfo"]["PlatformNVRAM"]["BoardSerialNumber"] = mlb
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = mlb
+
+
+    def moderate_serial_patch(self):
+        if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
+            self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
+        if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
+            print("- Adding custom serial numbers")
+            self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = self.constants.custom_serial_number
+            self.config["PlatformInfo"]["Generic"]["MLB"] = self.constants.custom_board_serial_number
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = self.constants.custom_serial_number
+            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = self.constants.custom_board_serial_number
+        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
+        self.config["PlatformInfo"]["Automatic"] = True
+        self.config["PlatformInfo"]["UpdateDataHub"] = True
+        self.config["PlatformInfo"]["UpdateNVRAM"] = True
+        self.config["PlatformInfo"]["UpdateSMBIOS"] = True
+        self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
+        self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
+
+
+    def advanced_serial_patch(self):
+        if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
+            self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
+        if self.constants.custom_serial_number == "" or self.constants.custom_board_serial_number == "":
+            macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            macserial_output = macserial_output.stdout.decode().strip().split(" | ")
+            sn = macserial_output[0]
+            mlb = macserial_output[1]
+        else:
+            sn = self.constants.custom_serial_number
+            mlb = self.constants.custom_board_serial_number
+        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
+        self.config["PlatformInfo"]["Automatic"] = True
+        self.config["PlatformInfo"]["UpdateDataHub"] = True
+        self.config["PlatformInfo"]["UpdateNVRAM"] = True
+        self.config["PlatformInfo"]["UpdateSMBIOS"] = True
+        self.config["UEFI"]["ProtocolOverrides"]["DataHub"] = True
+        self.config["PlatformInfo"]["Generic"]["ROM"] = binascii.unhexlify("0016CB445566")
+        self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
+        self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = sn
+        self.config["PlatformInfo"]["Generic"]["MLB"] = mlb
+        self.config["PlatformInfo"]["Generic"]["SystemUUID"] = str(uuid.uuid4()).upper()
+        self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-SN"] = sn
+        self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = mlb
