@@ -1,3 +1,5 @@
+# Class for handling SMBIOS Patches, invocation from build.py
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 from resources import constants, utilities, generate_smbios
 from resources.build import support

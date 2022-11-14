@@ -1,4 +1,5 @@
-# Support files for build
+# Utility class for build functions
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 from resources import constants, utilities
 

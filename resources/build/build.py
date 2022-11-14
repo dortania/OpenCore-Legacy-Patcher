@@ -1,4 +1,4 @@
-# Commands for building the EFI and SMBIOS
+# Class for generating OpenCore Configurations tailored for Macs
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 import copy

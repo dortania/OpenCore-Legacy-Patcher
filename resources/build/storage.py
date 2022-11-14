@@ -1,3 +1,5 @@
+# Class for handling Storage Controller Patches, invocation from build.py
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 from resources import constants, device_probe, utilities
 from resources.build import support

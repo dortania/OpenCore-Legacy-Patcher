@@ -1,3 +1,5 @@
+# Class for handling macOS Security Patches, invocation from build.py
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
 from resources import constants, utilities
 from resources.build import support
@@ -15,11 +17,6 @@ class build_security:
 
 
     def build(self):
-        if self.constants.vault is True:
-            print("- Setting Vault configuration")
-            self.config["Misc"]["Security"]["Vault"] = "Secure"
-            support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
-
         if self.constants.sip_status is False or self.constants.custom_sip_value:
             # Work-around 12.3 bug where Electron apps no longer launch with SIP lowered
             # Unknown whether this is intended behavior or not, revisit with 12.4

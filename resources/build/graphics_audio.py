@@ -1,3 +1,6 @@
+# Class for handling Graphics and Audio Patches, invocation from build.py
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+
 from resources import constants, device_probe, utilities
 from resources.build import support
 from data import smbios_data, model_array, os_data

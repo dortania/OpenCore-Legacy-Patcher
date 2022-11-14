@@ -1,3 +1,6 @@
+# Class for handling CPU and Firmware Patches, invocation from build.py
+# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+
 from resources import constants, generate_smbios
 from resources.build import support
 from data import smbios_data, cpu_data
