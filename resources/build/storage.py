@@ -26,10 +26,13 @@ class build_storage:
             print("- Enabling AHCI SSD patch")
             support.build_support(self.model, self.constants, self.config).enable_kext("MonteAHCIPort.kext", self.constants.monterey_ahci_version, self.constants.monterey_ahci_path)
 
-
         # ThirdPartyDrives Check
         if self.constants.allow_3rd_party_drives is True:
             for drive in ["SATA 2.5", "SATA 3.5", "mSATA"]:
+                if not self.model in smbios_data.smbios_dictionary:
+                    break
+                if not "Stock Storage" in smbios_data.smbios_dictionary[self.model]:
+                    break
                 if drive in smbios_data.smbios_dictionary[self.model]["Stock Storage"]:
                     if not self.constants.custom_model:
                         if self.computer.third_party_sata_ssd is True:
@@ -41,9 +44,17 @@ class build_storage:
                         self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
                         break
 
+
     def pata_handling(self):
-        if "PATA" in smbios_data.smbios_dictionary[self.model]["Stock Storage"]:
-            support.build_support(self.model, self.constants, self.config).enable_kext("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path)
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+        if not "Stock Storage" in smbios_data.smbios_dictionary[self.model]:
+            return
+        if not "PATA" in smbios_data.smbios_dictionary[self.model]["Stock Storage"]:
+            return
+
+        support.build_support(self.model, self.constants, self.config).enable_kext("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path)
+
 
     def pcie_handling(self):
         if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in model_array.MacPro):
@@ -55,11 +66,7 @@ class build_storage:
                     self.config["DeviceProperties"]["Add"][controller.pci_path] = {"built-in": 1}
                 else:
                     print(f"- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie")
-                    if support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("Innie.kext")["Enabled"] is False:
-                        support.build_support(self.model, self.constants, self.config).enable_kext("Innie.kext", self.constants.innie_version, self.constants.innie_path)
-            if not self.computer.storage:
-                print("- No PCIe Storage Controllers found to fix")
-
+                    support.build_support(self.model, self.constants, self.config).enable_kext("Innie.kext", self.constants.innie_version, self.constants.innie_path)
 
         if not self.constants.custom_model and self.constants.allow_nvme_fixing is True:
             nvme_devices = [i for i in self.computer.storage if isinstance(i, device_probe.NVMeController)]
@@ -82,11 +89,7 @@ class build_storage:
                 if (controller.vendor_id != 0x144D and controller.device_id != 0xA804):
                     # Avoid injecting NVMeFix when a native Apple NVMe drive is present
                     # https://github.com/acidanthera/NVMeFix/blob/1.0.9/NVMeFix/NVMeFix.cpp#L220-L225
-                    if support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("NVMeFix.kext")["Enabled"] is False:
-                        support.build_support(self.model, self.constants, self.config).enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)
-
-            if not nvme_devices:
-                print("- No 3rd Party NVMe drives found")
+                    support.build_support(self.model, self.constants, self.config).enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)
 
         # Apple RAID Card check
         if not self.constants.custom_model:
@@ -103,6 +106,11 @@ class build_storage:
 
 
     def misc_handling(self):
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+        if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
+            return
+
         # With macOS Monterey, Apple's SDXC driver requires the system to support VT-D
         # However pre-Ivy Bridge don't support this feature
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
