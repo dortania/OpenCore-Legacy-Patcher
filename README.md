@@ -44,8 +44,10 @@ To start using the project, please see our in-depth guide:
 
 ## Support
 
-To get aid with the patcher, we recommend joining the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN). We're actively there and is the quickest way to receive help.
+This project is offered on an AS-IS basis, we do not guarantee support for any issues that may arise. However, there is a community server with other passionate users and developers that can aid you:
 
+* [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN)
+  * Keep in mind that the Discord is maintained by the community, so we ask everyone to be respectful.
   * Please review our docs on [how to debug with OpenCore](https://dortania.github.io/OpenCore-Legacy-Patcher/DEBUG.html) to gather important information to help others with troubleshooting.
 
 ## Running from source
