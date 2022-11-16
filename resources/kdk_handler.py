@@ -180,18 +180,29 @@ class kernel_debug_kit_handler:
                 return False, msg, ""
             elif result == 2:
                 msg = "Could not contact Apple download servers"
-                print(f"- {msg}")
-                return False, msg, ""
+                download_link = self.kdk_backup_site(closest_build)
+                if download_link is None:
+                    msg += " and could not find a backup copy online"
+                    print(f"- {msg}")
+                    return False, msg, ""
             else:
                 msg = "Unknown error"
                 print(f"- {msg}")
                 return False, msg, ""
         elif result == 2:
             msg = "Could not contact Apple download servers"
-            print(f"- {msg}")
-            return False, msg, ""
+            download_link = self.kdk_backup_site(build)
+            if download_link is None:
+                msg += " and could not find a backup copy online"
+                print(f"- {msg}")
+                return False, msg, ""
 
-        if utilities.download_apple_developer_portal(download_link, self.constants.kdk_download_path):
+        if "github" in download_link:
+            result = utilities.download_file(download_link, self.constants.kdk_download_path)
+        else:
+            result = utilities.download_apple_developer_portal(download_link, self.constants.kdk_download_path)
+
+        if result:
             result = subprocess.run(["hdiutil", "verify", self.constants.kdk_download_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if result.returncode != 0:
                 print(f"Error: Kernel Debug Kit checksum verification failed!")
@@ -248,3 +259,25 @@ class kernel_debug_kit_handler:
                         continue
                     print(f"  - Removing {kdk_folder.name}")
                     utilities.elevated(["rm", "-rf", kdk_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+
+    def kdk_backup_site(self, build):
+        KDK_MIRROR_REPOSITORY = "https://api.github.com/repos/khronokernel/KDK-Mirror/releases"
+
+        # Check if tag exists
+        catalog = requests.get(KDK_MIRROR_REPOSITORY)
+        if catalog.status_code != 200:
+            print(f"- Could not contact KDK mirror repository")
+            return None
+
+        catalog = catalog.json()
+
+        for release in catalog:
+            if release["tag_name"] == build:
+                print(f"- Found KDK mirror for build: {build}")
+                for asset in release["assets"]:
+                    if asset["name"].endswith(".dmg"):
+                        return asset["browser_download_url"]
+
+        print(f"- Could not find KDK mirror for build {build}")
+        return None

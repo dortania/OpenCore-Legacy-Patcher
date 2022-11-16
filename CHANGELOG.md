@@ -10,6 +10,8 @@
     - Alleviates kernel panic when on prolonged idle
   - Automatically remove unsupported News Widgets on Ivy Bridge and Haswell iGPUs
     - Alleviates Notification Centre Crashing
+  - Implement downloading from Kernel Debug Kit Backup Repository
+    - Alleviates issues with Apple blocking KDK downloads from OCLP (Ref: [Issue #1016](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1016))
 - Work-around MacPro6,1 and Lilu race condition
   - Ensure Model and Board ID are set correctly before Lilu loads
 - Publish Application Version in UI header
