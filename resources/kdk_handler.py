@@ -262,7 +262,7 @@ class kernel_debug_kit_handler:
 
 
     def kdk_backup_site(self, build):
-        KDK_MIRROR_REPOSITORY = "https://api.github.com/repos/khronokernel/KDK-Mirror/releases"
+        KDK_MIRROR_REPOSITORY = "https://api.github.com/repos/dortania/KdkSupportPkg/releases"
 
         # Check if tag exists
         catalog = requests.get(KDK_MIRROR_REPOSITORY)
