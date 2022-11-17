@@ -26,7 +26,7 @@
   - CryptexFixup 1.0.1 - release
   - DebugEnhancer 1.0.7 - release
   - FeatureUnlock 1.1.0 - release
-  - OpenCorePkg 0.8.6 - release
+  - OpenCorePkg 0.8.7 - rolling (5061093)
   - RestrictEvents 1.0.9 - release
   - WhateverGreen 1.6.1 - release
 

@@ -1994,7 +1994,7 @@
 			<key>PollAppleHotKeys</key>
 			<true/>
 			<key>ShowPicker</key>
-			<true/>
+			<string>SkipOnHibernateWake</string>
 			<key>TakeoffDelay</key>
 			<integer>0</integer>
 			<key>Timeout</key>

@@ -26,8 +26,8 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_commit = "68a4ed5 - 11-07-2022"
-        self.opencore_version = "0.8.6"
+        self.opencore_commit = "5061093 - 11-16-2022"
+        self.opencore_version = "0.8.7"
 
         # Kext Versioning
         ## Acidanthera
