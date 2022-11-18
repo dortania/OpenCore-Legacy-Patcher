@@ -1,7 +1,7 @@
 # Class for handling Misc Patches, invocation from build.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from resources import constants, device_probe, generate_smbios
+from resources import constants, device_probe, generate_smbios, utilities
 from resources.build import support
 from data import model_array, smbios_data, cpu_data
 
@@ -216,10 +216,7 @@ class build_misc:
         support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("OpenLinuxBoot.efi", "UEFI", "Drivers")["Enabled"] = True
         support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("ResetNvramEntry.efi", "UEFI", "Drivers")["Enabled"] = True
 
-        if self.constants.showpicker is True:
-            print("- Enabling ShowPicker")
-            self.config["Misc"]["Boot"]["ShowPicker"] = "SkipOnHibernateWake"
-        else:
+        if self.constants.showpicker is False:
             print("- Hiding OpenCore picker")
             self.config["Misc"]["Boot"]["ShowPicker"] = "Hide"
 
@@ -227,7 +224,7 @@ class build_misc:
             print(f"- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds")
             self.config["Misc"]["Boot"]["Timeout"] = self.constants.oc_timeout
 
-        if self.constants.vault is True:
+        if self.constants.vault is True and utilities.check_command_line_tools() is True:
             print("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
             support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
