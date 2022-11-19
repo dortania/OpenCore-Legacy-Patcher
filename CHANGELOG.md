@@ -20,13 +20,14 @@
   - Patch out PlatformSupport.plist instead, allows for less maintenance overall
 - Add support for AMD GOP injection (AMDGOP.efi)
   - For MXM iMacs and Mac Pros with GPU VBIOS lacking GOP support (ie. no UEFI output even after OC loads)
+- Hide OpenCore Boot Picker when waking from hibernation
 - Increment Binaries:
   - AirPortBrcmFixup 2.1.6 - release
   - AppleALC 1.7.6 - release
   - CryptexFixup 1.0.1 - release
   - DebugEnhancer 1.0.7 - release
   - FeatureUnlock 1.1.0 - release
-  - OpenCorePkg 0.8.7 - rolling (5061093)
+  - OpenCorePkg 0.8.7 - rolling (fcb4e33)
   - RestrictEvents 1.0.9 - release
   - WhateverGreen 1.6.1 - release
 
