@@ -27,17 +27,22 @@ class check_binary_updates:
             return False
         return False
 
-    def check_if_build_newer(self):
-        # Pad version numbers to match length (ie. 0.1.0 vs 0.1.0.1)
-        while len(self.remote_version_array) > len(self.binary_version_array):
-            self.binary_version_array.append(0)
-        while len(self.remote_version_array) < len(self.binary_version_array):
-            self.remote_version_array.append(0)
+    def check_if_build_newer(self, remote_version=None, local_version=None):
+        if remote_version is None:
+            remote_version = self.remote_version_array
+        if local_version is None:
+            local_version = self.binary_version_array
 
-        for i in range(0, len(self.remote_version_array)):
-            if int(self.remote_version_array[i]) < int(self.binary_version_array[i]):
+        # Pad version numbers to match length (ie. 0.1.0 vs 0.1.0.1)
+        while len(remote_version) > len(local_version):
+            local_version.append(0)
+        while len(remote_version) < len(local_version):
+            remote_version.append(0)
+
+        for i in range(0, len(remote_version)):
+            if int(remote_version[i]) < int(local_version[i]):
                 break
-            elif int(self.remote_version_array[i]) > int(self.binary_version_array[i]):
+            elif int(remote_version[i]) > int(local_version[i]):
                 return True
 
         return False

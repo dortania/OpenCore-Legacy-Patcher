@@ -15,9 +15,10 @@ import threading
 from pathlib import Path
 import binascii
 import hashlib
+from datetime import datetime
 
 from resources import constants, defaults, install, installer, utilities, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
-from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch
+from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch, sys_patch_auto
 from resources.build import build
 from data import model_array, os_data, smbios_data, sip_data
 from gui import menu_redirect, gui_help
@@ -182,7 +183,100 @@ class wx_python_gui:
             self.popup.ShowModal()
         else:
             # Spawn thread to check for updates
+            self.check_for_local_installs()
             threading.Thread(target=self.check_for_updates).start()
+
+    def check_for_local_installs(self, event=None):
+        # Update app in '/Library/Application Support/Dortania' folder
+
+        # Skip if we're running from source
+        if self.constants.launcher_script:
+            return
+
+        # Only performed if application is already installed (ie. we're updating)
+        application_path = Path("/Library/Application Support/Dortania/OpenCore-Patcher.app")
+        if not application_path.exists():
+            return
+
+        # Check application version
+        # If we're older than the installed version, skip
+        application_plist_path = application_path / "Contents/Info.plist"
+        if not application_plist_path.exists():
+            return
+
+        application_plist = plistlib.load(application_plist_path.open("rb"))
+        if not "CFBundleShortVersionString" in application_plist:
+            return
+
+        application_version = application_plist["CFBundleShortVersionString"].split(".")
+        local_version = self.constants.patcher_version.split(".")
+
+        if application_version == local_version:
+            if "Build Date" not in application_plist:
+                return
+
+            # Check build date of installed version
+            plist_path = self.constants.launcher_binary.replace("MacOS/OpenCore-Patcher", "Info.plist")
+            if not Path(plist_path).exists():
+                return
+
+            plist = plistlib.load(Path(plist_path).open("rb"))
+            if "Build Date" not in plist:
+                return
+
+            if plist["Build Date"] == application_plist["Build Date"]:
+                return
+
+            local_build_date = datetime.strptime(plist["Build Date"], "%Y-%m-%d %H:%M:%S")
+            installed_build_date = datetime.strptime(application_plist["Build Date"], "%Y-%m-%d %H:%M:%S")
+
+            if local_build_date <= installed_build_date:
+                return
+
+        elif updates.check_binary_updates(self.constants).check_if_build_newer(local_version, application_version) is False:
+            return
+
+        # Ask user if they want to move the application to the Applications folder
+        self.popup = wx.MessageDialog(
+            self.frame,
+            f"We've detected an old version of OpenCore-Patcher.app installed in the Application Support folder.\n\nWould you like to replace it with this version?",
+            "Move to Applications?",
+            wx.YES_NO | wx.ICON_INFORMATION
+        )
+        self.popup.SetYesNoLabels("Move", "Ignore")
+        answer = self.popup.ShowModal()
+        if answer != wx.ID_YES:
+            return
+
+        path = str(self.constants.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
+
+        args = [
+            "osascript",
+            "-e",
+            f'''do shell script "ditto {path} '/Library/Application Support/Dortania/OpenCore-Patcher.app'"'''
+            ' with prompt "OpenCore Legacy Patcher needs administrator privileges to copy in."'
+            " with administrator privileges"
+            " without altering line endings",
+        ]
+
+        result = subprocess.run(args,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if result.returncode != 0:
+            print("- Failed to move application into /Library/Application Support/Dortania/OpenCore-Patcher.app")
+            # Notify user we failed to move the application
+            self.popup = wx.MessageDialog(
+                self.frame,
+                f"Failed to move the application to the Applications folder.\n\nThis is likely due to permission errors, you can copy the app manually into '/Library/Application Support/Dortania/OpenCore-Patcher.app' if you continue to see this error.",
+                "Failed to Move!",
+                style = wx.OK | wx.ICON_EXCLAMATION
+            )
+            self.popup.ShowModal()
+            return
+
+        subprocess.run(["xattr", "-cr", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["open", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["rm", "-R", path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        self.OnCloseFrame(event)
 
     def check_for_updates(self, event=None):
         if self.constants.has_checked_updates is True:
