@@ -459,7 +459,7 @@ class PatchSysVolume:
             self.execute_patchset(sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details))
 
         if self.constants.wxpython_variant is True and self.constants.detected_os >= os_data.os_data.big_sur:
-            sys_patch_auto.AutomaticSysPatch.install_auto_patcher_launch_agent(self.constants)
+            sys_patch_auto.AutomaticSysPatch(self.constants).install_auto_patcher_launch_agent()
 
         self.rebuild_snapshot()
 

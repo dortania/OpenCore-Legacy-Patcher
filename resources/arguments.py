@@ -112,4 +112,4 @@ class arguments:
             sys_patch.PatchSysVolume(settings.custom_model or settings.computer.real_model, settings, None).start_unpatch()
         elif self.args.auto_patch:
             print("- Set Auto patching")
-            sys_patch_auto.AutomaticSysPatch.start_auto_patch(settings)
+            sys_patch_auto.AutomaticSysPatch(settings).start_auto_patch()

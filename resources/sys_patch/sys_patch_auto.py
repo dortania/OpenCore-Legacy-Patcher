@@ -17,12 +17,17 @@ from resources.sys_patch import sys_patch_detect
 from gui import gui_main
 
 class AutomaticSysPatch:
-    def start_auto_patch(settings):
+
+    def __init__(self, constants):
+        self.constants = constants
+
+
+    def start_auto_patch(self):
         print("- Starting Automatic Patching")
-        if settings.wxpython_variant is True:
+        if self.constants.wxpython_variant is True:
             if utilities.check_seal() is True:
                 print("- Detected Snapshot seal intact, detecting patches")
-                patches = sys_patch_detect.detect_root_patch(settings.computer.real_model, settings).detect_patch_set()
+                patches = sys_patch_detect.detect_root_patch(self.constants.computer.real_model, self.constants).detect_patch_set()
                 if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
                     patches = []
                 if patches:
@@ -34,23 +39,23 @@ class AutomaticSysPatch:
                             if patches[patch] is True and not patch.startswith("Settings") and not patch.startswith("Validation"):
                                 patch_string += f"- {patch}\n"
                         # Check for updates
-                        dict = updates.check_binary_updates(settings).check_binary_updates()
+                        dict = updates.check_binary_updates(self.constants).check_binary_updates()
                         if not dict:
                             print("- No new binaries found on Github, proceeding with patching")
-                            if settings.launcher_script is None:
-                                args_string = f"'{settings.launcher_binary}' --gui_patch"
+                            if self.constants.launcher_script is None:
+                                args_string = f"'{self.constants.launcher_binary}' --gui_patch"
                             else:
-                                args_string = f"{settings.launcher_binary} {settings.launcher_script} --gui_patch"
+                                args_string = f"{self.constants.launcher_binary} {self.constants.launcher_script} --gui_patch"
 
                             warning_str = ""
                             if utilities.verify_network_connection("https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest") is False:
-                                warning_str = f"""\n\nWARNING: We're unable to verify whether there are any new releases of OpenCore Legacy Patcher on Github. Be aware that you may be using an outdated version for this OS. If you're unsure, verify on Github that OpenCore Legacy Patcher {settings.patcher_version} is the latest official release"""
+                                warning_str = f"""\n\nWARNING: We're unable to verify whether there are any new releases of OpenCore Legacy Patcher on Github. Be aware that you may be using an outdated version for this OS. If you're unsure, verify on Github that OpenCore Legacy Patcher {self.constants.patcher_version} is the latest official release"""
 
                             args = [
                                 "osascript",
                                 "-e",
                                 f"""display dialog "OpenCore Legacy Patcher has detected you're running without Root Patches, and would like to install them.\n\nmacOS wipes all root patches during OS installs and updates, so they need to be reinstalled.\n\nFollowing Patches have been detected for your system: \n{patch_string}\nWould you like to apply these patches?{warning_str}" """
-                                f'with icon POSIX file "{settings.app_icon_path}"',
+                                f'with icon POSIX file "{self.constants.app_icon_path}"',
                             ]
                             output = subprocess.run(
                                 args,
@@ -76,14 +81,14 @@ class AutomaticSysPatch:
                             github_link = dict[0]["Github Link"]
                             print(f"- Found new version: {version}")
 
-                            # launch oascript to ask user if they want to apply the update
+                            # launch osascript to ask user if they want to apply the update
                             # if yes, open the link in the default browser
                             # we never want to run the root patcher if there are updates available
                             args = [
                                 "osascript",
                                 "-e",
-                                f"""display dialog "OpenCore Legacy Patcher has detected you're running without Root Patches, and would like to install them.\n\nHowever we've detected a new version of OCLP on Github. Would you like to view this?\n\nCurrent Version: {settings.patcher_version}\nLatest Version: {version}\n\nNote: After downloading the latest OCLP version, open the app and run the 'Post Install Root Patcher' from the main menu." """
-                                f'with icon POSIX file "{settings.app_icon_path}"',
+                                f"""display dialog "OpenCore Legacy Patcher has detected you're running without Root Patches, and would like to install them.\n\nHowever we've detected a new version of OCLP on Github. Would you like to view this?\n\nCurrent Version: {self.constants.patcher_version}\nLatest Version: {version}\n\nNote: After downloading the latest OCLP version, open the app and run the 'Post Install Root Patcher' from the main menu." """
+                                f'with icon POSIX file "{self.constants.app_icon_path}"',
                             ]
                             output = subprocess.run(
                                 args,
@@ -96,14 +101,14 @@ class AutomaticSysPatch:
                         print("- Cannot run patching")
                 else:
                     print("- No patches detected")
-                    AutomaticSysPatch.determine_if_boot_matches(settings)
+                    self.determine_if_boot_matches()
             else:
                 print("- Detected Snapshot seal not intact, skipping")
-                AutomaticSysPatch.determine_if_boot_matches(settings)
+                self.determine_if_boot_matches(self.constants)
         else:
             print("- Auto Patch option is not supported on TUI, please use GUI")
 
-    def determine_if_boot_matches(settings):
+    def determine_if_boot_matches(self):
         # Goal of this function is to determine whether the user
         # is using a USB drive to Boot OpenCore but macOS does not
         # reside on the same drive as the USB.
@@ -116,14 +121,14 @@ class AutomaticSysPatch:
         should_notify = global_settings.global_settings().read_property("AutoPatch_Notify_Mismatched_Disks")
         if should_notify is False:
             print("- Skipping due to user preference")
-        elif settings.host_is_hackintosh is True:
+        elif self.constants.host_is_hackintosh is True:
             print("- Skipping due to hackintosh")
         else:
-            if settings.booted_oc_disk:
-                root_disk = settings.booted_oc_disk.strip("disk")
+            if self.constants.booted_oc_disk:
+                root_disk = self.constants.booted_oc_disk.strip("disk")
                 root_disk = "disk" + root_disk.split("s")[0]
 
-                print(f"  - Boot Drive: {settings.booted_oc_disk} ({root_disk})")
+                print(f"  - Boot Drive: {self.constants.booted_oc_disk} ({root_disk})")
                 macOS_disk = utilities.get_disk_path()
                 print(f"  - macOS Drive: {macOS_disk}")
                 physical_stores = utilities.find_apfs_physical_volume(macOS_disk)
@@ -149,7 +154,7 @@ class AutomaticSysPatch:
                                 "osascript",
                                 "-e",
                                 f"""display dialog "OpenCore Legacy Patcher has detected that you are booting OpenCore from an USB or External drive.\n\nIf you would like to boot your Mac normally without a USB drive plugged in, you can install OpenCore to the internal hard drive.\n\nWould you like to launch OpenCore Legacy Patcher and install to disk?" """
-                                f'with icon POSIX file "{settings.app_icon_path}"',
+                                f'with icon POSIX file "{self.constants.app_icon_path}"',
                             ]
                             output = subprocess.run(
                                 args,
@@ -158,8 +163,8 @@ class AutomaticSysPatch:
                             )
                             if output.returncode == 0:
                                 print("- Launching GUI's Build/Install menu")
-                                settings.start_build_install = True
-                                gui_main.wx_python_gui(settings).main_menu(None)
+                                self.constants.start_build_install = True
+                                gui_main.wx_python_gui(self.constants).main_menu(None)
                         else:
                             print("- Boot Disk is not removable, skipping prompt")
                     except KeyError:
@@ -169,14 +174,14 @@ class AutomaticSysPatch:
                 print("- Failed to find disk OpenCore launched from")
 
 
-    def install_auto_patcher_launch_agent(settings):
+    def install_auto_patcher_launch_agent(self):
         # Installs the following:
         #   - OpenCore-Patcher.app in /Library/Application Support/Dortania/
         #   - com.dortania.opencore-legacy-patcher.auto-patch.plist in /Library/LaunchAgents/
-        if settings.launcher_script is None:
+        if self.constants.launcher_script is None:
             # Verify our binary isn't located in '/Library/Application Support/Dortania/'
             # As we'd simply be duplicating ourselves
-            if not settings.launcher_binary.startswith("/Library/Application Support/Dortania/"):
+            if not self.constants.launcher_binary.startswith("/Library/Application Support/Dortania/"):
                 print("- Installing Auto Patcher Launch Agent")
 
                 if not Path("Library/Application Support/Dortania").exists():
@@ -189,7 +194,7 @@ class AutomaticSysPatch:
                     utilities.process_status(utilities.elevated(["rm", "-R", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
                 # Strip everything after OpenCore-Patcher.app
-                path = str(settings.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
+                path = str(self.constants.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
                 print(f"- Copying {path} to /Library/Application Support/Dortania/")
                 utilities.process_status(utilities.elevated(["ditto", path, "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
@@ -208,7 +213,7 @@ class AutomaticSysPatch:
             if not Path("/Library/LaunchAgents/").exists():
                 print("- Creating /Library/LaunchAgents/")
                 utilities.process_status(utilities.elevated(["mkdir", "-p", "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["cp", settings.auto_patch_launch_agent_path, "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["cp", self.constants.auto_patch_launch_agent_path, "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
             # Set the permissions on the com.dortania.opencore-legacy-patcher.auto-patch.plist
             print("- Setting permissions on auto-patch.plist")
