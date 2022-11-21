@@ -183,70 +183,72 @@ class wx_python_gui:
             self.popup.ShowModal()
         else:
             # Spawn thread to check for updates
-            self.check_for_local_installs()
-            threading.Thread(target=self.check_for_updates).start()
+            if self.check_for_local_installs() is True:
+                self.OnCloseFrame()
+            else:
+                threading.Thread(target=self.check_for_updates).start()
 
     def check_for_local_installs(self, event=None):
         # Update app in '/Library/Application Support/Dortania' folder
 
         # Skip if we're running from source
         if self.constants.launcher_script:
-            return
+            return False
 
         # Only performed if application is already installed (ie. we're updating)
         application_path = Path("/Library/Application Support/Dortania/OpenCore-Patcher.app")
         if not application_path.exists():
-            return
+            return False
 
         # Check application version
         # If we're older than the installed version, skip
         application_plist_path = application_path / "Contents/Info.plist"
         if not application_plist_path.exists():
-            return
+            return False
 
         application_plist = plistlib.load(application_plist_path.open("rb"))
         if not "CFBundleShortVersionString" in application_plist:
-            return
+            return False
 
         application_version = application_plist["CFBundleShortVersionString"].split(".")
         local_version = self.constants.patcher_version.split(".")
 
         if application_version == local_version:
             if "Build Date" not in application_plist:
-                return
+                return False
 
             # Check build date of installed version
             plist_path = self.constants.launcher_binary.replace("MacOS/OpenCore-Patcher", "Info.plist")
             if not Path(plist_path).exists():
-                return
+                return False
 
             plist = plistlib.load(Path(plist_path).open("rb"))
             if "Build Date" not in plist:
-                return
+                return False
 
             if plist["Build Date"] == application_plist["Build Date"]:
-                return
+                return False
 
             local_build_date = datetime.strptime(plist["Build Date"], "%Y-%m-%d %H:%M:%S")
             installed_build_date = datetime.strptime(application_plist["Build Date"], "%Y-%m-%d %H:%M:%S")
 
             if local_build_date <= installed_build_date:
-                return
+                return False
 
         elif updates.check_binary_updates(self.constants).check_if_build_newer(local_version, application_version) is False:
-            return
+            return False
 
         # Ask user if they want to move the application to the Applications folder
         self.popup = wx.MessageDialog(
             self.frame,
-            f"We've detected an old version of OpenCore-Patcher.app installed in the Application Support folder.\n\nWould you like to replace it with this version?",
+            f"We've detected an old version of OpenCore-Patcher.app installed in the Application Support directory.\n\nWould you like to replace it with this version?",
             "Move to Applications?",
             wx.YES_NO | wx.ICON_INFORMATION
         )
-        self.popup.SetYesNoLabels("Move", "Ignore")
+        self.popup.SetYesNoLabels("Replace", "Ignore")
         answer = self.popup.ShowModal()
         if answer != wx.ID_YES:
-            return
+            return False
 
         path = str(self.constants.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
 
@@ -270,13 +272,13 @@ class wx_python_gui:
                 style = wx.OK | wx.ICON_EXCLAMATION
             )
             self.popup.ShowModal()
-            return
+            return False
 
         subprocess.run(["xattr", "-cr", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         subprocess.run(["open", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         subprocess.run(["rm", "-R", path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        self.OnCloseFrame(event)
+        return True
 
     def check_for_updates(self, event=None):
         if self.constants.has_checked_updates is True:
