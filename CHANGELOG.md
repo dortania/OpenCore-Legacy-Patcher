@@ -21,7 +21,6 @@
 - Add support for AMD GOP injection (AMDGOP.efi)
   - For MXM iMacs and Mac Pros with GPU VBIOS lacking GOP support (ie. no UEFI output even after OC loads)
 - Hide OpenCore Boot Picker when waking from hibernation
-- Automatically move newer builds of OpenCore-Patcher.app to `/Library/Application Support/Dortania` if previously installed
 - Increment Binaries:
   - AirPortBrcmFixup 2.1.6 - release
   - AppleALC 1.7.6 - release

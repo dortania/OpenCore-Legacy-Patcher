@@ -312,8 +312,8 @@ class wx_python_gui:
             self.constants.ignore_updates = True
             print("- Ignoring App Updates due to defaults")
 
-        if did_find_update is False:
-            self.check_for_local_installs()
+        # if did_find_update is False:
+        #     self.check_for_local_installs()
 
     def relaunch_as_root(self, event=None):
 

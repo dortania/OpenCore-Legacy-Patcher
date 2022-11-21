@@ -205,6 +205,8 @@ class AutomaticSysPatch:
                     print(f"- Renaming {path} to OpenCore-Patcher.app")
                     utilities.process_status(utilities.elevated(["mv", f"/Library/Application Support/Dortania/{path}", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
+                subprocess.run(["xattr", "-cr", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
             # Copy over our launch agent
             print("- Copying auto-patch.plist Launch Agent to /Library/LaunchAgents/")
             if Path("/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist").exists():
