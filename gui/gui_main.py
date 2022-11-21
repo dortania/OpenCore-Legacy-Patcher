@@ -183,10 +183,7 @@ class wx_python_gui:
             self.popup.ShowModal()
         else:
             # Spawn thread to check for updates
-            if self.check_for_local_installs() is True:
-                self.OnCloseFrame()
-            else:
-                threading.Thread(target=self.check_for_updates).start()
+            threading.Thread(target=self.check_for_updates).start()
 
     def check_for_local_installs(self, event=None):
         # Update app in '/Library/Application Support/Dortania' folder
@@ -276,14 +273,16 @@ class wx_python_gui:
 
         subprocess.run(["xattr", "-cr", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         subprocess.run(["open", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        subprocess.run(["rm", "-R", path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if "AppTranslocation" not in path:
+            subprocess.run(["rm", "-R", path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        return True
+        self.OnCloseFrame()
 
     def check_for_updates(self, event=None):
         if self.constants.has_checked_updates is True:
             return
 
+        did_find_update = False
         ignore_updates = global_settings.global_settings().read_property("IgnoreAppUpdates")
         if ignore_updates is not True:
             self.constants.ignore_updates = False
@@ -302,6 +301,7 @@ class wx_python_gui:
                     )
                     self.dialog.SetYesNoCancelLabels("View on Github", "Always Ignore", "Ignore Once")
                     response = self.dialog.ShowModal()
+                    did_find_update = True
                     if response == wx.ID_YES:
                         webbrowser.open(github_link)
                     elif response == wx.ID_NO:
@@ -311,6 +311,9 @@ class wx_python_gui:
         else:
             self.constants.ignore_updates = True
             print("- Ignoring App Updates due to defaults")
+
+        if did_find_update is False:
+            self.check_for_local_installs()
 
     def relaunch_as_root(self, event=None):
 
