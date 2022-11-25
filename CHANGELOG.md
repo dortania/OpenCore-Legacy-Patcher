@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.5.3
+
 ## 0.5.2
 - Ventura Specific Updates:
   - Resolve AMD Polaris external display output support
