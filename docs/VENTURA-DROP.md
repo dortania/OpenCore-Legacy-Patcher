@@ -47,9 +47,10 @@ For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMa
 
 * CPUs supporting AVX2.0 are Haswell or newer, which no pre-2019 Mac Pros can be upgraded with.
 
-Currently at this time, OpenCore Legacy Patcher only supports patching the AMD Polaris Graphics stack to no longer require AVX2.0. However due to lack of hardware on-hand, we cannot support AMD Vega or Navi on Ventura.
+Currently at this time, OpenCore Legacy Patcher only supports patching the AMD Polaris Graphics stack to no longer require AVX2.0. However due to lack of hardware on-hand, we cannot support Navi on Ventura.
 
-* If you have spare Vega or Navi GPUs you'd like to donate, feel free to reach out: khronokernel@icloud.com
+* If you have spare Navi GPU you'd like to donate, feel free to reach out: khronokernel@icloud.com
+  * Thanks to a gracious user, we've gotten an AMD Vega 64 on-hand for testing. No time estimate can be provided for Vega support at this time.
 
 Additionally, the native stack will crash over and over on macOS Ventura as it fails to load the AVX2.0-based binaries. Thus to patch Ventura, you will need to boot in Safe Mode and run OCLP's Root Volume Patcher
 
