@@ -266,6 +266,10 @@ class Constants:
         return self.payload_path / Path("Drivers/diags.efi")
 
     @property
+    def link_rate_driver_path(self):
+        return self.payload_path / Path("Drivers/FixPCIeLinkRate.efi")
+
+    @property
     def list_txt_path(self):
         return self.payload_path / Path("List.txt")
 

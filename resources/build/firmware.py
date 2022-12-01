@@ -176,6 +176,12 @@ class build_firmware:
             support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("XhciDxe.efi", "UEFI", "Drivers")["Enabled"] = True
             support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("UsbBusDxe.efi", "UEFI", "Drivers")["Enabled"] = True
 
+        # PCIe Link Rate check
+        if self.model == "MacPro3,1":
+            print("- Adding PCIe Link Rate Patch")
+            shutil.copy(self.constants.link_rate_driver_path, self.constants.drivers_path)
+            support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("FixPCIeLinkRate.efi", "UEFI", "Drivers")["Enabled"] = True
+
 
     def firmware_compatibility_handling(self):
         self.dual_dp_handling()

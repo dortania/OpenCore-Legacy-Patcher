@@ -89,6 +89,8 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
   * Endless hours helping architect and troubleshoot many portions of the project
 * [flagers](https://github.com/flagersgit)
   * Aid with Nvidia Web Driver research and development
+* [joevt](https://github.com/joevt)
+  * [FixPCIeLinkrate](https://github.com/joevt/joevtApps)
 * MacRumors and Unsupported Mac Communities
   * Endless testing, reporting issues
 * Apple
