@@ -3,6 +3,8 @@
 ## 0.5.3
 - Integrate FixPCIeLinkrate.efi v0.1.0
   - Fixes link rate for PCIe 3.0 devices on MacPro3,1
+- Resolve AppleIntelCPUPowerManagement Panic in Safe Mode
+  - Applicable for pre-Haswell Macs on Ventura
 
 ## 0.5.2
 - Ventura Specific Updates:
