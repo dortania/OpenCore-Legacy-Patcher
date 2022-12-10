@@ -91,6 +91,14 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
   * Aid with Nvidia Web Driver research and development
 * [joevt](https://github.com/joevt)
   * [FixPCIeLinkrate](https://github.com/joevt/joevtApps)
+* Amazing users who've graciously donate hardware:
+  * [JohnD](https://forums.macrumors.com/members/johnd.53633/) - 2013 Mac Pro
+  * [SpiGAndromeda](https://github.com/SpiGAndromeda) - AMD Vega 64
+  * [turbomacs](https://github.com/turbomacs) - 2014 5k iMac
+  * [vinaypundith](https://forums.macrumors.com/members/vinaypundith.1212357/) - MacBook7,1
+  * zephar - 2008 Mac Pro
+  * jazo97 - 2011 15" MacBook Pro
+  * And others (reach out if we forgot you!)
 * MacRumors and Unsupported Mac Communities
   * Endless testing, reporting issues
 * Apple
