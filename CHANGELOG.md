@@ -5,6 +5,9 @@
   - Fixes link rate for PCIe 3.0 devices on MacPro3,1
 - Resolve AppleIntelCPUPowerManagement Panic in Safe Mode
   - Applicable for pre-Haswell Macs on Ventura
+- Revert AppleALC 1.7.6 update back to 1.6.3
+  - Resolves audio issues on certain Intel HDEF devices
+  - Regression currently being investigated within AppleALC
 
 ## 0.5.2
 - Ventura Specific Updates:

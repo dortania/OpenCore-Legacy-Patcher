@@ -36,7 +36,7 @@ class Constants:
         self.whatevergreen_version = "1.6.1"  #      WhateverGreen
         self.airportbcrmfixup_version = "2.1.6"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
-        self.applealc_version = "1.7.6"  #           AppleALC
+        self.applealc_version = "1.6.3"  #           AppleALC
         self.restrictevents_version = "1.0.9"  #     RestrictEvents
         self.featureunlock_version = "1.1.0"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.7"  #      DebugEnhancer
