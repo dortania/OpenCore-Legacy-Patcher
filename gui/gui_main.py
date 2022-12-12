@@ -2612,23 +2612,13 @@ class wx_python_gui:
             self.set_terascale_accel_checkbox.Disable()
             self.set_terascale_accel_checkbox.SetValue(False)
 
-        # Force Web Drivers in Tesla/Kepler
-        self.force_web_drivers_checkbox = wx.CheckBox(self.frame_modal, label="Force Web Drivers")
-        self.force_web_drivers_checkbox.SetValue(self.constants.force_nv_web)
-        self.force_web_drivers_checkbox.Bind(wx.EVT_CHECKBOX, self.force_web_drivers_click)
-        self.force_web_drivers_checkbox.SetPosition(wx.Point(
-            self.disable_thunderbolt_checkbox.GetPosition().x,
-            self.set_terascale_accel_checkbox.GetPosition().y + self.set_terascale_accel_checkbox.GetSize().height))
-        self.force_web_drivers_checkbox.SetToolTip(wx.ToolTip("This option will force Nvidia Web Driver support onto Nvidia Tesla and Kepler GPUs. This should only be used for development purposes."))
-
-
         # Windows GMUX
         self.windows_gmux_checkbox = wx.CheckBox(self.frame_modal, label="Windows GMUX")
         self.windows_gmux_checkbox.SetValue(self.constants.dGPU_switch)
         self.windows_gmux_checkbox.Bind(wx.EVT_CHECKBOX, self.windows_gmux_click)
         self.windows_gmux_checkbox.SetPosition(wx.Point(
-            self.force_web_drivers_checkbox.GetPosition().x,
-            self.force_web_drivers_checkbox.GetPosition().y + self.force_web_drivers_checkbox.GetSize().height))
+            self.set_terascale_accel_checkbox.GetPosition().x,
+            self.set_terascale_accel_checkbox.GetPosition().y + self.set_terascale_accel_checkbox.GetSize().height))
         self.windows_gmux_checkbox.SetToolTip(wx.ToolTip("Enable this option to allow usage of the hardware GMUX to switch between Intel and Nvidia/AMD GPUs in Windows."))
 
         # Hibernation Workaround

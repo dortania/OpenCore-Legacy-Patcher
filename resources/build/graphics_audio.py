@@ -241,7 +241,6 @@ class build_graphics_audio:
                 # Used to enable Audio support for non-standard dGPUs
                 support.build_support(self.model, self.constants, self.config).enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
 
-
         # Due to regression in AppleALC 1.6.4+, temporarily use 1.6.3 and set override
         if support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleALC.kext")["Enabled"] is True:
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -lilubetaall"
