@@ -16,6 +16,7 @@ from pathlib import Path
 import binascii
 import hashlib
 from datetime import datetime
+import py_sip_xnu
 
 from resources import constants, defaults, install, installer, utilities, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
 from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch, sys_patch_auto
@@ -3344,7 +3345,7 @@ class wx_python_gui:
         )
         self.sip_label_2.Center(wx.HORIZONTAL)
 
-        self.sip_label_2_2 = wx.StaticText(self.frame_modal, label=f"Currently Booted SIP: {hex(utilities.csr_dump())}")
+        self.sip_label_2_2 = wx.StaticText(self.frame_modal, label=f"Currently Booted SIP: {hex(py_sip_xnu.SipXnu().get_sip_status().value)}")
         self.sip_label_2_2.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
         self.sip_label_2_2.SetPosition(
             wx.Point(self.sip_label_2.GetPosition().x, self.sip_label_2.GetPosition().y + self.sip_label_2.GetSize().height + 5)

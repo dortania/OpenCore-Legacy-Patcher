@@ -9,14 +9,14 @@ from pathlib import Path
 import os
 import binascii
 import argparse
-from ctypes import CDLL, c_uint, byref
 import time
 import atexit
 import requests
 import shutil
 import urllib.parse
+import py_sip_xnu
 
-from resources import constants, ioreg, amfi_detect
+from resources import constants, ioreg
 from data import sip_data, os_data
 
 SESSION = requests.Session()
@@ -102,24 +102,9 @@ def check_filesystem_type():
     filesystem_type = plistlib.loads(subprocess.run(["diskutil", "info", "-plist", "/"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
     return filesystem_type["FilesystemType"]
 
-def csr_dump():
-    # Based off sip_config.py
-    # https://gist.github.com/pudquick/8b320be960e1654b908b10346272326b
-    # https://opensource.apple.com/source/xnu/xnu-7195.141.2/libsyscall/wrappers/csr.c.auto.html
-    # Far more reliable than parsing NVRAM's csr-active-config (ie. user can wipe it, boot.efi can strip bits)
-
-    # Note that 'csr_get_active_config' was not introduced until 10.11
-    try:
-        libsys = CDLL('/usr/lib/libSystem.dylib')
-        raw    = c_uint(0)
-        errmsg = libsys.csr_get_active_config(byref(raw))
-        return raw.value
-    except AttributeError:
-        return 0
-
 
 def csr_decode(os_sip):
-    sip_int = csr_dump()
+    sip_int = py_sip_xnu.SipXnu().get_sip_status().value
     for i,  current_sip_bit in enumerate(sip_data.system_integrity_protection.csr_values):
         if sip_int & (1 << i):
             sip_data.system_integrity_protection.csr_values[current_sip_bit] = True

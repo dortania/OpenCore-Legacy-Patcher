@@ -7,6 +7,8 @@ from resources import constants, device_probe, utilities, amfi_detect
 from resources.sys_patch import sys_patch_helpers
 from data import model_array, os_data, sip_data, sys_patch_dict
 
+import py_sip_xnu
+
 class detect_root_patch:
     def __init__(self, model, versions):
         self.model = model
@@ -357,7 +359,7 @@ class detect_root_patch:
             "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,
             "Validation: Patching Possible":               self.verify_patch_allowed(),
             f"Validation: SIP is enabled (Required: {self.check_sip()[2]} or higher)":  self.sip_enabled,
-            f"Validation: Currently Booted SIP: ({hex(utilities.csr_dump())})":         self.sip_enabled,
+            f"Validation: Currently Booted SIP: ({hex(py_sip_xnu.SipXnu().get_sip_status().value)})":         self.sip_enabled,
             "Validation: SecureBootModel is enabled":      self.sbm_enabled,
             f"Validation: {'AMFI' if self.constants.host_is_hackintosh is True or self.get_amfi_level_needed() > 2 else 'Library Validation'} is enabled":                 self.amfi_enabled if self.amfi_must_disable is True else False,
             "Validation: FileVault is enabled":            self.fv_enabled,

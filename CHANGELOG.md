@@ -11,6 +11,7 @@
 - Remove `Force Web Drivers` option
   - Avoids accidental use of non-Metal Web Drivers on Kepler GPUs
 - Resolve silent auto patcher crash when new OCLP version is available
+- Implement [`py_sip_xnu`](https://github.com/khronokernel/py_sip_xnu) module
 
 ## 0.5.2
 - Ventura Specific Updates:
