@@ -41,9 +41,6 @@ class build_opencore:
         support.build_support(self.model, self.constants, self.config).enable_kext("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path)
         self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
 
-        # Due to regression in AppleALC 1.6.4+, temporarily use 1.6.3 and set override
-        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += "-lilubetaall"
-
         # Call support functions
         firmware.build_firmware(self.model, self.constants, self.config).build()
         wired.build_wired(self.model, self.constants, self.config).build()
