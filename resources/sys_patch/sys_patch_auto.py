@@ -77,8 +77,9 @@ class AutomaticSysPatch:
                                     stderr=subprocess.STDOUT
                                 )
                         else:
-                            version = dict[0]["Version"]
-                            github_link = dict[0]["Github Link"]
+                            for key in dict:
+                                version = dict[key]["Version"]
+                                github_link = dict[key]["Github Link"]
                             print(f"- Found new version: {version}")
 
                             # launch osascript to ask user if they want to apply the update
