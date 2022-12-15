@@ -218,7 +218,7 @@ class build_misc:
 
         if self.constants.showpicker is False:
             print("- Hiding OpenCore picker")
-            self.config["Misc"]["Boot"]["ShowPicker"] = "Never"
+            self.config["Misc"]["Boot"]["ShowPicker"] = False
 
         if self.constants.oc_timeout != 5:
             print(f"- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds")

@@ -26,19 +26,19 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_commit = "5061093 - 11-16-2022"
+        self.opencore_commit = "10fc98f - 12-06-2022"
         self.opencore_version = "0.8.7"
 
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
         self.lilu_version = "1.6.2"  #               Lilu
-        self.whatevergreen_version = "1.6.1"  #      WhateverGreen
+        self.whatevergreen_version = "1.6.2"  #      WhateverGreen
         self.airportbcrmfixup_version = "2.1.6"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
         self.restrictevents_version = "1.0.9"  #     RestrictEvents
-        self.featureunlock_version = "1.1.0"  #      FeatureUnlock
+        self.featureunlock_version = "1.1.1"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.7"  #      DebugEnhancer
         self.cpufriend_version = "1.2.5"  #          CPUFriend
         self.bluetool_version = "2.6.4"  #           BlueToolFixup (BrcmPatchRAM)
