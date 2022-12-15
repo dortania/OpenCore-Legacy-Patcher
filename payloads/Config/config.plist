@@ -1978,7 +1978,7 @@
 			<key>HibernateMode</key>
 			<string>Auto</string>
 			<key>HibernateSkipsPicker</key>
-			<false/>
+			<true/>
 			<key>HideAuxiliary</key>
 			<true/>
 			<key>LauncherPath</key>
