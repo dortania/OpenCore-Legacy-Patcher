@@ -13,6 +13,7 @@
 - Resolve silent auto patcher crash when new OCLP version is available
 - Implement [`py_sip_xnu`](https://github.com/khronokernel/py_sip_xnu) module
 - Resolve Content Caching Patch Regression
+- Resolve KDK Versioning Fallback crashing when primary KDK site is down
 - Increment Binaries:
   - OpenCorePkg 0.8.7 - release
   - FeatureUnlock 1.1.1 - release

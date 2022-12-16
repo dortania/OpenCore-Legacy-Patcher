@@ -62,7 +62,7 @@ class kernel_debug_kit_handler:
         macos_builds = [i for i in results.json()["ios"] if i["osType"] == "macOS"]
         # If the version is borked, put it at the bottom of the list
         # Would omit it, but can't do that in this lambda
-        macos_builds.sort(key=lambda x: (packaging.version.parse(VERSION_PATTERN.match(x["version"]).group() if VERSION_PATTERN.match(x["version"]) else "0.0.0"), datetime.datetime.fromisoformat(x["released"])), reverse=True)  # type: ignore
+        macos_builds.sort(key=lambda x: (packaging.version.parse(VERSION_PATTERN.match(x["version"]).group() if VERSION_PATTERN.match(x["version"]) else "0.0.0"), datetime.datetime.fromisoformat(x["released"] if x["released"] != "" else "1984-01-01")), reverse=True)  # type: ignore
 
         # Iterate through, find build that is closest to the host version
         # Use date to determine which is closest
