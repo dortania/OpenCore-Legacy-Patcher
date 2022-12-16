@@ -79,7 +79,7 @@ class build_misc:
         patch_args = ""
         if support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True and self.constants.set_content_caching is True:
             print("- Fixing Content Caching support")
-            patch_args += "content-caching,"
+            patch_args += "asset,"
 
         if patch_args.endswith(","):
             patch_args = patch_args[:-1]
