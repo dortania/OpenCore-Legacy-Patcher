@@ -14,9 +14,10 @@
 - Implement [`py_sip_xnu`](https://github.com/khronokernel/py_sip_xnu) module
 - Resolve Content Caching Patch Regression
 - Resolve KDK Versioning Fallback crashing when primary KDK site is down
+- Resolve AirPlay to Mac support on Ventura with VMM
 - Increment Binaries:
   - OpenCorePkg 0.8.7 - release
-  - FeatureUnlock 1.1.1 - release
+  - FeatureUnlock 1.1.2 - rolling (94e29ce)
   - WhateverGreen 1.6.2 - release
 
 ## 0.5.2
