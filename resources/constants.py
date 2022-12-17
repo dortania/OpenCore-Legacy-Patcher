@@ -98,6 +98,10 @@ class Constants:
         ## https://github.com/blackgate/AMDGPUWakeHandler
         self.gpu_wake_version = "1.0.0"
 
+        ## flagersgit
+        ## https://github.com/flagersgit/KDKlessWorkaround
+        self.kdkless_version = "1.0.0"
+
         # Get resource path
         self.current_path = Path(__file__).parent.parent.resolve()
         self.payload_path = self.current_path / Path("payloads")
@@ -461,6 +465,10 @@ class Constants:
     @property
     def apple_raid_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleRAIDCard-v{self.apple_raid_version}.zip")
+
+    @property
+    def kdkless_path(self):
+        return self.payload_kexts_path / Path(f"Misc/KDKlessWorkaround-v{self.kdkless_version}-{self.kext_variant}.zip")
 
     @property
     def plist_folder_path(self):

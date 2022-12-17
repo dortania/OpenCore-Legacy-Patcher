@@ -33,6 +33,7 @@ class build_misc:
         self.debug_handling()
         self.cpu_friend_handling()
         self.general_oc_handling()
+        self.aux_kc_workaround()
 
     def feature_unlock_handling(self):
         if self.constants.fu_status is True:
@@ -228,3 +229,23 @@ class build_misc:
             print("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
             support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
+
+    def aux_kc_workaround(self):
+        gpu_dict = []
+        if not self.constants.custom_model:
+            gpu_dict = self.constants.computer.gpus
+        else:
+            if self.model in smbios_data.smbios_dictionary:
+                gpu_dict = smbios_data.smbios_dictionary[self.model]["Stock GPUs"]
+        for gpu in gpu_dict:
+            if not self.constants.custom_model:
+                gpu = gpu.arch
+            if gpu in [
+                device_probe.Intel.Archs.Ivy_Bridge,
+                device_probe.Intel.Archs.Haswell,
+                device_probe.Intel.Archs.Broadwell,
+                device_probe.Intel.Archs.Skylake,
+                device_probe.NVIDIA.Archs.Kepler,
+            ]:
+                support.build_support(self.model, self.constants, self.config).enable_kext("KDKlessWorkaround.kext", self.constants.kdkless_version, self.constants.kdkless_path)
+                break
