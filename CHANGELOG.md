@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.5.4
+
 ## 0.5.3
 - Integrate FixPCIeLinkrate.efi v0.1.0
   - Fixes link rate for PCIe 3.0 devices on MacPro3,1
