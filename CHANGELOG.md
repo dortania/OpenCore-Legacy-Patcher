@@ -16,6 +16,7 @@
 - Resolve KDK Versioning Fallback crashing when primary KDK site is down
 - Resolve AirPlay to Mac support on Ventura with VMM
 - Resolve WindowServer crashing on KDK-less with macOS 13.2 and Rapid Security Response updates
+- Resolve Host Versioning when RSR is installed
 - Increment Binaries:
   - OpenCorePkg 0.8.7 - release
   - FeatureUnlock 1.1.2 - rolling (94e29ce)

@@ -2,6 +2,7 @@
 
 import platform
 import subprocess
+import plistlib
 
 
 def detect_kernel_major():
@@ -25,4 +26,10 @@ def detect_os_version():
 def detect_os_build():
     # Return OS build
     # Example Output: 21A5522h (string)
-    return subprocess.run("sw_vers -buildVersion".split(), stdout=subprocess.PIPE).stdout.decode().strip()
+
+    # With macOS 13.2, Apple implemented the Rapid Security Response system which
+    # will change the reported build to the RSR version and not the original host
+    # To get the proper versions:
+    #  - Host: /System/Library/CoreServices/SystemVersion.plist
+    #  - RSR:  /System/Volumes/Preboot/Cryptexes/OS/System/Library/CoreServices/SystemVersion.plist
+    return plistlib.load(open("/System/Library/CoreServices/SystemVersion.plist", "rb"))["ProductBuildVersion"]
