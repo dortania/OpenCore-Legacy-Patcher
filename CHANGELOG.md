@@ -15,7 +15,6 @@
 - Resolve Content Caching Patch Regression
 - Resolve KDK Versioning Fallback crashing when primary KDK site is down
 - Resolve AirPlay to Mac support on Ventura with VMM
-- Resolve WindowServer crashing on KDK-less with macOS 13.2 and Rapid Security Response updates
 - Resolve Host Versioning when RSR is installed
 - Resolve iMac7,1-8,1 and MacBookPro4,1 boot support in Ventura
 - Increment Binaries:

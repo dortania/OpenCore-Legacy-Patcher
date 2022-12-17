@@ -33,7 +33,7 @@ class build_misc:
         self.debug_handling()
         self.cpu_friend_handling()
         self.general_oc_handling()
-        self.aux_kc_workaround()
+        # self.aux_kc_workaround()
 
     def feature_unlock_handling(self):
         if self.constants.fu_status is True:
