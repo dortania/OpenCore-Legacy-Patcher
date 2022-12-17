@@ -192,7 +192,7 @@ class build_firmware:
         # Currently the AICPUPM fix is not fully functional, thus forcing VMM is a temporary solution
         # Waiting for XNU source to be released to fix this properly
         # Ref: https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/
-        if self.model == "MacPro6,1" or self.constants.set_vmm_cpuid is True:
+        if self.model in ["MacPro6,1", "iMac7,1", "iMac8,1", "MacBookPro4,1"] or self.constants.set_vmm_cpuid is True:
             print("- Enabling VMM patch")
             self.config["Kernel"]["Emulate"]["Cpuid1Data"] = binascii.unhexlify("00000000000000000000008000000000")
             self.config["Kernel"]["Emulate"]["Cpuid1Mask"] = binascii.unhexlify("00000000000000000000008000000000")
