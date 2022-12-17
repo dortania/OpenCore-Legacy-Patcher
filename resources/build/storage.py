@@ -19,6 +19,7 @@ class build_storage:
         self.ahci_handling()
         self.pata_handling()
         self.misc_handling()
+        self.pcie_handling()
 
     def ahci_handling(self):
         # MacBookAir6,x ship with an AHCI over PCIe SSD model 'APPLE SSD TS0128F' and 'APPLE SSD TS0256F'

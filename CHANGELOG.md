@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.5.4
+- Resolve external NVMe reporting regression from 0.5.2
 
 ## 0.5.3
 - Integrate FixPCIeLinkrate.efi v0.1.0
