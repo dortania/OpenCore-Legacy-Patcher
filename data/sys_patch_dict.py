@@ -874,25 +874,50 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 0
                     },
                     "Maximum OS Support": {
-                        "OS Major": os_data.os_data.monterey,
+                        "OS Major": os_data.os_data.max_os,
                         "OS Minor": 99
                     },
                 },
                 "Install": {
                     "/usr/libexec": {
-                        "airportd": "11.5.2",
+                        "airportd": "11.7.1",
                     },
                     "/System/Library/CoreServices": {
-                        "WiFiAgent.app": "11.5.2",
+                        "WiFiAgent.app": "11.7.1",
                     },
                 },
                 "Install Non-Root": {
                     "/Library/Application Support/SkyLightPlugins": {
-                        **({ "CoreWLAN.dylib": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
-                        **({ "CoreWLAN.txt": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
+                        **({ "CoreWLAN.dylib": "SkyLightPlugins" } if os_major == os_data.os_data.monterey else {}),
+                        **({ "CoreWLAN.txt": "SkyLightPlugins" } if os_major == os_data.os_data.monterey else {}),
                     },
                 },
             },
+            "Legacy Wireless Extended": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/usr/libexec": {
+                        "wps": "12.6.2",
+                    },
+                    "/System/Library/Frameworks": {
+                        "CoreWLAN.framework": "12.6.2",
+                    },
+                    "/System/Library/PrivateFrameworks": {
+                        "CoreWiFi.framework": "12.6.2",
+                        "IO80211.framework":  "12.6.2",
+                    },
+                },
+            }
         },
         "Brightness": {
             "Legacy Backlight Control": {

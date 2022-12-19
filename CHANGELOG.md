@@ -2,6 +2,10 @@
 
 ## 0.5.4
 - Resolve external NVMe reporting regression from 0.5.2
+- Implement Legacy Wireless support for Ventura
+  - Applicable for BCM94328, BCM94322 and Atheros chipsets
+- Increment Binaries:
+  - PatcherSupportPkg 0.7.2 - release
 
 ## 0.5.3
 - Integrate FixPCIeLinkrate.efi v0.1.0

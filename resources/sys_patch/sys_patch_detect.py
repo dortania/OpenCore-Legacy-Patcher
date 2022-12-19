@@ -318,8 +318,11 @@ class detect_root_patch:
             isinstance(self.constants.computer.wifi, device_probe.Broadcom)
             and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
         ) or (isinstance(self.constants.computer.wifi, device_probe.Atheros) and self.constants.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
-            if os_data.os_data.ventura > self.constants.detected_os > os_data.os_data.big_sur:
+            if self.constants.detected_os > os_data.os_data.big_sur:
                 self.legacy_wifi = True
+                if self.constants.detected_os >= os_data.os_data.ventura:
+                    # Due to extracted frameworks for IO80211.framework and co, check library validation
+                    self.amfi_must_disable = True
 
         # if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
         if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
@@ -552,6 +555,7 @@ class detect_root_patch:
                 required_patches.update({"Legacy Non-GOP": all_hardware_patchset["Audio"]["Legacy Non-GOP"]})
         if hardware_details["Networking: Legacy Wireless"] is True:
             required_patches.update({"Legacy Wireless": all_hardware_patchset["Networking"]["Legacy Wireless"]})
+            required_patches.update({"Legacy Wireless Extended": all_hardware_patchset["Networking"]["Legacy Wireless Extended"]})
         if hardware_details["Miscellaneous: Legacy GMUX"] is True:
             required_patches.update({"Legacy GMUX": all_hardware_patchset["Miscellaneous"]["Legacy GMUX"]})
         if hardware_details["Miscellaneous: Legacy Keyboard Backlight"] is True:
