@@ -4,6 +4,8 @@
 - Resolve external NVMe reporting regression from 0.5.2
 - Implement Legacy Wireless support for Ventura
   - Applicable for BCM94328, BCM94322 and Atheros chipsets
+- Implement Wifi-only patches when no internet connection available but required (ie. KDKs)
+  - Allows users to install Legacy Wireless patches, then connect to the internet to install remaining patches
 - Increment Binaries:
   - PatcherSupportPkg 0.7.2 - release
 

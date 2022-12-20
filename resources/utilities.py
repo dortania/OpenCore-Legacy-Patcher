@@ -360,7 +360,9 @@ def get_firmware_vendor(*, decode: bool = False):
             value = value.strip("\0")
     return value
 
-def verify_network_connection(url):
+def verify_network_connection(url=None):
+    if url is None:
+        url = "https://www.google.com"
     try:
         response = SESSION.head(url, timeout=5, allow_redirects=True)
         return True

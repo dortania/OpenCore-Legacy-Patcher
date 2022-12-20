@@ -51,6 +51,7 @@ class detect_root_patch:
         self.fv_enabled      = False
         self.dosdude_patched = False
         self.missing_kdk     = False
+        self.has_network     = False
 
         self.missing_whatever_green = False
         self.missing_nv_web_nvram   = False
@@ -206,6 +207,31 @@ class detect_root_patch:
             if self.requires_root_kc is True:
                 self.missing_kdk = not self.check_kdk()
 
+        if (self.legacy_wifi is True and \
+            self.requires_root_kc is True and \
+            self.missing_kdk is True and \
+            self.constants.detected_os >= os_data.os_data.ventura
+        ):
+            if self.has_network is False:
+                # Due to the reliance of KDKs for most older patches, we'll allow KDK-less
+                # installs for Legacy Wifi patches and remove others
+                self.missing_kdk =      False
+                self.requires_root_kc = False
+
+                # Reset patches needing KDK
+                self.nvidia_tesla              = False
+                self.nvidia_web                = False
+                self.amd_ts1                   = False
+                self.amd_ts2                   = False
+                self.iron_gpu                  = False
+                self.sandy_gpu                 = False
+                self.legacy_gcn                = False
+                self.legacy_polaris            = False
+                self.brightness_legacy         = False
+                self.legacy_audio              = False
+                self.legacy_gmux               = False
+                self.legacy_keyboard_backlight = False
+
 
     def check_dgpu_status(self):
         dgpu = self.constants.computer.dgpu
@@ -303,7 +329,8 @@ class detect_root_patch:
         return (sip, sip_value, sip_hex)
 
     def detect_patch_set(self):
-        self.detect_gpus()
+        self.has_network = utilities.verify_network_connection()
+
         if self.model in model_array.LegacyBrightness:
             if self.constants.detected_os > os_data.os_data.catalina:
                 self.brightness_legacy = True
@@ -338,6 +365,8 @@ class detect_root_patch:
                 else:
                     self.legacy_gmux = True
 
+        self.detect_gpus()
+
         self.root_patch_dict = {
             "Graphics: Nvidia Tesla":                      self.nvidia_tesla,
             "Graphics: Nvidia Kepler":                     self.kepler_gpu,
@@ -371,6 +400,7 @@ class detect_root_patch:
             "Validation: Force OpenGL property missing":   self.missing_nv_web_opengl  if self.nvidia_web is True else False,
             "Validation: Force compat property missing":   self.missing_nv_compat      if self.nvidia_web is True else False,
             "Validation: nvda_drv(_vrl) variable missing": self.missing_nv_web_nvram   if self.nvidia_web is True else False,
+            "Validation: Network Connection Required":     not self.has_network if (self.requires_root_kc and self.missing_kdk and self.constants.detected_os >= os_data.os_data.ventura.value) else False,
         }
 
         return self.root_patch_dict
