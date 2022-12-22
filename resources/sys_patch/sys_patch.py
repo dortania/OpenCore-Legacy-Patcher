@@ -339,23 +339,20 @@ class PatchSysVolume:
         if self.constants.detected_os < os_data.os_data.big_sur:
             return
 
-        oclp_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
-        if not Path(oclp_path).exists():
-            return
-
         print("- Cleaning Auxiliary Kernel Collection")
-        oclp_plist_data = plistlib.load(Path(oclp_path).open("rb"))
-
-        for key in oclp_plist_data:
-            if "Install" not in oclp_plist_data[key]:
-                continue
-            for location in oclp_plist_data[key]["Install"]:
-                if not location.endswith("Extensions"):
+        oclp_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
+        if Path(oclp_path).exists():
+            oclp_plist_data = plistlib.load(Path(oclp_path).open("rb"))
+            for key in oclp_plist_data:
+                if "Install" not in oclp_plist_data[key]:
                     continue
-                for file in oclp_plist_data[key]["Install"][location]:
-                    if not file.endswith(".kext"):
+                for location in oclp_plist_data[key]["Install"]:
+                    if not location.endswith("Extensions"):
                         continue
-                    self.remove_file("/Library/Extensions", file)
+                    for file in oclp_plist_data[key]["Install"][location]:
+                        if not file.endswith(".kext"):
+                            continue
+                        self.remove_file("/Library/Extensions", file)
 
         # Handle situations where users migrated from older OSes with a lot of garbage in /L*/E*
         # ex. Nvidia Web Drivers, NetUSB, dosdude1's patches, etc.
