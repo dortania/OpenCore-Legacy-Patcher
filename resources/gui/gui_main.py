@@ -22,7 +22,7 @@ from resources import constants, defaults, install, installer, utilities, run, g
 from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch, sys_patch_auto
 from resources.build import build
 from data import model_array, os_data, smbios_data, sip_data
-from gui import menu_redirect, gui_help
+from resources.gui import menu_redirect, gui_help
 
 
 class wx_python_gui:

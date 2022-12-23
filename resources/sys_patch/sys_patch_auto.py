@@ -14,7 +14,7 @@ import subprocess
 import webbrowser
 from resources import utilities, updates, global_settings
 from resources.sys_patch import sys_patch_detect
-from gui import gui_main
+from resources.gui import gui_main
 
 class AutomaticSysPatch:
 
