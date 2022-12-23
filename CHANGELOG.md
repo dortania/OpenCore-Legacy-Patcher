@@ -7,8 +7,10 @@
 - Implement Wifi-only patches when no internet connection available but required (ie. KDKs)
   - Allows users to install Legacy Wireless patches, then connect to the internet to install remaining patches
 - Resolve `/Library/Extensions` not being cleaned on KDK-less root patches
+- Add AMD Vega Graphics support for pre-AVX2.0 systems on Ventura
+  - ex. AMD Vega 56 and 64, AMD Radeon VII
 - Increment Binaries:
-  - PatcherSupportPkg 0.7.2 - release
+  - PatcherSupportPkg 0.7.3 - release
 
 ## 0.5.3
 - Integrate FixPCIeLinkrate.efi v0.1.0

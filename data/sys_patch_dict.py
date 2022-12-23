@@ -630,6 +630,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "AMD8000Controller.kext":        "12.5",
                         "AMD9000Controller.kext":        "12.5",
                         "AMD9500Controller.kext":        "12.5",
+                        "AMD10000Controller.kext":       "12.5",
                         "AMDRadeonX4000.kext":           "12.5",
                         "AMDRadeonX4000HWServices.kext": "12.5",
                         "AMDFramebuffer.kext":           "12.5",
@@ -639,14 +640,6 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "AMDMTLBronzeDriver.bundle":     "12.5",
                         "AMDShared.bundle":              "12.5",
                     },
-                },
-                "Remove": {
-                    "/System/Library/Extensions": [
-                        # Due to downgraded AMDSupport.kext
-                        # In the future, we will have to downgrade the entire AMD stack
-                        # to support non-AVX2.0 machines with Vega or newer
-                        "AMD10000Controller.kext",
-                    ],
                 },
             },
             # Used only for AMD Polaris with host lacking AVX2.0
@@ -670,6 +663,51 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "AMDRadeonX4000GLDriver.bundle": "12.5",
                         "AMDMTLBronzeDriver.bundle":     "12.5",
                         "AMDShared.bundle":              "12.5",
+                    },
+                },
+            },
+            "AMD Legacy Vega": {
+                "Display Name": "Graphics: AMD Legacy Vega",
+                 "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Extensions": {
+                        "AMDRadeonX5000.kext":            "12.5",
+
+                        "AMDRadeonX5000GLDriver.bundle":  "12.5",
+                        "AMDRadeonX5000MTLDriver.bundle": "12.5",
+                        "AMDRadeonX5000Shared.bundle":    "12.5",
+
+                        "AMDShared.bundle":               "12.5",
+                    },
+                },
+            },
+            # Support mixed legacy and modern AMD GPUs
+            # Specifically systems using AMD GCN 1-3 and Vega (ex. MacPro6,1 with eGPU)
+            # Assume 'AMD Legacy GCN' patchset is installed alongside this
+            "AMD Legacy Vega Extended": {
+                "Display Name": "",
+                 "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Extensions": {
+                        "AMDRadeonX5000HWServices.kext": "12.5",
                     },
                 },
             },

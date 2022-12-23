@@ -29,6 +29,7 @@ class detect_root_patch:
         self.skylake_gpu    = False
         self.legacy_gcn     = False
         self.legacy_polaris = False
+        self.legacy_vega    = False
 
         # Misc Patch Detection
         self.brightness_legacy         = False
@@ -145,6 +146,15 @@ class detect_root_patch:
                         self.supports_metal = True
                         self.requires_root_kc = True
                         self.amfi_must_disable = True
+                elif gpu.arch == device_probe.AMD.Archs.Vega:
+                     if self.constants.detected_os > os_data.os_data.monterey:
+                        if "AVX2" in self.constants.computer.cpu.leafs:
+                            continue
+
+                        self.legacy_vega = True
+                        self.supports_metal = True
+                        self.requires_root_kc = True
+                        self.amfi_must_disable = True
                 elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
                     if self.constants.detected_os > non_metal_os:
                         self.iron_gpu = True
@@ -227,6 +237,7 @@ class detect_root_patch:
                 self.sandy_gpu                 = False
                 self.legacy_gcn                = False
                 self.legacy_polaris            = False
+                self.legacy_vega               = False
                 self.brightness_legacy         = False
                 self.legacy_audio              = False
                 self.legacy_gmux               = False
@@ -375,6 +386,7 @@ class detect_root_patch:
             "Graphics: AMD TeraScale 2":                   self.amd_ts2,
             "Graphics: AMD Legacy GCN":                    self.legacy_gcn,
             "Graphics: AMD Legacy Polaris":                self.legacy_polaris,
+            "Graphics: AMD Legacy Vega":                   self.legacy_vega,
             "Graphics: Intel Ironlake":                    self.iron_gpu,
             "Graphics: Intel Sandy Bridge":                self.sandy_gpu,
             "Graphics: Intel Ivy Bridge":                  self.ivy_gpu,
@@ -576,6 +588,13 @@ class detect_root_patch:
                 required_patches.update({"AMD Legacy Polaris": all_hardware_patchset["Graphics"]["AMD Legacy Polaris"]})
             if "AVX2" not in self.constants.computer.cpu.leafs:
                 required_patches.update({"AMD OpenCL": all_hardware_patchset["Graphics"]["AMD OpenCL"]})
+        if hardware_details["Graphics: AMD Legacy Vega"] is True:
+            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
+            required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
+            required_patches.update({"AMD Legacy Vega": all_hardware_patchset["Graphics"]["AMD Legacy Vega"]})
+            required_patches.update({"AMD OpenCL": all_hardware_patchset["Graphics"]["AMD OpenCL"]})
+            if hardware_details["Graphics: AMD Legacy GCN"] is True:
+                required_patches.update({"AMD Legacy Vega Extended": all_hardware_patchset["Graphics"]["AMD Legacy Vega Extended"]})
         if hardware_details["Brightness: Legacy Backlight Control"] is True:
             required_patches.update({"Legacy Backlight Control": all_hardware_patchset["Brightness"]["Legacy Backlight Control"]})
         if hardware_details["Audio: Legacy Realtek"] is True:
