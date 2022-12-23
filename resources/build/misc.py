@@ -184,6 +184,25 @@ class build_misc:
             if self.model in model_array.Missing_USB_Map_Ventura and self.constants.serial_settings not in ["Moderate", "Advanced"]:
                 support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map.kext")["MinKernel"] = "22.0.0"
 
+        # Add UHCI/OHCI drivers
+        # All Penryn Macs lack an internal USB hub to route USB 1.1 devices to the EHCI controller
+        # And MacPro4,1 and MacPro5,1 are the only post-Penryn Macs that lack an internal USB hub
+        # - Ref: https://techcommunity.microsoft.com/t5/microsoft-usb-blog/reasons-to-avoid-companion-controllers/ba-p/270710
+        #
+        # Required downgrades:
+        #  - IOUSBHostFamily.kext (only kext itself, not plugins)
+        #  - AppleUSBHub.kext
+        #  - AppleUSBEHCI.kext
+        # if (
+        #     smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value or \
+        #     self.model in ["MacPro4,1", "MacPro5,1"]
+        # ):
+        #     print("- Adding UHCI/OHCI USB support")
+        #     shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
+        #     support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCI.kext")["Enabled"] = True
+        #     support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
+        #     support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
+        #     support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
 
     def debug_handling(self):
         # DEBUG Settings (OpenCorePkg and Kernel Space)
