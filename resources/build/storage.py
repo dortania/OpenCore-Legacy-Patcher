@@ -24,8 +24,16 @@ class build_storage:
     def ahci_handling(self):
         # MacBookAir6,x ship with an AHCI over PCIe SSD model 'APPLE SSD TS0128F' and 'APPLE SSD TS0256F'
         # This controller is not supported properly in macOS Ventura, instead populating itself as 'Media' with no partitions
-        # To work-around this, use Monterey's AppleAHCI driver to force
-        if self.model in ["MacBookAir6,1", "MacBookAir6,2"]:
+        # To work-around this, use Monterey's AppleAHCI driver to force support
+        if not self.constants.custom_model:
+            sata_devices = [i for i in self.computer.storage if isinstance(i, device_probe.SATAController)]
+            for controller in enumerate(sata_devices):
+                # https://linux-hardware.org/?id=pci:1179-010b-1b4b-9183
+                if controller.vendor_id == 0x1179 and controller.device_id == 0x010b:
+                    print("- Enabling AHCI SSD patch")
+                    support.build_support(self.model, self.constants, self.config).enable_kext("MonteAHCIPort.kext", self.constants.monterey_ahci_version, self.constants.monterey_ahci_path)
+                    break
+        elif self.model in ["MacBookAir6,1", "MacBookAir6,2"]:
             print("- Enabling AHCI SSD patch")
             support.build_support(self.model, self.constants, self.config).enable_kext("MonteAHCIPort.kext", self.constants.monterey_ahci_version, self.constants.monterey_ahci_path)
 
