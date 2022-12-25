@@ -214,6 +214,7 @@ class Constants:
         self.legacy_accel_support = [
             os_data.os_data.big_sur,
             os_data.os_data.monterey,
+            os_data.os_data.ventura,
         ]
 
     # Payload Location
@@ -571,10 +572,6 @@ class Constants:
     @property
     def macserial_path(self):
         return self.payload_path / Path("OpenCore/macserial")
-
-    @property
-    def gfxutil_path(self):
-        return self.payload_path / Path("Tools/gfxutil")
 
     @property
     def vault_path(self):
