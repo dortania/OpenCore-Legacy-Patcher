@@ -12,6 +12,8 @@
 - Implement proper `APPLE SSD TS0128F/256F` detection
   - Allows all Macs to utilize patch if required
   - Avoids usage of patch when host lacks affected drive (ex. MacBookAir6,x with upgraded SSD)
+- Prompt with auto patcher when booted OpenCore is out of date to root patcher
+  - ex. Booted OCLP is 0.5.2, root patcher is 0.5.3
 - Increment Binaries:
   - PatcherSupportPkg 0.7.3 - release
 

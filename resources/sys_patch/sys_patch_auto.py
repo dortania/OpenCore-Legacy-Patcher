@@ -112,8 +112,44 @@ class AutomaticSysPatch:
         else:
             print("- Detected Snapshot seal not intact, skipping")
 
-        self.determine_if_boot_matches()
+        if self.determine_if_versions_match() is False:
+            self.determine_if_boot_matches()
 
+
+    def determine_if_versions_match(self):
+        print("- Checking booted vs installed OCLP Build")
+        if self.constants.computer.oclp_version is None:
+            print("- Booted version not found")
+            return False
+
+        if self.constants.computer.oclp_version == self.constants.patcher_version:
+            print("- Versions match")
+            return False
+
+        # Check if installed version is newer than booted version
+        if updates.check_binary_updates(self.constants).check_if_build_newer(
+            self.constants.computer.oclp_version.split("."), self.constants.patcher_version.split(".")
+        ) is True:
+            print("- Installed version is newer than booted version")
+            return False
+
+        args = [
+            "osascript",
+            "-e",
+            f"""display dialog "OpenCore Legacy Patcher has detected that you are booting an outdated OpenCore build\n- Booted: {self.constants.computer.oclp_version}\n- Installed: {self.constants.patcher_version}\n\nWould you like to update the OpenCore bootloader?" """
+            f'with icon POSIX file "{self.constants.app_icon_path}"',
+        ]
+        output = subprocess.run(
+            args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT
+        )
+        if output.returncode == 0:
+            print("- Launching GUI's Build/Install menu")
+            self.constants.start_build_install = True
+            gui_main.wx_python_gui(self.constants).main_menu(None)
+
+        return True
 
     def determine_if_boot_matches(self):
         # Goal of this function is to determine whether the user
