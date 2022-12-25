@@ -570,7 +570,7 @@ class Constants:
     # Tools
     @property
     def macserial_path(self):
-        return self.payload_path / Path("Tools/macserial")
+        return self.payload_path / Path("OpenCore/macserial")
 
     @property
     def gfxutil_path(self):
@@ -582,7 +582,7 @@ class Constants:
 
     @property
     def ocvalidate_path(self):
-        return self.payload_path / Path(f"Tools/ocvalidate-{self.opencore_version}")
+        return self.payload_path / Path(f"OpenCore/ocvalidate")
 
     @property
     def oclp_helper_path(self):
