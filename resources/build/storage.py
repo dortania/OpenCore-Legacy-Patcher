@@ -27,7 +27,7 @@ class build_storage:
         # To work-around this, use Monterey's AppleAHCI driver to force support
         if not self.constants.custom_model:
             sata_devices = [i for i in self.computer.storage if isinstance(i, device_probe.SATAController)]
-            for controller in enumerate(sata_devices):
+            for controller in sata_devices:
                 # https://linux-hardware.org/?id=pci:1179-010b-1b4b-9183
                 if controller.vendor_id == 0x1179 and controller.device_id == 0x010b:
                     print("- Enabling AHCI SSD patch")
