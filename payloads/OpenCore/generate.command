@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-# Simple script to delete unnecessary files from OpenCore and move into place
-# To use, simply :
+
+# Script to download and generate valid OpenCorePkg folder/file structure for use with OpenCore-Legacy-Patcher
+# To use:
 # - Download OpenCore-{VERSION}-{VARIANT}.zip
-#   - https://github.com/acidanthera/OpenCorePkg/releases
+#   - If no files are found, the script will download the latest version
 # - Place zips in same directory as this script
 # - Run script
-# TODO:
-# - Download latest builds from dortania.github.io
+
 
 import subprocess
 from pathlib import Path
+import requests
+
+REPO_URL = "https://api.github.com/repos/acidanthera/OpenCorePkg/releases/latest"
 
 BUILD_VARIANTS = [
     "DEBUG",
@@ -90,21 +93,21 @@ class GenerateOpenCore:
 
         # Find OpenCore DEBUG zip
         for file in self.working_dir.iterdir():
-            if file.name.endswith(".zip") and "DEBUG" in file.name:
+            if file.name.endswith("DEBUG.zip") and file.name != "OpenCore-DEBUG.zip":
                 print(f"   Found DEBUG zip: {file.name}")
                 self.debug_zip = file
 
         # Find OpenCore RELEASE zip
         for file in self.working_dir.iterdir():
-            if file.name.endswith(".zip") and "RELEASE" in file.name:
+            if file.name.endswith("RELEASE.zip") and file.name != "OpenCore-RELEASE.zip":
                 print(f"   Found RELEASE zip: {file.name}")
                 self.release_zip = file
 
         if self.debug_zip is None:
-            raise FileNotFoundError("DEBUG zip not found!")
+            self.download_new_binaries("DEBUG")
 
         if self.release_zip is None:
-            raise FileNotFoundError("RELEASE zip not found!")
+            self.download_new_binaries("RELEASE")
 
 
         # Unzip both, rename to OpenCore-DEBUG and OpenCore-RELEASE
@@ -157,6 +160,31 @@ class GenerateOpenCore:
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
+    def download_new_binaries(self, variant):
+        # Get latest release
+        print(f"Getting latest {variant}...")
+        latest_release = requests.get(REPO_URL).json()
+
+        # Get latest release download url
+        print(f"   Getting latest {variant} download url...")
+        for asset in latest_release["assets"]:
+            if asset["name"].endswith(f"{variant}.zip"):
+                download_url = asset["browser_download_url"]
+                print(f"   Download url: {download_url}")
+                break
+
+        if variant == "DEBUG":
+            self.debug_zip = f"{self.working_dir}/{asset['name']}"
+        elif variant == "RELEASE":
+            self.release_zip = f"{self.working_dir}/{asset['name']}"
+        else:
+            raise ValueError("Invalid variant!")
+
+        # Download latest release
+        print(f"   Downloading latest {variant}...")
+        download = requests.get(download_url)
+        with open(f"{self.working_dir}/{asset['name']}", "wb") as f:
+            f.write(download.content)
 
     def clean_old_bundles(self):
         print("Cleaning old bundles...")
