@@ -25,7 +25,7 @@ class kernel_debug_kit_handler:
         print("- Fetching available KDKs")
 
         try:
-            results = utilities.SESSION.get(KDK_API_LINK, headers={"User-Agent": f"OCLP/{self.constants.patcher_version}"})
+            results = utilities.SESSION.get(KDK_API_LINK, headers={"User-Agent": f"OCLP/{self.constants.patcher_version}"}, timeout=10)
         except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
             print("- Could not contact KDK API")
             return None
@@ -96,6 +96,11 @@ class kernel_debug_kit_handler:
         # 0: Portal is up and file is available
         # 1: Portal is up but file is not available
         # 2: Portal is down
+        # 3: Network error
+
+        if utilities.verify_network_connection("https://developerservices2.apple.com/services/download") is False:
+            print("- Could not connect to the network")
+            return 3
 
         TOKEN_URL_BASE = "https://developerservices2.apple.com/services/download"
         remote_path = urllib.parse.urlparse(link).path
@@ -196,6 +201,10 @@ class kernel_debug_kit_handler:
                 msg += " and could not find a backup copy online"
                 print(f"- {msg}")
                 return False, msg, ""
+        elif result == 3:
+            msg = "Failed to connect to the internet"
+            print(f"- {msg}")
+            return False, msg, ""
 
         if "github" in download_link:
             result = utilities.download_file(download_link, self.constants.kdk_download_path)
