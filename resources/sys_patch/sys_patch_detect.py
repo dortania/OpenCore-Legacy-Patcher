@@ -412,7 +412,7 @@ class detect_root_patch:
             "Validation: Force OpenGL property missing":   self.missing_nv_web_opengl  if self.nvidia_web is True else False,
             "Validation: Force compat property missing":   self.missing_nv_compat      if self.nvidia_web is True else False,
             "Validation: nvda_drv(_vrl) variable missing": self.missing_nv_web_nvram   if self.nvidia_web is True else False,
-            "Validation: Network Connection Required":     not self.has_network if (self.requires_root_kc and self.missing_kdk and self.constants.detected_os >= os_data.os_data.ventura.value) else False,
+            "Validation: Network Connection Required":     (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.constants.detected_os >= os_data.os_data.ventura.value) else False,
         }
 
         return self.root_patch_dict
@@ -485,6 +485,10 @@ class detect_root_patch:
                     print("\nCannot patch! WhateverGreen.kext missing")
                     print("Please ensure WhateverGreen.kext is installed")
 
+            if (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.constants.detected_os >= os_data.os_data.ventura.value) else False:
+                print("\nCannot patch! Network Connection Required")
+                print("Please ensure you have an active internet connection")
+
         if any(
             [
                 # General patch checks
@@ -498,6 +502,9 @@ class detect_root_patch:
                 self.missing_nv_web_opengl  if self.nvidia_web is True  else False,
                 self.missing_nv_compat      if self.nvidia_web is True  else False,
                 self.missing_whatever_green if self.nvidia_web is True  else False,
+
+                # KDK specific
+                (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.constants.detected_os >= os_data.os_data.ventura.value) else False
             ]
         ):
             return False
