@@ -3,7 +3,7 @@
 
 from resources import constants, device_probe, utilities
 from resources.build import support
-from data import smbios_data, model_array, os_data
+from data import smbios_data, model_array, os_data, cpu_data
 
 from pathlib import Path
 
