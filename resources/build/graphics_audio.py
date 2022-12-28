@@ -26,6 +26,7 @@ class build_graphics_audio:
         self.firmware_handling()
         self.spoof_handling()
         self.imac_mxm_patching()
+        self.ioaccel_workaround()
 
 
     def graphics_handling(self):
@@ -369,3 +370,43 @@ class build_graphics_audio:
             elif self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
                 self.backlight_path_detection()
                 self.nvidia_mxm_patch(self.gfx0_path)
+
+    def ioaccel_workaround(self):
+        # Handle misc IOAccelerator issues
+
+        # When MTL bundles are missing from disk, WindowServer will repeatedly crash
+        # This primarily occurs when installing an RSR update, where root is cleaned but AuxKC is not
+        gpu_dict = []
+        if not self.constants.custom_model:
+            gpu_dict = self.constants.computer.gpus
+        else:
+            if not self.model in smbios_data.smbios_dictionary:
+                return
+            gpu_dict = smbios_data.smbios_dictionary[self.model]["Stock GPUs"]
+        for gpu in gpu_dict:
+            if not self.constants.custom_model:
+                gpu = gpu.arch
+            if gpu in [
+                device_probe.Intel.Archs.Ivy_Bridge,
+                device_probe.Intel.Archs.Haswell,
+                device_probe.Intel.Archs.Broadwell,
+                device_probe.Intel.Archs.Skylake,
+                device_probe.NVIDIA.Archs.Kepler,
+            ]:
+                support.build_support(self.model, self.constants, self.config).enable_kext("KDKlessWorkaround.kext", self.constants.kdkless_version, self.constants.kdkless_path)
+                return
+
+        # KDKlessWorkaround supports disabling native AMD stack on Ventura for pre-AVX2.0 CPUs
+        # Applicable for Polaris, Vega, Navi GPUs
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] > cpu_data.cpu_data.ivy_bridge.value:
+            return
+        for gpu in gpu_dict:
+            if not self.constants.custom_model:
+                gpu = gpu.arch
+            if gpu in [
+                device_probe.AMD.Archs.Polaris,
+                device_probe.AMD.Archs.Vega,
+                device_probe.AMD.Archs.Navi,
+            ]:
+                support.build_support(self.model, self.constants, self.config).enable_kext("KDKlessWorkaround.kext", self.constants.kdkless_version, self.constants.kdkless_path)
+                return

@@ -14,8 +14,12 @@
   - Avoids usage of patch when host lacks affected drive (ex. MacBookAir6,x with upgraded SSD)
 - Prompt with auto patcher when booted OpenCore is out of date to root patcher
   - ex. Booted OCLP is 0.5.2, root patcher is 0.5.3
+- Disable native AMD Graphics on pre-Haswell Macs in Ventura
+  - Allows for easy root patching, dropping reliance on Safe Mode to boot
+  - Primarily applicable for Mac Pros with AMD Polaris and Vega GPUs
 - Increment Binaries:
   - PatcherSupportPkg 0.7.3 - release
+  - KDKlessWorkaround 1.0.0 - rolling (4924276)
 
 ## 0.5.3
 - Integrate FixPCIeLinkrate.efi v0.1.0
