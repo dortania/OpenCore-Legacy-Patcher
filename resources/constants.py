@@ -40,7 +40,7 @@ class Constants:
         self.restrictevents_version = "1.0.9"  #     RestrictEvents
         self.featureunlock_version = "1.1.2"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.7"  #      DebugEnhancer
-        self.cpufriend_version = "1.2.5"  #          CPUFriend
+        self.cpufriend_version = "1.2.6"  #          CPUFriend
         self.bluetool_version = "2.6.4"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
         self.autopkg_version = "1.0.1"  #            AutoPkgInstaller
