@@ -20,6 +20,7 @@
 - Increment Binaries:
   - PatcherSupportPkg 0.7.3 - release
   - KDKlessWorkaround 1.0.0 - rolling (4924276)
+  - FeatureUnlock 1.1.2 - rolling (eee2846)
 
 ## 0.5.3
 - Integrate FixPCIeLinkrate.efi v0.1.0

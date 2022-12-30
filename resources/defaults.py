@@ -16,6 +16,8 @@ class generate_defaults:
         self.constants.secure_status = False
         self.constants.disable_cs_lv = False
         self.constants.disable_amfi  = False
+        self.constants.fu_status =     True
+        self.constants.fu_arguments =  None
 
         self.constants.custom_serial_number =       ""
         self.constants.custom_board_serial_number = ""
@@ -119,17 +121,41 @@ class generate_defaults:
 
 
     def networking_probe(self):
-        if (
-            isinstance(self.constants.computer.wifi, device_probe.Broadcom) and
-            self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
-        ) or (
-            isinstance(self.constants.computer.wifi, device_probe.Atheros) and
-            self.constants.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40
-        ):
-            # 12.0: Legacy Wireless chipsets require root patching
-            self.constants.sip_status = False
-            self.constants.secure_status = False
+        if self.host_is_target:
+            if not (
+                (
+                    isinstance(self.constants.computer.wifi, device_probe.Broadcom) and
+                    self.constants.computer.wifi.chipset in [
+                        device_probe.Broadcom.Chipsets.AirPortBrcm4331,
+                        device_probe.Broadcom.Chipsets.AirPortBrcm43224,
+                    ]
+                ) or (
+                    isinstance(self.constants.computer.wifi, device_probe.Atheros) and
+                    self.constants.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40
+                )
+            ):
+                return
 
+        else:
+            if not self.model in smbios_data.smbios_dictionary:
+                return
+            if (
+                smbios_data.smbios_dictionary[self.model]["Wireless Model"] not in [
+                    device_probe.Broadcom.Chipsets.AirPortBrcm4331,
+                    device_probe.Broadcom.Chipsets.AirPortBrcm43224,
+                    device_probe.Atheros.Chipsets.AirPortAtheros40
+                ]
+            ):
+                return
+
+        # 12.0: Legacy Wireless chipsets require root patching
+        self.constants.sip_status = False
+        self.constants.secure_status = False
+
+        # 13.0: Enabling AirPlay to Mac patches breaks Control Center on legacy chipsets
+        # AirPlay to Mac was unsupported regardless, so we can safely disable it
+        self.constants.fu_status = True
+        self.constants.fu_arguments = " -disable_sidecar_mac"
 
     def misc_hardwares_probe(self):
         if self.host_is_target:
