@@ -1,6 +1,6 @@
 # pylint: disable=multiple-statements
 # Define Files
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
 from pathlib import Path
 from typing import Optional
@@ -20,7 +20,7 @@ class Constants:
         self.guide_link = "https://dortania.github.io/OpenCore-Legacy-Patcher/"
         self.repo_link = "https://github.com/dortania/OpenCore-Legacy-Patcher"
         self.repo_link_latest = f"{self.repo_link}/releases/tag/{self.patcher_version}"
-        self.copyright_date = "Copyright © 2020-2022 Dortania"
+        self.copyright_date = "Copyright © 2020-2023 Dortania"
         self.installer_pkg_url = f"{self.repo_link}/releases/download/{self.patcher_version}/AutoPkg-Assets.pkg"
         self.installer_pkg_url_nightly = "http://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython/main/AutoPkg-Assets.pkg.zip"
 
