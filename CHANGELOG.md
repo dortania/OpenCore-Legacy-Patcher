@@ -18,10 +18,12 @@
   - Allows for easy root patching, dropping reliance on Safe Mode to boot
   - Primarily applicable for Mac Pros with AMD Polaris and Vega GPUs
 - Increment Binaries:
+  - OpenCorePkg 0.8.8 - release
   - PatcherSupportPkg 0.7.3 - release
   - KDKlessWorkaround 1.0.0 - rolling (4924276)
-  - FeatureUnlock 1.1.2 - rolling (eee2846)
+  - FeatureUnlock 1.1.2 - release
   - CPUFriend 1.2.6 - release
+  - Lilu 1.6.3 - release
 
 ## 0.5.3
 - Integrate FixPCIeLinkrate.efi v0.1.0
