@@ -8,6 +8,8 @@ from resources.sys_patch import sys_patch_helpers
 from data import model_array, os_data, sip_data, sys_patch_dict
 
 import py_sip_xnu
+from pathlib import Path
+import plistlib
 
 class detect_root_patch:
     def __init__(self, model, versions):
@@ -217,31 +219,54 @@ class detect_root_patch:
             if self.requires_root_kc is True:
                 self.missing_kdk = not self.check_kdk()
 
-        if (self.legacy_wifi is True and \
-            self.requires_root_kc is True and \
-            self.missing_kdk is True and \
-            self.constants.detected_os >= os_data.os_data.ventura
-        ):
-            if self.has_network is False:
-                # Due to the reliance of KDKs for most older patches, we'll allow KDK-less
-                # installs for Legacy Wifi patches and remove others
-                self.missing_kdk =      False
-                self.requires_root_kc = False
+        self.check_networking_support()
 
-                # Reset patches needing KDK
-                self.nvidia_tesla              = False
-                self.nvidia_web                = False
-                self.amd_ts1                   = False
-                self.amd_ts2                   = False
-                self.iron_gpu                  = False
-                self.sandy_gpu                 = False
-                self.legacy_gcn                = False
-                self.legacy_polaris            = False
-                self.legacy_vega               = False
-                self.brightness_legacy         = False
-                self.legacy_audio              = False
-                self.legacy_gmux               = False
-                self.legacy_keyboard_backlight = False
+
+    def check_networking_support(self):
+        # On macOS Ventura, networking support is required to download KDKs.
+        # However for machines such as BCM94322, BCM94328 and Atheros chipsets,
+        # users may only have wifi as their only supported network interface.
+        # Thus we'll allow for KDK-less installs for these machines on first run.
+        # On subsequent runs, we'll require networking to be enabled.
+
+        if self.constants.detected_os < os_data.os_data.ventura:
+            return
+        if self.legacy_wifi is False:
+            return
+        if self.requires_root_kc is False:
+            return
+        if self.missing_kdk is False:
+            return
+        if self.has_network is True:
+            return
+
+        # Verify whether OCLP already installed network patches to the root volume
+        # If so, require networking to be enabled (user just needs to connect to wifi)
+        oclp_patch_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
+        if Path(oclp_patch_path).exists():
+            oclp_plist = plistlib.load(open(oclp_patch_path, "rb"))
+            if "Legacy Wireless" in oclp_plist:
+                return
+
+        # Due to the reliance of KDKs for most older patches, we'll allow KDK-less
+        # installs for Legacy Wifi patches and remove others
+        self.missing_kdk =      False
+        self.requires_root_kc = False
+
+        # Reset patches needing KDK
+        self.nvidia_tesla              = False
+        self.nvidia_web                = False
+        self.amd_ts1                   = False
+        self.amd_ts2                   = False
+        self.iron_gpu                  = False
+        self.sandy_gpu                 = False
+        self.legacy_gcn                = False
+        self.legacy_polaris            = False
+        self.legacy_vega               = False
+        self.brightness_legacy         = False
+        self.legacy_audio              = False
+        self.legacy_gmux               = False
+        self.legacy_keyboard_backlight = False
 
 
     def check_dgpu_status(self):
