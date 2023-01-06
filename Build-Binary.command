@@ -85,6 +85,8 @@ class create_binary:
             self.move_launcher()
         self.patch_load_command()
         self.add_commit_data()
+        self.post_flight_cleanup()
+        self.mini_validate()
 
     def build_binary(self):
         if Path(f"./dist/OpenCore-Patcher.app").exists():
@@ -265,6 +267,32 @@ class create_binary:
             print("  - Move failed")
             print(mv_output.stderr.decode('utf-8'))
             raise Exception("Move failed")
+
+    def post_flight_cleanup(self):
+        # Remove ./dist/OpenCore-Patcher
+        path = "./dist/OpenCore-Patcher"
+        print(f"  - Removing {path}")
+        rm_output = subprocess.run(
+            ["rm", "-rf", path],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        if rm_output.returncode != 0:
+            print(f"  - Remove failed: {path}")
+            print(rm_output.stderr.decode('utf-8'))
+            raise Exception(f"Remove failed: {path}")
+
+    def mini_validate(self):
+        # Ensure binary can start
+        # Only build a single config, TUI CI will do in-depth validation
+        print("  - Validating binary")
+        validate_output = subprocess.run(
+            ["./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher", "--build", "--model", "MacPro3,1"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+        if validate_output.returncode != 0:
+            print("  - Validation failed")
+            print(validate_output.stderr.decode('utf-8'))
+            raise Exception("Validation failed")
 
 if __name__ == "__main__":
     create_binary()

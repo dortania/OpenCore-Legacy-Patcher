@@ -17,6 +17,7 @@
 - Disable native AMD Graphics on pre-Haswell Macs in Ventura
   - Allows for easy root patching, dropping reliance on Safe Mode to boot
   - Primarily applicable for Mac Pros with AMD Polaris and Vega GPUs
+- Implement mini validation during GUI build
 - Increment Binaries:
   - OpenCorePkg 0.8.8 - release
   - PatcherSupportPkg 0.7.3 - release
