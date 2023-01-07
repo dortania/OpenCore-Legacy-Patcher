@@ -111,7 +111,7 @@ class PatchSysVolume:
                         print(result.stdout.decode().strip())
         return False
 
-    def merge_kdk_with_root(self):
+    def merge_kdk_with_root(self, save_hid_cs=False):
         if self.skip_root_kmutil_requirement is True:
             return
         if self.constants.detected_os < os_data.os_data.ventura:
@@ -145,6 +145,14 @@ class PatchSysVolume:
             raise Exception("Unable to find Kernel Debug Kit")
         self.kdk_path = kdk_path
         print(f"- Found KDK at: {kdk_path}")
+
+        # Due to some IOHIDFamily oddities, we need to ensure their CodeSignature is retained
+        cs_path = Path(self.mount_location) / Path("System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDEventDriver.kext/Contents/_CodeSignature")
+        if save_hid_cs is True and cs_path.exists():
+            print("- Backing up IOHIDEventDriver CodeSignature")
+            # Note it's a folder, not a file
+            utilities.elevated(["cp", "-r", cs_path, f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
         print("- Merging KDK with Root Volume")
         utilities.elevated(
             # Only merge '/System/Library/Extensions'
@@ -158,6 +166,16 @@ class PatchSysVolume:
             print("- Failed to merge KDK with Root Volume")
             raise Exception("Failed to merge KDK with Root Volume")
         print("- Successfully merged KDK with Root Volume")
+
+        # Restore IOHIDEventDriver CodeSignature
+        if save_hid_cs is True and Path(f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak").exists():
+            print("- Restoring IOHIDEventDriver CodeSignature")
+            if not cs_path.exists():
+                print("  - CodeSignature folder missing, creating")
+                utilities.elevated(["mkdir", "-p", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["cp", "-r", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["rm", "-rf", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
 
     def unpatch_root_vol(self):
         if self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is True:
@@ -541,7 +559,10 @@ class PatchSysVolume:
                                 raise Exception(f"Failed to find {source_file}")
 
         # Ensure KDK is properly installed
-        self.merge_kdk_with_root()
+        should_save_cs = False
+        if "Legacy USB 1.1" in required_patches:
+            should_save_cs = True
+        self.merge_kdk_with_root(save_hid_cs=should_save_cs)
 
         print("- Finished Preflight, starting patching")
 
