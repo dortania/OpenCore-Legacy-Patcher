@@ -81,13 +81,12 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     "/Library/Application Support/SkyLightPlugins": {
                         **({ "DropboxHack.dylib":    "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
                         **({ "DropboxHack.txt":      "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
-                        **({ "CatalystButton.dylib": "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
-                        **({ "CatalystButton.txt":   "SkyLightPlugins" } if os_major >= os_data.os_data.monterey else {}),
                     },
                 },
                 "Processes": {
                     # 'When Space Allows' option introduced in 12.4 (XNU 21.5)
                     **({"defaults write /Library/Preferences/.GlobalPreferences.plist ShowDate -int 1": True } if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 4, os_major, os_minor) else {}),
+                    "defaults write /Library/Preferences/.GlobalPreferences.plist InternalDebugUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                 },
             },
             "Non-Metal IOAccelerator Common": {

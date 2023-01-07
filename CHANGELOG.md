@@ -22,9 +22,20 @@
   - Implemented via Root Volume patching, ie. no installer support at this time
   - Applicable for Penryn Macs and Cheese Grater Mac Pros (MacPro3,1 - MacPro5,1)
   - See associated issue for current limitations: [Legacy UHCI/OHCI support in Ventura](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)
+- Add early non-Metal Graphics Acceleration support for macOS Ventura
+  - Applicable for following GPU architectures:
+    - Intel Ironlake and Sandy Bridge
+    - Nvidia Tesla, Maxwell and Pascal
+    - AMD TeraScale 1 and 2
+  - Note: Bluetooth Pairing is currently semi-functional, revert root patches to pair if you have issues
+- Overall non-Metal improvements:
+  - Improved fake rim
+  - Fixed full screen animation
+  - Fixed split screen
+  - Improved menubar blur
 - Increment Binaries:
   - OpenCorePkg 0.8.8 - release
-  - PatcherSupportPkg 0.7.4 - release
+  - PatcherSupportPkg 0.8.0 - release
   - KDKlessWorkaround 1.0.0 - rolling (4924276)
   - FeatureUnlock 1.1.2 - release
   - CPUFriend 1.2.6 - release

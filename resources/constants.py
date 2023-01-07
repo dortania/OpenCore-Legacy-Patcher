@@ -13,7 +13,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.5.4"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.7.4"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.8.0"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link = "https://discord.gg/rqdPgH8xSN"
@@ -214,7 +214,7 @@ class Constants:
         self.legacy_accel_support = [
             os_data.os_data.big_sur,
             os_data.os_data.monterey,
-            # os_data.os_data.ventura,
+            os_data.os_data.ventura,
         ]
 
     # Payload Location
