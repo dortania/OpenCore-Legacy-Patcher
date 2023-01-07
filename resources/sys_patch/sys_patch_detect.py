@@ -5,7 +5,7 @@
 
 from resources import constants, device_probe, utilities, amfi_detect
 from resources.sys_patch import sys_patch_helpers
-from data import model_array, os_data, sip_data, sys_patch_dict
+from data import model_array, os_data, sip_data, sys_patch_dict, smbios_data, cpu_data
 
 import py_sip_xnu
 from pathlib import Path
@@ -39,6 +39,7 @@ class detect_root_patch:
         self.legacy_wifi               = False
         self.legacy_gmux               = False
         self.legacy_keyboard_backlight = False
+        self.legacy_uhci_ohci          = False
 
         # Patch Requirements
         self.amfi_must_disable   = False
@@ -364,8 +365,40 @@ class detect_root_patch:
             sip_value = f"For Hackintoshes, please set csr-active-config to '03060000' ({sip_hex})\nFor non-OpenCore Macs, please run 'csrutil disable' in RecoveryOS"
         return (sip, sip_value, sip_hex)
 
+    def check_uhci_ohci(self):
+        if self.constants.detected_os < os_data.os_data.ventura:
+            return False
+
+        # If we're on a hackintosh, check for UHCI/OHCI controllers
+        if self.constants.host_is_hackintosh is True:
+            for controller in self.constants.computer.usb_controllers:
+                if (
+                    isinstance(controller, device_probe.UHCIController) or
+                    isinstance(controller, device_probe.OHCIController)
+                ):
+                    return True
+            return False
+
+        if self.model not in smbios_data.smbios_dictionary:
+            return False
+
+        # If we're on a Mac, check for Penryn or older
+        # This is due to Apple implementing an internal USB hub on post-Penryn (excluding MacPro4,1 and MacPro5,1)
+        # Ref: https://techcommunity.microsoft.com/t5/microsoft-usb-blog/reasons-to-avoid-companion-controllers/ba-p/270710
+        if (
+            smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value or \
+            self.model in ["MacPro4,1", "MacPro5,1"]
+        ):
+            return True
+
+        return False
+
     def detect_patch_set(self):
         self.has_network = utilities.verify_network_connection()
+
+        if self.check_uhci_ohci() is True:
+            self.legacy_uhci_ohci = True
+            self.requires_root_kc = True
 
         if self.model in model_array.LegacyBrightness:
             if self.constants.detected_os > os_data.os_data.catalina:
@@ -423,6 +456,7 @@ class detect_root_patch:
             "Networking: Legacy Wireless":                 self.legacy_wifi,
             "Miscellaneous: Legacy GMUX":                  self.legacy_gmux,
             "Miscellaneous: Legacy Keyboard Backlight":    self.legacy_keyboard_backlight,
+            "Miscellaneous: Legacy USB 1.1":               self.legacy_uhci_ohci,
             "Settings: Requires AMFI exemption":           self.amfi_must_disable,
             "Settings: Supports Auxiliary Cache":          not self.requires_root_kc,
             "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,
@@ -641,6 +675,8 @@ class detect_root_patch:
             required_patches.update({"Legacy GMUX": all_hardware_patchset["Miscellaneous"]["Legacy GMUX"]})
         if hardware_details["Miscellaneous: Legacy Keyboard Backlight"] is True:
             required_patches.update({"Legacy Keyboard Backlight": all_hardware_patchset["Miscellaneous"]["Legacy Keyboard Backlight"]})
+        if hardware_details["Miscellaneous: Legacy USB 1.1"] is True:
+            required_patches.update({"Legacy USB 1.1": all_hardware_patchset["Miscellaneous"]["Legacy USB 1.1"]})
 
         if required_patches:
             host_os_float = float(f"{self.constants.detected_os}.{self.constants.detected_os_minor}")

@@ -18,9 +18,13 @@
   - Allows for easy root patching, dropping reliance on Safe Mode to boot
   - Primarily applicable for Mac Pros with AMD Polaris and Vega GPUs
 - Implement mini validation during GUI build
+- Add early UHCI/OHCI support (USB1.1)
+  - Implemented via Root Volume patching, ie. no installer support at this time
+  - Applicable for Penryn Macs and Cheese Grater Mac Pros (MacPro3,1 - MacPro5,1)
+  - See associated issue for current limitations: [Legacy UHCI/OHCI support in Ventura](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)
 - Increment Binaries:
   - OpenCorePkg 0.8.8 - release
-  - PatcherSupportPkg 0.7.3 - release
+  - PatcherSupportPkg 0.7.4 - release
   - KDKlessWorkaround 1.0.0 - rolling (4924276)
   - FeatureUnlock 1.1.2 - release
   - CPUFriend 1.2.6 - release

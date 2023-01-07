@@ -253,13 +253,3 @@ class generate_defaults:
                 if os_data.os_data.ventura in self.constants.legacy_accel_support:
                     # Only disable AMFI if we officially support Ventura
                     self.constants.disable_amfi = True
-
-                if self.host_is_target:
-                    self.constants.host_is_non_metal = True
-                    # If a Mac is non-Metal based, Beta Blur is highly recommended
-                    if self.constants.detected_os >= os_data.os_data.big_sur:
-                        for arg in ["Moraea_BlurBeta"]:
-                            # If user explicitly set the blur, don't override
-                            arg_result = subprocess.run(["defaults", "read", "-g", arg], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-                            if arg_result not in ["true", "1", "false", "0"]:
-                                subprocess.run(["defaults", "write", "-g", arg, "-bool", "TRUE"])

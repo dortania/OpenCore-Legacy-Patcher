@@ -1030,6 +1030,28 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                     "defaults write /Library/Preferences/.GlobalPreferences.plist Moraea_BacklightHack -bool true": True,
                 },
             },
+            "Legacy USB 1.1": {
+                "Display Name": "Miscellaneous: Legacy USB 1.1",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install Reference": {
+                    "/System/Library/Extensions/IOUSBHostFamily.kext/Contents/MacOS": {
+                        "IOUSBHostFamily": "12.6.2",
+                    },
+                    "/System/Library/Extensions/IOUSBHostFamily.kext/Contents/PlugIns": {
+                        "AppleUSBEHCI.kext": "12.6.2",
+                        "AppleUSBHub.kext": "12.6.2",
+                    },
+                },
+            }
         },
     }
 

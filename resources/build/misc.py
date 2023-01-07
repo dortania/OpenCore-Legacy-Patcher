@@ -192,16 +192,16 @@ class build_misc:
         #  - IOUSBHostFamily.kext (only kext itself, not plugins)
         #  - AppleUSBHub.kext
         #  - AppleUSBEHCI.kext
-        # if (
-        #     smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value or \
-        #     self.model in ["MacPro4,1", "MacPro5,1"]
-        # ):
-        #     print("- Adding UHCI/OHCI USB support")
-        #     shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
-        #     support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCI.kext")["Enabled"] = True
-        #     support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
-        #     support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
-        #     support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
+        if (
+            smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value or \
+            self.model in ["MacPro4,1", "MacPro5,1"]
+        ):
+            print("- Adding UHCI/OHCI USB support")
+            shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
+            support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCI.kext")["Enabled"] = True
+            support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
+            support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
+            support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
 
     def debug_handling(self):
         # DEBUG Settings (OpenCorePkg and Kernel Space)
