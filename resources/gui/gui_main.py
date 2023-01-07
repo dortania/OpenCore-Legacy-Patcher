@@ -3590,11 +3590,11 @@ OpenCore Legacy Patcher by default knows the most ideal
         else:
             is_blur_enabled = False
 
-        is_rim_disabled = subprocess.run(["defaults", "read", "-g", "Moraea_RimBetaDisabled"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-        if is_rim_disabled in ["1", "true"]:
-            is_rim_disabled = True
+        is_rim_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_RimBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        if is_rim_enabled in ["1", "true"]:
+            is_rim_enabled = True
         else:
-            is_rim_disabled = False
+            is_rim_enabled = False
 
         # Checkbox: Dark Menu Bar
         self.dark_menu_bar_checkbox = wx.CheckBox(self.frame_modal, label="Dark Menu Bar")
@@ -3610,8 +3610,8 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.enable_beta_blur_checkbox.SetPosition(wx.Point(self.dark_menu_bar_checkbox.GetPosition().x, self.dark_menu_bar_checkbox.GetPosition().y + self.dark_menu_bar_checkbox.GetSize().height + 7))
 
         # Checkbox: Enable Beta Rim
-        self.enable_beta_rim_checkbox = wx.CheckBox(self.frame_modal, label="Disable Beta Rim")
-        self.enable_beta_rim_checkbox.SetValue(is_rim_disabled)
+        self.enable_beta_rim_checkbox = wx.CheckBox(self.frame_modal, label="Enable Beta Rim")
+        self.enable_beta_rim_checkbox.SetValue(is_rim_enabled)
         self.enable_beta_rim_checkbox.Bind(wx.EVT_CHECKBOX, self.enable_beta_rim_click)
         self.enable_beta_rim_checkbox.SetPosition(wx.Point(self.enable_beta_blur_checkbox.GetPosition().x, self.enable_beta_blur_checkbox.GetPosition().y + self.enable_beta_blur_checkbox.GetSize().height + 7))
 
@@ -3640,7 +3640,7 @@ OpenCore Legacy Patcher by default knows the most ideal
 
     def enable_beta_rim_click(self, event=None):
         if event.IsChecked():
-            subprocess.run(["defaults", "write", "-g", "Moraea_RimBetaDisabled", "-bool", "true"])
+            subprocess.run(["defaults", "write", "-g", "Moraea_RimBeta", "-bool", "true"])
         else:
-            subprocess.run(["defaults", "write", "-g", "Moraea_RimBetaDisabled", "-bool", "false"])
+            subprocess.run(["defaults", "write", "-g", "Moraea_RimBeta", "-bool", "false"])
         print("Beta Rim Enabled:", event.IsChecked())

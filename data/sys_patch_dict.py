@@ -1042,7 +1042,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 99
                     },
                 },
-                "Install Reference": {
+                "Install": {
                     "/System/Library/Extensions/IOUSBHostFamily.kext/Contents/MacOS": {
                         "IOUSBHostFamily": "12.6.2",
                     },
