@@ -27,7 +27,7 @@
     - Intel Ironlake and Sandy Bridge
     - Nvidia Tesla, Maxwell and Pascal
     - AMD TeraScale 1 and 2
-  - Note: Bluetooth Pairing is currently semi-functional, revert root patches to pair if you have issues
+  - Note: Bluetooth Pairing is currently semi-functional, see here for work around: [Tab+Space work-around](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/post-31858759)
 - Overall non-Metal improvements:
   - Improved fake rim
   - Fixed full screen animation
