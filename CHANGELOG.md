@@ -35,7 +35,7 @@
   - Improved menubar blur
 - Add Nvidia Kepler GOP Driver injection
   - Primarily for GPUs lacking GOPs and can't have a newer VBIOS flashed
-- Resolve Rapid Security Response support for Haswell Macs requiring KDKs
+- Resolve Rapid Security Response support for Haswell+ Macs requiring KDKs
   - Implemented via:
     - Userspace: RSRRepair at `/etc/rc.server` (2b1c9e3)
     - Kernelspace: RSRHelper.kext (cbe1be9)
