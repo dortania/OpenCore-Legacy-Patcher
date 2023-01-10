@@ -33,6 +33,8 @@
   - Fixed full screen animation
   - Fixed split screen
   - Improved menubar blur
+- Add Nvidia Kepler GOP Driver injection
+  - Primarily for GPUs lacking GOPs and can't have a newer VBIOS flashed
 - Increment Binaries:
   - OpenCorePkg 0.8.8 - release
   - PatcherSupportPkg 0.8.0 - release

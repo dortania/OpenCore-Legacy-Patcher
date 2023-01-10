@@ -2581,23 +2581,33 @@ class wx_python_gui:
         self.timeout_spinner.Centre(wx.HORIZONTAL)
 
         # AMD GOP Injection
-        self.set_gop_injection = wx.CheckBox(self.frame_modal, label="AMD GOP Injection")
-        self.set_gop_injection.SetPosition(wx.Point(
+        self.set_amd_gop_injection = wx.CheckBox(self.frame_modal, label="AMD GOP Injection")
+        self.set_amd_gop_injection.SetPosition(wx.Point(
             30,
             self.timeout_spinner.GetPosition().y + self.timeout_spinner.GetSize().height + 5))
-        self.set_gop_injection.SetValue(self.constants.gop_injection)
-        self.set_gop_injection.Bind(wx.EVT_CHECKBOX, self.gop_injection_checkbox_click)
+        self.set_amd_gop_injection.SetValue(self.constants.amd_gop_injection)
+        self.set_amd_gop_injection.Bind(wx.EVT_CHECKBOX, self.amd_gop_injection_checkbox_click)
         models = ["iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2", "MacPro3,1", "MacPro4,1", "MacPro5,1", "Xserve2,1", "Xserve3,1"]
         if (not self.constants.custom_model and self.computer.real_model not in models) or (self.constants.custom_model and self.constants.custom_model not in models):
-            self.set_gop_injection.Disable()
+            self.set_amd_gop_injection.Disable()
+
+        # Nvidia Kepler GOP injection
+        self.set_nvidia_kepler_gop_injection = wx.CheckBox(self.frame_modal, label="Nvidia Kepler GOP Injection")
+        self.set_nvidia_kepler_gop_injection.SetPosition(wx.Point(
+            self.set_amd_gop_injection.GetPosition().x,
+            self.set_amd_gop_injection.GetPosition().y + self.set_amd_gop_injection.GetSize().height))
+        self.set_nvidia_kepler_gop_injection.SetValue(self.constants.nvidia_kepler_gop_injection)
+        self.set_nvidia_kepler_gop_injection.Bind(wx.EVT_CHECKBOX, self.nvidia_kepler_gop_injection_checkbox_click)
+        if (not self.constants.custom_model and self.computer.real_model not in models) or (self.constants.custom_model and self.constants.custom_model not in models):
+            self.set_nvidia_kepler_gop_injection.Disable()
 
         # Disable Thunderbolt
         self.disable_thunderbolt_checkbox = wx.CheckBox(self.frame_modal, label="Disable Thunderbolt")
         self.disable_thunderbolt_checkbox.SetValue(self.constants.disable_tb)
         self.disable_thunderbolt_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_tb_click)
         self.disable_thunderbolt_checkbox.SetPosition(wx.Point(
-            self.set_gop_injection.GetPosition().x,
-            self.set_gop_injection.GetPosition().y + self.set_gop_injection.GetSize().height))
+            self.set_nvidia_kepler_gop_injection.GetPosition().x,
+            self.set_nvidia_kepler_gop_injection.GetPosition().y + self.set_nvidia_kepler_gop_injection.GetSize().height))
         self.disable_thunderbolt_checkbox.SetToolTip(wx.ToolTip("Disables Thunderbolt support on MacBookPro11,x\nMainly applicable for systems that cannot boot with Thunderbolt enabled"))
         if not self.constants.custom_model and not self.computer.real_model.startswith("MacBookPro11"):
             self.disable_thunderbolt_checkbox.Disable()
@@ -2846,13 +2856,21 @@ class wx_python_gui:
             print("Content Caching Disabled")
             self.constants.set_content_caching = False
 
-    def gop_injection_checkbox_click(self, event=None):
-        if self.set_gop_injection.GetValue():
-            print("GOP Injection Enabled")
-            self.constants.gop_injection = True
+    def amd_gop_injection_checkbox_click(self, event=None):
+        if self.set_amd_gop_injection.GetValue():
+            print("AMD GOP Injection Enabled")
+            self.constants.amd_gop_injection = True
         else:
-            print("GOP Injection Disabled")
-            self.constants.gop_injection = False
+            print("AMD GOP Injection Disabled")
+            self.constants.amd_gop_injection = False
+
+    def nvidia_kepler_gop_injection_checkbox_click(self, event=None):
+        if self.set_nvidia_kepler_gop_injection.GetValue():
+            print("Nvidia Kepler GOP Injection Enabled")
+            self.constants.nvidia_kepler_gop_injection = True
+        else:
+            print("Nvidia Kepler GOP Injection Disabled")
+            self.constants.nvidia_kepler_gop_injection = False
 
     def disable_tb_click(self, event=None):
         if self.disable_thunderbolt_checkbox.GetValue():

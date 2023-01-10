@@ -2543,6 +2543,18 @@
 				<key>Comment</key>
 				<string></string>
 				<key>Path</key>
+				<string>NVGOP_GK.efi</string>
+				<key>Enabled</key>
+				<false/>
+				<key>Arguments</key>
+				<string></string>
+				<key>LoadEarly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string></string>
+				<key>Path</key>
 				<string>FixPCIeLinkRate.efi</string>
 				<key>Enabled</key>
 				<false/>
