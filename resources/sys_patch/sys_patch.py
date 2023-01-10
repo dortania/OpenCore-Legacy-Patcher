@@ -295,6 +295,9 @@ class PatchSysVolume:
 
             for file in ["KextPolicy", "KextPolicy-shm", "KextPolicy-wal"]:
                 self.remove_file("/private/var/db/SystemPolicyConfiguration/", file)
+        else:
+            # Install RSRHelper utility to handle desynced KCs
+            sys_patch_helpers.sys_patch_helpers(self.constants).install_rsr_repair_binary()
 
         print("- Successfully built new kernel cache")
         return True

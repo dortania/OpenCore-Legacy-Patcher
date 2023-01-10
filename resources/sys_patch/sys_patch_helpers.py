@@ -184,3 +184,23 @@ class sys_patch_helpers:
             with open(file_path, "wb") as f:
                 plistlib.dump(data, f, sort_keys=False)
             subprocess.run(["killall", "NotificationCenter"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+
+    def install_rsr_repair_binary(self):
+        # With macOS 13.2, Apple implemented the Rapid Security Response System
+        # However Apple added a half baked snapshot reversion system if seal was broken,
+        # which forgets to handle Preboot BootKC syncing
+
+        # Thus this application will try to re-sync the BootKC with SysKC in the event of a panic
+        # Reference: https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1019
+
+        # This is a (hopefully) temporary work-around, however likely to stay.
+        # RSRRepair has the added bonus of fixing desynced KCs from 'bless', so useful in Big Sur+
+
+        if self.constants.detected_os < os_data.os_data.big_sur:
+            return
+
+        print("- Installing RSRRepair userspace utility")
+        result = utilities.elevated([self.constants.rsrrepair_userspace_path, "--install"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if result.returncode != 0:
+            print(f"  - Failed to install RSRRepair: {result.stdout.decode()}")

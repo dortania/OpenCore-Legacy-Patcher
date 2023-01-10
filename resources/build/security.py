@@ -41,6 +41,12 @@ class build_security:
             # Lets us check in sys_patch.py if config supports FileVault
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
 
+            # Patch KC UUID panics due to RSR installation
+            # - Ref: https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1019
+            print("- Enabling KC UUID mismatch patch")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -nokcmismatchpanic"
+            support.build_support(self.model, self.constants, self.config).enable_kext("RSRHelper.kext", self.constants.rsrhelper_version, self.constants.rsrhelper_path)
+
         if self.constants.disable_cs_lv is True:
             print("- Disabling Library Validation")
             # In Ventura, LV patch broke. For now, add AMFI arg

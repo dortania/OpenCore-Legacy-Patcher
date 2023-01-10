@@ -79,6 +79,7 @@ class Constants:
         self.mce_version = "1.0.0"  #                AppleMCEReporterDisabler
         self.btspoof_version = "1.0.0"  #            Bluetooth-Spoof
         self.aspp_override_version = "1.0.1"  #      ACPI_SMC_PlatformPlugin Override
+        self.rsrhelper_version = "1.0.0"  #          RSRHelper
 
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
@@ -449,6 +450,10 @@ class Constants:
         return self.payload_kexts_path / Path(f"Acidanthera/CryptexFixup-v{self.cryptexfixup_version}-{self.kext_variant}.zip")
 
     @property
+    def rsrhelper_path(self):
+        return self.payload_kexts_path / Path(f"Acidanthera/RSRHelper-v{self.rsrhelper_version}-{self.kext_variant}.zip")
+
+    @property
     def innie_path(self):
         return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}.zip")
 
@@ -589,6 +594,10 @@ class Constants:
     @property
     def oclp_helper_path(self):
         return self.payload_path / Path("Tools/OCLP-Helper")
+
+    @property
+    def rsrrepair_userspace_path(self):
+        return self.payload_path / Path("Tools/RSRRepair")
 
     # Icons
     @property
