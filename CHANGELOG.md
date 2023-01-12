@@ -20,14 +20,18 @@
 - Implement mini validation during GUI build
 - Add early UHCI/OHCI support (USB1.1)
   - Implemented via Root Volume patching, ie. no installer support at this time
+    - Support should be seen as experimental, especially for laptops
   - Applicable for Penryn Macs and Cheese Grater Mac Pros (MacPro3,1 - MacPro5,1)
   - See associated issue for current limitations: [Legacy UHCI/OHCI support in Ventura](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)
+    - USB 3.0 controllers cannot be used along side USB 1.1 patches, OCLP will prioritize USB 3.0 support
 - Add early non-Metal Graphics Acceleration support for macOS Ventura
   - Applicable for following GPU architectures:
     - Intel Ironlake and Sandy Bridge
     - Nvidia Tesla, Maxwell and Pascal
     - AMD TeraScale 1 and 2
-  - Note: Bluetooth Pairing is currently semi-functional, see here for work around: [Tab+Space work-around](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/post-31858759)
+  - Notes:
+    - Bluetooth Pairing is currently semi-functional, see here for work around: [Tab+Space work-around](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/post-31858759)
+    - AMFI currently needs to be outright disabled in Ventura
 - Overall non-Metal improvements:
   - Improved fake rim
   - Fixed full screen animation
