@@ -40,7 +40,7 @@ def string_to_hex(input_string):
 def process_status(process_result):
     if process_result.returncode != 0:
         print(f"Process failed with exit code {process_result.returncode}")
-        print(f"Please file an issue on our Github")
+        print(f"Please report the issue on the Discord server")
         raise Exception(f"Process result: \n{process_result.stdout.decode()}")
 
 

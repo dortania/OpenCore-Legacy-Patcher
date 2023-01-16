@@ -200,7 +200,7 @@ class sys_patch_helpers:
         if self.constants.detected_os < os_data.os_data.big_sur:
             return
 
-        print("- Installing RSRRepair userspace utility")
+        print("- Installing Kernel Collection syncing utility")
         result = utilities.elevated([self.constants.rsrrepair_userspace_path, "--install"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             print(f"  - Failed to install RSRRepair: {result.stdout.decode()}")
