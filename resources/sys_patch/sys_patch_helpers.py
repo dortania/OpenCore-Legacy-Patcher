@@ -196,6 +196,7 @@ class sys_patch_helpers:
 
         # This is a (hopefully) temporary work-around, however likely to stay.
         # RSRRepair has the added bonus of fixing desynced KCs from 'bless', so useful in Big Sur+
+        # https://github.com/flagersgit/RSRRepair
 
         if self.constants.detected_os < os_data.os_data.big_sur:
             return

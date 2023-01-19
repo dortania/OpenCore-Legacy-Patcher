@@ -1,6 +1,6 @@
 # OpenCore Legacy Patcher changelog
 
-## 0.5.4
+## 0.6.0
 - Resolve external NVMe reporting regression from 0.5.2
 - Implement Legacy Wireless support for Ventura
   - Applicable for BCM94328, BCM94322 and Atheros chipsets
@@ -41,8 +41,8 @@
   - Primarily for GPUs lacking GOPs and can't have a newer VBIOS flashed
 - Resolve Rapid Security Response support for Haswell+ Macs requiring KDKs
   - Implemented via:
-    - Userspace: RSRRepair at `/etc/rc.server` (2b1c9e3)
-    - Kernelspace: RSRHelper.kext (cbe1be9)
+    - Userspace: [RSRRepair](https://github.com/flagersgit/RSRRepair) at `/etc/rc.server` (2b1c9e3)
+    - Kernelspace: [RSRHelper.kext](https://github.com/khronokernel/RSRHelper) (cbe1be9)
 - Increment Binaries:
   - OpenCorePkg 0.8.8 - release
   - PatcherSupportPkg 0.8.0 - release
