@@ -21,7 +21,7 @@ import py_sip_xnu
 from resources import constants, defaults, install, installer, utilities, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
 from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch, sys_patch_auto
 from resources.build import build
-from data import model_array, os_data, smbios_data, sip_data
+from data import model_array, os_data, smbios_data, sip_data, cpu_data
 from resources.gui import menu_redirect, gui_help
 
 
@@ -1692,18 +1692,32 @@ class wx_python_gui:
         # Unsupported Models include:
         #   - USB 1.1 machines (Penryn, MacPro3,1-5,1)
         #   - Non-Metal GPUs
+        has_legacy_usb = False
+        issues_list = ""
         model = self.constants.custom_model or self.constants.computer.real_model
-        if model in model_array.LegacyGPU or model in ["MacPro3,1", "MacPro4,1", "MacPro5,1"]:
+        if model in ["MacPro3,1", "MacPro4,1", "MacPro5,1"]:
+            has_legacy_usb = True
+            issues_list = "- Lack of Keyboard/Mouse in macOS installer without a USB hub\n"
+        elif model in smbios_data.smbios_dictionary[model]:
+            if "CPU Generation" in smbios_data.smbios_dictionary[model]:
+                if smbios_data.smbios_dictionary[model]["CPU Generation"] <= cpu_data.cpu_data.penryn:
+                    has_legacy_usb = True
+                    if model.startswith("MacBook"):
+                        issues_list = "- Lack of internal Keyboard/Trackpad in macOS installer\n"
+                    elif not model.startswith("MacPro"):
+                        issues_list = "- Lack of internal Keyboard/Mouse in macOS installer\n"
+
+        if has_legacy_usb:
             try:
                 app_major = app_dict['Version'].split(".")[0]
                 if float(app_major) > self.constants.os_support:
                     # Throw pop up warning OCLP does not support this OS
                     os =  os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(app_major))
-                    dlg = wx.MessageDialog(self.frame_modal, f"OpenCore Legacy Patcher currently does not support macOS {os} on your machine ({model}).\n\nThe newest version we officially support is macOS {os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(str(self.constants.os_support)))}. For more information, see the associated Ventura Github Issue.\n\nWould you still want to continue downloading macOS {os}?", "Unsupported OS", style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION)
+                    dlg = wx.MessageDialog(self.frame_modal, f"OpenCore Legacy Patcher may not fully support macOS {os} on your machine ({model}).\n\nThe main issues include:\n{issues_list}\nThe newest version we recommend is macOS {os_data.os_conversion.convert_kernel_to_marketing_name(os_data.os_conversion.os_to_kernel(str(self.constants.os_support)))}. For more information, see the associated Github Issue.\n\nWould you still want to continue downloading macOS {os}?", "Unsupported OS", style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION)
                     dlg.SetYesNoCancelLabels("View Github Issue", "Download Anyways", "Cancel")
                     result = dlg.ShowModal()
                     if result == wx.ID_YES:
-                        webbrowser.open("https://github.com/dortania/OpenCore-Legacy-Patcher/issues/998")
+                        webbrowser.open("https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021")
                         return
                     elif result == wx.ID_NO:
                         pass

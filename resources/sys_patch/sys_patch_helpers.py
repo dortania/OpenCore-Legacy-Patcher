@@ -145,6 +145,9 @@ class sys_patch_helpers:
         utilities.elevated(["bash", "-c", "rm -rf /private/var/folders/*/*/*/WindowServer/com.apple.WindowServer"])
         # Disable writing to WindowServer folder
         utilities.elevated(["bash", "-c", "chflags uchg /private/var/folders/*/*/*/WindowServer"])
+        # Reference:
+        #   To reverse write lock:
+        #   'chflags nouchg /private/var/folders/*/*/*/WindowServer'
 
 
     def remove_news_widgets(self):
