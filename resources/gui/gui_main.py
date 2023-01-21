@@ -2862,6 +2862,14 @@ class wx_python_gui:
             print("Wake on WLAN Disabled")
             self.constants.enable_wake_on_wlan = False
 
+    def apfs_trim_click(self, event=None):
+        if self.apfs_trim_checkbox.GetValue():
+            print("APFS Trim Enabled")
+            self.constants.apfs_trim_timeout = True
+        else:
+            print("APFS Trim Disabled")
+            self.constants.apfs_trim_timeout = False
+
     def content_caching_click(self, event=None):
         if self.content_caching_checkbox.GetValue():
             print("Content Caching Enabled")
@@ -3550,12 +3558,19 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.content_caching_checkbox.SetPosition(wx.Point(self.wake_on_wlan_checkbox.GetPosition().x, self.wake_on_wlan_checkbox.GetPosition().y + self.wake_on_wlan_checkbox.GetSize().height))
         self.content_caching_checkbox.SetToolTip(wx.ToolTip("Enables content caching support in macOS"))
 
+        # APFS Trim
+        self.apfs_trim_checkbox = wx.CheckBox(self.frame_modal, label="APFS Trim")
+        self.apfs_trim_checkbox.SetValue(self.constants.apfs_trim_timeout)
+        self.apfs_trim_checkbox.Bind(wx.EVT_CHECKBOX, self.apfs_trim_click)
+        self.apfs_trim_checkbox.SetPosition(wx.Point(self.content_caching_checkbox.GetPosition().x, self.content_caching_checkbox.GetPosition().y + self.content_caching_checkbox.GetSize().height))
+        self.apfs_trim_checkbox.SetToolTip(wx.ToolTip("Enables APFS Trim support in macOS"))
+
         # Button: return to main menu
         self.return_to_main_menu_button = wx.Button(self.frame_modal, label="Return to Settings")
         self.return_to_main_menu_button.Bind(wx.EVT_BUTTON, self.settings_menu)
         self.return_to_main_menu_button.SetPosition(wx.Point(
-            self.content_caching_checkbox.GetPosition().x,
-            self.content_caching_checkbox.GetPosition().y + self.content_caching_checkbox.GetSize().height + 10))
+            self.apfs_trim_checkbox.GetPosition().x,
+            self.apfs_trim_checkbox.GetPosition().y + self.apfs_trim_checkbox.GetSize().height + 10))
         self.return_to_main_menu_button.Center(wx.HORIZONTAL)
 
         # set frame_modal size below return to main menu button

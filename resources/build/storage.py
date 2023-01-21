@@ -20,6 +20,7 @@ class build_storage:
         self.pata_handling()
         self.misc_handling()
         self.pcie_handling()
+        self.trim_handling()
 
     def ahci_handling(self):
         # MacBookAir6,x ship with an AHCI over PCIe SSD model 'APPLE SSD TS0128F' and 'APPLE SSD TS0256F'
@@ -127,3 +128,9 @@ class build_storage:
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
             if (self.constants.computer.sdxc_controller and not self.constants.custom_model) or (self.model.startswith("MacBookPro8") or self.model.startswith("Macmini5")):
                 support.build_support(self.model, self.constants, self.config).enable_kext("BigSurSDXC.kext", self.constants.bigsursdxc_version, self.constants.bigsursdxc_path)
+
+
+    def trim_handling(self):
+        if self.constants.apfs_trim_timeout is False:
+            print(f"- Disabling APFS TRIM timeout")
+            self.config["Kernel"]["Quirks"]["SetApfsTrimTimeout"] = 0

@@ -43,6 +43,8 @@
   - Implemented via:
     - Userspace: [RSRRepair](https://github.com/flagersgit/RSRRepair) at `/etc/rc.server` (2b1c9e3)
     - Kernelspace: [RSRHelper.kext](https://github.com/khronokernel/RSRHelper) (cbe1be9)
+- Add APFS Trim Configuration
+  - Settings -> Misc Settings -> APFS Trim
 - Increment Binaries:
   - OpenCorePkg 0.8.8 - release
   - PatcherSupportPkg 0.8.0 - release
