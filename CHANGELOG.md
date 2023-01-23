@@ -45,8 +45,6 @@
     - Kernelspace: [RSRHelper.kext](https://github.com/khronokernel/RSRHelper) (cbe1be9)
 - Add APFS Trim Configuration
   - Settings -> Misc Settings -> APFS Trim
-- Work-around KDKs failing to install due to Read-only error
-  - `[errno 30] read-only file system: KernelDebugPkg.kit`
 - Increment Binaries:
   - OpenCorePkg 0.8.8 - release
   - PatcherSupportPkg 0.8.2 - release
