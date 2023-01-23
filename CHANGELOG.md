@@ -9,6 +9,8 @@
 - Resolve `/Library/Extensions` not being cleaned on KDK-less root patches
 - Add AMD Vega Graphics support for pre-AVX2.0 systems on Ventura
   - ex. AMD Vega 56 and 64, AMD Radeon VII
+  - Note: As with Polaris, Vega GPUs cannot be mixed with AMD GCN 1-3 patches
+    - Patcher will prioritize the AMD GCN 1-3 (assumption that GCN is primary GPU, ex. MacPro6,1)
 - Implement proper `APPLE SSD TS0128F/256F` detection
   - Allows all Macs to utilize patch if required
   - Avoids usage of patch when host lacks affected drive (ex. MacBookAir6,x with upgraded SSD)

@@ -206,12 +206,13 @@ class detect_root_patch:
             self.sandy_gpu = False
             self.legacy_keyboard_backlight = False
 
-        if self.legacy_polaris is True and self.legacy_gcn is True:
+        if self.legacy_gcn is True:
             # We can only support one or the other due to the nature of relying
-            # on portions of the native AMD stack for Polaris
+            # on portions of the native AMD stack for Polaris and Vega
             # Thus we'll prioritize legacy GCN due to being the internal card
             # ex. MacPro6,1 and MacBookPro11,5 with eGPUs
             self.legacy_polaris = False
+            self.legacy_vega = False
 
         if self.constants.detected_os <= os_data.os_data.monterey:
             # Always assume Root KC requirement on Monterey and older
