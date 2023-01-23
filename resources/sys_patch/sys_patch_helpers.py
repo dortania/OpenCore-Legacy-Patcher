@@ -94,8 +94,8 @@ class sys_patch_helpers:
             if result.returncode != 0:
                 print("- Failed to install KDK:")
                 print(result.stdout.decode('utf-8'))
-                print(result.stderr.decode('utf-8'))
-
+                if result.stderr:
+                    print(result.stderr.decode('utf-8'))
                 utilities.elevated(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 raise Exception("Failed to install KDK")
             utilities.process_status(utilities.elevated(["rm", kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
