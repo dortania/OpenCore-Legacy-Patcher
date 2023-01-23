@@ -47,7 +47,7 @@
   - Settings -> Misc Settings -> APFS Trim
 - Increment Binaries:
   - OpenCorePkg 0.8.8 - release
-  - PatcherSupportPkg 0.8.1 - release
+  - PatcherSupportPkg 0.8.2 - release
   - KDKlessWorkaround 1.0.0 - rolling (4924276)
   - FeatureUnlock 1.1.2 - release
   - CPUFriend 1.2.6 - release
