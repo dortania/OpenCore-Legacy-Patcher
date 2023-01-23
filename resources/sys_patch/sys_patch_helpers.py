@@ -83,8 +83,15 @@ class sys_patch_helpers:
         print(f"- Installing downloaded KDK (this may take a while)")
         with tempfile.TemporaryDirectory() as mount_point:
             utilities.process_status(subprocess.run(["hdiutil", "attach", self.constants.kdk_download_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            # Install the KDK
-            utilities.process_status(utilities.elevated(["installer", "-pkg", f"{mount_point}/KernelDebugKit.pkg", "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            # Due to a permissions bug in macOS, sometimes the OS will fail on a Read-only file system error
+            # We don't actually need to write inside the KDK DMG, however macOS will do whatever it wants
+            # Thus move the KDK to another location, and run the installer from there
+            kdk_dst_path = Path(f"{self.constants.payload_path}/KernelDebugKit.pkg")
+            if kdk_dst_path.exists():
+                utilities.process_status(utilities.elevated(["rm", kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(subprocess.run(["cp", f"{mount_point}/KernelDebugKit.pkg", self.constants.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["installer", "-pkg", kdk_dst_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["rm", kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)  # Do not really care if this fails
         print("- Successfully installed KDK")
 
