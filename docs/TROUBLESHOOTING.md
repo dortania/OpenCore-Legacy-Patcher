@@ -181,3 +181,6 @@ Applicable models include:
 | iMac        | Late 2009 and older  | iMac7,1 - iMac10,x            | Excludes Core i5/7 27" late 2009 iMac (iMac11,1) |
 | Mac mini    | Mid 2011 and older   | Macmini3,1 - Macmini5,x       |                                                  |
 | Mac Pro     | Mid 2010 and older   | MacPro3,1 - MacPro5,1         |                                                  |
+
+
+![](../images/usb11-chart.png)

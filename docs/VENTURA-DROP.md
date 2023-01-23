@@ -24,15 +24,12 @@ Ventura's release dropped a large amount of Intel hardware, thus requiring the u
 
 ## Current status
 
-Overall, macOS Ventura is useable on most Metal-capable machines (ie. 2012 and newer). The graphics patches implemented have near feature parity to macOS Monterey, with patches still being under heavy development. See [Legacy Metal Graphics Support and macOS Ventura #1008](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) issue for more information.
-
-<img width="625" alt="" src="../images/OCLP-051-Initial-Support.png">
+<img width="625" alt="" src="../images/OCLP-060-Initial-Support.png">
 
 For older hardware, see below sections:
 
 * [Currently Unsupported/Broken Hardware in Ventura](#currently-unsupportedbroken-hardware-in-ventura)
   * [AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs](#amd-polaris-vega-and-navi-support-on-pre-2019-mac-pros-and-pre-2012-imacs)
-  * [Non-Metal Graphics Acceleration](#non-metal-graphics-acceleration)
   * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
   * [Ethernet issue with Early 2008 Mac Pro](#ethernet-issue-with-early-2008-mac-pro)
 
@@ -57,39 +54,6 @@ Following GPUs are applicable:
 | AMD Navi    | RX 5xxx/6xxx (10/20 series) | <span style="color:red"> Unsupported </span> |
 
 
-### Non-Metal Graphics Acceleration
-
-Regarding non-Metal, the team is hard at work to get non-Metal working, however this is our greatest challenge since Big Sur.
-
-Apple has made significant changes to the graphics stack in order to facilitate fancy effects, and in particularly, Stage Manager. We will update you as we work on development, however, now is not the best time to ask about ETAs.
-
-The following GPUs are applicable:
-
-* NVIDIA:
-  * Tesla (8000 - 300 series)
-* AMD:
-  * TeraScale (2000 - 6000 series)
-* Intel:
-  * Iron Lake
-  * Sandy Bridge (2000 - 3000 series)
-
-
-The following machines shipped stock with an unsupported GPU:
-
-::: warning Systems shipped with non-Metal Graphics Cards
-
-* iMac7,1 - iMac12,x
-* MacBook4,1 - MacBook7,1
-* MacBookAir2,1 - MacBookAir4,x
-* MacBookPro4,1 - MacBookPro8,x
-* Macmini3,1 - Macmini5,x
-* MacPro3,1 - MacPro5,1
-* Xserve2,1 - Xserve3,1
-
-:::
-
-
-
 ### USB 1.1 (OHCI/UHCI) Support
 
 For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed in macOS Ventura. While USB 1.1 may seem unimportant, it handles many important devices on your system. These include:
@@ -98,6 +62,9 @@ For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed i
 * IR Receivers
 * Bluetooth
 
+With OpenCore Legacy Patcher v0.6.0, basic support has been implemented via Root Volume patching. However due to this, users will need to use a USB hub for installation and post-OS updates when patches are cleaned:
+
+![](../images/usb11-chart.png)
 
 ::: warning The following systems rely on USB 1.1
 
@@ -116,7 +83,7 @@ For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed i
 MacPro3,1 suffers from Ethernet driver dying after returning from sleep, current workaround is to use a USB Ethernet adapter or disable sleep.
 
 
-::: details Legacy Wireless Support (Resolved in v0.5.4)
+::: details Legacy Wireless Support (Resolved in v0.6.0)
 
 
 ### Legacy Wireless Support
@@ -138,5 +105,39 @@ The following machines shipped stock with these cards:
 
 
 Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported by OpenCore Legacy Patcher. Consider upgrading to these cards if possible.
+
+:::
+
+
+::: details Non-Metal Graphics Acceleration (Resolved in 0.6.0 and newer)
+
+
+### Non-Metal Graphics Acceleration
+
+Regarding non-Metal, the team is hard at work to get non-Metal working, however this is our greatest challenge since Big Sur.
+
+Apple has made significant changes to the graphics stack in order to facilitate fancy effects, and in particularly, Stage Manager. We will update you as we work on development, however, now is not the best time to ask about ETAs.
+
+The following GPUs are applicable:
+
+* NVIDIA:
+  * Tesla (8000 - 300 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+
+
+The following machines shipped stock with an unsupported GPU:
+
+* iMac7,1 - iMac12,x
+* MacBook4,1 - MacBook7,1
+* MacBookAir2,1 - MacBookAir4,x
+* MacBookPro4,1 - MacBookPro8,x
+* Macmini3,1 - Macmini5,x
+* MacPro3,1 - MacPro5,1
+* Xserve2,1 - Xserve3,1
+
 
 :::
