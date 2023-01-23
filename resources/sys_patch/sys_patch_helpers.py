@@ -90,9 +90,13 @@ class sys_patch_helpers:
             if kdk_dst_path.exists():
                 utilities.process_status(utilities.elevated(["rm", kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(subprocess.run(["cp", f"{mount_point}/KernelDebugKit.pkg", self.constants.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["installer", "-pkg", kdk_dst_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            result = utilities.elevated(["installer", "-pkg", kdk_dst_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                print(f"- Failed to install KDK: {result.stdout}")
+                utilities.elevated(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                raise Exception("Failed to install KDK")
             utilities.process_status(utilities.elevated(["rm", kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)  # Do not really care if this fails
+            utilities.elevated(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         print("- Successfully installed KDK")
 
 
