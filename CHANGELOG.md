@@ -16,7 +16,7 @@
   - ex. Booted OCLP is 0.5.2, root patcher is 0.5.3
 - Disable native AMD Graphics on pre-Haswell Macs in Ventura
   - Allows for easy root patching, dropping reliance on Safe Mode to boot
-  - Primarily applicable for Mac Pros with AMD Polaris and Vega GPUs
+  - Primarily applicable for iMacs and Mac Pros with AMD Polaris and Vega GPUs
 - Implement mini validation during GUI build
 - Add early UHCI/OHCI support (USB1.1)
   - Implemented via Root Volume patching, ie. no installer support at this time
@@ -47,7 +47,7 @@
   - Settings -> Misc Settings -> APFS Trim
 - Increment Binaries:
   - OpenCorePkg 0.8.8 - release
-  - PatcherSupportPkg 0.8.0 - release
+  - PatcherSupportPkg 0.8.1 - release
   - KDKlessWorkaround 1.0.0 - rolling (4924276)
   - FeatureUnlock 1.1.2 - release
   - CPUFriend 1.2.6 - release
