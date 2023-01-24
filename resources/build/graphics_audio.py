@@ -433,7 +433,11 @@ class build_graphics_audio:
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:
-                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
+                if (
+                    self.model == "MacBookPro13,3" or
+                    smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value
+                ):
+                    # MacBookPro13,3 has AVX2.0 however the GPU has an unsupported framebuffer
                     has_kdk_gpu = True
 
         if has_kdkless_gpu is True and has_kdk_gpu is False:
