@@ -24,16 +24,12 @@ Ventura's release dropped a large amount of Intel hardware, thus requiring the u
 
 ## Current status
 
-Overall, macOS Ventura is useable on most Metal-capable machines (ie. 2012 and newer). The graphics patches implemented have near feature parity to macOS Monterey, with patches still being under heavy development. See [Legacy Metal Graphics Support and macOS Ventura #1008](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) issue for more information.
-
-<img width="625" alt="" src="../images/OCLP-051-Initial-Support.png">
+<img width="625" alt="" src="../images/OCLP-060-Initial-Support.png">
 
 For older hardware, see below sections:
 
 * [Currently Unsupported/Broken Hardware in Ventura](#currently-unsupportedbroken-hardware-in-ventura)
   * [AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs](#amd-polaris-vega-and-navi-support-on-pre-2019-mac-pros-and-pre-2012-imacs)
-  * [Non-Metal Graphics Acceleration](#non-metal-graphics-acceleration)
-  * [Legacy Wireless Support](#legacy-wireless-support)
   * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
   * [Ethernet issue with Early 2008 Mac Pro](#ethernet-issue-with-early-2008-mac-pro)
 
@@ -47,22 +43,73 @@ For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMa
 
 * CPUs supporting AVX2.0 are Haswell or newer, which no pre-2019 Mac Pros can be upgraded with.
 
-Currently at this time, OpenCore Legacy Patcher only supports patching the AMD Polaris Graphics stack to no longer require AVX2.0. However due to lack of hardware on-hand, we cannot support Navi on Ventura.
-
-* If you have spare Navi GPU you'd like to donate, feel free to reach out: khronokernel@icloud.com
-  * Thanks to a gracious user, we've gotten an AMD Vega 64 on-hand for testing. No time estimate can be provided for Vega support at this time.
-
-Additionally, the native stack will crash over and over on macOS Ventura as it fails to load the AVX2.0-based binaries. Thus to patch Ventura, you will need to boot in Safe Mode and run OCLP's Root Volume Patcher
-
-* To enter Safe Mode, hold Shift+Enter when selecting Ventura in OCLP's Boot Picker
+Currently at this time, OpenCore Legacy Patcher only supports patching the AMD Polaris and Vega Graphics stack to no longer require AVX2.0. We're recently received an AMD RX 6600 donation, so hopefully in the future the project can support AMD Navi with pre-Haswell Macs. However no time estimates can be given.
 
 Following GPUs are applicable:
 
 | GPU Architecture | Model Families | Supported |
 | :--- | :--- | :--- |
 | AMD Polaris | RX 4xx/5xx (10/20 series) | <span style="color:#30BCD5"> Supported with patching </span> |
-| AMD Vega    | Vega 56/64/VII (10/20 series) | <span style="color:red"> Unsupported </span> |
-| AMD Navi    | RX 5xxx/6xxx (10/20 series) | ^^ |
+| AMD Vega    | Vega 56/64/VII (10/20 series) | ^^ |
+| AMD Navi    | RX 5xxx/6xxx (10/20 series) | <span style="color:red"> Unsupported </span> |
+
+
+### USB 1.1 (OHCI/UHCI) Support
+
+For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed in macOS Ventura. While USB 1.1 may seem unimportant, it handles many important devices on your system. These include:
+
+* Keyboard and Trackpad for laptops
+* IR Receivers
+* Bluetooth
+
+With OpenCore Legacy Patcher v0.6.0, basic support has been implemented via Root Volume patching. However due to this, users will need to use a USB hub for installation and post-OS updates when patches are cleaned:
+
+![](../images/usb11-chart.png)
+
+::: warning The following systems rely on USB 1.1
+
+* iMac10,x and older
+* Macmini3,1 and older
+* MacBook7,1 and older
+* MacBookAir3,1 and older
+* MacBookPro7,1 and older
+  * MacBookPro6,x is exempt
+* MacPro5,1 and older
+
+:::
+
+### Ethernet issue with Early 2008 Mac Pro
+
+MacPro3,1 suffers from Ethernet driver dying after returning from sleep, current workaround is to use a USB Ethernet adapter or disable sleep.
+
+
+::: details Legacy Wireless Support (Resolved in v0.6.0)
+
+
+### Legacy Wireless Support
+
+For systems that required Root Patches in macOS Monterey to achieve Wireless support, unfortunately macOS Ventura has broken the patch set. Currently the following Wifi cards are unsupported:
+
+* Atheros: All models
+* Broadcom: BCM94328 and BCM94322
+
+The following machines shipped stock with these cards:
+
+* iMac12,x and older
+* Macmini3,1 and older
+* MacBook5,x and older
+* MacBookAir2,1 and older
+* MacBookPro7,1 and older
+  * MacBookPro6,x is exempt
+* MacPro5,1 and older
+
+
+Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported by OpenCore Legacy Patcher. Consider upgrading to these cards if possible.
+
+:::
+
+
+::: details Non-Metal Graphics Acceleration (Resolved in 0.6.0 and newer)
 
 
 ### Non-Metal Graphics Acceleration
@@ -84,8 +131,6 @@ The following GPUs are applicable:
 
 The following machines shipped stock with an unsupported GPU:
 
-::: warning Systems shipped with non-Metal Graphics Cards
-
 * iMac7,1 - iMac12,x
 * MacBook4,1 - MacBook7,1
 * MacBookAir2,1 - MacBookAir4,x
@@ -94,54 +139,5 @@ The following machines shipped stock with an unsupported GPU:
 * MacPro3,1 - MacPro5,1
 * Xserve2,1 - Xserve3,1
 
-:::
-
-
-### Legacy Wireless Support
-
-For systems that required Root Patches in macOS Monterey to achieve Wireless support, unfortunately macOS Ventura has broken the patch set. Currently the following Wifi cards are unsupported:
-
-* Atheros: All models
-* Broadcom: BCM94328 and BCM94322
-
-The following machines shipped stock with these cards:
-
-::: warning Systems shipped with applicable cards
-
-* iMac12,x and older
-* Macmini3,1 and older
-* MacBook5,x and older
-* MacBookAir2,1 and older
-* MacBookPro7,1 and older
-  * MacBookPro6,x is exempt
-* MacPro5,1 and older
 
 :::
-
-Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported by OpenCore Legacy Patcher. Consider upgrading to these cards if possible.
-
-
-### USB 1.1 (OHCI/UHCI) Support
-
-For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed in macOS Ventura. While USB 1.1 may seem unimportant, it handles many important devices on your system. These include:
-
-* Keyboard and Trackpad for laptops
-* IR Receivers
-* Bluetooth
-
-
-::: warning The following systems rely on USB 1.1
-
-* iMac10,x and older
-* Macmini3,1 and older
-* MacBook7,1 and older
-* MacBookAir3,1 and older
-* MacBookPro7,1 and older
-  * MacBookPro6,x is exempt
-* MacPro5,1 and older
-
-:::
-
-### Ethernet issue with Early 2008 Mac Pro
-
-MacPro3,1 suffers from Ethernet driver dying after returning from sleep, current workaround is to use a USB Ethernet adapter or disable sleep.
