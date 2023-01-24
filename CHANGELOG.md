@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.6.2
+
 ## 0.6.1
 - Avoid usage of KDKlessWorkaround on hardware not requiring it
   - Resolves AMD Graphics Regression from 0.5.3

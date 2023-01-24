@@ -83,7 +83,7 @@ With OpenCore Legacy Patcher v0.6.0, basic support has been implemented via Root
 MacPro3,1 suffers from Ethernet driver dying after returning from sleep, current workaround is to use a USB Ethernet adapter or disable sleep.
 
 
-::: details Legacy Wireless Support (Resolved in v0.6.0)
+::: details Legacy Wireless Support (Resolved in v0.6.0 and newer)
 
 
 ### Legacy Wireless Support
@@ -109,7 +109,7 @@ Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported 
 :::
 
 
-::: details Non-Metal Graphics Acceleration (Resolved in 0.6.0 and newer)
+::: details Non-Metal Graphics Acceleration (Resolved in v0.6.0 and newer)
 
 
 ### Non-Metal Graphics Acceleration
