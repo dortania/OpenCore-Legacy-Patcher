@@ -390,6 +390,11 @@ class build_graphics_audio:
             if not self.model in smbios_data.smbios_dictionary:
                 return
             gpu_dict = smbios_data.smbios_dictionary[self.model]["Stock GPUs"]
+
+        # Check if KDKless and KDK GPUs are present
+        # We only want KDKless.kext if there are no KDK GPUs
+        has_kdkless_gpu = False
+        has_kdk_gpu = False
         for gpu in gpu_dict:
             if not self.constants.custom_model:
                 gpu = gpu.arch
@@ -400,8 +405,41 @@ class build_graphics_audio:
                 device_probe.Intel.Archs.Skylake,
                 device_probe.NVIDIA.Archs.Kepler,
             ]:
-                support.build_support(self.model, self.constants, self.config).enable_kext("KDKlessWorkaround.kext", self.constants.kdkless_version, self.constants.kdkless_path)
-                return
+                has_kdkless_gpu = True
+
+            # Non-Metal KDK
+            if gpu in [
+                device_probe.NVIDIA.Archs.Tesla,
+                device_probe.NVIDIA.Archs.Maxwell,
+                device_probe.NVIDIA.Archs.Pascal,
+                device_probe.AMD.Archs.TeraScale_1,
+                device_probe.AMD.Archs.TeraScale_2,
+                device_probe.Intel.Archs.Iron_Lake,
+                device_probe.Intel.Archs.Sandy_Bridge,
+            ]:
+                has_kdk_gpu = True
+
+            if gpu in [
+                # Metal KDK (always)
+                device_probe.AMD.Archs.Legacy_GCN_7000,
+                device_probe.AMD.Archs.Legacy_GCN_8000,
+                device_probe.AMD.Archs.Legacy_GCN_9000,
+            ]:
+                has_kdk_gpu = True
+
+            if gpu in [
+                # Metal KDK (pre-AVX2.0)
+                device_probe.AMD.Archs.Polaris,
+                device_probe.AMD.Archs.Vega,
+                device_probe.AMD.Archs.Navi,
+            ]:
+                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
+                    has_kdk_gpu = True
+
+        if has_kdkless_gpu is True and has_kdk_gpu is False:
+            # KDKlessWorkaround is required for KDKless GPUs
+            support.build_support(self.model, self.constants, self.config).enable_kext("KDKlessWorkaround.kext", self.constants.kdkless_version, self.constants.kdkless_path)
+            return
 
         # KDKlessWorkaround supports disabling native AMD stack on Ventura for pre-AVX2.0 CPUs
         # Applicable for Polaris, Vega, Navi GPUs
