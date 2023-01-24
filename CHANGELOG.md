@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.6.1
+
 ## 0.6.0
 - Resolve external NVMe reporting regression from 0.5.2
 - Implement Legacy Wireless support for Ventura
