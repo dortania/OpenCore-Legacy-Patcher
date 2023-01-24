@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.6.1
+- Increment Binaries:
+  - KDKlessWorkaround 1.0.0 - rolling (8e41f39)
 
 ## 0.6.0
 - Resolve external NVMe reporting regression from 0.5.2
