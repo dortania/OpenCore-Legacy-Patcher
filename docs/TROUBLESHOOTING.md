@@ -19,7 +19,7 @@ Here are some common errors users may experience while using this patcher:
 * [Cannot Disable SIP in recoveryOS](#cannot-disable-sip-in-recoveryos)
 * [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
 * [No acceleration after a Metal GPU swap on Mac Pro](#no-acceleration-after-a-metal-gpu-swap-on-mac-pro)
-
+* [Keyboard, Mouse and Trackpad not working in installer or after update](#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update)
 
 
 ## OpenCore Legacy Patcher not launching
@@ -161,3 +161,26 @@ Alternatively, you can remove "AutoPkg-Assets.pkg" from /Library/Packages on the
 
 The reason for this is that the autopatcher will assume that you will be using the original graphics card and therefore does non-metal patching, which includes removing some drivers for other cards. This causes Metal cards to not accelerate after swapping.
 
+## Keyboard, Mouse and Trackpad not working in installer or after update
+
+For Macs using legacy USB 1.1 controllers, OpenCore Legacy Patcher can only restore support once it has performed root volume patches. Thus to install macOS, you need to hook up a USB hub between your Mac and Keyboard/Mouse.
+
+* For MacBook users, you'll need to find an external keyboard/mouse in addition to the USB hub
+
+More information can be found here:
+
+* [Legacy UHCI/OHCI support in Ventura #1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)
+
+Applicable models include:
+
+| Family      | Year                 | Model                         | Notes                                            |
+| :---------- | :--------------------| :---------------------------- | :----------------------------------------------- |
+| MacBook     | Mid 2010 and older   | MacBook4,1 - MacBook7,1       |                                                  |
+| MacBook Air | Late 2010 and older  | MacBookAir2,1 - MacBookAir3,x |                                                  |
+| MacBook Pro | Mid 2010 and older   | MacBookPro4,1 - MacBookPro7,x | Excludes Mid 2010 15" and 17" (MacBookPro6,x)    |
+| iMac        | Late 2009 and older  | iMac7,1 - iMac10,x            | Excludes Core i5/7 27" late 2009 iMac (iMac11,1) |
+| Mac mini    | Mid 2011 and older   | Macmini3,1 - Macmini5,x       |                                                  |
+| Mac Pro     | Mid 2010 and older   | MacPro3,1 - MacPro5,1         |                                                  |
+
+
+![](../images/usb11-chart.png)

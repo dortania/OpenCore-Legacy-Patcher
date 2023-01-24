@@ -13,6 +13,7 @@
 * [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
 * [Cannot Login on 2011 15" and 17" MacBook Pros](#cannot-login-on-2011-15-and-17-macbook-pros)
 * [Black Boxes on HD3000 iGPUs](#black-boxes-on-hd3000-igpus)
+* [Cannot Pair Bluetooth Devices](#cannot-pair-bluetooth-devices)
 
 The below page is for users experiencing issues with their overall usage of macOS Big Sur / macOS Monterey and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur / Monterey:
 
@@ -179,8 +180,18 @@ A somewhat strange issue on Intel HD3000-based Macs, on 3rd party displays somet
 
 * Mainly applicable for HDMI Displays, DVI and DisplayPort are generally unaffected.
 * If you're inside Setup Assistant, press `Cmd` + `Option` + `Control` + `T` to launch Terminal. From there, run `open /System/Applications/System\ Preferences.app`
-
+* Issue has spread to more Macs with macOS Ventura, including MacBook Airs and MacBook Pros
 
 | Default Color Profile | Display/Display P3 Profile |
 | :---                  | :---                       |
 | ![](../images/HD3000-Default-Colors.png) | ![](../images/HD3000-Display-Colors.png) |
+
+## Cannot Pair Bluetooth Devices
+
+In macOS Ventura, hover states may not function correctly which results in the "Connect" button not appearing in System Settings. To resolve:
+
+1. Enable Keyboard Navigation in System Settings -> Keyboard
+2. Tab + space over Bluetooth devices in System Settings -> Bluetooth
+3. Pair button should appear
+
+For more information, see [ASentientBot's post](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/page-116?post=31858759#post-31858759).
