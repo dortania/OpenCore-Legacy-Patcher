@@ -253,3 +253,8 @@ class generate_defaults:
                 if os_data.os_data.ventura in self.constants.legacy_accel_support:
                     # Only disable AMFI if we officially support Ventura
                     self.constants.disable_amfi = True
+
+                # Enable BetaBlur if user hasn't disabled it
+                is_blur_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_BlurBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+                if is_blur_enabled in ["false", "0"]:
+                    subprocess.run(["defaults", "write", "-g", "Moraea_BlurBeta", "-bool", "true"])

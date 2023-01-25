@@ -168,6 +168,28 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
+            "Non-Metal ColorSync Workaround": {
+                # HD3000 Macs have issues with certain ColorProfiles
+                # This downgrade allows for proper UI rendering,
+                # however limited to Ventura due to regression with Big Sur and Monterey
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": non_metal_os_support[-1],
+                        "OS Minor": 99
+                    },
+                },
+                "Install": {
+                    "/System/Library/Frameworks": {
+                        "ColorSync.framework": f"10.15.7-{os_major}",
+                    },
+                },
+            },
+
             # AMD GCN and Nvidia Kepler require Metal Downgrade in Ventura
             # The patches are required due to struct issues in the Metal stack
             # - AMD GCN will break on BronzeMtlDevice
