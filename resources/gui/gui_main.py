@@ -1060,6 +1060,7 @@ class wx_python_gui:
 
         patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
         self.patches = patches
+        can_unpatch = patches["Validation: Unpatching Possible"]
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
             print("- No applicable patches available")
             patches = []
@@ -1108,6 +1109,8 @@ class wx_python_gui:
                 self.patch_label.Centre(wx.HORIZONTAL)
                 i = i + self.patch_label.GetSize().height + 3
                 for patch in patches:
+                    if patch == "Validation: Unpatching Possible":
+                        continue
                     if patch.startswith("Validation") and patches[patch] is True:
                         print(f"- Adding check: {patch} - {patches[patch]}")
                         self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch[12:]}")
@@ -1210,7 +1213,8 @@ class wx_python_gui:
         if patches:
             if patches["Validation: Patching Possible"] is False:
                 self.start_root_patching.Disable()
-                self.revert_root_patches.Disable()
+        if can_unpatch is False:
+            self.revert_root_patches.Disable()
 
         self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
         self.frame_modal.ShowWindowModal()
