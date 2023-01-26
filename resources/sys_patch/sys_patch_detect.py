@@ -469,6 +469,7 @@ class detect_root_patch:
             "Settings: Supports Auxiliary Cache":          not self.requires_root_kc,
             "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,
             "Validation: Patching Possible":               self.verify_patch_allowed(),
+            "Validation: Unpatching Possible":             self.verify_unpatch_allowed(),
             f"Validation: SIP is enabled (Required: {self.check_sip()[2]} or higher)":  self.sip_enabled,
             f"Validation: Currently Booted SIP: ({hex(py_sip_xnu.SipXnu().get_sip_status().value)})":         self.sip_enabled,
             "Validation: SecureBootModel is enabled":      self.sbm_enabled,
@@ -577,6 +578,10 @@ class detect_root_patch:
             return False
         else:
             return True
+
+    def verify_unpatch_allowed(self, print_errors=False):
+        # Must be called after verify_patch_allowed
+        return not self.sip_enabled
 
     def generate_patchset(self, hardware_details):
         all_hardware_patchset = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor, self.constants.legacy_accel_support)
