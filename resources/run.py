@@ -3,10 +3,7 @@
 # Source: https://github.com/corpnewt/pymodules/blob/884c3de15b6a2570afde52fe8a14a3e946ffb18a/run.py
 
 import sys, subprocess, time, threading, shlex, logging
-try:
-    from Queue import Queue, Empty
-except:
-    from queue import Queue, Empty
+from queue import Queue, Empty
 
 ON_POSIX = 'posix' in sys.builtin_module_names
 

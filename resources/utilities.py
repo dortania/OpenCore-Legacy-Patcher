@@ -411,7 +411,7 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
         with location.open("wb") as file:
             count = 0
             start = time.perf_counter()
-            for chunk in response.iter_content(1024 * 1024 * 4):
+            for i, chunk in enumerate(response.iter_content(1024 * 1024 * 4)):
                 dl += len(chunk)
                 file.write(chunk)
                 count += len(chunk)
@@ -424,7 +424,8 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
                         logging.info("")
                 if total_file_size > 1024:
                     total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
-                logging.info(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
+                if i % 100 == 0:
+                    logging.info(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
 
         if verify_checksum is True:
             # Verify checksum

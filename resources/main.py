@@ -33,12 +33,14 @@ class OpenCoreLegacyPatcher:
             level=logging.NOTSET,
             format="%(asctime)s - %(filename)s (%(lineno)d): %(message)s",
             handlers=[
-                logging.FileHandler(f"Library/Logs/OpenCore-Patcher-v{self.constants.patcher_version}.log"),
+                # TODO: Handle proper file storage
+                logging.FileHandler(f"OpenCore-Patcher-v{self.constants.patcher_version}.log"),
                 logging.StreamHandler(),
             ],
         )
         logging.getLogger().handlers[1].setFormatter(logging.Formatter("%(message)s"))
         logging.getLogger().setLevel(logging.INFO)
+        logging.getLogger().handlers[1].maxBytes = 1024 * 1024 * 10
 
     def generate_base_data(self):
         self.constants.detected_os = os_probe.detect_kernel_major()
