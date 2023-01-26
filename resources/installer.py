@@ -2,8 +2,8 @@
 from pathlib import Path
 import plistlib
 import subprocess
-import requests
 import tempfile
+import logging
 from resources import utilities, tui_helpers
 
 def list_local_macOS_installers():
@@ -123,11 +123,11 @@ def create_installer(installer_path, volume_name):
     if (createinstallmedia_path).exists():
         utilities.cls()
         utilities.header(["Starting createinstallmedia"])
-        print("This will take some time, recommend making some coffee while you wait\n")
+        logging.info("This will take some time, recommend making some coffee while you wait\n")
         utilities.elevated([createinstallmedia_path, "--volume", f"/Volumes/{volume_name}", "--nointeraction"])
         return True
     else:
-        print("- Failed to find createinstallmedia")
+        logging.info("- Failed to find createinstallmedia")
     return False
 
 def download_install_assistant(download_path, ia_link):
@@ -137,7 +137,7 @@ def download_install_assistant(download_path, ia_link):
     return False
 
 def install_macOS_installer(download_path):
-    print("- Extracting macOS installer from InstallAssistant.pkg\n  This may take some time")
+    logging.info("- Extracting macOS installer from InstallAssistant.pkg\n  This may take some time")
     args = [
         "osascript",
         "-e",
@@ -149,11 +149,11 @@ def install_macOS_installer(download_path):
 
     result = subprocess.run(args,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.returncode == 0:
-        print("- InstallAssistant installed")
+        logging.info("- InstallAssistant installed")
         return True
     else:
-        print("- Failed to install InstallAssistant")
-        print(f"  Error Code: {result.returncode}")
+        logging.info("- Failed to install InstallAssistant")
+        logging.info(f"  Error Code: {result.returncode}")
         return False
 
 def list_downloadable_macOS_installers(download_path, catalog):
@@ -307,18 +307,18 @@ def format_drive(disk_id):
     header = f"# Formatting disk{disk_id} for macOS installer #"
     box_length = len(header)
     utilities.cls()
-    print("#" * box_length)
-    print(header)
-    print("#" * box_length)
-    print("")
-    #print(f"- Formatting disk{disk_id} for macOS installer")
+    logging.info("#" * box_length)
+    logging.info(header)
+    logging.info("#" * box_length)
+    logging.info("")
+    #logging.info(f"- Formatting disk{disk_id} for macOS installer")
     format_process = utilities.elevated(["diskutil", "eraseDisk", "HFS+", "OCLP-Installer", f"disk{disk_id}"])
     if format_process.returncode == 0:
-        print("- Disk formatted")
+        logging.info("- Disk formatted")
         return True
     else:
-        print("- Failed to format disk")
-        print(f"  Error Code: {format_process.returncode}")
+        logging.info("- Failed to format disk")
+        logging.info(f"  Error Code: {format_process.returncode}")
         input("\nPress Enter to exit")
         return False
 
@@ -326,7 +326,7 @@ def select_disk_to_format():
     utilities.cls()
     utilities.header(["Installing OpenCore to Drive"])
 
-    print("\nDisk picker is loading...")
+    logging.info("\nDisk picker is loading...")
 
     all_disks = {}
     # TODO: AllDisksAndPartitions is not supported in Snow Leopard and older
@@ -396,7 +396,7 @@ def list_disk_to_format():
         # Ensure user doesn't format their boot drive
         if not any(all_disks[disk]['removable'] is False for partition in all_disks[disk]):
             continue
-        print(f"disk {disk}: {all_disks[disk]['name']} ({utilities.human_fmt(all_disks[disk]['size'])})")
+        logging.info(f"disk {disk}: {all_disks[disk]['name']} ({utilities.human_fmt(all_disks[disk]['size'])})")
         list_disks.update({
             disk: {
                 "identifier": all_disks[disk]["identifier"],
@@ -431,7 +431,7 @@ def generate_installer_creation_script(tmp_location, installer_path, disk):
     global tmp_dir
     ia_tmp = tmp_dir.name
 
-    print(f"Creating temporary directory at {ia_tmp}")
+    logging.info(f"Creating temporary directory at {ia_tmp}")
     # Delete all files in tmp_dir
     for file in Path(ia_tmp).glob("*"):
         subprocess.run(["rm", "-rf", str(file)])
@@ -445,15 +445,15 @@ def generate_installer_creation_script(tmp_location, installer_path, disk):
         space_available = utilities.get_free_space()
         space_needed = Path(ia_tmp).stat().st_size
         if space_available < space_needed:
-            print("Not enough free space to create installer.sh")
-            print(f"{utilities.human_fmt(space_available)} available, {utilities.human_fmt(space_needed)} required")
+            logging.info("Not enough free space to create installer.sh")
+            logging.info(f"{utilities.human_fmt(space_available)} available, {utilities.human_fmt(space_needed)} required")
             return False
     subprocess.run(args)
 
     # Adjust installer_path to point to the copied installer
     installer_path = Path(ia_tmp) / Path(Path(installer_path).name)
     if not Path(installer_path).exists():
-        print(f"Failed to copy installer to {ia_tmp}")
+        logging.info(f"Failed to copy installer to {ia_tmp}")
         return False
 
     createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))

@@ -5,6 +5,7 @@
 
 import binascii
 import hashlib
+import logging
 from pathlib import Path
 
 CHUNK_LENGTH = 4 + 32
@@ -42,10 +43,10 @@ def chunk(file_path, chunklist, verbose):
         for chunk in chunks:
             status = hashlib.sha256(f.read(chunk["length"])).digest()
             if not status == chunk["checksum"]:
-                print(
+                logging.info(
                     f"Chunk {chunks.index(chunk) + 1} checksum status FAIL: chunk sum {binascii.hexlify(chunk['checksum']).decode()}, calculated sum {binascii.hexlify(status).decode()}")
                 return False
             elif verbose:
-                print(
+                logging.info(
                     f"Chunk {chunks.index(chunk) + 1} checksum status success")
     return True

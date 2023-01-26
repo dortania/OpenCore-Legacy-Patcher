@@ -23,11 +23,14 @@ class RedirectLabel(object):
         self.out=aWxTextCtrl
 
     def write(self,string):
-        if string.endswith("MB/s"):
+        if "MB/s" in string:
             self.out.SetLabel(string)
             self.out.Centre(wx.HORIZONTAL)
         wx.GetApp().Yield()
         time.sleep(0.01)
+
+    def fileno(self):
+        return 1
 
     def flush(self):
         pass

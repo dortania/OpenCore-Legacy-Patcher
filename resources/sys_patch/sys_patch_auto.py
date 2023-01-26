@@ -12,6 +12,7 @@ from pathlib import Path
 import plistlib
 import subprocess
 import webbrowser
+import logging
 from resources import utilities, updates, global_settings
 from resources.sys_patch import sys_patch_detect
 from resources.gui import gui_main
@@ -23,23 +24,23 @@ class AutomaticSysPatch:
 
 
     def start_auto_patch(self):
-        print("- Starting Automatic Patching")
+        logging.info("- Starting Automatic Patching")
         if self.constants.wxpython_variant is False:
-            print("- Auto Patch option is not supported on TUI, please use GUI")
+            logging.info("- Auto Patch option is not supported on TUI, please use GUI")
             return
 
         if utilities.check_seal() is True:
-            print("- Detected Snapshot seal intact, detecting patches")
+            logging.info("- Detected Snapshot seal intact, detecting patches")
             patches = sys_patch_detect.detect_root_patch(self.constants.computer.real_model, self.constants).detect_patch_set()
             if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
                 patches = []
             if patches:
-                print("- Detected applicable patches, determining whether possible to patch")
+                logging.info("- Detected applicable patches, determining whether possible to patch")
                 if patches["Validation: Patching Possible"] is False:
-                    print("- Cannot run patching")
+                    logging.info("- Cannot run patching")
                     return
 
-                print("- Determined patching is possible, checking for OCLP updates")
+                logging.info("- Determined patching is possible, checking for OCLP updates")
                 patch_string = ""
                 for patch in patches:
                     if patches[patch] is True and not patch.startswith("Settings") and not patch.startswith("Validation"):
@@ -47,7 +48,7 @@ class AutomaticSysPatch:
                 # Check for updates
                 dict = updates.check_binary_updates(self.constants).check_binary_updates()
                 if not dict:
-                    print("- No new binaries found on Github, proceeding with patching")
+                    logging.info("- No new binaries found on Github, proceeding with patching")
                     if self.constants.launcher_script is None:
                         args_string = f"'{self.constants.launcher_binary}' --gui_patch"
                     else:
@@ -87,7 +88,7 @@ class AutomaticSysPatch:
                     for key in dict:
                         version = dict[key]["Version"]
                         github_link = dict[key]["Github Link"]
-                    print(f"- Found new version: {version}")
+                    logging.info(f"- Found new version: {version}")
 
                     # launch osascript to ask user if they want to apply the update
                     # if yes, open the link in the default browser
@@ -108,29 +109,29 @@ class AutomaticSysPatch:
 
                     return
             else:
-                print("- No patches detected")
+                logging.info("- No patches detected")
         else:
-            print("- Detected Snapshot seal not intact, skipping")
+            logging.info("- Detected Snapshot seal not intact, skipping")
 
         if self.determine_if_versions_match() is False:
             self.determine_if_boot_matches()
 
 
     def determine_if_versions_match(self):
-        print("- Checking booted vs installed OCLP Build")
+        logging.info("- Checking booted vs installed OCLP Build")
         if self.constants.computer.oclp_version is None:
-            print("- Booted version not found")
+            logging.info("- Booted version not found")
             return False
 
         if self.constants.computer.oclp_version == self.constants.patcher_version:
-            print("- Versions match")
+            logging.info("- Versions match")
             return False
 
         # Check if installed version is newer than booted version
         if updates.check_binary_updates(self.constants).check_if_build_newer(
             self.constants.computer.oclp_version.split("."), self.constants.patcher_version.split(".")
         ) is True:
-            print("- Installed version is newer than booted version")
+            logging.info("- Installed version is newer than booted version")
             return False
 
         args = [
@@ -145,7 +146,7 @@ class AutomaticSysPatch:
             stderr=subprocess.STDOUT
         )
         if output.returncode == 0:
-            print("- Launching GUI's Build/Install menu")
+            logging.info("- Launching GUI's Build/Install menu")
             self.constants.start_build_install = True
             gui_main.wx_python_gui(self.constants).main_menu(None)
 
@@ -159,31 +160,31 @@ class AutomaticSysPatch:
         # If we determine them to be mismatched, notify the user
         # and ask if they want to install to install to disk
 
-        print("- Determining if macOS drive matches boot drive")
+        logging.info("- Determining if macOS drive matches boot drive")
         should_notify = global_settings.global_settings().read_property("AutoPatch_Notify_Mismatched_Disks")
         if should_notify is False:
-            print("- Skipping due to user preference")
+            logging.info("- Skipping due to user preference")
             return
         if self.constants.host_is_hackintosh is True:
-            print("- Skipping due to hackintosh")
+            logging.info("- Skipping due to hackintosh")
             return
         if not self.constants.booted_oc_disk:
-            print("- Failed to find disk OpenCore launched from")
+            logging.info("- Failed to find disk OpenCore launched from")
             return
 
         root_disk = self.constants.booted_oc_disk.strip("disk")
         root_disk = "disk" + root_disk.split("s")[0]
 
-        print(f"  - Boot Drive: {self.constants.booted_oc_disk} ({root_disk})")
+        logging.info(f"  - Boot Drive: {self.constants.booted_oc_disk} ({root_disk})")
         macOS_disk = utilities.get_disk_path()
-        print(f"  - macOS Drive: {macOS_disk}")
+        logging.info(f"  - macOS Drive: {macOS_disk}")
         physical_stores = utilities.find_apfs_physical_volume(macOS_disk)
-        print(f"  - APFS Physical Stores: {physical_stores}")
+        logging.info(f"  - APFS Physical Stores: {physical_stores}")
 
         disk_match = False
         for disk in physical_stores:
             if root_disk in disk:
-                print(f"- Boot drive matches macOS drive ({disk})")
+                logging.info(f"- Boot drive matches macOS drive ({disk})")
                 disk_match = True
                 break
 
@@ -191,15 +192,15 @@ class AutomaticSysPatch:
             return
 
         # Check if OpenCore is on a USB drive
-        print("- Boot Drive does not match macOS drive, checking if OpenCore is on a USB drive")
+        logging.info("- Boot Drive does not match macOS drive, checking if OpenCore is on a USB drive")
 
         disk_info = plistlib.loads(subprocess.run(["diskutil", "info", "-plist", root_disk], stdout=subprocess.PIPE).stdout)
         try:
             if disk_info["Ejectable"] is False:
-                print("- Boot Disk is not removable, skipping prompt")
+                logging.info("- Boot Disk is not removable, skipping prompt")
                 return
 
-            print("- Boot Disk is ejectable, prompting user to install to internal")
+            logging.info("- Boot Disk is ejectable, prompting user to install to internal")
 
             args = [
                 "osascript",
@@ -213,12 +214,12 @@ class AutomaticSysPatch:
                 stderr=subprocess.STDOUT
             )
             if output.returncode == 0:
-                print("- Launching GUI's Build/Install menu")
+                logging.info("- Launching GUI's Build/Install menu")
                 self.constants.start_build_install = True
                 gui_main.wx_python_gui(self.constants).main_menu(None)
 
         except KeyError:
-            print("- Unable to determine if boot disk is removable, skipping prompt")
+            logging.info("- Unable to determine if boot disk is removable, skipping prompt")
 
 
     def install_auto_patcher_launch_agent(self):
@@ -226,52 +227,52 @@ class AutomaticSysPatch:
         #   - OpenCore-Patcher.app in /Library/Application Support/Dortania/
         #   - com.dortania.opencore-legacy-patcher.auto-patch.plist in /Library/LaunchAgents/
         if self.constants.launcher_script is not None:
-            print("- Skipping Auto Patcher Launch Agent, not supported when running from source")
+            logging.info("- Skipping Auto Patcher Launch Agent, not supported when running from source")
             return
 
         if self.constants.launcher_binary.startswith("/Library/Application Support/Dortania/"):
-            print("- Skipping Auto Patcher Launch Agent, already installed")
+            logging.info("- Skipping Auto Patcher Launch Agent, already installed")
             return
 
         # Verify our binary isn't located in '/Library/Application Support/Dortania/'
         # As we'd simply be duplicating ourselves
-        print("- Installing Auto Patcher Launch Agent")
+        logging.info("- Installing Auto Patcher Launch Agent")
 
         if not Path("Library/Application Support/Dortania").exists():
-            print("- Creating /Library/Application Support/Dortania/")
+            logging.info("- Creating /Library/Application Support/Dortania/")
             utilities.process_status(utilities.elevated(["mkdir", "-p", "/Library/Application Support/Dortania"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
-        print("- Copying OpenCore Patcher to /Library/Application Support/Dortania/")
+        logging.info("- Copying OpenCore Patcher to /Library/Application Support/Dortania/")
         if Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
-            print("- Deleting existing OpenCore-Patcher")
+            logging.info("- Deleting existing OpenCore-Patcher")
             utilities.process_status(utilities.elevated(["rm", "-R", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
         # Strip everything after OpenCore-Patcher.app
         path = str(self.constants.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
-        print(f"- Copying {path} to /Library/Application Support/Dortania/")
+        logging.info(f"- Copying {path} to /Library/Application Support/Dortania/")
         utilities.process_status(utilities.elevated(["ditto", path, "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
         if not Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
             # Sometimes the binary the user launches may have a suffix (ie. OpenCore-Patcher 3.app)
             # We'll want to rename it to OpenCore-Patcher.app
             path = path.split("/")[-1]
-            print(f"- Renaming {path} to OpenCore-Patcher.app")
+            logging.info(f"- Renaming {path} to OpenCore-Patcher.app")
             utilities.process_status(utilities.elevated(["mv", f"/Library/Application Support/Dortania/{path}", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
         subprocess.run(["xattr", "-cr", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Copy over our launch agent
-        print("- Copying auto-patch.plist Launch Agent to /Library/LaunchAgents/")
+        logging.info("- Copying auto-patch.plist Launch Agent to /Library/LaunchAgents/")
         if Path("/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist").exists():
-            print("- Deleting existing auto-patch.plist")
+            logging.info("- Deleting existing auto-patch.plist")
             utilities.process_status(utilities.elevated(["rm", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         if not Path("/Library/LaunchAgents/").exists():
-            print("- Creating /Library/LaunchAgents/")
+            logging.info("- Creating /Library/LaunchAgents/")
             utilities.process_status(utilities.elevated(["mkdir", "-p", "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         utilities.process_status(utilities.elevated(["cp", self.constants.auto_patch_launch_agent_path, "/Library/LaunchAgents/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
         # Set the permissions on the com.dortania.opencore-legacy-patcher.auto-patch.plist
-        print("- Setting permissions on auto-patch.plist")
+        logging.info("- Setting permissions on auto-patch.plist")
         utilities.process_status(utilities.elevated(["chmod", "644", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         utilities.process_status(utilities.elevated(["chown", "root:wheel", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
@@ -279,5 +280,5 @@ class AutomaticSysPatch:
         # Simply an easy way for users to notice the app
         # If there's already an alias or exiting app, skip
         if not Path("/Applications/OpenCore-Patcher.app").exists():
-            print("- Making app alias")
+            logging.info("- Making app alias")
             utilities.process_status(utilities.elevated(["ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))

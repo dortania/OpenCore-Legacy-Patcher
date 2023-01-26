@@ -1,6 +1,7 @@
 # Handle misc CLI menu options
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 import sys
+import logging
 
 from resources import constants, install, utilities, defaults, installer, tui_helpers, global_settings
 from resources.sys_patch import sys_patch
@@ -21,7 +22,7 @@ class MenuOptions:
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.verbose_debug = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.change_verbose()
 
@@ -36,7 +37,7 @@ class MenuOptions:
             self.constants.opencore_debug = False
             self.constants.opencore_build = "RELEASE"
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.change_oc()
 
@@ -51,14 +52,14 @@ class MenuOptions:
             self.constants.kext_debug = False
             self.constants.kext_variant = "RELEASE"
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.change_kext()
 
     def change_metal(self):
         utilities.cls()
         utilities.header(["Assume Metal GPU Always in iMac"])
-        print(
+        logging.info(
             """This is for iMacs that have upgraded Metal GPUs, otherwise
 Patcher assumes based on stock configuration (ie. iMac10,x-12,x)
 
@@ -92,14 +93,14 @@ option is for those patching on a different machine or OCLP cannot detect.
             self.constants.imac_vendor = "AMD"
             self.constants.imac_model = "Legacy GCN"
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.change_metal()
 
     def change_serial(self):
         utilities.cls()
         utilities.header(["Set SMBIOS Spoof Level"])
-        print(
+        logging.info(
             """This section is for setting how OpenCore generates the SMBIOS
 Recommended for advanced users who want control how serials are handled
 
@@ -123,14 +124,14 @@ Q. Return to previous menu
         elif change_menu == "3":
             self.constants.serial_settings = "Advanced"
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.change_serial()
 
     def change_showpicker(self):
         utilities.cls()
         utilities.header(["Set OpenCore Picker mode"])
-        print(
+        logging.info(
             """By default, OpenCore will show its boot picker each time on boot up,
 however this can be disabled by default and be shown on command by repeatedly
 pressing the "Esc" key
@@ -142,14 +143,14 @@ pressing the "Esc" key
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.showpicker = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.change_showpicker()
 
     def change_vault(self):
         utilities.cls()
         utilities.header(["Set OpenCore Vaulting"])
-        print(
+        logging.info(
             """By default, this patcher will sign all your files and ensure none of the
 contents can be tampered with. However for more advanced users, you may
 want to be able to freely edit the config.plist and files.
@@ -164,14 +165,14 @@ Note: For security reasons, OpenShell will be disabled when Vault is set.
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.vault = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.change_vault()
 
     def change_sip(self):
         utilities.cls()
         utilities.header(["Set System Integrity protection"])
-        print(
+        logging.info(
             f"""SIP is used to ensure proper security measures are set,
 however to patch the root volume this must be lowered partially.
 Only disable is absolutely necessary. SIP value = 0x803
@@ -193,14 +194,14 @@ Q. Return to previous menu
         elif change_menu == "3":
             self.set_custom_sip_value()
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.change_sip()
 
     def change_sbm(self):
         utilities.cls()
         utilities.header(["Set SecureBootModel"])
-        print(
+        logging.info(
             """SecureBootModel is used to ensure best firmware security,
 however to patch the root volume this must be disabled.
 Only recommended to enable for users with T2 SMBIOS spoofs.
@@ -219,7 +220,7 @@ Q. Return to previous menu
         elif change_menu == "2":
             self.constants.secure_status = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.change_sbm()
 
@@ -227,7 +228,7 @@ Q. Return to previous menu
     def bootstrap_setting(self):
         utilities.cls()
         utilities.header(["Set Bootstrap method"])
-        print(
+        logging.info(
             """Sets OpenCore's bootstrap method, currently the patcher supports the
 following options.
 
@@ -251,14 +252,14 @@ see the EFI Boot entry in the boot picker.
         elif change_menu == "2":
             self.constants.boot_efi = True
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.bootstrap_setting()
 
     def drm_setting(self):
         utilities.cls()
         utilities.header(["Set DRM preferences"])
-        print(
+        logging.info(
             """Sets OpenCore's DRM preferences for iMac13,x and iMac14,x.
 In Big Sur, some DRM based content may be broken by
 default in AppleTV, Photobooth, etc.
@@ -277,14 +278,14 @@ Recommend only disabling if absolutely required.
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.drm_support = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.drm_setting()
 
     def allow_native_models(self):
         utilities.cls()
         utilities.header(["Allow OpenCore on native Models"])
-        print(
+        logging.info(
             """Allows natively supported Macs to use OpenCore. Recommended
 for users with 3rd Party NVMe SSDs to achieve improved overall
 power usage.
@@ -299,14 +300,14 @@ power usage.
             self.constants.allow_oc_everywhere = False
             self.constants.serial_settings = "Minimal"
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.allow_native_models()
 
     def custom_cpu(self):
         utilities.cls()
         utilities.header(["Set custom CPU Model Name"])
-        print(
+        logging.info(
             """Change reported CPU Model name in About This Mac
 Custom names will report as follows:
 
@@ -318,11 +319,11 @@ Q. Return to previous menu
         )
         if self.constants.custom_cpu_model_value == "":
             if self.constants.custom_cpu_model == 0:
-                print("Currently using original name")
+                logging.info("Currently using original name")
             else:
-                print("Currently using CPU name")
+                logging.info("Currently using CPU name")
         else:
-            print(f"Custom CPU name currently: {self.constants.custom_cpu_model_value}")
+            logging.info(f"Custom CPU name currently: {self.constants.custom_cpu_model_value}")
         change_menu = input("Set custom CPU Name(1,2,3): ")
         if change_menu == "1":
             self.constants.custom_cpu_model = 2
@@ -334,14 +335,14 @@ Q. Return to previous menu
             self.constants.custom_cpu_model = 1
             self.constants.custom_cpu_model_value = input("Enter new CPU Name: ")
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.custom_cpu()
 
     def disable_cpufriend(self):
         utilities.cls()
         utilities.header(["Disable CPU Friend?"])
-        print(
+        logging.info(
             """Only recommended for advanced users
 Disabling CPUFriend forces macOS into using a different
 Mac's power profile for CPUs and GPUs, which can harm the
@@ -354,14 +355,14 @@ hardware
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.disallow_cpufriend = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.disable_cpufriend()
 
     def set_smbios(self):
         utilities.cls()
         utilities.header(["Set SMBIOS Spoof Model"])
-        print(
+        logging.info(
             """Change model OpenCore spoofs Mac too
 
 Valid options:
@@ -374,7 +375,7 @@ Q. Return to previous menu
 
         change_menu = input("Set SMBIOS Spoof Model: ")
         if change_menu == "1":
-            print("Setting SMBIOS spoof to default mode")
+            logging.info("Setting SMBIOS spoof to default mode")
             self.constants.override_smbios = "Default"
         elif change_menu == "2":
             custom_smbios = input("Set new SMBIOS mode: ")
@@ -382,23 +383,23 @@ Q. Return to previous menu
                 if smbios_data.smbios_dictionary[custom_smbios]["Board ID"] != None:
                     self.constants.override_smbios = custom_smbios
                 else:
-                    print("Non-Intel SMBIOS, reverting to Default setting")
+                    logging.info("Non-Intel SMBIOS, reverting to Default setting")
                     self.constants.override_smbios = "Default"
             except KeyError:
-                print("Unsupported SMBIOS, reverting to Default setting")
+                logging.info("Unsupported SMBIOS, reverting to Default setting")
                 self.constants.override_smbios = "Default"
         elif change_menu == "3":
-            print("Disabling SMBIOS spoof")
+            logging.info("Disabling SMBIOS spoof")
             self.constants.override_smbios = self.model
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.set_smbios()
 
     def allow_firewire(self):
         utilities.cls()
         utilities.header(["Allow FireWire Boot Support"])
-        print(
+        logging.info(
             """
 In macOS Catalina and newer, Apple restricted
 usage of FireWire devices to boot macOS for
@@ -418,14 +419,14 @@ Note: MacBook5,x-7,1 don't support FireWire boot
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.firewire_boot = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.allow_firewire()
 
     def allow_nvme(self):
         utilities.cls()
         utilities.header(["Allow NVMe UEFI Support"])
-        print(
+        logging.info(
             """
 For machines not natively supporting NVMe,
 this option allows you to see and boot NVMe
@@ -445,14 +446,14 @@ OpenCore will enable NVMe support in it's picker
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.nvme_boot = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.allow_nvme()
 
     def allow_nvme_pwr_mgmt(self):
         utilities.cls()
         utilities.header(["Allow NVMe Power Management Adjustments"])
-        print(
+        logging.info(
             """
 For machines with upgraded NVMe drives, this
 option allows for better power management support
@@ -472,14 +473,14 @@ Skylake and newer Macs.
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.allow_nvme_fixing = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.allow_nvme()
 
     def allow_xhci(self):
         utilities.cls()
         utilities.header(["Allow NVMe UEFI Support"])
-        print(
+        logging.info(
             """
 For machines not natively supporting XHCI/USB 3.o,
 this option allows you to see and boot XHCI
@@ -499,14 +500,14 @@ OpenCore will enable XHCI support in it's picker
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.xhci_boot = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.allow_xhci()
 
     def allow_wowl(self):
         utilities.cls()
         utilities.header(["Allow Wake on WLAN"])
-        print(
+        logging.info(
             """
 Due to an unfortunate bug in macOS Big Sur+, Wake on WLAN is
 disabled by default for BCM943224, BCM94331 and BCM94360/2 chipsets.
@@ -523,7 +524,7 @@ be prepared if enabling.
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.enable_wake_on_wlan = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.allow_wowl()
 
@@ -531,7 +532,7 @@ be prepared if enabling.
     def disable_tb(self):
         utilities.cls()
         utilities.header(["Disable Thunderbolt on 2013-14 MacBook Pros"])
-        print(
+        logging.info(
             """
 Some 2013-14 MacBook Pro's have issues with the built-in thunderbolt,
 resulting in kernel panics and random shutdowns.
@@ -550,14 +551,14 @@ other devices that benefit from this fix.
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.disable_tb = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.disable_tb()
 
     def terascale_2_accel(self):
         utilities.cls()
         utilities.header(["Set TeraScale 2 Acceleration"])
-        print(
+        logging.info(
             """
 By default this patcher will install TeraScale 2 acceleration, however
 for some laptops this may be undesired due to how degraded their dGPU
@@ -577,21 +578,21 @@ handle acceleration tasks.
             global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", False)
             self.constants.allow_ts2_accel = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.terascale_2_accel()
 
     def dump_hardware(self):
         utilities.cls()
         utilities.header(["Dumping detected hardware"])
-        print("")
-        print(self.constants.computer)
+        logging.info("")
+        logging.info(self.constants.computer)
         input("\nPress [ENTER] to exit: ")
 
     def applealc_support(self):
         utilities.cls()
         utilities.header(["Set AppleALC usage"])
-        print(
+        logging.info(
             """
 By default this patcher will install audio patches in-memory via
 AppleALC. However for systems that cannot achieve boot screen support,
@@ -608,14 +609,14 @@ If AppleALC is detected, the Patcher will not install AppleHDA.
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.set_alc_usage = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.applealc_support()
 
     def dGPU_switch_support(self):
         utilities.cls()
         utilities.header(["Set Windows GMUX support"])
-        print(
+        logging.info(
             """
 With OCLP, we're able to restore iGPU functionality on iGPU+dGPU
 MacBook Pros. However for some this may not be desires, ie. eGPUs
@@ -629,14 +630,14 @@ for Windows may prefer to only work with the dGPU and eGPU active.
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.dGPU_switch = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.dGPU_switch_support()
 
     def set_3rd_party_drives(self):
         utilities.cls()
         utilities.header(["Set enhanced 3rd Party SSD Support"])
-        print(
+        logging.info(
             """
 On SATA-based Macs, Apple restricts enhanced OS support to native
 drives. Namely hibernation and TRIM.
@@ -652,14 +653,14 @@ TRIM is not ideal.
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.allow_3rd_party_drives = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.set_3rd_party_drives()
 
     def set_software_demux(self):
         utilities.cls()
         utilities.header(["Set Software Demux"])
-        print(
+        logging.info(
             """
 For MacBookPro8,2/3 users, it's very common for the dGPU to fail and
 thus require the user to disable them via the 'gpu-power-prefs'
@@ -680,14 +681,14 @@ https://dortania.github.io/OpenCore-Legacy-Patcher/ACCEL.html#unable-to-switch-g
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.software_demux = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.set_software_demux()
 
     def set_battery_throttle(self):
         utilities.cls()
         utilities.header(["Disable Firmware Throttling"])
-        print(
+        logging.info(
             """
 By default on Nehalem and newer Macs, the firmware will throttle if
 the battery or Display is either dead or missing. The firmware will set
@@ -709,14 +710,14 @@ Note: Only supported on Nehalem and newer Macs (2010+)
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.disable_msr_power_ctl = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.set_battery_throttle()
 
     def set_xcpm(self):
         utilities.cls()
         utilities.header(["Disable XCPM"])
-        print(
+        logging.info(
             """
 By default on Ivy Bridge EP and newer Macs, the system will throttle if
 the battery or Display is either dead or missing. Apple's XCPM will set
@@ -735,14 +736,14 @@ Note: Only supported on Ivy Bridge EP and newer Macs (2013+)
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.disable_xcpm = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.set_xcpm()
 
     def set_surplus(self):
         utilities.cls()
         utilities.header(["Override SurPlus MaxKernel"])
-        print(
+        logging.info(
             """
 By default OCLP will only allow SurPlus to be used on Big Sur and Monterey.
 This is for safety reasons in the event newer OSes may break compatibility
@@ -761,14 +762,14 @@ the event there's issues.
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.force_surplus = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.set_surplus()
 
     def set_hibernation_workaround(self):
         utilities.cls()
         utilities.header(["Set Hibernation Workaround"])
-        print(
+        logging.info(
             """
 For users with Hibernation issues, you can flip this option to disable certain
 OpenCore settings that may affect the stability of Hibernation. Namely
@@ -792,14 +793,14 @@ Note: This option should only be flipped under the following circumstances:
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.disable_connectdrivers = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.set_hibernation_workaround()
 
     def set_custom_sip_value(self):
         utilities.cls()
         utilities.header(["Set Custom SIP Value"])
-        print(
+        logging.info(
             """
 By default OCLP will use the SIP value of 0x00 as the enabled and
 0x803 for machines that require root patching. For users who wish
@@ -815,13 +816,13 @@ To disable SIP outright, set it to 0xFEF
             # Convert to binary hex
             self.constants.custom_sip_value = change_menu
         except ValueError:
-            print("Invalid input, returning to previous menu")
+            logging.info("Invalid input, returning to previous menu")
             self.set_custom_sip_value()
 
     def set_fu_settings(self):
         utilities.cls()
         utilities.header(["Set FeatureUnlock Settings"])
-        print(
+        logging.info(
             """
 By default OCLP will add a kext called FeatureUnlock to enable
 features locked out from older models. Including:
@@ -851,13 +852,13 @@ Supported Options:
             self.constants.fu_status = False
             self.constants.fu_arguments = None
         else:
-            print("Invalid input, returning to previous menu")
+            logging.info("Invalid input, returning to previous menu")
             self.set_fu_settings()
 
     def set_allow_native_spoofs(self):
         utilities.cls()
         utilities.header(["Allow Native Spoofs"])
-        print(
+        logging.info(
             """
 By default OCLP will not touch the SMBIOS of native models
 to ensure a "stock-like" environment. However for systems that
@@ -874,14 +875,14 @@ available however not officially supported.
         elif change_menu in {"n", "N", "no", "No"}:
             self.constants.allow_native_spoofs = False
         elif change_menu in {"q", "Q", "Quit", "quit"}:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.set_allow_native_spoofs()
 
     def set_nvram_write(self):
         utilities.cls()
         utilities.header(["Set NVRAM Write"])
-        print(
+        logging.info(
             """
 By default, OpenCore will write NVRAM variables to flash. This is
 recommended for majority of systems however for extremely degraded
@@ -899,13 +900,13 @@ Supported Options:
         elif change_menu == "2":
             self.constants.nvram_write = False
         else:
-            print("Invalid input, returning to previous menu")
+            logging.info("Invalid input, returning to previous menu")
             self.set_nvram_write()
 
     def set_cc_support(self):
         utilities.cls()
         utilities.header(["Set Content Caching Support"])
-        print(
+        logging.info(
             """
 On systems spoofing via VMM, Content Caching is disabled by
 default by Apple. This option allows you to mask VMM from
@@ -918,12 +919,12 @@ AssetCache.
         elif change_menu in ["n", "N", "no", "No"]:
             self.constants.set_content_caching = False
         elif change_menu in ["q", "Q", "Quit", "quit"]:
-            print("Returning to previous menu")
+            logging.info("Returning to previous menu")
         else:
             self.set_cc_support()
 
     def credits(self):
-        tui_helpers.TUIOnlyPrint(
+        tui_helpers.TUIOnlyLogging.info(
             ["Credits"],
             "Press [Enter] to go back.\n",
             [
@@ -947,7 +948,7 @@ https://github.com/dortania/OpenCore-Legacy-Patcher
     def change_model(self):
         utilities.cls()
         utilities.header(["Select Different Model"])
-        print(
+        logging.info(
             """
 Tip: Run the following command on the target machine to find the model identifier:
 
@@ -956,14 +957,14 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         )
         self.constants.custom_model = input("Please enter the model identifier of the target machine: ").strip()
         if self.constants.custom_model not in model_array.SupportedSMBIOS:
-            print(
+            logging.info(
                 f"""
 {self.constants.custom_model} is not a valid SMBIOS Identifier for macOS {self.constants.os_support}!
 """
             )
-            print_models = input(f"Print list of valid options for macOS {self.constants.os_support}? (y/n)")
-            if print_models.lower() in {"y", "yes"}:
-                print("\n".join(model_array.SupportedSMBIOS))
+            logging.info_models = input(f"Logging.info list of valid options for macOS {self.constants.os_support}? (y/n)")
+            if logging.info_models.lower() in {"y", "yes"}:
+                logging.info("\n".join(model_array.SupportedSMBIOS))
                 input("\nPress [ENTER] to continue")
         else:
             defaults.generate_defaults(self.constants.custom_model, False, self.constants)
@@ -975,11 +976,11 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         no_patch = False
         no_unpatch = False
         if self.constants.detected_os == os_data.os_data.monterey:
-            print(MenuOptions.monterey)
+            logging.info(MenuOptions.monterey)
         elif self.constants.detected_os == os_data.os_data.big_sur:
-            print(MenuOptions.big_sur)
+            logging.info(MenuOptions.big_sur)
         else:
-            print(MenuOptions.default)
+            logging.info(MenuOptions.default)
             no_patch = True
             no_unpatch = True
         change_menu = input("Patch System Volume?: ")
@@ -988,7 +989,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
         elif no_unpatch is not True and change_menu == "2":
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, None).start_unpatch()
         else:
-            print("Returning to main menu")
+            logging.info("Returning to main menu")
 
     def advanced_patcher_settings(self):
         response = None
@@ -1169,7 +1170,7 @@ system_profiler SPHardwareDataType | grep 'Model Identifier'
     def download_macOS(self):
         utilities.cls()
         utilities.header(["Create macOS installer"])
-        print(
+        logging.info(
             """
 This option allows you to download and flash a macOS installer
 to your USB drive.
@@ -1196,7 +1197,7 @@ B. Exit
             # To avoid selecting the wrong installer by mistake, let user select the correct one
             self.find_local_installer()
         else:
-            print("Failed to start download")
+            logging.info("Failed to start download")
             input("Press any key to continue...")
 
 
@@ -1246,14 +1247,14 @@ B. Exit
                 if installer.create_installer(installer_path, "OCLP-Installer") is True:
                     utilities.cls()
                     utilities.header(["Create macOS installer"])
-                    print("Installer created successfully.")
+                    logging.info("Installer created successfully.")
                     input("Press enter to exit.")
                     if self.constants.walkthrough is True:
                         self.closing_message()
                 else:
                     utilities.cls()
                     utilities.header(["Create macOS installer"])
-                    print("Installer creation failed.")
+                    logging.info("Installer creation failed.")
                     input("Press enter to return to the previous.")
                     return
             else:
@@ -1263,12 +1264,12 @@ B. Exit
     def closing_message(self):
         utilities.cls()
         utilities.header(["Create macOS installer"])
-        print("Thank you for using OpenCore Legacy Patcher!")
-        print("Reboot your machine and select EFI Boot to load OpenCore")
-        print("")
-        print("If you have any issues, remember to check the guide as well as\nour Discord server:")
-        print("\n\tGuide: https://dortania.github.io/OpenCore-Legacy-Patcher/")
-        print("\tDiscord: https://discord.gg/rqdPgH8xSN")
+        logging.info("Thank you for using OpenCore Legacy Patcher!")
+        logging.info("Reboot your machine and select EFI Boot to load OpenCore")
+        logging.info("")
+        logging.info("If you have any issues, remember to check the guide as well as\nour Discord server:")
+        logging.info("\n\tGuide: https://dortania.github.io/OpenCore-Legacy-Patcher/")
+        logging.info("\tDiscord: https://discord.gg/rqdPgH8xSN")
         input("\nPress enter to exit: ")
         sys.exit()
 

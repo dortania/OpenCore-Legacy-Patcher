@@ -11,6 +11,8 @@ import requests
 
 import subprocess
 
+import logging
+
 from resources import utilities
 from resources.constants import Constants
 
@@ -22,16 +24,16 @@ class kernel_debug_kit_handler:
     def get_available_kdks(self):
         KDK_API_LINK = "https://kdk-api.dhinak.net/v1"
 
-        print("- Fetching available KDKs")
+        logging.info("- Fetching available KDKs")
 
         try:
             results = utilities.SESSION.get(KDK_API_LINK, headers={"User-Agent": f"OCLP/{self.constants.patcher_version}"}, timeout=10)
         except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
-            print("- Could not contact KDK API")
+            logging.info("- Could not contact KDK API")
             return None
 
         if results.status_code != 200:
-            print("- Could not fetch KDK list")
+            logging.info("- Could not fetch KDK list")
             return None
 
         return sorted(results.json(), key=lambda x: (packaging.version.parse(x["version"]), datetime.datetime.fromisoformat(x["date"])), reverse=True)
@@ -47,16 +49,16 @@ class kernel_debug_kit_handler:
 
         parsed_host_version = cast(packaging.version.Version, packaging.version.parse(host_version))
 
-        print(f"- Checking closest match for: {host_version} build {host_build}")
+        logging.info(f"- Checking closest match for: {host_version} build {host_build}")
 
         try:
             results = utilities.SESSION.get(OS_DATABASE_LINK)
         except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
-            print("- Could not contact AppleDB")
+            logging.info("- Could not contact AppleDB")
             return None, "", ""
 
         if results.status_code != 200:
-            print("- Could not fetch database")
+            logging.info("- Could not fetch database")
             return None, "", ""
 
         macos_builds = [i for i in results.json()["ios"] if i["osType"] == "macOS"]
@@ -79,10 +81,10 @@ class kernel_debug_kit_handler:
                     continue
                 elif version <= parsed_host_version and version.major == parsed_host_version.major and version.minor == parsed_host_version.minor:
                     # The KDK list is already sorted by date then version, so the first match is the closest
-                    print(f"- Closest match: {version} build {build}")
+                    logging.info(f"- Closest match: {version} build {build}")
                     return self.generate_kdk_link(str(version), build), str(version), build
 
-        print("- Could not find a match")
+        logging.info("- Could not find a match")
         return None, "", ""
 
     def generate_kdk_link(self, version: str, build: str):
@@ -99,7 +101,7 @@ class kernel_debug_kit_handler:
         # 3: Network error
 
         if utilities.verify_network_connection("https://developerservices2.apple.com/services/download") is False:
-            print("- Could not connect to the network")
+            logging.info("- Could not connect to the network")
             return 3
 
         TOKEN_URL_BASE = "https://developerservices2.apple.com/services/download"
@@ -109,17 +111,17 @@ class kernel_debug_kit_handler:
         try:
             response = utilities.SESSION.get(token_url, timeout=5)
         except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
-            print("- Could not contact Apple download servers")
+            logging.info("- Could not contact Apple download servers")
             return 2
 
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError:
             if response.status_code == 400 and "The path specified is invalid" in response.text:
-                print("- File does not exist on Apple download servers")
+                logging.info("- File does not exist on Apple download servers")
                 return 1
             else:
-                print("- Could not request download authorization from Apple download servers")
+                logging.info("- Could not request download authorization from Apple download servers")
                 return 2
         return 0
 
@@ -127,7 +129,7 @@ class kernel_debug_kit_handler:
         detected_build = build
 
         if self.is_kdk_installed(detected_build) is True:
-            print("- KDK is already installed")
+            logging.info("- KDK is already installed")
             self.remove_unused_kdks(exclude_builds=[detected_build])
             return True, "", detected_build
 
@@ -151,59 +153,59 @@ class kernel_debug_kit_handler:
                     closest_version = kdk["version"]
                     closest_build = kdk["build"]
         else:
-            print("- Could not fetch KDK list, falling back to brute force")
+            logging.info("- Could not fetch KDK list, falling back to brute force")
             download_link = self.generate_kdk_link(version, build)
             closest_match_download_link, closest_version, closest_build = self.get_closest_match_legacy(version, build)
 
-        print(f"- Checking for KDK matching macOS {version} build {build}")
+        logging.info(f"- Checking for KDK matching macOS {version} build {build}")
         # download_link is None if no matching KDK is found, so we'll fall back to the closest match
         result = self.verify_apple_developer_portal(download_link) if download_link else 1
         if result == 0:
-            print("- Downloading KDK")
+            logging.info("- Downloading KDK")
         elif result == 1:
-            print("- Could not find KDK, finding closest match")
+            logging.info("- Could not find KDK, finding closest match")
 
             if self.is_kdk_installed(closest_build) is True:
-                print(f"- Closet Build ({closest_build}) already installed")
+                logging.info(f"- Closet Build ({closest_build}) already installed")
                 self.remove_unused_kdks(exclude_builds=[detected_build, closest_build])
                 return True, "", closest_build
 
             if closest_match_download_link is None:
                 msg = "Could not find KDK for host, nor closest match"
-                print(f"- {msg}")
+                logging.info(f"- {msg}")
                 return False, msg, ""
 
-            print(f"- Closest match: {closest_version} build {closest_build}")
+            logging.info(f"- Closest match: {closest_version} build {closest_build}")
             result = self.verify_apple_developer_portal(closest_match_download_link)
 
             if result == 0:
-                print("- Downloading KDK")
+                logging.info("- Downloading KDK")
                 download_link = closest_match_download_link
             elif result == 1:
                 msg = "Could not find KDK for host on Apple's servers, nor closest match"
-                print(f"- {msg}")
+                logging.info(f"- {msg}")
                 return False, msg, ""
             elif result == 2:
                 msg = "Could not contact Apple download servers"
                 download_link = self.kdk_backup_site(closest_build)
                 if download_link is None:
                     msg += " and could not find a backup copy online"
-                    print(f"- {msg}")
+                    logging.info(f"- {msg}")
                     return False, msg, ""
             else:
                 msg = "Unknown error"
-                print(f"- {msg}")
+                logging.info(f"- {msg}")
                 return False, msg, ""
         elif result == 2:
             msg = "Could not contact Apple download servers"
             download_link = self.kdk_backup_site(build)
             if download_link is None:
                 msg += " and could not find a backup copy online"
-                print(f"- {msg}")
+                logging.info(f"- {msg}")
                 return False, msg, ""
         elif result == 3:
             msg = "Failed to connect to the internet"
-            print(f"- {msg}")
+            logging.info(f"- {msg}")
             return False, msg, ""
 
         if "github" in download_link:
@@ -214,15 +216,15 @@ class kernel_debug_kit_handler:
         if result:
             result = subprocess.run(["hdiutil", "verify", self.constants.kdk_download_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if result.returncode != 0:
-                print(f"Error: Kernel Debug Kit checksum verification failed!")
-                print(f"Output: {result.stderr}")
+                logging.info(f"Error: Kernel Debug Kit checksum verification failed!")
+                logging.info(f"Output: {result.stderr}")
                 msg = "Kernel Debug Kit checksum verification failed, please try again.\n\nIf this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)"
-                print(f"- {msg}")
+                logging.info(f"- {msg}")
                 return False, msg, ""
             self.remove_unused_kdks(exclude_builds=[detected_build, closest_build])
             return True, "", detected_build
         msg = "Failed to download KDK"
-        print(f"- {msg}")
+        logging.info(f"- {msg}")
         return False, msg, ""
 
     def is_kdk_installed(self, build):
@@ -239,7 +241,7 @@ class kernel_debug_kit_handler:
                     if file.name.endswith(f"{build}.kdk"):
                         for kext in kexts_to_check:
                             if not Path(f"{file}/System/Library/Extensions/{kext}").exists():
-                                print(f"- Corrupted KDK found, removing due to missing: {file}/System/Library/Extensions/{kext}")
+                                logging.info(f"- Corrupted KDK found, removing due to missing: {file}/System/Library/Extensions/{kext}")
                                 utilities.elevated(["rm", "-rf", file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                                 return False
                         return True
@@ -255,7 +257,7 @@ class kernel_debug_kit_handler:
         if exclude_builds == []:
             return
 
-        print("- Cleaning unused KDKs")
+        logging.info("- Cleaning unused KDKs")
         for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
             if kdk_folder.is_dir():
                 if kdk_folder.name.endswith(".kdk"):
@@ -266,7 +268,7 @@ class kernel_debug_kit_handler:
                             break
                     if should_remove is False:
                         continue
-                    print(f"  - Removing {kdk_folder.name}")
+                    logging.info(f"  - Removing {kdk_folder.name}")
                     utilities.elevated(["rm", "-rf", kdk_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -276,17 +278,17 @@ class kernel_debug_kit_handler:
         # Check if tag exists
         catalog = requests.get(KDK_MIRROR_REPOSITORY)
         if catalog.status_code != 200:
-            print(f"- Could not contact KDK mirror repository")
+            logging.info(f"- Could not contact KDK mirror repository")
             return None
 
         catalog = catalog.json()
 
         for release in catalog:
             if release["tag_name"] == build:
-                print(f"- Found KDK mirror for build: {build}")
+                logging.info(f"- Found KDK mirror for build: {build}")
                 for asset in release["assets"]:
                     if asset["name"].endswith(".dmg"):
                         return asset["browser_download_url"]
 
-        print(f"- Could not find KDK mirror for build {build}")
+        logging.info(f"- Could not find KDK mirror for build {build}")
         return None

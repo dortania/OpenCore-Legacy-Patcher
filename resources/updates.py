@@ -3,6 +3,7 @@
 # Call check_binary_updates() to determine if any updates are available
 # Returns dict with Link and Version of the latest binary update if available
 import requests
+import logging
 
 
 class check_binary_updates:
@@ -62,24 +63,24 @@ class check_binary_updates:
             return "Unknown"
 
     def check_binary_updates(self):
-        # print("- Checking for updates...")
+        # logging.info("- Checking for updates...")
         if self.verify_network_connection(self.binary_url):
-            # print("- Network connection functional")
+            # logging.info("- Network connection functional")
             response = requests.get(self.binary_url)
             data_set = response.json()
-            # print("- Retrieved latest version data")
+            # logging.info("- Retrieved latest version data")
             self.remote_version = data_set["tag_name"]
-            # print(f"- Latest version: {self.remote_version}")
+            # logging.info(f"- Latest version: {self.remote_version}")
             self.remote_version_array = self.remote_version.split(".")
             self.remote_version_array = [
                 int(x) for x in self.remote_version_array
             ]
             if self.check_if_build_newer() is True:
-                # print("- Remote version is newer")
+                # logging.info("- Remote version is newer")
                 for asset in data_set["assets"]:
-                    print(f"- Found asset: {asset['name']}")
+                    logging.info(f"- Found asset: {asset['name']}")
                     if self.determine_remote_type(asset["name"]) == self.determine_local_build_type():
-                        # print(f"- Found matching asset: {asset['name']}")
+                        # logging.info(f"- Found matching asset: {asset['name']}")
                         self.available_binaries.update({
                             asset['name']: {
                                 "Name":
@@ -98,8 +99,8 @@ class check_binary_updates:
                 if self.available_binaries:
                     return self.available_binaries
                 else:
-                    # print("- No matching binaries available")
+                    # logging.info("- No matching binaries available")
                     return None
         # else:
-            # print("- Failed to connect to GitHub API")
+            # logging.info("- Failed to connect to GitHub API")
         return None

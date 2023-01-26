@@ -10,6 +10,7 @@ from data import model_array, os_data, sip_data, sys_patch_dict, smbios_data, cp
 import py_sip_xnu
 from pathlib import Path
 import plistlib
+import logging
 
 class detect_root_patch:
     def __init__(self, model, versions):
@@ -67,7 +68,7 @@ class detect_root_patch:
         non_metal_os = os_data.os_data.catalina
         for i, gpu in enumerate(gpus):
             if gpu.class_code and gpu.class_code != 0xFFFFFFFF:
-                print(f"- Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
+                logging.info(f"- Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
                 if gpu.arch in [device_probe.NVIDIA.Archs.Tesla] and self.constants.force_nv_web is False:
                     if self.constants.detected_os > non_metal_os:
                         self.nvidia_tesla = True
@@ -510,50 +511,50 @@ class detect_root_patch:
 
         if print_errors is True:
             if self.sip_enabled is True:
-                print("\nCannot patch! Please disable System Integrity Protection (SIP).")
-                print("Disable SIP in Patcher Settings and Rebuild OpenCore\n")
-                print("Ensure the following bits are set for csr-active-config:")
-                print("\n".join(sip))
-                print(sip_value)
+                logging.info("\nCannot patch! Please disable System Integrity Protection (SIP).")
+                logging.info("Disable SIP in Patcher Settings and Rebuild OpenCore\n")
+                logging.info("Ensure the following bits are set for csr-active-config:")
+                logging.info("\n".join(sip))
+                logging.info(sip_value)
 
             if self.sbm_enabled is True:
-                print("\nCannot patch! Please disable Apple Secure Boot.")
-                print("Disable SecureBootModel in Patcher Settings and Rebuild OpenCore")
-                print("For Hackintoshes, set SecureBootModel to Disabled")
+                logging.info("\nCannot patch! Please disable Apple Secure Boot.")
+                logging.info("Disable SecureBootModel in Patcher Settings and Rebuild OpenCore")
+                logging.info("For Hackintoshes, set SecureBootModel to Disabled")
 
             if self.fv_enabled is True:
-                print("\nCannot patch! Please disable FileVault.")
-                print("For OCLP Macs, please rebuild your config with 0.2.5 or newer")
-                print("For others, Go to System Preferences -> Security and disable FileVault")
+                logging.info("\nCannot patch! Please disable FileVault.")
+                logging.info("For OCLP Macs, please rebuild your config with 0.2.5 or newer")
+                logging.info("For others, Go to System Preferences -> Security and disable FileVault")
 
             if self.amfi_enabled is True and self.amfi_must_disable is True:
-                print("\nCannot patch! Please disable AMFI.")
-                print("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
+                logging.info("\nCannot patch! Please disable AMFI.")
+                logging.info("For Hackintoshes, please add amfi_get_out_of_my_way=1 to boot-args")
 
             if self.dosdude_patched is True:
-                print("\nCannot patch! Detected machine has already been patched by another patcher")
-                print("Please ensure your install is either clean or patched with OpenCore Legacy Patcher")
+                logging.info("\nCannot patch! Detected machine has already been patched by another patcher")
+                logging.info("Please ensure your install is either clean or patched with OpenCore Legacy Patcher")
 
             if self.nvidia_web is True:
                 if self.missing_nv_web_opengl is True:
-                    print("\nCannot patch! Force OpenGL property missing")
-                    print("Please ensure ngfxgl=1 is set in boot-args")
+                    logging.info("\nCannot patch! Force OpenGL property missing")
+                    logging.info("Please ensure ngfxgl=1 is set in boot-args")
 
                 if self.missing_nv_compat is True:
-                    print("\nCannot patch! Force Nvidia compatibility property missing")
-                    print("Please ensure ngfxcompat=1 is set in boot-args")
+                    logging.info("\nCannot patch! Force Nvidia compatibility property missing")
+                    logging.info("Please ensure ngfxcompat=1 is set in boot-args")
 
                 if self.missing_nv_web_nvram is True:
-                    print("\nCannot patch! nvda_drv(_vrl) variable missing")
-                    print("Please ensure nvda_drv_vrl=1 is set in boot-args")
+                    logging.info("\nCannot patch! nvda_drv(_vrl) variable missing")
+                    logging.info("Please ensure nvda_drv_vrl=1 is set in boot-args")
 
                 if self.missing_whatever_green is True:
-                    print("\nCannot patch! WhateverGreen.kext missing")
-                    print("Please ensure WhateverGreen.kext is installed")
+                    logging.info("\nCannot patch! WhateverGreen.kext missing")
+                    logging.info("Please ensure WhateverGreen.kext is installed")
 
             if (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.constants.detected_os >= os_data.os_data.ventura.value) else False:
-                print("\nCannot patch! Network Connection Required")
-                print("Please ensure you have an active internet connection")
+                logging.info("\nCannot patch! Network Connection Required")
+                logging.info("Please ensure you have an active internet connection")
 
         if any(
             [
@@ -581,7 +582,7 @@ class detect_root_patch:
         all_hardware_patchset = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor, self.constants.legacy_accel_support)
         required_patches = {}
         utilities.cls()
-        print("- The following patches will be applied:")
+        logging.info("- The following patches will be applied:")
         if hardware_details["Graphics: Intel Ironlake"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
             required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
@@ -700,8 +701,8 @@ class detect_root_patch:
                     del(required_patches[patch_name])
                 else:
                     if required_patches[patch_name]["Display Name"]:
-                        print(f"  - {required_patches[patch_name]['Display Name']}")
+                        logging.info(f"  - {required_patches[patch_name]['Display Name']}")
         else:
-            print("  - No patch sets found for booted model")
+            logging.info("  - No patch sets found for booted model")
 
         return required_patches

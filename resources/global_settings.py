@@ -5,6 +5,7 @@
 
 from pathlib import Path
 import plistlib
+import logging
 
 class global_settings:
 
@@ -21,7 +22,7 @@ class global_settings:
         try:
             plistlib.dump({"Developed by Dortania": True,}, Path(self.global_settings_plist).open("wb"))
         except PermissionError:
-            print("- Permission error: Unable to write to global settings file")
+            logging.info("- Permission error: Unable to write to global settings file")
 
     def read_property(self, property_name):
         if Path(self.global_settings_plist).exists():
@@ -37,7 +38,7 @@ class global_settings:
             try:
                 plistlib.dump(plist, Path(self.global_settings_plist).open("wb"))
             except PermissionError:
-                print("- Failed to write to global settings file")
+                logging.info("- Failed to write to global settings file")
 
 
     def convert_defaults_to_global_settings(self):
@@ -52,11 +53,11 @@ class global_settings:
             try:
                 plistlib.dump(global_settings_plist, Path(self.global_settings_plist).open("wb"))
             except PermissionError:
-                print("- Permission error: Unable to write to global settings file")
+                logging.info("- Permission error: Unable to write to global settings file")
                 return
 
             # delete defaults plist
             try:
                 Path(defaults_path).unlink()
             except PermissionError:
-                print("- Permission error: Unable to delete defaults plist")
+                logging.info("- Permission error: Unable to delete defaults plist")

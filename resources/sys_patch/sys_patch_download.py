@@ -4,6 +4,7 @@
 from resources import utilities
 from pathlib import Path
 import shutil
+import logging
 
 class grab_patcher_support_pkg:
 
@@ -17,16 +18,16 @@ class grab_patcher_support_pkg:
     def download_files(self):
         link = self.generate_pkg_link()
         if Path(self.constants.payload_local_binaries_root_path).exists():
-            print("- Removing old Root Patcher Payload folder")
+            logging.info("- Removing old Root Patcher Payload folder")
             # Delete folder
             shutil.rmtree(self.constants.payload_local_binaries_root_path)
 
         download_result = None
         if Path(self.constants.payload_local_binaries_root_path_zip).exists():
-            print(f"- Found local Universal-Binaries.zip, skipping download")
+            logging.info(f"- Found local Universal-Binaries.zip, skipping download")
             download_result = True
         else:
-            print(f"- No local version found, downloading...")
+            logging.info(f"- No local version found, downloading...")
             download_result = utilities.download_file(link, self.constants.payload_local_binaries_root_path_zip)
 
         return download_result, link

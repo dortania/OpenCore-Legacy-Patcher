@@ -17,6 +17,7 @@ import binascii
 import hashlib
 from datetime import datetime
 import py_sip_xnu
+import logging
 
 from resources import constants, defaults, install, installer, utilities, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
 from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch, sys_patch_auto
@@ -40,8 +41,7 @@ class wx_python_gui:
         self.hyperlink_colour = (25, 179, 231)
 
         # Backup stdout for usage with wxPython
-        self.stock_stdout = sys.stdout
-        self.stock_stderr = sys.stderr
+        self.stock_stream = logging.getLogger().handlers[1].stream
 
         current_uid = os.getuid()
 
@@ -108,8 +108,7 @@ class wx_python_gui:
     def reset_window(self):
         self.frame.DestroyChildren()
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
-        sys.stdout = self.stock_stdout
-        sys.stderr = self.stock_stderr
+        logging.getLogger().handlers[1].stream = self.stock_stream
         self.reset_frame_modal()
 
         # Re-enable sleep if we failed to do so before returning to the main menu
@@ -261,7 +260,7 @@ class wx_python_gui:
 
         result = subprocess.run(args,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode != 0:
-            print("- Failed to move application into /Library/Application Support/Dortania/OpenCore-Patcher.app")
+            logging.info("- Failed to move application into /Library/Application Support/Dortania/OpenCore-Patcher.app")
             # Notify user we failed to move the application
             self.popup = wx.MessageDialog(
                 self.frame,
@@ -293,7 +292,7 @@ class wx_python_gui:
                 for entry in dict:
                     version = dict[entry]["Version"]
                     github_link = dict[entry]["Github Link"]
-                    print(f"New version: {version}")
+                    logging.info(f"New version: {version}")
                     self.dialog = wx.MessageDialog(
                         parent=self.frame,
                         message=f"Current Version: {self.constants.patcher_version}\nNew version: {version}\nWould you like to view?",
@@ -306,12 +305,12 @@ class wx_python_gui:
                     if response == wx.ID_YES:
                         webbrowser.open(github_link)
                     elif response == wx.ID_NO:
-                        print("- Setting IgnoreAppUpdates to True")
+                        logging.info("- Setting IgnoreAppUpdates to True")
                         self.constants.ignore_updates = True
                         global_settings.global_settings().write_property("IgnoreAppUpdates", True)
         else:
             self.constants.ignore_updates = True
-            print("- Ignoring App Updates due to defaults")
+            logging.info("- Ignoring App Updates due to defaults")
 
         # if did_find_update is False:
         #     self.check_for_local_installs()
@@ -332,7 +331,7 @@ class wx_python_gui:
 
         # Show Dialog Box
         if self.dialog.ShowModal() == wx.ID_YES:
-            print("Relaunching as root")
+            logging.info("Relaunching as root")
 
             timer_val = 5
             extension = ""
@@ -706,8 +705,9 @@ class wx_python_gui:
         # Centre the text box to top of window
         self.stdout_text.Centre(wx.HORIZONTAL)
         self.stdout_text.SetValue("")
-        sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
-        sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
+
+        # Set StreamHandler to redirect stdout to textbox
+        logging.getLogger().handlers[1].stream = menu_redirect.RedirectText(self.stdout_text, False)
 
         self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
@@ -735,8 +735,7 @@ class wx_python_gui:
         self.build_opencore.Bind(wx.EVT_BUTTON, self.install_menu)
 
         # Reset stdout
-        sys.stdout = self.stock_stdout
-        sys.stderr = self.stock_stderr
+        logging.getLogger().handlers[1].stream = self.stock_stream
 
         # Throw popup asking to install OpenCore
         self.dialog = wx.MessageDialog(
@@ -838,7 +837,7 @@ class wx_python_gui:
 
             for disk in list_disks:
                 # Create a button for each disk
-                print(f"{list_disks[disk]['disk']} - {list_disks[disk]['name']} - {list_disks[disk]['size']}")
+                logging.info(f"{list_disks[disk]['disk']} - {list_disks[disk]['name']} - {list_disks[disk]['size']}")
                 self.install_button = wx.Button(self.frame, label=disk, size=(300,30))
                 self.install_button.SetLabel(f"{list_disks[disk]['disk']} - {list_disks[disk]['name']} - {list_disks[disk]['size']}")
                 self.install_button.SetPosition(
@@ -913,7 +912,7 @@ class wx_python_gui:
 
         list_partitions = install.tui_disk_installation(self.constants).list_partitions(disk, disk_data)
         for partition in list_partitions:
-            print(f"{list_partitions[partition]['partition']} - {list_partitions[partition]['name']} - {list_partitions[partition]['size']}")
+            logging.info(f"{list_partitions[partition]['partition']} - {list_partitions[partition]['name']} - {list_partitions[partition]['size']}")
             self.install_button = wx.Button(self.frame_modal, label=partition, size=(300,30))
             self.install_button.SetLabel(f"{list_partitions[partition]['partition']} - {list_partitions[partition]['name']} - {list_partitions[partition]['size']}")
             self.install_button.SetPosition(
@@ -943,7 +942,7 @@ class wx_python_gui:
         self.frame_modal.ShowWindowModal()
 
     def install_oc_process(self, partition):
-        print(f"Installing OpenCore to {partition}")
+        logging.info(f"Installing OpenCore to {partition}")
         self.reset_frame_modal()
         self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD - 20, self.WINDOW_HEIGHT_BUILD)
 
@@ -967,11 +966,9 @@ class wx_python_gui:
         self.frame_modal.SetSize(-1, self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 40)
         self.frame_modal.ShowWindowModal()
 
-        sys.stdout=menu_redirect.RedirectText(self.stdout_text, False)
-        sys.stderr=menu_redirect.RedirectText(self.stdout_text, False)
+        logging.getLogger().handlers[1].stream = menu_redirect.RedirectText(self.stdout_text, False)
         result = install.tui_disk_installation(self.constants).install_opencore(partition)
-        sys.stdout=sys.__stdout__
-        sys.stderr=sys.__stderr__
+        logging.getLogger().handlers[1].stream = self.stock_stream
 
         self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
@@ -1024,10 +1021,10 @@ class wx_python_gui:
                         break
 
                 if patch_installed is False:
-                    print(f"- Patch {patch} not installed")
+                    logging.info(f"- Patch {patch} not installed")
                     return True
 
-        print("- No new patches detected for system")
+        logging.info("- No new patches detected for system")
         return False
 
 
@@ -1061,7 +1058,7 @@ class wx_python_gui:
         patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
         self.patches = patches
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
-            print("- No applicable patches available")
+            logging.info("- No applicable patches available")
             patches = []
 
         # Check if OCLP has already applied the same patches
@@ -1075,7 +1072,7 @@ class wx_python_gui:
                 for patch in patches:
                     # Add Label for each patch
                     if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
-                        print(f"- Adding patch: {patch} - {patches[patch]}")
+                        logging.info(f"- Adding patch: {patch} - {patches[patch]}")
                         self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch}")
                         self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
                         self.patch_label.SetPosition(
@@ -1109,7 +1106,7 @@ class wx_python_gui:
                 i = i + self.patch_label.GetSize().height + 3
                 for patch in patches:
                     if patch.startswith("Validation") and patches[patch] is True:
-                        print(f"- Adding check: {patch} - {patches[patch]}")
+                        logging.info(f"- Adding check: {patch} - {patches[patch]}")
                         self.patch_label = wx.StaticText(self.frame_modal, label=f"- {patch[12:]}")
                         self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
                         self.patch_label.SetPosition(
@@ -1265,9 +1262,9 @@ class wx_python_gui:
         self.progress_bar.Hide()
 
         # Download resources
-        sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
+        logging.getLogger().handlers[1].stream = menu_redirect.RedirectLabel(self.developer_note)
         download_result, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
-        sys.stdout=sys.__stdout__
+        logging.getLogger().handlers[1].stream = self.stock_stream
 
         if download_result is None:
             # Create popup window to inform user of error
@@ -1289,9 +1286,9 @@ class wx_python_gui:
             self.subheader.Centre(wx.HORIZONTAL)
             self.developer_note.SetLabel("Starting shortly")
 
-            sys.stdout=menu_redirect.RedirectLabel(self.developer_note)
+            logging.getLogger().handlers[1].stream = menu_redirect.RedirectLabel(self.developer_note)
             kdk_result, error_msg, detected_build = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
-            sys.stdout=sys.__stdout__
+            logging.getLogger().handlers[1].stream = self.stock_stream
 
             if kdk_result is False:
                 # Create popup window to inform user of error
@@ -1364,8 +1361,7 @@ class wx_python_gui:
 
         self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
-        sys.stdout = menu_redirect.RedirectText(self.text_box, True)
-        sys.stderr = menu_redirect.RedirectText(self.text_box, True)
+        logging.getLogger().handlers[1].stream = menu_redirect.RedirectText(self.text_box, True)
         self.frame_modal.ShowWindowModal()
         wx.GetApp().Yield()
         try:
@@ -1373,10 +1369,9 @@ class wx_python_gui:
         except Exception as e:
             self.text_box.AppendText(f"- An internal error occurred while running the Root Patcher:\n{str(e)}")
             pass
-        sys.stdout = self.stock_stdout
-        sys.stderr = self.stock_stderr
+        logging.getLogger().handlers[1].stream = self.stock_stream
         if self.constants.root_patcher_succeeded is True:
-            print("- Root Patcher finished successfully")
+            logging.info("- Root Patcher finished successfully")
             if self.constants.needs_to_open_preferences is True:
                 if self.constants.detected_os >= os_data.os_data.ventura:
                     self.reboot_system(message="Root Patcher finished successfully!\nIf you were prompted to open System Settings to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?")
@@ -1475,8 +1470,7 @@ class wx_python_gui:
         self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         # Start reverting root patches
-        sys.stdout = menu_redirect.RedirectText(self.text_box, True)
-        sys.stderr = menu_redirect.RedirectText(self.text_box, True)
+        logging.getLogger().handlers[1].stream = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
         self.frame_modal.ShowWindowModal()
         while self.is_unpack_finished() is False:
@@ -1486,10 +1480,9 @@ class wx_python_gui:
         except Exception as e:
             self.text_box.AppendText(f"- An internal error occurred while running the Root Patcher:\n{str(e)}")
             pass
-        sys.stdout = self.stock_stdout
-        sys.stderr = self.stock_stderr
+        logging.getLogger().handlers[1].stream = self.stock_stream
         if self.constants.root_patcher_succeeded is True:
-            print("- Root Patcher finished successfully")
+            logging.info("- Root Patcher finished successfully")
             self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")
         self.return_to_main_menu.Enable()
         wx.GetApp().Yield()
@@ -1595,7 +1588,7 @@ class wx_python_gui:
             def ia():
                 self.available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "DeveloperSeed")
 
-            print("- Downloading installer catalog...")
+            logging.info("- Downloading installer catalog...")
             thread_ia = threading.Thread(target=ia)
             thread_ia.start()
 
@@ -1604,7 +1597,7 @@ class wx_python_gui:
                 wx.GetApp().Yield()
             available_installers = self.available_installers
         else:
-            print("- Using existing installer catalog...")
+            logging.info("- Using existing installer catalog...")
             available_installers = ias
 
         self.reset_frame_modal()
@@ -1633,7 +1626,7 @@ class wx_python_gui:
             if ias is None:
                 available_installers = installer.only_list_newest_installers(available_installers)
             for app in available_installers:
-                print(f"macOS {available_installers[app]['Version']} ({available_installers[app]['Build']}):\n  - Size: {utilities.human_fmt(available_installers[app]['Size'])}\n  - Source: {available_installers[app]['Source']}\n  - Variant: {available_installers[app]['Variant']}\n  - Link: {available_installers[app]['Link']}\n")
+                logging.info(f"macOS {available_installers[app]['Version']} ({available_installers[app]['Build']}):\n  - Size: {utilities.human_fmt(available_installers[app]['Size'])}\n  - Source: {available_installers[app]['Source']}\n  - Variant: {available_installers[app]['Variant']}\n  - Link: {available_installers[app]['Link']}\n")
                 if available_installers[app]['Variant'] in ["DeveloperSeed" , "PublicSeed"]:
                     extra = " Beta"
                 else:
@@ -1754,7 +1747,7 @@ class wx_python_gui:
         )
         self.download_label.Centre(wx.HORIZONTAL)
         # Redirect stdout to label
-        sys.stdout=menu_redirect.RedirectLabel(self.download_label)
+        logging.getLogger().handlers[1].stream = menu_redirect.RedirectLabel(self.download_label)
 
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
@@ -1771,13 +1764,13 @@ class wx_python_gui:
         # Download macOS install data
         if installer.download_install_assistant(self.constants.payload_path, app_dict['Link']):
             # Fix stdout
-            sys.stdout = self.stock_stdout
+            logging.getLogger().handlers[1].stream = self.stock_stream
             self.download_label.SetLabel(f"Finished Downloading {installer_name}")
             self.download_label.Centre(wx.HORIZONTAL)
             wx.App.Get().Yield()
             self.installer_validation(apple_integrity_file_link= app_dict['integrity'])
         else:
-            sys.stdout = self.stock_stdout
+            logging.getLogger().handlers[1].stream = self.stock_stream
             self.download_label.SetLabel(f"Failed to download {installer_name}")
             self.download_label.Centre(wx.HORIZONTAL)
 
@@ -1846,7 +1839,7 @@ class wx_python_gui:
                     for chunk in chunks:
                         status = hashlib.sha256(f.read(chunk["length"])).digest()
                         if not status == chunk["checksum"]:
-                            print(f"Chunk {chunks.index(chunk) + 1} checksum status FAIL: chunk sum {binascii.hexlify(chunk['checksum']).decode()}, calculated sum {binascii.hexlify(status).decode()}")
+                            logging.info(f"Chunk {chunks.index(chunk) + 1} checksum status FAIL: chunk sum {binascii.hexlify(chunk['checksum']).decode()}, calculated sum {binascii.hexlify(status).decode()}")
                             self.popup = wx.MessageDialog(
                             self.frame,
                                 f"We've found that Chunk {chunks.index(chunk) + 1} of {len(chunks)} has failed the integrity check.\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)",
@@ -1861,9 +1854,9 @@ class wx_python_gui:
                             self.verifying_chunk_label.SetLabel(f"Verifying Chunk {self.progress_bar.GetValue()} of {max_progress}")
                             wx.App.Get().Yield()
             else:
-                print("Invalid integrity file provided")
+                logging.info("Invalid integrity file provided")
         else:
-            print("Failed to download integrity file, skipping integrity check.")
+            logging.info("Failed to download integrity file, skipping integrity check.")
 
         wx.App.Get().Yield()
         self.header.SetLabel("Installing InstallAssistant.pkg")
@@ -1940,9 +1933,9 @@ class wx_python_gui:
 
         i = -7
         if available_installers:
-            print("Installer(s) found:")
+            logging.info("Installer(s) found:")
             for app in available_installers:
-                print(f"- {available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})")
+                logging.info(f"- {available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})")
                 self.install_selection = wx.Button(self.frame, label=f"{available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})", size=(320, 30))
                 i = i + 25
                 self.install_selection.SetPosition(
@@ -1954,7 +1947,7 @@ class wx_python_gui:
                 self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.format_usb_menu(available_installers[temp]['Short Name'], available_installers[temp]['Path']))
                 self.install_selection.Centre(wx.HORIZONTAL)
         else:
-            print("No installers found")
+            logging.info("No installers found")
             # Label: No Installers Found
             self.install_selection = wx.StaticText(self.frame, label="No Installers Found in Applications folder")
             self.install_selection.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
@@ -1981,7 +1974,7 @@ class wx_python_gui:
 
     def format_usb_menu(self, installer_name, installer_path):
         self.frame.DestroyChildren()
-        print(installer_path)
+        logging.info(installer_path)
 
         # Header
         self.header = wx.StaticText(self.frame, label="Format USB")
@@ -2013,9 +2006,9 @@ class wx_python_gui:
         i = -15
         available_disks = installer.list_disk_to_format()
         if available_disks:
-            print("Disks found")
+            logging.info("Disks found")
             for disk in available_disks:
-                print(f"{disk}: {available_disks[disk]['name']} - {available_disks[disk]['size']}")
+                logging.info(f"{disk}: {available_disks[disk]['name']} - {available_disks[disk]['size']}")
                 self.usb_selection = wx.Button(self.frame, label=f"{disk} - {available_disks[disk]['name']} - {utilities.human_fmt(available_disks[disk]['size'])}", size=(300, 30))
                 i = i + 25
                 self.usb_selection.SetPosition(
@@ -2027,7 +2020,7 @@ class wx_python_gui:
                 self.usb_selection.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.format_usb_progress(available_disks[temp]['identifier'], installer_name, installer_path))
                 self.usb_selection.Centre(wx.HORIZONTAL)
         else:
-            print("No disks found")
+            logging.info("No disks found")
             # Label: No Disks Found
             self.usb_selection = wx.StaticText(self.frame, label="No Disks Found")
             self.usb_selection.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
@@ -2133,9 +2126,9 @@ class wx_python_gui:
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
         wx.GetApp().Yield()
         # Create installer.sh script
-        print("- Creating installer.sh script")
-        print(f"- Disk: {disk}")
-        print(f"- Installer: {installer_path}")
+        logging.info("- Creating installer.sh script")
+        logging.info(f"- Disk: {disk}")
+        logging.info(f"- Installer: {installer_path}")
 
         self.prepare_script_thread = threading.Thread(target=self.prepare_script, args=(installer_path,disk))
         self.prepare_script_thread.start()
@@ -2148,8 +2141,8 @@ class wx_python_gui:
         if self.prepare_result is True:
             self.progress_label.SetLabel("Bytes Written: 0")
             self.progress_label.Centre(wx.HORIZONTAL)
-            print("- Successfully generated creation script")
-            print("- Starting creation script as admin")
+            logging.info("- Successfully generated creation script")
+            logging.info("- Starting creation script as admin")
             wx.GetApp().Yield()
             time.sleep(1)
             disk = disk[5:]
@@ -2202,7 +2195,7 @@ class wx_python_gui:
                         self.constants.start_build_install = True
                         self.build_install_menu()
         else:
-            print("- Failed to create installer script")
+            logging.info("- Failed to create installer script")
             self.progress_label.SetLabel("Failed to copy files to tmp directory")
             self.progress_label.Centre(wx.HORIZONTAL)
             popup_message = wx.MessageDialog(self.frame, "Failed to prepare the base files for installer creation.\n\nPlease ensure you have 20GB~ free on-disk before starting to ensure the installer has enough room to work.", "Error", wx.OK)
@@ -2217,16 +2210,16 @@ class wx_python_gui:
         args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
         output, error, returncode = run.Run()._stream_output(comm=args)
         if "Install media now available at" in output:
-            print("- Successfully created macOS installer")
+            logging.info("- Successfully created macOS installer")
             while self.download_thread.is_alive():
                 # wait for download_thread to finish
                 # though highly unlikely this thread is still alive (flashing an Installer will take a while)
                 time.sleep(0.1)
-            print("- Installing Root Patcher to drive")
+            logging.info("- Installing Root Patcher to drive")
             self.install_installer_pkg(self.target_disk)
             self.finished_cim_process = True
         else:
-            print("- Failed to create macOS installer")
+            logging.info("- Failed to create macOS installer")
             popup = wx.MessageDialog(self.frame, f"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}", "Error", wx.OK | wx.ICON_ERROR)
             popup.ShowModal()
         utilities.enable_sleep_after_running()
@@ -2240,7 +2233,7 @@ class wx_python_gui:
         #   - If nightly also fails, fall back to the manually uploaded variant
         link = self.constants.installer_pkg_url
         if utilities.validate_link(link) is False:
-            print("- Stock Install.pkg is missing on Github, falling back to Nightly")
+            logging.info("- Stock Install.pkg is missing on Github, falling back to Nightly")
             link = self.constants.installer_pkg_url_nightly
 
         if link.endswith(".zip"):
@@ -2267,7 +2260,7 @@ class wx_python_gui:
                     subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
                     subprocess.run(["cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
                 else:
-                    print("- Installer unsupported, requires Big Sur or newer")
+                    logging.info("- Installer unsupported, requires Big Sur or newer")
 
 
     def settings_menu(self, event=None):
@@ -2452,11 +2445,11 @@ class wx_python_gui:
     def model_choice_click(self, event=None):
         user_choice = self.dropdown_model.GetStringSelection()
         if user_choice == self.computer.real_model:
-            print(f"Using Real Model: {user_choice}")
+            logging.info(f"Using Real Model: {user_choice}")
             self.constants.custom_model = None
             defaults.generate_defaults(self.computer.real_model, True, self.constants)
         else:
-            print(f"Using Custom Model: {user_choice}")
+            logging.info(f"Using Custom Model: {user_choice}")
             self.constants.custom_model = user_choice
             defaults.generate_defaults(self.constants.custom_model, False, self.constants)
         # Reload Settings
@@ -2479,64 +2472,64 @@ class wx_python_gui:
                     if dlg.ShowModal() == wx.ID_NO:
                         self.checkbox_allow_native_models.SetValue(False)
                         return
-            print("Allow Native Models")
+            logging.info("Allow Native Models")
             self.constants.allow_oc_everywhere = True
             self.constants.serial_settings = "None"
         else:
-            print("Disallow Native Models")
+            logging.info("Disallow Native Models")
             self.constants.allow_oc_everywhere = False
             self.constants.serial_settings = "Minimal"
 
     def verbose_checkbox_click(self, event=None):
         if self.verbose_checkbox.GetValue():
-            print("Verbose mode enabled")
+            logging.info("Verbose mode enabled")
             self.constants.verbose_debug = True
         else:
-            print("Verbose mode disabled")
+            logging.info("Verbose mode disabled")
             self.constants.verbose_debug = False
 
     def kext_checkbox_click(self, event=None):
         if self.kext_checkbox.GetValue():
-            print("Kext mode enabled")
+            logging.info("Kext mode enabled")
             self.constants.kext_debug = True
             self.constants.kext_variant = "DEBUG"
         else:
-            print("Kext mode disabled")
+            logging.info("Kext mode disabled")
             self.constants.kext_debug = False
             self.constants.kext_variant = "RELEASE"
 
     def oc_checkbox_click(self, event=None):
         if self.opencore_checkbox.GetValue():
-            print("OC mode enabled")
+            logging.info("OC mode enabled")
             self.constants.opencore_debug = True
             self.constants.opencore_build = "DEBUG"
         else:
-            print("OC mode disabled")
+            logging.info("OC mode disabled")
             self.constants.opencore_debug = False
             self.constants.opencore_build = "RELEASE"
 
     def sip_checkbox_click(self, event=None):
         if self.sip_checkbox.GetValue():
-            print("SIP mode enabled")
+            logging.info("SIP mode enabled")
             self.constants.sip_status = True
         else:
-            print("SIP mode disabled")
+            logging.info("SIP mode disabled")
             self.constants.sip_status = False
 
     def secureboot_checkbox_click(self, event=None):
         if self.secureboot_checkbox.GetValue():
-            print("SecureBoot mode enabled")
+            logging.info("SecureBoot mode enabled")
             self.constants.secure_status = True
         else:
-            print("SecureBoot mode disabled")
+            logging.info("SecureBoot mode disabled")
             self.constants.secure_status = False
 
     def show_picker_checkbox_click(self, event=None):
         if self.bootpicker_checkbox.GetValue():
-            print("Show Picker mode enabled")
+            logging.info("Show Picker mode enabled")
             self.constants.showpicker = True
         else:
-            print("Show Picker mode disabled")
+            logging.info("Show Picker mode disabled")
             self.constants.showpicker = False
 
     def dev_settings_menu(self, event=None):
@@ -2790,29 +2783,29 @@ class wx_python_gui:
 
     def delete_unused_kdks_click(self, event):
         if self.delete_unused_kdks_checkbox.GetValue() is True:
-            print("Nuke KDKs enabled")
+            logging.info("Nuke KDKs enabled")
             self.constants.should_nuke_kdks = True
         else:
-            print("Nuke KDKs disabled")
+            logging.info("Nuke KDKs disabled")
             self.constants.should_nuke_kdks = False
         global_settings.global_settings().write_property("ShouldNukeKDKs", self.constants.should_nuke_kdks)
 
     def disable_library_validation_click(self, event):
         if self.disable_library_validation_checkbox.GetValue():
-            print("Disable Library Validation")
+            logging.info("Disable Library Validation")
             self.disable_amfi_checkbox.Enable()
             self.constants.disable_cs_lv = True
         else:
-            print("Enable Library Validation")
+            logging.info("Enable Library Validation")
             self.disable_amfi_checkbox.Disable()
             self.constants.disable_cs_lv = False
 
     def disable_amfi_click(self, event):
         if self.disable_amfi_checkbox.GetValue():
-            print("Disable AMFI")
+            logging.info("Disable AMFI")
             self.constants.disable_amfi = True
         else:
-            print("Enable AMFI")
+            logging.info("Enable AMFI")
             self.constants.disable_amfi = False
 
     def set_ignore_app_updates_click(self, event):
@@ -2824,171 +2817,171 @@ class wx_python_gui:
 
     def firewire_click(self, event=None):
         if self.firewire_boot_checkbox.GetValue():
-            print("Firewire Enabled")
+            logging.info("Firewire Enabled")
             self.constants.firewire_boot = True
         else:
-            print("Firewire Disabled")
+            logging.info("Firewire Disabled")
             self.constants.firewire_boot = False
 
     def nvme_click(self, event=None):
         if self.nvme_boot_checkbox.GetValue():
-            print("NVMe Enabled")
+            logging.info("NVMe Enabled")
             self.constants.nvme_boot = True
         else:
-            print("NVMe Disabled")
+            logging.info("NVMe Disabled")
             self.constants.nvme_boot = False
 
     def nvme_power_management_click(self, event=None):
         if self.nvme_power_management_checkbox.GetValue():
-            print("NVMe Power Management Enabled")
+            logging.info("NVMe Power Management Enabled")
             self.constants.allow_nvme_fixing = True
         else:
-            print("NVMe Power Management Disabled")
+            logging.info("NVMe Power Management Disabled")
             self.constants.allow_nvme_fixing = False
 
     def xhci_click(self, event=None):
         if self.xhci_boot_checkbox.GetValue():
-            print("XHCI Enabled")
+            logging.info("XHCI Enabled")
             self.constants.xhci_boot = True
         else:
-            print("XHCI Disabled")
+            logging.info("XHCI Disabled")
             self.constants.xhci_boot = False
 
     def wake_on_wlan_click(self, event=None):
         if self.wake_on_wlan_checkbox.GetValue():
-            print("Wake on WLAN Enabled")
+            logging.info("Wake on WLAN Enabled")
             self.constants.enable_wake_on_wlan = True
         else:
-            print("Wake on WLAN Disabled")
+            logging.info("Wake on WLAN Disabled")
             self.constants.enable_wake_on_wlan = False
 
     def apfs_trim_click(self, event=None):
         if self.apfs_trim_checkbox.GetValue():
-            print("APFS Trim Enabled")
+            logging.info("APFS Trim Enabled")
             self.constants.apfs_trim_timeout = True
         else:
-            print("APFS Trim Disabled")
+            logging.info("APFS Trim Disabled")
             self.constants.apfs_trim_timeout = False
 
     def content_caching_click(self, event=None):
         if self.content_caching_checkbox.GetValue():
-            print("Content Caching Enabled")
+            logging.info("Content Caching Enabled")
             self.constants.set_content_caching = True
         else:
-            print("Content Caching Disabled")
+            logging.info("Content Caching Disabled")
             self.constants.set_content_caching = False
 
     def amd_gop_injection_checkbox_click(self, event=None):
         if self.set_amd_gop_injection.GetValue():
-            print("AMD GOP Injection Enabled")
+            logging.info("AMD GOP Injection Enabled")
             self.constants.amd_gop_injection = True
         else:
-            print("AMD GOP Injection Disabled")
+            logging.info("AMD GOP Injection Disabled")
             self.constants.amd_gop_injection = False
 
     def nvidia_kepler_gop_injection_checkbox_click(self, event=None):
         if self.set_nvidia_kepler_gop_injection.GetValue():
-            print("Nvidia Kepler GOP Injection Enabled")
+            logging.info("Nvidia Kepler GOP Injection Enabled")
             self.constants.nvidia_kepler_gop_injection = True
         else:
-            print("Nvidia Kepler GOP Injection Disabled")
+            logging.info("Nvidia Kepler GOP Injection Disabled")
             self.constants.nvidia_kepler_gop_injection = False
 
     def disable_tb_click(self, event=None):
         if self.disable_thunderbolt_checkbox.GetValue():
-            print("Disable Thunderbolt Enabled")
+            logging.info("Disable Thunderbolt Enabled")
             self.constants.disable_tb = True
         else:
-            print("Disable Thunderbolt Disabled")
+            logging.info("Disable Thunderbolt Disabled")
             self.constants.disable_tb = False
 
     def ts2_accel_click(self, event=None):
         if self.set_terascale_accel_checkbox.GetValue():
-            print("TS2 Acceleration Enabled")
+            logging.info("TS2 Acceleration Enabled")
             global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", True)
             self.constants.allow_ts2_accel = True
         else:
-            print("TS2 Acceleration Disabled")
+            logging.info("TS2 Acceleration Disabled")
             global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", False)
             self.constants.allow_ts2_accel = False
 
     def force_web_drivers_click(self, event=None):
         if self.force_web_drivers_checkbox.GetValue():
-            print("Force Web Drivers Enabled")
+            logging.info("Force Web Drivers Enabled")
             global_settings.global_settings().write_property("Force_Web_Drivers", True)
             self.constants.force_nv_web = True
         else:
-            print("Force Web Drivers Disabled")
+            logging.info("Force Web Drivers Disabled")
             global_settings.global_settings().write_property("Force_Web_Drivers", False)
             self.constants.force_nv_web = False
 
     def windows_gmux_click(self, event=None):
         if self.windows_gmux_checkbox.GetValue():
-            print("Windows GMUX Enabled")
+            logging.info("Windows GMUX Enabled")
             self.constants.dGPU_switch = True
         else:
-            print("Windows GMUX Disabled")
+            logging.info("Windows GMUX Disabled")
             self.constants.dGPU_switch = False
 
     def hibernation_click(self, event=None):
         if self.hibernation_checkbox.GetValue():
-            print("Hibernation Enabled")
+            logging.info("Hibernation Enabled")
             self.constants.disable_connectdrivers = True
         else:
-            print("Hibernation Disabled")
+            logging.info("Hibernation Disabled")
             self.constants.disable_connectdrivers = False
 
     def disable_battery_throttling_click(self, event=None):
         if self.disable_battery_throttling_checkbox.GetValue():
-            print("Disable Battery Throttling Enabled")
+            logging.info("Disable Battery Throttling Enabled")
             self.constants.disable_msr_power_ctl = True
         else:
-            print("Disable Battery Throttling Disabled")
+            logging.info("Disable Battery Throttling Disabled")
             self.constants.disable_msr_power_ctl = False
 
     def disable_xcpm_click(self, event=None):
         if self.disable_xcpm_checkbox.GetValue():
-            print("Disable XCPM Enabled")
+            logging.info("Disable XCPM Enabled")
             self.constants.disable_xcpm = True
         else:
-            print("Disable XCPM Disabled")
+            logging.info("Disable XCPM Disabled")
             self.constants.disable_xcpm = False
 
     def software_demux_click(self, event=None):
         if self.software_demux_checkbox.GetValue():
-            print("Software Demux Enabled")
+            logging.info("Software Demux Enabled")
             self.constants.software_demux = True
         else:
-            print("Software Demux Disabled")
+            logging.info("Software Demux Disabled")
             self.constants.software_demux = False
 
     def disable_cpu_friend_click(self, event=None):
         if self.disable_cpu_friend_checkbox.GetValue():
-            print("Disable CPUFriend Enabled")
+            logging.info("Disable CPUFriend Enabled")
             self.constants.disallow_cpufriend = True
         else:
-            print("Disable CPUFriend Disabled")
+            logging.info("Disable CPUFriend Disabled")
             self.constants.disallow_cpufriend = False
 
     def apple_alc_click(self, event=None):
         if self.apple_alc_checkbox.GetValue():
-            print("AppleALC Usage Enabled")
+            logging.info("AppleALC Usage Enabled")
             self.constants.set_alc_usage = True
         else:
-            print("AppleALC Usage Disabled")
+            logging.info("AppleALC Usage Disabled")
             self.constants.set_alc_usage = False
 
     def set_enhanced_3rd_party_ssd_click(self, event=None):
         if self.set_enhanced_3rd_party_ssd_checkbox.GetValue():
-            print("Enhanced 3rd Party SSDs Enabled")
+            logging.info("Enhanced 3rd Party SSDs Enabled")
             self.constants.allow_3rd_party_drives = True
         else:
-            print("Enhanced 3rd Party SSDs Disabled")
+            logging.info("Enhanced 3rd Party SSDs Disabled")
             self.constants.allow_3rd_party_drives = False
 
     def gpu_selection_click(self, event=None):
         gpu_choice =  self.gpu_dropdown.GetStringSelection()
-        print(f"GPU Selection: {gpu_choice}")
+        logging.info(f"GPU Selection: {gpu_choice}")
         if "AMD" in gpu_choice:
             self.constants.imac_vendor = "AMD"
             self.constants.metal_build = True
@@ -3011,8 +3004,8 @@ class wx_python_gui:
             self.constants.imac_vendor = "None"
             self.constants.metal_build = False
 
-        print(f"GPU Vendor: {self.constants.imac_vendor}")
-        print(f"GPU Model: {self.constants.imac_model}")
+        logging.info(f"GPU Vendor: {self.constants.imac_vendor}")
+        logging.info(f"GPU Model: {self.constants.imac_model}")
 
     def fu_selection_click(self, event=None):
         fu_choice =  self.feature_unlock_dropdown.GetStringSelection()
@@ -3028,10 +3021,10 @@ class wx_python_gui:
 
     def set_writeflash_click(self, event=None):
         if self.set_writeflash_checkbox.GetValue():
-            print("Write Flash Enabled")
+            logging.info("Write Flash Enabled")
             self.constants.nvram_write = True
         else:
-            print("Write Flash Disabled")
+            logging.info("Write Flash Disabled")
             self.constants.nvram_write = False
 
     def smbios_settings_menu(self, event=None):
@@ -3180,10 +3173,10 @@ class wx_python_gui:
 
     def native_spoof_click(self, event):
         if self.native_spoof_checkbox.GetValue():
-            print("Allow Native Spoofs Enabled")
+            logging.info("Allow Native Spoofs Enabled")
             self.constants.allow_native_spoofs = True
         else:
-            print("Allow Native Spoofs Disabled")
+            logging.info("Allow Native Spoofs Disabled")
             self.constants.allow_native_spoofs = False
 
     def smbios_spoof_level_click(self, event=None):
@@ -3194,7 +3187,7 @@ class wx_python_gui:
             if dlg.ShowModal() == wx.ID_NO:
                 self.smbios_dropdown.SetStringSelection(self.constants.serial_settings)
                 return
-        print(f"SMBIOS Spoof Level: {selection}")
+        logging.info(f"SMBIOS Spoof Level: {selection}")
         self.constants.serial_settings = selection
         if selection == "None":
             self.smbios_model_dropdown.Disable()
@@ -3203,7 +3196,7 @@ class wx_python_gui:
 
     def smbios_model_click(self, event=None):
         selection = self.smbios_model_dropdown.GetStringSelection()
-        print(f"SMBIOS Spoof Model: {selection}")
+        logging.info(f"SMBIOS Spoof Model: {selection}")
         self.constants.override_smbios = selection
 
     def additional_info_menu(self, event=None):
@@ -3676,18 +3669,18 @@ OpenCore Legacy Patcher by default knows the most ideal
             subprocess.run(["defaults", "write", "-g", "Moraea_BlurBeta", "-bool", "true"])
         else:
             subprocess.run(["defaults", "write", "-g", "Moraea_BlurBeta", "-bool", "false"])
-        print("Beta Blur Enabled:", event.IsChecked())
+        logging.info("Beta Blur Enabled:", event.IsChecked())
 
     def enable_dark_menubar_click(self, event=None):
         if event.IsChecked():
             subprocess.run(["defaults", "write", "-g", "Moraea_DarkMenuBar", "-bool", "true"])
         else:
             subprocess.run(["defaults", "write", "-g", "Moraea_DarkMenuBar", "-bool", "false"])
-        print("Dark Menu Bar Enabled:", event.IsChecked())
+        logging.info("Dark Menu Bar Enabled:", event.IsChecked())
 
     def enable_beta_rim_click(self, event=None):
         if event.IsChecked():
             subprocess.run(["defaults", "write", "-g", "Moraea_RimBetaDisabled", "-bool", "true"])
         else:
             subprocess.run(["defaults", "write", "-g", "Moraea_RimBetaDisabled", "-bool", "false"])
-        print("Beta Rim Enabled:", event.IsChecked())
+        logging.info("Beta Rim Enabled:", event.IsChecked())

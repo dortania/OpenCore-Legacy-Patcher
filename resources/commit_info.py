@@ -25,7 +25,6 @@ class commit_info:
 
     def generate_commit_info(self):
         if self.plist_path:
-            # print(self.plist_path)
             plist_info = plistlib.load(Path(self.plist_path).open("rb"))
             if "Github" in plist_info:
                 return (

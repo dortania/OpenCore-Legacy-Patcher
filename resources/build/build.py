@@ -8,6 +8,7 @@ import shutil
 import zipfile
 from pathlib import Path
 from datetime import date
+import logging
 
 from resources import constants, utilities
 from resources.build import bluetooth, firmware, graphics_audio, support, storage, smbios, security, misc
@@ -30,9 +31,9 @@ class build_opencore:
     def build_efi(self):
         utilities.cls()
         if not self.constants.custom_model:
-            print(f"Building Configuration on model: {self.model}")
+            logging.info(f"Building Configuration on model: {self.model}")
         else:
-            print(f"Building Configuration for external model: {self.model}")
+            logging.info(f"Building Configuration for external model: {self.model}")
 
         self.generate_base()
         self.set_revision()
@@ -54,31 +55,31 @@ class build_opencore:
 
         # Work-around ocvalidate
         if self.constants.validate is False:
-            print("- Adding bootmgfw.efi BlessOverride")
+            logging.info("- Adding bootmgfw.efi BlessOverride")
             self.config["Misc"]["BlessOverride"] += ["\\EFI\\Microsoft\\Boot\\bootmgfw.efi"]
 
 
     def generate_base(self):
         # Generate OpenCore base folder and config
         if not Path(self.constants.build_path).exists():
-            print("Creating build folder")
+            logging.info("Creating build folder")
             Path(self.constants.build_path).mkdir()
         else:
-            print("Build folder already present, skipping")
+            logging.info("Build folder already present, skipping")
 
         if Path(self.constants.opencore_zip_copied).exists():
-            print("Deleting old copy of OpenCore zip")
+            logging.info("Deleting old copy of OpenCore zip")
             Path(self.constants.opencore_zip_copied).unlink()
         if Path(self.constants.opencore_release_folder).exists():
-            print("Deleting old copy of OpenCore folder")
+            logging.info("Deleting old copy of OpenCore folder")
             shutil.rmtree(self.constants.opencore_release_folder, onerror=rmtree_handler, ignore_errors=True)
 
-        print(f"\n- Adding OpenCore v{self.constants.opencore_version} {self.constants.opencore_build}")
+        logging.info(f"\n- Adding OpenCore v{self.constants.opencore_version} {self.constants.opencore_build}")
         shutil.copy(self.constants.opencore_zip_source, self.constants.build_path)
         zipfile.ZipFile(self.constants.opencore_zip_copied).extractall(self.constants.build_path)
 
         # Setup config.plist for editing
-        print("- Adding config.plist for OpenCore")
+        logging.info("- Adding config.plist for OpenCore")
         shutil.copy(self.constants.plist_template, self.constants.oc_folder)
         self.config = plistlib.load(Path(self.constants.plist_path).open("rb"))
 
@@ -115,9 +116,9 @@ class build_opencore:
         support.build_support(self.model, self.constants, self.config).sign_files()
         support.build_support(self.model, self.constants, self.config).validate_pathing()
 
-        print("")
-        print(f"Your OpenCore EFI for {self.model} has been built at:")
-        print(f"    {self.constants.opencore_release_folder}")
-        print("")
+        logging.info("")
+        logging.info(f"Your OpenCore EFI for {self.model} has been built at:")
+        logging.info(f"    {self.constants.opencore_release_folder}")
+        logging.info("")
         if self.constants.gui_mode is False:
             input("Press [Enter] to continue\n")

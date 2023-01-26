@@ -2,7 +2,7 @@
 # Written by CorpNewt
 # Source: https://github.com/corpnewt/pymodules/blob/884c3de15b6a2570afde52fe8a14a3e946ffb18a/run.py
 
-import sys, subprocess, time, threading, shlex
+import sys, subprocess, time, threading, shlex, logging
 try:
     from Queue import Queue, Empty
 except:
@@ -115,7 +115,7 @@ class Run:
             show   = comm.get("show",   False)
 
             if not mess == None:
-                print(mess)
+                logging.info(mess)
 
             if not len(args):
                 # nothing to process
@@ -131,7 +131,7 @@ class Run:
                         args = out[0].replace("\n", "") + " " + args # add to start of string
 
             if show:
-                print(" ".join(args))
+                logging.info(" ".join(args))
 
             if stream:
                 # Stream it!
@@ -140,9 +140,9 @@ class Run:
                 # Just run and gather output
                 out = self._run_command(args, shell)
                 if stdout and len(out[0]):
-                    print(out[0])
+                    logging.info(out[0])
                 if stderr and len(out[1]):
-                    print(out[1])
+                    logging.info(out[1])
             # Append output
             output_list.append(out)
             # Check for errors

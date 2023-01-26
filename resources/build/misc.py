@@ -5,7 +5,7 @@ from resources import constants, device_probe, generate_smbios, utilities
 from resources.build import support
 from data import model_array, smbios_data, cpu_data
 
-import binascii, shutil
+import binascii, shutil, logging
 from pathlib import Path
 
 
@@ -38,7 +38,7 @@ class build_misc:
         if self.constants.fu_status is True:
             support.build_support(self.model, self.constants, self.config).enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
             if self.constants.fu_arguments is not None:
-                print(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
+                logging.info(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
 
     def restrict_events_handling(self):
@@ -49,7 +49,7 @@ class build_misc:
         if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
             block_args += "gmux,"
         if self.model in model_array.MacPro:
-            print("- Disabling memory error reporting")
+            logging.info("- Disabling memory error reporting")
             block_args += "pcie,"
         gpu_dict = []
         if not self.constants.custom_model:
@@ -65,20 +65,20 @@ class build_misc:
                 device_probe.Intel.Archs.Haswell,
                 device_probe.NVIDIA.Archs.Kepler,
             ]:
-                print("- Disabling mediaanalysisd")
+                logging.info("- Disabling mediaanalysisd")
                 block_args += "media,"
                 break
         if block_args.endswith(","):
             block_args = block_args[:-1]
 
         if block_args != "":
-            print(f"- Setting RestrictEvents block arguments: {block_args}")
+            logging.info(f"- Setting RestrictEvents block arguments: {block_args}")
             support.build_support(self.model, self.constants, self.config).enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revblock"] = block_args
 
         patch_args = ""
         if support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True and self.constants.set_content_caching is True:
-            print("- Fixing Content Caching support")
+            logging.info("- Fixing Content Caching support")
             patch_args += "asset,"
 
         if patch_args.endswith(","):
@@ -89,17 +89,17 @@ class build_misc:
             patch_args = "none"
 
         if patch_args != "":
-            print(f"- Setting RestrictEvents patch arguments: {patch_args}")
+            logging.info(f"- Setting RestrictEvents patch arguments: {patch_args}")
             support.build_support(self.model, self.constants, self.config).enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revpatch"] = patch_args
 
         if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revcpu"] = self.constants.custom_cpu_model
             if self.constants.custom_cpu_model_value != "":
-                print(f"- Adding custom CPU Name: {self.constants.custom_cpu_model_value}")
+                logging.info(f"- Adding custom CPU Name: {self.constants.custom_cpu_model_value}")
                 self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revcpuname"] = self.constants.custom_cpu_model_value
             else:
-                print("- Adding CPU Name Patch")
+                logging.info("- Adding CPU Name Patch")
             support.build_support(self.model, self.constants, self.config).enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
 
         if support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
@@ -125,7 +125,7 @@ class build_misc:
         if self.constants.firewire_boot is True and generate_smbios.check_firewire(self.model) is True:
             # Enable FireWire Boot Support
             # Applicable for both native FireWire and Thunderbolt to FireWire adapters
-            print("- Enabling FireWire Boot Support")
+            logging.info("- Enabling FireWire Boot Support")
             support.build_support(self.model, self.constants, self.config).enable_kext("IOFireWireFamily.kext", self.constants.fw_kext, self.constants.fw_family_path)
             support.build_support(self.model, self.constants, self.config).enable_kext("IOFireWireSBP2.kext", self.constants.fw_kext, self.constants.fw_sbp2_path)
             support.build_support(self.model, self.constants, self.config).enable_kext("IOFireWireSerialBusProtocolTransport.kext", self.constants.fw_kext, self.constants.fw_bus_path)
@@ -148,7 +148,7 @@ class build_misc:
 
     def thunderbolt_handling(self):
         if self.constants.disable_tb is True and self.model in ["MacBookPro11,1", "MacBookPro11,2", "MacBookPro11,3", "MacBookPro11,4", "MacBookPro11,5"]:
-            print("- Disabling 2013-2014 laptop Thunderbolt Controller")
+            logging.info("- Disabling 2013-2014 laptop Thunderbolt Controller")
             if self.model in ["MacBookPro11,3", "MacBookPro11,5"]:
                 # 15" dGPU models: IOACPIPlane:/_SB/PCI0@0/PEG1@10001/UPSB@0/DSB0@0/NHI0@0
                 tb_device_path = "PciRoot(0x0)/Pci(0x1,0x1)/Pci(0x0,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)"
@@ -175,7 +175,7 @@ class build_misc:
                 (self.model in model_array.Missing_USB_Map or self.model in model_array.Missing_USB_Map_Ventura)
                 or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
-            print("- Adding USB-Map.kext")
+            logging.info("- Adding USB-Map.kext")
             Path(self.constants.map_kext_folder).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
@@ -196,7 +196,7 @@ class build_misc:
             smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value or \
             self.model in ["MacPro4,1", "MacPro5,1"]
         ):
-            print("- Adding UHCI/OHCI USB support")
+            logging.info("- Adding UHCI/OHCI USB support")
             shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
             support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCI.kext")["Enabled"] = True
             support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
@@ -207,11 +207,11 @@ class build_misc:
         # DEBUG Settings (OpenCorePkg and Kernel Space)
 
         if self.constants.verbose_debug is True:
-            print("- Enabling Verbose boot")
+            logging.info("- Enabling Verbose boot")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -v"
 
         if self.constants.kext_debug is True:
-            print("- Enabling DEBUG Kexts")
+            logging.info("- Enabling DEBUG Kexts")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -liludbgall liludump=90"
             # Disabled due to macOS Monterey crashing shortly after kernel init
             # Use DebugEnhancer.kext instead
@@ -219,7 +219,7 @@ class build_misc:
             support.build_support(self.model, self.constants, self.config).enable_kext("DebugEnhancer.kext", self.constants.debugenhancer_version, self.constants.debugenhancer_path)
 
         if self.constants.opencore_debug is True:
-            print("- Enabling DEBUG OpenCore")
+            logging.info("- Enabling DEBUG OpenCore")
             self.config["Misc"]["Debug"]["Target"] = 0x43
             self.config["Misc"]["Debug"]["DisplayLevel"] = 0x80000042
 
@@ -227,7 +227,7 @@ class build_misc:
         # OpenCorePkg Settings
 
         # OpenCanopy Settings (GUI)
-        print("- Adding OpenCanopy GUI")
+        logging.info("- Adding OpenCanopy GUI")
         shutil.rmtree(self.constants.resources_path, onerror=self.rmtree_handler)
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("OpenCanopy.efi", "UEFI", "Drivers")["Enabled"] = True
@@ -236,14 +236,14 @@ class build_misc:
         support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("ResetNvramEntry.efi", "UEFI", "Drivers")["Enabled"] = True
 
         if self.constants.showpicker is False:
-            print("- Hiding OpenCore picker")
+            logging.info("- Hiding OpenCore picker")
             self.config["Misc"]["Boot"]["ShowPicker"] = False
 
         if self.constants.oc_timeout != 5:
-            print(f"- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds")
+            logging.info(f"- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds")
             self.config["Misc"]["Boot"]["Timeout"] = self.constants.oc_timeout
 
         if self.constants.vault is True and utilities.check_command_line_tools() is True:
-            print("- Setting Vault configuration")
+            logging.info("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
             support.build_support(self.model, self.constants, self.config).get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
