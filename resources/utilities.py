@@ -447,29 +447,6 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
         return None
 
 
-def download_apple_developer_portal(link, location, is_gui=None, verify_checksum=False):
-    TOKEN_URL_BASE = "https://developerservices2.apple.com/services/download?path="
-    remote_path = urllib.parse.urlparse(link).path
-    token_url = urllib.parse.urlunparse(urllib.parse.urlparse(TOKEN_URL_BASE)._replace(query=urllib.parse.urlencode({"path": remote_path})))
-
-    try:
-        response = SESSION.get(token_url, timeout=5)
-    except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
-        print(" - Could not contact Apple download servers")
-        return None
-
-    try:
-        response.raise_for_status()
-    except requests.exceptions.HTTPError:
-        if response.status_code == 400 and "The path specified is invalid" in response.text:
-            print(" - File does not exist on Apple download servers")
-        else:
-            print(" - Could not request download authorization from Apple download servers")
-        return None
-
-    return download_file(link, location, is_gui, verify_checksum)
-
-
 def dump_constants(constants):
     with open(os.path.join(os.path.expanduser('~'), 'Desktop', 'internal_data.txt'), 'w') as f:
         f.write(str(vars(constants)))
