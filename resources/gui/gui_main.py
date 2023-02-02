@@ -19,8 +19,8 @@ from datetime import datetime
 import py_sip_xnu
 import logging
 
-from resources import constants, defaults, install, installer, utilities, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler
-from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch, sys_patch_auto
+from resources import constants, defaults, install, installer, utilities, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler, network_handler
+from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch
 from resources.build import build
 from data import model_array, os_data, smbios_data, sip_data, cpu_data
 from resources.gui import menu_redirect, gui_help
@@ -1750,14 +1750,32 @@ class wx_python_gui:
             )
         )
         self.download_label.Centre(wx.HORIZONTAL)
-        # Redirect stdout to label
-        logging.getLogger().handlers[1].stream = menu_redirect.RedirectLabel(self.download_label)
+
+        self.download_label_2 = wx.StaticText(self.frame, label="")
+        self.download_label_2.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
+        self.download_label_2.SetPosition(
+            wx.Point(
+                self.download_label.GetPosition().x,
+                self.download_label.GetPosition().y + self.download_label.GetSize().height + 5
+            )
+        )
+        self.download_label_2.Centre(wx.HORIZONTAL)
+
+        # Progress Bar
+        self.download_progress = wx.Gauge(self.frame, range=100, size=(self.frame.GetSize().width - 100, 20))
+        self.download_progress.SetPosition(
+            wx.Point(
+                self.download_label_2.GetPosition().x,
+                self.download_label_2.GetPosition().y + self.download_label_2.GetSize().height + 5
+            )
+        )
+        self.download_progress.Centre(wx.HORIZONTAL)
 
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
-                self.download_label.GetPosition().x,
-                self.download_label.GetPosition().y + self.download_label.GetSize().height + 30
+                self.download_progress.GetPosition().x,
+                self.download_progress.GetPosition().y + self.download_progress.GetSize().height + 15
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
@@ -1765,16 +1783,32 @@ class wx_python_gui:
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
         wx.GetApp().Yield()
 
+
+        ia_download = network_handler.download_object(app_dict['Link'])
+        ia_download.download(self.constants.payload_path / "InstallAssistant.pkg")
+
+        while ia_download.is_active():
+            wx.GetApp().Yield()
+            self.download_label.SetLabel(f"{utilities.human_fmt(ia_download.downloaded_file_size)} downloaded of {utilities.human_fmt(ia_download.total_file_size)} ({ia_download.get_percent():.2f}%)")
+            self.download_label.Centre(wx.HORIZONTAL)
+            self.download_label_2.SetLabel(
+                f"Average download speed: {utilities.human_fmt(ia_download.get_speed())}/s"
+            )
+            self.download_label_2.Centre(wx.HORIZONTAL)
+
+            self.download_progress.SetValue(ia_download.get_percent())
+
+            wx.GetApp().Yield()
+            time.sleep(0.1)
+
+
         # Download macOS install data
-        if installer.download_install_assistant(self.constants.payload_path, app_dict['Link']):
-            # Fix stdout
-            logging.getLogger().handlers[1].stream = self.stock_stream
+        if ia_download.download_complete:
             self.download_label.SetLabel(f"Finished Downloading {installer_name}")
             self.download_label.Centre(wx.HORIZONTAL)
             wx.App.Get().Yield()
-            self.installer_validation(apple_integrity_file_link= app_dict['integrity'])
+            self.installer_validation(apple_integrity_file_link=app_dict['integrity'])
         else:
-            logging.getLogger().handlers[1].stream = self.stock_stream
             self.download_label.SetLabel(f"Failed to download {installer_name}")
             self.download_label.Centre(wx.HORIZONTAL)
 
@@ -2245,7 +2279,14 @@ class wx_python_gui:
         else:
             path = self.constants.installer_pkg_path
 
-        if utilities.download_file(link, path):
+
+        autopkg_download = network_handler.download_object(link)
+        autopkg_download.download(path, display_progress=False)
+
+        while autopkg_download.is_active():
+            time.sleep(0.1)
+
+        if autopkg_download.download_complete:
             # Download thread will re-enable Idle Sleep after downloading
             utilities.disable_sleep_while_running()
             if str(path).endswith(".zip"):
