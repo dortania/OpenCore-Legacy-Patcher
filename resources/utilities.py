@@ -407,12 +407,15 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
         dl = 0
         total_downloaded_string = ""
         global clear
+        checksum = hashlib.sha256() if verify_checksum else None
         with location.open("wb") as file:
             count = 0
             start = time.perf_counter()
             for chunk in response.iter_content(1024 * 1024 * 4):
                 dl += len(chunk)
                 file.write(chunk)
+                if checksum:
+                    checksum.update(chunk)
                 count += len(chunk)
                 if is_gui is None:
                     if clear:
@@ -425,19 +428,8 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
                     total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
                 print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
 
-        if verify_checksum is True:
-            # Verify checksum
-            # Note that this can be quite taxing on slower Macs
-            checksum = hashlib.sha256()
-            with location.open("rb") as file:
-                chunk = file.read(1024 * 1024 * 16)
-                while chunk:
-                    checksum.update(chunk)
-                    chunk = file.read(1024 * 1024 * 16)
-            enable_sleep_after_running()
-            return checksum
         enable_sleep_after_running()
-        return True
+        return checksum.hexdigest() if checksum else True
     else:
         cls()
         header = "# Could not establish Network Connection with provided link! #"
@@ -453,29 +445,6 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
         else:
             print(link)
         return None
-
-
-def download_apple_developer_portal(link, location, is_gui=None, verify_checksum=False):
-    TOKEN_URL_BASE = "https://developerservices2.apple.com/services/download?path="
-    remote_path = urllib.parse.urlparse(link).path
-    token_url = urllib.parse.urlunparse(urllib.parse.urlparse(TOKEN_URL_BASE)._replace(query=urllib.parse.urlencode({"path": remote_path})))
-
-    try:
-        response = SESSION.get(token_url, timeout=5)
-    except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
-        print(" - Could not contact Apple download servers")
-        return None
-
-    try:
-        response.raise_for_status()
-    except requests.exceptions.HTTPError:
-        if response.status_code == 400 and "The path specified is invalid" in response.text:
-            print(" - File does not exist on Apple download servers")
-        else:
-            print(" - Could not request download authorization from Apple download servers")
-        return None
-
-    return download_file(link, location, is_gui, verify_checksum)
 
 
 def dump_constants(constants):
