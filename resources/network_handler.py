@@ -9,16 +9,24 @@ from pathlib import Path
 
 from resources import utilities
 
-
 SESSION = requests.Session()
 
-class network_utilities:
+class NetworkUtilities:
+    """
+    Utilities for network related tasks, primarily used for downloading files
+    """
 
     def __init__(self, url):
         self.url: str = url
 
 
     def verify_network_connection(self):
+        """
+        Verifies that the network is available
+
+        :return: True if the network is available, False if not
+        """
+
         try:
             response = requests.head(self.url, timeout=5, allow_redirects=True)
             return True
@@ -31,11 +39,27 @@ class network_utilities:
             return False
 
 
-class download_object:
+class DownloadObject:
+    """
+    Object for downloading files from the network
+
+    Usage:
+        >>> download_object = DownloadObject(url)
+        >>> download_object.download(path, display_progress=True)
+
+        >>> if download_object.is_active():
+        >>>     print(download_object.get_percent())
+
+        >>> if not download_object.download_complete:
+        >>>     print("Download failed")
+
+        >>> print("Download complete"")
+
+    """
 
     def __init__(self, url):
         self.url:       str = url
-        self.status:    str = "Downloading"
+        self.status:    str = "Inactive"
         self.error_msg: str = ""
         self.filename:  str = self._get_filename()
 
@@ -45,8 +69,8 @@ class download_object:
 
         self.error:             bool = False
         self.should_stop:       bool = False
-        self.has_network:       bool = network_utilities(self.url).verify_network_connection()
         self.download_complete: bool = False
+        self.has_network:       bool = NetworkUtilities(self.url).verify_network_connection()
 
         self.active_thread: threading.Thread = None
 
@@ -59,38 +83,84 @@ class download_object:
 
 
     def download(self, path, display_progress=False):
+        """
+        Download the file
+
+        Spawns a thread to download the file, so that the main thread can continue
+        Note sleep is disabled while the download is active
+        """
+
         if self.active_thread:
             return
+        self.status = "Downloading"
         logging.info(f"Starting download: {self.filename}")
         self.active_thread = threading.Thread(target=self._download, args=(path,display_progress,))
         self.active_thread.start()
 
 
     def _get_filename(self):
+        """
+        Get the filename from the URL
+
+        :return: The filename
+        """
+
         return Path(self.url).name
 
 
     def _populate_file_size(self):
+        """
+        Get the file size of the file to be downloaded
+
+        If unable to get file size, set to zero
+        """
         try:
-            self.total_file_size = int(requests.head(self.url, allow_redirects=True, timeout=5).headers['Content-Length'])
+            result = requests.head(self.url, allow_redirects=True, timeout=5)
+            if 'Content-Length' in result.headers:
+                self.total_file_size = float(result.headers['Content-Length'])
+            else:
+                raise Exception("Content-Length missing from headers")
+        except Exception as e:
+            logging.error(f"Error determining file size {self.url}: {str(e)}")
+            logging.error("Assuming file size is 0")
+            self.total_file_size = 0.0
+
+
+    def _prepare_working_directory(self, path):
+        """
+        Delete the file if it already exists
+
+        :param path: Path to the file
+        :return:     True if successful, False if not
+        """
+
+        try:
+            if Path(path).exists():
+                logging.info(f"Deleting existing file: {path}")
+                Path(path).unlink()
+                return True
+            if not Path(path).parent.exists():
+                logging.info(f"Creating directory: {Path(path).parent}")
+                Path(path).parent.mkdir(parents=True, exist_ok=True)
         except Exception as e:
             self.error = True
             self.error_msg = str(e)
             self.status = "Error"
-            logging.error(f"Error determining file size {self.url}: {self.error_msg}")
+            logging.error(f"Error preparing working directory {path}: {self.error_msg}")
+            return False
 
-
-    def _prepare_working_directory(self, path):
-        if Path(path).exists():
-            Path(path).unlink()
+        return True
 
 
     def _download(self, path, display_progress=False):
+        utilities.disable_sleep_while_running()
+
         try:
             if not self.has_network:
                 raise Exception("No network connection")
 
-            self._prepare_working_directory(path)
+            if self._prepare_working_directory(path) is False:
+                raise Exception(self.error_msg)
 
             response = SESSION.get(self.url, stream=True)
 
@@ -103,7 +173,10 @@ class download_object:
                         self.downloaded_file_size += len(chunk)
                         if display_progress and i % 100:
                             # Don't use logging here, as we'll be spamming the log file
-                            print(f"Downloaded {self.get_percent():.2f}% of {self.filename} ({utilities.human_fmt(self.get_speed())}/s) ({self.get_time_remaining():.2f} seconds remaining)")
+                            if self.total_file_size == 0.0:
+                                print(f"Downloaded {utilities.human_fmt(self.downloaded_file_size)} of {self.filename}")
+                            else:
+                                print(f"Downloaded {self.get_percent():.2f}% of {self.filename} ({utilities.human_fmt(self.get_speed())}/s) ({self.get_time_remaining():.2f} seconds remaining)")
                 self.download_complete = True
                 logging.info(f"Download complete: {self.filename}")
         except Exception as e:
@@ -111,11 +184,13 @@ class download_object:
             self.error_msg = str(e)
             self.status = "Error"
             logging.error(f"Error downloading {self.url}: {self.error_msg}")
+
         self.status = "Done"
+        utilities.enable_sleep_after_running()
 
 
     def get_percent(self):
-        if self.total_file_size == 0:
+        if self.total_file_size == 0.0:
             logging.error("File size is 0, cannot calculate percent")
             return -1
         return self.downloaded_file_size / self.total_file_size * 100
@@ -126,7 +201,7 @@ class download_object:
 
 
     def get_time_remaining(self):
-        if self.total_file_size == 0:
+        if self.total_file_size == 0.0:
             logging.error("File size is 0, cannot calculate time remaining")
             return -1
         return (self.total_file_size - self.downloaded_file_size) / self.get_speed()
@@ -144,8 +219,5 @@ class download_object:
 
     def stop(self):
         self.should_stop = True
-
-
-
-
-
+        if self.active_thread.is_alive():
+            time.sleep(1)
