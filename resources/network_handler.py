@@ -7,18 +7,31 @@ import time
 import requests
 import threading
 import logging
+import enum
 from pathlib import Path
 
 from resources import utilities
 
 SESSION = requests.Session()
 
+
+class DownloadStatus(enum.Enum):
+    """
+    Enum for download status
+    """
+
+    INACTIVE =    "Inactive"
+    DOWNLOADING = "Downloading"
+    ERROR =       "Error"
+    COMPLETE =    "Complete"
+
+
 class NetworkUtilities:
     """
     Utilities for network related tasks, primarily used for downloading files
     """
 
-    def __init__(self, url:str):
+    def __init__(self, url: str):
         self.url: str = url
 
 
@@ -62,7 +75,7 @@ class DownloadObject:
 
     def __init__(self, url: str, path: str):
         self.url:       str = url
-        self.status:    str = "Inactive"
+        self.status:    str = DownloadStatus.INACTIVE
         self.error_msg: str = ""
         self.filename:  str = self._get_filename()
 
@@ -99,7 +112,7 @@ class DownloadObject:
             spawn_thread (bool): Spawn a thread to download the file, otherwise download in the current thread
 
         """
-        self.status = "Downloading"
+        self.status = DownloadStatus.DOWNLOADING
         logging.info(f"Starting download: {self.filename}")
         if spawn_thread:
             if self.active_thread:
@@ -163,7 +176,7 @@ class DownloadObject:
         except Exception as e:
             self.error = True
             self.error_msg = str(e)
-            self.status = "Error"
+            self.status = DownloadStatus.ERROR
             logging.error(f"Error preparing working directory {path}: {self.error_msg}")
             return False
 
@@ -209,10 +222,10 @@ class DownloadObject:
         except Exception as e:
             self.error = True
             self.error_msg = str(e)
-            self.status = "Error"
+            self.status = DownloadStatus.ERROR
             logging.error(f"Error downloading {self.url}: {self.error_msg}")
 
-        self.status = "Done"
+        self.status = DownloadStatus.COMPLETE
         utilities.enable_sleep_after_running()
 
 
@@ -274,7 +287,7 @@ class DownloadObject:
             boolean: True if active, False if completed, failed, stopped, or inactive
         """
 
-        if self.status == "Downloading":
+        if self.status == DownloadStatus.DOWNLOADING:
             return True
         return False
 
