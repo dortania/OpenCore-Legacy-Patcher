@@ -20,10 +20,10 @@ class DownloadStatus(enum.Enum):
     Enum for download status
     """
 
-    INACTIVE =    "Inactive"
-    DOWNLOADING = "Downloading"
-    ERROR =       "Error"
-    COMPLETE =    "Complete"
+    INACTIVE:    str = "Inactive"
+    DOWNLOADING: str = "Downloading"
+    ERROR:       str = "Error"
+    COMPLETE:    str = "Complete"
 
 
 class NetworkUtilities:
@@ -202,7 +202,7 @@ class DownloadObject:
             if self._prepare_working_directory(self.filepath) is False:
                 raise Exception(self.error_msg)
 
-            response = SESSION.get(self.url, stream=True)
+            response = SESSION.get(self.url, stream=True, timeout=10)
 
             with open(self.filepath, 'wb') as file:
                 for i, chunk in enumerate(response.iter_content(1024 * 1024 * 4)):
