@@ -102,6 +102,7 @@ class download_object:
                         file.write(chunk)
                         self.downloaded_file_size += len(chunk)
                         if display_progress and i % 100:
+                            # Don't use logging here, as we'll be spamming the log file
                             print(f"Downloaded {self.get_percent():.2f}% of {self.filename} ({utilities.human_fmt(self.get_speed())}/s) ({self.get_time_remaining():.2f} seconds remaining)")
                 self.download_complete = True
                 logging.info(f"Download complete: {self.filename}")

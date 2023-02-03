@@ -13,8 +13,9 @@ import time
 import atexit
 import requests
 import shutil
-import urllib.parse
 import py_sip_xnu
+
+import logging
 
 from resources import constants, ioreg
 from data import sip_data, os_data
@@ -39,8 +40,8 @@ def string_to_hex(input_string):
 
 def process_status(process_result):
     if process_result.returncode != 0:
-        print(f"Process failed with exit code {process_result.returncode}")
-        print(f"Please report the issue on the Discord server")
+        logging.info(f"Process failed with exit code {process_result.returncode}")
+        logging.info(f"Please report the issue on the Discord server")
         raise Exception(f"Process result: \n{process_result.stdout.decode()}")
 
 
@@ -55,11 +56,11 @@ def human_fmt(num):
 def header(lines):
     lines = [i for i in lines if i is not None]
     total_length = len(max(lines, key=len)) + 4
-    print("#" * (total_length))
+    logging.info("#" * (total_length))
     for line in lines:
         left_side = math.floor(((total_length - 2 - len(line.strip())) / 2))
-        print("#" + " " * left_side + line.strip() + " " * (total_length - len("#" + " " * left_side + line.strip()) - 1) + "#")
-    print("#" * total_length)
+        logging.info("#" + " " * left_side + line.strip() + " " * (total_length - len("#" + " " * left_side + line.strip()) - 1) + "#")
+    logging.info("#" * total_length)
 
 
 RECOVERY_STATUS = None
@@ -124,7 +125,7 @@ sleep_process = None
 
 def disable_sleep_while_running():
     global sleep_process
-    print("- Disabling Idle Sleep")
+    logging.info("- Disabling Idle Sleep")
     if sleep_process is None:
         # If sleep_process is active, we'll just keep it running
         sleep_process = subprocess.Popen(["caffeinate", "-d", "-i", "-s"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -134,7 +135,7 @@ def disable_sleep_while_running():
 def enable_sleep_after_running():
     global sleep_process
     if sleep_process:
-        print("- Re-enabling Idle Sleep")
+        logging.info("- Re-enabling Idle Sleep")
         sleep_process.kill()
         sleep_process = None
 
@@ -283,7 +284,7 @@ def cls():
         if not check_recovery():
             os.system("cls" if os.name == "nt" else "clear")
         else:
-            print("\u001Bc")
+            logging.info("\u001Bc")
 
 def check_command_line_tools():
     # Determine whether Command Line Tools exist
@@ -390,7 +391,7 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
 
             # Check if we have enough space
             if total_file_size > get_free_space():
-                print(f"Not enough space to download {base_name} ({file_size_rounded}MB)")
+                logging.info(f"Not enough space to download {base_name} ({file_size_rounded}MB)")
                 return False
         else:
             file_size_string = ""
@@ -420,13 +421,13 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
                 if is_gui is None:
                     if clear:
                         cls()
-                        print(box_string)
-                        print(header)
-                        print(box_string)
-                        print("")
+                        logging.info(box_string)
+                        logging.info(header)
+                        logging.info(box_string)
+                        logging.info("")
                 if total_file_size > 1024:
                     total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
-                print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
+                logging.info(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
 
         enable_sleep_after_running()
         return checksum.hexdigest() if checksum else True
@@ -435,15 +436,15 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
         header = "# Could not establish Network Connection with provided link! #"
         box_length = len(header)
         box_string = "#" * box_length
-        print(box_string)
-        print(header)
-        print(box_string)
+        logging.info(box_string)
+        logging.info(header)
+        logging.info(box_string)
         if constants.Constants().url_patcher_support_pkg in link:
             # If we're downloading PatcherSupportPkg, present offline build
-            print("\nPlease grab the offline variant of OpenCore Legacy Patcher from Github:")
-            print(f"https://github.com/dortania/OpenCore-Legacy-Patcher/releases/download/{constants.Constants().patcher_version}/OpenCore-Patcher-TUI-Offline.app.zip")
+            logging.info("\nPlease grab the offline variant of OpenCore Legacy Patcher from Github:")
+            logging.info(f"https://github.com/dortania/OpenCore-Legacy-Patcher/releases/download/{constants.Constants().patcher_version}/OpenCore-Patcher-TUI-Offline.app.zip")
         else:
-            print(link)
+            logging.info(link)
         return None
 
 
@@ -560,7 +561,7 @@ def block_os_updaters():
         for bad_process in bad_processes:
             if bad_process in current_process:
                 if pid != "":
-                    print(f"- Killing Process: {pid} - {current_process.split('/')[-1]}")
+                    logging.info(f"- Killing Process: {pid} - {current_process.split('/')[-1]}")
                     subprocess.run(["kill", "-9", pid])
                     break
 
