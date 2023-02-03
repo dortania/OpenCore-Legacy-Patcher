@@ -32,12 +32,12 @@ Regarding OS support, see below:
 | MacBook1,1 | Mid-2006 | <span style="color:red"> NO </span>  | 32-Bit CPU limitation |
 | MacBook2,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | MacBook3,1 | Late 2007 | ^^ | ^^ |
-| MacBook4,1 | Early 2008 | <span style="color:#30BCD5"> YES - Monterey and older</span> | - No GPU Acceleration in Mavericks and newer<br/>- No Keyboard and Trackpad<br/>- No USB |
-| MacBook5,1 | Late 2008 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> - Supports macOS Monterey and older ([Ventura support in development](./VENTURA-DROP.md))|
+| MacBook4,1 | Early 2008 | ^^ | - No GPU Acceleration in Mavericks and newer<br/>- No Keyboard and Trackpad<br/>- No USB |
+| MacBook5,1 | Late 2008 | <span style="color:#30BCD5"> YES </span> | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021))|
 | MacBook5,2 | Early 2009 | ^^ | ^^ |
 | MacBook6,1 | Late 2009 | ^^ | ^^ |
 | MacBook7,1 | Mid-2010 | ^^ | ^^ |
-| MacBook8,1 | Mid-2015 | <span style="color:#30BCD5"> YES </span> | <span style="color:green"> Everything is supported</span> |
+| MacBook8,1 | Mid-2015 | ^^ | <span style="color:green"> Everything is supported</span> |
 | MacBook9,1 | Early 2016 | ^^ | ^^ |
 
 ### MacBook Air
@@ -45,12 +45,12 @@ Regarding OS support, see below:
 | SMBIOS | Year | Supported | Comment |
 | :--- | :--- | :--- | :--- |
 | MacBookAir1,1 | Early 2008 | <span style="color:red"> NO </span> | Requires SSE4.1 CPU |
-| MacBookAir2,1 | Late 2008 | <span style="color:#30BCD5"> YES - Monterey and older</span> | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> - Supports macOS Monterey and older ([Ventura support in development](./VENTURA-DROP.md))|
+| MacBookAir2,1 | Late 2008 | <span style="color:#30BCD5"> YES </span> | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021))|
 | MacBookAir3,1 | Late 2010 | ^^ | ^^ |
 | MacBookAir3,2 | ^^ | ^^ | ^^ |
-| MacBookAir4,1 | Mid-2011 | ^^ | ^^ |
+| MacBookAir4,1 | Mid-2011 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))|
 | MacBookAir4,2 | ^^ | ^^ | ^^ |
-| MacBookAir5,1 | Mid-2012 | <span style="color:#30BCD5"> YES </span> | <span style="color:green"> Everything is supported</span> |
+| MacBookAir5,1 | Mid-2012 | ^^ | <span style="color:green"> Everything is supported</span> |
 | MacBookAir5,2 | ^^ | ^^ | ^^ |
 | MacBookAir6,1 | Mid-2013, Early 2014 | ^^ | ^^ |
 | MacBookAir6,2 | ^^ | ^^ | ^^ |
@@ -66,19 +66,19 @@ Regarding OS support, see below:
 | MacBookPro2,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | MacBookPro2,2 | Late 2006 | ^^ | ^^ |
 | MacBookPro3,1 | Mid-2007 | ^^ | Requires SSE4.1 CPU |
-| MacBookPro4,1 | Early 2008 | <span style="color:#30BCD5"> YES - Monterey and older</span> | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> - Supports macOS Monterey and older ([Ventura support in development](./VENTURA-DROP.md))|
+| MacBookPro4,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021))|
 | MacBookPro5,1 | Late 2008 | ^^ | ^^ |
 | MacBookPro5,2 | Early 2009 | ^^ | ^^ |
 | MacBookPro5,3 | Mid-2009 | ^^ | ^^ |
 | MacBookPro5,4 | ^^ | ^^ | ^^ |
 | MacBookPro5,5 | ^^ | ^^ | ^^ |
-| MacBookPro6,1 | Mid-2010 | ^^ | ^^ |
+| MacBookPro6,1 | Mid-2010 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))|
 | MacBookPro6,2 | ^^ | ^^ | ^^ |
-| MacBookPro7,1 | ^^ | ^^ | ^^ |
-| MacBookPro8,1 | Early 2011 | ^^ | ^^ |
+| MacBookPro7,1 | ^^ | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021))|
+| MacBookPro8,1 | Early 2011 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))|
 | MacBookPro8,2 | ^^ | ^^ | ^^ |
 | MacBookPro8,3 | ^^ | ^^ | ^^ |
-| MacBookPro9,1 | Mid-2012 | <span style="color:#30BCD5"> YES </span> | <span style="color:green"> Everything is supported</span> |
+| MacBookPro9,1 | Mid-2012 | ^^ | <span style="color:green"> Everything is supported</span> |
 | MacBookPro9,2 | ^^ | ^^ | ^^ |
 | MacBookPro10,1 | Mid-2012, Early 2013 | ^^ | ^^ |
 | MacBookPro10,2 | Late 2012, Early 2013 | ^^ | ^^ |
@@ -98,12 +98,12 @@ Regarding OS support, see below:
 | :--- | :--- | :--- | :--- |
 | Macmini1,1 | Early 2006 | <span style="color:red"> NO </span> | 32-Bit CPU limitation |
 | Macmini2,1 | Mid-2007 | ^^ | 32-Bit Firmware limitation |
-| Macmini3,1 | Early 2009 | <span style="color:#30BCD5"> YES - Monterey and older</span> | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) <br/> - Supports macOS Monterey and older ([Ventura support in development](./VENTURA-DROP.md)) |
+| Macmini3,1 | Early 2009 | <span style="color:#30BCD5"> YES </span> | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021))|
 | Macmini4,1 | Mid-2010 | ^^ | ^^ |
-| Macmini5,1 | Mid-2011 | ^^ | ^^ |
+| Macmini5,1 | Mid-2011 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))|
 | Macmini5,2 | ^^ | ^^ | ^^ |
 | Macmini5,3 | ^^ | ^^ | ^^ |
-| Macmini6,1 | Late 2012 | <span style="color:#30BCD5"> YES </span> | <span style="color:green"> Everything is supported</span> |
+| Macmini6,1 | Late 2012 | ^^ | <span style="color:green"> Everything is supported</span> |
 | Macmini6,2 | ^^ | ^^ | ^^ |
 | Macmini7,1 | Mid-2014 | ^^ | ^^ |
 
@@ -116,16 +116,16 @@ Regarding OS support, see below:
 | iMac5,1 | Late 2006 | ^^ | 32-Bit Firmware limitation |
 | iMac5,2 | ^^ | ^^ | ^^ |
 | iMac6,1 | ^^ | ^^ | ^^ |
-| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES - Monterey and older</span> | - Requires an [SSE4.1 CPU Upgrade](https://lowendmac.com/2018/penryn-t9300-9500-cpu-upgrades-for-the-2007-imac/)<br/>- GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Stock Bluetooth 2.0 card non-functional<br/> - Supports macOS Monterey and older ([Ventura support in development](./VENTURA-DROP.md)) |
-| iMac8,1 | Early 2008 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)))<br/> - Supports macOS Monterey and older ([Ventura support in development](./VENTURA-DROP.md))|
+| iMac7,1 | Mid-2007 | <span style="color:#30BCD5"> YES </span> | - Requires an [SSE4.1 CPU Upgrade](https://lowendmac.com/2018/penryn-t9300-9500-cpu-upgrades-for-the-2007-imac/)<br/>- GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/>- Stock Bluetooth 2.0 card non-functional<br/> - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021))|
+| iMac8,1 | Early 2008 | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))<br/> - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021))|
 | iMac9,1 | Early 2009 | ^^ | ^^ |
-| iMac10,1 | Late 2009 | ^^ | - GPU is socketed, [recommend upgrading to Metal GPU](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857) <br/>- GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) <br/> - Supports macOS Monterey and older ([Ventura support in development](./VENTURA-DROP.md))|
-| iMac11,1 | ^^ | ^^ | ^^ |
+| iMac10,1 | Late 2009 | ^^ | - GPU is socketed, [recommend upgrading to Metal GPU](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857) <br/>- GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)) <br/> - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021))|
+| iMac11,1 | ^^ | ^^ | - GPU Acceleration in Public Beta, see current issues ([#108](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108))|
 | iMac11,2 | Mid-2010 | ^^ | ^^ |
 | iMac11,3 | ^^ | ^^ | ^^ |
 | iMac12,1 | Mid-2011 | ^^ | ^^ |
 | iMac12,2 | ^^ | ^^ | ^^ |
-| iMac13,1 | Late 2012 | <span style="color:#30BCD5"> YES </span> | <span style="color:green"> Everything is supported</span> |
+| iMac13,1 | Late 2012 | ^^ | <span style="color:green"> Everything is supported</span> |
 | iMac13,2 | ^^ | ^^ | ^^ |
 | iMac13,3 | ^^ | ^^ | ^^ |
 | iMac14,1 | Late 2013 | ^^ | ^^ |
@@ -145,8 +145,8 @@ Regarding OS support, see below:
 | :--- | :--- | :--- | :--- |
 | MacPro1,1 | Mid-2006 | <span style="color:red"> NO </span> | 32-Bit Firmware limitation |
 | MacPro2,1 | Mid-2007 | ^^ | ^^ |
-| MacPro3,1 | Early 2008 | <span style="color:#30BCD5"> YES - Monterey and older</span> | - Potential boot issues with built-in USB 1.1 ports (recommend using a USB 2.0 hub or dedicated USB PCIe controller) <br/>- Potential boot issues with stock Bluetooth card, recommend removing to avoid kernel panics |
-| MacPro4,1 | Early 2009 | ^^ | - Everything is supported as long as GPU is Metal capable <br/> - Supports macOS Monterey and older ([Ventura support in development](./VENTURA-DROP.md)) |
+| MacPro3,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issesues/1021)) <br/>- Potential boot issues with stock Bluetooth card, recommend removing to avoid kernel panics |
+| MacPro4,1 | Early 2009 | ^^ | - Everything is supported as long as GPU is Metal capable <br/> - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issesues/1021))|
 | MacPro5,1 | Mid-2010, Mid-2012 | ^^ | ^^ |
 | MacPro6,1 | Late 2013 | ^^ | - CPU Power Management currently unsupported<br/> - No DRM support |
 
@@ -155,7 +155,7 @@ Regarding OS support, see below:
 | SMBIOS | Year | Supported | Comment |
 | :--- | :--- | :--- | :--- |
 | Xserve1,1 | Mid-2006 | <span style="color:red"> NO </span> | 32-Bit Firmware limitation |
-| Xserve2,1 | Early 2008 | <span style="color:#30BCD5"> YES - Monterey and older</span> | - Everything is supported as long as GPU is Metal capable <br/> - Supports macOS Monterey and older ([Ventura support in development](./VENTURA-DROP.md))|
+| Xserve2,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021))|
 | Xserve3,1 | Early 2009 | ^^ | ^^ |
 
 # Once you've verified your hardware is supported, head to [Download and build macOS Installers](./INSTALLER.md)

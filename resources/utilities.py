@@ -15,7 +15,6 @@ import requests
 import shutil
 import urllib.parse
 import py_sip_xnu
-import logging
 
 from resources import constants, ioreg
 from data import sip_data, os_data
@@ -40,8 +39,8 @@ def string_to_hex(input_string):
 
 def process_status(process_result):
     if process_result.returncode != 0:
-        logging.info(f"Process failed with exit code {process_result.returncode}")
-        logging.info(f"Please report the issue on the Discord server")
+        print(f"Process failed with exit code {process_result.returncode}")
+        print(f"Please report the issue on the Discord server")
         raise Exception(f"Process result: \n{process_result.stdout.decode()}")
 
 
@@ -56,11 +55,11 @@ def human_fmt(num):
 def header(lines):
     lines = [i for i in lines if i is not None]
     total_length = len(max(lines, key=len)) + 4
-    logging.info("#" * (total_length))
+    print("#" * (total_length))
     for line in lines:
         left_side = math.floor(((total_length - 2 - len(line.strip())) / 2))
-        logging.info("#" + " " * left_side + line.strip() + " " * (total_length - len("#" + " " * left_side + line.strip()) - 1) + "#")
-    logging.info("#" * total_length)
+        print("#" + " " * left_side + line.strip() + " " * (total_length - len("#" + " " * left_side + line.strip()) - 1) + "#")
+    print("#" * total_length)
 
 
 RECOVERY_STATUS = None
@@ -125,7 +124,7 @@ sleep_process = None
 
 def disable_sleep_while_running():
     global sleep_process
-    logging.info("- Disabling Idle Sleep")
+    print("- Disabling Idle Sleep")
     if sleep_process is None:
         # If sleep_process is active, we'll just keep it running
         sleep_process = subprocess.Popen(["caffeinate", "-d", "-i", "-s"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -135,7 +134,7 @@ def disable_sleep_while_running():
 def enable_sleep_after_running():
     global sleep_process
     if sleep_process:
-        logging.info("- Re-enabling Idle Sleep")
+        print("- Re-enabling Idle Sleep")
         sleep_process.kill()
         sleep_process = None
 
@@ -284,7 +283,7 @@ def cls():
         if not check_recovery():
             os.system("cls" if os.name == "nt" else "clear")
         else:
-            logging.info("\u001Bc")
+            print("\u001Bc")
 
 def check_command_line_tools():
     # Determine whether Command Line Tools exist
@@ -296,7 +295,7 @@ def check_command_line_tools():
         return False
 
 def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
-    # TODO: Properly fix for El Capitan, which does not logging.info the XML representation even though we say to
+    # TODO: Properly fix for El Capitan, which does not print the XML representation even though we say to
 
     if uuid is not None:
         uuid += ":"
@@ -328,7 +327,7 @@ def get_nvram(variable: str, uuid: str = None, *, decode: bool = False):
 
 
 def get_rom(variable: str, *, decode: bool = False):
-    # TODO: Properly fix for El Capitan, which does not logging.info the XML representation even though we say to
+    # TODO: Properly fix for El Capitan, which does not print the XML representation even though we say to
 
     rom = ioreg.IORegistryEntryFromPath(ioreg.kIOMasterPortDefault, "IODeviceTree:/rom".encode())
 
@@ -391,7 +390,7 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
 
             # Check if we have enough space
             if total_file_size > get_free_space():
-                logging.info(f"Not enough space to download {base_name} ({file_size_rounded}MB)")
+                print(f"Not enough space to download {base_name} ({file_size_rounded}MB)")
                 return False
         else:
             file_size_string = ""
@@ -408,76 +407,44 @@ def download_file(link, location, is_gui=None, verify_checksum=False):
         dl = 0
         total_downloaded_string = ""
         global clear
+        checksum = hashlib.sha256() if verify_checksum else None
         with location.open("wb") as file:
             count = 0
             start = time.perf_counter()
-            for i, chunk in enumerate(response.iter_content(1024 * 1024 * 4)):
+            for chunk in response.iter_content(1024 * 1024 * 4):
                 dl += len(chunk)
                 file.write(chunk)
+                if checksum:
+                    checksum.update(chunk)
                 count += len(chunk)
                 if is_gui is None:
                     if clear:
                         cls()
-                        logging.info(box_string)
-                        logging.info(header)
-                        logging.info(box_string)
-                        logging.info("")
+                        print(box_string)
+                        print(header)
+                        print(box_string)
+                        print("")
                 if total_file_size > 1024:
                     total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
-                if i % 100 == 0:
-                    logging.info(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
+                print(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
 
-        if verify_checksum is True:
-            # Verify checksum
-            # Note that this can be quite taxing on slower Macs
-            checksum = hashlib.sha256()
-            with location.open("rb") as file:
-                chunk = file.read(1024 * 1024 * 16)
-                while chunk:
-                    checksum.update(chunk)
-                    chunk = file.read(1024 * 1024 * 16)
-            enable_sleep_after_running()
-            return checksum
         enable_sleep_after_running()
-        return True
+        return checksum.hexdigest() if checksum else True
     else:
         cls()
         header = "# Could not establish Network Connection with provided link! #"
         box_length = len(header)
         box_string = "#" * box_length
-        logging.info(box_string)
-        logging.info(header)
-        logging.info(box_string)
+        print(box_string)
+        print(header)
+        print(box_string)
         if constants.Constants().url_patcher_support_pkg in link:
             # If we're downloading PatcherSupportPkg, present offline build
-            logging.info("\nPlease grab the offline variant of OpenCore Legacy Patcher from Github:")
-            logging.info(f"https://github.com/dortania/OpenCore-Legacy-Patcher/releases/download/{constants.Constants().patcher_version}/OpenCore-Patcher-TUI-Offline.app.zip")
+            print("\nPlease grab the offline variant of OpenCore Legacy Patcher from Github:")
+            print(f"https://github.com/dortania/OpenCore-Legacy-Patcher/releases/download/{constants.Constants().patcher_version}/OpenCore-Patcher-TUI-Offline.app.zip")
         else:
-            logging.info(link)
+            print(link)
         return None
-
-
-def download_apple_developer_portal(link, location, is_gui=None, verify_checksum=False):
-    TOKEN_URL_BASE = "https://developerservices2.apple.com/services/download?path="
-    remote_path = urllib.parse.urlparse(link).path
-    token_url = urllib.parse.urlunparse(urllib.parse.urlparse(TOKEN_URL_BASE)._replace(query=urllib.parse.urlencode({"path": remote_path})))
-
-    try:
-        response = SESSION.get(token_url, timeout=5)
-    except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
-        logging.info(" - Could not contact Apple download servers")
-        return None
-
-    try:
-        response.raise_for_status()
-    except requests.exceptions.HTTPError:
-        if response.status_code == 400 and "The path specified is invalid" in response.text:
-            logging.info(" - File does not exist on Apple download servers")
-        else:
-            logging.info(" - Could not request download authorization from Apple download servers")
-        return None
-
-    return download_file(link, location, is_gui, verify_checksum)
 
 
 def dump_constants(constants):
@@ -593,7 +560,7 @@ def block_os_updaters():
         for bad_process in bad_processes:
             if bad_process in current_process:
                 if pid != "":
-                    logging.info(f"- Killing Process: {pid} - {current_process.split('/')[-1]}")
+                    print(f"- Killing Process: {pid} - {current_process.split('/')[-1]}")
                     subprocess.run(["kill", "-9", pid])
                     break
 

@@ -7,6 +7,8 @@
 - Ensure `Moraea_BlurBeta` is set on non-Metal systems
 - Implement proper Root Unpatching verification in GUI
   - Removes arbitrary patch requirements used against unpatching (ex. network connection)
+- Prioritize KdkSupportPkg repository for downloads
+  - Skips calls to Apple's now defunct Developer Portal API
 - Increment Binaries:
   - PatcherSupportPkg 0.8.3 - release
 
