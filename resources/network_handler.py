@@ -1,5 +1,7 @@
-# Download files from the network
-# Implements an object, where other libraries can use to query download status
+# Library dedicated to Network Handling tasks including downloading files
+# Primarily based around the DownloadObject class, which provides a simple
+# object for libraries to query download progress and status
+# Copyright (C) 2023, Mykola Grymalyuk
 
 import time
 import requests
@@ -16,7 +18,7 @@ class NetworkUtilities:
     Utilities for network related tasks, primarily used for downloading files
     """
 
-    def __init__(self, url):
+    def __init__(self, url:str):
         self.url: str = url
 
 
@@ -24,7 +26,8 @@ class NetworkUtilities:
         """
         Verifies that the network is available
 
-        :return: True if the network is available, False if not
+        Returns:
+            bool: True if network is available, False otherwise
         """
 
         try:
@@ -57,7 +60,7 @@ class DownloadObject:
 
     """
 
-    def __init__(self, url):
+    def __init__(self, url:str):
         self.url:       str = url
         self.status:    str = "Inactive"
         self.error_msg: str = ""
@@ -82,12 +85,17 @@ class DownloadObject:
         self.stop()
 
 
-    def download(self, path, display_progress=False):
+    def download(self, path: str, display_progress: bool =False):
         """
         Download the file
 
         Spawns a thread to download the file, so that the main thread can continue
         Note sleep is disabled while the download is active
+
+        Parameters:
+            path (str): Path to save the file to
+            display_progress (bool): Display progress in console
+
         """
 
         if self.active_thread:
@@ -102,7 +110,8 @@ class DownloadObject:
         """
         Get the filename from the URL
 
-        :return: The filename
+        Returns:
+            str: Filename
         """
 
         return Path(self.url).name
@@ -114,6 +123,7 @@ class DownloadObject:
 
         If unable to get file size, set to zero
         """
+
         try:
             result = requests.head(self.url, allow_redirects=True, timeout=5)
             if 'Content-Length' in result.headers:
@@ -126,12 +136,15 @@ class DownloadObject:
             self.total_file_size = 0.0
 
 
-    def _prepare_working_directory(self, path):
+    def _prepare_working_directory(self, path:str):
         """
         Delete the file if it already exists
 
-        :param path: Path to the file
-        :return:     True if successful, False if not
+        Parameters:
+            path (str): Path to the file
+
+        Returns:
+            bool: True if successful, False if not
         """
 
         try:
@@ -153,6 +166,15 @@ class DownloadObject:
 
 
     def _download(self, path, display_progress=False):
+        """
+        Download the file
+
+        Parameters:
+            path (str): Path to save the file to
+            display_progress (bool): Display progress in console
+
+        """
+
         utilities.disable_sleep_while_running()
 
         try:
@@ -190,6 +212,13 @@ class DownloadObject:
 
 
     def get_percent(self):
+        """
+        Query the download percent
+
+        Returns:
+            float: The download percent, or -1 if unknown
+        """
+
         if self.total_file_size == 0.0:
             logging.error("File size is 0, cannot calculate percent")
             return -1
@@ -197,10 +226,24 @@ class DownloadObject:
 
 
     def get_speed(self):
+        """
+        Query the download speed
+
+        Returns:
+            float: The download speed in bytes per second
+        """
+
         return self.downloaded_file_size / (time.time() - self.start_time)
 
 
     def get_time_remaining(self):
+        """
+        Query the time remaining for the download
+
+        Returns:
+            float: The time remaining in seconds, or -1 if unknown
+        """
+
         if self.total_file_size == 0.0:
             logging.error("File size is 0, cannot calculate time remaining")
             return -1
@@ -208,16 +251,37 @@ class DownloadObject:
 
 
     def get_file_size(self):
+        """
+        Query the file size of the file to be downloaded
+
+        Returns:
+            float: The file size in bytes, or 0.0 if unknown
+        """
+
         return self.total_file_size
 
 
     def is_active(self):
+        """
+        Query if the download is active
+
+        Returns:
+            boolean: True if active, False if completed, failed, stopped, or inactive
+        """
+
         if self.status == "Downloading":
             return True
         return False
 
 
     def stop(self):
+        """
+        Stop the download
+
+        Returns:
+            boolean: If the download is active, this function will hold the thread until stopped
+        """
+
         self.should_stop = True
         if self.active_thread.is_alive():
             time.sleep(1)
