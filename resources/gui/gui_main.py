@@ -1784,8 +1784,8 @@ class wx_python_gui:
         wx.GetApp().Yield()
 
 
-        ia_download = network_handler.DownloadObject(app_dict['Link'])
-        ia_download.download(self.constants.payload_path / "InstallAssistant.pkg")
+        ia_download = network_handler.DownloadObject(app_dict['Link'], self.constants.payload_path / "InstallAssistant.pkg")
+        ia_download.download()
 
         while ia_download.is_active():
             wx.GetApp().Yield()
@@ -2280,8 +2280,8 @@ class wx_python_gui:
             path = self.constants.installer_pkg_path
 
 
-        autopkg_download = network_handler.DownloadObject(link)
-        autopkg_download.download(path, display_progress=False)
+        autopkg_download = network_handler.DownloadObject(link, path)
+        autopkg_download.download()
 
         while autopkg_download.is_active():
             time.sleep(0.1)

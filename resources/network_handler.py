@@ -47,8 +47,8 @@ class DownloadObject:
     Object for downloading files from the network
 
     Usage:
-        >>> download_object = DownloadObject(url)
-        >>> download_object.download(path, display_progress=True)
+        >>> download_object = DownloadObject(url, path)
+        >>> download_object.download(display_progress=True)
 
         >>> if download_object.is_active():
         >>>     print(download_object.get_percent())
@@ -60,11 +60,13 @@ class DownloadObject:
 
     """
 
-    def __init__(self, url:str):
+    def __init__(self, url: str, path: str):
         self.url:       str = url
         self.status:    str = "Inactive"
         self.error_msg: str = ""
         self.filename:  str = self._get_filename()
+
+        self.filepath:  Path = Path(path)
 
         self.total_file_size:      float = 0.0
         self.downloaded_file_size: float = 0.0
@@ -85,7 +87,7 @@ class DownloadObject:
         self.stop()
 
 
-    def download(self, path: str, display_progress: bool =False):
+    def download(self, display_progress: bool = False, spawn_thread: bool = True):
         """
         Download the file
 
@@ -93,17 +95,20 @@ class DownloadObject:
         Note sleep is disabled while the download is active
 
         Parameters:
-            path (str): Path to save the file to
             display_progress (bool): Display progress in console
+            spawn_thread (bool): Spawn a thread to download the file, otherwise download in the current thread
 
         """
-
-        if self.active_thread:
-            return
         self.status = "Downloading"
         logging.info(f"Starting download: {self.filename}")
-        self.active_thread = threading.Thread(target=self._download, args=(path,display_progress,))
-        self.active_thread.start()
+        if spawn_thread:
+            if self.active_thread:
+                logging.error("Download already in progress")
+                return
+            self.active_thread = threading.Thread(target=self._download, args=(display_progress,))
+            self.active_thread.start()
+        else:
+            self._download(display_progress)
 
 
     def _get_filename(self):
@@ -136,7 +141,7 @@ class DownloadObject:
             self.total_file_size = 0.0
 
 
-    def _prepare_working_directory(self, path:str):
+    def _prepare_working_directory(self, path: Path):
         """
         Delete the file if it already exists
 
@@ -165,14 +170,14 @@ class DownloadObject:
         return True
 
 
-    def _download(self, path, display_progress=False):
+    def _download(self, display_progress: bool = False):
         """
         Download the file
 
-        Parameters:
-            path (str): Path to save the file to
-            display_progress (bool): Display progress in console
+        Libraries should invoke download() instead of this method
 
+        Parameters:
+            display_progress (bool): Display progress in console
         """
 
         utilities.disable_sleep_while_running()
@@ -181,12 +186,12 @@ class DownloadObject:
             if not self.has_network:
                 raise Exception("No network connection")
 
-            if self._prepare_working_directory(path) is False:
+            if self._prepare_working_directory(self.filepath) is False:
                 raise Exception(self.error_msg)
 
             response = SESSION.get(self.url, stream=True)
 
-            with open(path, 'wb') as file:
+            with open(self.filepath, 'wb') as file:
                 for i, chunk in enumerate(response.iter_content(1024 * 1024 * 4)):
                     if self.should_stop:
                         raise Exception("Download stopped")
