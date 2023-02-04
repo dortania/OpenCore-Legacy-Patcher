@@ -1290,9 +1290,55 @@ class wx_python_gui:
             self.subheader.Centre(wx.HORIZONTAL)
             self.developer_note.SetLabel("Starting shortly")
 
-            logging.getLogger().handlers[1].stream = menu_redirect.RedirectLabel(self.developer_note)
-            kdk_result, error_msg, detected_build = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
-            logging.getLogger().handlers[1].stream = self.stock_stream
+            kdk_result = False
+            kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
+            if kdk_obj.success is True:
+                kdk_download_obj = kdk_obj.retrieve_download()
+                if not kdk_download_obj:
+                    kdk_result = True
+                else:
+                    kdk_download_obj.download()
+
+                    self.header.SetLabel(f"Downloading KDK Build: {kdk_obj.kdk_url_build}")
+                    self.header.Centre(wx.HORIZONTAL)
+
+                    self.progress_bar.SetValue(0)
+                    # Set below developer note
+                    self.progress_bar.SetPosition(
+                        wx.Point(
+                            self.developer_note.GetPosition().x,
+                            self.developer_note.GetPosition().y + self.developer_note.GetSize().height + 10
+                        )
+                    )
+                    self.progress_bar.Centre(wx.HORIZONTAL)
+                    self.progress_bar.Show()
+
+                    self.frame.SetSize(-1, self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 60)
+
+                    while kdk_download_obj.is_active():
+                        self.subheader.SetLabel(f"{utilities.human_fmt(kdk_download_obj.downloaded_file_size)} downloaded of {utilities.human_fmt(kdk_download_obj.total_file_size)} ({kdk_download_obj.get_percent():.2f}%)")
+                        self.subheader.Centre(wx.HORIZONTAL)
+                        self.developer_note.SetLabel(
+                            f"Average download speed: {utilities.human_fmt(kdk_download_obj.get_speed())}/s"
+                        )
+                        self.developer_note.Centre(wx.HORIZONTAL)
+
+                        self.progress_bar.SetValue(kdk_download_obj.get_percent())
+
+                        wx.GetApp().Yield()
+                        time.sleep(0.1)
+
+                    if kdk_download_obj.download_complete is False:
+                        logging.error("Failed to download KDK")
+                        logging.error(kdk_download_obj.error_msg)
+                        error_msg = kdk_download_obj.error_msg
+                    else:
+                        kdk_result = kdk_obj.validate_kdk_checksum()
+                        error_msg = kdk_obj.error_msg
+            else:
+                logging.error("Failed to download KDK")
+                logging.error(kdk_obj.error_msg)
+                error_msg = kdk_obj.error_msg
 
             if kdk_result is False:
                 # Create popup window to inform user of error

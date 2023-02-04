@@ -29,12 +29,18 @@ class OpenCoreLegacyPatcher:
                 self.main_menu()
 
     def initialize_logging(self):
+        LOG_FILENAME = f"OpenCore-Patcher-v{self.constants.patcher_version}.log"
+        LOG_FILEPATH = Path(f"~/Library/Logs/{LOG_FILENAME}").expanduser()
+
+        if not LOG_FILEPATH.parent.exists():
+            # Likely in an installer environment, store in /Users/Shared
+            LOG_FILEPATH = Path("/Users/Shared") / LOG_FILENAME
+
         logging.basicConfig(
             level=logging.NOTSET,
             format="%(asctime)s - %(filename)s (%(lineno)d): %(message)s",
             handlers=[
-                # TODO: Handle proper file storage
-                logging.FileHandler(f"OpenCore-Patcher-v{self.constants.patcher_version}.log"),
+                logging.FileHandler(LOG_FILEPATH),
                 logging.StreamHandler(),
             ],
         )

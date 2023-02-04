@@ -112,6 +112,42 @@ class PatchSysVolume:
                         logging.info(result.stdout.decode().strip())
         return False
 
+
+    def invoke_kdk_handler(self):
+        # If we're invoked, there is no KDK installed (or something went wrong)
+        kdk_result = False
+        error_msg = ""
+
+        kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
+
+        if kdk_obj.success is False:
+            error_msg = kdk_obj.error_msg
+            return kdk_result, error_msg, None
+
+        kdk_download_obj = kdk_obj.retrieve_download()
+
+        # We didn't get a download object, something's wrong
+        if not kdk_download_obj:
+            if kdk_obj.kdk_already_installed is True:
+                error_msg = "KDK already installed, function should not have been invoked"
+                return kdk_result, error_msg, None
+            else:
+                error_msg = "Could not retrieve KDK"
+                return kdk_result, error_msg, None
+
+        # Hold thread until download is complete
+        kdk_download_obj.download(spawn_thread=False)
+
+        if kdk_download_obj.download_complete is False:
+            error_msg = kdk_download_obj.error_msg
+            return kdk_result, error_msg, None
+
+        kdk_result = kdk_obj.validate_kdk_checksum()
+        downloaded_kdk = self.constants.kdk_download_path
+
+        return kdk_result, error_msg, downloaded_kdk
+
+
     def merge_kdk_with_root(self, save_hid_cs=False):
         if self.skip_root_kmutil_requirement is True:
             return
@@ -122,7 +158,7 @@ class PatchSysVolume:
         kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=False)
         if kdk_path is None:
             if not self.constants.kdk_download_path.exists():
-                kdk_result, error_msg, downloaded_kdk = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
+                kdk_result, error_msg, downloaded_kdk = self.invoke_kdk_handler()
                 if kdk_result is False:
                     raise Exception(f"Unable to download KDK: {error_msg}")
             sys_patch_helpers.sys_patch_helpers(self.constants).install_kdk()
@@ -348,7 +384,7 @@ class PatchSysVolume:
 
     def delete_nonmetal_enforcement(self):
         for arg in ["useMetal", "useIOP"]:
-            result = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+            result = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
             if result in ["0", "false", "1", "true"]:
                 logging.info(f"- Removing non-Metal Enforcement Preference: {arg}")
                 utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])

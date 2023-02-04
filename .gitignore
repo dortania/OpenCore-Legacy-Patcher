@@ -32,3 +32,4 @@ __pycache__/
 /payloads.dmg
 /payloads/OpenCore-Legacy-Patcher-*.plist
 /payloads/KDK.dmg
+*.log
