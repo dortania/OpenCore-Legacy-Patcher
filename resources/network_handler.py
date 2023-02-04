@@ -48,7 +48,24 @@ class NetworkUtilities:
         """
 
         try:
-            return True if requests.head(self.url, timeout=5, allow_redirects=True) else False
+            requests.head(self.url, timeout=5, allow_redirects=True)
+            return True
+        except (
+            requests.exceptions.Timeout,
+            requests.exceptions.TooManyRedirects,
+            requests.exceptions.ConnectionError,
+            requests.exceptions.HTTPError
+        ):
+            return False
+
+    def validate_link(self):
+        # Check if link is 404
+        try:
+            response = SESSION.head(self.url, timeout=5, allow_redirects=True)
+            if response.status_code == 404:
+                return False
+            else:
+                return True
         except (
             requests.exceptions.Timeout,
             requests.exceptions.TooManyRedirects,
@@ -274,6 +291,11 @@ class DownloadObject:
                                 print(f"Downloaded {self.get_percent():.2f}% of {self.filename} ({utilities.human_fmt(self.get_speed())}/s) ({self.get_time_remaining():.2f} seconds remaining)")
                 self.download_complete = True
                 logging.info(f"Download complete: {self.filename}")
+                logging.info("Stats:")
+                logging.info(f"  Downloaded size: {utilities.human_fmt(self.downloaded_file_size)}")
+                logging.info(f"  Time elapsed: {time.time() - self.start_time} seconds")
+                logging.info(f"  Speed: {utilities.human_fmt(self.downloaded_file_size / (time.time() - self.start_time))}/s")
+                logging.info(f"  Location: {self.filepath}")
         except Exception as e:
             self.error = True
             self.error_msg = str(e)

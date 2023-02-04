@@ -441,16 +441,6 @@ def monitor_disk_output(disk):
     output = output[-2]
     return output
 
-def validate_link(link):
-    # Check if link is 404
-    try:
-        response = SESSION.head(link, timeout=5, allow_redirects=True)
-        if response.status_code == 404:
-            return False
-        else:
-            return True
-    except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError, requests.exceptions.HTTPError):
-        return False
 
 def block_os_updaters():
     # Disables any processes that would be likely to mess with

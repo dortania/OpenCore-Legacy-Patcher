@@ -2301,7 +2301,7 @@ class wx_python_gui:
         #   - When running from source/unable to find on Github, use the nightly.link variant
         #   - If nightly also fails, fall back to the manually uploaded variant
         link = self.constants.installer_pkg_url
-        if utilities.validate_link(link) is False:
+        if network_handler.NetworkUtilities(link).validate_link() is False:
             logging.info("- Stock Install.pkg is missing on Github, falling back to Nightly")
             link = self.constants.installer_pkg_url_nightly
 
@@ -2313,13 +2313,19 @@ class wx_python_gui:
         autopkg_download = network_handler.DownloadObject(link, path)
         autopkg_download.download(spawn_thread=False)
 
-        if autopkg_download.download_complete is True:
-            # Download thread will re-enable Idle Sleep after downloading
-            utilities.disable_sleep_while_running()
-            if str(path).endswith(".zip"):
-                if Path(self.constants.installer_pkg_path).exists():
-                    subprocess.run(["rm", self.constants.installer_pkg_path])
-                subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.installer_pkg_zip_path, self.constants.payload_path])
+        if autopkg_download.download_complete is False:
+            logging.warning("- Failed to download Install.pkg")
+            logging.warning(autopkg_download.error_msg)
+            return
+
+        # Download thread will re-enable Idle Sleep after downloading
+        utilities.disable_sleep_while_running()
+        if not str(path).endswith(".zip"):
+            return
+        if Path(self.constants.installer_pkg_path).exists():
+            subprocess.run(["rm", self.constants.installer_pkg_path])
+        subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.installer_pkg_zip_path, self.constants.payload_path])
+
 
     def install_installer_pkg(self, disk):
         disk = disk + "s2" # ESP sits at 1, and we know macOS will have created the main partition at 2

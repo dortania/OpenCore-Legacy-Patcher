@@ -6,6 +6,7 @@ from pathlib import Path
 import time
 import threading
 import logging
+import traceback
 
 from resources import cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads, commit_info
 from resources.build import build
@@ -36,6 +37,8 @@ class OpenCoreLegacyPatcher:
             # Likely in an installer environment, store in /Users/Shared
             LOG_FILEPATH = Path("/Users/Shared") / LOG_FILENAME
 
+        self.implement_custom_traceback_handler()
+
         logging.basicConfig(
             level=logging.NOTSET,
             format="%(asctime)s - %(filename)s (%(lineno)d): %(message)s",
@@ -47,6 +50,16 @@ class OpenCoreLegacyPatcher:
         logging.getLogger().handlers[1].setFormatter(logging.Formatter("%(message)s"))
         logging.getLogger().setLevel(logging.INFO)
         logging.getLogger().handlers[1].maxBytes = 1024 * 1024 * 10
+
+
+    def implement_custom_traceback_handler(self):
+        # TODO: Support thread exceptions
+        def custom_excepthook(type, value, tb):
+            logging.error("Uncaught exception", exc_info=(type, value, tb))
+            traceback.print_exception(type, value, tb)
+
+        sys.excepthook = custom_excepthook
+
 
     def generate_base_data(self):
         self.constants.detected_os = os_probe.detect_kernel_major()
