@@ -18,6 +18,7 @@
     - Allows for more reliable network calls and downloads
     - Better supports network timeouts and disconnects
     - Dramatically less noise in console during downloads
+  - Remove unused sys_patch_downloader.py module
 - Increment Binaries:
   - PatcherSupportPkg 0.8.3 - release
 

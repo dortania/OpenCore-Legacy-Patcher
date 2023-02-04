@@ -3,7 +3,7 @@
 # Used when supplying data to sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from resources import constants, device_probe, utilities, amfi_detect
+from resources import constants, device_probe, utilities, amfi_detect, network_handler
 from resources.sys_patch import sys_patch_helpers
 from data import model_array, os_data, sip_data, sys_patch_dict, smbios_data, cpu_data
 
@@ -402,7 +402,7 @@ class detect_root_patch:
         return False
 
     def detect_patch_set(self):
-        self.has_network = utilities.verify_network_connection()
+        self.has_network = network_handler.NetworkUtilities().verify_network_connection()
 
         if self.check_uhci_ohci() is True:
             self.legacy_uhci_ohci = True

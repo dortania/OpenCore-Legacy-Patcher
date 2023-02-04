@@ -1,6 +1,5 @@
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
-import hashlib
 import math
 import os
 import plistlib
@@ -9,7 +8,6 @@ from pathlib import Path
 import os
 import binascii
 import argparse
-import time
 import atexit
 import requests
 import shutil
@@ -19,8 +17,6 @@ import logging
 
 from resources import constants, ioreg
 from data import sip_data, os_data
-
-SESSION = requests.Session()
 
 
 def hexswap(input_hex: str):
@@ -360,93 +356,6 @@ def get_firmware_vendor(*, decode: bool = False):
         elif isinstance(value, str):
             value = value.strip("\0")
     return value
-
-def verify_network_connection(url=None):
-    if url is None:
-        url = "https://www.google.com"
-    try:
-        response = SESSION.head(url, timeout=5, allow_redirects=True)
-        return True
-    except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError, requests.exceptions.HTTPError):
-        return False
-
-def download_file(link, location, is_gui=None, verify_checksum=False):
-    if verify_network_connection(link):
-        disable_sleep_while_running()
-        base_name = Path(link).name
-
-        if Path(location).exists():
-            Path(location).unlink()
-
-        head_response = SESSION.head(link, allow_redirects=True)
-        try:
-            # Handle cases where Content-Length has garbage or is missing
-            total_file_size = int(head_response.headers['Content-Length'])
-        except KeyError:
-            total_file_size = 0
-
-        if total_file_size > 1024:
-            file_size_rounded = round(total_file_size / 1024 / 1024, 2)
-            file_size_string = f" of {file_size_rounded}MB"
-
-            # Check if we have enough space
-            if total_file_size > get_free_space():
-                logging.info(f"Not enough space to download {base_name} ({file_size_rounded}MB)")
-                return False
-        else:
-            file_size_string = ""
-
-        response = SESSION.get(link, stream=True)
-
-        # SU Catalog's link is quite long, strip to make it bearable
-        if "sucatalog.gz" in base_name:
-            base_name = "sucatalog.gz"
-
-        header = f"# Downloading: {base_name} #"
-        box_length = len(header)
-        box_string = "#" * box_length
-        dl = 0
-        total_downloaded_string = ""
-        global clear
-        checksum = hashlib.sha256() if verify_checksum else None
-        with location.open("wb") as file:
-            count = 0
-            start = time.perf_counter()
-            for chunk in response.iter_content(1024 * 1024 * 4):
-                dl += len(chunk)
-                file.write(chunk)
-                if checksum:
-                    checksum.update(chunk)
-                count += len(chunk)
-                if is_gui is None:
-                    if clear:
-                        cls()
-                        logging.info(box_string)
-                        logging.info(header)
-                        logging.info(box_string)
-                        logging.info("")
-                if total_file_size > 1024:
-                    total_downloaded_string = f" ({round(float(dl / total_file_size * 100), 2)}%)"
-                logging.info(f"{round(count / 1024 / 1024, 2)}MB Downloaded{file_size_string}{total_downloaded_string}\nAverage Download Speed: {round(dl//(time.perf_counter() - start) / 100000 / 8, 2)} MB/s")
-
-        enable_sleep_after_running()
-        return checksum.hexdigest() if checksum else True
-    else:
-        cls()
-        header = "# Could not establish Network Connection with provided link! #"
-        box_length = len(header)
-        box_string = "#" * box_length
-        logging.info(box_string)
-        logging.info(header)
-        logging.info(box_string)
-        if constants.Constants().url_patcher_support_pkg in link:
-            # If we're downloading PatcherSupportPkg, present offline build
-            logging.info("\nPlease grab the offline variant of OpenCore Legacy Patcher from Github:")
-            logging.info(f"https://github.com/dortania/OpenCore-Legacy-Patcher/releases/download/{constants.Constants().patcher_version}/OpenCore-Patcher-TUI-Offline.app.zip")
-        else:
-            logging.info(link)
-        return None
-
 
 def dump_constants(constants):
     with open(os.path.join(os.path.expanduser('~'), 'Desktop', 'internal_data.txt'), 'w') as f:

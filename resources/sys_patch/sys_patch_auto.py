@@ -13,7 +13,7 @@ import plistlib
 import subprocess
 import webbrowser
 import logging
-from resources import utilities, updates, global_settings
+from resources import utilities, updates, global_settings, network_handler
 from resources.sys_patch import sys_patch_detect
 from resources.gui import gui_main
 
@@ -55,7 +55,7 @@ class AutomaticSysPatch:
                         args_string = f"{self.constants.launcher_binary} {self.constants.launcher_script} --gui_patch"
 
                     warning_str = ""
-                    if utilities.verify_network_connection("https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest") is False:
+                    if network_handler.NetworkUtilities("https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest").verify_network_connection() is False:
                         warning_str = f"""\n\nWARNING: We're unable to verify whether there are any new releases of OpenCore Legacy Patcher on Github. Be aware that you may be using an outdated version for this OS. If you're unsure, verify on Github that OpenCore Legacy Patcher {self.constants.patcher_version} is the latest official release"""
 
                     args = [

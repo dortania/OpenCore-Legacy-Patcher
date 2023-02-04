@@ -40,7 +40,7 @@ from datetime import datetime
 import logging
 
 from resources import constants, utilities, kdk_handler
-from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers
+from resources.sys_patch import sys_patch_detect, sys_patch_auto, sys_patch_helpers
 
 from data import os_data
 
@@ -661,42 +661,12 @@ class PatchSysVolume:
 
     def check_files(self):
         if Path(self.constants.payload_local_binaries_root_path).exists():
-            logging.info("- Found local Apple Binaries")
-            if self.constants.gui_mode is False:
-                patch_input = input("Would you like to redownload?(y/n): ")
-                if patch_input in {"y", "Y", "yes", "Yes"}:
-                    shutil.rmtree(Path(self.constants.payload_local_binaries_root_path))
-                    output = self.download_files()
-                else:
-                    output = True
-            else:
-                output = self.download_files()
-        else:
-            output = self.download_files()
-        return output
+            logging.info("- Local PatcherSupportPkg resources available, continuing...")
+            return True
 
-    def download_files(self):
-        if self.constants.cli_mode is True:
-            download_result, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
-        else:
-            download_result = True
-            link = sys_patch_download.grab_patcher_support_pkg(self.constants).generate_pkg_link()
+        logging.info("- PatcherSupportPkg resources missing, Patcher likely corrupted!!!")
+        return False
 
-        if download_result and self.constants.payload_local_binaries_root_path_zip.exists():
-            logging.info("- Unzipping binaries...")
-            utilities.process_status(subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.payload_local_binaries_root_path_zip, self.constants.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            logging.info("- Binaries downloaded to:")
-            logging.info(self.constants.payload_path)
-            return self.constants.payload_local_binaries_root_path
-        else:
-            if self.constants.gui_mode is True:
-                logging.info("- Download failed, please verify the below link work:")
-                logging.info(link)
-                logging.info("\nIf you continue to have issues, try using the Offline builds")
-                logging.info("located on Github next to the other builds")
-            else:
-                input("\nPress enter to continue")
-        return None
 
     # Entry Function
     def start_patch(self):

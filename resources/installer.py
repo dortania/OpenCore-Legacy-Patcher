@@ -4,7 +4,7 @@ import plistlib
 import subprocess
 import tempfile
 import logging
-from resources import utilities, tui_helpers
+from resources import utilities, tui_helpers, network_handler
 
 def list_local_macOS_installers():
     # Finds all applicable macOS installers
@@ -132,7 +132,10 @@ def create_installer(installer_path, volume_name):
 
 def download_install_assistant(download_path, ia_link):
     # Downloads InstallAssistant.pkg
-    if utilities.download_file(ia_link, (Path(download_path) / Path("InstallAssistant.pkg"))):
+    ia_download = network_handler.DownloadObject(ia_link, (Path(download_path) / Path("InstallAssistant.pkg")))
+    ia_download.download(display_progress=True, spawn_thread=False)
+
+    if ia_download.download_complete is True:
         return True
     return False
 
@@ -165,9 +168,9 @@ def list_downloadable_macOS_installers(download_path, catalog):
     else:
         link = "https://swscan.apple.com/content/catalogs/others/index-13-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
 
-    if utilities.verify_network_connection(link) is True:
+    if network_handler.NetworkUtilities(link).verify_network_connection() is True:
         try:
-            catalog_plist = plistlib.loads(utilities.SESSION.get(link).content)
+            catalog_plist = plistlib.loads(network_handler.SESSION.get(link).content)
         except plistlib.InvalidFileException:
             return available_apps
 
@@ -181,7 +184,7 @@ def list_downloadable_macOS_installers(download_path, catalog):
                 for bm_package in catalog_plist["Products"][item]["Packages"]:
                     if "Info.plist" in bm_package["URL"] and "InstallInfo.plist" not in bm_package["URL"]:
                         try:
-                            build_plist = plistlib.loads(utilities.SESSION.get(bm_package["URL"]).content)
+                            build_plist = plistlib.loads(network_handler.SESSION.get(bm_package["URL"]).content)
                         except plistlib.InvalidFileException:
                             continue
                         # Ensure Apple Silicon specific Installers are not listed

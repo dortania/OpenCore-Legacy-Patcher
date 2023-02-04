@@ -8,6 +8,7 @@ import requests
 import threading
 import logging
 import enum
+import hashlib
 from pathlib import Path
 
 from resources import utilities
@@ -31,8 +32,11 @@ class NetworkUtilities:
     Utilities for network related tasks, primarily used for downloading files
     """
 
-    def __init__(self, url: str):
+    def __init__(self, url: str = None):
         self.url: str = url
+
+        if self.url is None:
+            self.url = "https://github.com"
 
 
     def verify_network_connection(self):
@@ -44,8 +48,7 @@ class NetworkUtilities:
         """
 
         try:
-            response = requests.head(self.url, timeout=5, allow_redirects=True)
-            return True
+            return True if requests.head(self.url, timeout=5, allow_redirects=True) else False
         except (
             requests.exceptions.Timeout,
             requests.exceptions.TooManyRedirects,
@@ -92,6 +95,11 @@ class DownloadObject:
 
         self.active_thread: threading.Thread = None
 
+        self.should_checksum: bool = False
+
+        self.checksum = None
+        self._checksum_storage: hash = None
+
         if self.has_network:
             self._populate_file_size()
 
@@ -100,7 +108,7 @@ class DownloadObject:
         self.stop()
 
 
-    def download(self, display_progress: bool = False, spawn_thread: bool = True):
+    def download(self, display_progress: bool = False, spawn_thread: bool = True, verify_checksum: bool = False):
         """
         Download the file
 
@@ -110,6 +118,7 @@ class DownloadObject:
         Parameters:
             display_progress (bool): Display progress in console
             spawn_thread (bool): Spawn a thread to download the file, otherwise download in the current thread
+            verify_checksum (bool): Calculate checksum of downloaded file if True
 
         """
         self.status = DownloadStatus.DOWNLOADING
@@ -118,10 +127,36 @@ class DownloadObject:
             if self.active_thread:
                 logging.error("Download already in progress")
                 return
+            self.should_checksum = verify_checksum
             self.active_thread = threading.Thread(target=self._download, args=(display_progress,))
             self.active_thread.start()
-        else:
-            self._download(display_progress)
+            return
+
+        self.should_checksum = verify_checksum
+        self._download(display_progress)
+
+    def download_simple(self, verify_checksum: bool = False):
+        """
+        Alternative to download(), mimics  utilities.py's old download_file() function
+
+        Parameters:
+            verify_checksum (bool): Return checksum of downloaded file if True
+
+        Returns:
+            If verify_checksum is True, returns the checksum of the downloaded file
+            Otherwise, returns True if download was successful, False otherwise
+        """
+
+        if verify_checksum:
+            self.should_checksum = True
+            self.checksum = hashlib.sha256()
+
+        self.download(spawn_thread=False)
+
+        if not self.download_complete:
+            return False
+
+        return self.checksum.hexdigest() if self.checksum else True
 
 
     def _get_filename(self):
@@ -143,7 +178,7 @@ class DownloadObject:
         """
 
         try:
-            result = requests.head(self.url, allow_redirects=True, timeout=5)
+            result = SESSION.head(self.url, allow_redirects=True, timeout=5)
             if 'Content-Length' in result.headers:
                 self.total_file_size = float(result.headers['Content-Length'])
             else:
@@ -154,9 +189,19 @@ class DownloadObject:
             self.total_file_size = 0.0
 
 
+    def _update_checksum(self, chunk: bytes):
+        """
+        Update checksum with new chunk
+
+        Parameters:
+            chunk (bytes): Chunk to update checksum with
+        """
+        self._checksum_storage.update(chunk)
+
+
     def _prepare_working_directory(self, path: Path):
         """
-        Delete the file if it already exists
+        Validates working enviroment, including free space and removing existing files
 
         Parameters:
             path (str): Path to the file
@@ -170,9 +215,17 @@ class DownloadObject:
                 logging.info(f"Deleting existing file: {path}")
                 Path(path).unlink()
                 return True
+
             if not Path(path).parent.exists():
                 logging.info(f"Creating directory: {Path(path).parent}")
                 Path(path).parent.mkdir(parents=True, exist_ok=True)
+
+            available_space = utilities.get_free_space()
+            if self.total_file_size > available_space:
+                msg = f"Not enough free space to download {self.filename}, need {utilities.human_fmt(self.total_file_size)}, have {utilities.human_fmt(available_space)}"
+                logging.error(msg)
+                raise Exception(msg)
+
         except Exception as e:
             self.error = True
             self.error_msg = str(e)
@@ -211,6 +264,8 @@ class DownloadObject:
                     if chunk:
                         file.write(chunk)
                         self.downloaded_file_size += len(chunk)
+                        if self.should_checksum:
+                            self._update_checksum(chunk)
                         if display_progress and i % 100:
                             # Don't use logging here, as we'll be spamming the log file
                             if self.total_file_size == 0.0:

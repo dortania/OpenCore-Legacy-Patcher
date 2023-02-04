@@ -20,7 +20,7 @@ import py_sip_xnu
 import logging
 
 from resources import constants, defaults, install, installer, utilities, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler, network_handler
-from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch
+from resources.sys_patch import sys_patch_detect, sys_patch
 from resources.build import build
 from data import model_array, os_data, smbios_data, sip_data, cpu_data
 from resources.gui import menu_redirect, gui_help
@@ -1265,25 +1265,6 @@ class wx_python_gui:
 
         self.progress_bar.Hide()
 
-        # Download resources
-        logging.getLogger().handlers[1].stream = menu_redirect.RedirectLabel(self.developer_note)
-        download_result, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
-        logging.getLogger().handlers[1].stream = self.stock_stream
-
-        if download_result is None:
-            # Create popup window to inform user of error
-            self.popup = wx.MessageDialog(
-                self.frame_modal,
-                "A problem occurred trying to download PatcherSupportPkg binaries\n\nIf you continue to have this error, download an Offline build from Github\nThese builds don't require a network connection to root patch",
-                "Network Error",
-                wx.YES_NO | wx.ICON_ERROR
-            )
-            self.popup.SetYesNoLabels("View on Github", "Ignore")
-            answer = self.popup.ShowModal()
-            if answer == wx.ID_YES:
-                webbrowser.open(self.constants.repo_link_latest)
-            self.main_menu()
-
         if self.patches["Settings: Kernel Debug Kit missing"] is True:
             # Download KDK (if needed)
             self.subheader.SetLabel("Downloading Kernel Debug Kit")
@@ -1798,7 +1779,7 @@ class wx_python_gui:
         self.download_label.Centre(wx.HORIZONTAL)
 
         self.download_label_2 = wx.StaticText(self.frame, label="")
-        self.download_label_2.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.BOLD))
+        self.download_label_2.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL))
         self.download_label_2.SetPosition(
             wx.Point(
                 self.download_label.GetPosition().x,
@@ -1849,7 +1830,7 @@ class wx_python_gui:
 
 
         # Download macOS install data
-        if ia_download.download_complete:
+        if ia_download.download_complete is True:
             self.download_label.SetLabel(f"Finished Downloading {installer_name}")
             self.download_label.Centre(wx.HORIZONTAL)
             wx.App.Get().Yield()
@@ -1895,7 +1876,7 @@ class wx_python_gui:
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.progress_bar.GetPosition().x,
-                self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 40
+                self.progress_bar.GetPosition().y + self.progress_bar.GetSize().height + 10
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
@@ -1905,7 +1886,11 @@ class wx_python_gui:
 
         wx.App.Get().Yield()
         integrity_path = Path(Path(self.constants.payload_path) / Path(apple_integrity_file_link.split("/")[-1]))
-        if utilities.download_file(apple_integrity_file_link, integrity_path, verify_checksum=False):
+
+        integrity_download = network_handler.DownloadObject(apple_integrity_file_link, integrity_path)
+        integrity_download.download(spawn_thread=False)
+
+        if network_handler.DownloadObject(apple_integrity_file_link, integrity_path).download_simple(verify_checksum=False):
             # If we're unable to download the integrity file immediately after downloading the IA, there's a legitimate issue
             # on Apple's end.
             # Fail gracefully and just head to installing the IA.
@@ -2325,14 +2310,10 @@ class wx_python_gui:
         else:
             path = self.constants.installer_pkg_path
 
-
         autopkg_download = network_handler.DownloadObject(link, path)
-        autopkg_download.download()
+        autopkg_download.download(spawn_thread=False)
 
-        while autopkg_download.is_active():
-            time.sleep(0.1)
-
-        if autopkg_download.download_complete:
+        if autopkg_download.download_complete is True:
             # Download thread will re-enable Idle Sleep after downloading
             utilities.disable_sleep_while_running()
             if str(path).endswith(".zip"):

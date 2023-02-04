@@ -5,6 +5,8 @@
 import requests
 import logging
 
+from resources import network_handler
+
 
 class check_binary_updates:
     def __init__(self, constants):
@@ -16,17 +18,6 @@ class check_binary_updates:
 
         self.available_binaries = {}
 
-    def verify_network_connection(self, url):
-        try:
-            response = requests.head(url, timeout=5)
-            if response:
-                return True
-        except (requests.exceptions.Timeout,
-                requests.exceptions.TooManyRedirects,
-                requests.exceptions.ConnectionError,
-                requests.exceptions.HTTPError):
-            return False
-        return False
 
     def check_if_build_newer(self, remote_version=None, local_version=None):
         if remote_version is None:
@@ -64,7 +55,7 @@ class check_binary_updates:
 
     def check_binary_updates(self):
         # logging.info("- Checking for updates...")
-        if self.verify_network_connection(self.binary_url):
+        if network_handler.NetworkUtilities(self.binary_url).verify_network_connection():
             # logging.info("- Network connection functional")
             response = requests.get(self.binary_url)
             data_set = response.json()
