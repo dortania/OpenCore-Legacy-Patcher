@@ -37,8 +37,6 @@ class OpenCoreLegacyPatcher:
             # Likely in an installer environment, store in /Users/Shared
             LOG_FILEPATH = Path("/Users/Shared") / LOG_FILENAME
 
-        self.implement_custom_traceback_handler()
-
         logging.basicConfig(
             level=logging.NOTSET,
             format="%(asctime)s - %(filename)s (%(lineno)d): %(message)s",
@@ -50,6 +48,8 @@ class OpenCoreLegacyPatcher:
         logging.getLogger().handlers[1].setFormatter(logging.Formatter("%(message)s"))
         logging.getLogger().setLevel(logging.INFO)
         logging.getLogger().handlers[1].maxBytes = 1024 * 1024 * 10
+
+        self.implement_custom_traceback_handler()
 
 
     def implement_custom_traceback_handler(self):
