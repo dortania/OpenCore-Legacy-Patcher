@@ -301,5 +301,6 @@ class DownloadObject:
         """
 
         self.should_stop = True
-        if self.active_thread.is_alive():
-            time.sleep(1)
+        if self.active_thread:
+            while self.active_thread.is_alive():
+                time.sleep(1)
