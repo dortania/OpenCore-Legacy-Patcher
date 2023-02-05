@@ -6,7 +6,7 @@ from pathlib import Path
 import time
 import threading
 import logging
-import traceback
+import threading
 
 from resources import cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads, commit_info
 from resources.build import build
@@ -53,11 +53,15 @@ class OpenCoreLegacyPatcher:
 
 
     def implement_custom_traceback_handler(self):
-        # TODO: Support thread exceptions
+        # Reroute traceback to logging
         def custom_excepthook(type, value, tb):
-            logging.error("Uncaught exception", exc_info=(type, value, tb))
+            logging.error("Uncaught exception in main thread", exc_info=(type, value, tb))
+
+        def custom_thread_excepthook(args):
+            logging.error("Uncaught exception in spawned thread", exc_info=(args))
 
         sys.excepthook = custom_excepthook
+        threading.excepthook = custom_thread_excepthook
 
 
     def generate_base_data(self):
