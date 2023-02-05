@@ -664,6 +664,12 @@ class PatchSysVolume:
             logging.info("- Local PatcherSupportPkg resources available, continuing...")
             return True
 
+        if Path(self.constants.payload_local_binaries_root_path_zip).exists():
+            logging.info("- Local PatcherSupportPkg resources available, unzipping...")
+            print("- Unzipping binaries...")
+            utilities.process_status(subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.payload_local_binaries_root_path_zip, self.constants.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            return True
+
         logging.info("- PatcherSupportPkg resources missing, Patcher likely corrupted!!!")
         return False
 
