@@ -293,7 +293,7 @@ class DownloadObject:
                 logging.info(f"Download complete: {self.filename}")
                 logging.info("Stats:")
                 logging.info(f"  Downloaded size: {utilities.human_fmt(self.downloaded_file_size)}")
-                logging.info(f"  Time elapsed: {time.time() - self.start_time} seconds")
+                logging.info(f"  Time elapsed: {(time.time() - self.start_time):.2f} seconds")
                 logging.info(f"  Speed: {utilities.human_fmt(self.downloaded_file_size / (time.time() - self.start_time))}/s")
                 logging.info(f"  Location: {self.filepath}")
         except Exception as e:
