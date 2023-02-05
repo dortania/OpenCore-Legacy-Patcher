@@ -56,7 +56,6 @@ class OpenCoreLegacyPatcher:
         # TODO: Support thread exceptions
         def custom_excepthook(type, value, tb):
             logging.error("Uncaught exception", exc_info=(type, value, tb))
-            traceback.print_exception(type, value, tb)
 
         sys.excepthook = custom_excepthook
 
