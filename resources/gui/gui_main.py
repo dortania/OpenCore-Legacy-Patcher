@@ -1887,9 +1887,6 @@ class wx_python_gui:
         wx.App.Get().Yield()
         integrity_path = Path(Path(self.constants.payload_path) / Path(apple_integrity_file_link.split("/")[-1]))
 
-        integrity_download = network_handler.DownloadObject(apple_integrity_file_link, integrity_path)
-        integrity_download.download(spawn_thread=False)
-
         if network_handler.DownloadObject(apple_integrity_file_link, integrity_path).download_simple(verify_checksum=False):
             # If we're unable to download the integrity file immediately after downloading the IA, there's a legitimate issue
             # on Apple's end.

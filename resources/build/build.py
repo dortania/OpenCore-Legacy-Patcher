@@ -74,7 +74,8 @@ class build_opencore:
             logging.info("Deleting old copy of OpenCore folder")
             shutil.rmtree(self.constants.opencore_release_folder, onerror=rmtree_handler, ignore_errors=True)
 
-        logging.info(f"\n- Adding OpenCore v{self.constants.opencore_version} {self.constants.opencore_build}")
+        logging.info("")
+        logging.info(f"- Adding OpenCore v{self.constants.opencore_version} {self.constants.opencore_build}")
         shutil.copy(self.constants.opencore_zip_source, self.constants.build_path)
         zipfile.ZipFile(self.constants.opencore_zip_copied).extractall(self.constants.build_path)
 
