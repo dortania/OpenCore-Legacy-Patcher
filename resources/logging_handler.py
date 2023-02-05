@@ -8,11 +8,12 @@ class InitializeLoggingSupport:
 
 
     def __init__(self) -> None:
-        self.log_filename: str  = f"OpenCore-Patcher.log"
+        self.log_filename: str = "OpenCore-Patcher.log"
+
         self.log_filepath: Path = None
 
-        self.max_file_size:     int = 1024 * 1024 * 10
-        self.file_size_redline: int = 1024 * 1024 * 9  # When to start cleaning log file
+        self.max_file_size:     int = 1024 * 1024 * 10  # 10 MB
+        self.file_size_redline: int = 1024 * 1024 * 9   # 9 MB, when to start cleaning log file
 
         self._initialize_logging_path()
         self._clean_log_file()
