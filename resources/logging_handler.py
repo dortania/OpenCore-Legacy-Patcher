@@ -41,6 +41,9 @@ class InitializeLoggingSupport:
         We check if we're near the max file size, and if so, we clean the log file
         """
 
+        if not self.log_filepath.exists():
+            return
+
         if self.log_filepath.stat().st_size < self.file_size_redline:
             return
 
