@@ -41,7 +41,7 @@ class wx_python_gui:
         self.hyperlink_colour = (25, 179, 231)
 
         # Backup stdout for usage with wxPython
-        self.stock_stream = logging.getLogger().handlers[1].stream
+        self.stock_stream = logging.getLogger().handlers[0].stream
 
         current_uid = os.getuid()
 
@@ -108,7 +108,7 @@ class wx_python_gui:
     def reset_window(self):
         self.frame.DestroyChildren()
         self.frame.SetSize(self.WINDOW_WIDTH_MAIN, self.WINDOW_HEIGHT_MAIN)
-        logging.getLogger().handlers[1].stream = self.stock_stream
+        logging.getLogger().handlers[0].stream = self.stock_stream
         self.reset_frame_modal()
 
         # Re-enable sleep if we failed to do so before returning to the main menu
@@ -707,7 +707,7 @@ class wx_python_gui:
         self.stdout_text.SetValue("")
 
         # Set StreamHandler to redirect stdout to textbox
-        logging.getLogger().handlers[1].stream = menu_redirect.RedirectText(self.stdout_text, False)
+        logging.getLogger().handlers[0].stream = menu_redirect.RedirectText(self.stdout_text, False)
 
         self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
@@ -735,7 +735,7 @@ class wx_python_gui:
         self.build_opencore.Bind(wx.EVT_BUTTON, self.install_menu)
 
         # Reset stdout
-        logging.getLogger().handlers[1].stream = self.stock_stream
+        logging.getLogger().handlers[0].stream = self.stock_stream
 
         # Throw popup asking to install OpenCore
         self.dialog = wx.MessageDialog(
@@ -966,9 +966,9 @@ class wx_python_gui:
         self.frame_modal.SetSize(-1, self.stdout_text.GetPosition().y + self.stdout_text.GetSize().height + 40)
         self.frame_modal.ShowWindowModal()
 
-        logging.getLogger().handlers[1].stream = menu_redirect.RedirectText(self.stdout_text, False)
+        logging.getLogger().handlers[0].stream = menu_redirect.RedirectText(self.stdout_text, False)
         result = install.tui_disk_installation(self.constants).install_opencore(partition)
-        logging.getLogger().handlers[1].stream = self.stock_stream
+        logging.getLogger().handlers[0].stream = self.stock_stream
 
         self.return_to_main_menu = wx.Button(self.frame_modal, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
@@ -1392,7 +1392,7 @@ class wx_python_gui:
 
         self.frame_modal.SetSize(self.WINDOW_WIDTH_BUILD, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
-        logging.getLogger().handlers[1].stream = menu_redirect.RedirectText(self.text_box, True)
+        logging.getLogger().handlers[0].stream = menu_redirect.RedirectText(self.text_box, True)
         self.frame_modal.ShowWindowModal()
         wx.GetApp().Yield()
         try:
@@ -1400,7 +1400,7 @@ class wx_python_gui:
         except Exception as e:
             self.text_box.AppendText(f"- An internal error occurred while running the Root Patcher:\n{str(e)}")
             pass
-        logging.getLogger().handlers[1].stream = self.stock_stream
+        logging.getLogger().handlers[0].stream = self.stock_stream
         if self.constants.root_patcher_succeeded is True:
             logging.info("- Root Patcher finished successfully")
             if self.constants.needs_to_open_preferences is True:
@@ -1501,7 +1501,7 @@ class wx_python_gui:
         self.frame_modal.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
 
         # Start reverting root patches
-        logging.getLogger().handlers[1].stream = menu_redirect.RedirectText(self.text_box, True)
+        logging.getLogger().handlers[0].stream = menu_redirect.RedirectText(self.text_box, True)
         wx.GetApp().Yield()
         self.frame_modal.ShowWindowModal()
         while self.is_unpack_finished() is False:
@@ -1511,7 +1511,7 @@ class wx_python_gui:
         except Exception as e:
             self.text_box.AppendText(f"- An internal error occurred while running the Root Patcher:\n{str(e)}")
             pass
-        logging.getLogger().handlers[1].stream = self.stock_stream
+        logging.getLogger().handlers[0].stream = self.stock_stream
         if self.constants.root_patcher_succeeded is True:
             logging.info("- Root Patcher finished successfully")
             self.reboot_system(message="Root Patcher finished successfully\nWould you like to reboot now?")

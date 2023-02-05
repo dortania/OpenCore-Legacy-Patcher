@@ -1,22 +1,35 @@
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-import subprocess
 import sys
-from pathlib import Path
 import time
-import threading
 import logging
 import threading
+import subprocess
+from pathlib import Path
 
-from resources import cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads, commit_info
-from resources.build import build
 from data import model_array
+from resources.build import build
+from resources import (
+    cli_menu,
+    constants,
+    utilities,
+    device_probe,
+    os_probe,
+    defaults,
+    arguments,
+    install,
+    tui_helpers,
+    reroute_payloads,
+    commit_info,
+    logging_handler
+)
+
 
 class OpenCoreLegacyPatcher:
     def __init__(self, launch_gui=False):
         self.constants = constants.Constants()
         self.constants.wxpython_variant = launch_gui
-        self.initialize_logging()
+        logging_handler.InitializeLoggingSupport()
 
         logging.info(f"- Loading OpenCore Legacy Patcher v{self.constants.patcher_version}...")
 
@@ -28,40 +41,6 @@ class OpenCoreLegacyPatcher:
                 gui_main.wx_python_gui(self.constants).main_menu(None)
             else:
                 self.main_menu()
-
-    def initialize_logging(self):
-        LOG_FILENAME = f"OpenCore-Patcher-v{self.constants.patcher_version}.log"
-        LOG_FILEPATH = Path(f"~/Library/Logs/{LOG_FILENAME}").expanduser()
-
-        if not LOG_FILEPATH.parent.exists():
-            # Likely in an installer environment, store in /Users/Shared
-            LOG_FILEPATH = Path("/Users/Shared") / LOG_FILENAME
-
-        logging.basicConfig(
-            level=logging.NOTSET,
-            format="%(asctime)s - %(filename)s (%(lineno)d): %(message)s",
-            handlers=[
-                logging.FileHandler(LOG_FILEPATH),
-                logging.StreamHandler(),
-            ],
-        )
-        logging.getLogger().handlers[1].setFormatter(logging.Formatter("%(message)s"))
-        logging.getLogger().setLevel(logging.INFO)
-        logging.getLogger().handlers[1].maxBytes = 1024 * 1024 * 10
-
-        self.implement_custom_traceback_handler()
-
-
-    def implement_custom_traceback_handler(self):
-        # Reroute traceback to logging
-        def custom_excepthook(type, value, tb):
-            logging.error("Uncaught exception in main thread", exc_info=(type, value, tb))
-
-        def custom_thread_excepthook(args):
-            logging.error("Uncaught exception in spawned thread", exc_info=(args))
-
-        sys.excepthook = custom_excepthook
-        threading.excepthook = custom_thread_excepthook
 
 
     def generate_base_data(self):

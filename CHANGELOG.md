@@ -13,7 +13,8 @@
       - Skips calls to Apple's now defunct Developer Portal API
     - Support local loose matching when no network connection is available
   - Implemented logging framework usage for more reliable logging
-    - Logs are stored under `~/OpenCore-Patcher-vX.Y.Z.log`
+    - Logs are stored under `~/OpenCore-Patcher.log`
+    - Subsequent runs are appended to the log, allowing for easy debugging
   - Implemented new network_handler.py module
     - Allows for more reliable network calls and downloads
     - Better supports network timeouts and disconnects
