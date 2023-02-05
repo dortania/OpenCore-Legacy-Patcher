@@ -18,7 +18,7 @@ The below table will list all supported and unsupported functions of the patcher
 
 Regarding OS support, see below:
 
-* Machines listing `YES - Monterey and older` means they cannot run macOS Ventura at this time. Machines with only `YES` can run all of the supported macOS versions offered by OpenCore Legacy Patcher.
+* Machines listing `YES - Ventura and older` means they cannot run macOS Ventura at this time. Machines with only `YES` can run all of the supported macOS versions offered by OpenCore Legacy Patcher.
 
 | Support Entry | Supported OSes | Description | Comment |
 | :--- | :--- | :--- | :--- |
