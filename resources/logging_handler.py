@@ -93,7 +93,7 @@ class InitializeLoggingSupport:
             level=logging.NOTSET,
             format="%(asctime)s - %(filename)s (%(lineno)d): %(message)s",
             handlers=[
-                logging.StreamHandler(),
+                logging.StreamHandler(stream = sys.stdout),
                 logging.FileHandler(self.log_filepath) if log_to_file is True else logging.NullHandler()
             ],
         )
