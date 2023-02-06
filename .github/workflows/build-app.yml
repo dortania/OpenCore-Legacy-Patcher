@@ -16,7 +16,7 @@ jobs:
       commitdate: ${{ github.event.head_commit.timestamp }}${{ github.event.release.published_at }}
     steps:
       - uses: actions/checkout@v3
-      - run: /Library/Frameworks/Python.framework/Versions/3.9/bin/python3 Build-Binary.command --build_tui --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}"
+      - run: /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 Build-Binary.command --build_tui --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}"
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
       - run: cd dist; zip -r ../OpenCore-Patcher-TUI.app.zip OpenCore-Patcher.app
       - run: ./../sign-tui.sh
