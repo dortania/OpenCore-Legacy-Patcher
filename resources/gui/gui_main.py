@@ -2327,16 +2327,22 @@ class wx_python_gui:
 
     def install_installer_pkg(self, disk):
         disk = disk + "s2" # ESP sits at 1, and we know macOS will have created the main partition at 2
-        if Path(self.constants.installer_pkg_path).exists():
-            path = utilities.grab_mount_point_from_disk(disk)
-            if Path(path + "/System/Library/CoreServices/SystemVersion.plist").exists():
-                os_version = plistlib.load(Path(path + "/System/Library/CoreServices/SystemVersion.plist").open("rb"))
-                kernel_version = os_data.os_conversion.os_to_kernel(os_version["ProductVersion"])
-                if int(kernel_version) >= os_data.os_data.big_sur:
-                    subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
-                    subprocess.run(["cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
-                else:
-                    logging.info("- Installer unsupported, requires Big Sur or newer")
+
+        if not Path(self.constants.installer_pkg_path).exists():
+            return
+
+        path = utilities.grab_mount_point_from_disk(disk)
+        if not Path(path + "/System/Library/CoreServices/SystemVersion.plist").exists():
+            return
+
+        os_version = plistlib.load(Path(path + "/System/Library/CoreServices/SystemVersion.plist").open("rb"))
+        kernel_version = os_data.os_conversion.os_to_kernel(os_version["ProductVersion"])
+        if int(kernel_version) < os_data.os_data.big_sur:
+            logging.info("- Installer unsupported, requires Big Sur or newer")
+            return
+
+        subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
+        subprocess.run(["cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
 
 
     def settings_menu(self, event=None):
