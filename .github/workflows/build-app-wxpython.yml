@@ -19,7 +19,7 @@ jobs:
       - run: /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}"
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
       - run: cd dist; ditto -c -k --sequesterRsrc --keepParent OpenCore-Patcher.app ../OpenCore-Patcher-wxPython.app.zip
-      - run: ./../sign-wxpython.sh
+      - run: xcrun altool --notarize-app --primary-bundle-id "com.dortania.opencore-legacy-patcher-wxpython" --username "${{ secrets.MAC_NOTARIZATION_USERNAME }}" --password "${{ secrets.MAC_NOTARIZATION_PASSWORD }}" --file OpenCore-Patcher-wxPython.app.zip
       - run: packagesbuild ./payloads/InstallPackage/AutoPkg-Assets-Setup.pkgproj
       - run: mv ./OpenCore-Patcher-wxPython.app.zip ./OpenCore-Patcher-GUI.app.zip
       - name: Upload App to Artifacts
