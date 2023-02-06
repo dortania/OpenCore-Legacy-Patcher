@@ -20,6 +20,14 @@
     - Better supports network timeouts and disconnects
     - Dramatically less noise in console during downloads
   - Remove unused sys_patch_downloader.py module
+- Build Server Changes:
+  - Upgrade Python backend to 3.10.9
+  - Upgrade Python modules:
+    - requests - 2.28.2
+    - pyobjc - 9.0.1
+    - wxpython - 4.2.0
+    - pyinstaller - 5.7.0
+    - packaging - 23.0
 - Increment Binaries:
   - PatcherSupportPkg 0.8.3 - release
 
