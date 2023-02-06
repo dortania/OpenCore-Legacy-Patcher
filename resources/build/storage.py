@@ -5,6 +5,7 @@ from resources import constants, device_probe, utilities
 from resources.build import support
 from data import model_array, smbios_data, cpu_data
 
+import logging
 
 class build_storage:
 
@@ -31,11 +32,11 @@ class build_storage:
             for controller in sata_devices:
                 # https://linux-hardware.org/?id=pci:1179-010b-1b4b-9183
                 if controller.vendor_id == 0x1179 and controller.device_id == 0x010b:
-                    print("- Enabling AHCI SSD patch")
+                    logging.info("- Enabling AHCI SSD patch")
                     support.build_support(self.model, self.constants, self.config).enable_kext("MonteAHCIPort.kext", self.constants.monterey_ahci_version, self.constants.monterey_ahci_path)
                     break
         elif self.model in ["MacBookAir6,1", "MacBookAir6,2"]:
-            print("- Enabling AHCI SSD patch")
+            logging.info("- Enabling AHCI SSD patch")
             support.build_support(self.model, self.constants, self.config).enable_kext("MonteAHCIPort.kext", self.constants.monterey_ahci_version, self.constants.monterey_ahci_path)
 
         # ThirdPartyDrives Check
@@ -48,11 +49,11 @@ class build_storage:
                 if drive in smbios_data.smbios_dictionary[self.model]["Stock Storage"]:
                     if not self.constants.custom_model:
                         if self.computer.third_party_sata_ssd is True:
-                            print("- Adding SATA Hibernation Patch")
+                            logging.info("- Adding SATA Hibernation Patch")
                             self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
                             break
                     else:
-                        print("- Adding SATA Hibernation Patch")
+                        logging.info("- Adding SATA Hibernation Patch")
                         self.config["Kernel"]["Quirks"]["ThirdPartyDrives"] = True
                         break
 
@@ -73,29 +74,29 @@ class build_storage:
             # Use Innie's same logic:
             # https://github.com/cdf/Innie/blob/v1.3.0/Innie/Innie.cpp#L90-L97
             for i, controller in enumerate(self.computer.storage):
-                print(f"- Fixing PCIe Storage Controller ({i + 1}) reporting")
+                logging.info(f"- Fixing PCIe Storage Controller ({i + 1}) reporting")
                 if controller.pci_path:
                     self.config["DeviceProperties"]["Add"][controller.pci_path] = {"built-in": 1}
                 else:
-                    print(f"- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie")
+                    logging.info(f"- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie")
                     support.build_support(self.model, self.constants, self.config).enable_kext("Innie.kext", self.constants.innie_version, self.constants.innie_path)
 
         if not self.constants.custom_model and self.constants.allow_nvme_fixing is True:
             nvme_devices = [i for i in self.computer.storage if isinstance(i, device_probe.NVMeController)]
             for i, controller in enumerate(nvme_devices):
-                print(f"- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}")
+                logging.info(f"- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}")
                 self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}"
 
                 # Disable Bit 0 (L0s), enable Bit 1 (L1)
                 nvme_aspm = (controller.aspm & (~0b11)) | 0b10
 
                 if controller.pci_path:
-                    print(f"- Found NVMe ({i}) at {controller.pci_path}")
+                    logging.info(f"- Found NVMe ({i}) at {controller.pci_path}")
                     self.config["DeviceProperties"]["Add"].setdefault(controller.pci_path, {})["pci-aspm-default"] = nvme_aspm
                     self.config["DeviceProperties"]["Add"][controller.pci_path.rpartition("/")[0]] = {"pci-aspm-default": nvme_aspm}
                 else:
                     if "-nvmefaspm" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
-                        print("- Falling back to -nvmefaspm")
+                        logging.info("- Falling back to -nvmefaspm")
                         self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -nvmefaspm"
 
                 if (controller.vendor_id != 0x144D and controller.device_id != 0xA804):
@@ -132,5 +133,5 @@ class build_storage:
 
     def trim_handling(self):
         if self.constants.apfs_trim_timeout is False:
-            print(f"- Disabling APFS TRIM timeout")
+            logging.info(f"- Disabling APFS TRIM timeout")
             self.config["Kernel"]["Quirks"]["SetApfsTrimTimeout"] = 0

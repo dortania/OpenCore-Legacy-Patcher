@@ -6,6 +6,7 @@ import plistlib
 import subprocess
 import shutil
 import os
+import logging
 from pathlib import Path
 from resources import utilities, constants, tui_helpers
 from data import os_data
@@ -79,7 +80,7 @@ class tui_disk_installation:
         utilities.header(["Installing OpenCore to Drive"])
 
         if not self.constants.opencore_release_folder.exists():
-            tui_helpers.TUIOnlyPrint(
+            tui_helpers.TUIOnlyLogging.info(
                 ["Installing OpenCore to Drive"],
                 "Press [Enter] to go back.\n",
                 [
@@ -89,7 +90,7 @@ Please build OpenCore first!"""
             ).start()
             return
 
-        print("\nDisk picker is loading...")
+        logging.info("\nDisk picker is loading...")
 
         all_disks = self.list_disks()
         menu = tui_helpers.TUIMenu(
@@ -169,17 +170,17 @@ Please build OpenCore first!"""
                 return
             else:
                 if self.constants.gui_mode is False:
-                    tui_helpers.TUIOnlyPrint(
+                    tui_helpers.TUIOnlyLogging.info(
                         ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + [""]
                     ).start()
                 else:
-                    print("An error occurred!")
-                    print(result.stderr.decode())
+                    logging.info("An error occurred!")
+                    logging.info(result.stderr.decode())
 
                     # Check if we're in Safe Mode, and if so, tell user FAT32 is unsupported
                     if utilities.check_boot_mode() == "safe_boot":
-                        print("\nSafe Mode detected. FAT32 is unsupported by macOS in this mode.")
-                        print("Please disable Safe Mode and try again.")
+                        logging.info("\nSafe Mode detected. FAT32 is unsupported by macOS in this mode.")
+                        logging.info("Please disable Safe Mode and try again.")
                 return
         partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {full_disk_identifier}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         parent_disk = partition_info["ParentWholeDisk"]
@@ -196,65 +197,65 @@ Please build OpenCore first!"""
 
         if mount_path.exists():
             if (mount_path / Path("EFI/Microsoft")).exists() and self.constants.gui_mode is False:
-                print("- Found Windows Boot Loader")
-                print("\nWould you like to continue installing OpenCore?")
-                print("Installing OpenCore onto this drive may make Windows unbootable until OpenCore")
-                print("is removed from the partition")
-                print("We highly recommend users partition 200MB off their drive with Disk Utility")
-                print("    Name:\t\t OPENCORE")
-                print("    Format:\t\t FAT32")
-                print("    Size:\t\t 200MB")
+                logging.info("- Found Windows Boot Loader")
+                logging.info("\nWould you like to continue installing OpenCore?")
+                logging.info("Installing OpenCore onto this drive may make Windows unbootable until OpenCore")
+                logging.info("is removed from the partition")
+                logging.info("We highly recommend users partition 200MB off their drive with Disk Utility")
+                logging.info("    Name:\t\t OPENCORE")
+                logging.info("    Format:\t\t FAT32")
+                logging.info("    Size:\t\t 200MB")
                 choice = input("\nWould you like to still install OpenCore to this drive?(y/n): ")
                 if not choice in ["y", "Y", "Yes", "yes"]:
                     subprocess.run(["diskutil", "umount", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
                     return False
             if (mount_path / Path("EFI/OC")).exists():
-                print("- Removing preexisting EFI/OC folder")
+                logging.info("- Removing preexisting EFI/OC folder")
                 shutil.rmtree(mount_path / Path("EFI/OC"), onerror=rmtree_handler)
             if (mount_path / Path("System")).exists():
-                print("- Removing preexisting System folder")
+                logging.info("- Removing preexisting System folder")
                 shutil.rmtree(mount_path / Path("System"), onerror=rmtree_handler)
             if (mount_path / Path("boot.efi")).exists():
-                print("- Removing preexisting boot.efi")
+                logging.info("- Removing preexisting boot.efi")
                 os.remove(mount_path / Path("boot.efi"))
-            print("- Copying OpenCore onto EFI partition")
+            logging.info("- Copying OpenCore onto EFI partition")
             shutil.copytree(self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC"))
             shutil.copytree(self.constants.opencore_release_folder / Path("System"), mount_path / Path("System"))
             if Path(self.constants.opencore_release_folder / Path("boot.efi")).exists():
                 shutil.copy(self.constants.opencore_release_folder / Path("boot.efi"), mount_path / Path("boot.efi"))
             if self.constants.boot_efi is True:
-                print("- Converting Bootstrap to BOOTx64.efi")
+                logging.info("- Converting Bootstrap to BOOTx64.efi")
                 if (mount_path / Path("EFI/BOOT")).exists():
                     shutil.rmtree(mount_path / Path("EFI/BOOT"), onerror=rmtree_handler)
                 Path(mount_path / Path("EFI/BOOT")).mkdir()
                 shutil.move(mount_path / Path("System/Library/CoreServices/boot.efi"), mount_path / Path("EFI/BOOT/BOOTx64.efi"))
                 shutil.rmtree(mount_path / Path("System"), onerror=rmtree_handler)
             if determine_sd_card(sd_type) is True:
-                print("- Adding SD Card icon")
+                logging.info("- Adding SD Card icon")
                 shutil.copy(self.constants.icon_path_sd, mount_path)
             elif ssd_type is True:
-                print("- Adding SSD icon")
+                logging.info("- Adding SSD icon")
                 shutil.copy(self.constants.icon_path_ssd, mount_path)
             elif disk_type == "USB":
-                print("- Adding External USB Drive icon")
+                logging.info("- Adding External USB Drive icon")
                 shutil.copy(self.constants.icon_path_external, mount_path)
             else:
-                print("- Adding Internal Drive icon")
+                logging.info("- Adding Internal Drive icon")
                 shutil.copy(self.constants.icon_path_internal, mount_path)
 
-            print("- Cleaning install location")
+            logging.info("- Cleaning install location")
             if not self.constants.recovery_status:
-                print("- Unmounting EFI partition")
+                logging.info("- Unmounting EFI partition")
                 subprocess.run(["diskutil", "umount", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
-            print("- OpenCore transfer complete")
+            logging.info("- OpenCore transfer complete")
             if self.constants.gui_mode is False:
-                print("\nPress [Enter] to continue.\n")
+                logging.info("\nPress [Enter] to continue.\n")
                 input()
         else:
             if self.constants.gui_mode is False:
-                tui_helpers.TUIOnlyPrint(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!"]).start()
+                tui_helpers.TUIOnlyLogging.info(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!"]).start()
             else:
-                print("EFI failed to mount!")
+                logging.info("EFI failed to mount!")
             return False
         return True
 

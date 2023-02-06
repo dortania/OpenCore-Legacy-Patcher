@@ -5,6 +5,7 @@ from resources import constants, utilities
 
 from pathlib import Path
 import shutil, plistlib, subprocess, zipfile
+import logging
 
 class build_support:
 
@@ -27,7 +28,7 @@ class build_support:
     def get_kext_by_bundle_path(self, bundle_path):
         kext = self.get_item_by_kv(self.config["Kernel"]["Add"], "BundlePath", bundle_path)
         if not kext:
-            print(f"- Could not find kext {bundle_path}!")
+            logging.info(f"- Could not find kext {bundle_path}!")
             raise IndexError
         return kext
 
@@ -35,7 +36,7 @@ class build_support:
     def get_efi_binary_by_path(self, bundle_path, entry_location, efi_type):
         efi_binary = self.get_item_by_kv(self.config[entry_location][efi_type], "Path", bundle_path)
         if not efi_binary:
-            print(f"- Could not find {efi_type}: {bundle_path}!")
+            logging.info(f"- Could not find {efi_type}: {bundle_path}!")
             raise IndexError
         return efi_binary
 
@@ -50,7 +51,7 @@ class build_support:
         if kext["Enabled"] is True:
             return
 
-        print(f"- Adding {kext_name} {kext_version}")
+        logging.info(f"- Adding {kext_name} {kext_version}")
         shutil.copy(kext_path, self.constants.kexts_path)
         kext["Enabled"] = True
 
@@ -63,27 +64,27 @@ class build_support:
             # sign.command checks for the existence of '/usr/bin/strings' however does not verify whether it's executable
             # sign.command will continue to run and create an unbootable OpenCore.efi due to the missing strings binary
             # macOS has dummy binaries that just reroute to the actual binaries after you install Xcode's Command Line Tools
-            print("- Missing Command Line tools, skipping Vault for saftey reasons")
-            print("- Install via 'xcode-select --install' and rerun OCLP if you wish to vault this config")
+            logging.info("- Missing Command Line tools, skipping Vault for saftey reasons")
+            logging.info("- Install via 'xcode-select --install' and rerun OCLP if you wish to vault this config")
             return
 
-        print("- Vaulting EFI")
+        logging.info("- Vaulting EFI")
         subprocess.run([str(self.constants.vault_path), f"{self.constants.oc_folder}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def validate_pathing(self):
         # Verify whether all files are accounted for on-disk
         # This ensures that OpenCore won't hit a critical error and fail to boot
-        print("- Validating generated config")
+        logging.info("- Validating generated config")
         if not Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")):
-            print("- OpenCore config file missing!!!")
+            logging.info("- OpenCore config file missing!!!")
             raise Exception("OpenCore config file missing")
 
         config_plist = plistlib.load(Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")).open("rb"))
 
         for acpi in config_plist["ACPI"]["Add"]:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/ACPI") / Path(acpi["Path"])).exists():
-                print(f"  - Missing ACPI Table: {acpi['Path']}")
+                logging.info(f"  - Missing ACPI Table: {acpi['Path']}")
                 raise Exception(f"Missing ACPI Table: {acpi['Path']}")
 
         for kext in config_plist["Kernel"]["Add"]:
@@ -91,40 +92,40 @@ class build_support:
             kext_binary_path = Path(kext_path / Path(kext["ExecutablePath"]))
             kext_plist_path = Path(kext_path / Path(kext["PlistPath"]))
             if not kext_path.exists():
-                print(f"- Missing kext: {kext_path}")
+                logging.info(f"- Missing kext: {kext_path}")
                 raise Exception(f"Missing {kext_path}")
             if not kext_binary_path.exists():
-                print(f"- Missing {kext['BundlePath']}'s binary: {kext_binary_path}")
+                logging.info(f"- Missing {kext['BundlePath']}'s binary: {kext_binary_path}")
                 raise Exception(f"Missing {kext_binary_path}")
             if not kext_plist_path.exists():
-                print(f"- Missing {kext['BundlePath']}'s plist: {kext_plist_path}")
+                logging.info(f"- Missing {kext['BundlePath']}'s plist: {kext_plist_path}")
                 raise Exception(f"Missing {kext_plist_path}")
 
         for tool in config_plist["Misc"]["Tools"]:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools") / Path(tool["Path"])).exists():
-                print(f"  - Missing tool: {tool['Path']}")
+                logging.info(f"  - Missing tool: {tool['Path']}")
                 raise Exception(f"Missing tool: {tool['Path']}")
 
         for driver in config_plist["UEFI"]["Drivers"]:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers") / Path(driver["Path"])).exists():
-                print(f"  - Missing driver: {driver['Path']}")
+                logging.info(f"  - Missing driver: {driver['Path']}")
                 raise Exception(f"Missing driver: {driver['Path']}")
 
         # Validating local files
         # Report if they have no associated config.plist entry (i.e. they're not being used)
         for tool_files in Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools")).glob("*"):
             if tool_files.name not in [x["Path"] for x in config_plist["Misc"]["Tools"]]:
-                print(f"  - Missing tool from config: {tool_files.name}")
+                logging.info(f"  - Missing tool from config: {tool_files.name}")
                 raise Exception(f"Missing tool from config: {tool_files.name}")
 
         for driver_file in Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers")).glob("*"):
             if driver_file.name not in [x["Path"] for x in config_plist["UEFI"]["Drivers"]]:
-                print(f"- Found extra driver: {driver_file.name}")
+                logging.info(f"- Found extra driver: {driver_file.name}")
                 raise Exception(f"Found extra driver: {driver_file.name}")
 
 
     def cleanup(self):
-        print("- Cleaning up files")
+        logging.info("- Cleaning up files")
         # Remove unused entries
         entries_to_clean = {
             "ACPI":   ["Add", "Delete", "Patch"],

@@ -3,6 +3,7 @@ from resources.sys_patch import sys_patch_helpers
 from resources.build import build
 from data import example_data, model_array, sys_patch_dict, os_data
 from pathlib import Path
+import logging
 
 
 def validate(settings):
@@ -41,30 +42,30 @@ def validate(settings):
 
     def build_prebuilt():
         for model in model_array.SupportedSMBIOS:
-            print(f"Validating predefined model: {model}")
+            logging.info(f"Validating predefined model: {model}")
             settings.custom_model = model
             build.build_opencore(settings.custom_model, settings).build_opencore()
             result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                print("Error on build!")
-                print(result.stdout.decode())
+                logging.info("Error on build!")
+                logging.info(result.stdout.decode())
                 raise Exception(f"Validation failed for predefined model: {model}")
             else:
-                print(f"Validation succeeded for predefined model: {model}")
+                logging.info(f"Validation succeeded for predefined model: {model}")
 
     def build_dumps():
         for model in valid_dumps:
             settings.computer = model
             settings.custom_model = ""
-            print(f"Validating dumped model: {settings.computer.real_model}")
+            logging.info(f"Validating dumped model: {settings.computer.real_model}")
             build.build_opencore(settings.computer.real_model, settings).build_opencore()
             result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                print("Error on build!")
-                print(result.stdout.decode())
+                logging.info("Error on build!")
+                logging.info(result.stdout.decode())
                 raise Exception(f"Validation failed for predefined model: {settings.computer.real_model}")
             else:
-                print(f"Validation succeeded for predefined model: {settings.computer.real_model}")
+                logging.info(f"Validation succeeded for predefined model: {settings.computer.real_model}")
 
 
     def validate_root_patch_files(major_kernel, minor_kernel):
@@ -82,10 +83,10 @@ def validate(settings):
                             for install_file in patchset[patch_subject][patch_core][install_type][install_directory]:
                                 source_file = str(settings.payload_local_binaries_root_path) + "/" + patchset[patch_subject][patch_core][install_type][install_directory][install_file] + install_directory + "/" + install_file
                                 if not Path(source_file).exists():
-                                    print(f"File not found: {source_file}")
+                                    logging.info(f"File not found: {source_file}")
                                     raise Exception(f"Failed to find {source_file}")
 
-        print(f"- Validating against Darwin {major_kernel}.{minor_kernel}")
+        logging.info(f"- Validating against Darwin {major_kernel}.{minor_kernel}")
         if not sys_patch_helpers.sys_patch_helpers(settings).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None):
             raise Exception("Failed to generate patchset plist")
 
@@ -95,17 +96,17 @@ def validate(settings):
 
     def validate_sys_patch():
         if Path(settings.payload_local_binaries_root_path_zip).exists():
-            print("Validating Root Patch File integrity")
+            logging.info("Validating Root Patch File integrity")
             if not Path(settings.payload_local_binaries_root_path).exists():
                 subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", settings.payload_local_binaries_root_path_zip, settings.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura]:
                 for i in range(0, 10):
                     validate_root_patch_files(supported_os, i)
-            print("Validating SNB Board ID patcher")
+            logging.info("Validating SNB Board ID patcher")
             settings.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
             sys_patch_helpers.sys_patch_helpers(settings).snb_board_id_patch(settings.payload_local_binaries_root_path)
         else:
-            print("- Skipping Root Patch File integrity validation")
+            logging.info("- Skipping Root Patch File integrity validation")
 
 
     def validate_configs():

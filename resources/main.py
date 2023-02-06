@@ -1,20 +1,38 @@
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-import subprocess
 import sys
-from pathlib import Path
 import time
+import logging
 import threading
+import subprocess
+from pathlib import Path
 
-from resources import cli_menu, constants, utilities, device_probe, os_probe, defaults, arguments, install, tui_helpers, reroute_payloads, commit_info
-from resources.build import build
 from data import model_array
+from resources.build import build
+from resources import (
+    cli_menu,
+    constants,
+    utilities,
+    device_probe,
+    os_probe,
+    defaults,
+    arguments,
+    install,
+    tui_helpers,
+    reroute_payloads,
+    commit_info,
+    logging_handler
+)
+
 
 class OpenCoreLegacyPatcher:
     def __init__(self, launch_gui=False):
-        print("- Loading...")
         self.constants = constants.Constants()
         self.constants.wxpython_variant = launch_gui
+        logging_handler.InitializeLoggingSupport()
+
+        logging.info(f"- Loading OpenCore Legacy Patcher v{self.constants.patcher_version}...")
+
         self.generate_base_data()
         if utilities.check_cli_args() is None:
             if launch_gui is True:
@@ -23,6 +41,7 @@ class OpenCoreLegacyPatcher:
                 gui_main.wx_python_gui(self.constants).main_menu(None)
             else:
                 self.main_menu()
+
 
     def generate_base_data(self):
         self.constants.detected_os = os_probe.detect_kernel_major()
@@ -58,14 +77,14 @@ class OpenCoreLegacyPatcher:
         defaults.generate_defaults(self.computer.real_model, True, self.constants)
 
         if utilities.check_cli_args() is not None:
-            print("- Detected arguments, switching to CLI mode")
+            logging.info("- Detected arguments, switching to CLI mode")
             self.constants.gui_mode = True  # Assumes no user interaction is required
             ignore_args = ["--auto_patch", "--gui_patch", "--gui_unpatch"]
             if not any(x in sys.argv for x in ignore_args):
                 self.constants.current_path = Path.cwd()
                 self.constants.cli_mode = True
                 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
-                    print("- Rerouting payloads location")
+                    logging.info("- Rerouting payloads location")
                     self.constants.payload_path = sys._MEIPASS / Path("payloads")
             ignore_args = ignore_args.pop(0)
             if not any(x in sys.argv for x in ignore_args):
@@ -73,7 +92,7 @@ class OpenCoreLegacyPatcher:
                     time.sleep(0.1)
             arguments.arguments().parse_arguments(self.constants)
         else:
-            print(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
+            logging.info(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
 
 
     def main_menu(self):

@@ -15,7 +15,7 @@
 * [Black Boxes on HD3000 iGPUs](#black-boxes-on-hd3000-igpus)
 * [Cannot Pair Bluetooth Devices](#cannot-pair-bluetooth-devices)
 
-The below page is for users experiencing issues with their overall usage of macOS Big Sur / macOS Monterey and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur / Monterey:
+The below page is for users experiencing issues with their overall usage of macOS Big Sur / Monterey / Ventura and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur / Monterey / Ventura:
 
 * Intel 3rd and 4th Gen - GMA series
 
@@ -23,7 +23,7 @@ For those unfamiliar with what is considered a non-Metal GPU, see the chart belo
 
 ::: details macOS GPU Chart
 
-Metal is Apple's in-house graphics API that acts as a replacement for OpenGL/OpenCL, introduced in 2015. With the release of macOS Mojave, every system without a Metal-capable GPU was dropped. 
+Metal is Apple's in-house graphics API that acts as a replacement for OpenGL/OpenCL, introduced in 2015. With the release of macOS Mojave, every system without a Metal-capable GPU was dropped.
 
 | Graphics Vendor | Architecture | Series | Supports Metal |
 | :--- | :--- | :--- | :--- |
@@ -31,7 +31,7 @@ Metal is Apple's in-house graphics API that acts as a replacement for OpenGL/Ope
 | ^^ | TeraScale 2 | HD5000 - HD6000 | ^^ |
 | AMD | GCN (and newer) | HD7000+ | <span style="color:green">Yes</span> |
 | NVIDIA | Tesla | 8000GT - GT300 |  <span style="color:red">No</span> |
-| ^^ | Fermi | GT400 - GT500 | ^^ | 
+| ^^ | Fermi | GT400 - GT500 | ^^ |
 | ^^ | Kepler | GT600 - GT700 | <span style="color:green">Yes</span> |
 | Intel | GMA | GMA900 - GMA3000 | <span style="color:red">No</span> |
 | ^^ | Iron Lake | HD series | ^^ |
@@ -102,7 +102,7 @@ Due to the Metal Backend, the enhanced color output of these apps seems to heavi
 
 ## Cannot press "Done" when editing a Sidebar Widget
 
-Workaround: Press some combination of Tab, or Tab and then Shift-Tab, or just Shift-Tab until the "Done" button is highlighted. Then press spacebar to activate the button, the same as in any other dialog with a highlighted button halo. 
+Workaround: Press some combination of Tab, or Tab and then Shift-Tab, or just Shift-Tab until the "Done" button is highlighted. Then press spacebar to activate the button, the same as in any other dialog with a highlighted button halo.
 
 ## Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer
 

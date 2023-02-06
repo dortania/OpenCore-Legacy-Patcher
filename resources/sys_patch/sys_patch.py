@@ -37,9 +37,10 @@ import shutil
 import subprocess
 from pathlib import Path
 from datetime import datetime
+import logging
 
 from resources import constants, utilities, kdk_handler
-from resources.sys_patch import sys_patch_download, sys_patch_detect, sys_patch_auto, sys_patch_helpers
+from resources.sys_patch import sys_patch_detect, sys_patch_auto, sys_patch_helpers
 
 from data import os_data
 
@@ -90,26 +91,62 @@ class PatchSysVolume:
         # Returns boolean if Root Volume is available
         self.root_mount_path = utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
-            print(f"- Found Root Volume at: {self.root_mount_path}")
+            logging.info(f"- Found Root Volume at: {self.root_mount_path}")
             if Path(self.mount_extensions).exists():
-                print("- Root Volume is already mounted")
+                logging.info("- Root Volume is already mounted")
                 return True
             else:
                 if self.root_supports_snapshot is True:
-                    print("- Mounting APFS Snapshot as writable")
+                    logging.info("- Mounting APFS Snapshot as writable")
                     result = utilities.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                     if result.returncode == 0:
-                        print(f"- Mounted APFS Snapshot as writable at: {self.mount_location}")
+                        logging.info(f"- Mounted APFS Snapshot as writable at: {self.mount_location}")
                         if Path(self.mount_extensions).exists():
-                            print("- Successfully mounted the Root Volume")
+                            logging.info("- Successfully mounted the Root Volume")
                             return True
                         else:
-                            print("- Root Volume appears to have unmounted unexpectedly")
+                            logging.info("- Root Volume appears to have unmounted unexpectedly")
                     else:
-                        print("- Unable to mount APFS Snapshot as writable")
-                        print("Reason for mount failure:")
-                        print(result.stdout.decode().strip())
+                        logging.info("- Unable to mount APFS Snapshot as writable")
+                        logging.info("Reason for mount failure:")
+                        logging.info(result.stdout.decode().strip())
         return False
+
+
+    def invoke_kdk_handler(self):
+        # If we're invoked, there is no KDK installed (or something went wrong)
+        kdk_result = False
+        error_msg = ""
+
+        kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
+
+        if kdk_obj.success is False:
+            error_msg = kdk_obj.error_msg
+            return kdk_result, error_msg, None
+
+        kdk_download_obj = kdk_obj.retrieve_download()
+
+        # We didn't get a download object, something's wrong
+        if not kdk_download_obj:
+            if kdk_obj.kdk_already_installed is True:
+                error_msg = "KDK already installed, function should not have been invoked"
+                return kdk_result, error_msg, None
+            else:
+                error_msg = "Could not retrieve KDK"
+                return kdk_result, error_msg, None
+
+        # Hold thread until download is complete
+        kdk_download_obj.download(spawn_thread=False)
+
+        if kdk_download_obj.download_complete is False:
+            error_msg = kdk_download_obj.error_msg
+            return kdk_result, error_msg, None
+
+        kdk_result = kdk_obj.validate_kdk_checksum()
+        downloaded_kdk = self.constants.kdk_download_path
+
+        return kdk_result, error_msg, downloaded_kdk
+
 
     def merge_kdk_with_root(self, save_hid_cs=False):
         if self.skip_root_kmutil_requirement is True:
@@ -121,7 +158,7 @@ class PatchSysVolume:
         kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=False)
         if kdk_path is None:
             if not self.constants.kdk_download_path.exists():
-                kdk_result, error_msg, downloaded_kdk = kdk_handler.kernel_debug_kit_handler(self.constants).download_kdk(self.constants.detected_os_version, self.constants.detected_os_build)
+                kdk_result, error_msg, downloaded_kdk = self.invoke_kdk_handler()
                 if kdk_result is False:
                     raise Exception(f"Unable to download KDK: {error_msg}")
             sys_patch_helpers.sys_patch_helpers(self.constants).install_kdk()
@@ -135,25 +172,25 @@ class PatchSysVolume:
                 oclp_plist_data = plistlib.load(open(oclp_plist, "rb"))
                 if "Kernel Debug Kit Used" in oclp_plist_data:
                     if oclp_plist_data["Kernel Debug Kit Used"] == str(kdk_path):
-                        print("- Matching KDK determined to already be merged, skipping")
+                        logging.info("- Matching KDK determined to already be merged, skipping")
                         return
             except:
                 pass
 
         if kdk_path is None:
-            print(f"- Unable to find Kernel Debug Kit: {downloaded_kdk}")
+            logging.info(f"- Unable to find Kernel Debug Kit: {downloaded_kdk}")
             raise Exception("Unable to find Kernel Debug Kit")
         self.kdk_path = kdk_path
-        print(f"- Found KDK at: {kdk_path}")
+        logging.info(f"- Found KDK at: {kdk_path}")
 
         # Due to some IOHIDFamily oddities, we need to ensure their CodeSignature is retained
         cs_path = Path(self.mount_location) / Path("System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDEventDriver.kext/Contents/_CodeSignature")
         if save_hid_cs is True and cs_path.exists():
-            print("- Backing up IOHIDEventDriver CodeSignature")
+            logging.info("- Backing up IOHIDEventDriver CodeSignature")
             # Note it's a folder, not a file
             utilities.elevated(["cp", "-r", cs_path, f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        print("- Merging KDK with Root Volume")
+        logging.info("- Merging KDK with Root Volume")
         utilities.elevated(
             # Only merge '/System/Library/Extensions'
             # 'Kernels' and 'KernelSupport' is wasted space for root patching (we don't care above dev kernels)
@@ -163,15 +200,15 @@ class PatchSysVolume:
         # During reversing, we found that kmutil uses this path to determine whether the KDK was successfully merged
         # Best to verify now before we cause any damage
         if not (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
-            print("- Failed to merge KDK with Root Volume")
+            logging.info("- Failed to merge KDK with Root Volume")
             raise Exception("Failed to merge KDK with Root Volume")
-        print("- Successfully merged KDK with Root Volume")
+        logging.info("- Successfully merged KDK with Root Volume")
 
         # Restore IOHIDEventDriver CodeSignature
         if save_hid_cs is True and Path(f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak").exists():
-            print("- Restoring IOHIDEventDriver CodeSignature")
+            logging.info("- Restoring IOHIDEventDriver CodeSignature")
             if not cs_path.exists():
-                print("  - CodeSignature folder missing, creating")
+                logging.info("  - CodeSignature folder missing, creating")
                 utilities.elevated(["mkdir", "-p", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             utilities.elevated(["cp", "-r", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             utilities.elevated(["rm", "-rf", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -179,36 +216,36 @@ class PatchSysVolume:
 
     def unpatch_root_vol(self):
         if self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is True:
-            print("- Reverting to last signed APFS snapshot")
+            logging.info("- Reverting to last signed APFS snapshot")
             result = utilities.elevated(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                print("- Unable to revert root volume patches")
-                print("Reason for unpatch Failure:")
-                print(result.stdout.decode())
-                print("- Failed to revert snapshot via Apple's 'bless' command")
+                logging.info("- Unable to revert root volume patches")
+                logging.info("Reason for unpatch Failure:")
+                logging.info(result.stdout.decode())
+                logging.info("- Failed to revert snapshot via Apple's 'bless' command")
             else:
                 self.clean_skylight_plugins()
                 self.delete_nonmetal_enforcement()
                 self.clean_auxiliary_kc()
                 self.constants.root_patcher_succeeded = True
-                print("- Unpatching complete")
-                print("\nPlease reboot the machine for patches to take effect")
+                logging.info("- Unpatching complete")
+                logging.info("\nPlease reboot the machine for patches to take effect")
 
     def rebuild_snapshot(self):
         if self.rebuild_kernel_collection() is True:
             self.update_preboot_kernel_cache()
             self.rebuild_dyld_shared_cache()
             if self.create_new_apfs_snapshot() is True:
-                print("- Patching complete")
-                print("\nPlease reboot the machine for patches to take effect")
+                logging.info("- Patching complete")
+                logging.info("\nPlease reboot the machine for patches to take effect")
                 if self.needs_kmutil_exemptions is True:
-                    print("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
+                    logging.info("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
                 self.constants.root_patcher_succeeded = True
                 if self.constants.gui_mode is False:
                     input("\nPress [ENTER] to continue")
 
     def rebuild_kernel_collection(self):
-        print("- Rebuilding Kernel Cache (This may take some time)")
+        logging.info("- Rebuilding Kernel Cache (This may take some time)")
         if self.constants.detected_os > os_data.os_data.catalina:
             # Base Arguments
             args = ["kmutil", "install"]
@@ -255,7 +292,7 @@ class PatchSysVolume:
             if self.needs_kmutil_exemptions is True:
                 # When installing to '/Library/Extensions', following args skip kext consent
                 # prompt in System Preferences when SIP's disabled
-                print("  (You will get a prompt by System Preferences, ignore for now)")
+                logging.info("  (You will get a prompt by System Preferences, ignore for now)")
                 args.append("--no-authentication")
                 args.append("--no-authorization")
         else:
@@ -271,11 +308,11 @@ class PatchSysVolume:
         # - will return 31 on 'No binaries or codeless kexts were provided'
         # - will return -10 if the volume is missing (ie. unmounted by another process)
         if result.returncode != 0 or (self.constants.detected_os < os_data.os_data.catalina and "KernelCache ID" not in result.stdout.decode()):
-            print("- Unable to build new kernel cache")
-            print(f"\nReason for Patch Failure ({result.returncode}):")
-            print(result.stdout.decode())
-            print("")
-            print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
+            logging.info("- Unable to build new kernel cache")
+            logging.info(f"\nReason for Patch Failure ({result.returncode}):")
+            logging.info(result.stdout.decode())
+            logging.info("")
+            logging.info("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
             if self.constants.gui_mode is False:
                 input("Press [ENTER] to continue")
             return False
@@ -284,11 +321,11 @@ class PatchSysVolume:
             # Force rebuild the Auxiliary KC
             result = utilities.elevated(["killall", "syspolicyd", "kernelmanagerd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                print("- Unable to remove kernel extension policy files")
-                print(f"\nReason for Patch Failure ({result.returncode}):")
-                print(result.stdout.decode())
-                print("")
-                print("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
+                logging.info("- Unable to remove kernel extension policy files")
+                logging.info(f"\nReason for Patch Failure ({result.returncode}):")
+                logging.info(result.stdout.decode())
+                logging.info("")
+                logging.info("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
                 if self.constants.gui_mode is False:
                     input("Press [ENTER] to continue")
                 return False
@@ -299,12 +336,12 @@ class PatchSysVolume:
             # Install RSRHelper utility to handle desynced KCs
             sys_patch_helpers.sys_patch_helpers(self.constants).install_rsr_repair_binary()
 
-        print("- Successfully built new kernel cache")
+        logging.info("- Successfully built new kernel cache")
         return True
 
     def create_new_apfs_snapshot(self):
         if self.root_supports_snapshot is True:
-            print("- Creating new APFS snapshot")
+            logging.info("- Creating new APFS snapshot")
             bless = utilities.elevated(
                 [
                     "bless",
@@ -313,43 +350,43 @@ class PatchSysVolume:
                 ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
             )
             if bless.returncode != 0:
-                print("- Unable to create new snapshot")
-                print("Reason for snapshot failure:")
-                print(bless.stdout.decode())
+                logging.info("- Unable to create new snapshot")
+                logging.info("Reason for snapshot failure:")
+                logging.info(bless.stdout.decode())
                 if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
-                    print("- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly")
+                    logging.info("- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly")
                 return False
             self.unmount_drive()
         return True
 
     def unmount_drive(self):
-        print("- Unmounting Root Volume (Don't worry if this fails)")
+        logging.info("- Unmounting Root Volume (Don't worry if this fails)")
         utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
     def rebuild_dyld_shared_cache(self):
         if self.constants.detected_os <= os_data.os_data.catalina:
-            print("- Rebuilding dyld shared cache")
+            logging.info("- Rebuilding dyld shared cache")
             utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
 
     def update_preboot_kernel_cache(self):
         if self.constants.detected_os == os_data.os_data.catalina:
-            print("- Rebuilding preboot kernel cache")
+            logging.info("- Rebuilding preboot kernel cache")
             utilities.process_status(utilities.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def clean_skylight_plugins(self):
         if (Path(self.mount_application_support) / Path("SkyLightPlugins/")).exists():
-            print("- Found SkylightPlugins folder, removing old plugins")
+            logging.info("- Found SkylightPlugins folder, removing old plugins")
             utilities.process_status(utilities.elevated(["rm", "-Rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["mkdir", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         else:
-            print("- Creating SkylightPlugins folder")
+            logging.info("- Creating SkylightPlugins folder")
             utilities.process_status(utilities.elevated(["mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
     def delete_nonmetal_enforcement(self):
         for arg in ["useMetal", "useIOP"]:
-            result = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+            result = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
             if result in ["0", "false", "1", "true"]:
-                print(f"- Removing non-Metal Enforcement Preference: {arg}")
+                logging.info(f"- Removing non-Metal Enforcement Preference: {arg}")
                 utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
 
     def clean_auxiliary_kc(self):
@@ -360,7 +397,7 @@ class PatchSysVolume:
         if self.constants.detected_os < os_data.os_data.big_sur:
             return
 
-        print("- Cleaning Auxiliary Kernel Collection")
+        logging.info("- Cleaning Auxiliary Kernel Collection")
         oclp_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
         if Path(oclp_path).exists():
             oclp_plist_data = plistlib.load(Path(oclp_path).open("rb"))
@@ -388,7 +425,7 @@ class PatchSysVolume:
         for file in Path("/Library/Extensions").glob("*.kext"):
             try:
                 if datetime.fromtimestamp(file.stat().st_mtime) < datetime(2021, 10, 1):
-                    print(f"  - Relocating {file.name} kext to {relocation_path}")
+                    logging.info(f"  - Relocating {file.name} kext to {relocation_path}")
                     if Path(relocation_path) / Path(file.name).exists():
                         utilities.elevated(["rm", "-Rf", relocation_path / Path(file.name)])
                     utilities.elevated(["mv", file, relocation_path])
@@ -402,7 +439,7 @@ class PatchSysVolume:
         file_name = "OpenCore-Legacy-Patcher.plist"
         destination_path_file = f"{destination_path}/{file_name}"
         if sys_patch_helpers.sys_patch_helpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path):
-            print("- Writing patchset information to Root Volume")
+            logging.info("- Writing patchset information to Root Volume")
             if Path(destination_path_file).exists():
                 utilities.process_status(utilities.elevated(["rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["cp", f"{self.constants.payload_path}/{file_name}", destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
@@ -429,7 +466,7 @@ class PatchSysVolume:
 
         updated_install_location = str(self.mount_location_data) + "/Library/Extensions"
 
-        print(f"  - Adding AuxKC support to {install_file}")
+        logging.info(f"  - Adding AuxKC support to {install_file}")
         plist_path = Path(Path(source_folder_path) / Path(install_file) / Path("Contents/Info.plist"))
         plist_data = plistlib.load((plist_path).open("rb"))
 
@@ -466,11 +503,11 @@ class PatchSysVolume:
         except PermissionError:
             pass
 
-        print(f"  - {kext_name} requires authentication in System Preferences")
+        logging.info(f"  - {kext_name} requires authentication in System Preferences")
         self.constants.needs_to_open_preferences = True # Notify in GUI to open System Preferences
 
     def patch_root_vol(self):
-        print(f"- Running patches for {self.model}")
+        logging.info(f"- Running patches for {self.model}")
         if self.patch_set_dictionary != {}:
             self.execute_patchset(self.patch_set_dictionary)
         else:
@@ -485,10 +522,10 @@ class PatchSysVolume:
         source_files_path = str(self.constants.payload_local_binaries_root_path)
         self.preflight_checks(required_patches, source_files_path)
         for patch in required_patches:
-            print("- Installing Patchset: " + patch)
+            logging.info("- Installing Patchset: " + patch)
             if "Remove" in required_patches[patch]:
                 for remove_patch_directory in required_patches[patch]["Remove"]:
-                    print("- Remove Files at: " + remove_patch_directory)
+                    logging.info("- Remove Files at: " + remove_patch_directory)
                     for remove_patch_file in required_patches[patch]["Remove"][remove_patch_directory]:
                         destination_folder_path = str(self.mount_location) + remove_patch_directory
                         self.remove_file(destination_folder_path, remove_patch_file)
@@ -497,7 +534,7 @@ class PatchSysVolume:
             for method_install in ["Install", "Install Non-Root"]:
                 if method_install in required_patches[patch]:
                     for install_patch_directory in list(required_patches[patch][method_install]):
-                        print(f"- Handling Installs in: {install_patch_directory}")
+                        logging.info(f"- Handling Installs in: {install_patch_directory}")
                         for install_file in list(required_patches[patch][method_install][install_patch_directory]):
                             source_folder_path = source_files_path + "/" + required_patches[patch][method_install][install_patch_directory][install_file] + install_patch_directory
                             if method_install == "Install":
@@ -526,10 +563,10 @@ class PatchSysVolume:
                     # Some processes need sudo, however we cannot directly call sudo in some scenarios
                     # Instead, call elevated funtion if string's boolean is True
                     if required_patches[patch]["Processes"][process] is True:
-                        print(f"- Running Process as Root:\n{process}")
+                        logging.info(f"- Running Process as Root:\n{process}")
                         utilities.process_status(utilities.elevated(process.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
                     else:
-                        print(f"- Running Process:\n{process}")
+                        logging.info(f"- Running Process:\n{process}")
                         utilities.process_status(subprocess.run(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
         if any(x in required_patches for x in ["AMD Legacy GCN", "AMD Legacy Polaris", "AMD Legacy Vega"]):
             sys_patch_helpers.sys_patch_helpers(self.constants).disable_window_server_caching()
@@ -538,7 +575,7 @@ class PatchSysVolume:
         self.write_patchset(required_patches)
 
     def preflight_checks(self, required_patches, source_files_path):
-        print("- Running Preflight Checks before patching")
+        logging.info("- Running Preflight Checks before patching")
 
         # Make sure old SkyLight plugins aren't being used
         self.clean_skylight_plugins()
@@ -567,7 +604,7 @@ class PatchSysVolume:
             should_save_cs = True
         self.merge_kdk_with_root(save_hid_cs=should_save_cs)
 
-        print("- Finished Preflight, starting patching")
+        logging.info("- Finished Preflight, starting patching")
 
     def install_new_file(self, source_folder, destination_folder, file_name):
         # .frameworks are merged
@@ -575,36 +612,36 @@ class PatchSysVolume:
         file_name_str = str(file_name)
 
         if not Path(destination_folder).exists():
-            print(f"  - Skipping {file_name}, cannot locate {source_folder}")
+            logging.info(f"  - Skipping {file_name}, cannot locate {source_folder}")
             return
 
         if file_name_str.endswith(".framework"):
             # merge with rsync
-            print(f"  - Installing: {file_name}")
+            logging.info(f"  - Installing: {file_name}")
             utilities.elevated(["rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)
             self.fix_permissions(destination_folder + "/" + file_name)
         elif Path(source_folder + "/" + file_name_str).is_dir():
             # Applicable for .kext, .app, .plugin, .bundle, all of which are directories
             if Path(destination_folder + "/" + file_name).exists():
-                print(f"  - Found existing {file_name}, overwriting...")
+                logging.info(f"  - Found existing {file_name}, overwriting...")
                 utilities.process_status(utilities.elevated(["rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
-                print(f"  - Installing: {file_name}")
+                logging.info(f"  - Installing: {file_name}")
             utilities.process_status(utilities.elevated(["cp", "-R", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             self.fix_permissions(destination_folder + "/" + file_name)
         else:
             # Assume it's an individual file, replace as normal
             if Path(destination_folder + "/" + file_name).exists():
-                print(f"  - Found existing {file_name}, overwriting...")
+                logging.info(f"  - Found existing {file_name}, overwriting...")
                 utilities.process_status(utilities.elevated(["rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
-                print(f"  - Installing: {file_name}")
+                logging.info(f"  - Installing: {file_name}")
             utilities.process_status(utilities.elevated(["cp", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             self.fix_permissions(destination_folder + "/" + file_name)
 
     def remove_file(self, destination_folder, file_name):
         if Path(destination_folder + "/" + file_name).exists():
-            print(f"  - Removing: {file_name}")
+            logging.info(f"  - Removing: {file_name}")
             if Path(destination_folder + "/" + file_name).is_dir():
                 utilities.process_status(utilities.elevated(["rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
@@ -624,87 +661,63 @@ class PatchSysVolume:
 
     def check_files(self):
         if Path(self.constants.payload_local_binaries_root_path).exists():
-            print("- Found local Apple Binaries")
-            if self.constants.gui_mode is False:
-                patch_input = input("Would you like to redownload?(y/n): ")
-                if patch_input in {"y", "Y", "yes", "Yes"}:
-                    shutil.rmtree(Path(self.constants.payload_local_binaries_root_path))
-                    output = self.download_files()
-                else:
-                    output = True
-            else:
-                output = self.download_files()
-        else:
-            output = self.download_files()
-        return output
+            logging.info("- Local PatcherSupportPkg resources available, continuing...")
+            return True
 
-    def download_files(self):
-        if self.constants.cli_mode is True:
-            download_result, link = sys_patch_download.grab_patcher_support_pkg(self.constants).download_files()
-        else:
-            download_result = True
-            link = sys_patch_download.grab_patcher_support_pkg(self.constants).generate_pkg_link()
-
-        if download_result and self.constants.payload_local_binaries_root_path_zip.exists():
-            print("- Unzipping binaries...")
+        if Path(self.constants.payload_local_binaries_root_path_zip).exists():
+            logging.info("- Local PatcherSupportPkg resources available, unzipping...")
+            logging.info("- Unzipping binaries...")
             utilities.process_status(subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.payload_local_binaries_root_path_zip, self.constants.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            print("- Binaries downloaded to:")
-            print(self.constants.payload_path)
-            return self.constants.payload_local_binaries_root_path
-        else:
-            if self.constants.gui_mode is True:
-                print("- Download failed, please verify the below link work:")
-                print(link)
-                print("\nIf you continue to have issues, try using the Offline builds")
-                print("located on Github next to the other builds")
-            else:
-                input("\nPress enter to continue")
-        return None
+            return True
+
+        logging.info("- PatcherSupportPkg resources missing, Patcher likely corrupted!!!")
+        return False
+
 
     # Entry Function
     def start_patch(self):
-        print("- Starting Patch Process")
-        print(f"- Determining Required Patch set for Darwin {self.constants.detected_os}")
+        logging.info("- Starting Patch Process")
+        logging.info(f"- Determining Required Patch set for Darwin {self.constants.detected_os}")
         self.patch_set_dictionary = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details)
 
         if self.patch_set_dictionary == {}:
             change_menu = None
-            print("- No Root Patches required for your machine!")
+            logging.info("- No Root Patches required for your machine!")
             if self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu: ")
         elif self.constants.gui_mode is False:
             change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
         else:
             change_menu = "y"
-            print("- Continuing root patching")
+            logging.info("- Continuing root patching")
         if change_menu in ["y", "Y"]:
-            print("- Verifying whether Root Patching possible")
+            logging.info("- Verifying whether Root Patching possible")
             if sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is True:
-                print("- Patcher is capable of patching")
+                logging.info("- Patcher is capable of patching")
                 if self.check_files():
                     if self.mount_root_vol() is True:
                         self.patch_root_vol()
                         if self.constants.gui_mode is False:
                             input("\nPress [ENTER] to return to the main menu")
                     else:
-                        print("- Recommend rebooting the machine and trying to patch again")
+                        logging.info("- Recommend rebooting the machine and trying to patch again")
                         if self.constants.gui_mode is False:
                             input("- Press [ENTER] to exit: ")
             elif self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu: ")
 
         else:
-            print("- Returning to main menu")
+            logging.info("- Returning to main menu")
 
     def start_unpatch(self):
-        print("- Starting Unpatch Process")
+        logging.info("- Starting Unpatch Process")
         if sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=True) is True:
             if self.mount_root_vol() is True:
                 self.unpatch_root_vol()
                 if self.constants.gui_mode is False:
                     input("\nPress [ENTER] to return to the main menu")
             else:
-                print("- Recommend rebooting the machine and trying to patch again")
+                logging.info("- Recommend rebooting the machine and trying to patch again")
                 if self.constants.gui_mode is False:
                     input("- Press [ENTER] to exit: ")
         elif self.constants.gui_mode is False:

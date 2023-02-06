@@ -9,6 +9,7 @@ from pathlib import Path
 from datetime import datetime
 import plistlib
 import os
+import logging
 
 from resources import constants, bplist
 
@@ -25,9 +26,9 @@ class sys_patch_helpers:
         # to supplement the ideal Board ID
         source_files_path = str(source_files_path)
         if self.constants.computer.reported_board_id not in self.constants.sandy_board_id_stock:
-            print(f"- Found unsupported Board ID {self.constants.computer.reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching")
+            logging.info(f"- Found unsupported Board ID {self.constants.computer.reported_board_id}, performing AppleIntelSNBGraphicsFB bin patching")
             board_to_patch = generate_smbios.determine_best_board_id_for_sandy(self.constants.computer.reported_board_id, self.constants.computer.gpus)
-            print(f"- Replacing {board_to_patch} with {self.constants.computer.reported_board_id}")
+            logging.info(f"- Replacing {board_to_patch} with {self.constants.computer.reported_board_id}")
 
             board_to_patch_hex = bytes.fromhex(board_to_patch.encode('utf-8').hex())
             reported_board_hex = bytes.fromhex(self.constants.computer.reported_board_id.encode('utf-8').hex())
@@ -36,7 +37,7 @@ class sys_patch_helpers:
                 # Pad the reported Board ID with zeros to match the length of the board to patch
                 reported_board_hex = reported_board_hex + bytes(len(board_to_patch_hex) - len(reported_board_hex))
             elif len(board_to_patch_hex) < len(reported_board_hex):
-                print(f"- Error: Board ID {self.constants.computer.reported_board_id} is longer than {board_to_patch}")
+                logging.info(f"- Error: Board ID {self.constants.computer.reported_board_id} is longer than {board_to_patch}")
                 raise Exception("Host's Board ID is longer than the kext's Board ID, cannot patch!!!")
 
             path = source_files_path + "/10.13.6/System/Library/Extensions/AppleIntelSNBGraphicsFB.kext/Contents/MacOS/AppleIntelSNBGraphicsFB"
@@ -47,7 +48,7 @@ class sys_patch_helpers:
                     with open(path, 'wb') as f:
                         f.write(data)
             else:
-                print(f"- Error: Could not find {path}")
+                logging.info(f"- Error: Could not find {path}")
                 raise Exception("Failed to find AppleIntelSNBGraphicsFB.kext, cannot patch!!!")
 
 
@@ -80,7 +81,7 @@ class sys_patch_helpers:
         if not self.constants.kdk_download_path.exists():
             return
 
-        print(f"- Installing downloaded KDK (this may take a while)")
+        logging.info(f"- Installing downloaded KDK (this may take a while)")
         with tempfile.TemporaryDirectory() as mount_point:
             utilities.process_status(subprocess.run(["hdiutil", "attach", self.constants.kdk_download_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             # Due to a permissions bug in macOS, sometimes the OS will fail on a Read-only file system error
@@ -92,15 +93,15 @@ class sys_patch_helpers:
             utilities.process_status(subprocess.run(["cp", f"{mount_point}/KernelDebugKit.pkg", self.constants.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             result = utilities.elevated(["installer", "-pkg", kdk_dst_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                print("- Failed to install KDK:")
-                print(result.stdout.decode('utf-8'))
+                logging.info("- Failed to install KDK:")
+                logging.info(result.stdout.decode('utf-8'))
                 if result.stderr:
-                    print(result.stderr.decode('utf-8'))
+                    logging.info(result.stderr.decode('utf-8'))
                 utilities.elevated(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 raise Exception("Failed to install KDK")
             utilities.process_status(utilities.elevated(["rm", kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.elevated(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        print("- Successfully installed KDK")
+        logging.info("- Successfully installed KDK")
 
 
     def determine_kdk_present(self, match_closest=False, override_build=None):
@@ -138,7 +139,7 @@ class sys_patch_helpers:
 
         if match_closest is True:
             result = os_data.os_conversion.find_largest_build(kdk_array)
-            print(f"- Closest KDK match to {search_build}: {result}")
+            logging.info(f"- Closest KDK match to {search_build}: {result}")
             for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
                 if kdk_folder.name.endswith(f"{result}.kdk"):
                     # Verify that the KDK is valid
@@ -154,7 +155,7 @@ class sys_patch_helpers:
         # And force macOS into properly generating the Opaque shaders
         if self.constants.detected_os < os_data.os_data.ventura:
              return
-        print("- Disabling WindowServer Caching")
+        logging.info("- Disabling WindowServer Caching")
         # Invoke via 'bash -c' to resolve pathing
         utilities.elevated(["bash", "-c", "rm -rf /private/var/folders/*/*/*/WindowServer/com.apple.WindowServer"])
         # Disable writing to WindowServer folder
@@ -170,12 +171,12 @@ class sys_patch_helpers:
         # we manually remove all News Widgets
         if self.constants.detected_os < os_data.os_data.ventura:
             return
-        print("- Parsing Notification Centre Widgets")
+        logging.info("- Parsing Notification Centre Widgets")
         file_path = "~/Library/Containers/com.apple.notificationcenterui/Data/Library/Preferences/com.apple.notificationcenterui.plist"
         file_path = Path(file_path).expanduser()
 
         if not file_path.exists():
-            print("  - Defaults file not found, skipping")
+            logging.info("  - Defaults file not found, skipping")
             return
 
         did_find = False
@@ -194,7 +195,7 @@ class sys_patch_helpers:
                                     continue
                                 if not b'com.apple.news' in sub_data[sub_entry][2]:
                                     continue
-                                print(f"  - Found News Widget to remove: {sub_data[sub_entry][2].decode('ascii')}")
+                                logging.info(f"  - Found News Widget to remove: {sub_data[sub_entry][2].decode('ascii')}")
                                 data["widgets"]["instances"].remove(widget)
                                 did_find = True
         if did_find:
@@ -218,7 +219,7 @@ class sys_patch_helpers:
         if self.constants.detected_os < os_data.os_data.big_sur:
             return
 
-        print("- Installing Kernel Collection syncing utility")
+        logging.info("- Installing Kernel Collection syncing utility")
         result = utilities.elevated([self.constants.rsrrepair_userspace_path, "--install"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
-            print(f"  - Failed to install RSRRepair: {result.stdout.decode()}")
+            logging.info(f"  - Failed to install RSRRepair: {result.stdout.decode()}")

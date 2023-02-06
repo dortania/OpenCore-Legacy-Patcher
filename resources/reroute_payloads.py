@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import atexit
+import logging
 
 class reroute_payloads:
     def __init__(self, constants):
@@ -17,10 +18,10 @@ class reroute_payloads:
         # Then reroute r/w to this new temp directory
         # Currently only applicable for GUI variant
         if self.constants.wxpython_variant is True and not self.constants.launcher_script:
-            print("- Running in Binary GUI mode, switching to tmp directory")
+            logging.info("- Running in Binary GUI mode, switching to tmp directory")
             self.temp_dir = tempfile.TemporaryDirectory()
-            print(f"- New payloads location: {self.temp_dir.name}")
-            print("- Creating payloads directory")
+            logging.info(f"- New payloads location: {self.temp_dir.name}")
+            logging.info("- Creating payloads directory")
             Path(self.temp_dir.name / Path("payloads")).mkdir(parents=True, exist_ok=True)
             self.unmount_active_dmgs(unmount_all_active=False)
             output = subprocess.run(
@@ -34,14 +35,14 @@ class reroute_payloads:
                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT
             )
             if output.returncode == 0:
-                print("- Mounted payloads.dmg")
+                logging.info("- Mounted payloads.dmg")
                 self.constants.current_path = Path(self.temp_dir.name)
                 self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
                 atexit.register(self.unmount_active_dmgs, unmount_all_active=False)
             else:
-                print("- Failed to mount payloads.dmg")
-                print(f"Output: {output.stdout.decode()}")
-                print(f"Return Code: {output.returncode}")
+                logging.info("- Failed to mount payloads.dmg")
+                logging.info(f"Output: {output.stdout.decode()}")
+                logging.info(f"Return Code: {output.returncode}")
 
     def unmount_active_dmgs(self, unmount_all_active=True):
         # Find all DMGs that are mounted, and forcefully unmount them
@@ -56,13 +57,13 @@ class reroute_payloads:
                     # Check that only our personal payloads.dmg is unmounted
                     if "shadow-path" in image:
                         if self.temp_dir.name in image["shadow-path"]:
-                            print("- Unmounting personal payloads.dmg")
+                            logging.info("- Unmounting personal payloads.dmg")
                             subprocess.run(
                                 ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT
                             )
                 else:
-                    print(f"- Unmounting payloads.dmg at: {image['system-entities'][0]['dev-entry']}")
+                    logging.info(f"- Unmounting payloads.dmg at: {image['system-entities'][0]['dev-entry']}")
                     subprocess.run(
                         ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT
