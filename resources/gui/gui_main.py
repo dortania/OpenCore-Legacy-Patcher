@@ -2153,7 +2153,8 @@ class wx_python_gui:
         self.developer_note_label_2.Centre(wx.HORIZONTAL)
 
         # Progress Bar
-        self.progress_bar = wx.Gauge(self.frame, range=16000, size=(-1, 20))
+        max_file_size = 1024 * 1024 * 1024 * 18  # 18GB, best guess for installer + chainloaded packages
+        self.progress_bar = wx.Gauge(self.frame, range=max_file_size, size=(-1, 20))
         self.progress_bar.SetPosition(
             wx.Point(
                 self.developer_note_label_2.GetPosition().x,
@@ -2229,7 +2230,7 @@ class wx_python_gui:
                     wx.GetApp().Yield()
                 else:
                     break
-            self.progress_bar.SetValue(16000)
+            self.progress_bar.SetValue(max_file_size)
             self.progress_label.SetLabel(f"Finished Running Installer Creation Script")
             self.progress_label.Centre(wx.HORIZONTAL)
             if self.finished_cim_process is True:
