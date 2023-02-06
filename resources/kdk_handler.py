@@ -43,12 +43,13 @@ class KernelDebugKitObject:
 
     """
 
-    def __init__(self, constants: Constants, host_build: str, host_version: str):
+    def __init__(self, constants: Constants, host_build: str, host_version: str, ignore_installed: bool = False):
         self.constants: Constants = constants
 
         self.host_build:   str = host_build    # ex. 20A5384c
         self.host_version: str = host_version  # ex. 11.0.1
 
+        self.ignore_installed:      bool = ignore_installed  # If True, will ignore any installed KDKs and download the latest
         self.kdk_already_installed: bool = False
 
         self.kdk_installed_path: str = ""
@@ -202,9 +203,12 @@ class KernelDebugKitObject:
         self.success = True
 
 
-    def retrieve_download(self):
+    def retrieve_download(self, override_path: str = ""):
         """
         Returns a DownloadObject for the KDK
+
+        Parameters:
+            override_path (str): Override the default download path
 
         Returns:
             DownloadObject: DownloadObject for the KDK, None if no download required
@@ -225,7 +229,7 @@ class KernelDebugKitObject:
 
         logging.info(f"- Returning DownloadObject for KDK: {Path(self.kdk_url).name}")
         self.success = True
-        return network_handler.DownloadObject(self.kdk_url, self.constants.kdk_download_path)
+        return network_handler.DownloadObject(self.kdk_url, self.constants.kdk_download_path if override_path == "" else Path(override_path))
 
 
     def _local_kdk_valid(self, kdk_path: str):
@@ -269,6 +273,9 @@ class KernelDebugKitObject:
             str: Path to KDK if valid, None if not
         """
 
+        if self.ignore_installed is True:
+            return None
+
         if build is None:
             build = self.host_build
 
@@ -294,6 +301,9 @@ class KernelDebugKitObject:
         Returns:
             str: Path to KDK if valid, None if not
         """
+
+        if self.ignore_installed is True:
+            return None
 
         if version is None:
             version = self.host_version

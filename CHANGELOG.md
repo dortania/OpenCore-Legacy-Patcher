@@ -19,7 +19,7 @@
     - Allows for more reliable network calls and downloads
     - Better supports network timeouts and disconnects
     - Dramatically less noise in console during downloads
-  - Remove unused sys_patch_downloader.py module
+  - Removed unused sys_patch_downloader.py module
 - Build Server Changes:
   - Upgrade Python backend to 3.10.9
   - Upgrade Python modules:
