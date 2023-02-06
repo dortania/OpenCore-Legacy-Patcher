@@ -18,8 +18,22 @@ import hashlib
 from datetime import datetime
 import py_sip_xnu
 import logging
+import tempfile
 
-from resources import constants, defaults, install, installer, utilities, run, generate_smbios, updates, integrity_verification, global_settings, kdk_handler, network_handler
+from resources import (
+    constants,
+    defaults,
+    install,
+    installer,
+    utilities,
+    run,
+    generate_smbios,
+    updates,
+    integrity_verification,
+    global_settings,
+    kdk_handler,
+    network_handler
+)
 from resources.sys_patch import sys_patch_detect, sys_patch
 from resources.build import build
 from data import model_array, os_data, smbios_data, sip_data, cpu_data
