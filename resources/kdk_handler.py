@@ -58,11 +58,15 @@ class KernelDebugKitObject:
         self.kdk_url_build:   str = ""
         self.kdk_url_version: str = ""
 
+        self.kdk_url_expected_size: int = 0
+
         self.kdk_url_is_exactly_match: bool = False
 
         self.kdk_closest_match_url:         str = ""
         self.kdk_closest_match_url_build:   str = ""
         self.kdk_closest_match_url_version: str = ""
+
+        self.kdk_closest_match_url_expected_size: int = 0
 
         self.success: bool = False
 
@@ -162,6 +166,7 @@ class KernelDebugKitObject:
                 self.kdk_url = kdk["url"]
                 self.kdk_url_build = kdk["build"]
                 self.kdk_url_version = kdk["version"]
+                self.kdk_url_expected_size = kdk["fileSize"]
                 self.kdk_url_is_exactly_match = True
                 break
             if kdk_version <= parsed_version and kdk_version.major == parsed_version.major and (kdk_version.minor in range(parsed_version.minor - 1, parsed_version.minor + 1)):
@@ -169,6 +174,7 @@ class KernelDebugKitObject:
                 self.kdk_closest_match_url = kdk["url"]
                 self.kdk_closest_match_url_build = kdk["build"]
                 self.kdk_closest_match_url_version = kdk["version"]
+                self.kdk_closest_match_url_expected_size = kdk["fileSize"]
                 self.kdk_url_is_exactly_match = False
                 break
 
@@ -183,6 +189,7 @@ class KernelDebugKitObject:
             self.kdk_url = self.kdk_closest_match_url
             self.kdk_url_build = self.kdk_closest_match_url_build
             self.kdk_url_version = self.kdk_closest_match_url_version
+            self.kdk_url_expected_size = self.kdk_closest_match_url_expected_size
         else:
             logging.info(f"- Direct match found for {host_build} ({host_version})")
 
