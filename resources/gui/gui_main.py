@@ -3,22 +3,29 @@
 # Currently Work in Progress
 
 import plistlib
-import wx
-import sys
-import webbrowser
-import subprocess
-import time
-import os
-import wx.adv
-from wx.lib.agw import hyperlink
-import threading
 from pathlib import Path
+from datetime import datetime
+
+import os
+import sys
+import subprocess
+import threading
+
+import webbrowser
+
+import time
+
 import binascii
 import hashlib
-from datetime import datetime
-import py_sip_xnu
+
 import logging
 import tempfile
+
+import wx
+import wx.adv
+from wx.lib.agw import hyperlink
+
+import py_sip_xnu
 
 from resources import (
     constants,
@@ -34,10 +41,13 @@ from resources import (
     kdk_handler,
     network_handler
 )
+
 from resources.sys_patch import sys_patch_detect, sys_patch
 from resources.build import build
-from data import model_array, os_data, smbios_data, sip_data, cpu_data
 from resources.gui import menu_redirect, gui_help
+
+from data import model_array, os_data, smbios_data, sip_data, cpu_data
+
 
 
 class wx_python_gui:
@@ -2167,7 +2177,7 @@ class wx_python_gui:
         self.developer_note_label_2.Centre(wx.HORIZONTAL)
 
         # Progress Bar
-        max_file_size = 1024 * 1024 * 1024 * 18  # 18GB, best guess for installer + chainloaded packages
+        max_file_size = 19000  # Best guess for installer + chainloaded packages
         self.progress_bar = wx.Gauge(self.frame, range=max_file_size, size=(-1, 20))
         self.progress_bar.SetPosition(
             wx.Point(
@@ -2239,7 +2249,7 @@ class wx_python_gui:
                 output = float(utilities.monitor_disk_output(disk))
                 bytes_written = output - default_output
                 if install_thread.is_alive():
-                    self.progress_bar.SetValue(bytes_written)
+                    self.progress_bar.SetValue(int(bytes_written))
                     self.progress_label.SetLabel(f"Bytes Written: {round(bytes_written, 2)}MB")
                     wx.GetApp().Yield()
                 else:
@@ -2339,6 +2349,84 @@ class wx_python_gui:
         subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.installer_pkg_zip_path, self.constants.payload_path])
 
 
+    def _kdk_chainload(self, build: str, version: str, download_dir: str):
+        """
+        Download the correct KDK to be chainloaded in the macOS installer
+
+        Parameters
+            build (str): The build number of the macOS installer (e.g. 20A5343j)
+            version (str): The version of the macOS installer (e.g. 11.0.1)
+        """
+
+        kdk_dmg_path = Path(download_dir) / "KDK.dmg"
+        kdk_pkg_path = Path(download_dir) / "KDK.pkg"
+
+        if kdk_dmg_path.exists():
+            kdk_dmg_path.unlink()
+        if kdk_pkg_path.exists():
+            kdk_pkg_path.unlink()
+
+        logging.info("- Initiating KDK download")
+        logging.info(f"  - Build: {build}")
+        logging.info(f"  - Version: {version}")
+        logging.info(f"  - Working Directory: {download_dir}")
+
+        kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, build, version, ignore_installed=True)
+        if kdk_obj.success is False:
+            logging.info("- Failed to retrieve KDK")
+            logging.info(kdk_obj.error_msg)
+            return
+
+        kdk_download_obj = kdk_obj.retrieve_download(override_path=kdk_dmg_path)
+        if kdk_download_obj is None:
+            logging.info("- Failed to retrieve KDK")
+            logging.info(kdk_obj.error_msg)
+
+        # Check remaining disk space before downloading
+        space = utilities.get_free_space(download_dir)
+        if space < (kdk_obj.kdk_url_expected_size * 2):
+            logging.info("- Not enough disk space to download and install KDK")
+            logging.info(f"- Attempting to download locally first")
+            if space < kdk_obj.kdk_url_expected_size:
+                logging.info("- Not enough disk space to install KDK, skipping")
+                return
+            # Ideally we'd download the KDK onto the disk to display progress in the UI
+            # However we'll just download to our temp directory and move it to the target disk
+            kdk_dmg_path = self.constants.kdk_download_path
+
+        kdk_download_obj.download(spawn_thread=False)
+        if kdk_download_obj.download_complete is False:
+            logging.info("- Failed to download KDK")
+            logging.info(kdk_download_obj.error_msg)
+            return
+
+        if not kdk_dmg_path.exists():
+            logging.info(f"- KDK missing: {kdk_dmg_path}")
+            return
+
+        # Now that we have a KDK, extract it to get the pkg
+        with tempfile.TemporaryDirectory() as mount_point:
+            logging.info("- Mounting KDK")
+            result = subprocess.run(["hdiutil", "attach", kdk_dmg_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                logging.info("- Failed to mount KDK")
+                logging.info(result.stdout.decode("utf-8"))
+                return
+
+            logging.info("- Copying KDK")
+            subprocess.run(["cp", "-r", f"{mount_point}/KernelDebugKit.pkg", kdk_pkg_path])
+
+            logging.info("- Unmounting KDK")
+            result = subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                logging.info("- Failed to unmount KDK")
+                logging.info(result.stdout.decode("utf-8"))
+                return
+
+        logging.info("- Removing KDK Disk Image")
+        kdk_dmg_path.unlink()
+
+
     def install_installer_pkg(self, disk):
         disk = disk + "s2" # ESP sits at 1, and we know macOS will have created the main partition at 2
 
@@ -2357,6 +2445,8 @@ class wx_python_gui:
 
         subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
         subprocess.run(["cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
+
+        self._kdk_chainload(os_version["ProductBuildVersion"], os_version["ProductVersion"], Path(path + "/Library/Packages/"))
 
 
     def settings_menu(self, event=None):

@@ -43,7 +43,7 @@ class Constants:
         self.cpufriend_version = "1.2.6"  #          CPUFriend
         self.bluetool_version = "2.6.4"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
-        self.autopkg_version = "1.0.1"  #            AutoPkgInstaller
+        self.autopkg_version = "1.0.2"  #            AutoPkgInstaller
         self.cryptexfixup_version = "1.0.1"  #       CryptexFixup
 
         ## Apple

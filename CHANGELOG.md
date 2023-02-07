@@ -7,6 +7,9 @@
 - Ensure `Moraea_BlurBeta` is set on non-Metal systems
 - Implement proper Root Unpatching verification in GUI
   - Removes arbitrary patch requirements used against unpatching (ex. network connection)
+- Implement Kernel Debug Kit installation during OS installs
+  - Avoids network requirement for first time installs
+  - Paired along side AutoPkgInstaller
 - Backend Changes:
   - Refactored kdk_handler.py
     - Prioritizes KdkSupportPkg repository for downloads
@@ -30,6 +33,7 @@
     - packaging - 23.0
 - Increment Binaries:
   - PatcherSupportPkg 0.8.3 - release
+  - AutoPkgInstaller 1.0.2 - release
 
 ## 0.6.1
 - Avoid usage of KDKlessWorkaround on hardware not requiring it
