@@ -76,7 +76,7 @@ class KernelDebugKitObject:
         self._get_latest_kdk()
 
 
-    def _get_available_kdks(self):
+    def _get_remote_kdks(self):
         """
         Fetches a list of available KDKs from the KdkSupportPkg API
 
@@ -129,14 +129,14 @@ class KernelDebugKitObject:
             logging.warning(f"- {self.error_msg}")
             return
 
-        self.kdk_installed_path = self._local_kdk_installed_build()
+        self.kdk_installed_path = self._local_kdk_installed()
         if self.kdk_installed_path:
             logging.info(f"- KDK already installed ({Path(self.kdk_installed_path).name}), skipping")
             self.kdk_already_installed = True
             self.success = True
             return
 
-        remote_kdk_version = self._get_available_kdks()
+        remote_kdk_version = self._get_remote_kdks()
 
         if remote_kdk_version is None:
             logging.warning("- Failed to fetch KDK list, falling back to local KDK matching")
@@ -145,7 +145,7 @@ class KernelDebugKitObject:
             # ex. 13.0.1 vs 13.0
             loose_version = f"{parsed_version.major}.{parsed_version.minor}"
             logging.info(f"- Checking for KDKs loosely matching {loose_version}")
-            self.kdk_installed_path = self._local_kdk_installed_version(loose_version)
+            self.kdk_installed_path = self._local_kdk_installed(match=loose_version, check_version=True)
             if self.kdk_installed_path:
                 logging.info(f"- Found matching KDK: {Path(self.kdk_installed_path).name}")
                 self.success = True
@@ -153,7 +153,7 @@ class KernelDebugKitObject:
 
             older_version = f"{parsed_version.major}.{parsed_version.minor - 1 if parsed_version.minor > 0 else 0}"
             logging.info(f"- Checking for KDKs matching {older_version}")
-            self.kdk_installed_path = self._local_kdk_installed_version(older_version)
+            self.kdk_installed_path = self._local_kdk_installed(match=older_version, check_version=True)
             if self.kdk_installed_path:
                 logging.info(f"- Found matching KDK: {Path(self.kdk_installed_path).name}")
                 self.success = True
@@ -200,7 +200,7 @@ class KernelDebugKitObject:
 
 
         # Check if this KDK is already installed
-        self.kdk_installed_path = self._local_kdk_installed_build(self.kdk_url_build)
+        self.kdk_installed_path = self._local_kdk_installed(match=self.kdk_url_build)
         if self.kdk_installed_path:
             logging.info(f"- KDK already installed ({Path(self.kdk_installed_path).name}), skipping")
             self.kdk_already_installed = True
@@ -276,39 +276,14 @@ class KernelDebugKitObject:
         return True
 
 
-    def _local_kdk_installed_build(self, build: str = None):
+    def _local_kdk_installed(self, match: str = None, check_version: bool = False):
         """
         Checks if KDK matching build is installed
         If so, validates it has not been corrupted
 
-        Returns:
-            str: Path to KDK if valid, None if not
-        """
-
-        if self.ignore_installed is True:
-            return None
-
-        if build is None:
-            build = self.host_build
-
-        if not Path(KDK_INSTALL_PATH).exists():
-            return None
-
-        for kdk_folder in Path(KDK_INSTALL_PATH).iterdir():
-            if not kdk_folder.is_dir():
-                continue
-            if not kdk_folder.name.endswith(f"{build}.kdk"):
-                continue
-
-            if self._local_kdk_valid(kdk_folder):
-                return kdk_folder
-
-        return None
-
-    def _local_kdk_installed_version(self, version: str = None):
-        """
-        Checks if KDK matching version is installed
-        If so, validates it has not been corrupted
+        Parameters:
+            match (str): string to match against (ex. build or version)
+            check_version (bool): If True, match against version, otherwise match against build
 
         Returns:
             str: Path to KDK if valid, None if not
@@ -317,8 +292,11 @@ class KernelDebugKitObject:
         if self.ignore_installed is True:
             return None
 
-        if version is None:
-            version = self.host_version
+        if match is None:
+            if check_version:
+                match = self.host_version
+            else:
+                match = self.host_build
 
         if not Path(KDK_INSTALL_PATH).exists():
             return None
@@ -326,8 +304,12 @@ class KernelDebugKitObject:
         for kdk_folder in Path(KDK_INSTALL_PATH).iterdir():
             if not kdk_folder.is_dir():
                 continue
-            if version not in kdk_folder.name:
-                continue
+            if check_version:
+                if match not in kdk_folder.name:
+                    continue
+            else:
+                if not kdk_folder.name.endswith(f"{match}.kdk"):
+                    continue
 
             if self._local_kdk_valid(kdk_folder):
                 return kdk_folder
