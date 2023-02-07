@@ -15,7 +15,7 @@ import logging
 
 from resources import utilities, network_handler
 from resources.constants import Constants
-from data.os_data import os_data
+from data import os_data
 
 KDK_INSTALL_PATH = "/Library/Developer/KDKs"
 
@@ -124,7 +124,7 @@ class KernelDebugKitObject:
 
         parsed_version = cast(packaging.version.Version, packaging.version.parse(host_version))
 
-        if parsed_version.major < os_data.ventura:
+        if os_data.os_conversion.os_to_kernel(str(parsed_version.major)) < os_data.os_data.ventura:
             self.error_msg = "KDKs are not required for macOS Monterey or older"
             logging.warning(f"- {self.error_msg}")
             return
