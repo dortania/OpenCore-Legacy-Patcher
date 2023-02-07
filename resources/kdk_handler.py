@@ -15,6 +15,7 @@ import logging
 
 from resources import utilities, network_handler
 from resources.constants import Constants
+from data.os_data import os_data
 
 KDK_INSTALL_PATH = "/Library/Developer/KDKs"
 
@@ -121,7 +122,13 @@ class KernelDebugKitObject:
             host_build   = self.host_build
             host_version = self.host_version
 
-        logging.info(f"- Fetching latest KDK for {host_build} ({host_version})")
+        parsed_version = cast(packaging.version.Version, packaging.version.parse(host_version))
+
+        if parsed_version.major < os_data.ventura:
+            self.error_msg = "KDKs are not required for macOS Monterey or older"
+            logging.warning(f"- {self.error_msg}")
+            return
+
         self.kdk_installed_path = self._local_kdk_installed_build()
         if self.kdk_installed_path:
             logging.info(f"- KDK already installed ({Path(self.kdk_installed_path).name}), skipping")
@@ -130,8 +137,6 @@ class KernelDebugKitObject:
             return
 
         remote_kdk_version = self._get_available_kdks()
-
-        parsed_version = cast(packaging.version.Version, packaging.version.parse(host_version))
 
         if remote_kdk_version is None:
             logging.warning("- Failed to fetch KDK list, falling back to local KDK matching")
