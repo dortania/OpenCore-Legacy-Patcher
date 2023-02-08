@@ -4,6 +4,7 @@
 import datetime
 from pathlib import Path
 from typing import cast
+import tempfile
 import plistlib
 
 import packaging.version
@@ -350,6 +351,25 @@ class KernelDebugKitObject:
             if self._local_kdk_valid(kdk_folder):
                 return kdk_folder
 
+        # If we can't find a KDK, next check if there's a backup present
+        # Check for KDK packages in the same directory as the KDK
+        for kdk_pkg in Path(KDK_INSTALL_PATH).iterdir():
+            if kdk_pkg.is_dir():
+                continue
+            if not kdk_pkg.name.endswith(".pkg"):
+                continue
+            if check_version:
+                if match not in kdk_pkg.name:
+                    continue
+            else:
+                if not kdk_pkg.name.endswith(f"{match}.pkg"):
+                    continue
+
+            logging.info(f"- Found KDK backup, restoring: {kdk_pkg.name}")
+            if KernelDebugKitUtilities().install_kdk_pkg(kdk_pkg):
+                logging.info("- Successfully restored KDK")
+                return self._local_kdk_installed(match=match, check_version=check_version)
+
         return None
 
 
@@ -381,7 +401,6 @@ class KernelDebugKitObject:
             exclude_builds (list, optional): Builds to exclude from removal.
                                              If None, defaults to host and closest match builds.
         """
-
 
         if exclude_builds is None:
             exclude_builds = [
@@ -443,3 +462,123 @@ class KernelDebugKitObject:
         self._remove_unused_kdks()
 
         self.success = True
+
+
+class KernelDebugKitUtilities:
+    """
+    Utilities for KDK handling
+
+    """
+
+    def __init__(self):
+        pass
+
+
+    def install_kdk_pkg(self, kdk_path: Path):
+        """
+        Installs provided KDK packages
+
+        Parameters:
+            kdk_path (Path): Path to KDK package
+
+        Returns:
+            bool: True if successful, False if not
+        """
+
+        if os.getuid() != 0:
+            logging.warning("- Cannot install KDK, not running as root")
+            return False
+
+        result = utilities.elevated(["installer", "-pkg", kdk_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if result.returncode != 0:
+            logging.info("- Failed to install KDK:")
+            logging.info(result.stdout.decode('utf-8'))
+            if result.stderr:
+                logging.info(result.stderr.decode('utf-8'))
+            return False
+
+        return True
+
+
+    def install_kdk_dmg(self, kdk_path: Path):
+        """
+        Installs provided KDK disk image
+
+        Parameters:
+            kdk_path (Path): Path to KDK disk image
+
+        Returns:
+            bool: True if successful, False if not
+        """
+
+        if os.getuid() != 0:
+            logging.warning("- Cannot install KDK, not running as root")
+            return False
+
+        logging.info(f"- Installing downloaded KDK (this may take a while)")
+        with tempfile.TemporaryDirectory() as mount_point:
+            result = subprocess.run(["hdiutil", "attach", kdk_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                logging.info("- Failed to mount KDK:")
+                logging.info(result.stdout.decode('utf-8'))
+                return False
+
+            kdk_pkg_path = Path(f"{mount_point}/KernelDebugKit.pkg")
+
+            if not kdk_pkg_path.exists():
+                logging.warning("- Failed to find KDK package in DMG, likely corrupted!!!")
+                return False
+
+            if self.install_kdk_pkg(kdk_pkg_path) is False:
+                return False
+
+            self._create_backup(kdk_pkg_path, Path(f"{kdk_path.parent}/{KDK_INFO_PLIST}"))
+
+            result = subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if result.returncode != 0:
+                # Non-fatal error
+                logging.info("- Failed to unmount KDK:")
+                logging.info(result.stdout.decode('utf-8'))
+
+        logging.info("- Successfully installed KDK")
+        return True
+
+
+    def _create_backup(self, kdk_path: Path, kdk_info_plist: Path):
+        """
+        Creates a backup of the KDK
+
+        Parameters:
+            kdk_path (Path): Path to KDK
+            kdk_info_plist (Path): Path to KDK Info.plist
+        """
+
+        if not kdk_path.exists():
+            logging.warning("- KDK does not exist, cannot create backup")
+            return
+        if not kdk_info_plist.exists():
+            logging.warning("- KDK Info.plist does not exist, cannot create backup")
+            return
+
+        kdk_info_dict = plistlib.load(kdk_info_plist.open("rb"))
+        logging.info("- Creating backup of KDK")
+
+        if 'version' not in kdk_info_dict or 'build' not in kdk_info_dict:
+            logging.warning("- Malformed KDK Info.plist provided, cannot create backup")
+            return
+
+        if os.getuid() != 0:
+            logging.warning("- Cannot create KDK backup, not running as root")
+            return
+
+        kdk_dst_name = f"KDK_{kdk_info_dict['version']}_{kdk_info_dict['build']}.pkg"
+        kdk_dst_path = Path(f"{KDK_INSTALL_PATH}/{kdk_dst_name}")
+
+        if kdk_dst_path.exists():
+            logging.info("- Backup already exists, skipping")
+            return
+
+        result = utilities.elevated(["cp", "-R", kdk_path, kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if result.returncode != 0:
+            logging.info("- Failed to create KDK backup:")
+            logging.info(result.stdout.decode('utf-8'))
