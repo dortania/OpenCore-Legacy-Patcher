@@ -18,8 +18,11 @@ from resources import utilities, network_handler
 from resources.constants import Constants
 from data import os_data
 
-KDK_INSTALL_PATH = "/Library/Developer/KDKs"
-KDK_INFO_PLIST = "KDKInfo.plist"
+KDK_INSTALL_PATH: str  = "/Library/Developer/KDKs"
+KDK_INFO_PLIST:   str  = "KDKInfo.plist"
+KDK_API_LINK:     str  = "https://raw.githubusercontent.com/dortania/KdkSupportPkg/gh-pages/manifest.json"
+
+KDK_ASSET_LIST:   list = None
 
 
 class KernelDebugKitObject:
@@ -81,14 +84,17 @@ class KernelDebugKitObject:
     def _get_remote_kdks(self):
         """
         Fetches a list of available KDKs from the KdkSupportPkg API
+        Additionally caches the list for future use, avoiding extra API calls
 
         Returns:
             list: A list of KDKs, sorted by version and date if available. Returns None if the API is unreachable
         """
 
-        KDK_API_LINK = "https://raw.githubusercontent.com/dortania/KdkSupportPkg/gh-pages/manifest.json"
+        global KDK_ASSET_LIST
 
         logging.info("- Pulling KDK list from KdkSupportPkg API")
+        if KDK_ASSET_LIST:
+            return KDK_ASSET_LIST
 
         try:
             results = network_handler.SESSION.get(
@@ -96,7 +102,7 @@ class KernelDebugKitObject:
                 headers={
                     "User-Agent": f"OCLP/{self.constants.patcher_version}"
                 },
-                timeout=10
+                timeout=5
             )
         except (requests.exceptions.Timeout, requests.exceptions.TooManyRedirects, requests.exceptions.ConnectionError):
             logging.info("- Could not contact KDK API")
@@ -106,7 +112,9 @@ class KernelDebugKitObject:
             logging.info("- Could not fetch KDK list")
             return None
 
-        return sorted(results.json(), key=lambda x: (packaging.version.parse(x["version"]), datetime.datetime.fromisoformat(x["date"])), reverse=True)
+        KDK_ASSET_LIST = sorted(results.json(), key=lambda x: (packaging.version.parse(x["version"]), datetime.datetime.fromisoformat(x["date"])), reverse=True)
+
+        return KDK_ASSET_LIST
 
 
     def _get_latest_kdk(self, host_build: str = None, host_version: str = None):
