@@ -486,8 +486,6 @@ class KernelDebugKitObject:
 
             self.error_msg = msg
 
-        self._remove_unused_kdks()
-
         self.success = True
 
 
