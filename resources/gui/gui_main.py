@@ -1328,7 +1328,7 @@ class wx_python_gui:
                         )
                         self.developer_note.Centre(wx.HORIZONTAL)
 
-                        self.progress_bar.SetValue(kdk_download_obj.get_percent())
+                        self.progress_bar.SetValue(int(kdk_download_obj.get_percent()))
 
                         wx.GetApp().Yield()
                         time.sleep(0.1)
@@ -1847,7 +1847,7 @@ class wx_python_gui:
             )
             self.download_label_2.Centre(wx.HORIZONTAL)
 
-            self.download_progress.SetValue(ia_download.get_percent())
+            self.download_progress.SetValue(int(ia_download.get_percent()))
 
             wx.GetApp().Yield()
             time.sleep(0.1)
