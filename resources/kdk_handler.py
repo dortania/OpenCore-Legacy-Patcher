@@ -597,7 +597,6 @@ class KernelDebugKitUtilities:
             return
 
         kdk_info_dict = plistlib.load(kdk_info_plist.open("rb"))
-        logging.info("- Creating backup of KDK")
 
         if 'version' not in kdk_info_dict or 'build' not in kdk_info_dict:
             logging.warning("- Malformed KDK Info.plist provided, cannot create backup")
@@ -610,6 +609,7 @@ class KernelDebugKitUtilities:
         kdk_dst_name = f"KDK_{kdk_info_dict['version']}_{kdk_info_dict['build']}.pkg"
         kdk_dst_path = Path(f"{KDK_INSTALL_PATH}/{kdk_dst_name}")
 
+        logging.info(f"- Creating backup: {kdk_dst_name}")
         if kdk_dst_path.exists():
             logging.info("- Backup already exists, skipping")
             return
