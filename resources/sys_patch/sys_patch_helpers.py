@@ -11,7 +11,7 @@ import plistlib
 import os
 import logging
 
-from resources import constants, bplist
+from resources import kdk_handler, bplist
 
 class sys_patch_helpers:
 
@@ -103,49 +103,6 @@ class sys_patch_helpers:
             utilities.elevated(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         logging.info("- Successfully installed KDK")
 
-
-    def determine_kdk_present(self, match_closest=False, override_build=None):
-        # Check if KDK is present
-        # If 'match_closest' is True, will provide the closest match to the reported KDK
-
-        kdk_array = []
-
-        search_build = self.constants.detected_os_build
-        if override_build:
-            search_build = override_build
-
-        if not Path("/Library/Developer/KDKs").exists():
-            return None
-
-
-        for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
-            if not kdk_folder.name.endswith(".kdk"):
-                continue
-
-            # Ensure direct match
-            if kdk_folder.name.endswith(f"{search_build}.kdk"):
-                # Verify that the KDK is valid
-                if (kdk_folder / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
-                    return kdk_folder
-            if match_closest is True:
-                # ex: KDK_13.0_22A5266r.kdk -> 22A5266r.kdk -> 22A5266r
-                try:
-                    build = kdk_folder.name.split("_")[2].split(".")[0]
-                    # Don't append if Darwin Major is different
-                    if build.startswith(str(self.constants.detected_os)):
-                        kdk_array.append(build)
-                except IndexError:
-                    pass
-
-        if match_closest is True:
-            result = os_data.os_conversion.find_largest_build(kdk_array)
-            logging.info(f"- Closest KDK match to {search_build}: {result}")
-            for kdk_folder in Path("/Library/Developer/KDKs").iterdir():
-                if kdk_folder.name.endswith(f"{result}.kdk"):
-                    # Verify that the KDK is valid
-                    if (kdk_folder / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists():
-                        return kdk_folder
-        return None
 
 
     def disable_window_server_caching(self):
