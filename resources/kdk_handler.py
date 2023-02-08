@@ -50,11 +50,13 @@ class KernelDebugKitObject:
 
     """
 
-    def __init__(self, constants: Constants, host_build: str, host_version: str, ignore_installed: bool = False):
+    def __init__(self, constants: Constants, host_build: str, host_version: str, ignore_installed: bool = False, passive: bool = False):
         self.constants: Constants = constants
 
         self.host_build:   str = host_build    # ex. 20A5384c
         self.host_version: str = host_version  # ex. 11.0.1
+
+        self.passive: bool = passive  # Don't perform actions requiring elevated privileges
 
         self.ignore_installed:      bool = ignore_installed  # If True, will ignore any installed KDKs and download the latest
         self.kdk_already_installed: bool = False
@@ -365,10 +367,16 @@ class KernelDebugKitObject:
                 if not kdk_pkg.name.endswith(f"{match}.pkg"):
                     continue
 
-            logging.info(f"- Found KDK backup, restoring: {kdk_pkg.name}")
-            if KernelDebugKitUtilities().install_kdk_pkg(kdk_pkg):
-                logging.info("- Successfully restored KDK")
-                return self._local_kdk_installed(match=match, check_version=check_version)
+            logging.info(f"- Found KDK backup: {kdk_pkg.name}")
+            if self.passive is False:
+                logging.info("- Attempting KDK restoration")
+                if KernelDebugKitUtilities().install_kdk_pkg(kdk_pkg):
+                    logging.info("- Successfully restored KDK")
+                    return self._local_kdk_installed(match=match, check_version=check_version)
+            else:
+                # When in passive mode, we're just checking if a KDK could be restored
+                logging.info("- KDK restoration skipped, running in passive mode")
+                return kdk_pkg
 
         return None
 
@@ -380,6 +388,9 @@ class KernelDebugKitObject:
         Args:
             kdk_path (str): Path to KDK
         """
+
+        if self.passive is True:
+            return
 
         if os.getuid() != 0:
             logging.warning("- Cannot remove KDK, not running as root")
@@ -401,6 +412,9 @@ class KernelDebugKitObject:
             exclude_builds (list, optional): Builds to exclude from removal.
                                              If None, defaults to host and closest match builds.
         """
+
+        if self.passive is True:
+            return
 
         if exclude_builds is None:
             exclude_builds = [
