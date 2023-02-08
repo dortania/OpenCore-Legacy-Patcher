@@ -1287,24 +1287,36 @@ class wx_python_gui:
             self.pulse_alternative(self.progress_bar)
             wx.GetApp().Yield()
 
-        self.progress_bar.Hide()
-
         if self.patches["Settings: Kernel Debug Kit missing"] is True:
             # Download KDK (if needed)
             self.subheader.SetLabel("Downloading Kernel Debug Kit")
             self.subheader.Centre(wx.HORIZONTAL)
             self.developer_note.SetLabel("Starting shortly")
 
+            wx.GetApp().Yield()
+
             kdk_result = False
-            kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
-            if kdk_obj.success is True:
-                kdk_download_obj = kdk_obj.retrieve_download()
+            self.kdk_obj = None
+            def kdk_thread_spawn():
+                self.kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
+
+            kdk_thread = threading.Thread(target=kdk_thread_spawn)
+            kdk_thread.start()
+
+            while kdk_thread.is_alive():
+                self.pulse_alternative(self.progress_bar)
+                wx.GetApp().Yield()
+
+            self.progress_bar.Hide()
+
+            if self.kdk_obj.success is True:
+                kdk_download_obj = self.kdk_obj.retrieve_download()
                 if not kdk_download_obj:
                     kdk_result = True
                 else:
                     kdk_download_obj.download()
 
-                    self.header.SetLabel(f"Downloading KDK Build: {kdk_obj.kdk_url_build}")
+                    self.header.SetLabel(f"Downloading KDK Build: {self.kdk_obj.kdk_url_build}")
                     self.header.Centre(wx.HORIZONTAL)
 
                     self.progress_bar.SetValue(0)
