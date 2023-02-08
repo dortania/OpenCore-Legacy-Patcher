@@ -161,6 +161,7 @@ class KernelDebugKitObject:
             self.kdk_installed_path = self._local_kdk_installed(match=loose_version, check_version=True)
             if self.kdk_installed_path:
                 logging.info(f"- Found matching KDK: {Path(self.kdk_installed_path).name}")
+                self.kdk_already_installed = True
                 self.success = True
                 return
 
@@ -169,6 +170,7 @@ class KernelDebugKitObject:
             self.kdk_installed_path = self._local_kdk_installed(match=older_version, check_version=True)
             if self.kdk_installed_path:
                 logging.info(f"- Found matching KDK: {Path(self.kdk_installed_path).name}")
+                self.kdk_already_installed = True
                 self.success = True
                 return
 
