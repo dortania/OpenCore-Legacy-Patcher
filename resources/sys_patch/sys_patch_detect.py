@@ -490,9 +490,9 @@ class detect_root_patch:
                     if self.amfi_shim_bins is True:
                         # Currently we require AMFI outright disabled
                         # in Ventura to work with shim'd binaries
-                        return 3
-                return 1
-        return 0
+                        return amfi_detect.AmfiConfigDetectLevel.ALLOW_ALL
+                return amfi_detect.AmfiConfigDetectLevel.LIBRARY_VALIDATION
+        return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
 
     def verify_patch_allowed(self, print_errors=False):
         sip_dict = self.check_sip()
@@ -500,7 +500,7 @@ class detect_root_patch:
         sip_value = sip_dict[1]
 
         self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
-        self.amfi_enabled = not amfi_detect.amfi_configuration_detection().check_config(self.get_amfi_level_needed())
+        self.amfi_enabled = not amfi_detect.AmfiConfigurationDetection().check_config(self.get_amfi_level_needed())
 
         if self.nvidia_web is True:
             self.missing_nv_web_nvram   = not self.check_nv_web_nvram()
