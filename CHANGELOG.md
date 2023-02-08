@@ -10,6 +10,8 @@
 - Implement Kernel Debug Kit installation during OS installs
   - Avoids network requirement for first time installs
   - Paired along side AutoPkgInstaller
+- Implement Kernel Debug Kit backup system
+  - Allows for easy restoration of KDKs if OS updates corrupted installed KDKs
 - Backend Changes:
   - Refactored kdk_handler.py
     - Prioritizes KdkSupportPkg repository for downloads

@@ -399,7 +399,15 @@ class KernelDebugKitObject:
             logging.warning("- Cannot remove KDK, not running as root")
             return
 
-        result = utilities.elevated(["rm", "-rf", kdk_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if not Path(kdk_path).exists():
+            logging.warning(f"- KDK does not exist: {kdk_path}")
+            return
+
+        rm_args = ["rm", "-f", kdk_path]
+        if Path(kdk_path).is_dir():
+            rm_args = ["rm", "-rf", kdk_path]
+
+        result = utilities.elevated(rm_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.warning(f"- Failed to remove KDK: {kdk_path}")
             logging.warning(f"- {result.stdout.decode('utf-8')}")
@@ -434,10 +442,12 @@ class KernelDebugKitObject:
         logging.info("- Cleaning unused KDKs")
         for kdk_folder in Path(KDK_INSTALL_PATH).iterdir():
             if kdk_folder.is_dir():
-                if kdk_folder.name.endswith(".kdk"):
+                if kdk_folder.name.endswith(".kdk") or kdk_folder.name.endswith(".pkg"):
                     should_remove = True
                     for build in exclude_builds:
-                        if build != "" and kdk_folder.name.endswith(f"{build}.kdk"):
+                        if build != "":
+                            continue
+                        if kdk_folder.name.endswith(f"{build}.kdk") or kdk_folder.name.endswith(f"{build}.pkg"):
                             should_remove = False
                             break
                     if should_remove is False:
