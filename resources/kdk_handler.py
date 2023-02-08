@@ -256,7 +256,7 @@ class KernelDebugKitObject:
         self.success = True
 
         kdk_download_path = self.constants.kdk_download_path if override_path == "" else Path(override_path)
-        kdk_plist_path = Path(f"{kdk_download_path}/{KDK_INFO_PLIST}") if override_path == "" else Path(f"{Path(override_path).parent}/{KDK_INFO_PLIST}")
+        kdk_plist_path = Path(f"{kdk_download_path.parent}/{KDK_INFO_PLIST}") if override_path == "" else Path(f"{Path(override_path).parent}/{KDK_INFO_PLIST}")
 
         self._generate_kdk_info_plist(kdk_plist_path)
         return network_handler.DownloadObject(self.kdk_url, kdk_download_path)
@@ -278,6 +278,7 @@ class KernelDebugKitObject:
         }
 
         try:
+            plist_path.touch()
             plistlib.dump(kdk_dict, plist_path.open("wb"), sort_keys=False)
         except Exception as e:
             logging.error(f"- Failed to generate KDK Info.plist: {e}")
@@ -503,6 +504,9 @@ class KernelDebugKitUtilities:
             logging.warning("- Cannot install KDK, not running as root")
             return False
 
+        logging.info(f"- Installing KDK package: {kdk_path.name}")
+        logging.info(f"  - This may take a while...")
+
         result = utilities.elevated(["installer", "-pkg", kdk_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info("- Failed to install KDK:")
@@ -529,7 +533,7 @@ class KernelDebugKitUtilities:
             logging.warning("- Cannot install KDK, not running as root")
             return False
 
-        logging.info(f"- Installing downloaded KDK (this may take a while)")
+        logging.info(f"- Extracting downloaded KDK disk image")
         with tempfile.TemporaryDirectory() as mount_point:
             result = subprocess.run(["hdiutil", "attach", kdk_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
@@ -541,21 +545,26 @@ class KernelDebugKitUtilities:
 
             if not kdk_pkg_path.exists():
                 logging.warning("- Failed to find KDK package in DMG, likely corrupted!!!")
+                self._unmount_disk_image(mount_point)
                 return False
 
             if self.install_kdk_pkg(kdk_pkg_path) is False:
+                self._unmount_disk_image(mount_point)
                 return False
 
             self._create_backup(kdk_pkg_path, Path(f"{kdk_path.parent}/{KDK_INFO_PLIST}"))
 
             result = subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            if result.returncode != 0:
-                # Non-fatal error
-                logging.info("- Failed to unmount KDK:")
-                logging.info(result.stdout.decode('utf-8'))
+            self._unmount_disk_image(mount_point)
 
         logging.info("- Successfully installed KDK")
         return True
+
+    def _unmount_disk_image(self, mount_point):
+        result = subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if result.returncode != 0:
+            logging.info("- Failed to unmount KDK:")
+            logging.info(result.stdout.decode('utf-8'))
 
 
     def _create_backup(self, kdk_path: Path, kdk_info_plist: Path):

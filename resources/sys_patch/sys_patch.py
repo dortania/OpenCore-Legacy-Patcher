@@ -113,56 +113,53 @@ class PatchSysVolume:
         return False
 
 
-    def invoke_kdk_handler(self):
-        # If we're invoked, there is no KDK installed (or something went wrong)
-        kdk_result = False
-        error_msg = ""
-
-        kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
-
-        if kdk_obj.success is False:
-            error_msg = kdk_obj.error_msg
-            return kdk_result, error_msg, None
-
-        kdk_download_obj = kdk_obj.retrieve_download()
-
-        # We didn't get a download object, something's wrong
-        if not kdk_download_obj:
-            if kdk_obj.kdk_already_installed is True:
-                error_msg = "KDK already installed, function should not have been invoked"
-                return kdk_result, error_msg, None
-            else:
-                error_msg = "Could not retrieve KDK"
-                return kdk_result, error_msg, None
-
-        # Hold thread until download is complete
-        kdk_download_obj.download(spawn_thread=False)
-
-        if kdk_download_obj.download_complete is False:
-            error_msg = kdk_download_obj.error_msg
-            return kdk_result, error_msg, None
-
-        kdk_result = kdk_obj.validate_kdk_checksum()
-        downloaded_kdk = self.constants.kdk_download_path
-
-        return kdk_result, error_msg, downloaded_kdk
-
-
     def merge_kdk_with_root(self, save_hid_cs=False):
         if self.skip_root_kmutil_requirement is True:
             return
         if self.constants.detected_os < os_data.os_data.ventura:
             return
 
-        downloaded_kdk = None
-        kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=False)
-        if kdk_path is None:
-            if not self.constants.kdk_download_path.exists():
-                kdk_result, error_msg, downloaded_kdk = self.invoke_kdk_handler()
-                if kdk_result is False:
-                    raise Exception(f"Unable to download KDK: {error_msg}")
-            sys_patch_helpers.sys_patch_helpers(self.constants).install_kdk()
-            kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=True, override_build=downloaded_kdk)
+        if self.constants.kdk_download_path.exists():
+            if kdk_handler.KernelDebugKitUtilities().install_kdk_dmg(self.constants.kdk_download_path) is False:
+                logging.info("Failed to install KDK")
+                raise Exception("Failed to install KDK")
+
+        kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
+        if kdk_obj.success is False:
+            logging.info(f"Unable to get KDK info: {kdk_obj.error_msg}")
+            raise Exception(f"Unable to get KDK info: {kdk_obj.error_msg}")
+
+        if kdk_obj.kdk_already_installed is False:
+
+            kdk_download_obj = kdk_obj.retrieve_download()
+            if not kdk_download_obj:
+                logging.info(f"Could not retrieve KDK: {kdk_obj.error_msg}")
+
+            # Hold thread until download is complete
+            kdk_download_obj.download(spawn_thread=False)
+
+            if kdk_download_obj.download_complete is False:
+                error_msg = kdk_download_obj.error_msg
+                logging.info(f"Could not download KDK: {error_msg}")
+                raise Exception(f"Could not download KDK: {error_msg}")
+
+            if kdk_obj.validate_kdk_checksum() is False:
+                logging.info(f"KDK checksum validation failed: {kdk_obj.error_msg}")
+                raise Exception(f"KDK checksum validation failed: {kdk_obj.error_msg}")
+
+            kdk_handler.KernelDebugKitUtilities().install_kdk_dmg(self.constants.kdk_download_path)
+            # re-init kdk_obj to get the new kdk_installed_path
+            kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
+            if kdk_obj.success is False:
+                logging.info(f"Unable to get KDK info: {kdk_obj.error_msg}")
+                raise Exception(f"Unable to get KDK info: {kdk_obj.error_msg}")
+
+            if kdk_obj.kdk_already_installed is False:
+                # We shouldn't get here, but just in case
+                logging.warning(f"KDK was not installed, but should have been: {kdk_obj.error_msg}")
+                raise Exception("KDK was not installed, but should have been: {kdk_obj.error_msg}")
+
+        kdk_path = Path(kdk_obj.kdk_installed_path) if kdk_obj.kdk_installed_path != "" else None
 
         oclp_plist = Path("/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist")
         if (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists() and oclp_plist.exists():
@@ -178,7 +175,7 @@ class PatchSysVolume:
                 pass
 
         if kdk_path is None:
-            logging.info(f"- Unable to find Kernel Debug Kit: {downloaded_kdk}")
+            logging.info(f"- Unable to find Kernel Debug Kit")
             raise Exception("Unable to find Kernel Debug Kit")
         self.kdk_path = kdk_path
         logging.info(f"- Found KDK at: {kdk_path}")

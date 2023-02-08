@@ -1350,12 +1350,12 @@ class wx_python_gui:
                         logging.error(kdk_download_obj.error_msg)
                         error_msg = kdk_download_obj.error_msg
                     else:
-                        kdk_result = kdk_obj.validate_kdk_checksum()
-                        error_msg = kdk_obj.error_msg
+                        kdk_result = self.kdk_obj.validate_kdk_checksum()
+                        error_msg = self.kdk_obj.error_msg
             else:
                 logging.error("Failed to download KDK")
-                logging.error(kdk_obj.error_msg)
-                error_msg = kdk_obj.error_msg
+                logging.error(self.kdk_obj.error_msg)
+                error_msg = self.kdk_obj.error_msg
 
             if kdk_result is False:
                 # Create popup window to inform user of error

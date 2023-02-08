@@ -77,33 +77,6 @@ class sys_patch_helpers:
             return True
         return False
 
-    def install_kdk(self):
-        if not self.constants.kdk_download_path.exists():
-            return
-
-        logging.info(f"- Installing downloaded KDK (this may take a while)")
-        with tempfile.TemporaryDirectory() as mount_point:
-            utilities.process_status(subprocess.run(["hdiutil", "attach", self.constants.kdk_download_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            # Due to a permissions bug in macOS, sometimes the OS will fail on a Read-only file system error
-            # We don't actually need to write inside the KDK DMG, however macOS will do whatever it wants
-            # Thus move the KDK to another location, and run the installer from there
-            kdk_dst_path = Path(f"{self.constants.payload_path}/KernelDebugKit.pkg")
-            if kdk_dst_path.exists():
-                utilities.process_status(utilities.elevated(["rm", kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(subprocess.run(["cp", f"{mount_point}/KernelDebugKit.pkg", self.constants.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            result = utilities.elevated(["installer", "-pkg", kdk_dst_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            if result.returncode != 0:
-                logging.info("- Failed to install KDK:")
-                logging.info(result.stdout.decode('utf-8'))
-                if result.stderr:
-                    logging.info(result.stderr.decode('utf-8'))
-                utilities.elevated(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                raise Exception("Failed to install KDK")
-            utilities.process_status(utilities.elevated(["rm", kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.elevated(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        logging.info("- Successfully installed KDK")
-
-
 
     def disable_window_server_caching(self):
         # On legacy GCN GPUs, the WindowServer cache generated creates

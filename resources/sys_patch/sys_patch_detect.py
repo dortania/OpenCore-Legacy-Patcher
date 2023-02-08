@@ -337,9 +337,7 @@ class detect_root_patch:
         return utilities.check_kext_loaded("WhateverGreen", self.constants.detected_os)
 
     def check_kdk(self):
-        if kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version, passive=True).kdk_already_installed == "":
-            return False
-        return True
+        return kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version, passive=True).kdk_already_installed
 
     def check_sip(self):
         if self.constants.detected_os > os_data.os_data.catalina:
