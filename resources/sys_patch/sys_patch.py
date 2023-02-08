@@ -187,7 +187,7 @@ class PatchSysVolume:
             # Note it's a folder, not a file
             utilities.elevated(["cp", "-r", cs_path, f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        logging.info("- Merging KDK with Root Volume")
+        logging.info(f"- Merging KDK with Root Volume: {kdk_path.name}")
         utilities.elevated(
             # Only merge '/System/Library/Extensions'
             # 'Kernels' and 'KernelSupport' is wasted space for root patching (we don't care above dev kernels)

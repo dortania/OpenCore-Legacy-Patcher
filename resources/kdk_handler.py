@@ -273,8 +273,8 @@ class KernelDebugKitObject:
             plist_path.unlink()
 
         kdk_dict = {
-            "Build": self.kdk_url_build,
-            "Version": self.kdk_url_version,
+            "build": self.kdk_url_build,
+            "version": self.kdk_url_version,
         }
 
         try:
@@ -553,18 +553,19 @@ class KernelDebugKitUtilities:
                 return False
 
             self._create_backup(kdk_pkg_path, Path(f"{kdk_path.parent}/{KDK_INFO_PLIST}"))
-
-            result = subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             self._unmount_disk_image(mount_point)
 
         logging.info("- Successfully installed KDK")
         return True
 
     def _unmount_disk_image(self, mount_point):
-        result = subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if result.returncode != 0:
-            logging.info("- Failed to unmount KDK:")
-            logging.info(result.stdout.decode('utf-8'))
+        """
+        Unmounts provided disk image silently
+
+        Parameters:
+            mount_point (Path): Path to mount point
+        """
+        subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _create_backup(self, kdk_path: Path, kdk_info_plist: Path):
