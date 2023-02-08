@@ -22,8 +22,8 @@ class AmfiConfigurationDetection:
 
     Usage:
 
-    >>> from resources.amfi_detect import AmfiConfigurationDetection
-    >>> can_patch = AmfiConfigurationDetection().check_config(AmfiConfigDetectLevel.AMFI_LEVEL_ALLOW_ALL)
+    >>> import amfi_detect
+    >>> can_patch = amfi_detect.AmfiConfigurationDetection().check_config(amfi_detect.AmfiConfigDetectLevel.ALLOW_ALL)
 
     """
 
