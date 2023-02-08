@@ -4,6 +4,7 @@
 import datetime
 from pathlib import Path
 from typing import cast
+import plistlib
 
 import packaging.version
 import requests
@@ -18,6 +19,7 @@ from resources.constants import Constants
 from data import os_data
 
 KDK_INSTALL_PATH = "/Library/Developer/KDKs"
+KDK_INFO_PLIST = "KDKInfo.plist"
 
 
 class KernelDebugKitObject:
@@ -241,7 +243,33 @@ class KernelDebugKitObject:
 
         logging.info(f"- Returning DownloadObject for KDK: {Path(self.kdk_url).name}")
         self.success = True
-        return network_handler.DownloadObject(self.kdk_url, self.constants.kdk_download_path if override_path == "" else Path(override_path))
+
+        kdk_download_path = self.constants.kdk_download_path if override_path == "" else Path(override_path)
+        kdk_plist_path = Path(f"{kdk_download_path}/{KDK_INFO_PLIST}") if override_path == "" else Path(f"{Path(override_path).parent}/{KDK_INFO_PLIST}")
+
+        self._generate_kdk_info_plist(kdk_plist_path)
+        return network_handler.DownloadObject(self.kdk_url, kdk_download_path)
+
+
+    def _generate_kdk_info_plist(self, plist_path: str):
+        """
+        Generates a KDK Info.plist
+
+        """
+
+        plist_path = Path(plist_path)
+        if plist_path.exists():
+            plist_path.unlink()
+
+        kdk_dict = {
+            "Build": self.kdk_url_build,
+            "Version": self.kdk_url_version,
+        }
+
+        try:
+            plistlib.dump(kdk_dict, plist_path.open("wb"), sort_keys=False)
+        except Exception as e:
+            logging.error(f"- Failed to generate KDK Info.plist: {e}")
 
 
     def _local_kdk_valid(self, kdk_path: str):
