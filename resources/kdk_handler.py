@@ -124,7 +124,7 @@ class KernelDebugKitObject:
         """
         Fetches the latest KDK for the current macOS version
 
-        Args:
+        Parameters:
             host_build (str, optional):   The build version of the current macOS version.
                                           If empty, will use the host_build from the class. Defaults to None.
             host_version (str, optional): The version of the current macOS version.
@@ -295,7 +295,7 @@ class KernelDebugKitObject:
 
         Uses Apple's pkg receipt system to verify the original contents of the KDK
 
-        Args:
+        Parameters:
             kdk_path (Path): Path to KDK
 
         Returns:
@@ -434,7 +434,7 @@ class KernelDebugKitObject:
         """
         Removes provided KDK
 
-        Args:
+        Parameters:
             kdk_path (str): Path to KDK
         """
 
@@ -465,7 +465,7 @@ class KernelDebugKitObject:
         """
         Removes KDKs that are not in use
 
-        Args:
+        Parameters:
             exclude_builds (list, optional): Builds to exclude from removal.
                                              If None, defaults to host and closest match builds.
         """
@@ -505,7 +505,7 @@ class KernelDebugKitObject:
         """
         Validates KDK DMG checksum
 
-        Args:
+        Parameters:
             kdk_dmg_path (str, optional): Path to KDK DMG. Defaults to None.
 
         Returns:

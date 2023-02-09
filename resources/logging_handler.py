@@ -26,7 +26,7 @@ class InitializeLoggingSupport:
 
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.log_filename: str  = "OpenCore-Patcher.log"
         self.log_filepath: Path = None
 
@@ -111,6 +111,10 @@ class InitializeLoggingSupport:
 
         StreamHandler's format is used to mimic the default behavior of print()
         While FileHandler's format is for more in-depth logging
+
+        Parameters:
+            log_to_file (bool): Whether to log to file or not
+
         """
 
         logging.basicConfig(
@@ -124,6 +128,7 @@ class InitializeLoggingSupport:
         logging.getLogger().setLevel(logging.INFO)
         logging.getLogger().handlers[0].setFormatter(logging.Formatter("%(message)s"))
         logging.getLogger().handlers[1].maxBytes = self.max_file_size
+
 
     def _attempt_initialize_logging_configuration(self):
         """
@@ -159,6 +164,7 @@ class InitializeLoggingSupport:
 
         sys.excepthook = custom_excepthook
         threading.excepthook = custom_thread_excepthook
+
 
     def _restore_original_excepthook(self):
         """
