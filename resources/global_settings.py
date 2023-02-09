@@ -6,6 +6,8 @@
 from pathlib import Path
 import plistlib
 import logging
+import os
+import subprocess
 
 class global_settings:
 
@@ -13,25 +15,28 @@ class global_settings:
         self.file_name = ".com.dortania.opencore-legacy-patcher.plist"
         self.global_settings_folder = "/Users/Shared"
         self.global_settings_plist = f"{self.global_settings_folder}/{self.file_name}"
-        self.generate_settings_file()
-        self.convert_defaults_to_global_settings()
+        self._generate_settings_file()
+        self._convert_defaults_to_global_settings()
+        self._fix_file_permission()
 
-    def generate_settings_file(self):
-        if Path(self.global_settings_plist).exists():
-            return
-        try:
-            plistlib.dump({"Developed by Dortania": True,}, Path(self.global_settings_plist).open("wb"))
-        except PermissionError:
-            logging.info("- Permission error: Unable to write to global settings file")
 
     def read_property(self, property_name):
+        """
+        Reads a property from the global settings file
+        """
+
         if Path(self.global_settings_plist).exists():
             plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
             if property_name in plist:
                 return plist[property_name]
         return None
 
+
     def write_property(self, property_name, property_value):
+        """
+        Writes a property to the global settings file
+        """
+
         if Path(self.global_settings_plist).exists():
             plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
             plist[property_name] = property_value
@@ -41,7 +46,20 @@ class global_settings:
                 logging.info("- Failed to write to global settings file")
 
 
-    def convert_defaults_to_global_settings(self):
+    def _generate_settings_file(self):
+        if Path(self.global_settings_plist).exists():
+            return
+        try:
+            plistlib.dump({"Developed by Dortania": True,}, Path(self.global_settings_plist).open("wb"))
+        except PermissionError:
+            logging.info("- Permission error: Unable to write to global settings file")
+
+
+    def _convert_defaults_to_global_settings(self):
+        """
+        Converts legacy defaults to global settings
+        """
+
         defaults_path = "~/Library/Preferences/com.dortania.opencore-legacy-patcher.plist"
         defaults_path = Path(defaults_path).expanduser()
 
@@ -61,3 +79,22 @@ class global_settings:
                 Path(defaults_path).unlink()
             except PermissionError:
                 logging.info("- Permission error: Unable to delete defaults plist")
+
+
+    def _fix_file_permission(self):
+        """
+        Fixes file permission for log file
+
+        If OCLP was invoked as root, file permission will only allow root to write to settings file
+        This in turn breaks normal OCLP execution to write to settings file
+        """
+
+        if os.geteuid() != 0:
+            return
+
+        # Set file permission to allow any user to write to log file
+        result = subprocess.run(["chmod", "777", self.global_settings_plist], capture_output=True)
+        if result.returncode != 0:
+            logging.warning("- Failed to fix settings file permissions:")
+            if result.stderr:
+                logging.warning(result.stderr.decode("utf-8"))
