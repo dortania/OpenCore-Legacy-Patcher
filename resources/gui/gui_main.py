@@ -2634,7 +2634,7 @@ class wx_python_gui:
 
         # Dropdown: GPU Model
         self.gpu_dropdown = wx.Choice(self.frame_modal)
-        for gpu in ["None", "Nvidia Kepler", "AMD GCN", "AMD Polaris"]:
+        for gpu in ["None", "Nvidia Kepler", "AMD GCN", "AMD Polaris", "AMD Navi", "AMD Lexa"]:
             self.gpu_dropdown.Append(gpu)
         self.gpu_dropdown.SetSelection(0)
         self.gpu_dropdown.SetPosition(wx.Point(
@@ -3065,6 +3065,10 @@ class wx_python_gui:
                 self.constants.imac_model = "Polaris"
             elif "GCN" in gpu_choice:
                 self.constants.imac_model = "Legacy GCN"
+            elif "Lexa" in gpu_choice:
+                self.constants.imac_model = "AMD Lexa"
+            elif "Navi" in gpu_choice:
+                self.constants.imac_model = "AMD Navi"
             else:
                 raise Exception("Unknown GPU Model")
         elif "Nvidia" in gpu_choice:

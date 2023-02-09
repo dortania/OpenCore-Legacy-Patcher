@@ -33,7 +33,7 @@ class Constants:
         ## Acidanthera
         ## https://github.com/acidanthera
         self.lilu_version = "1.6.3"  #               Lilu
-        self.whatevergreen_version = "1.6.3"  #      WhateverGreen
+        self.whatevergreen_version = "1.6.2A"  #     WhateverGreen
         self.airportbcrmfixup_version = "2.1.6"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC

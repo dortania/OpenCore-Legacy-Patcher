@@ -1,13 +1,14 @@
 # Class for handling Graphics and Audio Patches, invocation from build.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from resources import constants, device_probe, utilities
-from resources.build import support
-from data import smbios_data, model_array, os_data, cpu_data
+import shutil, binascii, logging
 
 from pathlib import Path
 
-import shutil, binascii, logging
+from resources import constants, device_probe, utilities
+from resources.build import support
+from data import smbios_data, model_array, os_data, cpu_data, video_bios_data
+
 
 class build_graphics_audio:
 
@@ -104,11 +105,33 @@ class build_graphics_audio:
                             if "nvda_drv" not in self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]:
                                 self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"] += ["nvda_drv"]
 
-
     def backlight_path_detection(self):
+    
+        # self.constants.custom_model: iMac has been modded with new dGPU
+        # self.computer.dgpu: dGPU has been found using the GFX0 path
+        # self.computer.dgpu.pci_path:
         if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
-            self.gfx0_path = self.computer.dgpu.pci_path
-            logging.info(f"- Found GFX0 Device Path: {self.gfx0_path}")
+            for i, device in enumerate(self.computer.gpus):
+                    logging.info(f"- Found dGPU ({i + 1}): {utilities.friendly_hex(device.vendor_id)}:{utilities.friendly_hex(device.device_id)}")
+                    self.config["#Revision"][f"Hardware-iMac-dGPU-{i + 1}"] = f"{utilities.friendly_hex(device.vendor_id)}:{utilities.friendly_hex(device.device_id)}"
+                    
+                    if device.pci_path != self.computer.dgpu.pci_path:
+                        logging.info("- device path and GFX0 Device path are different")
+                        self.gfx0_path = device.pci_path
+                        logging.info(f"- Set GFX0 Device Path: {self.gfx0_path}")
+                        self.computer.dgpu.device_id = device.device_id
+                        self.device_id = device.device_id
+                        logging.info(f"- Found GPU Arch: {device.arch}")
+                        if device.arch in [device_probe.AMD.Archs.Navi]:
+                            self.computer.dgpu.arch = device.arch
+
+                        # self.computer.dgpu.vendor_id = device.vendor_id
+                        # self.vendor_id = device.vendor_id
+                    else:
+                        self.gfx0_path = self.computer.dgpu.pci_path
+                        logging.info(f"- Found GFX0 Device Path: {self.gfx0_path}")
+                        logging.info(f"- Found GPU Arch: {self.computer.dgpu.arch}")
+
         else:
             if not self.constants.custom_model:
                 logging.info("- Failed to find GFX0 Device path, falling back on known logic")
@@ -169,7 +192,18 @@ class build_graphics_audio:
         if not support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
             # Ensure WEG is enabled as we need if for Backlight patching
             support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
-        self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
+            
+        if utilities.friendly_hex(self.computer.dgpu.device_id) == "7340":
+            logging.info(f"- Adding AMD RX5500XT vBIOS injection")
+            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "ATY,bin_image": binascii.unhexlify(video_bios_data.RX5500XT_64K) }
+            logging.info(f"- Adding AMD RX5500XT boot-args")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera applbkl=3"
+        elif utilities.friendly_hex(self.computer.dgpu.device_id) == "6981":
+            logging.info(f"- Adding AMD WX3200 device spoofing")
+            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "model": "AMD Radeon Pro WX 3200", "device-id": binascii.unhexlify("FF67")}
+        else:
+            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
+
         if self.constants.custom_model and self.model == "iMac11,2":
             # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
             # Set both properties when we cannot run hardware detection
@@ -207,7 +241,27 @@ class build_graphics_audio:
                     "CAIL,CAIL_DisableUVDPowerGating": 1,
                     "CAIL,CAIL_DisableVCEPowerGating": 1,
                 })
-
+        elif self.constants.imac_model == "AMD Lexa":
+            logging.info("- Adding Lexa Spoofing Patches")
+            self.config["DeviceProperties"]["Add"][backlight_path].update({
+                "model": "AMD Radeon Pro WX 3200",
+                "device-id": binascii.unhexlify("FF67"),
+            })
+            if self.model == "iMac11,2":
+                self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"].update({
+                    "model": "AMD Radeon Pro WX 3200",
+                    "device-id": binascii.unhexlify("FF67"),
+                })
+        elif self.constants.imac_model == "AMD Navi":
+            logging.info("- Adding Navi Spoofing Patches")
+            navi_backlight_path = backlight_path+"/Pci(0x0,0x0)/Pci(0x0,0x0)"
+            self.config["DeviceProperties"]["Add"][navi_backlight_path] = {
+                "ATY,bin_image": binascii.unhexlify(video_bios_data.RX5500XT_64K),
+                "shikigva": 128,
+                "unfairgva": 1,
+                "rebuild-device-tree": 1,
+                "enable-gva-support": 1
+            }
 
     def audio_handling(self):
         if (self.model in model_array.LegacyAudio or self.model in model_array.MacPro) and self.constants.set_alc_usage is True:
@@ -352,9 +406,10 @@ class build_graphics_audio:
 
 
     def imac_mxm_patching(self):
+        self.backlight_path_detection()
         # Check GPU Vendor
         if self.constants.metal_build is True:
-            self.backlight_path_detection()
+            # self.backlight_path_detection()
             logging.info("- Adding Metal GPU patches on request")
             if self.constants.imac_vendor == "AMD":
                 self.amd_mxm_patch(self.gfx0_path)
@@ -363,6 +418,7 @@ class build_graphics_audio:
             else:
                 logging.info("- Failed to find vendor")
         elif not self.constants.custom_model and self.model in model_array.LegacyGPU and self.computer.dgpu:
+            # self.backlight_path_detection()
             logging.info(f"- Detected dGPU: {utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{utilities.friendly_hex(self.computer.dgpu.device_id)}")
             if self.computer.dgpu.arch in [
                 device_probe.AMD.Archs.Legacy_GCN_7000,
@@ -372,10 +428,10 @@ class build_graphics_audio:
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:
-                self.backlight_path_detection()
+                # self.backlight_path_detection()
                 self.amd_mxm_patch(self.gfx0_path)
             elif self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
-                self.backlight_path_detection()
+                # self.backlight_path_detection()
                 self.nvidia_mxm_patch(self.gfx0_path)
 
     def ioaccel_workaround(self):

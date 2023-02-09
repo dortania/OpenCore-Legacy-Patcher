@@ -794,6 +794,8 @@ class amd_ids:
         0x67CA,  # Unknown
         0x67CC,  # Unknown
         0x67CF,  # Unknown
+        # Polaris 12 (Lexa)
+        0x6981,  # Lexa XT [Radeon PRO WX 3200]
     ]
 
     vega_ids = [
