@@ -9,21 +9,29 @@ import tempfile
 import atexit
 import logging
 
-class reroute_payloads:
+class RoutePayloadDiskImage:
+
     def __init__(self, constants):
         self.constants = constants
 
-    def setup_tmp_disk_image(self):
-        # Create a temp directory to mount the payloads.dmg
-        # Then reroute r/w to this new temp directory
-        # Currently only applicable for GUI variant
+        self._setup_tmp_disk_image()
+
+
+    def _setup_tmp_disk_image(self):
+        """
+        Initialize temp directory and mount payloads.dmg
+        Create overlay for patcher to write to
+
+        Currently only applicable for GUI variant and not running from source
+        """
+
         if self.constants.wxpython_variant is True and not self.constants.launcher_script:
             logging.info("- Running in Binary GUI mode, switching to tmp directory")
             self.temp_dir = tempfile.TemporaryDirectory()
             logging.info(f"- New payloads location: {self.temp_dir.name}")
             logging.info("- Creating payloads directory")
             Path(self.temp_dir.name / Path("payloads")).mkdir(parents=True, exist_ok=True)
-            self.unmount_active_dmgs(unmount_all_active=False)
+            self._unmount_active_dmgs(unmount_all_active=False)
             output = subprocess.run(
                 [
                     "hdiutil", "attach", "-noverify", f"{self.constants.payload_path}.dmg",
@@ -38,16 +46,25 @@ class reroute_payloads:
                 logging.info("- Mounted payloads.dmg")
                 self.constants.current_path = Path(self.temp_dir.name)
                 self.constants.payload_path = Path(self.temp_dir.name) / Path("payloads")
-                atexit.register(self.unmount_active_dmgs, unmount_all_active=False)
+                atexit.register(self._unmount_active_dmgs, unmount_all_active=False)
             else:
                 logging.info("- Failed to mount payloads.dmg")
                 logging.info(f"Output: {output.stdout.decode()}")
                 logging.info(f"Return Code: {output.returncode}")
 
-    def unmount_active_dmgs(self, unmount_all_active=True):
-        # Find all DMGs that are mounted, and forcefully unmount them
-        # If our disk image was previously mounted, we need to unmount it to use again
-        # This can happen if we crash during a previous secession, however 'atexit' class should hopefully avoid this
+
+    def _unmount_active_dmgs(self, unmount_all_active=True):
+        """
+        Unmounts disk images associated with OCLP
+
+        Finds all DMGs that are mounted, and forcefully unmount them
+        If our disk image was previously mounted, we need to unmount it to use again
+        This can happen if we crash during a previous secession, however 'atexit' class should hopefully avoid this
+
+        Parameters:
+            unmount_all_active (bool): If True, unmount all active DMGs, otherwise only unmount our own DMG
+        """
+
         dmg_info = subprocess.run(["hdiutil", "info", "-plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         dmg_info = plistlib.loads(dmg_info.stdout)
 

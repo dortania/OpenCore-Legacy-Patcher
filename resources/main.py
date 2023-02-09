@@ -76,7 +76,7 @@ class OpenCoreLegacyPatcher:
         self.constants.launcher_script = launcher_script
 
         # Initialize working directory
-        self.constants.unpack_thread = threading.Thread(target=reroute_payloads.reroute_payloads(self.constants).setup_tmp_disk_image)
+        self.constants.unpack_thread = threading.Thread(target=reroute_payloads.RoutePayloadDiskImage, args=(self.constants,))
         self.constants.unpack_thread.start()
 
         # Generate commit info
