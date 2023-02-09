@@ -1,51 +1,69 @@
+import logging
 import subprocess
+from pathlib import Path
+
 from resources.sys_patch import sys_patch_helpers
 from resources.build import build
 from data import example_data, model_array, sys_patch_dict, os_data
-from pathlib import Path
-import logging
 
 
-def validate(settings):
-    # Runs through ocvalidate to check for errors
+class PatcherValidation:
+    """
+    Validation class for the patcher
 
-    valid_dumps = [
-        example_data.MacBookPro.MacBookPro92_Stock,
-        example_data.MacBookPro.MacBookPro111_Stock,
-        example_data.MacBookPro.MacBookPro133_Stock,
-        # example_data.MacBookPro.MacBookPro171_Stock,
-        example_data.Macmini.Macmini52_Stock,
-        example_data.Macmini.Macmini61_Stock,
-        example_data.Macmini.Macmini71_Stock,
-        # example_data.Macmini.Macmini91_Stock,
-        example_data.iMac.iMac81_Stock,
-        example_data.iMac.iMac112_Stock,
-        example_data.iMac.iMac122_Upgraded,
-        example_data.iMac.iMac122_Upgraded_Nvidia,
-        example_data.iMac.iMac151_Stock,
-        example_data.MacPro.MacPro31_Stock,
-        example_data.MacPro.MacPro31_Upgrade,
-        example_data.MacPro.MacPro31_Modern_AMD,
-        example_data.MacPro.MacPro31_Modern_Kepler,
-        example_data.MacPro.MacPro41_Upgrade,
-        example_data.MacPro.MacPro41_Modern_AMD,
-        example_data.MacPro.MacPro41_51__Flashed_Modern_AMD,
-        example_data.MacPro.MacPro41_51_Flashed_NVIDIA_WEB_DRIVERS,
-    ]
+    Primarily for Continuous Integration
+    """
 
-    valid_dumps_native = [
-        example_data.iMac.iMac201_Stock,
-        example_data.MacBookPro.MacBookPro141_SSD_Upgrade,
-    ]
+    def __init__(self, constants):
+        self.constants = constants
 
-    settings.validate = True
+        self.valid_dumps = [
+            example_data.MacBookPro.MacBookPro92_Stock,
+            example_data.MacBookPro.MacBookPro111_Stock,
+            example_data.MacBookPro.MacBookPro133_Stock,
 
-    def build_prebuilt():
+            example_data.Macmini.Macmini52_Stock,
+            example_data.Macmini.Macmini61_Stock,
+            example_data.Macmini.Macmini71_Stock,
+
+            example_data.iMac.iMac81_Stock,
+            example_data.iMac.iMac112_Stock,
+            example_data.iMac.iMac122_Upgraded,
+            example_data.iMac.iMac122_Upgraded_Nvidia,
+            example_data.iMac.iMac151_Stock,
+
+            example_data.MacPro.MacPro31_Stock,
+            example_data.MacPro.MacPro31_Upgrade,
+            example_data.MacPro.MacPro31_Modern_AMD,
+            example_data.MacPro.MacPro31_Modern_Kepler,
+            example_data.MacPro.MacPro41_Upgrade,
+            example_data.MacPro.MacPro41_Modern_AMD,
+            example_data.MacPro.MacPro41_51__Flashed_Modern_AMD,
+            example_data.MacPro.MacPro41_51_Flashed_NVIDIA_WEB_DRIVERS,
+        ]
+
+        self.valid_dumps_native = [
+            example_data.iMac.iMac201_Stock,
+            example_data.MacBookPro.MacBookPro141_SSD_Upgrade,
+        ]
+
+        self.constants.validate = True
+
+        self._validate_configs()
+        self._validate_sys_patch()
+
+
+    def _build_prebuilt(self):
+        """
+        Generate a build for each predefined model
+        Then validate against ocvalidate
+        """
+
         for model in model_array.SupportedSMBIOS:
             logging.info(f"Validating predefined model: {model}")
-            settings.custom_model = model
-            build.build_opencore(settings.custom_model, settings).build_opencore()
-            result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            self.constants.custom_model = model
+            build.build_opencore(self.constants.custom_model, self.constants).build_opencore()
+            result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Error on build!")
                 logging.info(result.stdout.decode())
@@ -53,24 +71,35 @@ def validate(settings):
             else:
                 logging.info(f"Validation succeeded for predefined model: {model}")
 
-    def build_dumps():
-        for model in valid_dumps:
-            settings.computer = model
-            settings.custom_model = ""
-            logging.info(f"Validating dumped model: {settings.computer.real_model}")
-            build.build_opencore(settings.computer.real_model, settings).build_opencore()
-            result = subprocess.run([settings.ocvalidate_path, f"{settings.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    def _build_dumps(self):
+        """
+        Generate a build for each predefined model
+        Then validate against ocvalidate
+        """
+
+        for model in self.valid_dumps:
+            self.constants.computer = model
+            self.constants.custom_model = ""
+            logging.info(f"Validating dumped model: {self.constants.computer.real_model}")
+            build.build_opencore(self.constants.computer.real_model, self.constants).build_opencore()
+            result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Error on build!")
                 logging.info(result.stdout.decode())
-                raise Exception(f"Validation failed for predefined model: {settings.computer.real_model}")
+                raise Exception(f"Validation failed for predefined model: {self.constants.computer.real_model}")
             else:
-                logging.info(f"Validation succeeded for predefined model: {settings.computer.real_model}")
+                logging.info(f"Validation succeeded for predefined model: {self.constants.computer.real_model}")
 
 
-    def validate_root_patch_files(major_kernel, minor_kernel):
-        patchset = sys_patch_dict.SystemPatchDictionary(major_kernel, minor_kernel, settings.legacy_accel_support)
+    def _validate_root_patch_files(self, major_kernel, minor_kernel):
+        """
+        Validate that all files in the patchset are present in the payload
+        """
+
+        patchset = sys_patch_dict.SystemPatchDictionary(major_kernel, minor_kernel, self.constants.legacy_accel_support)
         host_os_float = float(f"{major_kernel}.{minor_kernel}")
+
         for patch_subject in patchset:
             for patch_core in patchset[patch_subject]:
                 patch_os_min_float = float(f'{patchset[patch_subject][patch_core]["OS Support"]["Minimum OS Support"]["OS Major"]}.{patchset[patch_subject][patch_core]["OS Support"]["Minimum OS Support"]["OS Minor"]}')
@@ -81,58 +110,72 @@ def validate(settings):
                     if install_type in patchset[patch_subject][patch_core]:
                         for install_directory in patchset[patch_subject][patch_core][install_type]:
                             for install_file in patchset[patch_subject][patch_core][install_type][install_directory]:
-                                source_file = str(settings.payload_local_binaries_root_path) + "/" + patchset[patch_subject][patch_core][install_type][install_directory][install_file] + install_directory + "/" + install_file
+                                source_file = str(self.constants.payload_local_binaries_root_path) + "/" + patchset[patch_subject][patch_core][install_type][install_directory][install_file] + install_directory + "/" + install_file
                                 if not Path(source_file).exists():
                                     logging.info(f"File not found: {source_file}")
                                     raise Exception(f"Failed to find {source_file}")
 
         logging.info(f"- Validating against Darwin {major_kernel}.{minor_kernel}")
-        if not sys_patch_helpers.sys_patch_helpers(settings).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None):
+        if not sys_patch_helpers.sys_patch_helpers(self.constants).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None):
             raise Exception("Failed to generate patchset plist")
 
         # Remove the plist file after validation
-        Path(settings.payload_path / f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist").unlink()
+        Path(self.constants.payload_path / f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist").unlink()
 
 
-    def validate_sys_patch():
-        if Path(settings.payload_local_binaries_root_path_zip).exists():
+    def _validate_sys_patch(self):
+        """
+        Validates sys_patch modules
+        """
+
+        if Path(self.constants.payload_local_binaries_root_path_zip).exists():
             logging.info("Validating Root Patch File integrity")
-            if not Path(settings.payload_local_binaries_root_path).exists():
-                subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", settings.payload_local_binaries_root_path_zip, settings.payload_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if not Path(self.constants.payload_local_binaries_root_path).exists():
+                subprocess.run(
+                    [
+                        "ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc",
+                        self.constants.payload_local_binaries_root_path_zip,
+                        self.constants.payload_path
+                    ],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT
+                )
             for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura]:
                 for i in range(0, 10):
-                    validate_root_patch_files(supported_os, i)
+                    self._validate_root_patch_files(supported_os, i)
             logging.info("Validating SNB Board ID patcher")
-            settings.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
-            sys_patch_helpers.sys_patch_helpers(settings).snb_board_id_patch(settings.payload_local_binaries_root_path)
+            self.constants.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
+            sys_patch_helpers.sys_patch_helpers(self.constants).snb_board_id_patch(self.constants.payload_local_binaries_root_path)
         else:
             logging.info("- Skipping Root Patch File integrity validation")
 
 
-    def validate_configs():
+    def _validate_configs(self):
+        """
+        Validates build modules
+        """
+
         # First run is with default settings
-        build_prebuilt()
-        build_dumps()
+        self._build_prebuilt()
+        self._build_dumps()
+
         # Second run, flip all settings
-        settings.verbose_debug = True
-        settings.opencore_debug = True
-        settings.opencore_build = "DEBUG"
-        settings.kext_debug = True
-        settings.kext_variant = "DEBUG"
-        settings.kext_debug = True
-        settings.showpicker = False
-        settings.sip_status = False
-        settings.secure_status = True
-        settings.firewire_boot = True
-        settings.nvme_boot = True
-        settings.enable_wake_on_wlan = True
-        settings.disable_tb = True
-        settings.force_surplus = True
-        settings.software_demux = True
-        settings.serial_settings = "Minimal"
-        build_prebuilt()
-        build_dumps()
+        self.constants.verbose_debug = True
+        self.constants.opencore_debug = True
+        self.constants.opencore_build = "DEBUG"
+        self.constants.kext_debug = True
+        self.constants.kext_variant = "DEBUG"
+        self.constants.kext_debug = True
+        self.constants.showpicker = False
+        self.constants.sip_status = False
+        self.constants.secure_status = True
+        self.constants.firewire_boot = True
+        self.constants.nvme_boot = True
+        self.constants.enable_wake_on_wlan = True
+        self.constants.disable_tb = True
+        self.constants.force_surplus = True
+        self.constants.software_demux = True
+        self.constants.serial_settings = "Minimal"
 
-
-    validate_configs()
-    validate_sys_patch()
+        self._build_prebuilt()
+        self._build_dumps()
