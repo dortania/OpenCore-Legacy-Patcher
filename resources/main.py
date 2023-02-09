@@ -44,10 +44,11 @@ class OpenCoreLegacyPatcher:
 
 
     def generate_base_data(self):
-        self.constants.detected_os = os_probe.detect_kernel_major()
-        self.constants.detected_os_minor = os_probe.detect_kernel_minor()
-        self.constants.detected_os_build = os_probe.detect_os_build()
-        self.constants.detected_os_version = os_probe.detect_os_version()
+        os_data = os_probe.OSProbe()
+        self.constants.detected_os = os_data.detect_kernel_major()
+        self.constants.detected_os_minor = os_data.detect_kernel_minor()
+        self.constants.detected_os_build = os_data.detect_os_build()
+        self.constants.detected_os_version = os_data.detect_os_version()
         self.constants.computer = device_probe.Computer.probe()
         self.constants.recovery_status = utilities.check_recovery()
         self.computer = self.constants.computer
