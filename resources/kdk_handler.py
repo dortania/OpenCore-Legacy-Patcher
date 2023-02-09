@@ -286,15 +286,63 @@ class KernelDebugKitObject:
             logging.error(f"- Failed to generate KDK Info.plist: {e}")
 
 
-    def _local_kdk_valid(self, kdk_path: str):
+    def _local_kdk_valid(self, kdk_path: Path):
         """
         Validates provided KDK, ensure no corruption
 
         The reason for this is due to macOS deleting files from the KDK during OS updates,
         similar to how Install macOS.app is deleted during OS updates
 
+        Uses Apple's pkg receipt system to verify the original contents of the KDK
+
         Args:
-            kdk_path (str): Path to KDK
+            kdk_path (Path): Path to KDK
+
+        Returns:
+            bool: True if valid, False if invalid
+        """
+
+        if not Path(f"{kdk_path}/System/Library/CoreServices/SystemVersion.plist").exists():
+            logging.info(f"- Corrupted KDK found ({kdk_path.name}), removing due to missing SystemVersion.plist")
+            self._remove_kdk(kdk_path)
+            return False
+
+        # Get build from KDK
+        kdk_plist_data = plistlib.load(Path(f"{kdk_path}/System/Library/CoreServices/SystemVersion.plist").open("rb"))
+        if "ProductBuildVersion" not in kdk_plist_data:
+            logging.info(f"- Corrupted KDK found ({kdk_path.name}), removing due to missing ProductBuildVersion")
+            self._remove_kdk(kdk_path)
+            return False
+
+        kdk_build = kdk_plist_data["ProductBuildVersion"]
+
+        # Check pkg receipts for this build, will give a canonical list if all files that should be present
+        result = subprocess.run(["pkgutil", "--files", f"com.apple.pkg.KDK.{kdk_build}"], capture_output=True)
+        if result.returncode != 0:
+            # If pkg receipt is missing, we'll fallback to legacy validation
+            logging.info(f"- pkg receipt missing for {kdk_path.name}, falling back to legacy validation")
+            return self._local_kdk_valid_legacy(kdk_path)
+
+        # Go through each line of the pkg receipt and ensure it exists
+        for line in result.stdout.decode("utf-8").splitlines():
+            if not line.startswith("System/Library/Extensions"):
+                continue
+            if not Path(f"{kdk_path}/{line}").exists():
+                logging.info(f"- Corrupted KDK found ({kdk_path.name}), removing due to missing file: {line}")
+                self._remove_kdk(kdk_path)
+                return False
+
+        return True
+
+
+    def _local_kdk_valid_legacy(self, kdk_path: Path):
+        """
+        Legacy variant of validating provided KDK
+        Uses best guess of files that should be present
+        This should ideally never be invoked, but used as a fallback
+
+        Parameters:
+            kdk_path (Path): Path to KDK
 
         Returns:
             bool: True if valid, False if invalid
@@ -306,8 +354,6 @@ class KernelDebugKitObject:
             "IOUSBHostFamily.kext/Contents/MacOS/IOUSBHostFamily",
             "AMDRadeonX6000.kext/Contents/MacOS/AMDRadeonX6000",
         ]
-
-        kdk_path = Path(kdk_path)
 
         for kext in KEXT_CATALOG:
             if not Path(f"{kdk_path}/System/Library/Extensions/{kext}").exists():

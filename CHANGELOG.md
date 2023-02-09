@@ -17,6 +17,7 @@
     - Prioritizes KdkSupportPkg repository for downloads
       - Skips calls to Apple's now defunct Developer Portal API
     - Support local loose matching when no network connection is available
+    - Implement pkg receipt verification to validate integrity of KDKs
   - Implemented logging framework usage for more reliable logging
     - Logs are stored under `~/OpenCore-Patcher.log`
     - Subsequent runs are appended to the log, allowing for easy debugging
