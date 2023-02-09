@@ -4,7 +4,7 @@ import plistlib
 import subprocess
 import tempfile
 import logging
-from resources import utilities, tui_helpers, network_handler
+from resources import utilities, network_handler
 
 def list_local_macOS_installers():
     # Finds all applicable macOS installers
@@ -324,52 +324,6 @@ def format_drive(disk_id):
         logging.info(f"  Error Code: {format_process.returncode}")
         input("\nPress Enter to exit")
         return False
-
-def select_disk_to_format():
-    utilities.cls()
-    utilities.header(["Installing OpenCore to Drive"])
-
-    logging.info("\nDisk picker is loading...")
-
-    all_disks = {}
-    # TODO: AllDisksAndPartitions is not supported in Snow Leopard and older
-    try:
-        # High Sierra and newer
-        disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-    except ValueError:
-        # Sierra and older
-        disks = plistlib.loads(subprocess.run("diskutil list -plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-    for disk in disks["AllDisksAndPartitions"]:
-        disk_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
-        try:
-            all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info["MediaName"], "size": disk_info["TotalSize"], "removable": disk_info["Internal"], "partitions": {}}
-        except KeyError:
-            # Avoid crashing with CDs installed
-            continue
-    menu = tui_helpers.TUIMenu(
-        ["Select Disk to write the macOS Installer onto"],
-        "Please select the disk you would like to install OpenCore to: ",
-        in_between=["Missing drives? Verify they are 14GB+ and external (ie. USB)", "", "Ensure all data is backed up on selected drive, entire drive will be erased!"],
-        return_number_instead_of_direct_call=True,
-        loop=True,
-    )
-    for disk in all_disks:
-        # Strip disks that are under 14GB (15,032,385,536 bytes)
-        # createinstallmedia isn't great at detecting if a disk has enough space
-        if not any(all_disks[disk]['size'] > 15032385536 for partition in all_disks[disk]):
-            continue
-        # Strip internal disks as well (avoid user formatting their SSD/HDD)
-        # Ensure user doesn't format their boot drive
-        if not any(all_disks[disk]['removable'] is False for partition in all_disks[disk]):
-            continue
-        menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({utilities.human_fmt(all_disks[disk]['size'])})", key=disk[4:])
-
-    response = menu.start()
-
-    if response == -1:
-        return None
-
-    return response
 
 
 

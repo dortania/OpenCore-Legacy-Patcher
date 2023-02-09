@@ -8,7 +8,7 @@ import shutil
 import os
 import logging
 from pathlib import Path
-from resources import utilities, constants, tui_helpers
+from resources import utilities, constants
 from data import os_data
 
 class tui_disk_installation:
@@ -75,65 +75,6 @@ class tui_disk_installation:
         return supported_partitions
 
 
-    def copy_efi(self):
-        utilities.cls()
-        utilities.header(["Installing OpenCore to Drive"])
-
-        if not self.constants.opencore_release_folder.exists():
-            tui_helpers.TUIOnlyLogging.info(
-                ["Installing OpenCore to Drive"],
-                "Press [Enter] to go back.\n",
-                [
-                    """OpenCore folder missing!
-Please build OpenCore first!"""
-                ],
-            ).start()
-            return
-
-        logging.info("\nDisk picker is loading...")
-
-        all_disks = self.list_disks()
-        menu = tui_helpers.TUIMenu(
-            ["Select Disk"],
-            "Please select the disk you would like to install OpenCore to: ",
-            in_between=["Missing disks? Ensure they have an EFI or FAT32 partition."],
-            return_number_instead_of_direct_call=True,
-            loop=True,
-        )
-        for disk in all_disks:
-            menu.add_menu_option(f"{disk}: {all_disks[disk]['name']} ({all_disks[disk]['size']})", key=disk[4:])
-
-        response = menu.start()
-
-        if response == -1:
-            return
-
-        disk_identifier = "disk" + response
-        selected_disk = all_disks[disk_identifier]
-
-        menu = tui_helpers.TUIMenu(
-            ["Select Partition"],
-            "Please select the partition you would like to install OpenCore to: ",
-            return_number_instead_of_direct_call=True,
-            loop=True,
-            in_between=["Missing partitions? Ensure they are formatted as an EFI or FAT32.", "", "* denotes likely candidate."],
-        )
-        for partition in selected_disk["partitions"]:
-            if selected_disk["partitions"][partition]["fs"] not in ("msdos", "EFI"):
-                continue
-            text = f"{partition}: {selected_disk['partitions'][partition]['name']} ({utilities.human_fmt(selected_disk['partitions'][partition]['size'])})"
-            if selected_disk["partitions"][partition]["type"] == "EFI" or (
-                selected_disk["partitions"][partition]["type"] == "Microsoft Basic Data" and selected_disk["partitions"][partition]["size"] < 1024 * 1024 * 512
-            ):  # 512 megabytes:
-                text += " *"
-            menu.add_menu_option(text, key=partition[len(disk_identifier) + 1 :])
-
-        response = menu.start()
-
-        if response == -1:
-            return
-        self.install_opencore(f"{disk_identifier}s{response}")
-
     def install_opencore(self, full_disk_identifier):
         def determine_sd_card(media_name):
             # Array filled with common SD Card names
@@ -169,18 +110,13 @@ Please build OpenCore first!"""
                 # cancelled prompt
                 return
             else:
-                if self.constants.gui_mode is False:
-                    tui_helpers.TUIOnlyLogging.info(
-                        ["Copying OpenCore"], "Press [Enter] to go back.\n", ["An error occurred!"] + result.stderr.decode().split("\n") + [""]
-                    ).start()
-                else:
-                    logging.info("An error occurred!")
-                    logging.info(result.stderr.decode())
+                logging.info("An error occurred!")
+                logging.info(result.stderr.decode())
 
-                    # Check if we're in Safe Mode, and if so, tell user FAT32 is unsupported
-                    if utilities.check_boot_mode() == "safe_boot":
-                        logging.info("\nSafe Mode detected. FAT32 is unsupported by macOS in this mode.")
-                        logging.info("Please disable Safe Mode and try again.")
+                # Check if we're in Safe Mode, and if so, tell user FAT32 is unsupported
+                if utilities.check_boot_mode() == "safe_boot":
+                    logging.info("\nSafe Mode detected. FAT32 is unsupported by macOS in this mode.")
+                    logging.info("Please disable Safe Mode and try again.")
                 return
         partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {full_disk_identifier}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
         parent_disk = partition_info["ParentWholeDisk"]
@@ -252,10 +188,7 @@ Please build OpenCore first!"""
                 logging.info("\nPress [Enter] to continue.\n")
                 input()
         else:
-            if self.constants.gui_mode is False:
-                tui_helpers.TUIOnlyLogging.info(["Copying OpenCore"], "Press [Enter] to go back.\n", ["EFI failed to mount!"]).start()
-            else:
-                logging.info("EFI failed to mount!")
+            logging.info("EFI failed to mount!")
             return False
         return True
 
