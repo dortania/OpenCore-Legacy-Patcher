@@ -9,6 +9,7 @@ jobs:
   build:
     name: Build Site and Deploy
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'dortania'
     steps:
       - uses: actions/setup-node@v3
         with:

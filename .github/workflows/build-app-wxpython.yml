@@ -11,12 +11,14 @@ jobs:
     name: Build wxPython
     runs-on: x86_64_mojave
     if: github.repository_owner == 'dortania'
+
     env:
       branch: ${{ github.ref }}
       commiturl: ${{ github.event.head_commit.url }}${{ github.event.release.html_url }}
       commitdate: ${{ github.event.head_commit.timestamp }}${{ github.event.release.published_at }}
       MAC_NOTARIZATION_USERNAME: ${{ secrets.MAC_NOTARIZATION_USERNAME }}
       MAC_NOTARIZATION_PASSWORD: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
+
     steps:
       - uses: actions/checkout@v3
       - run: /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}"
@@ -30,11 +32,13 @@ jobs:
         with:
           name: OpenCore-Patcher.app (GUI)
           path: OpenCore-Patcher-GUI.app.zip
+
       - name: Upload Package to Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: AutoPkg-Assets.pkg
           path: ./dist/AutoPkg-Assets.pkg
+
       - name: Upload Binary to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
@@ -43,6 +47,7 @@ jobs:
           file: OpenCore-Patcher-GUI.app.zip
           tag: ${{ github.ref }}
           file_glob: true
+
       - name: Upload Package to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
