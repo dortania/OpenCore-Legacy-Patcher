@@ -3818,19 +3818,19 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.subheader_4.SetPosition(wx.Point(0, self.subheader2_2.GetPosition().y + self.subheader2_2.GetSize().height+ 5))
         self.subheader_4.Centre(wx.HORIZONTAL)
 
-        is_dark_menu_bar = subprocess.run(["defaults", "read", "-g", "Moraea_DarkMenuBar"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        is_dark_menu_bar = subprocess.run(["defaults", "read", "-g", "Moraea_DarkMenuBar"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
         if is_dark_menu_bar in ["1", "true"]:
             is_dark_menu_bar = True
         else:
             is_dark_menu_bar = False
 
-        is_blur_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_BlurBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        is_blur_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_BlurBeta"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
         if is_blur_enabled in ["1", "true"]:
             is_blur_enabled = True
         else:
             is_blur_enabled = False
 
-        is_rim_disabled = subprocess.run(["defaults", "read", "-g", "Moraea_RimBetaDisabled"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        is_rim_disabled = subprocess.run(["defaults", "read", "-g", "Moraea_RimBetaDisabled"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
         if is_rim_disabled in ["1", "true"]:
             is_rim_disabled = True
         else:
