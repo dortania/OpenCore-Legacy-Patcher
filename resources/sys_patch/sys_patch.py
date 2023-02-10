@@ -340,7 +340,7 @@ class PatchSysVolume:
                 self._remove_file("/private/var/db/SystemPolicyConfiguration/", file)
         else:
             # Install RSRHelper utility to handle desynced KCs
-            sys_patch_helpers.sys_patch_helpers(self.constants).install_rsr_repair_binary()
+            sys_patch_helpers.SysPatchHelpers(self.constants).install_rsr_repair_binary()
 
         logging.info("- Successfully built new kernel cache")
         return True
@@ -445,7 +445,7 @@ class PatchSysVolume:
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
         file_name = "OpenCore-Legacy-Patcher.plist"
         destination_path_file = f"{destination_path}/{file_name}"
-        if sys_patch_helpers.sys_patch_helpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path):
+        if sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path):
             logging.info("- Writing patchset information to Root Volume")
             if Path(destination_path_file).exists():
                 utilities.process_status(utilities.elevated(["rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
@@ -576,9 +576,9 @@ class PatchSysVolume:
                         logging.info(f"- Running Process:\n{process}")
                         utilities.process_status(subprocess.run(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
         if any(x in required_patches for x in ["AMD Legacy GCN", "AMD Legacy Polaris", "AMD Legacy Vega"]):
-            sys_patch_helpers.sys_patch_helpers(self.constants).disable_window_server_caching()
+            sys_patch_helpers.SysPatchHelpers(self.constants).disable_window_server_caching()
         if any(x in required_patches for x in ["Intel Ivy Bridge", "Intel Haswell"]):
-            sys_patch_helpers.sys_patch_helpers(self.constants).remove_news_widgets()
+            sys_patch_helpers.SysPatchHelpers(self.constants).remove_news_widgets()
         self._write_patchset(required_patches)
 
     def _preflight_checks(self, required_patches, source_files_path):
@@ -593,7 +593,7 @@ class PatchSysVolume:
 
         # Make sure SNB kexts are compatible with the host
         if "Intel Sandy Bridge" in required_patches:
-            sys_patch_helpers.sys_patch_helpers(self.constants).snb_board_id_patch(source_files_path)
+            sys_patch_helpers.SysPatchHelpers(self.constants).snb_board_id_patch(source_files_path)
 
         for patch in required_patches:
             # Check if all files are present

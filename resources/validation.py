@@ -117,7 +117,7 @@ class PatcherValidation:
                                     raise Exception(f"Failed to find {source_file}")
 
         logging.info(f"- Validating against Darwin {major_kernel}.{minor_kernel}")
-        if not sys_patch_helpers.sys_patch_helpers(self.constants).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None):
+        if not sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None):
             raise Exception("Failed to generate patchset plist")
 
         # Remove the plist file after validation
@@ -146,7 +146,7 @@ class PatcherValidation:
                     self._validate_root_patch_files(supported_os, i)
             logging.info("Validating SNB Board ID patcher")
             self.constants.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
-            sys_patch_helpers.sys_patch_helpers(self.constants).snb_board_id_patch(self.constants.payload_local_binaries_root_path)
+            sys_patch_helpers.SysPatchHelpers(self.constants).snb_board_id_patch(self.constants.payload_local_binaries_root_path)
 
             # Clean up
             subprocess.run(
