@@ -20,8 +20,8 @@ class GenerateDefaults:
     def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants):
         self.constants: constants.Constants = global_constants
 
-        self.model          = model
-        self.host_is_target = host_is_target
+        self.model:          str = model
+        self.host_is_target: str = host_is_target
 
         # Reset Variables
         self.constants.sip_status:    bool = True
@@ -55,11 +55,11 @@ class GenerateDefaults:
         if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
             # Users disabling TS2 most likely have a faulty dGPU
             # users can override this in settings
-            ts2_status = global_settings.global_settings().read_property("MacBookPro_TeraScale_2_Accel")
+            ts2_status = global_settings.GlobalEnviromentSettings().read_property("MacBookPro_TeraScale_2_Accel")
             if ts2_status is True:
                 self.constants.allow_ts2_accel = True
             else:
-                global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", False)
+                global_settings.GlobalEnviromentSettings().write_property("MacBookPro_TeraScale_2_Accel", False)
                 self.constants.allow_ts2_accel = False
 
         if self.model in smbios_data.smbios_dictionary:
@@ -76,10 +76,10 @@ class GenerateDefaults:
         # Check if running in RecoveryOS
         self.constants.recovery_status = utilities.check_recovery()
 
-        if global_settings.global_settings().read_property("Force_Web_Drivers") is True:
+        if global_settings.GlobalEnviromentSettings().read_property("Force_Web_Drivers") is True:
             self.constants.force_nv_web = True
 
-        result = global_settings.global_settings().read_property("ShouldNukeKDKs")
+        result = global_settings.GlobalEnviromentSettings().read_property("ShouldNukeKDKs")
         if result is False:
             self.constants.should_nuke_kdks = False
 

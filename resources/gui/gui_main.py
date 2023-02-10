@@ -306,7 +306,7 @@ class wx_python_gui:
             return
 
         did_find_update = False
-        ignore_updates = global_settings.global_settings().read_property("IgnoreAppUpdates")
+        ignore_updates = global_settings.GlobalEnviromentSettings().read_property("IgnoreAppUpdates")
         if ignore_updates is not True:
             self.constants.ignore_updates = False
             self.constants.has_checked_updates = True
@@ -330,7 +330,7 @@ class wx_python_gui:
                     elif response == wx.ID_NO:
                         logging.info("- Setting IgnoreAppUpdates to True")
                         self.constants.ignore_updates = True
-                        global_settings.global_settings().write_property("IgnoreAppUpdates", True)
+                        global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", True)
         else:
             self.constants.ignore_updates = True
             logging.info("- Ignoring App Updates due to defaults")
@@ -588,10 +588,10 @@ class wx_python_gui:
             if self.constants.start_build_install is True:
                 self.build_install_menu()
             elif "--gui_patch" in sys.argv:
-                self.patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+                self.patches = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).detect_patch_set()
                 self.root_patch_start()
             elif "--gui_unpatch" in sys.argv:
-                self.patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+                self.patches = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).detect_patch_set()
                 self.root_patch_revert()
         self.finished_auto_patch = True
         self.constants.start_build_install = False
@@ -1078,7 +1078,7 @@ class wx_python_gui:
         )
         self.subheader.Centre(wx.HORIZONTAL)
 
-        patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+        patches = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).detect_patch_set()
         self.patches = patches
         can_unpatch = patches["Validation: Unpatching Possible"]
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
@@ -2988,7 +2988,7 @@ class wx_python_gui:
         else:
             logging.info("Nuke KDKs disabled")
             self.constants.should_nuke_kdks = False
-        global_settings.global_settings().write_property("ShouldNukeKDKs", self.constants.should_nuke_kdks)
+        global_settings.GlobalEnviromentSettings().write_property("ShouldNukeKDKs", self.constants.should_nuke_kdks)
 
     def disable_library_validation_click(self, event):
         if self.disable_library_validation_checkbox.GetValue():
@@ -3011,9 +3011,9 @@ class wx_python_gui:
     def set_ignore_app_updates_click(self, event):
         self.constants.ignore_updates = self.set_ignore_app_updates_checkbox.GetValue()
         if self.constants.ignore_updates is True:
-            global_settings.global_settings().write_property("IgnoreAppUpdates", True)
+            global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", True)
         else:
-            global_settings.global_settings().write_property("IgnoreAppUpdates", False)
+            global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", False)
 
     def firewire_click(self, event=None):
         if self.firewire_boot_checkbox.GetValue():
@@ -3098,21 +3098,21 @@ class wx_python_gui:
     def ts2_accel_click(self, event=None):
         if self.set_terascale_accel_checkbox.GetValue():
             logging.info("TS2 Acceleration Enabled")
-            global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", True)
+            global_settings.GlobalEnviromentSettings().write_property("MacBookPro_TeraScale_2_Accel", True)
             self.constants.allow_ts2_accel = True
         else:
             logging.info("TS2 Acceleration Disabled")
-            global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", False)
+            global_settings.GlobalEnviromentSettings().write_property("MacBookPro_TeraScale_2_Accel", False)
             self.constants.allow_ts2_accel = False
 
     def force_web_drivers_click(self, event=None):
         if self.force_web_drivers_checkbox.GetValue():
             logging.info("Force Web Drivers Enabled")
-            global_settings.global_settings().write_property("Force_Web_Drivers", True)
+            global_settings.GlobalEnviromentSettings().write_property("Force_Web_Drivers", True)
             self.constants.force_nv_web = True
         else:
             logging.info("Force Web Drivers Disabled")
-            global_settings.global_settings().write_property("Force_Web_Drivers", False)
+            global_settings.GlobalEnviromentSettings().write_property("Force_Web_Drivers", False)
             self.constants.force_nv_web = False
 
     def windows_gmux_click(self, event=None):

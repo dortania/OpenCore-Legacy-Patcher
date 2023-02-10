@@ -9,7 +9,11 @@ import logging
 import os
 import subprocess
 
-class global_settings:
+
+class GlobalEnviromentSettings:
+    """
+    Library for querying and writing global enviroment settings
+    """
 
     def __init__(self):
         self.file_name:              str = ".com.dortania.opencore-legacy-patcher.plist"

@@ -61,7 +61,7 @@ class PatchSysVolume:
         # GUI will detect hardware patches before starting PatchSysVolume()
         # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
         if hardware_details is None:
-            hardware_details = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+            hardware_details = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).detect_patch_set()
         self.hardware_details = hardware_details
         self._init_pathing(custom_root_mount_path=None, custom_data_mount_path=None)
 
@@ -518,7 +518,7 @@ class PatchSysVolume:
         if self.patch_set_dictionary != {}:
             self._execute_patchset(self.patch_set_dictionary)
         else:
-            self._execute_patchset(sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details))
+            self._execute_patchset(sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details))
 
         if self.constants.wxpython_variant is True and self.constants.detected_os >= os_data.os_data.big_sur:
             sys_patch_auto.AutomaticSysPatch(self.constants).install_auto_patcher_launch_agent()
@@ -685,7 +685,7 @@ class PatchSysVolume:
     def start_patch(self):
         logging.info("- Starting Patch Process")
         logging.info(f"- Determining Required Patch set for Darwin {self.constants.detected_os}")
-        self.patch_set_dictionary = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details)
+        self.patch_set_dictionary = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details)
 
         if self.patch_set_dictionary == {}:
             change_menu = None
@@ -699,7 +699,7 @@ class PatchSysVolume:
             logging.info("- Continuing root patching")
         if change_menu in ["y", "Y"]:
             logging.info("- Verifying whether Root Patching possible")
-            if sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is True:
+            if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is True:
                 logging.info("- Patcher is capable of patching")
                 if self._check_files():
                     if self._mount_root_vol() is True:
@@ -718,7 +718,7 @@ class PatchSysVolume:
 
     def start_unpatch(self):
         logging.info("- Starting Unpatch Process")
-        if sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=True) is True:
+        if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=True) is True:
             if self._mount_root_vol() is True:
                 self._unpatch_root_vol()
                 if self.constants.gui_mode is False:

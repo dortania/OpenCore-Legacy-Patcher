@@ -31,7 +31,7 @@ class AutomaticSysPatch:
 
         if utilities.check_seal() is True:
             logging.info("- Detected Snapshot seal intact, detecting patches")
-            patches = sys_patch_detect.detect_root_patch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
             if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
                 patches = []
             if patches:
@@ -161,7 +161,7 @@ class AutomaticSysPatch:
         # and ask if they want to install to install to disk
 
         logging.info("- Determining if macOS drive matches boot drive")
-        should_notify = global_settings.global_settings().read_property("AutoPatch_Notify_Mismatched_Disks")
+        should_notify = global_settings.GlobalEnviromentSettings().read_property("AutoPatch_Notify_Mismatched_Disks")
         if should_notify is False:
             logging.info("- Skipping due to user preference")
             return
