@@ -705,8 +705,8 @@ class DetectRootPatch:
             ]
         ):
             return False
-        else:
-            return True
+
+        return True
 
 
     def _verify_unpatch_allowed(self):
