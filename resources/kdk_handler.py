@@ -564,6 +564,8 @@ class KernelDebugKitUtilities:
         logging.info(f"- Installing KDK package: {kdk_path.name}")
         logging.info(f"  - This may take a while...")
 
+        # TODO: Check whether enough disk space is available
+
         result = utilities.elevated(["installer", "-pkg", kdk_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info("- Failed to install KDK:")
