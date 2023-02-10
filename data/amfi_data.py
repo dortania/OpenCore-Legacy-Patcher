@@ -6,19 +6,20 @@
 # - 0x3 used in 11.0.1 dyld source:
 #   - https://github.com/apple-oss-distributions/dyld/blob/5c9192436bb195e7a8fe61f22a229ee3d30d8222/testing/test-cases/kernel-hello-world.dtest/main.c#L2
 
-class apple_mobile_file_integrity:
+import enum
+
+class AppleMobileFileIntegrity(enum.IntEnum):
     # Names set are solely for readability
     # Internal names are unknown
-    amfi_values = {
-        "AMFI_ALLOW_TASK_FOR_PID":      False,  # 0x1   - Allow Task for PID (alt. amfi_unrestrict_task_for_pid=0x1)
-        "AMFI_ALLOW_INVALID_SIGNATURE": False,  # 0x2   - Reduce sig enforcement (alt. amfi_allow_any_signature=0x1)
-        "AMFI_LV_ENFORCE_THIRD_PARTY":  False,  # 0x4   - Don't mark external binaries as platform binaries
-        "AMFI_UNKNOWN_1":               False,  # 0x8
-        "AMFI_UNKNOWN_2":               False,  # 0x10
-        "AMFI_UNKNOWN_3":               False,  # 0x20
-        "AMFI_UNKNOWN_4":               False,  # 0x40
-        "AMFI_ALLOW_EVERYTHING":        False,  # 0x80  - Disable sig enforcement and Library Validation (alt. amfi_get_out_of_my_way=0x1)
-    },
+    AMFI_ALLOW_TASK_FOR_PID:      int = 0x1   # Allow Task for PID (alt. amfi_unrestrict_task_for_pid=0x1)
+    AMFI_ALLOW_INVALID_SIGNATURE: int = 0x2   # Reduce sig enforcement (alt. amfi_allow_any_signature=0x1)
+    AMFI_LV_ENFORCE_THIRD_PARTY:  int = 0x4   # Don't mark external binaries as platform binaries
+    AMFI_UNKNOWN_1:               int = 0x8
+    AMFI_UNKNOWN_2:               int = 0x10
+    AMFI_UNKNOWN_3:               int = 0x20
+    AMFI_UNKNOWN_4:               int = 0x40
+    AMFI_ALLOW_EVERYTHING:        int = 0x80  # Disable sig enforcement and Library Validation (alt. amfi_get_out_of_my_way=0x1)
+
 
 # Internally within AMFI.kext, Apple references 0x2 and 0x80 as both 'Disable signature enforcement'
 # However 0x80 is a higher privilege than 0x2, and breaks TCC support in OS (ex. Camera, Microphone, etc prompts)
