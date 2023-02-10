@@ -604,15 +604,19 @@ class DetectRootPatch:
             int: AMFI level needed
         """
 
-        if self.amfi_must_disable is True:
-            if self.constants.detected_os > os_data.os_data.catalina:
-                if self.constants.detected_os >= os_data.os_data.ventura:
-                    if self.amfi_shim_bins is True:
-                        # Currently we require AMFI outright disabled
-                        # in Ventura to work with shim'd binaries
-                        return amfi_detect.AmfiConfigDetectLevel.ALLOW_ALL
-                return amfi_detect.AmfiConfigDetectLevel.LIBRARY_VALIDATION
-        return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
+        if self.amfi_must_disable is False:
+            return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
+
+        if self.constants.detected_os < os_data.os_data.big_sur:
+            return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
+
+        if self.constants.detected_os >= os_data.os_data.ventura:
+            if self.amfi_shim_bins is True:
+                # Currently we require AMFI outright disabled
+                # in Ventura to work with shim'd binaries
+                return amfi_detect.AmfiConfigDetectLevel.ALLOW_ALL
+
+        return amfi_detect.AmfiConfigDetectLevel.LIBRARY_VALIDATION
 
 
     def verify_patch_allowed(self, print_errors: bool = False):
