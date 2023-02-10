@@ -80,7 +80,7 @@ class OpenCoreLegacyPatcher:
         self.constants.unpack_thread.start()
 
         # Generate commit info
-        self.constants.commit_info = commit_info.commit_info(self.constants.launcher_binary).generate_commit_info()
+        self.constants.commit_info = commit_info.ParseCommitInfo(self.constants.launcher_binary).generate_commit_info()
         if self.constants.commit_info[0] not in ["Running from source", "Built from source"]:
             # Now that we have commit info, update nightly link
             branch = self.constants.commit_info[0]
