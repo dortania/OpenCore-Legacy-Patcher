@@ -189,3 +189,5 @@ class PatcherValidation:
 
         self._build_prebuilt()
         self._build_dumps()
+
+        subprocess.run(["rm", "-rf", self.constants.build_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
