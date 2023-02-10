@@ -1,29 +1,42 @@
-# Auto Patching's main purpose is to try and tell the user they're missing root patches
-# New users may not realize OS updates remove our patches, so we try and run when nessasary
-# Conditions for running:
-#   - Verify running GUI (TUI users can write their own scripts)
-#   - Verify the Snapshot Seal is intact (if not, assume user is running patches)
-#   - Verify this model needs patching (if not, assume user upgraded hardware and OCLP was not removed)
-#   - Verify there are no updates for OCLP (ensure we have the latest patch sets)
-# If all these tests pass, start Root Patcher
 # Copyright (C) 2022, Mykola Grymalyuk
 
-from pathlib import Path
 import plistlib
 import subprocess
 import webbrowser
 import logging
-from resources import utilities, updates, global_settings, network_handler
+from pathlib import Path
+
+from resources import utilities, updates, global_settings, network_handler, constants
 from resources.sys_patch import sys_patch_detect
 from resources.gui import gui_main
 
-class AutomaticSysPatch:
 
-    def __init__(self, constants):
-        self.constants = constants
+class AutomaticSysPatch:
+    """
+    Library of functions for launch agent, including automatic patching
+    """
+
+    def __init__(self, global_constants: constants.Constants):
+        self.constants: constants.Constants = global_constants
 
 
     def start_auto_patch(self):
+        """
+        Initiates automatic patching
+
+        Auto Patching's main purpose is to try and tell the user they're missing root patches
+        New users may not realize OS updates remove our patches, so we try and run when nessasary
+
+        Conditions for running:
+            - Verify running GUI (TUI users can write their own scripts)
+            - Verify the Snapshot Seal is intact (if not, assume user is running patches)
+            - Verify this model needs patching (if not, assume user upgraded hardware and OCLP was not removed)
+            - Verify there are no updates for OCLP (ensure we have the latest patch sets)
+
+        If all these tests pass, start Root Patcher
+
+        """
+
         logging.info("- Starting Automatic Patching")
         if self.constants.wxpython_variant is False:
             logging.info("- Auto Patch option is not supported on TUI, please use GUI")
@@ -31,7 +44,7 @@ class AutomaticSysPatch:
 
         if utilities.check_seal() is True:
             logging.info("- Detected Snapshot seal intact, detecting patches")
-            patches = sys_patch_detect.detect_root_patch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
             if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
                 patches = []
             if patches:
@@ -46,7 +59,7 @@ class AutomaticSysPatch:
                     if patches[patch] is True and not patch.startswith("Settings") and not patch.startswith("Validation"):
                         patch_string += f"- {patch}\n"
                 # Check for updates
-                dict = updates.check_binary_updates(self.constants).check_binary_updates()
+                dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
                 if not dict:
                     logging.info("- No new binaries found on Github, proceeding with patching")
                     if self.constants.launcher_script is None:
@@ -113,26 +126,35 @@ class AutomaticSysPatch:
         else:
             logging.info("- Detected Snapshot seal not intact, skipping")
 
-        if self.determine_if_versions_match() is False:
-            self.determine_if_boot_matches()
+        if self._determine_if_versions_match():
+            self._determine_if_boot_matches()
 
 
-    def determine_if_versions_match(self):
+    def _determine_if_versions_match(self):
+        """
+        Determine if the booted version of OCLP matches the installed version
+
+        ie. Installed app is 0.2.0, but EFI version is 0.1.0
+
+        Returns:
+            bool: True if versions match, False if not
+        """
+
         logging.info("- Checking booted vs installed OCLP Build")
         if self.constants.computer.oclp_version is None:
             logging.info("- Booted version not found")
-            return False
+            return True
 
         if self.constants.computer.oclp_version == self.constants.patcher_version:
             logging.info("- Versions match")
-            return False
+            return True
 
         # Check if installed version is newer than booted version
-        if updates.check_binary_updates(self.constants).check_if_build_newer(
+        if updates.CheckBinaryUpdates(self.constants)._check_if_build_newer(
             self.constants.computer.oclp_version.split("."), self.constants.patcher_version.split(".")
         ) is True:
             logging.info("- Installed version is newer than booted version")
-            return False
+            return True
 
         args = [
             "osascript",
@@ -150,18 +172,25 @@ class AutomaticSysPatch:
             self.constants.start_build_install = True
             gui_main.wx_python_gui(self.constants).main_menu(None)
 
-        return True
+        return False
 
-    def determine_if_boot_matches(self):
-        # Goal of this function is to determine whether the user
-        # is using a USB drive to Boot OpenCore but macOS does not
-        # reside on the same drive as the USB.
 
-        # If we determine them to be mismatched, notify the user
-        # and ask if they want to install to install to disk
+    def _determine_if_boot_matches(self):
+        """
+        Determine if the boot drive matches the macOS drive
+        ie. Booted from USB, but macOS is on internal disk
+
+        Goal of this function is to determine whether the user
+        is using a USB drive to Boot OpenCore but macOS does not
+        reside on the same drive as the USB.
+
+        If we determine them to be mismatched, notify the user
+        and ask if they want to install to install to disk.
+        """
 
         logging.info("- Determining if macOS drive matches boot drive")
-        should_notify = global_settings.global_settings().read_property("AutoPatch_Notify_Mismatched_Disks")
+
+        should_notify = global_settings.GlobalEnviromentSettings().read_property("AutoPatch_Notify_Mismatched_Disks")
         if should_notify is False:
             logging.info("- Skipping due to user preference")
             return
@@ -223,9 +252,16 @@ class AutomaticSysPatch:
 
 
     def install_auto_patcher_launch_agent(self):
-        # Installs the following:
-        #   - OpenCore-Patcher.app in /Library/Application Support/Dortania/
-        #   - com.dortania.opencore-legacy-patcher.auto-patch.plist in /Library/LaunchAgents/
+        """
+        Install the Auto Patcher Launch Agent
+
+        Installs the following:
+            - OpenCore-Patcher.app in /Library/Application Support/Dortania/
+            - com.dortania.opencore-legacy-patcher.auto-patch.plist in /Library/LaunchAgents/
+
+        See start_auto_patch() comments for more info
+        """
+
         if self.constants.launcher_script is not None:
             logging.info("- Skipping Auto Patcher Launch Agent, not supported when running from source")
             return

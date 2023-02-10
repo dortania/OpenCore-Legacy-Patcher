@@ -1,14 +1,7 @@
 #!/usr/bin/env python3
 
-# This script's main purpose is to handle the following:
-#   - Download PatcherSupportPkg resources
-#   - Convert payloads directory into DMG (GUI only)
-#   - Build Binary via Pyinstaller
-#   - Add Launcher.sh (TUI only)
-#   - Patch 'LC_VERSION_MIN_MACOSX' to OS X 10.10
-#   - Add commit data to Info.plist
-
-# Copyright (C) 2022 - Mykola Grymalyuk
+# Generate stand alone application for OpenCore-Patcher
+# Copyright (C) 2022-2023 - Mykola Grymalyuk
 
 from pathlib import Path
 import time
@@ -21,26 +14,49 @@ import sys
 
 from resources import constants
 
-class create_binary:
+
+class CreateBinary:
+    """
+    Library for creating OpenCore-Patcher application
+
+    This script's main purpose is to handle the following:
+       - Download external dependancies (ex. PatcherSupportPkg)
+       - Convert payloads directory into DMG
+       - Build Binary via Pyinstaller
+       - Patch 'LC_VERSION_MIN_MACOSX' to OS X 10.10
+       - Add commit data to Info.plist
+
+    """
 
     def __init__(self):
         start = time.time()
         print("- Starting build script")
-        self.set_cwd()
-        self.args = self.parse_arguments()
 
-        self.preflight_processes()
-        self.build_binary()
-        self.postflight_processes()
+        self.args = self._parse_arguments()
+
+        self._set_cwd()
+
+        self._preflight_processes()
+        self._build_binary()
+        self._postflight_processes()
         print(f"- Build script completed in {str(round(time.time() - start, 2))} seconds")
 
-    def set_cwd(self):
+
+    def _set_cwd(self):
+        """
+        Initialize current working directory to parent of this script
+        """
+
         os.chdir(Path(__file__).resolve().parent)
         print(f"- Current Working Directory: \n\t{os.getcwd()}")
 
-    def parse_arguments(self):
+
+    def _parse_arguments(self):
+        """
+        Parse arguments passed to script
+        """
+
         parser = argparse.ArgumentParser(description='Builds OpenCore-Patcher binary')
-        parser.add_argument('--build_tui', action='store_true', help='Builds TUI binary, if omitted GUI binary is built')
         parser.add_argument('--branch', type=str, help='Git branch name')
         parser.add_argument('--commit', type=str, help='Git commit URL')
         parser.add_argument('--commit_date', type=str, help='Git commit date')
@@ -48,7 +64,12 @@ class create_binary:
         args = parser.parse_args()
         return args
 
-    def setup_pathing(self):
+
+    def _setup_pathing(self):
+        """
+        Initialize pathing for pyinstaller
+        """
+
         python_path = sys.executable
         python_binary = python_path.split("/")[-1]
         python_bin_dir = python_path.strip(python_binary)
@@ -70,25 +91,36 @@ class create_binary:
 
         self.pyinstaller_path = pyinstaller_path
 
-    def preflight_processes(self):
+
+    def _preflight_processes(self):
+        """
+        Start preflight processes
+        """
+
         print("- Starting preflight processes")
-        self.setup_pathing()
-        self.delete_extra_binaries()
-        self.download_resources()
-        if not self.args.build_tui:
-            # payloads.dmg is only needed for GUI builds
-            self.generate_payloads_dmg()
+        self._setup_pathing()
+        self._delete_extra_binaries()
+        self._download_resources()
+        self._generate_payloads_dmg()
 
-    def postflight_processes(self):
+
+    def _postflight_processes(self):
+        """
+        Start postflight processes
+        """
+
         print("- Starting postflight processes")
-        if self.args.build_tui:
-            self.move_launcher()
-        self.patch_load_command()
-        self.add_commit_data()
-        self.post_flight_cleanup()
-        self.mini_validate()
+        self._patch_load_command()
+        self._add_commit_data()
+        self._post_flight_cleanup()
+        self._mini_validate()
 
-    def build_binary(self):
+
+    def _build_binary(self):
+        """
+        Build binary via pyinstaller
+        """
+
         if Path(f"./dist/OpenCore-Patcher.app").exists():
             print("- Found OpenCore-Patcher.app, removing...")
             rm_output = subprocess.run(
@@ -101,12 +133,8 @@ class create_binary:
                 raise Exception("Remove failed")
 
 
-        if self.args.build_tui:
-            print("- Building TUI binary...")
-            build_args = [self.pyinstaller_path, "./OpenCore-Patcher.spec", "--noconfirm"]
-        else:
-            print("- Building GUI binary...")
-            build_args = [self.pyinstaller_path, "./OpenCore-Patcher-GUI.spec", "--noconfirm"]
+        print("- Building GUI binary...")
+        build_args = [self.pyinstaller_path, "./OpenCore-Patcher-GUI.spec", "--noconfirm"]
 
         build_result = subprocess.run(build_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if build_result.returncode != 0:
@@ -114,27 +142,52 @@ class create_binary:
             print(build_result.stderr.decode('utf-8'))
             raise Exception("Build failed")
 
-    def delete_extra_binaries(self):
-        delete_files = [
-            "AutoPkg-Assets.pkg",
-            "AutoPkg-Assets.pkg.zip",
-            "InstallAssistant.pkg",
-            "InstallAssistant.pkg.integrityDataV1",
-            "KDK.dmg",
+
+    def _delete_extra_binaries(self):
+        """
+        Delete extra binaries from payloads directory
+        """
+
+        whitelist_folders = [
+            "ACPI",
+            "Config",
+            "Drivers",
+            "Icon",
+            "InstallPackage",
+            "Kexts",
+            "OpenCore",
+            "Tools",
         ]
+
+        whitelist_files = [
+            "com.dortania.opencore-legacy-patcher.auto-patch.plist",
+            "entitlements.plist",
+            "launcher.sh",
+            "OC-Patcher-TUI.icns",
+            "OC-Patcher.icns",
+            "Universal-Binaries.zip",
+        ]
+
+
         print("- Deleting extra binaries...")
         for file in Path("payloads").glob(pattern="*"):
-            if file.name in delete_files or file.name.startswith("OpenCore-Legacy-Patcher"):
+            if file.is_dir():
+                if file.name in whitelist_folders:
+                    continue
                 print(f"  - Deleting {file.name}")
-                file.unlink()
-            elif (Path(file) / Path("Contents/Resources/createinstallmedia")).exists():
-                print(f"  - Deleting {file}")
                 subprocess.run(["rm", "-rf", file])
-            elif Path(file).is_dir() and file.name == "Universal-Binaries":
-                print(f"  - Deleting {file}")
-                subprocess.run(["rm", "-rf", file])
+            else:
+                if file.name in whitelist_files:
+                    continue
+                print(f"  - Deleting {file.name}")
+                subprocess.run(["rm", "-f", file])
 
-    def download_resources(self):
+
+    def _download_resources(self):
+        """
+        Download required dependencies
+        """
+
         patcher_support_pkg_version = constants.Constants().patcher_support_pkg_version
         required_resources = [
             "Universal-Binaries.zip"
@@ -181,21 +234,29 @@ class create_binary:
                 print(mv_output.stderr.decode('utf-8'))
                 raise Exception("Move failed")
 
-    def generate_payloads_dmg(self):
+
+    def _generate_payloads_dmg(self):
+        """
+        Generate disk image containing all payloads
+        Disk image will be password protected due to issues with
+        Apple's notarization system and inclusion of kernel extensions
+        """
+
         if Path("./payloads.dmg").exists():
-            if self.args.reset_binaries:
-                print("  - Removing old payloads.dmg")
-                rm_output = subprocess.run(
-                    ["rm", "-rf", "./payloads.dmg"],
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE
-                )
-                if rm_output.returncode != 0:
-                    print("- Remove failed")
-                    print(rm_output.stderr.decode('utf-8'))
-                    raise Exception("Remove failed")
-            else:
+            if not self.args.reset_binaries:
                 print("  - payloads.dmg already exists, skipping creation")
                 return
+
+            print("  - Removing old payloads.dmg")
+            rm_output = subprocess.run(
+                ["rm", "-rf", "./payloads.dmg"],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+            if rm_output.returncode != 0:
+                print("- Remove failed")
+                print(rm_output.stderr.decode('utf-8'))
+                raise Exception("Remove failed")
+
         print("  - Generating DMG...")
         dmg_output = subprocess.run([
             'hdiutil', 'create', './payloads.dmg',
@@ -213,7 +274,12 @@ class create_binary:
 
         print("  - DMG generation complete")
 
-    def add_commit_data(self):
+
+    def _add_commit_data(self):
+        """
+        Add commit data to Info.plist
+        """
+
         if not self.args.branch and not self.args.commit and not self.args.commit_date:
             print("  - No commit data provided, adding source info")
             branch = "Built from source"
@@ -233,20 +299,25 @@ class create_binary:
         }
         plistlib.dump(plist, Path(plist_path).open("wb"), sort_keys=True)
 
-    def patch_load_command(self):
-        # Patches LC_VERSION_MIN_MACOSX in Load Command to report 10.10
-        #
-        # By default Pyinstaller will create binaries supporting 10.13+
-        # However this limitation is entirely arbitrary for our libraries
-        # and instead we're able to support 10.10 without issues.
-        #
-        # To verify set version:
-        #   otool -l ./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher
-        #
-        #       cmd LC_VERSION_MIN_MACOSX
-        #   cmdsize 16
-        #   version 10.13
-        #       sdk 10.9
+
+    def _patch_load_command(self):
+        """
+        Patch LC_VERSION_MIN_MACOSX in Load Command to report 10.10
+
+        By default Pyinstaller will create binaries supporting 10.13+
+        However this limitation is entirely arbitrary for our libraries
+        and instead we're able to support 10.10 without issues.
+
+        To verify set version:
+          otool -l ./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher
+
+              cmd LC_VERSION_MIN_MACOSX
+          cmdsize 16
+          version 10.13
+              sdk 10.9
+
+        """
+
         print("  - Patching LC_VERSION_MIN_MACOSX")
         path = './dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher'
         find = b'\x00\x0D\x0A\x00' # 10.13 (0xA0D)
@@ -257,19 +328,12 @@ class create_binary:
             with open(path, 'wb') as f:
                 f.write(data)
 
-    def move_launcher(self):
-        print("  - Adding TUI launcher")
-        mv_output = subprocess.run(
-            ["cp", "./payloads/launcher.sh", "./dist/OpenCore-Patcher.app/Contents/MacOS/Launcher"],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        )
-        if mv_output.returncode != 0:
-            print("  - Move failed")
-            print(mv_output.stderr.decode('utf-8'))
-            raise Exception("Move failed")
 
-    def post_flight_cleanup(self):
-        # Remove ./dist/OpenCore-Patcher
+    def _post_flight_cleanup(self):
+        """
+        Post flight cleanup
+        """
+
         path = "./dist/OpenCore-Patcher"
         print(f"  - Removing {path}")
         rm_output = subprocess.run(
@@ -281,9 +345,12 @@ class create_binary:
             print(rm_output.stderr.decode('utf-8'))
             raise Exception(f"Remove failed: {path}")
 
-    def mini_validate(self):
-        # Ensure binary can start
-        # Only build a single config, TUI CI will do in-depth validation
+
+    def _mini_validate(self):
+        """
+        Validate generated binary
+        """
+
         print("  - Validating binary")
         validate_output = subprocess.run(
             ["./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher", "--build", "--model", "MacPro3,1"],
@@ -294,5 +361,6 @@ class create_binary:
             print(validate_output.stderr.decode('utf-8'))
             raise Exception("Validation failed")
 
+
 if __name__ == "__main__":
-    create_binary()
+    CreateBinary()

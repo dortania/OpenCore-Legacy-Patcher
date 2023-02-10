@@ -33,7 +33,6 @@ from resources import (
     install,
     installer,
     utilities,
-    run,
     generate_smbios,
     updates,
     integrity_verification,
@@ -256,7 +255,7 @@ class wx_python_gui:
             if local_build_date <= installed_build_date:
                 return False
 
-        elif updates.check_binary_updates(self.constants).check_if_build_newer(local_version, application_version) is False:
+        elif updates.CheckBinaryUpdates(self.constants)._check_if_build_newer(local_version, application_version) is False:
             return False
 
         # Ask user if they want to move the application to the Applications folder
@@ -307,11 +306,11 @@ class wx_python_gui:
             return
 
         did_find_update = False
-        ignore_updates = global_settings.global_settings().read_property("IgnoreAppUpdates")
+        ignore_updates = global_settings.GlobalEnviromentSettings().read_property("IgnoreAppUpdates")
         if ignore_updates is not True:
             self.constants.ignore_updates = False
             self.constants.has_checked_updates = True
-            dict = updates.check_binary_updates(self.constants).check_binary_updates()
+            dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
             if dict:
                 for entry in dict:
                     version = dict[entry]["Version"]
@@ -331,7 +330,7 @@ class wx_python_gui:
                     elif response == wx.ID_NO:
                         logging.info("- Setting IgnoreAppUpdates to True")
                         self.constants.ignore_updates = True
-                        global_settings.global_settings().write_property("IgnoreAppUpdates", True)
+                        global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", True)
         else:
             self.constants.ignore_updates = True
             logging.info("- Ignoring App Updates due to defaults")
@@ -589,10 +588,10 @@ class wx_python_gui:
             if self.constants.start_build_install is True:
                 self.build_install_menu()
             elif "--gui_patch" in sys.argv:
-                self.patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+                self.patches = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).detect_patch_set()
                 self.root_patch_start()
             elif "--gui_unpatch" in sys.argv:
-                self.patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+                self.patches = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).detect_patch_set()
                 self.root_patch_revert()
         self.finished_auto_patch = True
         self.constants.start_build_install = False
@@ -1079,7 +1078,7 @@ class wx_python_gui:
         )
         self.subheader.Centre(wx.HORIZONTAL)
 
-        patches = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+        patches = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).detect_patch_set()
         self.patches = patches
         can_unpatch = patches["Validation: Unpatching Possible"]
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
@@ -2310,8 +2309,11 @@ class wx_python_gui:
 
     def start_script(self):
         utilities.disable_sleep_while_running()
-        args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
-        output, error, returncode = run.Run()._stream_output(comm=args)
+        args   = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
+        result = subprocess.run(args, capture_output=True, text=True)
+        output = result.stdout
+        error  = result.stderr if result.stderr else ""
+
         if "Install media now available at" in output:
             logging.info("- Successfully created macOS installer")
             while self.download_thread.is_alive():
@@ -2645,11 +2647,11 @@ class wx_python_gui:
         if user_choice == self.computer.real_model:
             logging.info(f"Using Real Model: {user_choice}")
             self.constants.custom_model = None
-            defaults.generate_defaults(self.computer.real_model, True, self.constants)
+            defaults.GenerateDefaults(self.computer.real_model, True, self.constants)
         else:
             logging.info(f"Using Custom Model: {user_choice}")
             self.constants.custom_model = user_choice
-            defaults.generate_defaults(self.constants.custom_model, False, self.constants)
+            defaults.GenerateDefaults(self.constants.custom_model, False, self.constants)
         # Reload Settings
         self.settings_menu(None)
 
@@ -2986,7 +2988,7 @@ class wx_python_gui:
         else:
             logging.info("Nuke KDKs disabled")
             self.constants.should_nuke_kdks = False
-        global_settings.global_settings().write_property("ShouldNukeKDKs", self.constants.should_nuke_kdks)
+        global_settings.GlobalEnviromentSettings().write_property("ShouldNukeKDKs", self.constants.should_nuke_kdks)
 
     def disable_library_validation_click(self, event):
         if self.disable_library_validation_checkbox.GetValue():
@@ -3009,9 +3011,9 @@ class wx_python_gui:
     def set_ignore_app_updates_click(self, event):
         self.constants.ignore_updates = self.set_ignore_app_updates_checkbox.GetValue()
         if self.constants.ignore_updates is True:
-            global_settings.global_settings().write_property("IgnoreAppUpdates", True)
+            global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", True)
         else:
-            global_settings.global_settings().write_property("IgnoreAppUpdates", False)
+            global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", False)
 
     def firewire_click(self, event=None):
         if self.firewire_boot_checkbox.GetValue():
@@ -3096,21 +3098,21 @@ class wx_python_gui:
     def ts2_accel_click(self, event=None):
         if self.set_terascale_accel_checkbox.GetValue():
             logging.info("TS2 Acceleration Enabled")
-            global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", True)
+            global_settings.GlobalEnviromentSettings().write_property("MacBookPro_TeraScale_2_Accel", True)
             self.constants.allow_ts2_accel = True
         else:
             logging.info("TS2 Acceleration Disabled")
-            global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", False)
+            global_settings.GlobalEnviromentSettings().write_property("MacBookPro_TeraScale_2_Accel", False)
             self.constants.allow_ts2_accel = False
 
     def force_web_drivers_click(self, event=None):
         if self.force_web_drivers_checkbox.GetValue():
             logging.info("Force Web Drivers Enabled")
-            global_settings.global_settings().write_property("Force_Web_Drivers", True)
+            global_settings.GlobalEnviromentSettings().write_property("Force_Web_Drivers", True)
             self.constants.force_nv_web = True
         else:
             logging.info("Force Web Drivers Disabled")
-            global_settings.global_settings().write_property("Force_Web_Drivers", False)
+            global_settings.GlobalEnviromentSettings().write_property("Force_Web_Drivers", False)
             self.constants.force_nv_web = False
 
     def windows_gmux_click(self, event=None):
@@ -3816,19 +3818,19 @@ OpenCore Legacy Patcher by default knows the most ideal
         self.subheader_4.SetPosition(wx.Point(0, self.subheader2_2.GetPosition().y + self.subheader2_2.GetSize().height+ 5))
         self.subheader_4.Centre(wx.HORIZONTAL)
 
-        is_dark_menu_bar = subprocess.run(["defaults", "read", "-g", "Moraea_DarkMenuBar"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        is_dark_menu_bar = subprocess.run(["defaults", "read", "-g", "Moraea_DarkMenuBar"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
         if is_dark_menu_bar in ["1", "true"]:
             is_dark_menu_bar = True
         else:
             is_dark_menu_bar = False
 
-        is_blur_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_BlurBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        is_blur_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_BlurBeta"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
         if is_blur_enabled in ["1", "true"]:
             is_blur_enabled = True
         else:
             is_blur_enabled = False
 
-        is_rim_disabled = subprocess.run(["defaults", "read", "-g", "Moraea_RimBetaDisabled"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+        is_rim_disabled = subprocess.run(["defaults", "read", "-g", "Moraea_RimBetaDisabled"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
         if is_rim_disabled in ["1", "true"]:
             is_rim_disabled = True
         else:

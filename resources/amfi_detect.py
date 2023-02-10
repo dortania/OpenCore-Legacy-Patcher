@@ -3,6 +3,7 @@
 
 import enum
 from resources import utilities
+from data import amfi_data
 
 
 class AmfiConfigDetectLevel(enum.IntEnum):
@@ -67,32 +68,31 @@ class AmfiConfigurationDetection:
 
         amfi_value = 0
         for arg in self.boot_args:
-            if arg.startswith("amfi="):
-                try:
-                    amfi_value = arg.split("=")
-                    if len(amfi_value) != 2:
-                        return
-                    amfi_value = amfi_value[1]
-                    if amfi_value.startswith("0x"):
-                        amfi_value = int(amfi_value, 16)
-                    else:
-                        amfi_value = int(amfi_value)
-                except:
+            if not arg.startswith("amfi="):
+                continue
+            try:
+                amfi_value = arg.split("=")
+                if len(amfi_value) != 2:
                     return
-                break
+                amfi_value = amfi_value[1]
+                if amfi_value.startswith("0x"):
+                    amfi_value = int(amfi_value, 16)
+                else:
+                    amfi_value = int(amfi_value)
+            except:
+                return
+            break
 
         if amfi_value == 0:
             return
 
-        if amfi_value & 0x1:
-            self.AMFI_ALLOW_TASK_FOR_PID = True
-        if amfi_value & 0x2:
-            self.AMFI_ALLOW_INVALID_SIGNATURE = True
-        if amfi_value & 0x4:
-            self.AMFI_LV_ENFORCE_THIRD_PARTY = True
-        if amfi_value & 0x80:
-            self.AMFI_ALLOW_EVERYTHING = True
-            self.SKIP_LIBRARY_VALIDATION = True
+        self.AMFI_ALLOW_TASK_FOR_PID:      bool = amfi_value & amfi_data.AppleMobileFileIntegrity.AMFI_ALLOW_TASK_FOR_PID
+        self.AMFI_ALLOW_INVALID_SIGNATURE: bool = amfi_value & amfi_data.AppleMobileFileIntegrity.AMFI_ALLOW_INVALID_SIGNATURE
+        self.AMFI_LV_ENFORCE_THIRD_PARTY:  bool = amfi_value & amfi_data.AppleMobileFileIntegrity.AMFI_LV_ENFORCE_THIRD_PARTY
+
+        if amfi_value & amfi_data.AppleMobileFileIntegrity.AMFI_ALLOW_EVERYTHING:
+            self.AMFI_ALLOW_EVERYTHING        = True
+            self.SKIP_LIBRARY_VALIDATION      = True
             self.AMFI_ALLOW_INVALID_SIGNATURE = True
 
 

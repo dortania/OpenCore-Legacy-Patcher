@@ -95,7 +95,6 @@ body:
       description: What variant of our software are you running?
       options:
         - GUI (Graphical User Interface)
-        - TUI (Text User Interface)
         - CLI (Command Line Interface)
         - Other/Non-Applicable
     validations:

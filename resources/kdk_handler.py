@@ -15,8 +15,7 @@ import os
 
 import logging
 
-from resources import utilities, network_handler
-from resources.constants import Constants
+from resources import utilities, network_handler, constants
 from data import os_data
 
 KDK_INSTALL_PATH: str  = "/Library/Developer/KDKs"
@@ -50,8 +49,8 @@ class KernelDebugKitObject:
 
     """
 
-    def __init__(self, constants: Constants, host_build: str, host_version: str, ignore_installed: bool = False, passive: bool = False):
-        self.constants: Constants = constants
+    def __init__(self, global_constants: constants.Constants, host_build: str, host_version: str, ignore_installed: bool = False, passive: bool = False):
+        self.constants: constants.Constants = global_constants
 
         self.host_build:   str = host_build    # ex. 20A5384c
         self.host_version: str = host_version  # ex. 11.0.1
@@ -564,6 +563,8 @@ class KernelDebugKitUtilities:
 
         logging.info(f"- Installing KDK package: {kdk_path.name}")
         logging.info(f"  - This may take a while...")
+
+        # TODO: Check whether enough disk space is available
 
         result = utilities.elevated(["installer", "-pkg", kdk_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
