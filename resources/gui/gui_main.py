@@ -33,7 +33,6 @@ from resources import (
     install,
     installer,
     utilities,
-    run,
     generate_smbios,
     updates,
     integrity_verification,
@@ -2310,8 +2309,11 @@ class wx_python_gui:
 
     def start_script(self):
         utilities.disable_sleep_while_running()
-        args = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
-        output, error, returncode = run.Run()._stream_output(comm=args)
+        args   = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
+        result = subprocess.run(args, capture_output=True, text=True)
+        output = result.stdout
+        error  = result.stderr if result.stderr else ""
+
         if "Install media now available at" in output:
             logging.info("- Successfully created macOS installer")
             while self.download_thread.is_alive():
