@@ -1,22 +1,21 @@
 # Additional support functions for sys_patch.py
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
-import subprocess
-import tempfile
-from data import os_data
-from resources import generate_smbios, utilities
-from pathlib import Path
-from datetime import datetime
 import plistlib
 import os
 import logging
+import subprocess
+from pathlib import Path
+from datetime import datetime
 
-from resources import kdk_handler, bplist
+from data import os_data
+from resources import bplist, constants, generate_smbios, utilities
+
 
 class sys_patch_helpers:
 
-    def __init__(self, constants):
-        self.constants = constants
+    def __init__(self, global_constants: constants.Constants()):
+        self.constants: constants.Constants() = global_constants
 
 
     def snb_board_id_patch(self, source_files_path):

@@ -88,7 +88,7 @@ class OpenCoreLegacyPatcher:
             self.constants.installer_pkg_url_nightly = self.constants.installer_pkg_url_nightly.replace("main", branch)
 
         # Generate defaults
-        defaults.generate_defaults(self.computer.real_model, True, self.constants)
+        defaults.GenerateDefaults(self.computer.real_model, True, self.constants)
 
         if utilities.check_cli_args() is None:
             logging.info(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")

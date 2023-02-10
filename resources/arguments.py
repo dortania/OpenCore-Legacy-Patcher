@@ -1,17 +1,20 @@
-import sys
-from resources import defaults, utilities, validation
-from resources.sys_patch import sys_patch, sys_patch_auto
-from resources.build import build
-from data import model_array
 import threading
 import time
 import logging
+import sys
+
+from resources import defaults, utilities, validation, constants
+from resources.sys_patch import sys_patch, sys_patch_auto
+from resources.build import build
+from data import model_array
+
 
 # Generic building args
 class arguments:
-    def __init__(self, constants):
+    def __init__(self, global_constants: constants.Constants()):
+        self.constants: constants.Constants() = global_constants
+
         self.args = utilities.check_cli_args()
-        self.constants = constants
 
         self._parse_arguments()
 
@@ -93,7 +96,7 @@ class arguments:
             if self.args.model:
                 logging.info(f"- Using custom model: {self.args.model}")
                 self.constants.custom_model = self.args.model
-                defaults.generate_defaults(self.constants.custom_model, False, self.constants)
+                defaults.GenerateDefaults(self.constants.custom_model, False, self.constants)
             elif self.constants.computer.real_model not in model_array.SupportedSMBIOS and self.constants.allow_oc_everywhere is False:
                 logging.info(
                     """Your model is not supported by this patcher for running unsupported OSes!"
@@ -103,7 +106,7 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 sys.exit(1)
             else:
                 logging.info(f"- Using detected model: {self.constants.computer.real_model}")
-                defaults.generate_defaults(self.constants.custom_model, True, self.constants)
+                defaults.GenerateDefaults(self.constants.custom_model, True, self.constants)
 
         if self.args.disk:
             logging.info(f"- Install Disk set: {self.args.disk}")

@@ -13,14 +13,14 @@ import plistlib
 import subprocess
 import webbrowser
 import logging
-from resources import utilities, updates, global_settings, network_handler
+from resources import utilities, updates, global_settings, network_handler, constants
 from resources.sys_patch import sys_patch_detect
 from resources.gui import gui_main
 
 class AutomaticSysPatch:
 
-    def __init__(self, constants):
-        self.constants = constants
+    def __init__(self, global_constants: constants.Constants()):
+        self.constants: constants.Constants() = global_constants
 
 
     def start_auto_patch(self):

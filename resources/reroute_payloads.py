@@ -9,10 +9,12 @@ import tempfile
 import atexit
 import logging
 
+from resources import constants
+
 class RoutePayloadDiskImage:
 
-    def __init__(self, constants):
-        self.constants = constants
+    def __init__(self, global_constants: constants.Constants()):
+        self.constants: constants.Constants() = global_constants
 
         self._setup_tmp_disk_image()
 

@@ -5,16 +5,17 @@
 import requests
 import logging
 
-from resources import network_handler
+from resources import network_handler, constants
+
+REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest"
 
 
 class check_binary_updates:
-    def __init__(self, constants):
-        self.constants = constants
-        self.binary_version = self.constants.patcher_version
-        self.binary_version_array = self.binary_version.split(".")
-        self.binary_version_array = [int(x) for x in self.binary_version_array]
-        self.binary_url = "https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest"
+    def __init__(self, global_constants: constants.Constants()):
+        self.constants: constants.Constants() = global_constants
+
+        self.binary_version       = self.constants.patcher_version
+        self.binary_version_array = [int(x) for x in self.binary_version.split(".")]
 
         self.available_binaries = {}
 
@@ -55,9 +56,9 @@ class check_binary_updates:
 
     def check_binary_updates(self):
         # logging.info("- Checking for updates...")
-        if network_handler.NetworkUtilities(self.binary_url).verify_network_connection():
+        if network_handler.NetworkUtilities(REPO_LATEST_RELEASE_URL).verify_network_connection():
             # logging.info("- Network connection functional")
-            response = requests.get(self.binary_url)
+            response = requests.get(REPO_LATEST_RELEASE_URL)
             data_set = response.json()
             # logging.info("- Retrieved latest version data")
             self.remote_version = data_set["tag_name"]

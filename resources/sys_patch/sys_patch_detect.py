@@ -3,17 +3,31 @@
 # Used when supplying data to sys_patch.py
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from resources import constants, device_probe, utilities, amfi_detect, network_handler, kdk_handler
-from resources.sys_patch import sys_patch_helpers
-from data import model_array, os_data, sip_data, sys_patch_dict, smbios_data, cpu_data
-
-import py_sip_xnu
-from pathlib import Path
 import plistlib
 import logging
+import py_sip_xnu
+from pathlib import Path
+
+from resources import (
+    constants,
+    device_probe,
+    utilities,
+    amfi_detect,
+    network_handler,
+    kdk_handler
+)
+from data import (
+    model_array,
+    os_data,
+    sip_data,
+    sys_patch_dict,
+    smbios_data,
+    cpu_data
+)
+
 
 class detect_root_patch:
-    def __init__(self, model, versions):
+    def __init__(self, model: str, versions: constants.Constants()):
         self.model = model
         self.constants: constants.Constants() = versions
         self.computer = self.constants.computer

@@ -4,6 +4,7 @@ from pathlib import Path
 
 from resources.sys_patch import sys_patch_helpers
 from resources.build import build
+from resources import constants
 from data import example_data, model_array, sys_patch_dict, os_data
 
 
@@ -14,8 +15,10 @@ class PatcherValidation:
     Primarily for Continuous Integration
     """
 
-    def __init__(self, constants):
-        self.constants = constants
+    def __init__(self, global_constants: constants.Constants()):
+        self.constants: constants.Constants() = global_constants
+
+        self.constants.validate = True
 
         self.valid_dumps = [
             example_data.MacBookPro.MacBookPro92_Stock,
@@ -46,8 +49,6 @@ class PatcherValidation:
             example_data.iMac.iMac201_Stock,
             example_data.MacBookPro.MacBookPro141_SSD_Upgrade,
         ]
-
-        self.constants.validate = True
 
         self._validate_configs()
         self._validate_sys_patch()
@@ -146,6 +147,15 @@ class PatcherValidation:
             logging.info("Validating SNB Board ID patcher")
             self.constants.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
             sys_patch_helpers.sys_patch_helpers(self.constants).snb_board_id_patch(self.constants.payload_local_binaries_root_path)
+
+            # Clean up
+            subprocess.run(
+                [
+                    "rm", "-rf", self.constants.payload_local_binaries_root_path
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT
+            )
         else:
             logging.info("- Skipping Root Patch File integrity validation")
 

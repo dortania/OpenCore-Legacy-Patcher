@@ -1,36 +1,51 @@
 # Generate Default Data
-from resources import utilities, device_probe, generate_smbios, global_settings
-from data import smbios_data, cpu_data, os_data
 import subprocess
 
+from resources import (
+    utilities,
+    device_probe,
+    generate_smbios,
+    global_settings,
+    constants
+)
+from data import (
+    smbios_data,
+    cpu_data,
+    os_data
+)
 
-class generate_defaults:
 
-    def __init__(self, model, host_is_target, settings):
-        self.model =          model
-        self.constants =      settings
+class GenerateDefaults:
+
+    def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants()):
+        self.constants: constants.Constants() = global_constants
+
+        self.model          = model
         self.host_is_target = host_is_target
 
         # Reset Variables
-        self.constants.sip_status =    True
-        self.constants.secure_status = False
-        self.constants.disable_cs_lv = False
-        self.constants.disable_amfi  = False
-        self.constants.fu_status =     True
-        self.constants.fu_arguments =  None
+        self.constants.sip_status:    bool = True
+        self.constants.secure_status: bool = False
+        self.constants.disable_cs_lv: bool = False
+        self.constants.disable_amfi:  bool = False
+        self.constants.fu_status:     bool = True
+        self.constants.fu_arguments:  bool = None
 
-        self.constants.custom_serial_number =       ""
-        self.constants.custom_board_serial_number = ""
+        self.constants.custom_serial_number:       str = ""
+        self.constants.custom_board_serial_number: str = ""
 
-        self.general_probe()
-        self.nvram_probe()
-        self.gpu_probe()
-        self.networking_probe()
-        self.misc_hardwares_probe()
-        self.smbios_probe()
+        self._general_probe()
+        self._nvram_probe()
+        self._gpu_probe()
+        self._networking_probe()
+        self._misc_hardwares_probe()
+        self._smbios_probe()
 
 
-    def general_probe(self):
+    def _general_probe(self):
+        """
+        General probe for data
+        """
 
         if "Book" in self.model:
             self.constants.set_content_caching = False
@@ -68,7 +83,12 @@ class generate_defaults:
         if result is False:
             self.constants.should_nuke_kdks = False
 
-    def smbios_probe(self):
+
+    def _smbios_probe(self):
+        """
+        SMBIOS specific probe
+        """
+
         if not self.host_is_target:
             if self.model in ["MacPro4,1", "MacPro5,1"]:
                 # Allow H.265 on AMD
@@ -99,7 +119,11 @@ class generate_defaults:
                     self.constants.force_vmm = False
 
 
-    def nvram_probe(self):
+    def _nvram_probe(self):
+        """
+        NVRAM specific probe
+        """
+
         if not self.host_is_target:
             return
 
@@ -120,7 +144,11 @@ class generate_defaults:
             self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
 
 
-    def networking_probe(self):
+    def _networking_probe(self):
+        """
+        Networking specific probe
+        """
+
         if self.host_is_target:
             if not (
                 (
@@ -157,7 +185,11 @@ class generate_defaults:
         self.constants.fu_status = True
         self.constants.fu_arguments = " -disable_sidecar_mac"
 
-    def misc_hardwares_probe(self):
+
+    def _misc_hardwares_probe(self):
+        """
+        Misc probe
+        """
         if self.host_is_target:
             if self.constants.computer.usb_controllers:
                 if self.model in smbios_data.smbios_dictionary:
@@ -170,7 +202,11 @@ class generate_defaults:
                                 break
 
 
-    def gpu_probe(self):
+    def _gpu_probe(self):
+        """
+        Graphics specific probe
+        """
+
         gpu_dict = []
         if self.host_is_target:
             gpu_dict = self.constants.computer.gpus

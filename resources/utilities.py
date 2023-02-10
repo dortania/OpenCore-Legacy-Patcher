@@ -9,7 +9,6 @@ import os
 import binascii
 import argparse
 import atexit
-import requests
 import shutil
 import py_sip_xnu
 
