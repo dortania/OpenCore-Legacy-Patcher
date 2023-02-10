@@ -28,7 +28,7 @@ class OpenCoreLegacyPatcher:
     def __init__(self):
         logging_handler.InitializeLoggingSupport()
 
-        self.constants: constants = constants.Constants()
+        self.constants: constants.Constants = constants.Constants()
 
         self.constants.wxpython_variant: bool = True
 

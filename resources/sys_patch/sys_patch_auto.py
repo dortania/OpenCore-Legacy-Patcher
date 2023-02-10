@@ -19,8 +19,8 @@ from resources.gui import gui_main
 
 class AutomaticSysPatch:
 
-    def __init__(self, global_constants: constants.Constants()):
-        self.constants: constants.Constants() = global_constants
+    def __init__(self, global_constants: constants.Constants):
+        self.constants: constants.Constants = global_constants
 
 
     def start_auto_patch(self):

@@ -11,8 +11,9 @@ from data import model_array
 
 # Generic building args
 class arguments:
-    def __init__(self, global_constants: constants.Constants()):
-        self.constants: constants.Constants() = global_constants
+
+    def __init__(self, global_constants: constants.Constants):
+        self.constants: constants.Constants = global_constants
 
         self.args = utilities.check_cli_args()
 

@@ -14,8 +14,8 @@ from resources import bplist, constants, generate_smbios, utilities
 
 class sys_patch_helpers:
 
-    def __init__(self, global_constants: constants.Constants()):
-        self.constants: constants.Constants() = global_constants
+    def __init__(self, global_constants: constants.Constants):
+        self.constants: constants.Constants = global_constants
 
 
     def snb_board_id_patch(self, source_files_path):

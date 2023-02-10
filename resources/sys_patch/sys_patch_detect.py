@@ -27,9 +27,9 @@ from data import (
 
 
 class detect_root_patch:
-    def __init__(self, model: str, versions: constants.Constants()):
+    def __init__(self, model: str, global_constants: constants.Constants):
         self.model = model
-        self.constants: constants.Constants() = versions
+        self.constants: constants.Constants = global_constants
         self.computer = self.constants.computer
 
         # GPU Patch Detection

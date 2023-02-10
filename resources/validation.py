@@ -15,8 +15,8 @@ class PatcherValidation:
     Primarily for Continuous Integration
     """
 
-    def __init__(self, global_constants: constants.Constants()):
-        self.constants: constants.Constants() = global_constants
+    def __init__(self, global_constants: constants.Constants):
+        self.constants: constants.Constants = global_constants
 
         self.constants.validate = True
 

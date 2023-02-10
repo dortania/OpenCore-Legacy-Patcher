@@ -17,8 +17,8 @@ from data import (
 
 class GenerateDefaults:
 
-    def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants()):
-        self.constants: constants.Constants() = global_constants
+    def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants):
+        self.constants: constants.Constants = global_constants
 
         self.model          = model
         self.host_is_target = host_is_target

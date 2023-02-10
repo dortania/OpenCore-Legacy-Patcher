@@ -15,8 +15,7 @@ import os
 
 import logging
 
-from resources import utilities, network_handler
-from resources.constants import Constants
+from resources import utilities, network_handler, constants
 from data import os_data
 
 KDK_INSTALL_PATH: str  = "/Library/Developer/KDKs"
@@ -50,8 +49,8 @@ class KernelDebugKitObject:
 
     """
 
-    def __init__(self, constants: Constants, host_build: str, host_version: str, ignore_installed: bool = False, passive: bool = False):
-        self.constants: Constants = constants
+    def __init__(self, global_constants: constants.Constants, host_build: str, host_version: str, ignore_installed: bool = False, passive: bool = False):
+        self.constants: constants.Constants = global_constants
 
         self.host_build:   str = host_build    # ex. 20A5384c
         self.host_version: str = host_version  # ex. 11.0.1

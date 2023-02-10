@@ -13,8 +13,8 @@ from resources import constants
 
 class RoutePayloadDiskImage:
 
-    def __init__(self, global_constants: constants.Constants()):
-        self.constants: constants.Constants() = global_constants
+    def __init__(self, global_constants: constants.Constants):
+        self.constants: constants.Constants = global_constants
 
         self._setup_tmp_disk_image()
 

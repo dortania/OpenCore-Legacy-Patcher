@@ -12,15 +12,16 @@ import subprocess
 class global_settings:
 
     def __init__(self):
-        self.file_name = ".com.dortania.opencore-legacy-patcher.plist"
-        self.global_settings_folder = "/Users/Shared"
-        self.global_settings_plist = f"{self.global_settings_folder}/{self.file_name}"
+        self.file_name:              str = ".com.dortania.opencore-legacy-patcher.plist"
+        self.global_settings_folder: str = "/Users/Shared"
+        self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
+
         self._generate_settings_file()
         self._convert_defaults_to_global_settings()
         self._fix_file_permission()
 
 
-    def read_property(self, property_name):
+    def read_property(self, property_name: str):
         """
         Reads a property from the global settings file
         """
@@ -32,7 +33,7 @@ class global_settings:
         return None
 
 
-    def write_property(self, property_name, property_value):
+    def write_property(self, property_name: str, property_value):
         """
         Writes a property to the global settings file
         """

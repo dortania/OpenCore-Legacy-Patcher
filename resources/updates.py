@@ -11,8 +11,8 @@ REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/dortania/OpenCore-L
 
 
 class check_binary_updates:
-    def __init__(self, global_constants: constants.Constants()):
-        self.constants: constants.Constants() = global_constants
+    def __init__(self, global_constants: constants.Constants):
+        self.constants: constants.Constants = global_constants
 
         self.binary_version       = self.constants.patcher_version
         self.binary_version_array = [int(x) for x in self.binary_version.split(".")]

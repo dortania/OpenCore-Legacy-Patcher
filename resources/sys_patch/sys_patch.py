@@ -46,9 +46,9 @@ from data import os_data
 
 
 class PatchSysVolume:
-    def __init__(self, model, versions, hardware_details=None):
+    def __init__(self, model: str, global_constants: constants.Constants, hardware_details: list = None):
         self.model = model
-        self.constants: constants.Constants() = versions
+        self.constants: constants.Constants = global_constants
         self.computer = self.constants.computer
         self.root_mount_path = None
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
@@ -72,7 +72,15 @@ class PatchSysVolume:
         if Path(self.constants.payload_local_binaries_root_path).exists():
             shutil.rmtree(self.constants.payload_local_binaries_root_path)
 
-    def _init_pathing(self, custom_root_mount_path=None, custom_data_mount_path=None):
+    def _init_pathing(self, custom_root_mount_path: Path = None, custom_data_mount_path: Path = None):
+        """
+        Initializes the pathing for root volume patching
+
+        Parameters:
+            custom_root_mount_path (Path): Custom path to mount the root volume
+            custom_data_mount_path (Path): Custom path to mount the data volume
+
+        """
         if custom_root_mount_path and custom_data_mount_path:
             self.mount_location = custom_root_mount_path
             self.data_mount_location = custom_data_mount_path
@@ -83,6 +91,7 @@ class PatchSysVolume:
         else:
             self.mount_location = ""
             self.mount_location_data = ""
+
         self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
         self.mount_application_support = f"{self.mount_location_data}/Library/Application Support"
 
