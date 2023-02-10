@@ -255,7 +255,7 @@ class wx_python_gui:
             if local_build_date <= installed_build_date:
                 return False
 
-        elif updates.check_binary_updates(self.constants).check_if_build_newer(local_version, application_version) is False:
+        elif updates.CheckBinaryUpdates(self.constants)._check_if_build_newer(local_version, application_version) is False:
             return False
 
         # Ask user if they want to move the application to the Applications folder
@@ -310,7 +310,7 @@ class wx_python_gui:
         if ignore_updates is not True:
             self.constants.ignore_updates = False
             self.constants.has_checked_updates = True
-            dict = updates.check_binary_updates(self.constants).check_binary_updates()
+            dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
             if dict:
                 for entry in dict:
                     version = dict[entry]["Version"]

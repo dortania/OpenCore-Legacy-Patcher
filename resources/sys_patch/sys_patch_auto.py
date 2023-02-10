@@ -46,7 +46,7 @@ class AutomaticSysPatch:
                     if patches[patch] is True and not patch.startswith("Settings") and not patch.startswith("Validation"):
                         patch_string += f"- {patch}\n"
                 # Check for updates
-                dict = updates.check_binary_updates(self.constants).check_binary_updates()
+                dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
                 if not dict:
                     logging.info("- No new binaries found on Github, proceeding with patching")
                     if self.constants.launcher_script is None:
@@ -128,7 +128,7 @@ class AutomaticSysPatch:
             return False
 
         # Check if installed version is newer than booted version
-        if updates.check_binary_updates(self.constants).check_if_build_newer(
+        if updates.CheckBinaryUpdates(self.constants)._check_if_build_newer(
             self.constants.computer.oclp_version.split("."), self.constants.patcher_version.split(".")
         ) is True:
             logging.info("- Installed version is newer than booted version")
