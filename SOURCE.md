@@ -68,7 +68,6 @@ pip3 install pyinstaller
 cd ~/Developer/OpenCore-Legacy-Patcher/
 # Create the pyinstaller based Application
 # Optional Arguments
-#    '--build_tui':          Create TUI vairant (deprecated)
 #    '--reset_binaries':     Redownload and generate support files
 python3 Build-Binary.command
 # Open build folder

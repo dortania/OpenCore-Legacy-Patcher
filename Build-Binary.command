@@ -40,7 +40,6 @@ class create_binary:
 
     def parse_arguments(self):
         parser = argparse.ArgumentParser(description='Builds OpenCore-Patcher binary')
-        parser.add_argument('--build_tui', action='store_true', help='Builds TUI binary, if omitted GUI binary is built')
         parser.add_argument('--branch', type=str, help='Git branch name')
         parser.add_argument('--commit', type=str, help='Git commit URL')
         parser.add_argument('--commit_date', type=str, help='Git commit date')
@@ -75,14 +74,10 @@ class create_binary:
         self.setup_pathing()
         self.delete_extra_binaries()
         self.download_resources()
-        if not self.args.build_tui:
-            # payloads.dmg is only needed for GUI builds
-            self.generate_payloads_dmg()
+        self.generate_payloads_dmg()
 
     def postflight_processes(self):
         print("- Starting postflight processes")
-        if self.args.build_tui:
-            self.move_launcher()
         self.patch_load_command()
         self.add_commit_data()
         self.post_flight_cleanup()
@@ -101,12 +96,8 @@ class create_binary:
                 raise Exception("Remove failed")
 
 
-        if self.args.build_tui:
-            print("- Building TUI binary...")
-            build_args = [self.pyinstaller_path, "./OpenCore-Patcher.spec", "--noconfirm"]
-        else:
-            print("- Building GUI binary...")
-            build_args = [self.pyinstaller_path, "./OpenCore-Patcher-GUI.spec", "--noconfirm"]
+        print("- Building GUI binary...")
+        build_args = [self.pyinstaller_path, "./OpenCore-Patcher-GUI.spec", "--noconfirm"]
 
         build_result = subprocess.run(build_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if build_result.returncode != 0:
