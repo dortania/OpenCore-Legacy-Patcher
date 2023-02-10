@@ -68,7 +68,7 @@ class AmfiConfigurationDetection:
 
         amfi_value = 0
         for arg in self.boot_args:
-            if not arg.startswith("amfi"):
+            if not arg.startswith("amfi="):
                 continue
             try:
                 amfi_value = arg.split("=")
