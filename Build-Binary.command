@@ -15,7 +15,7 @@ import sys
 from resources import constants
 
 
-class create_binary:
+class CreateBinary:
     """
     Library for creating OpenCore-Patcher application
 
@@ -148,25 +148,39 @@ class create_binary:
         Delete extra binaries from payloads directory
         """
 
-        delete_files = [
-            "AutoPkg-Assets.pkg",
-            "AutoPkg-Assets.pkg.zip",
-            "InstallAssistant.pkg",
-            "InstallAssistant.pkg.integrityDataV1",
-            "KDK.dmg",
+        whitelist_folders = [
+            "ACPI",
+            "Config",
+            "Drivers",
+            "Icon",
+            "InstallPackage",
+            "Kexts",
+            "OpenCore",
+            "Tools",
         ]
+
+        whitelist_files = [
+            "com.dortania.opencore-legacy-patcher.auto-patch.plist",
+            "entitlements.plist",
+            "launcher.sh",
+            "OC-Patcher-TUI.icns",
+            "OC-Patcher.icns",
+            "Universal-Binaries.zip",
+        ]
+
 
         print("- Deleting extra binaries...")
         for file in Path("payloads").glob(pattern="*"):
-            if file.name in delete_files or file.name.startswith("OpenCore-Legacy-Patcher"):
+            if file.is_dir():
+                if file.name in whitelist_folders:
+                    continue
                 print(f"  - Deleting {file.name}")
-                file.unlink()
-            elif (Path(file) / Path("Contents/Resources/createinstallmedia")).exists():
-                print(f"  - Deleting {file}")
                 subprocess.run(["rm", "-rf", file])
-            elif Path(file).is_dir() and file.name == "Universal-Binaries":
-                print(f"  - Deleting {file}")
-                subprocess.run(["rm", "-rf", file])
+            else:
+                if file.name in whitelist_files:
+                    continue
+                print(f"  - Deleting {file.name}")
+                subprocess.run(["rm", "-f", file])
 
 
     def _download_resources(self):
@@ -349,4 +363,4 @@ class create_binary:
 
 
 if __name__ == "__main__":
-    create_binary()
+    CreateBinary()
