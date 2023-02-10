@@ -29,7 +29,8 @@ class GenerateDefaults:
         self.constants.disable_cs_lv: bool = False
         self.constants.disable_amfi:  bool = False
         self.constants.fu_status:     bool = True
-        self.constants.fu_arguments:  bool = None
+
+        self.constants.fu_arguments: str = None
 
         self.constants.custom_serial_number:       str = ""
         self.constants.custom_board_serial_number: str = ""
