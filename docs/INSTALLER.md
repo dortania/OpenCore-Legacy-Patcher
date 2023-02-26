@@ -1,8 +1,8 @@
 # Download and build macOS Installers
 
-This doc is centered around downloading and writing the macOS installer to a USB. If you're already familiar with how to do this, you can skip.
+This document is centered around downloading and writing the macOS installer to a USB drive. If you're already familiar with how to do this, you can skip this section.
 
-* Note: 16GB+ USB will be required for the installer
+* Note: 16GB+ USB drive will be required for the installer
 
 ## Creating the installer
 
@@ -12,11 +12,11 @@ With OpenCore Legacy Patcher, our new GUI includes a download menu for macOS ins
 
 For this guide, we'll be using the standard OpenCore-Patcher (GUI).
 
-Once downloaded, open the app and you should be greeted with this menu:
+Once downloaded, open the app and you should be greeted by this menu:
 
 ![OCLP GUI Main Menu](../images/OCLP-GUI-Main-Menu.png)
 
-First we'll want to select the "Create macOS Installer" button. This will present you with 2 options:
+First, we'll want to select the "Create macOS Installer" button. This will present you with 2 options:
 
 ![](../images/OCLP-GUI-Create-Installer-Menu.png)
 

@@ -1,42 +1,43 @@
-# Installing UEFI Windows 10
+# Installing Windows in UEFI Mode
 
-* Guide based off of [cdf's Mac Pro Thread](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/)
+Modern versions of Windows officially support two types of firmware: UEFI and BIOS. Users may want to boot Windows through the OCLP Bootpicker, but only UEFI Installations of Windows will show up in the OCLP Bootpicker.
+Many older Macs do not "officially" support UEFI Windows installations and will refuse to install or cause many issues, but OCLP can be used to prevent almost all of these installation and usability issues.
 
-To install a UEFI copy of Windows is actually super simple! All it requires is to boot Windows' Installer through OpenCore to force a UEFI setup. Here we'll be going step by step in the process, including partitioning and such.
+## Minimum Requirements
 
-* Note: UEFI Windows is generally quite usable for Arrandale and newer models, however machines with Penryn CPUs may experience issues
-* Recommended Models:
-  * MacBookAir4,x - 5,x
-  * MacBookPro8,x - 10,x
-  * Macmini5,x - 6,x
-  * iMac11,x - 13,x
+This guide will focus on the installation of Windows 10 without using Bootcamp Utility. Windows 11 should also work, but its quirks will not be covered.
 
-Once you know if your model is supported, you're good to go with the rest of this guide.
+* Due to hardware and firmware limitations, UEFI Windows installations are only recommended on the following machines:
 
-* Newer models than listed here will already natively support UEFI Windows through Boot Camp.
+  * 2015 MacBook or newer (MacBook8,x+)
+  * 2011 MacBook Air or newer (MacBookAir4,x+)
+  * 2011 MacBook Pro or newer (MacBookPro8,x+)
+  * 2011 Mac mini or newer (Macmini5,x+)
+  * 2009[^1] Mac Pro or newer (MacPro4,1+), upgraded GPU is preferred
+  * 2010 iMac or newer (iMac11,x+), upgraded GPU is preferred
+  * 2009[^2] Xserve (Xserve3,1), upgraded GPU is preferred
 
-For MacPro4,1/5,1 and Xserve3,1 users, please be aware that Windows has troubles with automatic installation, so please refer to cdf's guide on manual installation:
 
-* [cdf's Mac Pro Thread](https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/)
+[^1]: MacPro4,1 and MacPro5,1 systems experience issues with the Windows installer, see the DISM section for installation instructions.
+[^2]: Theoretically supported, not tested. Follow DISM section, similar to Mac Pro
 
-## Disk Formatting
+If your machine is not listed, UEFI Windows will likely still install, but you may face stability/driver issues.
 
-To start off, we'll need the following:
+## Disk Partitioning and Formatting
 
-* An 8GB USB drive for the Windows Installer
-* A minimum of 30GB of free space on whichever drive you want to install Windows to
+The following is required for installation:
+* 8GB+ USB Drive for the Windows installer
+* 30GB+ Free Space on an existing drive / empty drive for the Windows installation
 
-First, let's format our drives with the following steps:
-
-### USB Drive Formatting
+### Formatting the USB Drive
 
 Open Disk Utility in macOS and format the USB Drive as ExFat with the Master Boot Record scheme:
 
 ![](../images/windows-mbr-format.png)
 
-### Disk Formatting
+### Formatting the Target Drive
 
-Next, grab the drive you wish to install Windows on and partition it as ExFat (If formatting the entire drive, ensure it's using the GUID Partition Table scheme):
+Next, select the drive you wish to install Windows in Disk Utility on and partition it as ExFat (If formatting the entire drive, ensure it's using the GUID Partition Table scheme):
 
 ![](../images/windows-partition-1.png)
 
@@ -45,58 +46,144 @@ If you plan to use the same hard drive for macOS and Windows, we recommend creat
 Recommended size is 200MB and the partition format **must** be FAT32 for OpenCore to operate correctly. You will next want to install OpenCore onto the new partition, either moving from the ESP with [MountEFI](https://github.com/corpnewt/MountEFI) or rerunning the OpenCore-Patcher.app
 
 * Note 1: For machines with dedicated drives for Windows, having different partitions for OpenCore is not required.
-* Note 2: We recommend uninstalling OpenCore from the ESP/EFI Partition when you create this new OpenCore partition to avoid confusion when selecting OpenCore builds in the Mac's boot picker.
+* Note 2: Having different partitions for OpenCore is also not required if the Windows boot files detected by the stock Bootpicker are removed. See "Removing the Windows option from the stock bootpicker" for further information.
+* Note 3: We recommend uninstalling OpenCore from the ESP/EFI Partition when you create this new OpenCore partition to avoid confusion when selecting OpenCore builds in the Mac's boot picker.
 
 ![](../images/windows-partition-2.png)
 
-## Creating the Installer
+## Creating the Windows Installer
 
-First up, lets grab Windows's Installer at the below link:
+The latest Windows 10 installation image can be downloaded from Microsoft using the following link:
 
 * [Download Windows 10 Disc Image (ISO File)](https://www.microsoft.com/en-ca/software-download/windows10ISO)
 
-Next, mount the Windows 10 ISO:
+Alternatively, TechBench provides an download interface for other builds of Windows 10 in several languages, hosted on Microsoft's servers:
+
+* [TechBench by WZT](https://tb.rg-adguard.net/public.php)
+
+Once the file is downloaded, mount the .iso image:
 
 ![](../images/windows-iso.png)
 
-Then open terminal and run `rsync` on the USB drive (replace CCCOMA_X64 with the mounted ISO's name, as well as replacing W10USB with your USB drive's name):
+Then open terminal and use the `rsync` command with the disk image set as the source and your USB drive set as the target. (Replace "CCCOMA_X64" with the mounted image's partition name, and replace "InstallWin10" with your USB Drive's name).
 
 ```
-rsync -r -P /Volumes/CCCOMA_X64/ /Volumes/W10USB
+rsync -r -P /Volumes/CCCOMA_X64/ /Volumes/InstallWin10
 ```
-
-::: details If you get an error about install.wim
-
-One of the files, `install.wim`, may be too big for the FAT32 file system to hold. If this is the case, you should enter the commands below rather than the one above. This assumes you have `wimlib` installed, if not you can install it with [Homebrew](https://brew.sh):
-
-```
-# Copy everything but the install.wim file
-rsync -vha -P --exclude=sources/install.wim /Volumes/CCCOMA_X64/ /Volumes/W10USB
-
-# Use wimlib to split the install.wim file into a size that fits
-wimlib-imagex split /Volumes/CCCOMA_X64/sources/install.wim /Volumes/W10USB/sources/install.swm 4000
-```
-
-Once that's completed, you can continue.
-:::
 
 ![](../images/rsync-progess.png)
 
-Command will take some time, so sit back and get some coffee. Once finished, the root of the USB drive should look as follows:
-
-* Ensure that these folders and files are in the root of the USB drive, otherwise the USB will not boot.
+The `rsync` command will take some time, so get some coffee and sit back. Once finished, the root of the USB drive should look as follows:
 
 ![](../images/windows-rsync-done.png)
 
-Once done, lets reboot into OpenCore's Menu and you'll see a new Windows' entry:
+* Ensure that these folders and files are in the root of the USB drive, otherwise the USB will not boot.
 
-* Note: Do not boot the installer outside of OpenCore as this will default back to the old MBR BIOS setup. Booting through OpenCore ensures Windows uses UEFI.
 
-![](../images/oc-windows.png)
+## Installation Process
 
-From there, install Windows as normal and you'll get a new BootCamp entry in OpenCore's picker when done! Don't forget to run BootCamp's utilities installer as well to ensure Wi-Fi and other important features are functioning correctly. This can be downloaded from the BootCamp Assistant app in macOS, or with [brigadier](https://github.com/timsutton/brigadier) in Windows.
+Once you reboot your machine, you should see a new boot option in the OCLP Bootpicker labelled as "EFI Boot". It may or may not have the BootCamp icon.
 
-![](../images/oc-windows-done.png)
+:::warning
+
+If you aren't booted into OCLP, you may see two boot options labelled "Windows" and "EFI Boot". Do not choose either of the options and boot into OCLP to continue.
+
+:::
+
+### Installation: Microsoft Method
+
+Once booted into the Windows installer, proceed as you normally would on any Windows computer. If you see an error message containing “Windows could not prepare the computer to boot into the next phase of installation”, please follow the next portion of this guide (DISM Installation).
+
+### Installation: DISM Deployment Method
+
+Once booted into the Windows installer, proceed as you normally would until you reach the "Where do you want to install Windows" disk formatting section.
+
+When you are prompted to select a drive, select your desired partition and delete it using "Delete". If you want to install Windows to an empty drive, erase every partition currently on the desired drive.
+After your drive/partition is erased, press "New" to create the Windows system partitions. 
+
+![](../images/DISM-1.png)
+
+You will be prompted to confirm the creation of the system partitions, press "OK".
+
+![](../images/DISM-2.png)
+
+Once the partitions are created, select the main (largest) partition and press "Format". This will format the partition using the NFTS file system.
+
+![](../images/DISM-3.png)
+
+After the installer formats the partition, open up the Command Prompt by pressing SHIFT + F10. Then run the `diskpart` command, and `list vol`. This will produce a list of volumes in your system, make sure to keep track of the drive letters of the main Windows partition (largest, NTFS), the EFI partition (100MB, FAT32), and the Windows installer (Usually Drive D). Run `exit` to close diskpart
+
+![](../images/DISM-4.png)
+
+Now, get a list of available Windows editions by running `dism /Get-WimInfo /WimFile:D:\Sources\install.wim` (substituting D with the Installer Drive Letter). This guide will use Option 6 for Windows 10 Pro.
+
+![](../images/DISM-5.png)
+
+You can now start the deployment process. Run `dism /Apply-Image /ImageFile:D:\Sources\install.wim /index:6 /ApplyDir:E:`, replacing "D" with the Installer Drive Letter, "6" with the Windows edition option, and "E" with the Windows Partition Drive Letter.
+
+![](../images/DISM-6.png)
+
+Once `dism` finishes its thing, run `bcdboot E:\Windows`, substituting "E" for the drive letter of the main Windows partition to create the boot files.
+
+![](../images/DISM-7.png)
+
+::: details Removing the Windows option from the stock bootpicker, HIGHLY RECOMMENDED FOR MACPRO4,1, MACPRO5,1, AND XSERVE3,1 SYSTEMS
+
+Removing the Windows boot option from the stock bootpicker is HIGHLY RECOMMENDED on MacPro4,1, MacPro5,1, and Xserve3,1 systems in order to prevent Secure Boot NVRAM corruption and bricking.
+
+Enter the EFI Folder by running `C:`, substituting "C" for the EFI Partition Drive Letter. Then run `cd EFI` to enter the EFI Partition. Next, run `rmdir Boot /S /Q` to remove the boot files that can be detected by the stock Bootpicker. The OCLP Picker will still be able to detect and boot Windows.
+
+![](../images/DISM-8.png)
+
+You can verify that the `Boot` folder is removed by running the `dir` command:
+
+![](../images/DISM-9.png)
+
+:::
+
+Windows is now installed. It should be recognized as "EFI Boot" with a BootCamp icon in the OCLP Bootpicker.
+
+## Post-Installation
+
+### Installing BootCamp Software
+
+To get started, download the Brigadier utility from the following link:
+
+* [Download Brigadier](https://github.com/timsutton/brigadier/releases/download/0.2.4/brigadier.exe)
+
+Once Brigadier is downloaded, move it to your desktop for easy access.
+
+Open up a command prompt window as a standard user and run `cd desktop`.
+
+![](../images/BOOTCAMP-1.png)
+
+Then run `.\brigadier.exe --model=MODEL1,1`, replacing "MODEL1,1" with your machine's SMBIOS model.
+
+![](../images/BOOTCAMP-2.png)
+
+Once the BootCamp software is downloaded, you can install it by executing `Setup.exe` or `\Drivers\Apple\BootCamp.msi` (`BootCamp64.msi` if present).
+
+![](../images/BOOTCAMP-3.png)
+
+### Installing BootCamp 6 softare on unsupported machines
+
+To get started, download the Brigadier utility from the following link:
+
+* [Download Brigadier](https://github.com/timsutton/brigadier/releases/download/0.2.4/brigadier.exe)
+
+Once Brigadier is downloaded, move it to your desktop for easy access.
+
+Open up a command prompt window as a standard user and run `cd desktop`.
+
+![](../images/BOOTCAMP-1.png)
+
+Then run `.\brigadier.exe --model=MacPro7,1`. This will download the latest BootCamp 6 package.
+
+![](../images/BOOTCAMP-2.png)
+
+Once the BootCamp software is downloaded, you can install BootCamp 6 by executing `\Drivers\Apple\BootCamp.msi` in an administrator command prompt window.
+
+![](../images/BOOTCAMP-3.png)
 
 ## Troubleshooting
 
