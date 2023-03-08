@@ -12,6 +12,13 @@
   - Paired along side AutoPkgInstaller
 - Implement Kernel Debug Kit backup system
   - Allows for easy restoration of KDKs if OS updates corrupted installed KDKs
+- Update Wireless binaries
+  - Fixed WiFi preferences crash with legacy wifi patches
+- Update non-Metal Binaries
+  - Improved menubar blur saturation
+  - Fixed System Settings hover effects, including Bluetooth connect button
+  - Add Books hacks (reimplement cover image generation, disable broken page curl animation)
+  - Fixed unresponsive buttons
 - Backend Changes:
   - Refactored kdk_handler.py
     - Prioritizes KdkSupportPkg repository for downloads
@@ -38,7 +45,7 @@
     - pyinstaller - 5.7.0
     - packaging - 23.0
 - Increment Binaries:
-  - PatcherSupportPkg 0.8.3 - release
+  - PatcherSupportPkg 0.8.4 - release
   - AutoPkgInstaller 1.0.2 - release
 
 ## 0.6.1
