@@ -834,6 +834,7 @@ class DetectRootPatch:
                 required_patches.update({"AMD Legacy GCN": all_hardware_patchset["Graphics"]["AMD Legacy GCN"]})
             else:
                 required_patches.update({"AMD Legacy Polaris": all_hardware_patchset["Graphics"]["AMD Legacy Polaris"]})
+                required_patches.update({"Revert GVA Downgrade": all_hardware_patchset["Graphics"]["Revert GVA Downgrade"]})
             if "AVX2" not in self.constants.computer.cpu.leafs:
                 required_patches.update({"AMD OpenCL": all_hardware_patchset["Graphics"]["AMD OpenCL"]})
 
@@ -844,6 +845,8 @@ class DetectRootPatch:
             required_patches.update({"AMD OpenCL": all_hardware_patchset["Graphics"]["AMD OpenCL"]})
             if hardware_details["Graphics: AMD Legacy GCN"] is True:
                 required_patches.update({"AMD Legacy Vega Extended": all_hardware_patchset["Graphics"]["AMD Legacy Vega Extended"]})
+            else:
+                required_patches.update({"Revert GVA Downgrade": all_hardware_patchset["Graphics"]["Revert GVA Downgrade"]})
 
         if hardware_details["Brightness: Legacy Backlight Control"] is True:
             required_patches.update({"Legacy Backlight Control": all_hardware_patchset["Brightness"]["Legacy Backlight Control"]})
