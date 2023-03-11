@@ -32,6 +32,7 @@
     - Allows for more reliable network calls and downloads
     - Better supports network timeouts and disconnects
     - Dramatically less noise in console during downloads
+  - Implemented new macOS Installer handler
   - Removed unused modules:
     - sys_patch_downloader.py
     - run.py

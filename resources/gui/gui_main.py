@@ -31,14 +31,14 @@ from resources import (
     constants,
     defaults,
     install,
-    installer,
     utilities,
     generate_smbios,
     updates,
     integrity_verification,
     global_settings,
     kdk_handler,
-    network_handler
+    network_handler,
+    macos_installer_handler
 )
 
 from resources.sys_patch import sys_patch_detect, sys_patch
@@ -1652,7 +1652,9 @@ class wx_python_gui:
         # Download installer catalog
         if ias is None:
             def ia():
-                self.available_installers = installer.list_downloadable_macOS_installers(self.constants.payload_path, "DeveloperSeed")
+                remote_obj = macos_installer_handler.RemoteInstallerCatalog(seed_override=macos_installer_handler.SeedType.DeveloperSeed)
+                self.available_installers        = remote_obj.available_apps
+                self.available_installers_latest = remote_obj.available_apps_latest
 
             logging.info("- Downloading installer catalog...")
             thread_ia = threading.Thread(target=ia)
@@ -1690,7 +1692,7 @@ class wx_python_gui:
         i = -20
         if available_installers:
             if ias is None:
-                available_installers = installer.only_list_newest_installers(available_installers)
+                available_installers = self.available_installers_latest
             for app in available_installers:
                 logging.info(f"macOS {available_installers[app]['Version']} ({available_installers[app]['Build']}):\n  - Size: {utilities.human_fmt(available_installers[app]['Size'])}\n  - Source: {available_installers[app]['Source']}\n  - Variant: {available_installers[app]['Variant']}\n  - Link: {available_installers[app]['Link']}\n")
                 if available_installers[app]['Variant'] in ["DeveloperSeed" , "PublicSeed"]:
@@ -1964,7 +1966,7 @@ class wx_python_gui:
         self.header.Centre(wx.HORIZONTAL)
         self.verifying_chunk_label.SetLabel("Installing into Applications folder")
         self.verifying_chunk_label.Centre(wx.HORIZONTAL)
-        thread_install = threading.Thread(target=installer.install_macOS_installer, args=(self.constants.payload_path,))
+        thread_install = threading.Thread(target=macos_installer_handler.InstallerCreation().install_macOS_installer, args=(self.constants.payload_path,))
         thread_install.start()
         self.progress_bar.Pulse()
         while thread_install.is_alive():
@@ -2001,7 +2003,7 @@ class wx_python_gui:
 
         # Spawn thread to get list of installers
         def get_installers():
-            self.available_installers = installer.list_local_macOS_installers()
+            self.available_installers = macos_installer_handler.LocalInstallerCatalog().available_apps
 
         thread_get_installers = threading.Thread(target=get_installers)
         thread_get_installers.start()
@@ -2105,7 +2107,7 @@ class wx_python_gui:
         self.usb_selection_label.Centre(wx.HORIZONTAL)
 
         i = -15
-        available_disks = installer.list_disk_to_format()
+        available_disks = macos_installer_handler.InstallerCreation().list_disk_to_format()
         if available_disks:
             logging.info("Disks found")
             for disk in available_disks:
@@ -2305,7 +2307,7 @@ class wx_python_gui:
         self.return_to_main_menu.Enable()
 
     def prepare_script(self, installer_path, disk):
-        self.prepare_result = installer.generate_installer_creation_script(self.constants.payload_path, installer_path, disk)
+        self.prepare_result = macos_installer_handler.InstallerCreation().generate_installer_creation_script(self.constants.payload_path, installer_path, disk)
 
     def start_script(self):
         utilities.disable_sleep_while_running()
