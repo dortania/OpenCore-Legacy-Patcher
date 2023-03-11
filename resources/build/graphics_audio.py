@@ -22,17 +22,18 @@ class build_graphics_audio:
 
 
     def build(self):
+        self.imac_mxm_patching()
         self.graphics_handling()
         self.audio_handling()
         self.firmware_handling()
         self.spoof_handling()
-        self.imac_mxm_patching()
         self.ioaccel_workaround()
 
 
     def graphics_handling(self):
         if self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None":
-            support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
+            if not support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
+                support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
 
         # Mac Pro handling
         if self.model in model_array.MacPro:
@@ -146,7 +147,7 @@ class build_graphics_audio:
     def nvidia_mxm_patch(self, backlight_path):
         if not support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
             # Ensure WEG is enabled as we need if for Backlight patching
-            support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
+            support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_navi_version, self.constants.whatevergreen_navi_path)
         if self.model in ["iMac11,1", "iMac11,2", "iMac11,3", "iMac10,1"]:
             logging.info("- Adding Nvidia Brightness Control and DRM patches")
             self.config["DeviceProperties"]["Add"][backlight_path] = {
@@ -191,7 +192,7 @@ class build_graphics_audio:
         logging.info("- Adding AMD DRM patches")
         if not support.build_support(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
             # Ensure WEG is enabled as we need if for Backlight patching
-            support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
+            support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_navi_version, self.constants.whatevergreen_navi_path)
 
         if self.computer.dgpu.device_id == 0x7340:
             logging.info(f"- Adding AMD RX5500XT vBIOS injection")
