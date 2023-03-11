@@ -19,6 +19,9 @@
   - Fixed System Settings hover effects, including Bluetooth connect button
   - Add Books hacks (reimplement cover image generation, disable broken page curl animation)
   - Fixed unresponsive buttons
+- Implement Hardware Encoding support for AMD Polaris and Vega GPUs
+  - Applicable for pre-Haswell Macs on macOS Ventura
+  - Resolves DRM playback issues on Netflix, Disney+, etc.
 - Backend Changes:
   - Refactored kdk_handler.py
     - Prioritizes KdkSupportPkg repository for downloads
