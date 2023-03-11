@@ -194,16 +194,19 @@ class build_graphics_audio:
             # Ensure WEG is enabled as we need if for Backlight patching
             support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_navi_version, self.constants.whatevergreen_navi_path)
 
-        if self.computer.dgpu.device_id == 0x7340:
-            logging.info(f"- Adding AMD RX5500XT vBIOS injection")
-            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "ATY,bin_image": binascii.unhexlify(video_bios_data.RX5500XT_64K) }
-            logging.info(f"- Adding AMD RX5500XT boot-args")
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera applbkl=3"
-        elif self.computer.dgpu.device_id == 0x6981:
-            logging.info(f"- Adding AMD WX3200 device spoofing")
-            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "model": "AMD Radeon Pro WX 3200", "device-id": binascii.unhexlify("FF67")}
+        if not self.constants.custom_model:
+            if self.computer.dgpu.device_id == 0x7340:
+                logging.info(f"- Adding AMD RX5500XT vBIOS injection")
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "ATY,bin_image": binascii.unhexlify(video_bios_data.RX5500XT_64K) }
+                logging.info(f"- Adding AMD RX5500XT boot-args")
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera applbkl=3"
+            elif self.computer.dgpu.device_id == 0x6981:
+                logging.info(f"- Adding AMD WX3200 device spoofing")
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "model": "AMD Radeon Pro WX 3200", "device-id": binascii.unhexlify("FF67")}
+            else:
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
         else:
-            self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
+             self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
 
         if self.constants.custom_model and self.model == "iMac11,2":
             # iMac11,2 can have either PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0) or PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)
