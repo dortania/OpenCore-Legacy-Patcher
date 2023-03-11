@@ -22,6 +22,12 @@ class generate_defaults:
         self.constants.custom_serial_number =       ""
         self.constants.custom_board_serial_number = ""
 
+        for gpu in self.constants.computer.gpus:
+            if gpu.device_id_unspoofed == -1:
+                gpu.device_id_unspoofed = gpu.device_id
+            if gpu.vendor_id_unspoofed == -1:
+                gpu.vendor_id_unspoofed = gpu.vendor_id
+
         self.general_probe()
         self.nvram_probe()
         self.gpu_probe()
