@@ -106,7 +106,7 @@ class build_graphics_audio:
                                 self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"] += ["nvda_drv"]
 
     def backlight_path_detection(self):
-    
+
         # self.constants.custom_model: iMac has been modded with new dGPU
         # self.computer.dgpu: dGPU has been found using the GFX0 path
         # self.computer.dgpu.pci_path:
@@ -114,7 +114,7 @@ class build_graphics_audio:
             for i, device in enumerate(self.computer.gpus):
                     logging.info(f"- Found dGPU ({i + 1}): {utilities.friendly_hex(device.vendor_id)}:{utilities.friendly_hex(device.device_id)}")
                     self.config["#Revision"][f"Hardware-iMac-dGPU-{i + 1}"] = f"{utilities.friendly_hex(device.vendor_id)}:{utilities.friendly_hex(device.device_id)}"
-                    
+
                     if device.pci_path != self.computer.dgpu.pci_path:
                         logging.info("- device path and GFX0 Device path are different")
                         self.gfx0_path = device.pci_path
@@ -409,7 +409,6 @@ class build_graphics_audio:
         self.backlight_path_detection()
         # Check GPU Vendor
         if self.constants.metal_build is True:
-            # self.backlight_path_detection()
             logging.info("- Adding Metal GPU patches on request")
             if self.constants.imac_vendor == "AMD":
                 self.amd_mxm_patch(self.gfx0_path)
@@ -418,20 +417,18 @@ class build_graphics_audio:
             else:
                 logging.info("- Failed to find vendor")
         elif not self.constants.custom_model and self.model in model_array.LegacyGPU and self.computer.dgpu:
-            # self.backlight_path_detection()
             logging.info(f"- Detected dGPU: {utilities.friendly_hex(self.computer.dgpu.vendor_id)}:{utilities.friendly_hex(self.computer.dgpu.device_id)}")
             if self.computer.dgpu.arch in [
                 device_probe.AMD.Archs.Legacy_GCN_7000,
                 device_probe.AMD.Archs.Legacy_GCN_8000,
                 device_probe.AMD.Archs.Legacy_GCN_9000,
                 device_probe.AMD.Archs.Polaris,
+                device_probe.AMD.Archs.Polaris_Spoof,
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:
-                # self.backlight_path_detection()
                 self.amd_mxm_patch(self.gfx0_path)
             elif self.computer.dgpu.arch == device_probe.NVIDIA.Archs.Kepler:
-                # self.backlight_path_detection()
                 self.nvidia_mxm_patch(self.gfx0_path)
 
     def ioaccel_workaround(self):
@@ -486,6 +483,7 @@ class build_graphics_audio:
             if gpu in [
                 # Metal KDK (pre-AVX2.0)
                 device_probe.AMD.Archs.Polaris,
+                device_probe.AMD.Archs.Polaris_Spoof,
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:
@@ -510,6 +508,7 @@ class build_graphics_audio:
                 gpu = gpu.arch
             if gpu in [
                 device_probe.AMD.Archs.Polaris,
+                device_probe.AMD.Archs.Polaris_Spoof,
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:

@@ -242,6 +242,7 @@ class AMD(GPU):
         Legacy_GCN_8000 = "Legacy GCN v2"
         Legacy_GCN_9000 = "Legacy GCN v3"
         Polaris = "Polaris"
+        Polaris_Spoof = "Polaris (Spoofed)"
         Vega = "Vega"
         Navi = "Navi"
         Unknown = "Unknown"
@@ -263,6 +264,8 @@ class AMD(GPU):
             self.arch = AMD.Archs.TeraScale_2
         elif self.device_id in pci_data.amd_ids.polaris_ids:
             self.arch = AMD.Archs.Polaris
+        elif self.device_id in pci_data.amd_ids.polaris_spoof_ids:
+            self.arch = AMD.Archs.Polaris_Spoof
         elif self.device_id in pci_data.amd_ids.vega_ids:
             self.arch = AMD.Archs.Vega
         elif self.device_id in pci_data.amd_ids.navi_ids:

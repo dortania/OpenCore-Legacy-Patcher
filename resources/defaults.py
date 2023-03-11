@@ -196,6 +196,7 @@ class generate_defaults:
                 device_probe.AMD.Archs.Legacy_GCN_8000,
                 device_probe.AMD.Archs.Legacy_GCN_9000,
                 device_probe.AMD.Archs.Polaris,
+                device_probe.AMD.Archs.Polaris_Spoof,
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:
@@ -204,6 +205,7 @@ class generate_defaults:
                         device_probe.AMD.Archs.Legacy_GCN_8000,
                         device_probe.AMD.Archs.Legacy_GCN_9000,
                         device_probe.AMD.Archs.Polaris,
+                        device_probe.AMD.Archs.Polaris_Spoof,
                         device_probe.AMD.Archs.Vega,
                         device_probe.AMD.Archs.Navi,
                 ]:
@@ -221,6 +223,7 @@ class generate_defaults:
                 # See if system can use the native AMD stack in Ventura
                 if gpu in [
                     device_probe.AMD.Archs.Polaris,
+                    device_probe.AMD.Archs.Polaris_Spoof,
                     device_probe.AMD.Archs.Vega,
                     device_probe.AMD.Archs.Navi,
                 ]:
