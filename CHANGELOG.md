@@ -22,6 +22,9 @@
 - Implement Hardware Encoding support for AMD Polaris and Vega GPUs
   - Applicable for pre-Haswell Macs on macOS Ventura
   - Resolves DRM playback issues on Netflix, Disney+, etc.
+- Implement support for AMD Navi and Lexa MXM GPUs in 2009-2011 iMacs
+  - Primarily applicable for MXM 3.0 variants of AMD WX3200 (0x6981) and AMD RX5500XT (0x7340)
+  - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
 - Backend Changes:
   - Refactored kdk_handler.py
     - Prioritizes KdkSupportPkg repository for downloads
