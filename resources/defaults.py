@@ -21,7 +21,7 @@ class GenerateDefaults:
         self.constants: constants.Constants = global_constants
 
         self.model: str = model
-        
+
         self.host_is_target: bool = host_is_target
 
         # Reset Variables
@@ -32,10 +32,10 @@ class GenerateDefaults:
         self.constants.fu_status:     bool = True
 
         self.constants.fu_arguments: str = None
-          
+
         self.constants.custom_serial_number:       str = ""
         self.constants.custom_board_serial_number: str = ""
-        
+
         if self.host_is_target is True:
             for gpu in self.constants.computer.gpus:
                 if gpu.device_id_unspoofed == -1:
