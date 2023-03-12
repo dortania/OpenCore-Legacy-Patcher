@@ -1721,7 +1721,7 @@ class wx_python_gui:
             self.install_selection.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
             self.install_selection.Centre(wx.HORIZONTAL)
 
-        self.load_all_installers = wx.Button(self.frame_modal, label="Show older installers")
+        self.load_all_installers = wx.Button(self.frame_modal, label="Show all available installers")
         self.load_all_installers.SetPosition(
             wx.Point(
                 self.install_selection.GetPosition().x,
