@@ -20,14 +20,11 @@ And voila! No more USB drive required.
 
 To do this, run the OpenCore Patcher and head to Patcher Settings:
 
-| GUI Settings | TUI Settings
-| :--- | :--- |
-|![](../images/OCLP-GUI-Settings-ShowPicker.png) | ![](../images/OCLP-TUI-Settings.png) |
+![](../images/OCLP-GUI-Settings-ShowPicker.png)
 
 Here you can change different patcher settings, however the main interest is:
 
-* Show Boot Picker (GUI)
-* Set ShowPicker Mode (TUI)
+* Show Boot Picker
 
 Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, and then you can release the "ESC" key when you see the cursor arrow at the top left.
 

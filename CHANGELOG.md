@@ -7,11 +7,27 @@
 - Ensure `Moraea_BlurBeta` is set on non-Metal systems
 - Implement proper Root Unpatching verification in GUI
   - Removes arbitrary patch requirements used against unpatching (ex. network connection)
+- Implement Kernel Debug Kit installation during OS installs
+  - Avoids network requirement for first time installs
+  - Paired along side AutoPkgInstaller
+- Implement Kernel Debug Kit backup system
+  - Allows for easy restoration of KDKs if OS updates corrupted installed KDKs
+- Update Wireless binaries
+  - Fixed WiFi preferences crash with legacy wifi patches
+- Update non-Metal Binaries
+  - Improved menubar blur saturation
+  - Fixed System Settings hover effects, including Bluetooth connect button
+  - Add Books hacks (reimplement cover image generation, disable broken page curl animation)
+  - Fixed unresponsive buttons
+- Implement Hardware Encoding support for AMD Polaris and Vega GPUs
+  - Applicable for pre-Haswell Macs on macOS Ventura
+  - Resolves DRM playback issues on Netflix, Disney+, etc.
 - Backend Changes:
   - Refactored kdk_handler.py
     - Prioritizes KdkSupportPkg repository for downloads
       - Skips calls to Apple's now defunct Developer Portal API
     - Support local loose matching when no network connection is available
+    - Implement pkg receipt verification to validate integrity of KDKs
   - Implemented logging framework usage for more reliable logging
     - Logs are stored under `~/OpenCore-Patcher.log`
     - Subsequent runs are appended to the log, allowing for easy debugging
@@ -19,7 +35,11 @@
     - Allows for more reliable network calls and downloads
     - Better supports network timeouts and disconnects
     - Dramatically less noise in console during downloads
-  - Removed unused sys_patch_downloader.py module
+  - Implemented new macOS Installer handler
+  - Removed unused modules:
+    - sys_patch_downloader.py
+    - run.py
+    - TUI modules
 - Build Server Changes:
   - Upgrade Python backend to 3.10.9
   - Upgrade Python modules:
@@ -29,7 +49,8 @@
     - pyinstaller - 5.7.0
     - packaging - 23.0
 - Increment Binaries:
-  - PatcherSupportPkg 0.8.3 - release
+  - PatcherSupportPkg 0.8.4 - release
+  - AutoPkgInstaller 1.0.2 - release
 
 ## 0.6.1
 - Avoid usage of KDKlessWorkaround on hardware not requiring it

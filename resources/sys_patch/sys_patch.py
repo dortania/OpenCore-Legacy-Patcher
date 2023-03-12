@@ -46,9 +46,9 @@ from data import os_data
 
 
 class PatchSysVolume:
-    def __init__(self, model, versions, hardware_details=None):
+    def __init__(self, model: str, global_constants: constants.Constants, hardware_details: list = None):
         self.model = model
-        self.constants: constants.Constants() = versions
+        self.constants: constants.Constants = global_constants
         self.computer = self.constants.computer
         self.root_mount_path = None
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
@@ -61,9 +61,9 @@ class PatchSysVolume:
         # GUI will detect hardware patches before starting PatchSysVolume()
         # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
         if hardware_details is None:
-            hardware_details = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).detect_patch_set()
+            hardware_details = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).detect_patch_set()
         self.hardware_details = hardware_details
-        self.init_pathing(custom_root_mount_path=None, custom_data_mount_path=None)
+        self._init_pathing(custom_root_mount_path=None, custom_data_mount_path=None)
 
         self.skip_root_kmutil_requirement = self.hardware_details["Settings: Supports Auxiliary Cache"]
 
@@ -72,7 +72,15 @@ class PatchSysVolume:
         if Path(self.constants.payload_local_binaries_root_path).exists():
             shutil.rmtree(self.constants.payload_local_binaries_root_path)
 
-    def init_pathing(self, custom_root_mount_path=None, custom_data_mount_path=None):
+    def _init_pathing(self, custom_root_mount_path: Path = None, custom_data_mount_path: Path = None):
+        """
+        Initializes the pathing for root volume patching
+
+        Parameters:
+            custom_root_mount_path (Path): Custom path to mount the root volume
+            custom_data_mount_path (Path): Custom path to mount the data volume
+
+        """
         if custom_root_mount_path and custom_data_mount_path:
             self.mount_location = custom_root_mount_path
             self.data_mount_location = custom_data_mount_path
@@ -83,11 +91,12 @@ class PatchSysVolume:
         else:
             self.mount_location = ""
             self.mount_location_data = ""
+
         self.mount_extensions = f"{self.mount_location}/System/Library/Extensions"
         self.mount_application_support = f"{self.mount_location_data}/Library/Application Support"
 
 
-    def mount_root_vol(self):
+    def _mount_root_vol(self):
         # Returns boolean if Root Volume is available
         self.root_mount_path = utilities.get_disk_path()
         if self.root_mount_path.startswith("disk"):
@@ -113,56 +122,53 @@ class PatchSysVolume:
         return False
 
 
-    def invoke_kdk_handler(self):
-        # If we're invoked, there is no KDK installed (or something went wrong)
-        kdk_result = False
-        error_msg = ""
-
-        kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
-
-        if kdk_obj.success is False:
-            error_msg = kdk_obj.error_msg
-            return kdk_result, error_msg, None
-
-        kdk_download_obj = kdk_obj.retrieve_download()
-
-        # We didn't get a download object, something's wrong
-        if not kdk_download_obj:
-            if kdk_obj.kdk_already_installed is True:
-                error_msg = "KDK already installed, function should not have been invoked"
-                return kdk_result, error_msg, None
-            else:
-                error_msg = "Could not retrieve KDK"
-                return kdk_result, error_msg, None
-
-        # Hold thread until download is complete
-        kdk_download_obj.download(spawn_thread=False)
-
-        if kdk_download_obj.download_complete is False:
-            error_msg = kdk_download_obj.error_msg
-            return kdk_result, error_msg, None
-
-        kdk_result = kdk_obj.validate_kdk_checksum()
-        downloaded_kdk = self.constants.kdk_download_path
-
-        return kdk_result, error_msg, downloaded_kdk
-
-
-    def merge_kdk_with_root(self, save_hid_cs=False):
+    def _merge_kdk_with_root(self, save_hid_cs=False):
         if self.skip_root_kmutil_requirement is True:
             return
         if self.constants.detected_os < os_data.os_data.ventura:
             return
 
-        downloaded_kdk = None
-        kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=False)
-        if kdk_path is None:
-            if not self.constants.kdk_download_path.exists():
-                kdk_result, error_msg, downloaded_kdk = self.invoke_kdk_handler()
-                if kdk_result is False:
-                    raise Exception(f"Unable to download KDK: {error_msg}")
-            sys_patch_helpers.sys_patch_helpers(self.constants).install_kdk()
-            kdk_path = sys_patch_helpers.sys_patch_helpers(self.constants).determine_kdk_present(match_closest=True, override_build=downloaded_kdk)
+        if self.constants.kdk_download_path.exists():
+            if kdk_handler.KernelDebugKitUtilities().install_kdk_dmg(self.constants.kdk_download_path) is False:
+                logging.info("Failed to install KDK")
+                raise Exception("Failed to install KDK")
+
+        kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
+        if kdk_obj.success is False:
+            logging.info(f"Unable to get KDK info: {kdk_obj.error_msg}")
+            raise Exception(f"Unable to get KDK info: {kdk_obj.error_msg}")
+
+        if kdk_obj.kdk_already_installed is False:
+
+            kdk_download_obj = kdk_obj.retrieve_download()
+            if not kdk_download_obj:
+                logging.info(f"Could not retrieve KDK: {kdk_obj.error_msg}")
+
+            # Hold thread until download is complete
+            kdk_download_obj.download(spawn_thread=False)
+
+            if kdk_download_obj.download_complete is False:
+                error_msg = kdk_download_obj.error_msg
+                logging.info(f"Could not download KDK: {error_msg}")
+                raise Exception(f"Could not download KDK: {error_msg}")
+
+            if kdk_obj.validate_kdk_checksum() is False:
+                logging.info(f"KDK checksum validation failed: {kdk_obj.error_msg}")
+                raise Exception(f"KDK checksum validation failed: {kdk_obj.error_msg}")
+
+            kdk_handler.KernelDebugKitUtilities().install_kdk_dmg(self.constants.kdk_download_path)
+            # re-init kdk_obj to get the new kdk_installed_path
+            kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
+            if kdk_obj.success is False:
+                logging.info(f"Unable to get KDK info: {kdk_obj.error_msg}")
+                raise Exception(f"Unable to get KDK info: {kdk_obj.error_msg}")
+
+            if kdk_obj.kdk_already_installed is False:
+                # We shouldn't get here, but just in case
+                logging.warning(f"KDK was not installed, but should have been: {kdk_obj.error_msg}")
+                raise Exception("KDK was not installed, but should have been: {kdk_obj.error_msg}")
+
+        kdk_path = Path(kdk_obj.kdk_installed_path) if kdk_obj.kdk_installed_path != "" else None
 
         oclp_plist = Path("/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist")
         if (Path(self.mount_location) / Path("System/Library/Extensions/System.kext/PlugIns/Libkern.kext/Libkern")).exists() and oclp_plist.exists():
@@ -178,7 +184,7 @@ class PatchSysVolume:
                 pass
 
         if kdk_path is None:
-            logging.info(f"- Unable to find Kernel Debug Kit: {downloaded_kdk}")
+            logging.info(f"- Unable to find Kernel Debug Kit")
             raise Exception("Unable to find Kernel Debug Kit")
         self.kdk_path = kdk_path
         logging.info(f"- Found KDK at: {kdk_path}")
@@ -190,7 +196,7 @@ class PatchSysVolume:
             # Note it's a folder, not a file
             utilities.elevated(["cp", "-r", cs_path, f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        logging.info("- Merging KDK with Root Volume")
+        logging.info(f"- Merging KDK with Root Volume: {kdk_path.name}")
         utilities.elevated(
             # Only merge '/System/Library/Extensions'
             # 'Kernels' and 'KernelSupport' is wasted space for root patching (we don't care above dev kernels)
@@ -214,7 +220,7 @@ class PatchSysVolume:
             utilities.elevated(["rm", "-rf", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
-    def unpatch_root_vol(self):
+    def _unpatch_root_vol(self):
         if self.constants.detected_os > os_data.os_data.catalina and self.root_supports_snapshot is True:
             logging.info("- Reverting to last signed APFS snapshot")
             result = utilities.elevated(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -224,18 +230,18 @@ class PatchSysVolume:
                 logging.info(result.stdout.decode())
                 logging.info("- Failed to revert snapshot via Apple's 'bless' command")
             else:
-                self.clean_skylight_plugins()
-                self.delete_nonmetal_enforcement()
-                self.clean_auxiliary_kc()
+                self._clean_skylight_plugins()
+                self._delete_nonmetal_enforcement()
+                self._clean_auxiliary_kc()
                 self.constants.root_patcher_succeeded = True
                 logging.info("- Unpatching complete")
                 logging.info("\nPlease reboot the machine for patches to take effect")
 
-    def rebuild_snapshot(self):
-        if self.rebuild_kernel_collection() is True:
+    def _rebuild_snapshot(self):
+        if self._rebuild_kernel_collection() is True:
             self.update_preboot_kernel_cache()
-            self.rebuild_dyld_shared_cache()
-            if self.create_new_apfs_snapshot() is True:
+            self._rebuild_dyld_shared_cache()
+            if self._create_new_apfs_snapshot() is True:
                 logging.info("- Patching complete")
                 logging.info("\nPlease reboot the machine for patches to take effect")
                 if self.needs_kmutil_exemptions is True:
@@ -244,7 +250,7 @@ class PatchSysVolume:
                 if self.constants.gui_mode is False:
                     input("\nPress [ENTER] to continue")
 
-    def rebuild_kernel_collection(self):
+    def _rebuild_kernel_collection(self):
         logging.info("- Rebuilding Kernel Cache (This may take some time)")
         if self.constants.detected_os > os_data.os_data.catalina:
             # Base Arguments
@@ -331,15 +337,15 @@ class PatchSysVolume:
                 return False
 
             for file in ["KextPolicy", "KextPolicy-shm", "KextPolicy-wal"]:
-                self.remove_file("/private/var/db/SystemPolicyConfiguration/", file)
+                self._remove_file("/private/var/db/SystemPolicyConfiguration/", file)
         else:
             # Install RSRHelper utility to handle desynced KCs
-            sys_patch_helpers.sys_patch_helpers(self.constants).install_rsr_repair_binary()
+            sys_patch_helpers.SysPatchHelpers(self.constants).install_rsr_repair_binary()
 
         logging.info("- Successfully built new kernel cache")
         return True
 
-    def create_new_apfs_snapshot(self):
+    def _create_new_apfs_snapshot(self):
         if self.root_supports_snapshot is True:
             logging.info("- Creating new APFS snapshot")
             bless = utilities.elevated(
@@ -356,24 +362,25 @@ class PatchSysVolume:
                 if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
                     logging.info("- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly")
                 return False
-            self.unmount_drive()
+            self._unmount_drive()
         return True
 
-    def unmount_drive(self):
+    def _unmount_drive(self):
         logging.info("- Unmounting Root Volume (Don't worry if this fails)")
         utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-    def rebuild_dyld_shared_cache(self):
-        if self.constants.detected_os <= os_data.os_data.catalina:
-            logging.info("- Rebuilding dyld shared cache")
-            utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
+    def _rebuild_dyld_shared_cache(self):
+        if self.constants.detected_os > os_data.os_data.catalina:
+            return
+        logging.info("- Rebuilding dyld shared cache")
+        utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
 
     def update_preboot_kernel_cache(self):
         if self.constants.detected_os == os_data.os_data.catalina:
             logging.info("- Rebuilding preboot kernel cache")
             utilities.process_status(utilities.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
-    def clean_skylight_plugins(self):
+    def _clean_skylight_plugins(self):
         if (Path(self.mount_application_support) / Path("SkyLightPlugins/")).exists():
             logging.info("- Found SkylightPlugins folder, removing old plugins")
             utilities.process_status(utilities.elevated(["rm", "-Rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
@@ -382,14 +389,14 @@ class PatchSysVolume:
             logging.info("- Creating SkylightPlugins folder")
             utilities.process_status(utilities.elevated(["mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
-    def delete_nonmetal_enforcement(self):
+    def _delete_nonmetal_enforcement(self):
         for arg in ["useMetal", "useIOP"]:
             result = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
             if result in ["0", "false", "1", "true"]:
                 logging.info(f"- Removing non-Metal Enforcement Preference: {arg}")
                 utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
 
-    def clean_auxiliary_kc(self):
+    def _clean_auxiliary_kc(self):
         # When reverting root volume patches, the AuxKC will still retain the UUID
         # it was built against. Thus when Boot/SysKC are reverted, Aux will break
         # To resolve this, delete all installed kexts in /L*/E* and rebuild the AuxKC
@@ -410,7 +417,7 @@ class PatchSysVolume:
                     for file in oclp_plist_data[key]["Install"][location]:
                         if not file.endswith(".kext"):
                             continue
-                        self.remove_file("/Library/Extensions", file)
+                        self._remove_file("/Library/Extensions", file)
 
         # Handle situations where users migrated from older OSes with a lot of garbage in /L*/E*
         # ex. Nvidia Web Drivers, NetUSB, dosdude1's patches, etc.
@@ -434,17 +441,17 @@ class PatchSysVolume:
                 # ex. Symlinks pointing to symlinks pointing to dead files
                 pass
 
-    def write_patchset(self, patchset):
+    def _write_patchset(self, patchset):
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
         file_name = "OpenCore-Legacy-Patcher.plist"
         destination_path_file = f"{destination_path}/{file_name}"
-        if sys_patch_helpers.sys_patch_helpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path):
+        if sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path):
             logging.info("- Writing patchset information to Root Volume")
             if Path(destination_path_file).exists():
                 utilities.process_status(utilities.elevated(["rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             utilities.process_status(utilities.elevated(["cp", f"{self.constants.payload_path}/{file_name}", destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
-    def add_auxkc_support(self, install_file, source_folder_path, install_patch_directory, destination_folder_path):
+    def _add_auxkc_support(self, install_file, source_folder_path, install_patch_directory, destination_folder_path):
         # In macOS Ventura, KDKs are required to build new Boot and System KCs
         # However for some patch sets, we're able to use the Auxiliary KCs with '/Library/Extensions'
 
@@ -480,11 +487,11 @@ class PatchSysVolume:
         plist_data["OSBundleRequired"] = "Auxiliary"
         plistlib.dump(plist_data, plist_path.open("wb"))
 
-        self.check_kexts_needs_authentication(install_file)
+        self._check_kexts_needs_authentication(install_file)
 
         return updated_install_location
 
-    def check_kexts_needs_authentication(self, kext_name):
+    def _check_kexts_needs_authentication(self, kext_name):
         # Verify whether the user needs to authenticate in System Preferences
         # Specifically under 'private/var/db/KernelManagement/AuxKC/CurrentAuxKC/com.apple.kcgen.instructions.plist'
         #    ["kextsToBuild"][i]:
@@ -506,21 +513,21 @@ class PatchSysVolume:
         logging.info(f"  - {kext_name} requires authentication in System Preferences")
         self.constants.needs_to_open_preferences = True # Notify in GUI to open System Preferences
 
-    def patch_root_vol(self):
+    def _patch_root_vol(self):
         logging.info(f"- Running patches for {self.model}")
         if self.patch_set_dictionary != {}:
-            self.execute_patchset(self.patch_set_dictionary)
+            self._execute_patchset(self.patch_set_dictionary)
         else:
-            self.execute_patchset(sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details))
+            self._execute_patchset(sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details))
 
         if self.constants.wxpython_variant is True and self.constants.detected_os >= os_data.os_data.big_sur:
             sys_patch_auto.AutomaticSysPatch(self.constants).install_auto_patcher_launch_agent()
 
-        self.rebuild_snapshot()
+        self._rebuild_snapshot()
 
-    def execute_patchset(self, required_patches):
+    def _execute_patchset(self, required_patches):
         source_files_path = str(self.constants.payload_local_binaries_root_path)
-        self.preflight_checks(required_patches, source_files_path)
+        self._preflight_checks(required_patches, source_files_path)
         for patch in required_patches:
             logging.info("- Installing Patchset: " + patch)
             if "Remove" in required_patches[patch]:
@@ -528,7 +535,7 @@ class PatchSysVolume:
                     logging.info("- Remove Files at: " + remove_patch_directory)
                     for remove_patch_file in required_patches[patch]["Remove"][remove_patch_directory]:
                         destination_folder_path = str(self.mount_location) + remove_patch_directory
-                        self.remove_file(destination_folder_path, remove_patch_file)
+                        self._remove_file(destination_folder_path, remove_patch_file)
 
 
             for method_install in ["Install", "Install Non-Root"]:
@@ -542,10 +549,10 @@ class PatchSysVolume:
                             else:
                                 if install_patch_directory == "/Library/Extensions":
                                     self.needs_kmutil_exemptions = True
-                                    self.check_kexts_needs_authentication(install_file)
+                                    self._check_kexts_needs_authentication(install_file)
                                 destination_folder_path = str(self.mount_location_data) + install_patch_directory
 
-                            updated_destination_folder_path = self.add_auxkc_support(install_file, source_folder_path, install_patch_directory, destination_folder_path)
+                            updated_destination_folder_path = self._add_auxkc_support(install_file, source_folder_path, install_patch_directory, destination_folder_path)
 
                             if destination_folder_path != updated_destination_folder_path:
                                 # Update required_patches to reflect the new destination folder path
@@ -556,7 +563,7 @@ class PatchSysVolume:
 
                                 destination_folder_path = updated_destination_folder_path
 
-                            self.install_new_file(source_folder_path, destination_folder_path, install_file)
+                            self._install_new_file(source_folder_path, destination_folder_path, install_file)
 
             if "Processes" in required_patches[patch]:
                 for process in required_patches[patch]["Processes"]:
@@ -569,24 +576,24 @@ class PatchSysVolume:
                         logging.info(f"- Running Process:\n{process}")
                         utilities.process_status(subprocess.run(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
         if any(x in required_patches for x in ["AMD Legacy GCN", "AMD Legacy Polaris", "AMD Legacy Vega"]):
-            sys_patch_helpers.sys_patch_helpers(self.constants).disable_window_server_caching()
+            sys_patch_helpers.SysPatchHelpers(self.constants).disable_window_server_caching()
         if any(x in required_patches for x in ["Intel Ivy Bridge", "Intel Haswell"]):
-            sys_patch_helpers.sys_patch_helpers(self.constants).remove_news_widgets()
-        self.write_patchset(required_patches)
+            sys_patch_helpers.SysPatchHelpers(self.constants).remove_news_widgets()
+        self._write_patchset(required_patches)
 
-    def preflight_checks(self, required_patches, source_files_path):
+    def _preflight_checks(self, required_patches, source_files_path):
         logging.info("- Running Preflight Checks before patching")
 
         # Make sure old SkyLight plugins aren't being used
-        self.clean_skylight_plugins()
+        self._clean_skylight_plugins()
         # Make sure non-Metal Enforcement preferences are not present
-        self.delete_nonmetal_enforcement()
+        self._delete_nonmetal_enforcement()
         # Make sure we clean old kexts in /L*/E* that are not in the patchset
-        self.clean_auxiliary_kc()
+        self._clean_auxiliary_kc()
 
         # Make sure SNB kexts are compatible with the host
         if "Intel Sandy Bridge" in required_patches:
-            sys_patch_helpers.sys_patch_helpers(self.constants).snb_board_id_patch(source_files_path)
+            sys_patch_helpers.SysPatchHelpers(self.constants).snb_board_id_patch(source_files_path)
 
         for patch in required_patches:
             # Check if all files are present
@@ -602,11 +609,11 @@ class PatchSysVolume:
         should_save_cs = False
         if "Legacy USB 1.1" in required_patches:
             should_save_cs = True
-        self.merge_kdk_with_root(save_hid_cs=should_save_cs)
+        self._merge_kdk_with_root(save_hid_cs=should_save_cs)
 
         logging.info("- Finished Preflight, starting patching")
 
-    def install_new_file(self, source_folder, destination_folder, file_name):
+    def _install_new_file(self, source_folder, destination_folder, file_name):
         # .frameworks are merged
         # .kexts and .apps are deleted and replaced
         file_name_str = str(file_name)
@@ -619,7 +626,7 @@ class PatchSysVolume:
             # merge with rsync
             logging.info(f"  - Installing: {file_name}")
             utilities.elevated(["rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)
-            self.fix_permissions(destination_folder + "/" + file_name)
+            self._fix_permissions(destination_folder + "/" + file_name)
         elif Path(source_folder + "/" + file_name_str).is_dir():
             # Applicable for .kext, .app, .plugin, .bundle, all of which are directories
             if Path(destination_folder + "/" + file_name).exists():
@@ -628,7 +635,7 @@ class PatchSysVolume:
             else:
                 logging.info(f"  - Installing: {file_name}")
             utilities.process_status(utilities.elevated(["cp", "-R", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            self.fix_permissions(destination_folder + "/" + file_name)
+            self._fix_permissions(destination_folder + "/" + file_name)
         else:
             # Assume it's an individual file, replace as normal
             if Path(destination_folder + "/" + file_name).exists():
@@ -637,9 +644,9 @@ class PatchSysVolume:
             else:
                 logging.info(f"  - Installing: {file_name}")
             utilities.process_status(utilities.elevated(["cp", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            self.fix_permissions(destination_folder + "/" + file_name)
+            self._fix_permissions(destination_folder + "/" + file_name)
 
-    def remove_file(self, destination_folder, file_name):
+    def _remove_file(self, destination_folder, file_name):
         if Path(destination_folder + "/" + file_name).exists():
             logging.info(f"  - Removing: {file_name}")
             if Path(destination_folder + "/" + file_name).is_dir():
@@ -648,7 +655,7 @@ class PatchSysVolume:
                 utilities.process_status(utilities.elevated(["rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
 
-    def fix_permissions(self, destination_file):
+    def _fix_permissions(self, destination_file):
         chmod_args = ["chmod", "-Rf", "755", destination_file]
         chown_args = ["chown", "-Rf", "root:wheel", destination_file]
         if not Path(destination_file).is_dir():
@@ -659,7 +666,7 @@ class PatchSysVolume:
         utilities.process_status(utilities.elevated(chown_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
 
-    def check_files(self):
+    def _check_files(self):
         if Path(self.constants.payload_local_binaries_root_path).exists():
             logging.info("- Local PatcherSupportPkg resources available, continuing...")
             return True
@@ -678,7 +685,7 @@ class PatchSysVolume:
     def start_patch(self):
         logging.info("- Starting Patch Process")
         logging.info(f"- Determining Required Patch set for Darwin {self.constants.detected_os}")
-        self.patch_set_dictionary = sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details)
+        self.patch_set_dictionary = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details)
 
         if self.patch_set_dictionary == {}:
             change_menu = None
@@ -692,11 +699,11 @@ class PatchSysVolume:
             logging.info("- Continuing root patching")
         if change_menu in ["y", "Y"]:
             logging.info("- Verifying whether Root Patching possible")
-            if sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is True:
+            if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is True:
                 logging.info("- Patcher is capable of patching")
-                if self.check_files():
-                    if self.mount_root_vol() is True:
-                        self.patch_root_vol()
+                if self._check_files():
+                    if self._mount_root_vol() is True:
+                        self._patch_root_vol()
                         if self.constants.gui_mode is False:
                             input("\nPress [ENTER] to return to the main menu")
                     else:
@@ -711,9 +718,9 @@ class PatchSysVolume:
 
     def start_unpatch(self):
         logging.info("- Starting Unpatch Process")
-        if sys_patch_detect.detect_root_patch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=True) is True:
-            if self.mount_root_vol() is True:
-                self.unpatch_root_vol()
+        if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=True) is True:
+            if self._mount_root_vol() is True:
+                self._unpatch_root_vol()
                 if self.constants.gui_mode is False:
                     input("\nPress [ENTER] to return to the main menu")
             else:

@@ -13,7 +13,7 @@ class Constants:
     def __init__(self):
         # Patcher Versioning
         self.patcher_version = "0.6.2"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version = "0.8.3"  #  PatcherSupportPkg
+        self.patcher_support_pkg_version = "0.8.5"  #  PatcherSupportPkg
         self.url_patcher_support_pkg = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
         self.nightly_url_patcher_support_pkg = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link = "https://discord.gg/rqdPgH8xSN"
@@ -44,7 +44,7 @@ class Constants:
         self.cpufriend_version = "1.2.6"  #          CPUFriend
         self.bluetool_version = "2.6.4"  #           BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version = "2.6.1"  #          CSLVFixup
-        self.autopkg_version = "1.0.1"  #            AutoPkgInstaller
+        self.autopkg_version = "1.0.2"  #            AutoPkgInstaller
         self.cryptexfixup_version = "1.0.1"  #       CryptexFixup
 
         ## Apple

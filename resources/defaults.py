@@ -1,42 +1,60 @@
 # Generate Default Data
-from resources import utilities, device_probe, generate_smbios, global_settings
-from data import smbios_data, cpu_data, os_data
 import subprocess
 
+from resources import (
+    utilities,
+    device_probe,
+    generate_smbios,
+    global_settings,
+    constants
+)
+from data import (
+    smbios_data,
+    cpu_data,
+    os_data
+)
 
-class generate_defaults:
 
-    def __init__(self, model, host_is_target, settings):
-        self.model =          model
-        self.constants =      settings
-        self.host_is_target = host_is_target
+class GenerateDefaults:
+
+    def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants):
+        self.constants: constants.Constants = global_constants
+
+        self.model: str = model
+        
+        self.host_is_target: bool = host_is_target
 
         # Reset Variables
-        self.constants.sip_status =    True
-        self.constants.secure_status = False
-        self.constants.disable_cs_lv = False
-        self.constants.disable_amfi  = False
-        self.constants.fu_status =     True
-        self.constants.fu_arguments =  None
+        self.constants.sip_status:    bool = True
+        self.constants.secure_status: bool = False
+        self.constants.disable_cs_lv: bool = False
+        self.constants.disable_amfi:  bool = False
+        self.constants.fu_status:     bool = True
 
-        self.constants.custom_serial_number =       ""
-        self.constants.custom_board_serial_number = ""
+        self.constants.fu_arguments: str = None
+          
+        self.constants.custom_serial_number:       str = ""
+        self.constants.custom_board_serial_number: str = ""
+        
+        if self.host_is_target is True:
+            for gpu in self.constants.computer.gpus:
+                if gpu.device_id_unspoofed == -1:
+                    gpu.device_id_unspoofed = gpu.device_id
+                if gpu.vendor_id_unspoofed == -1:
+                    gpu.vendor_id_unspoofed = gpu.vendor_id
 
-        for gpu in self.constants.computer.gpus:
-            if gpu.device_id_unspoofed == -1:
-                gpu.device_id_unspoofed = gpu.device_id
-            if gpu.vendor_id_unspoofed == -1:
-                gpu.vendor_id_unspoofed = gpu.vendor_id
-
-        self.general_probe()
-        self.nvram_probe()
-        self.gpu_probe()
-        self.networking_probe()
-        self.misc_hardwares_probe()
-        self.smbios_probe()
+        self._general_probe()
+        self._nvram_probe()
+        self._gpu_probe()
+        self._networking_probe()
+        self._misc_hardwares_probe()
+        self._smbios_probe()
 
 
-    def general_probe(self):
+    def _general_probe(self):
+        """
+        General probe for data
+        """
 
         if "Book" in self.model:
             self.constants.set_content_caching = False
@@ -46,11 +64,11 @@ class generate_defaults:
         if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
             # Users disabling TS2 most likely have a faulty dGPU
             # users can override this in settings
-            ts2_status = global_settings.global_settings().read_property("MacBookPro_TeraScale_2_Accel")
+            ts2_status = global_settings.GlobalEnviromentSettings().read_property("MacBookPro_TeraScale_2_Accel")
             if ts2_status is True:
                 self.constants.allow_ts2_accel = True
             else:
-                global_settings.global_settings().write_property("MacBookPro_TeraScale_2_Accel", False)
+                global_settings.GlobalEnviromentSettings().write_property("MacBookPro_TeraScale_2_Accel", False)
                 self.constants.allow_ts2_accel = False
 
         if self.model in smbios_data.smbios_dictionary:
@@ -67,14 +85,19 @@ class generate_defaults:
         # Check if running in RecoveryOS
         self.constants.recovery_status = utilities.check_recovery()
 
-        if global_settings.global_settings().read_property("Force_Web_Drivers") is True:
+        if global_settings.GlobalEnviromentSettings().read_property("Force_Web_Drivers") is True:
             self.constants.force_nv_web = True
 
-        result = global_settings.global_settings().read_property("ShouldNukeKDKs")
+        result = global_settings.GlobalEnviromentSettings().read_property("ShouldNukeKDKs")
         if result is False:
             self.constants.should_nuke_kdks = False
 
-    def smbios_probe(self):
+
+    def _smbios_probe(self):
+        """
+        SMBIOS specific probe
+        """
+
         if not self.host_is_target:
             if self.model in ["MacPro4,1", "MacPro5,1"]:
                 # Allow H.265 on AMD
@@ -105,7 +128,11 @@ class generate_defaults:
                     self.constants.force_vmm = False
 
 
-    def nvram_probe(self):
+    def _nvram_probe(self):
+        """
+        NVRAM specific probe
+        """
+
         if not self.host_is_target:
             return
 
@@ -126,7 +153,11 @@ class generate_defaults:
             self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
 
 
-    def networking_probe(self):
+    def _networking_probe(self):
+        """
+        Networking specific probe
+        """
+
         if self.host_is_target:
             if not (
                 (
@@ -163,7 +194,11 @@ class generate_defaults:
         self.constants.fu_status = True
         self.constants.fu_arguments = " -disable_sidecar_mac"
 
-    def misc_hardwares_probe(self):
+
+    def _misc_hardwares_probe(self):
+        """
+        Misc probe
+        """
         if self.host_is_target:
             if self.constants.computer.usb_controllers:
                 if self.model in smbios_data.smbios_dictionary:
@@ -176,7 +211,11 @@ class generate_defaults:
                                 break
 
 
-    def gpu_probe(self):
+    def _gpu_probe(self):
+        """
+        Graphics specific probe
+        """
+
         gpu_dict = []
         if self.host_is_target:
             gpu_dict = self.constants.computer.gpus

@@ -1,6 +1,8 @@
 import logging
 import sys
 import threading
+import os
+import subprocess
 from pathlib import Path
 
 
@@ -19,9 +21,12 @@ class InitializeLoggingSupport:
     >>> from resources.logging_handler import InitializeLoggingSupport
     >>> InitializeLoggingSupport()
 
+    FOR DEVELOPERS:
+    - Do not invoke logging until after '_attempt_initialize_logging_configuration()' has been invoked
+
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.log_filename: str  = "OpenCore-Patcher.log"
         self.log_filepath: Path = None
 
@@ -35,6 +40,7 @@ class InitializeLoggingSupport:
         self._clean_log_file()
         self._attempt_initialize_logging_configuration()
         self._implement_custom_traceback_handler()
+        self._fix_file_permission()
 
 
     def __del__(self):
@@ -81,12 +87,34 @@ class InitializeLoggingSupport:
             print(f"- Failed to clean log file: {e}")
 
 
+    def _fix_file_permission(self):
+        """
+        Fixes file permission for log file
+
+        If OCLP was invoked as root, file permission will only allow root to write to log file
+        This in turn breaks normal OCLP execution to write to log file
+        """
+
+        if os.geteuid() != 0:
+            return
+
+        result = subprocess.run(["chmod", "777", self.log_filepath], capture_output=True)
+        if result.returncode != 0:
+            print(f"- Failed to fix log file permissions")
+            if result.stderr:
+                print(result.stderr.decode("utf-8"))
+
+
     def _initialize_logging_configuration(self, log_to_file: bool = True):
         """
         Initialize logging framework configuration
 
         StreamHandler's format is used to mimic the default behavior of print()
         While FileHandler's format is for more in-depth logging
+
+        Parameters:
+            log_to_file (bool): Whether to log to file or not
+
         """
 
         logging.basicConfig(
@@ -100,6 +128,7 @@ class InitializeLoggingSupport:
         logging.getLogger().setLevel(logging.INFO)
         logging.getLogger().handlers[0].setFormatter(logging.Formatter("%(message)s"))
         logging.getLogger().handlers[1].maxBytes = self.max_file_size
+
 
     def _attempt_initialize_logging_configuration(self):
         """
@@ -135,6 +164,7 @@ class InitializeLoggingSupport:
 
         sys.excepthook = custom_excepthook
         threading.excepthook = custom_thread_excepthook
+
 
     def _restore_original_excepthook(self):
         """

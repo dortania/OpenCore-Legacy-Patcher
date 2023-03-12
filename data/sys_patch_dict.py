@@ -296,6 +296,55 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 },
             },
 
+            # Support for 3802 GPUs were broken with 13.3+
+            # Downgrades 31001 stack to 13.2.1, however nukes AMFI support
+            # Extremely fugly, only for reference purposes at this time
+            "Metal 3802 Common Extended": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 4 # 13.3
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Install Reference": {
+                    "/System/Library/Frameworks": {
+                        "Metal.framework": "13.2.1",
+                    },
+                    "/System/Library/PrivateFrameworks": {
+                        "MTLCompiler.framework": "13.2.1",
+                        "GPUCompiler.framework": "13.2.1",
+                    },
+                },
+            },
+
+            # Primarily for AMD GCN GPUs
+            "Revert GVA Downgrade": {
+                "Display Name": "",
+                "OS Support": {
+                    "Minimum OS Support": {
+                        "OS Major": os_data.os_data.ventura,
+                        "OS Minor": 0
+                    },
+                    "Maximum OS Support": {
+                        "OS Major": os_data.os_data.max_os,
+                        "OS Minor": 99
+                    },
+                },
+                "Remove": {
+                    "/System/Library/PrivateFrameworks/AppleGVA.framework/Versions/A/": [
+                        "AppleGVA",
+                    ],
+                    "/System/Library/PrivateFrameworks/AppleGVACore.framework/Versions/A/": [
+                        "AppleGVACore",
+                    ],
+                },
+            },
+
             # For GPUs last natively supported in Catalina/Big Sur
             # Restores DRM support
             "Catalina GVA": {
@@ -657,6 +706,8 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "AMDFramebuffer.kext":           "12.5",
                         "AMDSupport.kext":               "12.5",
 
+                        "AMDRadeonVADriver.bundle":      "12.5",
+                        "AMDRadeonVADriver2.bundle":     "12.5",
                         "AMDRadeonX4000GLDriver.bundle": "12.5",
                         "AMDMTLBronzeDriver.bundle":     "12.5",
                         "AMDShared.bundle":              "12.5",
@@ -680,7 +731,9 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 "Install": {
                     "/System/Library/Extensions": {
                         "AMDRadeonX4000.kext":           "12.5",
+                        "AMDRadeonX4000HWServices.kext": "12.5",
 
+                        "AMDRadeonVADriver2.bundle":     "12.5",
                         "AMDRadeonX4000GLDriver.bundle": "12.5",
                         "AMDMTLBronzeDriver.bundle":     "12.5",
                         "AMDShared.bundle":              "12.5",
@@ -702,7 +755,9 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                 "Install": {
                     "/System/Library/Extensions": {
                         "AMDRadeonX5000.kext":            "12.5",
+                        "AMDRadeonX5000HWServices.kext":  "12.5",
 
+                        "AMDRadeonVADriver2.bundle":      "12.5",
                         "AMDRadeonX5000GLDriver.bundle":  "12.5",
                         "AMDRadeonX5000MTLDriver.bundle": "12.5",
                         "AMDRadeonX5000Shared.bundle":    "12.5",
