@@ -39,7 +39,7 @@ class Constants:
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
         self.restrictevents_version = "1.0.9"  #     RestrictEvents
-        self.featureunlock_version = "1.1.2"  #      FeatureUnlock
+        self.featureunlock_version = "1.1.4"  #      FeatureUnlock
         self.debugenhancer_version = "1.0.7"  #      DebugEnhancer
         self.cpufriend_version = "1.2.6"  #          CPUFriend
         self.bluetool_version = "2.6.4"  #           BlueToolFixup (BrcmPatchRAM)

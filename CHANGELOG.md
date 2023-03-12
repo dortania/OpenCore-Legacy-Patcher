@@ -25,6 +25,8 @@
 - Implement support for AMD Navi and Lexa MXM GPUs in 2009-2011 iMacs
   - Primarily applicable for MXM 3.0 variants of AMD WX3200 (0x6981) and AMD RX5500XT (0x7340)
   - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
+- Implement Continuity Camera Unlocking for pre-Kaby Lake CPUs
+  - Applicable for all legacy Macs in macOS Ventura
 - Backend Changes:
   - Refactored kdk_handler.py
     - Prioritizes KdkSupportPkg repository for downloads
@@ -54,6 +56,7 @@
 - Increment Binaries:
   - PatcherSupportPkg 0.8.4 - release
   - AutoPkgInstaller 1.0.2 - release
+  - FeatureUnlock 1.1.4 - rolling (0e8d87f)
 
 ## 0.6.1
 - Avoid usage of KDKlessWorkaround on hardware not requiring it
