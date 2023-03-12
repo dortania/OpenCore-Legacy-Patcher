@@ -796,6 +796,11 @@ class amd_ids:
         0x67CF,  # Unknown
     ]
 
+    polaris_spoof_ids = [
+        # Polaris 12 (Lexa)
+        0x6981,  # Lexa XT [Radeon PRO WX 3200]
+    ]
+
     vega_ids = [
         # GCN v5
         # AMDRadeonX5000

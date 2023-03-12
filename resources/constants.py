@@ -34,6 +34,7 @@ class Constants:
         ## https://github.com/acidanthera
         self.lilu_version = "1.6.3"  #               Lilu
         self.whatevergreen_version = "1.6.3"  #      WhateverGreen
+        self.whatevergreen_navi_version = "1.6.3-Navi"  # WhateverGreen (Navi Patch)
         self.airportbcrmfixup_version = "2.1.6"  #   AirPortBrcmFixup
         self.nvmefix_version = "1.0.9"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
@@ -301,6 +302,10 @@ class Constants:
     @property
     def whatevergreen_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/WhateverGreen-v{self.whatevergreen_version}-{self.kext_variant}.zip")
+
+    @property
+    def whatevergreen_navi_path(self):
+        return self.payload_kexts_path / Path(f"Acidanthera/WhateverGreen-v{self.whatevergreen_navi_version}-{self.kext_variant}.zip")
 
     @property
     def airportbcrmfixup_path(self):

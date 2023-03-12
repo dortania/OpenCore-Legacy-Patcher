@@ -1,0 +1,3319 @@
+diff --git a/WhateverGreen/kern_rad.cpp b/WhateverGreen/kern_rad.cpp
+index b4f271f..162dc82 100644
+--- a/WhateverGreen/kern_rad.cpp
++++ b/WhateverGreen/kern_rad.cpp
+@@ -8,6 +8,7 @@
+ #include <Headers/kern_api.hpp>
+ #include <Headers/kern_iokit.hpp>
+ #include <Headers/kern_devinfo.hpp>
++#include <Headers/kern_time.hpp>
+ #include <IOKit/IOService.h>
+ 
+ #include <Availability.h>
+@@ -190,1015 +191,2399 @@ void RAD::processKernel(KernelPatcher &patcher, DeviceInfo *info) {
+ }
+ 
+ void RAD::updatePwmMaxBrightnessFromInternalDisplay() {
+-	OSDictionary * matching = IOService::serviceMatching("AppleBacklightDisplay");
+-	if (matching == nullptr) {
+-		DBGLOG("igfx", "isRadeonX6000WiredToInternalDisplay null AppleBacklightDisplay");
+-		return;
+-	}
+-	
+-	OSIterator *iter = IOService::getMatchingServices(matching);
+-	if (iter == nullptr) {
+-		DBGLOG("igfx", "isRadeonX6000WiredToInternalDisplay null matching");
+-		matching->release();
+-		return;
+-	}
+-	
+-	IORegistryEntry* display = OSDynamicCast(IORegistryEntry, iter->getNextObject());
+-	if (display == nullptr) {
+-		DBGLOG("igfx", "isRadeonX6000WiredToInternalDisplay null display");
+-		iter->release();
+-		matching->release();
+-		return;
+-	}
+-	
+-	OSDictionary* iodispparm = OSDynamicCast(OSDictionary, display->getProperty("IODisplayParameters"));
+-	if (iodispparm == nullptr) {
+-		DBGLOG("igfx", "isRadeonX6000WiredToInternalDisplay null IODisplayParameters");
+-		iter->release();
+-		matching->release();
+-		return;
+-	}
+-	
+-	OSDictionary* linearbri = OSDynamicCast(OSDictionary, iodispparm->getObject("linear-brightness"));
+-	if (linearbri == nullptr) {
+-		DBGLOG("igfx", "isRadeonX6000WiredToInternalDisplay null linear-brightness");
+-		iter->release();
+-		matching->release();
+-		return;
+-	}
+-	
+-	OSNumber* maxbri = OSDynamicCast(OSNumber, linearbri->getObject("max"));
+-	if (maxbri == nullptr) {
+-		DBGLOG("igfx", "isRadeonX6000WiredToInternalDisplay null max");
+-		iter->release();
+-		matching->release();
+-		return;
+-	}
++    OSDictionary * matching = IOService::serviceMatching("AppleBacklightDisplay");
++    if (matching == nullptr) {
++        DBGLOG("igfx", "updatePwmMaxBrightnessFromInternalDisplay null AppleBacklightDisplay");
++        return;
++    }
++    
++    OSIterator *iter = IOService::getMatchingServices(matching);
++    if (iter == nullptr) {
++        DBGLOG("igfx", "updatePwmMaxBrightnessFromInternalDisplay null matching");
++        matching->release();
++        return;
++    }
++    
++    IORegistryEntry* display = OSDynamicCast(IORegistryEntry, iter->getNextObject());
++    if (display == nullptr) {
++        DBGLOG("igfx", "updatePwmMaxBrightnessFromInternalDisplay null display");
++        iter->release();
++        matching->release();
++        return;
++    }
++    
++    OSDictionary* iodispparm = OSDynamicCast(OSDictionary, display->getProperty("IODisplayParameters"));
++    if (iodispparm == nullptr) {
++        DBGLOG("igfx", "updatePwmMaxBrightnessFromInternalDisplay null IODisplayParameters");
++        iter->release();
++        matching->release();
++        return;
++    }
++    
++    OSDictionary* linearbri = OSDynamicCast(OSDictionary, iodispparm->getObject("linear-brightness"));
++    if (linearbri == nullptr) {
++        DBGLOG("igfx", "updatePwmMaxBrightnessFromInternalDisplay null linear-brightness");
++        iter->release();
++        matching->release();
++        return;
++    }
++    
++    OSNumber* maxbri = OSDynamicCast(OSNumber, linearbri->getObject("max"));
++    if (maxbri == nullptr) {
++        DBGLOG("igfx", "updatePwmMaxBrightnessFromInternalDisplay null max");
++        iter->release();
++        matching->release();
++        return;
++    }
++
++    callbackRAD->maxPwmBacklightLvl = maxbri->unsigned32BitValue();
++    DBGLOG("igfx", "updatePwmMaxBrightnessFromInternalDisplay get max brightness: 0x%x", callbackRAD->maxPwmBacklightLvl);
++
++    iter->release();
++    matching->release();
++}
+ 
+-	callbackRAD->maxPwmBacklightLvl = maxbri->unsigned32BitValue();
+-	DBGLOG("igfx", "updatePwmMaxBrightnessFromInternalDisplay get max brightness: 0x%x", callbackRAD->maxPwmBacklightLvl);
++typedef int64_t __int64;
++typedef int64_t _QWORD;
++typedef int32_t _DWORD;
++typedef int8_t __int8;
+ 
+-	iter->release();
+-	matching->release();
+-}
++struct dc_stream_state {
++    void *sink;
++    void *link;
++};
+ 
+-uint32_t RAD::wrapDcePanelCntlHwInit(void *panel_cntl) {
+-	callbackRAD->panelCntlPtr = panel_cntl;
+-	callbackRAD->updatePwmMaxBrightnessFromInternalDisplay(); // read max brightness value from IOReg
+-	uint32_t ret = FunctionCast(wrapDcePanelCntlHwInit, callbackRAD->orgDcePanelCntlHwInit)(panel_cntl);
+-	return ret;
+-}
++#define MAX_SINKS_PER_LINK 4
+ 
+-IOReturn RAD::wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute(IOService *framebuffer, IOIndex connectIndex, IOSelect attribute, uintptr_t value) {
+-	IOReturn ret = FunctionCast(wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute, callbackRAD->orgAMDRadeonX6000AmdRadeonFramebufferSetAttribute)(framebuffer, connectIndex, attribute, value);
+-	if (attribute != (UInt32)'bklt') {
+-		return ret;
+-	}
+-	
+-	if (callbackRAD->maxPwmBacklightLvl == 0) {
+-		DBGLOG("igfx", "wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute zero maxPwmBacklightLvl");
+-		return 0;
+-	}
+-	
+-	if (callbackRAD->panelCntlPtr == nullptr) {
+-		DBGLOG("igfx", "wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute null panel cntl");
+-		return 0;
+-	}
+-	
+-	if (callbackRAD->orgDceDriverSetBacklight == nullptr) {
+-		DBGLOG("igfx", "wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute null orgDcLinkSetBacklightLevel");
+-		return 0;
+-	}
+-	
+-	// set the backlight of AMD navi10 driver
+-	callbackRAD->curPwmBacklightLvl = (uint32_t)value;
+-	uint32_t btlper = callbackRAD->curPwmBacklightLvl * 100 / callbackRAD->maxPwmBacklightLvl;
+-	uint32_t pwmval = 0;
+-	if (btlper >= 100) {
+-		// This is from the dmcu_set_backlight_level function of Linux source
+-		// ...
+-		// if (backlight_pwm_u16_16 & 0x10000)
+-		// 	   backlight_8_bit = 0xFF;
+-		// else
+-		// 	   backlight_8_bit = (backlight_pwm_u16_16 >> 8) & 0xFF;
+-		// ...
+-		// The max brightness should have 0x10000 bit set
+-		pwmval = 0x1FF00;
+-	} else {
+-		pwmval = ((btlper * 0xFF) / 100) << 8U;
+-	}
++struct dc_link_settings {
++    uint32_t lane_count;
++    uint32_t link_rate;
++    uint32_t link_spread;
++    bool use_link_rate_set;
++    uint8_t link_rate_set;
++};
+ 
+-	callbackRAD->orgDceDriverSetBacklight(callbackRAD->panelCntlPtr, pwmval);
+-	return 0;
+-}
++struct dc_lane_settings {
++    uint32_t VOLTAGE_SWING;
++    uint32_t PRE_EMPHASIS;
++    uint32_t POST_CURSOR2;
++};
+ 
+-IOReturn RAD::wrapAMDRadeonX6000AmdRadeonFramebufferGetAttribute(IOService *framebuffer, IOIndex connectIndex, IOSelect attribute, uintptr_t * value) {
+-	IOReturn ret = FunctionCast(wrapAMDRadeonX6000AmdRadeonFramebufferGetAttribute, callbackRAD->orgAMDRadeonX6000AmdRadeonFramebufferGetAttribute)(framebuffer, connectIndex, attribute, value);
+-	if (attribute == (UInt32)'bklt') {
+-		// enable the backlight feature of AMD navi10 driver
+-		*value = callbackRAD->curPwmBacklightLvl;
+-		ret = 0;
+-	}
+-	return ret;
+-}
++struct dc_link_training_overrides {
++    uint32_t *voltage_swing;
++    uint32_t *pre_emphasis;
++    uint32_t *post_cursor2;
++
++    uint16_t *cr_pattern_time;
++    uint16_t *eq_pattern_time;
++    uint32_t *pattern_for_cr;
++    uint32_t *pattern_for_eq;
++
++    uint32_t *downspread;
++    bool *alternate_scrambler_reset;
++    bool *enhanced_framing;
++    bool *mst_enable;
++    bool *fec_enable;
++};
+ 
+-bool RAD::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size) {
+-	if (kextRadeonX6000Framebuffer.loadIndex == index) {
+-		KernelPatcher::RouteRequest requests[] = {
+-			{"_dce_panel_cntl_hw_init", wrapDcePanelCntlHwInit, orgDcePanelCntlHwInit},
+-			{"__ZN35AMDRadeonX6000_AmdRadeonFramebuffer25setAttributeForConnectionEijm", wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute, orgAMDRadeonX6000AmdRadeonFramebufferSetAttribute},
+-			{"__ZN35AMDRadeonX6000_AmdRadeonFramebuffer25getAttributeForConnectionEijPm", wrapAMDRadeonX6000AmdRadeonFramebufferGetAttribute, orgAMDRadeonX6000AmdRadeonFramebufferGetAttribute},
+-		};
++struct dp_audio_test_data_flags {
++    uint8_t test_requested  :1;
++    uint8_t disable_video   :1;
++};
+ 
+-		if (!patcher.routeMultiple(index, requests, address, size, true, true))
+-			SYSLOG("igfx", "Failed to route redeon x6000 gpu tracing.");
+-		
+-		orgDceDriverSetBacklight = reinterpret_cast<t_DceDriverSetBacklight>(patcher.solveSymbol(index, "_dce_driver_set_backlight"));
+-		if (patcher.getError() != KernelPatcher::Error::NoError) {
+-			SYSLOG("igfx", "failed to resolve _dce_driver_set_backlight");
+-			patcher.clearError();
+-		}
+-	}
+-	
+-	if (kextRadeonFramebuffer.loadIndex == index) {
+-		if (force24BppMode)
+-			process24BitOutput(patcher, kextRadeonFramebuffer, address, size);
+-		return true;
+-	}
++struct dp_audio_test_data {
+ 
+-	if (kextRadeonLegacyFramebuffer.loadIndex == index) {
+-		if (force24BppMode)
+-			process24BitOutput(patcher, kextRadeonLegacyFramebuffer, address, size);
+-		return true;
+-	}
++    struct dp_audio_test_data_flags flags;
++    uint8_t sampling_rate;
++    uint8_t channel_count;
++    uint8_t pattern_type;
++    uint8_t pattern_period[8];
++};
+ 
+-	if (kextRadeonSupport.loadIndex == index) {
+-		processConnectorOverrides(patcher, address, size, true);
++union compliance_test_state {
++    struct {
++        unsigned char STEREO_3D_RUNNING        : 1;
++        unsigned char RESERVED                 : 7;
++    } bits;
++    unsigned char raw;
++};
+ 
+-		if (getKernelVersion() > KernelVersion::Mojave ||
+-			(getKernelVersion() == KernelVersion::Mojave && getKernelMinorVersion() >= 5)) {
+-			KernelPatcher::RouteRequest request("__ZN13ATIController8TestVRAME13PCI_REG_INDEXb", doNotTestVram);
+-			patcher.routeMultiple(index, &request, 1, address, size);
+-		}
++struct graphics_object_id {
++    uint32_t  id:8;
++    uint32_t  enum_id:4;
++    uint32_t  type:4;
++    uint32_t  reserved:16; /* for padding. total size should be u32 */
++};
+ 
+-		if (useCustomAgdpDecision) {
+-			KernelPatcher::RouteRequest request("__ZN16AtiDeviceControl16notifyLinkChangeE31kAGDCRegisterLinkControlEvent_tmj", wrapNotifyLinkChange, orgNotifyLinkChange);
+-			patcher.routeMultiple(index, &request, 1, address, size);
+-		}
++union ddi_channel_mapping {
++    struct mapping {
++        uint8_t lane0:2;    /* Mapping for lane 0 */
++        uint8_t lane1:2;    /* Mapping for lane 1 */
++        uint8_t lane2:2;    /* Mapping for lane 2 */
++        uint8_t lane3:2;    /* Mapping for lane 3 */
++    } mapping;
++    uint8_t raw;
++};
+ 
+-		return true;
+-	}
++struct device_id {
++    uint32_t device_type:16;
++    uint32_t enum_id:16;    /* 1 based enum */
++    uint16_t raw_device_tag;
++};
+ 
+-	if (kextRadeonLegacySupport.loadIndex == index) {
+-		processConnectorOverrides(patcher, address, size, false);
+-		return true;
+-	}
++struct connector_device_tag_info {
++    uint32_t acpi_device;
++    struct device_id dev_id;
++};
+ 
+-	if (kextPolarisController.loadIndex == index) {
+-		KernelPatcher::RouteRequest request("__ZN17AMD9500Controller23findProjectByPartNumberEP20ControllerProperties", findProjectByPartNumber);
+-		patcher.routeMultiple(index, &request, 1, address, size);
+-	}
++union dpcd_rev {
++    struct {
++        uint8_t MINOR:4;
++        uint8_t MAJOR:4;
++    } bits;
++    uint8_t raw;
++};
+ 
+-	for (size_t i = 0; i < maxHardwareKexts; i++) {
+-		if (kextRadeonHardware[i].loadIndex == index) {
+-			processHardwareKext(patcher, i, address, size);
+-			return true;
+-		}
+-	}
++union max_lane_count {
++    struct {
++        uint8_t MAX_LANE_COUNT:5;
++        uint8_t POST_LT_ADJ_REQ_SUPPORTED:1;
++        uint8_t TPS3_SUPPORTED:1;
++        uint8_t ENHANCED_FRAME_CAP:1;
++    } bits;
++    uint8_t raw;
++};
+ 
+-	return false;
+-}
++union max_down_spread {
++    struct {
++        uint8_t MAX_DOWN_SPREAD:1;
++        uint8_t RESERVED:5;
++        uint8_t NO_AUX_HANDSHAKE_LINK_TRAINING:1;
++        uint8_t TPS4_SUPPORTED:1;
++    } bits;
++    uint8_t raw;
++};
+ 
+-void RAD::initHardwareKextMods() {
+-	// Decide on kext amount present for optimal performance.
+-	// 10.15+   has X4000, X5000, and X6000
+-	// 10.14+   has X4000 and X5000
+-	// 10.13.4+ has X3000, X4000, and X5000
+-	if (getKernelVersion() >= KernelVersion::Catalina)
+-		maxHardwareKexts = MaxRadeonHardwareCatalina;
+-	else if (getKernelVersion() >= KernelVersion::Mojave)
+-		maxHardwareKexts = MaxRadeonHardwareMojave;
+-	else if (getKernelVersion() == KernelVersion::HighSierra && getKernelMinorVersion() >= 5)
+-		maxHardwareKexts = MaxRadeonHardwareModernHighSierra;
+-
+-	// 10.13.4 fixed black screen issues
+-	if (maxHardwareKexts != MaxRadeonHardware) {
+-		for (size_t i = 0; i < MaxGetFrameBufferProcs; i++)
+-			getFrameBufferProcNames[IndexRadeonHardwareX4000][i] = nullptr;
+-
+-		// We have nothing to do for these kexts on recent systems
+-		if (!fixConfigName && !forceOpenGL && !forceCodecInfo) {
+-			// X4000 kext is not included in this list as we need to fix GVA properties for most of its GPUs
+-			kextRadeonHardware[IndexRadeonHardwareX5000].switchOff();
+-			kextRadeonHardware[IndexRadeonHardwareX6000].switchOff();
+-		}
+-	}
++union dprx_feature {
++    struct {
++        uint8_t GTC_CAP:1;                             // bit 0: DP 1.3+
++        uint8_t SST_SPLIT_SDP_CAP:1;                   // bit 1: DP 1.4
++        uint8_t AV_SYNC_CAP:1;                         // bit 2: DP 1.3+
++        uint8_t VSC_SDP_COLORIMETRY_SUPPORTED:1;       // bit 3: DP 1.3+
++        uint8_t VSC_EXT_VESA_SDP_SUPPORTED:1;          // bit 4: DP 1.4
++        uint8_t VSC_EXT_VESA_SDP_CHAINING_SUPPORTED:1; // bit 5: DP 1.4
++        uint8_t VSC_EXT_CEA_SDP_SUPPORTED:1;           // bit 6: DP 1.4
++        uint8_t VSC_EXT_CEA_SDP_CHAINING_SUPPORTED:1;  // bit 7: DP 1.4
++    } bits;
++    uint8_t raw;
++};
+ 
+-	if (getKernelVersion() < KernelVersion::Catalina) {
+-		kextRadeonHardware[IndexRadeonHardwareX6000].switchOff();
+-	}
++union sink_count {
++    struct {
++        uint8_t SINK_COUNT:6;
++        uint8_t CPREADY:1;
++        uint8_t RESERVED:1;
++    } bits;
++    uint8_t raw;
++};
+ 
+-	if (getKernelVersion() < KernelVersion::HighSierra) {
+-		// Versions before 10.13 do not support X4250 and X5000
+-		kextRadeonHardware[IndexRadeonHardwareX4250].switchOff();
+-		kextRadeonHardware[IndexRadeonHardwareX5000].switchOff();
++struct dc_dongle_caps {
++    /* dongle type (DP converter, CV smart dongle) */
++    uint32_t dongle_type;
++    bool extendedCapValid;
++    /* If dongle_type == DISPLAY_DONGLE_DP_HDMI_CONVERTER,
++    indicates 'Frame Sequential-to-lllFrame Pack' conversion capability.*/
++    bool is_dp_hdmi_s3d_converter;
++    bool is_dp_hdmi_ycbcr422_pass_through;
++    bool is_dp_hdmi_ycbcr420_pass_through;
++    bool is_dp_hdmi_ycbcr422_converter;
++    bool is_dp_hdmi_ycbcr420_converter;
++    uint32_t dp_hdmi_max_bpc;
++    uint32_t dp_hdmi_max_pixel_clk_in_khz;
++};
+ 
+-		// Versions before 10.13 have legacy X3000 and X4000 IDs
+-		kextRadeonHardware[IndexRadeonHardwareX3000].id = idRadeonX3000Old;
+-		kextRadeonHardware[IndexRadeonHardwareX4000].id = idRadeonX4000Old;
++union dpcd_fec_capability {
++    struct {
++        uint8_t FEC_CAPABLE:1;
++        uint8_t UNCORRECTED_BLOCK_ERROR_COUNT_CAPABLE:1;
++        uint8_t CORRECTED_BLOCK_ERROR_COUNT_CAPABLE:1;
++        uint8_t BIT_ERROR_COUNT_CAPABLE:1;
++        uint8_t RESERVED:4;
++    } bits;
++    uint8_t raw;
++};
+ 
+-		bool preSierra = getKernelVersion() < KernelVersion::Sierra;
++union dpcd_dsc_branch_decoder_capabilities {
++    struct {
++        uint8_t BRANCH_OVERALL_THROUGHPUT_0;
++        uint8_t BRANCH_OVERALL_THROUGHPUT_1;
++        uint8_t BRANCH_MAX_LINE_WIDTH;
++    } fields;
++    uint8_t raw[3];
++};
+ 
+-		if (preSierra) {
+-			// Versions before 10.12 do not support X4100
+-			kextRadeonHardware[IndexRadeonHardwareX4100].switchOff();
+-		}
++struct dpcd_dsc_support {
++    uint8_t DSC_SUPPORT        :1;
++    uint8_t DSC_PASSTHROUGH_SUPPORT    :1;
++    uint8_t RESERVED        :6;
++};
+ 
+-		if (preSierra || (getKernelVersion() == KernelVersion::Sierra && getKernelMinorVersion() < 7)) {
+-			// Versions before 10.12.6 do not support X4150, X4200
+-			kextRadeonHardware[IndexRadeonHardwareX4150].switchOff();
+-			kextRadeonHardware[IndexRadeonHardwareX4200].switchOff();
+-		}
+-	}
++struct dpcd_dsc_algorithm_revision {
++    uint8_t DSC_VERSION_MAJOR    :4;
++    uint8_t DSC_VERSION_MINOR    :4;
++};
+ 
+-	lilu.onKextLoadForce(kextRadeonHardware, maxHardwareKexts);
+-}
++struct dpcd_dsc_rc_buffer_block_size {
++    uint8_t RC_BLOCK_BUFFER_SIZE    :2;
++    uint8_t RESERVED        :6;
++};
+ 
+-void RAD::process24BitOutput(KernelPatcher &patcher, KernelPatcher::KextInfo &info, mach_vm_address_t address, size_t size) {
+-	auto bitsPerComponent = patcher.solveSymbol<int *>(info.loadIndex, "__ZL18BITS_PER_COMPONENT", address, size);
+-	if (bitsPerComponent) {
+-		while (bitsPerComponent && *bitsPerComponent) {
+-			if (*bitsPerComponent == 10) {
+-				auto ret = MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock);
+-				if (ret == KERN_SUCCESS) {
+-					DBGLOG("rad", "fixing BITS_PER_COMPONENT");
+-					*bitsPerComponent = 8;
+-					MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
+-				} else {
+-					SYSLOG("rad", "failed to disable write protection for BITS_PER_COMPONENT");
+-				}
+-			}
+-			bitsPerComponent++;
+-		}
+-	} else {
+-		SYSLOG("rad", "failed to find BITS_PER_COMPONENT");
+-		patcher.clearError();
+-	}
++struct dpcd_dsc_slice_capability1 {
++    uint8_t ONE_SLICE_PER_DP_DSC_SINK_DEVICE    :1;
++    uint8_t TWO_SLICES_PER_DP_DSC_SINK_DEVICE    :1;
++    uint8_t RESERVED                :1;
++    uint8_t FOUR_SLICES_PER_DP_DSC_SINK_DEVICE    :1;
++    uint8_t SIX_SLICES_PER_DP_DSC_SINK_DEVICE    :1;
++    uint8_t EIGHT_SLICES_PER_DP_DSC_SINK_DEVICE    :1;
++    uint8_t TEN_SLICES_PER_DP_DSC_SINK_DEVICE    :1;
++    uint8_t TWELVE_SLICES_PER_DP_DSC_SINK_DEVICE    :1;
++};
+ 
+-	DBGLOG("rad", "fixing pixel types");
++struct dpcd_dsc_line_buffer_bit_depth {
++    uint8_t LINE_BUFFER_BIT_DEPTH    :4;
++    uint8_t RESERVED        :4;
++};
+ 
+-	KernelPatcher::LookupPatch pixelPatch {
+-		&info,
+-		reinterpret_cast<const uint8_t *>("--RRRRRRRRRRGGGGGGGGGGBBBBBBBBBB"),
+-		reinterpret_cast<const uint8_t *>("--------RRRRRRRRGGGGGGGGBBBBBBBB"),
+-		32, 2
+-	};
++struct dpcd_dsc_block_prediction_support {
++    uint8_t BLOCK_PREDICTION_SUPPORT:1;
++    uint8_t RESERVED        :7;
++};
+ 
+-	patcher.applyLookupPatch(&pixelPatch);
+-	if (patcher.getError() != KernelPatcher::Error::NoError) {
+-		SYSLOG("rad", "failed to patch RGB mask for 24-bit output");
+-		patcher.clearError();
+-	}
+-}
++struct dpcd_maximum_bits_per_pixel_supported_by_the_decompressor {
++    uint8_t MAXIMUM_BITS_PER_PIXEL_SUPPORTED_BY_THE_DECOMPRESSOR_LOW    :7;
++    uint8_t MAXIMUM_BITS_PER_PIXEL_SUPPORTED_BY_THE_DECOMPRESSOR_HIGH    :7;
++    uint8_t RESERVED                            :2;
++};
+ 
+-void RAD::processConnectorOverrides(KernelPatcher &patcher, mach_vm_address_t address, size_t size, bool modern) {
+-	if (modern) {
+-		if (getKernelVersion() >= KernelVersion::HighSierra) {
+-			KernelPatcher::RouteRequest requests[] {
+-				KernelPatcher::RouteRequest("__ZN14AtiBiosParser116getConnectorInfoEP13ConnectorInfoRh", wrapGetConnectorsInfoV1, orgGetConnectorsInfoV1),
+-				KernelPatcher::RouteRequest("__ZN14AtiBiosParser216getConnectorInfoEP13ConnectorInfoRh", wrapGetConnectorsInfoV2, orgGetConnectorsInfoV2),
+-				KernelPatcher::RouteRequest("__ZN14AtiBiosParser126translateAtomConnectorInfoERN30AtiObjectInfoTableInterface_V117AtomConnectorInfoER13ConnectorInfo",
+-											wrapTranslateAtomConnectorInfoV1, orgTranslateAtomConnectorInfoV1),
+-				KernelPatcher::RouteRequest("__ZN14AtiBiosParser226translateAtomConnectorInfoERN30AtiObjectInfoTableInterface_V217AtomConnectorInfoER13ConnectorInfo",
+-											wrapTranslateAtomConnectorInfoV2, orgTranslateAtomConnectorInfoV2),
+-				KernelPatcher::RouteRequest("__ZN13ATIController5startEP9IOService", wrapATIControllerStart, orgATIControllerStart)
+-			};
+-			patcher.routeMultiple(kextRadeonSupport.loadIndex, requests, address, size);
+-		} else {
+-			KernelPatcher::RouteRequest requests[] {
+-				KernelPatcher::RouteRequest("__ZN23AtiAtomBiosDceInterface17getConnectorsInfoEP13ConnectorInfoRh", wrapGetConnectorsInfoV1, orgGetConnectorsInfoV1),
+-				KernelPatcher::RouteRequest("__ZN13ATIController5startEP9IOService", wrapATIControllerStart, orgATIControllerStart),
+-			};
+-			patcher.routeMultiple(kextRadeonSupport.loadIndex, requests, address, size);
+-
+-			orgGetAtomObjectTableForType = reinterpret_cast<t_getAtomObjectTableForType>(patcher.solveSymbol(kextRadeonSupport.loadIndex,
+-																											 "__ZN20AtiAtomBiosUtilities25getAtomObjectTableForTypeEhRh", address, size));
+-			if (!orgGetAtomObjectTableForType) {
+-				SYSLOG("rad", "failed to find AtiAtomBiosUtilities::getAtomObjectTableForType");
+-				patcher.clearError();
+-			}
+-		}
+-	} else {
+-		KernelPatcher::RouteRequest requests[] {
+-			KernelPatcher::RouteRequest("__ZN23AtiAtomBiosDceInterface17getConnectorsInfoEP13ConnectorInfoRh", wrapLegacyGetConnectorsInfo, orgLegacyGetConnectorsInfo),
+-			KernelPatcher::RouteRequest("__ZN19AMDLegacyController5startEP9IOService", wrapLegacyATIControllerStart, orgLegacyATIControllerStart),
+-		};
+-		patcher.routeMultiple(kextRadeonLegacySupport.loadIndex, requests, address, size);
++struct dpcd_dsc_decoder_color_format_capabilities {
++    uint8_t RGB_SUPPORT            :1;
++    uint8_t Y_CB_CR_444_SUPPORT        :1;
++    uint8_t Y_CB_CR_SIMPLE_422_SUPPORT    :1;
++    uint8_t Y_CB_CR_NATIVE_422_SUPPORT    :1;
++    uint8_t Y_CB_CR_NATIVE_420_SUPPORT    :1;
++    uint8_t RESERVED            :3;
++};
+ 
+-		orgLegacyGetAtomObjectTableForType = patcher.solveSymbol<t_getAtomObjectTableForType>(kextRadeonLegacySupport.loadIndex,
+-																							  "__ZN20AtiAtomBiosUtilities25getAtomObjectTableForTypeEhRh", address, size);
+-		if (!orgLegacyGetAtomObjectTableForType) {
+-			SYSLOG("rad", "failed to find AtiAtomBiosUtilities::getAtomObjectTableForType");
+-			patcher.clearError();
+-		}
+-	}
+-}
++struct dpcd_dsc_decoder_color_depth_capabilities {
++    uint8_t RESERVED0            :1;
++    uint8_t EIGHT_BITS_PER_COLOR_SUPPORT    :1;
++    uint8_t TEN_BITS_PER_COLOR_SUPPORT    :1;
++    uint8_t TWELVE_BITS_PER_COLOR_SUPPORT    :1;
++    uint8_t RESERVED1            :4;
++};
+ 
+-void RAD::processHardwareKext(KernelPatcher &patcher, size_t hwIndex, mach_vm_address_t address, size_t size) {
+-	auto getFrame = getFrameBufferProcNames[hwIndex];
+-	auto &hardware = kextRadeonHardware[hwIndex];
+-
+-	// Fix boot and wake to black screen
+-	for (size_t j = 0; j < MaxGetFrameBufferProcs && getFrame[j] != nullptr; j++) {
+-		auto getFB = patcher.solveSymbol(hardware.loadIndex, getFrame[j], address, size);
+-		if (getFB) {
+-			// Initially it was discovered that the only problematic register is PRIMARY_SURFACE_ADDRESS_HIGH (0x1A07).
+-			// This register must be nulled to solve most of the issues.
+-			// Depending on the amount of connected screens PRIMARY_SURFACE_ADDRESS (0x1A04) may not be null.
+-			// However, as of AMD Vega drivers in 10.13 DP1 both of these registers are now ignored.
+-			// Furthermore, there are no (extra) issues from just returning 0 in framebuffer base address.
+-
+-			// xor rax, rax
+-			// ret
+-			uint8_t ret[] {0x48, 0x31, 0xC0, 0xC3};
+-			patcher.routeBlock(getFB, ret, sizeof(ret));
+-			if (patcher.getError() == KernelPatcher::Error::NoError) {
+-				DBGLOG("rad", "patched %s", getFrame[j]);
+-			} else {
+-				SYSLOG("rad", "failed to patch %s code %d", getFrame[j], patcher.getError());
+-				patcher.clearError();
+-			}
+-		} else {
+-			SYSLOG("rad", "failed to find %s code %d", getFrame[j], patcher.getError());
+-			patcher.clearError();
+-		}
+-	}
++struct dpcd_peak_dsc_throughput_dsc_sink {
++    uint8_t THROUGHPUT_MODE_0:4;
++    uint8_t THROUGHPUT_MODE_1:4;
++};
+ 
+-	// Fix reported Accelerator name to support WhateverName.app
+-	// Also fix GVA properties for X4000.
+-	if (fixConfigName || hwIndex == IndexRadeonHardwareX4000) {
+-		KernelPatcher::RouteRequest request(populateAccelConfigProcNames[hwIndex], wrapPopulateAccelConfig[hwIndex], orgPopulateAccelConfig[hwIndex]);
+-		patcher.routeMultiple(hardware.loadIndex, &request, 1, address, size);
+-	}
++struct dpcd_dsc_slice_capabilities_2 {
++    uint8_t SIXTEEN_SLICES_PER_DSC_SINK_DEVICE    :1;
++    uint8_t TWENTY_SLICES_PER_DSC_SINK_DEVICE    :1;
++    uint8_t TWENTYFOUR_SLICES_PER_DSC_SINK_DEVICE    :1;
++    uint8_t RESERVED                :5;
++};
+ 
+-	// Enforce OpenGL support if requested
+-	if (forceOpenGL) {
+-		DBGLOG("rad", "disabling Metal support");
+-		uint8_t find1[] {0x4D, 0x65, 0x74, 0x61, 0x6C, 0x53, 0x74, 0x61};
+-		uint8_t find2[] {0x4D, 0x65, 0x74, 0x61, 0x6C, 0x50, 0x6C, 0x75};
+-		uint8_t repl1[] {0x50, 0x65, 0x74, 0x61, 0x6C, 0x53, 0x74, 0x61};
+-		uint8_t repl2[] {0x50, 0x65, 0x74, 0x61, 0x6C, 0x50, 0x6C, 0x75};
+-
+-		KernelPatcher::LookupPatch antimetal[] {
+-			{&hardware, find1, repl1, sizeof(find1), 2},
+-			{&hardware, find2, repl2, sizeof(find1), 2}
+-		};
++struct dpcd_bits_per_pixel_increment{
++    uint8_t INCREMENT_OF_BITS_PER_PIXEL_SUPPORTED    :3;
++    uint8_t RESERVED                :5;
++};
++union dpcd_dsc_basic_capabilities {
++    struct {
++        struct dpcd_dsc_support dsc_support;
++        struct dpcd_dsc_algorithm_revision dsc_algorithm_revision;
++        struct dpcd_dsc_rc_buffer_block_size dsc_rc_buffer_block_size;
++        uint8_t dsc_rc_buffer_size;
++        struct dpcd_dsc_slice_capability1 dsc_slice_capabilities_1;
++        struct dpcd_dsc_line_buffer_bit_depth dsc_line_buffer_bit_depth;
++        struct dpcd_dsc_block_prediction_support dsc_block_prediction_support;
++        struct dpcd_maximum_bits_per_pixel_supported_by_the_decompressor maximum_bits_per_pixel_supported_by_the_decompressor;
++        struct dpcd_dsc_decoder_color_format_capabilities dsc_decoder_color_format_capabilities;
++        struct dpcd_dsc_decoder_color_depth_capabilities dsc_decoder_color_depth_capabilities;
++        struct dpcd_peak_dsc_throughput_dsc_sink peak_dsc_throughput_dsc_sink;
++        uint8_t dsc_maximum_slice_width;
++        struct dpcd_dsc_slice_capabilities_2 dsc_slice_capabilities_2;
++        uint8_t reserved;
++        struct dpcd_bits_per_pixel_increment bits_per_pixel_increment;
++    } fields;
++    uint8_t raw[16];
++};
+ 
+-		for (auto &p : antimetal) {
+-			patcher.applyLookupPatch(&p);
+-			patcher.clearError();
+-		}
+-	}
++struct dpcd_dsc_capabilities {
++    union dpcd_dsc_basic_capabilities dsc_basic_caps;
++    union dpcd_dsc_branch_decoder_capabilities dsc_branch_decoder_caps;
++};
+ 
+-	// Patch AppleGVA support for non-supported models
+-	if (forceCodecInfo && getHWInfoProcNames[hwIndex] != nullptr) {
+-		KernelPatcher::RouteRequest request(getHWInfoProcNames[hwIndex], wrapGetHWInfo[hwIndex], orgGetHWInfo[hwIndex]);
+-		patcher.routeMultiple(hardware.loadIndex, &request, 1, address, size);
+-	}
+-}
++#define MAX_REPEATER_CNT 8
+ 
+-void RAD::mergeProperty(OSDictionary *props, const char *name, OSObject *value) {
+-	// The only type we could make from device properties is data.
+-	// To be able to override other types we do a conversion here.
+-	auto data = OSDynamicCast(OSData, value);
+-	if (data) {
+-		// It is hard to make a boolean even from ACPI, so we make a hack here:
+-		// 1-byte OSData with 0x01 / 0x00 values becomes boolean.
+-		auto val = static_cast<const uint8_t *>(data->getBytesNoCopy());
+-		auto len = data->getLength();
+-		if (val && len == sizeof(uint8_t)) {
+-			if (val[0] == 1) {
+-				props->setObject(name, kOSBooleanTrue);
+-				DBGLOG("rad", "prop %s was merged as kOSBooleanTrue", name);
+-				return;
+-			} else if (val[0] == 0) {
+-				props->setObject(name, kOSBooleanFalse);
+-				DBGLOG("rad", "prop %s was merged as kOSBooleanFalse", name);
+-				return;
+-			}
+-		}
++struct dc_lttpr_caps {
++    union dpcd_rev revision;
++    uint8_t mode;
++    uint8_t max_lane_count;
++    uint8_t max_link_rate;
++    uint8_t phy_repeater_cnt;
++    uint8_t max_ext_timeout;
++    uint8_t aux_rd_interval[MAX_REPEATER_CNT - 1];
++};
+ 
+-		// Consult the original value to make a decision
+-		auto orgValue = props->getObject(name);
+-		if (val && orgValue) {
+-			DBGLOG("rad", "prop %s has original value", name);
+-			if (len == sizeof(uint32_t) && OSDynamicCast(OSNumber, orgValue)) {
+-				auto num = *reinterpret_cast<const uint32_t *>(val);
+-				auto osnum = OSNumber::withNumber(num, 32);
+-				if (osnum) {
+-					DBGLOG("rad", "prop %s was merged as number %u", name, num);
+-					props->setObject(name, osnum);
+-					osnum->release();
+-				}
+-				return;
+-			} else if (len > 0 && val[len-1] == '\0' && OSDynamicCast(OSString, orgValue)) {
+-				auto str = reinterpret_cast<const char *>(val);
+-				auto osstr = OSString::withCString(str);
+-				if (osstr) {
+-					DBGLOG("rad", "prop %s was merged as string %s", name, str);
+-					props->setObject(name, osstr);
+-					osstr->release();
+-				}
+-				return;
+-			}
+-		} else {
+-			DBGLOG("rad", "prop %s has no original value", name);
+-		}
+-	}
++struct psr_caps {
++    unsigned char psr_version;
++    unsigned int psr_rfb_setup_time;
++    bool psr_exit_link_training_required;
++};
+ 
+-	// Default merge as is
+-	props->setObject(name, value);
+-	DBGLOG("rad", "prop %s was merged", name);
+-}
++struct dpcd_caps {
++    union dpcd_rev dpcd_rev;
++    union max_lane_count max_ln_count;
++    union max_down_spread max_down_spread;
++    union dprx_feature dprx_feature;
++
++    /* valid only for eDP v1.4 or higher*/
++    uint8_t edp_supported_link_rates_count;
++    uint32_t edp_supported_link_rates[8];
++
++    /* dongle type (DP converter, CV smart dongle) */
++    uint32_t dongle_type;
++    /* branch device or sink device */
++    bool is_branch_dev;
++    /* Dongle's downstream count. */
++    union sink_count sink_count;
++    /* If dongle_type == DISPLAY_DONGLE_DP_HDMI_CONVERTER,
++    indicates 'Frame Sequential-to-lllFrame Pack' conversion capability.*/
++    struct dc_dongle_caps dongle_caps;
++
++    uint32_t sink_dev_id;
++    int8_t sink_dev_id_str[6];
++    int8_t sink_hw_revision;
++    int8_t sink_fw_revision[2];
++
++    uint32_t branch_dev_id;
++    int8_t branch_dev_name[6];
++    int8_t branch_hw_revision;
++    int8_t branch_fw_revision[2];
++
++    bool allow_invalid_MSA_timing_param;
++    bool panel_mode_edp;
++    bool dpcd_display_control_capable;
++    bool ext_receiver_cap_field_present;
++    bool dynamic_backlight_capable_edp;
++    union dpcd_fec_capability fec_cap;
++    struct dpcd_dsc_capabilities dsc_caps;
++    struct dc_lttpr_caps lttpr_caps;
++    struct psr_caps psr_caps;
+ 
+-void RAD::mergeProperties(OSDictionary *props, const char *prefix, IOService *provider) {
+-	// Should be ok, but in case there are issues switch to dictionaryWithProperties();
+-	auto dict = provider->getPropertyTable();
+-	if (dict) {
+-		auto iterator = OSCollectionIterator::withCollection(dict);
+-		if (iterator) {
+-			OSSymbol *propname;
+-			size_t prefixlen = strlen(prefix);
+-			while ((propname = OSDynamicCast(OSSymbol, iterator->getNextObject())) != nullptr) {
+-				auto name = propname->getCStringNoCopy();
+-				if (name && propname->getLength() > prefixlen && !strncmp(name, prefix, prefixlen)) {
+-					auto prop = dict->getObject(propname);
+-					if (prop)
+-						mergeProperty(props, name + prefixlen, prop);
+-					else
+-						DBGLOG("rad", "prop %s was not merged due to no value", name);
+-				} else {
+-					//DBGLOG("rad", "prop %s does not match %s prefix", safeString(name), prefix);
+-				}
+-			}
++};
+ 
+-			iterator->release();
+-		} else {
+-			SYSLOG("rad", "prop merge failed to iterate over properties");
+-		}
+-	} else {
+-		SYSLOG("rad", "prop merge failed to get properties");
+-	}
++union dpcd_sink_ext_caps {
++    struct {
++        /* 0 - Sink supports backlight adjust via PWM during SDR/HDR mode
++         * 1 - Sink supports backlight adjust via AUX during SDR/HDR mode.
++         */
++        uint8_t sdr_aux_backlight_control : 1;
++        uint8_t hdr_aux_backlight_control : 1;
++        uint8_t reserved_1 : 2;
++        uint8_t oled : 1;
++        uint8_t reserved : 3;
++    } bits;
++    uint8_t raw;
++};
+ 
+-	if (!strcmp(prefix, "CAIL,")) {
+-		for (size_t i = 0; i < arrsize(powerGatingFlags); i++) {
+-			if (powerGatingFlags[i] && props->getObject(powerGatingFlags[i])) {
+-				DBGLOG("rad", "cail prop merge found %s, replacing", powerGatingFlags[i]);
+-				auto num = OSNumber::withNumber(1, 32);
+-				if (num) {
+-					props->setObject(powerGatingFlags[i], num);
+-					num->release();
+-				}
+-			}
+-		}
+-	}
+-}
++struct dc;
++
++typedef struct {
++    void *remote_sinks[MAX_SINKS_PER_LINK];
++    unsigned int sink_count;
++    void *local_sink;
++    unsigned int link_index;
++    uint32_t type;
++    uint32_t connector_signal;
++    uint32_t irq_source_hpd;
++    uint32_t irq_source_hpd_rx;/* aka DP Short Pulse  */
++    bool is_hpd_filter_disabled;
++    bool dp_ss_off;
++    bool link_state_valid;
++    bool aux_access_disabled;
++    bool sync_lt_in_progress;
++    uint32_t lttpr_mode;
++    bool is_internal_display;
++
++    /* TODO: Rename. Flag an endpoint as having a programmable mapping to a
++     * DIG encoder. */
++    bool is_dig_mapping_flexible;
++    bool hpd_status; /* HPD status of link without physical HPD pin. */
++
++    bool edp_sink_present;
++
++    /* caps is the same as reported_link_cap. link_traing use
++     * reported_link_cap. Will clean up.  TODO
++     */
++    struct dc_link_settings reported_link_cap;
++    struct dc_link_settings verified_link_cap;
++    struct dc_link_settings cur_link_settings;
++    struct dc_lane_settings cur_lane_setting;
++    struct dc_link_settings preferred_link_setting;
++    struct dc_link_training_overrides preferred_training_settings;
++    struct dp_audio_test_data audio_test_data;
++
++    uint8_t ddc_hw_inst;
++
++    uint8_t hpd_src;
++
++    uint8_t link_enc_hw_inst;
++    /* DIG link encoder ID. Used as index in link encoder resource pool.
++     * For links with fixed mapping to DIG, this is not changed after dc_link
++     * object creation.
++     */
++    uint32_t eng_id;
++
++    bool test_pattern_enabled;
++    union compliance_test_state compliance_test_state;
++
++    void *priv;
++
++    void *ddc;
++
++    bool aux_mode;
++
++    /* Private to DC core */
++
++    struct dc *dc;
++
++    void *ctx;
++
++    void *panel_cntl;
++    void *link_enc;
++    struct graphics_object_id link_id;
++    /* Endpoint type distinguishes display endpoints which do not have entries
++     * in the BIOS connector table from those that do. Helps when tracking link
++     * encoder to display endpoint assignments.
++     */
++    uint32_t ep_type;
++    union ddi_channel_mapping ddi_channel_mapping;
++    struct connector_device_tag_info device_tag;
++    struct dpcd_caps dpcd_caps;
++    uint32_t dongle_max_pix_clk;
++    unsigned short chip_caps;
++    unsigned int dpcd_sink_count;
++//#if defined(CONFIG_DRM_AMD_DC_HDCP)
++//    struct hdcp_caps hdcp_caps;
++//#endif
++    uint32_t edp_revision;
++    union dpcd_sink_ext_caps dpcd_sink_ext_caps;
++
++    /*
++    struct psr_settings psr_settings;
++
++    // MST record stream using this link
++    struct link_flags {
++        bool dp_keep_receiver_powered;
++        bool dp_skip_DID2;
++        bool dp_skip_reset_segment;
++    } wa_flags;
++    struct link_mst_stream_allocation_table mst_stream_alloc_table;
++
++    struct dc_link_status link_status;
++
++    struct link_trace link_trace;
++    struct gpio *hpd_gpio;
++    enum dc_link_fec_state fec_state;
++     */
++} my_dc_link_t;
++
++typedef struct {
++    void* plane_state;
++    struct dc_stream_state *stream;
++} my_pipe_ctx_t;
++
++struct panel_cntl_backlight_registers {
++    unsigned int BL_PWM_CNTL;
++    unsigned int BL_PWM_CNTL2;
++    unsigned int BL_PWM_PERIOD_CNTL;
++    unsigned int LVTMA_PWRSEQ_REF_DIV_BL_PWM_REF_DIV;
++};
+ 
+-void RAD::applyPropertyFixes(IOService *service, uint32_t connectorNum) {
+-	if (service && getKernelVersion() >= KernelVersion::HighSierra) {
+-		// Starting with 10.13.2 this is important to fix sleep issues due to enforced 6 screens
+-		if (!service->getProperty("CFG,CFG_FB_LIMIT")) {
+-			DBGLOG("rad", "setting fb limit to %u", connectorNum);
+-			service->setProperty("CFG_FB_LIMIT", connectorNum, 32);
+-		}
++struct hw_asic_id {
++    uint32_t chip_id;
++    uint32_t chip_family;
++    uint32_t pci_revision_id;
++    uint32_t hw_internal_rev;
++    uint32_t vram_type;
++    uint32_t vram_width;
++    uint32_t feature_flags;
++    uint32_t fake_paths_num;
++    void *atombios_base_address;
++};
+ 
+-		// In the past we set CFG_USE_AGDC to false, which caused visual glitches and broken multimonitor support.
+-		// A better workaround is to disable AGDP just like we do globally.
+-	}
+-}
++struct dc_vram_info {
++    unsigned int num_chans;
++    unsigned int dram_channel_width_bytes;
++};
+ 
+-void RAD::updateConnectorsInfo(void *atomutils, t_getAtomObjectTableForType gettable, IOService *ctrl, RADConnectors::Connector *connectors, uint8_t *sz) {
+-	if (atomutils) {
+-		DBGLOG("rad", "getConnectorsInfo found %u connectors", *sz);
+-		RADConnectors::print(connectors, *sz);
+-	}
++struct dc_golden_table {
++    uint16_t dc_golden_table_ver;
++    uint32_t aux_dphy_rx_control0_val;
++    uint32_t aux_dphy_tx_control_val;
++    uint32_t aux_dphy_rx_control1_val;
++    uint32_t dc_gpio_aux_ctrl_0_val;
++    uint32_t dc_gpio_aux_ctrl_1_val;
++    uint32_t dc_gpio_aux_ctrl_2_val;
++    uint32_t dc_gpio_aux_ctrl_3_val;
++    uint32_t dc_gpio_aux_ctrl_4_val;
++    uint32_t dc_gpio_aux_ctrl_5_val;
++};
+ 
+-	// Check if the user wants to override automatically detected connectors
+-	auto cons = ctrl->getProperty("connectors");
+-	if (cons) {
+-		auto consData = OSDynamicCast(OSData, cons);
+-		if (consData) {
+-			auto consPtr = consData->getBytesNoCopy();
+-			auto consSize = consData->getLength();
+-
+-			uint32_t consCount;
+-			if (WIOKit::getOSDataValue(ctrl, "connector-count", consCount)) {
+-				*sz = consCount;
+-				DBGLOG("rad", "getConnectorsInfo got size override to %u", *sz);
+-			}
++struct dc_firmware_info {
++    struct pll_info {
++        uint32_t crystal_frequency; /* in KHz */
++        uint32_t min_input_pxl_clk_pll_frequency; /* in KHz */
++        uint32_t max_input_pxl_clk_pll_frequency; /* in KHz */
++        uint32_t min_output_pxl_clk_pll_frequency; /* in KHz */
++        uint32_t max_output_pxl_clk_pll_frequency; /* in KHz */
++    } pll_info;
++
++    struct firmware_feature {
++        uint32_t memory_clk_ss_percentage;
++        uint32_t engine_clk_ss_percentage;
++    } feature;
++
++    uint32_t default_display_engine_pll_frequency; /* in KHz */
++    uint32_t external_clock_source_frequency_for_dp; /* in KHz */
++    uint32_t smu_gpu_pll_output_freq; /* in KHz */
++    uint8_t min_allowed_bl_level;
++    uint8_t remote_display_config;
++    uint32_t default_memory_clk; /* in KHz */
++    uint32_t default_engine_clk; /* in KHz */
++    uint32_t dp_phy_ref_clk; /* in KHz - DCE12 only */
++    uint32_t i2c_engine_ref_clk; /* in KHz - DCE12 only */
++    bool oem_i2c_present;
++    uint8_t oem_i2c_obj_id;
+ 
+-			if (consPtr && consSize > 0 && *sz > 0 && RADConnectors::valid(consSize, *sz)) {
+-				RADConnectors::copy(connectors, *sz, static_cast<const RADConnectors::Connector *>(consPtr), consSize);
+-				DBGLOG("rad", "getConnectorsInfo installed %u connectors", *sz);
+-				applyPropertyFixes(ctrl, *sz);
+-			} else {
+-				DBGLOG("rad", "getConnectorsInfo conoverrides have invalid size %u for %u num", consSize, *sz);
+-			}
+-		} else {
+-			DBGLOG("rad", "getConnectorsInfo conoverrides have invalid type");
+-		}
+-	} else {
+-		if (atomutils) {
+-			DBGLOG("rad", "getConnectorsInfo attempting to autofix connectors");
+-			uint8_t sHeader = 0, displayPathNum = 0, connectorObjectNum = 0;
+-			auto baseAddr = static_cast<uint8_t *>(gettable(atomutils, AtomObjectTableType::Common, &sHeader)) - sizeof(uint32_t);
+-			auto displayPaths = static_cast<AtomDisplayObjectPath *>(gettable(atomutils, AtomObjectTableType::DisplayPath, &displayPathNum));
+-			auto connectorObjects = static_cast<AtomConnectorObject *>(gettable(atomutils, AtomObjectTableType::ConnectorObject, &connectorObjectNum));
+-			if (displayPathNum == connectorObjectNum)
+-				autocorrectConnectors(baseAddr, displayPaths, displayPathNum, connectorObjects, connectorObjectNum, connectors, *sz);
+-			else
+-				DBGLOG("rad", "getConnectorsInfo found different displaypaths %u and connectors %u", displayPathNum, connectorObjectNum);
+-		}
++};
+ 
+-		applyPropertyFixes(ctrl, *sz);
+-
+-		// Prioritise connectors, since it may cause black screen on e.g. R9 370
+-		const uint8_t *senseList = nullptr;
+-		uint8_t senseNum = 0;
+-		auto priData = OSDynamicCast(OSData, ctrl->getProperty("connector-priority"));
+-		if (priData) {
+-			senseList = static_cast<const uint8_t *>(priData->getBytesNoCopy());
+-			senseNum = static_cast<uint8_t>(priData->getLength());
+-			DBGLOG("rad", "getConnectorInfo found %u senses in connector-priority", senseNum);
+-			reprioritiseConnectors(senseList, senseNum, connectors, *sz);
+-		} else {
+-			DBGLOG("rad", "getConnectorInfo leaving unchaged priority");
+-		}
+-	}
++#define NUMBER_OF_UCHAR_FOR_GUID 16
++#define MAX_NUMBER_OF_EXT_DISPLAY_PATH 7
++#define NUMBER_OF_CSR_M3_ARB 10
++#define NUMBER_OF_DISP_CLK_VOLTAGE 4
++#define NUMBER_OF_AVAILABLE_SCLK 5
+ 
+-	DBGLOG("rad", "getConnectorsInfo resulting %u connectors follow", *sz);
+-	RADConnectors::print(connectors, *sz);
+-}
++struct i2c_reg_info {
++    unsigned char       i2c_reg_index;
++    unsigned char       i2c_reg_val;
++};
+ 
+-void RAD::autocorrectConnectors(uint8_t *baseAddr, AtomDisplayObjectPath *displayPaths, uint8_t displayPathNum, AtomConnectorObject *connectorObjects,
+-								uint8_t connectorObjectNum, RADConnectors::Connector *connectors, uint8_t sz) {
+-	for (uint8_t i = 0; i < displayPathNum; i++) {
+-		if (!isEncoder(displayPaths[i].usGraphicObjIds)) {
+-			DBGLOG("rad", "autocorrectConnectors not encoder %X at %u", displayPaths[i].usGraphicObjIds, i);
+-			continue;
+-		}
++struct edp_info {
++    uint16_t edp_backlight_pwm_hz;
++    uint16_t edp_ss_percentage;
++    uint16_t edp_ss_rate_10hz;
++    uint8_t  edp_pwr_on_off_delay;
++    uint8_t  edp_pwr_on_vary_bl_to_blon;
++    uint8_t  edp_pwr_down_bloff_to_vary_bloff;
++    uint8_t  edp_panel_bpc;
++    uint8_t  edp_bootup_bl_level;
++};
+ 
+-		uint8_t txmit = 0, enc = 0;
+-		if (!getTxEnc(displayPaths[i].usGraphicObjIds, txmit, enc))
+-			continue;
++struct integrated_info {
++    struct clock_voltage_caps {
++        /* The Voltage Index indicated by FUSE, same voltage index
++        shared with SCLK DPM fuse table */
++        uint32_t voltage_index;
++        /* Maximum clock supported with specified voltage index */
++        uint32_t max_supported_clk; /* in KHz */
++    } disp_clk_voltage[NUMBER_OF_DISP_CLK_VOLTAGE];
++
++    struct display_connection_info {
++        struct external_display_path {
++            /* A bit vector to show what devices are supported */
++            uint32_t device_tag;
++            /* 16bit device ACPI id. */
++            uint32_t device_acpi_enum;
++            /* A physical connector for displays to plug in,
++            using object connector definitions */
++            struct graphics_object_id device_connector_id;
++            /* An index into external AUX/DDC channel LUT */
++            uint8_t ext_aux_ddc_lut_index;
++            /* An index into external HPD pin LUT */
++            uint8_t ext_hpd_pin_lut_index;
++            /* external encoder object id */
++            struct graphics_object_id ext_encoder_obj_id;
++            /* XBAR mapping of the PHY channels */
++            union ddi_channel_mapping channel_mapping;
++
++            unsigned short caps;
++        } path[MAX_NUMBER_OF_EXT_DISPLAY_PATH];
++
++        uint8_t gu_id[NUMBER_OF_UCHAR_FOR_GUID];
++        uint8_t checksum;
++    } ext_disp_conn_info; /* exiting long long time */
++
++    struct available_s_clk_list {
++        /* Maximum clock supported with specified voltage index */
++        uint32_t supported_s_clk; /* in KHz */
++        /* The Voltage Index indicated by FUSE for specified SCLK */
++        uint32_t voltage_index;
++        /* The Voltage ID indicated by FUSE for specified SCLK */
++        uint32_t voltage_id;
++    } avail_s_clk[NUMBER_OF_AVAILABLE_SCLK];
++
++    uint8_t memory_type;
++    uint8_t ma_channel_number;
++    uint32_t boot_up_engine_clock; /* in KHz */
++    uint32_t dentist_vco_freq; /* in KHz */
++    uint32_t boot_up_uma_clock; /* in KHz */
++    uint32_t boot_up_req_display_vector;
++    uint32_t other_display_misc;
++    uint32_t gpu_cap_info;
++    uint32_t sb_mmio_base_addr;
++    uint32_t system_config;
++    uint32_t cpu_cap_info;
++    uint32_t max_nb_voltage;
++    uint32_t min_nb_voltage;
++    uint32_t boot_up_nb_voltage;
++    uint32_t ext_disp_conn_info_offset;
++    uint32_t csr_m3_arb_cntl_default[NUMBER_OF_CSR_M3_ARB];
++    uint32_t csr_m3_arb_cntl_uvd[NUMBER_OF_CSR_M3_ARB];
++    uint32_t csr_m3_arb_cntl_fs3d[NUMBER_OF_CSR_M3_ARB];
++    uint32_t gmc_restore_reset_time;
++    uint32_t minimum_n_clk;
++    uint32_t idle_n_clk;
++    uint32_t ddr_dll_power_up_time;
++    uint32_t ddr_pll_power_up_time;
++    /* start for V6 */
++    uint32_t pcie_clk_ss_type;
++    uint32_t lvds_ss_percentage;
++    uint32_t lvds_sspread_rate_in_10hz;
++    uint32_t hdmi_ss_percentage;
++    uint32_t hdmi_sspread_rate_in_10hz;
++    uint32_t dvi_ss_percentage;
++    uint32_t dvi_sspread_rate_in_10_hz;
++    uint32_t sclk_dpm_boost_margin;
++    uint32_t sclk_dpm_throttle_margin;
++    uint32_t sclk_dpm_tdp_limit_pg;
++    uint32_t sclk_dpm_tdp_limit_boost;
++    uint32_t boost_engine_clock;
++    uint32_t boost_vid_2bit;
++    uint32_t enable_boost;
++    uint32_t gnb_tdp_limit;
++    /* Start from V7 */
++    uint32_t max_lvds_pclk_freq_in_single_link;
++    uint32_t lvds_misc;
++    uint32_t lvds_pwr_on_seq_dig_on_to_de_in_4ms;
++    uint32_t lvds_pwr_on_seq_de_to_vary_bl_in_4ms;
++    uint32_t lvds_pwr_off_seq_vary_bl_to_de_in4ms;
++    uint32_t lvds_pwr_off_seq_de_to_dig_on_in4ms;
++    uint32_t lvds_off_to_on_delay_in_4ms;
++    uint32_t lvds_pwr_on_seq_vary_bl_to_blon_in_4ms;
++    uint32_t lvds_pwr_off_seq_blon_to_vary_bl_in_4ms;
++    uint32_t lvds_reserved1;
++    uint32_t lvds_bit_depth_control_val;
++    //Start from V9
++    unsigned char dp0_ext_hdmi_slv_addr;
++    unsigned char dp0_ext_hdmi_reg_num;
++    struct i2c_reg_info dp0_ext_hdmi_reg_settings[9];
++    unsigned char dp0_ext_hdmi_6g_reg_num;
++    struct i2c_reg_info dp0_ext_hdmi_6g_reg_settings[3];
++    unsigned char dp1_ext_hdmi_slv_addr;
++    unsigned char dp1_ext_hdmi_reg_num;
++    struct i2c_reg_info dp1_ext_hdmi_reg_settings[9];
++    unsigned char dp1_ext_hdmi_6g_reg_num;
++    struct i2c_reg_info dp1_ext_hdmi_6g_reg_settings[3];
++    unsigned char dp2_ext_hdmi_slv_addr;
++    unsigned char dp2_ext_hdmi_reg_num;
++    struct i2c_reg_info dp2_ext_hdmi_reg_settings[9];
++    unsigned char dp2_ext_hdmi_6g_reg_num;
++    struct i2c_reg_info dp2_ext_hdmi_6g_reg_settings[3];
++    unsigned char dp3_ext_hdmi_slv_addr;
++    unsigned char dp3_ext_hdmi_reg_num;
++    struct i2c_reg_info dp3_ext_hdmi_reg_settings[9];
++    unsigned char dp3_ext_hdmi_6g_reg_num;
++    struct i2c_reg_info dp3_ext_hdmi_6g_reg_settings[3];
++    /* V11 */
++    uint32_t dp_ss_control;
++    /* V2.1 */
++    struct edp_info edp1_info;
++    struct edp_info edp2_info;
++};
+ 
+-		uint8_t sense = getSenseID(baseAddr + connectorObjects[i].usRecordOffset);
+-		if (!sense) {
+-			DBGLOG("rad", "autocorrectConnectors failed to detect sense for %u connector", i);
+-			continue;
+-		}
++struct dc_bios {
++    void *funcs;
+ 
+-		DBGLOG("rad", "autocorrectConnectors found txmit %02X enc %02X sense %02X for %u connector", txmit, enc, sense, i);
++    uint8_t *bios;
++    uint32_t bios_size;
+ 
+-		autocorrectConnector(getConnectorID(displayPaths[i].usConnObjectId), sense, txmit, enc, connectors, sz);
+-	}
+-}
++    uint8_t *bios_local_image;
+ 
+-void RAD::autocorrectConnector(uint8_t connector, uint8_t sense, uint8_t txmit, uint8_t enc, RADConnectors::Connector *connectors, uint8_t sz) {
+-	// This function attempts to fix the following issues:
+-	//
+-	// 1. Incompatible DVI transmitter on 290X, 370 and probably some other models
+-	// In this case a correct transmitter is detected by AtiAtomBiosDce60::getPropertiesForEncoderObject, however, later
+-	// in AtiAtomBiosDce60::getPropertiesForConnectorObject for DVI DL and TITFP513 this value is conjuncted with 0xCF,
+-	// which makes it wrong: 0x10 -> 0, 0x11 -> 1. As a result one gets black screen when connecting multiple displays.
+-	// getPropertiesForEncoderObject takes usGraphicObjIds and getPropertiesForConnectorObject takes usConnObjectId
+-
+-	if (callbackRAD->dviSingleLink) {
+-		if (connector != CONNECTOR_OBJECT_ID_DUAL_LINK_DVI_I &&
+-			connector != CONNECTOR_OBJECT_ID_DUAL_LINK_DVI_D &&
+-			connector != CONNECTOR_OBJECT_ID_LVDS) {
+-			DBGLOG("rad", "autocorrectConnector found unsupported connector type %02X", connector);
+-			return;
+-		}
++    void *ctx;
++    void *regs;
++    struct integrated_info *integrated_info;
++    struct dc_firmware_info fw_info;
++    bool fw_info_valid;
++    struct dc_vram_info vram_info;
++    struct dc_golden_table golden_table;
++};
+ 
+-		auto fixTransmit = [](auto &con, uint8_t idx, uint8_t sense, uint8_t txmit) {
+-			if (con.sense == sense) {
+-				if (con.transmitter != txmit && (con.transmitter & 0xCF) == con.transmitter) {
+-					DBGLOG("rad", "autocorrectConnector replacing txmit %02X with %02X for %u connector sense %02X",
+-						   con.transmitter, txmit, idx, sense);
+-					con.transmitter = txmit;
+-				}
+-				return true;
+-			}
+-			return false;
+-		};
++struct dmcu_version {
++    unsigned int interface_version;
++    unsigned int abm_version;
++    unsigned int psr_version;
++    unsigned int build_version;
++};
+ 
+-		bool isModern = RADConnectors::modern();
+-		for (uint8_t j = 0; j < sz; j++) {
+-			if (isModern) {
+-				auto &con = (&connectors->modern)[j];
+-				if (fixTransmit(con, j, sense, txmit))
+-					break;
+-			} else {
+-				auto &con = (&connectors->legacy)[j];
+-				if (fixTransmit(con, j, sense, txmit))
+-					break;
+-			}
+-		}
+-	} else {
+-		DBGLOG("rad", "autocorrectConnector use -raddvi to enable dvi autocorrection");
+-	}
++struct dc_versions {
++    const char *dc_ver;
++    struct dmcu_version dmcu_version;
++};
++
++#define MAX_PLANES 6
++
++struct dc_plane_cap {
++    uint32_t type;
++    uint32_t blends_with_above : 1;
++    uint32_t blends_with_below : 1;
++    uint32_t per_pixel_alpha : 1;
++    struct {
++        uint32_t argb8888 : 1;
++        uint32_t nv12 : 1;
++        uint32_t fp16 : 1;
++        uint32_t p010 : 1;
++        uint32_t ayuv : 1;
++    } pixel_format_support;
++    // max upscaling factor x1000
++    // upscaling factors are always >= 1
++    // for example, 1080p -> 8K is 4.0, or 4000 raw value
++    struct {
++        uint32_t argb8888;
++        uint32_t nv12;
++        uint32_t fp16;
++    } max_upscale_factor;
++    // max downscale factor x1000
++    // downscale factors are always <= 1
++    // for example, 8K -> 1080p is 0.25, or 250 raw value
++    struct {
++        uint32_t argb8888;
++        uint32_t nv12;
++        uint32_t fp16;
++    } max_downscale_factor;
++    // minimal width/height
++    uint32_t min_width;
++    uint32_t min_height;
++};
++
++struct rom_curve_caps {
++    uint16_t srgb : 1;
++    uint16_t bt2020 : 1;
++    uint16_t gamma2_2 : 1;
++    uint16_t pq : 1;
++    uint16_t hlg : 1;
++};
++
++struct dpp_color_caps {
++    uint16_t dcn_arch : 1; // all DCE generations treated the same
++    // input lut is different than most LUTs, just plain 256-entry lookup
++    uint16_t input_lut_shared : 1; // shared with DGAM
++    uint16_t icsc : 1;
++    uint16_t dgam_ram : 1;
++    uint16_t post_csc : 1; // before gamut remap
++    uint16_t gamma_corr : 1;
++
++    // hdr_mult and gamut remap always available in DPP (in that order)
++    // 3d lut implies shaper LUT,
++    // it may be shared with MPC - check MPC:shared_3d_lut flag
++    uint16_t hw_3d_lut : 1;
++    uint16_t ogam_ram : 1; // blnd gam
++    uint16_t ocsc : 1;
++    uint16_t dgam_rom_for_yuv : 1;
++    struct rom_curve_caps dgam_rom_caps;
++    struct rom_curve_caps ogam_rom_caps;
++};
++
++struct mpc_color_caps {
++    uint16_t gamut_remap : 1;
++    uint16_t ogam_ram : 1;
++    uint16_t ocsc : 1;
++    uint16_t num_3dluts : 3; //3d lut always assumes a preceding shaper LUT
++    uint16_t shared_3d_lut:1; //can be in either DPP or MPC, but single instance
++
++    struct rom_curve_caps ogam_rom_caps;
++};
++
++struct dc_color_caps {
++    struct dpp_color_caps dpp;
++    struct mpc_color_caps mpc;
++};
++
++struct dc_caps {
++    uint32_t max_streams;
++    uint32_t max_links;
++    uint32_t max_audios;
++    uint32_t max_slave_planes;
++    uint32_t max_slave_yuv_planes;
++    uint32_t max_slave_rgb_planes;
++    uint32_t max_planes;
++    uint32_t max_downscale_ratio;
++    uint32_t i2c_speed_in_khz;
++    uint32_t i2c_speed_in_khz_hdcp;
++    uint32_t dmdata_alloc_size;
++    unsigned int max_cursor_size;
++    unsigned int max_video_width;
++    unsigned int min_horizontal_blanking_period;
++    int linear_pitch_alignment;
++    bool dcc_const_color;
++    bool dynamic_audio;
++    bool is_apu;
++    bool dual_link_dvi;
++    bool post_blend_color_processing;
++    bool force_dp_tps4_for_cp2520;
++    bool disable_dp_clk_share;
++    bool psp_setup_panel_mode;
++    bool extended_aux_timeout_support;
++    bool dmcub_support;
++    uint32_t num_of_internal_disp;
++    uint32_t max_dp_protocol_version;
++    unsigned int mall_size_per_mem_channel;
++    unsigned int mall_size_total;
++    unsigned int cursor_cache_size;
++    struct dc_plane_cap planes[MAX_PLANES];
++    struct dc_color_caps color;
++    bool vbios_lttpr_aware;
++    bool vbios_lttpr_enable;
++};
++
++struct dc_cap_funcs {
++    bool (*get_dcc_compression_cap)(const struct dc *dc,
++            const struct dc_dcc_surface_param *input,
++            struct dc_surface_dcc_cap *output);
++};
++
++struct dc_config {
++    bool gpu_vm_support;
++    bool disable_disp_pll_sharing;
++    bool fbc_support;
++    bool disable_fractional_pwm;
++    bool allow_seamless_boot_optimization;
++    bool power_down_display_on_boot;
++    bool edp_not_connected;
++    bool edp_no_power_sequencing;
++    bool force_enum_edp;
++    bool forced_clocks;
++    bool allow_lttpr_non_transparent_mode;
++    bool multi_mon_pp_mclk_switch;
++    bool disable_dmcu;
++    bool enable_4to1MPC;
++    bool allow_edp_hotplug_detection;
++//#if defined(CONFIG_DRM_AMD_DC_DCN)
++//    bool clamp_min_dcfclk;
++//#endif
++    uint64_t vblank_alignment_dto_params;
++    uint8_t  vblank_alignment_max_frame_time_diff;
++    bool is_asymmetric_memory;
++    bool is_single_rank_dimm;
++};
++
++struct dc_bw_validation_profile {
++    bool enable;
++
++    unsigned long long total_ticks;
++    unsigned long long voltage_level_ticks;
++    unsigned long long watermark_ticks;
++    unsigned long long rq_dlg_ticks;
++
++    unsigned long long total_count;
++    unsigned long long skip_fast_count;
++    unsigned long long skip_pass_count;
++    unsigned long long skip_fail_count;
++};
++
++union mem_low_power_enable_options {
++    struct {
++        bool vga: 1;
++        bool i2c: 1;
++        bool dmcu: 1;
++        bool dscl: 1;
++        bool cm: 1;
++        bool mpc: 1;
++        bool optc: 1;
++    } bits;
++    uint32_t u32All;
++};
++
++struct dc_debug_options {
++    uint32_t visual_confirm;
++    bool sanity_checks;
++    bool max_disp_clk;
++    bool surface_trace;
++    bool timing_trace;
++    bool clock_trace;
++    bool validation_trace;
++    bool bandwidth_calcs_trace;
++    int max_downscale_src_width;
++
++    /* stutter efficiency related */
++    bool disable_stutter;
++    bool use_max_lb;
++    uint32_t disable_dcc;
++    uint32_t pipe_split_policy;
++    bool force_single_disp_pipe_split;
++    bool voltage_align_fclk;
++    bool disable_min_fclk;
++
++    bool disable_dfs_bypass;
++    bool disable_dpp_power_gate;
++    bool disable_hubp_power_gate;
++    bool disable_dsc_power_gate;
++    int dsc_min_slice_height_override;
++    int dsc_bpp_increment_div;
++    bool native422_support;
++    bool disable_pplib_wm_range;
++    uint32_t pplib_wm_report_mode;
++    unsigned int min_disp_clk_khz;
++    unsigned int min_dpp_clk_khz;
++    int sr_exit_time_dpm0_ns;
++    int sr_enter_plus_exit_time_dpm0_ns;
++    int sr_exit_time_ns;
++    int sr_enter_plus_exit_time_ns;
++    int urgent_latency_ns;
++    uint32_t underflow_assert_delay_us;
++    int percent_of_ideal_drambw;
++    int dram_clock_change_latency_ns;
++    bool optimized_watermark;
++    int always_scale;
++    bool disable_pplib_clock_request;
++    bool disable_clock_gate;
++    bool disable_mem_low_power;
++//#if defined(CONFIG_DRM_AMD_DC_DCN)
++//    bool pstate_enabled;
++//#endif
++    bool disable_dmcu;
++    bool disable_psr;
++    bool force_abm_enable;
++    bool disable_stereo_support;
++    bool vsr_support;
++    bool performance_trace;
++    bool az_endpoint_mute_only;
++    bool always_use_regamma;
++    bool recovery_enabled;
++    bool avoid_vbios_exec_table;
++    bool scl_reset_length10;
++    bool hdmi20_disable;
++    bool skip_detection_link_training;
++    uint32_t edid_read_retry_times;
++    bool remove_disconnect_edp;
++    unsigned int force_odm_combine; //bit vector based on otg inst
++//#if defined(CONFIG_DRM_AMD_DC_DCN)
++//    unsigned int force_odm_combine_4to1; //bit vector based on otg inst
++//    bool disable_z9_mpc;
++//#endif
++    unsigned int force_fclk_khz;
++    bool enable_tri_buf;
++    bool dmub_offload_enabled;
++    bool dmcub_emulation;
++//#if defined(CONFIG_DRM_AMD_DC_DCN)
++//    bool disable_idle_power_optimizations;
++//    unsigned int mall_size_override;
++//    unsigned int mall_additional_timer_percent;
++//    bool mall_error_as_fatal;
++//#endif
++    bool dmub_command_table; /* for testing only */
++    struct dc_bw_validation_profile bw_val_profile;
++    bool disable_fec;
++    bool disable_48mhz_pwrdwn;
++    /* This forces a hard min on the DCFCLK requested to SMU/PP
++     * watermarks are not affected.
++     */
++    unsigned int force_min_dcfclk_mhz;
++//#if defined(CONFIG_DRM_AMD_DC_DCN)
++//    int dwb_fi_phase;
++//#endif
++    bool disable_timing_sync;
++    bool cm_in_bypass;
++    int force_clock_mode;/*every mode change.*/
++
++    bool disable_dram_clock_change_vactive_support;
++    bool validate_dml_output;
++    bool enable_dmcub_surface_flip;
++    bool usbc_combo_phy_reset_wa;
++    bool disable_dsc;
++    bool enable_dram_clock_change_one_display_vactive;
++    union mem_low_power_enable_options enable_mem_low_power;
++    bool force_vblank_alignment;
++
++    /* Enable dmub aux for legacy ddc */
++    bool enable_dmub_aux_for_legacy_ddc;
++    bool optimize_edp_link_rate; /* eDP ILR */
++    /* force enable edp FEC */
++    bool force_enable_edp_fec;
++    /* FEC/PSR1 sequence enable delay in 100us */
++    uint8_t fec_enable_delay_in100us;
++//#if defined(CONFIG_DRM_AMD_DC_DCN)
++//    bool disable_z10;
++//    bool enable_sw_cntl_psr;
++//#endif
++};
++
++struct dc_bounding_box_overrides {
++    int sr_exit_time_ns;
++    int sr_enter_plus_exit_time_ns;
++    int urgent_latency_ns;
++    int percent_of_ideal_drambw;
++    int dram_clock_change_latency_ns;
++    int dummy_clock_change_latency_ns;
++    /* This forces a hard min on the DCFCLK we use
++     * for DML.  Unlike the debug option for forcing
++     * DCFCLK, this override affects watermark calculations
++     */
++    int min_dcfclk_mhz;
++};
++
++struct dc_bug_wa {
++    bool no_connect_phy_config;
++    bool dedcn20_305_wa;
++    bool skip_clock_update;
++    bool lt_early_cr_pattern;
++};
++
++struct dc {
++    struct dc_versions versions;
++    struct dc_caps caps;
++    struct dc_cap_funcs cap_funcs;
++    struct dc_config config;
++    struct dc_debug_options debug;
++    struct dc_bounding_box_overrides bb_overrides;
++    struct dc_bug_wa work_arounds;
++    /*
++    struct dc_context *ctx;
++    struct dc_phy_addr_space_config vm_pa_config;
++
++    uint8_t link_count;
++    struct dc_link *links[MAX_PIPES * 2];
++
++    struct dc_state *current_state;
++    struct resource_pool *res_pool;
++
++    struct clk_mgr *clk_mgr;
++
++    // Display Engine Clock levels
++    struct dm_pp_clock_levels sclk_lvls;
++
++    // Inputs into BW and WM calculations.
++    struct bw_calcs_dceip *bw_dceip;
++    struct bw_calcs_vbios *bw_vbios;
++#ifdef CONFIG_DRM_AMD_DC_DCN
++    struct dcn_soc_bounding_box *dcn_soc;
++    struct dcn_ip_params *dcn_ip;
++    struct display_mode_lib dml;
++#endif
++
++    // HW functions
++    struct hw_sequencer_funcs hwss;
++    struct dce_hwseq *hwseq;
++
++    // Require to optimize clocks and bandwidth for added/removed planes
++    bool optimized_required;
++    bool wm_optimized_required;
++#if defined(CONFIG_DRM_AMD_DC_DCN)
++    bool idle_optimizations_allowed;
++#endif
++
++    // Require to maintain clocks and bandwidth for UEFI enabled HW
++
++    // FBC compressor
++    struct compressor *fbc_compressor;
++
++    struct dc_debug_data debug_data;
++    struct dpcd_vendor_signature vendor_signature;
++
++    const char *build_id;
++    struct vm_helper *vm_helper;
++     */
++};
++
++struct dc_context {
++    struct dc *dc;
++
++    void *driver_context; /* e.g. amdgpu_device */
++    void *perf_trace;
++    void *cgs_device;
++
++    uint32_t dce_environment;
++    struct hw_asic_id asic_id;
++
++    /* todo: below should probably move to dc.  to facilitate removal
++     * of AS we will store these here
++     */
++    uint32_t dce_version;
++    struct dc_bios *dc_bios;
++    bool created_bios;
++    void *gpio_service;
++    uint32_t dc_sink_id_count;
++    uint32_t dc_stream_id_count;
++    uint32_t dc_edp_id_count;
++    uint64_t fbc_gpu_addr;
++    void *dmub_srv;
++};
++
++struct panel_cntl_funcs {
++    void (*destroy)(struct panel_cntl **panel_cntl);
++    uint32_t (*hw_init)(struct panel_cntl *panel_cntl);
++    bool (*is_panel_backlight_on)(struct panel_cntl *panel_cntl);
++    bool (*is_panel_powered_on)(struct panel_cntl *panel_cntl);
++    void (*store_backlight_level)(struct panel_cntl *panel_cntl);
++    void (*driver_set_backlight)(struct panel_cntl *panel_cntl,
++            uint32_t backlight_pwm_u16_16);
++    uint32_t (*get_current_backlight)(struct panel_cntl *panel_cntl);
++};
++struct panel_cntl {
++    const struct panel_cntl_funcs *funcs;
++    struct dc_context *ctx;
++    uint32_t inst;
++    /* registers setting needs to be saved and restored at InitBacklight */
++    struct panel_cntl_backlight_registers stored_backlight_registers;
++};
++bool g_is_sleep = false;
++uint64_t g_last_sleep_time = 0;
++static my_dc_link_t* g_dc_link_ptr = NULL;
++static mach_vm_address_t orig_dce110_edp_backlight_control;
++
++static mach_vm_address_t orig_dce110_edp_power_control;
++static void wrap_dce110_edp_power_control(my_dc_link_t *dc_link, bool power_up) {
++    g_dc_link_ptr = dc_link;
++    if (orig_dce110_edp_power_control) {
++        FunctionCast(wrap_dce110_edp_power_control, orig_dce110_edp_power_control)(dc_link, power_up);
++    }
++    SYSLOG("igfx", "wrap_dce110_edp_power_control %d end - %p", power_up, g_dc_link_ptr);
+ }
+ 
+-void RAD::reprioritiseConnectors(const uint8_t *senseList, uint8_t senseNum, RADConnectors::Connector *connectors, uint8_t sz) {
+-	static constexpr uint32_t typeList[] {
+-		RADConnectors::ConnectorLVDS,
+-		RADConnectors::ConnectorDigitalDVI,
+-		RADConnectors::ConnectorHDMI,
+-		RADConnectors::ConnectorDP,
+-		RADConnectors::ConnectorVGA
+-	};
+-	static constexpr uint8_t typeNum {static_cast<uint8_t>(arrsize(typeList))};
+-
+-	bool isModern = RADConnectors::modern();
+-	uint16_t priCount = 1;
+-	// Automatically detected connectors have equal priority (0), which often results in black screen
+-	// This allows to change this firstly by user-defined list, then by type list.
+-	//TODO: priority is ignored for 5xxx and 6xxx GPUs, should we manually reorder items?
+-	for (uint8_t i = 0; i < senseNum + typeNum + 1; i++) {
+-		for (uint8_t j = 0; j < sz; j++) {
+-			auto reorder = [&](auto &con) {
+-				if (i == senseNum + typeNum) {
+-					if (con.priority == 0)
+-						con.priority = priCount++;
+-				} else if (i < senseNum) {
+-					if (con.sense == senseList[i]) {
+-						DBGLOG("rad", "reprioritiseConnectors setting priority of sense %02X to %u by sense", con.sense, priCount);
+-						con.priority = priCount++;
+-						return true;
+-					}
+-				} else {
+-					if (con.priority == 0 && con.type == typeList[i-senseNum]) {
+-						DBGLOG("rad", "reprioritiseConnectors setting priority of sense %02X to %u by type", con.sense, priCount);
+-						con.priority = priCount++;
+-					}
+-				}
+-				return false;
+-			};
+-
+-			if ((isModern && reorder((&connectors->modern)[j])) ||
+-				(!isModern && reorder((&connectors->legacy)[j])))
+-				break;
+-		}
+-	}
++static char wrap_dce110_edp_backlight_control(my_dc_link_t *that, uint8_t a2) {
++    //SYSLOG("igfx", "wrap_dce110_edp_backlight_control start %p:%lu,%lu,%lu,%lu,%lu", that, on_or_off, a3, a4, a5, a6);
++    g_dc_link_ptr = that;
++    //if (g_dc_link_ptr && g_dc_link_ptr->dc) {
++    //    SYSLOG("igfx", "dce110_edp_backlight_control disable_fractional_pwm: %u", g_dc_link_ptr->dc->config.disable_fractional_pwm);
++    //}
++    char ret = FunctionCast(wrap_dce110_edp_backlight_control, orig_dce110_edp_backlight_control)(that, a2);
++    SYSLOG("igfx", "wrap_dce110_edp_backlight_control end - %p, %d", g_dc_link_ptr, ret);
++    
++    if (g_is_sleep) {
++        g_is_sleep = false;
++        
++        if (g_dc_link_ptr) {
++            wrap_dce110_edp_backlight_control(g_dc_link_ptr, false);
++            wrap_dce110_edp_power_control(g_dc_link_ptr, false);
++            IOSleep(200);
++            wrap_dce110_edp_power_control(g_dc_link_ptr, true);
++            wrap_dce110_edp_backlight_control(g_dc_link_ptr, true);
++        }
++    }
++    
++    return ret;
+ }
+ 
+-void RAD::setGvaProperties(IOService *accelService) {
+-	auto codecStr = OSDynamicCast(OSString, accelService->getProperty("IOGVACodec"));
+-	if (codecStr == nullptr) {
+-		DBGLOG("rad", "updating X4000 accelerator IOGVACodec to VCE");
+-		accelService->setProperty("IOGVACodec", "VCE");
+-	} else {
+-		auto codec = codecStr->getCStringNoCopy();
+-		DBGLOG("rad", "X4000 accelerator IOGVACodec is already set to %s", safeString(codec));
+-		if (codec != nullptr && strncmp(codec, "AMD", strlen("AMD")) == 0) {
+-			bool needsDecode = accelService->getProperty("IOGVAHEVCDecode") == nullptr;
+-			bool needsEncode = accelService->getProperty("IOGVAHEVCEncode") == nullptr;
+-			if (needsDecode) {
+-				OSObject *VTMaxDecodeLevel = OSNumber::withNumber(153, 32);
+-				OSString *VTMaxDecodeLevelKey  = OSString::withCString("VTMaxDecodeLevel");
+-				OSDictionary *VTPerProfileDetailsInner = OSDictionary::withCapacity(1);
+-				OSDictionary *VTPerProfileDetails = OSDictionary::withCapacity(3);
+-				OSString *VTPerProfileDetailsKey1 = OSString::withCString("1");
+-				OSString *VTPerProfileDetailsKey2 = OSString::withCString("2");
+-				OSString *VTPerProfileDetailsKey3 = OSString::withCString("3");
+-
+-				OSArray *VTSupportedProfileArray = OSArray::withCapacity(3);
+-				OSNumber *VTSupportedProfileArray1 = OSNumber::withNumber(1, 32);
+-				OSNumber *VTSupportedProfileArray2 = OSNumber::withNumber(2, 32);
+-				OSNumber *VTSupportedProfileArray3 = OSNumber::withNumber(3, 32);
+-
+-				OSDictionary *IOGVAHEVCDecodeCapabilities = OSDictionary::withCapacity(2);
+-				OSString *VTPerProfileDetailsKey = OSString::withCString("VTPerProfileDetails");
+-				OSString *VTSupportedProfileArrayKey = OSString::withCString("VTSupportedProfileArray");
+-
+-				if (VTMaxDecodeLevel != nullptr && VTMaxDecodeLevelKey != nullptr && VTPerProfileDetailsInner != nullptr &&
+-					VTPerProfileDetails != nullptr && VTPerProfileDetailsKey1 != nullptr && VTPerProfileDetailsKey2 != nullptr &&
+-					VTPerProfileDetailsKey3 != nullptr && VTSupportedProfileArrayKey != nullptr && VTSupportedProfileArray1 != nullptr &&
+-					VTSupportedProfileArray2 != nullptr && VTSupportedProfileArray3 != nullptr && VTSupportedProfileArray != nullptr &&
+-					VTPerProfileDetailsKey != nullptr && IOGVAHEVCDecodeCapabilities != nullptr) {
+-					VTPerProfileDetailsInner->setObject(VTMaxDecodeLevelKey, VTMaxDecodeLevel);
+-					VTPerProfileDetails->setObject(VTPerProfileDetailsKey1, VTPerProfileDetailsInner);
+-					VTPerProfileDetails->setObject(VTPerProfileDetailsKey2, VTPerProfileDetailsInner);
+-					VTPerProfileDetails->setObject(VTPerProfileDetailsKey3, VTPerProfileDetailsInner);
+-
+-					VTSupportedProfileArray->setObject(VTSupportedProfileArray1);
+-					VTSupportedProfileArray->setObject(VTSupportedProfileArray2);
+-					VTSupportedProfileArray->setObject(VTSupportedProfileArray3);
+-
+-					IOGVAHEVCDecodeCapabilities->setObject(VTPerProfileDetailsKey, VTPerProfileDetails);
+-					IOGVAHEVCDecodeCapabilities->setObject(VTSupportedProfileArrayKey, VTSupportedProfileArray);
+-
+-					accelService->setProperty("IOGVAHEVCDecode", "1");
+-					accelService->setProperty("IOGVAHEVCDecodeCapabilities", IOGVAHEVCDecodeCapabilities);
+-
+-					DBGLOG("rad", "recovering IOGVAHEVCDecode");
+-				} else {
+-					SYSLOG("rad", "allocation failure in IOGVAHEVCDecode");
+-				}
+-
+-				OSSafeReleaseNULL(VTMaxDecodeLevel);
+-				OSSafeReleaseNULL(VTMaxDecodeLevelKey);
+-				OSSafeReleaseNULL(VTPerProfileDetailsInner);
+-				OSSafeReleaseNULL(VTPerProfileDetails);
+-				OSSafeReleaseNULL(VTPerProfileDetailsKey1);
+-				OSSafeReleaseNULL(VTPerProfileDetailsKey2);
+-				OSSafeReleaseNULL(VTPerProfileDetailsKey3);
+-				OSSafeReleaseNULL(VTSupportedProfileArrayKey);
+-				OSSafeReleaseNULL(VTSupportedProfileArray1);
+-				OSSafeReleaseNULL(VTSupportedProfileArray2);
+-				OSSafeReleaseNULL(VTSupportedProfileArray3);
+-				OSSafeReleaseNULL(VTSupportedProfileArray);
+-				OSSafeReleaseNULL(VTPerProfileDetailsKey);
+-				OSSafeReleaseNULL(IOGVAHEVCDecodeCapabilities);
+-			}
++IOReturn RAD::wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute(IOService *framebuffer, IOIndex connectIndex, IOSelect attribute, uintptr_t value) {
++    IOReturn ret = FunctionCast(wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute, callbackRAD->orgAMDRadeonX6000AmdRadeonFramebufferSetAttribute)(framebuffer, connectIndex, attribute, value);
++    if (attribute != (UInt32)'bklt') {
++        return ret;
++    }
++    
++    if (callbackRAD->maxPwmBacklightLvl == 0) {
++        DBGLOG("igfx", "wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute zero maxPwmBacklightLvl");
++        return 0;
++    }
++    
++    if (callbackRAD->panelCntlPtr == nullptr) {
++        DBGLOG("igfx", "wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute null panel cntl");
++        return 0;
++    }
++    
++    if (callbackRAD->orgDceDriverSetBacklight == nullptr) {
++        DBGLOG("igfx", "wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute null orgDcLinkSetBacklightLevel");
++        return 0;
++    }
++    
++    // set the backlight of AMD navi10 driver
++    callbackRAD->curPwmBacklightLvl = (uint32_t)value;
++    uint32_t btlper = callbackRAD->curPwmBacklightLvl*100.0 / callbackRAD->maxPwmBacklightLvl;
++    if (btlper < 0) {
++        btlper = 0;
++    } else if (btlper > 100) {
++        btlper = 100;
++    }
++    
++    int pwmval = (int)((btlper / 100.0) * 0xFF) << 8;
++    if (pwmval >= 0xFF00) {
++        // This is from the dmcu_set_backlight_level function of Linux source
++        // ...
++        // if (backlight_pwm_u16_16 & 0x10000)
++        //        backlight_8_bit = 0xFF;
++        // else
++        //        backlight_8_bit = (backlight_pwm_u16_16 >> 8) & 0xFF;
++        // ...
++        // The max brightness should have 0x10000 bit set
++        pwmval = 0x1FF00;
++    }
++    
++    /*if (g_dc_link_ptr) {
++        __int64 v10 = 0;
++        __int64 v9 = *(_QWORD *)(*(_QWORD *)((__int64)g_dc_link_ptr + 304) + 944LL);
++        while ( true ) {
++            __int64 stream = *(_QWORD *)(v9 + v10 + 496);
++            if ( stream ) {
++                if (*(_QWORD *)(stream + 8) == (__int64)g_dc_link_ptr) {
++                    __int64 pipe_ctx = (v9 + v10 + 488);
++                    //SYSLOG("igfx", "my_set_backlight_lvl %p:%p, %d, %d", g_dc_link_ptr, pipe_ctx, backlight_pwm_u16_16, ramp);
++                    _QWORD *a1 = (_QWORD *)pipe_ctx;
++                    __int64 v5 = *(_QWORD *)(a1[1] + 8LL);
++                    __int64 v6 = *(_QWORD *)(v5 + 320);
++                    struct panel_cntl *panel_cntl = (struct panel_cntl *)v6;
++                    SYSLOG("igfx", "panel_cntl: %p", panel_cntl);
++                    break;
++                } else {
++                    SYSLOG("igfx", "steam link %lu != %p", *(_QWORD *)(stream + 8), g_dc_link_ptr);
++                }
++            }
++            v10 += 1280LL;
++            if ( v10 >= 7680 )
++                break;
++        }
++    } else {
++        DBGLOG("igfx", "null g_dc_link_ptr");
++    }*/
++    
++    struct panel_cntl* ppc = (struct panel_cntl*)callbackRAD->panelCntlPtr;
++    DBGLOG("igfx", "fb 0x%p, idx: %d, set brightness: 0x%p -> 0x%x, st: %d", framebuffer, connectIndex, callbackRAD->panelCntlPtr, pwmval, ppc->funcs->is_panel_powered_on(ppc));
++    callbackRAD->orgDceDriverSetBacklight(callbackRAD->panelCntlPtr, pwmval);
++    return 0;
++}
+ 
+-			if (needsEncode) {
+-				OSObject *VTMaxEncodeLevel = OSNumber::withNumber(153, 32);
+-				OSString *VTMaxEncodeLevelKey  = OSString::withCString("VTMaxEncodeLevel");
+-
+-				OSDictionary *VTPerProfileDetailsInner = OSDictionary::withCapacity(1);
+-				OSDictionary *VTPerProfileDetails = OSDictionary::withCapacity(1);
+-				OSString *VTPerProfileDetailsKey1 = OSString::withCString("1");
+-
+-				OSArray *VTSupportedProfileArray = OSArray::withCapacity(1);
+-				OSNumber *VTSupportedProfileArray1 = OSNumber::withNumber(1, 32);
+-
+-				OSDictionary *IOGVAHEVCEncodeCapabilities = OSDictionary::withCapacity(4);
+-				OSString *VTPerProfileDetailsKey = OSString::withCString("VTPerProfileDetails");
+-				OSString *VTQualityRatingKey = OSString::withCString("VTQualityRating");
+-				OSNumber *VTQualityRating = OSNumber::withNumber(50, 32);
+-				OSString *VTRatingKey = OSString::withCString("VTRating");
+-				OSNumber *VTRating = OSNumber::withNumber(350, 32);
+-				OSString *VTSupportedProfileArrayKey = OSString::withCString("VTSupportedProfileArray");
+-
+-				if (VTMaxEncodeLevel != nullptr && VTMaxEncodeLevelKey != nullptr && VTPerProfileDetailsInner != nullptr &&
+-					VTPerProfileDetails != nullptr && VTPerProfileDetailsKey1 != nullptr && VTSupportedProfileArrayKey != nullptr &&
+-					VTSupportedProfileArray1 != nullptr && VTSupportedProfileArray != nullptr && VTPerProfileDetailsKey != nullptr &&
+-					VTQualityRatingKey != nullptr && VTQualityRating != nullptr && VTRatingKey != nullptr && VTRating != nullptr &&
+-					IOGVAHEVCEncodeCapabilities != nullptr) {
+-
+-					VTPerProfileDetailsInner->setObject(VTMaxEncodeLevelKey, VTMaxEncodeLevel);
+-					VTPerProfileDetails->setObject(VTPerProfileDetailsKey1, VTPerProfileDetailsInner);
+-					VTSupportedProfileArray->setObject(VTSupportedProfileArray1);
+-
+-					IOGVAHEVCEncodeCapabilities->setObject(VTPerProfileDetailsKey, VTPerProfileDetails);
+-					IOGVAHEVCEncodeCapabilities->setObject(VTQualityRatingKey, VTQualityRating);
+-					IOGVAHEVCEncodeCapabilities->setObject(VTRatingKey, VTRating);
+-					IOGVAHEVCEncodeCapabilities->setObject(VTSupportedProfileArrayKey, VTSupportedProfileArray);
+-
+-					accelService->setProperty("IOGVAHEVCEncode", "1");
+-					accelService->setProperty("IOGVAHEVCEncodeCapabilities", IOGVAHEVCEncodeCapabilities);
+-
+-					DBGLOG("rad", "recovering IOGVAHEVCEncode");
+-				} else {
+-					SYSLOG("rad", "allocation failure in IOGVAHEVCEncode");
+-				}
+-
+-				OSSafeReleaseNULL(VTMaxEncodeLevel);
+-				OSSafeReleaseNULL(VTMaxEncodeLevelKey);
+-				OSSafeReleaseNULL(VTPerProfileDetailsInner);
+-				OSSafeReleaseNULL(VTPerProfileDetails);
+-				OSSafeReleaseNULL(VTPerProfileDetailsKey1);
+-				OSSafeReleaseNULL(VTSupportedProfileArrayKey);
+-				OSSafeReleaseNULL(VTSupportedProfileArray1);
+-				OSSafeReleaseNULL(VTSupportedProfileArray);
+-				OSSafeReleaseNULL(VTPerProfileDetailsKey);
+-				OSSafeReleaseNULL(VTQualityRatingKey);
+-				OSSafeReleaseNULL(VTQualityRating);
+-				OSSafeReleaseNULL(VTRatingKey);
+-				OSSafeReleaseNULL(VTRating);
+-				OSSafeReleaseNULL(IOGVAHEVCEncodeCapabilities);
+-			}
+-		}
+-	}
++uint32_t RAD::wrapDcePanelCntlHwInit(void *panel_cntl) {
++    callbackRAD->panelCntlPtr = panel_cntl;
++    callbackRAD->updatePwmMaxBrightnessFromInternalDisplay(); // read max brightness value from IOReg
++    struct panel_cntl* ppc = (struct panel_cntl*)callbackRAD->panelCntlPtr;
++    DBGLOG("igfx", "wrapDcePanelCntlHwInit: %p, bl: %d, pw: %d, bl: %d", panel_cntl, ppc->funcs->is_panel_backlight_on(ppc), ppc->funcs->is_panel_powered_on(ppc), ppc->funcs->get_current_backlight(ppc));
++    uint32_t ret = FunctionCast(wrapDcePanelCntlHwInit, callbackRAD->orgDcePanelCntlHwInit)(panel_cntl);
++    //if (ppc->funcs->is_panel_backlight_on(ppc) == 0 && ppc->funcs->is_panel_powered_on(ppc) == 1 && g_dc_link_ptr) {
++        //wrap_dce110_edp_backlight_control(g_dc_link_ptr, 0);
++        //wrap_dce110_edp_power_control(g_dc_link_ptr, false);
++    //    g_is_sleep = true;
++    //}
++    DBGLOG("igfx", "wrapDcePanelCntlHwInit: %p - %u, st: %d", panel_cntl, ret, ppc->funcs->is_panel_powered_on(ppc));
++    return ret;
+ }
+ 
+-void RAD::updateAccelConfig(size_t hwIndex, IOService *accelService, const char **accelConfig) {
+-	if (accelService && accelConfig) {
+-		if (fixConfigName) {
+-			auto gpuService = accelService->getParentEntry(gIOServicePlane);
+-
+-			if (gpuService) {
+-				auto model = OSDynamicCast(OSData, gpuService->getProperty("model"));
+-				if (model) {
+-					auto modelStr = static_cast<const char *>(model->getBytesNoCopy());
+-					if (modelStr) {
+-						if (modelStr[0] == 'A' && ((modelStr[1] == 'M' && modelStr[2] == 'D') ||
+-												   (modelStr[1] == 'T' && modelStr[2] == 'I')) && modelStr[3] == ' ') {
+-							modelStr += 4;
+-						}
+-
+-						DBGLOG("rad", "updateAccelConfig found gpu model %s", modelStr);
+-						*accelConfig = modelStr;
+-					} else {
+-						DBGLOG("rad", "updateAccelConfig found null gpu model");
+-					}
+-				} else {
+-					DBGLOG("rad", "updateAccelConfig failed to find gpu model");
+-				}
+-
+-			} else {
+-				DBGLOG("rad", "updateAccelConfig failed to find accelerator parent");
+-			}
+-		}
++IOReturn RAD::wrapAMDRadeonX6000AmdRadeonFramebufferGetAttribute(IOService *framebuffer, IOIndex connectIndex, IOSelect attribute, uintptr_t * value) {
++    IOReturn ret = FunctionCast(wrapAMDRadeonX6000AmdRadeonFramebufferGetAttribute, callbackRAD->orgAMDRadeonX6000AmdRadeonFramebufferGetAttribute)(framebuffer, connectIndex, attribute, value);
++    if (attribute == (UInt32)'bklt') {
++        // enable the backlight feature of AMD navi10 driver
++        *value = callbackRAD->curPwmBacklightLvl;
++        ret = 0;
++    }
++    return ret;
++}
+ 
+-		if (enableGvaSupport && hwIndex == IndexRadeonHardwareX4000) {
+-			setGvaProperties(accelService);
+-		}
+-	}
++static mach_vm_address_t Orig_AMDRadeonX6000_AmdInterruptManager_sleepInterrupts;
++static int64_t Wrap_AMDRadeonX6000_AmdInterruptManager_sleepInterrupts(__int64 a1, __int64 a2) {
++    SYSLOG("igfx", "Wrap_""AMDRadeonX6000_AmdInterruptManager_sleepInterrupts"" start " "%lu:%lu", a1, a2);
++    uint64_t currNs = getCurrentTimeNs();
++    if (currNs - g_last_sleep_time >= 1000000000) {
++        g_is_sleep = true;
++        g_last_sleep_time = getCurrentTimeNs();
++    }
++    int64_t ret = FunctionCast(Wrap_AMDRadeonX6000_AmdInterruptManager_sleepInterrupts, Orig_AMDRadeonX6000_AmdInterruptManager_sleepInterrupts)(a1, a2);
++    SYSLOG("igfx", "Wrap_""AMDRadeonX6000_AmdInterruptManager_sleepInterrupts"" end - " "%lu", ret);
++    return ret;
+ }
+ 
+-bool RAD::wrapSetProperty(IORegistryEntry *that, const char *aKey, void *bytes, unsigned length) {
+-	if (length > 10 && aKey && reinterpret_cast<const uint32_t *>(aKey)[0] == 'edom' && reinterpret_cast<const uint16_t *>(aKey)[2] == 'l') {
+-		DBGLOG("rad", "SetProperty caught model %u (%.*s)", length, length, static_cast<char *>(bytes));
+-		if (*static_cast<uint32_t *>(bytes) == ' DMA' || *static_cast<uint32_t *>(bytes) == ' ITA' || *static_cast<uint32_t *>(bytes) == 'edaR') {
+-			if (FunctionCast(wrapGetProperty, callbackRAD->orgGetProperty)(that, aKey)) {
+-				DBGLOG("rad", "SetProperty ignored setting %s to %s", aKey, static_cast<char *>(bytes));
+-				return true;
+-			}
+-			DBGLOG("rad", "SetProperty missing %s, fallback to %s", aKey, static_cast<char *>(bytes));
+-		}
+-	}
++static mach_vm_address_t Orig_AMDRadeonX6000_AmdLogger_setDebugLevel;
++static int64_t Wrap_AMDRadeonX6000_AmdLogger_setDebugLevel(__int64 a1, int a2) {
++    SYSLOG("igfx", "Wrap_""AMDRadeonX6000_AmdLogger_setDebugLevel"" start " "%lu:%d", a1, a2);
++    a2 = 9999;
++    int64_t ret = FunctionCast(Wrap_AMDRadeonX6000_AmdLogger_setDebugLevel, Orig_AMDRadeonX6000_AmdLogger_setDebugLevel)(a1, a2);
++    SYSLOG("igfx", "Wrap_""AMDRadeonX6000_AmdLogger_setDebugLevel"" end - " "%lu", ret);
++    return ret;
++}
+ 
+-	return FunctionCast(wrapSetProperty, callbackRAD->orgSetProperty)(that, aKey, bytes, length);
++static mach_vm_address_t Orig_my_dm_logger_write;
++static char g_buffer[81920] = {0};
++static int64_t Wrap_my_dm_logger_write(int64_t a1, unsigned int a2, const char *a3, ...) {
++    va_list args;
++    va_start(args, a3);
++    vsnprintf(g_buffer, 8192, a3, args);
++    SYSLOG("igfx", "dm log, type: %d, msg: %s", a2, g_buffer);
++    va_end(args);
++    return 0;
+ }
+ 
+-OSObject *RAD::wrapGetProperty(IORegistryEntry *that, const char *aKey) {
+-	auto obj = FunctionCast(wrapGetProperty, callbackRAD->orgGetProperty)(that, aKey);
+-	auto props = OSDynamicCast(OSDictionary, obj);
+-
+-	if (props && aKey) {
+-		const char *prefix {nullptr};
+-		auto provider = OSDynamicCast(IOService, that->getParentEntry(gIOServicePlane));
+-		if (provider) {
+-			if (aKey[0] == 'a') {
+-				if (!strcmp(aKey, "aty_config"))
+-					prefix = "CFG,";
+-				else if (!strcmp(aKey, "aty_properties"))
+-					prefix = "PP,";
+-			} else if (aKey[0] == 'c' && !strcmp(aKey, "cail_properties")) {
+-				prefix = "CAIL,";
+-			}
++bool RAD::processKext(KernelPatcher &patcher, size_t index, mach_vm_address_t address, size_t size) {
++    if (kextRadeonX6000Framebuffer.loadIndex == index) {
++        SYSLOG("igfx", "RAD::processKext, index: %lu, address: %p, size: %lu", index, address, size);
++        if (getKernelVersion() >= KernelVersion::Monterey) {
++            KernelPatcher::RouteRequest requests[] = {
++                {"__ZN35AMDRadeonX6000_AmdRadeonFramebuffer25setAttributeForConnectionEijm", wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute, orgAMDRadeonX6000AmdRadeonFramebufferSetAttribute},
++                {"__ZN35AMDRadeonX6000_AmdRadeonFramebuffer25getAttributeForConnectionEijPm", wrapAMDRadeonX6000AmdRadeonFramebufferGetAttribute, orgAMDRadeonX6000AmdRadeonFramebufferGetAttribute},
++                //{"__ZN24AMDRadeonX6000_AmdLogger13setDebugLevelE11LogSeverity", Wrap_AMDRadeonX6000_AmdLogger_setDebugLevel, Orig_AMDRadeonX6000_AmdLogger_setDebugLevel},
++                //{"__ZN34AMDRadeonX6000_AmdInterruptManager15sleepInterruptsEv", Wrap_AMDRadeonX6000_AmdInterruptManager_sleepInterrupts, Orig_AMDRadeonX6000_AmdInterruptManager_sleepInterrupts},
++            };
++
++            if (!patcher.routeMultiple(index, requests, address, size, true, true))
++                SYSLOG("igfx", "Failed to route redeon x6000 gpu tracing.");
++            
++            SYSLOG("igfx", "route _dce_panel_cntl_hw_init");
++            mach_vm_address_t dpchi_cal = address + 0x12CB94; // For Monterey
++            if (getKernelVersion() >= KernelVersion::Ventura) {
++                dpchi_cal = address + 0x12EC5F; // For Ventura
++            }
++            
++            // Verify the expect code of the destinate address, otherwise will not call to prevent kernel panic
++            const uint8_t dpchi_expect[] = { 0x55, 0x48, 0x89, 0xE5, 0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x53, 0x50, 0x49, 0x89, 0xFD, 0x4C, 0x8D, 0x45 };
++            unsigned char* dpchi_cal_charp = (unsigned char*)dpchi_cal;
++            bool expect_match = true;
++            for (int i = 0; i < 20; i++) {
++                //SYSLOG("igfx", "%d => %x", i, dpchi_cal_charp[i]);
++                if (dpchi_cal_charp[i] != dpchi_expect[i]) {
++                    SYSLOG("igfx", "_dce_panel_cntl_hw_init dismatch: %d => %x != %x", i, dpchi_cal_charp[i], dpchi_expect[i]);
++                    expect_match = false;
++                    break;
++                }
++            }
++            
++            if (expect_match) {
++                orgDcePanelCntlHwInit = patcher.routeFunction(dpchi_cal, reinterpret_cast<mach_vm_address_t>(wrapDcePanelCntlHwInit), true);
++                if (patcher.getError() == KernelPatcher::Error::NoError) {
++                    DBGLOG("igfx", "routed _dce_panel_cntl_hw_init");
++                } else {
++                    SYSLOG("igfx", "failed to route _dce_panel_cntl_hw_init %d", patcher.getError());
++                    patcher.clearError();
++                }
++                
++                mach_vm_address_t ddsb_cal = address + 0x12CFC9;
++                if (getKernelVersion() >= KernelVersion::Ventura) {
++                    ddsb_cal = address + 0x12F094;
++                }
++                SYSLOG("igfx", "got Monterey _dce_driver_set_backlight address: %p", ddsb_cal);
++                const uint8_t ddsb_expect[] = { 0x55, 0x48, 0x89, 0xE5, 0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x53, 0x50, 0x41, 0x89, 0xF7, 0x49, 0x89, 0xFE };
++                unsigned char* ddsb_cal_charp = (unsigned char*)ddsb_cal;
++                expect_match = true;
++                for (int i = 0; i < 20; i++) {
++                    //SYSLOG("igfx", "%d => %x", i, dpchi_cal_charp[i]);
++                    if (ddsb_cal_charp[i] != ddsb_expect[i]) {
++                        SYSLOG("igfx", "_dce_driver_set_backlight dismatch: %d => %x != %x", i, ddsb_cal_charp[i], ddsb_expect[i]);
++                        expect_match = false;
++                        break;
++                    }
++                }
++                
++                //for (int i = 0; i < 0x200000; i++) {
++                //    ddsb_cal_charp = (unsigned char*)(address + i);
++                //    int j = 0;
++                //    for (j = 0; j < 20; j++) {
++                //        //SYSLOG("igfx", "%d => %x", i, dpchi_cal_charp[i]);
++                //        if (ddsb_cal_charp[j] != ddsb_expect[j]) {
++                //            //SYSLOG("igfx", "_dce_panel_cntl_hw_init dismatch: %d => %x != %x", i, dpchi_cal_charp[i], dpchi_expect[i]);
++                //            //expect_match = false;
++                //            break;
++                //        }
++                //    }
++                //    if (j == 20) {
++                //        SYSLOG("igfx", "found address %u", i);
++                //    }
++                //}
++                
++                if (expect_match) {
++                    orgDceDriverSetBacklight = reinterpret_cast<t_DceDriverSetBacklight>(ddsb_cal);
++                }
++            }
++            
++            /*SYSLOG("igfx", "route _dm_logger_write");
++            mach_vm_address_t dlw_cal = address + 0x169117;
++            const uint8_t dlw_expect[] = { 0x55, 0x48, 0x89, 0xE5, 0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x53, 0x48, 0x81, 0xEC, 0x88, 0x04, 0x00, 0x00 };
++            unsigned char* dlw_cal_charp = (unsigned char*)dlw_cal;
++            expect_match = true;
++            for (int i = 0; i < 20; i++) {
++                //SYSLOG("igfx", "%d => %x", i, dpchi_cal_charp[i]);
++                if (dlw_cal_charp[i] != dlw_expect[i]) {
++                    SYSLOG("igfx", "_dm_logger_write dismatch: %d => %x != %x", i, dlw_cal_charp[i], dlw_expect[i]);
++                    expect_match = false;
++                    break;
++                }
++            }
++            if (expect_match) {
++                Orig_my_dm_logger_write = patcher.routeFunction(dlw_cal, reinterpret_cast<mach_vm_address_t>(Wrap_my_dm_logger_write), true);
++                if (patcher.getError() == KernelPatcher::Error::NoError) {
++                    DBGLOG("igfx", "routed _dm_logger_write");
++                } else {
++                    SYSLOG("igfx", "failed to route _dm_logger_write %d", patcher.getError());
++                    patcher.clearError();
++                }
++            }*/
++            
++            /*
++            SYSLOG("igfx", "route _dce110_edp_power_control");
++            mach_vm_address_t depc_cal = address + 0x1B04B9;
++            const uint8_t depc_expect[] = { 0x55, 0x48, 0x89, 0xE5, 0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x53, 0x48, 0x83, 0xEC, 0x48, 0x4C, 0x8B, 0xB7 };
++            unsigned char* depc_cal_charp = (unsigned char*)depc_cal;
++            expect_match = true;
++            for (int i = 0; i < 20; i++) {
++                //SYSLOG("igfx", "%d => %x", i, dpchi_cal_charp[i]);
++                if (depc_cal_charp[i] != depc_expect[i]) {
++                    SYSLOG("igfx", "_dce110_edp_power_control dismatch: %d => %x != %x", i, depc_cal_charp[i], depc_expect[i]);
++                    expect_match = false;
++                    break;
++                }
++            }
++            if (expect_match) {
++                orig_dce110_edp_power_control = patcher.routeFunction(depc_cal, reinterpret_cast<mach_vm_address_t>(wrap_dce110_edp_power_control), true);
++                if (patcher.getError() == KernelPatcher::Error::NoError) {
++                    DBGLOG("igfx", "routed _dce110_edp_power_control");
++                } else {
++                    SYSLOG("igfx", "failed to route _dce110_edp_power_control %d", patcher.getError());
++                    patcher.clearError();
++                }
++            }
++            
++            SYSLOG("igfx", "route _dce110_edp_backlight_control");
++            mach_vm_address_t debc_cal = address + 0x1B0926;
++            const uint8_t debc_expect[] = { 0x55, 0x48, 0x89, 0xE5, 0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x53, 0x48, 0x83, 0xEC, 0x48, 0x4C, 0x8B, 0xAF };
++            unsigned char* debc_cal_charp = (unsigned char*)debc_cal;
++            expect_match = true;
++            for (int i = 0; i < 20; i++) {
++                //SYSLOG("igfx", "%d => %x", i, dpchi_cal_charp[i]);
++                if (debc_cal_charp[i] != debc_expect[i]) {
++                    SYSLOG("igfx", "_dce110_edp_backlight_control dismatch: %d => %x != %x", i, debc_cal_charp[i], debc_expect[i]);
++                    expect_match = false;
++                    break;
++                }
++            }
++            if (expect_match) {
++                orig_dce110_edp_backlight_control = patcher.routeFunction(debc_cal, reinterpret_cast<mach_vm_address_t>(wrap_dce110_edp_backlight_control), true);
++                if (patcher.getError() == KernelPatcher::Error::NoError) {
++                    DBGLOG("igfx", "routed _dce110_edp_backlight_control");
++                } else {
++                    SYSLOG("igfx", "failed to route _dce110_edp_backlight_control %d", patcher.getError());
++                    patcher.clearError();
++                }
++            }*/
++        } else {
++            KernelPatcher::RouteRequest requests[] = {
++                {"_dce_panel_cntl_hw_init", wrapDcePanelCntlHwInit, orgDcePanelCntlHwInit},
++                {"__ZN35AMDRadeonX6000_AmdRadeonFramebuffer25setAttributeForConnectionEijm", wrapAMDRadeonX6000AmdRadeonFramebufferSetAttribute, orgAMDRadeonX6000AmdRadeonFramebufferSetAttribute},
++                {"__ZN35AMDRadeonX6000_AmdRadeonFramebuffer25getAttributeForConnectionEijPm", wrapAMDRadeonX6000AmdRadeonFramebufferGetAttribute, orgAMDRadeonX6000AmdRadeonFramebufferGetAttribute},
++                //{"_dc_link_bandwidth_kbps", wrapDcLinkBandwidthKbps, orgDcLinkBandwidthKbps},
++            };
++            
++            mach_vm_address_t dpchi_cal = address + 0x124F56;
++            unsigned char* dpchi_cal_charp = (unsigned char*)dpchi_cal;
++            for (int i = 0; i < 20; i++) {
++                SYSLOG("igfx", "%d => %x", i, dpchi_cal_charp[i]);
++            }
++            mach_vm_address_t ddsb_cal = address + 0x124B21;
++            unsigned char* ddsb_cal_charp = (unsigned char*)ddsb_cal;
++            for (int i = 0; i < 20; i++) {
++                SYSLOG("igfx", "%d => %x", i, ddsb_cal_charp[i]);
++            }
++
++            if (!patcher.routeMultiple(index, requests, address, size, true, true))
++                SYSLOG("igfx", "Failed to route redeon x6000 gpu tracing.");
++            
++            mach_vm_address_t ddsb = patcher.solveSymbol(index, "_dce_driver_set_backlight");
++            SYSLOG("igfx", "got Bigsur _dce_driver_set_backlight address: %p", ddsb);
++            orgDceDriverSetBacklight = reinterpret_cast<t_DceDriverSetBacklight>(ddsb);
++        }
++        //mach_vm_address_t ddsb_cal = address + 0x124F56;
++        //SYSLOG("igfx", "got _dce_driver_set_backlight address: %p, %p", ddsb, ddsb_cal);
++        //orgDceDriverSetBacklight = reinterpret_cast<t_DceDriverSetBacklight>(ddsb);
++        if (patcher.getError() != KernelPatcher::Error::NoError) {
++            SYSLOG("igfx", "failed to resolve _dce_driver_set_backlight");
++            patcher.clearError();
++            return false;
++        }
++    }
++    
++    if (kextRadeonFramebuffer.loadIndex == index) {
++        if (force24BppMode)
++            process24BitOutput(patcher, kextRadeonFramebuffer, address, size);
++        return true;
++    }
++
++    if (kextRadeonLegacyFramebuffer.loadIndex == index) {
++        if (force24BppMode)
++            process24BitOutput(patcher, kextRadeonLegacyFramebuffer, address, size);
++        return true;
++    }
++
++    if (kextRadeonSupport.loadIndex == index) {
++        processConnectorOverrides(patcher, address, size, true);
++
++        if (getKernelVersion() > KernelVersion::Mojave ||
++            (getKernelVersion() == KernelVersion::Mojave && getKernelMinorVersion() >= 5)) {
++            KernelPatcher::RouteRequest request("__ZN13ATIController8TestVRAME13PCI_REG_INDEXb", doNotTestVram);
++            patcher.routeMultiple(index, &request, 1, address, size);
++        }
++
++        if (useCustomAgdpDecision) {
++            KernelPatcher::RouteRequest request("__ZN16AtiDeviceControl16notifyLinkChangeE31kAGDCRegisterLinkControlEvent_tmj", wrapNotifyLinkChange, orgNotifyLinkChange);
++            patcher.routeMultiple(index, &request, 1, address, size);
++        }
++
++        return true;
++    }
++
++    if (kextRadeonLegacySupport.loadIndex == index) {
++        processConnectorOverrides(patcher, address, size, false);
++        return true;
++    }
++
++    if (kextPolarisController.loadIndex == index) {
++        KernelPatcher::RouteRequest request("__ZN17AMD9500Controller23findProjectByPartNumberEP20ControllerProperties", findProjectByPartNumber);
++        patcher.routeMultiple(index, &request, 1, address, size);
++    }
++
++    for (size_t i = 0; i < maxHardwareKexts; i++) {
++        if (kextRadeonHardware[i].loadIndex == index) {
++            processHardwareKext(patcher, i, address, size);
++            return true;
++        }
++    }
++
++    return false;
++}
+ 
+-			if (prefix) {
+-				DBGLOG("rad", "GetProperty discovered property merge request for %s", aKey);
+-				auto rawProps = props->copyCollection();
+-				if (rawProps) {
+-					auto newProps = OSDynamicCast(OSDictionary, rawProps);
+-					if (newProps) {
+-						callbackRAD->mergeProperties(newProps, prefix, provider);
+-						that->setProperty(aKey, newProps);
+-						obj = newProps;
+-					}
+-					rawProps->release();
+-				}
++void RAD::initHardwareKextMods() {
++    // Decide on kext amount present for optimal performance.
++    // 10.15+   has X4000, X5000, and X6000
++    // 10.14+   has X4000 and X5000
++    // 10.13.4+ has X3000, X4000, and X5000
++    if (getKernelVersion() >= KernelVersion::Catalina)
++        maxHardwareKexts = MaxRadeonHardwareCatalina;
++    else if (getKernelVersion() >= KernelVersion::Mojave)
++        maxHardwareKexts = MaxRadeonHardwareMojave;
++    else if (getKernelVersion() == KernelVersion::HighSierra && getKernelMinorVersion() >= 5)
++        maxHardwareKexts = MaxRadeonHardwareModernHighSierra;
++
++    // 10.13.4 fixed black screen issues
++    if (maxHardwareKexts != MaxRadeonHardware) {
++        for (size_t i = 0; i < MaxGetFrameBufferProcs; i++)
++            getFrameBufferProcNames[IndexRadeonHardwareX4000][i] = nullptr;
++
++        // We have nothing to do for these kexts on recent systems
++        if (!fixConfigName && !forceOpenGL && !forceCodecInfo) {
++            // X4000 kext is not included in this list as we need to fix GVA properties for most of its GPUs
++            kextRadeonHardware[IndexRadeonHardwareX5000].switchOff();
++            kextRadeonHardware[IndexRadeonHardwareX6000].switchOff();
++        }
++    }
++
++    if (getKernelVersion() < KernelVersion::Catalina) {
++        kextRadeonHardware[IndexRadeonHardwareX6000].switchOff();
++    }
++
++    if (getKernelVersion() < KernelVersion::HighSierra) {
++        // Versions before 10.13 do not support X4250 and X5000
++        kextRadeonHardware[IndexRadeonHardwareX4250].switchOff();
++        kextRadeonHardware[IndexRadeonHardwareX5000].switchOff();
++
++        // Versions before 10.13 have legacy X3000 and X4000 IDs
++        kextRadeonHardware[IndexRadeonHardwareX3000].id = idRadeonX3000Old;
++        kextRadeonHardware[IndexRadeonHardwareX4000].id = idRadeonX4000Old;
++
++        bool preSierra = getKernelVersion() < KernelVersion::Sierra;
++
++        if (preSierra) {
++            // Versions before 10.12 do not support X4100
++            kextRadeonHardware[IndexRadeonHardwareX4100].switchOff();
++        }
++
++        if (preSierra || (getKernelVersion() == KernelVersion::Sierra && getKernelMinorVersion() < 7)) {
++            // Versions before 10.12.6 do not support X4150, X4200
++            kextRadeonHardware[IndexRadeonHardwareX4150].switchOff();
++            kextRadeonHardware[IndexRadeonHardwareX4200].switchOff();
++        }
++    }
++
++    lilu.onKextLoadForce(kextRadeonHardware, maxHardwareKexts);
++}
+ 
+-			}
+-		}
+-	}
++void RAD::process24BitOutput(KernelPatcher &patcher, KernelPatcher::KextInfo &info, mach_vm_address_t address, size_t size) {
++    auto bitsPerComponent = patcher.solveSymbol<int *>(info.loadIndex, "__ZL18BITS_PER_COMPONENT", address, size);
++    if (bitsPerComponent) {
++        while (bitsPerComponent && *bitsPerComponent) {
++            if (*bitsPerComponent == 10) {
++                auto ret = MachInfo::setKernelWriting(true, KernelPatcher::kernelWriteLock);
++                if (ret == KERN_SUCCESS) {
++                    DBGLOG("rad", "fixing BITS_PER_COMPONENT");
++                    *bitsPerComponent = 8;
++                    MachInfo::setKernelWriting(false, KernelPatcher::kernelWriteLock);
++                } else {
++                    SYSLOG("rad", "failed to disable write protection for BITS_PER_COMPONENT");
++                }
++            }
++            bitsPerComponent++;
++        }
++    } else {
++        SYSLOG("rad", "failed to find BITS_PER_COMPONENT");
++        patcher.clearError();
++    }
++
++    DBGLOG("rad", "fixing pixel types");
++
++    KernelPatcher::LookupPatch pixelPatch {
++        &info,
++        reinterpret_cast<const uint8_t *>("--RRRRRRRRRRGGGGGGGGGGBBBBBBBBBB"),
++        reinterpret_cast<const uint8_t *>("--------RRRRRRRRGGGGGGGGBBBBBBBB"),
++        32, 2
++    };
++
++    patcher.applyLookupPatch(&pixelPatch);
++    if (patcher.getError() != KernelPatcher::Error::NoError) {
++        SYSLOG("rad", "failed to patch RGB mask for 24-bit output");
++        patcher.clearError();
++    }
++}
+ 
+-	return obj;
++void RAD::processConnectorOverrides(KernelPatcher &patcher, mach_vm_address_t address, size_t size, bool modern) {
++    if (modern) {
++        if (getKernelVersion() >= KernelVersion::HighSierra) {
++            KernelPatcher::RouteRequest requests[] {
++                KernelPatcher::RouteRequest("__ZN14AtiBiosParser116getConnectorInfoEP13ConnectorInfoRh", wrapGetConnectorsInfoV1, orgGetConnectorsInfoV1),
++                KernelPatcher::RouteRequest("__ZN14AtiBiosParser216getConnectorInfoEP13ConnectorInfoRh", wrapGetConnectorsInfoV2, orgGetConnectorsInfoV2),
++                KernelPatcher::RouteRequest("__ZN14AtiBiosParser126translateAtomConnectorInfoERN30AtiObjectInfoTableInterface_V117AtomConnectorInfoER13ConnectorInfo",
++                                            wrapTranslateAtomConnectorInfoV1, orgTranslateAtomConnectorInfoV1),
++                KernelPatcher::RouteRequest("__ZN14AtiBiosParser226translateAtomConnectorInfoERN30AtiObjectInfoTableInterface_V217AtomConnectorInfoER13ConnectorInfo",
++                                            wrapTranslateAtomConnectorInfoV2, orgTranslateAtomConnectorInfoV2),
++                KernelPatcher::RouteRequest("__ZN13ATIController5startEP9IOService", wrapATIControllerStart, orgATIControllerStart)
++            };
++            patcher.routeMultiple(kextRadeonSupport.loadIndex, requests, address, size);
++        } else {
++            KernelPatcher::RouteRequest requests[] {
++                KernelPatcher::RouteRequest("__ZN23AtiAtomBiosDceInterface17getConnectorsInfoEP13ConnectorInfoRh", wrapGetConnectorsInfoV1, orgGetConnectorsInfoV1),
++                KernelPatcher::RouteRequest("__ZN13ATIController5startEP9IOService", wrapATIControllerStart, orgATIControllerStart),
++            };
++            patcher.routeMultiple(kextRadeonSupport.loadIndex, requests, address, size);
++
++            orgGetAtomObjectTableForType = reinterpret_cast<t_getAtomObjectTableForType>(patcher.solveSymbol(kextRadeonSupport.loadIndex,
++                                                                                                             "__ZN20AtiAtomBiosUtilities25getAtomObjectTableForTypeEhRh", address, size));
++            if (!orgGetAtomObjectTableForType) {
++                SYSLOG("rad", "failed to find AtiAtomBiosUtilities::getAtomObjectTableForType");
++                patcher.clearError();
++            }
++        }
++    } else {
++        KernelPatcher::RouteRequest requests[] {
++            KernelPatcher::RouteRequest("__ZN23AtiAtomBiosDceInterface17getConnectorsInfoEP13ConnectorInfoRh", wrapLegacyGetConnectorsInfo, orgLegacyGetConnectorsInfo),
++            KernelPatcher::RouteRequest("__ZN19AMDLegacyController5startEP9IOService", wrapLegacyATIControllerStart, orgLegacyATIControllerStart),
++        };
++        patcher.routeMultiple(kextRadeonLegacySupport.loadIndex, requests, address, size);
++
++        orgLegacyGetAtomObjectTableForType = patcher.solveSymbol<t_getAtomObjectTableForType>(kextRadeonLegacySupport.loadIndex,
++                                                                                              "__ZN20AtiAtomBiosUtilities25getAtomObjectTableForTypeEhRh", address, size);
++        if (!orgLegacyGetAtomObjectTableForType) {
++            SYSLOG("rad", "failed to find AtiAtomBiosUtilities::getAtomObjectTableForType");
++            patcher.clearError();
++        }
++    }
+ }
+ 
+-uint32_t RAD::wrapGetConnectorsInfoV1(void *that, RADConnectors::Connector *connectors, uint8_t *sz) {
+-	uint32_t code = FunctionCast(wrapGetConnectorsInfoV1, callbackRAD->orgGetConnectorsInfoV1)(that, connectors, sz);
+-	auto props = callbackRAD->currentPropProvider.get();
+-
+-	if (code == 0 && sz && props && *props) {
+-		if (getKernelVersion() >= KernelVersion::HighSierra)
+-			callbackRAD->updateConnectorsInfo(nullptr, nullptr, *props, connectors, sz);
+-		else
+-			callbackRAD->updateConnectorsInfo(static_cast<void **>(that)[1], callbackRAD->orgGetAtomObjectTableForType, *props, connectors, sz);
+-	} else {
+-		DBGLOG("rad", "getConnectorsInfoV1 failed %X or undefined %d", code, props == nullptr);
+-	}
++void RAD::processHardwareKext(KernelPatcher &patcher, size_t hwIndex, mach_vm_address_t address, size_t size) {
++    auto getFrame = getFrameBufferProcNames[hwIndex];
++    auto &hardware = kextRadeonHardware[hwIndex];
++
++    // Fix boot and wake to black screen
++    for (size_t j = 0; j < MaxGetFrameBufferProcs && getFrame[j] != nullptr; j++) {
++        auto getFB = patcher.solveSymbol(hardware.loadIndex, getFrame[j], address, size);
++        if (getFB) {
++            // Initially it was discovered that the only problematic register is PRIMARY_SURFACE_ADDRESS_HIGH (0x1A07).
++            // This register must be nulled to solve most of the issues.
++            // Depending on the amount of connected screens PRIMARY_SURFACE_ADDRESS (0x1A04) may not be null.
++            // However, as of AMD Vega drivers in 10.13 DP1 both of these registers are now ignored.
++            // Furthermore, there are no (extra) issues from just returning 0 in framebuffer base address.
++
++            // xor rax, rax
++            // ret
++            uint8_t ret[] {0x48, 0x31, 0xC0, 0xC3};
++            patcher.routeBlock(getFB, ret, sizeof(ret));
++            if (patcher.getError() == KernelPatcher::Error::NoError) {
++                DBGLOG("rad", "patched %s", getFrame[j]);
++            } else {
++                SYSLOG("rad", "failed to patch %s code %d", getFrame[j], patcher.getError());
++                patcher.clearError();
++            }
++        } else {
++            SYSLOG("rad", "failed to find %s code %d", getFrame[j], patcher.getError());
++            patcher.clearError();
++        }
++    }
++
++    // Fix reported Accelerator name to support WhateverName.app
++    // Also fix GVA properties for X4000.
++    if (fixConfigName || hwIndex == IndexRadeonHardwareX4000) {
++        KernelPatcher::RouteRequest request(populateAccelConfigProcNames[hwIndex], wrapPopulateAccelConfig[hwIndex], orgPopulateAccelConfig[hwIndex]);
++        patcher.routeMultiple(hardware.loadIndex, &request, 1, address, size);
++    }
++
++    // Enforce OpenGL support if requested
++    if (forceOpenGL) {
++        DBGLOG("rad", "disabling Metal support");
++        uint8_t find1[] {0x4D, 0x65, 0x74, 0x61, 0x6C, 0x53, 0x74, 0x61};
++        uint8_t find2[] {0x4D, 0x65, 0x74, 0x61, 0x6C, 0x50, 0x6C, 0x75};
++        uint8_t repl1[] {0x50, 0x65, 0x74, 0x61, 0x6C, 0x53, 0x74, 0x61};
++        uint8_t repl2[] {0x50, 0x65, 0x74, 0x61, 0x6C, 0x50, 0x6C, 0x75};
++
++        KernelPatcher::LookupPatch antimetal[] {
++            {&hardware, find1, repl1, sizeof(find1), 2},
++            {&hardware, find2, repl2, sizeof(find1), 2}
++        };
++
++        for (auto &p : antimetal) {
++            patcher.applyLookupPatch(&p);
++            patcher.clearError();
++        }
++    }
++
++    // Patch AppleGVA support for non-supported models
++    if (forceCodecInfo && getHWInfoProcNames[hwIndex] != nullptr) {
++        KernelPatcher::RouteRequest request(getHWInfoProcNames[hwIndex], wrapGetHWInfo[hwIndex], orgGetHWInfo[hwIndex]);
++        patcher.routeMultiple(hardware.loadIndex, &request, 1, address, size);
++    }
++}
+ 
+-	return code;
++void RAD::mergeProperty(OSDictionary *props, const char *name, OSObject *value) {
++    // The only type we could make from device properties is data.
++    // To be able to override other types we do a conversion here.
++    auto data = OSDynamicCast(OSData, value);
++    if (data) {
++        // It is hard to make a boolean even from ACPI, so we make a hack here:
++        // 1-byte OSData with 0x01 / 0x00 values becomes boolean.
++        auto val = static_cast<const uint8_t *>(data->getBytesNoCopy());
++        auto len = data->getLength();
++        if (val && len == sizeof(uint8_t)) {
++            if (val[0] == 1) {
++                props->setObject(name, kOSBooleanTrue);
++                DBGLOG("rad", "prop %s was merged as kOSBooleanTrue", name);
++                return;
++            } else if (val[0] == 0) {
++                props->setObject(name, kOSBooleanFalse);
++                DBGLOG("rad", "prop %s was merged as kOSBooleanFalse", name);
++                return;
++            }
++        }
++
++        // Consult the original value to make a decision
++        auto orgValue = props->getObject(name);
++        if (val && orgValue) {
++            DBGLOG("rad", "prop %s has original value", name);
++            if (len == sizeof(uint32_t) && OSDynamicCast(OSNumber, orgValue)) {
++                auto num = *reinterpret_cast<const uint32_t *>(val);
++                auto osnum = OSNumber::withNumber(num, 32);
++                if (osnum) {
++                    DBGLOG("rad", "prop %s was merged as number %u", name, num);
++                    props->setObject(name, osnum);
++                    osnum->release();
++                }
++                return;
++            } else if (len > 0 && val[len-1] == '\0' && OSDynamicCast(OSString, orgValue)) {
++                auto str = reinterpret_cast<const char *>(val);
++                auto osstr = OSString::withCString(str);
++                if (osstr) {
++                    DBGLOG("rad", "prop %s was merged as string %s", name, str);
++                    props->setObject(name, osstr);
++                    osstr->release();
++                }
++                return;
++            }
++        } else {
++            DBGLOG("rad", "prop %s has no original value", name);
++        }
++    }
++
++    // Default merge as is
++    props->setObject(name, value);
++    DBGLOG("rad", "prop %s was merged", name);
+ }
+ 
+-uint32_t RAD::wrapGetConnectorsInfoV2(void *that, RADConnectors::Connector *connectors, uint8_t *sz) {
+-	uint32_t code = FunctionCast(wrapGetConnectorsInfoV2, callbackRAD->orgGetConnectorsInfoV2)(that, connectors, sz);
+-	auto props = callbackRAD->currentPropProvider.get();
++void RAD::mergeProperties(OSDictionary *props, const char *prefix, IOService *provider) {
++    // Should be ok, but in case there are issues switch to dictionaryWithProperties();
++    auto dict = provider->getPropertyTable();
++    if (dict) {
++        auto iterator = OSCollectionIterator::withCollection(dict);
++        if (iterator) {
++            OSSymbol *propname;
++            size_t prefixlen = strlen(prefix);
++            while ((propname = OSDynamicCast(OSSymbol, iterator->getNextObject())) != nullptr) {
++                auto name = propname->getCStringNoCopy();
++                if (name && propname->getLength() > prefixlen && !strncmp(name, prefix, prefixlen)) {
++                    auto prop = dict->getObject(propname);
++                    if (prop)
++                        mergeProperty(props, name + prefixlen, prop);
++                    else
++                        DBGLOG("rad", "prop %s was not merged due to no value", name);
++                } else {
++                    //DBGLOG("rad", "prop %s does not match %s prefix", safeString(name), prefix);
++                }
++            }
++
++            iterator->release();
++        } else {
++            SYSLOG("rad", "prop merge failed to iterate over properties");
++        }
++    } else {
++        SYSLOG("rad", "prop merge failed to get properties");
++    }
++
++    if (!strcmp(prefix, "CAIL,")) {
++        for (size_t i = 0; i < arrsize(powerGatingFlags); i++) {
++            if (powerGatingFlags[i] && props->getObject(powerGatingFlags[i])) {
++                DBGLOG("rad", "cail prop merge found %s, replacing", powerGatingFlags[i]);
++                auto num = OSNumber::withNumber(1, 32);
++                if (num) {
++                    props->setObject(powerGatingFlags[i], num);
++                    num->release();
++                }
++            }
++        }
++    }
++}
+ 
+-	if (code == 0 && sz && props && *props)
+-		callbackRAD->updateConnectorsInfo(nullptr, nullptr, *props, connectors, sz);
+-	else
+-		DBGLOG("rad", "getConnectorsInfoV2 failed %X or undefined %d", code, props == nullptr);
++void RAD::applyPropertyFixes(IOService *service, uint32_t connectorNum) {
++    if (service && getKernelVersion() >= KernelVersion::HighSierra) {
++        // Starting with 10.13.2 this is important to fix sleep issues due to enforced 6 screens
++        if (!service->getProperty("CFG,CFG_FB_LIMIT")) {
++            DBGLOG("rad", "setting fb limit to %u", connectorNum);
++            service->setProperty("CFG_FB_LIMIT", connectorNum, 32);
++        }
++
++        // In the past we set CFG_USE_AGDC to false, which caused visual glitches and broken multimonitor support.
++        // A better workaround is to disable AGDP just like we do globally.
++    }
++}
+ 
+-	return code;
++void RAD::updateConnectorsInfo(void *atomutils, t_getAtomObjectTableForType gettable, IOService *ctrl, RADConnectors::Connector *connectors, uint8_t *sz) {
++    if (atomutils) {
++        DBGLOG("rad", "getConnectorsInfo found %u connectors", *sz);
++        RADConnectors::print(connectors, *sz);
++    }
++
++    // Check if the user wants to override automatically detected connectors
++    auto cons = ctrl->getProperty("connectors");
++    if (cons) {
++        auto consData = OSDynamicCast(OSData, cons);
++        if (consData) {
++            auto consPtr = consData->getBytesNoCopy();
++            auto consSize = consData->getLength();
++
++            uint32_t consCount;
++            if (WIOKit::getOSDataValue(ctrl, "connector-count", consCount)) {
++                *sz = consCount;
++                DBGLOG("rad", "getConnectorsInfo got size override to %u", *sz);
++            }
++
++            if (consPtr && consSize > 0 && *sz > 0 && RADConnectors::valid(consSize, *sz)) {
++                RADConnectors::copy(connectors, *sz, static_cast<const RADConnectors::Connector *>(consPtr), consSize);
++                DBGLOG("rad", "getConnectorsInfo installed %u connectors", *sz);
++                applyPropertyFixes(ctrl, *sz);
++            } else {
++                DBGLOG("rad", "getConnectorsInfo conoverrides have invalid size %u for %u num", consSize, *sz);
++            }
++        } else {
++            DBGLOG("rad", "getConnectorsInfo conoverrides have invalid type");
++        }
++    } else {
++        if (atomutils) {
++            DBGLOG("rad", "getConnectorsInfo attempting to autofix connectors");
++            uint8_t sHeader = 0, displayPathNum = 0, connectorObjectNum = 0;
++            auto baseAddr = static_cast<uint8_t *>(gettable(atomutils, AtomObjectTableType::Common, &sHeader)) - sizeof(uint32_t);
++            auto displayPaths = static_cast<AtomDisplayObjectPath *>(gettable(atomutils, AtomObjectTableType::DisplayPath, &displayPathNum));
++            auto connectorObjects = static_cast<AtomConnectorObject *>(gettable(atomutils, AtomObjectTableType::ConnectorObject, &connectorObjectNum));
++            if (displayPathNum == connectorObjectNum)
++                autocorrectConnectors(baseAddr, displayPaths, displayPathNum, connectorObjects, connectorObjectNum, connectors, *sz);
++            else
++                DBGLOG("rad", "getConnectorsInfo found different displaypaths %u and connectors %u", displayPathNum, connectorObjectNum);
++        }
++
++        applyPropertyFixes(ctrl, *sz);
++
++        // Prioritise connectors, since it may cause black screen on e.g. R9 370
++        const uint8_t *senseList = nullptr;
++        uint8_t senseNum = 0;
++        auto priData = OSDynamicCast(OSData, ctrl->getProperty("connector-priority"));
++        if (priData) {
++            senseList = static_cast<const uint8_t *>(priData->getBytesNoCopy());
++            senseNum = static_cast<uint8_t>(priData->getLength());
++            DBGLOG("rad", "getConnectorInfo found %u senses in connector-priority", senseNum);
++            reprioritiseConnectors(senseList, senseNum, connectors, *sz);
++        } else {
++            DBGLOG("rad", "getConnectorInfo leaving unchaged priority");
++        }
++    }
++
++    DBGLOG("rad", "getConnectorsInfo resulting %u connectors follow", *sz);
++    RADConnectors::print(connectors, *sz);
+ }
+ 
+-uint32_t RAD::wrapLegacyGetConnectorsInfo(void *that, RADConnectors::Connector *connectors, uint8_t *sz) {
+-	uint32_t code = FunctionCast(wrapLegacyGetConnectorsInfo, callbackRAD->orgLegacyGetConnectorsInfo)(that, connectors, sz);
+-	auto props = callbackRAD->currentLegacyPropProvider.get();
++void RAD::autocorrectConnectors(uint8_t *baseAddr, AtomDisplayObjectPath *displayPaths, uint8_t displayPathNum, AtomConnectorObject *connectorObjects,
++                                uint8_t connectorObjectNum, RADConnectors::Connector *connectors, uint8_t sz) {
++    for (uint8_t i = 0; i < displayPathNum; i++) {
++        if (!isEncoder(displayPaths[i].usGraphicObjIds)) {
++            DBGLOG("rad", "autocorrectConnectors not encoder %X at %u", displayPaths[i].usGraphicObjIds, i);
++            continue;
++        }
++
++        uint8_t txmit = 0, enc = 0;
++        if (!getTxEnc(displayPaths[i].usGraphicObjIds, txmit, enc))
++            continue;
++
++        uint8_t sense = getSenseID(baseAddr + connectorObjects[i].usRecordOffset);
++        if (!sense) {
++            DBGLOG("rad", "autocorrectConnectors failed to detect sense for %u connector", i);
++            continue;
++        }
++
++        DBGLOG("rad", "autocorrectConnectors found txmit %02X enc %02X sense %02X for %u connector", txmit, enc, sense, i);
++
++        autocorrectConnector(getConnectorID(displayPaths[i].usConnObjectId), sense, txmit, enc, connectors, sz);
++    }
++}
+ 
+-	if (code == 0 && sz && props && *props)
+-		callbackRAD->updateConnectorsInfo(static_cast<void **>(that)[1], callbackRAD->orgLegacyGetAtomObjectTableForType, *props, connectors, sz);
+-	else
+-		DBGLOG("rad", "legacy getConnectorsInfo failed %X or undefined %d", code, props == nullptr);
++void RAD::autocorrectConnector(uint8_t connector, uint8_t sense, uint8_t txmit, uint8_t enc, RADConnectors::Connector *connectors, uint8_t sz) {
++    // This function attempts to fix the following issues:
++    //
++    // 1. Incompatible DVI transmitter on 290X, 370 and probably some other models
++    // In this case a correct transmitter is detected by AtiAtomBiosDce60::getPropertiesForEncoderObject, however, later
++    // in AtiAtomBiosDce60::getPropertiesForConnectorObject for DVI DL and TITFP513 this value is conjuncted with 0xCF,
++    // which makes it wrong: 0x10 -> 0, 0x11 -> 1. As a result one gets black screen when connecting multiple displays.
++    // getPropertiesForEncoderObject takes usGraphicObjIds and getPropertiesForConnectorObject takes usConnObjectId
++
++    if (callbackRAD->dviSingleLink) {
++        if (connector != CONNECTOR_OBJECT_ID_DUAL_LINK_DVI_I &&
++            connector != CONNECTOR_OBJECT_ID_DUAL_LINK_DVI_D &&
++            connector != CONNECTOR_OBJECT_ID_LVDS) {
++            DBGLOG("rad", "autocorrectConnector found unsupported connector type %02X", connector);
++            return;
++        }
++
++        auto fixTransmit = [](auto &con, uint8_t idx, uint8_t sense, uint8_t txmit) {
++            if (con.sense == sense) {
++                if (con.transmitter != txmit && (con.transmitter & 0xCF) == con.transmitter) {
++                    DBGLOG("rad", "autocorrectConnector replacing txmit %02X with %02X for %u connector sense %02X",
++                           con.transmitter, txmit, idx, sense);
++                    con.transmitter = txmit;
++                }
++                return true;
++            }
++            return false;
++        };
++
++        bool isModern = RADConnectors::modern();
++        for (uint8_t j = 0; j < sz; j++) {
++            if (isModern) {
++                auto &con = (&connectors->modern)[j];
++                if (fixTransmit(con, j, sense, txmit))
++                    break;
++            } else {
++                auto &con = (&connectors->legacy)[j];
++                if (fixTransmit(con, j, sense, txmit))
++                    break;
++            }
++        }
++    } else {
++        DBGLOG("rad", "autocorrectConnector use -raddvi to enable dvi autocorrection");
++    }
++}
+ 
+-	return code;
++void RAD::reprioritiseConnectors(const uint8_t *senseList, uint8_t senseNum, RADConnectors::Connector *connectors, uint8_t sz) {
++    static constexpr uint32_t typeList[] {
++        RADConnectors::ConnectorLVDS,
++        RADConnectors::ConnectorDigitalDVI,
++        RADConnectors::ConnectorHDMI,
++        RADConnectors::ConnectorDP,
++        RADConnectors::ConnectorVGA
++    };
++    static constexpr uint8_t typeNum {static_cast<uint8_t>(arrsize(typeList))};
++
++    bool isModern = RADConnectors::modern();
++    uint16_t priCount = 1;
++    // Automatically detected connectors have equal priority (0), which often results in black screen
++    // This allows to change this firstly by user-defined list, then by type list.
++    //TODO: priority is ignored for 5xxx and 6xxx GPUs, should we manually reorder items?
++    for (uint8_t i = 0; i < senseNum + typeNum + 1; i++) {
++        for (uint8_t j = 0; j < sz; j++) {
++            auto reorder = [&](auto &con) {
++                if (i == senseNum + typeNum) {
++                    if (con.priority == 0)
++                        con.priority = priCount++;
++                } else if (i < senseNum) {
++                    if (con.sense == senseList[i]) {
++                        DBGLOG("rad", "reprioritiseConnectors setting priority of sense %02X to %u by sense", con.sense, priCount);
++                        con.priority = priCount++;
++                        return true;
++                    }
++                } else {
++                    if (con.priority == 0 && con.type == typeList[i-senseNum]) {
++                        DBGLOG("rad", "reprioritiseConnectors setting priority of sense %02X to %u by type", con.sense, priCount);
++                        con.priority = priCount++;
++                    }
++                }
++                return false;
++            };
++
++            if ((isModern && reorder((&connectors->modern)[j])) ||
++                (!isModern && reorder((&connectors->legacy)[j])))
++                break;
++        }
++    }
+ }
+ 
+-uint32_t RAD::wrapTranslateAtomConnectorInfoV1(void *that, RADConnectors::AtomConnectorInfo *info, RADConnectors::Connector *connector) {
+-	uint32_t code = FunctionCast(wrapTranslateAtomConnectorInfoV1, callbackRAD->orgTranslateAtomConnectorInfoV1)(that, info, connector);
+-
+-	if (code == 0 && info && connector) {
+-		RADConnectors::print(connector, 1);
+-
+-		uint8_t sense = getSenseID(info->i2cRecord);
+-		if (sense) {
+-			DBGLOG("rad", "translateAtomConnectorInfoV1 got sense id %02X", sense);
+-
+-			// We need to extract usGraphicObjIds from info->hpdRecord, which is of type ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT:
+-			// struct ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT {
+-			//   uint8_t ucNumberOfSrc;
+-			//   uint16_t usSrcObjectID[ucNumberOfSrc];
+-			//   uint8_t ucNumberOfDst;
+-			//   uint16_t usDstObjectID[ucNumberOfDst];
+-			// };
+-			// The value we need is in usSrcObjectID. The structure is byte-packed.
+-
+-			uint8_t ucNumberOfSrc = info->hpdRecord[0];
+-			for (uint8_t i = 0; i < ucNumberOfSrc; i++) {
+-				auto usSrcObjectID = *reinterpret_cast<uint16_t *>(info->hpdRecord + sizeof(uint8_t) + i * sizeof(uint16_t));
+-				DBGLOG("rad", "translateAtomConnectorInfoV1 checking %04X object id", usSrcObjectID);
+-				if (((usSrcObjectID & OBJECT_TYPE_MASK) >> OBJECT_TYPE_SHIFT) == GRAPH_OBJECT_TYPE_ENCODER) {
+-					uint8_t txmit = 0, enc = 0;
+-					if (getTxEnc(usSrcObjectID, txmit, enc))
+-						callbackRAD->autocorrectConnector(getConnectorID(info->usConnObjectId), getSenseID(info->i2cRecord), txmit, enc, connector, 1);
+-					break;
+-				}
+-			}
++void RAD::setGvaProperties(IOService *accelService) {
++    auto codecStr = OSDynamicCast(OSString, accelService->getProperty("IOGVACodec"));
++    if (codecStr == nullptr) {
++        DBGLOG("rad", "updating X4000 accelerator IOGVACodec to VCE");
++        accelService->setProperty("IOGVACodec", "VCE");
++    } else {
++        auto codec = codecStr->getCStringNoCopy();
++        DBGLOG("rad", "X4000 accelerator IOGVACodec is already set to %s", safeString(codec));
++        if (codec != nullptr && strncmp(codec, "AMD", strlen("AMD")) == 0) {
++            bool needsDecode = accelService->getProperty("IOGVAHEVCDecode") == nullptr;
++            bool needsEncode = accelService->getProperty("IOGVAHEVCEncode") == nullptr;
++            if (needsDecode) {
++                OSObject *VTMaxDecodeLevel = OSNumber::withNumber(153, 32);
++                OSString *VTMaxDecodeLevelKey  = OSString::withCString("VTMaxDecodeLevel");
++                OSDictionary *VTPerProfileDetailsInner = OSDictionary::withCapacity(1);
++                OSDictionary *VTPerProfileDetails = OSDictionary::withCapacity(3);
++                OSString *VTPerProfileDetailsKey1 = OSString::withCString("1");
++                OSString *VTPerProfileDetailsKey2 = OSString::withCString("2");
++                OSString *VTPerProfileDetailsKey3 = OSString::withCString("3");
++
++                OSArray *VTSupportedProfileArray = OSArray::withCapacity(3);
++                OSNumber *VTSupportedProfileArray1 = OSNumber::withNumber(1, 32);
++                OSNumber *VTSupportedProfileArray2 = OSNumber::withNumber(2, 32);
++                OSNumber *VTSupportedProfileArray3 = OSNumber::withNumber(3, 32);
++
++                OSDictionary *IOGVAHEVCDecodeCapabilities = OSDictionary::withCapacity(2);
++                OSString *VTPerProfileDetailsKey = OSString::withCString("VTPerProfileDetails");
++                OSString *VTSupportedProfileArrayKey = OSString::withCString("VTSupportedProfileArray");
++
++                if (VTMaxDecodeLevel != nullptr && VTMaxDecodeLevelKey != nullptr && VTPerProfileDetailsInner != nullptr &&
++                    VTPerProfileDetails != nullptr && VTPerProfileDetailsKey1 != nullptr && VTPerProfileDetailsKey2 != nullptr &&
++                    VTPerProfileDetailsKey3 != nullptr && VTSupportedProfileArrayKey != nullptr && VTSupportedProfileArray1 != nullptr &&
++                    VTSupportedProfileArray2 != nullptr && VTSupportedProfileArray3 != nullptr && VTSupportedProfileArray != nullptr &&
++                    VTPerProfileDetailsKey != nullptr && IOGVAHEVCDecodeCapabilities != nullptr) {
++                    VTPerProfileDetailsInner->setObject(VTMaxDecodeLevelKey, VTMaxDecodeLevel);
++                    VTPerProfileDetails->setObject(VTPerProfileDetailsKey1, VTPerProfileDetailsInner);
++                    VTPerProfileDetails->setObject(VTPerProfileDetailsKey2, VTPerProfileDetailsInner);
++                    VTPerProfileDetails->setObject(VTPerProfileDetailsKey3, VTPerProfileDetailsInner);
++
++                    VTSupportedProfileArray->setObject(VTSupportedProfileArray1);
++                    VTSupportedProfileArray->setObject(VTSupportedProfileArray2);
++                    VTSupportedProfileArray->setObject(VTSupportedProfileArray3);
++
++                    IOGVAHEVCDecodeCapabilities->setObject(VTPerProfileDetailsKey, VTPerProfileDetails);
++                    IOGVAHEVCDecodeCapabilities->setObject(VTSupportedProfileArrayKey, VTSupportedProfileArray);
++
++                    accelService->setProperty("IOGVAHEVCDecode", "1");
++                    accelService->setProperty("IOGVAHEVCDecodeCapabilities", IOGVAHEVCDecodeCapabilities);
++
++                    DBGLOG("rad", "recovering IOGVAHEVCDecode");
++                } else {
++                    SYSLOG("rad", "allocation failure in IOGVAHEVCDecode");
++                }
++
++                OSSafeReleaseNULL(VTMaxDecodeLevel);
++                OSSafeReleaseNULL(VTMaxDecodeLevelKey);
++                OSSafeReleaseNULL(VTPerProfileDetailsInner);
++                OSSafeReleaseNULL(VTPerProfileDetails);
++                OSSafeReleaseNULL(VTPerProfileDetailsKey1);
++                OSSafeReleaseNULL(VTPerProfileDetailsKey2);
++                OSSafeReleaseNULL(VTPerProfileDetailsKey3);
++                OSSafeReleaseNULL(VTSupportedProfileArrayKey);
++                OSSafeReleaseNULL(VTSupportedProfileArray1);
++                OSSafeReleaseNULL(VTSupportedProfileArray2);
++                OSSafeReleaseNULL(VTSupportedProfileArray3);
++                OSSafeReleaseNULL(VTSupportedProfileArray);
++                OSSafeReleaseNULL(VTPerProfileDetailsKey);
++                OSSafeReleaseNULL(IOGVAHEVCDecodeCapabilities);
++            }
++
++            if (needsEncode) {
++                OSObject *VTMaxEncodeLevel = OSNumber::withNumber(153, 32);
++                OSString *VTMaxEncodeLevelKey  = OSString::withCString("VTMaxEncodeLevel");
++
++                OSDictionary *VTPerProfileDetailsInner = OSDictionary::withCapacity(1);
++                OSDictionary *VTPerProfileDetails = OSDictionary::withCapacity(1);
++                OSString *VTPerProfileDetailsKey1 = OSString::withCString("1");
++
++                OSArray *VTSupportedProfileArray = OSArray::withCapacity(1);
++                OSNumber *VTSupportedProfileArray1 = OSNumber::withNumber(1, 32);
++
++                OSDictionary *IOGVAHEVCEncodeCapabilities = OSDictionary::withCapacity(4);
++                OSString *VTPerProfileDetailsKey = OSString::withCString("VTPerProfileDetails");
++                OSString *VTQualityRatingKey = OSString::withCString("VTQualityRating");
++                OSNumber *VTQualityRating = OSNumber::withNumber(50, 32);
++                OSString *VTRatingKey = OSString::withCString("VTRating");
++                OSNumber *VTRating = OSNumber::withNumber(350, 32);
++                OSString *VTSupportedProfileArrayKey = OSString::withCString("VTSupportedProfileArray");
++
++                if (VTMaxEncodeLevel != nullptr && VTMaxEncodeLevelKey != nullptr && VTPerProfileDetailsInner != nullptr &&
++                    VTPerProfileDetails != nullptr && VTPerProfileDetailsKey1 != nullptr && VTSupportedProfileArrayKey != nullptr &&
++                    VTSupportedProfileArray1 != nullptr && VTSupportedProfileArray != nullptr && VTPerProfileDetailsKey != nullptr &&
++                    VTQualityRatingKey != nullptr && VTQualityRating != nullptr && VTRatingKey != nullptr && VTRating != nullptr &&
++                    IOGVAHEVCEncodeCapabilities != nullptr) {
++
++                    VTPerProfileDetailsInner->setObject(VTMaxEncodeLevelKey, VTMaxEncodeLevel);
++                    VTPerProfileDetails->setObject(VTPerProfileDetailsKey1, VTPerProfileDetailsInner);
++                    VTSupportedProfileArray->setObject(VTSupportedProfileArray1);
++
++                    IOGVAHEVCEncodeCapabilities->setObject(VTPerProfileDetailsKey, VTPerProfileDetails);
++                    IOGVAHEVCEncodeCapabilities->setObject(VTQualityRatingKey, VTQualityRating);
++                    IOGVAHEVCEncodeCapabilities->setObject(VTRatingKey, VTRating);
++                    IOGVAHEVCEncodeCapabilities->setObject(VTSupportedProfileArrayKey, VTSupportedProfileArray);
++
++                    accelService->setProperty("IOGVAHEVCEncode", "1");
++                    accelService->setProperty("IOGVAHEVCEncodeCapabilities", IOGVAHEVCEncodeCapabilities);
++
++                    DBGLOG("rad", "recovering IOGVAHEVCEncode");
++                } else {
++                    SYSLOG("rad", "allocation failure in IOGVAHEVCEncode");
++                }
++
++                OSSafeReleaseNULL(VTMaxEncodeLevel);
++                OSSafeReleaseNULL(VTMaxEncodeLevelKey);
++                OSSafeReleaseNULL(VTPerProfileDetailsInner);
++                OSSafeReleaseNULL(VTPerProfileDetails);
++                OSSafeReleaseNULL(VTPerProfileDetailsKey1);
++                OSSafeReleaseNULL(VTSupportedProfileArrayKey);
++                OSSafeReleaseNULL(VTSupportedProfileArray1);
++                OSSafeReleaseNULL(VTSupportedProfileArray);
++                OSSafeReleaseNULL(VTPerProfileDetailsKey);
++                OSSafeReleaseNULL(VTQualityRatingKey);
++                OSSafeReleaseNULL(VTQualityRating);
++                OSSafeReleaseNULL(VTRatingKey);
++                OSSafeReleaseNULL(VTRating);
++                OSSafeReleaseNULL(IOGVAHEVCEncodeCapabilities);
++            }
++        }
++    }
++}
+ 
++void RAD::updateAccelConfig(size_t hwIndex, IOService *accelService, const char **accelConfig) {
++    if (accelService && accelConfig) {
++        if (fixConfigName) {
++            auto gpuService = accelService->getParentEntry(gIOServicePlane);
++
++            if (gpuService) {
++                auto model = OSDynamicCast(OSData, gpuService->getProperty("model"));
++                if (model) {
++                    auto modelStr = static_cast<const char *>(model->getBytesNoCopy());
++                    if (modelStr) {
++                        if (modelStr[0] == 'A' && ((modelStr[1] == 'M' && modelStr[2] == 'D') ||
++                                                   (modelStr[1] == 'T' && modelStr[2] == 'I')) && modelStr[3] == ' ') {
++                            modelStr += 4;
++                        }
++
++                        DBGLOG("rad", "updateAccelConfig found gpu model %s", modelStr);
++                        *accelConfig = modelStr;
++                    } else {
++                        DBGLOG("rad", "updateAccelConfig found null gpu model");
++                    }
++                } else {
++                    DBGLOG("rad", "updateAccelConfig failed to find gpu model");
++                }
++
++            } else {
++                DBGLOG("rad", "updateAccelConfig failed to find accelerator parent");
++            }
++        }
++
++        if (enableGvaSupport && hwIndex == IndexRadeonHardwareX4000) {
++            setGvaProperties(accelService);
++        }
++    }
++}
+ 
+-		} else {
+-			DBGLOG("rad", "translateAtomConnectorInfoV1 failed to detect sense for translated connector");
+-		}
+-	}
++bool RAD::wrapSetProperty(IORegistryEntry *that, const char *aKey, void *bytes, unsigned length) {
++    if (length > 10 && aKey && reinterpret_cast<const uint32_t *>(aKey)[0] == 'edom' && reinterpret_cast<const uint16_t *>(aKey)[2] == 'l') {
++        DBGLOG("rad", "SetProperty caught model %u (%.*s)", length, length, static_cast<char *>(bytes));
++        if (*static_cast<uint32_t *>(bytes) == ' DMA' || *static_cast<uint32_t *>(bytes) == ' ITA' || *static_cast<uint32_t *>(bytes) == 'edaR') {
++            if (FunctionCast(wrapGetProperty, callbackRAD->orgGetProperty)(that, aKey)) {
++                DBGLOG("rad", "SetProperty ignored setting %s to %s", aKey, static_cast<char *>(bytes));
++                return true;
++            }
++            DBGLOG("rad", "SetProperty missing %s, fallback to %s", aKey, static_cast<char *>(bytes));
++        }
++    }
++
++    return FunctionCast(wrapSetProperty, callbackRAD->orgSetProperty)(that, aKey, bytes, length);
++}
+ 
+-	return code;
++OSObject *RAD::wrapGetProperty(IORegistryEntry *that, const char *aKey) {
++    auto obj = FunctionCast(wrapGetProperty, callbackRAD->orgGetProperty)(that, aKey);
++    auto props = OSDynamicCast(OSDictionary, obj);
++
++    if (props && aKey) {
++        const char *prefix {nullptr};
++        auto provider = OSDynamicCast(IOService, that->getParentEntry(gIOServicePlane));
++        if (provider) {
++            if (aKey[0] == 'a') {
++                if (!strcmp(aKey, "aty_config"))
++                    prefix = "CFG,";
++                else if (!strcmp(aKey, "aty_properties"))
++                    prefix = "PP,";
++            } else if (aKey[0] == 'c' && !strcmp(aKey, "cail_properties")) {
++                prefix = "CAIL,";
++            }
++
++            if (prefix) {
++                DBGLOG("rad", "GetProperty discovered property merge request for %s", aKey);
++                auto rawProps = props->copyCollection();
++                if (rawProps) {
++                    auto newProps = OSDynamicCast(OSDictionary, rawProps);
++                    if (newProps) {
++                        callbackRAD->mergeProperties(newProps, prefix, provider);
++                        that->setProperty(aKey, newProps);
++                        obj = newProps;
++                    }
++                    rawProps->release();
++                }
++
++            }
++        }
++    }
++
++    return obj;
+ }
+ 
+-uint32_t RAD::wrapTranslateAtomConnectorInfoV2(void *that, RADConnectors::AtomConnectorInfo *info, RADConnectors::Connector *connector) {
+-	uint32_t code = FunctionCast(wrapTranslateAtomConnectorInfoV2, callbackRAD->orgTranslateAtomConnectorInfoV2)(that, info, connector);
++uint32_t RAD::wrapGetConnectorsInfoV1(void *that, RADConnectors::Connector *connectors, uint8_t *sz) {
++    uint32_t code = FunctionCast(wrapGetConnectorsInfoV1, callbackRAD->orgGetConnectorsInfoV1)(that, connectors, sz);
++    auto props = callbackRAD->currentPropProvider.get();
++
++    if (code == 0 && sz && props && *props) {
++        if (getKernelVersion() >= KernelVersion::HighSierra)
++            callbackRAD->updateConnectorsInfo(nullptr, nullptr, *props, connectors, sz);
++        else
++            callbackRAD->updateConnectorsInfo(static_cast<void **>(that)[1], callbackRAD->orgGetAtomObjectTableForType, *props, connectors, sz);
++    } else {
++        DBGLOG("rad", "getConnectorsInfoV1 failed %X or undefined %d", code, props == nullptr);
++    }
++
++    return code;
++}
+ 
+-	if (code == 0 && info && connector) {
+-		RADConnectors::print(connector, 1);
++uint32_t RAD::wrapGetConnectorsInfoV2(void *that, RADConnectors::Connector *connectors, uint8_t *sz) {
++    uint32_t code = FunctionCast(wrapGetConnectorsInfoV2, callbackRAD->orgGetConnectorsInfoV2)(that, connectors, sz);
++    auto props = callbackRAD->currentPropProvider.get();
+ 
+-		uint8_t sense = getSenseID(info->i2cRecord);
+-		if (sense) {
+-			DBGLOG("rad", "translateAtomConnectorInfoV2 got sense id %02X", sense);
+-			uint8_t txmit = 0, enc = 0;
+-			if (getTxEnc(info->usGraphicObjIds, txmit, enc))
+-				callbackRAD->autocorrectConnector(getConnectorID(info->usConnObjectId), getSenseID(info->i2cRecord), txmit, enc, connector, 1);
+-		} else {
+-			DBGLOG("rad", "translateAtomConnectorInfoV2 failed to detect sense for translated connector");
+-		}
+-	}
++    if (code == 0 && sz && props && *props)
++        callbackRAD->updateConnectorsInfo(nullptr, nullptr, *props, connectors, sz);
++    else
++        DBGLOG("rad", "getConnectorsInfoV2 failed %X or undefined %d", code, props == nullptr);
+ 
+-	return code;
++    return code;
+ }
+ 
+-bool RAD::wrapATIControllerStart(IOService *ctrl, IOService *provider) {
+-	DBGLOG("rad", "starting controller " PRIKADDR, CASTKADDR(current_thread()));
+-	if (callbackRAD->forceVesaMode) {
+-		DBGLOG("rad", "disabling video acceleration on request");
+-		return false;
+-	}
++uint32_t RAD::wrapLegacyGetConnectorsInfo(void *that, RADConnectors::Connector *connectors, uint8_t *sz) {
++    uint32_t code = FunctionCast(wrapLegacyGetConnectorsInfo, callbackRAD->orgLegacyGetConnectorsInfo)(that, connectors, sz);
++    auto props = callbackRAD->currentLegacyPropProvider.get();
+ 
+-	callbackRAD->currentPropProvider.set(provider);
+-	bool r = FunctionCast(wrapATIControllerStart, callbackRAD->orgATIControllerStart)(ctrl, provider);
+-	DBGLOG("rad", "starting controller done %d " PRIKADDR, r, CASTKADDR(current_thread()));
+-	callbackRAD->currentPropProvider.erase();
++    if (code == 0 && sz && props && *props)
++        callbackRAD->updateConnectorsInfo(static_cast<void **>(that)[1], callbackRAD->orgLegacyGetAtomObjectTableForType, *props, connectors, sz);
++    else
++        DBGLOG("rad", "legacy getConnectorsInfo failed %X or undefined %d", code, props == nullptr);
+ 
+-	return r;
++    return code;
+ }
+ 
+-bool RAD::wrapLegacyATIControllerStart(IOService *ctrl, IOService *provider) {
+-	DBGLOG("rad", "starting legacy controller " PRIKADDR, CASTKADDR(current_thread()));
+-	if (callbackRAD->forceVesaMode) {
+-		DBGLOG("rad", "disabling legacy video acceleration on request");
+-		return false;
+-	}
++uint32_t RAD::wrapTranslateAtomConnectorInfoV1(void *that, RADConnectors::AtomConnectorInfo *info, RADConnectors::Connector *connector) {
++    uint32_t code = FunctionCast(wrapTranslateAtomConnectorInfoV1, callbackRAD->orgTranslateAtomConnectorInfoV1)(that, info, connector);
++
++    if (code == 0 && info && connector) {
++        RADConnectors::print(connector, 1);
++
++        uint8_t sense = getSenseID(info->i2cRecord);
++        if (sense) {
++            DBGLOG("rad", "translateAtomConnectorInfoV1 got sense id %02X", sense);
++
++            // We need to extract usGraphicObjIds from info->hpdRecord, which is of type ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT:
++            // struct ATOM_SRC_DST_TABLE_FOR_ONE_OBJECT {
++            //   uint8_t ucNumberOfSrc;
++            //   uint16_t usSrcObjectID[ucNumberOfSrc];
++            //   uint8_t ucNumberOfDst;
++            //   uint16_t usDstObjectID[ucNumberOfDst];
++            // };
++            // The value we need is in usSrcObjectID. The structure is byte-packed.
++
++            uint8_t ucNumberOfSrc = info->hpdRecord[0];
++            for (uint8_t i = 0; i < ucNumberOfSrc; i++) {
++                auto usSrcObjectID = *reinterpret_cast<uint16_t *>(info->hpdRecord + sizeof(uint8_t) + i * sizeof(uint16_t));
++                DBGLOG("rad", "translateAtomConnectorInfoV1 checking %04X object id", usSrcObjectID);
++                if (((usSrcObjectID & OBJECT_TYPE_MASK) >> OBJECT_TYPE_SHIFT) == GRAPH_OBJECT_TYPE_ENCODER) {
++                    uint8_t txmit = 0, enc = 0;
++                    if (getTxEnc(usSrcObjectID, txmit, enc))
++                        callbackRAD->autocorrectConnector(getConnectorID(info->usConnObjectId), getSenseID(info->i2cRecord), txmit, enc, connector, 1);
++                    break;
++                }
++            }
++
++
++        } else {
++            DBGLOG("rad", "translateAtomConnectorInfoV1 failed to detect sense for translated connector");
++        }
++    }
++
++    return code;
++}
+ 
+-	callbackRAD->currentLegacyPropProvider.set(provider);
+-	bool r = FunctionCast(wrapLegacyATIControllerStart, callbackRAD->orgLegacyATIControllerStart)(ctrl, provider);
+-	DBGLOG("rad", "starting legacy legacy controller done %d " PRIKADDR, r, CASTKADDR(current_thread()));
+-	callbackRAD->currentLegacyPropProvider.erase();
++uint32_t RAD::wrapTranslateAtomConnectorInfoV2(void *that, RADConnectors::AtomConnectorInfo *info, RADConnectors::Connector *connector) {
++    uint32_t code = FunctionCast(wrapTranslateAtomConnectorInfoV2, callbackRAD->orgTranslateAtomConnectorInfoV2)(that, info, connector);
++
++    if (code == 0 && info && connector) {
++        RADConnectors::print(connector, 1);
++
++        uint8_t sense = getSenseID(info->i2cRecord);
++        if (sense) {
++            DBGLOG("rad", "translateAtomConnectorInfoV2 got sense id %02X", sense);
++            uint8_t txmit = 0, enc = 0;
++            if (getTxEnc(info->usGraphicObjIds, txmit, enc))
++                callbackRAD->autocorrectConnector(getConnectorID(info->usConnObjectId), getSenseID(info->i2cRecord), txmit, enc, connector, 1);
++        } else {
++            DBGLOG("rad", "translateAtomConnectorInfoV2 failed to detect sense for translated connector");
++        }
++    }
++
++    return code;
++}
+ 
+-	return r;
++bool RAD::wrapATIControllerStart(IOService *ctrl, IOService *provider) {
++    DBGLOG("rad", "starting controller " PRIKADDR, CASTKADDR(current_thread()));
++    if (callbackRAD->forceVesaMode) {
++        DBGLOG("rad", "disabling video acceleration on request");
++        return false;
++    }
++
++    callbackRAD->currentPropProvider.set(provider);
++    bool r = FunctionCast(wrapATIControllerStart, callbackRAD->orgATIControllerStart)(ctrl, provider);
++    DBGLOG("rad", "starting controller done %d " PRIKADDR, r, CASTKADDR(current_thread()));
++    callbackRAD->currentPropProvider.erase();
++
++    return r;
++}
++
++bool RAD::wrapLegacyATIControllerStart(IOService *ctrl, IOService *provider) {
++    DBGLOG("rad", "starting legacy controller " PRIKADDR, CASTKADDR(current_thread()));
++    if (callbackRAD->forceVesaMode) {
++        DBGLOG("rad", "disabling legacy video acceleration on request");
++        return false;
++    }
++
++    callbackRAD->currentLegacyPropProvider.set(provider);
++    bool r = FunctionCast(wrapLegacyATIControllerStart, callbackRAD->orgLegacyATIControllerStart)(ctrl, provider);
++    DBGLOG("rad", "starting legacy legacy controller done %d " PRIKADDR, r, CASTKADDR(current_thread()));
++    callbackRAD->currentLegacyPropProvider.erase();
++
++    return r;
+ }
+ 
+ IOReturn RAD::findProjectByPartNumber(IOService *ctrl, void *properties) {

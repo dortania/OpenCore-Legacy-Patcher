@@ -25,24 +25,40 @@ class CPU:
 class PCIDevice:
     VENDOR_ID: ClassVar[int]  # Default vendor id, for subclasses.
 
-    vendor_id: int  # The vendor ID of this PCI device
-    device_id: int  # The device ID of this PCI device
+    vendor_id:  int  # The vendor ID of this PCI device
+    device_id:  int  # The device ID of this PCI device
     class_code: int  # The class code of this PCI device - https://pci-ids.ucw.cz/read/PD
 
-    name:             Optional[str]  = None  # Name of IORegistryEntry
-    model:            Optional[str]  = None  # model property
-    acpi_path:        Optional[str]  = None  # ACPI Device Path
-    pci_path:         Optional[str]  = None  # PCI Device Path
-    disable_metal:    Optional[bool] = False # 'disable-metal' property
-    force_compatible: Optional[bool] = False # 'force-compat' property
+    name:                Optional[str]  = None  # Name of IORegistryEntry
+    model:               Optional[str]  = None  # model property
+    acpi_path:           Optional[str]  = None  # ACPI Device Path
+    pci_path:            Optional[str]  = None  # PCI Device Path
+    disable_metal:       Optional[bool] = False # 'disable-metal' property
+    force_compatible:    Optional[bool] = False # 'force-compat' property
+    vendor_id_unspoofed: Optional[int]  = -1    # Unspoofed vendor ID of this PCI device
+    device_id_unspoofed: Optional[int]  = -1    # Unspoofed device ID of this PCI device
 
     @classmethod
     def from_ioregistry(cls, entry: ioreg.io_registry_entry_t, anti_spoof=False):
         properties: dict = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperties(entry, None, ioreg.kCFAllocatorDefault, ioreg.kNilOptions)[1])  # type: ignore
-        if anti_spoof and "IOName" in properties:
-            vendor_id, device_id = (int(i, 16) for i in properties["IOName"][3:].split(","))
-        else:
+
+        vendor_id = None
+        device_id = None
+        vendor_id_unspoofed = None
+        device_id_unspoofed = None
+
+        if "IOName" in properties and properties["IOName"].startswith("pci"):
+            vendor_id_unspoofed, device_id_unspoofed = (int(i, 16) for i in properties["IOName"][3:].split(","))
+            if anti_spoof:
+                vendor_id = vendor_id_unspoofed
+                device_id = device_id_unspoofed
+
+        if vendor_id is None and device_id is None:
             vendor_id, device_id = [int.from_bytes(properties[i][:4], byteorder="little") for i in ["vendor-id", "device-id"]]
+
+        if vendor_id_unspoofed is None and device_id_unspoofed is None:
+            vendor_id_unspoofed = vendor_id
+            device_id_unspoofed = device_id
 
         device = cls(vendor_id, device_id, int.from_bytes(properties["class-code"][:6], byteorder="little"), name=ioreg.io_name_t_to_str(ioreg.IORegistryEntryGetName(entry, None)[1]))
         if "model" in properties:
@@ -56,6 +72,9 @@ class PCIDevice:
             device.disable_metal = True
         if "force-compat" in properties:
             device.force_compatible = True
+
+        device.vendor_id_unspoofed = vendor_id_unspoofed
+        device.device_id_unspoofed = device_id_unspoofed
         device.populate_pci_path(entry)
         return device
 
@@ -242,6 +261,7 @@ class AMD(GPU):
         Legacy_GCN_8000 = "Legacy GCN v2"
         Legacy_GCN_9000 = "Legacy GCN v3"
         Polaris = "Polaris"
+        Polaris_Spoof = "Polaris (Spoofed)"
         Vega = "Vega"
         Navi = "Navi"
         Unknown = "Unknown"
@@ -263,6 +283,8 @@ class AMD(GPU):
             self.arch = AMD.Archs.TeraScale_2
         elif self.device_id in pci_data.amd_ids.polaris_ids:
             self.arch = AMD.Archs.Polaris
+        elif self.device_id in pci_data.amd_ids.polaris_spoof_ids:
+            self.arch = AMD.Archs.Polaris_Spoof
         elif self.device_id in pci_data.amd_ids.vega_ids:
             self.arch = AMD.Archs.Vega
         elif self.device_id in pci_data.amd_ids.navi_ids:

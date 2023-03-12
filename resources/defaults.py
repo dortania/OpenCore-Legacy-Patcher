@@ -20,8 +20,9 @@ class GenerateDefaults:
     def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants):
         self.constants: constants.Constants = global_constants
 
-        self.model:          str = model
-        self.host_is_target: str = host_is_target
+        self.model: str = model
+        
+        self.host_is_target: bool = host_is_target
 
         # Reset Variables
         self.constants.sip_status:    bool = True
@@ -31,9 +32,16 @@ class GenerateDefaults:
         self.constants.fu_status:     bool = True
 
         self.constants.fu_arguments: str = None
-
+          
         self.constants.custom_serial_number:       str = ""
         self.constants.custom_board_serial_number: str = ""
+        
+        if self.host_is_target is True:
+            for gpu in self.constants.computer.gpus:
+                if gpu.device_id_unspoofed == -1:
+                    gpu.device_id_unspoofed = gpu.device_id
+                if gpu.vendor_id_unspoofed == -1:
+                    gpu.vendor_id_unspoofed = gpu.vendor_id
 
         self._general_probe()
         self._nvram_probe()
@@ -233,6 +241,7 @@ class GenerateDefaults:
                 device_probe.AMD.Archs.Legacy_GCN_8000,
                 device_probe.AMD.Archs.Legacy_GCN_9000,
                 device_probe.AMD.Archs.Polaris,
+                device_probe.AMD.Archs.Polaris_Spoof,
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:
@@ -241,6 +250,7 @@ class GenerateDefaults:
                         device_probe.AMD.Archs.Legacy_GCN_8000,
                         device_probe.AMD.Archs.Legacy_GCN_9000,
                         device_probe.AMD.Archs.Polaris,
+                        device_probe.AMD.Archs.Polaris_Spoof,
                         device_probe.AMD.Archs.Vega,
                         device_probe.AMD.Archs.Navi,
                 ]:
@@ -258,6 +268,7 @@ class GenerateDefaults:
                 # See if system can use the native AMD stack in Ventura
                 if gpu in [
                     device_probe.AMD.Archs.Polaris,
+                    device_probe.AMD.Archs.Polaris_Spoof,
                     device_probe.AMD.Archs.Vega,
                     device_probe.AMD.Archs.Navi,
                 ]:
