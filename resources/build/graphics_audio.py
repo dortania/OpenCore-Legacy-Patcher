@@ -179,7 +179,6 @@ class build_graphics_audio:
             logging.info("- Disabling unsupported iGPU")
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                 "name": binascii.unhexlify("23646973706C6179"),
-                "IOName": "#display",
                 "class-code": binascii.unhexlify("FFFFFFFF"),
             }
         shutil.copy(self.constants.backlight_injector_path, self.constants.kexts_path)
@@ -216,7 +215,6 @@ class build_graphics_audio:
             logging.info("- Disabling unsupported iGPU")
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                 "name": binascii.unhexlify("23646973706C6179"),
-                "IOName": "#display",
                 "class-code": binascii.unhexlify("FFFFFFFF"),
             }
         elif self.model == "iMac10,1":
