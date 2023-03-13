@@ -47,8 +47,12 @@ class PCIDevice:
         vendor_id_unspoofed = None
         device_id_unspoofed = None
 
-        if "IOName" in properties and properties["IOName"].startswith("pci"):
-            vendor_id_unspoofed, device_id_unspoofed = (int(i, 16) for i in properties["IOName"][3:].split(","))
+        if "IOName" in properties:
+            ioname = properties["IOName"]
+            if type(ioname) is bytes:
+                ioname = ioname.strip(b"\0").decode()
+
+            vendor_id_unspoofed, device_id_unspoofed = (int(i, 16) for i in ioname[3:].split(","))
             if anti_spoof:
                 vendor_id = vendor_id_unspoofed
                 device_id = device_id_unspoofed
