@@ -311,7 +311,7 @@ def SystemPatchDictionary(os_major, os_minor, non_metal_os_support):
                         "OS Minor": 99
                     },
                 },
-                "Install Reference": {
+                "Install": {
                     "/System/Library/Frameworks": {
                         "Metal.framework": "13.2.1",
                     },

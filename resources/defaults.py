@@ -246,6 +246,13 @@ class GenerateDefaults:
                 device_probe.AMD.Archs.Navi,
             ]:
                 if gpu in [
+                    device_probe.Intel.Archs.Ivy_Bridge,
+                    device_probe.Intel.Archs.Haswell,
+                    device_probe.NVIDIA.Archs.Kepler,
+                ]:
+                    self.constants.disable_amfi = True
+
+                if gpu in [
                         device_probe.AMD.Archs.Legacy_GCN_7000,
                         device_probe.AMD.Archs.Legacy_GCN_8000,
                         device_probe.AMD.Archs.Legacy_GCN_9000,
