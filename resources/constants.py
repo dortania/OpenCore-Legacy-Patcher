@@ -76,6 +76,7 @@ class Constants:
         ## Dortania
         ## https://github.com/dortania
         self.backlight_injector_version = "1.1.0"  # BacklightInjector
+        self.backlight_injectorA_version = "1.0.0"  # BacklightInjector iMac9,1
         self.smcspoof_version = "1.0.0"  #           SMC-Spoof
         self.mce_version = "1.0.0"  #                AppleMCEReporterDisabler
         self.btspoof_version = "1.0.0"  #            Bluetooth-Spoof
@@ -410,6 +411,10 @@ class Constants:
     @property
     def backlight_injector_path(self):
         return self.payload_kexts_path / Path(f"Misc/BacklightInjector-v{self.backlight_injector_version}.zip")
+
+    @property
+    def backlight_injectorA_path(self):
+        return self.payload_kexts_path / Path(f"Misc/BacklightInjectorA-v{self.backlight_injectorA_version}.zip")
 
     @property
     def cpufriend_path(self):
