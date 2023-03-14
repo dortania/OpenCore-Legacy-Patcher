@@ -400,7 +400,8 @@ class build_graphics_audio:
                     "class-code": binascii.unhexlify("FFFFFFFF"),
                 }
             elif self.constants.serial_settings != "None":
-                self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
+                if self.gfx0_path not in self.config["DeviceProperties"]["Add"] or "agdpmod" not in self.config["DeviceProperties"]["Add"][self.gfx0_path]:
+                    self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
         if self.model.startswith("iMac14,1"):
             # Ensure that agdpmod is applied to iMac14,x with iGPU only
