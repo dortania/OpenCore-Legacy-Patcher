@@ -179,7 +179,6 @@ class build_graphics_audio:
             logging.info("- Disabling unsupported iGPU")
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                 "name": binascii.unhexlify("23646973706C6179"),
-                "IOName": "#display",
                 "class-code": binascii.unhexlify("FFFFFFFF"),
             }
         shutil.copy(self.constants.backlight_injector_path, self.constants.kexts_path)
@@ -216,7 +215,6 @@ class build_graphics_audio:
             logging.info("- Disabling unsupported iGPU")
             self.config["DeviceProperties"]["Add"]["PciRoot(0x0)/Pci(0x2,0x0)"] = {
                 "name": binascii.unhexlify("23646973706C6179"),
-                "IOName": "#display",
                 "class-code": binascii.unhexlify("FFFFFFFF"),
             }
         elif self.model == "iMac10,1":
@@ -402,7 +400,8 @@ class build_graphics_audio:
                     "class-code": binascii.unhexlify("FFFFFFFF"),
                 }
             elif self.constants.serial_settings != "None":
-                self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
+                if self.gfx0_path not in self.config["DeviceProperties"]["Add"] or "agdpmod" not in self.config["DeviceProperties"]["Add"][self.gfx0_path]:
+                    self.config["DeviceProperties"]["Add"][self.gfx0_path] = {"agdpmod": "vit9696"}
 
         if self.model.startswith("iMac14,1"):
             # Ensure that agdpmod is applied to iMac14,x with iGPU only
