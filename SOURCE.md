@@ -6,15 +6,15 @@ For developers wishing to validate mainline changes, you may use these nightly l
 
 * [GUI (Graphical Based App)](https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython/main/OpenCore-Patcher.app%20%28GUI%29.zip)
 
-**Warning**: These binaries should not be used without first consulting the [CHANGELOG](./CHANGELOG.md). Do not distribute these links in forums, please link to this file instead.
+**Warning**: These binaries should not be used without first consulting the [CHANGELOG](./CHANGELOG.md). Do not distribute these links in forums, please link to this document instead.
 
 * Users running new builds of the project without understanding what has changed are at a higher risk of bricking their installation as they do not read any warnings provided in the CHANGELOG. We wish to minimize these situations as much as possible.
 
 ## Getting Started
 
-To start, ensure you have Python 3.6 or newer installed. Additionally, ensure that they were downloaded from the official source, [python.org](https://www.python.org/downloads/macos/).
+To start, ensure you have Python 3.6 or newer installed. Additionally, ensure that it was downloaded from the official source, [python.org](https://www.python.org/downloads/macos/).
 
-* Python installations either preinstalled or provided with Xcode/Xcode Command Line Tools are unsupported due to reliablility issues.
+* Python installations either preinstalled or provided with Xcode or the Xcode Command Line Tools are unsupported due to reliability issues.
 
 Once Python is installed, open Terminal and run the following:
 
