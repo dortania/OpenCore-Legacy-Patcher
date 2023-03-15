@@ -32,11 +32,11 @@ class Constants:
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
-        self.lilu_version = "1.6.3"  #               Lilu
-        self.whatevergreen_version = "1.6.3"  #      WhateverGreen
-        self.whatevergreen_navi_version = "1.6.3-Navi"  # WhateverGreen (Navi Patch)
+        self.lilu_version = "1.6.4"  #               Lilu
+        self.whatevergreen_version = "1.6.4"  #      WhateverGreen
+        self.whatevergreen_navi_version = "1.6.4-Navi"  # WhateverGreen (Navi Patch)
         self.airportbcrmfixup_version = "2.1.6"  #   AirPortBrcmFixup
-        self.nvmefix_version = "1.0.9"  #            NVMeFix
+        self.nvmefix_version = "1.1.0"  #            NVMeFix
         self.applealc_version = "1.6.3"  #           AppleALC
         self.restrictevents_version = "1.0.9"  #     RestrictEvents
         self.featureunlock_version = "1.1.4"  #      FeatureUnlock
@@ -90,7 +90,7 @@ class Constants:
 
         ## cdf
         ## https://github.com/cdf/Innie
-        self.innie_version = "1.3.0"  # Innie
+        self.innie_version = "1.3.1"  # Innie
 
         ## arter97
         ## https://github.com/arter97/SimpleMSR/
@@ -461,7 +461,7 @@ class Constants:
 
     @property
     def innie_path(self):
-        return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}.zip")
+        return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}-{self.kext_variant}.zip")
 
     @property
     def simplemsr_path(self):
