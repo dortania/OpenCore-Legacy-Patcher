@@ -1,11 +1,11 @@
 # Installing Windows in UEFI Mode
 
 Modern versions of Windows officially support two types of firmware: UEFI and BIOS. Users may want to boot Windows through the OCLP Bootpicker, but only UEFI Installations of Windows will show up in the OCLP Bootpicker.
-Many older Macs do not "officially" support UEFI Windows installations and will refuse to install or cause many issues, but OCLP can be used to prevent almost all of these installation and usability issues.
+Many older Macs do not "officially" support UEFI Windows installations, leading to installation failures and strange behaviour, but OCLP can be used to prevent almost all of these issues.
 
 ## Minimum Requirements
 
-This guide will focus on the installation of Windows 10 without using Bootcamp Utility. Windows 11 should also work, but its quirks will not be covered.
+This guide will focus on the installation of Windows 10 without using Boot Camp Assistant. Windows 11 should also work, but its quirks will not be covered.
 
 * Due to hardware and firmware limitations, UEFI Windows installations are only recommended on the following machines:
 
@@ -18,8 +18,8 @@ This guide will focus on the installation of Windows 10 without using Bootcamp U
   * 2009[^2] Xserve (Xserve3,1), upgraded GPU is preferred
 
 
-[^1]: MacPro4,1 and MacPro5,1 systems experience issues with the Windows installer, see the DISM section for installation instructions.
-[^2]: Theoretically supported, not tested. Follow DISM section, similar to Mac Pro
+[^1]: MacPro4,1 and MacPro5,1 systems experience issues with the Windows installer, follow the DISM installation section for instructions.
+[^2]: Theoretically supported, not tested. Follow DISM installation section
 
 If your machine is not listed, UEFI Windows will likely still install, but you may face stability/driver issues.
 
@@ -41,25 +41,30 @@ Next, select the drive you wish to install Windows in Disk Utility on and partit
 
 ![](../images/windows-partition-1.png)
 
+
+:::warning
+
+Incorrectly erasing your drive can lead to data loss! Please verify that you are erasing the correct drive/partition.
+
+:::
+
 If you plan to use the same hard drive for macOS and Windows, we recommend creating a dedicated partition just for OpenCore. This lets Windows have the ESP to itself and OpenCore can stay within it's own bubble.
 
 Recommended size is 200MB and the partition format **must** be FAT32 for OpenCore to operate correctly. You will next want to install OpenCore onto the new partition, either moving from the ESP with [MountEFI](https://github.com/corpnewt/MountEFI) or rerunning the OpenCore-Patcher.app
 
 * Note 1: For machines with dedicated drives for Windows, having different partitions for OpenCore is not required.
-* Note 2: Having different partitions for OpenCore is also not required if the Windows boot files detected by the stock Bootpicker are removed. See "Removing the Windows option from the stock bootpicker" for further information.
+* Note 2: Having different partitions for OpenCore is not required if the Windows boot files detected by the stock Bootpicker are removed. See "Removing the Windows option from the stock bootpicker" for further information.
 * Note 3: We recommend uninstalling OpenCore from the ESP/EFI Partition when you create this new OpenCore partition to avoid confusion when selecting OpenCore builds in the Mac's boot picker.
 
 ![](../images/windows-partition-2.png)
 
 ## Creating the Windows Installer
 
-The latest Windows 10 installation image can be downloaded from Microsoft using the following link:
+The latest Windows installation images can be downloaded from Microsoft using the following links:
 
 * [Download Windows 10 Disc Image (ISO File)](https://www.microsoft.com/en-ca/software-download/windows10ISO)
 
-Alternatively, TechBench provides an download interface for other builds of Windows 10 in several languages, hosted on Microsoft's servers:
-
-* [TechBench by WZT](https://tb.rg-adguard.net/public.php)
+* [Download Windows 11 Disc Image (ISO File)](https://www.microsoft.com/en-ca/software-download/windows11)
 
 Once the file is downloaded, mount the .iso image:
 
@@ -82,7 +87,7 @@ The `rsync` command will take some time, so get some coffee and sit back. Once f
 
 ## Installation Process
 
-Once you reboot your machine, you should see a new boot option in the OCLP Bootpicker labelled as "EFI Boot". It may or may not have the BootCamp icon.
+Once you reboot your machine, you should see a new boot option in the OCLP Bootpicker labelled as "EFI Boot". It may or may not have the Boot Camp icon.
 
 :::warning
 
@@ -127,11 +132,21 @@ Once `dism` finishes its thing, run `bcdboot E:\Windows`, substituting "E" for t
 
 ![](../images/DISM-7.png)
 
-::: details Removing the Windows option from the stock bootpicker, HIGHLY RECOMMENDED FOR MACPRO4,1, MACPRO5,1, AND XSERVE3,1 SYSTEMS
+Windows is now installed. It should be recognized as "EFI Boot" with a Boot Camp icon in the OCLP Bootpicker.
 
-Removing the Windows boot option from the stock bootpicker is HIGHLY RECOMMENDED on MacPro4,1, MacPro5,1, and Xserve3,1 systems in order to prevent Secure Boot NVRAM corruption and bricking.
+:::warning
 
-Enter the EFI Folder by running `C:`, substituting "C" for the EFI Partition Drive Letter. Then run `cd EFI` to enter the EFI Partition. Next, run `rmdir Boot /S /Q` to remove the boot files that can be detected by the stock Bootpicker. The OCLP Picker will still be able to detect and boot Windows.
+After the boot files are created, **DO NOT** reboot if you are using a MacPro4,1, MacPro5,1, or Xserve3,1 system! A bug in the Windows bootloader exists that will completely brick the system if it is loaded through the stock bootpicker. See the "Installation: Removing the Windows option from the stock bootpicker" section for a workaround.
+
+:::
+
+### Installation: Removing the Windows option from the stock bootpicker
+
+Removing the Windows boot option from the stock bootpicker is **HIGHLY RECOMMENDED** on MacPro4,1, MacPro5,1, and Xserve3,1 systems in order to prevent Secure Boot NVRAM corruption and bricking.
+
+Start up a command prompt window in the Windows Setup environment by running `cmd`.
+
+Next, enter the EFI Folder by running `C:`, substituting "C" for the EFI Partition Drive Letter. Then run `cd EFI` to enter the EFI Partition. Then, run `rmdir Boot /S /Q` to remove the boot files that can be detected by the stock Bootpicker. The OCLP Picker will still be able to detect and boot Windows. 
 
 ![](../images/DISM-8.png)
 
@@ -139,13 +154,12 @@ You can verify that the `Boot` folder is removed by running the `dir` command:
 
 ![](../images/DISM-9.png)
 
-:::
+If, for whatever reason, you are not able to remove the boot files from the Windows setup, shut down your system, boot into macOS, mount your EFI partition with [MountEFI](https://github.com/corpnewt/MountEFI), and remove the `Boot` folder (it should have a recent file modification date, and contain `Bootx64.efi`).
 
-Windows is now installed. It should be recognized as "EFI Boot" with a BootCamp icon in the OCLP Bootpicker.
 
 ## Post-Installation
 
-### Installing BootCamp Software
+### Installing Boot Camp Software
 
 To get started, download the Brigadier utility from the following link:
 
@@ -161,11 +175,11 @@ Then run `.\brigadier.exe --model=MODEL1,1`, replacing "MODEL1,1" with your mach
 
 ![](../images/BOOTCAMP-2.png)
 
-Once the BootCamp software is downloaded, you can install it by executing `Setup.exe` or `\Drivers\Apple\BootCamp.msi` (`BootCamp64.msi` if present).
+Once the Boot Camp software is downloaded, you can install it by executing `Setup.exe` or `\Drivers\Apple\BootCamp.msi` (`BootCamp64.msi` if present).
 
 ![](../images/BOOTCAMP-3.png)
 
-### Installing BootCamp 6 softare on unsupported machines
+### Installing Boot Camp 6 softare on unsupported machines
 
 To get started, download the Brigadier utility from the following link:
 
@@ -181,7 +195,7 @@ Then run `.\brigadier.exe --model=MacPro7,1`. This will download the latest Boot
 
 ![](../images/BOOTCAMP-2.png)
 
-Once the BootCamp software is downloaded, you can install BootCamp 6 by executing `\Drivers\Apple\BootCamp.msi` in an administrator command prompt window.
+Once the Boot Camp software is downloaded, you can install Boot Camp 6 by executing `\Drivers\Apple\BootCamp.msi` in an administrator command prompt window.
 
 ![](../images/BOOTCAMP-3.png)
 
@@ -203,9 +217,9 @@ If needed, you can run it from the command line as administrator:
 set __COMPAT_LAYER=WIN7RTM && start \path\to\BootCamp\Drivers\Apple\Bootcamp.msi'
 ```
 
-Make sure to substitute `\path\to` with the location of the BootCamp folder.
+Make sure to substitute `\path\to` with the location of the Boot Camp folder.
 
-You can also open `Properties` on the file to change the compatibility to `Previous version of Windows` in case you have BootCamp 4.0 drivers (the above command does this already.)
+You can also open `Properties` on the file to change the compatibility to `Previous version of Windows` in case you have Boot Camp 4.0 drivers (the above command does this already.)
 
 :::
 
