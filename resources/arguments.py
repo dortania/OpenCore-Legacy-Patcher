@@ -109,10 +109,6 @@ If you plan to create the USB for another machine, please select the "Change Mod
                 logging.info(f"- Using detected model: {self.constants.computer.real_model}")
                 defaults.GenerateDefaults(self.constants.custom_model, True, self.constants)
 
-        if self.args.disk:
-            logging.info(f"- Install Disk set: {self.args.disk}")
-            self.constants.disk = self.args.disk
-
         if self.args.verbose:
             logging.info("- Set verbose configuration")
             self.constants.verbose_debug = True
