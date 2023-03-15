@@ -61,6 +61,7 @@
   - WhateverGreen 1.6.4 - release
   - NVMeFix 1.1.0 - release
   - Innie 1.3.1 - release
+  - OpenCorePkg 0.9.0 - release
 
 ## 0.6.1
 - Avoid usage of KDKlessWorkaround on hardware not requiring it
