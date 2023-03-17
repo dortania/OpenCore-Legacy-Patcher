@@ -34,7 +34,7 @@
     - Support local loose matching when no network connection is available
     - Implement pkg receipt verification to validate integrity of KDKs
   - Implemented logging framework usage for more reliable logging
-    - Logs are stored under `~/OpenCore-Patcher.log`
+    - Logs are stored under `~/Library/Logs/OpenCore-Patcher.log`
     - Subsequent runs are appended to the log, allowing for easy debugging
   - Implemented new network_handler.py module
     - Allows for more reliable network calls and downloads
