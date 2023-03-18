@@ -201,14 +201,20 @@ fi
         return list_disks
 
 
-class SeedType(enum.Enum):
+class SeedType(enum.IntEnum):
     """
     Enum for catalog types
+
+    Variants:
+        DeveloperSeed:  Developer Beta (Part of the Apple Developer Program)
+        PublicSeed:     Public Beta
+        CustomerSeed:   AppleSeed Program (Generally mirrors DeveloperSeed)
+        PublicRelease:  Public Release
     """
-    DeveloperSeed = 0
-    PublicSeed    = 1
-    CustomerSeed  = 2
-    PublicRelease = 3
+    DeveloperSeed: int = 0
+    PublicSeed:    int = 1
+    CustomerSeed:  int = 2
+    PublicRelease: int = 3
 
 
 class RemoteInstallerCatalog:
