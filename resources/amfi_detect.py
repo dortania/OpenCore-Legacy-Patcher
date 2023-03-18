@@ -28,7 +28,7 @@ class AmfiConfigurationDetection:
 
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.AMFI_ALLOW_TASK_FOR_PID:      bool = False
         self.AMFI_ALLOW_INVALID_SIGNATURE: bool = False
         self.AMFI_LV_ENFORCE_THIRD_PARTY:  bool = False
@@ -45,7 +45,7 @@ class AmfiConfigurationDetection:
         self._parse_oclp_configuration()
 
 
-    def _init_nvram_dicts(self):
+    def _init_nvram_dicts(self) -> None:
         """
         Initialize the boot-args and OCLP-Settings NVRAM dictionaries
         """
@@ -60,7 +60,7 @@ class AmfiConfigurationDetection:
             self.oclp_args = oclp_args.split(" ")
 
 
-    def _parse_amfi_bitmask(self):
+    def _parse_amfi_bitmask(self) -> None:
         """
         Parse the AMFI bitmask from boot-args
         See data/amfi_data.py for more information
@@ -96,7 +96,7 @@ class AmfiConfigurationDetection:
             self.AMFI_ALLOW_INVALID_SIGNATURE = True
 
 
-    def _parse_amfi_boot_args(self):
+    def _parse_amfi_boot_args(self) -> None:
         """
         Parse the AMFI boot-args
         """
@@ -121,7 +121,7 @@ class AmfiConfigurationDetection:
                         self.AMFI_ALLOW_INVALID_SIGNATURE = True
 
 
-    def _parse_oclp_configuration(self):
+    def _parse_oclp_configuration(self) -> None:
         """
         Parse the OCLP configuration
         """
@@ -130,7 +130,7 @@ class AmfiConfigurationDetection:
             self.SKIP_LIBRARY_VALIDATION = True
 
 
-    def check_config(self, level: int):
+    def check_config(self, level: int) -> bool:
         """
         Check the AMFI configuration based on provided AMFI level
         See AmfiConfigLevel enum for valid levels

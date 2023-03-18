@@ -10,7 +10,7 @@ from data import os_data
 
 
 class Constants:
-    def __init__(self):
+    def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "0.6.2"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version:     str = "0.8.5"  # PatcherSupportPkg

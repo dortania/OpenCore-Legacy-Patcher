@@ -15,7 +15,7 @@ class PatcherValidation:
     Primarily for Continuous Integration
     """
 
-    def __init__(self, global_constants: constants.Constants):
+    def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
 
         self.constants.validate = True
@@ -54,7 +54,7 @@ class PatcherValidation:
         self._validate_sys_patch()
 
 
-    def _build_prebuilt(self):
+    def _build_prebuilt(self) -> None:
         """
         Generate a build for each predefined model
         Then validate against ocvalidate
@@ -73,7 +73,7 @@ class PatcherValidation:
                 logging.info(f"Validation succeeded for predefined model: {model}")
 
 
-    def _build_dumps(self):
+    def _build_dumps(self) -> None:
         """
         Generate a build for each predefined model
         Then validate against ocvalidate
@@ -93,9 +93,13 @@ class PatcherValidation:
                 logging.info(f"Validation succeeded for predefined model: {self.constants.computer.real_model}")
 
 
-    def _validate_root_patch_files(self, major_kernel, minor_kernel):
+    def _validate_root_patch_files(self, major_kernel: int, minor_kernel: int) -> None:
         """
         Validate that all files in the patchset are present in the payload
+
+        Parameters:
+            major_kernel (int): Major kernel version
+            minor_kernel (int): Minor kernel version
         """
 
         patchset = sys_patch_dict.SystemPatchDictionary(major_kernel, minor_kernel, self.constants.legacy_accel_support)
@@ -124,7 +128,7 @@ class PatcherValidation:
         Path(self.constants.payload_path / f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist").unlink()
 
 
-    def _validate_sys_patch(self):
+    def _validate_sys_patch(self) -> None:
         """
         Validates sys_patch modules
         """
@@ -160,7 +164,7 @@ class PatcherValidation:
             logging.info("- Skipping Root Patch File integrity validation")
 
 
-    def _validate_configs(self):
+    def _validate_configs(self) -> None:
         """
         Validates build modules
         """

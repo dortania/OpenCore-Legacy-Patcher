@@ -32,14 +32,14 @@ class NetworkUtilities:
     Utilities for network related tasks, primarily used for downloading files
     """
 
-    def __init__(self, url: str = None):
+    def __init__(self, url: str = None) -> None:
         self.url: str = url
 
         if self.url is None:
             self.url = "https://github.com"
 
 
-    def verify_network_connection(self):
+    def verify_network_connection(self) -> bool:
         """
         Verifies that the network is available
 
@@ -58,8 +58,13 @@ class NetworkUtilities:
         ):
             return False
 
-    def validate_link(self):
-        # Check if link is 404
+    def validate_link(self) -> bool:
+        """
+        Check for 404 error
+
+        Returns:
+            bool: True if link is valid, False otherwise
+        """
         try:
             response = SESSION.head(self.url, timeout=5, allow_redirects=True)
             if response.status_code == 404:
@@ -93,7 +98,7 @@ class DownloadObject:
 
     """
 
-    def __init__(self, url: str, path: str):
+    def __init__(self, url: str, path: str) -> None:
         self.url:       str = url
         self.status:    str = DownloadStatus.INACTIVE
         self.error_msg: str = ""
@@ -121,11 +126,11 @@ class DownloadObject:
             self._populate_file_size()
 
 
-    def __del__(self):
+    def __del__(self) -> None:
         self.stop()
 
 
-    def download(self, display_progress: bool = False, spawn_thread: bool = True, verify_checksum: bool = False):
+    def download(self, display_progress: bool = False, spawn_thread: bool = True, verify_checksum: bool = False) -> None:
         """
         Download the file
 
@@ -152,7 +157,8 @@ class DownloadObject:
         self.should_checksum = verify_checksum
         self._download(display_progress)
 
-    def download_simple(self, verify_checksum: bool = False):
+
+    def download_simple(self, verify_checksum: bool = False) -> str or bool:
         """
         Alternative to download(), mimics  utilities.py's old download_file() function
 
@@ -176,7 +182,7 @@ class DownloadObject:
         return self.checksum.hexdigest() if self.checksum else True
 
 
-    def _get_filename(self):
+    def _get_filename(self) -> str:
         """
         Get the filename from the URL
 
@@ -187,7 +193,7 @@ class DownloadObject:
         return Path(self.url).name
 
 
-    def _populate_file_size(self):
+    def _populate_file_size(self) -> None:
         """
         Get the file size of the file to be downloaded
 
@@ -206,7 +212,7 @@ class DownloadObject:
             self.total_file_size = 0.0
 
 
-    def _update_checksum(self, chunk: bytes):
+    def _update_checksum(self, chunk: bytes) -> None:
         """
         Update checksum with new chunk
 
@@ -216,7 +222,7 @@ class DownloadObject:
         self._checksum_storage.update(chunk)
 
 
-    def _prepare_working_directory(self, path: Path):
+    def _prepare_working_directory(self, path: Path) -> bool:
         """
         Validates working enviroment, including free space and removing existing files
 
@@ -253,7 +259,7 @@ class DownloadObject:
         return True
 
 
-    def _download(self, display_progress: bool = False):
+    def _download(self, display_progress: bool = False) -> None:
         """
         Download the file
 
@@ -306,7 +312,7 @@ class DownloadObject:
         utilities.enable_sleep_after_running()
 
 
-    def get_percent(self):
+    def get_percent(self) -> float:
         """
         Query the download percent
 
@@ -320,7 +326,7 @@ class DownloadObject:
         return self.downloaded_file_size / self.total_file_size * 100
 
 
-    def get_speed(self):
+    def get_speed(self) -> float:
         """
         Query the download speed
 
@@ -331,7 +337,7 @@ class DownloadObject:
         return self.downloaded_file_size / (time.time() - self.start_time)
 
 
-    def get_time_remaining(self):
+    def get_time_remaining(self) -> float:
         """
         Query the time remaining for the download
 
@@ -345,7 +351,7 @@ class DownloadObject:
         return (self.total_file_size - self.downloaded_file_size) / self.get_speed()
 
 
-    def get_file_size(self):
+    def get_file_size(self) -> float:
         """
         Query the file size of the file to be downloaded
 
@@ -356,7 +362,7 @@ class DownloadObject:
         return self.total_file_size
 
 
-    def is_active(self):
+    def is_active(self) -> bool:
         """
         Query if the download is active
 
@@ -369,12 +375,11 @@ class DownloadObject:
         return False
 
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Stop the download
 
-        Returns:
-            boolean: If the download is active, this function will hold the thread until stopped
+        If the download is active, this function will hold the thread until stopped
         """
 
         self.should_stop = True
