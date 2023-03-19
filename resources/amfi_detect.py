@@ -136,10 +136,10 @@ class AmfiConfigurationDetection:
         See AmfiConfigLevel enum for valid levels
 
         Parameters:
-           level (int): The level of AMFI checks to check for
+            level (int): The level of AMFI checks to check for
 
         Returns:
-              bool: True if the AMFI configuration matches the level, False otherwise
+            bool: True if the AMFI configuration matches the level, False otherwise
         """
 
         if level == AmfiConfigDetectLevel.NO_CHECK:
