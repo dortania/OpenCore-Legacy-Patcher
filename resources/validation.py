@@ -102,7 +102,7 @@ class PatcherValidation:
             minor_kernel (int): Minor kernel version
         """
 
-        patchset = sys_patch_dict.SystemPatchDictionary(major_kernel, minor_kernel, self.constants.legacy_accel_support)
+        patchset = sys_patch_dict.SystemPatchDictionary(major_kernel, minor_kernel, self.constants.legacy_accel_support).patchset_dict
         host_os_float = float(f"{major_kernel}.{minor_kernel}")
 
         for patch_subject in patchset:
