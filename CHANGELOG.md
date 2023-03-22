@@ -19,9 +19,11 @@
   - Fixed System Settings hover effects, including Bluetooth connect button
   - Add Books hacks (reimplement cover image generation, disable broken page curl animation)
   - Fixed unresponsive buttons
-- Implement Hardware Encoding support for AMD Polaris and Vega GPUs
+- Implement Hardware Encoding support for AMD GCN 1-3, Polaris and Vega GPUs
   - Applicable for pre-Haswell Macs on macOS Ventura
   - Resolves DRM playback issues on Netflix, Disney+, etc.
+    - Note: GCN 1-3 DRM is functional, however hardware video encoding is still experimental
+      - AppleTV+ may be unstable due to this
 - Implement support for AMD Navi and Lexa MXM GPUs in 2009-2011 iMacs
   - Primarily applicable for MXM 3.0 variants of AMD WX3200 (0x6981) and AMD RX5500XT (0x7340)
   - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
@@ -34,7 +36,7 @@
     - Support local loose matching when no network connection is available
     - Implement pkg receipt verification to validate integrity of KDKs
   - Implemented logging framework usage for more reliable logging
-    - Logs are stored under `~/OpenCore-Patcher.log`
+    - Logs are stored under `~/Library/Logs/OpenCore-Patcher.log`
     - Subsequent runs are appended to the log, allowing for easy debugging
   - Implemented new network_handler.py module
     - Allows for more reliable network calls and downloads

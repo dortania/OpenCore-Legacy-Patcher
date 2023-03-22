@@ -26,7 +26,7 @@ class InitializeLoggingSupport:
 
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.log_filename: str  = "OpenCore-Patcher.log"
         self.log_filepath: Path = None
 
@@ -43,11 +43,11 @@ class InitializeLoggingSupport:
         self._fix_file_permission()
 
 
-    def __del__(self):
+    def __del__(self) -> None:
         self._restore_original_excepthook()
 
 
-    def _initialize_logging_path(self):
+    def _initialize_logging_path(self) -> None:
         """
         Initialize logging framework storage path
         """
@@ -62,7 +62,7 @@ class InitializeLoggingSupport:
         print(f"  - Log file: {self.log_filepath}")
 
 
-    def _clean_log_file(self):
+    def _clean_log_file(self) -> None:
         """
         Determine if log file should be cleaned
 
@@ -87,7 +87,7 @@ class InitializeLoggingSupport:
             print(f"- Failed to clean log file: {e}")
 
 
-    def _fix_file_permission(self):
+    def _fix_file_permission(self) -> None:
         """
         Fixes file permission for log file
 
@@ -105,7 +105,7 @@ class InitializeLoggingSupport:
                 print(result.stderr.decode("utf-8"))
 
 
-    def _initialize_logging_configuration(self, log_to_file: bool = True):
+    def _initialize_logging_configuration(self, log_to_file: bool = True) -> None:
         """
         Initialize logging framework configuration
 
@@ -130,7 +130,7 @@ class InitializeLoggingSupport:
         logging.getLogger().handlers[1].maxBytes = self.max_file_size
 
 
-    def _attempt_initialize_logging_configuration(self):
+    def _attempt_initialize_logging_configuration(self) -> None:
         """
         Attempt to initialize logging framework configuration
 
@@ -145,18 +145,18 @@ class InitializeLoggingSupport:
             self._initialize_logging_configuration(log_to_file=False)
 
 
-    def _implement_custom_traceback_handler(self):
+    def _implement_custom_traceback_handler(self) -> None:
         """
         Reroute traceback to logging module
         """
 
-        def custom_excepthook(type, value, tb):
+        def custom_excepthook(type, value, tb) -> None:
             """
             Reroute traceback in main thread to logging module
             """
             logging.error("Uncaught exception in main thread", exc_info=(type, value, tb))
 
-        def custom_thread_excepthook(args):
+        def custom_thread_excepthook(args) -> None:
             """
             Reroute traceback in spawned thread to logging module
             """
@@ -166,7 +166,7 @@ class InitializeLoggingSupport:
         threading.excepthook = custom_thread_excepthook
 
 
-    def _restore_original_excepthook(self):
+    def _restore_original_excepthook(self) -> None:
         """
         Restore original traceback handlers
         """

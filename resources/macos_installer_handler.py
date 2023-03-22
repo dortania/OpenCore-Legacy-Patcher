@@ -23,13 +23,19 @@ tmp_dir = tempfile.TemporaryDirectory()
 
 class InstallerCreation():
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
 
-    def install_macOS_installer(self, download_path: str):
+    def install_macOS_installer(self, download_path: str) -> bool:
         """
         Installs InstallAssistant.pkg
+
+        Parameters:
+            download_path (str): Path to InstallAssistant.pkg
+
+        Returns:
+            bool: True if successful, False otherwise
         """
 
         logging.info("- Extracting macOS installer from InstallAssistant.pkg\n  This may take some time")
@@ -52,7 +58,7 @@ class InstallerCreation():
         return True
 
 
-    def generate_installer_creation_script(self, tmp_location, installer_path, disk):
+    def generate_installer_creation_script(self, tmp_location: str, installer_path: str, disk: str) -> bool:
         """
         Creates installer.sh to be piped to OCLP-Helper and run as admin
 
@@ -67,6 +73,9 @@ class InstallerCreation():
             tmp_location (str): Path to temporary directory
             installer_path (str): Path to InstallAssistant.pkg
             disk (str): Disk to install to
+
+        Returns:
+            bool: True if successful, False otherwise
         """
 
         additional_args = ""
@@ -136,7 +145,8 @@ fi
             return True
         return False
 
-    def list_disk_to_format(self):
+
+    def list_disk_to_format(self) -> dict:
         """
         List applicable disks for macOS installer creation
         Only lists disks that are:
@@ -191,14 +201,20 @@ fi
         return list_disks
 
 
-class SeedType(enum.Enum):
+class SeedType(enum.IntEnum):
     """
     Enum for catalog types
+
+    Variants:
+        DeveloperSeed:  Developer Beta (Part of the Apple Developer Program)
+        PublicSeed:     Public Beta
+        CustomerSeed:   AppleSeed Program (Generally mirrors DeveloperSeed)
+        PublicRelease:  Public Release
     """
-    DeveloperSeed = 0
-    PublicSeed    = 1
-    CustomerSeed  = 2
-    PublicRelease = 3
+    DeveloperSeed: int = 0
+    PublicSeed:    int = 1
+    CustomerSeed:  int = 2
+    PublicRelease: int = 3
 
 
 class RemoteInstallerCatalog:
@@ -206,7 +222,7 @@ class RemoteInstallerCatalog:
     Parses Apple's Software Update catalog and finds all macOS installers.
     """
 
-    def __init__(self, seed_override: SeedType = SeedType.PublicRelease):
+    def __init__(self, seed_override: SeedType = SeedType.PublicRelease) -> None:
 
         self.catalog_url: str = self._construct_catalog_url(seed_override)
 
@@ -214,12 +230,15 @@ class RemoteInstallerCatalog:
         self.available_apps_latest: dict = self._list_newest_installers_only()
 
 
-    def _construct_catalog_url(self, seed_type: SeedType):
+    def _construct_catalog_url(self, seed_type: SeedType) -> str:
         """
         Constructs the catalog URL based on the seed type
 
-        Args:
+        Parameters:
             seed_type (SeedType): The seed type to use
+
+        Returns:
+            str: The catalog URL
         """
 
 
@@ -237,7 +256,7 @@ class RemoteInstallerCatalog:
         return url
 
 
-    def _fetch_catalog(self):
+    def _fetch_catalog(self) -> dict:
         """
         Fetches the catalog from Apple's servers
 
@@ -257,7 +276,13 @@ class RemoteInstallerCatalog:
 
         return catalog
 
-    def _parse_catalog(self):
+    def _parse_catalog(self) -> dict:
+        """
+        Parses the catalog and returns a dictionary of available installers
+
+        Returns:
+            dict: Dictionary of available installers
+        """
         available_apps: dict = {}
 
         catalog: dict = self._fetch_catalog()
@@ -358,7 +383,7 @@ class RemoteInstallerCatalog:
         return available_apps
 
 
-    def _list_newest_installers_only(self):
+    def _list_newest_installers_only(self) -> dict:
         """
         Returns a dictionary of the newest macOS installers only.
         Primarily used to avoid overwhelming the user with a list of
@@ -449,11 +474,11 @@ class LocalInstallerCatalog:
     Finds all macOS installers on the local machine.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.available_apps: dict = self._list_local_macOS_installers()
 
 
-    def _list_local_macOS_installers(self):
+    def _list_local_macOS_installers(self) -> dict:
         """
         Searches for macOS installers in /Applications
 
@@ -537,7 +562,7 @@ class LocalInstallerCatalog:
         return application_list
 
 
-    def _parse_sharedsupport_version(self, sharedsupport_path: Path):
+    def _parse_sharedsupport_version(self, sharedsupport_path: Path) -> tuple:
         """
         Determine true version of macOS installer by parsing SharedSupport.dmg
         This is required due to Info.plist reporting the application version, not the OS version

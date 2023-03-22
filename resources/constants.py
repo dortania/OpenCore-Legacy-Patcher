@@ -10,7 +10,7 @@ from data import os_data
 
 
 class Constants:
-    def __init__(self):
+    def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "0.6.2"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version:     str = "0.8.6"  # PatcherSupportPkg
@@ -18,11 +18,9 @@ class Constants:
 
         # URLs
         self.url_patcher_support_pkg:         str = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
-        self.nightly_url_patcher_support_pkg: str = "https://nightly.link/dortania/PatcherSupportPkg/workflows/build/master/"
         self.discord_link:                    str = "https://discord.gg/rqdPgH8xSN"
         self.guide_link:                      str = "https://dortania.github.io/OpenCore-Legacy-Patcher/"
         self.repo_link:                       str = "https://github.com/dortania/OpenCore-Legacy-Patcher"
-        self.repo_link_latest:                str = f"{self.repo_link}/releases/tag/{self.patcher_version}"
         self.installer_pkg_url:               str = f"{self.repo_link}/releases/download/{self.patcher_version}/AutoPkg-Assets.pkg"
         self.installer_pkg_url_nightly:       str = "http://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython/main/AutoPkg-Assets.pkg.zip"
 
@@ -62,10 +60,10 @@ class Constants:
         self.apfs_zlib_v2_version:  str = "12.6"  #   NoAVXFSCompressionTypeZlib (patched with AVXpel)
         self.multitouch_version:    str = "1.0.0"  #  AppleUSBMultitouch
         self.topcase_version:       str = "1.0.0"  #  AppleUSBTopCase
-        self.intel_82574l_version:  str = "1.0.0" #   Intel82574L
-        self.intel_8254x_version:   str = "1.0.0" #   AppleIntel8254XEthernet
-        self.apple_usb_11_injector: str = "1.0.0" #   AppleUSBUHCI/OHCI
-        self.aicpupm_version:       str = "1.0.0" #   AppleIntelCPUPowerManagement/Client
+        self.intel_82574l_version:  str = "1.0.0"  #  Intel82574L
+        self.intel_8254x_version:   str = "1.0.0"  #  AppleIntel8254XEthernet
+        self.apple_usb_11_injector: str = "1.0.0"  #  AppleUSBUHCI/OHCI
+        self.aicpupm_version:       str = "1.0.0"  #  AppleIntelCPUPowerManagement/Client
 
         ## Apple - Dortania Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
@@ -288,10 +286,6 @@ class Constants:
     @property
     def link_rate_driver_path(self):
         return self.payload_path / Path("Drivers/FixPCIeLinkRate.efi")
-
-    @property
-    def list_txt_path(self):
-        return self.payload_path / Path("List.txt")
 
     @property
     def installer_sh_path(self):

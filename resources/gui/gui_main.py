@@ -1941,7 +1941,7 @@ class wx_python_gui:
                 with Path(self.constants.payload_path / Path("InstallAssistant.pkg")).open("rb") as f:
                     for chunk in chunks:
                         status = hashlib.sha256(f.read(chunk["length"])).digest()
-                        if not status == chunk["checksum"]:
+                        if status != chunk["checksum"]:
                             logging.info(f"Chunk {chunks.index(chunk) + 1} checksum status FAIL: chunk sum {binascii.hexlify(chunk['checksum']).decode()}, calculated sum {binascii.hexlify(status).decode()}")
                             self.popup = wx.MessageDialog(
                             self.frame,

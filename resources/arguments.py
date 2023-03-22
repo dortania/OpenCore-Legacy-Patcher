@@ -12,7 +12,7 @@ from data import model_array
 # Generic building args
 class arguments:
 
-    def __init__(self, global_constants: constants.Constants):
+    def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
 
         self.args = utilities.check_cli_args()
@@ -20,7 +20,7 @@ class arguments:
         self._parse_arguments()
 
 
-    def _parse_arguments(self):
+    def _parse_arguments(self) -> None:
         """
         Parses arguments passed to the patcher
         """
@@ -46,7 +46,7 @@ class arguments:
             return
 
 
-    def _validation_handler(self):
+    def _validation_handler(self) -> None:
         """
         Enter validation mode
         """
@@ -54,7 +54,7 @@ class arguments:
         validation.PatcherValidation(self.constants)
 
 
-    def _sys_patch_handler(self):
+    def _sys_patch_handler(self) -> None:
         """
         Start root volume patching
         """
@@ -71,7 +71,7 @@ class arguments:
             sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, None).start_patch()
 
 
-    def _sys_unpatch_handler(self):
+    def _sys_unpatch_handler(self) -> None:
         """
         Start root volume unpatching
         """
@@ -79,7 +79,7 @@ class arguments:
         sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, None).start_unpatch()
 
 
-    def _sys_patch_auto_handler(self):
+    def _sys_patch_auto_handler(self) -> None:
         """
         Start root volume auto patching
         """
@@ -88,7 +88,7 @@ class arguments:
         sys_patch_auto.AutomaticSysPatch(self.constants).start_auto_patch()
 
 
-    def _build_handler(self):
+    def _build_handler(self) -> None:
         """
         Start config building process
         """

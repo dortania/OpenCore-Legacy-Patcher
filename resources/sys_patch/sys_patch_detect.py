@@ -744,7 +744,7 @@ class DetectRootPatch:
             dict: Dictionary of patches to be applied from sys_patch_dict.py
         """
 
-        all_hardware_patchset: dict = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor, self.constants.legacy_accel_support)
+        all_hardware_patchset: dict = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor, self.constants.legacy_accel_support).patchset_dict
         required_patches:      dict = {}
 
         utilities.cls()
@@ -758,10 +758,12 @@ class DetectRootPatch:
 
         if hardware_details["Graphics: Intel Sandy Bridge"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
-            required_patches.update({"Non-Metal ColorSync Workaround": all_hardware_patchset["Graphics"]["Non-Metal ColorSync Workaround"]})
             required_patches.update({"High Sierra GVA": all_hardware_patchset["Graphics"]["High Sierra GVA"]})
             required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
+            # Patchset breaks Display Profiles, don't install if primary GPU is AMD
+            if self.constants.computer.real_model not in ["Macmini5,2", "iMac12,1", "iMac12,2"]:
+                required_patches.update({"Non-Metal ColorSync Workaround": all_hardware_patchset["Graphics"]["Non-Metal ColorSync Workaround"]})
 
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})

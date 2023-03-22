@@ -13,13 +13,13 @@ from resources import constants
 
 class RoutePayloadDiskImage:
 
-    def __init__(self, global_constants: constants.Constants):
+    def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
 
         self._setup_tmp_disk_image()
 
 
-    def _setup_tmp_disk_image(self):
+    def _setup_tmp_disk_image(self) -> None:
         """
         Initialize temp directory and mount payloads.dmg
         Create overlay for patcher to write to
@@ -55,7 +55,7 @@ class RoutePayloadDiskImage:
                 logging.info(f"Return Code: {output.returncode}")
 
 
-    def _unmount_active_dmgs(self, unmount_all_active=True):
+    def _unmount_active_dmgs(self, unmount_all_active=True) -> None:
         """
         Unmounts disk images associated with OCLP
 
