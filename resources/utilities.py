@@ -422,9 +422,19 @@ def find_disk_off_uuid(uuid):
     return None
 
 def get_free_space(disk=None):
+    """
+    Get free space on disk in bytes
+
+    Parameters:
+        disk (str): Path to mounted disk (or folder on disk)
+
+    Returns:
+        int: Free space in bytes
+    """
     if disk is None:
         disk = "/"
-    total, used, free = shutil.disk_usage("/")
+
+    total, used, free = shutil.disk_usage(disk)
     return free
 
 def grab_mount_point_from_disk(disk):
