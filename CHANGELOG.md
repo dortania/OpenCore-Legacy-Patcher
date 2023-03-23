@@ -29,6 +29,11 @@
   - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
 - Implement Continuity Camera Unlocking for pre-Kaby Lake CPUs
   - Applicable for all legacy Macs in macOS Ventura
+- Resolve boot support for 3802-based GPUs with macOS 13.3
+  - Applicable for following GPUs:
+    - Intel Ivy Bridge and Haswell iGPUs
+    - Nvidia Kepler dGPUs
+  - Note: patchset now requires AMFI to be disabled, patchset still in active development to remove this requirement
 - Backend Changes:
   - Refactored kdk_handler.py
     - Prioritizes KdkSupportPkg repository for downloads
