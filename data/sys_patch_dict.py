@@ -348,7 +348,6 @@ class SystemPatchDictionary():
 
                 # Support for 3802 GPUs were broken with 13.3+
                 # Downgrades 31001 stack to 13.2.1, however nukes AMFI support
-                # Extremely fugly, only for reference purposes at this time
                 "Metal 3802 Common Extended": {
                     "Display Name": "",
                     "OS Support": {
@@ -361,7 +360,7 @@ class SystemPatchDictionary():
                             "OS Minor": 99
                         },
                     },
-                    "Install Reference": {
+                    "Install": {
                         "/System/Library/Frameworks": {
                             "Metal.framework": "13.2.1",
                         },

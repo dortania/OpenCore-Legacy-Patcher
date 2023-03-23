@@ -13,7 +13,7 @@ class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "0.6.2"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "0.8.5"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "0.8.6"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
 
         # URLs

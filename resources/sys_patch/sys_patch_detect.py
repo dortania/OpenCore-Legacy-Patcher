@@ -120,6 +120,8 @@ class DetectRootPatch:
                             self.supports_metal = True
                             if self.constants.detected_os >= os_data.os_data.ventura:
                                 self.amfi_must_disable = True
+                                if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
+                                    self.amfi_shim_bins = True
                 elif gpu.arch in [
                     device_probe.NVIDIA.Archs.Fermi,
                     device_probe.NVIDIA.Archs.Kepler,
@@ -205,11 +207,15 @@ class DetectRootPatch:
                         self.ivy_gpu = True
                         if self.constants.detected_os >= os_data.os_data.ventura:
                             self.amfi_must_disable = True
+                            if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
+                                self.amfi_shim_bins = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Haswell:
                     if self.constants.detected_os > os_data.os_data.monterey:
                         self.haswell_gpu = True
                         self.amfi_must_disable = True
+                        if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
+                            self.amfi_shim_bins = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Broadwell:
                     if self.constants.detected_os > os_data.os_data.monterey:
@@ -761,6 +767,7 @@ class DetectRootPatch:
 
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Metal 3802 Common Extended": all_hardware_patchset["Graphics"]["Metal 3802 Common Extended"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Big Sur OpenCL": all_hardware_patchset["Graphics"]["Big Sur OpenCL"]})
@@ -769,6 +776,7 @@ class DetectRootPatch:
 
         if hardware_details["Graphics: Intel Haswell"] is True:
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Metal 3802 Common Extended": all_hardware_patchset["Graphics"]["Metal 3802 Common Extended"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
@@ -799,6 +807,7 @@ class DetectRootPatch:
         if hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Revert Metal Downgrade": all_hardware_patchset["Graphics"]["Revert Metal Downgrade"]})
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Metal 3802 Common Extended": all_hardware_patchset["Graphics"]["Metal 3802 Common Extended"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Big Sur OpenCL": all_hardware_patchset["Graphics"]["Big Sur OpenCL"]})
