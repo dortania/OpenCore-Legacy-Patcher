@@ -1142,6 +1142,32 @@ class wx_python_gui:
                             )
                         )
                         i = i + self.patch_label.GetSize().height + 3
+
+                i += 10
+                if self.constants.host_is_hackintosh is False:
+                    self.patch_label = wx.StaticText(self.frame_modal, label="Please run 'Build and Install OpenCore' and reboot")
+                    self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+                    self.patch_label.SetPosition(
+                        wx.Point(
+                            self.subheader.GetPosition().x,
+                            self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
+                        )
+                    )
+                    self.patch_label.Centre(wx.HORIZONTAL)
+                    i = i + self.patch_label.GetSize().height + 3
+
+                    self.patch_label = wx.StaticText(self.frame_modal, label="to remove these errors.")
+                    self.patch_label.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+                    self.patch_label.SetPosition(
+                        wx.Point(
+                            self.subheader.GetPosition().x,
+                            self.subheader.GetPosition().y + self.subheader.GetSize().height + 3 + i
+                        )
+                    )
+                    self.patch_label.Centre(wx.HORIZONTAL)
+                    i = i + self.patch_label.GetSize().height + 3
+
+
             else:
                 if self.constants.computer.oclp_sys_version and self.constants.computer.oclp_sys_date:
                     date = self.constants.computer.oclp_sys_date.split(" @")
