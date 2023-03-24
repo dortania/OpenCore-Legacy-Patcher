@@ -61,7 +61,7 @@
     - pyinstaller - 5.7.0
     - packaging - 23.0
 - Increment Binaries:
-  - PatcherSupportPkg 0.8.4 - release
+  - PatcherSupportPkg 0.8.7 - release
   - AutoPkgInstaller 1.0.2 - release
   - FeatureUnlock 1.1.4 - rolling (0e8d87f)
   - Lilu 1.6.4 - release
