@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.6.3
+
 ## 0.6.2
 - Work around Black Box rendering issues on certain Display Color Profiles
   - Limited to Ventura currently due to limitations with other color profiles

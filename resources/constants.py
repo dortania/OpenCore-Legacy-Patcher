@@ -12,7 +12,7 @@ from data import os_data
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "0.6.2"  # OpenCore-Legacy-Patcher
+        self.patcher_version:                 str = "0.6.3"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version:     str = "0.8.7"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
 
@@ -127,7 +127,7 @@ class Constants:
         self.launcher_binary:            str = None  #  Determine launch binary path (ie. Python vs PyInstaller)
         self.launcher_script:            str = None  #  Determine launch file path   (None if PyInstaller)
         self.booted_oc_disk:             str = None  #  Determine current disk OCLP booted from
-        self.unpack_thread                   = None  # Determine if unpack thread finished (threading.Thread)
+        self.unpack_thread                   = None  #  Determine if unpack thread finished (threading.Thread)
 
         self.commit_info: tuple = (None, None, None)  # Commit info (Branch, Commit Date, Commit URL)
 
