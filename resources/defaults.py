@@ -17,7 +17,7 @@ from data import (
 
 class GenerateDefaults:
 
-    def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants):
+    def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
 
         self.model: str = model
@@ -51,7 +51,7 @@ class GenerateDefaults:
         self._smbios_probe()
 
 
-    def _general_probe(self):
+    def _general_probe(self) -> None:
         """
         General probe for data
         """
@@ -93,7 +93,7 @@ class GenerateDefaults:
             self.constants.should_nuke_kdks = False
 
 
-    def _smbios_probe(self):
+    def _smbios_probe(self) -> None:
         """
         SMBIOS specific probe
         """
@@ -128,7 +128,7 @@ class GenerateDefaults:
                     self.constants.force_vmm = False
 
 
-    def _nvram_probe(self):
+    def _nvram_probe(self) -> None:
         """
         NVRAM specific probe
         """
@@ -153,7 +153,7 @@ class GenerateDefaults:
             self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
 
 
-    def _networking_probe(self):
+    def _networking_probe(self) -> None:
         """
         Networking specific probe
         """
@@ -195,7 +195,7 @@ class GenerateDefaults:
         self.constants.fu_arguments = " -disable_sidecar_mac"
 
 
-    def _misc_hardwares_probe(self):
+    def _misc_hardwares_probe(self) -> None:
         """
         Misc probe
         """
@@ -211,7 +211,7 @@ class GenerateDefaults:
                                 break
 
 
-    def _gpu_probe(self):
+    def _gpu_probe(self) -> None:
         """
         Graphics specific probe
         """
@@ -245,6 +245,13 @@ class GenerateDefaults:
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:
+                if gpu in [
+                    device_probe.Intel.Archs.Ivy_Bridge,
+                    device_probe.Intel.Archs.Haswell,
+                    device_probe.NVIDIA.Archs.Kepler,
+                ]:
+                    self.constants.disable_amfi = True
+
                 if gpu in [
                         device_probe.AMD.Archs.Legacy_GCN_7000,
                         device_probe.AMD.Archs.Legacy_GCN_8000,
@@ -302,7 +309,8 @@ class GenerateDefaults:
                     # Only disable AMFI if we officially support Ventura
                     self.constants.disable_amfi = True
 
-                # Enable BetaBlur if user hasn't disabled it
-                is_blur_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_BlurBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-                if is_blur_enabled in ["false", "0"]:
-                    subprocess.run(["defaults", "write", "-g", "Moraea_BlurBeta", "-bool", "true"])
+                for key in ["Moraea_BlurBeta", "Amy.MenuBar2Beta"]:
+                    # Enable BetaBlur if user hasn't disabled it
+                    is_key_enabled = subprocess.run(["defaults", "read", "-g", key], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+                    if is_key_enabled not in ["false", "0"]:
+                        subprocess.run(["defaults", "write", "-g", key, "-bool", "true"])

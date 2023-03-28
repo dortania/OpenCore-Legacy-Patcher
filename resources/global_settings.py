@@ -15,7 +15,7 @@ class GlobalEnviromentSettings:
     Library for querying and writing global enviroment settings
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.file_name:              str = ".com.dortania.opencore-legacy-patcher.plist"
         self.global_settings_folder: str = "/Users/Shared"
         self.global_settings_plist:  str = f"{self.global_settings_folder}/{self.file_name}"
@@ -25,7 +25,7 @@ class GlobalEnviromentSettings:
         self._fix_file_permission()
 
 
-    def read_property(self, property_name: str):
+    def read_property(self, property_name: str) -> str or None:
         """
         Reads a property from the global settings file
         """
@@ -37,7 +37,7 @@ class GlobalEnviromentSettings:
         return None
 
 
-    def write_property(self, property_name: str, property_value):
+    def write_property(self, property_name: str, property_value) -> None:
         """
         Writes a property to the global settings file
         """
@@ -51,7 +51,7 @@ class GlobalEnviromentSettings:
                 logging.info("- Failed to write to global settings file")
 
 
-    def _generate_settings_file(self):
+    def _generate_settings_file(self) -> None:
         if Path(self.global_settings_plist).exists():
             return
         try:
@@ -60,7 +60,7 @@ class GlobalEnviromentSettings:
             logging.info("- Permission error: Unable to write to global settings file")
 
 
-    def _convert_defaults_to_global_settings(self):
+    def _convert_defaults_to_global_settings(self) -> None:
         """
         Converts legacy defaults to global settings
         """
@@ -86,7 +86,7 @@ class GlobalEnviromentSettings:
                 logging.info("- Permission error: Unable to delete defaults plist")
 
 
-    def _fix_file_permission(self):
+    def _fix_file_permission(self) -> None:
         """
         Fixes file permission for log file
 

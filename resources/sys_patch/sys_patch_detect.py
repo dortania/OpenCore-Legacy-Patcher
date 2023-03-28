@@ -120,6 +120,8 @@ class DetectRootPatch:
                             self.supports_metal = True
                             if self.constants.detected_os >= os_data.os_data.ventura:
                                 self.amfi_must_disable = True
+                                if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
+                                    self.amfi_shim_bins = True
                 elif gpu.arch in [
                     device_probe.NVIDIA.Archs.Fermi,
                     device_probe.NVIDIA.Archs.Kepler,
@@ -205,11 +207,15 @@ class DetectRootPatch:
                         self.ivy_gpu = True
                         if self.constants.detected_os >= os_data.os_data.ventura:
                             self.amfi_must_disable = True
+                            if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
+                                self.amfi_shim_bins = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Haswell:
                     if self.constants.detected_os > os_data.os_data.monterey:
                         self.haswell_gpu = True
                         self.amfi_must_disable = True
+                        if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
+                            self.amfi_shim_bins = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Broadwell:
                     if self.constants.detected_os > os_data.os_data.monterey:
@@ -738,7 +744,7 @@ class DetectRootPatch:
             dict: Dictionary of patches to be applied from sys_patch_dict.py
         """
 
-        all_hardware_patchset: dict = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor, self.constants.legacy_accel_support)
+        all_hardware_patchset: dict = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor, self.constants.legacy_accel_support).patchset_dict
         required_patches:      dict = {}
 
         utilities.cls()
@@ -752,13 +758,16 @@ class DetectRootPatch:
 
         if hardware_details["Graphics: Intel Sandy Bridge"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
-            required_patches.update({"Non-Metal ColorSync Workaround": all_hardware_patchset["Graphics"]["Non-Metal ColorSync Workaround"]})
             required_patches.update({"High Sierra GVA": all_hardware_patchset["Graphics"]["High Sierra GVA"]})
             required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
+            # Patchset breaks Display Profiles, don't install if primary GPU is AMD
+            if self.constants.computer.real_model not in ["Macmini5,2", "iMac12,1", "iMac12,2"]:
+                required_patches.update({"Non-Metal ColorSync Workaround": all_hardware_patchset["Graphics"]["Non-Metal ColorSync Workaround"]})
 
         if hardware_details["Graphics: Intel Ivy Bridge"] is True:
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Metal 3802 Common Extended": all_hardware_patchset["Graphics"]["Metal 3802 Common Extended"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Big Sur OpenCL": all_hardware_patchset["Graphics"]["Big Sur OpenCL"]})
@@ -767,6 +776,7 @@ class DetectRootPatch:
 
         if hardware_details["Graphics: Intel Haswell"] is True:
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Metal 3802 Common Extended": all_hardware_patchset["Graphics"]["Metal 3802 Common Extended"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
@@ -795,8 +805,8 @@ class DetectRootPatch:
             required_patches.update({"Non-Metal Enforcement": all_hardware_patchset["Graphics"]["Non-Metal Enforcement"]})
 
         if hardware_details["Graphics: Nvidia Kepler"] is True:
-            required_patches.update({"Revert Metal Downgrade": all_hardware_patchset["Graphics"]["Revert Metal Downgrade"]})
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
+            required_patches.update({"Metal 3802 Common Extended": all_hardware_patchset["Graphics"]["Metal 3802 Common Extended"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Big Sur OpenCL": all_hardware_patchset["Graphics"]["Big Sur OpenCL"]})
@@ -827,7 +837,6 @@ class DetectRootPatch:
                 del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
 
         if hardware_details["Graphics: AMD Legacy GCN"] is True or hardware_details["Graphics: AMD Legacy Polaris"] is True:
-            required_patches.update({"Revert Metal Downgrade": all_hardware_patchset["Graphics"]["Revert Metal Downgrade"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             if hardware_details["Graphics: AMD Legacy GCN"] is True:

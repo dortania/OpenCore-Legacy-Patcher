@@ -10,11 +10,11 @@ class OSProbe:
     Library for querying OS information specific to macOS
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.uname_data = platform.uname()
 
 
-    def detect_kernel_major(self):
+    def detect_kernel_major(self) -> int:
         """
         Detect the booted major kernel version
 
@@ -25,7 +25,7 @@ class OSProbe:
         return int(self.uname_data.release.partition(".")[0])
 
 
-    def detect_kernel_minor(self):
+    def detect_kernel_minor(self) -> int:
         """
         Detect the booted minor kernel version
 
@@ -36,7 +36,7 @@ class OSProbe:
         return int(self.uname_data.release.partition(".")[2].partition(".")[0])
 
 
-    def detect_os_version(self):
+    def detect_os_version(self) -> str:
         """
         Detect the booted OS version
 
@@ -51,7 +51,7 @@ class OSProbe:
         return result.stdout.decode().strip()
 
 
-    def detect_os_build(self, rsr: bool = False):
+    def detect_os_build(self, rsr: bool = False) -> str:
         """
         Detect the booted OS build
 

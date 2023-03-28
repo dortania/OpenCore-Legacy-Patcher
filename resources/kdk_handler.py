@@ -49,7 +49,7 @@ class KernelDebugKitObject:
 
     """
 
-    def __init__(self, global_constants: constants.Constants, host_build: str, host_version: str, ignore_installed: bool = False, passive: bool = False):
+    def __init__(self, global_constants: constants.Constants, host_build: str, host_version: str, ignore_installed: bool = False, passive: bool = False) -> None:
         self.constants: constants.Constants = global_constants
 
         self.host_build:   str = host_build    # ex. 20A5384c
@@ -83,7 +83,7 @@ class KernelDebugKitObject:
         self._get_latest_kdk()
 
 
-    def _get_remote_kdks(self):
+    def _get_remote_kdks(self) -> list or None:
         """
         Fetches a list of available KDKs from the KdkSupportPkg API
         Additionally caches the list for future use, avoiding extra API calls
@@ -119,7 +119,7 @@ class KernelDebugKitObject:
         return KDK_ASSET_LIST
 
 
-    def _get_latest_kdk(self, host_build: str = None, host_version: str = None):
+    def _get_latest_kdk(self, host_build: str = None, host_version: str = None) -> None:
         """
         Fetches the latest KDK for the current macOS version
 
@@ -229,7 +229,7 @@ class KernelDebugKitObject:
         self.success = True
 
 
-    def retrieve_download(self, override_path: str = ""):
+    def retrieve_download(self, override_path: str = "") -> network_handler.DownloadObject or None:
         """
         Returns a DownloadObject for the KDK
 
@@ -263,7 +263,7 @@ class KernelDebugKitObject:
         return network_handler.DownloadObject(self.kdk_url, kdk_download_path)
 
 
-    def _generate_kdk_info_plist(self, plist_path: str):
+    def _generate_kdk_info_plist(self, plist_path: str) -> None:
         """
         Generates a KDK Info.plist
 
@@ -285,7 +285,7 @@ class KernelDebugKitObject:
             logging.error(f"- Failed to generate KDK Info.plist: {e}")
 
 
-    def _local_kdk_valid(self, kdk_path: Path):
+    def _local_kdk_valid(self, kdk_path: Path) -> bool:
         """
         Validates provided KDK, ensure no corruption
 
@@ -334,7 +334,7 @@ class KernelDebugKitObject:
         return True
 
 
-    def _local_kdk_valid_legacy(self, kdk_path: Path):
+    def _local_kdk_valid_legacy(self, kdk_path: Path) -> bool:
         """
         Legacy variant of validating provided KDK
         Uses best guess of files that should be present
@@ -363,7 +363,7 @@ class KernelDebugKitObject:
         return True
 
 
-    def _local_kdk_installed(self, match: str = None, check_version: bool = False):
+    def _local_kdk_installed(self, match: str = None, check_version: bool = False) -> str or None:
         """
         Checks if KDK matching build is installed
         If so, validates it has not been corrupted
@@ -429,7 +429,7 @@ class KernelDebugKitObject:
         return None
 
 
-    def _remove_kdk(self, kdk_path: str):
+    def _remove_kdk(self, kdk_path: str) -> None:
         """
         Removes provided KDK
 
@@ -448,19 +448,18 @@ class KernelDebugKitObject:
             logging.warning(f"- KDK does not exist: {kdk_path}")
             return
 
-        rm_args = ["rm", "-f", kdk_path]
-        if Path(kdk_path).is_dir():
-            rm_args = ["rm", "-rf", kdk_path]
+        rm_args = ["rm", "-rf" if Path(kdk_path).is_dir() else "-f", kdk_path]
 
         result = utilities.elevated(rm_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.warning(f"- Failed to remove KDK: {kdk_path}")
             logging.warning(f"- {result.stdout.decode('utf-8')}")
+            return
 
         logging.info(f"- Successfully removed KDK: {kdk_path}")
 
 
-    def _remove_unused_kdks(self, exclude_builds: list = None):
+    def _remove_unused_kdks(self, exclude_builds: list = None) -> None:
         """
         Removes KDKs that are not in use
 
@@ -486,21 +485,20 @@ class KernelDebugKitObject:
 
         logging.info("- Cleaning unused KDKs")
         for kdk_folder in Path(KDK_INSTALL_PATH).iterdir():
-            if kdk_folder.is_dir():
-                if kdk_folder.name.endswith(".kdk") or kdk_folder.name.endswith(".pkg"):
-                    should_remove = True
-                    for build in exclude_builds:
-                        if build != "":
-                            continue
-                        if kdk_folder.name.endswith(f"{build}.kdk") or kdk_folder.name.endswith(f"{build}.pkg"):
-                            should_remove = False
-                            break
-                    if should_remove is False:
+            if kdk_folder.name.endswith(".kdk") or kdk_folder.name.endswith(".pkg"):
+                should_remove = True
+                for build in exclude_builds:
+                    if build == "":
                         continue
-                    self._remove_kdk(kdk_folder)
+                    if kdk_folder.name.endswith(f"_{build}.kdk") or kdk_folder.name.endswith(f"_{build}.pkg"):
+                        should_remove = False
+                        break
+                if should_remove is False:
+                    continue
+                self._remove_kdk(kdk_folder)
 
 
-    def validate_kdk_checksum(self, kdk_dmg_path: str = None):
+    def validate_kdk_checksum(self, kdk_dmg_path: str = None) -> bool:
         """
         Validates KDK DMG checksum
 
@@ -542,11 +540,11 @@ class KernelDebugKitUtilities:
 
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
 
-    def install_kdk_pkg(self, kdk_path: Path):
+    def install_kdk_pkg(self, kdk_path: Path) -> bool:
         """
         Installs provided KDK packages
 
@@ -577,7 +575,7 @@ class KernelDebugKitUtilities:
         return True
 
 
-    def install_kdk_dmg(self, kdk_path: Path):
+    def install_kdk_dmg(self, kdk_path: Path) -> bool:
         """
         Installs provided KDK disk image
 
@@ -617,7 +615,7 @@ class KernelDebugKitUtilities:
         logging.info("- Successfully installed KDK")
         return True
 
-    def _unmount_disk_image(self, mount_point):
+    def _unmount_disk_image(self, mount_point) -> None:
         """
         Unmounts provided disk image silently
 
@@ -627,7 +625,7 @@ class KernelDebugKitUtilities:
         subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
-    def _create_backup(self, kdk_path: Path, kdk_info_plist: Path):
+    def _create_backup(self, kdk_path: Path, kdk_info_plist: Path) -> None:
         """
         Creates a backup of the KDK
 

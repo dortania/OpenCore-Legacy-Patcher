@@ -11,14 +11,14 @@ REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/dortania/OpenCore-L
 
 
 class CheckBinaryUpdates:
-    def __init__(self, global_constants: constants.Constants):
+    def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
 
         self.binary_version       = self.constants.patcher_version
         self.binary_version_array = [int(x) for x in self.binary_version.split(".")]
 
 
-    def _check_if_build_newer(self, remote_version: list = None, local_version: list = None):
+    def _check_if_build_newer(self, remote_version: list = None, local_version: list = None) -> bool:
         """
         Check if the remote version is newer than the local version
 
@@ -50,7 +50,7 @@ class CheckBinaryUpdates:
         return False
 
 
-    def _determine_local_build_type(self):
+    def _determine_local_build_type(self) -> str:
         """
         Check if the local build is a GUI or TUI build
 
@@ -64,7 +64,7 @@ class CheckBinaryUpdates:
             return "TUI"
 
 
-    def _determine_remote_type(self, remote_name: str):
+    def _determine_remote_type(self, remote_name: str) -> str:
         """
         Check if the remote build is a GUI or TUI build
 
@@ -83,7 +83,7 @@ class CheckBinaryUpdates:
             return "Unknown"
 
 
-    def check_binary_updates(self):
+    def check_binary_updates(self) -> dict:
         """
         Check if any updates are available for the OpenCore Legacy Patcher binary
 

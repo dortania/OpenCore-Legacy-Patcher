@@ -25,7 +25,7 @@ class OpenCoreLegacyPatcher:
     Initial entry point for starting OpenCore Legacy Patcher
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         logging_handler.InitializeLoggingSupport()
 
         self.constants: constants.Constants = constants.Constants()
@@ -40,7 +40,7 @@ class OpenCoreLegacyPatcher:
             gui_main.wx_python_gui(self.constants).main_menu(None)
 
 
-    def _generate_base_data(self):
+    def _generate_base_data(self) -> None:
         """
         Generate base data required for the patcher to run
         """

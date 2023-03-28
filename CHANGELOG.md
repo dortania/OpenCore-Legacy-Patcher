@@ -1,5 +1,17 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.6.3
+- Update non-Metal Binaries:
+  - Resolves Safari 16.4 rendering issue
+  - Resolves left side menubar selections
+  - Implements automatic menubar text color
+  - New Menubar implementation can be disabled via `defaults write -g Amy.MenuBar2Beta -bool false`
+- Implement full IOUSBHostFamily downgrade for UHCI/OHCI
+  - Resolves panics on certain iMac models
+- Resolve unused KDKs not being properly cleaned up
+- Increment Binaries:
+  - PatcherSupportPkg 0.9.2 - release
+
 ## 0.6.2
 - Work around Black Box rendering issues on certain Display Color Profiles
   - Limited to Ventura currently due to limitations with other color profiles
@@ -19,14 +31,21 @@
   - Fixed System Settings hover effects, including Bluetooth connect button
   - Add Books hacks (reimplement cover image generation, disable broken page curl animation)
   - Fixed unresponsive buttons
-- Implement Hardware Encoding support for AMD Polaris and Vega GPUs
+- Implement Hardware Encoding support for AMD GCN 1-3, Polaris and Vega GPUs
   - Applicable for pre-Haswell Macs on macOS Ventura
   - Resolves DRM playback issues on Netflix, Disney+, etc.
+    - Note: GCN 1-3 DRM is functional, however hardware video encoding is still experimental
+      - AppleTV+ may be unstable due to this
 - Implement support for AMD Navi and Lexa MXM GPUs in 2009-2011 iMacs
   - Primarily applicable for MXM 3.0 variants of AMD WX3200 (0x6981) and AMD RX5500XT (0x7340)
   - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
 - Implement Continuity Camera Unlocking for pre-Kaby Lake CPUs
   - Applicable for all legacy Macs in macOS Ventura
+- Resolve boot support for 3802-based GPUs with macOS 13.3
+  - Applicable for following GPUs:
+    - Intel Ivy Bridge and Haswell iGPUs
+    - Nvidia Kepler dGPUs
+  - Note: patchset now requires AMFI to be disabled, patchset still in active development to remove this requirement
 - Backend Changes:
   - Refactored kdk_handler.py
     - Prioritizes KdkSupportPkg repository for downloads
@@ -34,7 +53,7 @@
     - Support local loose matching when no network connection is available
     - Implement pkg receipt verification to validate integrity of KDKs
   - Implemented logging framework usage for more reliable logging
-    - Logs are stored under `~/OpenCore-Patcher.log`
+    - Logs are stored under `~/Library/Logs/OpenCore-Patcher.log`
     - Subsequent runs are appended to the log, allowing for easy debugging
   - Implemented new network_handler.py module
     - Allows for more reliable network calls and downloads
@@ -54,9 +73,14 @@
     - pyinstaller - 5.7.0
     - packaging - 23.0
 - Increment Binaries:
-  - PatcherSupportPkg 0.8.4 - release
+  - PatcherSupportPkg 0.8.7 - release
   - AutoPkgInstaller 1.0.2 - release
   - FeatureUnlock 1.1.4 - rolling (0e8d87f)
+  - Lilu 1.6.4 - release
+  - WhateverGreen 1.6.4 - release
+  - NVMeFix 1.1.0 - release
+  - Innie 1.3.1 - release
+  - OpenCorePkg 0.9.0 - release
 
 ## 0.6.1
 - Avoid usage of KDKlessWorkaround on hardware not requiring it

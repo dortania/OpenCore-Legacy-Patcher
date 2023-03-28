@@ -5,7 +5,7 @@ import plistlib
 
 class ParseCommitInfo:
 
-    def __init__(self, binary_path: str):
+    def __init__(self, binary_path: str) -> None:
         """
         Parameters:
             binary_path (str): Path to binary
@@ -15,7 +15,7 @@ class ParseCommitInfo:
         self.plist_path = self._convert_binary_path_to_plist_path()
 
 
-    def _convert_binary_path_to_plist_path(self):
+    def _convert_binary_path_to_plist_path(self) -> str or None:
         """
         Resolve Info.plist path from binary path
         """
@@ -27,7 +27,7 @@ class ParseCommitInfo:
         return None
 
 
-    def generate_commit_info(self):
+    def generate_commit_info(self) -> tuple:
         """
         Generate commit info from Info.plist
 
