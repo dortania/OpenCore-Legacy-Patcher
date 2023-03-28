@@ -9,6 +9,8 @@
 - Implement full IOUSBHostFamily downgrade for UHCI/OHCI
   - Resolves panics on certain iMac models
 - Resolve unused KDKs not being properly cleaned up
+- Implement MXM graphics handling for iMac9,1
+  - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
 - Increment Binaries:
   - PatcherSupportPkg 0.9.2 - release
 
