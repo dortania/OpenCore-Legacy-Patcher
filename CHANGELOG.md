@@ -5,8 +5,10 @@
   - Resolves Safari 16.4 rendering issue
   - Resolves left side menubar selections
   - Implements automatic menubar text color
+  - New Menubar implementation can be disabled via `defaults write -g Amy.MenuBar2Beta -bool false`
 - Implement full IOUSBHostFamily downgrade for UHCI/OHCI
   - Resolves panics on certain iMac models
+- Resolve unused KDKs not being properly cleaned up
 - Increment Binaries:
   - PatcherSupportPkg 0.9.2 - release
 

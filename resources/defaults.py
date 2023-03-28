@@ -309,7 +309,8 @@ class GenerateDefaults:
                     # Only disable AMFI if we officially support Ventura
                     self.constants.disable_amfi = True
 
-                # Enable BetaBlur if user hasn't disabled it
-                is_blur_enabled = subprocess.run(["defaults", "read", "-g", "Moraea_BlurBeta"], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-                if is_blur_enabled in ["false", "0"]:
-                    subprocess.run(["defaults", "write", "-g", "Moraea_BlurBeta", "-bool", "true"])
+                for key in ["Moraea_BlurBeta", "Amy.MenuBar2Beta"]:
+                    # Enable BetaBlur if user hasn't disabled it
+                    is_key_enabled = subprocess.run(["defaults", "read", "-g", key], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+                    if is_key_enabled not in ["false", "0"]:
+                        subprocess.run(["defaults", "write", "-g", key, "-bool", "true"])
