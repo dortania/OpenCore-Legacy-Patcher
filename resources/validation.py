@@ -63,7 +63,7 @@ class PatcherValidation:
         for model in model_array.SupportedSMBIOS:
             logging.info(f"Validating predefined model: {model}")
             self.constants.custom_model = model
-            build.build_opencore(self.constants.custom_model, self.constants).build_opencore()
+            build.BuildOpenCore(self.constants.custom_model, self.constants)
             result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Error on build!")
@@ -83,7 +83,7 @@ class PatcherValidation:
             self.constants.computer = model
             self.constants.custom_model = ""
             logging.info(f"Validating dumped model: {self.constants.computer.real_model}")
-            build.build_opencore(self.constants.computer.real_model, self.constants).build_opencore()
+            build.BuildOpenCore(self.constants.computer.real_model, self.constants)
             result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Error on build!")

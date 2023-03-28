@@ -752,7 +752,7 @@ class wx_python_gui:
         while self.is_unpack_finished() is False:
             time.sleep(0.1)
 
-        build.build_opencore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
+        build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants)
         # Once finished, change build_opencore button to "Install OpenCore"
         self.build_opencore.SetLabel("🔩 Install OpenCore")
         self.build_opencore.Bind(wx.EVT_BUTTON, self.install_menu)

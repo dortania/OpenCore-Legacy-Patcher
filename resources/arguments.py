@@ -183,4 +183,4 @@ If you plan to create the USB for another machine, please select the "Change Mod
             self.constants.allow_oc_everywhere = True
             self.constants.serial_settings = "None"
 
-        build.build_opencore(self.constants.custom_model or self.constants.computer.real_model, self.constants).build_opencore()
+        build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants)

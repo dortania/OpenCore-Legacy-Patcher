@@ -1,18 +1,23 @@
 # Utility class for build functions
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
-from resources import constants, utilities
+import shutil
+import logging
+import plistlib
+import zipfile
+import subprocess
 
 from pathlib import Path
-import shutil, plistlib, subprocess, zipfile
-import logging
 
-class build_support:
+from resources import constants, utilities
 
-    def __init__(self, model, versions, config):
-        self.model = model
-        self.constants: constants.Constants = versions
-        self.config = config
+
+class BuildSupport:
+
+    def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
+        self.model: str = model
+        self.config: dict = config
+        self.constants: constants.Constants = global_constants
 
 
     @staticmethod
