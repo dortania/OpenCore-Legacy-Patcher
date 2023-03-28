@@ -488,8 +488,6 @@ class KernelDebugKitObject:
             if kdk_folder.name.endswith(".kdk") or kdk_folder.name.endswith(".pkg"):
                 should_remove = True
                 for build in exclude_builds:
-                    if build == "":
-                        continue
                     if kdk_folder.name.endswith(f"_{build}.kdk") or kdk_folder.name.endswith(f"_{build}.pkg"):
                         should_remove = False
                         break
