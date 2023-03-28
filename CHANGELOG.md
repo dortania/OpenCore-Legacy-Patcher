@@ -1,6 +1,14 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.6.3
+- Update non-Metal Binaries:
+  - Resolves Safari 16.4 rendering issue
+  - Resolves left side menubar selections
+  - Implements automatic menubar text color
+- Implement full IOUSBHostFamily downgrade for UHCI/OHCI
+  - Resolves panics on certain iMac models
+- Increment Binaries:
+  - PatcherSupportPkg 0.9.2 - release
 
 ## 0.6.2
 - Work around Black Box rendering issues on certain Display Color Profiles

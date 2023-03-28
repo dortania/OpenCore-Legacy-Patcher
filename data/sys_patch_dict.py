@@ -1168,12 +1168,8 @@ class SystemPatchDictionary():
                         },
                     },
                     "Install": {
-                        "/System/Library/Extensions/IOUSBHostFamily.kext/Contents/MacOS": {
-                            "IOUSBHostFamily": "12.6.2",
-                        },
-                        "/System/Library/Extensions/IOUSBHostFamily.kext/Contents/PlugIns": {
-                            "AppleUSBEHCI.kext": "12.6.2",
-                            "AppleUSBHub.kext": "12.6.2",
+                        "/System/Library/Extensions": {
+                            "IOUSBHostFamily.kext": "12.6.2",
                         },
                     },
                 }
