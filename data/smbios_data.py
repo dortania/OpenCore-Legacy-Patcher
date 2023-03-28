@@ -1872,8 +1872,10 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Ethernet Chipset": "Nvidia",
         "nForce Chipset": True,
+        "Socketed GPUs": "MXM",
         "Stock GPUs": [
             device_probe.NVIDIA.Archs.Tesla,
+            device_probe.AMD.Archs.TeraScale_1,
         ],
         "Stock Storage": [
             "SATA 3.5",
@@ -1943,7 +1945,7 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Socketed GPUs": "MXM",
         "Stock GPUs": [
-            device_probe.NVIDIA.Archs.Tesla,
+            device_probe.AMD.Archs.TeraScale_1,
         ],
         "Stock Storage": [
             "SATA 3.5",
@@ -1961,7 +1963,7 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Socketed GPUs": "MXM",
         "Stock GPUs": [
-            device_probe.NVIDIA.Archs.Tesla,
+            device_probe.AMD.Archs.TeraScale_1,
         ],
         "Stock Storage": [
             "SATA 3.5",
@@ -1979,7 +1981,7 @@ smbios_dictionary = {
         "nForce Chipset": True,
         "Socketed GPUs": "MXM",
         "Stock GPUs": [
-            device_probe.NVIDIA.Archs.Tesla,
+            device_probe.AMD.Archs.TeraScale_1,
         ],
         "Stock Storage": [
             "SATA 3.5",

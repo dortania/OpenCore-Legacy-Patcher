@@ -138,7 +138,7 @@ class build_graphics_audio:
                 logging.info("- Failed to find GFX0 Device path, falling back on known logic")
             if self.model in ["iMac11,1", "iMac11,3"]:
                 self.gfx0_path = "PciRoot(0x0)/Pci(0x3,0x0)/Pci(0x0,0x0)"
-            elif self.model == "iMac10,1":
+            elif self.model in ["iMac9,1", "iMac10,1"]:
                 self.gfx0_path = "PciRoot(0x0)/Pci(0xc,0x0)/Pci(0x0,0x0)"
             else:
                 self.gfx0_path = "PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)"
@@ -193,6 +193,10 @@ class build_graphics_audio:
             # Ensure WEG is enabled as we need if for Backlight patching
             support.build_support(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_navi_version, self.constants.whatevergreen_navi_path)
 
+        if self.model == "iMac9,1":
+            logging.info("- Adding iMac9,1 Brightness Control and DRM patches")
+            support.build_support(self.model, self.constants, self.config).enable_kext("BacklightInjector.kext", self.constants.backlight_injectorA_version, self.constants.backlight_injectorA_path)
+
         if not self.constants.custom_model:
             if self.computer.dgpu.device_id == 0x7340:
                 logging.info(f"- Adding AMD RX5500XT vBIOS injection")
@@ -217,7 +221,7 @@ class build_graphics_audio:
                 "name": binascii.unhexlify("23646973706C6179"),
                 "class-code": binascii.unhexlify("FFFFFFFF"),
             }
-        elif self.model == "iMac10,1":
+        elif self.model in ["iMac9,1", "iMac10,1"]:
             support.build_support(self.model, self.constants, self.config).enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
         if self.computer and self.computer.dgpu:
             if self.computer.dgpu.arch == device_probe.AMD.Archs.Legacy_GCN_7000:
