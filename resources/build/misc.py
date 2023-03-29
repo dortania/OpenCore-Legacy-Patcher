@@ -133,23 +133,17 @@ class BuildMiscellaneous:
         CPUFriend Handler
         """
 
-        if self.constants.disallow_cpufriend is True:
-            return
-        if self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"]:
-            return
-        if self.constants.serial_settings == "None":
-            return
+        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
+            support.BuildSupport(self.model, self.constants, self.config).enable_kext("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path)
 
-        support.BuildSupport(self.model, self.constants, self.config).enable_kext("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path)
-
-        # CPUFriendDataProvider handling
-        pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
-        if not pp_map_path.exists():
-            raise Exception(f"{pp_map_path} does not exist!!! Please file an issue stating file is missing for {self.model}.")
-        Path(self.constants.pp_kext_folder).mkdir()
-        Path(self.constants.pp_contents_folder).mkdir()
-        shutil.copy(pp_map_path, self.constants.pp_contents_folder)
-        support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("CPUFriendDataProvider.kext")["Enabled"] = True
+            # CPUFriendDataProvider handling
+            pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
+            if not pp_map_path.exists():
+                raise Exception(f"{pp_map_path} does not exist!!! Please file an issue stating file is missing for {self.model}.")
+            Path(self.constants.pp_kext_folder).mkdir()
+            Path(self.constants.pp_contents_folder).mkdir()
+            shutil.copy(pp_map_path, self.constants.pp_contents_folder)
+            support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("CPUFriendDataProvider.kext")["Enabled"] = True
 
 
     def _firewire_handling(self) -> None:
