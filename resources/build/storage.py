@@ -32,6 +32,10 @@ class BuildStorage:
 
 
     def _ahci_handling(self) -> None:
+        """
+        AHCI (SATA) Handler
+        """
+
         # MacBookAir6,x ship with an AHCI over PCIe SSD model 'APPLE SSD TS0128F' and 'APPLE SSD TS0256F'
         # This controller is not supported properly in macOS Ventura, instead populating itself as 'Media' with no partitions
         # To work-around this, use Monterey's AppleAHCI driver to force support
@@ -67,6 +71,10 @@ class BuildStorage:
 
 
     def _pata_handling(self) -> None:
+        """
+        ATA (PATA) Handler
+        """
+
         if not self.model in smbios_data.smbios_dictionary:
             return
         if not "Stock Storage" in smbios_data.smbios_dictionary[self.model]:
@@ -78,6 +86,10 @@ class BuildStorage:
 
 
     def _pcie_handling(self) -> None:
+        """
+        PCIe/NVMe Handler
+        """
+
         if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in model_array.MacPro):
             # Use Innie's same logic:
             # https://github.com/cdf/Innie/blob/v1.3.0/Innie/Innie.cpp#L90-L97
@@ -127,6 +139,10 @@ class BuildStorage:
 
 
     def _misc_handling(self) -> None:
+        """
+        SDXC Handler
+        """
+
         if not self.model in smbios_data.smbios_dictionary:
             return
         if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
@@ -140,6 +156,10 @@ class BuildStorage:
 
 
     def _trim_handling(self) -> None:
+        """
+        TRIM Handler
+        """
+
         if self.constants.apfs_trim_timeout is False:
             logging.info(f"- Disabling APFS TRIM timeout")
             self.config["Kernel"]["Quirks"]["SetApfsTrimTimeout"] = 0

@@ -22,12 +22,18 @@ class BuildMiscellaneous:
 
         self._build()
 
+
     def rmtree_handler(func, path, exc_info) -> None:
         if exc_info[0] == FileNotFoundError:
             return
         raise  # pylint: disable=misplaced-bare-raise
 
+
     def _build(self) -> None:
+        """
+        Kick off Misc Build Process
+        """
+
         self._feature_unlock_handling()
         self._restrict_events_handling()
         self._firewire_handling()
@@ -39,17 +45,26 @@ class BuildMiscellaneous:
         self._cpu_friend_handling()
         self._general_oc_handling()
 
+
     def _feature_unlock_handling(self) -> None:
-        if self.constants.fu_status is True:
-            support.BuildSupport(self.model, self.constants, self.config).enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
-            if self.constants.fu_arguments is not None:
-                logging.info(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
-                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
+        """
+        FeatureUnlock Handler
+        """
+
+        if self.constants.fu_status is False:
+            return
+
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
+        if self.constants.fu_arguments is not None:
+            logging.info(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
+
 
     def _restrict_events_handling(self) -> None:
-        # RestrictEvents handling
-        # - revpatch: Process patching
-        # - revblock: Process blocking
+        """
+        RestrictEvents Handler
+        """
+
         block_args = ""
         if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
             block_args += "gmux,"
@@ -114,29 +129,53 @@ class BuildMiscellaneous:
 
 
     def _cpu_friend_handling(self) -> None:
-        if self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
-            support.BuildSupport(self.model, self.constants, self.config).enable_kext("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path)
+        """
+        CPUFriend Handler
+        """
 
-            # CPUFriendDataProvider handling
-            pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
-            if not pp_map_path.exists():
-                raise Exception(f"{pp_map_path} does not exist!!! Please file an issue stating file is missing for {self.model}.")
-            Path(self.constants.pp_kext_folder).mkdir()
-            Path(self.constants.pp_contents_folder).mkdir()
-            shutil.copy(pp_map_path, self.constants.pp_contents_folder)
-            support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("CPUFriendDataProvider.kext")["Enabled"] = True
+        if self.constants.disallow_cpufriend is True:
+            return
+        if self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"]:
+            return
+        if self.constants.serial_settings == "None":
+            return
+
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path)
+
+        # CPUFriendDataProvider handling
+        pp_map_path = Path(self.constants.platform_plugin_plist_path) / Path(f"{self.model}/Info.plist")
+        if not pp_map_path.exists():
+            raise Exception(f"{pp_map_path} does not exist!!! Please file an issue stating file is missing for {self.model}.")
+        Path(self.constants.pp_kext_folder).mkdir()
+        Path(self.constants.pp_contents_folder).mkdir()
+        shutil.copy(pp_map_path, self.constants.pp_contents_folder)
+        support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("CPUFriendDataProvider.kext")["Enabled"] = True
+
 
     def _firewire_handling(self) -> None:
-        if self.constants.firewire_boot is True and generate_smbios.check_firewire(self.model) is True:
-            # Enable FireWire Boot Support
-            # Applicable for both native FireWire and Thunderbolt to FireWire adapters
-            logging.info("- Enabling FireWire Boot Support")
-            support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOFireWireFamily.kext", self.constants.fw_kext, self.constants.fw_family_path)
-            support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOFireWireSBP2.kext", self.constants.fw_kext, self.constants.fw_sbp2_path)
-            support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOFireWireSerialBusProtocolTransport.kext", self.constants.fw_kext, self.constants.fw_bus_path)
-            support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("IOFireWireFamily.kext/Contents/PlugIns/AppleFWOHCI.kext")["Enabled"] = True
+        """
+        FireWire Handler
+        """
+
+        if self.constants.firewire_boot is False:
+            return
+        if generate_smbios.check_firewire(self.model) is False:
+            return
+
+        # Enable FireWire Boot Support
+        # Applicable for both native FireWire and Thunderbolt to FireWire adapters
+        logging.info("- Enabling FireWire Boot Support")
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOFireWireFamily.kext", self.constants.fw_kext, self.constants.fw_family_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOFireWireSBP2.kext", self.constants.fw_kext, self.constants.fw_sbp2_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOFireWireSerialBusProtocolTransport.kext", self.constants.fw_kext, self.constants.fw_bus_path)
+        support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("IOFireWireFamily.kext/Contents/PlugIns/AppleFWOHCI.kext")["Enabled"] = True
+
 
     def _trackpad_handling(self) -> None:
+        """
+        Trackpad Handler
+        """
+
         # Pre-Force Touch trackpad support for macOS Ventura
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.skylake.value:
             if self.model.startswith("MacBook"):
@@ -151,7 +190,12 @@ class BuildMiscellaneous:
         if self.model in ["MacBook4,1", "MacBook5,2"]:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path)
 
+
     def _thunderbolt_handling(self) -> None:
+        """
+        Thunderbolt Handler
+        """
+
         if self.constants.disable_tb is True and self.model in ["MacBookPro11,1", "MacBookPro11,2", "MacBookPro11,3", "MacBookPro11,4", "MacBookPro11,5"]:
             logging.info("- Disabling 2013-2014 laptop Thunderbolt Controller")
             if self.model in ["MacBookPro11,3", "MacBookPro11,5"]:
@@ -163,13 +207,22 @@ class BuildMiscellaneous:
 
             self.config["DeviceProperties"]["Add"][tb_device_path] = {"class-code": binascii.unhexlify("FFFFFFFF"), "device-id": binascii.unhexlify("FFFF0000")}
 
+
     def _webcam_handling(self) -> None:
-        # Legacy iSight patches
+        """
+        iSight Handler
+        """
+
         if "Legacy iSight" in smbios_data.smbios_dictionary[self.model]:
             if smbios_data.smbios_dictionary[self.model]["Legacy iSight"] is True:
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyUSBVideoSupport.kext", self.constants.apple_isight_version, self.constants.apple_isight_path)
 
+
     def _usb_handling(self) -> None:
+        """
+        USB Handler
+        """
+
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
         if (
@@ -193,10 +246,7 @@ class BuildMiscellaneous:
         # And MacPro4,1 and MacPro5,1 are the only post-Penryn Macs that lack an internal USB hub
         # - Ref: https://techcommunity.microsoft.com/t5/microsoft-usb-blog/reasons-to-avoid-companion-controllers/ba-p/270710
         #
-        # Required downgrades:
-        #  - IOUSBHostFamily.kext (only kext itself, not plugins)
-        #  - AppleUSBHub.kext
-        #  - AppleUSBEHCI.kext
+        # To be paired for sys_patch_dict.py's 'Legacy USB 1.1' patchset
         if (
             smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value or \
             self.model in ["MacPro4,1", "MacPro5,1"]
@@ -208,8 +258,11 @@ class BuildMiscellaneous:
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
 
+
     def _debug_handling(self) -> None:
-        # DEBUG Settings (OpenCorePkg and Kernel Space)
+        """
+        Debug Handler for OpenCorePkg and Kernel Space
+        """
 
         if self.constants.verbose_debug is True:
             logging.info("- Enabling Verbose boot")
@@ -228,13 +281,12 @@ class BuildMiscellaneous:
             self.config["Misc"]["Debug"]["Target"] = 0x43
             self.config["Misc"]["Debug"]["DisplayLevel"] = 0x80000042
 
+
     def _general_oc_handling(self) -> None:
         """
-
+        General OpenCorePkg Handler
         """
-        # OpenCorePkg Settings
 
-        # OpenCanopy Settings (GUI)
         logging.info("- Adding OpenCanopy GUI")
         shutil.rmtree(self.constants.resources_path, onerror=self.rmtree_handler)
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)

@@ -39,6 +39,12 @@ class BuildGraphicsAudio:
 
 
     def _graphics_handling(self) -> None:
+        """
+        Graphics Handling
+
+        Primarily for Mac Pros and systems with Nvidia Maxwell/Pascal GPUs
+        """
+
         if self.constants.allow_oc_everywhere is False and self.constants.serial_settings != "None":
             if not support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
@@ -115,10 +121,10 @@ class BuildGraphicsAudio:
                                 self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"] += ["nvda_drv"]
 
     def _backlight_path_detection(self) -> None:
+        """
+        iMac MXM dGPU Backlight DevicePath Detection
+        """
 
-        # self.constants.custom_model: iMac has been modded with new dGPU
-        # self.computer.dgpu: dGPU has been found using the GFX0 path
-        # self.computer.dgpu.pci_path:
         if not self.constants.custom_model and self.computer.dgpu and self.computer.dgpu.pci_path:
             for i, device in enumerate(self.computer.gpus):
                     logging.info(f"- Found dGPU ({i + 1}): {utilities.friendly_hex(device.vendor_id)}:{utilities.friendly_hex(device.device_id)}")
@@ -153,6 +159,10 @@ class BuildGraphicsAudio:
 
 
     def _nvidia_mxm_patch(self, backlight_path) -> None:
+        """
+        iMac Nvidia Kepler MXM Handler
+        """
+
         if not support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
             # Ensure WEG is enabled as we need if for Backlight patching
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_navi_version, self.constants.whatevergreen_navi_path)
@@ -196,6 +206,10 @@ class BuildGraphicsAudio:
 
 
     def _amd_mxm_patch(self, backlight_path) -> None:
+        """
+        iMac AMD GCN and Navi MXM Handler
+        """
+
         logging.info("- Adding AMD DRM patches")
         if not support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
             # Ensure WEG is enabled as we need if for Backlight patching
@@ -278,6 +292,10 @@ class BuildGraphicsAudio:
             }
 
     def _audio_handling(self) -> None:
+        """
+        Audio Handler
+        """
+
         if (self.model in model_array.LegacyAudio or self.model in model_array.MacPro) and self.constants.set_alc_usage is True:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleALC.kext", self.constants.applealc_version, self.constants.applealc_path)
 
@@ -315,6 +333,10 @@ class BuildGraphicsAudio:
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -lilubetaall"
 
     def _firmware_handling(self) -> None:
+        """
+        Firmware Handler
+        """
+
         # Add UGA to GOP layer
         if "UGA Graphics" in smbios_data.smbios_dictionary[self.model]:
             logging.info("- Adding UGA to GOP Patch")
@@ -363,6 +385,10 @@ class BuildGraphicsAudio:
 
 
     def _spoof_handling(self) -> None:
+        """
+        SMBIOS Spoofing Handler
+        """
+
         if self.constants.serial_settings == "None":
             return
 
@@ -421,6 +447,10 @@ class BuildGraphicsAudio:
 
 
     def _imac_mxm_patching(self) -> None:
+        """
+        General iMac MXM Handler
+        """
+
         self._backlight_path_detection()
         # Check GPU Vendor
         if self.constants.metal_build is True:
@@ -447,10 +477,13 @@ class BuildGraphicsAudio:
                 self._nvidia_mxm_patch(self.gfx0_path)
 
     def _ioaccel_workaround(self) -> None:
-        # Handle misc IOAccelerator issues
+        """
+        Miscellaneous IOAccelerator Handler
 
-        # When MTL bundles are missing from disk, WindowServer will repeatedly crash
-        # This primarily occurs when installing an RSR update, where root is cleaned but AuxKC is not
+        When MTL bundles are missing from disk, WindowServer will repeatedly crash
+        This primarily occurs when installing an RSR update, where root is cleaned but AuxKC is not
+        """
+
         gpu_dict = []
         if not self.constants.custom_model:
             gpu_dict = self.constants.computer.gpus

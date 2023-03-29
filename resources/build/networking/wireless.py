@@ -101,8 +101,13 @@ class BuildWirelessNetworking:
 
 
     def _wowl_handling(self) -> None:
-        # To avoid reduced networking performance from wake, AirPortBrcmFixup is used to disable wake on WLAN by default.
-        # However some users may want to enable wake on WLAN, so enable if requested.
+        """
+        Wake on WLAN handling
+
+        To avoid reduced networking performance from wake, AirPortBrcmFixup is used to disable wake on WLAN by default.
+        However some users may want to enable wake on WLAN, so enable if requested.
+        """
+
         if self.constants.enable_wake_on_wlan is False:
             return
         if support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AirportBrcmFixup.kext")["Enabled"] is False:
@@ -113,8 +118,13 @@ class BuildWirelessNetworking:
 
 
     def _wifi_fake_id(self) -> None:
-        # BCM94331 and BCM943224 are both partially supported within Big Sur's native AirPortBrcmNIC stack
-        # Simply adding the Device IDs and usage of AirPortBrcmFixup will restore full functionality
+        """
+        Fake Device ID Handler for BCM943224 and BCM94331 chipsets
+
+        BCM94331 and BCM943224 are both partially supported within Big Sur's native AirPortBrcmNIC stack
+        Simply adding the Device IDs and usage of AirPortBrcmFixup will restore full functionality
+        """
+
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AirportBrcmFixup.kext", self.constants.airportbcrmfixup_version, self.constants.airportbcrmfixup_path)
         support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AirportBrcmFixup.kext/Contents/PlugIns/AirPortBrcmNIC_Injector.kext")["Enabled"] = True
         if not self.constants.custom_model and self.computer.wifi and self.computer.wifi.pci_path:

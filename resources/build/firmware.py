@@ -36,6 +36,10 @@ class BuildFirmware:
 
 
     def _power_management_handling(self) -> None:
+        """
+        Power Management Handling
+        """
+
         if not self.model in smbios_data.smbios_dictionary:
             return
         if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
@@ -83,6 +87,10 @@ class BuildFirmware:
 
 
     def _acpi_handling(self) -> None:
+        """
+        ACPI Table Handling
+        """
+
         if not self.model in smbios_data.smbios_dictionary:
             return
         if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
@@ -106,6 +114,10 @@ class BuildFirmware:
 
 
     def _cpu_compatibility_handling(self) -> None:
+        """
+        CPU Compatibility Handling
+        """
+
         if not self.model in smbios_data.smbios_dictionary:
             return
         if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
@@ -158,7 +170,10 @@ class BuildFirmware:
 
 
     def _firmware_driver_handling(self) -> None:
-        # Firmware Drivers (Drivers/*.efi)
+        """
+        Firmware Driver Handling (Drivers/*.efi)
+        """
+
         if not self.model in smbios_data.smbios_dictionary:
             return
         if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
@@ -194,6 +209,10 @@ class BuildFirmware:
 
 
     def _firmware_compatibility_handling(self) -> None:
+        """
+        Firmware Compatibility Handling (Firmware and Kernel)
+        """
+
         self._dual_dp_handling()
 
         # Force VMM as a temporary solution to getting the MacPro6,1 booting in Ventura
