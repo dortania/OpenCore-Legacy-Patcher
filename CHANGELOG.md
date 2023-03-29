@@ -11,6 +11,8 @@
 - Resolve unused KDKs not being properly cleaned up
 - Implement MXM graphics handling for iMac9,1
   - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
+- Backend changes:
+  - Use `.AppleSystemUIFont` for wxPython text rendering (thanks [jazzzny](https://github.com/Jazzzny))
 - Increment Binaries:
   - PatcherSupportPkg 0.9.2 - release
 
