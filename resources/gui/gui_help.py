@@ -34,12 +34,12 @@ class gui_help_menu:
 
         # Header
         self.header = wx.StaticText(self.frame_modal, label="Patcher Resources", pos=(10,10))
-        self.header.SetFont(wx.Font(18, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        self.header.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
         self.header.Centre(wx.HORIZONTAL)
 
         # Subheader
         self.subheader = wx.StaticText(self.frame_modal, label="Following resources are available:")
-        self.subheader.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL))
+        self.subheader.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         self.subheader.SetPosition(
             wx.Point(
                 self.header.GetPosition().x,
