@@ -28,12 +28,6 @@ class BuildMiscellaneous:
         self._build()
 
 
-    def rmtree_handler(func, path, exc_info) -> None:
-        if exc_info[0] == FileNotFoundError:
-            return
-        raise  # pylint: disable=misplaced-bare-raise
-
-
     def _build(self) -> None:
         """
         Kick off Misc Build Process
@@ -287,7 +281,6 @@ class BuildMiscellaneous:
         """
 
         logging.info("- Adding OpenCanopy GUI")
-        shutil.rmtree(self.constants.resources_path, onerror=self.rmtree_handler)
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
         support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenCanopy.efi", "UEFI", "Drivers")["Enabled"] = True
         support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenRuntime.efi", "UEFI", "Drivers")["Enabled"] = True
