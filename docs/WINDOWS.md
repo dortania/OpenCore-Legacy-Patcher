@@ -104,7 +104,7 @@ Once booted into the Windows installer, proceed as you normally would on any Win
 Once booted into the Windows installer, proceed as you normally would until you reach the "Where do you want to install Windows" disk formatting section.
 
 When you are prompted to select a drive, select your desired partition and delete it using "Delete". If you want to install Windows to an empty drive, erase every partition currently on the desired drive.
-After your drive/partition is erased, press "New" to create the Windows system partitions. 
+After your drive/partition is erased, press "New" to create the Windows system partitions.
 
 ![](../images/DISM-1.png)
 
@@ -146,7 +146,7 @@ Removing the Windows boot option from the stock bootpicker is **HIGHLY RECOMMEND
 
 Start up a command prompt window in the Windows Setup environment by running `cmd`.
 
-Next, enter the EFI Folder by running `C:`, substituting "C" for the EFI Partition Drive Letter. Then run `cd EFI` to enter the EFI Partition. Then, run `rmdir Boot /S /Q` to remove the boot files that can be detected by the stock Bootpicker. The OCLP Picker will still be able to detect and boot Windows. 
+Next, enter the EFI Folder by running `C:`, substituting "C" for the EFI Partition Drive Letter. Then run `cd EFI` to enter the EFI Partition. Then, run `rmdir Boot /S /Q` to remove the boot files that can be detected by the stock Bootpicker. The OCLP Picker will still be able to detect and boot Windows.
 
 ![](../images/DISM-8.png)
 
@@ -177,8 +177,6 @@ Then run `.\brigadier.exe --model=MODEL1,1`, replacing "MODEL1,1" with your mach
 
 Once the Boot Camp software is downloaded, you can install it by executing `Setup.exe` or `\Drivers\Apple\BootCamp.msi` (`BootCamp64.msi` if present).
 
-![](../images/BOOTCAMP-3.png)
-
 ### Installing Boot Camp 6 softare on unsupported machines
 
 To get started, download the Brigadier utility from the following link:
@@ -196,8 +194,6 @@ Then run `.\brigadier.exe --model=MacPro7,1`. This will download the latest Boot
 ![](../images/BOOTCAMP-2.png)
 
 Once the Boot Camp software is downloaded, you can install Boot Camp 6 by executing `\Drivers\Apple\BootCamp.msi` in an administrator command prompt window.
-
-![](../images/BOOTCAMP-3.png)
 
 ## Troubleshooting
 
