@@ -1,5 +1,5 @@
 # Class for handling SMBIOS Patches, invocation from build.py
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
 import ast
 import uuid
@@ -16,6 +16,11 @@ from data import smbios_data, cpu_data, model_array
 
 
 class BuildSMBIOS:
+    """
+    Build Library for SMBIOS Support
+
+    Invoke from build.py
+    """
 
     def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
         self.model: str = model
@@ -56,7 +61,11 @@ class BuildSMBIOS:
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -no_compat_check"
 
 
-    def _set_smbios(self) -> None:
+    def set_smbios(self) -> None:
+        """
+        SMBIOS Handler
+        """
+
         spoofed_model = self.model
 
         if self.constants.override_smbios == "Default":
@@ -193,6 +202,16 @@ class BuildSMBIOS:
 
 
     def _minimal_serial_patch(self) -> None:
+        """
+        Minimal SMBIOS Spoofing Handler
+
+        This function will only spoof the following:
+        - Board ID
+        - Firmware Features
+        - BIOS Version
+        - Serial Numbers (if override requested)
+        """
+
         # Generate Firmware Features
         fw_feature = generate_smbios.generate_fw_features(self.model, self.constants.custom_model)
         # fw_feature = self.patch_firmware_feature()
@@ -248,6 +267,12 @@ class BuildSMBIOS:
 
 
     def _moderate_serial_patch(self) -> None:
+        """
+        Moderate SMBIOS Spoofing Handler
+
+        Implements a full SMBIOS replacement, however retains original serial numbers (unless override requested)
+        """
+
         if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
             self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
         if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
@@ -266,6 +291,12 @@ class BuildSMBIOS:
 
 
     def _advanced_serial_patch(self) -> None:
+        """
+        Advanced SMBIOS Spoofing Handler
+
+        Implements a full SMBIOS replacement, including serial numbers
+        """
+
         if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
             self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
         if self.constants.custom_serial_number == "" or self.constants.custom_board_serial_number == "":

@@ -1,5 +1,5 @@
 # Utility class for build functions
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
 import shutil
 import typing
@@ -14,6 +14,9 @@ from resources import constants, utilities
 
 
 class BuildSupport:
+    """
+    Support Library for build.py and related libraries
+    """
 
     def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
         self.model: str = model

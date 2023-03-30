@@ -1,5 +1,5 @@
 # Class for generating OpenCore Configurations tailored for Macs
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
 import copy
 import pickle
@@ -23,7 +23,11 @@ def rmtree_handler(func, path, exc_info) -> None:
 
 
 class BuildOpenCore:
-    
+    """
+    Core Build Library for generating and validating OpenCore EFI Configurations
+    compatible with genuine Macs
+    """
+
     def __init__(self, model: str, global_constants: constants.Constants) -> None:
         self.model: str = model
         self.config: dict = None
@@ -137,7 +141,7 @@ class BuildOpenCore:
         # Generate OpenCore Configuration
         self._build_efi()
         if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True or (self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != ""):
-            smbios.BuildSMBIOS(self.model, self.constants, self.config)._set_smbios()
+            smbios.BuildSMBIOS(self.model, self.constants, self.config).set_smbios()
         support.BuildSupport(self.model, self.constants, self.config).cleanup()
         self._save_config()
 

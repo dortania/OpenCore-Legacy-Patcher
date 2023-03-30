@@ -1,5 +1,5 @@
 # Class for handling Graphics and Audio Patches, invocation from build.py
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
 import shutil
 import logging
@@ -13,6 +13,11 @@ from data import smbios_data, model_array, os_data, cpu_data, video_bios_data
 
 
 class BuildGraphicsAudio:
+    """
+    Build Library for Graphics and Audio Support
+
+    Invoke from build.py
+    """
 
     def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
         self.model: str = model

@@ -1,5 +1,5 @@
 # Class for handling macOS Security Patches, invocation from build.py
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
 import logging
 import binascii
@@ -9,6 +9,11 @@ from resources.build import support
 
 
 class BuildSecurity:
+    """
+    Build Library for Security Patch Support
+
+    Invoke from build.py
+    """
 
     def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
         self.model: str = model

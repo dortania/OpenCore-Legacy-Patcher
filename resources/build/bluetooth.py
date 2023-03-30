@@ -1,5 +1,5 @@
 # Class for handling Bluetooth Patches, invocation from build.py
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
 import logging
 
@@ -9,6 +9,11 @@ from data import smbios_data, bluetooth_data
 
 
 class BuildBluetooth:
+    """
+    Build Library for Bluetooth Support
+
+    Invoke from build.py
+    """
 
     def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
         self.model: str = model

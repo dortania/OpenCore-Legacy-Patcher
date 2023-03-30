@@ -1,5 +1,5 @@
 # Class for handling Wired Networking Patches, invocation from build.py
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
 from resources import constants, device_probe
 from resources.build import support
@@ -7,6 +7,11 @@ from data import smbios_data, cpu_data
 
 
 class BuildWiredNetworking:
+    """
+    Build Library for Wired Networking Support
+
+    Invoke from build.py
+    """
 
     def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
         self.model: str = model
