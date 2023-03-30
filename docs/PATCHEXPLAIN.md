@@ -1,6 +1,6 @@
 # Explaining the patches in OpenCore Legacy Patcher
 
-In our patcher, there are numerous patches used to ensure a stable system. Here we're going to go over what patches are used and why we recommend or even require them.
+In our patcher, there are numerous patches used to ensure a stable system. Here, we're going to go over what patches are used and why we recommend or even require them.
 
 * [OpenCore Settings](#opencore-settings)
 * [Injected Kexts](#injected-kexts)
@@ -8,7 +8,7 @@ In our patcher, there are numerous patches used to ensure a stable system. Here 
 
 ## OpenCore Settings
 
-Below is a run down of the main logic OpenCore Legacy Patcher uses to gain native support in macOS. Note that OpenCore's configuration is documented within [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) as well as on an online version provided by us:
+Below is a rundown of the main logic that OpenCore Legacy Patcher uses to gain native support in macOS. Note that OpenCore's configuration is documented within [OpenCorePkg](https://github.com/acidanthera/OpenCorePkg) as well as on an online version provided by us:
 
 * [OpenCorePkg Online Docs](https://dortania.github.io/docs/latest/Configuration.html)
 

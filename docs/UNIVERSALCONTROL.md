@@ -29,7 +29,7 @@ Technical requirements:
 * iPadOS 15.4 or newer (if applicable)
 * OpenCore Legacy Patcher 0.4.3 or newer
 
-Check the [table of models](#table-of-models) below to see whether you need to upgrade hardware and exactly what hardware is required to be changed based on the offending Macs listed. For help on how to upgrade the Wi-Fi card in older 2008-2011 models, refer to the Discord channel [#hardware](https://discord.gg/rqdPgH8xSN) if required.
+Check the [table of models](#table-of-models) below to see whether you need to upgrade hardware and exactly what hardware is required to be changed based on the offending Macs listed. For help on how to upgrade the Wi-Fi card in older 2008-2011 models, refer to the `#hardware` channel in the [Discord server](https://discord.gg/rqdPgH8xSN) if required.
 
 
 
@@ -253,7 +253,7 @@ Then, go to **SMBIOS Settings**, tick **Allow Native Spoofs**, set SMBIOS Spoof 
 
 Any model after the list of officially blacklisted Macs should be supported, but these are the earliest Macs with Universal Control support, and thus chosen for the sake of simplicity.
 
-**Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Monterey as long as the other requirements are met, since they aren't blacklisted.
+**Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Monterey, as long as the other requirements are met, since they aren't blacklisted.
 
 
 | Mac by name | Native SMBIOS | Spoof SMBIOS | Tested | Tested by |

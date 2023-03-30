@@ -32,7 +32,7 @@ Once you've toggled them both off, build your OpenCore EFI once again and instal
 
 For many users, SIP will be lowered by default on build. For Intel HD 4000 users, you may have noticed that SIP is partially disabled. This is to ensure full compatibility with macOS Monterey and allow seamless booting between it and older OSes. However for users who do not plan to boot Monterey, you can re-enable under Patcher Settings.
 
-Note: Machines running macOS Ventura or systems with non-Metal GPUs cannot enable SIP outright, due to having a patched root volume. Enabling will brick the installation.
+Note: Machines running macOS Ventura or systems with non-Metal GPUs cannot enable SIP outright, due to having a patched root volume. Enabling it will brick the installation.
 
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
 | :--- | :--- | :--- |
@@ -79,7 +79,7 @@ With macOS Ventura and Macs with AMD Legacy GCN GPUs (ie. Metal), Root Patching 
 
 * [Apple's Developer Download Page](https://developer.apple.com/download/all/?q=Kernel%20Debug%20Kit)
 
-Grab the closet Kernel Debug Kit to the OS you installed, and install it to the machine running Ventura.
+Grab the Kernel Debug Kit whose version is closest to the OS you installed, and install it to the machine running Ventura.
 
 Machines that require this are those with AMD Metal dGPUs:
 * 2008 - 2013 Mac Pros (MacPro3,1 - 6,1)
@@ -88,7 +88,7 @@ Machines that require this are those with AMD Metal dGPUs:
 
 :::
 
-Below entires represent GPUs no longer natively supported, ie. requiring root volume patch with OpenCore Legacy Patcher:
+Below entries represent GPUs no longer natively supported, ie. requiring root volume patching with OpenCore Legacy Patcher:
 
 :::details GPUs requiring patching in macOS Big Sur
 

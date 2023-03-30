@@ -39,11 +39,11 @@ The team is doing their best to investigate and fix the aforementioned issues, h
 
 ### AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs
 
-For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMac9,1-12,2), keep in mind macOS Ventura now requires [AVX2.0 support in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura officially with these GPUs.
+For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMac9,1-12,2), keep in mind that macOS Ventura now requires [AVX2.0 support in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura officially with these GPUs.
 
 * CPUs supporting AVX2.0 are Haswell or newer, which no pre-2019 Mac Pros can be upgraded with.
 
-Currently at this time, OpenCore Legacy Patcher only supports patching the AMD Polaris and Vega Graphics stack to no longer require AVX2.0. We're recently received an AMD RX 6600 donation, so hopefully in the future the project can support AMD Navi with pre-Haswell Macs. However no time estimates can be given.
+Currently at this time, OpenCore Legacy Patcher only supports patching the AMD Polaris and Vega Graphics stack to no longer require AVX2.0. We're recently received an AMD RX 6600 donation, so hopefully in the future the project can support AMD Navi with pre-Haswell Macs. However, no time estimates can be given.
 
 Following GPUs are applicable:
 
@@ -80,7 +80,7 @@ With OpenCore Legacy Patcher v0.6.0, basic support has been implemented via Root
 
 ### Ethernet issue with Early 2008 Mac Pro
 
-MacPro3,1 suffers from Ethernet driver dying after returning from sleep, current workaround is to use a USB Ethernet adapter or disable sleep.
+MacPro3,1 suffers from the Ethernet driver dying after returning from sleep, current workaround is to use a USB Ethernet adapter or disable sleep.
 
 
 ::: details Legacy Wireless Support (Resolved in v0.6.0 and newer)

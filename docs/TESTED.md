@@ -6,7 +6,7 @@ To aid users in troubleshooting, we've compiled a list of users who've reported 
 
 | SMBIOS | Tested | Tester | Model | Version | Comment |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| MacBook4,1 | <span style="color:#30BCD5"> YES </span> | Mami | Stock | Unknown | Couldn't install due to broke USB support |
+| MacBook4,1 | <span style="color:#30BCD5"> YES </span> | Mami | Stock | Unknown | Couldn't install due to broken USB support |
 | MacBook5,1 | ^^ | air.man | ^^ | 0.0.19 | N/A |
 | MacBook5,2 | ^^ | Finder352 | ^^ | ^^ | ^^ |
 | MacBook6,1 | ^^ | Finder352 | ^^ | ^^ | ^^ |

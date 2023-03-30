@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Here are some common errors users may experience while using this patcher:
+Here are some common errors that users may experience while using this patcher:
 
 * [OpenCore Legacy Patcher not launching](#opencore-legacy-patcher-not-launching)
 * [Stuck on `This version of Mac OS X is not supported on this platform`](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform)
@@ -46,7 +46,7 @@ Reminder that once this is done, you'll need to select OpenCore in the boot pick
 
 With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates work correctly and reliably with Big Sur. However this installs NVRAM variables that will confuse your Mac if not running with OpenCore. To resolve this, simply uninstall OpenCore and [reset NVRAM](https://support.apple.com/en-mide/HT201255).
 
-* Note: Machines with modded root volumes will also result in an infinite recovery loop until integrity is restored.
+* Note: Machines with modified root volumes will also result in an infinite recovery loop until integrity is restored.
 
 ## Reboot when entering Hibernation (`Sleep Wake Failure`)
 
@@ -92,11 +92,11 @@ As a work-around, we recommend users try out the below app:
 
 With OCLP v0.2.5, we've added support for legacy Wi-Fi on Monterey. However, some users may have noticed that they can't connect to wireless networks.
 
-To work-around this, we recommend that users manually connect using the "other" option in the Wi-Fi menu bar or manually adding the network in the "Network" preference pane.
+To work-around this, we recommend that users manually connect using the "Other" option in the Wi-Fi menu bar or manually adding the network in the "Network" preference pane.
 
 ## No Graphics Acceleration
 
-In macOS, GPU drivers are often dropped from the OS with each major release of it. With macOS Big Sur, currently all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and NVIDIA Kepler graphics processors. 
+In macOS, GPU drivers are often dropped from the OS with each major release of it. With macOS Big Sur, currently, all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and NVIDIA Kepler graphics processors. 
 
 If you're using OCLP v0.4.4, you should have been prompted to install Root Volume patches after the first boot from installation of macOS. If you need to do this manually, you can do so within the patcher app. Once rebooted, acceleration will be re-enabled as well as brightness control for laptops.
 
@@ -151,7 +151,7 @@ Because of this, we recommend placing a USB 2.0/3.0 hub between your devices and
 
 A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this stage, a lot of heavy cryptography is performed, which can make systems appear to be stuck. In reality they are working quite hard to finish up the installation.
 
-Because this step can take a few hours or more depending on drive speeds, be patient at this stage and do not manually power off or reboot your machine as this will break the installation and require you to reinstall. If you think your system has stalled, press the Caps Lock key. If the light turns on, your system is busy.
+Because this step can take a few hours or more depending on drive speeds, be patient at this stage and do not manually power off or reboot your machine as this will break the installation and require you to reinstall. If you think your system has stalled, press the Caps Lock key. If the light turns on, your system is busy and not actually frozen.
 
 ## No acceleration after a Metal GPU swap on Mac Pro
 

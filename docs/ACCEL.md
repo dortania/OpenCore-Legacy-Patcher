@@ -106,7 +106,7 @@ Workaround: Press some combination of Tab, or Tab and then Shift-Tab, or just Sh
 
 ## Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer
 
-Unfortunately a very well known issue that the community is investigating. A currently known solution is to downgrade to macOS 11.2.3 or older until a proper fix can be found. Additionally logging out and logging in can resolve the issue without requiring a reboot.
+Unfortunately, this is a very well known issue that the community is investigating. A currently known solution is to downgrade to macOS 11.2.3 or older until a proper fix can be found. Additionally, logging out and logging back in can resolve the issue without requiring a reboot.
 
 * Note, this issue should be exclusive to TeraScale 1 GPUs (ie. HD2000-4000). TeraScale 2 GPUs should not exhibit this issue.
 
@@ -116,9 +116,9 @@ In the event Apple removes 11.2.3 from their catalogue, we've provided a mirror 
 
 ## Unable to switch GPUs on 2011 15" and 17" MacBook Pros
 
-Currently OpenCore Legacy Patcher, GPU switching between the iGPU and dGPU is broken. The simplest way to set a specific GPU is to disable the dGPU when you wish to remain on the more power efficient iGPU.
+Currently, with OpenCore Legacy Patcher, GPU switching between the iGPU and dGPU is broken. The simplest way to set a specific GPU is to disable the dGPU when you wish to remain on the more power efficient iGPU.
 
-The best way to achieve this is to boot Recovery (or Single User Mode if the dGPU refuses to function at all) and run the following command:
+The best way to achieve this is to boot to Recovery (or Single User Mode if the dGPU refuses to function at all) and run the following command:
 
 ```sh
 nvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00
@@ -157,14 +157,13 @@ The following tool can be used to work-around this issue:
 
 By default, OpenCore Legacy Patcher will assume MacBookPro8,2/3 have a faulty dGPU and disable acceleration. This is the safest option for most users as enabling dGPU acceleration on faulty Macs will result in failed booting.
 
-However if your machine does not have the dGPU disabled via NVRAM, you'll experience a login loop. To work around this is quite simple:
+However, if your machine does not have the dGPU disabled via NVRAM, you'll experience a login loop. To work around this is quite simple:
 
 1. Boot macOS in Single User Mode
     * Press Cmd+S in OpenCore's menu when you turn the Mac on
-2. When command line prompt appears, enter the dGPU disabler argument (at the bottom)
+2. When the command line prompt appears, enter the dGPU disabler argument (at the bottom)
 3. Reboot and patched macOS should work normally
-4. If you still want to use the dGPU, run OpenCore Legacy Patcher and enable TS2 Acceleration from settings. Then root patch your Mac again
-     `Patcher Settings -> Developer Settings -> Set TeraScale 2 Accel`
+4. If you still want to use the dGPU, run OpenCore Legacy Patcher and enable TS2 Acceleration from settings. Go to `Patcher Settings -> Developer Settings -> Set TeraScale 2 Accel`, then root patch again.
 5. Either Reset NVRAM or set `gpu-power-prefs` to zeros to re-enable the dGPU
 
 ```sh
