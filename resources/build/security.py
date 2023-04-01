@@ -1,23 +1,34 @@
 # Class for handling macOS Security Patches, invocation from build.py
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
-from resources import constants, utilities
+import logging
+import binascii
+
+from resources import constants, utilities, device_probe
 from resources.build import support
 
-import binascii
-import logging
+
+class BuildSecurity:
+    """
+    Build Library for Security Patch Support
+
+    Invoke from build.py
+    """
+
+    def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
+        self.model: str = model
+        self.config: dict = config
+        self.constants: constants.Constants = global_constants
+        self.computer: device_probe.Computer = self.constants.computer
+
+        self._build()
 
 
-class build_security:
+    def _build(self) -> None:
+        """
+        Kick off Security Build Process
+        """
 
-    def __init__(self, model, versions, config):
-        self.model = model
-        self.constants: constants.Constants = versions
-        self.config = config
-        self.computer = self.constants.computer
-
-
-    def build(self):
         if self.constants.sip_status is False or self.constants.custom_sip_value:
             # Work-around 12.3 bug where Electron apps no longer launch with SIP lowered
             # Unknown whether this is intended behavior or not, revisit with 12.4
@@ -26,7 +37,7 @@ class build_security:
             # Adds AutoPkgInstaller for Automatic OpenCore-Patcher installation
             # Only install if running the GUI (AutoPkg-Assets.pkg requires the GUI)
             if self.constants.wxpython_variant is True:
-                support.build_support(self.model, self.constants, self.config).enable_kext("AutoPkgInstaller.kext", self.constants.autopkg_version, self.constants.autopkg_path)
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("AutoPkgInstaller.kext", self.constants.autopkg_version, self.constants.autopkg_path)
             if self.constants.custom_sip_value:
                 logging.info(f"- Setting SIP value to: {self.constants.custom_sip_value}")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["csr-active-config"] = utilities.string_to_hex(self.constants.custom_sip_value.lstrip("0x"))
@@ -38,7 +49,7 @@ class build_security:
             # This is however hidden behind kern.development, thus we patch _apfs_filevault_allowed to always return true
             # Note this function was added in 11.3 (20E232, 20.4), older builds do not support this (ie. 11.2.3)
             logging.info("- Allowing FileVault on Root Patched systems")
-            support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Force FileVault on Broken Seal")["Enabled"] = True
+            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Force FileVault on Broken Seal")["Enabled"] = True
             # Lets us check in sys_patch.py if config supports FileVault
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_fv"
 
@@ -46,7 +57,7 @@ class build_security:
             # - Ref: https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1019
             logging.info("- Enabling KC UUID mismatch patch")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -nokcmismatchpanic"
-            support.build_support(self.model, self.constants, self.config).enable_kext("RSRHelper.kext", self.constants.rsrhelper_version, self.constants.rsrhelper_path)
+            support.BuildSupport(self.model, self.constants, self.config).enable_kext("RSRHelper.kext", self.constants.rsrhelper_version, self.constants.rsrhelper_path)
 
         if self.constants.disable_cs_lv is True:
             # In Ventura, LV patch broke. For now, add AMFI arg
@@ -56,18 +67,18 @@ class build_security:
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " amfi=0x80"
             else:
                 logging.info("- Disabling Library Validation")
-            support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Library Validation Enforcement")["Enabled"] = True
-            support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable _csr_check() in _vnode_check_signature")["Enabled"] = True
+            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable Library Validation Enforcement")["Enabled"] = True
+            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Disable _csr_check() in _vnode_check_signature")["Enabled"] = True
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Settings"] += " -allow_amfi"
             # CSLVFixup simply patches out __RESTRICT and __restrict out of the Music.app Binary
             # Ref: https://pewpewthespells.com/blog/blocking_code_injection_on_ios_and_os_x.html
-            support.build_support(self.model, self.constants, self.config).enable_kext("CSLVFixup.kext", self.constants.cslvfixup_version, self.constants.cslvfixup_path)
+            support.BuildSupport(self.model, self.constants, self.config).enable_kext("CSLVFixup.kext", self.constants.cslvfixup_version, self.constants.cslvfixup_path)
 
         if self.constants.secure_status is False:
             logging.info("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
             if self.constants.force_vmm is True:
                 logging.info("- Forcing VMM patchset to support OTA updates")
-                support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
-                support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Legacy")["Enabled"] = True
-                support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Ventura")["Enabled"] = True
+                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
+                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Legacy")["Enabled"] = True
+                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Ventura")["Enabled"] = True

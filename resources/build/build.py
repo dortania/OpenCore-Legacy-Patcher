@@ -1,57 +1,69 @@
 # Class for generating OpenCore Configurations tailored for Macs
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
 import copy
 import pickle
 import plistlib
 import shutil
 import zipfile
+import logging
+
 from pathlib import Path
 from datetime import date
-import logging
 
 from resources import constants, utilities
 from resources.build import bluetooth, firmware, graphics_audio, support, storage, smbios, security, misc
 from resources.build.networking import wired, wireless
 
 
-def rmtree_handler(func, path, exc_info):
+def rmtree_handler(func, path, exc_info) -> None:
     if exc_info[0] == FileNotFoundError:
         return
     raise  # pylint: disable=misplaced-bare-raise
 
 
-class build_opencore:
-    def __init__(self, model, versions):
-        self.model = model
-        self.config = None
-        self.constants: constants.Constants = versions
+class BuildOpenCore:
+    """
+    Core Build Library for generating and validating OpenCore EFI Configurations
+    compatible with genuine Macs
+    """
+
+    def __init__(self, model: str, global_constants: constants.Constants) -> None:
+        self.model: str = model
+        self.config: dict = None
+        self.constants: constants.Constants = global_constants
+
+        self._build_opencore()
 
 
-    def build_efi(self):
+    def _build_efi(self) -> None:
+        """
+        Build EFI folder
+        """
+
         utilities.cls()
-        if not self.constants.custom_model:
-            logging.info(f"Building Configuration on model: {self.model}")
-        else:
-            logging.info(f"Building Configuration for external model: {self.model}")
+        logging.info(f"Building Configuration {'for external' if self.constants.custom_model else 'on model'}: {self.model}")
 
-        self.generate_base()
-        self.set_revision()
+        self._generate_base()
+        self._set_revision()
 
         # Set Lilu and co.
-        support.build_support(self.model, self.constants, self.config).enable_kext("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path)
         self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
 
         # Call support functions
-        firmware.build_firmware(self.model, self.constants, self.config).build()
-        wired.build_wired(self.model, self.constants, self.config).build()
-        wireless.build_wireless(self.model, self.constants, self.config).build()
-        graphics_audio.build_graphics_audio(self.model, self.constants, self.config).build()
-        bluetooth.build_bluetooth(self.model, self.constants, self.config).build()
-        storage.build_storage(self.model, self.constants, self.config).build()
-        smbios.build_smbios(self.model, self.constants, self.config).build()
-        security.build_security(self.model, self.constants, self.config).build()
-        misc.build_misc(self.model, self.constants, self.config).build()
+        for function in [
+            firmware.BuildFirmware,
+            wired.BuildWiredNetworking,
+            wireless.BuildWirelessNetworking,
+            graphics_audio.BuildGraphicsAudio,
+            bluetooth.BuildBluetooth,
+            storage.BuildStorage,
+            smbios.BuildSMBIOS,
+            security.BuildSecurity,
+            misc.BuildMiscellaneous
+        ]:
+            function(self.model, self.constants, self.config)
 
         # Work-around ocvalidate
         if self.constants.validate is False:
@@ -59,8 +71,11 @@ class build_opencore:
             self.config["Misc"]["BlessOverride"] += ["\\EFI\\Microsoft\\Boot\\bootmgfw.efi"]
 
 
-    def generate_base(self):
-        # Generate OpenCore base folder and config
+    def _generate_base(self) -> None:
+        """
+        Generate OpenCore base folder and config
+        """
+
         if not Path(self.constants.build_path).exists():
             logging.info("Creating build folder")
             Path(self.constants.build_path).mkdir()
@@ -85,8 +100,11 @@ class build_opencore:
         self.config = plistlib.load(Path(self.constants.plist_path).open("rb"))
 
 
-    def set_revision(self):
-        # Set revision in config
+    def _set_revision(self) -> None:
+        """
+        Set revision information in config.plist
+        """
+
         self.config["#Revision"]["Build-Version"] = f"{self.constants.patcher_version} - {date.today()}"
         if not self.constants.custom_model:
             self.config["#Revision"]["Build-Type"] = "OpenCore Built on Target Machine"
@@ -101,21 +119,35 @@ class build_opencore:
         self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Model"] = self.model
 
 
-    def save_config(self):
+    def _save_config(self) -> None:
+        """
+        Save config.plist to disk
+        """
+
         plistlib.dump(self.config, Path(self.constants.plist_path).open("wb"), sort_keys=True)
 
 
-    def build_opencore(self):
+    def _build_opencore(self) -> None:
+        """
+        Kick off the build process
+
+        This is the main function:
+        - Generates the OpenCore configuration
+        - Cleans working directory
+        - Signs files
+        - Validates generated EFI
+        """
+
         # Generate OpenCore Configuration
-        self.build_efi()
+        self._build_efi()
         if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True or (self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != ""):
-            smbios.build_smbios(self.model, self.constants, self.config).set_smbios()
-        support.build_support(self.model, self.constants, self.config).cleanup()
-        self.save_config()
+            smbios.BuildSMBIOS(self.model, self.constants, self.config).set_smbios()
+        support.BuildSupport(self.model, self.constants, self.config).cleanup()
+        self._save_config()
 
         # Post-build handling
-        support.build_support(self.model, self.constants, self.config).sign_files()
-        support.build_support(self.model, self.constants, self.config).validate_pathing()
+        support.BuildSupport(self.model, self.constants, self.config).sign_files()
+        support.BuildSupport(self.model, self.constants, self.config).validate_pathing()
 
         logging.info("")
         logging.info(f"Your OpenCore EFI for {self.model} has been built at:")

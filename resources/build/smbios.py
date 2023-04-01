@@ -1,48 +1,71 @@
 # Class for handling SMBIOS Patches, invocation from build.py
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
+
+import ast
+import uuid
+import logging
+import binascii
+import plistlib
+import subprocess
+
+from pathlib import Path
 
 from resources import constants, utilities, generate_smbios
 from resources.build import support
 from data import smbios_data, cpu_data, model_array
 
-import subprocess, plistlib, binascii, uuid, ast, logging
-from pathlib import Path
 
-class build_smbios:
+class BuildSMBIOS:
+    """
+    Build Library for SMBIOS Support
 
-    def __init__(self, model, versions, config):
-        self.model = model
-        self.constants: constants.Constants = versions
-        self.config = config
+    Invoke from build.py
+    """
 
-    def build(self):
+    def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
+        self.model: str = model
+        self.config: dict = config
+        self.constants: constants.Constants = global_constants
+
+        self._build()
+
+
+    def _build(self) -> None:
+        """
+        Kick off SMBIOS Build Process
+        """
+
         if self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True:
             if self.constants.serial_settings == "None":
                 # Credit to Parrotgeek1 for boot.efi and hv_vmm_present patch sets
                 logging.info("- Enabling Board ID exemption patch")
-                support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Skip Board ID check")["Enabled"] = True
+                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Skip Board ID check")["Enabled"] = True
 
                 logging.info("- Enabling VMM exemption patch")
-                support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
-                support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Legacy")["Enabled"] = True
-                support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Ventura")["Enabled"] = True
+                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
+                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Legacy")["Enabled"] = True
+                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Ventura")["Enabled"] = True
             else:
                 logging.info("- Enabling SMC exemption patch")
-                support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
-                support.build_support(self.model, self.constants, self.config).enable_kext("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path)
+                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.driver.AppleSMC")["Enabled"] = True
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("SMC-Spoof.kext", self.constants.smcspoof_version, self.constants.smcspoof_path)
 
         if self.constants.serial_settings in ["Moderate", "Advanced"]:
             logging.info("- Enabling USB Rename Patches")
-            support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "XHC1 to SHC1")["Enabled"] = True
-            support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "EHC1 to EH01")["Enabled"] = True
-            support.build_support(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "EHC2 to EH02")["Enabled"] = True
+            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "XHC1 to SHC1")["Enabled"] = True
+            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "EHC1 to EH01")["Enabled"] = True
+            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Patch"], "Comment", "EHC2 to EH02")["Enabled"] = True
 
         if self.model == self.constants.override_smbios:
             logging.info("- Adding -no_compat_check")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -no_compat_check"
 
 
-    def set_smbios(self):
+    def set_smbios(self) -> None:
+        """
+        SMBIOS Handler
+        """
+
         spoofed_model = self.model
 
         if self.constants.override_smbios == "Default":
@@ -70,14 +93,14 @@ class build_smbios:
 
         if self.constants.serial_settings == "Moderate":
             logging.info("- Using Moderate SMBIOS patching")
-            self.moderate_serial_patch()
+            self._moderate_serial_patch()
         elif self.constants.serial_settings == "Advanced":
             logging.info("- Using Advanced SMBIOS patching")
-            self.advanced_serial_patch()
+            self._advanced_serial_patch()
         elif self.constants.serial_settings == "Minimal":
             logging.info("- Using Minimal SMBIOS patching")
             self.spoofed_model = self.model
-            self.minimal_serial_patch()
+            self._minimal_serial_patch()
         else:
             # Update DataHub to resolve Lilu Race Condition
             # macOS Monterey will sometimes not present the boardIdentifier in the DeviceTree on UEFI 1.2 or older Mac,
@@ -178,7 +201,17 @@ class build_smbios:
                 plistlib.dump(agdp_config, Path(new_agdp_ls).open("wb"), sort_keys=True)
 
 
-    def minimal_serial_patch(self):
+    def _minimal_serial_patch(self) -> None:
+        """
+        Minimal SMBIOS Spoofing Handler
+
+        This function will only spoof the following:
+        - Board ID
+        - Firmware Features
+        - BIOS Version
+        - Serial Numbers (if override requested)
+        """
+
         # Generate Firmware Features
         fw_feature = generate_smbios.generate_fw_features(self.model, self.constants.custom_model)
         # fw_feature = self.patch_firmware_feature()
@@ -233,7 +266,13 @@ class build_smbios:
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["OCLP-Spoofed-MLB"] = mlb
 
 
-    def moderate_serial_patch(self):
+    def _moderate_serial_patch(self) -> None:
+        """
+        Moderate SMBIOS Spoofing Handler
+
+        Implements a full SMBIOS replacement, however retains original serial numbers (unless override requested)
+        """
+
         if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
             self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
         if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
@@ -251,7 +290,13 @@ class build_smbios:
         self.config["PlatformInfo"]["Generic"]["SystemProductName"] = self.spoofed_model
 
 
-    def advanced_serial_patch(self):
+    def _advanced_serial_patch(self) -> None:
+        """
+        Advanced SMBIOS Spoofing Handler
+
+        Implements a full SMBIOS replacement, including serial numbers
+        """
+
         if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
             self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
         if self.constants.custom_serial_number == "" or self.constants.custom_board_serial_number == "":

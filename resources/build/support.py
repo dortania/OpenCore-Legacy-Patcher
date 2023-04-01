@@ -1,22 +1,41 @@
 # Utility class for build functions
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
+
+import shutil
+import typing
+import logging
+import plistlib
+import zipfile
+import subprocess
+
+from pathlib import Path
 
 from resources import constants, utilities
 
-from pathlib import Path
-import shutil, plistlib, subprocess, zipfile
-import logging
 
-class build_support:
+class BuildSupport:
+    """
+    Support Library for build.py and related libraries
+    """
 
-    def __init__(self, model, versions, config):
-        self.model = model
-        self.constants: constants.Constants = versions
-        self.config = config
+    def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
+        self.model: str = model
+        self.config: dict = config
+        self.constants: constants.Constants = global_constants
 
 
     @staticmethod
-    def get_item_by_kv(iterable, key, value):
+    def get_item_by_kv(iterable: dict, key: str, value: typing.Any) -> dict:
+        """
+        Gets an item from a list of dicts by key and value
+
+        Parameters:
+            iterable (list): List of dicts
+            key       (str): Key to search for
+            value     (any): Value to search for
+
+        """
+
         item = None
         for i in iterable:
             if i[key] == value:
@@ -25,24 +44,49 @@ class build_support:
         return item
 
 
-    def get_kext_by_bundle_path(self, bundle_path):
-        kext = self.get_item_by_kv(self.config["Kernel"]["Add"], "BundlePath", bundle_path)
+    def get_kext_by_bundle_path(self, bundle_path: str) -> dict:
+        """
+        Gets a kext by bundle path
+
+        Parameters:
+            bundle_path (str): Relative bundle path of the kext in the EFI folder
+        """
+
+        kext: dict = self.get_item_by_kv(self.config["Kernel"]["Add"], "BundlePath", bundle_path)
         if not kext:
             logging.info(f"- Could not find kext {bundle_path}!")
             raise IndexError
         return kext
 
 
-    def get_efi_binary_by_path(self, bundle_path, entry_location, efi_type):
-        efi_binary = self.get_item_by_kv(self.config[entry_location][efi_type], "Path", bundle_path)
+    def get_efi_binary_by_path(self, bundle_name: str, entry_type: str, efi_type: str) -> dict:
+        """
+        Gets an EFI binary by name
+
+        Parameters:
+            bundle_name (str): Name of the EFI binary
+            entry_type  (str): Type of EFI binary (UEFI, Misc)
+            efi_type    (str): Type of EFI binary (Drivers, Tools)
+        """
+
+        efi_binary: dict = self.get_item_by_kv(self.config[entry_type][efi_type], "Path", bundle_name)
         if not efi_binary:
-            logging.info(f"- Could not find {efi_type}: {bundle_path}!")
+            logging.info(f"- Could not find {efi_type}: {bundle_name}!")
             raise IndexError
         return efi_binary
 
 
-    def enable_kext(self, kext_name, kext_version, kext_path, check=False):
-        kext = self.get_kext_by_bundle_path(kext_name)
+    def enable_kext(self, kext_name: str, kext_version: str, kext_path: Path, check: bool = False) -> None:
+        """
+        Enables a kext in the config.plist
+
+        Parameters:
+            kext_name     (str): Name of the kext
+            kext_version  (str): Version of the kext
+            kext_path    (Path): Path to the kext
+        """
+
+        kext: dict = self.get_kext_by_bundle_path(kext_name)
 
         if callable(check) and not check():
             # Check failed
@@ -56,7 +100,11 @@ class build_support:
         kext["Enabled"] = True
 
 
-    def sign_files(self):
+    def sign_files(self) -> None:
+        """
+        Signs files for on OpenCorePkg's Vault system
+        """
+
         if self.constants.vault is False:
             return
 
@@ -72,9 +120,13 @@ class build_support:
         subprocess.run([str(self.constants.vault_path), f"{self.constants.oc_folder}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
-    def validate_pathing(self):
-        # Verify whether all files are accounted for on-disk
-        # This ensures that OpenCore won't hit a critical error and fail to boot
+    def validate_pathing(self) -> None:
+        """
+        Validate whether all files are accounted for on-disk
+
+        This ensures that OpenCore won't hit a critical error and fail to boot
+        """
+
         logging.info("- Validating generated config")
         if not Path(self.constants.opencore_release_folder / Path("EFI/OC/config.plist")):
             logging.info("- OpenCore config file missing!!!")
@@ -124,7 +176,11 @@ class build_support:
                 raise Exception(f"Found extra driver: {driver_file.name}")
 
 
-    def cleanup(self):
+    def cleanup(self) -> None:
+        """
+        Clean up files and entries
+        """
+
         logging.info("- Cleaning up files")
         # Remove unused entries
         entries_to_clean = {

@@ -1,29 +1,46 @@
 # Class for handling Storage Controller Patches, invocation from build.py
-# Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
+# Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
+
+import logging
 
 from resources import constants, device_probe, utilities
 from resources.build import support
 from data import model_array, smbios_data, cpu_data
 
-import logging
 
-class build_storage:
+class BuildStorage:
+    """
+    Build Library for System Storage Support
 
-    def __init__(self, model, versions, config):
-        self.model = model
-        self.constants: constants.Constants = versions
-        self.config = config
-        self.computer = self.constants.computer
+    Invoke from build.py
+    """
+
+    def __init__(self, model: str, global_constants: constants.Constants, config: dict) -> None:
+        self.model: str = model
+        self.config: dict = config
+        self.constants: constants.Constants = global_constants
+        self.computer: device_probe.Computer = self.constants.computer
+
+        self._build()
 
 
-    def build(self):
-        self.ahci_handling()
-        self.pata_handling()
-        self.misc_handling()
-        self.pcie_handling()
-        self.trim_handling()
+    def _build(self) -> None:
+        """
+        Kick off Storage Build Process
+        """
 
-    def ahci_handling(self):
+        self._ahci_handling()
+        self._pata_handling()
+        self._misc_handling()
+        self._pcie_handling()
+        self._trim_handling()
+
+
+    def _ahci_handling(self) -> None:
+        """
+        AHCI (SATA) Handler
+        """
+
         # MacBookAir6,x ship with an AHCI over PCIe SSD model 'APPLE SSD TS0128F' and 'APPLE SSD TS0256F'
         # This controller is not supported properly in macOS Ventura, instead populating itself as 'Media' with no partitions
         # To work-around this, use Monterey's AppleAHCI driver to force support
@@ -33,11 +50,11 @@ class build_storage:
                 # https://linux-hardware.org/?id=pci:1179-010b-1b4b-9183
                 if controller.vendor_id == 0x1179 and controller.device_id == 0x010b:
                     logging.info("- Enabling AHCI SSD patch")
-                    support.build_support(self.model, self.constants, self.config).enable_kext("MonteAHCIPort.kext", self.constants.monterey_ahci_version, self.constants.monterey_ahci_path)
+                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("MonteAHCIPort.kext", self.constants.monterey_ahci_version, self.constants.monterey_ahci_path)
                     break
         elif self.model in ["MacBookAir6,1", "MacBookAir6,2"]:
             logging.info("- Enabling AHCI SSD patch")
-            support.build_support(self.model, self.constants, self.config).enable_kext("MonteAHCIPort.kext", self.constants.monterey_ahci_version, self.constants.monterey_ahci_path)
+            support.BuildSupport(self.model, self.constants, self.config).enable_kext("MonteAHCIPort.kext", self.constants.monterey_ahci_version, self.constants.monterey_ahci_path)
 
         # ThirdPartyDrives Check
         if self.constants.allow_3rd_party_drives is True:
@@ -58,7 +75,11 @@ class build_storage:
                         break
 
 
-    def pata_handling(self):
+    def _pata_handling(self) -> None:
+        """
+        ATA (PATA) Handler
+        """
+
         if not self.model in smbios_data.smbios_dictionary:
             return
         if not "Stock Storage" in smbios_data.smbios_dictionary[self.model]:
@@ -66,10 +87,14 @@ class build_storage:
         if not "PATA" in smbios_data.smbios_dictionary[self.model]["Stock Storage"]:
             return
 
-        support.build_support(self.model, self.constants, self.config).enable_kext("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path)
 
 
-    def pcie_handling(self):
+    def _pcie_handling(self) -> None:
+        """
+        PCIe/NVMe Handler
+        """
+
         if not self.constants.custom_model and (self.constants.allow_oc_everywhere is True or self.model in model_array.MacPro):
             # Use Innie's same logic:
             # https://github.com/cdf/Innie/blob/v1.3.0/Innie/Innie.cpp#L90-L97
@@ -79,7 +104,7 @@ class build_storage:
                     self.config["DeviceProperties"]["Add"][controller.pci_path] = {"built-in": 1}
                 else:
                     logging.info(f"- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie")
-                    support.build_support(self.model, self.constants, self.config).enable_kext("Innie.kext", self.constants.innie_version, self.constants.innie_path)
+                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("Innie.kext", self.constants.innie_version, self.constants.innie_path)
 
         if not self.constants.custom_model and self.constants.allow_nvme_fixing is True:
             nvme_devices = [i for i in self.computer.storage if isinstance(i, device_probe.NVMeController)]
@@ -102,7 +127,7 @@ class build_storage:
                 if (controller.vendor_id != 0x144D and controller.device_id != 0xA804):
                     # Avoid injecting NVMeFix when a native Apple NVMe drive is present
                     # https://github.com/acidanthera/NVMeFix/blob/1.0.9/NVMeFix/NVMeFix.cpp#L220-L225
-                    support.build_support(self.model, self.constants, self.config).enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)
+                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)
 
         # Apple RAID Card check
         if not self.constants.custom_model:
@@ -110,15 +135,19 @@ class build_storage:
                 for storage_controller in self.computer.storage:
                     if storage_controller.vendor_id == 0x106b and storage_controller.device_id == 0x008A:
                         # AppleRAIDCard.kext only supports pci106b,8a
-                        support.build_support(self.model, self.constants, self.config).enable_kext("AppleRAIDCard.kext", self.constants.apple_raid_version, self.constants.apple_raid_path)
+                        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleRAIDCard.kext", self.constants.apple_raid_version, self.constants.apple_raid_path)
                         break
         elif self.model.startswith("Xserve"):
             # For Xserves, assume RAID is present
             # Namely due to Xserve2,1 being limited to 10.7, thus no hardware detection
-            support.build_support(self.model, self.constants, self.config).enable_kext("AppleRAIDCard.kext", self.constants.apple_raid_version, self.constants.apple_raid_path)
+            support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleRAIDCard.kext", self.constants.apple_raid_version, self.constants.apple_raid_path)
 
 
-    def misc_handling(self):
+    def _misc_handling(self) -> None:
+        """
+        SDXC Handler
+        """
+
         if not self.model in smbios_data.smbios_dictionary:
             return
         if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
@@ -128,10 +157,14 @@ class build_storage:
         # However pre-Ivy Bridge don't support this feature
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value:
             if (self.constants.computer.sdxc_controller and not self.constants.custom_model) or (self.model.startswith("MacBookPro8") or self.model.startswith("Macmini5")):
-                support.build_support(self.model, self.constants, self.config).enable_kext("BigSurSDXC.kext", self.constants.bigsursdxc_version, self.constants.bigsursdxc_path)
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("BigSurSDXC.kext", self.constants.bigsursdxc_version, self.constants.bigsursdxc_path)
 
 
-    def trim_handling(self):
+    def _trim_handling(self) -> None:
+        """
+        TRIM Handler
+        """
+
         if self.constants.apfs_trim_timeout is False:
             logging.info(f"- Disabling APFS TRIM timeout")
             self.config["Kernel"]["Quirks"]["SetApfsTrimTimeout"] = 0
