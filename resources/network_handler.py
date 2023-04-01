@@ -80,6 +80,36 @@ class NetworkUtilities:
             return False
 
 
+    def get(self, url: str, **kwargs) -> requests.Response:
+        """
+        Wrapper for requests's get method
+        Implement additional error handling
+
+        Parameters:
+            url (str): URL to get
+            **kwargs: Additional parameters for requests.get
+
+        Returns:
+            requests.Response: Response object from requests.get
+        """
+
+        result: requests.Response = None
+
+        try:
+            result = SESSION.get(url, **kwargs)
+        except (
+            requests.exceptions.Timeout,
+            requests.exceptions.TooManyRedirects,
+            requests.exceptions.ConnectionError,
+            requests.exceptions.HTTPError
+        ) as error:
+            logging.warn(f"Error calling requests.get: {error}")
+            # Return empty response object
+            return requests.Response()
+
+        return result
+
+
 class DownloadObject:
     """
     Object for downloading files from the network
@@ -278,7 +308,7 @@ class DownloadObject:
             if self._prepare_working_directory(self.filepath) is False:
                 raise Exception(self.error_msg)
 
-            response = SESSION.get(self.url, stream=True, timeout=10)
+            response = NetworkUtilities().get(self.url, stream=True, timeout=10)
 
             with open(self.filepath, 'wb') as file:
                 for i, chunk in enumerate(response.iter_content(1024 * 1024 * 4)):

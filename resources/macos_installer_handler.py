@@ -270,7 +270,7 @@ class RemoteInstallerCatalog:
             return catalog
 
         try:
-            catalog = plistlib.loads(network_handler.SESSION.get(self.catalog_url).content)
+            catalog = plistlib.loads(network_handler.NetworkUtilities().get(self.catalog_url).content)
         except plistlib.InvalidFileException:
             return {}
 
@@ -311,7 +311,7 @@ class RemoteInstallerCatalog:
                     continue
 
                 try:
-                    build_plist = plistlib.loads(network_handler.SESSION.get(bm_package["URL"]).content)
+                    build_plist = plistlib.loads(network_handler.NetworkUtilities().get(bm_package["URL"]).content)
                 except plistlib.InvalidFileException:
                     continue
 

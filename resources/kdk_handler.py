@@ -99,7 +99,7 @@ class KernelDebugKitObject:
             return KDK_ASSET_LIST
 
         try:
-            results = network_handler.SESSION.get(
+            results = network_handler.NetworkUtilities().get(
                 KDK_API_LINK,
                 headers={
                     "User-Agent": f"OCLP/{self.constants.patcher_version}"

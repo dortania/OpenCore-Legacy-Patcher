@@ -13,6 +13,8 @@
   - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
 - Backend changes:
   - Use `.AppleSystemUIFont` for wxPython text rendering (thanks [jazzzny](https://github.com/Jazzzny))
+  - Add extra error handling for network errors
+    - Handles `RemoteDisconnected('Remote end closed connection without response')` exceptions
 - Increment Binaries:
   - PatcherSupportPkg 0.9.2 - release
 

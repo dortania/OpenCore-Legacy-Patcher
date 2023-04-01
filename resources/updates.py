@@ -96,7 +96,7 @@ class CheckBinaryUpdates:
         if not network_handler.NetworkUtilities(REPO_LATEST_RELEASE_URL).verify_network_connection():
             return None
 
-        response = requests.get(REPO_LATEST_RELEASE_URL)
+        response = network_handler.NetworkUtilities().get(REPO_LATEST_RELEASE_URL)
         data_set = response.json()
 
         self.remote_version = data_set["tag_name"]
