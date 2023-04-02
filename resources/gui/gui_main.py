@@ -1950,38 +1950,36 @@ class wx_python_gui:
         wx.App.Get().Yield()
         integrity_path = Path(Path(self.constants.payload_path) / Path(apple_integrity_file_link.split("/")[-1]))
 
-        if network_handler.DownloadObject(apple_integrity_file_link, integrity_path).download_simple(verify_checksum=False):
+        chunklist_stream = network_handler.NetworkUtilities().get(apple_integrity_file_link).content
+        if chunklist_stream:
             # If we're unable to download the integrity file immediately after downloading the IA, there's a legitimate issue
             # on Apple's end.
             # Fail gracefully and just head to installing the IA.
             utilities.disable_sleep_while_running()
-            apple_integrity_file = str(integrity_path)
-            chunks = integrity_verification.generate_chunklist_dict(str(apple_integrity_file))
-            if chunks:
-                max_progress = len(chunks)
-                self.progress_bar.SetValue(0)
-                self.progress_bar.SetRange(max_progress)
+            chunk_obj = integrity_verification.ChunklistVerification(self.constants.payload_path / Path("InstallAssistant.pkg"), chunklist_stream)
+            if chunk_obj.chunks:
+                self.progress_bar.SetValue(chunk_obj.current_chunk)
+                self.progress_bar.SetRange(chunk_obj.total_chunks)
 
                 wx.App.Get().Yield()
-                # See integrity_verification.py for more information on the integrity verification process
-                with Path(self.constants.payload_path / Path("InstallAssistant.pkg")).open("rb") as f:
-                    for chunk in chunks:
-                        status = hashlib.sha256(f.read(chunk["length"])).digest()
-                        if status != chunk["checksum"]:
-                            logging.info(f"Chunk {chunks.index(chunk) + 1} checksum status FAIL: chunk sum {binascii.hexlify(chunk['checksum']).decode()}, calculated sum {binascii.hexlify(status).decode()}")
-                            self.popup = wx.MessageDialog(
-                            self.frame,
-                                f"We've found that Chunk {chunks.index(chunk) + 1} of {len(chunks)} has failed the integrity check.\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)",
-                                "Corrupted Installer!",
-                                style = wx.OK | wx.ICON_EXCLAMATION
-                            )
-                            self.popup.ShowModal()
-                            self.main_menu()
-                            break
-                        else:
-                            self.progress_bar.SetValue(self.progress_bar.GetValue() + 1)
-                            self.verifying_chunk_label.SetLabel(f"Verifying Chunk {self.progress_bar.GetValue()} of {max_progress}")
-                            wx.App.Get().Yield()
+                chunk_obj.validate()
+
+                while chunk_obj.status == integrity_verification.ChunklistStatus.IN_PROGRESS:
+                    self.progress_bar.SetValue(chunk_obj.current_chunk)
+                    self.verifying_chunk_label.SetLabel(f"Verifying Chunk {chunk_obj.current_chunk} of {chunk_obj.total_chunks}")
+                    wx.App.Get().Yield()
+
+                if chunk_obj.status == integrity_verification.ChunklistStatus.FAILURE:
+                    self.popup = wx.MessageDialog(
+                        self.frame,
+                            f"We've found that Chunk {chunk_obj.current_chunk} of {chunk_obj.total_chunks} has failed the integrity check.\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)",
+                            "Corrupted Installer!",
+                            style = wx.OK | wx.ICON_EXCLAMATION
+                        )
+                    self.popup.ShowModal()
+                    self.main_menu()
+
+                logging.info("Integrity check passed!")
             else:
                 logging.info("Invalid integrity file provided")
         else:

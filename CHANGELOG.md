@@ -16,6 +16,9 @@
   - Add extra error handling for network errors
     - Handles `RemoteDisconnected('Remote end closed connection without response')` exceptions
   - Move root volume patch set generation to dedicated sys_patch_generate.py module
+  - Refactored integrity_verification.py:
+    - Implemented Object-Oriented design
+    - Reduced disk I/O and main thread monopolization
 - Increment Binaries:
   - PatcherSupportPkg 0.9.2 - release
 
