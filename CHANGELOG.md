@@ -15,6 +15,7 @@
   - Use `.AppleSystemUIFont` for wxPython text rendering (thanks [jazzzny](https://github.com/Jazzzny))
   - Add extra error handling for network errors
     - Handles `RemoteDisconnected('Remote end closed connection without response')` exceptions
+  - Move root volume patch set generation to dedicated sys_patch_generate.py module
 - Increment Binaries:
   - PatcherSupportPkg 0.9.2 - release
 

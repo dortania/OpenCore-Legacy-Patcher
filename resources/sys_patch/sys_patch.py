@@ -40,7 +40,7 @@ from datetime import datetime
 import logging
 
 from resources import constants, utilities, kdk_handler
-from resources.sys_patch import sys_patch_detect, sys_patch_auto, sys_patch_helpers
+from resources.sys_patch import sys_patch_detect, sys_patch_auto, sys_patch_helpers, sys_patch_generate
 
 from data import os_data
 
@@ -518,7 +518,7 @@ class PatchSysVolume:
         if self.patch_set_dictionary != {}:
             self._execute_patchset(self.patch_set_dictionary)
         else:
-            self._execute_patchset(sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details))
+            self._execute_patchset(sys_patch_generate.GenerateRootPatchSets(self.computer.real_model, self.constants, self.hardware_details).patchset)
 
         if self.constants.wxpython_variant is True and self.constants.detected_os >= os_data.os_data.big_sur:
             sys_patch_auto.AutomaticSysPatch(self.constants).install_auto_patcher_launch_agent()
@@ -685,7 +685,7 @@ class PatchSysVolume:
     def start_patch(self):
         logging.info("- Starting Patch Process")
         logging.info(f"- Determining Required Patch set for Darwin {self.constants.detected_os}")
-        self.patch_set_dictionary = sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).generate_patchset(self.hardware_details)
+        self.patch_set_dictionary = sys_patch_generate.GenerateRootPatchSets(self.computer.real_model, self.constants, self.hardware_details).patchset
 
         if self.patch_set_dictionary == {}:
             change_menu = None
