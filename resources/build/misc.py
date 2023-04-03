@@ -64,48 +64,13 @@ class BuildMiscellaneous:
         RestrictEvents Handler
         """
 
-        block_args = ""
-        if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
-            block_args += "gmux,"
-        if self.model in model_array.MacPro:
-            logging.info("- Disabling memory error reporting")
-            block_args += "pcie,"
-        gpu_dict = []
-        if not self.constants.custom_model:
-            gpu_dict = self.constants.computer.gpus
-        else:
-            if self.model in smbios_data.smbios_dictionary:
-                gpu_dict = smbios_data.smbios_dictionary[self.model]["Stock GPUs"]
-        for gpu in gpu_dict:
-            if not self.constants.custom_model:
-                gpu = gpu.arch
-            if gpu in [
-                device_probe.Intel.Archs.Ivy_Bridge,
-                device_probe.Intel.Archs.Haswell,
-                device_probe.NVIDIA.Archs.Kepler,
-            ]:
-                logging.info("- Disabling mediaanalysisd")
-                block_args += "media,"
-                break
-        if block_args.endswith(","):
-            block_args = block_args[:-1]
+        block_args = ",".join(self._re_generate_block_arguments())
+        patch_args = ",".join(self._re_generate_patch_arguments())
 
         if block_args != "":
             logging.info(f"- Setting RestrictEvents block arguments: {block_args}")
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revblock"] = block_args
-
-        patch_args = ""
-        if support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True and self.constants.set_content_caching is True:
-            logging.info("- Fixing Content Caching support")
-            patch_args += "asset,"
-
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.ivy_bridge.value:
-            logging.info("- Fixing CoreGraphics support on Ivy Bridge")
-            patch_args += "f16c,"
-
-        if patch_args.endswith(","):
-            patch_args = patch_args[:-1]
 
         if block_args != "" and patch_args == "":
             # Disable unneeded Userspace patching (cs_validate_page is quite expensive)
@@ -120,6 +85,69 @@ class BuildMiscellaneous:
             # Ensure this is done at the end so all previous RestrictEvents patches are applied
             # RestrictEvents and EFICheckDisabler will conflict if both are injected
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("EFICheckDisabler.kext", "", self.constants.efi_disabler_path)
+
+
+    def _re_generate_block_arguments(self) -> list:
+        """
+        Generate RestrictEvents block arguments
+
+        Returns:
+            list: RestrictEvents block arguments
+        """
+
+        re_block_args = []
+
+        # Resolve GMUX switching in Big Sur+
+        if self.model in ["MacBookPro6,1", "MacBookPro6,2", "MacBookPro9,1", "MacBookPro10,1"]:
+            re_block_args.append("gmux")
+
+        # Resolve memory error reporting on MacPro7,1 SMBIOS
+        if self.model in model_array.MacPro:
+            logging.info("- Disabling memory error reporting")
+            re_block_args.append("pcie")
+
+        # Resolve mediaanalysisd crashing on 3802 GPUs
+        gpu_dict = [] if self.constants.custom_model else self.constants.computer.gpus
+        if gpu_dict == []:
+            gpu_dict = smbios_data.smbios_dictionary[self.model]["Stock GPUs"] if self.model in smbios_data.smbios_dictionary else []
+
+        for gpu in gpu_dict:
+            if not self.constants.custom_model:
+                gpu = gpu.arch
+            if gpu in [
+                device_probe.Intel.Archs.Ivy_Bridge,
+                device_probe.Intel.Archs.Haswell,
+                device_probe.NVIDIA.Archs.Kepler,
+            ]:
+                logging.info("- Disabling mediaanalysisd")
+                re_block_args.append("media")
+                break
+
+        return re_block_args
+
+
+    def _re_generate_patch_arguments(self) -> list:
+        """
+        Generate RestrictEvents patch arguments
+
+        Returns:
+            list: Patch arguments
+        """
+
+        re_patch_args = []
+
+        # Resolve content caching when kern.hv_vmm_present is set
+        if support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True and self.constants.set_content_caching is True:
+            logging.info("- Fixing Content Caching support")
+            re_patch_args.append("asset")
+
+        # Resolve CoreGraphics.framework crashing on Ivy Bridge in macOS 13.3+
+        # Ref: https://github.com/acidanthera/RestrictEvents/pull/12
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.ivy_bridge.value:
+            logging.info("- Fixing CoreGraphics support on Ivy Bridge")
+            re_patch_args.append("f16c")
+
+        return re_patch_args
 
 
     def _cpu_friend_handling(self) -> None:
