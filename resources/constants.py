@@ -156,10 +156,6 @@ class Constants:
         self.override_smbios:     str  = "Default"  # Set SMBIOS model used
         self.allow_native_spoofs: bool = False  #     Allow native models to recieve spoofs
 
-        ### RestrictEvents CPU renaming
-        self.custom_cpu_model:       int = 2  #  Patch type value
-        self.custom_cpu_model_value: str = ""  # New CPU name within About This Mac
-
         ### Serial Number Overrides
         self.custom_serial_number:       str = ""  # Set SMBIOS serial number
         self.custom_board_serial_number: str = ""  # Set SMBIOS board serial number

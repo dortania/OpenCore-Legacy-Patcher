@@ -112,15 +112,6 @@ class BuildMiscellaneous:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
             self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revpatch"] = patch_args
 
-        if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
-            self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revcpu"] = self.constants.custom_cpu_model
-            if self.constants.custom_cpu_model_value != "":
-                logging.info(f"- Adding custom CPU Name: {self.constants.custom_cpu_model_value}")
-                self.config["NVRAM"]["Add"]["4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102"]["revcpuname"] = self.constants.custom_cpu_model_value
-            else:
-                logging.info("- Adding CPU Name Patch")
-            support.BuildSupport(self.model, self.constants, self.config).enable_kext("RestrictEvents.kext", self.constants.restrictevents_version, self.constants.restrictevents_path)
-
         if support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("RestrictEvents.kext")["Enabled"] is False:
             # Ensure this is done at the end so all previous RestrictEvents patches are applied
             # RestrictEvents and EFICheckDisabler will conflict if both are injected

@@ -235,10 +235,6 @@ class BuildSMBIOS:
         self.config["PlatformInfo"]["SMBIOS"]["SystemProductName"] = self.model
         self.config["PlatformInfo"]["SMBIOS"]["BoardVersion"] = self.model
 
-        # ProcessorType (when RestrictEvent's CPU naming is used)
-        if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
-            self.config["PlatformInfo"]["SMBIOS"]["ProcessorType"] = 1537
-
         # Avoid incorrect Firmware Updates
         self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["run-efi-updater"] = "No"
         self.config["PlatformInfo"]["SMBIOS"]["BIOSVersion"] = "9999.999.999.999.999"
@@ -273,8 +269,6 @@ class BuildSMBIOS:
         Implements a full SMBIOS replacement, however retains original serial numbers (unless override requested)
         """
 
-        if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
-            self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
         if self.constants.custom_serial_number != "" and self.constants.custom_board_serial_number != "":
             logging.info("- Adding custom serial numbers")
             self.config["PlatformInfo"]["Generic"]["SystemSerialNumber"] = self.constants.custom_serial_number
@@ -297,8 +291,6 @@ class BuildSMBIOS:
         Implements a full SMBIOS replacement, including serial numbers
         """
 
-        if self.constants.custom_cpu_model == 0 or self.constants.custom_cpu_model == 1:
-            self.config["PlatformInfo"]["Generic"]["ProcessorType"] = 1537
         if self.constants.custom_serial_number == "" or self.constants.custom_board_serial_number == "":
             macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             macserial_output = macserial_output.stdout.decode().strip().split(" | ")

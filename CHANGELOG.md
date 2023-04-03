@@ -11,6 +11,7 @@
 - Resolve unused KDKs not being properly cleaned up
 - Implement MXM graphics handling for iMac9,1
   - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
+- Resolve accidental CPU renaming with RestrictEvents
 - Backend changes:
   - Use `.AppleSystemUIFont` for wxPython text rendering (thanks [jazzzny](https://github.com/Jazzzny))
   - Add extra error handling for network errors:

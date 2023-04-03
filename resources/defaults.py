@@ -146,12 +146,6 @@ class GenerateDefaults:
             self.constants.custom_serial_number = ""
             self.constants.custom_board_serial_number = ""
 
-        custom_cpu_model_value = utilities.get_nvram("revcpuname", "4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102", decode=True)
-        if custom_cpu_model_value is not None:
-            # TODO: Fix to not use two separate variables
-            self.constants.custom_cpu_model = 1
-            self.constants.custom_cpu_model_value = custom_cpu_model_value.split("%00")[0]
-
 
     def _networking_probe(self) -> None:
         """
