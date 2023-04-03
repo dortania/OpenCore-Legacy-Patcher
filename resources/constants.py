@@ -26,8 +26,8 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_commit:  str = "e4f0ba1 - 03-06-2023"
-        self.opencore_version: str = "0.9.0"
+        self.opencore_commit:  str = "41b8aca - 04-03-2023"
+        self.opencore_version: str = "0.9.1"
 
         # Kext Versioning
         ## Acidanthera
@@ -35,14 +35,14 @@ class Constants:
         self.lilu_version:               str = "1.6.4"  #      Lilu
         self.whatevergreen_version:      str = "1.6.4"  #      WhateverGreen
         self.whatevergreen_navi_version: str = "1.6.4-Navi"  # WhateverGreen (Navi Patch)
-        self.airportbcrmfixup_version:   str = "2.1.6"  #      AirPortBrcmFixup
+        self.airportbcrmfixup_version:   str = "2.1.7"  #      AirPortBrcmFixup
         self.nvmefix_version:            str = "1.1.0"  #      NVMeFix
         self.applealc_version:           str = "1.6.3"  #      AppleALC
-        self.restrictevents_version:     str = "1.0.9"  #      RestrictEvents
+        self.restrictevents_version:     str = "1.1.0"  #      RestrictEvents
         self.featureunlock_version:      str = "1.1.4"  #      FeatureUnlock
         self.debugenhancer_version:      str = "1.0.7"  #      DebugEnhancer
         self.cpufriend_version:          str = "1.2.6"  #      CPUFriend
-        self.bluetool_version:           str = "2.6.4"  #      BlueToolFixup (BrcmPatchRAM)
+        self.bluetool_version:           str = "2.6.5"  #      BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version:          str = "2.6.1"  #      CSLVFixup
         self.autopkg_version:            str = "1.0.2"  #      AutoPkgInstaller
         self.cryptexfixup_version:       str = "1.0.1"  #      CryptexFixup

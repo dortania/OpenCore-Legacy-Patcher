@@ -62,6 +62,7 @@ UNUSED_TOOLS = [
     "RtcRw.efi",
     "CsrUtil.efi",
     "TpmInfo.efi",
+    "ListPartitions.efi",
 ]
 
 IMPORTANT_UTILITIES = [

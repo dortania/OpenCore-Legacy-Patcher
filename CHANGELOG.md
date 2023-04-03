@@ -13,7 +13,7 @@
   - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
 - Backend changes:
   - Use `.AppleSystemUIFont` for wxPython text rendering (thanks [jazzzny](https://github.com/Jazzzny))
-  - Add extra error handling for network errors
+  - Add extra error handling for network errors:
     - Handles `RemoteDisconnected('Remote end closed connection without response')` exceptions
   - Move root volume patch set generation to dedicated sys_patch_generate.py module
   - Refactored integrity_verification.py:
@@ -21,6 +21,10 @@
     - Reduced disk I/O and main thread monopolization
 - Increment Binaries:
   - PatcherSupportPkg 0.9.2 - release
+  - OpenCorePkg 0.9.1 - release
+  - AirPortBrcmFixup 2.1.7 - release
+  - RestrictEvents 1.1.0 - release
+  - BrcmPatchRAM 2.6.5 - release
 
 ## 0.6.2
 - Work around Black Box rendering issues on certain Display Color Profiles

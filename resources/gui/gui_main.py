@@ -15,9 +15,6 @@ import webbrowser
 
 import time
 
-import binascii
-import hashlib
-
 import logging
 import tempfile
 

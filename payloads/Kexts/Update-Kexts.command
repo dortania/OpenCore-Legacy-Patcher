@@ -23,7 +23,7 @@ KEXT_DICTIONARY = {
         # },
         "BlueToolFixup": {
             "Repository": "https://github.com/acidanthera/BrcmPatchRAM",
-            "Constants Variable": "self.bluetoolfixup_version",
+            "Constants Variable": "self.bluetool_version",
             "Override": "BrcmPatchRAM",
         },
         "CPUFriend": {
