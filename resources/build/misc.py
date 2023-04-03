@@ -100,6 +100,10 @@ class BuildMiscellaneous:
             logging.info("- Fixing Content Caching support")
             patch_args += "asset,"
 
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.ivy_bridge.value:
+            logging.info("- Fixing CoreGraphics support on Ivy Bridge")
+            patch_args += "f16c,"
+
         if patch_args.endswith(","):
             patch_args = patch_args[:-1]
 
