@@ -295,6 +295,9 @@ class BuildGraphicsAudio:
                 "rebuild-device-tree": 1,
                 "enable-gva-support": 1
             }
+            logging.info(f"- Adding AMD RX5500XT boot-args")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera applbkl=3"
+
 
     def _audio_handling(self) -> None:
         """
@@ -336,6 +339,7 @@ class BuildGraphicsAudio:
         # Due to regression in AppleALC 1.6.4+, temporarily use 1.6.3 and set override
         if support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleALC.kext")["Enabled"] is True:
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -lilubetaall"
+
 
     def _firmware_handling(self) -> None:
         """

@@ -10,12 +10,14 @@
   - Resolves panics on certain iMac models
 - Resolve unused KDKs not being properly cleaned up
 - Implement MXM graphics handling for iMac9,1
-  - Credit to [Ausdauersportler](https://github.com/Ausdauersportler) for implementation
+  - Credit to [@Ausdauersportler](https://github.com/Ausdauersportler) for implementation
 - Resolve CoreGraphics.framework crashing on Ivy Bridge CPUs in macOS 13.3+
   - Disables f16c sysctl reporting
 - Resolve accidental CPU renaming with RestrictEvents
+- Resolve backlight and internal display support for AMD Navi MXM GPUs
+  - Credit to [@Ausdauersportler](https://github.com/Ausdauersportler) for bug fix
 - Backend changes:
-  - Use `.AppleSystemUIFont` for wxPython text rendering (thanks [jazzzny](https://github.com/Jazzzny))
+  - Use `.AppleSystemUIFont` for wxPython text rendering (thanks [@jazzzny](https://github.com/Jazzzny))
   - Add extra error handling for network errors:
     - Handles `RemoteDisconnected('Remote end closed connection without response')` exceptions
   - Move root volume patch set generation to dedicated sys_patch_generate.py module
