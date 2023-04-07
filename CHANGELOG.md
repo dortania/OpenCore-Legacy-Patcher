@@ -16,6 +16,9 @@
 - Resolve accidental CPU renaming with RestrictEvents
 - Resolve backlight and internal display support for AMD Navi MXM GPUs
   - Credit to [@Ausdauersportler](https://github.com/Ausdauersportler) for bug fix
+- Resolve 3rd Party Apps erroring on Metal with macOS 13.3
+  - Applicable Software: Applications directly using Metal (ex. Blender, Parallels Desktop)
+  - Applicable Hardware: 3802-based GPUs (ie. Intel Ivy Bridge and Haswell iGPUs, Nvidia Kepler dGPUs)
 - Backend changes:
   - Use `.AppleSystemUIFont` for wxPython text rendering (thanks [@jazzzny](https://github.com/Jazzzny))
   - Add extra error handling for network errors:
@@ -25,7 +28,7 @@
     - Implemented Object-Oriented design
     - Reduced disk I/O and main thread monopolization
 - Increment Binaries:
-  - PatcherSupportPkg 0.9.2 - release
+  - PatcherSupportPkg 0.9.3 - release
   - OpenCorePkg 0.9.1 - release
   - AirPortBrcmFixup 2.1.7 - release
   - RestrictEvents 1.1.0 - release

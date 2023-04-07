@@ -211,3 +211,65 @@ class SysPatchHelpers:
         result = utilities.elevated([self.constants.rsrrepair_userspace_path, "--install"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info(f"  - Failed to install RSRRepair: {result.stdout.decode()}")
+
+
+    def patch_gpu_compiler_libraries(self, mount_point: str | Path):
+        """
+        Fix GPUCompiler.framework's libraries to resolve linking issues
+
+        On 13.3 with 3802 GPUs, OCLP will downgrade GPUCompiler to resolve
+        graphics support. However the binary hardcodes the library names,
+        and thus we need to adjust the libraries to match (31001.669)
+
+        Important portions of the library will be downgraded to 31001.669,
+        and the remaining bins will be copied over (via CoW to reduce waste)
+
+        Primary folders to merge:
+        - 31001.XXX: (current OS version)
+            - include:
+                - module.modulemap
+                - opencl-c.h
+            - lib (entire directory)
+
+        Parameters:
+            mount_point: The mount point of the target volume
+        """
+
+        if self.constants.detected_os < os_data.os_data.ventura:
+            return
+        if self.constants.detected_os == os_data.os_data.ventura:
+            if self.constants.detected_os_minor < 4:
+                return
+
+        LIBRARY_DIR = f"{mount_point}/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/31001/Libraries/lib/clang"
+        GPU_VERSION = "31001.669"
+
+        DEST_DIR = f"{LIBRARY_DIR}/{GPU_VERSION}"
+
+        if not Path(DEST_DIR).exists():
+            return
+
+        for file in Path(LIBRARY_DIR).iterdir():
+            if file.is_file():
+                continue
+            if file.name == GPU_VERSION:
+                continue
+
+            # Partial match as each OS can increment the version
+            if not file.name.startswith("31001."):
+                continue
+
+            logging.info(f"- Merging GPUCompiler.framework libraries to match binary")
+
+            src_dir = f"{LIBRARY_DIR}/{file.name}"
+            for file in ["module.modulemap", "opencl-c.h"]:
+                # Copy on Write to reduce disk usage
+                dst_path = f"{DEST_DIR}/include/{file}"
+                if Path(dst_path).exists():
+                    continue
+                utilities.process_status(utilities.elevated(["cp", "-c", dst_path, f"{DEST_DIR}/include/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+            if not Path(f"{DEST_DIR}/lib").exists():
+                utilities.process_status(utilities.elevated(["cp", "-cR", f"{src_dir}/lib", f"{DEST_DIR}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+            break
