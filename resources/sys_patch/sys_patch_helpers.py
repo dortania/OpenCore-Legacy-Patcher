@@ -267,7 +267,7 @@ class SysPatchHelpers:
                 dst_path = f"{DEST_DIR}/include/{file}"
                 if Path(dst_path).exists():
                     continue
-                utilities.process_status(utilities.elevated(["cp", "-c", dst_path, f"{DEST_DIR}/include/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["cp", "-c", f"{src_dir}/include/{file}", f"{DEST_DIR}/include/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
             if not Path(f"{DEST_DIR}/lib").exists():
                 utilities.process_status(utilities.elevated(["cp", "-cR", f"{src_dir}/lib", f"{DEST_DIR}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
