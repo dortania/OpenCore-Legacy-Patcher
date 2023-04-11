@@ -6,6 +6,7 @@ import enum
 import itertools
 import subprocess
 import plistlib
+import hashlib
 from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type, Union
@@ -491,6 +492,7 @@ class Computer:
     reported_model: Optional[str] = None
     reported_board_id: Optional[str] = None
     build_model: Optional[str] = None
+    uuid_sha1: Optional[str] = None
     gpus: list[GPU] = field(default_factory=list)
     igpu: Optional[GPU] = None  # Shortcut for IGPU
     dgpu: Optional[GPU] = None  # Shortcut for GFX0
@@ -719,6 +721,8 @@ class Computer:
         else:
             board = "board-id"
         self.reported_board_id = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(entry, board, ioreg.kCFAllocatorDefault, ioreg.kNilOptions)).strip(b"\0").decode()  # type: ignore
+        self.uuid_sha1 = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(entry, "IOPlatformUUID", ioreg.kCFAllocatorDefault, ioreg.kNilOptions))  # type: ignore
+        self.uuid_sha1 = hashlib.sha1(self.uuid_sha1.encode()).hexdigest()
         ioreg.IOObjectRelease(entry)
 
         # Real model

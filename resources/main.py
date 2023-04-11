@@ -16,7 +16,8 @@ from resources import (
     arguments,
     reroute_payloads,
     commit_info,
-    logging_handler
+    logging_handler,
+    analytics_handler,
 )
 
 
@@ -109,5 +110,7 @@ class OpenCoreLegacyPatcher:
         if not any(x in sys.argv for x in ignore_args):
             while self.constants.unpack_thread.is_alive():
                 time.sleep(0.1)
+
+        threading.Thread(target=analytics_handler.Analytics, args=(self.constants,)).start()
 
         arguments.arguments(self.constants)
