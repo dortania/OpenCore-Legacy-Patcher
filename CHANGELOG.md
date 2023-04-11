@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.6.4
+
 ## 0.6.3
 - Update non-Metal Binaries:
   - Resolves Safari 16.4 rendering issue
