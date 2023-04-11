@@ -5,7 +5,8 @@
   - Resolves Safari 16.4 rendering issue
   - Resolves left side menubar selections
   - Implements automatic menubar text color
-  - New Menubar implementation can be disabled via `defaults write -g Amy.MenuBar2Beta -bool false`
+  - New experimental Menubar implementation can be enabled via `defaults write -g Amy.MenuBar2Beta -bool true`
+    - Note: If you experience issues with the new implementation, you can revert back to the old implementation by running `defaults delete -g Amy.MenuBar2Beta`
 - Implement full IOUSBHostFamily downgrade for UHCI/OHCI
   - Resolves panics on certain iMac models
 - Resolve unused KDKs not being properly cleaned up
