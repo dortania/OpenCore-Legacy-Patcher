@@ -90,6 +90,7 @@ class OpenCoreLegacyPatcher:
 
         # Generate defaults
         defaults.GenerateDefaults(self.computer.real_model, True, self.constants)
+        threading.Thread(target=analytics_handler.Analytics, args=(self.constants,)).start()
 
         if utilities.check_cli_args() is None:
             logging.info(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
@@ -110,7 +111,5 @@ class OpenCoreLegacyPatcher:
         if not any(x in sys.argv for x in ignore_args):
             while self.constants.unpack_thread.is_alive():
                 time.sleep(0.1)
-
-        threading.Thread(target=analytics_handler.Analytics, args=(self.constants,)).start()
 
         arguments.arguments(self.constants)
