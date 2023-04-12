@@ -2981,10 +2981,9 @@ class wx_python_gui:
         self.set_ignore_app_updates_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore will ignore App Updates on launch.\nEnable this option if you do not want to be prompted for App Updates"))
 
         # Set Disable Analytics
-        res = global_settings.GlobalEnviromentSettings().read_property("DisableAnalytics")
-        if res is None:
-            res = False
-        self.set_disable_analytics_checkbox = wx.CheckBox(self.frame_modal, label="Disable Analytics")
+        res = global_settings.GlobalEnviromentSettings().read_property("DisableCrashAndAnalyticsReporting")
+        res = False if res is None else res
+        self.set_disable_analytics_checkbox = wx.CheckBox(self.frame_modal, label="Disable Crash/Analytics")
         self.set_disable_analytics_checkbox.SetValue(res)
         self.set_disable_analytics_checkbox.Bind(wx.EVT_CHECKBOX, self.set_disable_analytics_click)
         self.set_disable_analytics_checkbox.SetPosition(wx.Point(
@@ -3051,7 +3050,7 @@ class wx_python_gui:
             global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", False)
 
     def set_disable_analytics_click(self, event):
-        global_settings.GlobalEnviromentSettings().write_property("DisableAnalytics", self.set_disable_analytics_checkbox.GetValue())
+        global_settings.GlobalEnviromentSettings().write_property("DisableCrashAndAnalyticsReporting", self.set_disable_analytics_checkbox.GetValue())
 
     def firewire_click(self, event=None):
         if self.firewire_boot_checkbox.GetValue():

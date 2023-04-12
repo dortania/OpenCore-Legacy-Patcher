@@ -29,7 +29,7 @@ class Analytics:
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
 
-        if global_settings.GlobalEnviromentSettings().read_property("DisableAnalytics") is True:
+        if global_settings.GlobalEnviromentSettings().read_property("DisableCrashAndAnalyticsReporting") is True:
             return
 
         self._generate_base_data()
