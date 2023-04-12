@@ -109,6 +109,35 @@ class NetworkUtilities:
 
         return result
 
+    def post(self, url: str, **kwargs) -> requests.Response:
+        """
+        Wrapper for requests's post method
+        Implement additional error handling
+
+        Parameters:
+            url (str): URL to post
+            **kwargs: Additional parameters for requests.post
+
+        Returns:
+            requests.Response: Response object from requests.post
+        """
+
+        result: requests.Response = None
+
+        try:
+            result = SESSION.post(url, **kwargs)
+        except (
+            requests.exceptions.Timeout,
+            requests.exceptions.TooManyRedirects,
+            requests.exceptions.ConnectionError,
+            requests.exceptions.HTTPError
+        ) as error:
+            logging.warn(f"Error calling requests.post: {error}")
+            # Return empty response object
+            return requests.Response()
+
+        return result
+
 
 class DownloadObject:
     """

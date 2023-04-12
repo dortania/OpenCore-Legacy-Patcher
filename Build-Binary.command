@@ -61,6 +61,8 @@ class CreateBinary:
         parser.add_argument('--commit', type=str, help='Git commit URL')
         parser.add_argument('--commit_date', type=str, help='Git commit date')
         parser.add_argument('--reset_binaries', action='store_true', help='Force redownload and imaging of payloads')
+        parser.add_argument('--key', type=str, help='Developer key for signing')
+        parser.add_argument('--site', type=str, help='Path to server')
         args = parser.parse_args()
         return args
 
@@ -132,15 +134,83 @@ class CreateBinary:
                 print(rm_output.stderr.decode('utf-8'))
                 raise Exception("Remove failed")
 
+        self._embed_key()
 
         print("- Building GUI binary...")
         build_args = [self.pyinstaller_path, "./OpenCore-Patcher-GUI.spec", "--noconfirm"]
 
         build_result = subprocess.run(build_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        self._strip_key()
+
         if build_result.returncode != 0:
             print("- Build failed")
             print(build_result.stderr.decode('utf-8'))
             raise Exception("Build failed")
+
+
+
+
+    def _embed_key(self):
+        """
+        Embed developer key into binary
+        """
+
+        if not self.args.key:
+            print("- No developer key provided, skipping...")
+            return
+        if not self.args.site:
+            print("- No site provided, skipping...")
+            return
+
+        print("- Embedding developer key...")
+        if not Path("./resources/analytics_handler.py").exists():
+            print("- analytics_handler.py not found")
+            return
+
+        lines = []
+        with open("./resources/analytics_handler.py", "r") as f:
+            lines = f.readlines()
+
+        for i, line in enumerate(lines):
+            if line.startswith("SITE_KEY:         str = "):
+                lines[i] = f"SITE_KEY:         str = \"{self.args.key}\"\n"
+            elif line.startswith("ANALYTICS_SERVER: str = "):
+                lines[i] = f"ANALYTICS_SERVER: str = \"{self.args.site}\"\n"
+
+        with open("./resources/analytics_handler.py", "w") as f:
+            f.writelines(lines)
+
+
+    def _strip_key(self):
+        """
+        Strip developer key from binary
+        """
+
+        if not self.args.key:
+            print("- No developer key provided, skipping...")
+            return
+        if not self.args.site:
+            print("- No site provided, skipping...")
+            return
+
+        print("- Stripping developer key...")
+        if not Path("./resources/analytics_handler.py").exists():
+            print("- analytics_handler.py not found")
+            return
+
+        lines = []
+        with open("./resources/analytics_handler.py", "r") as f:
+            lines = f.readlines()
+
+        for i, line in enumerate(lines):
+            if line.startswith("SITE_KEY:         str = "):
+                lines[i] = f"SITE_KEY:         str = \"\"\n"
+            elif line.startswith("ANALYTICS_SERVER: str = "):
+                lines[i] = f"ANALYTICS_SERVER: str = \"\"\n"
+
+        with open("./resources/analytics_handler.py", "w") as f:
+            f.writelines(lines)
 
 
     def _delete_extra_binaries(self):

@@ -16,7 +16,8 @@ from resources import (
     arguments,
     reroute_payloads,
     commit_info,
-    logging_handler
+    logging_handler,
+    analytics_handler,
 )
 
 
@@ -89,6 +90,7 @@ class OpenCoreLegacyPatcher:
 
         # Generate defaults
         defaults.GenerateDefaults(self.computer.real_model, True, self.constants)
+        threading.Thread(target=analytics_handler.Analytics, args=(self.constants,)).start()
 
         if utilities.check_cli_args() is None:
             logging.info(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
