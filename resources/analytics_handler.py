@@ -3,7 +3,7 @@ import plistlib
 from pathlib import Path
 import json
 
-from resources import network_handler, constants
+from resources import network_handler, constants, global_settings
 
 
 DATE_FORMAT:      str = "%Y-%m-%d %H-%M-%S"
@@ -28,6 +28,9 @@ class Analytics:
 
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
+
+        if global_settings.GlobalEnviromentSettings().read_property("DisableAnalytics") is True:
+            return
 
         self._generate_base_data()
         self._post_data()
