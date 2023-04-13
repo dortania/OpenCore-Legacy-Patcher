@@ -5,6 +5,9 @@
   - Implement new analytics_handler.py module
     - Adds support for anonymous analytics including host info (and crash reports in the future)
     - Can be disabled via GUI or `defaults write com.dortania.opencore-legacy-patcher DisableCrashAndAnalyticsReporting -bool true`
+- Resolve Safari rendering error on Ivy Bridge in macOS 13.3+
+- Increment Binaries:
+  - RestrictEvents 1.1.1 - rolling (495f4d5)
 
 ## 0.6.3
 - Update non-Metal Binaries:
