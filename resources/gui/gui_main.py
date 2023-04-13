@@ -44,7 +44,7 @@ from resources.gui import menu_redirect, gui_help
 
 from data import model_array, os_data, smbios_data, sip_data, cpu_data
 
-
+import hashlib
 
 class wx_python_gui:
     def __init__(self, versions, frame=None, frame_modal=None):
@@ -2157,17 +2157,41 @@ class wx_python_gui:
             )
             self.usb_selection.Centre(wx.HORIZONTAL)
 
+        # Checkbox: Verify integrity after flashing
+        self.verify_checkbox = wx.CheckBox(self.frame, label="Verify integrity after flashing")
+        self.verify_checkbox.SetValue(False) # set default value to True
+        self.verify_checkbox.Bind(wx.EVT_CHECKBOX, lambda event: self.on_verify_checkbox(event))
+        self.verify_checkbox.SetPosition(
+            wx.Point(
+                self.usb_selection_label.GetPosition().x,
+                self.usb_selection_label.GetPosition().y + self.usb_selection_label.GetSize().height + i + 40
+            )
+        )
+        self.verify_checkbox.Centre(wx.HORIZONTAL)
+
+        # Return to main menu button
         self.return_to_main_menu = wx.Button(self.frame, label="Return to Main Menu")
         self.return_to_main_menu.SetPosition(
             wx.Point(
                 self.usb_selection.GetPosition().x,
-                self.usb_selection.GetPosition().y + self.usb_selection.GetSize().height + 10
+                self.verify_checkbox.GetPosition().y + self.verify_checkbox.GetSize().height + 10
             )
         )
         self.return_to_main_menu.Bind(wx.EVT_BUTTON, self.main_menu)
         self.return_to_main_menu.Centre(wx.HORIZONTAL)
 
+        # update the size of the frame to accommodate the new elements
         self.frame.SetSize(-1, self.return_to_main_menu.GetPosition().y + self.return_to_main_menu.GetSize().height + 40)
+
+        self.frame.Show(True)
+
+    def on_verify_checkbox(self, event=None):
+        if self.verify_checkbox.GetValue():
+            logging.info("- Verify integrity after flashing enabled")
+            self.constants.verify_integrity = True
+        else:
+            logging.info("- Verify integrity after flashing disabled")
+            self.constants.verify_integrity = False
 
     def format_usb_progress(self, disk, installer_name, installer_path):
         self.frame.DestroyChildren()
@@ -2211,7 +2235,7 @@ class wx_python_gui:
         self.developer_note_label_2.Centre(wx.HORIZONTAL)
 
         # Progress Bar
-        max_file_size = 19000  # Best guess for installer + chainloaded packages
+        max_file_size = 17500  # Best guess for installer + chainloaded packages
         self.progress_bar = wx.Gauge(self.frame, range=max_file_size, size=(-1, 20))
         self.progress_bar.SetPosition(
             wx.Point(
@@ -2285,12 +2309,75 @@ class wx_python_gui:
                 if install_thread.is_alive():
                     self.progress_bar.SetValue(int(bytes_written))
                     self.progress_label.SetLabel(f"Bytes Written: {round(bytes_written, 2)}MB")
+                    self.progress_label.Centre(wx.HORIZONTAL)
                     wx.GetApp().Yield()
                 else:
                     break
             self.progress_bar.SetValue(max_file_size)
             self.progress_label.SetLabel(f"Finished Running Installer Creation Script")
             self.progress_label.Centre(wx.HORIZONTAL)
+
+            if self.constants.verify_integrity is True:
+                def generate_checksum(path, checksum_func, progress_func):
+                    """
+                    Non-blocking function to generate checksum of a file and update progress bar
+                    """
+                    checksum = checksum_func()
+                    try:
+                        with open(path, "rb") as f:
+                            filesize = os.path.getsize(path)
+                            chunk_size = 8192
+                            total_read = 0
+                            while chunk := f.read(chunk_size):
+                                checksum.update(chunk)
+                                total_read += chunk_size
+                                progress_percent = int((total_read/filesize) * 100)
+                                progress_func(progress_percent)
+                                wx.Yield()
+                    except (FileNotFoundError, IOError, OSError):
+                        logging.info(f"- File {path} not found or I/O error")
+                        checksum = None
+                    return checksum
+                self.progress_bar.SetRange(100)
+                self.progress_label.SetLabel("Computing origin installer integrity checksum")
+                self.progress_label.Centre(wx.HORIZONTAL)
+                wx.Yield()
+                origin_dmg_path = os.path.join(installer_path, "Contents", "SharedSupport", "SharedSupport.dmg")
+                logging.info(f"- Origin DMG path: {origin_dmg_path}")
+                origin_dmg_hash = generate_checksum(origin_dmg_path, hashlib.sha256, self.progress_bar.SetValue)
+                if origin_dmg_hash is None:
+                    logging.info("- Origin file not found or I/O error")
+                    self.progress_label.SetLabel("Integrity verification failure")
+                    self.progress_label.Centre(wx.HORIZONTAL)
+                    wx.MessageBox("Integrity verification failure. Please check the origin installer and try again.", "Error", wx.OK | wx.ICON_ERROR)
+                    return
+
+                self.progress_label.SetLabel("Computing destination installer integrity checksum")
+                self.progress_label.Centre(wx.HORIZONTAL)
+                wx.Yield()
+                volume_name = os.path.splitext(os.path.basename(installer_path))[0]
+                logging.info(f"- Volume name of installer disk: {volume_name}")
+                destination_dmg_path = os.path.join("/Volumes", volume_name, f"{volume_name}.app", "Contents", "SharedSupport", "SharedSupport.dmg")
+                logging.info(f"- Destination DMG path: {destination_dmg_path}")
+                destination_dmg_hash = generate_checksum(destination_dmg_path, hashlib.sha256, self.progress_bar.SetValue)
+                if destination_dmg_hash is None:
+                    logging.info("- Destination file not found or I/O error")
+                    self.progress_label.SetLabel("Integrity verification failure")
+                    self.progress_label.Centre(wx.HORIZONTAL)
+                    wx.MessageBox("Integrity verification failure. Please check the destination media and try again.", "Error", wx.OK | wx.ICON_ERROR)
+                    return
+
+                if origin_dmg_hash.hexdigest() == destination_dmg_hash.hexdigest():
+                    logging.info("- Hashes match, copy should be OK")
+                    self.progress_label.SetLabel("Integrity verification success")
+                    self.progress_label.Centre(wx.HORIZONTAL)
+                else:
+                    logging.info("- Hashes do not match, copy bad")
+                    self.progress_label.SetLabel("Integrity verification failure")
+                    self.progress_label.Centre(wx.HORIZONTAL)
+                    wx.MessageBox("Integrity verification failure. Please check the destination media and try again.", "Error", wx.OK | wx.ICON_ERROR)
+                    return
+
             if self.finished_cim_process is True:
                 self.finished_cim_process = False
                 # Only prompt user with option to install OC to disk if
