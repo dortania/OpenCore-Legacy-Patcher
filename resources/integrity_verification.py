@@ -9,6 +9,7 @@ import logging
 import binascii
 import threading
 
+from typing import Union
 from pathlib import Path
 
 CHUNK_LENGTH = 4 + 32
@@ -43,7 +44,7 @@ class ChunklistVerification:
         ...     print(chunk_obj.error_msg)
     """
 
-    def __init__(self, file_path: Path, chunklist_path: Path | bytes) -> None:
+    def __init__(self, file_path: Path, chunklist_path: Union[Path, bytes]) -> None:
         if isinstance(chunklist_path, bytes):
             self.chunklist_path: bytes = chunklist_path
         else:
@@ -59,7 +60,7 @@ class ChunklistVerification:
         self.status: ChunklistStatus = ChunklistStatus.IN_PROGRESS
 
 
-    def _generate_chunks(self, chunklist: Path | bytes) -> dict:
+    def _generate_chunks(self, chunklist: Union[Path, bytes]) -> dict:
         """
         Generate a dictionary of the chunklist header and chunks
 

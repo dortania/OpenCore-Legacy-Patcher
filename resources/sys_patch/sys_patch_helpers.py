@@ -5,6 +5,8 @@ import plistlib
 import os
 import logging
 import subprocess
+
+from typing import Union
 from pathlib import Path
 from datetime import datetime
 
@@ -213,7 +215,7 @@ class SysPatchHelpers:
             logging.info(f"  - Failed to install RSRRepair: {result.stdout.decode()}")
 
 
-    def patch_gpu_compiler_libraries(self, mount_point: str | Path):
+    def patch_gpu_compiler_libraries(self, mount_point: Union[str, Path]):
         """
         Fix GPUCompiler.framework's libraries to resolve linking issues
 
