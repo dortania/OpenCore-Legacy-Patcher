@@ -52,7 +52,7 @@ class PCIDevice:
             if type(ioname) is bytes:
                 ioname = ioname.strip(b"\0").decode()
 
-            if ioname.startswith("pci"):
+            if ioname.startswith("pci") and "," in ioname:
                 vendor_id_unspoofed, device_id_unspoofed = (int(i, 16) for i in ioname[3:].split(","))
                 if anti_spoof:
                     vendor_id = vendor_id_unspoofed
