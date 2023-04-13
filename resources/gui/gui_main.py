@@ -2980,12 +2980,23 @@ class wx_python_gui:
             self.delete_unused_kdks_checkbox.GetPosition().y + self.delete_unused_kdks_checkbox.GetSize().height))
         self.set_ignore_app_updates_checkbox.SetToolTip(wx.ToolTip("This will set whether OpenCore will ignore App Updates on launch.\nEnable this option if you do not want to be prompted for App Updates"))
 
+        # Set Disable Analytics
+        res = global_settings.GlobalEnviromentSettings().read_property("DisableCrashAndAnalyticsReporting")
+        res = False if res is None else res
+        self.set_disable_analytics_checkbox = wx.CheckBox(self.frame_modal, label="Disable Crash/Analytics")
+        self.set_disable_analytics_checkbox.SetValue(res)
+        self.set_disable_analytics_checkbox.Bind(wx.EVT_CHECKBOX, self.set_disable_analytics_click)
+        self.set_disable_analytics_checkbox.SetPosition(wx.Point(
+            self.set_ignore_app_updates_checkbox.GetPosition().x,
+            self.set_ignore_app_updates_checkbox.GetPosition().y + self.set_ignore_app_updates_checkbox.GetSize().height))
+        self.set_disable_analytics_checkbox.SetToolTip(wx.ToolTip("Sets whether anonymized analytics are sent to the Dortania team.\nThis is used to help improve the application and is completely optional."))
+
         # Button: Developer Debug Info
         self.debug_button = wx.Button(self.frame_modal, label="Developer Debug Info")
         self.debug_button.Bind(wx.EVT_BUTTON, self.additional_info_menu)
         self.debug_button.SetPosition(wx.Point(
-            self.set_ignore_app_updates_checkbox.GetPosition().x,
-            self.set_ignore_app_updates_checkbox.GetPosition().y + self.set_ignore_app_updates_checkbox.GetSize().height + 5))
+            self.set_disable_analytics_checkbox.GetPosition().x,
+            self.set_disable_analytics_checkbox.GetPosition().y + self.set_disable_analytics_checkbox.GetSize().height + 5))
         self.debug_button.Center(wx.HORIZONTAL)
 
         # Button: return to main menu
@@ -3037,6 +3048,9 @@ class wx_python_gui:
             global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", True)
         else:
             global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", False)
+
+    def set_disable_analytics_click(self, event):
+        global_settings.GlobalEnviromentSettings().write_property("DisableCrashAndAnalyticsReporting", self.set_disable_analytics_checkbox.GetValue())
 
     def firewire_click(self, event=None):
         if self.firewire_boot_checkbox.GetValue():

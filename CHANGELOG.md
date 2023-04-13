@@ -1,6 +1,10 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.6.4
+- Backend changes:
+  - Implement new analytics_handler.py module
+    - Adds support for anonymous analytics including host info (and crash reports in the future)
+    - Can be disabled via GUI or `defaults write com.dortania.opencore-legacy-patcher DisableCrashAndAnalyticsReporting -bool true`
 
 ## 0.6.3
 - Update non-Metal Binaries:

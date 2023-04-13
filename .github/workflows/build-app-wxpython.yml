@@ -18,10 +18,12 @@ jobs:
       commitdate: ${{ github.event.head_commit.timestamp }}${{ github.event.release.published_at }}
       MAC_NOTARIZATION_USERNAME: ${{ secrets.MAC_NOTARIZATION_USERNAME }}
       MAC_NOTARIZATION_PASSWORD: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
+      ANALYTICS_KEY: ${{ secrets.ANALYTICS_KEY }}
+      ANALYTICS_SITE: ${{ secrets.ANALYTICS_SITE }}
 
     steps:
       - uses: actions/checkout@v3
-      - run: /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}"
+      - run: /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}" --key "${{ env.ANALYTICS_KEY }}" --site "${{ env.ANALYTICS_SITE }}"
       - run: 'codesign -s "Developer ID Application: Mykola Grymalyuk (S74BDJXQMD)" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
       - run: cd dist; ditto -c -k --sequesterRsrc --keepParent OpenCore-Patcher.app ../OpenCore-Patcher-wxPython.app.zip
       - run: xcrun altool --notarize-app --primary-bundle-id "com.dortania.opencore-legacy-patcher" --username "${{ env.MAC_NOTARIZATION_USERNAME }}" --password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --file OpenCore-Patcher-wxPython.app.zip
