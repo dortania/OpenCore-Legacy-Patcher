@@ -418,7 +418,7 @@ class DetectRootPatch:
             bool: True if loaded, False otherwise
         """
 
-        return utilities.check_kext_loaded("WhateverGreen", self.constants.detected_os)
+        return utilities.check_kext_loaded("WhateverGreen")
 
 
     def _check_kdk(self):
@@ -521,7 +521,7 @@ class DetectRootPatch:
             if self.constants.detected_os > os_data.os_data.catalina:
                 self.brightness_legacy = True
 
-        if self.model in ["iMac7,1", "iMac8,1"] or (self.model in model_array.LegacyAudio and utilities.check_kext_loaded("AppleALC", self.constants.detected_os) is False):
+        if self.model in ["iMac7,1", "iMac8,1"] or (self.model in model_array.LegacyAudio and utilities.check_kext_loaded("AppleALC") is False):
             # Special hack for systems with botched GOPs
             # TL;DR: No Boot Screen breaks Lilu, therefore breaking audio
             if self.constants.detected_os > os_data.os_data.catalina:
@@ -608,6 +608,10 @@ class DetectRootPatch:
             return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
 
         if self.constants.detected_os < os_data.os_data.big_sur:
+            return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
+
+        if utilities.check_kext_loaded("AMFIPass"):
+            # If AMFIPass is loaded, our binaries will work
             return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
 
         if self.constants.detected_os >= os_data.os_data.ventura:

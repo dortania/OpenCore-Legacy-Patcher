@@ -173,15 +173,23 @@ def enable_sleep_after_running():
         sleep_process = None
 
 
-def check_kext_loaded(kext_name, os_version):
-    if os_version > os_data.os_data.catalina:
-        kext_loaded = subprocess.run(["kmutil", "showloaded", "--list-only", "--variant-suffix", "release"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    else:
-        kext_loaded = subprocess.run(["kextstat", "-l"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    if kext_name in kext_loaded.stdout.decode():
-        return True
-    else:
-        return False
+def check_kext_loaded(kext_name: str) -> bool:
+    """
+    Checks if a kext is loaded
+
+    Parameters:
+        kext_name (str): The name of the kext to check
+
+    Returns:
+        bool: True if the kext is loaded, False if not
+    """
+    args = ["kextstat", "-l"]
+
+    if Path("/usr/bin/kmutil").exists():
+        args = ["kmutil", "showloaded", "--list-only", "--variant-suffix", "release"]
+
+    kext_loaded = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return kext_name in kext_loaded.stdout.decode()
 
 
 def check_oclp_boot():

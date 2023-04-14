@@ -20,7 +20,7 @@ class CreateBinary:
     Library for creating OpenCore-Patcher application
 
     This script's main purpose is to handle the following:
-       - Download external dependancies (ex. PatcherSupportPkg)
+       - Download external dependencies (ex. PatcherSupportPkg)
        - Convert payloads directory into DMG
        - Build Binary via Pyinstaller
        - Patch 'LC_VERSION_MIN_MACOSX' to OS X 10.10
@@ -275,7 +275,10 @@ class CreateBinary:
         for resource in required_resources:
             if Path(f"./{resource}").exists():
                 if self.args.reset_binaries:
-                    print(f"- Removing old {resource}")
+                    print(f"  - Removing old {resource}")
+                    # Just to be safe
+                    assert resource, "Resource cannot be empty"
+                    assert resource not in ("/", "."), "Resource cannot be root"
                     rm_output = subprocess.run(
                         ["rm", "-rf", f"./{resource}"],
                         stdout=subprocess.PIPE, stderr=subprocess.PIPE

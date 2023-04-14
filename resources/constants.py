@@ -82,6 +82,7 @@ class Constants:
         self.btspoof_version:             str = "1.0.0"  # Bluetooth-Spoof
         self.aspp_override_version:       str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
         self.rsrhelper_version:           str = "1.0.0"  # RSRHelper
+        self.amfipass_version:            str = "1.1.0"  # AMFIPass
 
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
@@ -483,6 +484,11 @@ class Constants:
         return self.payload_kexts_path / Path(f"Acidanthera/RSRHelper-v{self.rsrhelper_version}-{self.kext_variant}.zip")
 
     @property
+    def amfipass_path(self):
+        # AMFIPass is release only
+        return self.payload_kexts_path / Path(f"Acidanthera/AMFIPass-v{self.amfipass_version}-RELEASE.zip")
+
+    @property
     def innie_path(self):
         return self.payload_kexts_path / Path(f"Misc/Innie-v{self.innie_version}-{self.kext_variant}.zip")
 
@@ -668,8 +674,7 @@ class Constants:
     # Apple Payloads Paths
     @property
     def payload_local_binaries_root_path(self):
-        return self.payload_path / Path("Universal-Binaries")
-
+        return self.binaries_path
     @property
     def kdk_download_path(self):
         return self.payload_path / Path("KDK.dmg")

@@ -67,7 +67,6 @@ class PatchSysVolume:
 
         self.skip_root_kmutil_requirement = self.hardware_details["Settings: Supports Auxiliary Cache"]
 
-
     def _init_pathing(self, custom_root_mount_path: Path = None, custom_data_mount_path: Path = None) -> None:
         """
         Initializes the pathing for root volume patching
