@@ -602,7 +602,7 @@ class SystemPatchDictionary():
                         },
                         "/System/Library/PrivateFrameworks": {
                             # Restore OpenCL by adding missing compiler files
-                            "GPUCompiler.framework": "11.6" if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 0, self.os_major, self.os_minor) else {},
+                            **({ "GPUCompiler.framework": "11.6"} if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 0, self.os_major, self.os_minor) else {}),
                         },
                     },
                     "Install Non-Root": {
