@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.6.5
+
 ## 0.6.4
 - Backend changes:
   - Implement new analytics_handler.py module
