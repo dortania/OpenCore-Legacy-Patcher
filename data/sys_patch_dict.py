@@ -600,6 +600,9 @@ class SystemPatchDictionary():
                             "GeForceTeslaGLDriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
                             "GeForceTeslaVADriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
                         },
+                        "/System/Library/PrivateFrameworks": {
+                            "GPUCompiler.framework": "11.6",
+                        },
                     },
                     "Install Non-Root": {
                         "/Library/Extensions": {
