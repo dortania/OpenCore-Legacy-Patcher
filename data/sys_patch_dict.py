@@ -601,7 +601,8 @@ class SystemPatchDictionary():
                             "GeForceTeslaVADriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "GPUCompiler.framework": "11.6",
+                            # Restore OpenCL by adding missing compiler files
+                            "GPUCompiler.framework": "11.6" if os_data.os_conversion.is_os_newer(os_data.os_data.monterey, 0, self.os_major, self.os_minor) else {},
                         },
                     },
                     "Install Non-Root": {
