@@ -1,6 +1,11 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.6.5
+- Update 3802 Patchset Binaries:
+  - Resolves additional 3rd party app crashes on Metal with macOS 13.3+
+  - ex: PowerPoint's "Presentation Mode"
+- Increment Binaries:
+  - PatcherSupportPkg 0.9.6 - release
 
 ## 0.6.4
 - Backend changes:
