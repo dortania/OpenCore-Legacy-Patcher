@@ -114,7 +114,7 @@ module.exports = {
 				'UNINSTALL',
 				'ICNS',
 				'WINDOWS',
-				'UNIVERSALCONTROL',
+				'FEATUREUNLOCK',
             ]
         },
         {
@@ -133,7 +133,6 @@ module.exports = {
             sidebarDepth: 1,
             children: [
 				'ISSUES-HOLD',
-				'TESTED',
 				'TERMS',
 				'HOW',
 				'PATCHEXPLAIN',
