@@ -7,7 +7,7 @@ The best way to support us in all honesty is to donate any old hardware you no l
 Main sections of help we'd appreciate:
 
 * Donating any Mac you own
-  * Does require SSE4,1 CPU to test on Sierra and newer however
+  * Does require SSE4,1 CPU to test on Sierra and later however
 
 Additionally, hardware info dumps are greatly beneficial for us to determine what patches a machine might need:
 

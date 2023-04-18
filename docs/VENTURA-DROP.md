@@ -1,7 +1,7 @@
 ![](../images/macos-ventura.png)
 
 ::: warning
-macOS Ventura is supported by OpenCore Legacy Patcher **0.5.0 and newer,** currently in early stages.  
+macOS Ventura is supported by OpenCore Legacy Patcher **0.5.0 and later,** currently in early stages.  
 Use the latest available version for the most stability.
 :::
 
@@ -74,7 +74,7 @@ MacPro3,1 suffers from the Ethernet driver dying after returning from sleep, cur
 
 ## Resolved Issues
 
-::: details Legacy Wireless Support (Resolved in 0.6.0 and newer)
+::: details Legacy Wireless Support (Resolved in 0.6.0 and later)
 
 
 ### Legacy Wireless Support
@@ -100,7 +100,7 @@ Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported 
 :::
 
 
-::: details Non-Metal Graphics Acceleration (Resolved in 0.6.0 and newer)
+::: details Non-Metal Graphics Acceleration (Resolved in 0.6.0 and later)
 
 
 ### Non-Metal Graphics Acceleration

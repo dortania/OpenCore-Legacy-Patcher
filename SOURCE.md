@@ -57,7 +57,7 @@ Pass `-h` or `--help` for more information on supported CLI arguments.
 
 The main goal of generating prebuilt binaries is to strip the requirement of a local Python installation for users. For developers, there's very little benefit besides enabling dark mode support in the GUI. For development, simply use the OpenCore-Patcher-GUI.command file with a Python 3 installation.
 
-* Note that due to PyInstaller's linking mechanism, binaries generated on Catalina and newer are not compatible with High Sierra and older
+* Note that due to PyInstaller's linking mechanism, binaries generated on Catalina and later are not compatible with High Sierra and older
   * To ensure the best compatibility, generate binaries on macOS Mojave. These binaries will be compatible with macOS 10.9 to macOS 12.
   * Currently our build system is a [Macmini8,1 provided by MacStadium](https://www.macstadium.com/opensource) running macOS Mojave (10.14.6).
 

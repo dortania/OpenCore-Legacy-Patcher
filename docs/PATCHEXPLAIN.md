@@ -188,10 +188,10 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 ### Ethernet
 
 * nForceEthernet
-  * Reason: Inject old NVIDIA Ethernet kext to resolve networking in Catalina and newer
+  * Reason: Inject old NVIDIA Ethernet kext to resolve networking in Catalina and later
   * Models: 2010 and older NVIDIA Ethernet require
 * MarvelYukonEthernet
-  * Reason: Inject old Marvel Ethernet kext to resolve networking in Catalina and newer
+  * Reason: Inject old Marvel Ethernet kext to resolve networking in Catalina and later
   * Models: 2008 and older Marvel Ethernet require
 * CatalinaBCM5701Ethernet
   * Reason: Inject old Broadcom Ethernet kext to resolve networking in Big Sur
@@ -233,7 +233,7 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
   * Reason: Fix IDE support on MacPro3,1
   * Models: MacPro3,1
 * AppleIntelMCEDisabler
-  * Reason: Fix dual socket support in Catalina and newer
+  * Reason: Fix dual socket support in Catalina and later
   * Models: Mac Pros and Xserves
 * SMC-Spoof
   * Reason: Spoofs SMC version to 9.9999

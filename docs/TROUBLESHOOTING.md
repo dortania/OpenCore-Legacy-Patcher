@@ -138,7 +138,7 @@ Head into the GUI, go to Patcher Settings, and toggle the bits you need disabled
 
 ## Intermediate issues with USB 1.1 and Bluetooth on MacPro3,1 - MacPro5,1
 
-For those experiencing issues with USB 1.1 devices (such as mice, keyboards and bluetooth chipsets), macOS Big Sur and newer have weakened OS-side reliability for the UHCI controller in older Mac Pros.
+For those experiencing issues with USB 1.1 devices (such as mice, keyboards and bluetooth chipsets), macOS Big Sur and later have weakened OS-side reliability for the UHCI controller in older Mac Pros.
 
 * UHCI is a USB 1.1 controller that is hooked together with the USB 2.0 ports in your system. Whenever a USB 1.1 device is detected, the UHCI controller is given ownership of the device at a hardware/firmware level.
   * EHCI is the USB 2.0 controller in older Mac Pros

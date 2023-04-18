@@ -1,7 +1,7 @@
 ![](../images/macos-bigsur.png)
 
 ::: warning
-macOS Big Sur is supported by OpenCore Legacy Patcher **0.0.1 and newer.**  
+macOS Big Sur is supported by OpenCore Legacy Patcher **0.0.1 and later.**  
 Use the latest available version for the most stability.
 :::
 
@@ -34,7 +34,7 @@ When running Big Sur with root patches installed, macOS will delete the original
 
 ## Resolved Issues
 
-::: details TeraScale 2 Acceleration Issues (Resolved in 0.4.2 and newer)
+::: details TeraScale 2 Acceleration Issues (Resolved in 0.4.2 and later)
 
 AMD TeraScale 2 GPUs can be subject to **severe** graphical anomolies, such as
 
@@ -48,7 +48,7 @@ Changes have been slowly introduced over multiple versions to try and allieviate
 People who are prone to epilepsy should exercise **extreme** caution when using TeraScale 2 GPUs on Big Sur, or wait until the proper fixes have been found.
 ::: 
 
-::: details Stock bluetooth panics on iMac7,1 and MacPro3,1 (Resolved in 0.1.3 and newer)
+::: details Stock bluetooth panics on iMac7,1 and MacPro3,1 (Resolved in 0.1.3 and later)
 
 Due to the connection of the stock Bluetooth card in the imac7,1 and MacPro3,1, it can cause kernel panics when loading `com.apple.driver.CSRHIDTransitionDriver` in the macOS installer or macOS itself.
 
@@ -56,7 +56,7 @@ Workaround is to remove the stock Bluetooth card in these models, however be awa
 
 :::
 
-::: details Non-Metal Acceleration (Resolved in 0.1.1 and newer)
+::: details Non-Metal Acceleration (Resolved in 0.1.1 and later)
 
 * Non-Metal GPUs do not have working acceleration patches:
   * Intel Ironlake and Sandy Bridge iGPUs
@@ -75,7 +75,7 @@ Note: iMac10,1 through iMac12,x can be upgraded with Metal GPUs, [see here for m
 
 :::
 
-::: details Incorrect firmware updates bricking Macs (Resolved in 0.0.9 and newer)
+::: details Incorrect firmware updates bricking Macs (Resolved in 0.0.9 and later)
 
 As a result of the spoofing done by OpenCore, some users began to report issues with macOS updates installing firmware for different Mac models and rendering them unable to be used. We strongly recommend holding off on any macOS updates until this issue is resolved.
 

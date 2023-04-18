@@ -1,4 +1,27 @@
-# Working Around Legacy Acceleration Issues
+# Working around non-Metal Acceleration Issues
+
+The following page is for users experiencing issues with their overall usage of the non-Metal Acceleration patches, included with OpenCore Legacy Patcher 0.1.1 and later. For those unfamiliar with what is considered a non-Metal GPU, see the chart below:
+
+::: details macOS GPU Chart
+
+Metal is Apple's in-house graphics API that acts as a replacement for OpenGL/OpenCL, introduced in 2015. With the release of macOS Mojave, every system without a Metal-capable GPU was dropped.  
+
+| Graphics Vendor | Architecture | Series | Supports Metal |
+| :--- | :--- | :--- | :--- |
+| ATI | TeraScale 1 | HD2000 - HD4000 | <span style="color:red">No</span> |
+| ^^ | TeraScale 2 | HD5000 - HD6000 | ^^ |
+| AMD | GCN (and later) | HD7000+ | <span style="color:green">Yes</span> |
+| NVIDIA | Tesla | 8000GT - GT300 |  <span style="color:red">No</span> |
+| ^^ | Fermi | GT400 - GT500 | ^^ |
+| ^^ | Kepler | GT600 - GT700 | <span style="color:green">Yes</span> |
+| Intel | GMA | GMA900 - GMA3000 | <span style="color:red">No</span> |
+| ^^ | Iron Lake | HD series | ^^ |
+| ^^ | Sandy Bridge | HD3000 | ^^ |
+| ^^ | Ivy Bridge (and later) | HD4000 | <span style="color:green">Yes</span> |
+
+::: warning
+OpenCore Legacy patcher does not have acceleration patches for Intel's GMA architecture.
+:::
 
 * [Broken Background Blurs](#broken-background-blurs)
 * [Downloading older non-Metal Apps](#downloading-older-non-metal-apps)
@@ -7,7 +30,7 @@
 * [Keyboard Backlight broken](#keyboard-backlight-broken)
 * [Photos and Maps Apps Heavily Distorted](#photos-and-maps-apps-heavily-distorted)
 * [Cannot press "Done" when editing a Sidebar Widget](#cannot-press-done-when-editing-a-sidebar-widget)
-* [Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer](#wake-from-sleep-heavily-distorted-on-amd-ati-in-macos-11-3-and-newer)
+* [Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and later](#wake-from-sleep-heavily-distorted-on-amd-ati-in-macos-11-3-and-newer)
 * [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
 * [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
@@ -15,34 +38,9 @@
 * [Black Boxes on HD3000 iGPUs](#black-boxes-on-hd3000-igpus)
 * [Cannot Pair Bluetooth Devices](#cannot-pair-bluetooth-devices)
 
-The below page is for users experiencing issues with their overall usage of macOS Big Sur / Monterey / Ventura and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur / Monterey / Ventura:
-
-* Intel 3rd and 4th Gen - GMA series
-
-For those unfamiliar with what is considered a non-Metal GPU, see the chart below:
-
-::: details macOS GPU Chart
-
-Metal is Apple's in-house graphics API that acts as a replacement for OpenGL/OpenCL, introduced in 2015. With the release of macOS Mojave, every system without a Metal-capable GPU was dropped.
-
-| Graphics Vendor | Architecture | Series | Supports Metal |
-| :--- | :--- | :--- | :--- |
-| ATI | TeraScale 1 | HD2000 - HD4000 | <span style="color:red">No</span> |
-| ^^ | TeraScale 2 | HD5000 - HD6000 | ^^ |
-| AMD | GCN (and newer) | HD7000+ | <span style="color:green">Yes</span> |
-| NVIDIA | Tesla | 8000GT - GT300 |  <span style="color:red">No</span> |
-| ^^ | Fermi | GT400 - GT500 | ^^ |
-| ^^ | Kepler | GT600 - GT700 | <span style="color:green">Yes</span> |
-| Intel | GMA | GMA900 - GMA3000 | <span style="color:red">No</span> |
-| ^^ | Iron Lake | HD series | ^^ |
-| ^^ | Sandy Bridge | HD3000 | ^^ |
-| ^^ | Ivy Bridge (and newer) | HD4000 | <span style="color:green">Yes</span> |
-
-:::
-
 ## Broken Background Blurs
 
-By default with the non-Metal acceleration patches, many background blur menus may act distorted when moving a cursor over it. With 0.4.1 and newer, users can enable a new Beta Blur feature to try and resolve the issue:
+By default with the non-Metal acceleration patches, many background blur menus may act distorted when moving a cursor over it. With 0.4.1 and later, users can enable a new Beta Blur feature to try and resolve the issue:
 
 * As of 0.4.6, this option is enabled by default.
 * Enabling beta blurs can be more demanding on slower hardware.
@@ -106,7 +104,7 @@ Due to the Metal Backend, the enhanced color output of these apps seems to heavi
 
 Workaround: Press some combination of Tab, or Tab and then Shift-Tab, or just Shift-Tab until the "Done" button is highlighted. Then press spacebar to activate the button, the same as in any other dialog with a highlighted button halo.
 
-## Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer
+## Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and later
 
 Unfortunately, this is a very well known issue that the community is investigating. A currently known solution is to downgrade to macOS 11.2.3 or older until a proper fix can be found. Additionally, logging out and logging back in can resolve the issue without requiring a reboot.
 
