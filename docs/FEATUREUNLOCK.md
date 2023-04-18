@@ -3,7 +3,7 @@
 OpenCore Legacy Patcher makes use of **FeatureUnlock**, a powerful patching engine to enable features on Macs restricted from using them by Apple.
 * This applies to natively-supported Macs as well.
 * If your model is not listed in a specific section, that feature is not restricted from being enabled on your Mac. 
-  * This does not mean your Mac hardware is capable of those features. See the Special notes of each section.
+  * This does not mean your Mac hardware is capable of those features. See the Special notes of each section, and reach out to the #hardware channel of our [Discord](https://discord.gg/rqdPgH8xSN) to learn more.
 
 ::: warning
 FeatureUnlock can cause instability and performance issues in macOS. If random issues with the operating system arise while enabled, try disabling FeatureUnlock before asking for support.
@@ -123,3 +123,4 @@ Applicable for:
     * iPhone 12 or later for Studio Light
 * Blacklist is not model based, instead is CPU based
 :::
+
