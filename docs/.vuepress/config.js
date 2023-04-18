@@ -79,15 +79,7 @@ module.exports = {
             children: [
                 'INSTALLER',
 				'BUILD',
-            ]
-
-        },
-        {
-            title: 'Installation',
-            collapsable: false,
-            sidebarDepth: 1,
-            children: [
-				'BOOT',
+                'BOOT',
 				'POST-INSTALL',
             ]
 
