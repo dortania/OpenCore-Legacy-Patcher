@@ -9,12 +9,12 @@ This guide will focus on the installation of Windows 10 without using Boot Camp 
 
 * Due to hardware and firmware limitations, UEFI Windows installations are only recommended on the following machines:
 
-  * 2015 MacBook or newer (MacBook8,x+)
-  * 2011 MacBook Air or newer (MacBookAir4,x+)
-  * 2011 MacBook Pro or newer (MacBookPro8,x+)
-  * 2011 Mac mini or newer (Macmini5,x+)
-  * 2009[^1] Mac Pro or newer (MacPro4,1+), upgraded GPU is preferred
-  * 2010 iMac or newer (iMac11,x+), upgraded GPU is preferred
+  * 2015 MacBook and later (MacBook8,x+)
+  * 2011 MacBook Air and later (MacBookAir4,x+)
+  * 2011 MacBook Pro and later (MacBookPro8,x+)
+  * 2011 Mac mini and later (Macmini5,x+)
+  * 2009[^1] Mac Pro and later (MacPro4,1+), upgraded GPU is preferred
+  * 2010 iMac and later (iMac11,x+), upgraded GPU is preferred
   * 2009[^2] Xserve (Xserve3,1), upgraded GPU is preferred
 
 
