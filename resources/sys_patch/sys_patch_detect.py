@@ -477,11 +477,6 @@ class DetectRootPatch:
         if self.constants.detected_os < os_data.os_data.ventura:
             return False
 
-        # Former USB 1.1 Patches used to be incompatible with XHCI controllers
-        #for controller in self.constants.computer.usb_controllers:
-            #if (isinstance(controller, device_probe.XHCIController)):
-                #return False
-
         # If we're on a hackintosh, check for UHCI/OHCI controllers
         if self.constants.host_is_hackintosh is True:
             for controller in self.constants.computer.usb_controllers:
