@@ -4,6 +4,8 @@
 - Update 3802 Patchset Binaries:
   - Resolves additional 3rd party app crashes on Metal with macOS 13.3+
   - ex: PowerPoint's "Presentation Mode"
+- Resolve OpenCL rendering on Nvidia Web Drivers
+  - thanks [@jazzzny](https://github.com/Jazzzny)
 - Increment Binaries:
   - PatcherSupportPkg 0.9.6 - release
 
