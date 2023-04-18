@@ -82,7 +82,7 @@ This error occurs when macOS determines that the current firmware does not have 
 
 ## No Brightness Control
 
-With OCLP v0.0.22, we've added support for brightness control on many models. However, some users may have noticed that their brightness keys do not work.
+With OCLP 0.0.22, we've added support for brightness control on many models. However, some users may have noticed that their brightness keys do not work.
 
 As a work-around, we recommend users try out the below app:
 
@@ -90,7 +90,7 @@ As a work-around, we recommend users try out the below app:
 
 ## Cannot connect Wi-Fi on Monterey with legacy cards
 
-With OCLP v0.2.5, we've added support for legacy Wi-Fi on Monterey. However, some users may have noticed that they can't connect to wireless networks.
+With OCLP 0.2.5, we've added support for legacy Wi-Fi on Monterey. However, some users may have noticed that they can't connect to wireless networks.
 
 To work-around this, we recommend that users manually connect using the "Other" option in the Wi-Fi menu bar or manually adding the network in the "Network" preference pane.
 
@@ -98,7 +98,7 @@ To work-around this, we recommend that users manually connect using the "Other" 
 
 In macOS, GPU drivers are often dropped from the OS with each major release of it. With macOS Big Sur, currently, all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and NVIDIA Kepler graphics processors. 
 
-If you're using OCLP v0.4.4, you should have been prompted to install Root Volume patches after the first boot from installation of macOS. If you need to do this manually, you can do so within the patcher app. Once rebooted, acceleration will be re-enabled as well as brightness control for laptops.
+If you're using OCLP 0.4.4, you should have been prompted to install Root Volume patches after the first boot from installation of macOS. If you need to do this manually, you can do so within the patcher app. Once rebooted, acceleration will be re-enabled as well as brightness control for laptops.
 
 ## Black Screen on MacBookPro11,3 in macOS Monterey
 

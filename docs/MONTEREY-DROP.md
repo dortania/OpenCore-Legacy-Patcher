@@ -1,45 +1,42 @@
 ![](../images/macos-monterey.png)
 
-With OpenCore Legacy Patcher v0.1.7 and newer, we've implemented beta macOS Monterey support for users. Please note that Apple has dropped a lot of hardware with this release as well as broken many of our previous patch sets. This page will be used to inform users regarding current issues and will be updated as new patch sets are developed and added to our patcher.
+::: warning
+macOS Monterey is supported by OpenCore Legacy Patcher **0.1.7 and newer.**  
+Use the latest available version for the most stability.
+::: 
 
-## Newly dropped hardware
+## Dropped Hardware
 
-With Monterey, Apple continues their their somewhat ruthless march of dropping Intel hardware. This release saw the removal, and thus addition into OpenCore Legacy Patcher, of the following models:
+In addition to all unsupported Macs, the following models will now require OpenCore Legacy Patcher to run macOS Monterey:
 
-* iMac14,4
-* iMac15,1
-* MacBook8,1
-* MacBookAir6,1
-* MacBookAir6,2
-* MacBookPro11,1
-* MacBookPro11,2
-* MacBookPro11,3
+| Model Name | Model Identifier |
+| --- | --- |
+| iMac (21.5-inch, Late 2013) | `iMac14,1` |
+| iMac (27-inch, Late 2013) | `iMac14,2`<br>`iMac14,3` | 
+| iMac (21.5-inch, Mid 2014) | `iMac14,4` | 
+| iMac (Retina 5K, 27-inch, Late 2014)<br>iMac (Retina 5K, 27-inch, Mid 2015) | `iMac15,1` |
+| MacBook (Retina, 12-inch, Early 2015) | `MacBook8,1` |
+| MacBook Air (11-inch, Mid 2013)<br>MacBook Air (11-inch, Early 2014) | `MacBookAir6,1` | 
+| MacBook Air (13-inch, Mid 2013)<br>MacBook Air (13-inch, Early 2014) | `MacBookAir6,2` | 
+| MacBook Pro (Retina, 13-inch, Late 2013)<br>MacBook Pro (Retina, 13-inch, Mid 2014) | `MacBookPro11,1` | 
+| MacBook Pro (Retina, 15-inch, Late 2013)<br>MacBook Pro (Retina, 15-inch, Mid 2014) | `MacBookPro11,2`<br>`MacBookPro11,3` | 
 
-::: details Model names
-
-* iMac (21.5-inch, Mid 2014)
-* iMac (Retina 5K, 27-inch, Late 2014)
-* MacBook (Retina, 12-inch, Early 2015)
-* MacBook Air (11-inch, Mid 2013)
-* MacBook Air (13-inch, Mid 2013)
-* MacBook Air (11-inch, Early 2014)
-* MacBook Air (13-inch, Early 2014)
-* MacBook Pro (Retina, 13-inch, Late 2013)
-* MacBook Pro (Retina, 15-inch, Late 2013)
-* MacBook Pro (Retina, 13-inch, Mid 2014)
-* MacBook Pro (Retina, 15-inch, Mid 2014)
-
-:::
-
-All of these models now have support in OpenCore Legacy Patcher.
-
-## Current Monterey Issues
+## Current Issues
 
 ### MacBookPro11,3 booting issue without Kepler acceleration
 
 Due to the display being routed through the NVIDIA Kepler card and macOS being rendered on the Intel iGPU, users have been experiencing issues booting without post-install patches applied ([see here for more info](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/522).) Currently the only workaround is to install the patches in safe mode, by holding down `Shift+Enter` when you select macOS in the OCLP boot picker.
 
-## Previously Broken Hardware
+## Resolved Issues
+
+::: details macOS 12.5 issue with Kepler GPUs (Resolved in 0.4.10 and newer)
+
+In macOS 12.5, Apple broke Kepler GPUs by updating the Metal Performance Shader frameworks. One of its subframeworks, MPSImage, is no longer compatible with the Kepler Metal driver, resulting in WindowServer freezing and returning the user to the login screen.
+
+* Associated Github Issue:
+  * [macOS 12.5: Nvidia Kepler and WindowServer crashing #1004](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1004)
+
+:::
 
 ::: details iMac15,1 5K Display Output Issue (Resolved in 0.3.2 and newer)
 

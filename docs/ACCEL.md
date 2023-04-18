@@ -44,16 +44,18 @@ Metal is Apple's in-house graphics API that acts as a replacement for OpenGL/Ope
 
 By default with the non-Metal acceleration patches, many background blur menus may act distorted when moving a cursor over it. With 0.4.1 and newer, users can enable a new Beta Blur feature to try and resolve the issue:
 
+* As of 0.4.6, this option is enabled by default.
+* Enabling beta blurs can be more demanding on slower hardware.
+
 ![](../images/OCLP-GUI-Settings-Beta-Blur.png)
 
-Do note that enabling beta blurs can be more demanding on slower hardware
 ## Downloading older non-Metal Apps
 
-Many Apple apps now have direct reliance on Metal for proper functioning, however legacy builds of these apps still do work in Big Sur. See below for archive of many apps such as Pages, iMovie, GarageBand.
+Many Apple apps now have direct reliance on Metal for proper functioning, however legacy builds of these apps still do work in Big Sur. See below for archive of many apps such as Pages, iMovie, and GarageBand.
 
 * [Apple Apps for Non-Metal Macs](https://archive.org/details/apple-apps-for-non-metal-macs)
 
-Note: This archive assumes that you own these copies of these apps through the Mac App Store, Dortania does not condone piracy
+Note: This archive assumes that you own these copies of these apps through the Mac App Store, Dortania does not condone piracy.
 
 ## Unable to run Zoom
 
@@ -63,7 +65,7 @@ Currently Zoom relies partially on Metal and so needs a small binary patch. Dosd
 
 ## Unable to grant special permissions to apps (ie. Camera Access to Zoom)
 
-With version 0.2.5, this issue should be full resolved
+With version 0.2.5, this issue should be fully resolved
 
 ::: details 0.2.4 and older Work-Around
 
@@ -132,7 +134,7 @@ Note: This driver only provides partial support in macOS, full graphics accelera
 
 ## Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)
 
-Resolved with OpenCore Legacy Patcher v0.4.2
+Resolved with OpenCore Legacy Patcher 0.4.2
 
 ::: details Legacy Fix (prior to 0.4.2)
 
