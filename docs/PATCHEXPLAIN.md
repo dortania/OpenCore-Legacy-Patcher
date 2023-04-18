@@ -83,7 +83,7 @@ Below is a rundown of the main logic that OpenCore Legacy Patcher uses to gain n
 * Disable Library Validation Enforcement Patch
   * Reason: non-Metal Root Volume Patches do not pass library validation tests
   * Logic: Forces Library Validation function to always return not required
-  * Models: Non-Metal GPUs
+  * Models: non-Metal GPUs
 * SurPlus Patch
   * Reason: macOS 11.3-12.0.1 require systems to have RDRAND support in the CPU for stable boot
   * Logic: Forces RDRAND code to return predetermined value

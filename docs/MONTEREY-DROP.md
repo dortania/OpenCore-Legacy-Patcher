@@ -145,9 +145,9 @@ By default these machines require root volume patches to gain graphics accelerat
 
 :::
 
-::: details Non-Metal Acceleration (Resolved in 0.2.5 and later)
+::: details non-Metal Acceleration (Resolved in 0.2.5 and later)
 
-* Non-Metal GPUs no longer have working acceleration patches:
+* non-Metal GPUs no longer have working acceleration patches:
   * Intel Ironlake and Sandy Bridge iGPUs
   * NVIDIA Tesla and Fermi GPUs
   * AMD TeraScale 1 and 2 GPUs

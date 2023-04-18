@@ -56,9 +56,9 @@ Workaround is to remove the stock Bluetooth card in these models, however be awa
 
 :::
 
-::: details Non-Metal Acceleration (Resolved in 0.1.1 and later)
+::: details non-Metal Acceleration (Resolved in 0.1.1 and later)
 
-* Non-Metal GPUs do not have working acceleration patches:
+* non-Metal GPUs do not have working acceleration patches:
   * Intel Ironlake and Sandy Bridge iGPUs
   * NVIDIA Tesla and Fermi GPUs
   * AMD TeraScale 1 and 2 GPUs

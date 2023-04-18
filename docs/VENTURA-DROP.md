@@ -100,10 +100,10 @@ Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported 
 :::
 
 
-::: details Non-Metal Graphics Acceleration (Resolved in 0.6.0 and later)
+::: details non-Metal Graphics Acceleration (Resolved in 0.6.0 and later)
 
 
-### Non-Metal Graphics Acceleration
+### non-Metal Graphics Acceleration
 
 Regarding non-Metal, the team is hard at work to get non-Metal working, however this is our greatest challenge since Big Sur.
 

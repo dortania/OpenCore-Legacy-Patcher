@@ -38,34 +38,58 @@ OpenCore Legacy patcher does not have acceleration patches for Intel's GMA archi
 * [Black Boxes on HD3000 iGPUs](#black-boxes-on-hd3000-igpus)
 * [Cannot Pair Bluetooth Devices](#cannot-pair-bluetooth-devices)
 
-## Broken Background Blurs
+## Background Blurs
+As of 0.4.6 and later, OpenCore Legacy Patcher provides and enabled a Beta Blur feature to reduce blur distortion and flashing with the non-Metal acceleration patches. 
 
-By default with the non-Metal acceleration patches, many background blur menus may act distorted when moving a cursor over it. With 0.4.1 and later, users can enable a new Beta Blur feature to try and resolve the issue:
+::: warning 
+On older hardware, this feature can be more demanding. 
+:::
 
-* As of 0.4.6, this option is enabled by default.
-* Enabling beta blurs can be more demanding on slower hardware.
+Disable this option if performance decreases greatly, however be aware that the original issue will return.
 
 ![](../images/OCLP-GUI-Settings-Beta-Blur.png)
 
-## Downloading older non-Metal Apps
+## Issues with apps depending on Metal
 
+There are likely other apps that depend on Metal that are not covered here, report to the Discord server if you have issues.
+
+::: details Photos and Maps
+Due to the Metal Backend, the enhanced color output of these apps seems to heavily break overall UI usage. To work around this, [users reported](https://forums.macrumors.com/threads/macos-11-big-sur-on-unsupported-macs-thread.2242172/post-29870324) forcing the color output of their monitor from Billions to Millions of colors helped greatly. Apps easily allowing this customization are [SwitchResX](https://www.madrau.com), [ResXreme](https://macdownload.informer.com/resxtreme/) and [EasyRes](http://easyresapp.com).
+:::
+
+::: details Maps and MapKit (macOS 12.0+)
+These apps do not currently work. No time can be given on when a fix will be available.
+:::
+
+::: details Apple's iWork suite
 Many Apple apps now have direct reliance on Metal for proper functioning, however legacy builds of these apps still do work in Big Sur. See below for archive of many apps such as Pages, iMovie, and GarageBand.
 
-* [Apple Apps for Non-Metal Macs](https://archive.org/details/apple-apps-for-non-metal-macs)
+* [Apple Apps for non-Metal Macs](https://archive.org/details/apple-apps-for-non-metal-macs)
 
 Note: This archive assumes that you own these copies of these apps through the Mac App Store, Dortania does not condone piracy.
+:::
 
-## Unable to run Zoom
-
+::: details Zoom Web Conferencing
 Currently Zoom relies partially on Metal and so needs a small binary patch. Dosdude1 has provided a nice script for this:
 
-* [Zoom Non-Metal Fix](http://dosdude1.com/catalina/zoomnonmetal-new.command.zip)
+* [Zoom non-Metal Fix](http://dosdude1.com/catalina/zoomnonmetal-new.command.zip)
+:::
+
+::: details Microsoft Office
+Users reported various issues with Word and PowerPoint on recent versions of Office. The below package can be used to replace the offending versions with ones that work properly:
+
+* [Microsoft Office 16.29.19090802](https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Office_16.29.19090802_BusinessPro_Installer.pkg)
+:::
 
 ## Unable to grant special permissions to apps (ie. Camera Access to Zoom)
 
-With version 0.2.5, this issue should be fully resolved
+As of version 0.2.5 and later, this issue should be fully resolved
 
-::: details 0.2.4 and older Work-Around
+::: warning
+Users on macOS Ventura will need to use the workaround as the patchset broke.
+:::
+
+::: details 0.2.4 and older workaround
 
 Due to the usage of `amfi_get_out_of_my_way=1`, macOS will fail to prompt users for special permissions upon application start as well as omit the entires in System Preferences. To work around this, we recommend users install [tccplus](https://github.com/jslegendre/tccplus) to manage permissions.
 
@@ -96,11 +120,7 @@ $ sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "INSERT or RE
 
 Due to forcing `hidd` into spinning up with the fallback mode enabled, this can break the OS's recognition of backlight keyboards. Thankfully the drivers themselves still do operate so applications such as [LabTick](https://www.macupdate.com/app/mac/22151/lab-tick) are able to set the brightness manually.
 
-## Photos and Maps Apps Heavily Distorted
-
-Due to the Metal Backend, the enhanced color output of these apps seems to heavily break overall UI usage. To work around this, [users reported](https://forums.macrumors.com/threads/macos-11-big-sur-on-unsupported-macs-thread.2242172/post-29870324) forcing the color output of their monitor from Billions to Millions of colors helped greatly. Apps easily allowing this customization are [SwitchResX](https://www.madrau.com), [ResXreme](https://macdownload.informer.com/resxtreme/) and [EasyRes](http://easyresapp.com).
-
-## Cannot press "Done" when editing a Sidebar Widget
+## Cannot press "Done" when editing a Notification Center Widget
 
 Workaround: Press some combination of Tab, or Tab and then Shift-Tab, or just Shift-Tab until the "Done" button is highlighted. Then press spacebar to activate the button, the same as in any other dialog with a highlighted button halo.
 
@@ -108,7 +128,7 @@ Workaround: Press some combination of Tab, or Tab and then Shift-Tab, or just Sh
 
 Unfortunately, this is a very well known issue that the community is investigating. A currently known solution is to downgrade to macOS 11.2.3 or older until a proper fix can be found. Additionally, logging out and logging back in can resolve the issue without requiring a reboot.
 
-* Note, this issue should be exclusive to TeraScale 1 GPUs (ie. HD2000-4000). TeraScale 2 GPUs should not exhibit this issue.
+* Note, this issue should be exclusive to TeraScale 1 GPUs (ie. HD2000-4000). TeraScale 2 and other non-Metal GPUs should not exhibit this issue.
 
 In the event Apple removes 11.2.3 from their catalogue, we've provided a mirror below:
 
@@ -151,7 +171,7 @@ Due to a bug in the legacy acceleration patches, users won't be able to enable S
 
 The following tool can be used to work-around this issue:
 
-* [Non-Metal Safari Extensions](https://github.com/moosethegoose2213/Non-Metal-Safari-Extensions/)
+* [non-Metal Safari Extensions](https://github.com/moosethegoose2213/Non-Metal-Safari-Extensions/)
 
 ## Cannot Login on 2011 15" and 17" MacBook Pros
 
