@@ -188,9 +188,9 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
   * Reason: Installs non AVX2.0 Cryptex on non AVX2.0 CPUs
   * Models: All CPUs Ivy Bridge and older
 * AutoPkgInstaller
-  * Reason: Alows for automatic root patching
+  * Reason: Allows for automatic root patching
 * NVMeFix
-  * Reason: Fixes 3rd party nvme support
+  * Reason: Fixes 3rd party NVMe support
 * RSRHelper
   * Reason: Fixes RSR Support on root patched installs
 * 
@@ -243,10 +243,10 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 ### Wifi
 
 * IO80211ElCap
-  * Reason: Re-inject wifi drivers from El Capitan 
+  * Reason: Re-inject WiFi drivers from El Capitan 
   * Models: BCM94328, BCM94322 and Atheros chipsets
 * corecaptureElCap.kext
-  * Reason: Re-inject wifi drivers from El Capitan 
+  * Reason: Re-inject WiFi drivers from El Capitan 
   * Models: BCM94328, BCM94322 and Atheros chipsets
 
 ### Misc
@@ -268,9 +268,9 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 * AMDGPUWakeHandler
   * Reason: Adds Software Based Demux for 2011 15/17 Macbook Pros
 * AppleIntelCPUPowerManagement
-  * Reason: Restores Ivy Bridge and older CPU power Management
+  * Reason: Restores Ivy Bridge and older CPU Power Management
 * AppleIntelCPUPowerManagementClient
-  * Reason: Restores Ivy Bridge and older CPU power Management
+  * Reason: Restores Ivy Bridge and older CPU Power Management
 * AppleUSBTopCase
   * Reason: Restore USB Keyboard support on Mac OS Ventura
 * AppleUSBMultitouch
@@ -282,11 +282,11 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 * BacklightInjector
   * Reason: Fixes Brightness in iMacs with upgraded GPUs
 * BigSurSDXC
-  * Reason: Restores SDXD Support in Pre Ivy-Bridge Macs
+  * Reason: Restores SDXC Support in Pre Ivy-Bridge Macs
 * Bluetooth-spoof
   * Reason: Spoofs legacy Bluetooth to work on Monterey and newer
 * Innie
-  * Reason: Makes all PCIe drive appear internal
+  * Reason: Makes all PCIe drives appear internal
   * Models: MacPro3,1 and newer & Xserve3,1 and newer 
 * KDKlessWorkaround
   * Reason: Helps with Mac os updates on KDKless patched systems
@@ -350,14 +350,14 @@ Applicable for BCM94328, BCM94322 and Atheros Wifi cards
 * OpenCL (libCLVMNVPTXPlugin.dylib, NVPTX.dylib)
   * Reason: Re-add Kepler hardware acceleration support
 * Metal 
-  * Reason:  13.3 Broke 3802 gpus requires a Metal downgrade to 13.2.1
+  * Reason: 3802 based GPU's broken by 13.3, requiring a Metal downgrade to 13.2.1
 
 ### PrivateFrameworks
 
 * MTLCompiler
-  * 13.3 Broke 3802 gpus requires a MTLCompiler downgrade to 13.2.1
+  * Reason: 3802 based GPU's broken by 13.3, requiring a MTLCompiler downgrade to 13.2.1
 * GPUCompiler
-  * 13.3 Broke 3802 gpus requires a GPUCompiler downgrade to 13.2.1
+  * Reason: 3802 based GPU's broken by 13.3, requiring a GPUCompiler downgrade to 13.2.1
 
 :::
 
@@ -379,9 +379,9 @@ Applicable for BCM94328, BCM94322 and Atheros Wifi cards
 * AppleGVA/AppleGVACore
   * Reason: Enable DRM support
 * MTLCompiler
-  * 13.3 Broke 3802 gpus requires a MTLCompiler downgrade to 13.2.1
+  * Reason: 3802 based GPU's broken by 13.3, requiring a MTLCompiler downgrade to 13.2.1
 * GPUCompiler
-  * 13.3 Broke 3802 gpus requires a GPUCompiler downgrade to 13.2.1
+  * Reason: 3802 based GPU's broken by 13.3, requiring a GPUCompiler downgrade to 13.2.1
 
 ### Frameworks
 
@@ -390,7 +390,7 @@ Applicable for BCM94328, BCM94322 and Atheros Wifi cards
 * WebKit (com.apple.WebProcess.sb)
   * Reason: Re-add Ivy Bridge Safari rendering support
 * Metal 
-  * Reason:  13.3 Broke 3802 gpus requires a Metal downgrade to 13.2.1
+  * Reason:  3802 based GPU's broken by 13.3, requiring a Metal downgrade to 13.2.1
 :::
 
 ::: details Intel Haswell Graphics Acceleration Patches (13.0+)
@@ -408,14 +408,14 @@ Applicable for BCM94328, BCM94322 and Atheros Wifi cards
 ### Frameworks 
 
 * Metal 
-  * Reason:  13.3 Broke 3802 gpus requires a Metal downgrade to 13.2.1
+  * Reason:  3802 based GPU's broken by 13.3, requiring a Metal downgrade to 13.2.1
 
 ### PrivateFrameworks
 
 * MTLCompiler
-  * 13.3 Broke 3802 gpus requires a MTLCompiler downgrade to 13.2.1
+  * Reason: 3802 based GPU's broken by 13.3, requiring a MTLCompiler downgrade to 13.2.1
 * GPUCompiler
-  * 13.3 Broke 3802 gpus requires a GPUCompiler downgrade to 13.2.1
+  * Reason: 3802 based GPU's broken by 13.3, requiring a GPUCompiler downgrade to 13.2.1
 
 :::
 
