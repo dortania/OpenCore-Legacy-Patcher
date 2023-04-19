@@ -3156,10 +3156,10 @@ class wx_python_gui:
 
     def disable_colorsync_click(self, event=None):
         if self.set_colorsync_checkbox.GetValue():
-            logging.info("ColorSync Patch Enabled")
+            logging.info("ColorSync Patch Disabled")
             self.constants.disable_cat_colorsync = True
         else:
-            logging.info("ColorSync Patch Disabled")
+            logging.info("ColorSync Patch Enabled")
             self.constants.disable_cat_colorsync = False
 
     def force_web_drivers_click(self, event=None):
