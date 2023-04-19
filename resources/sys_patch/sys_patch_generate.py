@@ -52,8 +52,9 @@ class GenerateRootPatchSets:
             required_patches.update({"High Sierra GVA": all_hardware_patchset["Graphics"]["High Sierra GVA"]})
             required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"Intel Sandy Bridge": all_hardware_patchset["Graphics"]["Intel Sandy Bridge"]})
-            # Patchset breaks Display Profiles, don't install if primary GPU is AMD
-
+            # Patchset breaks Display Profiles, don't install if primary GPU is AMD. Give users option to disable patch in settings to restore Display Profiles
+            if self.constants.computer.real_model not in ["Macmini5,2", "iMac12,1", "iMac12,2"] or self.constants.disable_cat_colorsync is False:
+                required_patches.update({"Non-Metal ColorSync Workaround": all_hardware_patchset["Graphics"]["Non-Metal ColorSync Workaround"]})
 
         if self.hardware_details["Graphics: Intel Ivy Bridge"] is True:
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
