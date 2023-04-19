@@ -535,7 +535,7 @@ Applicable for BCM94328, BCM94322 and Atheros Wifi cards
   * GeForceTeslaWeb.kext
   * NVDANV50HalTeslaWeb.kext
   * NVDAResmanTeslaWeb.kext
-    * Reason: Allows for Non Metal Acceleration for NVIDIA Maxwell And Pascal GPUs
+    * Reason: Allows for non-Metal Acceleration for NVIDIA Maxwell and Pascal GPUs
 
 * AMD/ATI Binaries
   * AMD2400Controller.kext
