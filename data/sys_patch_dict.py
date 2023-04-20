@@ -143,6 +143,7 @@ class SystemPatchDictionary():
                         # 'When Space Allows' option introduced in 12.4 (XNU 21.5)
                         **({"defaults write /Library/Preferences/.GlobalPreferences.plist ShowDate -int 1": True } if self.os_float >= self.macOS_12_4 else {}),
                         "defaults write /Library/Preferences/.GlobalPreferences.plist InternalDebugUseGPUProcessForCanvasRenderingEnabled -bool false": True,
+                        "defaults write /Library/Preferences/.GlobalPreferences.plist WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                     },
                 },
                 "Non-Metal IOAccelerator Common": {

@@ -4,6 +4,11 @@
 - Update 3802 Patchset Binaries:
   - Resolves additional 3rd party app crashes on Metal with macOS 13.3+
   - ex: PowerPoint's "Presentation Mode"
+- Update non-Metal Binaries:
+  - Resolves Safari 16.4 frozen canvas rendering
+  - ex: Google Docs
+- Allow for coexistence of USB 3.0 controllers and USB 1.1 patches on macOS 13+
+  - Restores USB 3.0 expansion card support on USB 1.1 machines such as MacPro5,1
 - Resolve OpenCL rendering on Nvidia Web Drivers
   - thanks [@jazzzny](https://github.com/Jazzzny)
 - Increment Binaries:
