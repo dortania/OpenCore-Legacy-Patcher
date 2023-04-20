@@ -139,7 +139,7 @@ Below is a rundown of the main logic that OpenCore Legacy Patcher uses to gain n
   * Reason: Enables Content Caching when using VMM spoofing
   * Logic: Adds args to NVRAM
   * Models: Any model using VMM spoofing
-* `-amfi_get_out_of_my_way=0x1`
+* `amfi=0x80`
   * Reason: Disables Apple Mobile File Integrity to allow for root patches
   * Logic: Adds args to NVRAM
   * Models: Any model that requires unsigned root patches
@@ -196,7 +196,7 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 * NVMeFix
   * Reason: Fixes 3rd party NVMe support
 * RSRHelper
-  * Reason: Fixes RSR Support on root patched installs
+  * Reason: Fixes Rapid Security Response Support on root patched installs
 * 
 
 ### Ethernet
@@ -271,15 +271,11 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
   * Adds AppleRaidCard Support for Xserves
 * AMDGPUWakeHandler
   * Reason: Adds Software Based Demux for 2011 15/17 Macbook Pros
-* AppleIntelCPUPowerManagement
-  * Reason: Restores Ivy Bridge and older CPU Power Management
-* AppleIntelCPUPowerManagementClient
+* AppleIntelCPUPowerManagement and AppleIntelCPUPowerManagementClient
   * Reason: Restores Ivy Bridge and older CPU Power Management
 * AppleUSBTopCase
   * Reason: Restore USB Keyboard support on Mac OS Ventura
-* AppleUSBMultitouch
-  * Reason: Restore USB Trackpad support on Mac OS Ventura
-* AppleUSBTrackpad
+* AppleUSBMultitouch and AppleUSBTrackpad
   * Reason: Restore USB Trackpad support on Mac OS Ventura
 * ASPP-Override
   * Reason: Forces ACPI_SMC_PlatformPlugin to outmatch X86PlatformPlugin and disable firmware throttling 
@@ -299,7 +295,7 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 * MonteAHCIPort
   * Reason: Fixes SSD support for stock SSD found in MacBookAir6,x
 * NoAVXFSCompressionTypeZlib
-  * Reason: Prevents AVXFSCompressionTypeZlib crash in 12.4+
+  * Reason: Prevents AVXFSCompressionTypeZlib crash on pre AVX1.0 systems in 12.4+
 * SimpleMSR 
   * Reason: Disables BD PROCHOT to prevent firmware throttling on Nehalem+ MacBooks
 
