@@ -142,7 +142,7 @@ Below is a rundown of the main logic that OpenCore Legacy Patcher uses to gain n
 * `-amfi_get_out_of_my_way=0x1`
   * Reason: Disables Apple Mobile File Integrity to allow for root patches
   * Logic: Adds args to NVRAM
-  * Models: Any model that requires usigned root patches
+  * Models: Any model that requires unsigned root patches
 
 ### UEFI -> ProtocolOverrides
 
