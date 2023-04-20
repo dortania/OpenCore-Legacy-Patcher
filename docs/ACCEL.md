@@ -30,7 +30,7 @@ OpenCore Legacy patcher does not have acceleration patches for Intel's GMA archi
 * [Keyboard Backlight broken](#keyboard-backlight-broken)
 * [Photos and Maps Apps Heavily Distorted](#photos-and-maps-apps-heavily-distorted)
 * [Cannot press "Done" when editing a Sidebar Widget](#cannot-press-done-when-editing-a-sidebar-widget)
-* [Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and later](#wake-from-sleep-heavily-distorted-on-amd-ati-in-macos-11-3-and-newer)
+* [Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and later](#wake-from-sleep-heavily-distorted-on-amd-ati-in-macos-11-3-and-later)
 * [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
 * [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
@@ -78,7 +78,7 @@ Currently Zoom relies partially on Metal and so needs a small binary patch. Dosd
 ::: details Microsoft Office
 Users reported various issues with Word and PowerPoint on recent versions of Office. The below package can be used to replace the offending versions with ones that work properly:
 
-* [Microsoft Office 16.29.19090802](https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Office_16.29.19090802_BusinessPro_Installer.pkg)
+* [Microsoft Office 16.43.20110804](https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Office_16.43.20110804_Installer.pkg)
 :::
 
 ## Unable to grant special permissions to apps (ie. Camera Access to Zoom)
