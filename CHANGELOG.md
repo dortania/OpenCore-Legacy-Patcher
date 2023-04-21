@@ -11,6 +11,8 @@
   - Restores USB 3.0 expansion card support on USB 1.1 machines such as MacPro5,1
 - Resolve OpenCL rendering on Nvidia Web Drivers
   - thanks [@jazzzny](https://github.com/Jazzzny)
+- Implement option to disable ColorSync downgrade on HD 3000 Macs
+  - Allows for Display Profiles support
 - Increment Binaries:
   - PatcherSupportPkg 0.9.6 - release
 
