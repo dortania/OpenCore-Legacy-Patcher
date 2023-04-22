@@ -25,7 +25,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}" --key "${{ env.ANALYTICS_KEY }}" --site "${{ env.ANALYTICS_SITE }}"
+
+      - name: Build Binary
+        run: /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}" --key "${{ env.ANALYTICS_KEY }}" --site "${{ env.ANALYTICS_SITE }}"
 
       - name: Import Certificate
         uses: apple-actions/import-codesign-certs@v1
@@ -33,11 +35,21 @@ jobs:
           p12-file-base64: ${{ secrets.MAC_CODESIGN_CERT }}
           p12-password: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
 
-      - run: 'codesign -s "${{ env.MAC_CODESIGN_IDENTITY }}" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
-      - run: cd dist; ditto -c -k --sequesterRsrc --keepParent OpenCore-Patcher.app ../OpenCore-Patcher-wxPython.app.zip
-      - run: xcrun altool --notarize-app --primary-bundle-id "com.dortania.opencore-legacy-patcher" --username "${{ env.MAC_NOTARIZATION_USERNAME }}" --password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --file OpenCore-Patcher-wxPython.app.zip
-      - run: packagesbuild ./payloads/InstallPackage/AutoPkg-Assets-Setup.pkgproj
-      - run: mv ./OpenCore-Patcher-wxPython.app.zip ./OpenCore-Patcher-GUI.app.zip
+      - name: Codesign Binary
+        run: 'codesign -s "${{ env.MAC_CODESIGN_IDENTITY }}" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
+
+      - name: Package Binary
+        run: cd dist; ditto -c -k --sequesterRsrc --keepParent OpenCore-Patcher.app ../OpenCore-Patcher-wxPython.app.zip
+
+      - name: Notarize Binary
+        run: xcrun altool --notarize-app --primary-bundle-id "com.dortania.opencore-legacy-patcher" --username "${{ env.MAC_NOTARIZATION_USERNAME }}" --password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --file OpenCore-Patcher-wxPython.app.zip
+
+      - name: Generate support package
+        run: packagesbuild ./payloads/InstallPackage/AutoPkg-Assets-Setup.pkgproj
+
+      - name: Prepare App for Upload
+        run: mv ./OpenCore-Patcher-wxPython.app.zip ./OpenCore-Patcher-GUI.app.zip
+
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v3
         with:
