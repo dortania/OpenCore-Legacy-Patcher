@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Validate
-    runs-on: x86_64_mojave
+    runs-on: x86_64_test_monterey
     if: github.repository_owner == 'dortania'
     env:
       branch: ${{ github.ref }}
