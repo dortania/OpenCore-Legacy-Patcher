@@ -42,7 +42,7 @@ jobs:
         run: cd dist; ditto -c -k --sequesterRsrc --keepParent OpenCore-Patcher.app ../OpenCore-Patcher-wxPython.app.zip
 
       - name: Notarize Binary
-        run: xcrun altool --notarize-app --primary-bundle-id "com.dortania.opencore-legacy-patcher" --username "${{ env.MAC_NOTARIZATION_USERNAME }}" --password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --file OpenCore-Patcher-wxPython.app.zip
+        run: xcrun notarytool submit --apple-id "${{ env.MAC_NOTARIZATION_USERNAME }}" --password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --file OpenCore-Patcher-wxPython.app.zip
 
       - name: Generate support package
         run: packagesbuild ./payloads/InstallPackage/AutoPkg-Assets-Setup.pkgproj
