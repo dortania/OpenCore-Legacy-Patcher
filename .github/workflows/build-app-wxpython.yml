@@ -20,6 +20,7 @@ jobs:
       MAC_CODESIGN_CERT: ${{ secrets.MAC_CODESIGN_CERT }}
       MAC_NOTARIZATION_USERNAME: ${{ secrets.MAC_NOTARIZATION_USERNAME }}
       MAC_NOTARIZATION_PASSWORD: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
+      MAC_NOTARIZATION_TEAM_ID: ${{ secrets.MAC_NOTARIZATION_TEAM_ID }}
       ANALYTICS_KEY: ${{ secrets.ANALYTICS_KEY }}
       ANALYTICS_SITE: ${{ secrets.ANALYTICS_SITE }}
 
@@ -43,7 +44,7 @@ jobs:
         run: cd dist; ditto -c -k --sequesterRsrc --keepParent OpenCore-Patcher.app ../OpenCore-Patcher-wxPython.app.zip
 
       - name: Notarize Binary
-        run: xcrun notarytool submit --apple-id "${{ env.MAC_NOTARIZATION_USERNAME }}" --password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --file OpenCore-Patcher-wxPython.app.zip
+        run: xcrun notarytool submit OpenCore-Patcher-wxPython.app.zip --apple-id "${{ env.MAC_NOTARIZATION_USERNAME }}" --password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --team-id "${{ env.MAC_NOTARIZATION_TEAM_ID }}" --wait
 
       - name: Generate support package
         run: packagesbuild ./payloads/InstallPackage/AutoPkg-Assets-Setup.pkgproj
