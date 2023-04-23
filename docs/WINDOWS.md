@@ -94,7 +94,7 @@ The `rsync` command will take some time, so get some coffee and sit back. Once f
 
 Now mount the Windows 11 ISO file. Then go into the monted image to "Sources" and find a file named "install.wim", which looks as follows:
 
-![](../images/windows 11.png)
+![](/images/windows%2011.png)
 
 
 Now copy that file onto your USB in the same directory. Now you can follow the rest of the guide.
