@@ -5,7 +5,7 @@ Many older Macs do not "officially" support UEFI Windows installations, leading 
 
 ## Minimum Requirements
 
-This guide will focus on the installation of Windows 10 and Widows 11 without using Boot Camp Assistant. Windows 11 requires some additional steps.
+This guide will focus on the installation of Windows 10 and Windows 11 without using Boot Camp Assistant. Windows 11 requires some additional steps.
 
 * Due to hardware and firmware limitations, UEFI Windows installations are only recommended on the following machines:
 
