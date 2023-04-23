@@ -5,7 +5,7 @@ Many older Macs do not "officially" support UEFI Windows installations, leading 
 
 ## Minimum Requirements
 
-This guide will focus on the installation of Windows 10 without using Boot Camp Assistant. Windows 11 should also work, but its quirks will not be covered.
+This guide will focus on the installation of Windows 10 and Widows 11 without using Boot Camp Assistant. Windows 11 requires some additional steps.
 
 * Due to hardware and firmware limitations, UEFI Windows installations are only recommended on the following machines:
 
@@ -66,11 +66,17 @@ The latest Windows installation images can be downloaded from Microsoft using th
 
 * [Download Windows 11 Disc Image (ISO File)](https://www.microsoft.com/en-ca/software-download/windows11)
 
+:::warning
+
+If you are installing Windows 11, then you need to download both ISO files and modify them as shown later in the guide.
+
+:::
+
 Once the file is downloaded, mount the .iso image:
 
 ![](../images/windows-iso.png)
 
-Then open terminal and use the `rsync` command with the disk image set as the source and your USB drive set as the target. (Replace "CCCOMA_X64" with the mounted image's partition name, and replace "InstallWin10" with your USB Drive's name).
+Then open terminal and use the `rsync` command with the disk image set as the source and your USB drive set as the target. (Replace "CCCOMA_X64" with the mounted image's partition name, and replace "InstallWin10" with your USB Drive's name). If you are installing Windows 11 you still need to run this step on the Windows 10 ISO file. 
 
 ```
 rsync -r -P /Volumes/CCCOMA_X64/ /Volumes/InstallWin10
@@ -84,10 +90,16 @@ The `rsync` command will take some time, so get some coffee and sit back. Once f
 
 * Ensure that these folders and files are in the root of the USB drive, otherwise the USB will not boot.
 
+## Windows 11 USB modification
 
+Now mount the Windows 11 ISO file. Then go into the monted image to "Sources" and find a file named "install.wim".
+
+![](../images/windows 11)
+
+Now copy that file onto the currently Windows 10 USB in the same directory.
 ## Installation Process
 
-Once you reboot your machine, you should see a new boot option in the OCLP Bootpicker labelled as "EFI Boot". It may or may not have the Boot Camp icon.
+Once you reboot your machine, you should see a new boot option in the OCLP Bootpicker labelled as "Windows". It may or may not have the Boot Camp icon.
 
 :::warning
 
