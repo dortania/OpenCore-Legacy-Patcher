@@ -68,7 +68,7 @@ The latest Windows installation images can be downloaded from Microsoft using th
 
 :::warning
 
-If you are installing Windows 11, then you need to download both ISO files and modify them as shown later in the guide.
+If you are installing Windows 11, then you need to download both ISO files.
 
 :::
 
