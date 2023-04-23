@@ -39,7 +39,7 @@ Open Disk Utility in macOS and format the USB Drive as ExFat with the Master Boo
 
 Next, select the drive you wish to install Windows in Disk Utility on and partition it as ExFat (If formatting the entire drive, ensure it's using the GUID Partition Table scheme):
 
-![](../images/windows-partition-1.png)
+![](/images/windows-partition-1.png)
 
 
 :::warning
