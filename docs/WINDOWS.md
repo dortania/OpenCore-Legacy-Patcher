@@ -97,7 +97,7 @@ Now mount the Windows 11 ISO file. Then go into the monted image to "Sources" an
 <img width="921" alt="windows 11" src="https://user-images.githubusercontent.com/116940396/233828676-d901f3b7-e465-4b74-b30a-16fc79b5953a.png">
 
 
-Now copy that file onto the currently Windows 10 USB in the same directory.
+Now copy that file onto your USB in the same directory.
 ## Installation Process
 
 Once you reboot your machine, you should see a new boot option in the OCLP Bootpicker labelled as "Windows". It may or may not have the Boot Camp icon.
