@@ -94,7 +94,7 @@ The `rsync` command will take some time, so get some coffee and sit back. Once f
 
 Now mount the Windows 11 ISO file. Then go into the monted image to "Sources" and find a file named "install.wim".
 
-![](../images/windows 11)
+![](../images/windows 11.png)
 
 Now copy that file onto the currently Windows 10 USB in the same directory.
 ## Installation Process
