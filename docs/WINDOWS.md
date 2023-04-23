@@ -92,7 +92,7 @@ The `rsync` command will take some time, so get some coffee and sit back. Once f
 
 ## Windows 11 USB modification
 
-Now mount the Windows 11 ISO file. Then go into the monted image to "Sources" and find a file named "install.wim".
+Now mount the Windows 11 ISO file. Then go into the monted image to "Sources" and find a file named "install.wim", which looks as follows:
 
 ![](../images/windows 11.png)
 
