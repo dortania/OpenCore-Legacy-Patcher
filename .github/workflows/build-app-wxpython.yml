@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build wxPython
-    runs-on: x86_64_test_monterey
+    runs-on: x86_64_monterey
     if: github.repository_owner == 'dortania'
 
     env:
