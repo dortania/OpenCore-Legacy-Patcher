@@ -13,6 +13,10 @@
   - thanks [@jazzzny](https://github.com/Jazzzny)
 - Increment Binaries:
   - PatcherSupportPkg 0.9.6 - release
+- Build Server Changes:
+  - Upgrade CI Host to macOS Monterey
+  - Upgrade Xcode to 14.2
+  - Switch from `altool` to `notarytool` for notarization
 
 ## 0.6.4
 - Backend changes:
