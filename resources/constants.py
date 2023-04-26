@@ -607,6 +607,11 @@ class Constants:
     def rsrrepair_userspace_path(self):
         return self.payload_path / Path("Tools/RSRRepair")
 
+    # Frameworks
+    @property
+    def osinstallersetup_path(self):
+        return self.payload_path / Path("Frameworks/OSInstallerSetup.framework")
+
     # Icons
     @property
     def app_icon_path(self):

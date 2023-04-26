@@ -1,0 +1,27 @@
+;;
+;; BridgeOSInstall framework - sandbox profile
+;; Copyright (c) 2017 Apple Inc. All Rights reserved.
+;;
+;; WARNING: The sandbox rules in this file currently constitute
+;; Apple System Private Interface and are subject to change at any time and
+;; without notice. The contents of this file are also auto-generated and not
+;; user editable; it may be overwritten at any time.
+;;
+
+(allow file-write*
+    (regex #"^/private/var/tmp/[^/]+BOSConfigureRequestOperation-ExtractedComponent($|/)"))
+
+(allow file-read*
+    (subpath "/AppleInternal/Library/Bundles/BridgeOSInstallInternal.bundle"))
+
+(allow mach-lookup
+    (global-name "com.apple.remoted")
+    (global-name "com.apple.bridgeOSUpdateProxy")
+    (global-name "com.apple.installerauthagent")
+    (global-name "com.apple.InstallerDiagnostics.installerdiagd")
+    (global-name "com.apple.bosreporter"))
+
+(allow user-preference-read
+    (preference-domain "com.apple.BridgeOSInstall"))
+
+(allow mach-per-user-lookup)

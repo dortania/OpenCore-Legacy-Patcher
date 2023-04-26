@@ -1,0 +1,31 @@
+;;
+;; OSPersonalization framework - sandbox profile
+;; Copyright (c) 2017 Apple Inc. All Rights reserved.
+;;
+;; WARNING: The sandbox rules in this file currently constitute
+;; Apple System Private Interface and are subject to change at any time and
+;; without notice. The contents of this file are also auto-generated and not
+;; user editable; it may be overwritten at any time.
+;;
+
+;; Temporary directories
+(allow file-write*
+	   (regex #"^/private/var/tmp/[^/]+OSPPackagePersonalizationController-FirmwareBundleComponent($|/)")
+       (regex #"^/private/var/tmp/[^/]+SignedManifestsSandbox($|/)")
+       (regex #"^/private/var/tmp/[^/]+PersonalizedBundle($|/)"))
+
+;; Preferences
+(allow user-preference-read
+       (preference-domain "com.apple.OSPersonalization"))
+
+;; For installerauthagent
+(allow mach-per-user-lookup)
+(allow mach-lookup
+       (global-name "com.apple.installerauthagent"))
+
+;; Allow installing signed manifests into a root with ditto
+(allow file-read*
+       (literal "/usr/bin/ditto"))
+(allow process-fork)
+(allow process-exec
+       (literal "/usr/bin/ditto"))

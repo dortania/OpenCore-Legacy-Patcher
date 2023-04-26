@@ -120,6 +120,8 @@ class InstallerCreation():
             return False
 
         createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
+        osinstallersetup_path = str(Path(installer_path) / Path("Contents/Frameworks/OSInstallerSetup.framework"))
+        osinstallersetuptemp_path = str(Path(installer_path) / Path("Contents/Frameworks/OSInstallerSetup.framework.bak"))
         plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))
         if Path(plist_path).exists():
             plist = plistlib.load(Path(plist_path).open("rb"))
@@ -136,11 +138,23 @@ class InstallerCreation():
 
         with script_location.open("w") as script:
             script.write(f'''#!/bin/bash
-erase_disk='diskutil eraseDisk HFS+ OCLP-Installer {disk}'
+os_version=$(sw_vers -productVersion)
+if [[ "$os_version" == 10.10.* ]]; then
+    # Move the framework paths to temporary locations
+    mv "{osinstallersetup_path}" "{osinstallersetuptemp_path}"
+    cp -a "{self.constants.osinstallersetup_path}" "{osinstallersetup_path}"
+fi
+
+erase_disk="diskutil eraseDisk HFS+ OCLP-Installer {disk}"
 if $erase_disk; then
     "{createinstallmedia_path}" --volume /Volumes/OCLP-Installer --nointeraction{additional_args}
 fi
-            ''')
+
+if [[ "$os_version" == 10.10.* ]]; then
+    rm -rf "{osinstallersetup_path}"
+    mv "{osinstallersetuptemp_path}" "{osinstallersetup_path}"
+fi
+''')
         if Path(script_location).exists():
             return True
         return False

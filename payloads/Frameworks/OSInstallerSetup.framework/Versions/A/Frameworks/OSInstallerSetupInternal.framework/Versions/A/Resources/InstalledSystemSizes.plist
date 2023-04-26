@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>10.10.5</key>
+	<integer>12207591424</integer>
+	<key>10.11.6</key>
+	<integer>8095531008</integer>
+	<key>10.12.3</key>
+	<integer>6469668864</integer>
+	<key>10.12.6</key>
+	<integer>6649602048</integer>
+	<key>10.13.4</key>
+	<integer>7525609472</integer>
+	<key>10.13.6</key>
+	<integer>7423451136</integer>
+	<key>10.14</key>
+	<integer>7760363520</integer>
+	<key>10.14.6</key>
+	<integer>7841488896</integer>
+	<key>10.15</key>
+	<integer>9842872320</integer>
+	<key>10.15.1</key>
+	<integer>10992439296</integer>
+	<key>10.16</key>
+	<integer>16639766528</integer>
+	<key>10.6.8</key>
+	<integer>4242427904</integer>
+	<key>10.8.5</key>
+	<integer>8030015488</integer>
+	<key>10.9.5</key>
+	<integer>9484034048</integer>
+	<key>12.0</key>
+	<integer>0</integer>
+</dict>
+</plist>
