@@ -1782,7 +1782,7 @@ class wx_python_gui:
         if model in ["MacPro3,1", "MacPro4,1", "MacPro5,1"]:
             has_legacy_usb = True
             issues_list = "- Lack of Keyboard/Mouse in macOS installer without a USB hub\n"
-        elif model in smbios_data.smbios_dictionary[model]:
+        elif model in smbios_data.smbios_dictionary:
             if "CPU Generation" in smbios_data.smbios_dictionary[model]:
                 if smbios_data.smbios_dictionary[model]["CPU Generation"] <= cpu_data.cpu_data.penryn:
                     has_legacy_usb = True
