@@ -537,28 +537,34 @@ class LocalInstallerCatalog:
             if "CFBundleDisplayName" not in application_info_plist:
                 continue
 
-            app_version = application_info_plist["DTPlatformVersion"]
-            clean_name = application_info_plist["CFBundleDisplayName"]
+            app_version:  str = application_info_plist["DTPlatformVersion"]
+            clean_name:   str = application_info_plist["CFBundleDisplayName"]
+            app_sdk:      str = application_info_plist["DTSDKBuild"] if "DTSDKBuild" in application_info_plist else "Unknown"
+            min_required: str = application_info_plist["LSMinimumSystemVersion"] if "LSMinimumSystemVersion" in application_info_plist else "Unknown"
 
-            if "DTSDKBuild" in application_info_plist:
-                app_sdk = application_info_plist["DTSDKBuild"]
-            else:
-                app_sdk = "Unknown"
+            kernel:       int = 0
+            try:
+                kernel = int(app_sdk[:2])
+            except ValueError:
+                pass
+
+            min_required = os_data.os_conversion.os_to_kernel(min_required) if min_required != "Unknown" else 0
+
+            if min_required == os_data.os_data.sierra and kernel == os_data.os_data.ventura:
+                # Ventura's installer requires El Capitan minimum
+                # Ref: https://github.com/dortania/OpenCore-Legacy-Patcher/discussions/1038
+                min_required = os_data.os_data.el_capitan
 
             # app_version can sometimes report GM instead of the actual version
             # This is a workaround to get the actual version
             if app_version.startswith("GM"):
-                try:
-                    app_version = int(app_sdk[:2])
-                    if app_version < 20:
-                        app_version = f"10.{app_version - 4}"
-                    else:
-                        app_version = f"{app_version - 9}.0"
-                except ValueError:
+                if kernel == 0:
                     app_version = "Unknown"
+                else:
+                    app_version = os_data.os_conversion.kernel_to_os(kernel)
 
             # Check if App Version is High Sierra or newer
-            if os_data.os_conversion.os_to_kernel(app_version) < os_data.os_data.high_sierra:
+            if kernel < os_data.os_data.high_sierra:
                 continue
 
             results = self._parse_sharedsupport_version(Path(APPLICATION_SEARCH_PATH) / Path(application)/ Path("Contents/SharedSupport/SharedSupport.dmg"))
@@ -573,6 +579,7 @@ class LocalInstallerCatalog:
                     "Version": app_version,
                     "Build": app_sdk,
                     "Path": application,
+                    "Minimum Host OS": min_required,
                 }
             })
 

@@ -28,22 +28,51 @@ class os_data(enum.IntEnum):
 
 class os_conversion:
 
-    def os_to_kernel(os):
-        # Convert OS version to major XNU version
+    def os_to_kernel(os: str) -> int:
+        """
+        Convert OS version to major XNU version
+
+        Parameters:
+            os (str): OS version
+
+        Returns:
+            int: Major XNU version
+        """
         if os.startswith("10."):
             return (int(os.split(".")[1]) + 4)
         else:
             return (int(os.split(".")[0]) + 9)
 
-    def kernel_to_os(kernel):
-        # Convert major XNU version to OS version
+
+    def kernel_to_os(kernel: int) -> str:
+        """
+        Convert major XNU version to OS version
+
+        Parameters:
+            kernel (int): Major XNU version
+
+        Returns:
+            str: OS version
+        """
         if kernel >= os_data.big_sur:
             return str((kernel - 9))
         else:
             return str((f"10.{kernel - 4}"))
 
-    def is_os_newer(source_major, source_minor, target_major, target_minor):
-        # Check if OS version 1 is newer than OS version 2
+
+    def is_os_newer(source_major: int, source_minor: int, target_major: int, target_minor: int) -> bool:
+        """
+        Check if OS version 1 is newer than OS version 2
+
+        Parameters:
+            source_major (int): Major XNU version of OS version 1
+            source_minor (int): Minor XNU version of OS version 1
+            target_major (int): Major XNU version of OS version 2
+            target_minor (int): Minor XNU version of OS version 2
+
+        Returns:
+            bool: True if OS version 1 is newer than OS version 2
+        """
         if source_major < target_major:
             return True
         elif source_major == target_major:
@@ -52,8 +81,17 @@ class os_conversion:
             else:
                 return False
 
-    def convert_kernel_to_marketing_name(kernel):
-        # Convert major XNU version to Marketing Name
+
+    def convert_kernel_to_marketing_name(kernel: int) -> str:
+        """
+        Convert major XNU version to Marketing name
+
+        Parameters:
+            kernel (int): Major XNU version
+
+        Returns:
+            str: Marketing name of OS
+        """
         try:
             # Find os_data enum name
             os_name = os_data(kernel).name
@@ -70,8 +108,17 @@ class os_conversion:
 
         return os_name
 
-    def convert_marketing_name_to_kernel(marketing_name):
-        # Convert Marketing Name to major XNU version
+
+    def convert_marketing_name_to_kernel(marketing_name: str) -> int:
+        """
+        Convert Marketing Name to major XNU version
+
+        Parameters:
+            marketing_name (str): Marketing Name of OS
+
+        Returns:
+            int: Major XNU version
+        """
         try:
             # Find os_data enum value
             os_kernel = os_data[marketing_name.lower().replace(" ", "_")]
@@ -81,16 +128,18 @@ class os_conversion:
         return int(os_kernel)
 
 
-    def find_largest_build(build_array):
-        # Find the newest version within an array of versions
-        # These builds will have both numbers and letters in the version
-        # ex:
-        # [
-        #    "22A5295i",
-        #    "22A5266r",
-        #    "22A5286j",
-        #    "22A5295h",
-        # ]
+    def find_largest_build(build_array: list) -> str:
+        """
+        Find the newest version within an array of versions
+        These builds will have both numbers and letters in the version
+        ex:
+        [
+            "22A5295i",
+            "22A5266r",
+            "22A5286j",
+            "22A5295h",
+        ]
+        """
 
         max_length =        0  # Length of the longest build
         build_array_split = [] # 'build_array', converted into individual array of elements

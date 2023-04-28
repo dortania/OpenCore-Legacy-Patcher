@@ -11,6 +11,10 @@
   - Restores USB 3.0 expansion card support on USB 1.1 machines such as MacPro5,1
 - Resolve OpenCL rendering on Nvidia Web Drivers
   - thanks [@jazzzny](https://github.com/Jazzzny)
+- Resolve UI unable to download macOS installers on unknown models
+  - ex. M2 Macs and Hackintoshes
+- Implement minimum OS check for installer creation
+  - Prevents vague errors when creating Ventura installers on Yosemite
 - Increment Binaries:
   - PatcherSupportPkg 0.9.6 - release
 - Build Server Changes:
