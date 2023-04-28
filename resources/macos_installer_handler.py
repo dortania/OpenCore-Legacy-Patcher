@@ -138,7 +138,6 @@ class InstallerCreation():
 
         with script_location.open("w") as script:
             if platform_version == "13" and osversion == os_data.os_data.yosemite:
-                logging.info(montereyosinstaller_path)
                 logging.info("- Will patch installer for 10.10")
                 script.write(f'''#!/bin/bash
 erase_disk='diskutil eraseDisk HFS+ OCLP-Installer {disk}'
