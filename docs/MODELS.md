@@ -20,10 +20,8 @@ Regarding OS support, see below:
 
 | Support Entry | Supported OSes | Description | Comment |
 | :--- | :--- | :--- | :--- |
-| HostOS | macOS 10.10 - macOS 13 | Refers to OSes where running OpenCore-Patcher.app are supported | Supports 10.7+ if [Python 3.9 or higher](https://www.python.org/downloads/) is manually installed, simply run the `OpenCore-Patcher-GUI.command` located in the repo |
+| HostOS | macOS 10.10 - macOS 13 | Refers to OSes where running OpenCore-Patcher.app are supported | Users running 10.9 Mavericks or older are advised to upgrade to [10.11 El Capitan](https://support.apple.com/en-ca/HT211683) before using OpenCore Legacy Patcher. |
 | TargetOS | macOS 11 - macOS 13 | Refers to OSes that can be patched to run with OpenCore | May support 10.4 and newer (in a potentially broken state). No support provided. |
-
-* macOS Ventura installer creation requires 10.11 or later
 
 ### MacBook
 
