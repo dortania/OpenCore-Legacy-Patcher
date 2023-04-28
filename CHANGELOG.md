@@ -13,6 +13,8 @@
   - thanks [@jazzzny](https://github.com/Jazzzny)
 - Resolve UI unable to download macOS installers on unknown models
   - ex. M2 Macs and Hackintoshes
+- Implement minimum OS check for installer creation
+  - Prevents vague errors when creating Ventura installers on Yosemite
 - Increment Binaries:
   - PatcherSupportPkg 0.9.6 - release
 - Build Server Changes:
