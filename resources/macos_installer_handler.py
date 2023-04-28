@@ -122,8 +122,8 @@ class InstallerCreation():
         createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
         osinstallersetup_path = str(Path(installer_path) / Path("Contents/Frameworks/OSInstallerSetup.framework"))
         osinstallersetuptemp_path = str(Path(installer_path) / Path("Contents/Frameworks/OSInstallerSetup.framework.bak"))
-        osinstallersetup_usbpath = str(Path(installer_path) / Path("/Volumes/Install macOS Ventura/Install macOS Ventura.app/Contents/Frameworks/OSInstallerSetup.framework"))
-        osinstallersetuptemp_usbpath = str(Path(installer_path) / Path("/Volumes/Install macOS Ventura/Install macOS Ventura.app/Contents/Frameworks/OSInstallerSetup.framework.bak"))
+        osinstallersetup_usbpath = str(Path("/Volumes/Install macOS Ventura/Install macOS Ventura.app/Contents/Frameworks/OSInstallerSetup.framework"))
+        osinstallersetuptemp_usbpath = str(Path("/Volumes/Install macOS Ventura/Install macOS Ventura.app/Contents/Frameworks/OSInstallerSetup.framework.bak"))
         plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))
         if Path(plist_path).exists():
             plist = plistlib.load(Path(plist_path).open("rb"))
