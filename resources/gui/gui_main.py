@@ -2328,7 +2328,7 @@ class wx_python_gui:
         self.return_to_main_menu.Enable()
 
     def prepare_script(self, installer_path, disk):
-        self.prepare_result = macos_installer_handler.InstallerCreation().generate_installer_creation_script(self.constants.payload_path, installer_path, disk)
+        self.prepare_result = macos_installer_handler.InstallerCreation().generate_installer_creation_script(self.constants.payload_path, installer_path, disk, self.constants.detected_os, self.constants.osinstallersetup_path)
 
     def start_script(self):
         utilities.disable_sleep_while_running()

@@ -8,7 +8,7 @@ import enum
 import logging
 
 from data import os_data
-from resources import network_handler, utilities, constants
+from resources import network_handler, utilities
 
 
 APPLICATION_SEARCH_PATH:  str = "/Applications"
@@ -58,7 +58,7 @@ class InstallerCreation():
         return True
 
 
-    def generate_installer_creation_script(self, tmp_location: str, installer_path: str, disk: str) -> bool:
+    def generate_installer_creation_script(self, tmp_location: str, installer_path: str, disk: str, osversion: int, montereyosinstaller_path: str) -> bool:
         """
         Creates installer.sh to be piped to OCLP-Helper and run as admin
 
@@ -137,12 +137,14 @@ class InstallerCreation():
         script_location.touch()
 
         with script_location.open("w") as script:
-            if platform_version[0] >= "13" and constants.Constants.detected_os <= 14:
+            if platform_version == "13" and osversion == os_data.os_data.yosemite:
+                logging.info(montereyosinstaller_path)
+                logging.info("- Will patch installer for 10.10")
                 script.write(f'''#!/bin/bash
 erase_disk='diskutil eraseDisk HFS+ OCLP-Installer {disk}'
 if $erase_disk; then
     mv "{osinstallersetup_path}" "{osinstallersetuptemp_path}"
-    cp -av "{constants.Constants.osinstallersetup_path}" "{osinstallersetup_path}"
+    cp -av "{montereyosinstaller_path}" "{osinstallersetup_path}"
     "{createinstallmedia_path}" --volume /Volumes/OCLP-Installer --nointeraction{additional_args}
     rm -rf "{osinstallersetup_path}"
     mv "{osinstallersetuptemp_path}" "{osinstallersetup_path}"

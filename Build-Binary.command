@@ -227,6 +227,7 @@ class CreateBinary:
             "Kexts",
             "OpenCore",
             "Tools",
+            "Frameworks",
         ]
 
         whitelist_files = [
