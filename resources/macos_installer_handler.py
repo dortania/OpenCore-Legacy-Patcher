@@ -122,6 +122,8 @@ class InstallerCreation():
         createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
         osinstallersetup_path = str(Path(installer_path) / Path("Contents/Frameworks/OSInstallerSetup.framework"))
         osinstallersetuptemp_path = str(Path(installer_path) / Path("Contents/Frameworks/OSInstallerSetup.framework.bak"))
+        osinstallersetup_usbpath = str(Path(installer_path) / Path("/Volumes/Install macOS Ventura/Install macOS Ventura.app/Contents/Frameworks/OSInstallerSetup.framework"))
+        osinstallersetuptemp_usbpath = str(Path(installer_path) / Path("/Volumes/Install macOS Ventura/Install macOS Ventura.app/Contents/Frameworks/OSInstallerSetup.framework.bak"))
         plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))
         if Path(plist_path).exists():
             plist = plistlib.load(Path(plist_path).open("rb"))
@@ -146,7 +148,9 @@ if $erase_disk; then
     cp -av "{montereyosinstaller_path}" "{osinstallersetup_path}"
     "{createinstallmedia_path}" --volume /Volumes/OCLP-Installer --nointeraction{additional_args}
     rm -rf "{osinstallersetup_path}"
+    rm -rf "{osinstallersetup_usbpath}"
     mv "{osinstallersetuptemp_path}" "{osinstallersetup_path}"
+    mv "{osinstallersetuptemp_usbpath}" "{osinstallersetup_usbpath}"
 fi
             ''')
             else:
