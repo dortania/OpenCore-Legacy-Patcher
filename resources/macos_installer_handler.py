@@ -551,9 +551,9 @@ class LocalInstallerCatalog:
             min_required = os_data.os_conversion.os_to_kernel(min_required) if min_required != "Unknown" else 0
 
             if min_required == os_data.os_data.sierra and kernel == os_data.os_data.ventura:
-                # Ventura's installer requires El Capitan minimum
+                # Ventura's installer requires El Capitan minimum, however it can be worked around for Yosemite.
                 # Ref: https://github.com/dortania/OpenCore-Legacy-Patcher/discussions/1038
-                min_required = os_data.os_data.el_capitan
+                min_required = os_data.os_data.yosemite
 
             # app_version can sometimes report GM instead of the actual version
             # This is a workaround to get the actual version
