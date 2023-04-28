@@ -529,13 +529,12 @@ class LocalInstallerCatalog:
             except ValueError:
                 pass
 
-            min_required = os_data.os_conversion.os_to_kernel(min_required) if min_required != "Unknown" else "Unknown"
+            min_required = os_data.os_conversion.os_to_kernel(min_required) if min_required != "Unknown" else 0
 
-            if isinstance(min_required, int):
-                if min_required == os_data.os_data.sierra and kernel == os_data.os_data.ventura:
-                    # Ventura's installer requires El Capitan minimum
-                    # Ref: https://github.com/dortania/OpenCore-Legacy-Patcher/discussions/1038
-                    min_required = os_data.os_data.el_capitan
+            if min_required == os_data.os_data.sierra and kernel == os_data.os_data.ventura:
+                # Ventura's installer requires El Capitan minimum
+                # Ref: https://github.com/dortania/OpenCore-Legacy-Patcher/discussions/1038
+                min_required = os_data.os_data.el_capitan
 
             # app_version can sometimes report GM instead of the actual version
             # This is a workaround to get the actual version
