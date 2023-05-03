@@ -13,10 +13,24 @@ from resources import network_handler, utilities
 
 APPLICATION_SEARCH_PATH:  str = "/Applications"
 SFR_SOFTWARE_UPDATE_PATH: str = "SFR/com_apple_MobileAsset_SFRSoftwareUpdate/com_apple_MobileAsset_SFRSoftwareUpdate.xml"
-
-CATALOG_URL_BASE:      str = "https://swscan.apple.com/content/catalogs/others/index"
-CATALOG_URL_EXTENSION: str = "13-12-10.16-10.15-10.14-10.13-10.12-10.11-10.10-10.9-mountainlion-lion-snowleopard-leopard.merged-1.sucatalog"
-CATALOG_URL_VERSION:   str = "13"
+CATALOG_URL_BASE:         str = "https://swscan.apple.com/content/catalogs/others/index"
+CATALOG_URL_EXTENSION:    str = ".merged-1.sucatalog"
+CATALOG_URL_VARIANTS:     list = [
+    "13",
+    "12",
+    "10.16",
+    "10.15",
+    "10.14",
+    "10.13",
+    "10.12",
+    "10.11",
+    "10.10",
+    "10.9",
+    "mountainlion",
+    "lion",
+    "snowleopard",
+    "leopard",
+]
 
 tmp_dir = tempfile.TemporaryDirectory()
 
@@ -222,15 +236,15 @@ class RemoteInstallerCatalog:
     Parses Apple's Software Update catalog and finds all macOS installers.
     """
 
-    def __init__(self, seed_override: SeedType = SeedType.PublicRelease) -> None:
+    def __init__(self, seed_override: SeedType = SeedType.PublicRelease, os_override: int = os_data.os_data.big_sur) -> None:
 
-        self.catalog_url: str = self._construct_catalog_url(seed_override)
+        self.catalog_url: str = self._construct_catalog_url(seed_override, os_override)
 
         self.available_apps:        dict = self._parse_catalog()
         self.available_apps_latest: dict = self._list_newest_installers_only()
 
 
-    def _construct_catalog_url(self, seed_type: SeedType) -> str:
+    def _construct_catalog_url(self, seed_type: SeedType, os_kernel: int) -> str:
         """
         Constructs the catalog URL based on the seed type
 
@@ -241,17 +255,30 @@ class RemoteInstallerCatalog:
             str: The catalog URL
         """
 
+        url: str = CATALOG_URL_BASE
 
-        url: str = ""
+        os_version: str = os_data.os_conversion.kernel_to_os(os_kernel)
+        os_version = "10.16" if os_version == "11" else os_version
+        if os_version not in CATALOG_URL_VARIANTS:
+            logging.error(f"OS version {os_version} is not supported, defaulting to latest")
+            os_version = CATALOG_URL_VARIANTS[0]
 
+        url += f"-{os_version}"
         if seed_type == SeedType.DeveloperSeed:
-            url = f"{CATALOG_URL_BASE}-{CATALOG_URL_VERSION}seed-{CATALOG_URL_EXTENSION}"
+            url += f"seed"
         elif seed_type == SeedType.PublicSeed:
-            url = f"{CATALOG_URL_BASE}-{CATALOG_URL_VERSION}beta-{CATALOG_URL_EXTENSION}"
+            url += f"beta"
         elif seed_type == SeedType.CustomerSeed:
-            url = f"{CATALOG_URL_BASE}-{CATALOG_URL_VERSION}customerseed-{CATALOG_URL_EXTENSION}"
-        else:
-            url = f"{CATALOG_URL_BASE}-{CATALOG_URL_EXTENSION}"
+            url += f"customerseed"
+
+        did_find_variant: bool = False
+        for variant in CATALOG_URL_VARIANTS:
+            if variant in url:
+                did_find_variant = True
+            if did_find_variant:
+                url += f"-{variant}"
+
+        url += f"{CATALOG_URL_EXTENSION}"
 
         return url
 
@@ -356,13 +383,10 @@ class RemoteInstallerCatalog:
                         continue
                     if "IntegrityDataURL" not in ia_package:
                         continue
-                    if "Size" not in ia_package:
-                        size = 0
 
                     download_link = ia_package["URL"]
                     integrity     = ia_package["IntegrityDataURL"]
-                    size          = ia_package["Size"]
-
+                    size          = ia_package["Size"] if ia_package["Size"] else 0
 
                 if any([version, build, download_link, size, integrity]) is None:
                     continue

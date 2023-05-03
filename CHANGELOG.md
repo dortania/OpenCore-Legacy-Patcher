@@ -15,6 +15,9 @@
   - ex. M2 Macs and Hackintoshes
 - Implement minimum OS check for installer creation
   - Prevents vague errors when creating Ventura installers on Yosemite
+- Backend changes:
+  - macos_installer_handler.py:
+    - Expand OS support for IA parsing in SUCatalog
 - Increment Binaries:
   - PatcherSupportPkg 0.9.6 - release
 - Build Server Changes:
