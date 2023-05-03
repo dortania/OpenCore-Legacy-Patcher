@@ -18,6 +18,8 @@
 - Backend changes:
   - macos_installer_handler.py:
     - Expand OS support for IA parsing in SUCatalog
+  - gui_main.py:
+    - Fix spacing regression introduced with `.AppleSystemUIFont` implementation
 - Increment Binaries:
   - PatcherSupportPkg 0.9.6 - release
 - Build Server Changes:

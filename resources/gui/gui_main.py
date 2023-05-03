@@ -2112,6 +2112,7 @@ class wx_python_gui:
     def format_usb_menu(self, installer_name, installer_path):
         self.frame.DestroyChildren()
         logging.info(installer_path)
+        self.frame.SetSize(370, -1)
 
         # Header
         self.header = wx.StaticText(self.frame, label="Format USB")
@@ -2184,7 +2185,7 @@ class wx_python_gui:
 
     def format_usb_progress(self, disk, installer_name, installer_path):
         self.frame.DestroyChildren()
-        self.frame.SetSize(500, -1)
+        self.frame.SetSize(520, -1)
         # Header
         self.header = wx.StaticText(self.frame, label=f"Creating Installer: {installer_name}")
         self.header.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
