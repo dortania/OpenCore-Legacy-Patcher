@@ -236,7 +236,7 @@ class RemoteInstallerCatalog:
     Parses Apple's Software Update catalog and finds all macOS installers.
     """
 
-    def __init__(self, seed_override: SeedType = SeedType.PublicRelease, os_override: int = os_data.os_data.big_sur) -> None:
+    def __init__(self, seed_override: SeedType = SeedType.PublicRelease, os_override: int = os_data.os_data.ventura) -> None:
 
         self.catalog_url: str = self._construct_catalog_url(seed_override, os_override)
 
