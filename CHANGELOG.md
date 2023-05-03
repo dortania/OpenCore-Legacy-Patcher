@@ -15,6 +15,8 @@
   - ex. M2 Macs and Hackintoshes
 - Implement minimum OS check for installer creation
   - Prevents vague errors when creating Ventura installers on Yosemite
+- Resolve WindowServer crashing with Rapid Security Response (RSR) installation
+  - Primarily applicable for Haswell iGPUs on 13.3.1 (a)
 - Backend changes:
   - macos_installer_handler.py:
     - Expand OS support for IA parsing in SUCatalog

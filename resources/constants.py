@@ -238,6 +238,10 @@ class Constants:
     def auto_patch_launch_agent_path(self):
         return self.payload_path / Path("com.dortania.opencore-legacy-patcher.auto-patch.plist")
 
+    @property
+    def rsr_monitor_launch_daemon_path(self):
+        return self.payload_path / Path("com.dortania.opencore-legacy-patcher.rsr-monitor.plist")
+
     # ACPI
     @property
     def pci_ssdt_path(self):
