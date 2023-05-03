@@ -451,6 +451,15 @@ def monitor_disk_output(disk):
     return output
 
 
+def get_preboot_uuid() -> str:
+    """
+    Get the UUID of the Preboot volume
+    """
+    args = ["ioreg", "-a", "-n", "chosen", "-p", "IODeviceTree", "-r"]
+    output = plistlib.loads(subprocess.run(args, stdout=subprocess.PIPE).stdout)
+    return output[0]["apfs-preboot-uuid"].strip(b"\0").decode()
+
+
 def block_os_updaters():
     # Disables any processes that would be likely to mess with
     # the root volume while we're working with it.
