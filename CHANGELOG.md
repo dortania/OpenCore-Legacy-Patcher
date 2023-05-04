@@ -17,13 +17,15 @@
   - Prevents vague errors when creating Ventura installers on Yosemite
 - Resolve WindowServer crashing with Rapid Security Response (RSR) installation
   - Primarily applicable for Haswell iGPUs on 13.3.1 (a)
+- Update legacy Wireless binaries
+  - Resolve wifi crashing on 13.4 with BCM94322, BCM943224 and Atheros chipsets
 - Backend changes:
   - macos_installer_handler.py:
     - Expand OS support for IA parsing in SUCatalog
   - gui_main.py:
     - Fix spacing regression introduced with `.AppleSystemUIFont` implementation
 - Increment Binaries:
-  - PatcherSupportPkg 0.9.6 - release
+  - PatcherSupportPkg 0.9.7 - release
 - Build Server Changes:
   - Upgrade CI Host to macOS Monterey
   - Upgrade Xcode to 14.2
