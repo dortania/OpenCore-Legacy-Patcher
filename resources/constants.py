@@ -210,6 +210,7 @@ class Constants:
         self.set_content_caching:    bool = False  # Set Content Caching
         self.disable_xcpm:           bool = False  # Disable XCPM (X86PlatformPlugin.kext)
         self.set_vmm_cpuid:          bool = False  # Set VMM bit inside CPUID
+        self.disable_cat_colorsync:  bool = False  # Disable the ColorSync patch to regain Display Profiles
         self.set_alc_usage:          bool = True  #  Set AppleALC usage
         self.allow_3rd_party_drives: bool = True  #  Allow ThridPartyDrives quirk
         self.allow_nvme_fixing:      bool = True  #  Allow NVMe Kernel Space Patches
