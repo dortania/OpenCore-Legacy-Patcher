@@ -10,11 +10,6 @@ jobs:
   build:
     name: Validate
     runs-on: x86_64_monterey
-    if: github.repository_owner == 'dortania'
-    env:
-      branch: ${{ github.ref }}
-      commiturl: ${{ github.event.head_commit.url }}${{ github.event.release.html_url }}
-      commitdate: ${{ github.event.head_commit.timestamp }}${{ github.event.release.published_at }}
     steps:
       - uses: actions/checkout@v3
       - name: Validate
