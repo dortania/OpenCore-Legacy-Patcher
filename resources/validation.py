@@ -154,8 +154,6 @@ class PatcherValidation:
             logging.info(f"Output: {output.stdout.decode()}")
             logging.info(f"Return Code: {output.returncode}")
 
-            print(self.constants.payload_local_binaries_root_path_dmg)
-
             raise Exception("Failed to mount Universal-Binaries.dmg")
 
         logging.info("- Mounted Universal-Binaries.dmg")

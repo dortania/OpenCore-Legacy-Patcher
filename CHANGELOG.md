@@ -5,8 +5,12 @@
   - Allows for Display Profiles support on some units
     - Note: black box rendering issues will likely appear
   - Thanks [@jazzzny](https://github.com/Jazzzny)
-- Rename payloads.dmg volume name to "OpenCore Patcher Resources"
+- Rename payloads.dmg volume name to "OpenCore Patcher Resources (Base)"
   - Allows for better identification when mounted (ex. Disk Utility while app is running)
+- Implement DMG-based PatcherSupportPkg system
+  - Reduces both app size and root patching time
+- Increment Binaries:
+  - PatcherSupportPkg 1.0.0 - release
 
 ## 0.6.5
 - Update 3802 Patchset Binaries:
