@@ -31,7 +31,7 @@ jobs:
         run: /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}" --key "${{ env.ANALYTICS_KEY }}" --site "${{ env.ANALYTICS_SITE }}"
 
       - name: Import Certificate
-        if: (!security find-certificate -c ${{ env.MAC_CODESIGN_IDENTITY }})
+        if: (!security find-certificate -c "${{ env.MAC_CODESIGN_IDENTITY }}")
         uses: apple-actions/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.MAC_CODESIGN_CERT }}
