@@ -13,7 +13,7 @@ class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "0.6.6"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "0.9.7"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "1.0.0"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
 
         # URLs
@@ -231,6 +231,12 @@ class Constants:
     @property
     def payload_path_dmg(self):
         return self.original_path / Path("payloads.dmg")
+
+    @property
+    def payload_local_binaries_root_path_dmg(self):
+        return self.original_path / Path("Universal-Binaries.dmg")
+
+
     # OpenCore
     @property
     def opencore_zip_source(self):
@@ -655,10 +661,6 @@ class Constants:
     @property
     def payload_local_binaries_root_path(self):
         return self.payload_path / Path("Universal-Binaries")
-
-    @property
-    def payload_local_binaries_root_path_zip(self):
-        return self.payload_path / Path("Universal-Binaries.zip")
 
     @property
     def kdk_download_path(self):

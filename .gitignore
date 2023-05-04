@@ -33,3 +33,4 @@ __pycache__/
 /payloads/OpenCore-Legacy-Patcher-*.plist
 /payloads/KDK.dmg
 *.log
+/Universal-Binaries.dmg
