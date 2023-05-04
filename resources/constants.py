@@ -106,8 +106,9 @@ class Constants:
         self.kdkless_version: str = "1.0.0"
 
         # Get resource path
-        self.current_path: Path = Path(__file__).parent.parent.resolve()
-        self.payload_path: Path = self.current_path / Path("payloads")
+        self.current_path:  Path = Path(__file__).parent.parent.resolve()
+        self.original_path: Path = Path(__file__).parent.parent.resolve()
+        self.payload_path:  Path = self.current_path / Path("payloads")
 
         # Patcher Settings
         ## Internal settings
@@ -225,6 +226,11 @@ class Constants:
         ]
 
     # Payload Location
+
+    # Support Disk Images
+    @property
+    def payload_path_dmg(self):
+        return self.original_path / Path("payloads.dmg")
     # OpenCore
     @property
     def opencore_zip_source(self):

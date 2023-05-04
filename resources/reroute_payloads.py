@@ -36,7 +36,7 @@ class RoutePayloadDiskImage:
             self._unmount_active_dmgs(unmount_all_active=False)
             output = subprocess.run(
                 [
-                    "hdiutil", "attach", "-noverify", f"{self.constants.payload_path}.dmg",
+                    "hdiutil", "attach", "-noverify", f"{self.constants.payload_path_dmg}",
                     "-mountpoint", Path(self.temp_dir.name / Path("payloads")),
                     "-nobrowse",
                     "-shadow", Path(self.temp_dir.name / Path("payloads_overlay")),
@@ -55,7 +55,7 @@ class RoutePayloadDiskImage:
                 logging.info(f"Return Code: {output.returncode}")
 
 
-    def _unmount_active_dmgs(self, unmount_all_active=True) -> None:
+    def _unmount_active_dmgs(self, unmount_all_active: bool = True) -> None:
         """
         Unmounts disk images associated with OCLP
 
@@ -70,20 +70,22 @@ class RoutePayloadDiskImage:
         dmg_info = subprocess.run(["hdiutil", "info", "-plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         dmg_info = plistlib.loads(dmg_info.stdout)
 
-        for image in dmg_info["images"]:
-            if image["image-path"].endswith("payloads.dmg"):
-                if unmount_all_active is False:
-                    # Check that only our personal payloads.dmg is unmounted
-                    if "shadow-path" in image:
-                        if self.temp_dir.name in image["shadow-path"]:
-                            logging.info("- Unmounting personal payloads.dmg")
-                            subprocess.run(
-                                ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-                            )
-                else:
-                    logging.info(f"- Unmounting payloads.dmg at: {image['system-entities'][0]['dev-entry']}")
-                    subprocess.run(
-                        ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
-                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-                    )
+
+        for variant in ["Universal-Binaries.dmg", "payloads.dmg"]:
+            for image in dmg_info["images"]:
+                if image["image-path"].endswith(variant):
+                    if unmount_all_active is False:
+                        # Check that only our personal payloads.dmg is unmounted
+                        if "shadow-path" in image:
+                            if self.temp_dir.name in image["shadow-path"]:
+                                logging.info(f"- Unmounting personal {variant}")
+                                subprocess.run(
+                                    ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
+                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+                                )
+                    else:
+                        logging.info(f"- Unmounting {variant} at: {image['system-entities'][0]['dev-entry']}")
+                        subprocess.run(
+                            ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+                        )
