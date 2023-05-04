@@ -236,7 +236,6 @@ class CreateBinary:
             "launcher.sh",
             "OC-Patcher-TUI.icns",
             "OC-Patcher.icns",
-            "Universal-Binaries.zip",
         ]
 
 
@@ -261,16 +260,16 @@ class CreateBinary:
 
         patcher_support_pkg_version = constants.Constants().patcher_support_pkg_version
         required_resources = [
-            "Universal-Binaries.zip"
+            "Universal-Binaries.dmg"
         ]
 
         print("- Downloading required resources...")
         for resource in required_resources:
-            if Path(f"./payloads/{resource}").exists():
+            if Path(f"./{resource}").exists():
                 if self.args.reset_binaries:
                     print(f"  - Removing old {resource}")
                     rm_output = subprocess.run(
-                        ["rm", "-rf", f"./payloads/{resource}"],
+                        ["rm", "-rf", f"./{resource}"],
                         stdout=subprocess.PIPE, stderr=subprocess.PIPE
                     )
                     if rm_output.returncode != 0:
@@ -298,13 +297,6 @@ class CreateBinary:
                 print(f"  - {resource} not found")
                 raise Exception(f"{resource} not found")
 
-            print("  - Moving into payloads")
-            mv_output = subprocess.run(["mv", resource, "./payloads/"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            if mv_output.returncode != 0:
-                print("  - Move failed")
-                print(mv_output.stderr.decode('utf-8'))
-                raise Exception("Move failed")
-
 
     def _generate_payloads_dmg(self):
         """
@@ -331,9 +323,9 @@ class CreateBinary:
         print("  - Generating DMG...")
         dmg_output = subprocess.run([
             'hdiutil', 'create', './payloads.dmg',
-            '-megabytes', '32000',
+            '-megabytes', '32000',  # Overlays can only be as large as the disk image allows
             '-format', 'UDZO', '-ov',
-            '-volname', 'OpenCore Patcher Resources',
+            '-volname', 'OpenCore Patcher Resources (Base)',
             '-fs', 'HFS+',
             '-srcfolder', './payloads',
             '-passphrase', 'password', '-encryption'

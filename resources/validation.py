@@ -133,35 +133,40 @@ class PatcherValidation:
         Validates sys_patch modules
         """
 
-        if Path(self.constants.payload_local_binaries_root_path_zip).exists():
-            logging.info("Validating Root Patch File integrity")
-            if not Path(self.constants.payload_local_binaries_root_path).exists():
-                subprocess.run(
-                    [
-                        "ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc",
-                        self.constants.payload_local_binaries_root_path_zip,
-                        self.constants.payload_path
-                    ],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.STDOUT
-                )
-            for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura]:
-                for i in range(0, 10):
-                    self._validate_root_patch_files(supported_os, i)
-            logging.info("Validating SNB Board ID patcher")
-            self.constants.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
-            sys_patch_helpers.SysPatchHelpers(self.constants).snb_board_id_patch(self.constants.payload_local_binaries_root_path)
-
-            # Clean up
-            subprocess.run(
-                [
-                    "rm", "-rf", self.constants.payload_local_binaries_root_path
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT
-            )
-        else:
+        if not Path(self.constants.payload_local_binaries_root_path_dmg).exists():
             logging.info("- Skipping Root Patch File integrity validation")
+            return
+
+        logging.info("Validating Root Patch File integrity")
+        output = subprocess.run(
+            [
+                "hdiutil", "attach", "-noverify", f"{self.constants.payload_local_binaries_root_path_dmg}",
+                "-mountpoint", Path(self.constants.payload_path / Path("Universal-Binaries")),
+                "-nobrowse",
+                "-shadow", Path(self.constants.payload_path / Path("Universal-Binaries_overlay")),
+                "-passphrase", "password"
+            ],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        )
+
+        if output.returncode != 0:
+            logging.info("- Failed to mount Universal-Binaries.dmg")
+            logging.info(f"Output: {output.stdout.decode()}")
+            logging.info(f"Return Code: {output.returncode}")
+
+            print(self.constants.payload_local_binaries_root_path_dmg)
+
+            raise Exception("Failed to mount Universal-Binaries.dmg")
+
+        logging.info("- Mounted Universal-Binaries.dmg")
+
+
+        for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura]:
+            for i in range(0, 10):
+                self._validate_root_patch_files(supported_os, i)
+        logging.info("Validating SNB Board ID patcher")
+        self.constants.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
+        sys_patch_helpers.SysPatchHelpers(self.constants).snb_board_id_patch(self.constants.payload_local_binaries_root_path)
 
 
     def _validate_configs(self) -> None:
