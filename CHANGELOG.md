@@ -1,5 +1,11 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.6.6
+- Implement option to disable ColorSync downgrade on HD 3000 Macs
+  - Allows for Display Profiles support on some units
+    - Note: black box rendering issues will likely appear
+  - Thanks [@jazzzny](https://github.com/Jazzzny)
+
 ## 0.6.5
 - Update 3802 Patchset Binaries:
   - Resolves additional 3rd party app crashes on Metal with macOS 13.3+
@@ -11,10 +17,25 @@
   - Restores USB 3.0 expansion card support on USB 1.1 machines such as MacPro5,1
 - Resolve OpenCL rendering on Nvidia Web Drivers
   - thanks [@jazzzny](https://github.com/Jazzzny)
-- Implement option to disable ColorSync downgrade on HD 3000 Macs
-  - Allows for Display Profiles support
+- Resolve UI unable to download macOS installers on unknown models
+  - ex. M2 Macs and Hackintoshes
+- Implement minimum OS check for installer creation
+  - Prevents vague errors when creating Ventura installers on Yosemite
+- Resolve WindowServer crashing with Rapid Security Response (RSR) installation
+  - Primarily applicable for Haswell iGPUs on 13.3.1 (a)
+- Update legacy Wireless binaries
+  - Resolve wifi crashing on 13.4 with BCM94322, BCM943224 and Atheros chipsets
+- Backend changes:
+  - macos_installer_handler.py:
+    - Expand OS support for IA parsing in SUCatalog
+  - gui_main.py:
+    - Fix spacing regression introduced with `.AppleSystemUIFont` implementation
 - Increment Binaries:
-  - PatcherSupportPkg 0.9.6 - release
+  - PatcherSupportPkg 0.9.7 - release
+- Build Server Changes:
+  - Upgrade CI Host to macOS Monterey
+  - Upgrade Xcode to 14.2
+  - Switch from `altool` to `notarytool` for notarization
 
 ## 0.6.4
 - Backend changes:

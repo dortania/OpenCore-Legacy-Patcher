@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AssociatedBundleIdentifiers</key>
+	<string>com.dortania.opencore-legacy-patcher</string>
+	<key>Label</key>
+	<string>com.dortania.opencore-legacy-patcher.rsr-monitor</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>rm</string>
+		<string>-rf</string>
+		<string>/Library/Extensions/example.kext</string> <!-- Update kext to correct name -->
+	</array>
+	<key>WatchPaths</key>
+    <array>
+      <string>/System/Volumes/Preboot/UUID/cryptex1/OS.dmg</string> <!-- Update UUID to host's booted Preboot folder -->
+    </array>
+</dict>
+</plist>

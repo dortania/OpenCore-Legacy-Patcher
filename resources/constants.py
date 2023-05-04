@@ -12,8 +12,8 @@ from data import os_data
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "0.6.5"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "0.9.6"  # PatcherSupportPkg
+        self.patcher_version:                 str = "0.6.6"  # OpenCore-Legacy-Patcher
+        self.patcher_support_pkg_version:     str = "0.9.7"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
 
         # URLs
@@ -238,6 +238,10 @@ class Constants:
     @property
     def auto_patch_launch_agent_path(self):
         return self.payload_path / Path("com.dortania.opencore-legacy-patcher.auto-patch.plist")
+
+    @property
+    def rsr_monitor_launch_daemon_path(self):
+        return self.payload_path / Path("com.dortania.opencore-legacy-patcher.rsr-monitor.plist")
 
     # ACPI
     @property

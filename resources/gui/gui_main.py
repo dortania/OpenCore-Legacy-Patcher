@@ -1782,7 +1782,7 @@ class wx_python_gui:
         if model in ["MacPro3,1", "MacPro4,1", "MacPro5,1"]:
             has_legacy_usb = True
             issues_list = "- Lack of Keyboard/Mouse in macOS installer without a USB hub\n"
-        elif model in smbios_data.smbios_dictionary[model]:
+        elif model in smbios_data.smbios_dictionary:
             if "CPU Generation" in smbios_data.smbios_dictionary[model]:
                 if smbios_data.smbios_dictionary[model]["CPU Generation"] <= cpu_data.cpu_data.penryn:
                     has_legacy_usb = True
@@ -2060,7 +2060,17 @@ class wx_python_gui:
             logging.info("Installer(s) found:")
             for app in available_installers:
                 logging.info(f"- {available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})")
-                self.install_selection = wx.Button(self.frame, label=f"{available_installers[app]['Short Name']}: {available_installers[app]['Version']} ({available_installers[app]['Build']})", size=(320, 30))
+
+                app_str = f"{available_installers[app]['Short Name']}"
+                unsupported: bool = available_installers[app]['Minimum Host OS'] > self.constants.detected_os
+
+                if unsupported:
+                    min_str = os_data.os_conversion.convert_kernel_to_marketing_name(available_installers[app]['Minimum Host OS'])
+                    app_str += f" (Requires {min_str})"
+                else:
+                    app_str += f": {available_installers[app]['Version']} ({available_installers[app]['Build']})"
+
+                self.install_selection = wx.Button(self.frame, label=app_str, size=(320, 30))
                 i = i + 25
                 self.install_selection.SetPosition(
                     wx.Point(
@@ -2070,6 +2080,9 @@ class wx_python_gui:
                 )
                 self.install_selection.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.format_usb_menu(available_installers[temp]['Short Name'], available_installers[temp]['Path']))
                 self.install_selection.Centre(wx.HORIZONTAL)
+
+                if unsupported:
+                    self.install_selection.Disable()
         else:
             logging.info("No installers found")
             # Label: No Installers Found
@@ -2099,6 +2112,7 @@ class wx_python_gui:
     def format_usb_menu(self, installer_name, installer_path):
         self.frame.DestroyChildren()
         logging.info(installer_path)
+        self.frame.SetSize(370, -1)
 
         # Header
         self.header = wx.StaticText(self.frame, label="Format USB")
@@ -2171,7 +2185,7 @@ class wx_python_gui:
 
     def format_usb_progress(self, disk, installer_name, installer_path):
         self.frame.DestroyChildren()
-        self.frame.SetSize(500, -1)
+        self.frame.SetSize(520, -1)
         # Header
         self.header = wx.StaticText(self.frame, label=f"Creating Installer: {installer_name}")
         self.header.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))

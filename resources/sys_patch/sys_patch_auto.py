@@ -312,9 +312,71 @@ class AutomaticSysPatch:
         utilities.process_status(utilities.elevated(["chmod", "644", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         utilities.process_status(utilities.elevated(["chown", "root:wheel", "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
+        # Copy over our launch daemon
+        if self._create_rsr_monitor_daemon() is True:
+            logging.info("- Copying rsr-monitor.plist Launch Daemon to /Library/LaunchDaemons/")
+            if Path("/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.rsr-monitor.plist").exists():
+                logging.info("- Deleting existing rsr-monitor.plist")
+                utilities.process_status(utilities.elevated(["rm", "/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.rsr-monitor.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            if not Path("/Library/LaunchDaemons/").exists():
+                logging.info("- Creating /Library/LaunchDaemons/")
+                utilities.process_status(utilities.elevated(["mkdir", "-p", "/Library/LaunchDaemons/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["cp", self.constants.rsr_monitor_launch_daemon_path, "/Library/LaunchDaemons/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+            # Set the permissions on the com.dortania.opencore-legacy-patcher.rsr-monitor.plist
+            logging.info("- Setting permissions on rsr-monitor.plist")
+            utilities.process_status(utilities.elevated(["chmod", "644", "/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.rsr-monitor.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chown", "root:wheel", "/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.rsr-monitor.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
         # Making app alias
         # Simply an easy way for users to notice the app
         # If there's already an alias or exiting app, skip
         if not Path("/Applications/OpenCore-Patcher.app").exists():
             logging.info("- Making app alias")
             utilities.process_status(utilities.elevated(["ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+
+    def _create_rsr_monitor_daemon(self) -> bool:
+        # Get kext list in /Library/Extensions that have the 'GPUCompanionBundles' property
+        # This is used to determine if we need to run the RSRMonitor
+        logging.info("- Checking if RSRMonitor is needed")
+
+        cryptex_path = f"/System/Volumes/Preboot/{utilities.get_preboot_uuid()}/cryptex1/current/OS.dmg"
+        if not Path(cryptex_path).exists():
+            logging.info("- No OS.dmg, skipping RSRMonitor")
+            return False
+
+        kexts = []
+        for kext in Path("/Library/Extensions").glob("*.kext"):
+            if not Path(f"{kext}/Contents/Info.plist").exists():
+                continue
+            kext_plist = plistlib.load(open(f"{kext}/Contents/Info.plist", "rb"))
+            if "GPUCompanionBundles" not in kext_plist:
+                continue
+            logging.info(f"  - Found kext with GPUCompanionBundles: {kext.name}")
+            kexts.append(kext.name)
+
+        # If we have no kexts, we don't need to run the RSRMonitor
+        if not kexts:
+            logging.info("- No kexts found with GPUCompanionBundles, skipping RSRMonitor")
+            return False
+
+        # Load the RSRMonitor plist
+        rsr_monitor_plist = plistlib.load(open(self.constants.rsr_monitor_launch_daemon_path, "rb"))
+
+        arguments = ["rm", "-Rfv"]
+        arguments += [f"/Library/Extensions/{kext}" for kext in kexts]
+
+        # Add the arguments to the RSRMonitor plist
+        rsr_monitor_plist["ProgramArguments"] = arguments
+
+        # Next add monitoring for '/System/Volumes/Preboot/{UUID}/cryptex1/OS.dmg'
+        logging.info(f"  - Adding monitor: {cryptex_path}")
+        rsr_monitor_plist["WatchPaths"] = [
+            cryptex_path,
+        ]
+
+        # Write the RSRMonitor plist
+        plistlib.dump(rsr_monitor_plist, Path(self.constants.rsr_monitor_launch_daemon_path).open("wb"))
+
+        return True
