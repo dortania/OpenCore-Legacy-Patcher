@@ -32,7 +32,7 @@ jobs:
 
       - name: Import Certificate
         if: (!test -f ~/Library/Keychains/login.keychain-db || !security find-certificate -c "${{ env.MAC_CODESIGN_IDENTITY }}" ~/Library/Keychains/login.keychain-db)
-        uses: apple-actions/import-codesign-certs@v1
+        uses: apple-actions/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.MAC_CODESIGN_CERT }}
           p12-password: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
