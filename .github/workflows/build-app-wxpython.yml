@@ -30,12 +30,12 @@ jobs:
       - name: Build Binary
         run: /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}" --key "${{ env.ANALYTICS_KEY }}" --site "${{ env.ANALYTICS_SITE }}"
 
-      # Uncomment when using Github Runners or first run on self-hosted
-      # - name: Import Certificate
-      #   uses: apple-actions/import-codesign-certs@v1
-      #   with:
-      #     p12-file-base64: ${{ secrets.MAC_CODESIGN_CERT }}
-      #     p12-password: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
+      - name: Import Certificate
+        if: !test -f ~/Library/Keychains/login.keychain-db || !security find-certificate -c "${{ env.MAC_CODESIGN_IDENTITY }}" ~/Library/Keychains/login.keychain-db
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.MAC_CODESIGN_CERT }}
+          p12-password: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
 
       - name: Codesign Binary
         run: 'codesign -s "${{ env.MAC_CODESIGN_IDENTITY }}" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
