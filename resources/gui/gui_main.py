@@ -2867,13 +2867,25 @@ class wx_python_gui:
             self.set_terascale_accel_checkbox.Disable()
             self.set_terascale_accel_checkbox.SetValue(False)
 
+        # Disable ColorSync Downgrade
+        self.set_colorsync_checkbox = wx.CheckBox(self.frame_modal, label="Disable ColorSync Downgrade")
+        self.set_colorsync_checkbox.SetValue(self.constants.disable_cat_colorsync)
+        self.set_colorsync_checkbox.Bind(wx.EVT_CHECKBOX, self.disable_colorsync_click)
+        self.set_colorsync_checkbox.SetPosition(wx.Point(
+            self.set_terascale_accel_checkbox.GetPosition().x,
+            self.set_terascale_accel_checkbox.GetPosition().y + self.set_terascale_accel_checkbox.GetSize().height))
+        self.set_colorsync_checkbox.SetToolTip(wx.ToolTip("This option will disable the ColorSync patch used on HD 3000 Macs.\nMainly applicable if you need Display Profile functionality"))
+        if self.computer.real_model not in ["MacBookAir4,1","MacBookAir4,2","MacBookPro8,1","MacBookPro8,2","MacBookPro8,3","Macmini5,1"]:
+            self.set_colorsync_checkbox.Disable()
+            self.set_colorsync_checkbox.SetValue(False)
+
         # Windows GMUX
         self.windows_gmux_checkbox = wx.CheckBox(self.frame_modal, label="Windows GMUX")
         self.windows_gmux_checkbox.SetValue(self.constants.dGPU_switch)
         self.windows_gmux_checkbox.Bind(wx.EVT_CHECKBOX, self.windows_gmux_click)
         self.windows_gmux_checkbox.SetPosition(wx.Point(
-            self.set_terascale_accel_checkbox.GetPosition().x,
-            self.set_terascale_accel_checkbox.GetPosition().y + self.set_terascale_accel_checkbox.GetSize().height))
+            self.set_colorsync_checkbox.GetPosition().x,
+            self.set_colorsync_checkbox.GetPosition().y + self.set_colorsync_checkbox.GetSize().height))
         self.windows_gmux_checkbox.SetToolTip(wx.ToolTip("Enable this option to allow usage of the hardware GMUX to switch between Intel and Nvidia/AMD GPUs in Windows."))
 
         # Hibernation Workaround
@@ -3155,6 +3167,16 @@ class wx_python_gui:
             logging.info("TS2 Acceleration Disabled")
             global_settings.GlobalEnviromentSettings().write_property("MacBookPro_TeraScale_2_Accel", False)
             self.constants.allow_ts2_accel = False
+
+    def disable_colorsync_click(self, event=None):
+        if self.set_colorsync_checkbox.GetValue():
+            logging.info("ColorSync Patch Disabled")
+            global_settings.GlobalEnviromentSettings().write_property("Disable_ColorSync_Downgrade", True)
+            self.constants.disable_cat_colorsync = True
+        else:
+            logging.info("ColorSync Patch Enabled")
+            global_settings.GlobalEnviromentSettings().write_property("Disable_ColorSync_Downgrade", False)
+            self.constants.disable_cat_colorsync = False
 
     def force_web_drivers_click(self, event=None):
         if self.force_web_drivers_checkbox.GetValue():
