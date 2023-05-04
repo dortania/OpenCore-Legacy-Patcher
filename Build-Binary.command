@@ -333,7 +333,7 @@ class CreateBinary:
             'hdiutil', 'create', './payloads.dmg',
             '-megabytes', '32000',
             '-format', 'UDZO', '-ov',
-            '-volname', 'payloads',
+            '-volname', 'OpenCore Patcher Resources',
             '-fs', 'HFS+',
             '-srcfolder', './payloads',
             '-passphrase', 'password', '-encryption'
