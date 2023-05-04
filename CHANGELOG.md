@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.6.6
+
 ## 0.6.5
 - Update 3802 Patchset Binaries:
   - Resolves additional 3rd party app crashes on Metal with macOS 13.3+
