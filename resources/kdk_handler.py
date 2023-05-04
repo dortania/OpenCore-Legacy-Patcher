@@ -179,16 +179,28 @@ class KernelDebugKitObject:
 
             return
 
+        # First check exact match
         for kdk in remote_kdk_version:
-            kdk_version = cast(packaging.version.Version, packaging.version.parse(kdk["version"]))
-            if (kdk["build"] == host_build):
-                self.kdk_url = kdk["url"]
-                self.kdk_url_build = kdk["build"]
-                self.kdk_url_version = kdk["version"]
-                self.kdk_url_expected_size = kdk["fileSize"]
-                self.kdk_url_is_exactly_match = True
-                break
-            if kdk_version <= parsed_version and kdk_version.major == parsed_version.major and (kdk_version.minor in range(parsed_version.minor - 1, parsed_version.minor + 1)):
+            if (kdk["build"] != host_build):
+                continue
+            self.kdk_url = kdk["url"]
+            self.kdk_url_build = kdk["build"]
+            self.kdk_url_version = kdk["version"]
+            self.kdk_url_expected_size = kdk["fileSize"]
+            self.kdk_url_is_exactly_match = True
+            break
+
+        # If no exact match, check for closest match
+        if self.kdk_url == "":
+            for kdk in remote_kdk_version:
+                kdk_version = cast(packaging.version.Version, packaging.version.parse(kdk["version"]))
+                if kdk_version > parsed_version:
+                    continue
+                if kdk_version.major != parsed_version.major:
+                    continue
+                if kdk_version.minor not in range(parsed_version.minor - 1, parsed_version.minor + 1):
+                    continue
+
                 # The KDK list is already sorted by version then date, so the first match is the closest
                 self.kdk_closest_match_url = kdk["url"]
                 self.kdk_closest_match_url_build = kdk["build"]

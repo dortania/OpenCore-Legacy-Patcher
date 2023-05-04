@@ -9,6 +9,8 @@
   - Allows for better identification when mounted (ex. Disk Utility while app is running)
 - Implement DMG-based PatcherSupportPkg system
   - Reduces both app size and root patching time
+- Resolve incorrect remote KDK matching for macOS betas
+  - ex. Beta 4 KDK being recommended for Beta 3 install
 - Increment Binaries:
   - PatcherSupportPkg 1.0.0 - release
 
