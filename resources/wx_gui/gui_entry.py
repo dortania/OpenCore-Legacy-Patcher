@@ -20,6 +20,7 @@ class SupportedEntryPoints:
     MAIN_MENU  = gui_main_menu.MainMenu
     BUILD_OC   = gui_build.BuildFrame
     INSTALL_OC = gui_install_oc.InstallOCFrame
+    SYS_PATCH  = gui_sys_patch.SysPatchMenu
 
 class EntryPoint:
 

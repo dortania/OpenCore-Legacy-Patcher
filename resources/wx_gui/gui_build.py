@@ -79,6 +79,9 @@ class BuildFrame(wx.Frame):
 
 
     def _invoke_build(self):
+        while gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
+            wx.Yield()
+
         thread = threading.Thread(target=self._build)
         thread.start()
 

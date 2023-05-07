@@ -336,6 +336,9 @@ class SysPatchMenu(wx.Frame):
     def start_root_patching(self, patches: dict):
         logging.info("Starting root patching")
 
+        while gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
+            wx.Yield()
+
         if patches["Settings: Kernel Debug Kit missing"] is True:
             if self._kdk_download(self) is False:
                 self.on_return_to_main_menu()

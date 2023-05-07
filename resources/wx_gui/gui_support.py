@@ -6,13 +6,42 @@ import logging
 
 import subprocess
 
+from pathlib import Path
+
 from resources import constants
+
+class PayloadMount:
+
+    def __init__(self, global_constants: constants.Constants, frame: wx.Frame) -> None:
+        self.constants: constants.Constants = global_constants
+        self.frame: wx.Frame = frame
+
+
+    def is_unpack_finished(self):
+        if self.constants.unpack_thread.is_alive():
+            return False
+
+        if Path(self.constants.payload_kexts_path).exists():
+            return True
+
+        # Raise error to end program
+        popup = wx.MessageDialog(
+            self.frame,
+            f"During unpacking of our internal files, we seemed to have encountered an error.\n\nIf you keep seeing this error, please try rebooting and redownloading the application.",
+            "Internal Error occurred!",
+            style = wx.OK | wx.ICON_EXCLAMATION
+        )
+        popup.ShowModal()
+        self.frame.Freeze()
+        sys.exit(1)
 
 
 class ThreadHandler(logging.Handler):
+
     def __init__(self, text_box: wx.TextCtrl):
         logging.Handler.__init__(self)
         self.text_box = text_box
+
 
     def emit(self, record):
         wx.CallAfter(self.text_box.AppendText, self.format(record) + '\n')
