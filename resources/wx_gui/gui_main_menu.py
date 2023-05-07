@@ -3,6 +3,7 @@ from resources.wx_gui import (
     gui_build,
     gui_sys_patch,
     gui_support,
+    gui_help,
 )
 from resources import constants
 
@@ -98,4 +99,9 @@ class MainMenu(wx.Frame):
         pass
 
     def on_help(self, event: wx.Event = None):
-        pass
+        gui_help.HelpFrame(
+            parent=self,
+            title=self.title,
+            global_constants=self.constants,
+            screen_location=self.GetPosition()
+        )
