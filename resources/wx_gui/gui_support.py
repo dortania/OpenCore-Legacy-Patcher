@@ -3,12 +3,12 @@ import time
 import sys
 import time
 import logging
-
 import subprocess
 
 from pathlib import Path
 
 from resources import constants
+
 
 class PayloadMount:
 
@@ -37,36 +37,17 @@ class PayloadMount:
 
 
 class ThreadHandler(logging.Handler):
+    """
+    Reroutes logging output to a wx.TextCtrl using UI callbacks
+    """
 
     def __init__(self, text_box: wx.TextCtrl):
         logging.Handler.__init__(self)
         self.text_box = text_box
 
 
-    def emit(self, record):
+    def emit(self, record: logging.LogRecord):
         wx.CallAfter(self.text_box.AppendText, self.format(record) + '\n')
-
-
-class RedirectText(object):
-    """
-    Redirects stdout to a wxPython TextCtrl
-    """
-
-    def __init__(self, aWxTextCtrl: wx.TextCtrl, sleep: bool):
-        self.out   = aWxTextCtrl
-        self.sleep = sleep
-
-    def write(self,string):
-        self.out.WriteText(string)
-        wx.GetApp().Yield()
-        if self.sleep:
-            time.sleep(0.01)
-
-    def fileno(self):
-        return 1
-
-    def flush(self):
-        pass
 
 
 class RestartHost:
@@ -117,7 +98,6 @@ class RelaunchApplicationAsRoot:
         if self.dialog.ShowModal() != wx.ID_YES:
             logging.info("User cancelled relaunch")
             return
-
 
         timer: int = 5
         program_arguments: str = ""
@@ -175,4 +155,5 @@ class RelaunchApplicationAsRoot:
             timer -= 1
             if timer == 0:
                 break
+
         sys.exit(0)
