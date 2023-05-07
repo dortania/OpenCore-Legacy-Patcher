@@ -110,6 +110,7 @@ class tui_disk_installation:
         if result.returncode != 0:
             if "execution error" in result.stderr.decode() and result.stderr.decode().strip()[-5:-1] == "-128":
                 # cancelled prompt
+                logging.info("- Mount cancelled by user")
                 return
             else:
                 logging.info("An error occurred!")

@@ -1,6 +1,7 @@
 import wx
 import logging
 import threading
+import traceback
 
 from resources.wx_gui import gui_main_menu, gui_install_oc, gui_support
 from resources.build import build
@@ -33,7 +34,7 @@ class BuildFrame(wx.Frame):
         self._invoke_build()
 
 
-    def _generate_elements(self, frame=None) -> None:
+    def _generate_elements(self, frame: wx.Frame = None) -> None:
         """
         Generate UI elements for build frame
 
@@ -70,6 +71,8 @@ class BuildFrame(wx.Frame):
         return_button = wx.Button(frame, label="Return to Main Menu", pos=(-1, text_box.GetPosition()[1] + text_box.GetSize()[1] + 5), size=(200, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         return_button.Center(wx.HORIZONTAL)
+        return_button.Disable()
+        self.return_button = return_button
 
         # Adjust window size to fit all elements
         frame.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
@@ -82,7 +85,17 @@ class BuildFrame(wx.Frame):
         while thread.is_alive():
             wx.Yield()
 
-        self.install_button.Enable()
+        self.return_button.Enable()
+        dialog = wx.MessageDialog(
+            parent=self,
+            message=f"Would you like to install OpenCore now?",
+            caption="Finished building your OpenCore configuration!",
+            style=wx.YES_NO | wx.ICON_QUESTION
+        )
+        dialog.SetYesNoLabels("Install to disk", "View build log")
+
+
+        self.on_install() if dialog.ShowModal() == wx.ID_YES else self.install_button.Enable()
 
 
     def _build(self):
@@ -91,11 +104,15 @@ class BuildFrame(wx.Frame):
         """
         logger = logging.getLogger()
         logger.addHandler(gui_support.ThreadHandler(self.text_box))
-        build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants)
+        try:
+            build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants)
+        except:
+            logging.error("- An internal error occurred while building:\n")
+            logging.error(traceback.format_exc())
         logger.removeHandler(logger.handlers[2])
 
 
-    def on_return_to_main_menu(self, event):
+    def on_return_to_main_menu(self, event: wx.Event = None):
         self.frame_modal.Hide()
         main_menu_frame = gui_main_menu.MainMenu(
             None,
@@ -108,7 +125,7 @@ class BuildFrame(wx.Frame):
         self.Destroy()
 
 
-    def on_install(self, event):
+    def on_install(self, event: wx.Event = None):
         self.frame_modal.Destroy()
         self.Destroy()
         install_oc_frame = gui_install_oc.InstallOCFrame(

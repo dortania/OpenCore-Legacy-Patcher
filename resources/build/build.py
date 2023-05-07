@@ -7,7 +7,6 @@ import plistlib
 import shutil
 import zipfile
 import logging
-import time
 
 from pathlib import Path
 from datetime import date
@@ -145,8 +144,6 @@ class BuildOpenCore:
             smbios.BuildSMBIOS(self.model, self.constants, self.config).set_smbios()
         support.BuildSupport(self.model, self.constants, self.config).cleanup()
         self._save_config()
-
-        time.sleep(5)
 
         # Post-build handling
         support.BuildSupport(self.model, self.constants, self.config).sign_files()

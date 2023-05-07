@@ -1,41 +1,148 @@
 
 import wx
+import os
 import logging
 import plistlib
+import threading
+import subprocess
+import time
+import sys
+import traceback
 from pathlib import Path
 
-from resources import constants
+from resources import constants, kdk_handler, utilities, network_handler
+from data import os_data
 from resources.sys_patch import (
     sys_patch,
     sys_patch_detect
 )
 
 from resources.wx_gui import (
-    gui_main_menu
+    gui_main_menu,
+    gui_support,
 )
 
 class SysPatchMenu(wx.Frame):
     """
-    Create a frame for building OpenCore
+    Create a frame for root patching
     Uses a Modal Dialog for smoother transition from other frames
     """
-    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
+    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None, patches: dict = {}):
         super(SysPatchMenu, self).__init__(parent, title=title, size=(350, 260))
 
         self.title = title
         self.constants: constants.Constants = global_constants
         self.frame_modal: wx.Dialog = None
+        self.return_button: wx.Button = None
 
         self.frame_modal = wx.Dialog(self, title=title, size=(360, 200))
 
-        self._generate_elements(self.frame_modal)
+        if patches:
+            return
+
+        self._generate_elements_display_patches(self.frame_modal, patches)
 
         self.SetPosition(screen_location) if screen_location else self.Centre()
         self.frame_modal.ShowWindowModal()
 
 
+    def _kdk_download(self, frame: wx.Frame = None) -> bool:
+        frame = self if not frame else frame
 
-    def _generate_elements(self, frame=None) -> None:
+        logging.info("KDK missing, generating KDK download frame")
+
+        header = wx.StaticText(frame, label="Downloading Kernel Debug Kit", pos=(-1,5))
+        header.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        header.Center(wx.HORIZONTAL)
+
+        subheader = wx.StaticText(frame, label="Fetching KDK database...", pos=(-1, header.GetPosition()[1] + header.GetSize()[1] + 5))
+        subheader.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        subheader.Center(wx.HORIZONTAL)
+
+        progress_bar = wx.Gauge(frame, range=100, pos=(-1, subheader.GetPosition()[1] + subheader.GetSize()[1] + 5), size=(250, 20))
+        progress_bar.Center(wx.HORIZONTAL)
+        progress_bar.Pulse()
+
+        # Set size of frame
+        frame.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 35))
+        frame.Show()
+
+        # Generate KDK object
+        kdk_result = False
+        self.kdk_obj: kdk_handler.KernelDebugKitObject = None
+        def kdk_thread_spawn():
+            self.kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
+
+        kdk_thread = threading.Thread(target=kdk_thread_spawn)
+        kdk_thread.start()
+
+        while kdk_thread.is_alive():
+            progress_bar.Pulse()
+            wx.GetApp().Yield()
+
+        if self.kdk_obj.success is False:
+            progress_bar.SetValue(0)
+            wx.MessageBox(f"KDK download failed: {self.kdk_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
+            return False
+
+        kdk_download_obj = self.kdk_obj.retrieve_download()
+        if not kdk_download_obj:
+            # KDK is already downloaded
+            return True
+
+        kdk_download_obj.download()
+
+        header.SetLabel(f"Downloading KDK Build: {self.kdk_obj.kdk_url_build}")
+        header.Center(wx.HORIZONTAL)
+
+        progress_bar.SetValue(0)
+        # Set below developer note
+        progress_bar.SetPosition(
+            wx.Point(
+                subheader.GetPosition().x,
+                subheader.GetPosition().y + subheader.GetSize().height + 30
+            )
+        )
+        progress_bar.Center(wx.HORIZONTAL)
+        progress_bar.Show()
+
+        developer_note = wx.StaticText(frame, label="Starting shortly", pos=(-1, progress_bar.GetPosition().y - 23))
+        developer_note.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        developer_note.Center(wx.HORIZONTAL)
+
+        frame.SetSize(-1, progress_bar.GetPosition().y + progress_bar.GetSize().height + 40)
+
+        while kdk_download_obj.is_active():
+            subheader.SetLabel(f"{utilities.human_fmt(kdk_download_obj.downloaded_file_size)} downloaded of {utilities.human_fmt(kdk_download_obj.total_file_size)} ({kdk_download_obj.get_percent():.2f}%)")
+            subheader.Center(wx.HORIZONTAL)
+            developer_note.SetLabel(
+                f"Average download speed: {utilities.human_fmt(kdk_download_obj.get_speed())}/s"
+            )
+            developer_note.Center(wx.HORIZONTAL)
+
+            progress_bar.SetValue(int(kdk_download_obj.get_percent()))
+            wx.GetApp().Yield()
+
+        if kdk_download_obj.download_complete is False:
+            logging.info("Failed to download KDK")
+            logging.info(kdk_download_obj.error_msg)
+            # wx.MessageBox(f"KDK download failed: {kdk_download_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
+            msg = wx.MessageDialog(frame, f"KDK download failed: {kdk_download_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
+            msg.ShowModal()
+            return False
+
+        if self.kdk_obj.validate_kdk_checksum() is False:
+            logging.error("KDK checksum validation failed")
+            logging.error(self.kdk_obj.error_msg)
+            msg = wx.MessageDialog(frame, f"KDK checksum validation failed: {self.kdk_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
+            msg.ShowModal()
+            return False
+
+        logging.info("KDK download complete")
+        return True
+
+
+    def _generate_elements_display_patches(self, frame: wx.Frame = None, patches: dict = {}) -> None:
         """
         Generate UI elements for root patching frame
 
@@ -59,7 +166,7 @@ class SysPatchMenu(wx.Frame):
         available_label.Center(wx.HORIZONTAL)
 
         # Labels: {patch name}
-        patches: dict = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+        patches: dict = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set() if not patches else patches
         can_unpatch: bool = patches["Validation: Unpatching Possible"]
 
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
@@ -72,7 +179,7 @@ class SysPatchMenu(wx.Frame):
 
         if not patches:
             # Prompt user with no patches found
-            patch_label = wx.StaticText(frame, label="No patches needed", pos=(-1, available_label.GetPosition()[1] + 20))
+            patch_label = wx.StaticText(frame, label="No patches required", pos=(-1, available_label.GetPosition()[1] + 20))
             patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
             patch_label.Center(wx.HORIZONTAL)
 
@@ -80,7 +187,7 @@ class SysPatchMenu(wx.Frame):
             # Add Label for each patch
             i = 0
             if no_new_patches is True:
-                patch_label = wx.StaticText(frame, label="No new patches needed", pos=(-1, 50))
+                patch_label = wx.StaticText(frame, label="All applicable patches already installed", pos=(-1, 50))
                 patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
                 patch_label.Center(wx.HORIZONTAL)
                 i = i + 10
@@ -112,18 +219,31 @@ class SysPatchMenu(wx.Frame):
 
                     patch_label = wx.StaticText(frame, label=f"- {patch.split('Validation: ')[1]}", pos=(available_label.GetPosition().x - 10, patch_label.GetPosition().y + 20))
                     patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-                    # patch_label.Center(wx.HORIZONTAL)
+            else:
+                if self.constants.computer.oclp_sys_version and self.constants.computer.oclp_sys_date:
+                    date = self.constants.computer.oclp_sys_date.split(" @")
+                    date = date[0] if len(date) == 2 else ""
+
+                    patch_text = f"{self.constants.computer.oclp_sys_version}, {date}"
+
+                    patch_label = wx.StaticText(frame, label="Root Volume last patched:", pos=(-1, patch_label.GetPosition().y + i + 20))
+                    patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+                    patch_label.Center(wx.HORIZONTAL)
+
+                    patch_label = wx.StaticText(frame, label=patch_text, pos=(available_label.GetPosition().x - 10, patch_label.GetPosition().y + 20))
+                    patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                    patch_label.Center(wx.HORIZONTAL)
 
 
         # Button: Start Root Patching
         start_button = wx.Button(frame, label="Start Root Patching", pos=(10, patch_label.GetPosition().y + 20), size=(170, 30))
-        start_button.Bind(wx.EVT_BUTTON, lambda event: self._start_root_patching(frame, patches, no_new_patches))
+        start_button.Bind(wx.EVT_BUTTON, lambda event: self.start_root_patching(frame, patches, no_new_patches))
         start_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         start_button.Center(wx.HORIZONTAL)
 
         # Button: Revert Root Patches
         revert_button = wx.Button(frame, label="Revert Root Patches", pos=(10, start_button.GetPosition().y + start_button.GetSize().height - 5), size=(170, 30))
-        revert_button.Bind(wx.EVT_BUTTON, lambda event: self._revert_root_patching(frame, patches, can_unpatch))
+        revert_button.Bind(wx.EVT_BUTTON, lambda event: self.revert_root_patching(frame, patches, can_unpatch))
         revert_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         revert_button.Center(wx.HORIZONTAL)
 
@@ -132,24 +252,144 @@ class SysPatchMenu(wx.Frame):
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         return_button.Center(wx.HORIZONTAL)
+        self.return_button = return_button
 
+        # Disable buttons if unsupported
         if not patches:
             start_button.Disable()
-            revert_button.Disable()
+        else:
+            if patches["Validation: Patching Possible"] is False:
+                start_button.Disable()
+            if patches["Validation: Unpatching Possible"] is False:
+                revert_button.Disable()
+
+        # Relaunch as root if not root
+        uid = os.geteuid()
+        if uid != 0:
+            start_button.Bind(wx.EVT_BUTTON, gui_support.RelaunchApplicationAsRoot(frame, self.constants).relaunch)
+            revert_button.Bind(wx.EVT_BUTTON, gui_support.RelaunchApplicationAsRoot(frame, self.constants).relaunch)
 
         # Set frame size
         frame.SetSize((-1, return_button.GetPosition().y + return_button.GetSize().height + 35))
 
 
+    def _generate_modal(self, patches: dict = {}, variant: str = "Root Patching"):
+        """
+        Create UI for root patching/unpatching
+        """
+        supported_variants = ["Root Patching", "Revert Root Patches"]
+        if variant not in supported_variants:
+            logging.error(f"Unsupported variant: {variant}")
+            return
 
-    def _start_root_patching(self, frame: wx.Frame, patches: dict, no_new_patches: bool):
-        pass
+        self.frame_modal.Close()
+
+        dialog = wx.Dialog(self, title=self.title, size=(400, 200))
+
+        # Title
+        title = wx.StaticText(dialog, label=variant, pos=(-1, 10))
+        title.SetFont(wx.Font(15, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title.Center(wx.HORIZONTAL)
+
+        if variant == "Root Patching":
+            # Label
+            label = wx.StaticText(dialog, label="Root Patching will patch the following:", pos=(-1, title.GetPosition()[1] + 30))
+            label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            label.Center(wx.HORIZONTAL)
+
+            # Labels
+            i = 0
+            for patch in patches:
+                if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
+                    logging.info(f"- Adding patch: {patch} - {patches[patch]}")
+                    patch_label = wx.StaticText(dialog, label=f"- {patch}", pos=(label.GetPosition()[0], label.GetPosition()[1] + 20 + i))
+                    patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                    i = i + 5
+            if i == 0:
+                patch_label = wx.StaticText(dialog, label="- No patches to apply", pos=(label.GetPosition()[0], label.GetPosition()[1] + 20))
+                patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        else:
+            patch_label = wx.StaticText(dialog, label="Reverting to last sealed snapshot", pos=(-1, title.GetPosition()[1] + 30))
+            patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            patch_label.Center(wx.HORIZONTAL)
 
 
-    def _revert_root_patching(self, frame: wx.Frame, patches: dict, can_unpatch: bool):
-        pass
+        # Text box
+        text_box = wx.TextCtrl(dialog, pos=(10, patch_label.GetPosition()[1] + 20), size=(400, 400), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
+        text_box.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        text_box.Center(wx.HORIZONTAL)
+        self.text_box = text_box
 
-    def on_return_to_main_menu(self, event):
+        # Button: Return to Main Menu
+        return_button = wx.Button(dialog, label="Return to Main Menu", pos=(10, text_box.GetPosition()[1] + text_box.GetSize()[1] + 5), size=(150, 30))
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
+        return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        return_button.Center(wx.HORIZONTAL)
+        self.return_button = return_button
+
+        # Set frame size
+        dialog.SetSize((-1, return_button.GetPosition().y + return_button.GetSize().height + 33))
+
+        dialog.ShowWindowModal()
+
+
+    def start_root_patching(self, patches: dict):
+        logging.info("Starting root patching")
+
+        if patches["Settings: Kernel Debug Kit missing"] is True:
+            if self._kdk_download(self) is False:
+                self.on_return_to_main_menu()
+                return
+
+        self._generate_modal(patches, "Root Patching")
+
+        thread = threading.Thread(target=self._start_root_patching, args=(patches,))
+        thread.start()
+
+        while thread.is_alive():
+            wx.GetApp().Yield()
+
+        self._post_patch()
+        self.return_button.Enable()
+
+
+    def _start_root_patching(self, patches: dict):
+        logger = logging.getLogger()
+        logger.addHandler(gui_support.ThreadHandler(self.text_box))
+        try:
+            sys_patch.PatchSysVolume(self.constants.computer.real_model, self.constants, patches).start_patch()
+        except:
+            logging.error("- An internal error occurred while running the Root Patcher:\n")
+            logging.error(traceback.format_exc())
+        logger.removeHandler(logger.handlers[2])
+
+
+    def revert_root_patching(self, patches: dict):
+        logging.info("Reverting root patches")
+        self._generate_modal(patches, "Revert Root Patches")
+
+        thread = threading.Thread(target=self._revert_root_patching, args=(patches,))
+        thread.start()
+
+        while thread.is_alive():
+            wx.GetApp().Yield()
+
+        self._post_patch()
+        self.return_button.Enable()
+
+
+    def _revert_root_patching(self, patches: dict):
+        logger = logging.getLogger()
+        logger.addHandler(gui_support.ThreadHandler(self.text_box))
+        try:
+            sys_patch.PatchSysVolume(self.constants.computer.real_model, self.constants, patches).start_unpatch()
+        except:
+            logging.error("- An internal error occurred while running the Root Patcher:\n")
+            logging.error(traceback.format_exc())
+        logger.removeHandler(logger.handlers[2])
+
+
+    def on_return_to_main_menu(self, event: wx.Event = None):
         self.frame_modal.Hide()
         main_menu_frame = gui_main_menu.MainMenu(
             None,
@@ -162,6 +402,42 @@ class SysPatchMenu(wx.Frame):
         self.Destroy()
 
 
+    def _post_patch(self):
+        if self.constants.root_patcher_succeeded is False:
+            return
+
+        if self.constants.needs_to_open_preferences is False:
+            gui_support.RestartHost(self).restart(message="Root Patcher finished successfully!\n\nWould you like to reboot now?")
+            return
+
+        if self.constants.detected_os >= os_data.os_data.ventura:
+            gui_support.RestartHost(self).restart(message="Root Patcher finished successfully!\nIf you were prompted to open System Settings to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?")
+            return
+
+        # Create dialog box to open System Preferences -> Security and Privacy
+        self.popup = wx.MessageDialog(
+            self.frame_modal,
+            "We just finished installing the patches to your Root Volume!\n\nHowever, Apple requires users to manually approve the kernel extensions installed before they can be used next reboot.\n\nWould you like to open System Preferences?",
+            "Open System Preferences?",
+            wx.YES_NO | wx.ICON_INFORMATION
+        )
+        self.popup.SetYesNoLabels("Open System Preferences", "Ignore")
+        answer = self.popup.ShowModal()
+        if answer == wx.ID_YES:
+            output =subprocess.run(
+                [
+                    "osascript", "-e",
+                    'tell app "System Preferences" to activate',
+                    "-e", 'tell app "System Preferences" to reveal anchor "General" of pane id "com.apple.preference.security"',
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            if output.returncode != 0:
+                # Some form of fallback if unaccelerated state errors out
+                subprocess.run(["open", "-a", "System Preferences"])
+            time.sleep(5)
+            sys.exit(0)
 
 
     def _check_if_new_patches_needed(self, patches: dict) -> bool:

@@ -8,8 +8,10 @@ from resources.wx_gui import (
     gui_main_menu,
     gui_build,
     gui_menubar,
-    gui_install_oc
+    gui_install_oc,
+    gui_sys_patch
 )
+from resources.sys_patch import sys_patch_detect
 
 class SupportedEntryPoints:
     """
@@ -38,19 +40,30 @@ class EntryPoint:
         Launches entry point for the wxPython GUI
         """
         self._generate_base_data()
+
+        if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv:
+            entry = gui_sys_patch.SysPatchMenu
+            patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+
         self.frame: wx.Frame = entry(
             None,
             title=f"{self.constants.patcher_name} ({self.constants.patcher_version})",
             global_constants=self.constants,
-            screen_location=None
+            screen_location=None,
+            **({"patches": patches} if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv else {})
         )
         self.frame.SetMenuBar(gui_menubar.GenerateMenubar().generate())
         atexit.register(self.OnCloseFrame)
 
+        if "--gui_patch" in sys.argv:
+            self.frame.start_root_patching(patches)
+        elif "--gui_unpatch" in sys.argv:
+            self.frame.revert_root_patching(patches)
+
         self.app.MainLoop()
 
 
-    def OnCloseFrame(self, event=None):
+    def OnCloseFrame(self, event: wx.Event = None):
         """
         Closes the wxPython GUI
         """
@@ -66,5 +79,3 @@ class EntryPoint:
         self.frame.DestroyChildren()
         self.frame.Destroy()
         self.app.ExitMainLoop()
-
-        sys.exit()

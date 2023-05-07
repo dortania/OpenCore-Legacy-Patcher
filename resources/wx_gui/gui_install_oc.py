@@ -1,6 +1,7 @@
 import wx
 import threading
 import logging
+import traceback
 
 from resources.wx_gui import gui_main_menu, gui_support
 from resources import constants, install
@@ -19,6 +20,8 @@ class InstallOCFrame(wx.Frame):
 
         self.available_disks: dict = None
         self.stock_output = logging.getLogger().handlers[0].stream
+
+        self.hyperlink_colour = (25, 179, 231)
 
         self._generate_elements()
 
@@ -106,16 +109,19 @@ class InstallOCFrame(wx.Frame):
                 # disk6s1 -> disk6
                 disk_root = self.constants.booted_oc_disk.strip("disk")
                 disk_root = "disk" + disk_root.split("s")[0]
+                logging.info(f"- Checking if booted disk is present: {disk_root}")
 
             # Add buttons for each disk
             for disk in self.available_disks:
                 # Create a button for each disk
                 logging.info(f"- {self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}")
-                disk_button = wx.Button(dialog, label=f"{self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}", size=(300,30), pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5))
+                disk_button = wx.Button(dialog, label=f"{self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}", size=(350,30), pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5))
                 disk_button.Center(wx.HORIZONTAL)
                 disk_button.Bind(wx.EVT_BUTTON, lambda event, disk=disk: self._display_volumes(disk, self.available_disks))
+                logging.info(f"- Comparing {disk_root} to {self.available_disks[disk]['disk']}")
                 if disk_root == self.available_disks[disk]['disk']:
-                    disk_button.SetForegroundColour((25, 179, 231))
+                    logging.info("- Found match")
+                    disk_button.SetForegroundColour(self.hyperlink_colour)
 
 
             if disk_root:
@@ -130,12 +136,12 @@ class InstallOCFrame(wx.Frame):
         # Add button: Search for disks again
         search_button = wx.Button(dialog, label="Search for disks again", size=(200,30), pos=(-1, disk_label.GetPosition()[1] + disk_label.GetSize()[1] + 5))
         search_button.Center(wx.HORIZONTAL)
-        search_button.Bind(wx.EVT_BUTTON, self._reload_frame)
+        search_button.Bind(wx.EVT_BUTTON, self.on_reload_frame)
 
         # Add button: Return to main menu
         return_button = wx.Button(dialog, label="Return to main menu", size=(200,30), pos=(-1, search_button.GetPosition()[1] + 25))
         return_button.Center(wx.HORIZONTAL)
-        return_button.Bind(wx.EVT_BUTTON, self._return_to_main_menu)
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 
         # Set size
         dialog.SetSize((370, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
@@ -173,7 +179,7 @@ class InstallOCFrame(wx.Frame):
         # Add button: Return to main menu
         return_button = wx.Button(dialog, label="Return to main menu", size=(200,30), pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]))
         return_button.Center(wx.HORIZONTAL)
-        return_button.Bind(wx.EVT_BUTTON, self._return_to_main_menu)
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 
         # Set size
         dialog.SetSize((370, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
@@ -210,7 +216,7 @@ class InstallOCFrame(wx.Frame):
         # Add button: Return to main menu
         return_button = wx.Button(dialog, label="Return to main menu", size=(200,30), pos=(-1, text_box.GetPosition()[1] + text_box.GetSize()[1] + 10))
         return_button.Center(wx.HORIZONTAL)
-        return_button.Bind(wx.EVT_BUTTON, self._return_to_main_menu)
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         return_button.Disable()
 
         # Set size
@@ -230,7 +236,6 @@ class InstallOCFrame(wx.Frame):
         thread.start()
 
         while thread.is_alive():
-            # wx.Yield()
             wx.GetApp().Yield()
 
         if self.result is True:
@@ -253,11 +258,15 @@ class InstallOCFrame(wx.Frame):
 
         logger = logging.getLogger()
         logger.addHandler(gui_support.ThreadHandler(self.text_box))
-        self.result = install.tui_disk_installation(self.constants).install_opencore(partition)
+        try:
+            self.result = install.tui_disk_installation(self.constants).install_opencore(partition)
+        except:
+            logging.error("- An internal error occurred while installing:\n")
+            logging.error(traceback.format_exc())
         logger.removeHandler(logger.handlers[2])
 
 
-    def _reload_frame(self, event) -> None:
+    def on_reload_frame(self, event: wx.Event = None) -> None:
         """
         Reload frame
         """
@@ -271,7 +280,7 @@ class InstallOCFrame(wx.Frame):
         frame.Show()
 
 
-    def _return_to_main_menu(self, event: wx.Event) -> None:
+    def on_return_to_main_menu(self, event: wx.Event = None) -> None:
         """
         Return to main menu
         """

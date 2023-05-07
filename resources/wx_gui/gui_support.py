@@ -45,7 +45,7 @@ class RestartHost:
     Restarts the host machine
     """
 
-    def __init__(self, frame) -> None:
+    def __init__(self, frame: wx.Frame) -> None:
         self.frame: wx.Frame = frame
 
 

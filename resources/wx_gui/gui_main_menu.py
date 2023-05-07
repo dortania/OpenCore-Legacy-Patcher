@@ -69,7 +69,8 @@ class MainMenu(wx.Frame):
         self.SetSize((350, copy_label.GetPosition()[1] + 50))
 
 
-    def on_build_and_install(self, event):
+    def on_build_and_install(self, event: wx.Event = None):
+        self.Hide()
         gui_build.BuildFrame(
             parent=None,
             title=self.title,
@@ -79,7 +80,8 @@ class MainMenu(wx.Frame):
         self.Destroy()
 
 
-    def on_post_install_root_patch(self, event):
+    def on_post_install_root_patch(self, event: wx.Event = None):
+        self.Hide()
         gui_sys_patch.SysPatchMenu(
             parent=None,
             title=self.title,
@@ -89,11 +91,11 @@ class MainMenu(wx.Frame):
         self.Destroy()
 
 
-    def on_create_macos_installer(self, event):
+    def on_create_macos_installer(self, event: wx.Event = None):
         pass
 
-    def on_settings(self, event):
+    def on_settings(self, event: wx.Event = None):
         pass
 
-    def on_help(self, event):
+    def on_help(self, event: wx.Event = None):
         pass

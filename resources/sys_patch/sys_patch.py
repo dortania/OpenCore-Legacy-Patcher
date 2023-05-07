@@ -910,8 +910,6 @@ class PatchSysVolume:
             elif self.constants.gui_mode is False:
                 input("\nPress [ENTER] to return to the main menu: ")
 
-        else:
-            logging.info("- Returning to main menu")
 
     def start_unpatch(self) -> None:
         """

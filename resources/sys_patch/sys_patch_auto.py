@@ -8,7 +8,7 @@ from pathlib import Path
 
 from resources import utilities, updates, global_settings, network_handler, constants
 from resources.sys_patch import sys_patch_detect
-from resources.gui import gui_main
+from resources.wx_gui import gui_entry
 
 
 class AutomaticSysPatch:
@@ -170,7 +170,7 @@ class AutomaticSysPatch:
         if output.returncode == 0:
             logging.info("- Launching GUI's Build/Install menu")
             self.constants.start_build_install = True
-            gui_main.wx_python_gui(self.constants).main_menu(None)
+            gui_entry.EntryPoint(self.constants).start(entry=gui_entry.SupportedEntryPoints.BUILD_OC)
 
         return False
 
@@ -245,7 +245,7 @@ class AutomaticSysPatch:
             if output.returncode == 0:
                 logging.info("- Launching GUI's Build/Install menu")
                 self.constants.start_build_install = True
-                gui_main.wx_python_gui(self.constants).main_menu(None)
+                gui_entry.EntryPoint(self.constants).start(entry=gui_entry.SupportedEntryPoints.BUILD_OC)
 
         except KeyError:
             logging.info("- Unable to determine if boot disk is removable, skipping prompt")
