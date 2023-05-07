@@ -10,6 +10,17 @@ from pathlib import Path
 from resources import constants
 
 
+class GenerateMenubar:
+
+    def __init__(self) -> None:
+        self.menubar: wx.MenuBar = None
+
+
+    def generate(self) -> wx.MenuBar:
+        self.menubar = wx.MenuBar()
+        return self.menubar
+
+
 class PayloadMount:
 
     def __init__(self, global_constants: constants.Constants, frame: wx.Frame) -> None:

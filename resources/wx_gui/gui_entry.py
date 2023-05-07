@@ -7,9 +7,9 @@ from resources import constants
 from resources.wx_gui import (
     gui_main_menu,
     gui_build,
-    gui_menubar,
     gui_install_oc,
-    gui_sys_patch
+    gui_sys_patch,
+    gui_support
 )
 from resources.sys_patch import sys_patch_detect
 
@@ -53,7 +53,8 @@ class EntryPoint:
             screen_location=None,
             **({"patches": patches} if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv else {})
         )
-        self.frame.SetMenuBar(gui_menubar.GenerateMenubar().generate())
+        if self.frame:
+            self.frame.SetMenuBar(gui_support.GenerateMenubar().generate())
         atexit.register(self.OnCloseFrame)
 
         if "--gui_patch" in sys.argv:

@@ -36,13 +36,12 @@ class SysPatchMenu(wx.Frame):
         self.return_button: wx.Button = None
 
         self.frame_modal = wx.Dialog(self, title=title, size=(360, 200))
+        self.SetPosition(screen_location) if screen_location else self.Centre()
 
         if patches:
             return
 
         self._generate_elements_display_patches(self.frame_modal, patches)
-
-        self.SetPosition(screen_location) if screen_location else self.Centre()
         self.frame_modal.ShowWindowModal()
 
 
@@ -260,8 +259,9 @@ class SysPatchMenu(wx.Frame):
         else:
             if patches["Validation: Patching Possible"] is False:
                 start_button.Disable()
-            if patches["Validation: Unpatching Possible"] is False:
-                revert_button.Disable()
+        if can_unpatch is False:
+            revert_button.Disable()
+
 
         # Relaunch as root if not root
         uid = os.geteuid()
