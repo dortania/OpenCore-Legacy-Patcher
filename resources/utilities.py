@@ -48,6 +48,44 @@ def human_fmt(num):
     return "%.1f %s" % (num, "EB")
 
 
+def seconds_to_readable_time(seconds) -> str:
+    """
+    Convert seconds to a readable time format
+
+    Parameters:
+        seconds (int | float | str): Seconds to convert
+
+    Returns:
+        str: Readable time format
+    """
+    seconds = int(seconds)
+    time = ""
+
+    if seconds == 0:
+        return "Done"
+    if seconds < 0:
+        return "Indeterminate"
+
+    years, seconds = divmod(seconds, 31536000)
+    days, seconds = divmod(seconds, 86400)
+    hours, seconds = divmod(seconds, 3600)
+    minutes, seconds = divmod(seconds, 60)
+
+    if years > 0:
+        return "Over a year"
+    if days > 0:
+        if days > 31:
+            return "Over a month"
+        time += f"{days}d "
+    if hours > 0:
+        time += f"{hours}h "
+    if minutes > 0:
+        time += f"{minutes}m "
+    if seconds > 0:
+        time += f"{seconds}s"
+    return time
+
+
 def header(lines):
     lines = [i for i in lines if i is not None]
     total_length = len(max(lines, key=len)) + 4

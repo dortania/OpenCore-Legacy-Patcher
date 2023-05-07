@@ -20,6 +20,7 @@ from resources.sys_patch import (
 from resources.wx_gui import (
     gui_main_menu,
     gui_support,
+    gui_download,
 )
 
 class SysPatchMenu(wx.Frame):
@@ -89,46 +90,23 @@ class SysPatchMenu(wx.Frame):
             # KDK is already downloaded
             return True
 
-        kdk_download_obj.download()
+        gui_download.DownloadFrame(
+            self,
+            title=self.title,
+            global_constants=self.constants,
+            screen_location=self.GetScreenPosition(),
+            download_obj=kdk_download_obj,
+            item_name=f"KDK Build {self.kdk_obj.kdk_url_build}"
+        )
+        if kdk_download_obj.download_complete is False:
+            return False
 
-        header.SetLabel(f"Downloading KDK Build: {self.kdk_obj.kdk_url_build}")
+        header.SetLabel(f"Validating KDK: {self.kdk_obj.kdk_url_build}")
         header.Center(wx.HORIZONTAL)
 
-        progress_bar.SetValue(0)
-        # Set below developer note
-        progress_bar.SetPosition(
-            wx.Point(
-                subheader.GetPosition().x,
-                subheader.GetPosition().y + subheader.GetSize().height + 30
-            )
-        )
-        progress_bar.Center(wx.HORIZONTAL)
-        progress_bar.Show()
-
-        developer_note = wx.StaticText(frame, label="Starting shortly", pos=(-1, progress_bar.GetPosition().y - 23))
-        developer_note.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        developer_note.Center(wx.HORIZONTAL)
-
-        frame.SetSize(-1, progress_bar.GetPosition().y + progress_bar.GetSize().height + 40)
-
-        while kdk_download_obj.is_active():
-            subheader.SetLabel(f"{utilities.human_fmt(kdk_download_obj.downloaded_file_size)} downloaded of {utilities.human_fmt(kdk_download_obj.total_file_size)} ({kdk_download_obj.get_percent():.2f}%)")
-            subheader.Center(wx.HORIZONTAL)
-            developer_note.SetLabel(
-                f"Average download speed: {utilities.human_fmt(kdk_download_obj.get_speed())}/s"
-            )
-            developer_note.Center(wx.HORIZONTAL)
-
-            progress_bar.SetValue(int(kdk_download_obj.get_percent()))
-            wx.GetApp().Yield()
-
-        if kdk_download_obj.download_complete is False:
-            logging.info("Failed to download KDK")
-            logging.info(kdk_download_obj.error_msg)
-            # wx.MessageBox(f"KDK download failed: {kdk_download_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
-            msg = wx.MessageDialog(frame, f"KDK download failed: {kdk_download_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
-            msg.ShowModal()
-            return False
+        subheader.SetLabel("Checking if checksum is valid...")
+        subheader.Center(wx.HORIZONTAL)
+        wx.GetApp().Yield()
 
         if self.kdk_obj.validate_kdk_checksum() is False:
             logging.error("KDK checksum validation failed")

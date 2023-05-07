@@ -4,6 +4,7 @@ from resources.wx_gui import (
     gui_sys_patch,
     gui_support,
     gui_help,
+    gui_macos_installer,
 )
 from resources import constants
 
@@ -93,7 +94,13 @@ class MainMenu(wx.Frame):
 
 
     def on_create_macos_installer(self, event: wx.Event = None):
-        pass
+        gui_macos_installer.macOSInstallerFrame(
+            parent=self,
+            title=self.title,
+            global_constants=self.constants,
+            screen_location=self.GetPosition()
+        )
+
 
     def on_settings(self, event: wx.Event = None):
         pass
