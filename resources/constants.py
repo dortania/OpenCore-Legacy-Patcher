@@ -15,6 +15,7 @@ class Constants:
         self.patcher_version:                 str = "0.6.6"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version:     str = "1.0.0"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
+        self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
         # URLs
         self.url_patcher_support_pkg:         str = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
