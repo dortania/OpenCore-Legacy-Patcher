@@ -100,6 +100,8 @@ class tui_disk_installation:
             " without altering line endings",
         ]
 
+        logging.info(f"- Mounting partition: {full_disk_identifier}")
+
         if self.constants.detected_os >= os_data.os_data.el_capitan and not self.constants.recovery_status:
             result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
@@ -128,8 +130,6 @@ class tui_disk_installation:
             ssd_type = False
         mount_path = Path(partition_info["MountPoint"])
         disk_type = partition_info["BusProtocol"]
-        utilities.cls()
-        utilities.header(["Copying OpenCore"])
 
         if mount_path.exists():
             if (mount_path / Path("EFI/Microsoft")).exists() and self.constants.gui_mode is False:

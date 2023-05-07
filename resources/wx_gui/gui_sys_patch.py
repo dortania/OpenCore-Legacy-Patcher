@@ -20,13 +20,13 @@ class SysPatchMenu(wx.Frame):
     Uses a Modal Dialog for smoother transition from other frames
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        super(SysPatchMenu, self).__init__(parent, title=title, size=(350, 250))
+        super(SysPatchMenu, self).__init__(parent, title=title, size=(350, 260))
 
         self.title = title
         self.constants: constants.Constants = global_constants
         self.frame_modal: wx.Dialog = None
 
-        self.frame_modal = wx.Dialog(self, title=title, size=(370, 200))
+        self.frame_modal = wx.Dialog(self, title=title, size=(360, 200))
 
         self._generate_elements(self.frame_modal)
 
@@ -116,26 +116,29 @@ class SysPatchMenu(wx.Frame):
 
 
         # Button: Start Root Patching
-        start_button = wx.Button(frame, label="Start Root Patching", pos=(10, patch_label.GetPosition().y + 40), size=(170, 30))
+        start_button = wx.Button(frame, label="Start Root Patching", pos=(10, patch_label.GetPosition().y + 20), size=(170, 30))
         start_button.Bind(wx.EVT_BUTTON, lambda event: self._start_root_patching(frame, patches, no_new_patches))
         start_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         start_button.Center(wx.HORIZONTAL)
 
         # Button: Revert Root Patches
-        revert_button = wx.Button(frame, label="Revert Root Patches", pos=(10, start_button.GetPosition().y + start_button.GetSize().height - 5
-                                                                           ), size=(170, 30))
+        revert_button = wx.Button(frame, label="Revert Root Patches", pos=(10, start_button.GetPosition().y + start_button.GetSize().height - 5), size=(170, 30))
         revert_button.Bind(wx.EVT_BUTTON, lambda event: self._revert_root_patching(frame, patches, can_unpatch))
         revert_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         revert_button.Center(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
-        return_button = wx.Button(frame, label="Return to Main Menu", pos=(10, revert_button.GetPosition().y + revert_button.GetSize().height + 10), size=(150, 30))
+        return_button = wx.Button(frame, label="Return to Main Menu", pos=(10, revert_button.GetPosition().y + revert_button.GetSize().height), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         return_button.Center(wx.HORIZONTAL)
 
+        if not patches:
+            start_button.Disable()
+            revert_button.Disable()
+
         # Set frame size
-        frame.SetSize((-1, return_button.GetPosition().y + return_button.GetSize().height + 40))
+        frame.SetSize((-1, return_button.GetPosition().y + return_button.GetSize().height + 35))
 
 
 

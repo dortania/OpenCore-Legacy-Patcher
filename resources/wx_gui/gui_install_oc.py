@@ -15,6 +15,7 @@ class InstallOCFrame(wx.Frame):
 
         self.constants: constants.Constants = global_constants
         self.title: str = title
+        self.result: bool = False
 
         self.available_disks: dict = None
         self.stock_output = logging.getLogger().handlers[0].stream
@@ -220,20 +221,19 @@ class InstallOCFrame(wx.Frame):
         self.dialog = dialog
 
         # Install OpenCore
-        self._install_oc(partition)
+        self._invoke_install_oc(partition)
         return_button.Enable()
 
 
-    def _install_oc(self, partition: dict) -> None:
-        """
-        Install OpenCore to disk
-        """
-        logging.info(f"- Installing OpenCore to {partition}")
-        logging.getLogger().handlers[0].stream = gui_support.RedirectText(self.text_box, False)
-        result = install.tui_disk_installation(self.constants).install_opencore(partition)
-        logging.getLogger().handlers[0].stream = self.stock_output
+    def _invoke_install_oc(self, partition: dict) -> None:
+        thread = threading.Thread(target=self._install_oc, args=(partition,))
+        thread.start()
 
-        if result is True:
+        while thread.is_alive():
+            # wx.Yield()
+            wx.GetApp().Yield()
+
+        if self.result is True:
             if not self.constants.custom_model:
                 gui_support.RestartHost(self).restart(message="OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?")
             else:
@@ -243,6 +243,18 @@ class InstallOCFrame(wx.Frame):
                     wx.OK
                 )
                 popup_message.ShowModal()
+
+
+    def _install_oc(self, partition: dict) -> None:
+        """
+        Install OpenCore to disk
+        """
+        logging.info(f"- Installing OpenCore to {partition}")
+
+        logger = logging.getLogger()
+        logger.addHandler(gui_support.ThreadHandler(self.text_box))
+        self.result = install.tui_disk_installation(self.constants).install_opencore(partition)
+        logger.removeHandler(logger.handlers[2])
 
 
     def _reload_frame(self, event) -> None:

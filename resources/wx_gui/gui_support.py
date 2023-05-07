@@ -8,6 +8,16 @@ import subprocess
 
 from resources import constants
 
+
+class ThreadHandler(logging.Handler):
+    def __init__(self, text_box: wx.TextCtrl):
+        logging.Handler.__init__(self)
+        self.text_box = text_box
+
+    def emit(self, record):
+        wx.CallAfter(self.text_box.AppendText, self.format(record) + '\n')
+
+
 class RedirectText(object):
     """
     Redirects stdout to a wxPython TextCtrl

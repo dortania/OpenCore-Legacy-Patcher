@@ -76,13 +76,23 @@ class BuildFrame(wx.Frame):
 
 
     def _invoke_build(self):
+        thread = threading.Thread(target=self._build)
+        thread.start()
+
+        while thread.is_alive():
+            wx.Yield()
+
+        self.install_button.Enable()
+
+
+    def _build(self):
         """
         Calls build function and redirects stdout to the text box
         """
-        logging.getLogger().handlers[0].stream = gui_support.RedirectText(self.text_box, False)
+        logger = logging.getLogger()
+        logger.addHandler(gui_support.ThreadHandler(self.text_box))
         build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants)
-        logging.getLogger().handlers[0].stream = self.stock_output
-        self.install_button.Enable()
+        logger.removeHandler(logger.handlers[2])
 
 
     def on_return_to_main_menu(self, event):
