@@ -16,10 +16,11 @@ class DownloadFrame(wx.Frame):
         self.download_obj: network_handler.DownloadObject = download_obj
         self.item_name: str = item_name
 
+        self.user_cancelled: bool = False
+
         self.frame_modal = wx.Dialog(parent, title=title, size=(400, 200))
 
         self._generate_elements(self.frame_modal)
-
 
 
     def _generate_elements(self, frame: wx.Frame = None) -> None:
@@ -45,8 +46,12 @@ class DownloadFrame(wx.Frame):
         progress_bar = wx.Gauge(frame, range=100, pos=(-1, label_est_time.GetPosition()[1] + label_est_time.GetSize()[1] + 5), size=(300, 20))
         progress_bar.Center(wx.HORIZONTAL)
 
+        return_button = wx.Button(frame, label="Return", pos=(-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 5))
+        return_button.Bind(wx.EVT_BUTTON, lambda event: self.terminate_download())
+        return_button.Center(wx.HORIZONTAL)
+
         # Set size of frame
-        frame.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
+        frame.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
         frame.ShowWindowModal()
 
         self.download_obj.download()
@@ -70,11 +75,15 @@ class DownloadFrame(wx.Frame):
             progress_bar.SetValue(int(self.download_obj.get_percent()))
             wx.GetApp().Yield()
 
-        if self.download_obj.download_complete is False:
+        if self.download_obj.download_complete is False and self.user_cancelled is False:
             wx.MessageBox(f"Download failed: \n{self.download_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
 
         frame.Destroy()
 
 
+    def terminate_download(self) -> None:
+        if wx.MessageBox("Are you sure you want to cancel the download?", "Cancel Download", wx.YES_NO | wx.ICON_QUESTION | wx.NO_DEFAULT) == wx.YES:
+            self.user_cancelled = True
+            self.download_obj.stop()
 
 
