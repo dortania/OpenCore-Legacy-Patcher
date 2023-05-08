@@ -148,6 +148,13 @@ class macOSInstallerFrame(wx.Frame):
 
 
     def on_download_installer(self, app: dict) -> None:
+        host_space = utilities.get_free_space()
+        needed_space = app['Size'] * 2
+        if host_space < needed_space:
+            dlg = wx.MessageDialog(self.frame_modal, f"You do not have enough free space to download and extract this installer. Please free up some space and try again\n\n{utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required", "Insufficient Space", wx.OK | wx.ICON_WARNING)
+            dlg.ShowModal()
+            return
+
         self.frame_modal.Close()
 
         download_obj = network_handler.DownloadObject(app['Link'], self.constants.payload_path / "InstallAssistant.pkg")
@@ -188,7 +195,6 @@ class macOSInstallerFrame(wx.Frame):
         progress_bar = wx.Gauge(self, range=100, pos=(-1, chunk_label.GetPosition()[1] + chunk_label.GetSize()[1] + 5), size=(270, 30))
         progress_bar.Center(wx.HORIZONTAL)
 
-
         # Set size of frame
         self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
         self.Show()
@@ -215,7 +221,6 @@ class macOSInstallerFrame(wx.Frame):
                     self.on_return_to_main_menu()
                     return
 
-
         # Extract installer
         title_label.SetLabel("Extracting macOS Installer")
         title_label.Center(wx.HORIZONTAL)
@@ -240,20 +245,16 @@ class macOSInstallerFrame(wx.Frame):
         while thread.is_alive():
             wx.Yield()
 
-        if self.result is False:
-            progress_bar.SetValue(0)
-            chunk_label.SetLabel("Failed to extract macOS installer")
-            chunk_label.Center(wx.HORIZONTAL)
-            wx.MessageBox("An error occurred while extracting the macOS installer. Could be due to a corrupted installer", "Error", wx.OK | wx.ICON_ERROR)
-
         progress_bar.Hide()
-        chunk_label.SetLabel("Successfully extracted macOS installer")
+        chunk_label.SetLabel("Successfully extracted macOS installer" if self.result is True else "Failed to extract macOS installer")
         chunk_label.Center(wx.HORIZONTAL)
 
         # Create macOS Installer button
         create_installer_button = wx.Button(self, label="Create macOS Installer", pos=(-1, progress_bar.GetPosition()[1]), size=(170, 30))
         create_installer_button.Bind(wx.EVT_BUTTON, self.on_existing)
         create_installer_button.Center(wx.HORIZONTAL)
+        if self.result is False:
+            create_installer_button.Disable()
 
         # Return to main menu button
         return_button = wx.Button(self, label="Return to Main Menu", pos=(-1, create_installer_button.GetPosition()[1] + create_installer_button.GetSize()[1]), size=(150, 30))
@@ -266,8 +267,12 @@ class macOSInstallerFrame(wx.Frame):
         # Show frame
         self.Show()
 
-        result = wx.MessageBox("Finished extracting the installer, would you like to continue and create a macOS installer?", "Create macOS Installer?", wx.YES_NO | wx.ICON_QUESTION)
-        if result == wx.YES:
+        if self.result is False:
+            wx.MessageBox("An error occurred while extracting the macOS installer. Could be due to a corrupted installer", "Error", wx.OK | wx.ICON_ERROR)
+            return
+
+        user_input = wx.MessageBox("Finished extracting the installer, would you like to continue and create a macOS installer?", "Create macOS Installer?", wx.YES_NO | wx.ICON_QUESTION)
+        if user_input == wx.YES:
             self.on_existing()
 
 
