@@ -4,7 +4,7 @@ import threading
 
 from pathlib import Path
 
-from resources.wx_gui import gui_main_menu, gui_support, gui_download
+from resources.wx_gui import gui_main_menu, gui_support, gui_download, gui_macos_installer_flash
 from resources import (
     constants,
     macos_installer_handler,
@@ -18,9 +18,9 @@ class macOSInstallerFrame(wx.Frame):
     """
     Create a frame for downloading and creating macOS installers
     Uses a Modal Dialog for smoother transition from other frames
+    Note: Flashing installers is passed to gui_macos_installer_flash.py
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        # super(macOSInstallerFrame, self).__init__(parent, title=title, size=(350, 200))
 
         self.constants: constants.Constants = global_constants
         self.title: str = title
@@ -130,6 +130,11 @@ class macOSInstallerFrame(wx.Frame):
                 installer_button.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.on_download_installer(installers[temp]))
                 installer_button.Center(wx.HORIZONTAL)
                 spacer += 25
+
+                # Since installers are sorted by version, set the latest installer as the default button
+                # Note that on full display, the last installer is generally a beta
+                if show_full is False and app == list(installers.keys())[-1]:
+                    installer_button.SetDefault()
 
         # Show all available installers
         show_all_button = wx.Button(dialog, label="Show all available installers" if show_full is False else "Show only latest installers", pos=(-1, installer_button.GetPosition()[1] + installer_button.GetSize()[1]), size=(180, 30))
@@ -276,6 +281,7 @@ class macOSInstallerFrame(wx.Frame):
             self.on_existing()
 
 
+
     def on_download(self, event: wx.Event) -> None:
         self.frame_modal.Close()
         self.parent.Hide()
@@ -283,7 +289,20 @@ class macOSInstallerFrame(wx.Frame):
         self.parent.Close()
 
     def on_existing(self, event: wx.Event = None) -> None:
-        pass
+        frames = [self, self.frame_modal, self.parent]
+        for frame in frames:
+            if frame:
+                frame.Close()
+        gui_macos_installer_flash.macOSInstallerFlashFrame(
+            None,
+            title=self.title,
+            global_constants=self.constants,
+            **({"screen_location": self.GetScreenPosition()} if self else {})
+        )
+        for frame in frames:
+            if frame:
+                frame.Destroy()
+
 
     def on_return(self, event: wx.Event) -> None:
         self.frame_modal.Close()
