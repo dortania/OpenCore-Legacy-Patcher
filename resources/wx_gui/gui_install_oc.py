@@ -80,7 +80,7 @@ class InstallOCFrame(wx.Frame):
         self.progress_bar.Hide()
 
         # Create wxDialog for disk selection
-        dialog = wx.Dialog(self, title=self.title, size=(370, -1))
+        dialog = wx.Dialog(self, title=self.title, size=(380, -1))
 
         # Title label: Install OpenCore
         title_label = wx.StaticText(dialog, label="Install OpenCore", pos=(-1,5))
@@ -146,7 +146,7 @@ class InstallOCFrame(wx.Frame):
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 
         # Set size
-        dialog.SetSize((370, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
+        dialog.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
         dialog.ShowWindowModal()
         self.dialog = dialog
 
@@ -163,7 +163,7 @@ class InstallOCFrame(wx.Frame):
             self,
             title=f"Volumes on {disk}",
             style=wx.CAPTION | wx.CLOSE_BOX,
-            size=(370, 300)
+            size=(300, 300)
         )
 
         # Add text: "Volumes on {disk}"
@@ -189,7 +189,7 @@ class InstallOCFrame(wx.Frame):
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 
         # Set size
-        dialog.SetSize((370, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
+        dialog.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
 
         # Show dialog
         dialog.ShowWindowModal()

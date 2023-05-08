@@ -172,12 +172,12 @@ class SysPatchMenu(wx.Frame):
                     if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                         i = i + 20
                         logging.info(f"- Adding patch: {patch} - {patches[patch]}")
-                        patch_label = wx.StaticText(frame, label=f"- {patch}", pos=(available_label.GetPosition()[0], available_label.GetPosition()[1] + i))
+                        patch_label = wx.StaticText(frame, label=f"- {patch}", pos=(available_label.GetPosition()[0] + 20, available_label.GetPosition()[1] + i))
                         patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
 
             if patches["Validation: Patching Possible"] is False:
                 # Cannot patch due to the following reasons:
-                patch_label = wx.StaticText(frame, label="Cannot patch due to the following reasons:", pos=(-1, patch_label.GetPosition().y + i - 10))
+                patch_label = wx.StaticText(frame, label="Cannot patch due to the following reasons:", pos=(-1, patch_label.GetPosition().y + 25))
                 patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                 patch_label.Center(wx.HORIZONTAL)
 
@@ -198,7 +198,7 @@ class SysPatchMenu(wx.Frame):
 
                     patch_text = f"{self.constants.computer.oclp_sys_version}, {date}"
 
-                    patch_label = wx.StaticText(frame, label="Root Volume last patched:", pos=(-1, patch_label.GetPosition().y + i + 20))
+                    patch_label = wx.StaticText(frame, label="Root Volume last patched:", pos=(-1, patch_label.GetPosition().y + 25))
                     patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                     patch_label.Center(wx.HORIZONTAL)
 
@@ -208,7 +208,7 @@ class SysPatchMenu(wx.Frame):
 
 
         # Button: Start Root Patching
-        start_button = wx.Button(frame, label="Start Root Patching", pos=(10, patch_label.GetPosition().y + 30), size=(170, 30))
+        start_button = wx.Button(frame, label="Start Root Patching", pos=(10, patch_label.GetPosition().y + 25), size=(170, 30))
         start_button.Bind(wx.EVT_BUTTON, lambda event: self.start_root_patching(frame, patches, no_new_patches))
         start_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         start_button.Center(wx.HORIZONTAL)
