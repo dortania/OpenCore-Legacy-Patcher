@@ -83,12 +83,15 @@ class macOSInstallerFlashFrame(wx.Frame):
         if self.available_installers_local:
             logging.info("Installer(s) found:")
             spacer = 10
+            entries = len(self.available_installers_local)
             for app in self.available_installers_local:
                 logging.info(f"- {self.available_installers_local[app]['Short Name']}: {self.available_installers_local[app]['Version']} ({self.available_installers_local[app]['Build']})")
                 installer_button = wx.Button(frame_modal, label=f"{self.available_installers_local[app]['Short Name']}: {self.available_installers_local[app]['Version']} ({self.available_installers_local[app]['Build']})", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + spacer), size=(300, 30))
                 installer_button.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.on_select(self.available_installers_local[temp]))
                 installer_button.Center(wx.HORIZONTAL)
                 spacer += 25
+                if entries == 1:
+                    installer_button.SetDefault()
         else:
             installer_button = wx.StaticText(frame_modal, label="No installers found in '/Applications'", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
             installer_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
@@ -150,11 +153,14 @@ class macOSInstallerFlashFrame(wx.Frame):
         # List of disks
         if self.available_disks:
             spacer = 5
+            entries = len(self.available_disks)
             for disk in self.available_disks:
                 logging.info(f"{disk}: {self.available_disks[disk]['name']} - {utilities.human_fmt(self.available_disks[disk]['size'])}")
                 disk_button = wx.Button(self.frame_modal, label=f"{disk}: {self.available_disks[disk]['name']} - {utilities.human_fmt(self.available_disks[disk]['size'])}", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + spacer), size=(300, 30))
                 disk_button.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.on_select_disk(self.available_disks[temp], installer))
                 disk_button.Center(wx.HORIZONTAL)
+                if entries == 1:
+                    disk_button.SetDefault()
         else:
             disk_button = wx.StaticText(self.frame_modal, label="No disks found", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
             disk_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
@@ -171,7 +177,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
 
     def on_select_disk(self, disk: dict, installer: dict) -> None:
-        answer = wx.MessageBox(f"Are you sure you want to erase '{disk['name']}'?", "Confirmation", wx.YES_NO | wx.ICON_QUESTION)
+        answer = wx.MessageBox(f"Are you sure you want to erase '{disk['name']}'?\nAll data will be lost, this cannot be undone.", "Confirmation", wx.YES_NO | wx.ICON_QUESTION)
         if answer != wx.YES:
             return
 

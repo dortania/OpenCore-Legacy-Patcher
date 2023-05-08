@@ -112,17 +112,18 @@ class InstallOCFrame(wx.Frame):
                 logging.info(f"- Checking if booted disk is present: {disk_root}")
 
             # Add buttons for each disk
+            items = len(self.available_disks)
+            longest_label = max((len(self.available_disks[disk]['disk']) + len(self.available_disks[disk]['name']) + len(str(self.available_disks[disk]['size']))) for disk in self.available_disks)
+            longest_label = longest_label * 10
+
             for disk in self.available_disks:
                 # Create a button for each disk
                 logging.info(f"- {self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}")
-                disk_button = wx.Button(dialog, label=f"{self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}", size=(350,30), pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5))
+                disk_button = wx.Button(dialog, label=f"{self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}", size=(longest_label ,30), pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5))
                 disk_button.Center(wx.HORIZONTAL)
                 disk_button.Bind(wx.EVT_BUTTON, lambda event, disk=disk: self._display_volumes(disk, self.available_disks))
-                logging.info(f"- Comparing {disk_root} to {self.available_disks[disk]['disk']}")
-                if disk_root == self.available_disks[disk]['disk']:
-                    logging.info("- Found match")
-                    disk_button.SetForegroundColour(self.hyperlink_colour)
-
+                if disk_root == self.available_disks[disk]['disk'] or items == 1:
+                    disk_button.SetDefault()
 
             if disk_root:
                 # Add note: "Note: Blue represent the disk OpenCore is currently booted from"
@@ -170,14 +171,19 @@ class InstallOCFrame(wx.Frame):
         text_label.Center(wx.HORIZONTAL)
 
         partitions = install.tui_disk_installation(self.constants).list_partitions(disk, dataset)
+        items = len(partitions)
+        longest_label = max((len(partitions[partition]['partition']) + len(partitions[partition]['name']) + len(str(partitions[partition]['size']))) for partition in partitions)
+        longest_label = longest_label * 10
         for partition in partitions:
             logging.info(f"- {partitions[partition]['partition']} - {partitions[partition]['name']} - {partitions[partition]['size']}")
-            disk_button = wx.Button(dialog, label=f"{partitions[partition]['partition']} - {partitions[partition]['name']} - {partitions[partition]['size']}", size=(300,30), pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 5))
+            disk_button = wx.Button(dialog, label=f"{partitions[partition]['partition']} - {partitions[partition]['name']} - {partitions[partition]['size']}", size=(longest_label,30), pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 5))
             disk_button.Center(wx.HORIZONTAL)
             disk_button.Bind(wx.EVT_BUTTON, lambda event, partition=partition: self._install_oc_process(partition))
+            if partitions[partition]['partition'].startswith(f"{disk}s") or items == 1:
+                disk_button.SetDefault()
 
         # Add button: Return to main menu
-        return_button = wx.Button(dialog, label="Return to main menu", size=(200,30), pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]))
+        return_button = wx.Button(dialog, label="Return to main menu", size=(150,30), pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]))
         return_button.Center(wx.HORIZONTAL)
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 
