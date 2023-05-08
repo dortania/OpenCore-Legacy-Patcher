@@ -161,13 +161,19 @@ class macOSInstallerFlashFrame(wx.Frame):
                 disk_button.Center(wx.HORIZONTAL)
                 if entries == 1:
                     disk_button.SetDefault()
+                spacer += 25
         else:
             disk_button = wx.StaticText(self.frame_modal, label="No disks found", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
             disk_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
             disk_button.Center(wx.HORIZONTAL)
 
+        # Search for disks again
+        search_button = wx.Button(self.frame_modal, label="Search for disks again", pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]), size=(150, 30))
+        search_button.Bind(wx.EVT_BUTTON, self.on_select)
+        search_button.Center(wx.HORIZONTAL)
+
         # Button: Return to Main Menu
-        cancel_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]), size=(150, 30))
+        cancel_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, search_button.GetPosition()[1] + search_button.GetSize()[1] - 10), size=(150, 30))
         cancel_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         cancel_button.Center(wx.HORIZONTAL)
 

@@ -68,7 +68,6 @@ class SysPatchMenu(wx.Frame):
         frame.Show()
 
         # Generate KDK object
-        kdk_result = False
         self.kdk_obj: kdk_handler.KernelDebugKitObject = None
         def kdk_thread_spawn():
             self.kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
@@ -164,27 +163,23 @@ class SysPatchMenu(wx.Frame):
             # Add Label for each patch
             i = 0
             if no_new_patches is True:
-                patch_label = wx.StaticText(frame, label="All applicable patches already installed", pos=(-1, 50))
+                patch_label = wx.StaticText(frame, label="All applicable patches already installed", pos=(-1, available_label.GetPosition()[1] + 20))
                 patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
                 patch_label.Center(wx.HORIZONTAL)
-                i = i + 10
+                i = i + 20
             else:
                 for patch in patches:
                     if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
+                        i = i + 20
                         logging.info(f"- Adding patch: {patch} - {patches[patch]}")
-                        patch_label = wx.StaticText(frame, label=f"- {patch}", pos=(available_label.GetPosition()[0]
-                            , available_label.GetPosition()[1] + 20 + i))
+                        patch_label = wx.StaticText(frame, label=f"- {patch}", pos=(available_label.GetPosition()[0], available_label.GetPosition()[1] + i))
                         patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-                        i = i + 5
-
 
             if patches["Validation: Patching Possible"] is False:
                 # Cannot patch due to the following reasons:
-                i = i + 10
-                patch_label = wx.StaticText(frame, label="Cannot patch due to the following reasons:", pos=(-1, patch_label.GetPosition().y + i + 10))
+                patch_label = wx.StaticText(frame, label="Cannot patch due to the following reasons:", pos=(-1, patch_label.GetPosition().y + i - 10))
                 patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                 patch_label.Center(wx.HORIZONTAL)
-
 
                 for patch in patches:
                     if not patch.startswith("Validation"):
@@ -213,7 +208,7 @@ class SysPatchMenu(wx.Frame):
 
 
         # Button: Start Root Patching
-        start_button = wx.Button(frame, label="Start Root Patching", pos=(10, patch_label.GetPosition().y + 20), size=(170, 30))
+        start_button = wx.Button(frame, label="Start Root Patching", pos=(10, patch_label.GetPosition().y + 30), size=(170, 30))
         start_button.Bind(wx.EVT_BUTTON, lambda event: self.start_root_patching(frame, patches, no_new_patches))
         start_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         start_button.Center(wx.HORIZONTAL)

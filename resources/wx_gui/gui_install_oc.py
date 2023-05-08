@@ -98,12 +98,7 @@ class InstallOCFrame(wx.Frame):
         gpt_note.Center(wx.HORIZONTAL)
 
         # Add buttons for each disk
-        if self.available_disks is None:
-            # Text: Failed to find any applicable disks
-            disk_label = wx.StaticText(dialog, label="Failed to find any applicable disks", pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5))
-            disk_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-            disk_label.Center(wx.HORIZONTAL)
-        else:
+        if self.available_disks:
             disk_root = self.constants.booted_oc_disk
             if disk_root:
                 # disk6s1 -> disk6
@@ -115,15 +110,16 @@ class InstallOCFrame(wx.Frame):
             items = len(self.available_disks)
             longest_label = max((len(self.available_disks[disk]['disk']) + len(self.available_disks[disk]['name']) + len(str(self.available_disks[disk]['size']))) for disk in self.available_disks)
             longest_label = longest_label * 10
-
+            spacer = 0
             for disk in self.available_disks:
                 # Create a button for each disk
                 logging.info(f"- {self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}")
-                disk_button = wx.Button(dialog, label=f"{self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}", size=(longest_label ,30), pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5))
+                disk_button = wx.Button(dialog, label=f"{self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}", size=(longest_label ,30), pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5 + spacer))
                 disk_button.Center(wx.HORIZONTAL)
                 disk_button.Bind(wx.EVT_BUTTON, lambda event, disk=disk: self._display_volumes(disk, self.available_disks))
                 if disk_root == self.available_disks[disk]['disk'] or items == 1:
                     disk_button.SetDefault()
+                spacer += 25
 
             if disk_root:
                 # Add note: "Note: Blue represent the disk OpenCore is currently booted from"
@@ -133,14 +129,19 @@ class InstallOCFrame(wx.Frame):
             else:
                 disk_label = wx.StaticText(dialog, label="", pos=(-1, disk_button.GetPosition()[1] + 15))
                 disk_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        else:
+            # Text: Failed to find any applicable disks
+            disk_label = wx.StaticText(dialog, label="Failed to find any applicable disks", pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5))
+            disk_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+            disk_label.Center(wx.HORIZONTAL)
 
         # Add button: Search for disks again
-        search_button = wx.Button(dialog, label="Search for disks again", size=(200,30), pos=(-1, disk_label.GetPosition()[1] + disk_label.GetSize()[1] + 5))
+        search_button = wx.Button(dialog, label="Search for disks again", size=(150,30), pos=(-1, disk_label.GetPosition()[1] + disk_label.GetSize()[1] + 5))
         search_button.Center(wx.HORIZONTAL)
         search_button.Bind(wx.EVT_BUTTON, self.on_reload_frame)
 
         # Add button: Return to main menu
-        return_button = wx.Button(dialog, label="Return to main menu", size=(200,30), pos=(-1, search_button.GetPosition()[1] + 25))
+        return_button = wx.Button(dialog, label="Return to main menu", size=(150,30), pos=(-1, search_button.GetPosition()[1] + 20))
         return_button.Center(wx.HORIZONTAL)
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 

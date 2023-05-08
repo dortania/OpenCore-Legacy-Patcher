@@ -155,8 +155,8 @@ class DetectRootPatch:
                     device_probe.AMD.Archs.Polaris,
                 ]:
                     if self.constants.detected_os > os_data.os_data.monterey:
-                        if self.constants.computer.rosetta_active is True:
-                            continue
+                        # if self.constants.computer.rosetta_active is True:
+                        #     continue
 
                         if gpu.arch == device_probe.AMD.Archs.Polaris:
                             # Check if host supports AVX2.0
@@ -201,7 +201,8 @@ class DetectRootPatch:
                             self.amfi_shim_bins = True
                         self.legacy_keyboard_backlight = self._check_legacy_keyboard_backlight()
                         self.requires_root_kc = True
-                elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
+                # elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
+                if True:
                     if self.constants.detected_os > os_data.os_data.big_sur:
                         self.ivy_gpu = True
                         if self.constants.detected_os >= os_data.os_data.ventura:
