@@ -231,8 +231,11 @@ class SettingsFrame(wx.Frame):
         # Set Override Model to top middle
         model_choice = wx.Choice(panel, choices=model_array.SupportedSMBIOS + ["Host Model"] if self.constants.computer.real_model not in model_array.SupportedSMBIOS else model_array.SupportedSMBIOS, pos=(panel.GetSize()[0] / 2, 10))
         model_choice.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        model_choice.SetSelection(model_array.SupportedSMBIOS.index(self.constants.custom_model) if self.constants.custom_model else model_choice.FindString(self.constants.computer.real_model))
         model_choice.Bind(wx.EVT_CHOICE, lambda event: self.on_model_choice(event, model_choice))
+        selection = self.constants.custom_model if self.constants.custom_model else self.constants.computer.real_model
+        if selection not in model_array.SupportedSMBIOS:
+            selection = "Host Model"
+        model_choice.SetSelection(model_choice.FindString(selection))
 
         # Set position to middle of panel
         center = (panel.GetSize()[0] + 150)
