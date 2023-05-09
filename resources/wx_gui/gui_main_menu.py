@@ -5,12 +5,13 @@ from resources.wx_gui import (
     gui_sys_patch,
     gui_support,
     gui_help,
+    gui_settings,
 )
 from resources import constants
 
 class MainMenu(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        super(MainMenu, self).__init__(parent, title=title, size=(350, 300))
+        super(MainMenu, self).__init__(parent, title=title, size=(350, 300), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
         self.constants: constants.Constants = global_constants
         self.title: str = title
@@ -46,6 +47,7 @@ class MainMenu(wx.Frame):
         model_label = wx.StaticText(self, label=f"Model: {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1,30))
         model_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         model_label.Center(wx.HORIZONTAL)
+        self.model_label = model_label
 
         # Buttons:
         menu_buttons = {
@@ -103,7 +105,13 @@ class MainMenu(wx.Frame):
 
 
     def on_settings(self, event: wx.Event = None):
-        pass
+        gui_settings.SettingsFrame(
+            parent=self,
+            title=self.title,
+            global_constants=self.constants,
+            screen_location=self.GetPosition()
+        )
+
 
     def on_help(self, event: wx.Event = None):
         gui_help.HelpFrame(

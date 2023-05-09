@@ -14,7 +14,7 @@ class BuildFrame(wx.Frame):
     Uses a Modal Dialog for smoother transition from other frames
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        super(BuildFrame, self).__init__(parent, title=title, size=(350, 200))
+        super(BuildFrame, self).__init__(parent, title=title, size=(350, 200), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
         self.install_button: wx.Button = None
         self.text_box:     wx.TextCtrl = None

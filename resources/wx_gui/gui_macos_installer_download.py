@@ -70,7 +70,7 @@ class macOSInstallerFrame(wx.Frame):
 
 
     def _generate_catalog_frame(self) -> wx.Frame:
-        super(macOSInstallerFrame, self).__init__(None, title=self.title, size=(300, 200))
+        super(macOSInstallerFrame, self).__init__(None, title=self.title, size=(300, 200), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         self.SetPosition((self.parent.GetPosition()[0], self.parent.GetPosition()[1]))
 
         # Title: Pulling installer catalog

@@ -22,7 +22,7 @@ from data import os_data
 class macOSInstallerFlashFrame(wx.Frame):
 
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        super(macOSInstallerFlashFrame, self).__init__(parent, title=title, size=(350, 200))
+        super(macOSInstallerFlashFrame, self).__init__(parent, title=title, size=(350, 200), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
         self.constants: constants.Constants = global_constants
         self.title: str = title
