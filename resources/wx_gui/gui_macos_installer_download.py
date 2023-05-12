@@ -81,7 +81,8 @@ class macOSInstallerFrame(wx.Frame):
         # Progress bar
         progress_bar = wx.Gauge(self, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(250, 30))
         progress_bar.Center(wx.HORIZONTAL)
-        progress_bar.Pulse()
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
 
         # Set size of frame
         self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
@@ -100,6 +101,7 @@ class macOSInstallerFrame(wx.Frame):
         while thread.is_alive():
             wx.Yield()
 
+        progress_bar_animation.stop_pulse()
         progress_bar.Hide()
         self._display_available_installers()
 
@@ -233,7 +235,8 @@ class macOSInstallerFrame(wx.Frame):
         chunk_label.SetLabel("May take a few minutes...")
         chunk_label.Center(wx.HORIZONTAL)
 
-        progress_bar.Pulse()
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
 
         # Start thread to extract installer
         self.result = False
@@ -250,6 +253,7 @@ class macOSInstallerFrame(wx.Frame):
         while thread.is_alive():
             wx.Yield()
 
+        progress_bar_animation.stop_pulse()
         progress_bar.Hide()
         chunk_label.SetLabel("Successfully extracted macOS installer" if self.result is True else "Failed to extract macOS installer")
         chunk_label.Center(wx.HORIZONTAL)

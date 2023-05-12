@@ -585,6 +585,7 @@ class LocalInstallerCatalog:
                     "Build": app_sdk,
                     "Path": application,
                     "Minimum Host OS": min_required,
+                    "OS": kernel
                 }
             })
 

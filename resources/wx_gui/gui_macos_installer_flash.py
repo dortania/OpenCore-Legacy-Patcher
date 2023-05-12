@@ -8,7 +8,7 @@ import tempfile
 
 from pathlib import Path
 
-from resources.wx_gui import gui_main_menu, gui_build
+from resources.wx_gui import gui_main_menu, gui_build, gui_support
 from resources import (
     constants,
     macos_installer_handler,
@@ -30,6 +30,8 @@ class macOSInstallerFlashFrame(wx.Frame):
         self.available_installers_local: dict = {}
         self.available_disks: dict = {}
         self.prepare_result: bool = False
+
+        self.progress_bar_animation: gui_support.GaugePulseCallback = None
 
         self.frame_modal: wx.Dialog = None
 
@@ -54,7 +56,10 @@ class macOSInstallerFlashFrame(wx.Frame):
         # Progress bar
         progress_bar = wx.Gauge(self, range=100, pos=(-1, 30), size=(200, 30))
         progress_bar.Center(wx.HORIZONTAL)
-        progress_bar.Pulse()
+
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
+        self.progress_bar_animation = progress_bar_animation
 
         # Set size of frame
         self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
@@ -105,6 +110,8 @@ class macOSInstallerFlashFrame(wx.Frame):
         # Set size of frame
         frame_modal.SetSize((-1, cancel_button.GetPosition()[1] + cancel_button.GetSize()[1] + 40))
 
+        self.progress_bar_animation.stop_pulse()
+
         frame_modal.ShowWindowModal()
         self.frame_modal = frame_modal
 
@@ -123,7 +130,9 @@ class macOSInstallerFlashFrame(wx.Frame):
         # Progress bar
         progress_bar = wx.Gauge(self, range=100, pos=(-1, 30), size=(200, 30))
         progress_bar.Center(wx.HORIZONTAL)
-        progress_bar.Pulse()
+
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
 
         # Set size of frame
         self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
@@ -179,6 +188,9 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # Set size of frame
         self.frame_modal.SetSize((-1, cancel_button.GetPosition()[1] + cancel_button.GetSize()[1] + 40))
+
+        progress_bar_animation.stop_pulse()
+
         self.frame_modal.ShowWindowModal()
 
 
@@ -217,7 +229,9 @@ class macOSInstallerFlashFrame(wx.Frame):
         # Progress bar
         progress_bar = wx.Gauge(self, range=100, pos=(-1, bytes_written_label.GetPosition()[1] + bytes_written_label.GetSize()[1] + 5), size=(300, 30))
         progress_bar.Center(wx.HORIZONTAL)
-        progress_bar.Pulse()
+
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
 
         # Set size of frame
         self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
@@ -232,10 +246,11 @@ class macOSInstallerFlashFrame(wx.Frame):
         # Base Size
         estimated_size = 16000
         # AutoPkg (700MB~)
-        estimated_size += 700 if self.constants.detected_os >= os_data.os_data.big_sur else 0
+        estimated_size += 700 if installer['OS'] >= os_data.os_data.big_sur else 0
         # KDK (700MB~, and overhead for copying to installer)
-        estimated_size += 700 * 2 if self.constants.detected_os >= os_data.os_data.ventura else 0
+        estimated_size += 700 * 2 if installer['OS'] >= os_data.os_data.ventura else 0
 
+        progress_bar_animation.stop_pulse()
         progress_bar.SetRange(estimated_size)
 
         root_disk = disk['identifier'][5:]
@@ -259,9 +274,13 @@ class macOSInstallerFlashFrame(wx.Frame):
             return
 
         # Next verify the installer
-        progress_bar.Pulse()
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
+
         bytes_written_label.SetLabel("Validating Installer Integrity...")
         error_message = self._validate_installer_pkg(disk['identifier'])
+
+        progress_bar_animation.stop_pulse()
 
         if error_message != "":
             progress_bar.SetValue(0)

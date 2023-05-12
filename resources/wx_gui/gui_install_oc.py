@@ -21,6 +21,8 @@ class InstallOCFrame(wx.Frame):
         self.available_disks: dict = None
         self.stock_output = logging.getLogger().handlers[0].stream
 
+        self.progress_bar_animation: gui_support.GaugePulseCallback = None
+
         self.hyperlink_colour = (25, 179, 231)
 
         self._generate_elements()
@@ -55,7 +57,11 @@ class InstallOCFrame(wx.Frame):
         # Progress bar: {indeterminate}
         progress_bar = wx.Gauge(self, range=100, pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1]), size=(150, 30), style=wx.GA_HORIZONTAL | wx.GA_SMOOTH)
         progress_bar.Center(wx.HORIZONTAL)
-        progress_bar.Pulse()
+
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
+
+        self.progress_bar_animation = progress_bar_animation
         self.progress_bar = progress_bar
 
 
@@ -77,6 +83,7 @@ class InstallOCFrame(wx.Frame):
             wx.Yield()
             continue
 
+        self.progress_bar_animation.stop_pulse()
         self.progress_bar.Hide()
 
         # Create wxDialog for disk selection

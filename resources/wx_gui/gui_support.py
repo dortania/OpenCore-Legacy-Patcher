@@ -4,10 +4,12 @@ import sys
 import time
 import logging
 import subprocess
+import threading
 
 from pathlib import Path
 
 from resources import constants
+from data import model_array, os_data
 
 
 class GenerateMenubar:
@@ -19,6 +21,95 @@ class GenerateMenubar:
     def generate(self) -> wx.MenuBar:
         self.menubar = wx.MenuBar()
         return self.menubar
+
+
+
+class GaugePulseCallback:
+    """
+    Uses an alternative Pulse() method for wx.Gauge() on macOS Monterey+
+    Dirty hack, however better to display some form of animation than none at all
+    """
+
+    def __init__(self, global_constants: constants.Constants, gauge: wx.Gauge) -> None:
+        self.gauge: wx.Gauge = gauge
+
+        self.pulse_thread: threading.Thread = None
+        self.pulse_thread_active: bool = False
+
+        self.gauge_value: int = 0
+        self.pulse_forward: bool = True
+
+        self.non_metal_alternative: bool = CheckProperties(global_constants).host_is_non_metal()
+
+
+    def start_pulse(self) -> None:
+        if self.non_metal_alternative is False:
+            self.gauge.Pulse()
+            return
+        self.pulse_thread_active = True
+        self.pulse_thread = threading.Thread(target=self._pulse)
+        self.pulse_thread.start()
+
+
+    def stop_pulse(self) -> None:
+        if self.non_metal_alternative is False:
+            return
+        self.pulse_thread_active = False
+        self.pulse_thread.join()
+
+
+    def _pulse(self) -> None:
+        while self.pulse_thread_active:
+            if self.gauge_value == 0:
+                self.pulse_forward = True
+
+            elif self.gauge_value == 100:
+                self.pulse_forward = False
+
+            if self.pulse_forward:
+                self.gauge_value += 1
+            else:
+                self.gauge_value -= 1
+
+            wx.CallAfter(self.gauge.SetValue, self.gauge_value)
+            time.sleep(0.005)
+
+
+class CheckProperties:
+
+    def __init__(self, global_constants: constants.Constants) -> None:
+        self.constants: constants.Constants = global_constants
+
+    def host_can_build(self):
+        """
+        Check if host supports building OpenCore configs
+        """
+        if self.constants.host_is_hackintosh is True:
+            return False
+        if self.constants.allow_oc_everywhere is True:
+            return True
+        if self.constants.custom_model:
+            return True
+        if self.constants.computer.real_model in model_array.SupportedSMBIOS:
+            return True
+
+        return False
+
+
+    def host_is_non_metal(self):
+        """
+        Check if host is non-metal
+        Primarily for wx.Gauge().Pulse() workaround (where animation doesn't work on Monterey+)
+        """
+
+        if self.constants.detected_os < os_data.os_data.monterey:
+            return False
+        if not Path("/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/SkyLightOld.dylib").exists():
+            # SkyLight stubs are only used on non-Metal
+            return False
+
+        return True
+
 
 
 class PayloadMount:

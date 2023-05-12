@@ -8,6 +8,7 @@ from resources.wx_gui import (
     gui_settings,
 )
 from resources import constants
+from data import model_array, os_data
 
 class MainMenu(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
@@ -15,6 +16,9 @@ class MainMenu(wx.Frame):
 
         self.constants: constants.Constants = global_constants
         self.title: str = title
+
+        self.model_label: wx.StaticText = None
+        self.build_button: wx.Button = None
 
         self._generate_elements()
 
@@ -63,6 +67,14 @@ class MainMenu(wx.Frame):
             button.Bind(wx.EVT_BUTTON, button_function)
             button.Center(wx.HORIZONTAL)
             button_y += 30
+
+            if button_name == "Build and Install OpenCore":
+                self.build_button = button
+                if gui_support.CheckProperties(self.constants).host_can_build() is False:
+                    button.Disable()
+            elif button_name == "Post-Install Root Patch":
+                if self.constants.detected_os < os_data.os_data.big_sur:
+                    button.Disable()
 
         # Text: Copyright
         copy_label = wx.StaticText(self, label=self.constants.copyright_date, pos=(-1, button_y + 10))

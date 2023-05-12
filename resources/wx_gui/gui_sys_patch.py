@@ -61,7 +61,9 @@ class SysPatchMenu(wx.Frame):
 
         progress_bar = wx.Gauge(frame, range=100, pos=(-1, subheader.GetPosition()[1] + subheader.GetSize()[1] + 5), size=(250, 20))
         progress_bar.Center(wx.HORIZONTAL)
-        progress_bar.Pulse()
+
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
 
         # Set size of frame
         frame.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 35))
@@ -76,10 +78,10 @@ class SysPatchMenu(wx.Frame):
         kdk_thread.start()
 
         while kdk_thread.is_alive():
-            progress_bar.Pulse()
             wx.GetApp().Yield()
 
         if self.kdk_obj.success is False:
+            progress_bar_animation.stop_pulse()
             progress_bar.SetValue(0)
             wx.MessageBox(f"KDK download failed: {self.kdk_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
             return False
@@ -107,12 +109,17 @@ class SysPatchMenu(wx.Frame):
         subheader.Center(wx.HORIZONTAL)
         wx.GetApp().Yield()
 
+        progress_bar_animation.stop_pulse()
+
         if self.kdk_obj.validate_kdk_checksum() is False:
+            progress_bar.SetValue(0)
             logging.error("KDK checksum validation failed")
             logging.error(self.kdk_obj.error_msg)
             msg = wx.MessageDialog(frame, f"KDK checksum validation failed: {self.kdk_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
             msg.ShowModal()
             return False
+
+        progress_bar.SetValue(100)
 
         logging.info("KDK download complete")
         return True
