@@ -8,7 +8,7 @@ from resources.wx_gui import (
     gui_settings,
 )
 from resources import constants
-from data import model_array, os_data
+from data import os_data
 
 class MainMenu(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
@@ -123,7 +123,6 @@ class MainMenu(wx.Frame):
             global_constants=self.constants,
             screen_location=self.GetPosition()
         )
-
 
     def on_help(self, event: wx.Event = None):
         gui_help.HelpFrame(
