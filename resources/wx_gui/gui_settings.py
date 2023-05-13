@@ -128,7 +128,8 @@ class SettingsFrame(wx.Frame):
                     checkbox.Bind(wx.EVT_CHECKBOX, event)
                     if "condition" in setting_info:
                         checkbox.Enable(setting_info["condition"])
-                        checkbox.SetValue(setting_info["condition"])
+                        if setting_info["condition"] is False:
+                            checkbox.SetValue(False)
 
                 elif setting_info["type"] == "spinctrl":
                     # Add spinctrl, and description underneath
