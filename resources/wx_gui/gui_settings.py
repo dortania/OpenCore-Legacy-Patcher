@@ -683,7 +683,7 @@ class SettingsFrame(wx.Frame):
         entries_per_row = len(sip_data.system_integrity_protection.csr_values) // 2
         horizontal_spacer = 15
         vertical_spacer = 25
-        index = 0
+        index = 1
         for sip_bit in sip_data.system_integrity_protection.csr_values_extended:
             self.sip_checkbox = wx.CheckBox(panel, label=sip_data.system_integrity_protection.csr_values_extended[sip_bit]["name"].split("CSR_")[1], pos = (vertical_spacer, sip_booted_label.GetPosition()[1] + 20 + horizontal_spacer))
             self.sip_checkbox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
