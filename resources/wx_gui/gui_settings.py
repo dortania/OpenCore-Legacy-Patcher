@@ -23,7 +23,7 @@ class SettingsFrame(wx.Frame):
 
         self.settings = self._settings()
 
-        self.frame_modal = wx.Dialog(parent, title=title, size=(600, 750))
+        self.frame_modal = wx.Dialog(parent, title=title, size=(600, 700))
 
         self._generate_elements(self.frame_modal)
         self.frame_modal.ShowWindowModal()
@@ -771,7 +771,7 @@ Hardware Information:
     {pprint.pformat(self.constants.computer, indent=4)}
 """
         # TextCtrl: properties
-        self.app_stats = wx.TextCtrl(panel, value=lines, pos=(-1, title.GetPosition()[1] + 30), size=(600, 320), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
+        self.app_stats = wx.TextCtrl(panel, value=lines, pos=(-1, title.GetPosition()[1] + 30), size=(600, 270), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
         self.app_stats.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
 
 
