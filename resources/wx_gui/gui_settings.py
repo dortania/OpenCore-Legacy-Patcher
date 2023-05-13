@@ -3,11 +3,12 @@ import wx.adv
 import logging
 import py_sip_xnu
 import pprint
+import subprocess
 
 from resources.wx_gui import gui_support
 
 from resources import constants, global_settings, defaults
-from data import model_array, sip_data
+from data import model_array, sip_data, smbios_data
 
 class SettingsFrame(wx.Frame):
     """
@@ -135,13 +136,21 @@ class SettingsFrame(wx.Frame):
                     # Add label next to spinctrl
                     label = wx.StaticText(panel, label=setting, pos=(spinctrl.GetSize()[0] + width - 16, spinctrl.GetPosition()[1]))
                     label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+                elif setting_info["type"] == "combobox":
+                    # Add combobox, and description underneath
+                    combobox = wx.ComboBox(panel, value=setting_info["value"], pos=(width + 20, 10 + height), choices=setting_info["choices"], size = (100,-1))
+                    combobox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+                    combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.on_combobox(event, variable))
+                    height += 10
                 else:
                     raise Exception("Invalid setting type")
 
                 lines = '\n'.join(setting_info["description"])
                 description = wx.StaticText(panel, label=lines, pos=(30 + width, 10 + height + 20))
                 description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-                height += 40
+                height += 40 if setting_info["type"] != "combobox" else 60
+
+
 
                 # Check number of lines in description, and adjust spacer accordingly
                 description_lines = len(lines.split('\n'))
@@ -168,6 +177,8 @@ class SettingsFrame(wx.Frame):
             }
         }
         """
+
+        models = [model for model in smbios_data.smbios_dictionary if "_" not in model and " " not in model and smbios_data.smbios_dictionary[model]["Board ID"] is not None]
 
         settings = {
             "Build": {
@@ -390,7 +401,9 @@ class SettingsFrame(wx.Frame):
                     "value": self.constants.secure_status,
                     "variable": "secure_status",
                     "description": [
-                        "Enable SecureBootModel",
+                        "Set Apple Secure Boot Model Identifier",
+                        "to matching T2 model if spoofing.",
+                        "Note: Incompatible with Root Patching.",
                     ],
                 },
                 "System Integrity Protection": {
@@ -433,6 +446,64 @@ class SettingsFrame(wx.Frame):
                         "Note: Disabling can cause UI corruption.",
                     ],
                 },
+            },
+            "SMBIOS": {
+                "Model Spoofing": {
+                    "type": "title",
+                },
+                "SMBIOS Spoof Level": {
+                    "type": "combobox",
+                    "choices": [
+                        "None",
+                        "Minimal",
+                        "Moderate",
+                        "Advanced",
+                    ],
+                    "value": self.constants.serial_settings,
+                    "variable": "serial_settings",
+                    "description": [
+                        "Set SMBIOS spoofing level.",
+                        "Levels are as follows:",
+                        "   - None: No spoofing.",
+                        "   - Minimal: Overrides Board ID.",
+                        "   - Moderate: Overrides Model.",
+                        "   - Advanced: Overrides Model and serial.",
+                    ],
+                },
+
+                "SMBIOS Spoof Model": {
+                    "type": "combobox",
+                    "choices": models + ["Default"],
+                    "value": self.constants.override_smbios,
+                    "variable": "override_smbios",
+                    "description": [
+                        "Set Mac Model to spoof to.",
+                    ],
+
+                },
+                "wrap_around 1": {
+                    "type": "wrap_around",
+                },
+                "Allow native spoofing": {
+                    "type": "checkbox",
+                    "value": self.constants.allow_native_spoofs,
+                    "variable": "allow_native_spoofs",
+                    "description": [
+                        "Allow OpenCore to spoof to",
+                        "natively supported Macs.",
+                        "Primarily used for enabling",
+                        "Universal Control.",
+                    ],
+                },
+                "Serial Spoofing": {
+                    "type": "title",
+                },
+                "Populate Serial Spoofing": {
+                    "type": "populate",
+                    "function": self._populate_serial_spoofing_settings,
+                    "args": wx.Frame,
+                },
+
             },
             "Non-Metal": {
                 "SkyLight Configuration": {
@@ -600,6 +671,41 @@ class SettingsFrame(wx.Frame):
             self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.on_sip_value)
 
 
+    def _populate_serial_spoofing_settings(self, panel: wx.Frame) -> None:
+        title: wx.StaticText = None
+        for child in panel.GetChildren():
+            if child.GetLabel() == "Serial Spoofing":
+                title = child
+                break
+
+        # Label: Custom Serial Number
+        custom_serial_number_label = wx.StaticText(panel, label="Custom Serial Number", pos=(title.GetPosition()[0] - 150, title.GetPosition()[1] + 30))
+        custom_serial_number_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+
+        # Textbox: Custom Serial Number
+        custom_serial_number_textbox = wx.TextCtrl(panel, pos=(custom_serial_number_label.GetPosition()[0] - 27, custom_serial_number_label.GetPosition()[1] + 20), size=(200, 25))
+        custom_serial_number_textbox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        custom_serial_number_textbox.SetToolTip("Enter a custom serial number here. This will be used for the SMBIOS and iMessage.\n\nNote: This will not be used if the \"Use Custom Serial Number\" checkbox is not checked.")
+        custom_serial_number_textbox.Bind(wx.EVT_TEXT, self.on_custom_serial_number_textbox)
+        self.custom_serial_number_textbox = custom_serial_number_textbox
+
+        # Label: Custom Board Serial Number
+        custom_board_serial_number_label = wx.StaticText(panel, label="Custom Board Serial Number", pos=(title.GetPosition()[0] + 120, custom_serial_number_label.GetPosition()[1]))
+        custom_board_serial_number_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+
+        # Textbox: Custom Board Serial Number
+        custom_board_serial_number_textbox = wx.TextCtrl(panel, pos=(custom_board_serial_number_label.GetPosition()[0] - 5, custom_serial_number_textbox.GetPosition()[1]), size=(200, 25))
+        custom_board_serial_number_textbox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        custom_board_serial_number_textbox.SetToolTip("Enter a custom board serial number here. This will be used for the SMBIOS and iMessage.\n\nNote: This will not be used if the \"Use Custom Board Serial Number\" checkbox is not checked.")
+        custom_board_serial_number_textbox.Bind(wx.EVT_TEXT, self.on_custom_board_serial_number_textbox)
+        self.custom_board_serial_number_textbox = custom_board_serial_number_textbox
+
+        # Button: Generate Serial Number (below)
+        generate_serial_number_button = wx.Button(panel, label=f"Generate S/N: {self.constants.custom_model or self.constants.computer.real_model}", pos=(title.GetPosition()[0] - 30, custom_board_serial_number_label.GetPosition()[1] + 60), size=(200, 25))
+        generate_serial_number_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        generate_serial_number_button.Bind(wx.EVT_BUTTON, self.on_generate_serial_number)
+
+
     def _populate_app_stats(self, panel: wx.Frame) -> None:
         title: wx.StaticText = None
         for child in panel.GetChildren():
@@ -697,6 +803,34 @@ Hardware Information:
             self.constants.custom_sip_value = hex(self.sip_value)
 
         self.sip_configured_label.SetLabel(f"Currently configured SIP: {hex(self.sip_value)}")
+
+    def on_combobox(self, event: wx.Event, label: str) -> None:
+        """
+        """
+        value = event.GetEventObject().GetValue()
+        self._update_setting(self.settings[self._find_parent_for_key(label)][label]["variable"], value)
+
+
+    def on_generate_serial_number(self, event: wx.Event) -> None:
+        dlg = wx.MessageDialog(self.frame_modal, "Please take caution when using serial spoofing. This should only be used on machines that were legally obtained and require reserialization.\n\nNote: new serials are only overlayed through OpenCore and are not permanently installed into ROM.\n\nMisuse of this setting can break power management and other aspects of the OS if the system does not need spoofing\n\nDortania does not condone the use of our software on stolen devices.\n\nAre you certain you want to continue?", "Warning", wx.YES_NO | wx.ICON_WARNING)
+        if dlg.ShowModal() != wx.ID_YES:
+            return
+
+        macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.constants.custom_model or self.constants.computer.real_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        macserial_output = macserial_output.stdout.decode().strip().split(" | ")
+        if len(macserial_output) == 2:
+            self.custom_serial_number_textbox.SetValue(macserial_output[0])
+            self.custom_board_serial_number_textbox.SetValue(macserial_output[1])
+        else:
+            wx.MessageBox(f"Failed to generate serial number:\n\n{macserial_output}", "Error", wx.OK | wx.ICON_ERROR)
+
+
+    def on_custom_serial_number_textbox(self, event: wx.Event) -> None:
+        self.constants.custom_serial_number = event.GetEventObject().GetValue()
+
+
+    def on_custom_board_serial_number_textbox(self, event: wx.Event) -> None:
+        self.constants.custom_board_serial_number = event.GetEventObject().GetValue()
 
 
     def on_return(self, event):
