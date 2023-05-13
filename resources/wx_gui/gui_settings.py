@@ -7,7 +7,7 @@ import subprocess
 
 from resources.wx_gui import gui_support
 
-from resources import constants, global_settings, defaults
+from resources import constants, global_settings, defaults, generate_smbios
 from data import model_array, sip_data, smbios_data
 
 class SettingsFrame(wx.Frame):
@@ -126,6 +126,9 @@ class SettingsFrame(wx.Frame):
                     checkbox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                     event = lambda event, warning=setting_info["warning"] if "warning" in setting_info else "", override=bool(setting_info["override_function"]) if "override_function" in setting_info else False: self.on_checkbox(event, warning, override)
                     checkbox.Bind(wx.EVT_CHECKBOX, event)
+                    if "condition" in setting_info:
+                        checkbox.Enable(setting_info["condition"])
+                        checkbox.SetValue(setting_info["condition"])
 
                 elif setting_info["type"] == "spinctrl":
                     # Add spinctrl, and description underneath
@@ -137,9 +140,11 @@ class SettingsFrame(wx.Frame):
                     label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                 elif setting_info["type"] == "combobox":
                     # Add combobox, and description underneath
-                    combobox = wx.ComboBox(panel, value=setting_info["value"], pos=(width + 20, 10 + height), choices=setting_info["choices"], size = (100,-1))
+                    combobox = wx.ComboBox(panel, value=setting_info["value"], pos=(width + 20, 10 + height), choices=setting_info["choices"], size = (130,-1))
                     combobox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-                    combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.on_combobox(event, variable))
+                    # combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.on_combobox(event, variable))
+                    if "override_function" in setting_info:
+                        combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.settings[tab][variable]["override_function"](event))
                     height += 10
                 else:
                     raise Exception("Invalid setting type")
@@ -148,8 +153,6 @@ class SettingsFrame(wx.Frame):
                 description = wx.StaticText(panel, label=lines, pos=(30 + width, 10 + height + 20))
                 description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
                 height += 40 if setting_info["type"] != "combobox" else 60
-
-
 
                 # Check number of lines in description, and adjust spacer accordingly
                 description_lines = len(lines.split('\n'))
@@ -178,6 +181,7 @@ class SettingsFrame(wx.Frame):
         """
 
         models = [model for model in smbios_data.smbios_dictionary if "_" not in model and " " not in model and smbios_data.smbios_dictionary[model]["Board ID"] is not None]
+        socketed_gpu_models = ["iMac9,1", "iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2", "MacPro3,1", "MacPro4,1", "MacPro5,1", "Xserve2,1", "Xserve3,1"]
 
         settings = {
             "Build": {
@@ -192,6 +196,7 @@ class SettingsFrame(wx.Frame):
                         "Enable booting macOS from",
                         "FireWire drives.",
                     ],
+                    "condition": not bool(generate_smbios.check_firewire(self.constants.computer.real_model) is False and not self.constants.custom_model)
                 },
                 "XHCI Booting": {
                     "type": "checkbox",
@@ -199,7 +204,8 @@ class SettingsFrame(wx.Frame):
                     "variable": "xhci_boot",
                     "description": [
                         "Enable booting macOS from add-in",
-                        "USB 3.0 expansion cards.",
+                        "USB 3.0 expansion cards on systems",
+                        "without native support.",
                     ],
                 },
                 "NVMe Booting": {
@@ -208,19 +214,10 @@ class SettingsFrame(wx.Frame):
                     "variable": "nvme_boot",
                     "description": [
                         "Enable booting macOS from NVMe",
-                        "drives.",
+                        "drives on systems without native",
+                        "support.",
                         "Note: Requires Firmware support",
                         "for OpenCore to load from NVMe.",
-                    ],
-                },
-                "Wake on WLAN": {
-                    "type": "checkbox",
-                    "value": self.constants.enable_wake_on_wlan,
-                    "variable": "enable_wake_on_wlan",
-                    "description": [
-                        "Disabled by default due to",
-                        "performance degradation",
-                        "on some systems from wake.",
                     ],
                 },
                 "wrap_around 2": {
@@ -231,7 +228,7 @@ class SettingsFrame(wx.Frame):
                     "value": self.constants.set_content_caching,
                     "variable": "set_content_caching",
                     "description": [
-                        "Enable Content Caching.",
+                        # "Enable Content Caching.",
                     ],
                 },
                 "APFS Trim": {
@@ -244,12 +241,11 @@ class SettingsFrame(wx.Frame):
                     ],
 
                 },
-                "Show Boot Picker": {
+                "Show OpenCore Boot Picker": {
                     "type": "checkbox",
                     "value": self.constants.showpicker,
                     "variable": "showpicker",
                     "description": [
-                        "Show OpenCore boot picker",
                         "When disabled, users can hold ESC to",
                         "show picker in the firmware.",
                     ],
@@ -259,8 +255,8 @@ class SettingsFrame(wx.Frame):
                     "value": self.constants.oc_timeout,
                     "variable": "oc_timeout",
                     "description": [
-                        "Timeout for OpenCore boot picker",
-                        "in seconds.",
+                        "Timeout before boot picker selects default",
+                        "entry in seconds.",
                         "Set to 0 for no timeout.",
                     ],
 
@@ -306,24 +302,6 @@ class SettingsFrame(wx.Frame):
                 "Miscellaneous": {
                     "type": "title",
                 },
-                "AMD GOP Injection": {
-                    "type": "checkbox",
-                    "value": self.constants.amd_gop_injection,
-                    "variable": "amd_gop_injection",
-                    "description": [
-                        "Inject AMD GOP for boot screen",
-                        "support on PC GPUs.",
-                    ],
-                },
-                "Nvidia GOP Injection": {
-                    "type": "checkbox",
-                    "value": self.constants.nvidia_kepler_gop_injection,
-                    "variable": "nvidia_kepler_gop_injection",
-                    "description": [
-                        "Inject Nvidia Kepler GOP for boot",
-                        "screen support on PC GPUs.",
-                    ],
-                },
                 "Disable Firmware Throttling": {
                     "type": "checkbox",
                     "value": self.constants.disable_fw_throttle,
@@ -334,9 +312,18 @@ class SettingsFrame(wx.Frame):
                         "Ex. Missing Display, Battery, etc.",
                     ],
                 },
-                "wrap_around 1": {
-                    "type": "wrap_around",
+
+                "Wake on WLAN": {
+                    "type": "checkbox",
+                    "value": self.constants.enable_wake_on_wlan,
+                    "variable": "enable_wake_on_wlan",
+                    "description": [
+                        "Disabled by default due to",
+                        "performance degradation",
+                        "on some systems from wake.",
+                    ],
                 },
+
                 "Software DeMUX": {
                     "type": "checkbox",
                     "value": self.constants.software_demux,
@@ -348,13 +335,17 @@ class SettingsFrame(wx.Frame):
                         "Note: Requires associated NVRAM arg:",
                         "'gpu-power-prefs'.",
                     ],
+                    "condition": not bool(not self.constants.custom_model and self.constants.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"])
+                },
+                "wrap_around 1": {
+                    "type": "wrap_around",
                 },
                 "3rd Party NVMe PM": {
                     "type": "checkbox",
                     "value": self.constants.allow_nvme_fixing,
                     "variable": "allow_nvme_fixing",
                     "description": [
-                        "Enable 3rd party NVMe power",
+                        "Enable non-stock NVMe power",
                         "management in macOS.",
                     ],
                 },
@@ -363,10 +354,80 @@ class SettingsFrame(wx.Frame):
                     "value": self.constants.allow_3rd_party_drives,
                     "variable": "allow_3rd_party_drives",
                     "description": [
-                        "Enable 3rd party SATA power",
+                        "Enable non-stock SATA power",
                         "management in macOS.",
                     ],
+                    "condition": not bool(self.constants.computer.third_party_sata_ssd is False and not self.constants.custom_model)
                 },
+                "FeatureUnlock": {
+                    "type": "combobox",
+                    "choices": [
+                        "Enabled",
+                        "Partial",
+                        "Disabled",
+                    ],
+                    "value": "Enabled",
+                    "variable": "",
+                    "description": [
+                        "Configure FeatureUnlock level.",
+                        "Recommend lowering if your system",
+                        "experiences memory instability.",
+                    ],
+                },
+                "Populate FeatureUnlock Override": {
+                    "type": "populate",
+                    "function": self._populate_fu_override,
+                    "args": wx.Frame,
+                },
+                "Graphics": {
+                    "type": "title",
+                },
+                "AMD GOP Injection": {
+                    "type": "checkbox",
+                    "value": self.constants.amd_gop_injection,
+                    "variable": "amd_gop_injection",
+                    "description": [
+                        "Inject AMD GOP for boot screen",
+                        "support on PC GPUs.",
+                    ],
+                    "condition": not bool((not self.constants.custom_model and self.constants.computer.real_model not in socketed_gpu_models) or (self.constants.custom_model and self.constants.custom_model not in socketed_gpu_models))
+                },
+                "Nvidia GOP Injection": {
+                    "type": "checkbox",
+                    "value": self.constants.nvidia_kepler_gop_injection,
+                    "variable": "nvidia_kepler_gop_injection",
+                    "description": [
+                        "Inject Nvidia Kepler GOP for boot",
+                        "screen support on PC GPUs.",
+                    ],
+                    "condition": not bool((not self.constants.custom_model and self.constants.computer.real_model not in socketed_gpu_models) or (self.constants.custom_model and self.constants.custom_model not in socketed_gpu_models))
+                },
+                "wrap_around 2": {
+                    "type": "wrap_around",
+                },
+                "Graphics Override": {
+                    "type": "combobox",
+                    "choices": [
+                        "None",
+                        "Nvidia Kepler",
+                        "AMD GCN",
+                        "AMD Polaris",
+                        "AMD Lexa",
+                        "AMD Navi",
+                    ],
+                    "value": "None",
+                    "variable": "",
+                    "description": [
+                        "Override detected/assumed GPU on",
+                        "socketed MXM-based iMacs.",
+                    ],
+                },
+                "Populate Graphics Override": {
+                    "type": "populate",
+                    "function": self._populate_graphics_override,
+                    "args": wx.Frame,
+                },
+
             },
             "Security": {
                 "Kernel Security": {
@@ -430,6 +491,7 @@ class SettingsFrame(wx.Frame):
                         "By default this is disabled due to",
                         "common GPU failures on these models.",
                     ],
+                    "condition": not bool(self.constants.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"])
                 },
                 "wrap_around 1": {
                     "type": "wrap_around",
@@ -444,6 +506,7 @@ class SettingsFrame(wx.Frame):
                         "on HD3000 GPUs in Ventura and newer.",
                         "Note: Disabling can cause UI corruption.",
                     ],
+                    "condition": not bool(self.constants.computer.real_model not in ["MacBookAir4,1","MacBookAir4,2","MacBookPro8,1","MacBookPro8,2","MacBookPro8,3","Macmini5,1"])
                 },
             },
             "SMBIOS": {
@@ -483,12 +546,12 @@ class SettingsFrame(wx.Frame):
                 "wrap_around 1": {
                     "type": "wrap_around",
                 },
-                "Allow native spoofing": {
+                "Allow spoofing native Macs": {
                     "type": "checkbox",
                     "value": self.constants.allow_native_spoofs,
                     "variable": "allow_native_spoofs",
                     "description": [
-                        "Allow OpenCore to spoof to",
+                        "Allow OpenCore to spoof",
                         "natively supported Macs.",
                         "Primarily used for enabling",
                         "Universal Control.",
@@ -563,7 +626,7 @@ class SettingsFrame(wx.Frame):
                     "variable": "IgnoreAppUpdates",
                     "constants_variable": "ignore_updates",
                     "description": [
-                        "Ignore app updates",
+                        # "Ignore app updates",
                     ],
                     "override_function": self._update_global_settings,
                 },
@@ -580,15 +643,15 @@ class SettingsFrame(wx.Frame):
                     ],
                     "override_function": self._update_global_settings,
                 },
-                "Disable Unused KDKs": {
+                "Remove Unused KDKs": {
                     "type": "checkbox",
                     "value": global_settings.GlobalEnviromentSettings().read_property("ShouldNukeKDKs") or self.constants.should_nuke_kdks,
                     "variable": "ShouldNukeKDKs",
                     "constants_variable": "should_nuke_kdks",
                     "description": [
                         "When enabled, the app will remove",
-                        "unused KDKs from the system during",
-                        "root patching.",
+                        "unused Kernel Debug Kits from the system",
+                        "during root patching.",
                     ],
                     "override_function": self._update_global_settings,
                 },
@@ -651,8 +714,7 @@ class SettingsFrame(wx.Frame):
 
         # Label: Flip individual bits corresponding to XNU's csr.h
         # If you're unfamiliar with how SIP works, do not touch this menu
-        sip_label = wx.StaticText(panel, label="Flip individual bits corresponding to", pos=(sip_title.GetPosition()[0] - 20
-                                                                                             , sip_title.GetPosition()[1] + 30))
+        sip_label = wx.StaticText(panel, label="Flip individual bits corresponding to", pos=(sip_title.GetPosition()[0] - 20, sip_title.GetPosition()[1] + 30))
         sip_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
 
         # Hyperlink: csr.h
@@ -884,6 +946,91 @@ Hardware Information:
 
     def on_custom_board_serial_number_textbox(self, event: wx.Event) -> None:
         self.constants.custom_board_serial_number = event.GetEventObject().GetValue()
+
+
+    def _populate_fu_override(self, panel: wx.Panel) -> None:
+        gpu_combo_box: wx.ComboBox = None
+        index = 0
+        for child in panel.GetChildren():
+            if isinstance(child, wx.ComboBox):
+                gpu_combo_box = child
+                break
+
+        gpu_combo_box.Bind(wx.EVT_COMBOBOX, self.fu_selection_click)
+        if self.constants.fu_status is False:
+            gpu_combo_box.SetStringSelection("Disabled")
+        elif self.constants.fu_arguments is None:
+            gpu_combo_box.SetStringSelection("Enabled")
+        else:
+            gpu_combo_box.SetStringSelection("Partial")
+
+
+    def fu_selection_click(self, event: wx.Event) -> None:
+        value = event.GetEventObject().GetStringSelection()
+        if value == "Enabled":
+            self.constants.fu_status = True
+            self.constants.fu_arguments = None
+            return
+
+        if value == "Partial":
+            self.constants.fu_status = True
+            self.constants.fu_arguments = " -disable_sidecar_mac"
+            return
+
+        self.constants.fu_status = False
+        self.constants.fu_arguments = None
+
+
+    def _populate_graphics_override(self, panel: wx.Panel) -> None:
+        gpu_combo_box: wx.ComboBox = None
+        index = 0
+        for child in panel.GetChildren():
+            if isinstance(child, wx.ComboBox):
+                if index == 0:
+                    index = index + 1
+                    continue
+                gpu_combo_box = child
+                break
+
+        gpu_combo_box.Bind(wx.EVT_COMBOBOX, self.gpu_selection_click)
+        gpu_combo_box.SetStringSelection(f"{self.constants.imac_vendor} {self.constants.imac_model}")
+
+        socketed_gpu_models = ["iMac9,1", "iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]
+        if ((not self.constants.custom_model and self.constants.computer.real_model not in socketed_gpu_models) or (self.constants.custom_model and self.constants.custom_model not in socketed_gpu_models)):
+            gpu_combo_box.Disable()
+            return
+
+
+    def gpu_selection_click(self, event: wx.Event) -> None:
+        gpu_choice = event.GetEventObject().GetStringSelection()
+
+        logging.info(f"Updating GPU Selection: {gpu_choice}")
+        if "AMD" in gpu_choice:
+            self.constants.imac_vendor = "AMD"
+            self.constants.metal_build = True
+            if "Polaris" in gpu_choice:
+                self.constants.imac_model = "Polaris"
+            elif "GCN" in gpu_choice:
+                self.constants.imac_model = "GCN"
+            elif "Lexa" in gpu_choice:
+                self.constants.imac_model = "Lexa"
+            elif "Navi" in gpu_choice:
+                self.constants.imac_model = "Navi"
+            else:
+                raise Exception("Unknown GPU Model")
+        elif "Nvidia" in gpu_choice:
+            self.constants.imac_vendor = "Nvidia"
+            self.constants.metal_build = True
+            if "Kepler" in gpu_choice:
+                self.constants.imac_model = "Kepler"
+            elif "GT" in gpu_choice:
+                self.constants.imac_model = "GT"
+            else:
+                raise Exception("Unknown GPU Model")
+        else:
+            self.constants.imac_vendor = "None"
+            self.constants.metal_build = False
+
 
 
     def _get_system_settings(self, variable) -> bool:
