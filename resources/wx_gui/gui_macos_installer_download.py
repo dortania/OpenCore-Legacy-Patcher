@@ -139,7 +139,7 @@ class macOSInstallerFrame(wx.Frame):
                     installer_button.SetDefault()
 
         # Show all available installers
-        show_all_button = wx.Button(dialog, label="Show all available installers" if show_full is False else "Show only latest installers", pos=(-1, installer_button.GetPosition()[1] + installer_button.GetSize()[1]), size=(180, 30))
+        show_all_button = wx.Button(dialog, label="Show all available installers" if show_full is False else "Show only latest installers", pos=(-1, installer_button.GetPosition()[1] + installer_button.GetSize()[1]), size=(200, 30))
         show_all_button.Bind(wx.EVT_BUTTON, lambda event: self._display_available_installers(event, not show_full))
         show_all_button.Center(wx.HORIZONTAL)
 

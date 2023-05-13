@@ -141,6 +141,13 @@ class macOSInstallerFlashFrame(wx.Frame):
         def fetch_disks():
             self.available_disks = macos_installer_handler.InstallerCreation().list_disk_to_format()
 
+            # Need to clean up output on pre-Sierra
+            # Disk images are mixed in with regular disks (ex. payloads.dmg)
+            for disk in self.available_disks.copy():
+                if "read-only" in self.available_disks[disk]['name']:
+                    del self.available_disks[disk]
+
+
         thread = threading.Thread(target=fetch_disks)
         thread.start()
 
@@ -177,12 +184,12 @@ class macOSInstallerFlashFrame(wx.Frame):
             disk_button.Center(wx.HORIZONTAL)
 
         # Search for disks again
-        search_button = wx.Button(self.frame_modal, label="Search for disks again", pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]), size=(150, 30))
+        search_button = wx.Button(self.frame_modal, label="Search for disks again", pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]), size=(160, 30))
         search_button.Bind(wx.EVT_BUTTON, self.on_select)
         search_button.Center(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
-        cancel_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, search_button.GetPosition()[1] + search_button.GetSize()[1] - 10), size=(150, 30))
+        cancel_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, search_button.GetPosition()[1] + search_button.GetSize()[1] - 10), size=(160, 30))
         cancel_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         cancel_button.Center(wx.HORIZONTAL)
 

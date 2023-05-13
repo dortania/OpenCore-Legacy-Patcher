@@ -84,11 +84,11 @@ class CheckProperties:
         """
         Check if host supports building OpenCore configs
         """
+        if self.constants.custom_model:
+            return True
         if self.constants.host_is_hackintosh is True:
             return False
         if self.constants.allow_oc_everywhere is True:
-            return True
-        if self.constants.custom_model:
             return True
         if self.constants.computer.real_model in model_array.SupportedSMBIOS:
             return True

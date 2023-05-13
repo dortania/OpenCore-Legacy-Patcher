@@ -71,6 +71,12 @@ class InstallOCFrame(wx.Frame):
         """
         self.available_disks = install.tui_disk_installation(self.constants).list_disks()
 
+        # Need to clean up output on pre-Sierra
+        # Disk images are mixed in with regular disks (ex. payloads.dmg)
+        for disk in self.available_disks.copy():
+            if "read-only" in self.available_disks[disk]['name']:
+                del self.available_disks[disk]
+
 
     def _display_disks(self) -> None:
         """
@@ -143,12 +149,12 @@ class InstallOCFrame(wx.Frame):
             disk_label.Center(wx.HORIZONTAL)
 
         # Add button: Search for disks again
-        search_button = wx.Button(dialog, label="Search for disks again", size=(150,30), pos=(-1, disk_label.GetPosition()[1] + disk_label.GetSize()[1] + 5))
+        search_button = wx.Button(dialog, label="Search for disks again", size=(160,30), pos=(-1, disk_label.GetPosition()[1] + disk_label.GetSize()[1] + 5))
         search_button.Center(wx.HORIZONTAL)
         search_button.Bind(wx.EVT_BUTTON, self.on_reload_frame)
 
         # Add button: Return to main menu
-        return_button = wx.Button(dialog, label="Return to main menu", size=(150,30), pos=(-1, search_button.GetPosition()[1] + 20))
+        return_button = wx.Button(dialog, label="Return to main menu", size=(160,30), pos=(-1, search_button.GetPosition()[1] + 20))
         return_button.Center(wx.HORIZONTAL)
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 
