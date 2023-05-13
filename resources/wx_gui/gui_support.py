@@ -96,13 +96,15 @@ class CheckProperties:
         return False
 
 
-    def host_is_non_metal(self):
+    def host_is_non_metal(self, general_check: bool = False):
         """
         Check if host is non-metal
         Primarily for wx.Gauge().Pulse() workaround (where animation doesn't work on Monterey+)
         """
 
-        if self.constants.detected_os < os_data.os_data.monterey:
+        if self.constants.detected_os < os_data.os_data.monterey and general_check is False:
+            return False
+        if self.constants.detected_os < os_data.os_data.big_sur and general_check is True:
             return False
         if not Path("/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/SkyLightOld.dylib").exists():
             # SkyLight stubs are only used on non-Metal

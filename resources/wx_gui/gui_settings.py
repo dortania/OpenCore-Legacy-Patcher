@@ -2,6 +2,7 @@ import wx
 import wx.adv
 import logging
 import py_sip_xnu
+import pprint
 
 from resources.wx_gui import gui_support
 
@@ -10,6 +11,7 @@ from data import model_array, sip_data
 
 class SettingsFrame(wx.Frame):
     """
+    Modal-based Settings Frame
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
         self.constants: constants.Constants = global_constants
@@ -26,6 +28,11 @@ class SettingsFrame(wx.Frame):
         self.frame_modal.ShowWindowModal()
 
     def _generate_elements(self, frame: wx.Frame = None) -> None:
+        """
+        Generates elements for the Settings Frame
+        Uses wx.Notebook to implement a tabbed interface
+        and relies on 'self._settings()' for populating
+        """
 
         notebook = wx.Notebook(frame)
         notebook.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
@@ -37,31 +44,20 @@ class SettingsFrame(wx.Frame):
         model_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
         sizer.Add(model_label, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        model_choice = wx.Choice(frame, choices=model_array.SupportedSMBIOS + ["Host Model"] if self.constants.computer.real_model not in model_array.SupportedSMBIOS else model_array.SupportedSMBIOS, pos=(-1, -1))
+        model_choice = wx.Choice(frame, choices=model_array.SupportedSMBIOS + ["Host Model"], pos=(-1, -1))
         model_choice.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         model_choice.Bind(wx.EVT_CHOICE, lambda event: self.on_model_choice(event, model_choice))
-        selection = self.constants.custom_model if self.constants.custom_model else self.constants.computer.real_model
-        if selection not in model_array.SupportedSMBIOS:
-            selection = "Host Model"
+        selection = self.constants.custom_model if self.constants.custom_model else "Host Model"
         model_choice.SetSelection(model_choice.FindString(selection))
-
         sizer.Add(model_choice, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        # Add label below Override Model
         model_description = wx.StaticText(frame, label="Overrides Mac Model Patcher will build for.", pos=(-1, -1))
         model_description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         sizer.Add(model_description, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-
-        tabs = [
-            "Build",
-            "Advanced",
-            "Security",
-            "Root Patching",
-            "Non-Metal",
-            "SMBIOS",
-            "App"
-        ]
+        tabs = list(self.settings.keys())
+        if gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True) is False:
+            tabs.remove("Non-Metal")
         for tab in tabs:
             panel = wx.Panel(notebook)
             notebook.AddPage(panel, tab)
@@ -74,30 +70,32 @@ class SettingsFrame(wx.Frame):
         return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         sizer.Add(return_button, 0, wx.ALIGN_CENTER | wx.ALL, 10)
 
-
         frame.SetSizer(sizer)
 
         horizontal_center = frame.GetSize()[0] / 2
 
         for tab in tabs:
+            if tab not in self.settings:
+                continue
+
             stock_height = 0
             stock_width = 20
 
             height = stock_height
             width = stock_width
-            panel = notebook.GetPage(tabs.index(tab))
-
-            if tab not in self.settings:
-                continue
 
             lowest_height_reached = height
             highest_height_reached = height
+
+            panel = notebook.GetPage(tabs.index(tab))
 
             for setting, setting_info in self.settings[tab].items():
                 if setting_info["type"] == "populate":
                     # execute populate function
                     if setting_info["args"] == wx.Frame:
                         setting_info["function"](panel)
+                    else:
+                        raise Exception("Invalid populate function")
                     continue
 
                 if setting_info["type"] == "title":
@@ -113,15 +111,12 @@ class SettingsFrame(wx.Frame):
 
                     title.SetPosition((int(horizontal_center) - int(title.GetSize()[0] / 2) - 15, height))
                     highest_height_reached = height + title.GetSize()[1] + 10
-
                     height += title.GetSize()[1] + 10
-
                     continue
 
                 if setting_info["type"] == "wrap_around":
                     height = highest_height_reached
                     width = 300 if width is stock_width else stock_width
-
                     continue
 
                 if setting_info["type"] == "checkbox":
@@ -141,8 +136,7 @@ class SettingsFrame(wx.Frame):
                     label = wx.StaticText(panel, label=setting, pos=(spinctrl.GetSize()[0] + width - 16, spinctrl.GetPosition()[1]))
                     label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                 else:
-                    logging.critical(f"Unknown setting type: {setting_info['type']}")
-                    continue
+                    raise Exception("Invalid setting type")
 
                 lines = '\n'.join(setting_info["description"])
                 description = wx.StaticText(panel, label=lines, pos=(30 + width, 10 + height + 20))
@@ -158,7 +152,22 @@ class SettingsFrame(wx.Frame):
                     lowest_height_reached = height
 
 
-    def _settings(self):
+    def _settings(self) -> dict:
+        """
+        Generates a dictionary of settings to be used in the GUI
+        General format:
+        {
+            "Tab Name": {
+                "type": "title" | "checkbox" | "spinctrl" | "populate" | "wrap_around",
+                "value": bool | int | str,
+                "variable": str,  (Variable name)
+                "constants_variable": str, (Constants variable name, if different from "variable")
+                "description": [str, str, str], (List of strings)
+                "warning": str, (Optional) (Warning message to be displayed when checkbox is checked)
+                "override_function": function, (Optional) (Function to be executed when checkbox is checked)
+            }
+        }
+        """
 
         settings = {
             "Build": {
@@ -284,6 +293,9 @@ class SettingsFrame(wx.Frame):
                 },
             },
             "Advanced": {
+                "Miscellaneous": {
+                    "type": "title",
+                },
                 "AMD GOP Injection": {
                     "type": "checkbox",
                     "value": self.constants.amd_gop_injection,
@@ -391,9 +403,12 @@ class SettingsFrame(wx.Frame):
                 },
             },
             "Root Patching": {
+                "Root Volume Patching": {
+                    "type": "title",
+                },
                 "TeraScale 2 Acceleration": {
                     "type": "checkbox",
-                    "value": global_settings.GlobalEnviromentSettings().read_property("MacBookPro_TeraScale_2_Accel"),
+                    "value": global_settings.GlobalEnviromentSettings().read_property("MacBookPro_TeraScale_2_Accel") or self.constants.allow_ts2_accel,
                     "variable": "MacBookPro_TeraScale_2_Accel",
                     "constants_variable": "allow_ts2_accel",
                     "description": [
@@ -409,7 +424,7 @@ class SettingsFrame(wx.Frame):
                 },
                 "Disable ColorSync Downgrade": {
                     "type": "checkbox",
-                    "value": global_settings.GlobalEnviromentSettings().read_property("Disable_ColorSync_Downgrade"),
+                    "value": global_settings.GlobalEnviromentSettings().read_property("Disable_ColorSync_Downgrade") or self.constants.disable_cat_colorsync,
                     "variable": "Disable_ColorSync_Downgrade",
                     "constants_variable": "disable_cat_colorsync",
                     "description": [
@@ -419,8 +434,15 @@ class SettingsFrame(wx.Frame):
                     ],
                 },
             },
-            "Non-Metal": {},
+            "Non-Metal": {
+                "SkyLight Configuration": {
+                    "type": "title",
+                },
+            },
             "App": {
+                "General": {
+                    "type": "title",
+                },
                 "Allow native models": {
                     "type": "checkbox",
                     "value": self.constants.allow_oc_everywhere,
@@ -436,7 +458,7 @@ class SettingsFrame(wx.Frame):
                 },
                 "Ignore App Updates": {
                     "type": "checkbox",
-                    "value": global_settings.GlobalEnviromentSettings().read_property("IgnoreAppUpdates"),
+                    "value": global_settings.GlobalEnviromentSettings().read_property("IgnoreAppUpdates") or self.constants.ignore_updates,
                     "variable": "IgnoreAppUpdates",
                     "constants_variable": "ignore_updates",
                     "description": [
@@ -459,7 +481,7 @@ class SettingsFrame(wx.Frame):
                 },
                 "Disable Unused KDKs": {
                     "type": "checkbox",
-                    "value": global_settings.GlobalEnviromentSettings().read_property("ShouldNukeKDKs"),
+                    "value": global_settings.GlobalEnviromentSettings().read_property("ShouldNukeKDKs") or self.constants.should_nuke_kdks,
                     "variable": "ShouldNukeKDKs",
                     "constants_variable": "should_nuke_kdks",
                     "description": [
@@ -469,6 +491,14 @@ class SettingsFrame(wx.Frame):
                     ],
                     "override_function": self._update_global_settings,
                 },
+                "Statistics": {
+                    "type": "title",
+                },
+                "Populate Stats": {
+                    "type": "populate",
+                    "function": self._populate_app_stats,
+                    "args": wx.Frame,
+                },
             },
         }
 
@@ -476,18 +506,23 @@ class SettingsFrame(wx.Frame):
 
 
     def on_model_choice(self, event: wx.Event, model_choice: wx.Choice) -> None:
+        """
+        Sets model to use for patching.
+        """
 
         selection = model_choice.GetStringSelection()
         if selection == "Host Model":
-            logging.info(f"Using Real Model: {self.constants.computer.real_model}")
+            selection = self.constants.computer.real_model
             self.constants.custom_model = None
+            logging.info(f"Using Real Model: {self.constants.computer.real_model}")
             defaults.GenerateDefaults(self.constants.computer.real_model, True, self.constants)
-
         else:
             logging.info(f"Using Custom Model: {selection}")
             self.constants.custom_model = selection
             defaults.GenerateDefaults(self.constants.custom_model, False, self.constants)
             self.parent.build_button.Enable()
+
+
 
         self.parent.model_label.SetLabel(f"Model: {selection}")
         self.parent.model_label.Center(wx.HORIZONTAL)
@@ -552,15 +587,46 @@ class SettingsFrame(wx.Frame):
             self.sip_checkbox = wx.CheckBox(panel, label=sip_data.system_integrity_protection.csr_values_extended[sip_bit]["name"].split("CSR_")[1], pos = (vertical_spacer, sip_booted_label.GetPosition()[1] + 20 + horizontal_spacer))
             self.sip_checkbox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
             self.sip_checkbox.SetToolTip(f'Description: {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["description"]}\nValue: {hex(sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"])}\nIntroduced in: macOS {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["introduced_friendly"]}')
+
             if self.sip_value & sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"] == sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"]:
                 self.sip_checkbox.SetValue(True)
+
             horizontal_spacer += 20
-            index += 1
             if index == entries_per_row:
                 horizontal_spacer = 20
                 vertical_spacer += 250
 
+            index += 1
             self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.on_sip_value)
+
+
+    def _populate_app_stats(self, panel: wx.Frame) -> None:
+        title: wx.StaticText = None
+        for child in panel.GetChildren():
+            if child.GetLabel() == "Statistics":
+                title = child
+                break
+
+        lines = f"""Application Information:
+    Application Version: {self.constants.patcher_version}
+    PatcherSupportPkg Version: {self.constants.patcher_support_pkg_version}
+
+Commit Information:
+    Branch: {self.constants.commit_info[0]}
+    Date: {self.constants.commit_info[1]}
+    URL: {self.constants.commit_info[2] if self.constants.commit_info[2] != "" else "N/A"}
+
+Booted Information:
+    Booted OS: XNU {self.constants.detected_os} ({self.constants.detected_os_version})
+    Booted Patcher Version: {self.constants.computer.oclp_version}
+    Booted OpenCore Version: {self.constants.computer.opencore_version}
+
+Hardware Information:
+    {pprint.pformat(self.constants.computer, indent=4)}
+"""
+        # TextCtrl: properties
+        self.app_stats = wx.TextCtrl(panel, value=lines, pos=(-1, title.GetPosition()[1] + 30), size=(600, 320), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
+        self.app_stats.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
 
 
     def on_checkbox(self, event: wx.Event, warning_pop: str = "", override_function: bool = False) -> None:
