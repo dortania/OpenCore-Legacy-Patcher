@@ -1,10 +1,12 @@
 import wx
+import wx.adv
 import logging
+import py_sip_xnu
 
 from resources.wx_gui import gui_support
 
 from resources import constants, global_settings, defaults
-from data import model_array
+from data import model_array, sip_data
 
 class SettingsFrame(wx.Frame):
     """
@@ -13,6 +15,8 @@ class SettingsFrame(wx.Frame):
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent
+
+        self.hyperlink_colour = (25, 179, 231)
 
         self.settings = self._settings()
 
@@ -44,7 +48,7 @@ class SettingsFrame(wx.Frame):
         sizer.Add(model_choice, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
         # Add label below Override Model
-        model_description = wx.StaticText(frame, label="Overrides system OCLP will build for.", pos=(-1, -1))
+        model_description = wx.StaticText(frame, label="Overrides Mac Model Patcher will build for.", pos=(-1, -1))
         model_description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         sizer.Add(model_description, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
@@ -122,7 +126,7 @@ class SettingsFrame(wx.Frame):
 
                 if setting_info["type"] == "checkbox":
                     # Add checkbox, and description underneath
-                    checkbox = wx.CheckBox(panel, label=setting, pos=(10 + width, 10 + height), size = (200,-1))
+                    checkbox = wx.CheckBox(panel, label=setting, pos=(10 + width, 10 + height), size = (300,-1))
                     checkbox.SetValue(setting_info["value"] if setting_info["value"] else False)
                     checkbox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                     event = lambda event, warning=setting_info["warning"] if "warning" in setting_info else "", override=bool(setting_info["override_function"]) if "override_function" in setting_info else False: self.on_checkbox(event, warning, override)
@@ -157,7 +161,6 @@ class SettingsFrame(wx.Frame):
     def _settings(self):
 
         settings = {
-
             "Build": {
                 "General": {
                     "type": "title",
@@ -168,7 +171,7 @@ class SettingsFrame(wx.Frame):
                     "variable": "firewire_boot",
                     "description": [
                         "Enable booting macOS from",
-                        "FireWire drives",
+                        "FireWire drives.",
                     ],
                 },
                 "XHCI Booting": {
@@ -177,7 +180,7 @@ class SettingsFrame(wx.Frame):
                     "variable": "xhci_boot",
                     "description": [
                         "Enable booting macOS from add-in",
-                        "USB 3.0 expansion cards",
+                        "USB 3.0 expansion cards.",
                     ],
                 },
                 "NVMe Booting": {
@@ -186,9 +189,9 @@ class SettingsFrame(wx.Frame):
                     "variable": "nvme_boot",
                     "description": [
                         "Enable booting macOS from NVMe",
-                        "drives",
+                        "drives.",
                         "Note: Requires Firmware support",
-                        "for OpenCore to load from NVMe",
+                        "for OpenCore to load from NVMe.",
                     ],
                 },
                 "Wake on WLAN": {
@@ -196,10 +199,9 @@ class SettingsFrame(wx.Frame):
                     "value": self.constants.enable_wake_on_wlan,
                     "variable": "enable_wake_on_wlan",
                     "description": [
-                        "Enable Wake on WLAN",
-                        "When enabled, macOS will be able to",
-                        "wake from sleep using a Wireless",
-                        "Network connection.",
+                        "Disabled by default due to",
+                        "performance degradation",
+                        "on some systems from wake.",
                     ],
                 },
                 "wrap_around 2": {
@@ -210,7 +212,7 @@ class SettingsFrame(wx.Frame):
                     "value": self.constants.set_content_caching,
                     "variable": "set_content_caching",
                     "description": [
-                        "Enable Content Caching",
+                        "Enable Content Caching.",
                     ],
                 },
                 "APFS Trim": {
@@ -219,7 +221,7 @@ class SettingsFrame(wx.Frame):
                     "variable": "apfs_trim_timeout",
                     "description": [
                         "Recommended for all users, however faulty",
-                        "SSDs benefit from disabling this.",
+                        "SSDs may benefit from disabling this.",
                     ],
 
                 },
@@ -232,7 +234,6 @@ class SettingsFrame(wx.Frame):
                         "When disabled, users can hold ESC to",
                         "show picker in the firmware.",
                     ],
-
                 },
                 "Boot Picker Timeout": {
                     "type": "spinctrl",
@@ -241,7 +242,7 @@ class SettingsFrame(wx.Frame):
                     "description": [
                         "Timeout for OpenCore boot picker",
                         "in seconds.",
-                        "Set to 0 for no timeout",
+                        "Set to 0 for no timeout.",
                     ],
 
                     "min": 0,
@@ -256,7 +257,7 @@ class SettingsFrame(wx.Frame):
                     "value": self.constants.verbose_debug,
                     "variable": "verbose_debug",
                     "description": [
-                        "Verbose output during boot",
+                        "Verbose output during boot.",
                     ],
 
                 },
@@ -282,36 +283,6 @@ class SettingsFrame(wx.Frame):
                     ],
                 },
             },
-            "Security": {
-                "Disable Library Validation": {
-                    "type": "checkbox",
-                    "value": self.constants.disable_cs_lv,
-                    "variable": "disable_cs_lv",
-                    "description": [
-                        "Required for root volume patching,",
-                        "allowing our custom frameworks to",
-                        "load.",
-                    ],
-                },
-                "Disable AMFI": {
-                    "type": "checkbox",
-                    "value": self.constants.disable_amfi,
-                    "variable": "disable_amfi",
-                    "description": [
-                        "Extended version of 'Disable",
-                        "Library Validation', required for",
-                        "patching macOS.",
-                    ],
-                },
-                "Secure Boot Model": {
-                    "type": "checkbox",
-                    "value": self.constants.secure_status,
-                    "variable": "secure_status",
-                    "description": [
-                        "Enable SecureBootModel",
-                    ],
-                }
-            },
             "Advanced": {
                 "AMD GOP Injection": {
                     "type": "checkbox",
@@ -336,10 +307,13 @@ class SettingsFrame(wx.Frame):
                     "value": self.constants.disable_fw_throttle,
                     "variable": "disable_fw_throttle",
                     "description": [
-                        "Disables firmware based throttling",
+                        "Disables firmware-based throttling",
                         "caused by missing hardware.",
-                        "ex. Missing Display, Battery, etc.",
+                        "Ex. Missing Display, Battery, etc.",
                     ],
+                },
+                "wrap_around 1": {
+                    "type": "wrap_around",
                 },
                 "Software DeMUX": {
                     "type": "checkbox",
@@ -347,12 +321,11 @@ class SettingsFrame(wx.Frame):
                     "variable": "software_demux",
                     "description": [
                         "Enable software based DeMUX",
-                        "for MacBookPro8,2 and MacBookPro8,3",
-                        "Prevents faulty dGPU from turning on",
+                        "for MacBookPro8,2 and MacBookPro8,3.",
+                        "Prevents faulty dGPU from turning on.",
+                        "Note: Requires associated NVRAM arg:",
+                        "'gpu-power-prefs'.",
                     ],
-                },
-                "wrap_around 1": {
-                    "type": "wrap_around",
                 },
                 "3rd Party NVMe PM": {
                     "type": "checkbox",
@@ -360,9 +333,7 @@ class SettingsFrame(wx.Frame):
                     "variable": "allow_nvme_fixing",
                     "description": [
                         "Enable 3rd party NVMe power",
-                        "management. When enabled, macOS",
-                        "will be able to control the power",
-                        "management of NVMe drives.",
+                        "management in macOS.",
                     ],
                 },
                 "3rd Party SATA PM": {
@@ -371,13 +342,83 @@ class SettingsFrame(wx.Frame):
                     "variable": "allow_3rd_party_drives",
                     "description": [
                         "Enable 3rd party SATA power",
-                        "management. When enabled, macOS",
-                        "will be able to control the power",
-                        "management of SATA drives.",
+                        "management in macOS.",
                     ],
                 },
             },
-            "Root Patching": {},
+            "Security": {
+                "Kernel Security": {
+                    "type": "title",
+                },
+                "Disable Library Validation": {
+                    "type": "checkbox",
+                    "value": self.constants.disable_cs_lv,
+                    "variable": "disable_cs_lv",
+                    "description": [
+                        "Required for loading modified",
+                        "system files from root patching.",
+                    ],
+                },
+                "Disable AMFI": {
+                    "type": "checkbox",
+                    "value": self.constants.disable_amfi,
+                    "variable": "disable_amfi",
+                    "description": [
+                        "Extended version of 'Disable",
+                        "Library Validation', required",
+                        "for systems with deeper",
+                        "root patches.",
+                    ],
+                },
+                "wrap_around 1": {
+                    "type": "wrap_around",
+                },
+                "Secure Boot Model": {
+                    "type": "checkbox",
+                    "value": self.constants.secure_status,
+                    "variable": "secure_status",
+                    "description": [
+                        "Enable SecureBootModel",
+                    ],
+                },
+                "System Integrity Protection": {
+                    "type": "title",
+                },
+                "Populate SIP": {
+                    "type": "populate",
+                    "function": self._populate_sip_settings,
+                    "args": wx.Frame,
+                },
+            },
+            "Root Patching": {
+                "TeraScale 2 Acceleration": {
+                    "type": "checkbox",
+                    "value": global_settings.GlobalEnviromentSettings().read_property("MacBookPro_TeraScale_2_Accel"),
+                    "variable": "MacBookPro_TeraScale_2_Accel",
+                    "constants_variable": "allow_ts2_accel",
+                    "description": [
+                        "Enable AMD TeraScale 2 GPU",
+                        "Acceleration on MacBookPro8,2 and",
+                        "MacBookPro8,3.",
+                        "By default this is disabled due to",
+                        "common GPU failures on these models.",
+                    ],
+                },
+                "wrap_around 1": {
+                    "type": "wrap_around",
+                },
+                "Disable ColorSync Downgrade": {
+                    "type": "checkbox",
+                    "value": global_settings.GlobalEnviromentSettings().read_property("Disable_ColorSync_Downgrade"),
+                    "variable": "Disable_ColorSync_Downgrade",
+                    "constants_variable": "disable_cat_colorsync",
+                    "description": [
+                        "Disable ColorSync downgrade",
+                        "on HD3000 GPUs in Ventura and newer.",
+                        "Note: Disabling can cause UI corruption.",
+                    ],
+                },
+            },
             "Non-Metal": {},
             "App": {
                 "Allow native models": {
@@ -395,13 +436,13 @@ class SettingsFrame(wx.Frame):
                 },
                 "Ignore App Updates": {
                     "type": "checkbox",
-                    "value": self.constants.ignore_updates,
-                    "variable": "ignore_updates",
+                    "value": global_settings.GlobalEnviromentSettings().read_property("IgnoreAppUpdates"),
+                    "variable": "IgnoreAppUpdates",
+                    "constants_variable": "ignore_updates",
                     "description": [
                         "Ignore app updates",
-                        "When enabled, the app will not",
-                        "check for updates.",
                     ],
+                    "override_function": self._update_global_settings,
                 },
                 "wrap_around 1": {
                     "type": "wrap_around",
@@ -411,21 +452,22 @@ class SettingsFrame(wx.Frame):
                     "value": global_settings.GlobalEnviromentSettings().read_property("DisableCrashAndAnalyticsReporting"),
                     "variable": "DisableCrashAndAnalyticsReporting",
                     "description": [
-                        "Disable crash and system reporting",
-                        "When enabled, the app will not",
+                        "When enabled, patcher will not",
                         "report any info to Dortania.",
                     ],
-                    "override_function": global_settings.GlobalEnviromentSettings().write_property,
+                    "override_function": self._update_global_settings,
                 },
                 "Disable Unused KDKs": {
                     "type": "checkbox",
-                    "value": self.constants.should_nuke_kdks,
-                    "variable": "should_nuke_kdks",
+                    "value": global_settings.GlobalEnviromentSettings().read_property("ShouldNukeKDKs"),
+                    "variable": "ShouldNukeKDKs",
+                    "constants_variable": "should_nuke_kdks",
                     "description": [
-                        "Disable unused KDKs",
                         "When enabled, the app will remove",
-                        "unused KDKs from the system.",
+                        "unused KDKs from the system during",
+                        "root patching.",
                     ],
+                    "override_function": self._update_global_settings,
                 },
             },
         }
@@ -461,129 +503,64 @@ class SettingsFrame(wx.Frame):
 
     def _populate_sip_settings(self, panel: wx.Frame) -> None:
 
-        spacer = 280
+        horizontal_spacer = 250
 
-        # Title: System Integrity Protection
-        sip_title = wx.StaticText(panel, label="System Integrity Protection", pos=(-1, 10 + spacer))
-        sip_title.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        # Look for title on frame
+        sip_title: wx.StaticText = None
+        for child in panel.GetChildren():
+            if child.GetLabel() == "System Integrity Protection":
+                sip_title = child
+                break
+
 
         # Label: Flip individual bits corresponding to XNU's csr.h
         # If you're unfamiliar with how SIP works, do not touch this menu
-        sip_label = wx.StaticText(panel, label="Flip individual bits corresponding to", pos=(-1, sip_title.GetSize()[1] + 20 + spacer))
+        sip_label = wx.StaticText(panel, label="Flip individual bits corresponding to", pos=(sip_title.GetPosition()[0] - 20
+                                                                                             , sip_title.GetPosition()[1] + 30))
         sip_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
 
         # Hyperlink: csr.h
-        sip_csr_h = wx.adv.HyperlinkCtrl(panel, id=wx.ID_ANY, label="XNU's csr.h", url="https://opensource.apple.com/source/xnu/xnu-6153.141.1/bsd/sys/csr.h.auto.html", pos=(-1, sip_title.GetSize()[1] + 40 + spacer))
+        sip_csr_h = wx.adv.HyperlinkCtrl(panel, id=wx.ID_ANY, label="XNU's csr.h", url="https://github.com/apple-oss-distributions/xnu/blob/xnu-8020.101.4/bsd/sys/csr.h", pos=(sip_label.GetPosition()[0] + sip_label.GetSize()[0] + 5, sip_label.GetPosition()[1] + 1))
         sip_csr_h.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-
-        # Label: If you're unfamiliar with how SIP works, do not touch this menu
-        sip_description = wx.StaticText(panel, label="If you're unfamiliar with how SIP works, do not touch this menu", pos=(-1, sip_title.GetSize()[1] + 60 + spacer))
-        sip_description.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        sip_csr_h.SetHoverColour(self.hyperlink_colour)
+        sip_csr_h.SetNormalColour(self.hyperlink_colour)
+        sip_csr_h.SetVisitedColour(self.hyperlink_colour)
 
         # Label: SIP Status
-        sip_status = wx.StaticText(panel, label="SIP Status", pos=(-1, sip_title.GetSize()[1] + 100 + spacer))
-        sip_status.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        if self.constants.custom_sip_value is not None:
+            self.sip_value = int(self.constants.custom_sip_value, 16)
+        elif self.constants.sip_status is True:
+            self.sip_value = 0x00
+        else:
+            self.sip_value = 0x803
+        sip_configured_label = wx.StaticText(panel, label=f"Currently configured SIP: {hex(self.sip_value)}", pos=(sip_label.GetPosition()[0] + 35, sip_label.GetPosition()[1] + 20))
+        sip_configured_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        self.sip_configured_label = sip_configured_label
 
-        # Label: SIP Status Description
-        sip_status_description = wx.StaticText(panel, label="Displays the current status of SIP", pos=(-1, sip_title.GetSize()[1] + 120 + spacer))
+        # Label: SIP Status
+        sip_booted_label = wx.StaticText(panel, label=f"Currently booted SIP: {hex(py_sip_xnu.SipXnu().get_sip_status().value)}", pos=(sip_configured_label.GetPosition()[0] + 34
+            , sip_configured_label.GetPosition()[1] + 20))
+        sip_booted_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
 
-#         self.configure_sip_title = wx.StaticText(self.frame_modal, label="Configure SIP", pos=wx.Point(10, 10))
-#         self.configure_sip_title.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-#         self.configure_sip_title.Center(wx.HORIZONTAL)
 
-#         # Label: Flip individual bits corresponding to XNU's csr.h
-#         # If you're unfamiliar with how SIP works, do not touch this menu
-#         self.sip_label = wx.StaticText(self.frame_modal, label="Flip individual bits corresponding to")
-#         self.sip_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-#         self.sip_label.SetPosition(
-#             wx.Point(-1, self.configure_sip_title.GetPosition().y + self.configure_sip_title.GetSize().height + 10)
-#         )
-#         self.sip_label.Center(wx.HORIZONTAL)
-#         self.sip_label.SetPosition(
-#             wx.Point(self.sip_label.GetPosition().x - 25, -1)
-#         )
+        # SIP toggles
+        entries_per_row = len(sip_data.system_integrity_protection.csr_values) // 2
+        horizontal_spacer = 15
+        vertical_spacer = 25
+        index = 0
+        for sip_bit in sip_data.system_integrity_protection.csr_values_extended:
+            self.sip_checkbox = wx.CheckBox(panel, label=sip_data.system_integrity_protection.csr_values_extended[sip_bit]["name"].split("CSR_")[1], pos = (vertical_spacer, sip_booted_label.GetPosition()[1] + 20 + horizontal_spacer))
+            self.sip_checkbox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            self.sip_checkbox.SetToolTip(f'Description: {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["description"]}\nValue: {hex(sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"])}\nIntroduced in: macOS {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["introduced_friendly"]}')
+            if self.sip_value & sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"] == sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"]:
+                self.sip_checkbox.SetValue(True)
+            horizontal_spacer += 20
+            index += 1
+            if index == entries_per_row:
+                horizontal_spacer = 20
+                vertical_spacer += 250
 
-#         hyperlink_label = hyperlink.HyperLinkCtrl(
-#             self.frame_modal,
-#             -1,
-#             "XNU's csr.h",
-#             pos=(self.sip_label.GetPosition().x + self.sip_label.GetSize().width, self.sip_label.GetPosition().y),
-#             URL="https://github.com/apple/darwin-xnu/blob/main/bsd/sys/csr.h",
-#         )
-#         hyperlink_label.SetForegroundColour(self.hyperlink_colour)
-#         hyperlink_label.SetColours(
-#             link=self.hyperlink_colour,
-#             visited=self.hyperlink_colour,
-#             rollover=self.hyperlink_colour,
-#         )
-
-#         if self.constants.custom_sip_value is not None:
-#             self.sip_value = int(self.constants.custom_sip_value, 16)
-#         elif self.constants.sip_status is True:
-#             self.sip_value = 0x00
-#         else:
-#             self.sip_value = 0x803
-
-#         self.sip_label_2 = wx.StaticText(self.frame_modal, label=f"Currently configured SIP: {hex(self.sip_value)}")
-#         self.sip_label_2.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-#         self.sip_label_2.SetPosition(
-#             wx.Point(self.sip_label.GetPosition().x, self.sip_label.GetPosition().y + self.sip_label.GetSize().height + 10)
-#         )
-#         self.sip_label_2.Center(wx.HORIZONTAL)
-
-#         self.sip_label_2_2 = wx.StaticText(self.frame_modal, label=f"Currently Booted SIP: {hex(py_sip_xnu.SipXnu().get_sip_status().value)}")
-#         self.sip_label_2_2.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-#         self.sip_label_2_2.SetPosition(
-#             wx.Point(self.sip_label_2.GetPosition().x, self.sip_label_2.GetPosition().y + self.sip_label_2.GetSize().height + 5)
-#         )
-#         self.sip_label_2_2.Center(wx.HORIZONTAL)
-
-#         self.sip_label_3 = wx.StaticText(self.frame_modal, label="For older Macs requiring root patching, we set SIP to\n be partially disabled (0x803) to allow root patching.")
-#         self.sip_label_3.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-#         self.sip_label_3.SetPosition(
-#             wx.Point(self.sip_label_2_2.GetPosition().x, self.sip_label_2_2.GetPosition().y + self.sip_label_2_2.GetSize().height + 10)
-#         )
-#         self.sip_label_3.Center(wx.HORIZONTAL)
-
-#         self.sip_label_4 = wx.StaticText(self.frame_modal, label="This value (0x803) corresponds to the following bits in csr.h:")
-#         self.sip_label_4.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-#         self.sip_label_4.SetPosition(
-#             wx.Point(self.sip_label_3.GetPosition().x, self.sip_label_3.GetPosition().y + self.sip_label_3.GetSize().height + 5)
-#         )
-#         self.sip_label_4.Center(wx.HORIZONTAL)
-
-#         self.sip_label_5 = wx.StaticText(self.frame_modal, label="      0x1  - CSR_ALLOW_UNTRUSTED_KEXTS\n      0x2  - CSR_ALLOW_UNRESTRICTED_FS\n   0x800 - CSR_ALLOW_UNAUTHENTICATED_ROOT")
-#         self.sip_label_5.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-#         self.sip_label_5.SetPosition(
-#             wx.Point(self.sip_label_4.GetPosition().x, self.sip_label_4.GetPosition().y + self.sip_label_4.GetSize().height + 7)
-#         )
-#         self.sip_label_5.Center(wx.HORIZONTAL)
-
-#         warning_string = """
-# OpenCore Legacy Patcher by default knows the most ideal
-#  SIP value for your system. Override this value only if you
-#      understand the consequences. Reckless usage of this
-#                menu can break your installation.
-# """
-#         self.sip_label_6 = wx.StaticText(self.frame_modal, label=warning_string)
-#         self.sip_label_6.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-#         self.sip_label_6.SetPosition(
-#             wx.Point(self.sip_label_5.GetPosition().x, self.sip_label_5.GetPosition().y + self.sip_label_5.GetSize().height - 10)
-#         )
-#         self.sip_label_6.Center(wx.HORIZONTAL)
-
-#         i = -10
-#         for sip_bit in sip_data.system_integrity_protection.csr_values_extended:
-#             self.sip_checkbox = wx.CheckBox(self.frame_modal, label=sip_data.system_integrity_protection.csr_values_extended[sip_bit]["name"])
-#             self.sip_checkbox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-#             self.sip_checkbox.SetToolTip(f'Description: {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["description"]}\nValue: {hex(sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"])}\nIntroduced in: macOS {sip_data.system_integrity_protection.csr_values_extended[sip_bit]["introduced_friendly"]}')
-#             self.sip_checkbox.SetPosition(
-#                 wx.Point(70, self.sip_label_6.GetPosition().y + self.sip_label_6.GetSize().height + i)
-#             )
-#             i = i + 20
-#             self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.update_sip_value)
-#             if self.sip_value & sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"] == sip_data.system_integrity_protection.csr_values_extended[sip_bit]["value"]:
-#                 self.sip_checkbox.SetValue(True)
+            self.sip_checkbox.Bind(wx.EVT_CHECKBOX, self.on_sip_value)
 
 
     def on_checkbox(self, event: wx.Event, warning_pop: str = "", override_function: bool = False) -> None:
@@ -597,7 +574,8 @@ class SettingsFrame(wx.Frame):
                 event.GetEventObject().SetValue(not event.GetEventObject().GetValue())
                 return
         if override_function is True:
-            self.settings[self._find_parent_for_key(label)][label]["override_function"](self.settings["General"][label]["variable"], value)
+            print("Override function")
+            self.settings[self._find_parent_for_key(label)][label]["override_function"](self.settings[self._find_parent_for_key(label)][label]["variable"], value, self.settings[self._find_parent_for_key(label)][label]["constants_variable"] if "constants_variable" in self.settings[self._find_parent_for_key(label)][label] else None)
             return
 
         self._update_setting(self.settings[self._find_parent_for_key(label)][label]["variable"], value)
@@ -616,14 +594,43 @@ class SettingsFrame(wx.Frame):
 
 
     def _update_setting(self, variable, value):
-        logging.info(f"Updating Setting: {variable} = {value}")
+        logging.info(f"Updating Local Setting: {variable} = {value}")
         setattr(self.constants, variable, value)
+
+
+    def _update_global_settings(self, variable, value, global_setting = None):
+        logging.info(f"Updating Global Setting: {variable} = {value}")
+        global_settings.GlobalEnviromentSettings().write_property(variable, value)
+        if global_setting is not None:
+            self._update_setting(global_setting, value)
 
 
     def _find_parent_for_key(self, key: str) -> str:
         for parent in self.settings:
             if key in self.settings[parent]:
                 return parent
+
+
+    def on_sip_value(self, event: wx.Event) -> None:
+        """
+        """
+        dict = sip_data.system_integrity_protection.csr_values_extended[f"CSR_{event.GetEventObject().GetLabel()}"]
+
+        if event.GetEventObject().GetValue() is True:
+            self.sip_value = self.sip_value + dict["value"]
+        else:
+            self.sip_value = self.sip_value - dict["value"]
+
+        if hex(self.sip_value) == "0x0":
+            self.constants.custom_sip_value = None
+            self.constants.sip_status = True
+        elif hex(self.sip_value) == "0x803":
+            self.constants.custom_sip_value = None
+            self.constants.sip_status = False
+        else:
+            self.constants.custom_sip_value = hex(self.sip_value)
+
+        self.sip_configured_label.SetLabel(f"Currently configured SIP: {hex(self.sip_value)}")
 
 
     def on_return(self, event):
