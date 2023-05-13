@@ -74,7 +74,6 @@ class SettingsFrame(wx.Frame):
         frame.SetSizer(sizer)
 
         horizontal_center = frame.GetSize()[0] / 2
-
         for tab in tabs:
             if tab not in self.settings:
                 continue
@@ -509,6 +508,37 @@ class SettingsFrame(wx.Frame):
                 "SkyLight Configuration": {
                     "type": "title",
                 },
+                "Dark Menu Bar": {
+                    "type": "checkbox",
+                    "value": self._get_system_settings("Moraea_DarkMenuBar"),
+                    "variable": "Moraea_DarkMenuBar",
+                    "description": [
+                        "Enable Dark Menu Bar",
+                    ],
+                    "override_function": self._update_system_defaults,
+                },
+                "Beta Blur": {
+                    "type": "checkbox",
+                    "value": self._get_system_settings("Moraea_BlurBeta"),
+                    "variable": "Moraea_BlurBeta",
+                    "description": [
+                        "Enable Beta Blur",
+                    ],
+                    "override_function": self._update_system_defaults,
+
+                },
+                "wrap_around 1": {
+                    "type": "wrap_around",
+                },
+                "Disable Beta Rim": {
+                    "type": "checkbox",
+                    "value": self._get_system_settings("Moraea_RimBetaDisabled"),
+                    "variable": "Moraea_RimBetaDisabled",
+                    "description": [
+                        "Disable Beta Rim",
+                    ],
+                    "override_function": self._update_system_defaults,
+                },
             },
             "App": {
                 "General": {
@@ -706,6 +736,16 @@ class SettingsFrame(wx.Frame):
         generate_serial_number_button.Bind(wx.EVT_BUTTON, self.on_generate_serial_number)
 
 
+    def _populate_non_metal_settings(self, panel: wx.Frame) -> None:
+        title: wx.StaticText = None
+        for child in panel.GetChildren():
+            if child.GetLabel() == "SkyLight Configuration":
+                title = child
+                break
+
+        # Label: To apply, a logout is required
+
+
     def _populate_app_stats(self, panel: wx.Frame) -> None:
         title: wx.StaticText = None
         for child in panel.GetChildren():
@@ -777,6 +817,19 @@ Hardware Information:
             self._update_setting(global_setting, value)
 
 
+    def _update_system_defaults(self, variable, value, global_setting = None):
+        value_type = type(value)
+        if value_type is str:
+            value_type = "-string"
+        elif value_type is int:
+            value_type = "-int"
+        elif value_type is bool:
+            value_type = "-bool"
+
+        logging.info(f"Updating System Defaults: {variable} = {value} ({value_type})")
+        subprocess.run(["defaults", "write", "-g", variable, value_type, str(value)])
+
+
     def _find_parent_for_key(self, key: str) -> str:
         for parent in self.settings:
             if key in self.settings[parent]:
@@ -831,6 +884,16 @@ Hardware Information:
 
     def on_custom_board_serial_number_textbox(self, event: wx.Event) -> None:
         self.constants.custom_board_serial_number = event.GetEventObject().GetValue()
+
+
+    def _get_system_settings(self, variable) -> bool:
+        result = subprocess.run(["defaults", "read", "-g", variable], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if result.returncode == 0:
+            try:
+                return bool(int(result.stdout.decode().strip()))
+            except:
+                return False
+        return False
 
 
     def on_return(self, event):
