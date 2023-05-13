@@ -140,8 +140,13 @@ class SettingsFrame(wx.Frame):
                     label = wx.StaticText(panel, label=setting, pos=(spinctrl.GetSize()[0] + width - 16, spinctrl.GetPosition()[1]))
                     label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                 elif setting_info["type"] == "combobox":
+                    # Title
+                    title = wx.StaticText(panel, label=setting, pos=(width + 30, 10 + height))
+                    title.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+                    height += title.GetSize()[1] + 10
+
                     # Add combobox, and description underneath
-                    combobox = wx.ComboBox(panel, value=setting_info["value"], pos=(width + 20, 10 + height), choices=setting_info["choices"], size = (130,-1))
+                    combobox = wx.ComboBox(panel, value=setting_info["value"], pos=(width + 25, 10 + height), choices=setting_info["choices"], size = (130,-1))
                     combobox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                     # combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.on_combobox(event, variable))
                     if "override_function" in setting_info:
@@ -153,12 +158,19 @@ class SettingsFrame(wx.Frame):
                 lines = '\n'.join(setting_info["description"])
                 description = wx.StaticText(panel, label=lines, pos=(30 + width, 10 + height + 20))
                 description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-                height += 40 if setting_info["type"] != "combobox" else 60
+                height += 40
 
                 # Check number of lines in description, and adjust spacer accordingly
                 description_lines = len(lines.split('\n'))
-                if description_lines > 1:
-                    height += (description_lines) * 11
+                # if description_lines > 1:
+                #     height += (description_lines) * 11
+                for i, line in enumerate(lines.split('\n')):
+                    if line == "":
+                        continue
+                    if i == 0:
+                        height += 11
+                    else:
+                        height += 13
 
                 if height > lowest_height_reached:
                     lowest_height_reached = height
@@ -341,6 +353,21 @@ class SettingsFrame(wx.Frame):
                 "wrap_around 1": {
                     "type": "wrap_around",
                 },
+                "FeatureUnlock": {
+                    "type": "combobox",
+                    "choices": [
+                        "Enabled",
+                        "Partial",
+                        "Disabled",
+                    ],
+                    "value": "Enabled",
+                    "variable": "",
+                    "description": [
+                        "Configure FeatureUnlock level.",
+                        "Recommend lowering if your system",
+                        "experiences memory instability.",
+                    ],
+                },
                 "3rd Party NVMe PM": {
                     "type": "checkbox",
                     "value": self.constants.allow_nvme_fixing,
@@ -359,21 +386,6 @@ class SettingsFrame(wx.Frame):
                         "management in macOS.",
                     ],
                     "condition": not bool(self.constants.computer.third_party_sata_ssd is False and not self.constants.custom_model)
-                },
-                "FeatureUnlock": {
-                    "type": "combobox",
-                    "choices": [
-                        "Enabled",
-                        "Partial",
-                        "Disabled",
-                    ],
-                    "value": "Enabled",
-                    "variable": "",
-                    "description": [
-                        "Configure FeatureUnlock level.",
-                        "Recommend lowering if your system",
-                        "experiences memory instability.",
-                    ],
                 },
                 "Populate FeatureUnlock Override": {
                     "type": "populate",
@@ -525,8 +537,7 @@ class SettingsFrame(wx.Frame):
                     "value": self.constants.serial_settings,
                     "variable": "serial_settings",
                     "description": [
-                        "Set SMBIOS spoofing level.",
-                        "Levels are as follows:",
+                        "Supported Levels:",
                         "   - None: No spoofing.",
                         "   - Minimal: Overrides Board ID.",
                         "   - Moderate: Overrides Model.",
@@ -552,10 +563,10 @@ class SettingsFrame(wx.Frame):
                     "value": self.constants.allow_native_spoofs,
                     "variable": "allow_native_spoofs",
                     "description": [
-                        "Allow OpenCore to spoof",
-                        "natively supported Macs.",
+                        "Allow OpenCore to spoof natively",
+                        "supported Macs.",
                         "Primarily used for enabling",
-                        "Universal Control.",
+                        "Universal Control on unsupported Macs",
                     ],
                 },
                 "Serial Spoofing": {
