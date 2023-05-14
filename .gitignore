@@ -35,3 +35,4 @@ __pycache__/
 *.log
 /Universal-Binaries.dmg
 /payloads/KDKInfo.plist
+/payloads/update.sh

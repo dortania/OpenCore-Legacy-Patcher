@@ -181,7 +181,7 @@ fi
 mv "{str(self.application_path)}" "/Library/Application Support/Dortania/OpenCore-Patcher.app"
 
 # Check if '/Applications/OpenCore-Patcher.app' exists
-if [ -d "/Applications/OpenCore-Patcher.app" ]; then
+if [ ! -d "/Applications/OpenCore-Patcher.app" ]; then
     ln -s "/Library/Application Support/Dortania/OpenCore-Patcher.app" "/Applications/OpenCore-Patcher.app"
 fi
 """
