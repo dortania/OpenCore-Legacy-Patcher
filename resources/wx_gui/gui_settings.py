@@ -23,7 +23,7 @@ class SettingsFrame(wx.Frame):
 
         self.settings = self._settings()
 
-        self.frame_modal = wx.Dialog(parent, title=title, size=(600, 700))
+        self.frame_modal = wx.Dialog(parent, title=title, size=(600, 675))
 
         self._generate_elements(self.frame_modal)
         self.frame_modal.ShowWindowModal()
@@ -57,8 +57,6 @@ class SettingsFrame(wx.Frame):
         sizer.Add(model_description, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
         tabs = list(self.settings.keys())
-        if gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True) is False:
-            tabs.remove("Non-Metal")
         for tab in tabs:
             panel = wx.Panel(notebook)
             notebook.AddPage(panel, tab)
@@ -112,6 +110,16 @@ class SettingsFrame(wx.Frame):
                     title.SetPosition((int(horizontal_center) - int(title.GetSize()[0] / 2) - 15, height))
                     highest_height_reached = height + title.GetSize()[1] + 10
                     height += title.GetSize()[1] + 10
+                    continue
+
+                if setting_info["type"] == "sub_title":
+                    # Add sub-title
+                    sub_title = wx.StaticText(panel, label=setting, pos=(-1, -1))
+                    sub_title.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+
+                    sub_title.SetPosition((int(horizontal_center) - int(sub_title.GetSize()[0] / 2) - 15, height))
+                    highest_height_reached = height + sub_title.GetSize()[1] + 10
+                    height += sub_title.GetSize()[1] + 10
                     continue
 
                 if setting_info["type"] == "wrap_around":
@@ -311,6 +319,93 @@ class SettingsFrame(wx.Frame):
                     ],
                 },
             },
+            "Extras": {
+                "General (Continued)": {
+                    "type": "title",
+                },
+                "Wake on WLAN": {
+                    "type": "checkbox",
+                    "value": self.constants.enable_wake_on_wlan,
+                    "variable": "enable_wake_on_wlan",
+                    "description": [
+                        "Disabled by default due to",
+                        "performance degradation",
+                        "on some systems from wake.",
+                    ],
+                },
+                "Disable Thunderbolt": {
+                    "type": "checkbox",
+                    "value": self.constants.disable_tb,
+                    "variable": "disable_tb",
+                    "description": [
+                        "For MacBookPro11,x with faulty",
+                        "PCHs that may crash sporadically.",
+                    ],
+                    "condition": (self.constants.custom_model and self.constants.custom_model in ["MacBookPro11,1", "MacBookPro11,2", "MacBookPro11,3"]) or self.constants.computer.real_model in ["MacBookPro11,1", "MacBookPro11,2", "MacBookPro11,3"]
+                },
+                "Windows GMUX": {
+                    "type": "checkbox",
+                    "value": self.constants.dGPU_switch,
+                    "variable": "dGPU_switch",
+                    "description": [
+                        "Allow iGPU to be exposed in Windows",
+                        "for dGPU-based MacBooks.",
+                    ],
+                },
+                "Disable CPUFriend": {
+                    "type": "checkbox",
+                    "value": self.constants.disallow_cpufriend,
+                    "variable": "disallow_cpufriend",
+                    "description": [
+                        "Disables power management helper",
+                        "for unsupported models.",
+                    ],
+                },
+                "wrap_around 1": {
+                    "type": "wrap_around",
+                },
+                "Allow AppleALC Audio": {
+                    "type": "checkbox",
+                    "value": self.constants.set_alc_usage,
+                    "variable": "set_alc_usage",
+                    "description": [
+                        "Allow AppleALC to manage audio",
+                        "if applicable.",
+                        "Only disable if your host lacks",
+                        "a GOP ROM.",
+                    ],
+                },
+                "NVRAM WriteFlash": {
+                    "type": "checkbox",
+                    "value": self.constants.nvram_write,
+                    "variable": "nvram_write",
+                    "description": [
+                        "Allow OpenCore to write to NVRAM.",
+                        "Disable on systems with faulty or",
+                        "degraded NVRAM.",
+                    ],
+                },
+
+                "3rd Party NVMe PM": {
+                    "type": "checkbox",
+                    "value": self.constants.allow_nvme_fixing,
+                    "variable": "allow_nvme_fixing",
+                    "description": [
+                        "Enable non-stock NVMe power",
+                        "management in macOS.",
+                    ],
+                },
+                "3rd Party SATA PM": {
+                    "type": "checkbox",
+                    "value": self.constants.allow_3rd_party_drives,
+                    "variable": "allow_3rd_party_drives",
+                    "description": [
+                        "Enable non-stock SATA power",
+                        "management in macOS.",
+                    ],
+                    "condition": not bool(self.constants.computer.third_party_sata_ssd is False and not self.constants.custom_model)
+                },
+            },
             "Advanced": {
                 "Miscellaneous": {
                     "type": "title",
@@ -325,18 +420,6 @@ class SettingsFrame(wx.Frame):
                         "Ex. Missing Display, Battery, etc.",
                     ],
                 },
-
-                "Wake on WLAN": {
-                    "type": "checkbox",
-                    "value": self.constants.enable_wake_on_wlan,
-                    "variable": "enable_wake_on_wlan",
-                    "description": [
-                        "Disabled by default due to",
-                        "performance degradation",
-                        "on some systems from wake.",
-                    ],
-                },
-
                 "Software DeMUX": {
                     "type": "checkbox",
                     "value": self.constants.software_demux,
@@ -348,6 +431,7 @@ class SettingsFrame(wx.Frame):
                         "Note: Requires associated NVRAM arg:",
                         "'gpu-power-prefs'.",
                     ],
+                    "warning": "This settings requires 'gpu-power-prefs' NVRAM argument to be set to '1'.\n\nIf missing and this option is toggled, the system will not boot\n\nFull command:\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00",
                     "condition": not bool(not self.constants.custom_model and self.constants.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"])
                 },
                 "wrap_around 1": {
@@ -368,29 +452,21 @@ class SettingsFrame(wx.Frame):
                         "experiences memory instability.",
                     ],
                 },
-                "3rd Party NVMe PM": {
-                    "type": "checkbox",
-                    "value": self.constants.allow_nvme_fixing,
-                    "variable": "allow_nvme_fixing",
-                    "description": [
-                        "Enable non-stock NVMe power",
-                        "management in macOS.",
-                    ],
-                },
-                "3rd Party SATA PM": {
-                    "type": "checkbox",
-                    "value": self.constants.allow_3rd_party_drives,
-                    "variable": "allow_3rd_party_drives",
-                    "description": [
-                        "Enable non-stock SATA power",
-                        "management in macOS.",
-                    ],
-                    "condition": not bool(self.constants.computer.third_party_sata_ssd is False and not self.constants.custom_model)
-                },
                 "Populate FeatureUnlock Override": {
                     "type": "populate",
                     "function": self._populate_fu_override,
                     "args": wx.Frame,
+                },
+                "Hibernation Work-around": {
+                    "type": "checkbox",
+                    "value": self.constants.disable_connectdrivers,
+                    "variable": "disable_connectdrivers",
+                    "description": [
+                        "Only load minimum EFI drivers",
+                        "to prevent hibernation issues.",
+                        "Note: This may break booting from",
+                        "external drives.",
+                    ],
                 },
                 "Graphics": {
                     "type": "title",
@@ -488,40 +564,6 @@ class SettingsFrame(wx.Frame):
                     "args": wx.Frame,
                 },
             },
-            "Root Patching": {
-                "Root Volume Patching": {
-                    "type": "title",
-                },
-                "TeraScale 2 Acceleration": {
-                    "type": "checkbox",
-                    "value": global_settings.GlobalEnviromentSettings().read_property("MacBookPro_TeraScale_2_Accel") or self.constants.allow_ts2_accel,
-                    "variable": "MacBookPro_TeraScale_2_Accel",
-                    "constants_variable": "allow_ts2_accel",
-                    "description": [
-                        "Enable AMD TeraScale 2 GPU",
-                        "Acceleration on MacBookPro8,2 and",
-                        "MacBookPro8,3.",
-                        "By default this is disabled due to",
-                        "common GPU failures on these models.",
-                    ],
-                    "condition": not bool(self.constants.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"])
-                },
-                "wrap_around 1": {
-                    "type": "wrap_around",
-                },
-                "Disable ColorSync Downgrade": {
-                    "type": "checkbox",
-                    "value": global_settings.GlobalEnviromentSettings().read_property("Disable_ColorSync_Downgrade") or self.constants.disable_cat_colorsync,
-                    "variable": "Disable_ColorSync_Downgrade",
-                    "constants_variable": "disable_cat_colorsync",
-                    "description": [
-                        "Disable ColorSync downgrade",
-                        "on HD3000 GPUs in Ventura and newer.",
-                        "Note: Disabling can cause UI corruption.",
-                    ],
-                    "condition": not bool(self.constants.computer.real_model not in ["MacBookAir4,1","MacBookAir4,2","MacBookPro8,1","MacBookPro8,2","MacBookPro8,3","Macmini5,1"])
-                },
-            },
             "SMBIOS": {
                 "Model Spoofing": {
                     "type": "title",
@@ -577,32 +619,68 @@ class SettingsFrame(wx.Frame):
                     "function": self._populate_serial_spoofing_settings,
                     "args": wx.Frame,
                 },
-
             },
-            "Non-Metal": {
-                "SkyLight Configuration": {
+            "Root Patching": {
+                "Root Volume Patching": {
                     "type": "title",
+                },
+                "TeraScale 2 Acceleration": {
+                    "type": "checkbox",
+                    "value": global_settings.GlobalEnviromentSettings().read_property("MacBookPro_TeraScale_2_Accel") or self.constants.allow_ts2_accel,
+                    "variable": "MacBookPro_TeraScale_2_Accel",
+                    "constants_variable": "allow_ts2_accel",
+                    "description": [
+                        "Enable AMD TeraScale 2 GPU",
+                        "Acceleration on MacBookPro8,2 and",
+                        "MacBookPro8,3.",
+                        "By default this is disabled due to",
+                        "common GPU failures on these models.",
+                    ],
+                    "condition": not bool(self.constants.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"])
+                },
+                "wrap_around 1": {
+                    "type": "wrap_around",
+                },
+                "Disable ColorSync Downgrade": {
+                    "type": "checkbox",
+                    "value": global_settings.GlobalEnviromentSettings().read_property("Disable_ColorSync_Downgrade") or self.constants.disable_cat_colorsync,
+                    "variable": "Disable_ColorSync_Downgrade",
+                    "constants_variable": "disable_cat_colorsync",
+                    "description": [
+                        "Disable ColorSync downgrade",
+                        "on HD3000 GPUs in Ventura and newer.",
+                        "Note: Disabling can cause UI corruption.",
+                    ],
+                    "condition": not bool(self.constants.computer.real_model not in ["MacBookAir4,1","MacBookAir4,2","MacBookPro8,1","MacBookPro8,2","MacBookPro8,3","Macmini5,1"])
+                },
+                "Non-Metal Configuration": {
+                    "type": "title",
+                },
+                "Log out required to apply changes to SkyLight": {
+                    "type": "sub_title",
                 },
                 "Dark Menu Bar": {
                     "type": "checkbox",
                     "value": self._get_system_settings("Moraea_DarkMenuBar"),
                     "variable": "Moraea_DarkMenuBar",
                     "description": [
-                        "Enable Dark Menu Bar",
+                        # "Enable Dark Menu Bar",
                     ],
                     "override_function": self._update_system_defaults,
+                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
                 },
                 "Beta Blur": {
                     "type": "checkbox",
                     "value": self._get_system_settings("Moraea_BlurBeta"),
                     "variable": "Moraea_BlurBeta",
                     "description": [
-                        "Enable Beta Blur",
+                        # "Enable Beta Blur",
                     ],
                     "override_function": self._update_system_defaults,
+                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
 
                 },
-                "wrap_around 1": {
+                "wrap_around 2": {
                     "type": "wrap_around",
                 },
                 "Disable Beta Rim": {
@@ -610,9 +688,10 @@ class SettingsFrame(wx.Frame):
                     "value": self._get_system_settings("Moraea_RimBetaDisabled"),
                     "variable": "Moraea_RimBetaDisabled",
                     "description": [
-                        "Disable Beta Rim",
+                        # "Disable Beta Rim",
                     ],
                     "override_function": self._update_system_defaults,
+                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
                 },
             },
             "App": {
@@ -845,7 +924,7 @@ Hardware Information:
     {pprint.pformat(self.constants.computer, indent=4)}
 """
         # TextCtrl: properties
-        self.app_stats = wx.TextCtrl(panel, value=lines, pos=(-1, title.GetPosition()[1] + 30), size=(600, 270), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
+        self.app_stats = wx.TextCtrl(panel, value=lines, pos=(-1, title.GetPosition()[1] + 30), size=(600, 240), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
         self.app_stats.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
 
 
