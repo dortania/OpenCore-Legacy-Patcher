@@ -170,7 +170,6 @@ class macOSInstallerFrame(wx.Frame):
             self,
             title=self.title,
             global_constants=self.constants,
-            screen_location=self.GetScreenPosition(),
             download_obj=download_obj,
             item_name=f"macOS {app['Version']} ({app['Build']})",
         )

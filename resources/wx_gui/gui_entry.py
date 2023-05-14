@@ -9,7 +9,8 @@ from resources.wx_gui import (
     gui_build,
     gui_install_oc,
     gui_sys_patch,
-    gui_support
+    gui_support,
+    gui_update,
 )
 from resources.sys_patch import sys_patch_detect
 
@@ -21,6 +22,7 @@ class SupportedEntryPoints:
     BUILD_OC   = gui_build.BuildFrame
     INSTALL_OC = gui_install_oc.InstallOCFrame
     SYS_PATCH  = gui_sys_patch.SysPatchMenu
+    UPDATE_APP = gui_update.UpdateFrame
 
 class EntryPoint:
 

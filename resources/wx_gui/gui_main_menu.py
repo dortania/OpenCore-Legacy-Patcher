@@ -1,4 +1,9 @@
 import wx
+import logging
+import webbrowser
+import threading
+import sys
+
 from resources.wx_gui import (
     gui_build,
     gui_macos_installer_download,
@@ -6,8 +11,10 @@ from resources.wx_gui import (
     gui_support,
     gui_help,
     gui_settings,
+    gui_update,
 )
-from resources import constants
+
+from resources import constants, global_settings, updates
 from data import os_data
 
 class MainMenu(wx.Frame):
@@ -24,6 +31,8 @@ class MainMenu(wx.Frame):
 
         self.SetPosition(screen_location) if screen_location else self.Centre()
         self.Show()
+
+        self._preflight_checks()
 
 
     def _generate_elements(self) -> None:
@@ -85,6 +94,61 @@ class MainMenu(wx.Frame):
         self.SetSize((350, copy_label.GetPosition()[1] + 50))
 
 
+    def _preflight_checks(self):
+        if (
+                self.constants.computer.build_model != None and
+                self.constants.computer.build_model != self.constants.computer.real_model and
+                self.constants.host_is_hackintosh is False
+            ):
+            # Notify user they're booting an unsupported configuration
+            pop_up = wx.MessageDialog(
+                self,
+                f"We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.",
+                "Unsupported Configuration Detected!",
+                style = wx.OK | wx.ICON_EXCLAMATION
+            )
+            pop_up.ShowModal()
+            self.on_build_and_install()
+            return
+
+        threading.Thread(target=self._check_for_updates).start()
+
+
+    def _check_for_updates(self):
+        if self.constants.has_checked_updates is True:
+            return
+
+        ignore_updates = global_settings.GlobalEnviromentSettings().read_property("IgnoreAppUpdates")
+        if ignore_updates is True:
+            self.constants.ignore_updates = True
+            return
+
+        self.constants.ignore_updates = False
+        self.constants.has_checked_updates = True
+        dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
+        if not dict:
+            return
+
+        for entry in dict:
+            version = dict[entry]["Version"]
+            logging.info(f"New version: {version}")
+            dialog = wx.MessageDialog(
+                parent=self,
+                message=f"Current Version: {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}\nNew version: {version}\nWould you like to update?",
+                caption="Update Available for OpenCore Legacy Patcher!",
+                style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
+            )
+            dialog.SetYesNoCancelLabels("Download and install", "Always Ignore", "Ignore Once")
+            response = dialog.ShowModal()
+
+            if response == wx.ID_YES:
+                wx.CallAfter(self.on_update, dict[entry]["Link"], version)
+            elif response == wx.ID_NO:
+                logging.info("- Setting IgnoreAppUpdates to True")
+                self.constants.ignore_updates = True
+                global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", True)
+
+
     def on_build_and_install(self, event: wx.Event = None):
         self.Hide()
         gui_build.BuildFrame(
@@ -130,4 +194,14 @@ class MainMenu(wx.Frame):
             title=self.title,
             global_constants=self.constants,
             screen_location=self.GetPosition()
+        )
+
+    def on_update(self, oclp_url: str, oclp_version: str):
+        gui_update.UpdateFrame(
+            parent=self,
+            title=self.title,
+            global_constants=self.constants,
+            screen_location=self.GetPosition(),
+            url=oclp_url,
+            item=oclp_version
         )

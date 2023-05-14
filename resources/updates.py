@@ -35,6 +35,12 @@ class CheckBinaryUpdates:
         if local_version is None:
             local_version = self.binary_version_array
 
+
+        if local_version == remote_version:
+            if not self.constants.commit_info[0].startswith("refs/tags"):
+                # Check for nightly builds
+                return True
+
         # Pad version numbers to match length (ie. 0.1.0 vs 0.1.0.1)
         while len(remote_version) > len(local_version):
             local_version.append(0)
@@ -98,6 +104,9 @@ class CheckBinaryUpdates:
 
         response = network_handler.NetworkUtilities().get(REPO_LATEST_RELEASE_URL)
         data_set = response.json()
+
+        if "tag_name" not in data_set:
+            return None
 
         self.remote_version = data_set["tag_name"]
 

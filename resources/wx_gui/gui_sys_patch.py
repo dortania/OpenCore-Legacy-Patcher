@@ -95,7 +95,6 @@ class SysPatchMenu(wx.Frame):
             self,
             title=self.title,
             global_constants=self.constants,
-            screen_location=self.GetScreenPosition(),
             download_obj=kdk_download_obj,
             item_name=f"KDK Build {self.kdk_obj.kdk_url_build}"
         )
