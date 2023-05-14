@@ -122,7 +122,7 @@ class InstallOCFrame(wx.Frame):
             # Add buttons for each disk
             items = len(self.available_disks)
             longest_label = max((len(self.available_disks[disk]['disk']) + len(self.available_disks[disk]['name']) + len(str(self.available_disks[disk]['size']))) for disk in self.available_disks)
-            longest_label = longest_label * 10
+            longest_label = longest_label * 9
             spacer = 0
             for disk in self.available_disks:
                 # Create a button for each disk
