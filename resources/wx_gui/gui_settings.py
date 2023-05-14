@@ -8,7 +8,7 @@ import subprocess
 from resources.wx_gui import gui_support
 
 from resources import constants, global_settings, defaults, generate_smbios
-from data import model_array, sip_data, smbios_data
+from data import model_array, sip_data, smbios_data, os_data
 
 class SettingsFrame(wx.Frame):
     """
@@ -859,6 +859,16 @@ Hardware Information:
             if warning.ShowModal() == wx.ID_NO:
                 event.GetEventObject().SetValue(not event.GetEventObject().GetValue())
                 return
+            if label == "Allow native models":
+                if self.constants.computer.real_model in smbios_data.smbios_dictionary:
+                    if self.constants.detected_os > smbios_data.smbios_dictionary[self.constants.computer.real_model]["Max OS Supported"]:
+                        chassis_type = "aluminum"
+                        if self.constants.computer.real_model in ["MacBook4,1", "MacBook5,2", "MacBook6,1", "MacBook7,1"]:
+                            chassis_type = "plastic"
+                        dlg = wx.MessageDialog(self.frame_modal, f"This model, {self.constants.computer.real_model}, does not natively support macOS {os_data.os_conversion.kernel_to_os(self.constants.detected_os)}, {os_data.os_conversion.convert_kernel_to_marketing_name(self.constants.detected_os)}. The last native OS was macOS {os_data.os_conversion.kernel_to_os(smbios_data.smbios_dictionary[self.constants.computer.real_model]['Max OS Supported'])}, {os_data.os_conversion.convert_kernel_to_marketing_name(smbios_data.smbios_dictionary[self.constants.computer.real_model]['Max OS Supported'])}\n\nToggling this option will break booting on this OS. Are you absolutely certain this is desired?\n\nYou may end up with a nice {chassis_type} brick 🧱", "Are you certain?", wx.YES_NO | wx.ICON_WARNING | wx.NO_DEFAULT)
+                        if dlg.ShowModal() == wx.ID_NO:
+                            event.GetEventObject().SetValue(not event.GetEventObject().GetValue())
+                            return
         if override_function is True:
             print("Override function")
             self.settings[self._find_parent_for_key(label)][label]["override_function"](self.settings[self._find_parent_for_key(label)][label]["variable"], value, self.settings[self._find_parent_for_key(label)][label]["constants_variable"] if "constants_variable" in self.settings[self._find_parent_for_key(label)][label] else None)
