@@ -91,12 +91,25 @@ class macOSInstallerFlashFrame(wx.Frame):
             entries = len(self.available_installers_local)
             for app in self.available_installers_local:
                 logging.info(f"- {self.available_installers_local[app]['Short Name']}: {self.available_installers_local[app]['Version']} ({self.available_installers_local[app]['Build']})")
-                installer_button = wx.Button(frame_modal, label=f"{self.available_installers_local[app]['Short Name']}: {self.available_installers_local[app]['Version']} ({self.available_installers_local[app]['Build']})", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + spacer), size=(300, 30))
+
+                app_str = f"{self.available_installers_local[app]['Short Name']}"
+                unsupported: bool = self.available_installers_local[app]['Minimum Host OS'] > self.constants.detected_os
+
+                if unsupported:
+                    min_str = os_data.os_conversion.convert_kernel_to_marketing_name(self.available_installers_local[app]['Minimum Host OS'])
+                    app_str += f" (Requires {min_str})"
+                else:
+                    app_str += f": {self.available_installers_local[app]['Version']} ({self.available_installers_local[app]['Build']})"
+
+                installer_button = wx.Button(frame_modal, label=app_str, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + spacer), size=(300, 30))
                 installer_button.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.on_select(self.available_installers_local[temp]))
                 installer_button.Center(wx.HORIZONTAL)
                 spacer += 25
-                if entries == 1:
+                if unsupported:
+                    installer_button.Disable()
+                elif entries == 1:
                     installer_button.SetDefault()
+
         else:
             installer_button = wx.StaticText(frame_modal, label="No installers found in '/Applications'", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
             installer_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
