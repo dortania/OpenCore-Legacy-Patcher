@@ -11,6 +11,21 @@
   - Reduces both app size and root patching time
 - Resolve incorrect remote KDK matching for macOS betas
   - ex. Beta 4 KDK being recommended for Beta 3 install
+- Backend changes:
+  - Rename OCLP-Helper to OpenCore-Patcher-Helper
+    - Allows for better identification when displaying prompts
+  - Reimplement wxPython GUI into modularized system:
+    - Allows for easier maintenance and future expansion
+    - Changes include:
+      - Reworked settings UI
+      - Unified download UI with time remaining
+      - Implement in-app update system
+      - Expand app update checks to include nightly users
+        - ex. 0.6.6 nightly -> 0.6.6 release
+      - Implement macOS installer verification after flashing
+      - Implement proper UI call backs on long processes
+        - ex. Root patching
+      - Implement default selections for disks and installers
 - Increment Binaries:
   - PatcherSupportPkg 1.0.0 - release
 
