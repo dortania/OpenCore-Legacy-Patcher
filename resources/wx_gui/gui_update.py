@@ -136,7 +136,7 @@ class UpdateFrame(wx.Frame):
         while thread.is_alive():
             wx.Yield()
 
-        timer = 5
+        timer = 8
         while True:
             launch_label.SetLabel(f"Closing old process in {timer} seconds")
             launch_label.Center(wx.HORIZONTAL)
@@ -237,4 +237,4 @@ EOF
     def _launch_update(self):
         # Launch update
         logging.info("Launching update: '/Library/Application Support/Dortania/OpenCore-Patcher.app'")
-        subprocess.Popen(["open", "/Library/Application Support/Dortania/OpenCore-Patcher.app"])
+        subprocess.Popen(["/Library/Application Support/Dortania/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher"])
