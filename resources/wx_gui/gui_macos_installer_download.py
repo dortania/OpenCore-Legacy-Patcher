@@ -4,7 +4,12 @@ import threading
 
 from pathlib import Path
 
-from resources.wx_gui import gui_main_menu, gui_support, gui_download, gui_macos_installer_flash
+from resources.wx_gui import (
+    gui_main_menu,
+    gui_support,
+    gui_download,
+    gui_macos_installer_flash
+)
 from resources import (
     constants,
     macos_installer_handler,
@@ -14,7 +19,7 @@ from resources import (
 )
 
 
-class macOSInstallerFrame(wx.Frame):
+class macOSInstallerDownloadFrame(wx.Frame):
     """
     Create a frame for downloading and creating macOS installers
     Uses a Modal Dialog for smoother transition from other frames
@@ -69,8 +74,11 @@ class macOSInstallerFrame(wx.Frame):
         frame.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
 
 
-    def _generate_catalog_frame(self) -> wx.Frame:
-        super(macOSInstallerFrame, self).__init__(None, title=self.title, size=(300, 200), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+    def _generate_catalog_frame(self) -> None:
+        """
+        Generate frame to display available installers
+        """
+        super(macOSInstallerDownloadFrame, self).__init__(None, title=self.title, size=(300, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         self.SetPosition((self.parent.GetPosition()[0], self.parent.GetPosition()[1]))
 
         # Title: Pulling installer catalog
@@ -107,6 +115,9 @@ class macOSInstallerFrame(wx.Frame):
 
 
     def _display_available_installers(self, event: wx.Event = None, show_full: bool = False) -> None:
+        """
+        Display available installers in frame
+        """
         self.frame_modal.Destroy()
         dialog = wx.Dialog(self, title="Select macOS Installer", size=(300, 200))
 
@@ -155,6 +166,9 @@ class macOSInstallerFrame(wx.Frame):
 
 
     def on_download_installer(self, app: dict) -> None:
+        """
+        Download macOS installer
+        """
         host_space = utilities.get_free_space()
         needed_space = app['Size'] * 2
         if host_space < needed_space:
@@ -182,7 +196,9 @@ class macOSInstallerFrame(wx.Frame):
 
 
     def _validate_installer(self, chunklist_link: str) -> None:
-
+        """
+        Validate macOS installer
+        """
         self.SetSize((300, 200))
         for child in self.GetChildren():
             child.Destroy()
@@ -284,14 +300,20 @@ class macOSInstallerFrame(wx.Frame):
             self.on_existing()
 
 
-
     def on_download(self, event: wx.Event) -> None:
+        """
+        Display available macOS versions to download
+        """
         self.frame_modal.Close()
         self.parent.Hide()
         self._generate_catalog_frame()
         self.parent.Close()
 
+
     def on_existing(self, event: wx.Event = None) -> None:
+        """
+        Display local macOS installers
+        """
         frames = [self, self.frame_modal, self.parent]
         for frame in frames:
             if frame:
@@ -308,12 +330,19 @@ class macOSInstallerFrame(wx.Frame):
 
 
     def on_return(self, event: wx.Event) -> None:
+        """
+        Return to main menu (dismiss frame)
+        """
         self.frame_modal.Close()
 
-    def on_return_to_main_menu(self, event: wx.Event = None):
+
+    def on_return_to_main_menu(self, event: wx.Event = None) -> None:
+        """
+        Return to main menu
+        """
         if self.frame_modal:
             self.frame_modal.Hide()
-        main_menu_frame = gui_main_menu.MainMenu(
+        main_menu_frame = gui_main_menu.MainFrame(
             None,
             title=self.title,
             global_constants=self.constants,

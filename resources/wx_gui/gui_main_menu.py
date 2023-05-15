@@ -1,8 +1,6 @@
 import wx
 import logging
-import webbrowser
 import threading
-import sys
 
 from resources.wx_gui import (
     gui_build,
@@ -13,13 +11,17 @@ from resources.wx_gui import (
     gui_settings,
     gui_update,
 )
-
-from resources import constants, global_settings, updates
+from resources import (
+    constants,
+    global_settings,
+    updates
+)
 from data import os_data
 
-class MainMenu(wx.Frame):
+
+class MainFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        super(MainMenu, self).__init__(parent, title=title, size=(350, 300), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        super(MainFrame, self).__init__(parent, title=title, size=(350, 300), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
         self.constants: constants.Constants = global_constants
         self.title: str = title
@@ -105,7 +107,7 @@ class MainMenu(wx.Frame):
                 self,
                 f"We found you are currently booting OpenCore built for a different unit: {self.constants.computer.build_model}\n\nWe builds configs to match individual units and cannot be mixed or reused with different Macs.\n\nPlease Build and Install a new OpenCore config, and reboot your Mac.",
                 "Unsupported Configuration Detected!",
-                style = wx.OK | wx.ICON_EXCLAMATION
+                style=wx.OK | wx.ICON_EXCLAMATION
             )
             pop_up.ShowModal()
             self.on_build_and_install()
@@ -162,7 +164,7 @@ class MainMenu(wx.Frame):
 
     def on_post_install_root_patch(self, event: wx.Event = None):
         self.Hide()
-        gui_sys_patch.SysPatchMenu(
+        gui_sys_patch.SysPatchFrame(
             parent=None,
             title=self.title,
             global_constants=self.constants,
@@ -172,7 +174,7 @@ class MainMenu(wx.Frame):
 
 
     def on_create_macos_installer(self, event: wx.Event = None):
-        gui_macos_installer_download.macOSInstallerFrame(
+        gui_macos_installer_download.macOSInstallerDownloadFrame(
             parent=self,
             title=self.title,
             global_constants=self.constants,

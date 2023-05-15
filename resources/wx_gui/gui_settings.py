@@ -1,15 +1,29 @@
 import wx
 import wx.adv
+import pprint
 import logging
 import py_sip_xnu
-import pprint
 import subprocess
+
 from pathlib import Path
 
-from resources.wx_gui import gui_support, gui_update
+from resources.wx_gui import (
+    gui_support,
+    gui_update
+)
+from resources import (
+    constants,
+    global_settings,
+    defaults,
+    generate_smbios
+)
+from data import (
+    model_array,
+    sip_data,
+    smbios_data,
+    os_data
+)
 
-from resources import constants, global_settings, defaults, generate_smbios
-from data import model_array, sip_data, smbios_data, os_data
 
 class SettingsFrame(wx.Frame):
     """
@@ -898,16 +912,6 @@ class SettingsFrame(wx.Frame):
         generate_serial_number_button.Bind(wx.EVT_BUTTON, self.on_generate_serial_number)
 
 
-    def _populate_non_metal_settings(self, panel: wx.Frame) -> None:
-        title: wx.StaticText = None
-        for child in panel.GetChildren():
-            if child.GetLabel() == "SkyLight Configuration":
-                title = child
-                break
-
-        # Label: To apply, a logout is required
-
-
     def _populate_app_stats(self, panel: wx.Frame) -> None:
         title: wx.StaticText = None
         for child in panel.GetChildren():
@@ -918,6 +922,8 @@ class SettingsFrame(wx.Frame):
         lines = f"""Application Information:
     Application Version: {self.constants.patcher_version}
     PatcherSupportPkg Version: {self.constants.patcher_support_pkg_version}
+    Application Path: {self.constants.launcher_binary}
+    Application Mount: {self.constants.payload_path}
 
 Commit Information:
     Branch: {self.constants.commit_info[0]}

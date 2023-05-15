@@ -1,11 +1,16 @@
+# Generate UI for Building OpenCore
 import wx
 import logging
 import threading
 import traceback
 
-from resources.wx_gui import gui_main_menu, gui_install_oc, gui_support
-from resources.build import build
 from resources import constants
+from resources.build import build
+from resources.wx_gui import (
+    gui_main_menu,
+    gui_install_oc,
+    gui_support
+)
 
 
 class BuildFrame(wx.Frame):
@@ -13,8 +18,8 @@ class BuildFrame(wx.Frame):
     Create a frame for building OpenCore
     Uses a Modal Dialog for smoother transition from other frames
     """
-    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        super(BuildFrame, self).__init__(parent, title=title, size=(350, 200), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None) -> None:
+        super(BuildFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
         self.install_button: wx.Button = None
         self.text_box:     wx.TextCtrl = None
@@ -78,7 +83,10 @@ class BuildFrame(wx.Frame):
         frame.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
 
 
-    def _invoke_build(self):
+    def _invoke_build(self) -> None:
+        """
+        Invokes build function and waits for it to finish
+        """
         while gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
             wx.Yield()
 
@@ -100,7 +108,7 @@ class BuildFrame(wx.Frame):
         self.on_install() if dialog.ShowModal() == wx.ID_YES else self.install_button.Enable()
 
 
-    def _build(self):
+    def _build(self) -> None:
         """
         Calls build function and redirects stdout to the text box
         """
@@ -114,9 +122,12 @@ class BuildFrame(wx.Frame):
         logger.removeHandler(logger.handlers[2])
 
 
-    def on_return_to_main_menu(self, event: wx.Event = None):
+    def on_return_to_main_menu(self, event: wx.Event = None) -> None:
+        """
+        Return to main menu
+        """
         self.frame_modal.Hide()
-        main_menu_frame = gui_main_menu.MainMenu(
+        main_menu_frame = gui_main_menu.MainFrame(
             None,
             title=self.title,
             global_constants=self.constants,
@@ -127,7 +138,10 @@ class BuildFrame(wx.Frame):
         self.Destroy()
 
 
-    def on_install(self, event: wx.Event = None):
+    def on_install(self, event: wx.Event = None) -> None:
+        """
+        Launch install frame
+        """
         self.frame_modal.Destroy()
         self.Destroy()
         install_oc_frame = gui_install_oc.InstallOCFrame(

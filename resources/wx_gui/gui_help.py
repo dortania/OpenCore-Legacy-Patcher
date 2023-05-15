@@ -1,3 +1,4 @@
+# Generate UI for help menu
 import wx
 import webbrowser
 
@@ -8,7 +9,7 @@ class HelpFrame(wx.Frame):
     """
     Append to main menu through a modal dialog
     """
-    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
+    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None) -> None:
 
         self.dialog = wx.Dialog(parent, title=title, size=(300, 200))
 
@@ -21,7 +22,6 @@ class HelpFrame(wx.Frame):
 
     def _generate_elements(self, frame: wx.Frame = None) -> None:
         """
-
         Format:
             - Title: Patcher Resources
             - Text:  Following resources are available:

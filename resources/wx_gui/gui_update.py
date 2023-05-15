@@ -1,19 +1,26 @@
+# Generate UI for updating the patcher
 import wx
 import sys
-import subprocess
-import threading
-import logging
 import time
+import logging
 import datetime
+import threading
+import subprocess
+
 from pathlib import Path
 
 from resources.wx_gui import gui_download
+from resources import (
+    constants,
+    network_handler,
+    updates
+)
 
-
-from resources import constants, network_handler, updates
 
 class UpdateFrame(wx.Frame):
-
+    """
+    Create a frame for updating the patcher
+    """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: wx.Point, url: str = "", version_label: str = "") -> None:
         if parent:
             self.parent: wx.Frame = parent
@@ -22,7 +29,7 @@ class UpdateFrame(wx.Frame):
                 child.Hide()
             parent.Hide()
         else:
-            super(UpdateFrame, self).__init__(parent, title=title, size=(350, 300), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            super(UpdateFrame, self).__init__(parent, title=title, size=(350, 300), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
         self.title: str = title
         self.constants: constants.Constants = global_constants
@@ -150,12 +157,13 @@ class UpdateFrame(wx.Frame):
 
 
 
-    def _extract_update(self):
-        # Extract update
+    def _extract_update(self) -> None:
+        """
+        Extracts the update
+        """
         logging.info("Extracting update")
         if Path(self.application_path).exists():
             subprocess.run(["rm", "-rf", str(self.application_path)])
-
 
         # Some hell spawn at Github decided to double zip our Github Actions artifacts
         # So we need to unzip it twice
@@ -177,8 +185,10 @@ class UpdateFrame(wx.Frame):
                 wx.CallAfter(sys.exit, 1)
 
 
-    def _install_update(self):
-        # Install update
+    def _install_update(self) -> None:
+        """
+        Installs update to '/Library/Application Support/Dortania/OpenCore-Patcher.app'
+        """
         logging.info(f"Installing update: {self.application_path}")
 
         # Create bash script to run as root
@@ -234,7 +244,9 @@ EOF
             wx.CallAfter(sys.exit, 1)
 
 
-    def _launch_update(self):
-        # Launch update
+    def _launch_update(self) -> None:
+        """
+        Launches newly installed update
+        """
         logging.info("Launching update: '/Library/Application Support/Dortania/OpenCore-Patcher.app'")
         subprocess.Popen(["/Library/Application Support/Dortania/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher"])

@@ -1,35 +1,39 @@
 
 import wx
 import os
+import sys
+import time
 import logging
 import plistlib
+import traceback
 import threading
 import subprocess
-import time
-import sys
-import traceback
+
 from pathlib import Path
 
-from resources import constants, kdk_handler, utilities, network_handler
-from data import os_data
+from resources import (
+    constants,
+    kdk_handler,
+)
 from resources.sys_patch import (
     sys_patch,
     sys_patch_detect
 )
-
 from resources.wx_gui import (
     gui_main_menu,
     gui_support,
     gui_download,
 )
+from data import os_data
 
-class SysPatchMenu(wx.Frame):
+
+class SysPatchFrame(wx.Frame):
     """
     Create a frame for root patching
     Uses a Modal Dialog for smoother transition from other frames
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None, patches: dict = {}):
-        super(SysPatchMenu, self).__init__(parent, title=title, size=(350, 260), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        super(SysPatchFrame, self).__init__(parent, title=title, size=(350, 260), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
         self.title = title
         self.constants: constants.Constants = global_constants
@@ -157,7 +161,6 @@ class SysPatchMenu(wx.Frame):
 
         # Check if OCLP has already applied the same patches
         no_new_patches = not self._check_if_new_patches_needed(patches) if patches else False
-
 
         if not patches:
             # Prompt user with no patches found
@@ -373,7 +376,7 @@ class SysPatchMenu(wx.Frame):
 
     def on_return_to_main_menu(self, event: wx.Event = None):
         self.frame_modal.Hide()
-        main_menu_frame = gui_main_menu.MainMenu(
+        main_menu_frame = gui_main_menu.MainFrame(
             None,
             title=self.title,
             global_constants=self.constants,

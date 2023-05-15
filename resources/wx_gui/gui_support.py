@@ -1,10 +1,9 @@
 import wx
-import time
 import sys
 import time
 import logging
-import subprocess
 import threading
+import subprocess
 
 from pathlib import Path
 
@@ -21,7 +20,6 @@ class GenerateMenubar:
     def generate(self) -> wx.MenuBar:
         self.menubar = wx.MenuBar()
         return self.menubar
-
 
 
 class GaugePulseCallback:
@@ -113,7 +111,6 @@ class CheckProperties:
         return True
 
 
-
 class PayloadMount:
 
     def __init__(self, global_constants: constants.Constants, frame: wx.Frame) -> None:
@@ -133,7 +130,7 @@ class PayloadMount:
             self.frame,
             f"During unpacking of our internal files, we seemed to have encountered an error.\n\nIf you keep seeing this error, please try rebooting and redownloading the application.",
             "Internal Error occurred!",
-            style = wx.OK | wx.ICON_EXCLAMATION
+            style=wx.OK | wx.ICON_EXCLAMATION
         )
         popup.ShowModal()
         self.frame.Freeze()
@@ -188,6 +185,7 @@ class RelaunchApplicationAsRoot:
     def __init__(self, frame: wx.Frame, global_constants: constants.Constants) -> None:
         self.constants = global_constants
         self.frame: wx.Frame = frame
+
 
     def relaunch(self, event: wx.Event):
 

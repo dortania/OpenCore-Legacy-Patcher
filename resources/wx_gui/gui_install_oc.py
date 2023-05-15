@@ -12,7 +12,7 @@ class InstallOCFrame(wx.Frame):
     Create a frame for installing OpenCore to disk
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        super(InstallOCFrame, self).__init__(parent, title=title, size=(300, 120), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        super(InstallOCFrame, self).__init__(parent, title=title, size=(300, 120), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
         self.constants: constants.Constants = global_constants
         self.title: str = title
@@ -252,6 +252,9 @@ class InstallOCFrame(wx.Frame):
 
 
     def _invoke_install_oc(self, partition: dict) -> None:
+        """
+        Invoke OpenCore installation
+        """
         thread = threading.Thread(target=self._install_oc, args=(partition,))
         thread.start()
 
@@ -304,7 +307,7 @@ class InstallOCFrame(wx.Frame):
         """
         Return to main menu
         """
-        main_menu_frame = gui_main_menu.MainMenu(
+        main_menu_frame = gui_main_menu.MainFrame(
             None,
             title=self.title,
             global_constants=self.constants,

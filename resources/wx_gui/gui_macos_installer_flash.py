@@ -1,10 +1,10 @@
 import wx
-import logging
-import threading
 import time
-import subprocess
+import logging
 import plistlib
 import tempfile
+import threading
+import subprocess
 
 from pathlib import Path
 
@@ -22,7 +22,7 @@ from data import os_data
 class macOSInstallerFlashFrame(wx.Frame):
 
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        super(macOSInstallerFlashFrame, self).__init__(parent, title=title, size=(350, 200), style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        super(macOSInstallerFlashFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
 
         self.constants: constants.Constants = global_constants
         self.title: str = title
@@ -546,7 +546,7 @@ class macOSInstallerFlashFrame(wx.Frame):
     def on_return_to_main_menu(self, event: wx.Event = None):
         if self.frame_modal:
             self.frame_modal.Hide()
-        main_menu_frame = gui_main_menu.MainMenu(
+        main_menu_frame = gui_main_menu.MainFrame(
             None,
             title=self.title,
             global_constants=self.constants,
