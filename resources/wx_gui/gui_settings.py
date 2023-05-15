@@ -877,6 +877,7 @@ class SettingsFrame(wx.Frame):
         custom_serial_number_textbox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         custom_serial_number_textbox.SetToolTip("Enter a custom serial number here. This will be used for the SMBIOS and iMessage.\n\nNote: This will not be used if the \"Use Custom Serial Number\" checkbox is not checked.")
         custom_serial_number_textbox.Bind(wx.EVT_TEXT, self.on_custom_serial_number_textbox)
+        custom_serial_number_textbox.SetValue(self.constants.custom_serial_number)
         self.custom_serial_number_textbox = custom_serial_number_textbox
 
         # Label: Custom Board Serial Number
@@ -888,6 +889,7 @@ class SettingsFrame(wx.Frame):
         custom_board_serial_number_textbox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         custom_board_serial_number_textbox.SetToolTip("Enter a custom board serial number here. This will be used for the SMBIOS and iMessage.\n\nNote: This will not be used if the \"Use Custom Board Serial Number\" checkbox is not checked.")
         custom_board_serial_number_textbox.Bind(wx.EVT_TEXT, self.on_custom_board_serial_number_textbox)
+        custom_board_serial_number_textbox.SetValue(self.constants.custom_board_serial_number)
         self.custom_board_serial_number_textbox = custom_board_serial_number_textbox
 
         # Button: Generate Serial Number (below)
