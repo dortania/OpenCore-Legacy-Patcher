@@ -4,8 +4,9 @@ import logging
 import py_sip_xnu
 import pprint
 import subprocess
+from pathlib import Path
 
-from resources.wx_gui import gui_support
+from resources.wx_gui import gui_support, gui_update
 
 from resources import constants, global_settings, defaults, generate_smbios
 from data import model_array, sip_data, smbios_data, os_data
@@ -52,9 +53,15 @@ class SettingsFrame(wx.Frame):
         model_choice.SetSelection(model_choice.FindString(selection))
         sizer.Add(model_choice, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        model_description = wx.StaticText(frame, label="Overrides Mac Model Patcher will build for.", pos=(-1, -1))
-        model_description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        sizer.Add(model_description, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        if Path("~/.dortania_developer").expanduser().exists():
+            developer_mode_button = wx.Button(frame, label="Install latest nightly build 🧪", pos=(-1, -1), size=(200, 30))
+            developer_mode_button.Bind(wx.EVT_BUTTON, self.on_dev_mode)
+            developer_mode_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            sizer.Add(developer_mode_button, 0, wx.ALIGN_CENTER | wx.ALL, 0)
+        else:
+            model_description = wx.StaticText(frame, label="Overrides Mac Model Patcher will build for.", pos=(-1, -1))
+            model_description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            sizer.Add(model_description, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
         tabs = list(self.settings.keys())
         for tab in tabs:
@@ -1133,7 +1140,6 @@ Hardware Information:
             self.constants.metal_build = False
 
 
-
     def _get_system_settings(self, variable) -> bool:
         result = subprocess.run(["defaults", "read", "-g", variable], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode == 0:
@@ -1146,3 +1152,14 @@ Hardware Information:
 
     def on_return(self, event):
         self.frame_modal.Destroy()
+
+
+    def on_dev_mode(self, event: wx.Event) -> None:
+        gui_update.UpdateFrame(
+            parent=self.parent,
+            title=self.title,
+            global_constants=self.constants,
+            screen_location=self.parent.GetPosition(),
+            url="https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython/main/OpenCore-Patcher.app%20%28GUI%29.zip",
+            version_label="(Nightly)"
+        )

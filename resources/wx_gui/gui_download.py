@@ -56,7 +56,7 @@ class DownloadFrame(wx.Frame):
 
         self.download_obj.download()
         while self.download_obj.is_active():
-            if self.download_obj.total_file_size == -1:
+            if self.download_obj.get_percent() == -1:
                 amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded"
             else:
                 amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded of {utilities.human_fmt(self.download_obj.total_file_size)} ({self.download_obj.get_percent():.2f}%)"
@@ -70,7 +70,6 @@ class DownloadFrame(wx.Frame):
             label_est_time.SetLabel(
                 f"Estimated time remaining: {utilities.seconds_to_readable_time(self.download_obj.get_time_remaining())}"
             )
-
 
             progress_bar.SetValue(int(self.download_obj.get_percent()))
             wx.GetApp().Yield()

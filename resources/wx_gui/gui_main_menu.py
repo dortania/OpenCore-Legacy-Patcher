@@ -203,5 +203,5 @@ class MainMenu(wx.Frame):
             global_constants=self.constants,
             screen_location=self.GetPosition(),
             url=oclp_url,
-            item=oclp_version
+            version_label=oclp_version
         )

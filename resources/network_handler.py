@@ -382,7 +382,6 @@ class DownloadObject:
         """
 
         if self.total_file_size == 0.0:
-            logging.error("- File size is 0, cannot calculate percent")
             return -1
         return self.downloaded_file_size / self.total_file_size * 100
 
@@ -407,7 +406,6 @@ class DownloadObject:
         """
 
         if self.total_file_size == 0.0:
-            logging.error("- File size is 0, cannot calculate time remaining")
             return -1
         speed = self.get_speed()
         if speed <= 0:

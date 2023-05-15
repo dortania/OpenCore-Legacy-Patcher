@@ -4,6 +4,7 @@ import subprocess
 import threading
 import logging
 import time
+import datetime
 from pathlib import Path
 
 from resources.wx_gui import gui_download
@@ -13,7 +14,7 @@ from resources import constants, network_handler, updates
 
 class UpdateFrame(wx.Frame):
 
-    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: wx.Point, url: str = "", item: str = "") -> None:
+    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: wx.Point, url: str = "", version_label: str = "") -> None:
         if parent:
             self.parent: wx.Frame = parent
 
@@ -35,13 +36,16 @@ class UpdateFrame(wx.Frame):
                 self.screen_location = self.GetScreenPosition()
 
 
-        if url == "" or item == "":
+        if url == "" or version_label == "":
             dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
             if dict:
                 for key in dict:
-                    item = dict[key]["Version"]
+                    version_label = dict[key]["Version"]
                     url = dict[key]["Link"]
                     break
+
+        self.version_label = version_label
+        self.url = url
 
         self.frame: wx.Frame = wx.Frame(
             parent=parent if parent else self,
@@ -50,7 +54,6 @@ class UpdateFrame(wx.Frame):
             pos=self.screen_location,
             style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER ^ wx.MAXIMIZE_BOX
         )
-
 
         # Title: Preparing update
         title_label = wx.StaticText(self.frame, label="Preparing download...", pos=(-1,1))
@@ -73,7 +76,7 @@ class UpdateFrame(wx.Frame):
             title=self.title,
             global_constants=self.constants,
             download_obj=download_obj,
-            item_name=f"OpenCore Patcher {item}"
+            item_name=f"OpenCore Patcher {version_label}"
         )
 
         if download_obj.download_complete is False:
@@ -110,7 +113,7 @@ class UpdateFrame(wx.Frame):
         progress_bar.Hide()
 
         # Label: 0.6.6 has been installed to:
-        installed_label = wx.StaticText(self.frame, label=f"{item} has been installed:", pos=(-1, progress_bar.GetPosition().y - 15))
+        installed_label = wx.StaticText(self.frame, label=f"{version_label} has been installed:", pos=(-1, progress_bar.GetPosition().y - 15))
         installed_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
         installed_label.Center(wx.HORIZONTAL)
 
@@ -120,12 +123,12 @@ class UpdateFrame(wx.Frame):
         installed_path_label.Center(wx.HORIZONTAL)
 
         # Label: Launching update shortly...
-        launch_label = wx.StaticText(self.frame, label="Launching update shortly...", pos=(-1, installed_path_label.GetPosition().y + 20))
+        launch_label = wx.StaticText(self.frame, label="Launching update shortly...", pos=(-1, installed_path_label.GetPosition().y + 30))
         launch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         launch_label.Center(wx.HORIZONTAL)
 
         # Adjust frame size
-        self.frame.SetSize((-1, launch_label.GetPosition().y + 80))
+        self.frame.SetSize((-1, launch_label.GetPosition().y + 60))
 
         thread = threading.Thread(target=self._launch_update)
         thread.start()
@@ -133,11 +136,11 @@ class UpdateFrame(wx.Frame):
         while thread.is_alive():
             wx.Yield()
 
-        timer = 3
+        timer = 5
         while True:
-            wx.GetApp().Yield()
             launch_label.SetLabel(f"Closing old process in {timer} seconds")
             launch_label.Center(wx.HORIZONTAL)
+            wx.GetApp().Yield()
             time.sleep(1)
             timer -= 1
             if timer == 0:
@@ -152,18 +155,31 @@ class UpdateFrame(wx.Frame):
         logging.info("Extracting update")
         if Path(self.application_path).exists():
             subprocess.run(["rm", "-rf", str(self.application_path)])
-        result = subprocess.run(
-            ["ditto", "-xk", str(self.constants.payload_path / "OpenCore-Patcher-GUI.app.zip"), str(self.constants.payload_path)], capture_output=True
-        )
-        if result.returncode != 0:
-            wx.CallAfter(self.progress_bar.SetValue, 0)
-            wx.CallAfter(wx.MessageBox, f"Failed to extract update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
-            wx.CallAfter(sys.exit, 1)
+
+
+        # Some hell spawn at Github decided to double zip our Github Actions artifacts
+        # So we need to unzip it twice
+        loop = 0
+        while True:
+            result = subprocess.run(
+                ["ditto", "-xk", str(self.constants.payload_path / "OpenCore-Patcher-GUI.app.zip"), str(self.constants.payload_path)], capture_output=True
+            )
+            if result.returncode != 0:
+                wx.CallAfter(self.progress_bar.SetValue, 0)
+                wx.CallAfter(wx.MessageBox, f"Failed to extract update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
+                wx.CallAfter(sys.exit, 1)
+            if Path(self.application_path).exists():
+                break
+            loop += 1
+            if loop == 2:
+                wx.CallAfter(self.progress_bar.SetValue, 0)
+                wx.CallAfter(wx.MessageBox, "Failed to extract update. Error: Update file does not exist", "Critical Error!", wx.OK | wx.ICON_ERROR)
+                wx.CallAfter(sys.exit, 1)
 
 
     def _install_update(self):
         # Install update
-        logging.info("Installing update")
+        logging.info(f"Installing update: {self.application_path}")
 
         # Create bash script to run as root
         script = f"""#!/bin/bash
@@ -184,6 +200,23 @@ mv "{str(self.application_path)}" "/Library/Application Support/Dortania/OpenCor
 if [ ! -d "/Applications/OpenCore-Patcher.app" ]; then
     ln -s "/Library/Application Support/Dortania/OpenCore-Patcher.app" "/Applications/OpenCore-Patcher.app"
 fi
+
+# Create update.plist with info about update
+cat << EOF > "/Library/Application Support/Dortania/update.plist"
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+<dict>
+    <key>CFBundleShortVersionString</key>
+    <string>{self.version_label}</string>
+    <key>CFBundleVersion</key>
+    <string>{self.version_label}</string>
+    <key>InstallationDate</key>
+    <date>{datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")}</date>
+    <key>InstallationSource</key>
+    <string>{self.url}</string>
+</dict>
+</plist>
+EOF
 """
         # Write script to file
         with open(self.constants.payload_path / "update.sh", "w") as f:
@@ -191,11 +224,13 @@ fi
 
         # Execute script
         args = [self.constants.oclp_helper_path, "/bin/sh", str(self.constants.payload_path / "update.sh")]
-        logging.info(f"Executing: {args}")
         result = subprocess.run(args, capture_output=True)
         if result.returncode != 0:
             wx.CallAfter(self.progress_bar.SetValue, 0)
-            wx.CallAfter(wx.MessageBox, f"Failed to install update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
+            if "User cancelled" in result.stderr.decode("utf-8"):
+                wx.CallAfter(wx.MessageBox, "User cancelled update", "Update Cancelled", wx.OK | wx.ICON_INFORMATION)
+            else:
+                wx.CallAfter(wx.MessageBox, f"Failed to install update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
             wx.CallAfter(sys.exit, 1)
 
 

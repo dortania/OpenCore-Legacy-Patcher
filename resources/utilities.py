@@ -62,7 +62,7 @@ def seconds_to_readable_time(seconds) -> str:
     time = ""
 
     if seconds == 0:
-        return "Done"
+        return "Almost done"
     if seconds < 0:
         return "Indeterminate"
 
