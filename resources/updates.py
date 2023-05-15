@@ -2,7 +2,6 @@
 # Check whether new updates are available for OpenCore Legacy Patcher binary
 # Call check_binary_updates() to determine if any updates are available
 # Returns dict with Link and Version of the latest binary update if available
-import requests
 import logging
 
 from resources import network_handler, constants
