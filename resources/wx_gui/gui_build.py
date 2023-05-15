@@ -33,6 +33,9 @@ class BuildFrame(wx.Frame):
 
         self._generate_elements(self.frame_modal)
 
+        if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
+            self.constants.update_stage = gui_support.AutoUpdateStages.BUILDING
+
         self.SetPosition(screen_location) if screen_location else self.Centre()
         self.frame_modal.ShowWindowModal()
 

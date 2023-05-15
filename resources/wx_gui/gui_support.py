@@ -11,6 +11,15 @@ from resources import constants
 from data import model_array, os_data
 
 
+class AutoUpdateStages:
+    INACTIVE = 0
+    CHECKING = 1
+    BUILDING = 2
+    INSTALLING = 3
+    ROOT_PATCHING = 4
+    FINISHED = 5
+
+
 class GenerateMenubar:
 
     def __init__(self) -> None:

@@ -131,6 +131,7 @@ class Constants:
         self.launcher_script:            str = None  #  Determine launch file path   (None if PyInstaller)
         self.booted_oc_disk:             str = None  #  Determine current disk OCLP booted from
         self.unpack_thread                   = None  #  Determine if unpack thread finished (threading.Thread)
+        self.update_stage:               int = 0  #     Determine update stage (see gui_support.py)
 
         self.commit_info: tuple = (None, None, None)  # Commit info (Branch, Commit Date, Commit URL)
 

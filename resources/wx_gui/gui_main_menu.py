@@ -1,4 +1,7 @@
+# Generate GUI for main menu
 import wx
+import sys
+import time
 import logging
 import threading
 
@@ -112,6 +115,34 @@ class MainFrame(wx.Frame):
             pop_up.ShowModal()
             self.on_build_and_install()
             return
+
+        if "--update_installed" in sys.argv and self.constants.has_checked_updates is False and gui_support.CheckProperties(self.constants).host_can_build():
+            # Notify user that the update has been installed
+            self.constants.has_checked_updates = True
+            pop_up = wx.MessageDialog(
+                self,
+                f"OpenCore Legacy Patcher has been updated to the latest version: {self.constants.patcher_version}\n\nWould you like to update OpenCore and your root volume patches?",
+                "Update successful!",
+                style=wx.YES_NO | wx.YES_DEFAULT | wx.ICON_INFORMATION
+            )
+            pop_up.ShowModal()
+
+            if pop_up.GetReturnCode() != wx.ID_YES:
+                print("- Skipping OpenCore and root volume patch update...")
+                return
+
+
+            print("- Updating OpenCore and root volume patches...")
+            self.constants.update_stage = gui_support.AutoUpdateStages.CHECKING
+            self.Hide()
+            pos = self.GetPosition()
+            gui_build.BuildFrame(
+                parent=None,
+                title=self.title,
+                global_constants=self.constants,
+                screen_location=pos
+            )
+            self.Close()
 
         threading.Thread(target=self._check_for_updates).start()
 

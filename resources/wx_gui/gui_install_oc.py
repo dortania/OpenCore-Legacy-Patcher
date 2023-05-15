@@ -3,7 +3,7 @@ import threading
 import logging
 import traceback
 
-from resources.wx_gui import gui_main_menu, gui_support
+from resources.wx_gui import gui_main_menu, gui_support, gui_sys_patch
 from resources import constants, install
 
 
@@ -26,6 +26,9 @@ class InstallOCFrame(wx.Frame):
         self.hyperlink_colour = (25, 179, 231)
 
         self._generate_elements()
+
+        if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
+            self.constants.update_stage = gui_support.AutoUpdateStages.INSTALLING
 
         self.SetPosition(screen_location) if screen_location else self.Centre()
         self.Show()
@@ -262,7 +265,25 @@ class InstallOCFrame(wx.Frame):
             wx.GetApp().Yield()
 
         if self.result is True:
-            if not self.constants.custom_model:
+            if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
+                self.constants.update_stage = gui_support.AutoUpdateStages.ROOT_PATCHING
+                popup_message = wx.MessageDialog(
+                    self,
+                    f"OpenCore has finished installing to disk.\n\nWould you like to update your root patches next?", "Success",
+                    wx.YES_NO | wx.YES_DEFAULT
+                )
+                popup_message.ShowModal()
+                if popup_message.GetReturnCode() == wx.ID_YES:
+                    gui_sys_patch.SysPatchFrame(
+                        parent=None,
+                        title=self.title,
+                        global_constants=self.constants,
+                        screen_location=self.GetPosition()
+                    )
+                    self.Destroy()
+                return
+
+            elif not self.constants.custom_model:
                 gui_support.RestartHost(self).restart(message="OpenCore has finished installing to disk.\n\nYou will need to reboot and hold the Option key and select OpenCore/Boot EFI's option.\n\nWould you like to reboot?")
             else:
                 popup_message = wx.MessageDialog(
@@ -271,6 +292,9 @@ class InstallOCFrame(wx.Frame):
                     wx.OK
                 )
                 popup_message.ShowModal()
+        else:
+            if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
+                self.constants.update_stage = gui_support.AutoUpdateStages.FINISHED
 
 
     def _install_oc(self, partition: dict) -> None:

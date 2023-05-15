@@ -39,6 +39,7 @@ class SysPatchFrame(wx.Frame):
         self.constants: constants.Constants = global_constants
         self.frame_modal: wx.Dialog = None
         self.return_button: wx.Button = None
+        self.available_patches: bool = False
 
         self.frame_modal = wx.Dialog(self, title=title, size=(360, 200))
         self.SetPosition(screen_location) if screen_location else self.Centre()
@@ -48,6 +49,10 @@ class SysPatchFrame(wx.Frame):
 
         self._generate_elements_display_patches(self.frame_modal, patches)
         self.frame_modal.ShowWindowModal()
+
+        if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
+            if self.available_patches is False:
+                gui_support.RestartHost(self).restart(message="No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?")
 
 
     def _kdk_download(self, frame: wx.Frame = None) -> bool:
@@ -239,11 +244,13 @@ class SysPatchFrame(wx.Frame):
         if not patches:
             start_button.Disable()
         else:
+            self.available_patches = True
             if patches["Validation: Patching Possible"] is False:
                 start_button.Disable()
+            elif no_new_patches is False:
+                start_button.SetDefault()
         if can_unpatch is False:
             revert_button.Disable()
-
 
         # Relaunch as root if not root
         uid = os.geteuid()

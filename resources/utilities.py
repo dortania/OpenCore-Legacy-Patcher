@@ -572,6 +572,7 @@ def check_cli_args():
     parser.add_argument("--gui_patch", help="Starts GUI in Root Patcher", action="store_true", required=False)
     parser.add_argument("--gui_unpatch", help="Starts GUI in Root Unpatcher", action="store_true", required=False)
     parser.add_argument("--auto_patch", help="Check if patches are needed and prompt user", action="store_true", required=False)
+    parser.add_argument("--update_installed", help="Prompt user to finish updating via GUI", action="store_true", required=False)
 
     args = parser.parse_args()
     if not (args.build or args.patch_sys_vol or args.unpatch_sys_vol or args.validate or args.auto_patch):
