@@ -35,12 +35,12 @@ class UpdateFrame(wx.Frame):
         self.constants: constants.Constants = global_constants
         self.application_path = self.constants.payload_path / "OpenCore-Patcher.app"
         self.screen_location: wx.Point = screen_location
-        if self.screen_location is None:
-            if parent:
-                self.screen_location = parent.GetScreenPosition()
-            else:
-                self.Centre()
-                self.screen_location = self.GetScreenPosition()
+        if parent:
+            self.parent.Centre()
+            self.screen_location = parent.GetScreenPosition()
+        else:
+            self.Centre()
+            self.screen_location = self.GetScreenPosition()
 
 
         if url == "" or version_label == "":
@@ -143,7 +143,7 @@ class UpdateFrame(wx.Frame):
         while thread.is_alive():
             wx.Yield()
 
-        timer = 8
+        timer = 5
         while True:
             launch_label.SetLabel(f"Closing old process in {timer} seconds")
             launch_label.Center(wx.HORIZONTAL)
@@ -249,4 +249,4 @@ EOF
         Launches newly installed update
         """
         logging.info("Launching update: '/Library/Application Support/Dortania/OpenCore-Patcher.app'")
-        subprocess.Popen(["/Library/Application Support/Dortania/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher"])
+        subprocess.Popen(["/Library/Application Support/Dortania/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher", "--update_installed"])
