@@ -67,17 +67,13 @@ class SettingsFrame(wx.Frame):
         model_choice.SetSelection(model_choice.FindString(selection))
         sizer.Add(model_choice, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        if Path("~/.dortania_developer").expanduser().exists():
-            developer_mode_button = wx.Button(frame, label="Install latest nightly build 🧪", pos=(-1, -1), size=(200, 30))
-            developer_mode_button.Bind(wx.EVT_BUTTON, self.on_dev_mode)
-            developer_mode_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-            sizer.Add(developer_mode_button, 0, wx.ALIGN_CENTER | wx.ALL, 0)
-        else:
-            model_description = wx.StaticText(frame, label="Overrides Mac Model Patcher will build for.", pos=(-1, -1))
-            model_description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-            sizer.Add(model_description, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        model_description = wx.StaticText(frame, label="Overrides Mac Model Patcher will build for.", pos=(-1, -1))
+        model_description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        sizer.Add(model_description, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
         tabs = list(self.settings.keys())
+        if not Path("~/.dortania_developer").expanduser().exists():
+            tabs.remove("Developer")
         for tab in tabs:
             panel = wx.Panel(notebook)
             notebook.AddPage(panel, tab)
@@ -181,6 +177,12 @@ class SettingsFrame(wx.Frame):
                     if "override_function" in setting_info:
                         combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.settings[tab][variable]["override_function"](event))
                     height += 10
+                elif setting_info["type"] == "button":
+                    button = wx.Button(panel, label=setting, pos=(width + 25, 10 + height), size = (200,-1))
+                    button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                    button.Bind(wx.EVT_BUTTON, lambda event, variable=setting: self.settings[tab][variable]["function"](event))
+                    height += 10
+
                 else:
                     raise Exception("Invalid setting type")
 
@@ -190,9 +192,6 @@ class SettingsFrame(wx.Frame):
                 height += 40
 
                 # Check number of lines in description, and adjust spacer accordingly
-                description_lines = len(lines.split('\n'))
-                # if description_lines > 1:
-                #     height += (description_lines) * 11
                 for i, line in enumerate(lines.split('\n')):
                     if line == "":
                         continue
@@ -776,6 +775,24 @@ class SettingsFrame(wx.Frame):
                     "args": wx.Frame,
                 },
             },
+            "Developer": {
+                "Install latest nightly build 🧪": {
+                    "type": "button",
+                    "function": self.on_nightly,
+                    "description": [
+                        "If you're already here, I assume you're ok",
+                        "bricking your system 🧱.",
+                        "Check CHANGELOG before blindly updating.",
+                    ],
+                },
+                "Export constants": {
+                    "type": "button",
+                    "function": self.on_export_constants,
+                    "description": [
+                        "Export constants.py values to a plist file.",
+                    ],
+                },
+            },
         }
 
         return settings
@@ -1162,7 +1179,7 @@ Hardware Information:
         self.frame_modal.Destroy()
 
 
-    def on_dev_mode(self, event: wx.Event) -> None:
+    def on_nightly(self, event: wx.Event) -> None:
         gui_update.UpdateFrame(
             parent=self.parent,
             title=self.title,
@@ -1171,3 +1188,14 @@ Hardware Information:
             url="https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython/main/OpenCore-Patcher.app%20%28GUI%29.zip",
             version_label="(Nightly)"
         )
+
+    def on_export_constants(self, event: wx.Event) -> None:
+        # Throw pop up to get save location
+        with wx.FileDialog(self.parent, "Save Constants File", wildcard="JSON files (*.txt)|*.txt", style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return
+
+            # Save the current contents in the file
+            pathname = fileDialog.GetPath()
+            with open(pathname, 'w') as file:
+                file.write(pprint.pformat(vars(self.constants), indent=4))
