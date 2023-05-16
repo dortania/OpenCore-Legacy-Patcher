@@ -786,11 +786,14 @@ class SettingsFrame(wx.Frame):
                         "Check CHANGELOG before blindly updating.",
                     ],
                 },
+                "wrap_around 1": {
+                    "type": "wrap_around",
+                },
                 "Export constants": {
                     "type": "button",
                     "function": self.on_export_constants,
                     "description": [
-                        "Export constants.py values to a plist file.",
+                        "Export constants.py values to a txt file.",
                     ],
                 },
             },

@@ -175,6 +175,8 @@ class UpdateFrame(wx.Frame):
                 wx.CallAfter(self.progress_bar.SetValue, 0)
                 wx.CallAfter(wx.MessageBox, f"Failed to extract update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
                 wx.CallAfter(sys.exit, 1)
+                break
+
             if Path(self.application_path).exists():
                 break
 
@@ -182,6 +184,7 @@ class UpdateFrame(wx.Frame):
                 wx.CallAfter(self.progress_bar.SetValue, 0)
                 wx.CallAfter(wx.MessageBox, "Failed to extract update. Error: Update file does not exist", "Critical Error!", wx.OK | wx.ICON_ERROR)
                 wx.CallAfter(sys.exit, 1)
+                break
 
 
     def _install_update(self) -> None:
