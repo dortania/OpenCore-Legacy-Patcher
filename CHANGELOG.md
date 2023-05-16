@@ -11,6 +11,9 @@
   - Reduces both app size and root patching time
 - Resolve incorrect remote KDK matching for macOS betas
   - ex. Beta 4 KDK being recommended for Beta 3 install
+- Resolve low power mode on MacPro6,1
+  - Credit to CaseyJ's [PCI Bus Enumeration Patch](https://github.com/AMD-OSX/AMD_Vanilla/pull/196)
+- Resolve PCI eject menu appearing on unsupported hardware
 - Increment Binaries:
   - PatcherSupportPkg 1.0.0 - release
   - OpenCorePkg 0.9.2 - release
