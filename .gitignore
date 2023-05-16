@@ -34,3 +34,4 @@ __pycache__/
 /payloads/KDK.dmg
 *.log
 /Universal-Binaries.dmg
+/payloads/Universal-Binaries_overlay

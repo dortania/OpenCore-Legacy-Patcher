@@ -152,6 +152,26 @@ class GenerateKexts:
                     self._get_latest_release(kext_folder, kext_name)
 
 
+    def _is_build_nightly(self, kext: str, version: str) -> bool:
+        # Load CHANGELOG.md
+        changelog_path = Path(f"../../CHANGELOG.md").absolute()
+        with open(changelog_path, "r") as changelog_file:
+            changelog = changelog_file.read()
+
+        # Check if kext is in changelog
+        if kext not in changelog:
+            return False
+
+        # Check if kext is 'rolling' or 'nightly'
+        for line in changelog.split("\n"):
+            if kext in line and version in line:
+                if ("rolling" in line or "nightly" in line):
+                    return True
+                break
+
+        return False
+
+
     def _get_latest_release(self, kext_folder, kext_name, override_kext_zip_name=None):
         # Get latest release from GitHub API
         repo_url = KEXT_DICTIONARY[kext_folder][kext_name]["Repository"].replace("https://github.com", "https://api.github.com/repos")
@@ -178,7 +198,12 @@ class GenerateKexts:
 
             if packaging.version.parse(remote_version) <= packaging.version.parse(local_version):
                 print(f"  {kext_name} {variant} is up to date: v{local_version}")
-                continue
+                if remote_version == local_version:
+                    if self._is_build_nightly(kext_name, local_version) is False:
+                        continue
+                    print(f"  {kext_name} {variant} is a nightly build, updating...")
+                else:
+                    continue
 
             for asset in latest_release["assets"]:
                 if not asset["name"].endswith(f"{variant}.zip"):
@@ -186,9 +211,9 @@ class GenerateKexts:
                 print(f"  Downloading {kext_name} {variant}: v{remote_version}...")
                 zip_name = f"{override_kext_zip_name}-v{remote_version}-{variant}.zip" if override_kext_zip_name else f"{kext_name}-v{remote_version}-{variant}.zip"
 
-                self._download_file(asset["browser_download_url"], f"./{kext_folder}/{zip_name}", f"{kext_name}.kext")
-                if Path(f"./{kext_folder}/{zip_name}").exists():
+                if Path(f"./{kext_folder}/{zip_name.replace(f'v{remote_version}', f'v{local_version}')}").exists():
                     subprocess.run(["rm", "-rf", f"./{kext_folder}/{zip_name.replace(f'v{remote_version}', f'v{local_version}')}"])
+                self._download_file(asset["browser_download_url"], f"./{kext_folder}/{zip_name}", f"{kext_name}.kext")
                 self._update_constants_file(KEXT_DICTIONARY[kext_folder][kext_name]["Constants Variable"], local_version, remote_version)
 
                 if override_kext_zip_name:
