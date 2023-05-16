@@ -220,17 +220,28 @@ class BuildFirmware:
 
         self._dual_dp_handling()
 
-        # Force VMM as a temporary solution to getting the MacPro6,1 booting in Ventura
-        # With macOS Ventura, Apple removed AppleIntelCPUPowerManagement.kext and assumed XCPM support across all Macs
-        # This change resulted in broken OS booting as the machine had no power management support
-        # Currently the AICPUPM fix is not fully functional, thus forcing VMM is a temporary solution
-        # Waiting for XNU source to be released to fix this properly
-        # Ref: https://forums.macrumors.com/threads/opencore-on-the-mac-pro.2207814/
-        if self.model in ["MacPro6,1", "iMac7,1", "iMac8,1", "MacBookPro4,1"] or self.constants.set_vmm_cpuid is True:
+        # Patches IOPCIConfigurator.cpp's IOPCIIsHotplugPort to skip configRead16/32 calls
+        # Credit to CaseySJ for original discovery:
+        # - Patch: https://github.com/AMD-OSX/AMD_Vanilla/pull/196
+        # - Source: https://github.com/apple-oss-distributions/IOPCIFamily/blob/main/IOPCIConfigurator.cpp#L968-L1022
+        #
+        # Currently all pre-Sandy Bridge Macs lacking an iGPU benefit from this patch as well as MacPro6,1
+        # Otherwise some graphics hardware will fail to wake, macOS will misreport hardware as ExpressCard-based,
+        # prevents MacPro6,1 from both booting unaccelerated and breaks low power states.
+        if (
+            self.model in ["MacPro6,1", "MacBookPro4,1"] or
+            (
+                smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value and \
+                not self.model.startswith("MacBook")
+            )
+        ):
+            logging.info("- Adding PCI Bus Enumeration Patch")
+            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "CaseySJ - Fix PCI bus enumeration")["Enabled"] = True
+
+        if self.constants.set_vmm_cpuid is True:
             logging.info("- Enabling VMM patch")
             self.config["Kernel"]["Emulate"]["Cpuid1Data"] = binascii.unhexlify("00000000000000000000008000000000")
             self.config["Kernel"]["Emulate"]["Cpuid1Mask"] = binascii.unhexlify("00000000000000000000008000000000")
-            self.config["Kernel"]["Emulate"]["MinKernel"] =  "22.0.0"
 
         if (
             self.model.startswith("MacBook")
