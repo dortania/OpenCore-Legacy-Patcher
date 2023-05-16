@@ -286,8 +286,8 @@ class macOSInstallerFlashFrame(wx.Frame):
         while thread.is_alive():
             total_bytes_written = float(utilities.monitor_disk_output(root_disk))
             bytes_written = total_bytes_written - initial_bytes_written
-            bytes_written_label.SetLabel(f"Bytes Written: {bytes_written:.2f} MB")
-            progress_bar.SetValue(int(bytes_written))
+            wx.CallAfter(bytes_written_label.SetLabel, f"Bytes Written: {bytes_written:.2f} MB")
+            wx.CallAfter(progress_bar.SetValue, int(bytes_written))
             wx.Yield()
 
         if self.result is False:
