@@ -28,6 +28,11 @@
       - Implement default selections for disks and installers
 - Increment Binaries:
   - PatcherSupportPkg 1.0.0 - release
+  - OpenCorePkg 0.9.2 - release
+  - Lilu 1.6.5 - release
+  - RestrictEvents 1.1.1 - release
+  - FeatureUnlock 1.1.4 - release
+  - BlueToolFixup 2.6.6 - release
 
 ## 0.6.5
 - Update 3802 Patchset Binaries:

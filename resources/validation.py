@@ -166,6 +166,29 @@ class PatcherValidation:
         self.constants.computer.reported_board_id = "Mac-7BA5B2DFE22DDD8C"
         sys_patch_helpers.SysPatchHelpers(self.constants).snb_board_id_patch(self.constants.payload_local_binaries_root_path)
 
+        # unmount the dmg
+        output = subprocess.run(
+            [
+                "hdiutil", "detach", Path(self.constants.payload_path / Path("Universal-Binaries")),
+                "-force"
+            ],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        )
+
+        if output.returncode != 0:
+            logging.info("- Failed to unmount Universal-Binaries.dmg")
+            logging.info(f"Output: {output.stdout.decode()}")
+            logging.info(f"Return Code: {output.returncode}")
+
+            raise Exception("Failed to unmount Universal-Binaries.dmg")
+
+        subprocess.run(
+            [
+                "rm", "-f", Path(self.constants.payload_path / Path("Universal-Binaries_overlay"))
+            ],
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        )
+
 
     def _validate_configs(self) -> None:
         """
