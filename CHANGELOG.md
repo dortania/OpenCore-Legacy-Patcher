@@ -13,6 +13,7 @@
   - ex. Beta 4 KDK being recommended for Beta 3 install
 - Increment Binaries:
   - PatcherSupportPkg 1.0.0 - release
+  - OpenCorePkg 0.9.2 - release
   - Lilu 1.6.5 - release
   - RestrictEvents 1.1.1 - release
   - FeatureUnlock 1.1.4 - release
