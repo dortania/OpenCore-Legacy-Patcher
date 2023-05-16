@@ -20,6 +20,7 @@
       - Reworked settings UI
       - Unified download UI with time remaining
       - Implement in-app update system
+        - Guides users to update OpenCore and Root Patches once update's installed
       - Expand app update checks to include nightly users
         - ex. 0.6.6 nightly -> 0.6.6 release
       - Implement macOS installer verification after flashing

@@ -167,8 +167,7 @@ class UpdateFrame(wx.Frame):
 
         # Some hell spawn at Github decided to double zip our Github Actions artifacts
         # So we need to unzip it twice
-        loop = 0
-        while True:
+        for i in range(3):
             result = subprocess.run(
                 ["ditto", "-xk", str(self.constants.payload_path / "OpenCore-Patcher-GUI.app.zip"), str(self.constants.payload_path)], capture_output=True
             )
@@ -178,8 +177,8 @@ class UpdateFrame(wx.Frame):
                 wx.CallAfter(sys.exit, 1)
             if Path(self.application_path).exists():
                 break
-            loop += 1
-            if loop == 2:
+
+            if i == 2:
                 wx.CallAfter(self.progress_bar.SetValue, 0)
                 wx.CallAfter(wx.MessageBox, "Failed to extract update. Error: Update file does not exist", "Critical Error!", wx.OK | wx.ICON_ERROR)
                 wx.CallAfter(sys.exit, 1)
