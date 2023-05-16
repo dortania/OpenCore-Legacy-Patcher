@@ -215,7 +215,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
 
     def on_select_disk(self, disk: dict, installer: dict) -> None:
-        answer = wx.MessageBox(f"Are you sure you want to erase '{disk['name']}'?\nAll data will be lost, this cannot be undone.", "Confirmation", wx.YES_NO | wx.ICON_QUESTION)
+        answer = wx.MessageBox(f"Are you sure you want to erase '{disk['name']}'?\nAll data will be lost, this cannot be undone.", "Confirmation", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
         if answer != wx.YES:
             return
 

@@ -1084,7 +1084,6 @@ Hardware Information:
 
     def _populate_fu_override(self, panel: wx.Panel) -> None:
         gpu_combo_box: wx.ComboBox = None
-        index = 0
         for child in panel.GetChildren():
             if isinstance(child, wx.ComboBox):
                 gpu_combo_box = child
