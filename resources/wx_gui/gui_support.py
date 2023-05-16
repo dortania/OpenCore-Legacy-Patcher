@@ -46,6 +46,8 @@ class GaugePulseCallback:
         self.gauge_value: int = 0
         self.pulse_forward: bool = True
 
+        self.max_value: int = gauge.GetRange()
+
         self.non_metal_alternative: bool = CheckProperties(global_constants).host_is_non_metal()
 
 
@@ -70,7 +72,7 @@ class GaugePulseCallback:
             if self.gauge_value == 0:
                 self.pulse_forward = True
 
-            elif self.gauge_value == 100:
+            elif self.gauge_value == self.max_value:
                 self.pulse_forward = False
 
             if self.pulse_forward:
