@@ -699,7 +699,7 @@ class SystemPatchDictionary():
                             "AMD3800Controller.kext":        "10.13.6",
                             "AMD4600Controller.kext":        "10.13.6",
                             "AMD4800Controller.kext":        "10.13.6",
-                            "ATIRadeonX2000.kext":           "10.13.6",
+                            "ATIRadeonX2000.kext":           "10.13.6" if self.os_major < os_data.os_data.ventura else "10.13.6 TS1",
                             "ATIRadeonX2000GA.plugin":       "10.13.6",
                             "ATIRadeonX2000GLDriver.bundle": "10.13.6",
                             "ATIRadeonX2000VADriver.bundle": "10.13.6",
