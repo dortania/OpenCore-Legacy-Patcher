@@ -57,7 +57,7 @@ class InstallerCreation():
         try:
             applescript.AppleScript(
                 f'''do shell script "installer -pkg {Path(download_path)}/InstallAssistant.pkg -target /"'''
-                ' with prompt "OpenCore Legacy Patcher needs administrator privileges to add InstallAssistant."'
+                ' with prompt "OpenCore Legacy Patcher needs administrator privileges to extract the installer."'
                 " with administrator privileges"
                 " without altering line endings",
             ).run()
