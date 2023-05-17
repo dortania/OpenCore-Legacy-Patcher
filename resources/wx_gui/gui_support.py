@@ -4,6 +4,7 @@ import time
 import logging
 import threading
 import subprocess
+import applescript
 
 from pathlib import Path
 
@@ -184,7 +185,10 @@ class RestartHost:
             # Reboots with Count Down prompt (user can still dismiss if needed)
             self.frame.Hide()
             wx.GetApp().Yield()
-            subprocess.call(['osascript', '-e', 'tell app "loginwindow" to «event aevtrrst»'])
+            try:
+                applescript.AppleScript('tell app "loginwindow" to «event aevtrrst»').run()
+            except applescript.ScriptError as e:
+                logging.error(f"Error while trying to reboot: {e}")
             sys.exit(0)
 
 
@@ -213,32 +217,22 @@ class RelaunchApplicationAsRoot:
             return
 
         timer: int = 5
-        program_arguments: str = ""
+        program_arguments: list = []
 
         if event:
             if event.GetEventObject() != wx.Menu:
                 try:
                     if event.GetEventObject().GetLabel() in ["Start Root Patching", "Reinstall Root Patches"]:
-                        program_arguments = " --gui_patch"
+                        program_arguments += ["--gui_patch"]
                     elif event.GetEventObject().GetLabel() == "Revert Root Patches":
-                        program_arguments = " --gui_unpatch"
+                        program_arguments += ["--gui_unpatch"]
                 except TypeError:
                     pass
 
         if self.constants.launcher_script is None:
-            program_arguments = f"'{self.constants.launcher_binary}'{program_arguments}"
+            program_arguments = [self.constants.launcher_binary] + program_arguments
         else:
-            program_arguments = f"{self.constants.launcher_binary} {self.constants.launcher_script}{program_arguments}"
-
-        # Relaunch as root
-        args = [
-            "osascript",
-            "-e",
-            f'''do shell script "{program_arguments}"'''
-            ' with prompt "OpenCore Legacy Patcher needs administrator privileges to relaunch as admin."'
-            " with administrator privileges"
-            " without altering line endings",
-        ]
+            program_arguments = [self.constants.launcher_binary, self.constants.launcher_script] + program_arguments
 
         self.frame.DestroyChildren()
         self.frame.SetSize(400, 300)
@@ -259,7 +253,7 @@ class RelaunchApplicationAsRoot:
         wx.GetApp().Yield()
 
         logging.info(f"- Relaunching as root with command: {program_arguments}")
-        subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess.Popen([self.constants.oclp_helper_path, *program_arguments], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         while True:
             wx.GetApp().Yield()

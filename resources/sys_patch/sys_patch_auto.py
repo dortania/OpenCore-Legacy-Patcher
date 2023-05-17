@@ -83,36 +83,30 @@ class AutomaticSysPatch:
 
                 logging.info("- No new binaries found on Github, proceeding with patching")
                 if self.constants.launcher_script is None:
-                    args_string = f"'{self.constants.launcher_binary}' --gui_patch"
+                    args = [self.constants.launcher_binary, "--gui_patch"]
                 else:
-                    args_string = f"{self.constants.launcher_binary} {self.constants.launcher_script} --gui_patch"
+                    args = [self.constants.launcher_binary, self.constants.launcher_script, "--gui_patch"]
 
                 warning_str = ""
                 if network_handler.NetworkUtilities("https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest").verify_network_connection() is False:
                     warning_str = f"""\n\nWARNING: We're unable to verify whether there are any new releases of OpenCore Legacy Patcher on Github. Be aware that you may be using an outdated version for this OS. If you're unsure, verify on Github that OpenCore Legacy Patcher {self.constants.patcher_version} is the latest official release"""
 
-                args = [
-                    "osascript",
-                    "-e",
-                    f"""display dialog "OpenCore Legacy Patcher has detected you're running without Root Patches, and would like to install them.\n\nmacOS wipes all root patches during OS installs and updates, so they need to be reinstalled.\n\nFollowing Patches have been detected for your system: \n{patch_string}\nWould you like to apply these patches?{warning_str}" """
-                    f'with icon POSIX file "{self.constants.app_icon_path}"',
-                ]
                 output = subprocess.run(
-                    args,
+                    [
+                        "osascript",
+                        "-e",
+                        f"""display dialog "OpenCore Legacy Patcher has detected you're running without Root Patches, and would like to install them.\n\nmacOS wipes all root patches during OS installs and updates, so they need to be reinstalled.\n\nFollowing Patches have been detected for your system: \n{patch_string}\nWould you like to apply these patches?{warning_str}" """
+                        f'with icon POSIX file "{self.constants.app_icon_path}"',
+                    ],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT
                 )
                 if output.returncode == 0:
-                    args = [
-                        "osascript",
-                        "-e",
-                        f'''do shell script "{args_string}"'''
-                        f' with prompt "OpenCore Legacy Patcher would like to patch your root volume"'
-                        " with administrator privileges"
-                        " without altering line endings"
-                    ]
                     subprocess.run(
-                        args,
+                        [
+                            self.constants.oclp_helper_path,
+                            *args
+                        ],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.STDOUT
                     )

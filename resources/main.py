@@ -73,8 +73,8 @@ class OpenCoreLegacyPatcher:
             launcher_script =  __file__
             if "main.py" in launcher_script:
                 launcher_script = launcher_script.replace("/resources/main.py", "/OpenCore-Patcher-GUI.command")
-        self.constants.launcher_binary = launcher_binary
-        self.constants.launcher_script = launcher_script
+        self.constants.launcher_binary = str(launcher_binary)
+        self.constants.launcher_script = str(launcher_script)
 
         # Initialize working directory
         self.constants.unpack_thread = threading.Thread(target=reroute_payloads.RoutePayloadDiskImage, args=(self.constants,))
