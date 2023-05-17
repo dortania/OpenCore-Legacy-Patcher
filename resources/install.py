@@ -96,7 +96,7 @@ class tui_disk_installation:
         logging.info(f"- Mounting partition: {full_disk_identifier}")
         if self.constants.detected_os >= os_data.os_data.el_capitan and not self.constants.recovery_status:
             try:
-                applescript.AppleScript(f'''do shell script "diskutil mount {full_disk_identifier}" with prompt "OpenCore Legacy Patcher needs administrator privileges to mount your EFI." with administrator privileges without altering line endings''').run()
+                applescript.AppleScript(f'''do shell script "diskutil mount {full_disk_identifier}" with prompt "OpenCore Legacy Patcher needs administrator privileges to mount this volume." with administrator privileges without altering line endings''').run()
             except applescript.ScriptError as e:
                 if "User canceled" in str(e):
                     logging.info("- Mount cancelled by user")
