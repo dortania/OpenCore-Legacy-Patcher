@@ -18,7 +18,7 @@
 - Resolve graphics corruption on wake for TeraScale 1
   - Patch currently limited to Ventura and newer
 - Backend changes:
-  - Rename OCLP-Helper to OpenCore-Patcher-Helper
+  - Rename OCLP-Helper to OpenCore-Patcher
     - Allows for better identification when displaying prompts
   - Reimplement wxPython GUI into modularized system:
     - Allows for easier maintenance and future expansion

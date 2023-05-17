@@ -1,11 +1,12 @@
 # Copyright (C) 2022, Mykola Grymalyuk
 
+import wx
+import logging
 import plistlib
 import subprocess
-import webbrowser
-import logging
+
 from pathlib import Path
-import wx
+
 
 from resources import utilities, updates, global_settings, network_handler, constants
 from resources.sys_patch import sys_patch_detect
