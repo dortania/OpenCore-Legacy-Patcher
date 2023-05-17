@@ -14,6 +14,7 @@
 - Resolve low power mode on MacPro6,1
   - Credit to CaseyJ's [PCI Bus Enumeration Patch](https://github.com/AMD-OSX/AMD_Vanilla/pull/196)
 - Resolve PCI eject menu appearing on unsupported hardware
+- Resolve kernel panic on wake for Nvidia 8000 series GPUs
 - Increment Binaries:
   - PatcherSupportPkg 1.0.0 - release
   - OpenCorePkg 0.9.2 - release
