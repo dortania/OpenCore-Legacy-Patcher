@@ -98,12 +98,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.Show()
 
         # Grab installer catalog
-        def fetch_installers():
+        def _fetch_installers():
             remote_obj = macos_installer_handler.RemoteInstallerCatalog(seed_override=macos_installer_handler.SeedType.DeveloperSeed)
             self.available_installers        = remote_obj.available_apps
             self.available_installers_latest = remote_obj.available_apps_latest
 
-        thread = threading.Thread(target=fetch_installers)
+        thread = threading.Thread(target=_fetch_installers)
         thread.start()
 
         while thread.is_alive():

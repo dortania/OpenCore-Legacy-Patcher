@@ -80,10 +80,10 @@ class SysPatchFrame(wx.Frame):
 
         # Generate KDK object
         self.kdk_obj: kdk_handler.KernelDebugKitObject = None
-        def kdk_thread_spawn():
+        def _kdk_thread_spawn():
             self.kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
 
-        kdk_thread = threading.Thread(target=kdk_thread_spawn)
+        kdk_thread = threading.Thread(target=_kdk_thread_spawn)
         kdk_thread.start()
 
         while kdk_thread.is_alive():

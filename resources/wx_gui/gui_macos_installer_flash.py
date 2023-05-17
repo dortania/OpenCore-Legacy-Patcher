@@ -151,17 +151,19 @@ class macOSInstallerFlashFrame(wx.Frame):
         self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
 
         # Fetch local disks
-        def fetch_disks():
+        def _fetch_disks():
             self.available_disks = macos_installer_handler.InstallerCreation().list_disk_to_format()
 
             # Need to clean up output on pre-Sierra
             # Disk images are mixed in with regular disks (ex. payloads.dmg)
+            ignore = ["disk image", "read-only", "virtual"]
             for disk in self.available_disks.copy():
-                if "read-only" in self.available_disks[disk]['name']:
-                    del self.available_disks[disk]
+                for string in ignore:
+                    if string in self.available_disks[disk]['name'].lower():
+                        del self.available_disks[disk]
 
 
-        thread = threading.Thread(target=fetch_disks)
+        thread = threading.Thread(target=_fetch_disks)
         thread.start()
 
         while thread.is_alive():
@@ -198,7 +200,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # Search for disks again
         search_button = wx.Button(self.frame_modal, label="Search for disks again", pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]), size=(160, 30))
-        search_button.Bind(wx.EVT_BUTTON, self.on_select)
+        search_button.Bind(wx.EVT_BUTTON, lambda event, temp=installer: self.on_select(temp))
         search_button.Center(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
@@ -276,21 +278,25 @@ class macOSInstallerFlashFrame(wx.Frame):
         root_disk = disk['identifier'][5:]
         initial_bytes_written = float(utilities.monitor_disk_output(root_disk))
         self.result = False
-        def flash():
+        def _flash():
             self.result = self._flash_installer(root_disk)
 
-        thread = threading.Thread(target=flash)
+        thread = threading.Thread(target=_flash)
         thread.start()
 
         # Wait for installer to be created
         while thread.is_alive():
-            total_bytes_written = float(utilities.monitor_disk_output(root_disk))
+            try:
+                total_bytes_written = float(utilities.monitor_disk_output(root_disk))
+            except:
+                pass
             bytes_written = total_bytes_written - initial_bytes_written
             wx.CallAfter(bytes_written_label.SetLabel, f"Bytes Written: {bytes_written:.2f} MB")
             wx.CallAfter(progress_bar.SetValue, int(bytes_written))
             wx.Yield()
 
         if self.result is False:
+            self.on_return_to_main_menu()
             return
 
         # Next verify the installer
@@ -361,7 +367,6 @@ class macOSInstallerFlashFrame(wx.Frame):
             logging.info("- Failed to create macOS installer")
             popup = wx.MessageDialog(self, f"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}", "Error", wx.OK | wx.ICON_ERROR)
             popup.ShowModal()
-            self.on_return_to_main_menu()
             return False
 
         logging.info("- Successfully created macOS installer")
@@ -513,7 +518,7 @@ class macOSInstallerFlashFrame(wx.Frame):
     def _validate_installer_pkg(self, disk: str) -> bool:
         verification_success = False
         error_message = ""
-        def integrity_check():
+        def _integrity_check():
             nonlocal error_message
             path = utilities.grab_mount_point_from_disk(disk + "s2")
             dmg_path = path + f"/{path.split('/')[2]}.app/Contents/SharedSupport/SharedSupport.dmg"
@@ -531,7 +536,7 @@ class macOSInstallerFlashFrame(wx.Frame):
                     error_message += "\n\nSTDERR: " + result.stderr.decode("utf-8")
 
 
-        thread = threading.Thread(target=integrity_check)
+        thread = threading.Thread(target=_integrity_check)
         thread.start()
         while thread.is_alive():
             wx.Yield()
@@ -546,6 +551,9 @@ class macOSInstallerFlashFrame(wx.Frame):
     def on_return_to_main_menu(self, event: wx.Event = None):
         if self.frame_modal:
             self.frame_modal.Hide()
+        if self:
+            if isinstance(self, wx.Frame):
+                self.Hide()
         main_menu_frame = gui_main_menu.MainFrame(
             None,
             title=self.title,
@@ -555,4 +563,6 @@ class macOSInstallerFlashFrame(wx.Frame):
         main_menu_frame.Show()
         if self.frame_modal:
             self.frame_modal.Destroy()
-        self.Destroy()
+        if self:
+            if isinstance(self, wx.Frame):
+                self.Destroy()
