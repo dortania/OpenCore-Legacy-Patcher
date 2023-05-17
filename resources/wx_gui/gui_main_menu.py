@@ -32,6 +32,8 @@ class MainFrame(wx.Frame):
         self.model_label: wx.StaticText = None
         self.build_button: wx.Button = None
 
+        self.constants.update_stage = gui_support.AutoUpdateStages.INACTIVE
+
         self._generate_elements()
 
         self.SetPosition(screen_location) if screen_location else self.Centre()
