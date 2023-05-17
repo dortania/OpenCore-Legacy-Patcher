@@ -14,9 +14,11 @@
 - Resolve low power mode on MacPro6,1
   - Credit to CaseyJ's [PCI Bus Enumeration Patch](https://github.com/AMD-OSX/AMD_Vanilla/pull/196)
 - Resolve PCI eject menu appearing on unsupported hardware
-- Resolve kernel panic on wake for Nvidia 8000 series GPUs
+- Resolve kernel panic on wake for AMD TeraScale 1 and Nvidia Tesla 8000 series GPUs
+- Resolve graphics corruption on wake for TeraScale 1
+  - Patch currently limited to Ventura and newer
 - Increment Binaries:
-  - PatcherSupportPkg 1.0.0 - release
+  - PatcherSupportPkg 1.0.1 - release
   - OpenCorePkg 0.9.2 - release
   - Lilu 1.6.5 - release
   - RestrictEvents 1.1.1 - release
