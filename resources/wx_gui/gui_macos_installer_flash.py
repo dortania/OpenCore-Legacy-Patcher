@@ -316,7 +316,11 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         progress_bar.SetValue(estimated_size)
 
-        # Notify user
+        if gui_support.CheckProperties(self.constants).host_can_build() is False:
+            wx.MessageBox("Installer created successfully! If you want to install OpenCore to this USB, you will need to change the Target Model in settings", "Successfully created the macOS installer!", wx.OK | wx.ICON_INFORMATION)
+            self.on_return_to_main_menu()
+            return
+
         answer = wx.MessageBox("Installer created successfully, would you like to continue and Install OpenCore to this disk?", "Successfully created the macOS installer!", wx.YES_NO | wx.ICON_QUESTION)
         if answer != wx.YES:
             self.on_return_to_main_menu()
