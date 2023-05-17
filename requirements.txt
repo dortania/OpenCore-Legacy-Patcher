@@ -4,3 +4,4 @@ wxpython
 pyinstaller
 packaging
 py_sip_xnu
+py-applescript

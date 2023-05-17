@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import enum
 import logging
+import applescript
 
 from data import os_data
 from resources import network_handler, utilities
@@ -53,19 +54,16 @@ class InstallerCreation():
         """
 
         logging.info("- Extracting macOS installer from InstallAssistant.pkg\n  This may take some time")
-        args = [
-            "osascript",
-            "-e",
-            f'''do shell script "installer -pkg {Path(download_path)}/InstallAssistant.pkg -target /"'''
-            ' with prompt "OpenCore Legacy Patcher needs administrator privileges to add InstallAssistant."'
-            " with administrator privileges"
-            " without altering line endings",
-        ]
-
-        result = subprocess.run(args,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if result.returncode != 0:
+        try:
+            applescript.AppleScript(
+                f'''do shell script "installer -pkg {Path(download_path)}/InstallAssistant.pkg -target /"'''
+                ' with prompt "OpenCore Legacy Patcher needs administrator privileges to add InstallAssistant."'
+                " with administrator privileges"
+                " without altering line endings",
+            ).run()
+        except Exception as e:
             logging.info("- Failed to install InstallAssistant")
-            logging.info(f"  Error Code: {result.returncode}")
+            logging.info(f"  Error Code: {e}")
             return False
 
         logging.info("- InstallAssistant installed")
