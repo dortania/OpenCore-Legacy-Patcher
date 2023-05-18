@@ -65,11 +65,11 @@ class UpdateFrame(wx.Frame):
         # Title: Preparing update
         title_label = wx.StaticText(self.frame, label="Preparing download...", pos=(-1,1))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
         progress_bar = wx.Gauge(self.frame, range=100, pos=(10, 50), size=(300, 20))
-        progress_bar.Center(wx.HORIZONTAL)
+        progress_bar.Centre(wx.HORIZONTAL)
         progress_bar.Pulse()
         self.progress_bar = progress_bar
 
@@ -93,7 +93,7 @@ class UpdateFrame(wx.Frame):
 
         # Title: Extracting update
         title_label.SetLabel("Extracting update...")
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
         wx.Yield()
 
         thread = threading.Thread(target=self._extract_update)
@@ -104,7 +104,7 @@ class UpdateFrame(wx.Frame):
 
         # Title: Installing update
         title_label.SetLabel("Installing update...")
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         thread = threading.Thread(target=self._install_update)
         thread.start()
@@ -114,7 +114,7 @@ class UpdateFrame(wx.Frame):
 
         # Title: Update complete
         title_label.SetLabel("Update complete!")
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
         progress_bar.Hide()
@@ -122,17 +122,17 @@ class UpdateFrame(wx.Frame):
         # Label: 0.6.6 has been installed to:
         installed_label = wx.StaticText(self.frame, label=f"{version_label} has been installed:", pos=(-1, progress_bar.GetPosition().y - 15))
         installed_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        installed_label.Center(wx.HORIZONTAL)
+        installed_label.Centre(wx.HORIZONTAL)
 
         # Label: '/Library/Application Support/Dortania'
         installed_path_label = wx.StaticText(self.frame, label='/Library/Application Support/Dortania', pos=(-1, installed_label.GetPosition().y + 20))
         installed_path_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        installed_path_label.Center(wx.HORIZONTAL)
+        installed_path_label.Centre(wx.HORIZONTAL)
 
         # Label: Launching update shortly...
         launch_label = wx.StaticText(self.frame, label="Launching update shortly...", pos=(-1, installed_path_label.GetPosition().y + 30))
         launch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        launch_label.Center(wx.HORIZONTAL)
+        launch_label.Centre(wx.HORIZONTAL)
 
         # Adjust frame size
         self.frame.SetSize((-1, launch_label.GetPosition().y + 60))
@@ -146,7 +146,7 @@ class UpdateFrame(wx.Frame):
         timer = 5
         while True:
             launch_label.SetLabel(f"Closing old process in {timer} seconds")
-            launch_label.Center(wx.HORIZONTAL)
+            launch_label.Centre(wx.HORIZONTAL)
             wx.Yield()
             time.sleep(1)
             timer -= 1

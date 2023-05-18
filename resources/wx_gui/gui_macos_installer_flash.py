@@ -51,11 +51,11 @@ class macOSInstallerFlashFrame(wx.Frame):
         # Title: Fetching local macOS Installers
         title_label = wx.StaticText(self, label="Fetching local macOS Installers", pos=(-1,1))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
         progress_bar = wx.Gauge(self, range=100, pos=(-1, 30), size=(200, 30))
-        progress_bar.Center(wx.HORIZONTAL)
+        progress_bar.Centre(wx.HORIZONTAL)
 
         progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
         progress_bar_animation.start_pulse()
@@ -77,12 +77,12 @@ class macOSInstallerFlashFrame(wx.Frame):
             wx.Yield()
 
         frame_modal = wx.Dialog(self, title=self.title, size=(350, 200))
-        frame_modal.Center(wx.HORIZONTAL)
+        frame_modal.Centre(wx.HORIZONTAL)
 
         # Title: Select macOS Installer
         title_label = wx.StaticText(frame_modal, label="Select local macOS Installer", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # List of installers
         if self.available_installers_local:
@@ -103,7 +103,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
                 installer_button = wx.Button(frame_modal, label=app_str, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + spacer), size=(300, 30))
                 installer_button.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.on_select(self.available_installers_local[temp]))
-                installer_button.Center(wx.HORIZONTAL)
+                installer_button.Centre(wx.HORIZONTAL)
                 spacer += 25
                 if unsupported:
                     installer_button.Disable()
@@ -113,12 +113,12 @@ class macOSInstallerFlashFrame(wx.Frame):
         else:
             installer_button = wx.StaticText(frame_modal, label="No installers found in '/Applications'", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
             installer_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-            installer_button.Center(wx.HORIZONTAL)
+            installer_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
         cancel_button = wx.Button(frame_modal, label="Return to Main Menu", pos=(-1, installer_button.GetPosition()[1] + installer_button.GetSize()[1]), size=(150, 30))
         cancel_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
-        cancel_button.Center(wx.HORIZONTAL)
+        cancel_button.Centre(wx.HORIZONTAL)
 
         # Set size of frame
         frame_modal.SetSize((-1, cancel_button.GetPosition()[1] + cancel_button.GetSize()[1] + 40))
@@ -138,11 +138,11 @@ class macOSInstallerFlashFrame(wx.Frame):
         # Fetching information on local disks
         title_label = wx.StaticText(self, label="Fetching information on local disks", pos=(-1,1))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
         progress_bar = wx.Gauge(self, range=100, pos=(-1, 30), size=(200, 30))
-        progress_bar.Center(wx.HORIZONTAL)
+        progress_bar.Centre(wx.HORIZONTAL)
 
         progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
         progress_bar_animation.start_pulse()
@@ -173,12 +173,12 @@ class macOSInstallerFlashFrame(wx.Frame):
         # Title: Select local disk
         title_label = wx.StaticText(self.frame_modal, label="Select local disk", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Label: Selected USB will be erased, please backup any data
         warning_label = wx.StaticText(self.frame_modal, label="Selected USB will be erased, please backup any data", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
         warning_label.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        warning_label.Center(wx.HORIZONTAL)
+        warning_label.Centre(wx.HORIZONTAL)
 
         # List of disks
         if self.available_disks:
@@ -188,24 +188,24 @@ class macOSInstallerFlashFrame(wx.Frame):
                 logging.info(f"{disk}: {self.available_disks[disk]['name']} - {utilities.human_fmt(self.available_disks[disk]['size'])}")
                 disk_button = wx.Button(self.frame_modal, label=f"{disk}: {self.available_disks[disk]['name']} - {utilities.human_fmt(self.available_disks[disk]['size'])}", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + spacer), size=(300, 30))
                 disk_button.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.on_select_disk(self.available_disks[temp], installer))
-                disk_button.Center(wx.HORIZONTAL)
+                disk_button.Centre(wx.HORIZONTAL)
                 if entries == 1:
                     disk_button.SetDefault()
                 spacer += 25
         else:
             disk_button = wx.StaticText(self.frame_modal, label="No disks found", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
             disk_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-            disk_button.Center(wx.HORIZONTAL)
+            disk_button.Centre(wx.HORIZONTAL)
 
         # Search for disks again
         search_button = wx.Button(self.frame_modal, label="Search for disks again", pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]), size=(160, 30))
         search_button.Bind(wx.EVT_BUTTON, lambda event, temp=installer: self.on_select(temp))
-        search_button.Center(wx.HORIZONTAL)
+        search_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
         cancel_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, search_button.GetPosition()[1] + search_button.GetSize()[1] - 10), size=(160, 30))
         cancel_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
-        cancel_button.Center(wx.HORIZONTAL)
+        cancel_button.Centre(wx.HORIZONTAL)
 
         # Set size of frame
         self.frame_modal.SetSize((-1, cancel_button.GetPosition()[1] + cancel_button.GetSize()[1] + 40))
@@ -230,26 +230,26 @@ class macOSInstallerFlashFrame(wx.Frame):
         # Title: Creating Installer: {installer_name}
         title_label = wx.StaticText(self, label=f"Creating Installer: {installer['Short Name']}", pos=(-1,1))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Label: Creating macOS installers can take 30min+ on slower USB drives.
         warning_label = wx.StaticText(self, label="Creating macOS installers can take 30min+ on slower USB drives.", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
         warning_label.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        warning_label.Center(wx.HORIZONTAL)
+        warning_label.Centre(wx.HORIZONTAL)
 
         # Label: We will notify you when the installer is ready.
         warning_label = wx.StaticText(self, label="We will notify you when the installer is ready.", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
         warning_label.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        warning_label.Center(wx.HORIZONTAL)
+        warning_label.Centre(wx.HORIZONTAL)
 
         # Label: Bytes Written: 0 MB
         bytes_written_label = wx.StaticText(self, label="Bytes Written: 0000.0 MB", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
         bytes_written_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        bytes_written_label.Center(wx.HORIZONTAL)
+        bytes_written_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
         progress_bar = wx.Gauge(self, range=100, pos=(-1, bytes_written_label.GetPosition()[1] + bytes_written_label.GetSize()[1] + 5), size=(300, 30))
-        progress_bar.Center(wx.HORIZONTAL)
+        progress_bar.Centre(wx.HORIZONTAL)
 
         progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
         progress_bar_animation.start_pulse()

@@ -53,22 +53,22 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         title_label = wx.StaticText(frame, label="Create macOS Installer", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Button: Download macOS Installer
         download_button = wx.Button(frame, label="Download macOS Installer", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(200, 30))
         download_button.Bind(wx.EVT_BUTTON, self.on_download)
-        download_button.Center(wx.HORIZONTAL)
+        download_button.Centre(wx.HORIZONTAL)
 
         # Button: Use existing macOS Installer
         existing_button = wx.Button(frame, label="Use existing macOS Installer", pos=(-1, download_button.GetPosition()[1] + download_button.GetSize()[1] - 5), size=(200, 30))
         existing_button.Bind(wx.EVT_BUTTON, self.on_existing)
-        existing_button.Center(wx.HORIZONTAL)
+        existing_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
         return_button = wx.Button(frame, label="Return to Main Menu", pos=(-1, existing_button.GetPosition()[1] + existing_button.GetSize()[1] + 5), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return)
-        return_button.Center(wx.HORIZONTAL)
+        return_button.Centre(wx.HORIZONTAL)
 
         # Set size of frame
         frame.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
@@ -84,11 +84,11 @@ class macOSInstallerDownloadFrame(wx.Frame):
         # Title: Pulling installer catalog
         title_label = wx.StaticText(self, label="Pulling installer catalog", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
         progress_bar = wx.Gauge(self, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(250, 30))
-        progress_bar.Center(wx.HORIZONTAL)
+        progress_bar.Centre(wx.HORIZONTAL)
         progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
         progress_bar_animation.start_pulse()
 
@@ -124,12 +124,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
         # Title: Select macOS Installer
         title_label = wx.StaticText(dialog, label="Select macOS Installer", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Subtitle: Installers currently available from Apple:
         subtitle_label = wx.StaticText(dialog, label="Installers currently available from Apple:", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
         subtitle_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        subtitle_label.Center(wx.HORIZONTAL)
+        subtitle_label.Centre(wx.HORIZONTAL)
 
         # List of installers
         installers = self.available_installers_latest if show_full is False else self.available_installers
@@ -141,7 +141,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
                 installer_button = wx.Button(dialog, label=f"macOS {installers[app]['Version']}{extra} ({installers[app]['Build']} - {utilities.human_fmt(installers[app]['Size'])})", pos=(-1, subtitle_label.GetPosition()[1] + subtitle_label.GetSize()[1] + 5 + spacer), size=(270, 30))
                 installer_button.Bind(wx.EVT_BUTTON, lambda event, temp=app: self.on_download_installer(installers[temp]))
-                installer_button.Center(wx.HORIZONTAL)
+                installer_button.Centre(wx.HORIZONTAL)
                 spacer += 25
 
                 # Since installers are sorted by version, set the latest installer as the default button
@@ -152,12 +152,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
         # Show all available installers
         show_all_button = wx.Button(dialog, label="Show all available installers" if show_full is False else "Show only latest installers", pos=(-1, installer_button.GetPosition()[1] + installer_button.GetSize()[1]), size=(200, 30))
         show_all_button.Bind(wx.EVT_BUTTON, lambda event: self._display_available_installers(event, not show_full))
-        show_all_button.Center(wx.HORIZONTAL)
+        show_all_button.Centre(wx.HORIZONTAL)
 
         # Return to Main Menu
         return_button = wx.Button(dialog, label="Return to Main Menu", pos=(-1, show_all_button.GetPosition()[1] + show_all_button.GetSize()[1] - 7), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
-        return_button.Center(wx.HORIZONTAL)
+        return_button.Centre(wx.HORIZONTAL)
 
         # Set size of frame
         dialog.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
@@ -206,16 +206,16 @@ class macOSInstallerDownloadFrame(wx.Frame):
         # Title: Validating macOS Installer
         title_label = wx.StaticText(self, label="Validating macOS Installer", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Label: Validating chunk 0 of 0
         chunk_label = wx.StaticText(self, label="Validating chunk 0 of 0", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
         chunk_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        chunk_label.Center(wx.HORIZONTAL)
+        chunk_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
         progress_bar = wx.Gauge(self, range=100, pos=(-1, chunk_label.GetPosition()[1] + chunk_label.GetSize()[1] + 5), size=(270, 30))
-        progress_bar.Center(wx.HORIZONTAL)
+        progress_bar.Centre(wx.HORIZONTAL)
 
         # Set size of frame
         self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
@@ -235,7 +235,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 while chunk_obj.status == integrity_verification.ChunklistStatus.IN_PROGRESS:
                     progress_bar.SetValue(chunk_obj.current_chunk)
                     chunk_label.SetLabel(f"Validating chunk {chunk_obj.current_chunk} of {chunk_obj.total_chunks}")
-                    chunk_label.Center(wx.HORIZONTAL)
+                    chunk_label.Centre(wx.HORIZONTAL)
                     wx.App.Get().Yield()
 
                 if chunk_obj.status == integrity_verification.ChunklistStatus.FAILURE:
@@ -245,10 +245,10 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         # Extract installer
         title_label.SetLabel("Extracting macOS Installer")
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         chunk_label.SetLabel("May take a few minutes...")
-        chunk_label.Center(wx.HORIZONTAL)
+        chunk_label.Centre(wx.HORIZONTAL)
 
         progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
         progress_bar_animation.start_pulse()
@@ -271,19 +271,19 @@ class macOSInstallerDownloadFrame(wx.Frame):
         progress_bar_animation.stop_pulse()
         progress_bar.Hide()
         chunk_label.SetLabel("Successfully extracted macOS installer" if self.result is True else "Failed to extract macOS installer")
-        chunk_label.Center(wx.HORIZONTAL)
+        chunk_label.Centre(wx.HORIZONTAL)
 
         # Create macOS Installer button
         create_installer_button = wx.Button(self, label="Create macOS Installer", pos=(-1, progress_bar.GetPosition()[1]), size=(170, 30))
         create_installer_button.Bind(wx.EVT_BUTTON, self.on_existing)
-        create_installer_button.Center(wx.HORIZONTAL)
+        create_installer_button.Centre(wx.HORIZONTAL)
         if self.result is False:
             create_installer_button.Disable()
 
         # Return to main menu button
         return_button = wx.Button(self, label="Return to Main Menu", pos=(-1, create_installer_button.GetPosition()[1] + create_installer_button.GetSize()[1]), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
-        return_button.Center(wx.HORIZONTAL)
+        return_button.Centre(wx.HORIZONTAL)
 
         # Set size of frame
         self.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))

@@ -825,7 +825,7 @@ class SettingsFrame(wx.Frame):
 
 
         self.parent.model_label.SetLabel(f"Model: {selection}")
-        self.parent.model_label.Center(wx.HORIZONTAL)
+        self.parent.model_label.Centre(wx.HORIZONTAL)
 
         self.frame_modal.Destroy()
         SettingsFrame(

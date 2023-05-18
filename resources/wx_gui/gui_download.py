@@ -36,26 +36,26 @@ class DownloadFrame(wx.Frame):
 
         title_label = wx.StaticText(frame, label=f"Downloading: {self.item_name}", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         label_amount = wx.StaticText(frame, label="0.00 B downloaded of 0.00B (0.00%)", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
         label_amount.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        label_amount.Center(wx.HORIZONTAL)
+        label_amount.Centre(wx.HORIZONTAL)
 
         label_speed = wx.StaticText(frame, label="Average download speed: Unknown", pos=(-1, label_amount.GetPosition()[1] + label_amount.GetSize()[1] + 5))
         label_speed.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        label_speed.Center(wx.HORIZONTAL)
+        label_speed.Centre(wx.HORIZONTAL)
 
         label_est_time = wx.StaticText(frame, label="Estimated time remaining: Unknown", pos=(-1, label_speed.GetPosition()[1] + label_speed.GetSize()[1] + 5))
         label_est_time.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        label_est_time.Center(wx.HORIZONTAL)
+        label_est_time.Centre(wx.HORIZONTAL)
 
         progress_bar = wx.Gauge(frame, range=100, pos=(-1, label_est_time.GetPosition()[1] + label_est_time.GetSize()[1] + 5), size=(300, 20))
-        progress_bar.Center(wx.HORIZONTAL)
+        progress_bar.Centre(wx.HORIZONTAL)
 
         return_button = wx.Button(frame, label="Return", pos=(-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 5))
         return_button.Bind(wx.EVT_BUTTON, lambda event: self.terminate_download())
-        return_button.Center(wx.HORIZONTAL)
+        return_button.Centre(wx.HORIZONTAL)
 
         # Set size of frame
         frame.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))
@@ -68,7 +68,7 @@ class DownloadFrame(wx.Frame):
             else:
                 amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded of {utilities.human_fmt(self.download_obj.total_file_size)} ({self.download_obj.get_percent():.2f}%)"
             label_amount.SetLabel(amount_str)
-            label_amount.Center(wx.HORIZONTAL)
+            label_amount.Centre(wx.HORIZONTAL)
 
             label_speed.SetLabel(
                 f"Average download speed: {utilities.human_fmt(self.download_obj.get_speed())}/s"

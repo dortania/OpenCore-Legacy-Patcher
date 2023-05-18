@@ -57,28 +57,28 @@ class BuildFrame(wx.Frame):
 
         title_label = wx.StaticText(frame, label="Build and Install OpenCore", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         model_label = wx.StaticText(frame, label=f"Model: {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1,30))
         model_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        model_label.Center(wx.HORIZONTAL)
+        model_label.Centre(wx.HORIZONTAL)
 
         # Button: Install OpenCore
         install_button = wx.Button(frame, label="🔩 Install OpenCore", pos=(-1, model_label.GetPosition()[1] + model_label.GetSize()[1]), size=(150, 30))
         install_button.Bind(wx.EVT_BUTTON, self.on_install)
-        install_button.Center(wx.HORIZONTAL)
+        install_button.Centre(wx.HORIZONTAL)
         install_button.Disable()
         self.install_button = install_button
 
         # Read-only text box: {empty}
         text_box = wx.TextCtrl(frame, value="", pos=(-1, install_button.GetPosition()[1] + install_button.GetSize()[1] + 10), size=(400, 350), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
-        text_box.Center(wx.HORIZONTAL)
+        text_box.Centre(wx.HORIZONTAL)
         self.text_box = text_box
 
         # Button: Return to Main Menu
         return_button = wx.Button(frame, label="Return to Main Menu", pos=(-1, text_box.GetPosition()[1] + text_box.GetSize()[1] + 5), size=(200, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
-        return_button.Center(wx.HORIZONTAL)
+        return_button.Centre(wx.HORIZONTAL)
         return_button.Disable()
         self.return_button = return_button
 

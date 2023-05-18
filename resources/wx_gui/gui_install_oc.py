@@ -49,17 +49,17 @@ class InstallOCFrame(wx.Frame):
         # Title label: Install OpenCore
         title_label = wx.StaticText(self, label="Install OpenCore", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Text: Parsing local disks...
         text_label = wx.StaticText(self, label="Fetching information on local disks...", pos=(-1,30))
         text_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        text_label.Center(wx.HORIZONTAL)
+        text_label.Centre(wx.HORIZONTAL)
         self.text_label = text_label
 
         # Progress bar: {indeterminate}
         progress_bar = wx.Gauge(self, range=100, pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1]), size=(150, 30), style=wx.GA_HORIZONTAL | wx.GA_SMOOTH)
-        progress_bar.Center(wx.HORIZONTAL)
+        progress_bar.Centre(wx.HORIZONTAL)
 
         progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
         progress_bar_animation.start_pulse()
@@ -102,17 +102,17 @@ class InstallOCFrame(wx.Frame):
         # Title label: Install OpenCore
         title_label = wx.StaticText(dialog, label="Install OpenCore", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Text: select disk to install OpenCore onto
         text_label = wx.StaticText(dialog, label="Select disk to install OpenCore onto:", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
         text_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        text_label.Center(wx.HORIZONTAL)
+        text_label.Centre(wx.HORIZONTAL)
 
         # Add note: "Missing disks? Ensure they're FAT32 or formatted as GUID/GPT"
         gpt_note = wx.StaticText(dialog, label="Missing disks? Ensure they're FAT32 or formatted as GUID/GPT", pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 5))
         gpt_note.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        gpt_note.Center(wx.HORIZONTAL)
+        gpt_note.Centre(wx.HORIZONTAL)
 
         # Add buttons for each disk
         if self.available_disks:
@@ -132,7 +132,7 @@ class InstallOCFrame(wx.Frame):
                 # Create a button for each disk
                 logging.info(f"- {self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}")
                 disk_button = wx.Button(dialog, label=f"{self.available_disks[disk]['disk']} - {self.available_disks[disk]['name']} - {self.available_disks[disk]['size']}", size=(longest_label ,30), pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5 + spacer))
-                disk_button.Center(wx.HORIZONTAL)
+                disk_button.Centre(wx.HORIZONTAL)
                 disk_button.Bind(wx.EVT_BUTTON, lambda event, disk=disk: self._display_volumes(disk, self.available_disks))
                 if disk_root == self.available_disks[disk]['disk'] or items == 1:
                     disk_button.SetDefault()
@@ -142,7 +142,7 @@ class InstallOCFrame(wx.Frame):
                 # Add note: "Note: Blue represent the disk OpenCore is currently booted from"
                 disk_label = wx.StaticText(dialog, label="Note: Blue represent the disk OpenCore is currently booted from", pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1] + 5))
                 disk_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-                disk_label.Center(wx.HORIZONTAL)
+                disk_label.Centre(wx.HORIZONTAL)
             else:
                 disk_label = wx.StaticText(dialog, label="", pos=(-1, disk_button.GetPosition()[1] + 15))
                 disk_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
@@ -150,16 +150,16 @@ class InstallOCFrame(wx.Frame):
             # Text: Failed to find any applicable disks
             disk_label = wx.StaticText(dialog, label="Failed to find any applicable disks", pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5))
             disk_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-            disk_label.Center(wx.HORIZONTAL)
+            disk_label.Centre(wx.HORIZONTAL)
 
         # Add button: Search for disks again
         search_button = wx.Button(dialog, label="Search for disks again", size=(160,30), pos=(-1, disk_label.GetPosition()[1] + disk_label.GetSize()[1] + 5))
-        search_button.Center(wx.HORIZONTAL)
+        search_button.Centre(wx.HORIZONTAL)
         search_button.Bind(wx.EVT_BUTTON, self.on_reload_frame)
 
         # Add button: Return to main menu
         return_button = wx.Button(dialog, label="Return to main menu", size=(160,30), pos=(-1, search_button.GetPosition()[1] + 20))
-        return_button.Center(wx.HORIZONTAL)
+        return_button.Centre(wx.HORIZONTAL)
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 
         # Set size
@@ -186,7 +186,7 @@ class InstallOCFrame(wx.Frame):
         # Add text: "Volumes on {disk}"
         text_label = wx.StaticText(dialog, label=f"Volumes on {disk}", pos=(-1, 10))
         text_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        text_label.Center(wx.HORIZONTAL)
+        text_label.Centre(wx.HORIZONTAL)
 
         partitions = install.tui_disk_installation(self.constants).list_partitions(disk, dataset)
         items = len(partitions)
@@ -195,14 +195,14 @@ class InstallOCFrame(wx.Frame):
         for partition in partitions:
             logging.info(f"- {partitions[partition]['partition']} - {partitions[partition]['name']} - {partitions[partition]['size']}")
             disk_button = wx.Button(dialog, label=f"{partitions[partition]['partition']} - {partitions[partition]['name']} - {partitions[partition]['size']}", size=(longest_label,30), pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 5))
-            disk_button.Center(wx.HORIZONTAL)
+            disk_button.Centre(wx.HORIZONTAL)
             disk_button.Bind(wx.EVT_BUTTON, lambda event, partition=partition: self._install_oc_process(partition))
             if partitions[partition]['partition'].startswith(f"{disk}s") or items == 1:
                 disk_button.SetDefault()
 
         # Add button: Return to main menu
         return_button = wx.Button(dialog, label="Return to main menu", size=(150,30), pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]))
-        return_button.Center(wx.HORIZONTAL)
+        return_button.Centre(wx.HORIZONTAL)
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 
         # Set size
@@ -230,16 +230,16 @@ class InstallOCFrame(wx.Frame):
         # Add text: "Installing OpenCore to {partition}"
         text_label = wx.StaticText(dialog, label=f"Installing OpenCore to {partition}", pos=(-1, 10))
         text_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        text_label.Center(wx.HORIZONTAL)
+        text_label.Centre(wx.HORIZONTAL)
 
         # Read-only text box: {empty}
         text_box = wx.TextCtrl(dialog, value="", pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 10), size=(370, 200), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
-        text_box.Center(wx.HORIZONTAL)
+        text_box.Centre(wx.HORIZONTAL)
         self.text_box = text_box
 
         # Add button: Return to main menu
         return_button = wx.Button(dialog, label="Return to main menu", size=(200,30), pos=(-1, text_box.GetPosition()[1] + text_box.GetSize()[1] + 10))
-        return_button.Center(wx.HORIZONTAL)
+        return_button.Centre(wx.HORIZONTAL)
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         return_button.Disable()
 

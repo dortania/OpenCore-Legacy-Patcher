@@ -35,11 +35,11 @@ class HelpFrame(wx.Frame):
 
         title_label = wx.StaticText(frame, label="Patcher Resources", pos=(-1,5))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         text_label = wx.StaticText(frame, label="Following resources are available:", pos=(-1,30))
         text_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        text_label.Center(wx.HORIZONTAL)
+        text_label.Centre(wx.HORIZONTAL)
 
         buttons = {
             "Official Guide":           self.constants.guide_link,
@@ -50,12 +50,12 @@ class HelpFrame(wx.Frame):
         for button in buttons:
             help_button = wx.Button(frame, label=button, pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + (list(buttons.keys()).index(button) * 30)), size=(200, 30))
             help_button.Bind(wx.EVT_BUTTON, lambda event, temp=buttons[button]: webbrowser.open(temp))
-            help_button.Center(wx.HORIZONTAL)
+            help_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
         return_button = wx.Button(frame, label="Return to Main Menu", pos=(-1, help_button.GetPosition()[1] + help_button.GetSize()[1]), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, lambda event: frame.Close())
-        return_button.Center(wx.HORIZONTAL)
+        return_button.Centre(wx.HORIZONTAL)
 
         # Set size of frame
         frame.SetSize((-1, return_button.GetPosition()[1] + return_button.GetSize()[1] + 40))

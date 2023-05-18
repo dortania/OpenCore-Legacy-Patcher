@@ -60,12 +60,12 @@ class MainFrame(wx.Frame):
         # Title label: OpenCore Legacy Patcher v{X.Y.Z}
         title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher v{self.constants.patcher_version}", pos=(-1,1))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-        title_label.Center(wx.HORIZONTAL)
+        title_label.Centre(wx.HORIZONTAL)
 
         # Text: Model: {Build or Host Model}
         model_label = wx.StaticText(self, label=f"Model: {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1,30))
         model_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        model_label.Center(wx.HORIZONTAL)
+        model_label.Centre(wx.HORIZONTAL)
         self.model_label = model_label
 
         # Buttons:
@@ -80,7 +80,7 @@ class MainFrame(wx.Frame):
         for button_name, button_function in menu_buttons.items():
             button = wx.Button(self, label=button_name, pos=(-1, button_y), size=(200, 30))
             button.Bind(wx.EVT_BUTTON, button_function)
-            button.Center(wx.HORIZONTAL)
+            button.Centre(wx.HORIZONTAL)
             button_y += 30
 
             if button_name == "Build and Install OpenCore":
@@ -94,7 +94,7 @@ class MainFrame(wx.Frame):
         # Text: Copyright
         copy_label = wx.StaticText(self, label=self.constants.copyright_date, pos=(-1, button_y + 10))
         copy_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        copy_label.Center(wx.HORIZONTAL)
+        copy_label.Centre(wx.HORIZONTAL)
 
         # Set window size
         self.SetSize((350, copy_label.GetPosition()[1] + 50))

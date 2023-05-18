@@ -265,7 +265,7 @@ class RelaunchApplicationAsRoot:
         # Add count down label
         countdown_label = wx.StaticText(self.frame, label=f"Closing old process in {timer} seconds", pos=(0, header.GetPosition().y + header.GetSize().height + 3))
         countdown_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
-        countdown_label.Center(wx.HORIZONTAL)
+        countdown_label.Centre(wx.HORIZONTAL)
 
         # Set size of frame
         self.frame.SetSize((-1, countdown_label.GetPosition().y + countdown_label.GetSize().height + 40))
