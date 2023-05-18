@@ -78,10 +78,8 @@ class InstallOCFrame(wx.Frame):
         # Disk images are mixed in with regular disks (ex. payloads.dmg)
         ignore = ["disk image", "read-only", "virtual"]
         for disk in self.available_disks.copy():
-            for string in ignore:
-                if string in self.available_disks[disk]['name'].lower():
-                    del self.available_disks[disk]
-                    break
+            if any(string in self.available_disks[disk]['name'].lower() for string in ignore):
+                del self.available_disks[disk]
 
 
     def _display_disks(self) -> None:
