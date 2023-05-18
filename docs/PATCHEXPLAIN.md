@@ -298,7 +298,8 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
   * Reason: Prevents AVXFSCompressionTypeZlib crash on pre AVX1.0 systems in 12.4+
 * SimpleMSR 
   * Reason: Disables BD PROCHOT to prevent firmware throttling on Nehalem+ MacBooks
-
+* LegacyKeyboardInjector
+  * Reason: Fixes function keys on MacBook4,1/MacBook5,2
 
 
 :::
