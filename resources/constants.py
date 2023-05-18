@@ -104,6 +104,9 @@ class Constants:
         ## https://github.com/flagersgit/KDKlessWorkaround
         self.kdkless_version: str = "1.0.0"
 
+        ## Jazzzny
+        self.legacy_keyboard: str = "1.0.0"  # LegacyKeyboardInjector - Jazzzny
+
         # Get resource path
         self.current_path:  Path = Path(__file__).parent.parent.resolve()
         self.original_path: Path = Path(__file__).parent.parent.resolve()
@@ -496,6 +499,10 @@ class Constants:
     @property
     def apple_isight_path(self):
         return self.payload_kexts_path / Path(f"Misc/LegacyUSBVideoSupport-v{self.apple_isight_version}.zip")
+    
+    @property
+    def legacy_keyboard_path(self):
+        return self.payload_kexts_path / Path(f"Misc/LegacyKeyboardInjector-v{self.legacy_keyboard}.zip")
 
     @property
     def apple_raid_path(self):
