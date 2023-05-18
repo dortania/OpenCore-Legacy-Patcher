@@ -83,7 +83,7 @@ class EntryPoint:
         logging.info("- Cleaning up wxPython GUI")
 
         self.frame.SetTransparent(0)
-        wx.GetApp().Yield()
+        wx.Yield()
 
         self.frame.DestroyChildren()
         self.frame.Destroy()

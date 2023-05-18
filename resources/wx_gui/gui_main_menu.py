@@ -1,7 +1,6 @@
 # Generate GUI for main menu
 import wx
 import sys
-import time
 import logging
 import threading
 

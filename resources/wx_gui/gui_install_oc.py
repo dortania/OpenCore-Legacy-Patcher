@@ -263,7 +263,7 @@ class InstallOCFrame(wx.Frame):
         thread.start()
 
         while thread.is_alive():
-            wx.GetApp().Yield()
+            wx.Yield()
 
         if self.result is True:
             if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:

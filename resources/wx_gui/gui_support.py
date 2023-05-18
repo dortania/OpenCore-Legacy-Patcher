@@ -9,7 +9,7 @@ import applescript
 from pathlib import Path
 
 from resources import constants
-from data import model_array, os_data, cpu_data, smbios_data
+from data import model_array, os_data, smbios_data
 
 
 class AutoUpdateStages:
@@ -194,7 +194,7 @@ class RestartHost:
         if answer == wx.ID_YES:
             # Reboots with Count Down prompt (user can still dismiss if needed)
             self.frame.Hide()
-            wx.GetApp().Yield()
+            wx.Yield()
             try:
                 applescript.AppleScript('tell app "loginwindow" to «event aevtrrst»').run()
             except applescript.ScriptError as e:
@@ -270,13 +270,13 @@ class RelaunchApplicationAsRoot:
         # Set size of frame
         self.frame.SetSize((-1, countdown_label.GetPosition().y + countdown_label.GetSize().height + 40))
 
-        wx.GetApp().Yield()
+        wx.Yield()
 
         logging.info(f"- Relaunching as root with command: {program_arguments}")
         subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         while True:
-            wx.GetApp().Yield()
+            wx.Yield()
             countdown_label.SetLabel(f"Closing old process in {timer} seconds")
             time.sleep(1)
             timer -= 1

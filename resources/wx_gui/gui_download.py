@@ -79,7 +79,7 @@ class DownloadFrame(wx.Frame):
             )
 
             progress_bar.SetValue(int(self.download_obj.get_percent()))
-            wx.GetApp().Yield()
+            wx.Yield()
 
         if self.download_obj.download_complete is False and self.user_cancelled is False:
             wx.MessageBox(f"Download failed: \n{self.download_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)

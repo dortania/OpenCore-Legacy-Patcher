@@ -147,7 +147,7 @@ class UpdateFrame(wx.Frame):
         while True:
             launch_label.SetLabel(f"Closing old process in {timer} seconds")
             launch_label.Center(wx.HORIZONTAL)
-            wx.GetApp().Yield()
+            wx.Yield()
             time.sleep(1)
             timer -= 1
             if timer == 0:

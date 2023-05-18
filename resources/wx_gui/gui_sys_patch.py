@@ -87,7 +87,7 @@ class SysPatchFrame(wx.Frame):
         kdk_thread.start()
 
         while kdk_thread.is_alive():
-            wx.GetApp().Yield()
+            wx.Yield()
 
         if self.kdk_obj.success is False:
             progress_bar_animation.stop_pulse()
@@ -115,7 +115,7 @@ class SysPatchFrame(wx.Frame):
 
         subheader.SetLabel("Checking if checksum is valid...")
         subheader.Center(wx.HORIZONTAL)
-        wx.GetApp().Yield()
+        wx.Yield()
 
         progress_bar_animation.stop_pulse()
 
@@ -372,7 +372,7 @@ class SysPatchFrame(wx.Frame):
         thread.start()
 
         while thread.is_alive():
-            wx.GetApp().Yield()
+            wx.Yield()
 
         self._post_patch()
         self.return_button.Enable()
@@ -397,7 +397,7 @@ class SysPatchFrame(wx.Frame):
         thread.start()
 
         while thread.is_alive():
-            wx.GetApp().Yield()
+            wx.Yield()
 
         self._post_patch()
         self.return_button.Enable()
