@@ -1188,6 +1188,8 @@ Hardware Information:
     def on_nightly(self, event: wx.Event) -> None:
         # Ask prompt for which branch
         branches = ["main"]
+        if self.constants.commit_info[0] not in ["Running from source", "Built from source"]:
+            branches = [self.constants.commit_info[0].split("/")[-1]]
         result = network_handler.NetworkUtilities().get("https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/branches")
         if result is not None:
             result = result.json()
