@@ -1387,6 +1387,24 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>BundlePath</key>
+				<string>LegacyKeyboardInjector.kext</string>
+				<key>Comment</key>
+				<string>Legacy Keyboard support for macOS 11+</string>
+				<key>Enabled</key>
+				<false/>
+				<key>ExecutablePath</key>
+				<string></string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>20.0.0</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
 				<string>USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCI.kext</string>
 				<key>Comment</key>
 				<string>USB1.1 - AppleUSBOHCI</string>

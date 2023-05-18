@@ -53,6 +53,7 @@ class Constants:
         self.piixata_version:       str = "1.0.1"  #  AppleIntelPIIXATA
         self.fw_kext:               str = "1.0.1"  #  IOFireWireFamily
         self.apple_trackpad:        str = "1.0.1"  #  AppleUSBTrackpad
+        self.legacy_keyboard:        str = "1.0.0"  # LegacyKeyboardInjector - Jazzzny
         self.apple_isight_version:  str = "1.0.0"  #  AppleiSight
         self.apple_raid_version:    str = "1.0.0"  #  AppleRAIDCard
         self.apfs_zlib_version:     str = "12.3.1"  # NoAVXFSCompressionTypeZlib
@@ -496,6 +497,10 @@ class Constants:
     @property
     def apple_isight_path(self):
         return self.payload_kexts_path / Path(f"Misc/LegacyUSBVideoSupport-v{self.apple_isight_version}.zip")
+    
+    @property
+    def legacy_keyboard_path(self):
+        return self.payload_kexts_path / Path(f"Misc/LegacyKeyboardInjector-v{self.apple_isight_version}.zip")
 
     @property
     def apple_raid_path(self):
