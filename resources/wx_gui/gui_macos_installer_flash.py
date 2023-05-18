@@ -161,6 +161,7 @@ class macOSInstallerFlashFrame(wx.Frame):
                 for string in ignore:
                     if string in self.available_disks[disk]['name'].lower():
                         del self.available_disks[disk]
+                        break
 
 
         thread = threading.Thread(target=_fetch_disks)

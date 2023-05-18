@@ -81,6 +81,7 @@ class InstallOCFrame(wx.Frame):
             for string in ignore:
                 if string in self.available_disks[disk]['name'].lower():
                     del self.available_disks[disk]
+                    break
 
 
     def _display_disks(self) -> None:
