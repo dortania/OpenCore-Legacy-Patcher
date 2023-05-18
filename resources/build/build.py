@@ -153,5 +153,3 @@ class BuildOpenCore:
         logging.info(f"Your OpenCore EFI for {self.model} has been built at:")
         logging.info(f"    {self.constants.opencore_release_folder}")
         logging.info("")
-        if self.constants.gui_mode is False:
-            input("Press [Enter] to continue\n")
