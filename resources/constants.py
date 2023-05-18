@@ -502,7 +502,7 @@ class Constants:
     
     @property
     def legacy_keyboard_path(self):
-        return self.payload_kexts_path / Path(f"Misc/LegacyKeyboardInjector-v{self.apple_isight_version}.zip")
+        return self.payload_kexts_path / Path(f"Misc/LegacyKeyboardInjector-v{self.legacy_keyboard}.zip")
 
     @property
     def apple_raid_path(self):
