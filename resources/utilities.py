@@ -531,7 +531,7 @@ def check_boot_mode():
 def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
     # When running through our GUI, we run as root, however we do not get uid 0
     # Best to assume CLI is running as root
-    if os.geteuid() == 0 or check_cli_args() is not None:
+    if os.getuid() == 0 or check_cli_args() is not None:
         return subprocess.run(*args, **kwargs)
     else:
         return subprocess.run(["sudo"] + [args[0][0]] + args[0][1:], **kwargs)

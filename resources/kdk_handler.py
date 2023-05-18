@@ -452,7 +452,7 @@ class KernelDebugKitObject:
         if self.passive is True:
             return
 
-        if os.geteuid() != 0:
+        if os.getuid() != 0:
             logging.warning("- Cannot remove KDK, not running as root")
             return
 
@@ -567,7 +567,7 @@ class KernelDebugKitUtilities:
             bool: True if successful, False if not
         """
 
-        if os.geteuid() != 0:
+        if os.getuid() != 0:
             logging.warning("- Cannot install KDK, not running as root")
             return False
 
@@ -598,7 +598,7 @@ class KernelDebugKitUtilities:
             bool: True if successful, False if not
         """
 
-        if os.geteuid() != 0:
+        if os.getuid() != 0:
             logging.warning("- Cannot install KDK, not running as root")
             return False
 
@@ -659,7 +659,7 @@ class KernelDebugKitUtilities:
             logging.warning("- Malformed KDK Info.plist provided, cannot create backup")
             return
 
-        if os.geteuid() != 0:
+        if os.getuid() != 0:
             logging.warning("- Cannot create KDK backup, not running as root")
             return
 
