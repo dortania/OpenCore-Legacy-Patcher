@@ -17,7 +17,7 @@
 - Resolve kernel panic on wake for AMD TeraScale 1 and Nvidia Tesla 8000 series GPUs
 - Resolve graphics corruption on wake for TeraScale 1
   - Patch currently limited to Ventura and newer
-- Restore Function Keys on MacBook5,2, MacBookPro4,1, and MacBook4,1
+- Restore Function Keys on MacBook5,2 and MacBook4,1
   - Implementation by [@jazzzny](https://github.com/Jazzzny)
 - Increment Binaries:
   - PatcherSupportPkg 1.0.1 - release
