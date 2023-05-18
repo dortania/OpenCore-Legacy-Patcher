@@ -7,7 +7,7 @@
 * [Keyboard Backlight broken](#keyboard-backlight-broken)
 * [Photos and Maps Apps Heavily Distorted](#photos-and-maps-apps-heavily-distorted)
 * [Cannot press "Done" when editing a Sidebar Widget](#cannot-press-done-when-editing-a-sidebar-widget)
-* [Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer](#wake-from-sleep-heavily-distorted-on-amd-ati-in-macos-11-3-and-newer)
+* [Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey](#wake-from-sleep-heavily-distorted-on-amd-ati-in-macos-11-3-to-monterey)
 * [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
 * [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
@@ -104,9 +104,11 @@ Due to the Metal Backend, the enhanced color output of these apps seems to heavi
 
 Workaround: Press some combination of Tab, or Tab and then Shift-Tab, or just Shift-Tab until the "Done" button is highlighted. Then press spacebar to activate the button, the same as in any other dialog with a highlighted button halo.
 
-## Wake from sleep heavily distorted on AMD/ATI in macOS 11.3 and newer
+## Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey
 
-Unfortunately, this is a very well known issue that the community is investigating. A currently known solution is to downgrade to macOS 11.2.3 or older until a proper fix can be found. Additionally, logging out and logging back in can resolve the issue without requiring a reboot.
+**Fixed for macOS Ventura starting from 0.6.6. Big Sur and Monterey will continue to exhibit the issue.**
+
+For older versions, only known solution is to downgrade to macOS 11.2.3 or older. Additionally, logging out and logging back in can resolve the issue without requiring a reboot.
 
 * Note, this issue should be exclusive to TeraScale 1 GPUs (ie. HD2000-4000). TeraScale 2 GPUs should not exhibit this issue.
 
