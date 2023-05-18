@@ -141,6 +141,7 @@ class tui_disk_installation:
             subprocess.run(["rm", mount_path / Path("boot.efi")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         logging.info("- Copying OpenCore onto EFI partition")
+        subprocess.run(["mkdir", "-p", mount_path / Path("EFI")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         subprocess.run(["cp", "-r", self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         subprocess.run(["cp", "-r", self.constants.opencore_release_folder / Path("System"), mount_path / Path("System")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
