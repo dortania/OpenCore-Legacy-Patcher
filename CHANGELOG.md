@@ -20,7 +20,7 @@
 - Increment Binaries:
   - PatcherSupportPkg 1.0.1 - release
   - OpenCorePkg 0.9.2 - release
-  - Lilu 1.6.5 - release
+  - Lilu 1.6.6 - rolling (d8f3782)
   - RestrictEvents 1.1.1 - release
   - FeatureUnlock 1.1.4 - release
   - BlueToolFixup 2.6.6 - release
