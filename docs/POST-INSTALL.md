@@ -16,7 +16,7 @@ Once you've installed macOS through OpenCore, you can boot up and go through the
 
 And voila! No more USB drive required.
 
-## Booting seamlessly without Verbose or OpenCore Picker
+## Booting seamlessly without Boot Picker
 
 To do this, run the OpenCore Patcher and head to Patcher Settings, then uncheck "Show OpenCore Bootpicker" on the Build tab:
 
