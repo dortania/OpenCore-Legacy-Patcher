@@ -1,7 +1,7 @@
 # Post-Installation
 
 * [Booting without USB drive](#booting-without-usb-drive)
-* [Booting seamlessly without Verbose or OpenCore Picker](#booting-seamlessly-without-verbose-or-opencore-picker)
+* [Booting seamlessly without Boot Picker](#booting-seamlessly-without-boot-picker)
 * [Applying Post Install Volume Patches](#applying-post-install-volume-patches)
 
 ## Booting without USB drive
@@ -21,10 +21,6 @@ And voila! No more USB drive required.
 To do this, run the OpenCore Patcher and head to Patcher Settings, then uncheck "Show OpenCore Bootpicker" on the Build tab:
 
 ![](../images/OCLP-GUI-Settings-ShowPicker.png)
-
-Here you can change different patcher settings, however the main interest is:
-
-* Show Boot Picker
 
 Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, and then you can release the "ESC" key when you see the cursor arrow at the top left.
 
