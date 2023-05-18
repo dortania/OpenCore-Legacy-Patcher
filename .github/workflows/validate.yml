@@ -10,6 +10,7 @@ jobs:
   build:
     name: Validate
     runs-on: x86_64_monterey
+    if: github.repository_owner == 'dortania'
     steps:
       - uses: actions/checkout@v3
       - name: Validate
