@@ -18,7 +18,7 @@ And voila! No more USB drive required.
 
 ## Booting seamlessly without Verbose or OpenCore Picker
 
-To do this, run the OpenCore Patcher and head to Patcher Settings and uncheck "Show OpenCore Bootpicker" on the Build tab:
+To do this, run the OpenCore Patcher and head to Patcher Settings, then uncheck "Show OpenCore Bootpicker" on the Build tab:
 
 ![](../images/OCLP-GUI-Settings-ShowPicker.png)
 
