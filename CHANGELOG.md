@@ -35,6 +35,7 @@
       - Implement default selections for disks and installers
   - Utilize `py-applescript` for authorization prompts
     - Avoids displaying prompts with `osascript` in the title
+    - Due to limitations, only used for installer creation and OpenCore installation
 - Increment Binaries:
   - PatcherSupportPkg 1.0.1 - release
   - OpenCorePkg 0.9.2 - release
