@@ -203,7 +203,7 @@ class BuildMiscellaneous:
                     support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyEventDriver.kext")["Enabled"] = True
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBMultitouch.kext", self.constants.multitouch_version, self.constants.multitouch_path)
         # Legacy Trackpad & Keyboard support
-        if self.model in ["MacBook4,1", "MacBook5,2"]:
+        if self.model in ["MacBook4,1", "MacBook5,2", "MacBookPro4,1"]:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path)
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyKeyboardInjector.kext", self.constants.legacy_keyboard, self.constants.legacy_keyboard_path) # Inject legacy personalities into AppleUSBTCKeyboard and AppleUSBTCKeyEventDriver
 
