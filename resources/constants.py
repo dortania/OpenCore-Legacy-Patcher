@@ -53,7 +53,6 @@ class Constants:
         self.piixata_version:       str = "1.0.1"  #  AppleIntelPIIXATA
         self.fw_kext:               str = "1.0.1"  #  IOFireWireFamily
         self.apple_trackpad:        str = "1.0.1"  #  AppleUSBTrackpad
-        self.legacy_keyboard:       str = "1.0.0"  # LegacyKeyboardInjector - Jazzzny
         self.apple_isight_version:  str = "1.0.0"  #  AppleiSight
         self.apple_raid_version:    str = "1.0.0"  #  AppleRAIDCard
         self.apfs_zlib_version:     str = "12.3.1"  # NoAVXFSCompressionTypeZlib
@@ -104,6 +103,9 @@ class Constants:
         ## flagersgit
         ## https://github.com/flagersgit/KDKlessWorkaround
         self.kdkless_version: str = "1.0.0"
+
+        ## Jazzzny
+        self.legacy_keyboard: str = "1.0.0"  # LegacyKeyboardInjector - Jazzzny
 
         # Get resource path
         self.current_path:  Path = Path(__file__).parent.parent.resolve()
