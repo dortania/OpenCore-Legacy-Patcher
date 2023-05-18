@@ -22,7 +22,8 @@ from data import (
     model_array,
     sip_data,
     smbios_data,
-    os_data
+    os_data,
+    cpu_data
 )
 
 
@@ -238,7 +239,7 @@ class SettingsFrame(wx.Frame):
                         "Enable booting macOS from",
                         "FireWire drives.",
                     ],
-                    "condition": not bool(generate_smbios.check_firewire(self.constants.computer.real_model) is False and not self.constants.custom_model)
+                    "condition": not (generate_smbios.check_firewire(self.constants.custom_model or self.constants.computer.real_model) is False)
                 },
                 "XHCI Booting": {
                     "type": "checkbox",
@@ -249,6 +250,7 @@ class SettingsFrame(wx.Frame):
                         "USB 3.0 expansion cards on systems",
                         "without native support.",
                     ],
+                    "condition": not gui_support.CheckProperties(self.constants).host_has_cpu_gen(cpu_data.cpu_data.ivy_bridge) # Sandy Bridge and older do not natively support XHCI booting
                 },
                 "NVMe Booting": {
                     "type": "checkbox",
@@ -261,6 +263,7 @@ class SettingsFrame(wx.Frame):
                         "Note: Requires Firmware support",
                         "for OpenCore to load from NVMe.",
                     ],
+                    "condition": not gui_support.CheckProperties(self.constants).host_has_cpu_gen(cpu_data.cpu_data.ivy_bridge) # Sandy Bridge and older do not natively support NVMe booting
                 },
                 "wrap_around 2": {
                     "type": "wrap_around",
@@ -453,7 +456,7 @@ class SettingsFrame(wx.Frame):
                         "'gpu-power-prefs'.",
                     ],
                     "warning": "This settings requires 'gpu-power-prefs' NVRAM argument to be set to '1'.\n\nIf missing and this option is toggled, the system will not boot\n\nFull command:\nnvram FA4CE28D-B62F-4C99-9CC3-6815686E30F9:gpu-power-prefs=%01%00%00%00",
-                    "condition": not bool(not self.constants.custom_model and self.constants.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"])
+                    "condition": not bool((not self.constants.custom_model and self.constants.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"]) or (self.constants.custom_model and self.constants.custom_model not in ["MacBookPro8,2", "MacBookPro8,3"]))
                 },
                 "wrap_around 1": {
                     "type": "wrap_around",

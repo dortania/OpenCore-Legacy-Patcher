@@ -9,7 +9,7 @@ import applescript
 from pathlib import Path
 
 from resources import constants
-from data import model_array, os_data
+from data import model_array, os_data, cpu_data, smbios_data
 
 
 class AutoUpdateStages:
@@ -121,6 +121,16 @@ class CheckProperties:
             return False
 
         return True
+
+    def host_has_cpu_gen(self, gen: int) -> bool:
+        """
+        Check if host has a CPU generation equal to or greater than the specified generation
+        """
+        model = self.constants.custom_model if self.constants.custom_model else self.constants.computer.real_model
+        if model in smbios_data.smbios_dictionary:
+            if smbios_data.smbios_dictionary[model]["CPU Generation"] >= gen:
+                return True
+        return False
 
 
 class PayloadMount:
