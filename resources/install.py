@@ -77,21 +77,16 @@ class tui_disk_installation:
         return supported_partitions
 
 
-    def install_opencore(self, full_disk_identifier):
-        def determine_sd_card(media_name):
-            # Array filled with common SD Card names
-            # Note most USB-based SD Card readers generally report as "Storage Device"
-            # Thus no reliable way to detect further without parsing IOService output (kUSBProductString)
-            if (
-                "SD Card" in media_name or \
-                "SD/MMC" in media_name or \
-                "SDXC Reader" in media_name or \
-                "SD Reader" in media_name or \
-                "Card Reader" in media_name
-            ):
-                return True
-            return False
+    def _determine_sd_card(media_name: str):
+        # Array filled with common SD Card names
+        # Note most USB-based SD Card readers generally report as "Storage Device"
+        # Thus no reliable way to detect further without parsing IOService output (kUSBProductString)
+        if any(x in media_name for x in ("SD Card", "SD/MMC", "SDXC Reader", "SD Reader", "Card Reader")):
+            return True
+        return False
 
+
+    def install_opencore(self, full_disk_identifier: str):
         # TODO: Apple Script fails in Yosemite(?) and older
         logging.info(f"- Mounting partition: {full_disk_identifier}")
         if self.constants.detected_os >= os_data.os_data.el_capitan and not self.constants.recovery_status:
@@ -156,7 +151,7 @@ class tui_disk_installation:
             subprocess.run(["mv", mount_path / Path("System/Library/CoreServices/boot.efi"), mount_path / Path("EFI/BOOT/BOOTx64.efi")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             subprocess.run(["rm", "-rf", mount_path / Path("System")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        if determine_sd_card(sd_type) is True:
+        if self._determine_sd_card(sd_type) is True:
             logging.info("- Adding SD Card icon")
             subprocess.run(["cp", self.constants.icon_path_sd, mount_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         elif ssd_type is True:
@@ -175,8 +170,5 @@ class tui_disk_installation:
             subprocess.run(["diskutil", "umount", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
         logging.info("- OpenCore transfer complete")
-        if self.constants.gui_mode is False:
-            logging.info("\nPress [Enter] to continue.\n")
-            input()
 
         return True
