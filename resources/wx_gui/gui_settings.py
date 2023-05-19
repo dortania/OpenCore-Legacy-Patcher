@@ -178,6 +178,8 @@ class SettingsFrame(wx.Frame):
                     # combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.on_combobox(event, variable))
                     if "override_function" in setting_info:
                         combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.settings[tab][variable]["override_function"](event))
+                    else:
+                        combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.on_combobox(event, variable))
                     height += 10
                 elif setting_info["type"] == "button":
                     button = wx.Button(panel, label=setting, pos=(width + 25, 10 + height), size = (200,-1))
