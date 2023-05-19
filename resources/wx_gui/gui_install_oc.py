@@ -116,7 +116,8 @@ class InstallOCFrame(wx.Frame):
 
         # Add buttons for each disk
         if self.available_disks:
-            disk_root = self.constants.booted_oc_disk
+            # Only show booted disk if building for host
+            disk_root = self.constants.booted_oc_disk if self.constants.custom_model is None else None
             if disk_root:
                 # disk6s1 -> disk6
                 disk_root = self.constants.booted_oc_disk.strip("disk")
@@ -197,7 +198,7 @@ class InstallOCFrame(wx.Frame):
             disk_button = wx.Button(dialog, label=f"{partitions[partition]['partition']} - {partitions[partition]['name']} - {partitions[partition]['size']}", size=(longest_label,30), pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 5))
             disk_button.Centre(wx.HORIZONTAL)
             disk_button.Bind(wx.EVT_BUTTON, lambda event, partition=partition: self._install_oc_process(partition))
-            if partitions[partition]['partition'].startswith(f"{disk}s") or items == 1:
+            if items == 1 or self.constants.booted_oc_disk == partitions[partition]['partition']:
                 disk_button.SetDefault()
 
         # Add button: Return to main menu
