@@ -22,7 +22,7 @@ To do this, run the OpenCore Patcher and head to Patcher Settings, then uncheck 
 
 ![](../images/OCLP-GUI-Settings-ShowPicker.png)
 
-Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, and then you can release the "ESC" key when you see the cursor arrow at the top left.
+Once you've toggled it off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, and then you can release the "ESC" key when you see the cursor arrow at the top left.
 
 ## Enabling SIP
 
