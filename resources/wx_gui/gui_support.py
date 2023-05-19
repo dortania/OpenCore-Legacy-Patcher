@@ -8,6 +8,7 @@ import applescript
 
 from pathlib import Path
 
+from resources.wx_gui import gui_about
 from resources import constants
 from data import model_array, os_data, smbios_data
 
@@ -23,13 +24,22 @@ class AutoUpdateStages:
 
 class GenerateMenubar:
 
-    def __init__(self) -> None:
-        self.menubar: wx.MenuBar = None
+    def __init__(self, frame: wx.Frame, global_constants: constants.Constants) -> None:
+        self.frame: wx.Frame = frame
+        self.constants: constants.Constants = global_constants
 
 
     def generate(self) -> wx.MenuBar:
-        self.menubar = wx.MenuBar()
-        return self.menubar
+        menubar = wx.MenuBar()
+        fileMenu = wx.Menu()
+
+        aboutItem = fileMenu.Append(wx.ID_ABOUT, "&About OpenCore Legacy Patcher")
+        fileMenu.AppendSeparator()
+
+        menubar.Append(fileMenu, "&File")
+        self.frame.SetMenuBar(menubar)
+
+        self.frame.Bind(wx.EVT_MENU, lambda event: gui_about.AboutFrame(self.constants), aboutItem)
 
 
 class GaugePulseCallback:

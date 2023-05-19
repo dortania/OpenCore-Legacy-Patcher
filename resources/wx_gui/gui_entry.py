@@ -39,6 +39,7 @@ class EntryPoint:
 
     def _generate_base_data(self) -> None:
         self.app = wx.App()
+        self.app.SetAppName(self.constants.patcher_name)
 
 
     def start(self, entry: SupportedEntryPoints = gui_main_menu.MainFrame) -> None:
@@ -60,7 +61,7 @@ class EntryPoint:
             **({"patches": patches} if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv else {})
         )
         if self.frame:
-            self.frame.SetMenuBar(gui_support.GenerateMenubar().generate())
+            gui_support.GenerateMenubar(self.frame, self.constants).generate()
 
         atexit.register(self.OnCloseFrame)
 

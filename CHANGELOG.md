@@ -35,6 +35,7 @@
       - Implement proper UI call backs on long processes
         - ex. Root patching
       - Implement default selections for disks and installers
+      - Set about and quit items
   - Utilize `py-applescript` for authorization prompts
     - Avoids displaying prompts with `osascript` in the title
     - Due to limitations, only used for installer creation and OpenCore installation
