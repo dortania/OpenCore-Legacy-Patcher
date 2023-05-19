@@ -398,6 +398,7 @@ class RemoteInstallerCatalog:
                         "integrity": integrity,
                         "Source":   "Apple Inc.",
                         "Variant":   catalog_url,
+                        "OS":        os_data.os_conversion.os_to_kernel(version)
                     }
                 })
 

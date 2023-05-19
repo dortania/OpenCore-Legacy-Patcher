@@ -1,6 +1,7 @@
 import wx
 import logging
 import threading
+import webbrowser
 
 from pathlib import Path
 
@@ -17,6 +18,7 @@ from resources import (
     network_handler,
     integrity_verification
 )
+from data import os_data, smbios_data, cpu_data
 
 
 class macOSInstallerDownloadFrame(wx.Frame):
@@ -169,6 +171,29 @@ class macOSInstallerDownloadFrame(wx.Frame):
         """
         Download macOS installer
         """
+
+        # Notify user whether their model is compatible with the selected installer
+        problems = []
+        model = self.constants.custom_model or self.constants.computer.real_model
+        if model in smbios_data.smbios_dictionary:
+            if app["OS"] >= os_data.os_data.ventura:
+                if smbios_data.smbios_dictionary[model]["CPU Generation"] <= cpu_data.cpu_data.penryn or model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]:
+                    if model.startswith("MacBook"):
+                        problems.append("Lack of internal Keyboard/Trackpad in macOS installer.")
+                    else:
+                        problems.append("Lack of internal Keyboard/Mouse in macOS installer.")
+
+        if problems:
+            problems = "\n".join(problems)
+            dlg = wx.MessageDialog(self.frame_modal, f"Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page.", "Potential Issues", wx.YES_NO | wx.CANCEL | wx.ICON_WARNING)
+            dlg.SetYesNoCancelLabels("View Github Issue", "Download Anyways", "Cancel")
+            result = dlg.ShowModal()
+            if result == wx.ID_CANCEL:
+                return
+            elif result == wx.ID_YES:
+                webbrowser.open("https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021")
+                return
+
         host_space = utilities.get_free_space()
         needed_space = app['Size'] * 2
         if host_space < needed_space:
