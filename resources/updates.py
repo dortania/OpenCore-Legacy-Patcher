@@ -2,7 +2,6 @@
 # Check whether new updates are available for OpenCore Legacy Patcher binary
 # Call check_binary_updates() to determine if any updates are available
 # Returns dict with Link and Version of the latest binary update if available
-import requests
 import logging
 
 from resources import network_handler, constants
@@ -34,6 +33,12 @@ class CheckBinaryUpdates:
             remote_version = self.remote_version_array
         if local_version is None:
             local_version = self.binary_version_array
+
+
+        if local_version == remote_version:
+            if not self.constants.commit_info[0].startswith("refs/tags"):
+                # Check for nightly builds
+                return True
 
         # Pad version numbers to match length (ie. 0.1.0 vs 0.1.0.1)
         while len(remote_version) > len(local_version):
@@ -98,6 +103,9 @@ class CheckBinaryUpdates:
 
         response = network_handler.NetworkUtilities().get(REPO_LATEST_RELEASE_URL)
         data_set = response.json()
+
+        if "tag_name" not in data_set:
+            return None
 
         self.remote_version = data_set["tag_name"]
 

@@ -15,6 +15,7 @@ class Constants:
         self.patcher_version:                 str = "0.6.6"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version:     str = "1.0.1"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
+        self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
         # URLs
         self.url_patcher_support_pkg:         str = "https://github.com/dortania/PatcherSupportPkg/releases/download/"
@@ -132,6 +133,7 @@ class Constants:
         self.launcher_script:            str = None  #  Determine launch file path   (None if PyInstaller)
         self.booted_oc_disk:             str = None  #  Determine current disk OCLP booted from
         self.unpack_thread                   = None  #  Determine if unpack thread finished (threading.Thread)
+        self.update_stage:               int = 0  #     Determine update stage (see gui_support.py)
 
         self.commit_info: tuple = (None, None, None)  # Commit info (Branch, Commit Date, Commit URL)
 
@@ -206,12 +208,11 @@ class Constants:
         self.dGPU_switch:            bool = False  # Set Display GPU Switching for Windows
         self.force_surplus:          bool = False  # Force SurPlus patch in newer OSes
         self.force_latest_psp:       bool = False  # Force latest PatcherSupportPkg
-        self.disable_msr_power_ctl:  bool = False  # Disable MSR Power Control (missing battery throttling)
+        self.disable_fw_throttle:    bool = False  # Disable MSR Power Control and XCPM
         self.software_demux:         bool = False  # Enable Software Demux patch set
         self.force_vmm:              bool = False  # Force VMM patch
         self.disable_connectdrivers: bool = False  # Disable ConnectDrivers (hibernation)
         self.set_content_caching:    bool = False  # Set Content Caching
-        self.disable_xcpm:           bool = False  # Disable XCPM (X86PlatformPlugin.kext)
         self.set_vmm_cpuid:          bool = False  # Set VMM bit inside CPUID
         self.disable_cat_colorsync:  bool = False  # Disable the ColorSync patch to regain Display Profiles
         self.set_alc_usage:          bool = True  #  Set AppleALC usage
@@ -624,7 +625,7 @@ class Constants:
 
     @property
     def oclp_helper_path(self):
-        return self.payload_path / Path("Tools/OCLP-Helper")
+        return self.payload_path / Path("Tools/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher")
 
     @property
     def rsrrepair_userspace_path(self):

@@ -9,6 +9,7 @@ import threading
 import logging
 import enum
 import hashlib
+import atexit
 from pathlib import Path
 
 from resources import utilities
@@ -340,6 +341,7 @@ class DownloadObject:
             response = NetworkUtilities().get(self.url, stream=True, timeout=10)
 
             with open(self.filepath, 'wb') as file:
+                atexit.register(self.stop)
                 for i, chunk in enumerate(response.iter_content(1024 * 1024 * 4)):
                     if self.should_stop:
                         raise Exception("Download stopped")
@@ -380,7 +382,6 @@ class DownloadObject:
         """
 
         if self.total_file_size == 0.0:
-            logging.error("- File size is 0, cannot calculate percent")
             return -1
         return self.downloaded_file_size / self.total_file_size * 100
 
@@ -405,9 +406,11 @@ class DownloadObject:
         """
 
         if self.total_file_size == 0.0:
-            logging.error("- File size is 0, cannot calculate time remaining")
             return -1
-        return (self.total_file_size - self.downloaded_file_size) / self.get_speed()
+        speed = self.get_speed()
+        if speed <= 0:
+            return -1
+        return (self.total_file_size - self.downloaded_file_size) / speed
 
 
     def get_file_size(self) -> float:

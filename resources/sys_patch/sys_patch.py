@@ -280,8 +280,6 @@ class PatchSysVolume:
                 if self.needs_kmutil_exemptions is True:
                     logging.info("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
                 self.constants.root_patcher_succeeded = True
-                if self.constants.gui_mode is False:
-                    input("\nPress [ENTER] to continue")
 
 
     def _rebuild_kernel_collection(self) -> bool:
@@ -365,8 +363,6 @@ class PatchSysVolume:
             logging.info(result.stdout.decode())
             logging.info("")
             logging.info("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
-            if self.constants.gui_mode is False:
-                input("Press [ENTER] to continue")
             return False
 
         if self.skip_root_kmutil_requirement is True:
@@ -378,8 +374,6 @@ class PatchSysVolume:
                 logging.info(result.stdout.decode())
                 logging.info("")
                 logging.info("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
-                if self.constants.gui_mode is False:
-                    input("Press [ENTER] to continue")
                 return False
 
             for file in ["KextPolicy", "KextPolicy-shm", "KextPolicy-wal"]:
@@ -885,33 +879,18 @@ class PatchSysVolume:
         self.patch_set_dictionary = sys_patch_generate.GenerateRootPatchSets(self.computer.real_model, self.constants, self.hardware_details).patchset
 
         if self.patch_set_dictionary == {}:
-            change_menu = None
             logging.info("- No Root Patches required for your machine!")
-            if self.constants.gui_mode is False:
-                input("\nPress [ENTER] to return to the main menu: ")
-        elif self.constants.gui_mode is False:
-            change_menu = input("Would you like to continue with Root Volume Patching?(y/n): ")
-        else:
-            change_menu = "y"
-            logging.info("- Continuing root patching")
-        if change_menu in ["y", "Y"]:
-            logging.info("- Verifying whether Root Patching possible")
-            if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is True:
-                logging.info("- Patcher is capable of patching")
-                if self._check_files():
-                    if self._mount_root_vol() is True:
-                        self._patch_root_vol()
-                        if self.constants.gui_mode is False:
-                            input("\nPress [ENTER] to return to the main menu")
-                    else:
-                        logging.info("- Recommend rebooting the machine and trying to patch again")
-                        if self.constants.gui_mode is False:
-                            input("- Press [ENTER] to exit: ")
-            elif self.constants.gui_mode is False:
-                input("\nPress [ENTER] to return to the main menu: ")
+            return
 
-        else:
-            logging.info("- Returning to main menu")
+        logging.info("- Verifying whether Root Patching possible")
+        if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is True:
+            logging.info("- Patcher is capable of patching")
+            if self._check_files():
+                if self._mount_root_vol() is True:
+                    self._patch_root_vol()
+                else:
+                    logging.info("- Recommend rebooting the machine and trying to patch again")
+
 
     def start_unpatch(self) -> None:
         """
@@ -922,11 +901,5 @@ class PatchSysVolume:
         if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=True) is True:
             if self._mount_root_vol() is True:
                 self._unpatch_root_vol()
-                if self.constants.gui_mode is False:
-                    input("\nPress [ENTER] to return to the main menu")
             else:
                 logging.info("- Recommend rebooting the machine and trying to patch again")
-                if self.constants.gui_mode is False:
-                    input("- Press [ENTER] to exit: ")
-        elif self.constants.gui_mode is False:
-            input("\nPress [ENTER] to return to the main menu")

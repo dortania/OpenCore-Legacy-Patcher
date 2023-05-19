@@ -19,6 +19,26 @@
   - Patch currently limited to Ventura and newer
 - Restore Function Keys on MacBook5,2 and MacBook4,1
   - Implementation by [@jazzzny](https://github.com/Jazzzny)
+- Backend changes:
+  - Rename OCLP-Helper to OpenCore-Patcher
+    - Allows for better identification when displaying prompts
+  - Reimplement wxPython GUI into modularized system:
+    - Allows for easier maintenance and future expansion
+    - Changes include:
+      - Reworked settings UI
+      - Unified download UI with time remaining
+      - Implement in-app update system
+        - Guides users to update OpenCore and Root Patches once update's installed
+      - Expand app update checks to include nightly users
+        - ex. 0.6.6 nightly -> 0.6.6 release
+      - Implement macOS installer verification after flashing
+      - Implement proper UI call backs on long processes
+        - ex. Root patching
+      - Implement default selections for disks and installers
+      - Set about and quit items
+  - Utilize `py-applescript` for authorization prompts
+    - Avoids displaying prompts with `osascript` in the title
+    - Due to limitations, only used for installer creation and OpenCore installation
 - Increment Binaries:
   - PatcherSupportPkg 1.0.1 - release
   - OpenCorePkg 0.9.2 - release
