@@ -77,7 +77,7 @@ class tui_disk_installation:
         return supported_partitions
 
 
-    def _determine_sd_card(media_name: str):
+    def _determine_sd_card(self, media_name: str):
         # Array filled with common SD Card names
         # Note most USB-based SD Card readers generally report as "Storage Device"
         # Thus no reliable way to detect further without parsing IOService output (kUSBProductString)
