@@ -49,6 +49,7 @@ app = BUNDLE(coll,
              icon="payloads/OC-Patcher.icns",
              bundle_identifier="com.dortania.opencore-legacy-patcher",
              info_plist={
+                "CFBundleName": "OpenCore Legacy Patcher",
                 "CFBundleShortVersionString": constants.Constants().patcher_version,
                 "NSHumanReadableCopyright": constants.Constants().copyright_date,
                 "LSMinimumSystemVersion": "10.10.0",
