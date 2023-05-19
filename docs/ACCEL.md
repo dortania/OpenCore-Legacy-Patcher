@@ -7,7 +7,7 @@
 * [Keyboard Backlight broken](#keyboard-backlight-broken)
 * [Photos and Maps Apps Heavily Distorted](#photos-and-maps-apps-heavily-distorted)
 * [Cannot press "Done" when editing a Sidebar Widget](#cannot-press-done-when-editing-a-sidebar-widget)
-* [Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey](#wake-from-sleep-heavily-distorted-on-amd-ati-from-macos-11-3-to-monterey)
+* [Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey](#wake-from-sleep-heavily-distorted-on-amd-ati-from-macOS-11-3-to-monterey)
 * [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
 * [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
