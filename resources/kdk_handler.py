@@ -538,10 +538,12 @@ class KernelDebugKitObject:
             logging.info(f"- {msg}")
 
             self.error_msg = msg
+            return False
 
         self._remove_unused_kdks()
-
         self.success = True
+        logging.info("- Kernel Debug Kit checksum verified")
+        return True
 
 
 class KernelDebugKitUtilities:

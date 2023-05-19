@@ -34,4 +34,6 @@ __pycache__/
 /payloads/KDK.dmg
 *.log
 /Universal-Binaries.dmg
-/payloads/Universal-Binaries_overlay
+/payloads/KDKInfo.plist
+/payloads/update.sh
+/payloads/OpenCore-Patcher.app

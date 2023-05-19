@@ -259,7 +259,7 @@ class BuildGraphicsAudio:
                     "CAIL,CAIL_DisableUVDPowerGating": 1,
                     "CAIL,CAIL_DisableVCEPowerGating": 1,
                 })
-        if self.constants.imac_model == "Legacy GCN":
+        if self.constants.imac_model == "GCN":
             logging.info("- Adding Legacy GCN Power Gate Patches")
             self.config["DeviceProperties"]["Add"][backlight_path].update({
                 "CAIL,CAIL_DisableDrmdmaPowerGating": 1,
@@ -274,7 +274,7 @@ class BuildGraphicsAudio:
                     "CAIL,CAIL_DisableUVDPowerGating": 1,
                     "CAIL,CAIL_DisableVCEPowerGating": 1,
                 })
-        elif self.constants.imac_model == "AMD Lexa":
+        elif self.constants.imac_model == "Lexa":
             logging.info("- Adding Lexa Spoofing Patches")
             self.config["DeviceProperties"]["Add"][backlight_path].update({
                 "model": "AMD Radeon Pro WX 3200",
@@ -285,7 +285,7 @@ class BuildGraphicsAudio:
                     "model": "AMD Radeon Pro WX 3200",
                     "device-id": binascii.unhexlify("FF67"),
                 })
-        elif self.constants.imac_model == "AMD Navi":
+        elif self.constants.imac_model == "Navi":
             logging.info("- Adding Navi Spoofing Patches")
             navi_backlight_path = backlight_path+"/Pci(0x0,0x0)/Pci(0x0,0x0)"
             self.config["DeviceProperties"]["Add"][navi_backlight_path] = {

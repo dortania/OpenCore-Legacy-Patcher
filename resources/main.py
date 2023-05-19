@@ -6,7 +6,7 @@ import logging
 import threading
 from pathlib import Path
 
-from resources.gui import gui_main
+from resources.wx_gui import gui_entry
 from resources import (
     constants,
     utilities,
@@ -38,7 +38,7 @@ class OpenCoreLegacyPatcher:
         self._generate_base_data()
 
         if utilities.check_cli_args() is None:
-            gui_main.wx_python_gui(self.constants).main_menu(None)
+            gui_entry.EntryPoint(self.constants).start()
 
 
     def _generate_base_data(self) -> None:
@@ -99,7 +99,7 @@ class OpenCoreLegacyPatcher:
         logging.info("- Detected arguments, switching to CLI mode")
         self.constants.gui_mode = True  # Assumes no user interaction is required
 
-        ignore_args = ["--auto_patch", "--gui_patch", "--gui_unpatch"]
+        ignore_args = ["--auto_patch", "--gui_patch", "--gui_unpatch", "--update_installed"]
         if not any(x in sys.argv for x in ignore_args):
             self.constants.current_path = Path.cwd()
             self.constants.cli_mode = True
