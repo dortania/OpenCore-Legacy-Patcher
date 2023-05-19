@@ -15,6 +15,7 @@
   - Credit to CaseyJ's [PCI Bus Enumeration Patch](https://github.com/AMD-OSX/AMD_Vanilla/pull/196)
 - Resolve PCI eject menu appearing on unsupported hardware
 - Resolve kernel panic on wake for AMD TeraScale 1 and Nvidia Tesla 8000 series GPUs
+- Resolve loss of Ethernet after wake on MacPro3,1 in Ventura
 - Resolve graphics corruption on wake for TeraScale 1
   - Patch currently limited to Ventura and newer
 - Restore Function Keys on MacBook5,2 and MacBook4,1
