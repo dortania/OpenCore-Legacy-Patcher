@@ -74,6 +74,7 @@ class UpdateFrame(wx.Frame):
         progress_bar.Pulse()
         self.progress_bar = progress_bar
 
+        self.frame.Centre()
         self.frame.Show()
         wx.Yield()
 

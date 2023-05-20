@@ -269,6 +269,8 @@ class SysPatchFrame(wx.Frame):
                 start_button.Disable()
             elif no_new_patches is False:
                 start_button.SetDefault()
+            else:
+                self.available_patches = False
         if can_unpatch is False:
             revert_button.Disable()
 
