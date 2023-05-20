@@ -173,7 +173,7 @@ class SettingsFrame(wx.Frame):
                     height += title.GetSize()[1] + 10
 
                     # Add combobox, and description underneath
-                    combobox = wx.ComboBox(panel, value=setting_info["value"], pos=(width + 25, 10 + height), choices=setting_info["choices"], size = (130,-1))
+                    combobox = wx.ComboBox(panel, value=setting_info["value"], pos=(width + 25, 10 + height), choices=setting_info["choices"], size = (150,-1))
                     combobox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                     # combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.on_combobox(event, variable))
                     if "override_function" in setting_info:
