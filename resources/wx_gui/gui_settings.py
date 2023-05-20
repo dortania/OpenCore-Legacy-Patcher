@@ -62,14 +62,14 @@ class SettingsFrame(wx.Frame):
         model_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
         sizer.Add(model_label, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        model_choice = wx.Choice(frame, choices=model_array.SupportedSMBIOS + ["Host Model"], pos=(-1, -1))
+        model_choice = wx.Choice(frame, choices=model_array.SupportedSMBIOS + ["Host Model"], pos=(-1, -1), size=(150, -1))
         model_choice.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         model_choice.Bind(wx.EVT_CHOICE, lambda event: self.on_model_choice(event, model_choice))
         selection = self.constants.custom_model if self.constants.custom_model else "Host Model"
         model_choice.SetSelection(model_choice.FindString(selection))
         sizer.Add(model_choice, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        model_description = wx.StaticText(frame, label="Overrides Mac Model Patcher will build for.", pos=(-1, -1))
+        model_description = wx.StaticText(frame, label="Overrides Mac Model the Patcher will build for.", pos=(-1, -1))
         model_description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         sizer.Add(model_description, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
@@ -166,20 +166,20 @@ class SettingsFrame(wx.Frame):
                     # Add label next to spinctrl
                     label = wx.StaticText(panel, label=setting, pos=(spinctrl.GetSize()[0] + width - 16, spinctrl.GetPosition()[1]))
                     label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-                elif setting_info["type"] == "combobox":
+                elif setting_info["type"] == "choice":
                     # Title
                     title = wx.StaticText(panel, label=setting, pos=(width + 30, 10 + height))
                     title.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                     height += title.GetSize()[1] + 10
 
                     # Add combobox, and description underneath
-                    combobox = wx.ComboBox(panel, value=setting_info["value"], pos=(width + 25, 10 + height), choices=setting_info["choices"], size = (150,-1))
-                    combobox.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-                    # combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.on_combobox(event, variable))
+                    choice = wx.Choice(panel, pos=(width + 25, 10 + height), choices=setting_info["choices"], size = (150,-1))
+                    choice.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                    choice.SetSelection(choice.FindString(setting_info["value"]))
                     if "override_function" in setting_info:
-                        combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.settings[tab][variable]["override_function"](event))
+                        choice.Bind(wx.EVT_CHOICE, lambda event, variable=setting: self.settings[tab][variable]["override_function"](event))
                     else:
-                        combobox.Bind(wx.EVT_COMBOBOX, lambda event, variable=setting: self.on_combobox(event, variable))
+                        choice.Bind(wx.EVT_CHOICE, lambda event, variable=setting: self.on_choice(event, variable))
                     height += 10
                 elif setting_info["type"] == "button":
                     button = wx.Button(panel, label=setting, pos=(width + 25, 10 + height), size = (200,-1))
@@ -466,7 +466,7 @@ class SettingsFrame(wx.Frame):
                     "type": "wrap_around",
                 },
                 "FeatureUnlock": {
-                    "type": "combobox",
+                    "type": "choice",
                     "choices": [
                         "Enabled",
                         "Partial",
@@ -523,7 +523,7 @@ class SettingsFrame(wx.Frame):
                     "type": "wrap_around",
                 },
                 "Graphics Override": {
-                    "type": "combobox",
+                    "type": "choice",
                     "choices": [
                         "None",
                         "Nvidia Kepler",
@@ -597,7 +597,7 @@ class SettingsFrame(wx.Frame):
                     "type": "title",
                 },
                 "SMBIOS Spoof Level": {
-                    "type": "combobox",
+                    "type": "choice",
                     "choices": [
                         "None",
                         "Minimal",
@@ -616,7 +616,7 @@ class SettingsFrame(wx.Frame):
                 },
 
                 "SMBIOS Spoof Model": {
-                    "type": "combobox",
+                    "type": "choice",
                     "choices": models + ["Default"],
                     "value": self.constants.override_smbios,
                     "variable": "override_smbios",
@@ -1064,10 +1064,10 @@ Hardware Information:
 
         self.sip_configured_label.SetLabel(f"Currently configured SIP: {hex(self.sip_value)}")
 
-    def on_combobox(self, event: wx.Event, label: str) -> None:
+    def on_choice(self, event: wx.Event, label: str) -> None:
         """
         """
-        value = event.GetEventObject().GetValue()
+        value = event.GetString()
         self._update_setting(self.settings[self._find_parent_for_key(label)][label]["variable"], value)
 
 
@@ -1094,13 +1094,13 @@ Hardware Information:
 
 
     def _populate_fu_override(self, panel: wx.Panel) -> None:
-        gpu_combo_box: wx.ComboBox = None
+        gpu_combo_box: wx.Choice = None
         for child in panel.GetChildren():
-            if isinstance(child, wx.ComboBox):
+            if isinstance(child, wx.Choice):
                 gpu_combo_box = child
                 break
 
-        gpu_combo_box.Bind(wx.EVT_COMBOBOX, self.fu_selection_click)
+        gpu_combo_box.Bind(wx.EVT_CHOICE, self.fu_selection_click)
         if self.constants.fu_status is False:
             gpu_combo_box.SetStringSelection("Disabled")
         elif self.constants.fu_arguments is None:
@@ -1112,31 +1112,34 @@ Hardware Information:
     def fu_selection_click(self, event: wx.Event) -> None:
         value = event.GetEventObject().GetStringSelection()
         if value == "Enabled":
+            logging.info("Updating FU Status: Enabled")
             self.constants.fu_status = True
             self.constants.fu_arguments = None
             return
 
         if value == "Partial":
+            logging.info("Updating FU Status: Partial")
             self.constants.fu_status = True
             self.constants.fu_arguments = " -disable_sidecar_mac"
             return
 
+        logging.info("Updating FU Status: Disabled")
         self.constants.fu_status = False
         self.constants.fu_arguments = None
 
 
     def _populate_graphics_override(self, panel: wx.Panel) -> None:
-        gpu_combo_box: wx.ComboBox = None
+        gpu_combo_box: wx.Choice = None
         index = 0
         for child in panel.GetChildren():
-            if isinstance(child, wx.ComboBox):
+            if isinstance(child, wx.Choice):
                 if index == 0:
                     index = index + 1
                     continue
                 gpu_combo_box = child
                 break
 
-        gpu_combo_box.Bind(wx.EVT_COMBOBOX, self.gpu_selection_click)
+        gpu_combo_box.Bind(wx.EVT_CHOICE, self.gpu_selection_click)
         gpu_combo_box.SetStringSelection(f"{self.constants.imac_vendor} {self.constants.imac_model}")
 
         socketed_gpu_models = ["iMac9,1", "iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]
