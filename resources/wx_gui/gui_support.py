@@ -265,10 +265,10 @@ class RelaunchApplicationAsRoot:
         ]
 
         self.frame.DestroyChildren()
-        self.frame.SetSize(400, 300)
+        self.frame.SetSize(300, 300)
 
         # Header
-        header = wx.StaticText(self.frame, label="Relaunching as root")
+        header = wx.StaticText(self.frame, label="Relaunching as root", pos=(-1, 5))
         header.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
         header.Centre(wx.HORIZONTAL)
 

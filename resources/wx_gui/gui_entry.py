@@ -60,8 +60,6 @@ class EntryPoint:
             screen_location=None,
             **({"patches": patches} if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv else {})
         )
-        if self.frame:
-            gui_support.GenerateMenubar(self.frame, self.constants).generate()
 
         atexit.register(self.OnCloseFrame)
 

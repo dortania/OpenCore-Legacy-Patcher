@@ -23,7 +23,8 @@ from data import os_data
 
 class MainFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-        super(MainFrame, self).__init__(parent, title=title, size=(350, 300), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        super(MainFrame, self).__init__(parent, title=title, size=(600, 400), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        gui_support.GenerateMenubar(self, global_constants).generate()
 
         self.constants: constants.Constants = global_constants
         self.title: str = title
@@ -35,7 +36,7 @@ class MainFrame(wx.Frame):
 
         self._generate_elements()
 
-        self.SetPosition(screen_location) if screen_location else self.Centre()
+        self.Centre()
         self.Show()
 
         self._preflight_checks()
@@ -58,30 +59,101 @@ class MainFrame(wx.Frame):
         """
 
         # Title label: OpenCore Legacy Patcher v{X.Y.Z}
-        title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher v{self.constants.patcher_version}", pos=(-1,1))
+        title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher v{self.constants.patcher_version}", pos=(-1,10))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
         title_label.Centre(wx.HORIZONTAL)
 
         # Text: Model: {Build or Host Model}
-        model_label = wx.StaticText(self, label=f"Model: {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1,30))
+        model_label = wx.StaticText(self, label=f"Model: {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1, title_label.GetPosition()[1] + 25
+                                                                                                                                    ))
         model_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         model_label.Centre(wx.HORIZONTAL)
         self.model_label = model_label
 
         # Buttons:
         menu_buttons = {
-            "Build and Install OpenCore": self.on_build_and_install,
-            "Post-Install Root Patch":    self.on_post_install_root_patch,
-            "Create macOS Installer":     self.on_create_macos_installer,
-            "Settings":                   self.on_settings,
-            "Help":                       self.on_help
+            "Build and Install OpenCore": {
+                "function": self.on_build_and_install,
+                "description": [
+                    "Prepares provided drive to be able",
+                    "to boot unsupported OSes.",
+                    "Use on installers or internal drives."
+                ],
+                "icon": str(self.constants.icns_resource_path / "OC-Build.icns"),
+            },
+            "Create macOS Installer": {
+                "function": self.on_create_macos_installer,
+                "description": [
+                    "Download and flash a macOS",
+                    "Installer for your system.",
+                ],
+                "icon": str(self.constants.icns_resource_path / "OC-Installer.icns"),
+            },
+            "⚙️ Settings": {
+                "function": self.on_settings,
+                "description": [
+                ],
+            },
+            "Post-Install Root Patch": {
+                "function": self.on_post_install_root_patch,
+                "description": [
+                    "Installs hardware drivers and",
+                    "patches for your system after",
+                    "installing a new version of macOS.",
+                ],
+                "icon": str(self.constants.icns_resource_path / "OC-Patch.icns"),
+            },
+
+            "Support": {
+                "function": self.on_help,
+                "description": [
+                    "Resources for OpenCore Legacy",
+                    "Patcher.",
+                ],
+                "icon": str(self.constants.icns_resource_path / "OC-Support.icns"),
+            },
         }
-        button_y = model_label.GetPosition()[1] + 20
+        button_x = 30
+        button_y = model_label.GetPosition()[1] + 30
+        rollover = len(menu_buttons) / 2
+        if rollover % 1 != 0:
+            rollover = int(rollover) + 1
+        index = 0
+        max_height = 0
         for button_name, button_function in menu_buttons.items():
-            button = wx.Button(self, label=button_name, pos=(-1, button_y), size=(200, 30))
-            button.Bind(wx.EVT_BUTTON, button_function)
-            button.Centre(wx.HORIZONTAL)
+            # place icon
+            if "icon" in button_function:
+                icon = wx.StaticBitmap(self, bitmap=wx.Bitmap(button_function["icon"], wx.BITMAP_TYPE_ICON), pos=(button_x - 10, button_y), size=(64, 64))
+                if button_name == "Post-Install Root Patch":
+                    icon.SetPosition((-1, button_y + 7))
+                if button_name == "Create macOS Installer":
+                    icon.SetPosition((button_x - 5, button_y + 3))
+                if button_name == "Support":
+                    # icon_mac.SetSize((80, 80))
+                    icon.SetPosition((button_x - 7, button_y + 3))
+                if button_name == "Build and Install OpenCore":
+                    icon.SetSize((70, 70))
+            if button_name == "⚙️ Settings":
+                button_y += 5
+
+            button = wx.Button(self, label=button_name, pos=(button_x + 70, button_y), size=(180, 30))
+            button.Bind(wx.EVT_BUTTON, lambda event, function=button_function["function"]: function(event))
             button_y += 30
+
+            # # Text: Description
+            description_label = wx.StaticText(self, label='\n'.join(button_function["description"]), pos=(button_x + 75, button.GetPosition()[1] + button.GetSize()[1] + 3))
+            description_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            # button_y += 15
+
+            for i, line in enumerate(button_function["description"]):
+                if line == "":
+                    continue
+                if i == 0:
+                    button_y += 11
+                else:
+                    button_y += 13
+
+            button_y += 25
 
             if button_name == "Build and Install OpenCore":
                 self.build_button = button
@@ -90,14 +162,25 @@ class MainFrame(wx.Frame):
             elif button_name == "Post-Install Root Patch":
                 if self.constants.detected_os < os_data.os_data.big_sur:
                     button.Disable()
+            elif button_name == "⚙️ Settings":
+                button.SetSize((100, -1))
+                button.Centre(wx.HORIZONTAL)
+                description_label.Centre(wx.HORIZONTAL)
+
+            index += 1
+            if index == rollover:
+                max_height = button_y
+                button_x = 320
+                button_y = model_label.GetPosition()[1] + 30
+
 
         # Text: Copyright
-        copy_label = wx.StaticText(self, label=self.constants.copyright_date, pos=(-1, button_y + 10))
+        copy_label = wx.StaticText(self, label=self.constants.copyright_date, pos=(-1, max_height - 15))
         copy_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         copy_label.Centre(wx.HORIZONTAL)
 
         # Set window size
-        self.SetSize((350, copy_label.GetPosition()[1] + 50))
+        self.SetSize((-1, copy_label.GetPosition()[1] + 50))
 
 
     def _preflight_checks(self):
@@ -195,14 +278,12 @@ class MainFrame(wx.Frame):
 
 
     def on_post_install_root_patch(self, event: wx.Event = None):
-        self.Hide()
         gui_sys_patch.SysPatchFrame(
-            parent=None,
+            parent=self,
             title=self.title,
             global_constants=self.constants,
             screen_location=self.GetPosition()
         )
-        self.Destroy()
 
 
     def on_create_macos_installer(self, event: wx.Event = None):

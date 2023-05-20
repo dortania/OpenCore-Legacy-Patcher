@@ -13,7 +13,6 @@ class DownloadFrame(wx.Frame):
     Update provided frame with download stats
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, download_obj: network_handler.DownloadObject, item_name: str) -> None:
-
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent

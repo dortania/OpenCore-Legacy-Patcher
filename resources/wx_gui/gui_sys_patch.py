@@ -33,7 +33,14 @@ class SysPatchFrame(wx.Frame):
     Uses a Modal Dialog for smoother transition from other frames
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None, patches: dict = {}):
-        super(SysPatchFrame, self).__init__(parent, title=title, size=(350, 260), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        self.frame = parent
+        self.initiated_with_parent = False
+        if not self.frame:
+            super(SysPatchFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            self.frame = self
+            self.frame.Centre()
+        else:
+            self.initiated_with_parent = True
 
         self.title = title
         self.constants: constants.Constants = global_constants
@@ -41,8 +48,7 @@ class SysPatchFrame(wx.Frame):
         self.return_button: wx.Button = None
         self.available_patches: bool = False
 
-        self.frame_modal = wx.Dialog(self, title=title, size=(360, 200))
-        self.SetPosition(screen_location) if screen_location else self.Centre()
+        self.frame_modal = wx.Dialog(self.frame, title=title, size=(360, 200))
 
         if patches:
             return
@@ -52,7 +58,7 @@ class SysPatchFrame(wx.Frame):
 
         if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
             if self.available_patches is False:
-                gui_support.RestartHost(self).restart(message="No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?")
+                gui_support.RestartHost(self.frame).restart(message="No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?")
 
 
     def _kdk_download(self, frame: wx.Frame = None) -> bool:
@@ -249,7 +255,7 @@ class SysPatchFrame(wx.Frame):
 
         # Button: Return to Main Menu
         return_button = wx.Button(frame, label="Return to Main Menu", pos=(10, revert_button.GetPosition().y + revert_button.GetSize().height), size=(150, 30))
-        return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_dismiss if self.initiated_with_parent else self.on_return_to_main_menu)
         return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         return_button.Centre(wx.HORIZONTAL)
         self.return_button = return_button
@@ -351,11 +357,17 @@ class SysPatchFrame(wx.Frame):
 
         # Set frame size
         dialog.SetSize((-1, return_button.GetPosition().y + return_button.GetSize().height + 33))
-
+        self.frame_modal = dialog
         dialog.ShowWindowModal()
 
 
     def start_root_patching(self, patches: dict):
+        self.frame.Close() if self.frame else None
+        super(SysPatchFrame, self).__init__(None, title=self.title, size=(350, 260), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        gui_support.GenerateMenubar(self, self.constants).generate()
+        self.Centre()
+        self.return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu) if self.return_button else None
+
         logging.info("Starting root patching")
 
         while gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
@@ -391,6 +403,12 @@ class SysPatchFrame(wx.Frame):
 
 
     def revert_root_patching(self, patches: dict):
+        self.frame.Close() if self.frame else None
+        super(SysPatchFrame, self).__init__(None, title=self.title, size=(350, 260), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        gui_support.GenerateMenubar(self, self.constants).generate()
+        self.Centre()
+        self.return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu) if self.return_button else None
+
         logging.info("Reverting root patches")
         self._generate_modal(patches, "Revert Root Patches")
         self.return_button.Disable()
@@ -417,16 +435,24 @@ class SysPatchFrame(wx.Frame):
 
 
     def on_return_to_main_menu(self, event: wx.Event = None):
-        self.frame_modal.Hide()
+        # Get frame from event
+        frame_modal: wx.Dialog = event.GetEventObject().GetParent()
+        frame: wx.Frame = frame_modal.Parent
+        frame_modal.Hide()
+        frame.Hide()
+
         main_menu_frame = gui_main_menu.MainFrame(
             None,
             title=self.title,
             global_constants=self.constants,
-            screen_location=self.GetScreenPosition()
         )
         main_menu_frame.Show()
+        frame.Destroy()
+
+
+    def on_return_dismiss(self, event: wx.Event = None):
+        self.frame_modal.Hide()
         self.frame_modal.Destroy()
-        self.Destroy()
 
 
     def _post_patch(self):
@@ -434,11 +460,11 @@ class SysPatchFrame(wx.Frame):
             return
 
         if self.constants.needs_to_open_preferences is False:
-            gui_support.RestartHost(self).restart(message="Root Patcher finished successfully!\n\nWould you like to reboot now?")
+            gui_support.RestartHost(self.frame_modal).restart(message="Root Patcher finished successfully!\n\nWould you like to reboot now?")
             return
 
         if self.constants.detected_os >= os_data.os_data.ventura:
-            gui_support.RestartHost(self).restart(message="Root Patcher finished successfully!\nIf you were prompted to open System Settings to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?")
+            gui_support.RestartHost(self.frame_modal).restart(message="Root Patcher finished successfully!\nIf you were prompted to open System Settings to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?")
             return
 
         # Create dialog box to open System Preferences -> Security and Privacy
