@@ -20,6 +20,7 @@
   - Patch currently limited to Ventura and newer
 - Restore Function Keys on MacBook5,2 and MacBook4,1
   - Implementation by [@jazzzny](https://github.com/Jazzzny)
+- Resolve Application alias not being created with AutoPatcher
 - Backend changes:
   - Rename OCLP-Helper to OpenCore-Patcher
     - Allows for better identification when displaying prompts
