@@ -1,4 +1,5 @@
 import wx
+import os
 import sys
 import time
 import logging
@@ -35,11 +36,16 @@ class GenerateMenubar:
 
         aboutItem = fileMenu.Append(wx.ID_ABOUT, "&About OpenCore Legacy Patcher")
         fileMenu.AppendSeparator()
+        relaunchItem = fileMenu.Append(wx.ID_ANY, "&Relaunch as Root")
 
         menubar.Append(fileMenu, "&File")
         self.frame.SetMenuBar(menubar)
 
         self.frame.Bind(wx.EVT_MENU, lambda event: gui_about.AboutFrame(self.constants), aboutItem)
+        self.frame.Bind(wx.EVT_MENU, lambda event: RelaunchApplicationAsRoot(self.frame, self.constants).relaunch(None), relaunchItem)
+
+        if os.geteuid() == 0:
+            relaunchItem.Enable(False)
 
 
 class GaugePulseCallback:
@@ -197,7 +203,7 @@ class RestartHost:
             self.frame,
             message,
             "Reboot to apply?",
-            wx.YES_NO | wx.ICON_INFORMATION
+            wx.YES_NO | wx.YES_DEFAULT | wx.ICON_INFORMATION
         )
         self.popup.SetYesNoLabels("Reboot", "Ignore")
         answer = self.popup.ShowModal()
@@ -266,6 +272,7 @@ class RelaunchApplicationAsRoot:
 
         self.frame.DestroyChildren()
         self.frame.SetSize(300, 300)
+        self.frame.Centre()
 
         # Header
         header = wx.StaticText(self.frame, label="Relaunching as root", pos=(-1, 5))
