@@ -89,7 +89,7 @@ class MainFrame(wx.Frame):
                 ],
                 "icon": str(self.constants.icns_resource_path / "OC-Installer.icns"),
             },
-            "Settings ⚙️": {
+            "⚙️ Settings": {
                 "function": self.on_settings,
                 "description": [
                 ],
@@ -123,17 +123,17 @@ class MainFrame(wx.Frame):
         for button_name, button_function in menu_buttons.items():
             # place icon
             if "icon" in button_function:
-                icon_mac = wx.StaticBitmap(self, bitmap=wx.Bitmap(button_function["icon"], wx.BITMAP_TYPE_ICON), pos=(button_x - 10, button_y), size=(64, 64))
+                icon = wx.StaticBitmap(self, bitmap=wx.Bitmap(button_function["icon"], wx.BITMAP_TYPE_ICON), pos=(button_x - 10, button_y), size=(64, 64))
                 if button_name == "Post-Install Root Patch":
-                    icon_mac.SetPosition((-1, button_y + 7))
+                    icon.SetPosition((-1, button_y + 7))
                 if button_name == "Create macOS Installer":
-                    icon_mac.SetPosition((button_x - 5, button_y + 3))
+                    icon.SetPosition((button_x - 5, button_y + 3))
                 if button_name == "Support":
                     # icon_mac.SetSize((80, 80))
-                    icon_mac.SetPosition((button_x - 7, button_y + 3))
+                    icon.SetPosition((button_x - 7, button_y + 3))
                 if button_name == "Build and Install OpenCore":
-                    icon_mac.SetSize((70, 70))
-            if button_name == "Settings ⚙️":
+                    icon.SetSize((70, 70))
+            if button_name == "⚙️ Settings":
                 button_y += 5
 
             button = wx.Button(self, label=button_name, pos=(button_x + 70, button_y), size=(180, 30))
@@ -162,7 +162,7 @@ class MainFrame(wx.Frame):
             elif button_name == "Post-Install Root Patch":
                 if self.constants.detected_os < os_data.os_data.big_sur:
                     button.Disable()
-            elif button_name == "Settings ⚙️":
+            elif button_name == "⚙️ Settings":
                 button.SetSize((100, -1))
                 button.Centre(wx.HORIZONTAL)
                 description_label.Centre(wx.HORIZONTAL)
