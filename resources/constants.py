@@ -500,7 +500,7 @@ class Constants:
     @property
     def apple_isight_path(self):
         return self.payload_kexts_path / Path(f"Misc/LegacyUSBVideoSupport-v{self.apple_isight_version}.zip")
-    
+
     @property
     def legacy_keyboard_path(self):
         return self.payload_kexts_path / Path(f"Misc/LegacyKeyboardInjector-v{self.legacy_keyboard}.zip")
@@ -672,6 +672,12 @@ class Constants:
     @property
     def kdk_download_path(self):
         return self.payload_path / Path("KDK.dmg")
+
+    @property
+    def icns_resource_path(self):
+        if self.launcher_script:
+            return self.payload_path / Path("Icon/AppIcons")
+        return Path(self.launcher_binary).parent.parent / Path("Resources")
 
 
     sbm_values = [

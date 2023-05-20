@@ -13,6 +13,7 @@ class InstallOCFrame(wx.Frame):
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
         super(InstallOCFrame, self).__init__(parent, title=title, size=(300, 120), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        gui_support.GenerateMenubar(self, global_constants).generate()
 
         self.constants: constants.Constants = global_constants
         self.title: str = title
@@ -30,7 +31,7 @@ class InstallOCFrame(wx.Frame):
         if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
             self.constants.update_stage = gui_support.AutoUpdateStages.INSTALLING
 
-        self.SetPosition(screen_location) if screen_location else self.Centre()
+        self.Centre()
         self.Show()
 
         self._display_disks()

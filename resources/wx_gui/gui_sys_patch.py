@@ -33,7 +33,7 @@ class SysPatchFrame(wx.Frame):
     Uses a Modal Dialog for smoother transition from other frames
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None, patches: dict = {}):
-        super(SysPatchFrame, self).__init__(parent, title=title, size=(350, 260), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        self.frame = parent
 
         self.title = title
         self.constants: constants.Constants = global_constants
@@ -41,8 +41,7 @@ class SysPatchFrame(wx.Frame):
         self.return_button: wx.Button = None
         self.available_patches: bool = False
 
-        self.frame_modal = wx.Dialog(self, title=title, size=(360, 200))
-        self.SetPosition(screen_location) if screen_location else self.Centre()
+        self.frame_modal = wx.Dialog(self.frame, title=title, size=(360, 200))
 
         if patches:
             return
@@ -52,7 +51,7 @@ class SysPatchFrame(wx.Frame):
 
         if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
             if self.available_patches is False:
-                gui_support.RestartHost(self).restart(message="No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?")
+                gui_support.RestartHost(self.frame).restart(message="No root patch updates needed!\n\nWould you like to reboot to apply the new OpenCore build?")
 
 
     def _kdk_download(self, frame: wx.Frame = None) -> bool:
@@ -249,7 +248,7 @@ class SysPatchFrame(wx.Frame):
 
         # Button: Return to Main Menu
         return_button = wx.Button(frame, label="Return to Main Menu", pos=(10, revert_button.GetPosition().y + revert_button.GetSize().height), size=(150, 30))
-        return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_dismiss)
         return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         return_button.Centre(wx.HORIZONTAL)
         self.return_button = return_button
@@ -356,6 +355,12 @@ class SysPatchFrame(wx.Frame):
 
 
     def start_root_patching(self, patches: dict):
+        self.frame.Close() if self.frame else None
+        super(SysPatchFrame, self).__init__(None, title=self.title, size=(350, 260), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        gui_support.GenerateMenubar(self, self.constants).generate()
+        self.Centre()
+        self.return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu) if self.return_button else None
+
         logging.info("Starting root patching")
 
         while gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
@@ -391,6 +396,12 @@ class SysPatchFrame(wx.Frame):
 
 
     def revert_root_patching(self, patches: dict):
+        self.frame.Close() if self.frame else None
+        super(SysPatchFrame, self).__init__(None, title=self.title, size=(350, 260), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        gui_support.GenerateMenubar(self, self.constants).generate()
+        self.Centre()
+        self.return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu) if self.return_button else None
+
         logging.info("Reverting root patches")
         self._generate_modal(patches, "Revert Root Patches")
         self.return_button.Disable()
@@ -422,11 +433,16 @@ class SysPatchFrame(wx.Frame):
             None,
             title=self.title,
             global_constants=self.constants,
-            screen_location=self.GetScreenPosition()
+            screen_location=self.GetScreenPosition() if not self.frame else self.frame.GetScreenPosition(),
         )
         main_menu_frame.Show()
         self.frame_modal.Destroy()
-        self.Destroy()
+        self.Destroy() if not self.frame else self.frame.Destroy()
+
+
+    def on_return_dismiss(self, event: wx.Event = None):
+        self.frame_modal.Hide()
+        self.frame_modal.Destroy()
 
 
     def _post_patch(self):

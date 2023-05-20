@@ -20,6 +20,7 @@ class BuildFrame(wx.Frame):
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None) -> None:
         super(BuildFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        gui_support.GenerateMenubar(self, global_constants).generate()
 
         self.install_button: wx.Button = None
         self.text_box:     wx.TextCtrl = None
@@ -36,7 +37,7 @@ class BuildFrame(wx.Frame):
         if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
             self.constants.update_stage = gui_support.AutoUpdateStages.BUILDING
 
-        self.SetPosition(screen_location) if screen_location else self.Centre()
+        self.Centre()
         self.frame_modal.ShowWindowModal()
 
         self._invoke_build()

@@ -148,6 +148,14 @@ class CreateBinary:
             print(build_result.stderr.decode('utf-8'))
             raise Exception("Build failed")
 
+        # Next embed support icns into ./Resources
+        print("- Embedding icns...")
+        for file in Path("payloads/Icon/AppIcons").glob("*.icns"):
+            subprocess.run(
+                ["cp", str(file), "./dist/OpenCore-Patcher.app/Contents/Resources/"],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+
 
 
 

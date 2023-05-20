@@ -357,6 +357,8 @@ class SettingsFrame(wx.Frame):
                         "Disabled by default due to",
                         "performance degradation",
                         "on some systems from wake.",
+                        "Only applies to BCM943224, 331,",
+                        "360 and 3602 chipsets.",
                     ],
                 },
                 "Disable Thunderbolt": {
