@@ -244,7 +244,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         warning_label.Centre(wx.HORIZONTAL)
 
         # Label: Bytes Written: 0 MB
-        bytes_written_label = wx.StaticText(self, label="Bytes Written: 0000.0 MB", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
+        bytes_written_label = wx.StaticText(self, label="Bytes Written: 0.00 MB", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
         bytes_written_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         bytes_written_label.Centre(wx.HORIZONTAL)
 
