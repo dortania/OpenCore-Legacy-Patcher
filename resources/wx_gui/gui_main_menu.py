@@ -3,6 +3,7 @@ import wx
 import sys
 import logging
 import threading
+import webbrowser
 
 from resources.wx_gui import (
     gui_build,
@@ -255,15 +256,13 @@ class MainFrame(wx.Frame):
                 caption="Update Available for OpenCore Legacy Patcher!",
                 style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
             )
-            dialog.SetYesNoCancelLabels("Download and install", "Always Ignore", "Ignore Once")
+            dialog.SetYesNoCancelLabels("Download and install", "Ignore", "View on Github")
             response = dialog.ShowModal()
 
             if response == wx.ID_YES:
                 wx.CallAfter(self.on_update, dict[entry]["Link"], version)
-            elif response == wx.ID_NO:
-                logging.info("- Setting IgnoreAppUpdates to True")
-                self.constants.ignore_updates = True
-                global_settings.GlobalEnviromentSettings().write_property("IgnoreAppUpdates", True)
+            elif response == wx.ID_CANCEL:
+                webbrowser.open(dict[entry]["Github Link"])
 
 
     def on_build_and_install(self, event: wx.Event = None):

@@ -4,6 +4,7 @@ import wx
 import logging
 import plistlib
 import subprocess
+import webbrowser
 
 from pathlib import Path
 
@@ -58,10 +59,12 @@ class AutomaticSysPatch:
                 caption="Update Available for OpenCore Legacy Patcher!",
                 style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
             )
-            dialog.SetYesNoCancelLabels("Download and install", "Always Ignore", "Ignore Once")
+            dialog.SetYesNoCancelLabels("Download and install", "View on Github", "Ignore")
             response = dialog.ShowModal()
             if response == wx.ID_YES:
                 gui_entry.EntryPoint(self.constants).start(entry=gui_entry.SupportedEntryPoints.UPDATE_APP)
+            elif response == wx.ID_NO:
+                webbrowser.open(dict[key]["Github Link"])
             return
 
         if utilities.check_seal() is True:
