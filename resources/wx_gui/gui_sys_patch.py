@@ -34,6 +34,13 @@ class SysPatchFrame(wx.Frame):
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None, patches: dict = {}):
         self.frame = parent
+        self.initiated_with_parent = False
+        if not self.frame:
+            super(SysPatchFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            self.frame = self
+            self.frame.Centre()
+        else:
+            self.initiated_with_parent = True
 
         self.title = title
         self.constants: constants.Constants = global_constants
@@ -248,7 +255,7 @@ class SysPatchFrame(wx.Frame):
 
         # Button: Return to Main Menu
         return_button = wx.Button(frame, label="Return to Main Menu", pos=(10, revert_button.GetPosition().y + revert_button.GetSize().height), size=(150, 30))
-        return_button.Bind(wx.EVT_BUTTON, self.on_return_dismiss)
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_dismiss if self.initiated_with_parent else self.on_return_to_main_menu)
         return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         return_button.Centre(wx.HORIZONTAL)
         self.return_button = return_button
@@ -350,7 +357,7 @@ class SysPatchFrame(wx.Frame):
 
         # Set frame size
         dialog.SetSize((-1, return_button.GetPosition().y + return_button.GetSize().height + 33))
-
+        self.frame_modal = dialog
         dialog.ShowWindowModal()
 
 
@@ -428,16 +435,19 @@ class SysPatchFrame(wx.Frame):
 
 
     def on_return_to_main_menu(self, event: wx.Event = None):
-        self.frame_modal.Hide()
+        # Get frame from event
+        frame_modal: wx.Dialog = event.GetEventObject().GetParent()
+        frame: wx.Frame = frame_modal.Parent
+        frame_modal.Hide()
+        frame.Hide()
+
         main_menu_frame = gui_main_menu.MainFrame(
             None,
             title=self.title,
             global_constants=self.constants,
-            screen_location=self.GetScreenPosition() if not self.frame else self.frame.GetScreenPosition(),
         )
         main_menu_frame.Show()
-        self.frame_modal.Destroy()
-        self.Destroy() if not self.frame else self.frame.Destroy()
+        frame.Destroy()
 
 
     def on_return_dismiss(self, event: wx.Event = None):
@@ -450,11 +460,11 @@ class SysPatchFrame(wx.Frame):
             return
 
         if self.constants.needs_to_open_preferences is False:
-            gui_support.RestartHost(self).restart(message="Root Patcher finished successfully!\n\nWould you like to reboot now?")
+            gui_support.RestartHost(self.frame_modal).restart(message="Root Patcher finished successfully!\n\nWould you like to reboot now?")
             return
 
         if self.constants.detected_os >= os_data.os_data.ventura:
-            gui_support.RestartHost(self).restart(message="Root Patcher finished successfully!\nIf you were prompted to open System Settings to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?")
+            gui_support.RestartHost(self.frame_modal).restart(message="Root Patcher finished successfully!\nIf you were prompted to open System Settings to authorize new kexts, this can be ignored. Your system is ready once restarted.\n\nWould you like to reboot now?")
             return
 
         # Create dialog box to open System Preferences -> Security and Privacy
