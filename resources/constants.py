@@ -75,14 +75,15 @@ class Constants:
 
         ## Dortania
         ## https://github.com/dortania
-        self.backlight_injector_version:  str = "1.1.0"  # BacklightInjector
-        self.backlight_injectorA_version: str = "1.0.0"  # BacklightInjector (iMac9,1)
-        self.smcspoof_version:            str = "1.0.0"  # SMC-Spoof
-        self.mce_version:                 str = "1.0.0"  # AppleMCEReporterDisabler
-        self.btspoof_version:             str = "1.0.0"  # Bluetooth-Spoof
-        self.aspp_override_version:       str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
-        self.rsrhelper_version:           str = "1.0.0"  # RSRHelper
-        self.amfipass_version:            str = "1.2.0"  # AMFIPass
+        self.backlight_injector_version:     str = "1.1.0"  # BacklightInjector
+        self.backlight_injectorA_version:    str = "1.0.0"  # BacklightInjector (iMac9,1)
+        self.smcspoof_version:               str = "1.0.0"  # SMC-Spoof
+        self.mce_version:                    str = "1.0.0"  # AppleMCEReporterDisabler
+        self.btspoof_version:                str = "1.0.0"  # Bluetooth-Spoof
+        self.aspp_override_version:          str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
+        self.rsrhelper_version:              str = "1.0.0"  # RSRHelper
+        self.amfipass_version:               str = "1.2.0"  # AMFIPass
+        self.amfipass_compatibility_version: str = "1.2.0"  # Minimum AMFIPass version required
 
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
@@ -674,7 +675,8 @@ class Constants:
     # Apple Payloads Paths
     @property
     def payload_local_binaries_root_path(self):
-        return self.binaries_path
+-        return self.payload_path / Path("Universal-Binaries")
+
     @property
     def kdk_download_path(self):
         return self.payload_path / Path("KDK.dmg")

@@ -1,21 +1,20 @@
 # Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
+import argparse
+import atexit
+import binascii
+import logging
 import math
 import os
 import plistlib
+import re
+import shutil
 import subprocess
 from pathlib import Path
-import os
-import binascii
-import argparse
-import atexit
-import shutil
 import py_sip_xnu
 
-import logging
-
+from data import os_data, sip_data
 from resources import constants, ioreg
-from data import sip_data, os_data
 
 
 def hexswap(input_hex: str):
@@ -173,23 +172,35 @@ def enable_sleep_after_running():
         sleep_process = None
 
 
-def check_kext_loaded(kext_name: str) -> bool:
+def check_kext_loaded(bundle_id: str) -> str:
     """
     Checks if a kext is loaded
 
     Parameters:
-        kext_name (str): The name of the kext to check
+        bundle_id (str): The bundle ID of the kext to check
 
     Returns:
-        bool: True if the kext is loaded, False if not
+        str: The version of the kext if it is loaded, or "" if it is not loaded
     """
-    args = ["kextstat", "-l"]
+    # Name (Version) UUID <Linked Against>
+    # no UUID for kextstat
+    pattern = re.compile(re.escape(bundle_id) + r"\s+\((?P<version>.+)\)")
+
+    args = ["kextstat", "-l", "-b", bundle_id]
 
     if Path("/usr/bin/kmutil").exists():
-        args = ["kmutil", "showloaded", "--list-only", "--variant-suffix", "release"]
+        args = ["kmutil", "showloaded", "--list-only", "--variant-suffix", "release", "--optional-identifier", bundle_id]
 
     kext_loaded = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    return kext_name in kext_loaded.stdout.decode()
+    if kext_loaded.returncode != 0:
+        return ""
+    output = kext_loaded.stdout.decode()
+    if not output.strip():
+        return ""
+    match = pattern.search(output)
+    if match:
+        return match.group("version")
+    return ""
 
 
 def check_oclp_boot():
