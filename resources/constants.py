@@ -675,7 +675,7 @@ class Constants:
     # Apple Payloads Paths
     @property
     def payload_local_binaries_root_path(self):
--        return self.payload_path / Path("Universal-Binaries")
+        return self.payload_path / Path("Universal-Binaries")
 
     @property
     def kdk_download_path(self):
