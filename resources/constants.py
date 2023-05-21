@@ -82,7 +82,7 @@ class Constants:
         self.btspoof_version:             str = "1.0.0"  # Bluetooth-Spoof
         self.aspp_override_version:       str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
         self.rsrhelper_version:           str = "1.0.0"  # RSRHelper
-        self.amfipass_version:            str = "1.1.0"  # AMFIPass
+        self.amfipass_version:            str = "1.2.0"  # AMFIPass
 
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
