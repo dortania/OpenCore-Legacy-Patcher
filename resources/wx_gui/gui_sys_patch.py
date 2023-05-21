@@ -293,7 +293,7 @@ class SysPatchFrame(wx.Frame):
             logging.error(f"Unsupported variant: {variant}")
             return
 
-        self.frame_modal.Close()
+        self.frame_modal.Close() if self.frame_modal else None
 
         dialog = wx.Dialog(self, title=self.title, size=(400, 200))
 
