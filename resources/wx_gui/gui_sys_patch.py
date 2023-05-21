@@ -243,13 +243,13 @@ class SysPatchFrame(wx.Frame):
 
         # Button: Start Root Patching
         start_button = wx.Button(frame, label="Start Root Patching", pos=(10, patch_label.GetPosition().y + 25), size=(170, 30))
-        start_button.Bind(wx.EVT_BUTTON, lambda event: self.start_root_patching(frame, patches, no_new_patches))
+        start_button.Bind(wx.EVT_BUTTON, lambda event: self.start_root_patching(patches))
         start_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         start_button.Centre(wx.HORIZONTAL)
 
         # Button: Revert Root Patches
         revert_button = wx.Button(frame, label="Revert Root Patches", pos=(10, start_button.GetPosition().y + start_button.GetSize().height - 5), size=(170, 30))
-        revert_button.Bind(wx.EVT_BUTTON, lambda event: self.revert_root_patching(frame, patches, can_unpatch))
+        revert_button.Bind(wx.EVT_BUTTON, lambda event: self.revert_root_patching(patches))
         revert_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         revert_button.Centre(wx.HORIZONTAL)
 
