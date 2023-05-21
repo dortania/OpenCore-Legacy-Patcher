@@ -35,7 +35,7 @@ class SysPatchFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None, patches: dict = {}):
         self.frame = parent
         self.initiated_with_parent = False
-        if not self.frame:
+        if not self.frame and patches == {}:
             super(SysPatchFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
             self.frame = self
             self.frame.Centre()
