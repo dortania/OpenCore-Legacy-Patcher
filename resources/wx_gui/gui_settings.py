@@ -194,6 +194,9 @@ class SettingsFrame(wx.Frame):
                 description = wx.StaticText(panel, label=lines, pos=(30 + width, 10 + height + 20))
                 description.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
                 height += 40
+                if "condition" in setting_info:
+                    if setting_info["condition"] is False:
+                        description.SetForegroundColour((128, 128, 128))
 
                 # Check number of lines in description, and adjust spacer accordingly
                 for i, line in enumerate(lines.split('\n')):
@@ -692,7 +695,9 @@ class SettingsFrame(wx.Frame):
                     "value": self._get_system_settings("Moraea_DarkMenuBar"),
                     "variable": "Moraea_DarkMenuBar",
                     "description": [
-                        # "Enable Dark Menu Bar",
+                        "If Beta Menu Bar is enabled,",
+                        "menu bar colour will dynamically",
+                        "change as needed.",
                     ],
                     "override_function": self._update_system_defaults,
                     "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
@@ -702,7 +707,7 @@ class SettingsFrame(wx.Frame):
                     "value": self._get_system_settings("Moraea_BlurBeta"),
                     "variable": "Moraea_BlurBeta",
                     "description": [
-                        # "Enable Beta Blur",
+                        "Control window blur behaviour.",
                     ],
                     "override_function": self._update_system_defaults,
                     "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
@@ -711,12 +716,25 @@ class SettingsFrame(wx.Frame):
                 "wrap_around 2": {
                     "type": "wrap_around",
                 },
+                "Beta Menu Bar": {
+                    "type": "checkbox",
+                    "value": self._get_system_settings("Amy.MenuBar2Beta"),
+                    "variable": "Amy.MenuBar2Beta",
+                    "description": [
+                        "Supports dynamic colour changes.",
+                        "Note: Setting is still experimental.",
+                        "If you experience issues, please",
+                        "disable this setting.",
+                    ],
+                    "override_function": self._update_system_defaults,
+                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
+                },
                 "Disable Beta Rim": {
                     "type": "checkbox",
                     "value": self._get_system_settings("Moraea_RimBetaDisabled"),
                     "variable": "Moraea_RimBetaDisabled",
                     "description": [
-                        # "Disable Beta Rim",
+                        "Control Window Rim rendering.",
                     ],
                     "override_function": self._update_system_defaults,
                     "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
