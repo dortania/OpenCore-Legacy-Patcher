@@ -492,6 +492,8 @@ class PatchSysVolume:
         if Path(oclp_path).exists():
             oclp_plist_data = plistlib.load(Path(oclp_path).open("rb"))
             for key in oclp_plist_data:
+                if isinstance(oclp_plist_data[key], (bool, int)):
+                     continue
                 if "Install" not in oclp_plist_data[key]:
                     continue
                 for location in oclp_plist_data[key]["Install"]:

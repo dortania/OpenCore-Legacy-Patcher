@@ -522,6 +522,8 @@ class SysPatchFrame(wx.Frame):
                 # See sys_patch_dict.py for more info
                 patch_installed = False
                 for key in oclp_plist_data:
+                    if isinstance(oclp_plist_data[key], (bool, int)):
+                        continue
                     if "Display Name" not in oclp_plist_data[key]:
                         continue
                     if oclp_plist_data[key]["Display Name"] == patch:
