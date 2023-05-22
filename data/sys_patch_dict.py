@@ -103,6 +103,9 @@ class SystemPatchDictionary():
                             "GPUSupport.framework": "10.14.3",
                             "SkyLight.framework":  f"10.14.6-{self.os_major}",
                         },
+                        "/System/Applications": {
+                            **({ "Photo Booth.app": "11.7.6"} if self.os_major >= os_data.os_data.monterey else {}),
+                        },
                     },
                     "Remove": {
                         "/System/Library/Extensions": [
