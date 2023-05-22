@@ -211,10 +211,11 @@ class SysPatchFrame(wx.Frame):
 
             if patches["Validation: Patching Possible"] is False:
                 # Cannot patch due to the following reasons:
-                patch_label = wx.StaticText(frame, label="Cannot patch due to the following reasons:", pos=(-1, patch_label.GetPosition().y + 25))
+                patch_label = wx.StaticText(frame, label="Cannot patch due to the following reasons:", pos=(-1, patch_label.GetPosition()[1] + 25))
                 patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                 patch_label.Centre(wx.HORIZONTAL)
 
+                longest_patch = ""
                 for patch in patches:
                     if not patch.startswith("Validation"):
                         continue
@@ -223,8 +224,30 @@ class SysPatchFrame(wx.Frame):
                     if patch == "Validation: Unpatching Possible":
                         continue
 
-                    patch_label = wx.StaticText(frame, label=f"- {patch.split('Validation: ')[1]}", pos=(available_label.GetPosition().x - 10, patch_label.GetPosition().y + 20))
+                    if len(patch) > len(longest_patch):
+                        longest_patch = patch
+                anchor = wx.StaticText(frame, label=longest_patch.split('Validation: ')[1], pos=(-1, patch_label.GetPosition()[1] + 20))
+                anchor.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                anchor.Centre(wx.HORIZONTAL)
+                anchor.Hide()
+
+                i = 0
+                for patch in patches:
+                    if not patch.startswith("Validation"):
+                        continue
+                    if patches[patch] is False:
+                        continue
+                    if patch == "Validation: Unpatching Possible":
+                        continue
+
+                    patch_label = wx.StaticText(frame, label=f"- {patch.split('Validation: ')[1]}", pos=(anchor.GetPosition()[0], anchor.GetPosition()[1] + i))
                     patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                    i = i + 20
+
+                if i == 20:
+                    patch_label.SetLabel(patch_label.GetLabel().replace("-", ""))
+                    patch_label.Centre(wx.HORIZONTAL)
+
             else:
                 if self.constants.computer.oclp_sys_version and self.constants.computer.oclp_sys_date:
                     date = self.constants.computer.oclp_sys_date.split(" @")
