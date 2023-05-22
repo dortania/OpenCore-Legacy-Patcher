@@ -23,6 +23,7 @@
 - Update non-Metal Binaries:
   - Resolves cryptexd and sshd crashes
   - Resolves screen recording regression
+  - Resolves Photo Booth on macOS Monterey and later
 - Resolve Application alias not being created with AutoPatcher
 - Backend changes:
   - Rename OCLP-Helper to OpenCore-Patcher
