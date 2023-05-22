@@ -71,8 +71,12 @@ class UpdateFrame(wx.Frame):
         # Progress bar
         progress_bar = wx.Gauge(self.frame, range=100, pos=(10, 50), size=(300, 20))
         progress_bar.Centre(wx.HORIZONTAL)
-        progress_bar.Pulse()
+
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
+
         self.progress_bar = progress_bar
+        self.progress_bar_animation = progress_bar_animation
 
         self.frame.Centre()
         self.frame.Show()
@@ -89,6 +93,7 @@ class UpdateFrame(wx.Frame):
         )
 
         if download_obj.download_complete is False:
+            progress_bar_animation.stop_pulse()
             progress_bar.SetValue(0)
             wx.MessageBox("Failed to download update. If you continue to have this issue, please manually download OpenCore Legacy Patcher off Github", "Critical Error!", wx.OK | wx.ICON_ERROR)
             sys.exit(1)
@@ -120,6 +125,7 @@ class UpdateFrame(wx.Frame):
 
         # Progress bar
         progress_bar.Hide()
+        progress_bar_animation.stop_pulse()
 
         # Label: 0.6.6 has been installed to:
         installed_label = wx.StaticText(self.frame, label=f"{version_label} has been installed:", pos=(-1, progress_bar.GetPosition().y - 15))
@@ -174,6 +180,7 @@ class UpdateFrame(wx.Frame):
                 ["ditto", "-xk", str(self.constants.payload_path / "OpenCore-Patcher-GUI.app.zip"), str(self.constants.payload_path)], capture_output=True
             )
             if result.returncode != 0:
+                wx.CallAfter(self.progress_bar_animation.stop_pulse)
                 wx.CallAfter(self.progress_bar.SetValue, 0)
                 wx.CallAfter(wx.MessageBox, f"Failed to extract update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
                 wx.CallAfter(sys.exit, 1)
@@ -183,6 +190,7 @@ class UpdateFrame(wx.Frame):
                 break
 
             if i == 1:
+                wx.CallAfter(self.progress_bar_animation.stop_pulse)
                 wx.CallAfter(self.progress_bar.SetValue, 0)
                 wx.CallAfter(wx.MessageBox, "Failed to extract update. Error: Update file does not exist", "Critical Error!", wx.OK | wx.ICON_ERROR)
                 wx.CallAfter(sys.exit, 1)
@@ -240,6 +248,7 @@ EOF
         args = [self.constants.oclp_helper_path, "/bin/sh", str(self.constants.payload_path / "update.sh")]
         result = subprocess.run(args, capture_output=True)
         if result.returncode != 0:
+            wx.CallAfter(self.progress_bar_animation.stop_pulse)
             wx.CallAfter(self.progress_bar.SetValue, 0)
             if "User cancelled" in result.stderr.decode("utf-8"):
                 wx.CallAfter(wx.MessageBox, "User cancelled update", "Update Cancelled", wx.OK | wx.ICON_INFORMATION)
