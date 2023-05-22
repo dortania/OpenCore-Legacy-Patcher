@@ -275,6 +275,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         progress_bar_animation.stop_pulse()
         progress_bar.SetRange(estimated_size)
 
+        # /dev/diskX -> diskX
         root_disk = disk['identifier'][5:]
         initial_bytes_written = float(utilities.monitor_disk_output(root_disk))
         self.result = False
