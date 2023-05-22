@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.6.7
+- Backend changes:
+  - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
 
 ## 0.6.6
 - Implement option to disable ColorSync downgrade on HD 3000 Macs

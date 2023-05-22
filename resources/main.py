@@ -1,5 +1,6 @@
 # Copyright (C) 2020-2022, Dhinak G, Mykola Grymalyuk
 
+import os
 import sys
 import time
 import logging
@@ -45,6 +46,9 @@ class OpenCoreLegacyPatcher:
         """
 
         self.constants.wxpython_variant: bool = True
+
+        # Ensure we live after parent process dies (ie. LaunchAgent)
+        os.setpgrp()
 
         # Generate OS data
         os_data = os_probe.OSProbe()
