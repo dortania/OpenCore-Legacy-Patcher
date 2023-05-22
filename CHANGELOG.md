@@ -48,7 +48,7 @@
   - Resolve exception handler not logging to file
   - Display raised exceptions from main thread to users
 - Increment Binaries:
-  - PatcherSupportPkg 1.0.2 - release
+  - PatcherSupportPkg 1.1.0 - release
   - OpenCorePkg 0.9.2 - release
   - Lilu 1.6.6 - rolling (d8f3782)
   - RestrictEvents 1.1.1 - release

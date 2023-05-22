@@ -93,6 +93,7 @@ class OpenCoreLegacyPatcher:
         threading.Thread(target=analytics_handler.Analytics, args=(self.constants,)).start()
 
         if utilities.check_cli_args() is None:
+            self.constants.cli_mode = False
             logging.info(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
             return
 
@@ -102,7 +103,6 @@ class OpenCoreLegacyPatcher:
         ignore_args = ["--auto_patch", "--gui_patch", "--gui_unpatch", "--update_installed"]
         if not any(x in sys.argv for x in ignore_args):
             self.constants.current_path = Path.cwd()
-            self.constants.cli_mode = True
             if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
                 logging.info("- Rerouting payloads location")
                 self.constants.payload_path = sys._MEIPASS / Path("payloads")

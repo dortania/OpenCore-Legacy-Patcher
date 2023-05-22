@@ -229,7 +229,8 @@ class SettingsFrame(wx.Frame):
         """
 
         models = [model for model in smbios_data.smbios_dictionary if "_" not in model and " " not in model and smbios_data.smbios_dictionary[model]["Board ID"] is not None]
-        socketed_gpu_models = ["iMac9,1", "iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2", "MacPro3,1", "MacPro4,1", "MacPro5,1", "Xserve2,1", "Xserve3,1"]
+        socketed_imac_models = ["iMac9,1", "iMac10,1", "iMac11,1", "iMac11,2", "iMac11,3", "iMac12,1", "iMac12,2"]
+        socketed_gpu_models = socketed_imac_models + ["MacPro3,1", "MacPro4,1", "MacPro5,1", "Xserve2,1", "Xserve3,1"]
 
         settings = {
             "Build": {
@@ -541,6 +542,7 @@ class SettingsFrame(wx.Frame):
                         "Override detected/assumed GPU on",
                         "socketed MXM-based iMacs.",
                     ],
+                    "condition": bool((not self.constants.custom_model and self.constants.computer.real_model in socketed_imac_models) or (self.constants.custom_model and self.constants.custom_model in socketed_imac_models))
                 },
                 "Populate Graphics Override": {
                     "type": "populate",
@@ -712,6 +714,16 @@ class SettingsFrame(wx.Frame):
                     "override_function": self._update_system_defaults,
                     "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
 
+                },
+                "Beach Ball Cursor Workaround": {
+                    "type": "checkbox",
+                    "value": self._get_system_settings("Moraea.EnableSpinHack"),
+                    "variable": "Moraea.EnableSpinHack",
+                    "description": [
+                        "Note: May be more CPU intensive.",
+                    ],
+                    "override_function": self._update_system_defaults,
+                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
                 },
                 "wrap_around 2": {
                     "type": "wrap_around",
