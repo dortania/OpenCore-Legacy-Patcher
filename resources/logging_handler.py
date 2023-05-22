@@ -159,6 +159,9 @@ class InitializeLoggingSupport:
             """
             logging.error("Uncaught exception in main thread", exc_info=(type, value, tb))
 
+            if self.constants.cli_mode is True:
+                return
+
             error_msg = f"OpenCore Legacy Patcher encountered the following internal error:\n\n"
             error_msg += f"{type.__name__}: {value}"
             if tb:
