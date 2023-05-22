@@ -600,7 +600,7 @@ class DetectRootPatch:
         if self.constants.detected_os < os_data.os_data.big_sur:
             return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
 
-        amfipass_version = utilities.check_kext_loaded("AMFIPass")
+        amfipass_version = utilities.check_kext_loaded("com.dhinakg.AMFIPass")
         if amfipass_version:
             if packaging.version.parse(amfipass_version) >= packaging.version.parse(self.constants.amfipass_compatibility_version):
                 # If AMFIPass is loaded, our binaries will work
