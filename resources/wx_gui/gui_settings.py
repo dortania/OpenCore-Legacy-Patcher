@@ -713,6 +713,16 @@ class SettingsFrame(wx.Frame):
                     "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
 
                 },
+                "Beach Ball Cursor Workaround": {
+                    "type": "checkbox",
+                    "value": self._get_system_settings("Moraea.EnableSpinHack"),
+                    "variable": "Moraea.EnableSpinHack",
+                    "description": [
+                        "Note: May be more CPU intensive.",
+                    ],
+                    "override_function": self._update_system_defaults,
+                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
+                },
                 "wrap_around 2": {
                     "type": "wrap_around",
                 },
