@@ -5,6 +5,7 @@ import traceback
 
 from resources.wx_gui import gui_main_menu, gui_support, gui_sys_patch
 from resources import constants, install
+from data import os_data
 
 
 class InstallOCFrame(wx.Frame):
@@ -268,7 +269,7 @@ class InstallOCFrame(wx.Frame):
             wx.Yield()
 
         if self.result is True:
-            if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
+            if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE and self.constants.detected_os >= os_data.os_data.big_sur:
                 self.constants.update_stage = gui_support.AutoUpdateStages.ROOT_PATCHING
                 popup_message = wx.MessageDialog(
                     self,
@@ -277,6 +278,7 @@ class InstallOCFrame(wx.Frame):
                 )
                 popup_message.ShowModal()
                 if popup_message.GetReturnCode() == wx.ID_YES:
+                    self.Hide()
                     gui_sys_patch.SysPatchFrame(
                         parent=None,
                         title=self.title,
