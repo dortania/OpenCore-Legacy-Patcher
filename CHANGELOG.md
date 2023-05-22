@@ -20,6 +20,9 @@
   - Patch currently limited to Ventura and newer
 - Restore Function Keys on MacBook5,2 and MacBook4,1
   - Implementation by [@jazzzny](https://github.com/Jazzzny)
+- Update non-Metal Binaries:
+  - Resolves cryptexd and sshd crashes
+  - Resolves screen recording regression
 - Resolve Application alias not being created with AutoPatcher
 - Backend changes:
   - Rename OCLP-Helper to OpenCore-Patcher
@@ -42,7 +45,7 @@
     - Avoids displaying prompts with `osascript` in the title
     - Due to limitations, only used for installer creation and OpenCore installation
 - Increment Binaries:
-  - PatcherSupportPkg 1.0.1 - release
+  - PatcherSupportPkg 1.0.2 - release
   - OpenCorePkg 0.9.2 - release
   - Lilu 1.6.6 - rolling (d8f3782)
   - RestrictEvents 1.1.1 - release
