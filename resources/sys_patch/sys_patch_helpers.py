@@ -97,6 +97,7 @@ class SysPatchHelpers:
             "Commit URL": f"{self.constants.commit_info[2]}",
             "Kernel Debug Kit Used": f"{kdk_string}",
             "OS Version": f"{self.constants.detected_os}.{self.constants.detected_os_minor} ({self.constants.detected_os_build})",
+            "Custom Signature": bool(Path(self.constants.payload_local_binaries_root_path / ".signed").exists()),
         }
 
         data.update(patchset)
