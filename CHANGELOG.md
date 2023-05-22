@@ -44,6 +44,8 @@
   - Utilize `py-applescript` for authorization prompts
     - Avoids displaying prompts with `osascript` in the title
     - Due to limitations, only used for installer creation and OpenCore installation
+  - Resolve exception handler not logging to file
+  - Display raised exceptions from main thread to users
 - Increment Binaries:
   - PatcherSupportPkg 1.0.2 - release
   - OpenCorePkg 0.9.2 - release

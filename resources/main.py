@@ -27,11 +27,9 @@ class OpenCoreLegacyPatcher:
     """
 
     def __init__(self) -> None:
-        logging_handler.InitializeLoggingSupport()
-
         self.constants: constants.Constants = constants.Constants()
 
-        self.constants.wxpython_variant: bool = True
+        logging_handler.InitializeLoggingSupport(self.constants)
 
         logging.info(f"- Loading OpenCore Legacy Patcher v{self.constants.patcher_version}...")
 
@@ -45,6 +43,8 @@ class OpenCoreLegacyPatcher:
         """
         Generate base data required for the patcher to run
         """
+
+        self.constants.wxpython_variant: bool = True
 
         # Generate OS data
         os_data = os_probe.OSProbe()

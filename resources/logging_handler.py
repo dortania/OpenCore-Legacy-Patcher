@@ -1,9 +1,14 @@
-import logging
-import sys
-import threading
 import os
+import sys
+import logging
+import threading
+import traceback
 import subprocess
+import applescript
+
 from pathlib import Path
+
+from resources import constants
 
 
 class InitializeLoggingSupport:
@@ -26,9 +31,11 @@ class InitializeLoggingSupport:
 
     """
 
-    def __init__(self) -> None:
+    def __init__(self, global_constants: constants.Constants) -> None:
         self.log_filename: str  = "OpenCore-Patcher.log"
         self.log_filepath: Path = None
+
+        self.constants: constants.Constants = global_constants
 
         self.original_excepthook:        sys       = sys.excepthook
         self.original_thread_excepthook: threading = threading.excepthook
@@ -41,10 +48,6 @@ class InitializeLoggingSupport:
         self._attempt_initialize_logging_configuration()
         self._implement_custom_traceback_handler()
         self._fix_file_permission()
-
-
-    def __del__(self) -> None:
-        self._restore_original_excepthook()
 
 
     def _initialize_logging_path(self) -> None:
@@ -155,6 +158,15 @@ class InitializeLoggingSupport:
             Reroute traceback in main thread to logging module
             """
             logging.error("Uncaught exception in main thread", exc_info=(type, value, tb))
+
+            error_msg = f"OpenCore Legacy Patcher encountered the following internal error:\n\n"
+            error_msg += f"{type.__name__}: {value}"
+            if tb:
+                error_msg += f"\n\n{traceback.extract_tb(tb)[-1]}"
+            error_msg += "\n\nPlease report this error on our Discord server."
+
+            applescript.AppleScript(f'display dialog "{error_msg}" with title "OpenCore Legacy Patcher ({self.constants.patcher_version})" buttons {{"OK"}} default button "OK" with icon caution giving up after 30').run()
+
 
         def custom_thread_excepthook(args) -> None:
             """
