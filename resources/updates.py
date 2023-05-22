@@ -96,6 +96,8 @@ class CheckBinaryUpdates:
             dict: Dictionary with Link and Version of the latest binary update if available
         """
 
+        return None
+
         available_binaries: list = {}
 
         if not network_handler.NetworkUtilities(REPO_LATEST_RELEASE_URL).verify_network_connection():
