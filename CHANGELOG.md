@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.6.7
+
 ## 0.6.6
 - Implement option to disable ColorSync downgrade on HD 3000 Macs
   - Allows for Display Profiles support on some units
