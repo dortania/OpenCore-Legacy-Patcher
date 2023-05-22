@@ -1,7 +1,7 @@
 # Post-Installation
 
 * [Booting without USB drive](#booting-without-usb-drive)
-* [Booting seamlessly without Verbose or OpenCore Picker](#booting-seamlessly-without-verbose-or-opencore-picker)
+* [Booting seamlessly without Boot Picker](#booting-seamlessly-without-boot-picker)
 * [Applying Post Install Volume Patches](#applying-post-install-volume-patches)
 
 ## Booting without USB drive
@@ -16,23 +16,21 @@ Once you've installed macOS through OpenCore, you can boot up and go through the
 
 And voila! No more USB drive required.
 
-## Booting seamlessly without Verbose or OpenCore Picker
+## Booting seamlessly without Boot Picker
 
-To do this, run the OpenCore Patcher and head to Patcher Settings:
+To do this, run the OpenCore Patcher and head to Patcher Settings, then uncheck "Show OpenCore Bootpicker" on the Build tab:
 
 ![](../images/OCLP-GUI-Settings-ShowPicker.png)
 
-Here you can change different patcher settings, however the main interest is:
-
-* Show Boot Picker
-
-Once you've toggled them both off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, and then you can release the "ESC" key when you see the cursor arrow at the top left.
+Once you've toggled it off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, and then you can release the "ESC" key when you see the cursor arrow at the top left.
 
 ## Enabling SIP
 
 For many users, SIP will be lowered by default on build. For Intel HD 4000 users, you may have noticed that SIP is partially disabled. This is to ensure full compatibility with macOS Monterey and allow seamless booting between it and older OSes. However for users who do not plan to boot Monterey, you can re-enable under Patcher Settings.
 
 Note: Machines running macOS Ventura or systems with non-Metal GPUs cannot enable SIP outright, due to having a patched root volume. Enabling it will brick the installation.
+
+Going forward with 0.6.6, SIP settings can be accessed from the Security tab shown in the images.
 
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
 | :--- | :--- | :--- |
@@ -48,19 +46,13 @@ If you're unsure whether you should enable SIP, leave it as-is. Systems where yo
 
 Post Install Volume Patches, sometimes also called root patches, are patches that have to be installed to disk for some older Macs to gain back functionality.
 
-OCLP v0.4.4 and higher include an autopatcher, which will automatically root patch your system but **only if the USB install media was created within OCLP.**
+OCLP will automatically root patch your system during a first time install **if the USB install media was created within OCLP.** Users will also be prompted to install these patches after macOS updates or whenever patches are not detected on the system. We recommend rebuilding OpenCore with the latest version of OCLP to take advantage of these new features.
 
-Users with OCLP v0.4.4 or higher will also be prompted to install these patches after macOS updates or whenever patches are not detected on the system. We recommend rebuilding OpenCore with the latest version of OCLP to take advantage of these new features.
+Users can also see whether applicable patches have been installed, date and version the system was root patched with in the Post-Install Menu.
 
-
-
-In OCLP v0.4.5 a new indicator was added to help users to see if, when and on what version the system was root patched. Note that the "Available patches" section above this does not track the status and will always show the patches that are available, whether they're installed or not.
-
-| Automatic install prompt in 0.4.4+ | Last patched status in 0.4.5+ |
+| Automatic install prompt | Status |
 | :--- | :--- |
 | ![](../images/OCLP-GUI-root-patch-update.png) | ![](../images/OCLP-GUI-Root-Patch-Status.png)  |
-
-
 
 
 

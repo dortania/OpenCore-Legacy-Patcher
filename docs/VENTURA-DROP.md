@@ -78,11 +78,6 @@ With OpenCore Legacy Patcher v0.6.0, basic support has been implemented via Root
 
 :::
 
-### Ethernet issue with Early 2008 Mac Pro
-
-MacPro3,1 suffers from the Ethernet driver dying after returning from sleep, current workaround is to use a USB Ethernet adapter or disable sleep.
-
-
 ::: details Legacy Wireless Support (Resolved in v0.6.0 and newer)
 
 

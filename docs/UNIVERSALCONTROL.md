@@ -209,7 +209,7 @@ Ventura has dropped more models which includes all of the blacklisted Macs in qu
 
 Firstly run the GUI version of OpenCore Legacy Patcher. 
 
-Then go to **Settings**, go to **SMBIOS Settings**, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model **one listed next to your native model in the table for spoofed models below.**
+Then go to **Settings** and **SMBIOS** tab, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model **one listed next to your native model in the table for spoofed models below.**
 
 Notice that "Allow native models" and "Allow Native Spoofs" **are NOT** enabled unlike on Monterey, this is on purpose. They are no longer relevant on Ventura and enabling them will cause boot issues.
 
@@ -239,14 +239,16 @@ Spoofing to any model with native Ventura support should work, but these are the
 
 ::: details macOS Monterey
 
-Firstly, run the GUI version of OpenCore Legacy Patcher. Secondly, go to **Settings** and tick **Allow native models**.
+Firstly, run the GUI version of OpenCore Legacy Patcher. Secondly, go to **Settings** then the **App** tab and tick **Allow native models**.
 
-Then, go to **SMBIOS Settings**, tick **Allow Native Spoofs**, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model to **one listed next to your native model in the table for spoofed models below.**
+[](../images/OCLP-App-Allow-Native-Models.png)
+
+Then, go to **SMBIOS** tab, tick **Allow spoofing native Macs**, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model to **one listed next to your native model in the table for spoofed models below.**
 
 
 | Main Settings view | SMBIOS settings |
 | :--- | :--- |
-| ![](../images/OCLP-allow-native-models.png) | ![](../images/OCLP-smbios-settings.png) |
+| ![](../images/OCLP-SMBIOS-Allow-Native-Spoof.png) | ![](../images/OCLP-smbios-settings.png) |
 
 
 ::: details Table for spoofed models (click to expand)
