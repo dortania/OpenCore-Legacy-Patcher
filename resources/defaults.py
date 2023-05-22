@@ -330,12 +330,13 @@ class GenerateDefaults:
         """
 
         if not self.host_is_target:
+            # Unknown whether the host is using old binaries
             # Rebuild it once you are on the host
             return
 
         # Check for adhoc signed binaries
         if self.constants.computer.oclp_sys_signed is False:
-            # Rebuild EFI and reboot after root patching
+            # Root patch with new binaries, then reboot
             return
 
         # Note: simply checking the authority is not enough, as the authority can be spoofed
