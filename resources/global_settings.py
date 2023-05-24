@@ -48,7 +48,7 @@ class GlobalEnviromentSettings:
             try:
                 plistlib.dump(plist, Path(self.global_settings_plist).open("wb"))
             except PermissionError:
-                logging.info("- Failed to write to global settings file")
+                logging.info("Failed to write to global settings file")
 
 
     def _generate_settings_file(self) -> None:
@@ -57,7 +57,7 @@ class GlobalEnviromentSettings:
         try:
             plistlib.dump({"Developed by Dortania": True,}, Path(self.global_settings_plist).open("wb"))
         except PermissionError:
-            logging.info("- Permission error: Unable to write to global settings file")
+            logging.info("Permission error: Unable to write to global settings file")
 
 
     def _convert_defaults_to_global_settings(self) -> None:
@@ -76,14 +76,14 @@ class GlobalEnviromentSettings:
             try:
                 plistlib.dump(global_settings_plist, Path(self.global_settings_plist).open("wb"))
             except PermissionError:
-                logging.info("- Permission error: Unable to write to global settings file")
+                logging.info("Permission error: Unable to write to global settings file")
                 return
 
             # delete defaults plist
             try:
                 Path(defaults_path).unlink()
             except PermissionError:
-                logging.info("- Permission error: Unable to delete defaults plist")
+                logging.info("Permission error: Unable to delete defaults plist")
 
 
     def _fix_file_permission(self) -> None:
@@ -100,6 +100,6 @@ class GlobalEnviromentSettings:
         # Set file permission to allow any user to write to log file
         result = subprocess.run(["chmod", "777", self.global_settings_plist], capture_output=True)
         if result.returncode != 0:
-            logging.warning("- Failed to fix settings file permissions:")
+            logging.warning("Failed to fix settings file permissions:")
             if result.stderr:
                 logging.warning(result.stderr.decode("utf-8"))

@@ -116,7 +116,7 @@ class CheckBinaryUpdates:
             return None
 
         for asset in data_set["assets"]:
-            logging.info(f"- Found asset: {asset['name']}")
+            logging.info(f"Found asset: {asset['name']}")
             if self._determine_remote_type(asset["name"]) == self._determine_local_build_type():
                 available_binaries.update({
                     asset['name']: {

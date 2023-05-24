@@ -2,6 +2,7 @@
 
 import wx
 import wx.adv
+import logging
 
 from resources import constants
 
@@ -12,6 +13,7 @@ class AboutFrame(wx.Frame):
         if wx.FindWindowByName("About"):
             return
 
+        logging.info("Generating About frame")
         super(AboutFrame, self).__init__(None, title="About", size=(350, 350), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         self.constants: constants.Constants = global_constants
         self.Centre()

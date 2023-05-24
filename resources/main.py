@@ -32,8 +32,6 @@ class OpenCoreLegacyPatcher:
 
         logging_handler.InitializeLoggingSupport(self.constants)
 
-        logging.info(f"- Loading OpenCore Legacy Patcher v{self.constants.patcher_version}...")
-
         self._generate_base_data()
 
         if utilities.check_cli_args() is None:
@@ -98,18 +96,17 @@ class OpenCoreLegacyPatcher:
 
         if utilities.check_cli_args() is None:
             self.constants.cli_mode = False
-            logging.info(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
             return
 
-        logging.info("- Detected arguments, switching to CLI mode")
+        logging.info("Detected arguments, switching to CLI mode")
         self.constants.gui_mode = True  # Assumes no user interaction is required
 
         ignore_args = ["--auto_patch", "--gui_patch", "--gui_unpatch", "--update_installed"]
         if not any(x in sys.argv for x in ignore_args):
             self.constants.current_path = Path.cwd()
             if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
-                logging.info("- Rerouting payloads location")
                 self.constants.payload_path = sys._MEIPASS / Path("payloads")
+                logging.info("Rerouting payloads location")
         ignore_args = ignore_args.pop(0)
 
         if not any(x in sys.argv for x in ignore_args):

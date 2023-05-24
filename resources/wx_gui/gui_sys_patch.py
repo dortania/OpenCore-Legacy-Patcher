@@ -33,6 +33,7 @@ class SysPatchFrame(wx.Frame):
     Uses a Modal Dialog for smoother transition from other frames
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None, patches: dict = {}):
+        logging.info("Initializing Root Patching Frame")
         self.frame = parent
         self.initiated_with_parent = False
         if not self.frame and patches == {}:
@@ -167,7 +168,7 @@ class SysPatchFrame(wx.Frame):
         can_unpatch: bool = patches["Validation: Unpatching Possible"]
 
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
-            logging.info("- No applicable patches available")
+            logging.info("No applicable patches available")
             patches = []
 
         # Check if OCLP has already applied the same patches
@@ -198,10 +199,11 @@ class SysPatchFrame(wx.Frame):
                 anchor.Centre(wx.HORIZONTAL)
                 anchor.Hide()
 
+                logging.info("Available patches:")
                 for patch in patches:
                     if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                         i = i + 20
-                        logging.info(f"- Adding patch: {patch} - {patches[patch]}")
+                        logging.info(f"- {patch}")
                         patch_label = wx.StaticText(frame, label=f"- {patch}", pos=(anchor.GetPosition()[0], available_label.GetPosition()[1] + i))
                         patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
 
@@ -346,9 +348,10 @@ class SysPatchFrame(wx.Frame):
 
             # Labels
             i = 0
+            logging.info("Available patches:")
             for patch in patches:
                 if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
-                    logging.info(f"- Adding patch: {patch} - {patches[patch]}")
+                    logging.info(f"- {patch}")
                     patch_label = wx.StaticText(dialog, label=f"- {patch}", pos=(anchor.GetPosition()[0], label.GetPosition()[1] + 20 + i))
                     patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
                     i = i + 20
@@ -422,7 +425,7 @@ class SysPatchFrame(wx.Frame):
         try:
             sys_patch.PatchSysVolume(self.constants.computer.real_model, self.constants, patches).start_patch()
         except:
-            logging.error("- An internal error occurred while running the Root Patcher:\n")
+            logging.error("An internal error occurred while running the Root Patcher:\n")
             logging.error(traceback.format_exc())
         logger.removeHandler(logger.handlers[2])
 
@@ -454,7 +457,7 @@ class SysPatchFrame(wx.Frame):
         try:
             sys_patch.PatchSysVolume(self.constants.computer.real_model, self.constants, patches).start_unpatch()
         except:
-            logging.error("- An internal error occurred while running the Root Patcher:\n")
+            logging.error("An internal error occurred while running the Root Patcher:\n")
             logging.error(traceback.format_exc())
         logger.removeHandler(logger.handlers[2])
 
@@ -525,6 +528,8 @@ class SysPatchFrame(wx.Frame):
         Thus we'll need to see if the exact same OCLP build was used already
         """
 
+        logging.info("Checking if new patches are needed")
+
         if self.constants.commit_info[0] in ["Running from source", "Built from source"]:
             return True
 
@@ -557,5 +562,5 @@ class SysPatchFrame(wx.Frame):
                     logging.info(f"- Patch {patch} not installed")
                     return True
 
-        logging.info("- No new patches detected for system")
+        logging.info("No new patches detected for system")
         return False

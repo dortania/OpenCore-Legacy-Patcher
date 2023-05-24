@@ -52,7 +52,7 @@ class EntryPoint:
             entry = gui_sys_patch.SysPatchFrame
             patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
 
-        logging.info(f"- Loading wxPython GUI: {entry.__name__}")
+        logging.info(f"Entry point set: {entry.__name__}")
         self.frame: wx.Frame = entry(
             None,
             title=f"{self.constants.patcher_name} ({self.constants.patcher_version})",
@@ -79,7 +79,7 @@ class EntryPoint:
         if not self.frame:
             return
 
-        logging.info("- Cleaning up wxPython GUI")
+        logging.info("Cleaning up wxPython GUI")
 
         self.frame.SetTransparent(0)
         wx.Yield()

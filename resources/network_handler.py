@@ -204,10 +204,10 @@ class DownloadObject:
 
         """
         self.status = DownloadStatus.DOWNLOADING
-        logging.info(f"- Starting download: {self.filename}")
+        logging.info(f"Starting download: {self.filename}")
         if spawn_thread:
             if self.active_thread:
-                logging.error("- Download already in progress")
+                logging.error("Download already in progress")
                 return
             self.should_checksum = verify_checksum
             self.active_thread = threading.Thread(target=self._download, args=(display_progress,))
@@ -267,8 +267,8 @@ class DownloadObject:
             else:
                 raise Exception("Content-Length missing from headers")
         except Exception as e:
-            logging.error(f"- Error determining file size {self.url}: {str(e)}")
-            logging.error("- Assuming file size is 0")
+            logging.error(f"Error determining file size {self.url}: {str(e)}")
+            logging.error("Assuming file size is 0")
             self.total_file_size = 0.0
 
 
@@ -295,17 +295,17 @@ class DownloadObject:
 
         try:
             if Path(path).exists():
-                logging.info(f"- Deleting existing file: {path}")
+                logging.info(f"Deleting existing file: {path}")
                 Path(path).unlink()
                 return True
 
             if not Path(path).parent.exists():
-                logging.info(f"- Creating directory: {Path(path).parent}")
+                logging.info(f"Creating directory: {Path(path).parent}")
                 Path(path).parent.mkdir(parents=True, exist_ok=True)
 
             available_space = utilities.get_free_space(Path(path).parent)
             if self.total_file_size > available_space:
-                msg = f"- Not enough free space to download {self.filename}, need {utilities.human_fmt(self.total_file_size)}, have {utilities.human_fmt(available_space)}"
+                msg = f"Not enough free space to download {self.filename}, need {utilities.human_fmt(self.total_file_size)}, have {utilities.human_fmt(available_space)}"
                 logging.error(msg)
                 raise Exception(msg)
 
@@ -313,7 +313,7 @@ class DownloadObject:
             self.error = True
             self.error_msg = str(e)
             self.status = DownloadStatus.ERROR
-            logging.error(f"- Error preparing working directory {path}: {self.error_msg}")
+            logging.error(f"Error preparing working directory {path}: {self.error_msg}")
             return False
 
         return True
@@ -353,21 +353,21 @@ class DownloadObject:
                         if display_progress and i % 100:
                             # Don't use logging here, as we'll be spamming the log file
                             if self.total_file_size == 0.0:
-                                print(f"- Downloaded {utilities.human_fmt(self.downloaded_file_size)} of {self.filename}")
+                                print(f"Downloaded {utilities.human_fmt(self.downloaded_file_size)} of {self.filename}")
                             else:
-                                print(f"- Downloaded {self.get_percent():.2f}% of {self.filename} ({utilities.human_fmt(self.get_speed())}/s) ({self.get_time_remaining():.2f} seconds remaining)")
+                                print(f"Downloaded {self.get_percent():.2f}% of {self.filename} ({utilities.human_fmt(self.get_speed())}/s) ({self.get_time_remaining():.2f} seconds remaining)")
                 self.download_complete = True
-                logging.info(f"- Download complete: {self.filename}")
-                logging.info("- Stats:")
-                logging.info(f"-   Downloaded size: {utilities.human_fmt(self.downloaded_file_size)}")
-                logging.info(f"-   Time elapsed: {(time.time() - self.start_time):.2f} seconds")
-                logging.info(f"-   Speed: {utilities.human_fmt(self.downloaded_file_size / (time.time() - self.start_time))}/s")
-                logging.info(f"-   Location: {self.filepath}")
+                logging.info(f"Download complete: {self.filename}")
+                logging.info("Stats:")
+                logging.info(f"- Downloaded size: {utilities.human_fmt(self.downloaded_file_size)}")
+                logging.info(f"- Time elapsed: {(time.time() - self.start_time):.2f} seconds")
+                logging.info(f"- Speed: {utilities.human_fmt(self.downloaded_file_size / (time.time() - self.start_time))}/s")
+                logging.info(f"- Location: {self.filepath}")
         except Exception as e:
             self.error = True
             self.error_msg = str(e)
             self.status = DownloadStatus.ERROR
-            logging.error(f"- Error downloading {self.url}: {self.error_msg}")
+            logging.error(f"Error downloading {self.url}: {self.error_msg}")
 
         self.status = DownloadStatus.COMPLETE
         utilities.enable_sleep_after_running()

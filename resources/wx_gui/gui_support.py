@@ -289,7 +289,7 @@ class RelaunchApplicationAsRoot:
 
         wx.Yield()
 
-        logging.info(f"- Relaunching as root with command: {program_arguments}")
+        logging.info(f"Relaunching as root with command: {program_arguments}")
         subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         while True:

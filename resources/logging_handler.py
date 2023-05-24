@@ -1,5 +1,7 @@
+import wx
 import os
 import sys
+import time
 import logging
 import threading
 import traceback
@@ -32,22 +34,24 @@ class InitializeLoggingSupport:
     """
 
     def __init__(self, global_constants: constants.Constants) -> None:
-        self.log_filename: str  = "OpenCore-Patcher.log"
-        self.log_filepath: Path = None
-
         self.constants: constants.Constants = global_constants
+
+        self.log_filename: str  = f"OpenCore-Patcher-{self.constants.patcher_version}.log"
+        self.log_filepath: Path = None
 
         self.original_excepthook:        sys       = sys.excepthook
         self.original_thread_excepthook: threading = threading.excepthook
 
-        self.max_file_size:     int = 1024 * 1024 * 10  # 10 MB
-        self.file_size_redline: int = 1024 * 1024 * 9   # 9 MB, when to start cleaning log file
+        self.max_file_size:     int = 1024 * 1024               # 1 MB
+        self.file_size_redline: int = 1024 * 1024 - 1024 * 100  # 900 KB, when to start cleaning log file
 
         self._initialize_logging_path()
         self._clean_log_file()
         self._attempt_initialize_logging_configuration()
+        self._start_logging()
         self._implement_custom_traceback_handler()
         self._fix_file_permission()
+        self._clean_prior_version_logs()
 
 
     def _initialize_logging_path(self) -> None:
@@ -60,9 +64,6 @@ class InitializeLoggingSupport:
         if not self.log_filepath.parent.exists():
              # Likely in an installer environment, store in /Users/Shared
             self.log_filepath = Path("/Users/Shared") / self.log_filename
-
-        print("- Initializing logging framework...")
-        print(f"  - Log file: {self.log_filepath}")
 
 
     def _clean_log_file(self) -> None:
@@ -87,7 +88,33 @@ class InitializeLoggingSupport:
             # Rename current log file to backup log file
             self.log_filepath.rename(backup_log_filepath)
         except Exception as e:
-            print(f"- Failed to clean log file: {e}")
+            print(f"Failed to clean log file: {e}")
+
+
+    def _clean_prior_version_logs(self) -> None:
+        """
+        Clean logs from old Patcher versions
+
+        If file is more than a week old, assume it's unused and delete it
+        """
+
+        time_threshold = time.time() - 60 * 60 * 24 * 7
+
+        for file in self.log_filepath.parent.glob("OpenCore-Patcher*"):
+            if not file.is_file():
+                continue
+
+            if not file.name.endswith(".log"):
+                continue
+
+            if file.name == self.log_filename:
+                continue
+
+            if file.stat().st_mtime < time_threshold:
+                try:
+                    file.unlink()
+                except Exception as e:
+                    print(f"Failed to clean prior version log file: {e}")
 
 
     def _fix_file_permission(self) -> None:
@@ -103,9 +130,13 @@ class InitializeLoggingSupport:
 
         result = subprocess.run(["chmod", "777", self.log_filepath], capture_output=True)
         if result.returncode != 0:
-            print(f"- Failed to fix log file permissions")
+            logging.error(f"Failed to fix log file permissions")
+            if result.stdout:
+                logging.error("STDOUT:")
+                logging.error(result.stdout.decode("utf-8"))
             if result.stderr:
-                print(result.stderr.decode("utf-8"))
+                logging.error("STDERR:")
+                logging.error(result.stderr.decode("utf-8"))
 
 
     def _initialize_logging_configuration(self, log_to_file: bool = True) -> None:
@@ -122,7 +153,7 @@ class InitializeLoggingSupport:
 
         logging.basicConfig(
             level=logging.NOTSET,
-            format="%(asctime)s - %(filename)s (%(lineno)d): %(message)s",
+            format="[%(asctime)s] [%(filename)-32s] [%(lineno)-4d]: %(message)s",
             handlers=[
                 logging.StreamHandler(stream = sys.stdout),
                 logging.FileHandler(self.log_filepath) if log_to_file is True else logging.NullHandler()
@@ -143,9 +174,24 @@ class InitializeLoggingSupport:
         try:
             self._initialize_logging_configuration()
         except Exception as e:
-            print(f"- Failed to initialize logging framework: {e}")
-            print("- Retrying without logging to file...")
+            print(f"Failed to initialize logging framework: {e}")
+            print("Retrying without logging to file...")
             self._initialize_logging_configuration(log_to_file=False)
+
+
+    def _start_logging(self):
+        """
+        Start logging, used as easily identifiable start point in logs
+        """
+
+        str_msg = f"# OpenCore Legacy Patcher ({self.constants.patcher_version}) #"
+        str_len = len(str_msg)
+
+        logging.info('#' * str_len)
+        logging.info(str_msg)
+        logging.info('#' * str_len)
+
+        logging.info(f"Log file set to: {self.log_filepath}")
 
 
     def _implement_custom_traceback_handler(self) -> None:

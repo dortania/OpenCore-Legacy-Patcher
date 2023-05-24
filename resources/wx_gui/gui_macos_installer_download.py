@@ -28,7 +28,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
     Note: Flashing installers is passed to gui_macos_installer_flash.py
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
-
+        logging.info("Initializing macOS Installer Download Frame")
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent

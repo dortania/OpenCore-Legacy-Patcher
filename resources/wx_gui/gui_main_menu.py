@@ -24,6 +24,7 @@ from data import os_data
 
 class MainFrame(wx.Frame):
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
+        logging.info("Initializing Main Menu Frame")
         super(MainFrame, self).__init__(parent, title=title, size=(600, 400), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, global_constants).generate()
 
@@ -213,11 +214,11 @@ class MainFrame(wx.Frame):
             pop_up.ShowModal()
 
             if pop_up.GetReturnCode() != wx.ID_YES:
-                print("- Skipping OpenCore and root volume patch update...")
+                print("Skipping OpenCore and root volume patch update...")
                 return
 
 
-            print("- Updating OpenCore and root volume patches...")
+            print("Updating OpenCore and root volume patches...")
             self.constants.update_stage = gui_support.AutoUpdateStages.CHECKING
             self.Hide()
             pos = self.GetPosition()

@@ -158,7 +158,7 @@ sleep_process = None
 
 def disable_sleep_while_running():
     global sleep_process
-    logging.info("- Disabling Idle Sleep")
+    logging.info("Disabling Idle Sleep")
     if sleep_process is None:
         # If sleep_process is active, we'll just keep it running
         sleep_process = subprocess.Popen(["caffeinate", "-d", "-i", "-s"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -168,7 +168,7 @@ def disable_sleep_while_running():
 def enable_sleep_after_running():
     global sleep_process
     if sleep_process:
-        logging.info("- Re-enabling Idle Sleep")
+        logging.info("Re-enabling Idle Sleep")
         sleep_process.kill()
         sleep_process = None
 
@@ -516,7 +516,7 @@ def block_os_updaters():
         for bad_process in bad_processes:
             if bad_process in current_process:
                 if pid != "":
-                    logging.info(f"- Killing Process: {pid} - {current_process.split('/')[-1]}")
+                    logging.info(f"Killing Process: {pid} - {current_process.split('/')[-1]}")
                     subprocess.run(["kill", "-9", pid])
                     break
 

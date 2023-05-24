@@ -53,7 +53,7 @@ class InstallerCreation():
             bool: True if successful, False otherwise
         """
 
-        logging.info("- Extracting macOS installer from InstallAssistant.pkg\n  This may take some time")
+        logging.info("Extracting macOS installer from InstallAssistant.pkg\n  This may take some time")
         try:
             applescript.AppleScript(
                 f'''do shell script "installer -pkg {Path(download_path)}/InstallAssistant.pkg -target /"'''
@@ -62,11 +62,11 @@ class InstallerCreation():
                 " without altering line endings",
             ).run()
         except Exception as e:
-            logging.info("- Failed to install InstallAssistant")
+            logging.info("Failed to install InstallAssistant")
             logging.info(f"  Error Code: {e}")
             return False
 
-        logging.info("- InstallAssistant installed")
+        logging.info("InstallAssistant installed")
         return True
 
 

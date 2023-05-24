@@ -22,6 +22,7 @@ class UpdateFrame(wx.Frame):
     Create a frame for updating the patcher
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: wx.Point, url: str = "", version_label: str = "") -> None:
+        logging.info("Initializing Update Frame")
         if parent:
             self.parent: wx.Frame = parent
 
@@ -54,6 +55,9 @@ class UpdateFrame(wx.Frame):
 
         self.version_label = version_label
         self.url = url
+
+        logging.info(f"Update URL: {url}")
+        logging.info(f"Update Version: {version_label}")
 
         self.frame: wx.Frame = wx.Frame(
             parent=parent if parent else self,
@@ -180,6 +184,7 @@ class UpdateFrame(wx.Frame):
                 ["ditto", "-xk", str(self.constants.payload_path / "OpenCore-Patcher-GUI.app.zip"), str(self.constants.payload_path)], capture_output=True
             )
             if result.returncode != 0:
+                logging.error(f"Failed to extract update. Error: {result.stderr.decode('utf-8')}")
                 wx.CallAfter(self.progress_bar_animation.stop_pulse)
                 wx.CallAfter(self.progress_bar.SetValue, 0)
                 wx.CallAfter(wx.MessageBox, f"Failed to extract update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
@@ -190,6 +195,7 @@ class UpdateFrame(wx.Frame):
                 break
 
             if i == 1:
+                logging.error("Failed to extract update. Error: Update file does not exist")
                 wx.CallAfter(self.progress_bar_animation.stop_pulse)
                 wx.CallAfter(self.progress_bar.SetValue, 0)
                 wx.CallAfter(wx.MessageBox, "Failed to extract update. Error: Update file does not exist", "Critical Error!", wx.OK | wx.ICON_ERROR)
@@ -251,8 +257,10 @@ EOF
             wx.CallAfter(self.progress_bar_animation.stop_pulse)
             wx.CallAfter(self.progress_bar.SetValue, 0)
             if "User cancelled" in result.stderr.decode("utf-8"):
+                logging.info("User cancelled update")
                 wx.CallAfter(wx.MessageBox, "User cancelled update", "Update Cancelled", wx.OK | wx.ICON_INFORMATION)
             else:
+                logging.critical(f"Failed to install update. Error: {result.stderr.decode('utf-8')}")
                 wx.CallAfter(wx.MessageBox, f"Failed to install update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
             wx.CallAfter(sys.exit, 1)
 

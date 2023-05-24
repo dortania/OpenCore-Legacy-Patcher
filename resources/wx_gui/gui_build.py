@@ -19,6 +19,7 @@ class BuildFrame(wx.Frame):
     Uses a Modal Dialog for smoother transition from other frames
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None) -> None:
+        logging.info("Initializing Build Frame")
         super(BuildFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, global_constants).generate()
 
@@ -121,7 +122,7 @@ class BuildFrame(wx.Frame):
         try:
             build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants)
         except:
-            logging.error("- An internal error occurred while building:\n")
+            logging.error("An internal error occurred while building:\n")
             logging.error(traceback.format_exc())
         logger.removeHandler(logger.handlers[2])
 

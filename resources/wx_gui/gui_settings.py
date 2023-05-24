@@ -32,6 +32,7 @@ class SettingsFrame(wx.Frame):
     Modal-based Settings Frame
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
+        logging.info("Initializing Settings Frame")
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent
@@ -1257,11 +1258,12 @@ Hardware Information:
 
     def on_export_constants(self, event: wx.Event) -> None:
         # Throw pop up to get save location
-        with wx.FileDialog(self.parent, "Save Constants File", wildcard="JSON files (*.txt)|*.txt", style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
+        with wx.FileDialog(self.parent, "Save Constants File", wildcard="JSON files (*.txt)|*.txt", style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT, defaultFile=f"constants-{self.constants.patcher_version}.txt") as fileDialog:
             if fileDialog.ShowModal() == wx.ID_CANCEL:
                 return
 
             # Save the current contents in the file
             pathname = fileDialog.GetPath()
+            logging.info(f"Saving constants to {pathname}")
             with open(pathname, 'w') as file:
                 file.write(pprint.pformat(vars(self.constants), indent=4))
