@@ -3,6 +3,16 @@
 ## 0.6.7
 - Backend changes:
   - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
+  - Rework logging handler:
+    - Implement formatted logging
+      - Allowing easier debugging
+    - Implement per-version file logging
+      - ex. OpenCore-Patcher-0.6.7.log
+    - Remove old logs after 1 week of inactivity
+    - Reduce log rollover to 1MB
+    - Reveal log file in Finder on main thread crash
+  - Resolve SharedSupport.dmg pathing error during macOS Installer Verification
+    - Applicable to systems with 2 (or more) USB Installers with the same name plugged in
 
 ## 0.6.6
 - Implement option to disable ColorSync downgrade on HD 3000 Macs

@@ -216,6 +216,9 @@ class InitializeLoggingSupport:
 
             applescript.AppleScript(f'display dialog "{error_msg}" with title "OpenCore Legacy Patcher ({self.constants.patcher_version})" buttons {{"OK"}} default button "OK" with icon caution giving up after 30').run()
 
+            # Open log location
+            subprocess.run(["open", "--reveal", self.log_filepath])
+
 
         def custom_thread_excepthook(args) -> None:
             """

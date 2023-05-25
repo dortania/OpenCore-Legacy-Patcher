@@ -132,6 +132,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
 
     def on_select(self, installer: dict) -> None:
+        logging.info(f"Selected installer: {installer['Short Name']} ({installer['Version']} ({installer['Build']}))")
         self.frame_modal.Destroy()
 
         for child in self.GetChildren():
@@ -186,8 +187,9 @@ class macOSInstallerFlashFrame(wx.Frame):
         if self.available_disks:
             spacer = 5
             entries = len(self.available_disks)
+            logging.info("Available disks:")
             for disk in self.available_disks:
-                logging.info(f"{disk}: {self.available_disks[disk]['name']} - {utilities.human_fmt(self.available_disks[disk]['size'])}")
+                logging.info(f" - {disk}: {self.available_disks[disk]['name']} - {utilities.human_fmt(self.available_disks[disk]['size'])}")
                 disk_button = wx.Button(self.frame_modal, label=f"{disk}: {self.available_disks[disk]['name']} - {utilities.human_fmt(self.available_disks[disk]['size'])}", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + spacer), size=(300, 30))
                 disk_button.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.on_select_disk(self.available_disks[temp], installer))
                 disk_button.Centre(wx.HORIZONTAL)
@@ -221,6 +223,8 @@ class macOSInstallerFlashFrame(wx.Frame):
         answer = wx.MessageBox(f"Are you sure you want to erase '{disk['name']}'?\nAll data will be lost, this cannot be undone.", "Confirmation", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
         if answer != wx.YES:
             return
+
+        logging.info(f"Selected disk: {disk['name']}")
 
         self.frame_modal.Destroy()
 
@@ -262,6 +266,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # Prepare resources
         if self._prepare_resources(installer['Path'], disk['identifier']) is False:
+            logging.error("Failed to prepare resources, cannot continue.")
             wx.MessageBox("Failed to prepare resources, cannot continue.", "Error", wx.OK | wx.ICON_ERROR)
             self.on_return_to_main_menu()
             return
@@ -281,6 +286,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         initial_bytes_written = float(utilities.monitor_disk_output(root_disk))
         self.result = False
         def _flash():
+            logging.info(f"Flashing {installer['Path']} to {root_disk}")
             self.result = self._flash_installer(root_disk)
 
         thread = threading.Thread(target=_flash)
@@ -298,6 +304,7 @@ class macOSInstallerFlashFrame(wx.Frame):
             wx.Yield()
 
         if self.result is False:
+            logging.error("Failed to flash installer, cannot continue.")
             self.on_return_to_main_menu()
             return
 
@@ -522,12 +529,15 @@ class macOSInstallerFlashFrame(wx.Frame):
         kdk_dmg_path.unlink()
 
     def _validate_installer_pkg(self, disk: str) -> bool:
-        verification_success = False
+        logging.info("Validating installer pkg")
         error_message = ""
         def _integrity_check():
             nonlocal error_message
-            path = utilities.grab_mount_point_from_disk(disk + "s2")
-            dmg_path = path + f"/{path.split('/')[2]}.app/Contents/SharedSupport/SharedSupport.dmg"
+            for folder in Path(utilities.grab_mount_point_from_disk(disk + "s2")).glob("*.app"):
+                if folder.is_dir():
+                    dmg_path = folder / "Contents" / "SharedSupport" / "SharedSupport.dmg"
+                    break
+
             if not Path(dmg_path).exists():
                 logging.error(f"Failed to find {dmg_path}")
                 error_message = f"Failed to find {dmg_path}"
@@ -547,10 +557,10 @@ class macOSInstallerFlashFrame(wx.Frame):
         while thread.is_alive():
             wx.Yield()
 
-        if verification_success:
+        if error_message == "":
+            logging.info("Installer pkg validated")
             return error_message
 
-        logging.error(error_message)
         return error_message
 
 

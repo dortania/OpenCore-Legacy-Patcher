@@ -36,6 +36,8 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.available_installers = None
         self.available_installers_latest = None
 
+        self.catalog_seed: macos_installer_handler.SeedType = macos_installer_handler.SeedType.DeveloperSeed
+
         self.frame_modal = wx.Dialog(parent, title=title, size=(330, 200))
 
         self._generate_elements(self.frame_modal)
@@ -102,7 +104,8 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         # Grab installer catalog
         def _fetch_installers():
-            remote_obj = macos_installer_handler.RemoteInstallerCatalog(seed_override=macos_installer_handler.SeedType.DeveloperSeed)
+            logging.info(f"Fetching installer catalog: {macos_installer_handler.SeedType(self.catalog_seed).name}")
+            remote_obj = macos_installer_handler.RemoteInstallerCatalog(seed_override=self.catalog_seed)
             self.available_installers        = remote_obj.available_apps
             self.available_installers_latest = remote_obj.available_apps_latest
 
@@ -138,8 +141,9 @@ class macOSInstallerDownloadFrame(wx.Frame):
         installers = self.available_installers_latest if show_full is False else self.available_installers
         if installers:
             spacer = 0
+            logging.info(f"Available installers on SUCatalog ({'All entries' if show_full else 'Latest only'}):")
             for app in installers:
-                logging.info(f"macOS {installers[app]['Version']} ({installers[app]['Build']}):\n  - Size: {utilities.human_fmt(installers[app]['Size'])}\n  - Source: {installers[app]['Source']}\n  - Variant: {installers[app]['Variant']}\n  - Link: {installers[app]['Link']}\n")
+                logging.info(f"- macOS {installers[app]['Version']} ({installers[app]['Build']}):\n  - Size: {utilities.human_fmt(installers[app]['Size'])}\n  - Source: {installers[app]['Source']}\n  - Variant: {installers[app]['Variant']}\n  - Link: {installers[app]['Link']}\n")
                 extra = " Beta" if installers[app]['Variant'] in ["DeveloperSeed" , "PublicSeed"] else ""
 
                 installer_button = wx.Button(dialog, label=f"macOS {installers[app]['Version']}{extra} ({installers[app]['Build']} - {utilities.human_fmt(installers[app]['Size'])})", pos=(-1, subtitle_label.GetPosition()[1] + subtitle_label.GetSize()[1] + 5 + spacer), size=(270, 30))
@@ -172,6 +176,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         """
         Download macOS installer
         """
+        logging.info(f"Selected macOS {app['Version']} ({app['Build']})")
 
         # Notify user whether their model is compatible with the selected installer
         problems = []
@@ -185,6 +190,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
                         problems.append("Lack of internal Keyboard/Mouse in macOS installer.")
 
         if problems:
+            logging.warning(f"Potential issues with {model} and {app['Version']} ({app['Build']}): {problems}")
             problems = "\n".join(problems)
             dlg = wx.MessageDialog(self.frame_modal, f"Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey", "Potential Issues", wx.YES_NO | wx.CANCEL | wx.ICON_WARNING)
             dlg.SetYesNoCancelLabels("View Github Issue", "Download Anyways", "Cancel")
@@ -198,6 +204,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         host_space = utilities.get_free_space()
         needed_space = app['Size'] * 2
         if host_space < needed_space:
+            logging.error(f"Insufficient space to download and extract: {utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required")
             dlg = wx.MessageDialog(self.frame_modal, f"You do not have enough free space to download and extract this installer. Please free up some space and try again\n\n{utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required", "Insufficient Space", wx.OK | wx.ICON_WARNING)
             dlg.ShowModal()
             return
@@ -249,6 +256,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         chunklist_stream = network_handler.NetworkUtilities().get(chunklist_link).content
         if chunklist_stream:
+            logging.info("Validating macOS installer")
             utilities.disable_sleep_while_running()
             chunk_obj = integrity_verification.ChunklistVerification(self.constants.payload_path / Path("InstallAssistant.pkg"), chunklist_stream)
             if chunk_obj.chunks:
@@ -265,9 +273,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
                     wx.App.Get().Yield()
 
                 if chunk_obj.status == integrity_verification.ChunklistStatus.FAILURE:
-                    wx.MessageBox("Chunklist validation failed.\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)", "Corrupted Installer!", wx.OK | wx.ICON_ERROR)
+                    logging.error(f"Chunklist validation failed: Hash mismatch on {chunk_obj.current_chunk}")
+                    wx.MessageBox(f"Chunklist validation failed: Hash mismatch on {chunk_obj.current_chunk}\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)", "Corrupted Installer!", wx.OK | wx.ICON_ERROR)
                     self.on_return_to_main_menu()
                     return
+
+        logging.info("macOS installer validated")
 
         # Extract installer
         title_label.SetLabel("Extracting macOS Installer")

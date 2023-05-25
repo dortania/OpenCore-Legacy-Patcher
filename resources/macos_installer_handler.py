@@ -53,7 +53,7 @@ class InstallerCreation():
             bool: True if successful, False otherwise
         """
 
-        logging.info("Extracting macOS installer from InstallAssistant.pkg\n  This may take some time")
+        logging.info("Extracting macOS installer from InstallAssistant.pkg")
         try:
             applescript.AppleScript(
                 f'''do shell script "installer -pkg {Path(download_path)}/InstallAssistant.pkg -target /"'''
@@ -201,7 +201,6 @@ fi
             if not any(all_disks[disk]['removable'] is False for partition in all_disks[disk]):
                 continue
 
-            logging.info(f"disk {disk}: {all_disks[disk]['name']} ({utilities.human_fmt(all_disks[disk]['size'])})")
             list_disks.update({
                 disk: {
                     "identifier": all_disks[disk]["identifier"],

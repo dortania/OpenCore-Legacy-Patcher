@@ -50,7 +50,7 @@ class arguments:
         """
         Enter validation mode
         """
-
+        logging.info("Set Validation Mode")
         validation.PatcherValidation(self.constants)
 
 
