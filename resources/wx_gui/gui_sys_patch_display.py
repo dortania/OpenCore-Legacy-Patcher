@@ -29,12 +29,16 @@ class SysPatchDisplayFrame(wx.Frame):
         if parent:
             self.frame = parent
         else:
-            self.frame = wx.Frame.__init__(self, parent, title=title, size=(360, 200), style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER ^ wx.MAXIMIZE_BOX)
+            super().__init__(parent, title=title, size=(360, 200), style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER ^ wx.MAXIMIZE_BOX)
+            self.frame = self
+            self.frame.Centre()
+
         self.title = title
         self.constants: constants.Constants = global_constants
         self.frame_modal: wx.Dialog = None
         self.return_button: wx.Button = None
         self.available_patches: bool = False
+        self.init_with_parent = True if parent else False
 
         self.frame_modal = wx.Dialog(self.frame, title=title, size=(360, 200))
 
@@ -186,7 +190,7 @@ class SysPatchDisplayFrame(wx.Frame):
 
         # Button: Return to Main Menu
         return_button = wx.Button(frame, label="Return to Main Menu", pos=(10, revert_button.GetPosition().y + revert_button.GetSize().height), size=(150, 30))
-        return_button.Bind(wx.EVT_BUTTON, self.on_return_dismiss)
+        return_button.Bind(wx.EVT_BUTTON, self.on_return_dismiss if self.init_with_parent else self.on_return_to_main_menu)
         return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         return_button.Centre(wx.HORIZONTAL)
         self.return_button = return_button
