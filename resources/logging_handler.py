@@ -190,7 +190,13 @@ class InitializeLoggingSupport:
         logging.info(str_msg)
         logging.info('#' * str_len)
 
-        logging.info(f"Log file set to: {self.log_filepath}")
+        logging.info("Log file set:")
+        # Display relative path to avoid disclosing user's username
+        try:
+            path = self.log_filepath.relative_to(Path.home())
+            logging.info(f"~/{path}")
+        except ValueError:
+            logging.info(self.log_filepath)
 
 
     def _implement_custom_traceback_handler(self) -> None:
