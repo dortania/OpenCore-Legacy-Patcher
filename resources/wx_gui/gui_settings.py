@@ -824,6 +824,12 @@ class SettingsFrame(wx.Frame):
                         "Check CHANGELOG before blindly updating.",
                     ],
                 },
+                "Trigger Exception": {
+                    "type": "button",
+                    "function": self.on_test_exception,
+                    "description": [
+                    ],
+                },
                 "wrap_around 1": {
                     "type": "wrap_around",
                 },
@@ -1267,3 +1273,7 @@ Hardware Information:
             logging.info(f"Saving constants to {pathname}")
             with open(pathname, 'w') as file:
                 file.write(pprint.pformat(vars(self.constants), indent=4))
+
+
+    def on_test_exception(self, event: wx.Event) -> None:
+        raise Exception("Test Exception")
