@@ -226,7 +226,7 @@ class SysPatchDisplayFrame(wx.Frame):
             patches=patches,
         )
         frame.start_root_patching()
-        self.on_return_dismiss()
+        self.on_return_dismiss() if self.init_with_parent else self.on_return_to_main_menu()
 
 
     def on_revert_root_patching(self, patches: dict):
@@ -237,7 +237,7 @@ class SysPatchDisplayFrame(wx.Frame):
             patches=patches,
         )
         frame.revert_root_patching()
-        self.on_return_dismiss()
+        self.on_return_dismiss() if self.init_with_parent else self.on_return_to_main_menu()
 
 
     def on_return_to_main_menu(self, event: wx.Event = None):
