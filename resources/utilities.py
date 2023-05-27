@@ -394,9 +394,6 @@ def get_firmware_vendor(*, decode: bool = False):
             value = value.strip("\0")
     return value
 
-def dump_constants(constants):
-    with open(os.path.join(os.path.expanduser('~'), 'Desktop', 'internal_data.txt'), 'w') as f:
-        f.write(str(vars(constants)))
 
 def find_apfs_physical_volume(device):
     # ex: disk3s1s1

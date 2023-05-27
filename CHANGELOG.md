@@ -16,6 +16,7 @@
       - ex. OpenCore-Patcher (0.6.7) (2021-12-31-12-34-56).log
     - Keep only 10 latest log files
     - Reveal log file in Finder on main thread crash
+    - Avoid writing username to log file
   - Resolve SharedSupport.dmg pathing error during macOS Installer Verification
     - Applicable to systems with 2 (or more) USB Installers with the same name plugged in
   - Resolve payloads path being mis-routed during CLI calls
