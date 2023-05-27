@@ -106,23 +106,6 @@ class BuildMiscellaneous:
             logging.info("- Disabling memory error reporting")
             re_block_args.append("pcie")
 
-        # Resolve mediaanalysisd crashing on 3802 GPUs
-        gpu_dict = [] if self.constants.custom_model else self.constants.computer.gpus
-        if gpu_dict == []:
-            gpu_dict = smbios_data.smbios_dictionary[self.model]["Stock GPUs"] if self.model in smbios_data.smbios_dictionary else []
-
-        for gpu in gpu_dict:
-            if not self.constants.custom_model:
-                gpu = gpu.arch
-            if gpu in [
-                device_probe.Intel.Archs.Ivy_Bridge,
-                device_probe.Intel.Archs.Haswell,
-                device_probe.NVIDIA.Archs.Kepler,
-            ]:
-                logging.info("- Disabling mediaanalysisd")
-                re_block_args.append("media")
-                break
-
         return re_block_args
 
 
