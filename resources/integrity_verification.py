@@ -100,6 +100,18 @@ class ChunklistVerification:
             self.status = ChunklistStatus.FAILURE
             return
 
+        if not Path(self.file_path).exists():
+            self.error_msg = f"File {self.file_path} does not exist"
+            self.status = ChunklistStatus.FAILURE
+            logging.info(self.error_msg)
+            return
+
+        if not Path(self.file_path).is_file():
+            self.error_msg = f"File {self.file_path} is not a file"
+            self.status = ChunklistStatus.FAILURE
+            logging.info(self.error_msg)
+            return
+
         with self.file_path.open("rb") as f:
             for chunk in self.chunks:
                 self.current_chunk += 1
