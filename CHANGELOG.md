@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.6.7
+- Resolve partition buttons overlapping in Install OpenCore UI
+  - ex. "EFI" and additional FAT32 partitions on a single drive
 - Backend changes:
   - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
 

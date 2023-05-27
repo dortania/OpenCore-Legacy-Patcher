@@ -195,13 +195,15 @@ class InstallOCFrame(wx.Frame):
         items = len(partitions)
         longest_label = max((len(partitions[partition]['partition']) + len(partitions[partition]['name']) + len(str(partitions[partition]['size']))) for partition in partitions)
         longest_label = longest_label * 10
+        spacer = 0
         for partition in partitions:
             logging.info(f"- {partitions[partition]['partition']} - {partitions[partition]['name']} - {partitions[partition]['size']}")
-            disk_button = wx.Button(dialog, label=f"{partitions[partition]['partition']} - {partitions[partition]['name']} - {partitions[partition]['size']}", size=(longest_label,30), pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 5))
+            disk_button = wx.Button(dialog, label=f"{partitions[partition]['partition']} - {partitions[partition]['name']} - {partitions[partition]['size']}", size=(longest_label,30), pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 5 + spacer))
             disk_button.Centre(wx.HORIZONTAL)
             disk_button.Bind(wx.EVT_BUTTON, lambda event, partition=partition: self._install_oc_process(partition))
             if items == 1 or self.constants.booted_oc_disk == partitions[partition]['partition']:
                 disk_button.SetDefault()
+            spacer += 25
 
         # Add button: Return to main menu
         return_button = wx.Button(dialog, label="Return to main menu", size=(150,30), pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]))
