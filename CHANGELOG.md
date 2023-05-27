@@ -5,6 +5,7 @@
   - ex. "EFI" and additional FAT32 partitions on a single drive
 - Backend changes:
   - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
+  - Resolve payloads path being mis-routed during CLI calls
 
 ## 0.6.6
 - Implement option to disable ColorSync downgrade on HD 3000 Macs

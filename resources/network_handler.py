@@ -316,6 +316,7 @@ class DownloadObject:
             logging.error(f"- Error preparing working directory {path}: {self.error_msg}")
             return False
 
+        logging.info(f"- Directory ready: {path}")
         return True
 
 
