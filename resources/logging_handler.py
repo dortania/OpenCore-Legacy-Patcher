@@ -1,4 +1,3 @@
-import wx
 import os
 import sys
 import time
@@ -36,7 +35,7 @@ class InitializeLoggingSupport:
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
 
-        self.log_filename: str  = f"OpenCore-Patcher-{self.constants.patcher_version}.log"
+        self.log_filename: str  = f"OpenCore-Patcher_{self.constants.patcher_version}_{time.strftime('%Y-%m-%d_%H-%M-%S')}.log"
         self.log_filepath: Path = None
 
         self.original_excepthook:        sys       = sys.excepthook
@@ -46,7 +45,6 @@ class InitializeLoggingSupport:
         self.file_size_redline: int = 1024 * 1024 - 1024 * 100  # 900 KB, when to start cleaning log file
 
         self._initialize_logging_path()
-        self._clean_log_file()
         self._attempt_initialize_logging_configuration()
         self._start_logging()
         self._implement_custom_traceback_handler()
@@ -59,62 +57,57 @@ class InitializeLoggingSupport:
         Initialize logging framework storage path
         """
 
-        self.log_filepath = Path(f"~/Library/Logs/{self.log_filename}").expanduser()
+        base_path = Path("~/Library/Logs").expanduser()
+        if not base_path.exists():
+            # Likely in an installer environment, store in /Users/Shared
+            base_path = Path("/Users/Shared")
+        else:
+            # create Dortania folder if it doesn't exist
+            base_path = base_path / "Dortania"
+            if not base_path.exists():
+                try:
+                    base_path.mkdir()
+                except Exception as e:
+                    logging.error(f"Failed to create Dortania folder: {e}")
+                    base_path = Path("/Users/Shared")
 
-        if not self.log_filepath.parent.exists():
-             # Likely in an installer environment, store in /Users/Shared
-            self.log_filepath = Path("/Users/Shared") / self.log_filename
-
-
-    def _clean_log_file(self) -> None:
-        """
-        Determine if log file should be cleaned
-
-        We check if we're near the max file size, and if so, we clean the log file
-        """
-
-        if not self.log_filepath.exists():
-            return
-
-        if self.log_filepath.stat().st_size < self.file_size_redline:
-            return
-
-        # Check if backup log file exists
-        backup_log_filepath = self.log_filepath.with_suffix(".old.log")
-        try:
-            if backup_log_filepath.exists():
-                backup_log_filepath.unlink()
-
-            # Rename current log file to backup log file
-            self.log_filepath.rename(backup_log_filepath)
-        except Exception as e:
-            print(f"Failed to clean log file: {e}")
+        self.log_filepath = Path(f"{base_path}/{self.log_filename}").expanduser()
 
 
     def _clean_prior_version_logs(self) -> None:
         """
         Clean logs from old Patcher versions
 
-        If file is more than a week old, assume it's unused and delete it
+        Keep 10 latest logs
         """
 
-        time_threshold = time.time() - 60 * 60 * 24 * 7
+        paths = [
+            self.log_filepath.parent,        # ~/Library/Logs/Dortania
+            self.log_filepath.parent.parent, # ~/Library/Logs (old location)
+        ]
 
-        for file in self.log_filepath.parent.glob("OpenCore-Patcher*"):
-            if not file.is_file():
-                continue
+        logs = []
 
-            if not file.name.endswith(".log"):
-                continue
+        for path in paths:
+            for file in path.glob("OpenCore-Patcher*"):
+                if not file.is_file():
+                    continue
 
-            if file.name == self.log_filename:
-                continue
+                if not file.name.endswith(".log"):
+                    continue
 
-            if file.stat().st_mtime < time_threshold:
-                try:
-                    file.unlink()
-                except Exception as e:
-                    print(f"Failed to clean prior version log file: {e}")
+                if file.name == self.log_filename:
+                    continue
+
+                logs.append(file)
+
+        logs.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+
+        for log in logs[9:]:
+            try:
+                log.unlink()
+            except Exception as e:
+                logging.error(f"Failed to delete log file: {e}")
 
 
     def _fix_file_permission(self) -> None:
@@ -128,15 +121,21 @@ class InitializeLoggingSupport:
         if os.geteuid() != 0:
             return
 
-        result = subprocess.run(["chmod", "777", self.log_filepath], capture_output=True)
-        if result.returncode != 0:
-            logging.error(f"Failed to fix log file permissions")
-            if result.stdout:
-                logging.error("STDOUT:")
-                logging.error(result.stdout.decode("utf-8"))
-            if result.stderr:
-                logging.error("STDERR:")
-                logging.error(result.stderr.decode("utf-8"))
+        paths = [
+            self.log_filepath,        # ~/Library/Logs/Dortania/OpenCore-Patcher_{version}_{date}.log
+            self.log_filepath.parent, # ~/Library/Logs/Dortania
+        ]
+
+        for path in paths:
+            result = subprocess.run(["chmod", "777", path], capture_output=True)
+            if result.returncode != 0:
+                logging.error(f"Failed to fix log file permissions")
+                if result.stdout:
+                    logging.error("STDOUT:")
+                    logging.error(result.stdout.decode("utf-8"))
+                if result.stderr:
+                    logging.error("STDERR:")
+                    logging.error(result.stderr.decode("utf-8"))
 
 
     def _initialize_logging_configuration(self, log_to_file: bool = True) -> None:

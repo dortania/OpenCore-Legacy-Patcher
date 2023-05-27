@@ -6,10 +6,9 @@
   - Rework logging handler:
     - Implement formatted logging
       - Allowing easier debugging
-    - Implement per-version file logging
-      - ex. OpenCore-Patcher-0.6.7.log
-    - Remove old logs after 1 week of inactivity
-    - Reduce log rollover to 1MB
+    - Implement per-version, per-run file logging
+      - ex. OpenCore-Patcher (0.6.7) (2021-12-31-12-34-56).log
+    - Keep only 10 latest log files
     - Reveal log file in Finder on main thread crash
   - Resolve SharedSupport.dmg pathing error during macOS Installer Verification
     - Applicable to systems with 2 (or more) USB Installers with the same name plugged in
