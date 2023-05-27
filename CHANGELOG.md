@@ -3,6 +3,10 @@
 ## 0.6.7
 - Resolve partition buttons overlapping in Install OpenCore UI
   - ex. "EFI" and additional FAT32 partitions on a single drive
+- Re-enable mediaanalysisd on Ventura
+  - Allows for Live Text support on systems with3802 GPUs
+    - ie. Intel Ivy Bridge and Haswell, Nvidia Kepler
+  - Previously disabled due to high instability in Photos with Face Scanning, now resolved
 - Backend changes:
   - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
   - Resolve payloads path being mis-routed during CLI calls
