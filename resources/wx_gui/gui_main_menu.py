@@ -8,10 +8,11 @@ import webbrowser
 from resources.wx_gui import (
     gui_build,
     gui_macos_installer_download,
-    gui_sys_patch,
     gui_support,
     gui_help,
     gui_settings,
+    gui_sys_patch_start,
+    gui_sys_patch_display,
     gui_update,
 )
 from resources import (
@@ -278,7 +279,7 @@ class MainFrame(wx.Frame):
 
 
     def on_post_install_root_patch(self, event: wx.Event = None):
-        gui_sys_patch.SysPatchFrame(
+        gui_sys_patch_display.SysPatchDisplayFrame(
             parent=self,
             title=self.title,
             global_constants=self.constants,

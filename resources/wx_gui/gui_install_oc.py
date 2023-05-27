@@ -3,7 +3,7 @@ import threading
 import logging
 import traceback
 
-from resources.wx_gui import gui_main_menu, gui_support, gui_sys_patch
+from resources.wx_gui import gui_main_menu, gui_support, gui_sys_patch_display
 from resources import constants, install
 from data import os_data
 
@@ -284,7 +284,7 @@ class InstallOCFrame(wx.Frame):
                 popup_message.ShowModal()
                 if popup_message.GetReturnCode() == wx.ID_YES:
                     self.Hide()
-                    gui_sys_patch.SysPatchFrame(
+                    gui_sys_patch_display.SysPatchDisplayFrame(
                         parent=None,
                         title=self.title,
                         global_constants=self.constants,

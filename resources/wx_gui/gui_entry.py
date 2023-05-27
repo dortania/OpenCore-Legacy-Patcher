@@ -9,8 +9,7 @@ from resources.wx_gui import (
     gui_main_menu,
     gui_build,
     gui_install_oc,
-    gui_sys_patch,
-    gui_support,
+    gui_sys_patch_start,
     gui_update,
 )
 from resources.sys_patch import sys_patch_detect
@@ -23,7 +22,7 @@ class SupportedEntryPoints:
     MAIN_MENU  = gui_main_menu.MainFrame
     BUILD_OC   = gui_build.BuildFrame
     INSTALL_OC = gui_install_oc.InstallOCFrame
-    SYS_PATCH  = gui_sys_patch.SysPatchFrame
+    SYS_PATCH  = gui_sys_patch_start.SysPatchStartFrame
     UPDATE_APP = gui_update.UpdateFrame
 
 
@@ -49,7 +48,7 @@ class EntryPoint:
         self._generate_base_data()
 
         if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv:
-            entry = gui_sys_patch.SysPatchFrame
+            entry = gui_sys_patch_start.SysPatchStartFrame
             patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
 
         logging.info(f"Entry point set: {entry.__name__}")
@@ -64,9 +63,9 @@ class EntryPoint:
         atexit.register(self.OnCloseFrame)
 
         if "--gui_patch" in sys.argv:
-            self.frame.start_root_patching(patches)
+            self.frame.start_root_patching()
         elif "--gui_unpatch" in sys.argv:
-            self.frame.revert_root_patching(patches)
+            self.frame.revert_root_patching()
 
         self.app.MainLoop()
 
