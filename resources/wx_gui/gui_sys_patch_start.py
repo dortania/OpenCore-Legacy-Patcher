@@ -44,6 +44,22 @@ class SysPatchStartFrame(wx.Frame):
         super(SysPatchStartFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, self.constants).generate()
 
+
+        logging.info("Display Properties before CentreOnScreen() call:")
+        logging.info(f"  Screen Size: {wx.DisplaySize()}")
+        logging.info(f"  Screen Position: {wx.Display().GetGeometry().GetPosition()}")
+        logging.info(f"  Frame Size: {self.GetSize()}")
+        logging.info(f"  Frame Position: {self.GetPosition()}")
+
+        self.CentreOnScreen()
+
+        logging.info("Display Properties after CentreOnScreen() call:")
+        logging.info(f"  Screen Size: {wx.DisplaySize()}")
+        logging.info(f"  Screen Position: {wx.Display().GetGeometry().GetPosition()}")
+        logging.info(f"  Frame Size: {self.GetSize()}")
+        logging.info(f"  Frame Position: {self.GetPosition()}")
+
+
         if self.patches == {}:
             self.patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
 
@@ -208,7 +224,6 @@ class SysPatchStartFrame(wx.Frame):
         dialog.SetSize((-1, return_button.GetPosition().y + return_button.GetSize().height + 33))
         self.frame_modal = dialog
         dialog.ShowWindowModal()
-        self.Centre()
 
 
     def start_root_patching(self):
