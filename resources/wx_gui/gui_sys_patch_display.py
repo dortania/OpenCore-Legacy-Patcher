@@ -1,8 +1,10 @@
 
 import wx
 import os
+import time
 import logging
 import plistlib
+import threading
 
 from pathlib import Path
 
@@ -43,7 +45,6 @@ class SysPatchDisplayFrame(wx.Frame):
         self.frame_modal = wx.Dialog(self.frame, title=title, size=(360, 200))
 
         self._generate_elements_display_patches(self.frame_modal)
-        self.frame_modal.ShowWindowModal()
 
         if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
             if self.available_patches is False:
@@ -68,13 +69,45 @@ class SysPatchDisplayFrame(wx.Frame):
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
         title_label.Centre(wx.HORIZONTAL)
 
-        # Label: Available patches:
-        available_label = wx.StaticText(frame, label="Available patches for your system:", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 10))
+        # Label: Fetching patches...
+        available_label = wx.StaticText(frame, label="Fetching patches for host", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 10))
         available_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
         available_label.Centre(wx.HORIZONTAL)
 
+        # Progress bar
+        progress_bar = wx.Gauge(frame, range=100, pos=(-1, available_label.GetPosition()[1] + available_label.GetSize()[1] + 10), size=(250, 20))
+        progress_bar.Centre(wx.HORIZONTAL)
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
+
+        # Set window height
+        frame.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
+
         # Labels: {patch name}
-        patches: dict = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+        patches: dict = {}
+        def _fetch_patches(self) -> None:
+            nonlocal patches
+            patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            time.sleep(5)
+
+        thread = threading.Thread(target=_fetch_patches, args=(self,))
+        thread.start()
+
+        frame.ShowWindowModal()
+
+        while thread.is_alive():
+            wx.Yield()
+
+
+        frame.Close()
+
+        progress_bar.Hide()
+        progress_bar_animation.stop_pulse()
+
+        available_label.SetLabel("Available patches for your system:")
+        available_label.Centre(wx.HORIZONTAL)
+
+
         can_unpatch: bool = patches["Validation: Unpatching Possible"]
 
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
@@ -215,7 +248,8 @@ class SysPatchDisplayFrame(wx.Frame):
             revert_button.Bind(wx.EVT_BUTTON, gui_support.RelaunchApplicationAsRoot(frame, self.constants).relaunch)
 
         # Set frame size
-        frame.SetSize((-1, return_button.GetPosition().y + return_button.GetSize().height + 35))
+        frame.SetSize((-1, return_button.GetPosition().y + return_button.GetSize().height + 15))
+        frame.ShowWindowModal()
 
 
     def on_start_root_patching(self, patches: dict):
