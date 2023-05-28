@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import pprint
 import logging
 import threading
 import traceback
@@ -209,12 +210,7 @@ class InitializeLoggingSupport:
             Reroute traceback in main thread to logging module
             """
             logging.error("Uncaught exception in main thread", exc_info=(type, value, tb))
-
-            logging.info("System Information:")
-            logging.info(f"  Host Model Identifier: {self.constants.computer.real_model}")
-            logging.info(f"  macOS Version: {self.constants.detected_os_version}")
-            logging.info(f"  Patcher Version: {self.constants.patcher_version}")
-            logging.info(f"  Arguments passed to Patcher: {sys.argv}")
+            self._display_debug_properties()
 
             if self.constants.cli_mode is True:
                 return
@@ -257,3 +253,19 @@ class InitializeLoggingSupport:
 
         sys.excepthook = self.original_excepthook
         threading.excepthook = self.original_thread_excepthook
+
+
+    def _display_debug_properties(self) -> None:
+        """
+        Display debug properties, primarily after main thread crash
+        """
+        logging.info("Debug Properties:")
+        logging.info(f"  Effective User ID: {os.geteuid()}")
+        logging.info(f"  Effective Group ID: {os.getegid()}")
+        logging.info(f"  Real User ID: {os.getuid()}")
+        logging.info(f"  Real Group ID: {os.getgid()}")
+        logging.info("  Arguments passed to Patcher:")
+        for arg in sys.argv:
+            logging.info(f"    {arg}")
+
+        logging.info(f"Host Properties:\n{pprint.pformat(self.constants.computer.__dict__, indent=4)}")
