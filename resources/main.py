@@ -92,7 +92,7 @@ class OpenCoreLegacyPatcher:
 
         # Generate defaults
         defaults.GenerateDefaults(self.computer.real_model, True, self.constants)
-        threading.Thread(target=analytics_handler.Analytics, args=(self.constants,)).start()
+        threading.Thread(target=analytics_handler.Analytics(self.constants).send_analytics).start()
 
         if utilities.check_cli_args() is None:
             self.constants.cli_mode = False

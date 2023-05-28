@@ -9,7 +9,7 @@ import applescript
 
 from pathlib import Path
 
-from resources import constants
+from resources import constants, analytics_handler
 
 
 class InitializeLoggingSupport:
@@ -210,6 +210,12 @@ class InitializeLoggingSupport:
             """
             logging.error("Uncaught exception in main thread", exc_info=(type, value, tb))
 
+            logging.info("System Information:")
+            logging.info(f"  Host Model Identifier: {self.constants.computer.real_model}")
+            logging.info(f"  macOS Version: {self.constants.detected_os_version}")
+            logging.info(f"  Patcher Version: {self.constants.patcher_version}")
+            logging.info(f"  Arguments passed to Patcher: {sys.argv}")
+
             if self.constants.cli_mode is True:
                 return
 
@@ -217,12 +223,21 @@ class InitializeLoggingSupport:
             error_msg += f"{type.__name__}: {value}"
             if tb:
                 error_msg += f"\n\n{traceback.extract_tb(tb)[-1]}"
-            error_msg += "\n\nPlease report this error on our Discord server."
+            error_msg += "\n\nSend crash report to Dortania?"
 
-            applescript.AppleScript(f'display dialog "{error_msg}" with title "OpenCore Legacy Patcher ({self.constants.patcher_version})" buttons {{"OK"}} default button "OK" with icon caution giving up after 30').run()
+            # applescript.AppleScript(f'display dialog "{error_msg}" with title "OpenCore Legacy Patcher ({self.constants.patcher_version})" buttons {{"OK"}} default button "OK" with icon caution giving up after 30').run()
 
-            # Open log location
-            subprocess.run(["open", "--reveal", self.log_filepath])
+            # Ask user if they want to send crash report
+            try:
+                result = applescript.AppleScript(f'display dialog "{error_msg}" with title "OpenCore Legacy Patcher ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution giving up after 30').run()
+            except Exception as e:
+                logging.error(f"Failed to display crash report dialog: {e}")
+                return
+
+            if result[applescript.AEType(b'bhit')] != "Yes":
+                return
+
+            threading.Thread(target=analytics_handler.Analytics(self.constants).send_crash_report, args=(self.log_filepath,)).start()
 
 
         def custom_thread_excepthook(args) -> None:
