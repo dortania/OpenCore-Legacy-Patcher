@@ -1,7 +1,6 @@
 
 import wx
 import os
-import time
 import logging
 import plistlib
 import threading
@@ -88,7 +87,6 @@ class SysPatchDisplayFrame(wx.Frame):
         def _fetch_patches(self) -> None:
             nonlocal patches
             patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
-            time.sleep(5)
 
         thread = threading.Thread(target=_fetch_patches, args=(self,))
         thread.start()
