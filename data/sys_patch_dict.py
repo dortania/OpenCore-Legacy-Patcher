@@ -148,7 +148,7 @@ class SystemPatchDictionary():
                         "defaults write /Library/Preferences/.GlobalPreferences.plist InternalDebugUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                         "defaults write /Library/Preferences/.GlobalPreferences.plist WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                         # MenuBar2 breaks macOS if enabled before patching
-                        "defaults write -g Amy.MenuBar2Beta -bool false": True,
+                        "defaults write ~/Library/Preferences/.GlobalPreferences.plist Amy.MenuBar2Beta -bool false": True,
 
                     },
                 },
