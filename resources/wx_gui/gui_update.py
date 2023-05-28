@@ -38,10 +38,10 @@ class UpdateFrame(wx.Frame):
         self.application_path = self.constants.payload_path / "OpenCore-Patcher.app"
         self.screen_location: wx.Point = screen_location
         if parent:
-            self.parent.Centre()
+            gui_support.Centre(self.parent, self.constants)
             self.screen_location = parent.GetScreenPosition()
         else:
-            self.Centre()
+            gui_support.Centre(self, self.constants)
             self.screen_location = self.GetScreenPosition()
 
 
@@ -82,7 +82,7 @@ class UpdateFrame(wx.Frame):
         self.progress_bar = progress_bar
         self.progress_bar_animation = progress_bar_animation
 
-        self.frame.Centre()
+        gui_support.Centre(self.frame, self.constants)
         self.frame.Show()
         wx.Yield()
 

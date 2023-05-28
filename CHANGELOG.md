@@ -20,6 +20,7 @@
   - Resolve SharedSupport.dmg pathing error during macOS Installer Verification
     - Applicable to systems with 2 (or more) USB Installers with the same name plugged in
   - Resolve payloads path being mis-routed during CLI calls
+  - Add UI when fetching root patches for host
 
 ## 0.6.6
 - Implement option to disable ColorSync downgrade on HD 3000 Macs

@@ -39,7 +39,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         self._generate_elements()
 
-        self.Centre()
+        gui_support.Centre(self, self.constants)
         self.Show()
 
         self._populate_installers()
@@ -79,7 +79,6 @@ class macOSInstallerFlashFrame(wx.Frame):
             wx.Yield()
 
         frame_modal = wx.Dialog(self, title=self.title, size=(350, 200))
-        frame_modal.Centre(wx.HORIZONTAL)
 
         # Title: Select macOS Installer
         title_label = wx.StaticText(frame_modal, label="Select local macOS Installer", pos=(-1,5))

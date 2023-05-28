@@ -33,7 +33,7 @@ class InstallOCFrame(wx.Frame):
         if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
             self.constants.update_stage = gui_support.AutoUpdateStages.INSTALLING
 
-        self.Centre()
+        gui_support.Centre(self, self.constants)
         self.Show()
 
         self._display_disks()
