@@ -38,7 +38,7 @@ class BuildFrame(wx.Frame):
         if self.constants.update_stage != gui_support.AutoUpdateStages.INACTIVE:
             self.constants.update_stage = gui_support.AutoUpdateStages.BUILDING
 
-        gui_support.Centre(self, self.constants)
+        self.Centre()
         self.frame_modal.ShowWindowModal()
 
         self._invoke_build()

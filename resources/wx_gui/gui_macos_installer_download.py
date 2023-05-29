@@ -84,7 +84,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         """
         super(macOSInstallerDownloadFrame, self).__init__(None, title=self.title, size=(300, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, self.constants).generate()
-        gui_support.Centre(self, self.constants)
+        self.Centre()
 
         # Title: Pulling installer catalog
         title_label = wx.StaticText(self, label="Pulling installer catalog", pos=(-1,5))

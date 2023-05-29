@@ -32,7 +32,7 @@ class SysPatchDisplayFrame(wx.Frame):
         else:
             super().__init__(parent, title=title, size=(360, 200), style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER ^ wx.MAXIMIZE_BOX)
             self.frame = self
-            gui_support.Centre(self.frame, self.constants)
+            self.frame.Centre()
 
         self.title = title
         self.constants: constants.Constants = global_constants
