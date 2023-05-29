@@ -221,11 +221,9 @@ class InitializeLoggingSupport:
                 error_msg += f"\n\n{traceback.extract_tb(tb)[-1]}"
             error_msg += "\n\nSend crash report to Dortania?"
 
-            # applescript.AppleScript(f'display dialog "{error_msg}" with title "OpenCore Legacy Patcher ({self.constants.patcher_version})" buttons {{"OK"}} default button "OK" with icon caution giving up after 30').run()
-
             # Ask user if they want to send crash report
             try:
-                result = applescript.AppleScript(f'display dialog "{error_msg}" with title "OpenCore Legacy Patcher ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution giving up after 30').run()
+                result = applescript.AppleScript(f'display dialog "{error_msg}" with title "OpenCore Legacy Patcher ({self.constants.patcher_version})" buttons {{"Yes", "No"}} default button "Yes" with icon caution').run()
             except Exception as e:
                 logging.error(f"Failed to display crash report dialog: {e}")
                 return
