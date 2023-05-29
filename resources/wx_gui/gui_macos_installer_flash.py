@@ -299,7 +299,11 @@ class macOSInstallerFlashFrame(wx.Frame):
                 total_bytes_written = initial_bytes_written
             bytes_written = total_bytes_written - initial_bytes_written
             wx.CallAfter(bytes_written_label.SetLabel, f"Bytes Written: {bytes_written:.2f} MB")
-            wx.CallAfter(progress_bar.SetValue, int(bytes_written))
+            try:
+                bytes_written = int(bytes_written)
+            except:
+                bytes_written = 0
+            wx.CallAfter(progress_bar.SetValue, bytes_written)
             wx.Yield()
 
         if self.result is False:
