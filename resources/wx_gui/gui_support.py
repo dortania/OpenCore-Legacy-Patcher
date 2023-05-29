@@ -23,6 +23,53 @@ class AutoUpdateStages:
     FINISHED = 5
 
 
+class Centre:
+    """
+    Alternative to wx.Frame.Centre() for macOS Ventura+ on non-Metal GPUs
+    ----------
+    As reported by socamx#3874, all of their non-Metal Mac minis would incorrectly centre
+    at the top of the screen, rather than the screen centre. Half of the window frame would
+    be off-screen, making it rather difficult to grab frame handle and move the window.
+    This bug is only triggered when the application is launched via AppleScript,
+    ie. Relaunch as root for root patching.
+    As calculating screen centre is trivial, this is safe for all non-Metal Macs.
+    Test unit specs:
+    - Macmini4,1 (2010, Nvidia Tesla)
+    - Asus VP228HE 21.5" Display (1920x1080)
+    """
+
+    def __init__(self, frame: wx.Frame, global_constants: constants.Constants) -> None:
+        self.frame: wx.Frame = frame
+        self.constants: constants.Constants = global_constants
+
+        self._centre()
+
+
+    def _centre(self) -> None:
+        """
+        Calculate centre position of screen and set window position
+        """
+        if self.constants.detected_os < os_data.os_data.ventura:
+            self.frame.Centre()
+            return
+
+        if CheckProperties(self.constants).host_is_non_metal() is False:
+            self.frame.Centre()
+            return
+
+        # Get screen resolution
+        screen_resolution = wx.DisplaySize()
+        logging.info(f"Screen resolution: {screen_resolution}")
+        window_size = self.frame.GetSize()
+        logging.info(f"Window size: {window_size}")
+
+        # Calculate window position
+        x_pos = int((screen_resolution[0] - window_size[0]) / 2)
+        y_pos = int((screen_resolution[1] - window_size[1]) / 2)
+
+        self.frame.SetPosition((x_pos, y_pos))
+
+
 class GenerateMenubar:
 
     def __init__(self, frame: wx.Frame, global_constants: constants.Constants) -> None:

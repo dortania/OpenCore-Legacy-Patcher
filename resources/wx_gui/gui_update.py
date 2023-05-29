@@ -41,7 +41,7 @@ class UpdateFrame(wx.Frame):
             self.parent.Centre()
             self.screen_location = parent.GetScreenPosition()
         else:
-            self.Centre()
+            gui_support.Centre(self, self.constants)
             self.screen_location = self.GetScreenPosition()
 
 

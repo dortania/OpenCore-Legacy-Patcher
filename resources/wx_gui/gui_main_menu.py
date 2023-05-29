@@ -39,8 +39,9 @@ class MainFrame(wx.Frame):
 
         self._generate_elements()
 
-        self.Centre()
+        gui_support.Centre(self, self.constants)
         self.Show()
+
 
         self._preflight_checks()
 

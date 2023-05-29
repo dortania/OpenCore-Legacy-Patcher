@@ -48,7 +48,7 @@ class SysPatchStartFrame(wx.Frame):
         if not (isinstance(delay, int) | isinstance(delay, float)):
             delay = 1
         time.sleep(delay)
-        self.Centre()
+        gui_support.Centre(self, self.constants)
 
         if self.patches == {}:
             self.patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
