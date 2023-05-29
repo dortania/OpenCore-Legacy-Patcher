@@ -259,6 +259,10 @@ class InitializeLoggingSupport:
         """
         Display debug properties, primarily after main thread crash
         """
+        logging.info("Host Properties:")
+        logging.info(f"  XNU Version: {self.constants.detected_os}.{self.constants.detected_os_minor}")
+        logging.info(f"  XNU Build: {self.constants.detected_os_build}")
+        logging.info(f"  macOS Version: {self.constants.detected_os_version}")
         logging.info("Debug Properties:")
         logging.info(f"  Effective User ID: {os.geteuid()}")
         logging.info(f"  Effective Group ID: {os.getegid()}")
