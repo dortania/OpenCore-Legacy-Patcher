@@ -1,11 +1,10 @@
 # Entry point for the wxPython GUI
 import wx
 import sys
-import time
 import atexit
 import logging
 
-from resources import constants, global_settings
+from resources import constants
 from resources.wx_gui import (
     gui_main_menu,
     gui_build,
@@ -38,10 +37,6 @@ class EntryPoint:
 
 
     def _generate_base_data(self) -> None:
-        delay = global_settings.GlobalEnviromentSettings().read_property("APP_DELAY_TIME")
-        if not (isinstance(delay, int) | isinstance(delay, float)):
-            delay = 1
-        time.sleep(delay)
         self.app = wx.App()
         self.app.SetAppName(self.constants.patcher_name)
 
