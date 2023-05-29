@@ -39,7 +39,7 @@ class EntryPoint:
 
     def _generate_base_data(self) -> None:
         delay = global_settings.GlobalEnviromentSettings().read_property("APP_DELAY_TIME")
-        if not isinstance(delay, int or float):
+        if not (isinstance(delay, int) | isinstance(delay, float)):
             delay = 1
         time.sleep(delay)
         self.app = wx.App()
