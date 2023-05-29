@@ -104,6 +104,7 @@ class SysPatchStartFrame(wx.Frame):
         if kdk_download_obj.download_complete is False:
             return False
 
+        logging.info("KDK download complete, validating with hdiutil")
         header.SetLabel(f"Validating KDK: {self.kdk_obj.kdk_url_build}")
         header.Centre(wx.HORIZONTAL)
 
@@ -219,8 +220,7 @@ class SysPatchStartFrame(wx.Frame):
 
         if self.patches["Settings: Kernel Debug Kit missing"] is True:
             if self._kdk_download(self) is False:
-                self.on_return_to_main_menu()
-                return
+                sys.exit(1)
 
         self._generate_modal(self.patches, "Root Patching")
         self.return_button.Disable()

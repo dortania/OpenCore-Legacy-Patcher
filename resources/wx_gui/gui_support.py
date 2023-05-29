@@ -106,6 +106,7 @@ class CheckProperties:
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
 
+
     def host_can_build(self):
         """
         Check if host supports building OpenCore configs
