@@ -7,6 +7,9 @@
   - Allows for Live Text support on systems with3802 GPUs
     - ie. Intel Ivy Bridge and Haswell, Nvidia Kepler
   - Previously disabled due to high instability in Photos with Face Scanning, now resolved
+- Update non-Metal Binaries:
+  - Resolve window placement defaulting past top of screen for some apps
+    - ex. OpenCore-Patcher.app during root patching
 - Backend changes:
   - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
   - Rework logging handler:
@@ -21,6 +24,8 @@
     - Applicable to systems with 2 (or more) USB Installers with the same name plugged in
   - Resolve payloads path being mis-routed during CLI calls
   - Add UI when fetching root patches for host
+- Increment Binaries:
+  - PatcherSupportPkg 1.1.1 - release
 
 ## 0.6.6
 - Implement option to disable ColorSync downgrade on HD 3000 Macs
