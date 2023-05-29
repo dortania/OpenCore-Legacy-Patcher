@@ -39,7 +39,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         self._generate_elements()
 
-        gui_support.Centre(self, self.constants)
+        self.Centre()
         self.Show()
 
         self._populate_installers()

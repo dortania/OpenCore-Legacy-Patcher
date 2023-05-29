@@ -44,11 +44,7 @@ class SysPatchStartFrame(wx.Frame):
 
         super(SysPatchStartFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, self.constants).generate()
-        delay = global_settings.GlobalEnviromentSettings().read_property("APP_DELAY_TIME")
-        if not (isinstance(delay, int) | isinstance(delay, float)):
-            delay = 1
-        time.sleep(delay)
-        gui_support.Centre(self, self.constants)
+        self.Centre()
 
         if self.patches == {}:
             self.patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
