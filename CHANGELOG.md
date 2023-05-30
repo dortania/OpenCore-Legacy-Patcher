@@ -26,6 +26,8 @@
     - Applicable to systems with 2 (or more) USB Installers with the same name plugged in
   - Resolve payloads path being mis-routed during CLI calls
   - Add UI when fetching root patches for host
+  - Remove progress bar work-around for non-Metal in Monterey and later
+    - Requires host to have been patched with PatcherSupportPkg 1.1.2 or newer
 - Increment Binaries:
   - PatcherSupportPkg 1.1.2 - release
 
