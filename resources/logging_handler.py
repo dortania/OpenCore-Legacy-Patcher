@@ -213,6 +213,7 @@ class InitializeLoggingSupport:
             self._display_debug_properties()
 
             if self.constants.cli_mode is True:
+                threading.Thread(target=analytics_handler.Analytics(self.constants).send_crash_report, args=(self.log_filepath,)).start()
                 return
 
             error_msg = f"OpenCore Legacy Patcher encountered the following internal error:\n\n"

@@ -52,6 +52,10 @@ class EntryPoint:
             patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
 
         logging.info(f"Entry point set: {entry.__name__}")
+
+        # Normally set by main.py, but transitions from CLI mode may not have this set
+        self.constants.gui_mode = True
+
         self.frame: wx.Frame = entry(
             None,
             title=f"{self.constants.patcher_name} ({self.constants.patcher_version})",

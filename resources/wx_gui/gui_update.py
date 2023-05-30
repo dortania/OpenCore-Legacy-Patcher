@@ -52,6 +52,9 @@ class UpdateFrame(wx.Frame):
                     version_label = dict[key]["Version"]
                     url = dict[key]["Link"]
                     break
+            else:
+                wx.MessageBox("Failed to get update info", "Critical Error")
+                sys.exit(1)
 
         self.version_label = version_label
         self.url = url

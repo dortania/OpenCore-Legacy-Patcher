@@ -48,7 +48,7 @@ class CreateBinary:
         """
 
         os.chdir(Path(__file__).resolve().parent)
-        print(f"Current Working Directory: \n\t{os.getcwd()}")
+        print(f"Current Working Directory:\n- {os.getcwd()}")
 
 
     def _parse_arguments(self):
