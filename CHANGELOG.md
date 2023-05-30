@@ -12,6 +12,8 @@
     - ex. OpenCore-Patcher.app during root patching
   - Resolve indeterminate progress bars not rendering with wxWidgets in Monterey and later
     - ex. OpenCore-Patcher.app
+- UI changes:
+  - Add "Show Log File" button to menubar
 - Backend changes:
   - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
   - Rework logging handler:

@@ -27,6 +27,7 @@ VALID_ANALYTICS_ENTRIES: dict = {
 VALID_CRASH_ENTRIES: dict = {
     'KEY':                 str,               # Prevent abuse (embedded at compile time)
     'APPLICATION_VERSION': str,               # ex. 0.2.0
+    'APPLICATION_COMMIT':  str,               # ex. 0.2.0 or {commit hash if not a release}
     'OS_VERSION':          str,               # ex. 10.15.7
     'MODEL':               str,               # ex. MacBookPro11,5
     'TIMESTAMP':           datetime.datetime, # ex. 2021-09-01-12-00-00
@@ -67,6 +68,7 @@ class Analytics:
         crash_data= {
             "KEY":                 SITE_KEY,
             "APPLICATION_VERSION": self.version,
+            "APPLICATION_COMMIT":  self.constants.commit_info[2].split("/")[-1],
             "OS_VERSION":          self.os,
             "MODEL":               self.model,
             "TIMESTAMP":           self.date,

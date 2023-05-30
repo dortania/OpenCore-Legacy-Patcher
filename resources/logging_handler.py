@@ -73,7 +73,7 @@ class InitializeLoggingSupport:
                     base_path = Path("/Users/Shared")
 
         self.log_filepath = Path(f"{base_path}/{self.log_filename}").expanduser()
-
+        self.constants.log_filepath = self.log_filepath
 
     def _clean_prior_version_logs(self) -> None:
         """

@@ -40,12 +40,15 @@ class GenerateMenubar:
         aboutItem = fileMenu.Append(wx.ID_ABOUT, "&About OpenCore Legacy Patcher")
         fileMenu.AppendSeparator()
         relaunchItem = fileMenu.Append(wx.ID_ANY, "&Relaunch as Root")
+        fileMenu.AppendSeparator()
+        revealLogItem = fileMenu.Append(wx.ID_ANY, "&Reveal Log File")
 
         menubar.Append(fileMenu, "&File")
         self.frame.SetMenuBar(menubar)
 
         self.frame.Bind(wx.EVT_MENU, lambda event: gui_about.AboutFrame(self.constants), aboutItem)
         self.frame.Bind(wx.EVT_MENU, lambda event: RelaunchApplicationAsRoot(self.frame, self.constants).relaunch(None), relaunchItem)
+        self.frame.Bind(wx.EVT_MENU, lambda event: subprocess.run(["open", "-R", self.constants.log_filepath]), revealLogItem)
 
         if os.geteuid() == 0:
             relaunchItem.Enable(False)
