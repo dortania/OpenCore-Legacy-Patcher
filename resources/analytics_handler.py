@@ -65,10 +65,12 @@ class Analytics:
         if not log_file.exists():
             return
 
+        commit_info = self.constants.commit_info[0].split("/")[-1] + "_" + self.constants.commit_info[1].split("T")[0] + "_" + self.constants.commit_info[2].split("/")[-1]
+
         crash_data= {
             "KEY":                 SITE_KEY,
             "APPLICATION_VERSION": self.version,
-            "APPLICATION_COMMIT":  self.constants.commit_info[2].split("/")[-1],
+            "APPLICATION_COMMIT":  commit_info,
             "OS_VERSION":          self.os,
             "MODEL":               self.model,
             "TIMESTAMP":           self.date,
