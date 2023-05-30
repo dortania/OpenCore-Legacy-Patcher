@@ -8,6 +8,7 @@
     - ie. Intel Ivy Bridge and Haswell, Nvidia Kepler
   - Previously disabled due to high instability in Photos with Face Scanning, now resolved
 - Resolve crashing after patching with MenuBar2 implementation enabled
+  - Setting must be re-enabled after patching
 - Backend changes:
   - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
   - Resolve payloads path being mis-routed during CLI calls
