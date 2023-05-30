@@ -7,6 +7,8 @@
   - Allows for Live Text support on systems with3802 GPUs
     - ie. Intel Ivy Bridge and Haswell, Nvidia Kepler
   - Previously disabled due to high instability in Photos with Face Scanning, now resolved
+- Work-around crashing after patching with MenuBar2 implementation enabled
+  - Setting must be re-enabled after patching
 - Update non-Metal Binaries:
   - Resolve window placement defaulting past top of screen for some apps
     - ex. OpenCore-Patcher.app during root patching
