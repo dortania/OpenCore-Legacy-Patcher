@@ -50,7 +50,7 @@ class arguments:
         """
         Enter validation mode
         """
-
+        logging.info("Set Validation Mode")
         validation.PatcherValidation(self.constants)
 
 
@@ -59,9 +59,9 @@ class arguments:
         Start root volume patching
         """
 
-        logging.info("- Set System Volume patching")
+        logging.info("Set System Volume patching")
         if "Library/InstallerSandboxes/" in str(self.constants.payload_path):
-            logging.info("- Running from Installer Sandbox")
+            logging.info("- Running from Installer Sandbox, blocking OS updaters")
             thread = threading.Thread(target=sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, None).start_patch)
             thread.start()
             while thread.is_alive():
@@ -75,7 +75,7 @@ class arguments:
         """
         Start root volume unpatching
         """
-        logging.info("- Set System Volume unpatching")
+        logging.info("Set System Volume unpatching")
         sys_patch.PatchSysVolume(self.constants.custom_model or self.constants.computer.real_model, self.constants, None).start_unpatch()
 
 
@@ -84,7 +84,7 @@ class arguments:
         Start root volume auto patching
         """
 
-        logging.info("- Set Auto patching")
+        logging.info("Set Auto patching")
         sys_patch_auto.AutomaticSysPatch(self.constants).start_auto_patch()
 
 
@@ -92,6 +92,7 @@ class arguments:
         """
         Start config building process
         """
+        logging.info("Set OpenCore Build")
 
         if self.args.model:
             if self.args.model:

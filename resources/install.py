@@ -88,13 +88,13 @@ class tui_disk_installation:
 
     def install_opencore(self, full_disk_identifier: str):
         # TODO: Apple Script fails in Yosemite(?) and older
-        logging.info(f"- Mounting partition: {full_disk_identifier}")
+        logging.info(f"Mounting partition: {full_disk_identifier}")
         if self.constants.detected_os >= os_data.os_data.el_capitan and not self.constants.recovery_status:
             try:
                 applescript.AppleScript(f'''do shell script "diskutil mount {full_disk_identifier}" with prompt "OpenCore Legacy Patcher needs administrator privileges to mount this volume." with administrator privileges without altering line endings''').run()
             except applescript.ScriptError as e:
                 if "User canceled" in str(e):
-                    logging.info("- Mount cancelled by user")
+                    logging.info("Mount cancelled by user")
                     return
                 logging.info(f"An error occurred: {e}")
                 if utilities.check_boot_mode() == "safe_boot":
@@ -104,7 +104,7 @@ class tui_disk_installation:
         else:
             result = subprocess.run(f"diskutil mount {full_disk_identifier}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if result.returncode != 0:
-                logging.info("- Mount failed")
+                logging.info("Mount failed")
                 logging.info(result.stderr.decode())
                 return
 
@@ -124,18 +124,18 @@ class tui_disk_installation:
             return False
 
         if (mount_path / Path("EFI/OC")).exists():
-            logging.info("- Removing preexisting EFI/OC folder")
+            logging.info("Removing preexisting EFI/OC folder")
             subprocess.run(["rm", "-rf", mount_path / Path("EFI/OC")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if (mount_path / Path("System")).exists():
-            logging.info("- Removing preexisting System folder")
+            logging.info("Removing preexisting System folder")
             subprocess.run(["rm", "-rf", mount_path / Path("System")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if (mount_path / Path("boot.efi")).exists():
-            logging.info("- Removing preexisting boot.efi")
+            logging.info("Removing preexisting boot.efi")
             subprocess.run(["rm", mount_path / Path("boot.efi")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        logging.info("- Copying OpenCore onto EFI partition")
+        logging.info("Copying OpenCore onto EFI partition")
         subprocess.run(["mkdir", "-p", mount_path / Path("EFI")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         subprocess.run(["cp", "-r", self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         subprocess.run(["cp", "-r", self.constants.opencore_release_folder / Path("System"), mount_path / Path("System")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -144,7 +144,7 @@ class tui_disk_installation:
             subprocess.run(["cp", self.constants.opencore_release_folder / Path("boot.efi"), mount_path / Path("boot.efi")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if self.constants.boot_efi is True:
-            logging.info("- Converting Bootstrap to BOOTx64.efi")
+            logging.info("Converting Bootstrap to BOOTx64.efi")
             if (mount_path / Path("EFI/BOOT")).exists():
                 subprocess.run(["rm", "-rf", mount_path / Path("EFI/BOOT")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             Path(mount_path / Path("EFI/BOOT")).mkdir()
@@ -152,23 +152,23 @@ class tui_disk_installation:
             subprocess.run(["rm", "-rf", mount_path / Path("System")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if self._determine_sd_card(sd_type) is True:
-            logging.info("- Adding SD Card icon")
+            logging.info("Adding SD Card icon")
             subprocess.run(["cp", self.constants.icon_path_sd, mount_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         elif ssd_type is True:
-            logging.info("- Adding SSD icon")
+            logging.info("Adding SSD icon")
             subprocess.run(["cp", self.constants.icon_path_ssd, mount_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         elif disk_type == "USB":
-            logging.info("- Adding External USB Drive icon")
+            logging.info("Adding External USB Drive icon")
             subprocess.run(["cp", self.constants.icon_path_external, mount_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         else:
-            logging.info("- Adding Internal Drive icon")
+            logging.info("Adding Internal Drive icon")
             subprocess.run(["cp", self.constants.icon_path_internal, mount_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        logging.info("- Cleaning install location")
+        logging.info("Cleaning install location")
         if not self.constants.recovery_status:
-            logging.info("- Unmounting EFI partition")
+            logging.info("Unmounting EFI partition")
             subprocess.run(["diskutil", "umount", mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
 
-        logging.info("- OpenCore transfer complete")
+        logging.info("OpenCore transfer complete")
 
         return True

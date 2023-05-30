@@ -9,8 +9,9 @@ from resources import network_handler, constants, global_settings
 DATE_FORMAT:      str = "%Y-%m-%d %H-%M-%S"
 ANALYTICS_SERVER: str = ""
 SITE_KEY:         str = ""
+CRASH_URL:        str = ANALYTICS_SERVER + "/crash"
 
-VALID_ENTRIES: dict = {
+VALID_ANALYTICS_ENTRIES: dict = {
     'KEY':                 str,               # Prevent abuse (embedded at compile time)
     'UNIQUE_IDENTITY':     str,               # Host's UUID as SHA1 hash
     'APPLICATION_NAME':    str,               # ex. OpenCore Legacy Patcher
@@ -23,17 +24,60 @@ VALID_ENTRIES: dict = {
     'TIMESTAMP':           datetime.datetime, # ex. 2021-09-01-12-00-00
 }
 
+VALID_CRASH_ENTRIES: dict = {
+    'KEY':                 str,               # Prevent abuse (embedded at compile time)
+    'APPLICATION_VERSION': str,               # ex. 0.2.0
+    'APPLICATION_COMMIT':  str,               # ex. 0.2.0 or {commit hash if not a release}
+    'OS_VERSION':          str,               # ex. 10.15.7
+    'MODEL':               str,               # ex. MacBookPro11,5
+    'TIMESTAMP':           datetime.datetime, # ex. 2021-09-01-12-00-00
+    'CRASH_LOG':           str,               # ex. "This is a crash log"
+}
+
 
 class Analytics:
 
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
+        self.unique_identity = str(self.constants.computer.uuid_sha1)
+        self.application =     str("OpenCore Legacy Patcher")
+        self.version =         str(self.constants.patcher_version)
+        self.os =              str(self.constants.detected_os_version)
+        self.model =           str(self.constants.computer.real_model)
+        self.date =            str(datetime.datetime.now().strftime(DATE_FORMAT))
 
+
+    def send_analytics(self) -> None:
         if global_settings.GlobalEnviromentSettings().read_property("DisableCrashAndAnalyticsReporting") is True:
             return
 
         self._generate_base_data()
-        self._post_data()
+        self._post_analytics_data()
+
+
+    def send_crash_report(self, log_file: Path) -> None:
+        if ANALYTICS_SERVER == "":
+            return
+        if SITE_KEY == "":
+            return
+        if global_settings.GlobalEnviromentSettings().read_property("DisableCrashAndAnalyticsReporting") is True:
+            return
+        if not log_file.exists():
+            return
+
+        commit_info = self.constants.commit_info[0].split("/")[-1] + "_" + self.constants.commit_info[1].split("T")[0] + "_" + self.constants.commit_info[2].split("/")[-1]
+
+        crash_data= {
+            "KEY":                 SITE_KEY,
+            "APPLICATION_VERSION": self.version,
+            "APPLICATION_COMMIT":  commit_info,
+            "OS_VERSION":          self.os,
+            "MODEL":               self.model,
+            "TIMESTAMP":           self.date,
+            "CRASH_LOG":           log_file.read_text()
+        }
+
+        network_handler.NetworkUtilities().post(CRASH_URL, json = crash_data)
 
 
     def _get_country(self) -> str:
@@ -54,12 +98,6 @@ class Analytics:
 
 
     def _generate_base_data(self) -> None:
-
-        self.unique_identity = str(self.constants.computer.uuid_sha1)
-        self.application = str("OpenCore Legacy Patcher")
-        self.version = str(self.constants.patcher_version)
-        self.os = str( self.constants.detected_os_version)
-        self.model = str(self.constants.computer.real_model)
         self.gpus = []
 
         self.firmware = str(self.constants.computer.firmware_vendor)
@@ -78,14 +116,14 @@ class Analytics:
             'GPUS':                self.gpus,
             'FIRMWARE':            self.firmware,
             'LOCATION':            self.location,
-            'TIMESTAMP':           str(datetime.datetime.now().strftime(DATE_FORMAT)),
+            'TIMESTAMP':           self.date,
         }
 
         # convert to JSON:
         self.data = json.dumps(self.data)
 
 
-    def _post_data(self) -> None:
+    def _post_analytics_data(self) -> None:
         # Post data to analytics server
         if ANALYTICS_SERVER == "":
             return

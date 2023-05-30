@@ -3,9 +3,12 @@ import os
 import sys
 import time
 import logging
+import plistlib
 import threading
 import subprocess
 import applescript
+
+import packaging.version
 
 from pathlib import Path
 
@@ -37,12 +40,15 @@ class GenerateMenubar:
         aboutItem = fileMenu.Append(wx.ID_ABOUT, "&About OpenCore Legacy Patcher")
         fileMenu.AppendSeparator()
         relaunchItem = fileMenu.Append(wx.ID_ANY, "&Relaunch as Root")
+        fileMenu.AppendSeparator()
+        revealLogItem = fileMenu.Append(wx.ID_ANY, "&Reveal Log File")
 
         menubar.Append(fileMenu, "&File")
         self.frame.SetMenuBar(menubar)
 
         self.frame.Bind(wx.EVT_MENU, lambda event: gui_about.AboutFrame(self.constants), aboutItem)
         self.frame.Bind(wx.EVT_MENU, lambda event: RelaunchApplicationAsRoot(self.frame, self.constants).relaunch(None), relaunchItem)
+        self.frame.Bind(wx.EVT_MENU, lambda event: subprocess.run(["open", "-R", self.constants.log_filepath]), revealLogItem)
 
         if os.geteuid() == 0:
             relaunchItem.Enable(False)
@@ -50,8 +56,10 @@ class GenerateMenubar:
 
 class GaugePulseCallback:
     """
-    Uses an alternative Pulse() method for wx.Gauge() on macOS Monterey+
+    Uses an alternative Pulse() method for wx.Gauge() on macOS Monterey+ with non-Metal GPUs
     Dirty hack, however better to display some form of animation than none at all
+
+    Note: This work-around is no longer needed on hosts using PatcherSupportPkg 1.1.2 or newer
     """
 
     def __init__(self, global_constants: constants.Constants, gauge: wx.Gauge) -> None:
@@ -66,6 +74,9 @@ class GaugePulseCallback:
         self.max_value: int = gauge.GetRange()
 
         self.non_metal_alternative: bool = CheckProperties(global_constants).host_is_non_metal()
+        if self.non_metal_alternative is True:
+            if CheckProperties(global_constants).host_psp_version() >= packaging.version.Version("1.1.2"):
+                self.non_metal_alternative = False
 
 
     def start_pulse(self) -> None:
@@ -106,6 +117,7 @@ class CheckProperties:
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
 
+
     def host_can_build(self):
         """
         Check if host supports building OpenCore configs
@@ -138,6 +150,7 @@ class CheckProperties:
 
         return True
 
+
     def host_has_cpu_gen(self, gen: int) -> bool:
         """
         Check if host has a CPU generation equal to or greater than the specified generation
@@ -147,6 +160,24 @@ class CheckProperties:
             if smbios_data.smbios_dictionary[model]["CPU Generation"] >= gen:
                 return True
         return False
+
+
+    def host_psp_version(self) -> packaging.version.Version:
+        """
+        Grab PatcherSupportPkg version from OpenCore-Legacy-Patcher.plist
+        """
+        oclp_plist_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
+        if not Path(oclp_plist_path).exists():
+            return packaging.version.Version("0.0.0")
+
+        oclp_plist = plistlib.load(open(oclp_plist_path, "rb"))
+        if "PatcherSupportPkg" not in oclp_plist:
+            return packaging.version.Version("0.0.0")
+
+        if oclp_plist["PatcherSupportPkg"].startswith("v"):
+            oclp_plist["PatcherSupportPkg"] = oclp_plist["PatcherSupportPkg"][1:]
+
+        return packaging.version.parse(oclp_plist["PatcherSupportPkg"])
 
 
 class PayloadMount:
@@ -289,7 +320,7 @@ class RelaunchApplicationAsRoot:
 
         wx.Yield()
 
-        logging.info(f"- Relaunching as root with command: {program_arguments}")
+        logging.info(f"Relaunching as root with command: {program_arguments}")
         subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         while True:

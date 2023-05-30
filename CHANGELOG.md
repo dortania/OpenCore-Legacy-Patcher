@@ -7,11 +7,33 @@
   - Allows for Live Text support on systems with3802 GPUs
     - ie. Intel Ivy Bridge and Haswell, Nvidia Kepler
   - Previously disabled due to high instability in Photos with Face Scanning, now resolved
-- Resolve crashing after patching with MenuBar2 implementation enabled
+- Work-around crashing after patching with MenuBar2 implementation enabled
   - Setting must be re-enabled after patching
+- Update non-Metal Binaries:
+  - Resolve window placement defaulting past top of screen for some apps
+    - ex. OpenCore-Patcher.app during root patching
+  - Resolve indeterminate progress bars not rendering with wxWidgets in Monterey and later
+    - ex. OpenCore-Patcher.app
+- UI changes:
+  - Add "Show Log File" button to menubar
 - Backend changes:
   - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
+  - Rework logging handler:
+    - Implement formatted logging
+      - Allowing easier debugging
+    - Implement per-version, per-run file logging
+      - ex. OpenCore-Patcher (0.6.7) (2021-12-31-12-34-56).log
+    - Keep only 10 latest log files
+    - Reveal log file in Finder on main thread crash
+    - Avoid writing username to log file
+  - Resolve SharedSupport.dmg pathing error during macOS Installer Verification
+    - Applicable to systems with 2 (or more) USB Installers with the same name plugged in
   - Resolve payloads path being mis-routed during CLI calls
+  - Add UI when fetching root patches for host
+  - Remove progress bar work-around for non-Metal in Monterey and later
+    - Requires host to have been patched with PatcherSupportPkg 1.1.2 or newer
+- Increment Binaries:
+  - PatcherSupportPkg 1.1.2 - release
 
 ## 0.6.6
 - Implement option to disable ColorSync downgrade on HD 3000 Macs

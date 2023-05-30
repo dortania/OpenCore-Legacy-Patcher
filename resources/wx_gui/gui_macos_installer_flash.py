@@ -22,6 +22,7 @@ from data import os_data
 class macOSInstallerFlashFrame(wx.Frame):
 
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None):
+        logging.info("Initializing macOS Installer Flash Frame")
         super(macOSInstallerFlashFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, global_constants).generate()
 
@@ -78,7 +79,6 @@ class macOSInstallerFlashFrame(wx.Frame):
             wx.Yield()
 
         frame_modal = wx.Dialog(self, title=self.title, size=(350, 200))
-        frame_modal.Centre(wx.HORIZONTAL)
 
         # Title: Select macOS Installer
         title_label = wx.StaticText(frame_modal, label="Select local macOS Installer", pos=(-1,5))
@@ -131,6 +131,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
 
     def on_select(self, installer: dict) -> None:
+        logging.info(f"Selected installer: {installer['Short Name']} ({installer['Version']} ({installer['Build']}))")
         self.frame_modal.Destroy()
 
         for child in self.GetChildren():
@@ -185,8 +186,9 @@ class macOSInstallerFlashFrame(wx.Frame):
         if self.available_disks:
             spacer = 5
             entries = len(self.available_disks)
+            logging.info("Available disks:")
             for disk in self.available_disks:
-                logging.info(f"{disk}: {self.available_disks[disk]['name']} - {utilities.human_fmt(self.available_disks[disk]['size'])}")
+                logging.info(f" - {disk}: {self.available_disks[disk]['name']} - {utilities.human_fmt(self.available_disks[disk]['size'])}")
                 disk_button = wx.Button(self.frame_modal, label=f"{disk}: {self.available_disks[disk]['name']} - {utilities.human_fmt(self.available_disks[disk]['size'])}", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + spacer), size=(300, 30))
                 disk_button.Bind(wx.EVT_BUTTON, lambda event, temp=disk: self.on_select_disk(self.available_disks[temp], installer))
                 disk_button.Centre(wx.HORIZONTAL)
@@ -220,6 +222,8 @@ class macOSInstallerFlashFrame(wx.Frame):
         answer = wx.MessageBox(f"Are you sure you want to erase '{disk['name']}'?\nAll data will be lost, this cannot be undone.", "Confirmation", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
         if answer != wx.YES:
             return
+
+        logging.info(f"Selected disk: {disk['name']}")
 
         self.frame_modal.Destroy()
 
@@ -261,6 +265,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # Prepare resources
         if self._prepare_resources(installer['Path'], disk['identifier']) is False:
+            logging.error("Failed to prepare resources, cannot continue.")
             wx.MessageBox("Failed to prepare resources, cannot continue.", "Error", wx.OK | wx.ICON_ERROR)
             self.on_return_to_main_menu()
             return
@@ -280,6 +285,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         initial_bytes_written = float(utilities.monitor_disk_output(root_disk))
         self.result = False
         def _flash():
+            logging.info(f"Flashing {installer['Path']} to {root_disk}")
             self.result = self._flash_installer(root_disk)
 
         thread = threading.Thread(target=_flash)
@@ -293,10 +299,15 @@ class macOSInstallerFlashFrame(wx.Frame):
                 total_bytes_written = initial_bytes_written
             bytes_written = total_bytes_written - initial_bytes_written
             wx.CallAfter(bytes_written_label.SetLabel, f"Bytes Written: {bytes_written:.2f} MB")
-            wx.CallAfter(progress_bar.SetValue, int(bytes_written))
+            try:
+                bytes_written = int(bytes_written)
+            except:
+                bytes_written = 0
+            wx.CallAfter(progress_bar.SetValue, bytes_written)
             wx.Yield()
 
         if self.result is False:
+            logging.error("Failed to flash installer, cannot continue.")
             self.on_return_to_main_menu()
             return
 
@@ -354,14 +365,14 @@ class macOSInstallerFlashFrame(wx.Frame):
 
     def _flash_installer(self, disk) -> bool:
         utilities.disable_sleep_while_running()
-        logging.info("- Creating macOS installer")
+        logging.info("Creating macOS installer")
 
         thread = threading.Thread(target=self._auto_package_handler)
         thread.start()
 
         # print contents of installer.sh
         with open(self.constants.installer_sh_path, "r") as f:
-            logging.info(f"- installer.sh contents:\n{f.read()}")
+            logging.info(f"installer.sh contents:\n{f.read()}")
 
         args   = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
         result = subprocess.run(args, capture_output=True, text=True)
@@ -369,17 +380,17 @@ class macOSInstallerFlashFrame(wx.Frame):
         error  = result.stderr if result.stderr else ""
 
         if "Install media now available at" not in output:
-            logging.info("- Failed to create macOS installer")
+            logging.info("Failed to create macOS installer")
             popup = wx.MessageDialog(self, f"Failed to create macOS installer\n\nOutput: {output}\n\nError: {error}", "Error", wx.OK | wx.ICON_ERROR)
             popup.ShowModal()
             return False
 
-        logging.info("- Successfully created macOS installer")
+        logging.info("Successfully created macOS installer")
         while thread.is_alive():
             # wait for download_thread to finish
             # though highly unlikely this thread is still alive (flashing an Installer will take a while)
             time.sleep(0.1)
-        logging.info("- Installing Root Patcher to drive")
+        logging.info("Installing Root Patcher to drive")
         self._install_installer_pkg(disk)
 
         utilities.enable_sleep_after_running()
@@ -396,7 +407,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         """
         link = self.constants.installer_pkg_url
         if network_handler.NetworkUtilities(link).validate_link() is False:
-            logging.info("- Stock Install.pkg is missing on Github, falling back to Nightly")
+            logging.info("Stock Install.pkg is missing on Github, falling back to Nightly")
             link = self.constants.installer_pkg_url_nightly
 
         if link.endswith(".zip"):
@@ -408,7 +419,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         autopkg_download.download(spawn_thread=False)
 
         if autopkg_download.download_complete is False:
-            logging.warning("- Failed to download Install.pkg")
+            logging.warning("Failed to download Install.pkg")
             logging.warning(autopkg_download.error_msg)
             return
 
@@ -434,7 +445,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         os_version = plistlib.load(Path(path + "/System/Library/CoreServices/SystemVersion.plist").open("rb"))
         kernel_version = os_data.os_conversion.os_to_kernel(os_version["ProductVersion"])
         if int(kernel_version) < os_data.os_data.big_sur:
-            logging.info("- Installer unsupported, requires Big Sur or newer")
+            logging.info("Installer unsupported, requires Big Sur or newer")
             return
 
         subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
@@ -460,29 +471,29 @@ class macOSInstallerFlashFrame(wx.Frame):
         if kdk_pkg_path.exists():
             kdk_pkg_path.unlink()
 
-        logging.info("- Initiating KDK download")
-        logging.info(f"  - Build: {build}")
-        logging.info(f"  - Version: {version}")
-        logging.info(f"  - Working Directory: {download_dir}")
+        logging.info("Initiating KDK download")
+        logging.info(f"- Build: {build}")
+        logging.info(f"- Version: {version}")
+        logging.info(f"- Working Directory: {download_dir}")
 
         kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, build, version, ignore_installed=True)
         if kdk_obj.success is False:
-            logging.info("- Failed to retrieve KDK")
+            logging.info("Failed to retrieve KDK")
             logging.info(kdk_obj.error_msg)
             return
 
         kdk_download_obj = kdk_obj.retrieve_download(override_path=kdk_dmg_path)
         if kdk_download_obj is None:
-            logging.info("- Failed to retrieve KDK")
+            logging.info("Failed to retrieve KDK")
             logging.info(kdk_obj.error_msg)
 
         # Check remaining disk space before downloading
         space = utilities.get_free_space(download_dir)
         if space < (kdk_obj.kdk_url_expected_size * 2):
-            logging.info("- Not enough disk space to download and install KDK")
-            logging.info(f"- Attempting to download locally first")
+            logging.info("Not enough disk space to download and install KDK")
+            logging.info(f"Attempting to download locally first")
             if space < kdk_obj.kdk_url_expected_size:
-                logging.info("- Not enough disk space to install KDK, skipping")
+                logging.info("Not enough disk space to install KDK, skipping")
                 return
             # Ideally we'd download the KDK onto the disk to display progress in the UI
             # However we'll just download to our temp directory and move it to the target disk
@@ -490,43 +501,46 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         kdk_download_obj.download(spawn_thread=False)
         if kdk_download_obj.download_complete is False:
-            logging.info("- Failed to download KDK")
+            logging.info("Failed to download KDK")
             logging.info(kdk_download_obj.error_msg)
             return
 
         if not kdk_dmg_path.exists():
-            logging.info(f"- KDK missing: {kdk_dmg_path}")
+            logging.info(f"KDK missing: {kdk_dmg_path}")
             return
 
         # Now that we have a KDK, extract it to get the pkg
         with tempfile.TemporaryDirectory() as mount_point:
-            logging.info("- Mounting KDK")
+            logging.info("Mounting KDK")
             result = subprocess.run(["hdiutil", "attach", kdk_dmg_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                logging.info("- Failed to mount KDK")
+                logging.info("Failed to mount KDK")
                 logging.info(result.stdout.decode("utf-8"))
                 return
 
-            logging.info("- Copying KDK")
+            logging.info("Copying KDK")
             subprocess.run(["cp", "-r", f"{mount_point}/KernelDebugKit.pkg", kdk_pkg_path])
 
-            logging.info("- Unmounting KDK")
+            logging.info("Unmounting KDK")
             result = subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
-                logging.info("- Failed to unmount KDK")
+                logging.info("Failed to unmount KDK")
                 logging.info(result.stdout.decode("utf-8"))
                 return
 
-        logging.info("- Removing KDK Disk Image")
+        logging.info("Removing KDK Disk Image")
         kdk_dmg_path.unlink()
 
     def _validate_installer_pkg(self, disk: str) -> bool:
-        verification_success = False
+        logging.info("Validating installer pkg")
         error_message = ""
         def _integrity_check():
             nonlocal error_message
-            path = utilities.grab_mount_point_from_disk(disk + "s2")
-            dmg_path = path + f"/{path.split('/')[2]}.app/Contents/SharedSupport/SharedSupport.dmg"
+            for folder in Path(utilities.grab_mount_point_from_disk(disk + "s2")).glob("*.app"):
+                if folder.is_dir():
+                    dmg_path = folder / "Contents" / "SharedSupport" / "SharedSupport.dmg"
+                    break
+
             if not Path(dmg_path).exists():
                 logging.error(f"Failed to find {dmg_path}")
                 error_message = f"Failed to find {dmg_path}"
@@ -546,10 +560,10 @@ class macOSInstallerFlashFrame(wx.Frame):
         while thread.is_alive():
             wx.Yield()
 
-        if verification_success:
+        if error_message == "":
+            logging.info("Installer pkg validated")
             return error_message
 
-        logging.error(error_message)
         return error_message
 
 
