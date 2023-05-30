@@ -10,6 +10,8 @@
 - Update non-Metal Binaries:
   - Resolve window placement defaulting past top of screen for some apps
     - ex. OpenCore-Patcher.app during root patching
+  - Resolve indeterminate progress bars not rendering with wxWidgets in Monterey and later
+    - ex. OpenCore-Patcher.app
 - Backend changes:
   - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
   - Rework logging handler:
@@ -25,7 +27,7 @@
   - Resolve payloads path being mis-routed during CLI calls
   - Add UI when fetching root patches for host
 - Increment Binaries:
-  - PatcherSupportPkg 1.1.1 - release
+  - PatcherSupportPkg 1.1.2 - release
 
 ## 0.6.6
 - Implement option to disable ColorSync downgrade on HD 3000 Macs
