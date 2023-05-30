@@ -120,7 +120,7 @@ class PatcherValidation:
                                     logging.info(f"File not found: {source_file}")
                                     raise Exception(f"Failed to find {source_file}")
 
-        logging.info(f"- Validating against Darwin {major_kernel}.{minor_kernel}")
+        logging.info(f"Validating against Darwin {major_kernel}.{minor_kernel}")
         if not sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None):
             raise Exception("Failed to generate patchset plist")
 
@@ -153,13 +153,13 @@ class PatcherValidation:
         )
 
         if output.returncode != 0:
-            logging.info("- Failed to mount Universal-Binaries.dmg")
+            logging.info("Failed to mount Universal-Binaries.dmg")
             logging.info(f"Output: {output.stdout.decode()}")
             logging.info(f"Return Code: {output.returncode}")
 
             raise Exception("Failed to mount Universal-Binaries.dmg")
 
-        logging.info("- Mounted Universal-Binaries.dmg")
+        logging.info("Mounted Universal-Binaries.dmg")
 
 
         for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura]:
@@ -179,7 +179,7 @@ class PatcherValidation:
         )
 
         if output.returncode != 0:
-            logging.info("- Failed to unmount Universal-Binaries.dmg")
+            logging.info("Failed to unmount Universal-Binaries.dmg")
             logging.info(f"Output: {output.stdout.decode()}")
             logging.info(f"Return Code: {output.returncode}")
 

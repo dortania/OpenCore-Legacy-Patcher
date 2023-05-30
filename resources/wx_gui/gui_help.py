@@ -1,5 +1,6 @@
 # Generate UI for help menu
 import wx
+import logging
 import webbrowser
 
 from resources import constants
@@ -10,7 +11,7 @@ class HelpFrame(wx.Frame):
     Append to main menu through a modal dialog
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, screen_location: tuple = None) -> None:
-
+        logging.info("Initializing Help Frame")
         self.dialog = wx.Dialog(parent, title=title, size=(300, 200))
 
         self.constants: constants.Constants = global_constants

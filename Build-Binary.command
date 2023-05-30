@@ -30,7 +30,7 @@ class CreateBinary:
 
     def __init__(self):
         start = time.time()
-        print("- Starting build script")
+        print("Starting build script")
 
         self.args = self._parse_arguments()
 
@@ -39,7 +39,7 @@ class CreateBinary:
         self._preflight_processes()
         self._build_binary()
         self._postflight_processes()
-        print(f"- Build script completed in {str(round(time.time() - start, 2))} seconds")
+        print(f"Build script completed in {str(round(time.time() - start, 2))} seconds")
 
 
     def _set_cwd(self):
@@ -48,7 +48,7 @@ class CreateBinary:
         """
 
         os.chdir(Path(__file__).resolve().parent)
-        print(f"- Current Working Directory: \n\t{os.getcwd()}")
+        print(f"Current Working Directory: \n\t{os.getcwd()}")
 
 
     def _parse_arguments(self):
@@ -88,7 +88,7 @@ class CreateBinary:
             pyinstaller_path = f"{python_bin_dir}pyinstaller"
 
         if not Path(pyinstaller_path).exists():
-            print(f"  - pyinstaller not found:\n\t{pyinstaller_path}")
+            print(f"- pyinstaller not found:\n\t{pyinstaller_path}")
             raise Exception("pyinstaller not found")
 
         self.pyinstaller_path = pyinstaller_path
@@ -99,7 +99,7 @@ class CreateBinary:
         Start preflight processes
         """
 
-        print("- Starting preflight processes")
+        print("Starting preflight processes")
         self._setup_pathing()
         self._delete_extra_binaries()
         self._download_resources()
@@ -111,7 +111,7 @@ class CreateBinary:
         Start postflight processes
         """
 
-        print("- Starting postflight processes")
+        print("Starting postflight processes")
         self._patch_load_command()
         self._add_commit_data()
         self._post_flight_cleanup()
@@ -124,19 +124,19 @@ class CreateBinary:
         """
 
         if Path(f"./dist/OpenCore-Patcher.app").exists():
-            print("- Found OpenCore-Patcher.app, removing...")
+            print("Found OpenCore-Patcher.app, removing...")
             rm_output = subprocess.run(
                 ["rm", "-rf", "./dist/OpenCore-Patcher.app"],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
             if rm_output.returncode != 0:
-                print("- Remove failed")
+                print("Remove failed")
                 print(rm_output.stderr.decode('utf-8'))
                 raise Exception("Remove failed")
 
         self._embed_key()
 
-        print("- Building GUI binary...")
+        print("Building GUI binary...")
         build_args = [self.pyinstaller_path, "./OpenCore-Patcher-GUI.spec", "--noconfirm"]
 
         build_result = subprocess.run(build_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -144,12 +144,12 @@ class CreateBinary:
         self._strip_key()
 
         if build_result.returncode != 0:
-            print("- Build failed")
+            print("Build failed")
             print(build_result.stderr.decode('utf-8'))
             raise Exception("Build failed")
 
         # Next embed support icns into ./Resources
-        print("- Embedding icns...")
+        print("Embedding icns...")
         for file in Path("payloads/Icon/AppIcons").glob("*.icns"):
             subprocess.run(
                 ["cp", str(file), "./dist/OpenCore-Patcher.app/Contents/Resources/"],
@@ -165,15 +165,15 @@ class CreateBinary:
         """
 
         if not self.args.key:
-            print("- No developer key provided, skipping...")
+            print("No developer key provided, skipping...")
             return
         if not self.args.site:
-            print("- No site provided, skipping...")
+            print("No site provided, skipping...")
             return
 
-        print("- Embedding developer key...")
+        print("Embedding developer key...")
         if not Path("./resources/analytics_handler.py").exists():
-            print("- analytics_handler.py not found")
+            print("analytics_handler.py not found")
             return
 
         lines = []
@@ -196,15 +196,15 @@ class CreateBinary:
         """
 
         if not self.args.key:
-            print("- No developer key provided, skipping...")
+            print("No developer key provided, skipping...")
             return
         if not self.args.site:
-            print("- No site provided, skipping...")
+            print("No site provided, skipping...")
             return
 
-        print("- Stripping developer key...")
+        print("Stripping developer key...")
         if not Path("./resources/analytics_handler.py").exists():
-            print("- analytics_handler.py not found")
+            print("analytics_handler.py not found")
             return
 
         lines = []
@@ -247,17 +247,17 @@ class CreateBinary:
         ]
 
 
-        print("- Deleting extra binaries...")
+        print("Deleting extra binaries...")
         for file in Path("payloads").glob(pattern="*"):
             if file.is_dir():
                 if file.name in whitelist_folders:
                     continue
-                print(f"  - Deleting {file.name}")
+                print(f"- Deleting {file.name}")
                 subprocess.run(["rm", "-rf", file])
             else:
                 if file.name in whitelist_files:
                     continue
-                print(f"  - Deleting {file.name}")
+                print(f"- Deleting {file.name}")
                 subprocess.run(["rm", "-f", file])
 
 
@@ -271,23 +271,23 @@ class CreateBinary:
             "Universal-Binaries.dmg"
         ]
 
-        print("- Downloading required resources...")
+        print("Downloading required resources...")
         for resource in required_resources:
             if Path(f"./{resource}").exists():
                 if self.args.reset_binaries:
-                    print(f"  - Removing old {resource}")
+                    print(f"- Removing old {resource}")
                     rm_output = subprocess.run(
                         ["rm", "-rf", f"./{resource}"],
                         stdout=subprocess.PIPE, stderr=subprocess.PIPE
                     )
                     if rm_output.returncode != 0:
-                        print("- Remove failed")
+                        print("Remove failed")
                         print(rm_output.stderr.decode('utf-8'))
                         raise Exception("Remove failed")
                 else:
-                    print(f"  - {resource} already exists, skipping download")
+                    print(f"- {resource} already exists, skipping download")
                     continue
-            print(f"  - Downloading {resource}...")
+            print(f"- Downloading {resource}...")
 
             download_result = subprocess.run(
                 [
@@ -298,11 +298,11 @@ class CreateBinary:
             )
 
             if download_result.returncode != 0:
-                print("  - Download failed")
+                print("- Download failed")
                 print(download_result.stderr.decode('utf-8'))
                 raise Exception("Download failed")
             if not Path(f"./{resource}").exists():
-                print(f"  - {resource} not found")
+                print(f"- {resource} not found")
                 raise Exception(f"{resource} not found")
 
 
@@ -315,20 +315,20 @@ class CreateBinary:
 
         if Path("./payloads.dmg").exists():
             if not self.args.reset_binaries:
-                print("  - payloads.dmg already exists, skipping creation")
+                print("- payloads.dmg already exists, skipping creation")
                 return
 
-            print("  - Removing old payloads.dmg")
+            print("- Removing old payloads.dmg")
             rm_output = subprocess.run(
                 ["rm", "-rf", "./payloads.dmg"],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
             if rm_output.returncode != 0:
-                print("- Remove failed")
+                print("Remove failed")
                 print(rm_output.stderr.decode('utf-8'))
                 raise Exception("Remove failed")
 
-        print("  - Generating DMG...")
+        print("- Generating DMG...")
         dmg_output = subprocess.run([
             'hdiutil', 'create', './payloads.dmg',
             '-megabytes', '32000',  # Overlays can only be as large as the disk image allows
@@ -339,11 +339,11 @@ class CreateBinary:
             '-passphrase', 'password', '-encryption'
         ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if dmg_output.returncode != 0:
-            print("  - DMG generation failed")
+            print("- DMG generation failed")
             print(dmg_output.stderr.decode('utf-8'))
             raise Exception("DMG generation failed")
 
-        print("  - DMG generation complete")
+        print("- DMG generation complete")
 
 
     def _add_commit_data(self):
@@ -352,7 +352,7 @@ class CreateBinary:
         """
 
         if not self.args.branch and not self.args.commit and not self.args.commit_date:
-            print("  - No commit data provided, adding source info")
+            print("- No commit data provided, adding source info")
             branch = "Built from source"
             commit_url = ""
             commit_date = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -360,7 +360,7 @@ class CreateBinary:
             branch = self.args.branch
             commit_url = self.args.commit
             commit_date = self.args.commit_date
-        print("  - Adding commit data to Info.plist")
+        print("- Adding commit data to Info.plist")
         plist_path = Path("./dist/OpenCore-Patcher.app/Contents/Info.plist")
         plist = plistlib.load(Path(plist_path).open("rb"))
         plist["Github"] = {
@@ -389,7 +389,7 @@ class CreateBinary:
 
         """
 
-        print("  - Patching LC_VERSION_MIN_MACOSX")
+        print("- Patching LC_VERSION_MIN_MACOSX")
         path = './dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher'
         find = b'\x00\x0D\x0A\x00' # 10.13 (0xA0D)
         replace = b'\x00\x0A\x0A\x00' # 10.10 (0xA0A)
@@ -406,13 +406,13 @@ class CreateBinary:
         """
 
         path = "./dist/OpenCore-Patcher"
-        print(f"  - Removing {path}")
+        print(f"- Removing {path}")
         rm_output = subprocess.run(
             ["rm", "-rf", path],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         if rm_output.returncode != 0:
-            print(f"  - Remove failed: {path}")
+            print(f"- Remove failed: {path}")
             print(rm_output.stderr.decode('utf-8'))
             raise Exception(f"Remove failed: {path}")
 
@@ -422,13 +422,13 @@ class CreateBinary:
         Validate generated binary
         """
 
-        print("  - Validating binary")
+        print("- Validating binary")
         validate_output = subprocess.run(
             ["./dist/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher", "--build", "--model", "MacPro3,1"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         if validate_output.returncode != 0:
-            print("  - Validation failed")
+            print("- Validation failed")
             print(validate_output.stderr.decode('utf-8'))
             raise Exception("Validation failed")
 

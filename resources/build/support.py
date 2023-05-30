@@ -136,7 +136,7 @@ class BuildSupport:
 
         for acpi in config_plist["ACPI"]["Add"]:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/ACPI") / Path(acpi["Path"])).exists():
-                logging.info(f"  - Missing ACPI Table: {acpi['Path']}")
+                logging.info(f"- Missing ACPI Table: {acpi['Path']}")
                 raise Exception(f"Missing ACPI Table: {acpi['Path']}")
 
         for kext in config_plist["Kernel"]["Add"]:
@@ -155,19 +155,19 @@ class BuildSupport:
 
         for tool in config_plist["Misc"]["Tools"]:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools") / Path(tool["Path"])).exists():
-                logging.info(f"  - Missing tool: {tool['Path']}")
+                logging.info(f"- Missing tool: {tool['Path']}")
                 raise Exception(f"Missing tool: {tool['Path']}")
 
         for driver in config_plist["UEFI"]["Drivers"]:
             if not Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers") / Path(driver["Path"])).exists():
-                logging.info(f"  - Missing driver: {driver['Path']}")
+                logging.info(f"- Missing driver: {driver['Path']}")
                 raise Exception(f"Missing driver: {driver['Path']}")
 
         # Validating local files
         # Report if they have no associated config.plist entry (i.e. they're not being used)
         for tool_files in Path(self.constants.opencore_release_folder / Path("EFI/OC/Tools")).glob("*"):
             if tool_files.name not in [x["Path"] for x in config_plist["Misc"]["Tools"]]:
-                logging.info(f"  - Missing tool from config: {tool_files.name}")
+                logging.info(f"- Missing tool from config: {tool_files.name}")
                 raise Exception(f"Missing tool from config: {tool_files.name}")
 
         for driver_file in Path(self.constants.opencore_release_folder / Path("EFI/OC/Drivers")).glob("*"):

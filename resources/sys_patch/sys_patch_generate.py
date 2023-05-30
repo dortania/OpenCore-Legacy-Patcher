@@ -40,7 +40,7 @@ class GenerateRootPatchSets:
 
         utilities.cls()
 
-        logging.info("- The following patches will be applied:")
+        logging.info("The following patches will be applied:")
 
         if self.hardware_details["Graphics: Intel Ironlake"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
@@ -184,8 +184,8 @@ class GenerateRootPatchSets:
                     del(required_patches[patch_name])
                 else:
                     if required_patches[patch_name]["Display Name"]:
-                        logging.info(f"  - {required_patches[patch_name]['Display Name']}")
+                        logging.info(f"- {required_patches[patch_name]['Display Name']}")
         else:
-            logging.info("  - No patch sets found for booted model")
+            logging.info("- No patch sets found for booted model")
 
         return required_patches

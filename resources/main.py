@@ -32,8 +32,6 @@ class OpenCoreLegacyPatcher:
 
         logging_handler.InitializeLoggingSupport(self.constants)
 
-        logging.info(f"- Loading OpenCore Legacy Patcher v{self.constants.patcher_version}...")
-
         self._generate_base_data()
 
         if utilities.check_cli_args() is None:
@@ -94,14 +92,13 @@ class OpenCoreLegacyPatcher:
 
         # Generate defaults
         defaults.GenerateDefaults(self.computer.real_model, True, self.constants)
-        threading.Thread(target=analytics_handler.Analytics, args=(self.constants,)).start()
+        threading.Thread(target=analytics_handler.Analytics(self.constants).send_analytics).start()
 
         if utilities.check_cli_args() is None:
             self.constants.cli_mode = False
-            logging.info(f"- No arguments present, loading {'GUI' if self.constants.wxpython_variant is True else 'TUI'} mode")
             return
 
-        logging.info("- Detected arguments, switching to CLI mode")
+        logging.info("Detected arguments, switching to CLI mode")
         self.constants.gui_mode = True  # Assumes no user interaction is required
 
         ignore_args = ["--auto_patch", "--gui_patch", "--gui_unpatch", "--update_installed"]

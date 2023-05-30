@@ -92,7 +92,7 @@ class DetectRootPatch:
         non_metal_os = os_data.os_data.catalina
         for i, gpu in enumerate(gpus):
             if gpu.class_code and gpu.class_code != 0xFFFFFFFF:
-                logging.info(f"- Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
+                logging.info(f"Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
                 if gpu.arch in [device_probe.NVIDIA.Archs.Tesla] and self.constants.force_nv_web is False:
                     if self.constants.detected_os > non_metal_os:
                         self.nvidia_tesla = True

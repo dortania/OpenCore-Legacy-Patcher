@@ -1,5 +1,6 @@
 # Generate UI for downloading files
 import wx
+import logging
 
 from resources import (
     constants,
@@ -13,6 +14,7 @@ class DownloadFrame(wx.Frame):
     Update provided frame with download stats
     """
     def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, download_obj: network_handler.DownloadObject, item_name: str) -> None:
+        logging.info("Initializing Download Frame")
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent
@@ -91,6 +93,7 @@ class DownloadFrame(wx.Frame):
         Terminate download
         """
         if wx.MessageBox("Are you sure you want to cancel the download?", "Cancel Download", wx.YES_NO | wx.ICON_QUESTION | wx.NO_DEFAULT) == wx.YES:
+            logging.info("User cancelled download")
             self.user_cancelled = True
             self.download_obj.stop()
 
