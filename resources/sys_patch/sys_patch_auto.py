@@ -350,7 +350,11 @@ class AutomaticSysPatch:
         for kext in Path("/Library/Extensions").glob("*.kext"):
             if not Path(f"{kext}/Contents/Info.plist").exists():
                 continue
-            kext_plist = plistlib.load(open(f"{kext}/Contents/Info.plist", "rb"))
+            try:
+                kext_plist = plistlib.load(open(f"{kext}/Contents/Info.plist", "rb"))
+            except Exception as e:
+                logging.info(f"  - Failed to load plist for {kext.name}: {e}")
+                continue
             if "GPUCompanionBundles" not in kext_plist:
                 continue
             logging.info(f"  - Found kext with GPUCompanionBundles: {kext.name}")
