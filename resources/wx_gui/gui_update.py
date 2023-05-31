@@ -89,7 +89,15 @@ class UpdateFrame(wx.Frame):
         self.frame.Show()
         wx.Yield()
 
-        download_obj = network_handler.DownloadObject(url, self.constants.payload_path / "OpenCore-Patcher-GUI.app.zip")
+        download_obj = None
+        def _fetch_update() -> None:
+            nonlocal download_obj
+            download_obj = network_handler.DownloadObject(url, self.constants.payload_path / "OpenCore-Patcher-GUI.app.zip")
+
+        thread = threading.Thread(target=_fetch_update)
+        thread.start()
+        while thread.is_alive():
+            wx.Yield()
 
         gui_download.DownloadFrame(
             self.frame,

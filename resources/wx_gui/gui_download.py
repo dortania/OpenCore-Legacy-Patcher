@@ -64,10 +64,15 @@ class DownloadFrame(wx.Frame):
 
         self.download_obj.download()
         while self.download_obj.is_active():
-            if self.download_obj.get_percent() == -1:
+            percentage: int = self.download_obj.get_percent()
+
+            if percentage == -1:
                 amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded"
+                progress_bar.Pulse()
             else:
-                amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded of {utilities.human_fmt(self.download_obj.total_file_size)} ({self.download_obj.get_percent():.2f}%)"
+                amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded of {utilities.human_fmt(self.download_obj.total_file_size)} ({percentage:.2f}%)"
+                progress_bar.SetValue(int(percentage))
+
             label_amount.SetLabel(amount_str)
             label_amount.Centre(wx.HORIZONTAL)
 
@@ -79,7 +84,6 @@ class DownloadFrame(wx.Frame):
                 f"Estimated time remaining: {utilities.seconds_to_readable_time(self.download_obj.get_time_remaining())}"
             )
 
-            progress_bar.SetValue(int(self.download_obj.get_percent()))
             wx.Yield()
 
         if self.download_obj.download_complete is False and self.user_cancelled is False:
