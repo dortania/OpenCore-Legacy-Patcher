@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 0.6.8
+
 ## 0.6.7
 - Resolve partition buttons overlapping in Install OpenCore UI
   - ex. "EFI" and additional FAT32 partitions on a single drive

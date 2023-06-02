@@ -12,7 +12,7 @@ from data import os_data
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "0.6.7"  # OpenCore-Legacy-Patcher
+        self.patcher_version:                 str = "0.6.8"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version:     str = "1.1.2"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
