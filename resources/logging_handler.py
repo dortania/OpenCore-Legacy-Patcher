@@ -228,7 +228,11 @@ class InitializeLoggingSupport:
                 error_msg += f"\n\n{traceback.extract_tb(tb)[-1]}"
 
             cant_log: bool = global_settings.GlobalEnviromentSettings().read_property("DisableCrashAndAnalyticsReporting")
+            if not isinstance(cant_log, bool):
+                cant_log = False
 
+            if self.constants.commit_info[0].startswith("refs/tags"):
+                cant_log = True
 
             if cant_log is True:
                 error_msg += "\n\nReveal log file?"

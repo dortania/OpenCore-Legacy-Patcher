@@ -64,6 +64,9 @@ class Analytics:
             return
         if not log_file.exists():
             return
+        if self.constants.commit_info[0].startswith("refs/tags"):
+            # Avoid being overloaded with crash reports
+            return
 
         commit_info = self.constants.commit_info[0].split("/")[-1] + "_" + self.constants.commit_info[1].split("T")[0] + "_" + self.constants.commit_info[2].split("/")[-1]
 
