@@ -1,6 +1,5 @@
 import os
 import sys
-import time
 import pprint
 import logging
 import threading
@@ -9,8 +8,9 @@ import subprocess
 import applescript
 
 from pathlib import Path
+from datetime import datetime
 
-from resources import constants, analytics_handler
+from resources import constants, analytics_handler, global_settings
 
 
 class InitializeLoggingSupport:
@@ -36,7 +36,9 @@ class InitializeLoggingSupport:
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
 
-        self.log_filename: str  = f"OpenCore-Patcher_{self.constants.patcher_version}_{time.strftime('%Y-%m-%d_%H-%M-%S')}.log"
+        log_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f")
+
+        self.log_filename: str  = f"OpenCore-Patcher_{self.constants.patcher_version}_{log_time}.log"
         self.log_filepath: Path = None
 
         self.original_excepthook:        sys       = sys.excepthook
@@ -220,7 +222,14 @@ class InitializeLoggingSupport:
             error_msg += f"{type.__name__}: {value}"
             if tb:
                 error_msg += f"\n\n{traceback.extract_tb(tb)[-1]}"
-            error_msg += "\n\nSend crash report to Dortania?"
+
+            cant_log: bool = global_settings.GlobalEnviromentSettings().read_property("DisableCrashAndAnalyticsReporting")
+
+
+            if cant_log is True:
+                error_msg += "\n\nReveal log file?"
+            else:
+                error_msg += "\n\nSend crash report to Dortania?"
 
             # Ask user if they want to send crash report
             try:
@@ -230,6 +239,10 @@ class InitializeLoggingSupport:
                 return
 
             if result[applescript.AEType(b'bhit')] != "Yes":
+                return
+
+            if cant_log is True:
+                subprocess.run(["open", "--reveal", self.log_filepath])
                 return
 
             threading.Thread(target=analytics_handler.Analytics(self.constants).send_crash_report, args=(self.log_filepath,)).start()

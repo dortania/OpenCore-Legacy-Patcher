@@ -82,8 +82,9 @@ class GlobalEnviromentSettings:
             # delete defaults plist
             try:
                 Path(defaults_path).unlink()
-            except PermissionError:
-                logging.info("Permission error: Unable to delete defaults plist")
+            except Exception as e:
+                logging.error("Error: Unable to delete defaults plist")
+                logging.error(e)
 
 
     def _fix_file_permission(self) -> None:
