@@ -479,7 +479,6 @@ class RemoteInstallerCatalog:
 
                     os_builds.append(newest_apps[ia]["Build"])
 
-        # Final passthrough
         # Remove Betas if there's a non-beta version available
         for ia in list(newest_apps):
             if newest_apps[ia]["Variant"] in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
@@ -487,6 +486,11 @@ class RemoteInstallerCatalog:
                     if newest_apps[ia2]["Version"].split(".")[0] == newest_apps[ia]["Version"].split(".")[0] and newest_apps[ia2]["Variant"] not in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
                         newest_apps.pop(ia)
                         break
+
+        # Remove unsupported versions (namely 14)
+        for ia in list(newest_apps):
+            if newest_apps[ia]["Version"].split(".")[0] not in supported_versions:
+                newest_apps.pop(ia)
 
         return newest_apps
 

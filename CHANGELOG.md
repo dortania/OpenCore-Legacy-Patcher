@@ -16,6 +16,11 @@
     - ex. OpenCore-Patcher.app
 - UI changes:
   - Add "Show Log File" button to menubar
+- Avoid listing unsupported installer to download by default
+  - ex. macOS 14 InstallAssistant.pkg
+- Resolve crash when fetching remote macOS installers offline
+- Avoid displaying root patches on unsupported macOS versions
+  - ex. macOS 14
 - Backend changes:
   - Call `setpgrp()` to prevent app from being killed if parent process is killed (ie. LaunchAgents)
   - Rework logging handler:
