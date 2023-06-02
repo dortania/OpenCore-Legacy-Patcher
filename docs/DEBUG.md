@@ -10,6 +10,8 @@ The easiest way to debug yourself is via Patcher Settings. Here there are many d
 * "Enable OpenCore DEBUG"
 * "Enable Kext DEBUG"
 
+![](../images/ocdebugimage.png)
+
 When you've enabled these 3 options, rebuild OpenCore and install to your drive. This will provide much greater debug information as well as write logs to the EFI Partition.
 
 ## Obtaining OpenCore logs from disk
