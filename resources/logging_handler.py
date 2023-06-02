@@ -214,6 +214,10 @@ class InitializeLoggingSupport:
             logging.error("Uncaught exception in main thread", exc_info=(type, value, tb))
             self._display_debug_properties()
 
+            if "wx/" in "".join(traceback.format_exception(type, value, tb)):
+                # Likely a GUI error, don't display error dialog
+                return
+
             if self.constants.cli_mode is True:
                 threading.Thread(target=analytics_handler.Analytics(self.constants).send_crash_report, args=(self.log_filepath,)).start()
                 return
