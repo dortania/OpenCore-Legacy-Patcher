@@ -1,6 +1,11 @@
 # OpenCore Legacy Patcher changelog
 
 ## 0.6.8
+- Update non-Metal Binaries:
+  - Improve experimental Menubar implementation stability
+  - Implement reduce transparency Menubar
+- Increment Binaries:
+  - PatcherSupportPkg 1.1.3 - release
 
 ## 0.6.7
 - Resolve partition buttons overlapping in Install OpenCore UI
