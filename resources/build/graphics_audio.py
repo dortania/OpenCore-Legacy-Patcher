@@ -546,7 +546,7 @@ class BuildGraphicsAudio:
             ]:
                 if (
                     self.model == "MacBookPro13,3" or
-                    smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value
+                    smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value
                 ):
                     # MacBookPro13,3 has AVX2.0 however the GPU has an unsupported framebuffer
                     has_kdk_gpu = True
@@ -558,7 +558,7 @@ class BuildGraphicsAudio:
 
         # KDKlessWorkaround supports disabling native AMD stack on Ventura for pre-AVX2.0 CPUs
         # Applicable for Polaris, Vega, Navi GPUs
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] > cpu_data.cpu_data.ivy_bridge.value:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] > cpu_data.CPUGen.ivy_bridge.value:
             return
         for gpu in gpu_dict:
             if not self.constants.custom_model:

@@ -109,7 +109,7 @@ def check_firewire(model):
     if model.startswith("MacBookPro"):
         return True
     elif model.startswith("MacBookAir"):
-        if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
+        if smbios_data.smbios_dictionary[model]["CPU Generation"] < cpu_data.CPUGen.sandy_bridge.value:
             return False
     elif model.startswith("MacBook"):
         return False

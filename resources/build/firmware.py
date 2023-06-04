@@ -50,7 +50,7 @@ class BuildFirmware:
         if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
             return
 
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value:
             # In macOS Ventura, Apple dropped AppleIntelCPUPowerManagement* kexts as they're unused on Haswell+
             # However re-injecting the AICPUPM kexts is not enough, as Ventura changed how 'intel_cpupm_matching' is set:
             #    macOS 12.5: https://github.com/apple-oss-distributions/xnu/blob/xnu-8020.140.41/osfmk/i386/pal_routines.h#L153-L163
@@ -73,7 +73,7 @@ class BuildFirmware:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleIntelCPUPowerManagement.kext", self.constants.aicpupm_version, self.constants.aicpupm_path)
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleIntelCPUPowerManagementClient.kext", self.constants.aicpupm_version, self.constants.aicpupm_client_path)
 
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value or self.constants.disable_fw_throttle is True:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.sandy_bridge.value or self.constants.disable_fw_throttle is True:
             # With macOS 12.3 Beta 1, Apple dropped the 'plugin-type' check within X86PlatformPlugin
             # Because of this, X86PP will match onto the CPU instead of ACPI_SMC_PlatformPlugin
             # This causes power management to break on pre-Ivy Bridge CPUs as they don't have correct
@@ -85,7 +85,7 @@ class BuildFirmware:
                 # Only inject on older OSes if user requests
                 support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Add"], "BundlePath", "ASPP-Override.kext")["MinKernel"] = ""
 
-        if self.constants.disable_fw_throttle is True and smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.cpu_data.nehalem.value:
+        if self.constants.disable_fw_throttle is True and smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.CPUGen.nehalem.value:
             logging.info("- Disabling Firmware Throttling")
             # Nehalem and newer systems force firmware throttling via MSR_POWER_CTL
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("SimpleMSR.kext", self.constants.simplemsr_version, self.constants.simplemsr_path)
@@ -104,12 +104,12 @@ class BuildFirmware:
         # Resolves Big Sur support for consumer Nehalem
         # CPBG device in ACPI is a Co-Processor Bridge Device, which is not actually physically present
         # IOPCIFamily will error when enumerating this device, thus we'll power it off via _STA (has no effect in older OSes)
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.nehalem.value and not (self.model.startswith("MacPro") or self.model.startswith("Xserve")):
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.CPUGen.nehalem.value and not (self.model.startswith("MacPro") or self.model.startswith("Xserve")):
             logging.info("- Adding SSDT-CPBG.aml")
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["ACPI"]["Add"], "Path", "SSDT-CPBG.aml")["Enabled"] = True
             shutil.copy(self.constants.pci_ssdt_path, self.constants.acpi_path)
 
-        if cpu_data.cpu_data.sandy_bridge <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value and self.model != "MacPro6,1":
+        if cpu_data.CPUGen.sandy_bridge <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value and self.model != "MacPro6,1":
             # Based on: https://egpu.io/forums/pc-setup/fix-dsdt-override-to-correct-error-12/
             # Applicable for Sandy and Ivy Bridge Macs
             logging.info("- Enabling Windows 10 UEFI Audio support")
@@ -130,20 +130,20 @@ class BuildFirmware:
 
         # SSE4,1 support (ie. Penryn)
         # Required for macOS Mojave and newer
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AAAMouSSE.kext", self.constants.mousse_version, self.constants.mousse_path)
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("telemetrap.kext", self.constants.telemetrap_version, self.constants.telemetrap_path)
 
         # Force Rosetta Cryptex installation in macOS Ventura
         # Restores support for CPUs lacking AVX2.0 support
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value:
             logging.info("- Enabling Rosetta Cryptex support in Ventura")
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("CryptexFixup.kext", self.constants.cryptexfixup_version, self.constants.cryptexfixup_path)
 
         # i3 Ivy Bridge iMacs don't support RDRAND
         # However for prebuilt, assume they do
         if (not self.constants.custom_model and "RDRAND" not in self.computer.cpu.flags) or \
-            (smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.sandy_bridge.value):
+            (smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.sandy_bridge.value):
             # Ref: https://github.com/reenigneorcim/SurPlus
             # Enable for all systems missing RDRAND support
             logging.info("- Adding SurPlus Patch for Race Condition")
@@ -164,12 +164,12 @@ class BuildFirmware:
         #    https://forums.macrumors.com/threads/monterand-probably-the-start-of-an-ongoing-saga.2320479/post-31123553
 
         # To verify the non-AVX kext is used, check IOService for 'com_apple_AppleFSCompression_NoAVXCompressionTypeZlib'
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.sandy_bridge.value:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("NoAVXFSCompressionTypeZlib.kext", self.constants.apfs_zlib_version, self.constants.apfs_zlib_path)
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("NoAVXFSCompressionTypeZlib-AVXpel.kext", self.constants.apfs_zlib_v2_version, self.constants.apfs_zlib_v2_path)
 
         # HID patches
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.penryn.value:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value:
             logging.info("- Adding IOHIDFamily patch")
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.iokit.IOHIDFamily")["Enabled"] = True
 
@@ -185,7 +185,7 @@ class BuildFirmware:
             return
 
         # Exfat check
-        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value:
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.sandy_bridge.value:
             # Sandy Bridge and newer Macs natively support ExFat
             logging.info("- Adding ExFatDxeLegacy.efi")
             shutil.copy(self.constants.exfat_legacy_driver_path, self.constants.drivers_path)
@@ -231,7 +231,7 @@ class BuildFirmware:
         if (
             self.model in ["MacPro6,1", "MacBookPro4,1"] or
             (
-                smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.sandy_bridge.value and \
+                smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.sandy_bridge.value and \
                 not self.model.startswith("MacBook")
             )
         ):
@@ -246,8 +246,8 @@ class BuildFirmware:
         if (
             self.model.startswith("MacBook")
             and (
-                smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.haswell.value or
-                smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.cpu_data.broadwell.value
+                smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.CPUGen.haswell.value or
+                smbios_data.smbios_dictionary[self.model]["CPU Generation"] == cpu_data.CPUGen.broadwell.value
             )
         ):
             # Fix Virtual Machine support for non-macOS OSes

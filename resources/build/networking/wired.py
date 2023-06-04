@@ -43,14 +43,14 @@ class BuildWiredNetworking:
             if isinstance(controller, device_probe.BroadcomEthernet) and controller.chipset == device_probe.BroadcomEthernet.Chipsets.AppleBCM5701Ethernet:
                 if not self.model in smbios_data.smbios_dictionary:
                     continue
-                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
+                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.ivy_bridge.value:
                     # Required due to Big Sur's BCM5701 requiring VT-D support
                     # Applicable for pre-Ivy Bridge models
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)
             elif isinstance(controller, device_probe.IntelEthernet):
                 if not self.model in smbios_data.smbios_dictionary:
                     continue
-                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
+                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.ivy_bridge.value:
                     # Apple's IOSkywalkFamily in DriverKit requires VT-D support
                     # Applicable for pre-Ivy Bridge models
                     if controller.chipset == device_probe.IntelEthernet.Chipsets.AppleIntelI210Ethernet:
@@ -76,7 +76,7 @@ class BuildWiredNetworking:
             return
 
         if smbios_data.smbios_dictionary[self.model]["Ethernet Chipset"] == "Broadcom":
-            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.ivy_bridge.value:
                 # Required due to Big Sur's BCM5701 requiring VT-D support
                 # Applicable for pre-Ivy Bridge models
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("CatalinaBCM5701Ethernet.kext", self.constants.bcm570_version, self.constants.bcm570_path)

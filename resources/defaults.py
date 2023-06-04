@@ -80,7 +80,7 @@ class GenerateDefaults:
                 self.constants.disable_cat_colorsync = False
 
         if self.model in smbios_data.smbios_dictionary:
-            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.cpu_data.skylake.value:
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.CPUGen.skylake.value:
                 # On 2016-2017 MacBook Pros, 15" devices used a stock Samsung SSD with IONVMeController
                 # Technically this should be patched based on NVMeFix.kext logic,
                 # however Apple deemed the SSD unsupported for enhanced performance
@@ -204,7 +204,7 @@ class GenerateDefaults:
         if self.host_is_target:
             if self.constants.computer.usb_controllers:
                 if self.model in smbios_data.smbios_dictionary:
-                    if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.cpu_data.ivy_bridge.value:
+                    if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.ivy_bridge.value:
                         # Pre-Ivy do not natively support XHCI boot support
                         # If we detect XHCI on older model, enable
                         for controller in self.constants.computer.usb_controllers:
@@ -286,7 +286,7 @@ class GenerateDefaults:
                             continue
                     else:
                         if self.model in smbios_data.smbios_dictionary:
-                            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.cpu_data.haswell.value:
+                            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.CPUGen.haswell.value:
                                 continue
 
                 self.constants.sip_status = False

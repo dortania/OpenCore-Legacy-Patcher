@@ -188,7 +188,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         model = self.constants.custom_model or self.constants.computer.real_model
         if model in smbios_data.smbios_dictionary:
             if app["OS"] >= os_data.os_data.ventura:
-                if smbios_data.smbios_dictionary[model]["CPU Generation"] <= cpu_data.cpu_data.penryn or model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]:
+                if smbios_data.smbios_dictionary[model]["CPU Generation"] <= cpu_data.CPUGen.penryn or model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]:
                     if model.startswith("MacBook"):
                         problems.append("Lack of internal Keyboard/Trackpad in macOS installer.")
                     else:

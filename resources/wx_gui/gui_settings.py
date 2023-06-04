@@ -257,7 +257,7 @@ class SettingsFrame(wx.Frame):
                         "USB 3.0 expansion cards on systems",
                         "without native support.",
                     ],
-                    "condition": not gui_support.CheckProperties(self.constants).host_has_cpu_gen(cpu_data.cpu_data.ivy_bridge) # Sandy Bridge and older do not natively support XHCI booting
+                    "condition": not gui_support.CheckProperties(self.constants).host_has_cpu_gen(cpu_data.CPUGen.ivy_bridge) # Sandy Bridge and older do not natively support XHCI booting
                 },
                 "NVMe Booting": {
                     "type": "checkbox",
@@ -270,7 +270,7 @@ class SettingsFrame(wx.Frame):
                         "Note: Requires Firmware support",
                         "for OpenCore to load from NVMe.",
                     ],
-                    "condition": not gui_support.CheckProperties(self.constants).host_has_cpu_gen(cpu_data.cpu_data.ivy_bridge) # Sandy Bridge and older do not natively support NVMe booting
+                    "condition": not gui_support.CheckProperties(self.constants).host_has_cpu_gen(cpu_data.CPUGen.ivy_bridge) # Sandy Bridge and older do not natively support NVMe booting
                 },
                 "wrap_around 2": {
                     "type": "wrap_around",

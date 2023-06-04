@@ -109,7 +109,7 @@ class BuildSMBIOS:
 
             # Note 1: Only apply if system is UEFI 1.2, this is generally Ivy Bridge and older
             # Note 2: Flipping 'UEFI -> ProtocolOverrides -> DataHub' will break hibernation
-            if (smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.cpu_data.ivy_bridge.value and self.model):
+            if (smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value and self.model):
                 logging.info("- Detected UEFI 1.2 or older Mac, updating BoardProduct")
                 self.config["PlatformInfo"]["DataHub"]["BoardProduct"] = self.spoofed_board
                 self.config["PlatformInfo"]["UpdateDataHub"] = True
