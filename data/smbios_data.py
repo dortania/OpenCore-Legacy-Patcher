@@ -22,6 +22,7 @@ from data import cpu_data, os_data, bluetooth_data
 
 smbios_dictionary = {
     "MacBook1,1": {
+        "Marketing Name": "MacBook (13-inch)",
         "Board ID": "Mac-F4208CC8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -42,6 +43,7 @@ smbios_dictionary = {
         ],
     },
     "MacBook2,1": {
+        "Marketing Name": "MacBook (13-inch Late 2006)",
         "Board ID": "Mac-F4208CA9",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -62,6 +64,7 @@ smbios_dictionary = {
         ],
     },
     "MacBook3,1": {
+        "Marketing Name": "MacBook (13-inch Late 2007)",
         "Board ID": "Mac-F22788C8",
         "FirmwareFeatures": "0xC0001407",
         "SecureBootModel": None,
@@ -82,6 +85,7 @@ smbios_dictionary = {
         ],
     },
     "MacBook4,1": {
+        "Marketing Name": "MacBook (13-inch, Early 2008)",
         "Board ID": "Mac-F22788A9",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -102,6 +106,7 @@ smbios_dictionary = {
         ],
     },
     "MacBook5,1": {
+        "Marketing Name": "MacBook (13-inch, Aluminum, Late 2008)",
         "Board ID": "Mac-F42D89C8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -138,6 +143,7 @@ smbios_dictionary = {
         ],
     },
     "MacBook5,2": {
+        "Marketing Name": "MacBook (13-inch, Mid 2009)",
         "Board ID": "Mac-F22788AA",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -157,6 +163,7 @@ smbios_dictionary = {
         ],
     },
     "MacBook6,1": {
+        "Marketing Name": "MacBook (13-inch, Late 2009)",
         "Board ID": "Mac-F22C8AC8",
         "FirmwareFeatures": "0xFC0FE13F",
         "SecureBootModel": None,
@@ -175,6 +182,7 @@ smbios_dictionary = {
         ],
     },
     "MacBook7,1": {
+        "Marketing Name": "MacBook (13-inch, Mid 2010)",
         "Board ID": "Mac-F22C89C8",
         "FirmwareFeatures": "0xFC0FE13F",
         "SecureBootModel": None,
@@ -193,6 +201,7 @@ smbios_dictionary = {
         ],
     },
     "MacBook8,1": {
+        "Marketing Name": "MacBook (Retina, 12-inch, Early 2015)",
         "Board ID": "Mac-BE0E8AC46FE800CC",
         "FirmwareFeatures": "0xFC0FE13F",
         "SecureBootModel": None,
@@ -227,6 +236,7 @@ smbios_dictionary = {
         ],
     },
     "MacBook9,1": {
+        "Marketing Name": "MacBook (Retina, 12-inch, Early 2016)",
         "Board ID": "Mac-9AE82516C7C6B903",
         "FirmwareFeatures": "0x8FC0FE13F",
         "SecureBootModel": None,
@@ -244,6 +254,7 @@ smbios_dictionary = {
         ],
     },
     "MacBook10,1": {
+        "Marketing Name": "MacBook (Retina, 12-inch, 2017)",
         "Board ID": "Mac-EE2EBD4B90B839A8",
         "FirmwareFeatures": "0x8FC0FE13F",
         "SecureBootModel": None,
@@ -261,6 +272,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir1,1": {
+        "Marketing Name": "MacBook Air (Original)",
         "Board ID": "Mac-F42C8CC8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -278,6 +290,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir2,1": {
+        "Marketing Name": "MacBook Air (Mid 2009)",
         "Board ID": "Mac-F42D88C8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -296,6 +309,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir3,1": {
+        "Marketing Name": "MacBook Air (11-inch, Late 2010)",
         "Board ID": "Mac-942452F5819B1C1B",
         "FirmwareFeatures": "0xD00DE137",
         "SecureBootModel": None,
@@ -314,6 +328,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir3,2": {
+        "Marketing Name": "MacBook Air (13-inch, Late 2010)",
         "Board ID": "Mac-942C5DF58193131B",
         "FirmwareFeatures": "0xD00DE137",
         "SecureBootModel": None,
@@ -332,6 +347,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir4,1": {
+        "Marketing Name": "MacBook Air (11-inch, Mid 2011)",
         "Board ID": "Mac-C08A6BB70A942AC2",
         "FirmwareFeatures": "0xD00DE137",
         "SecureBootModel": None,
@@ -349,6 +365,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir4,2": {
+        "Marketing Name": "MacBook Air (13-inch, Mid 2011)",
         "Board ID": "Mac-742912EFDBEE19B3",
         "FirmwareFeatures": "0xD00DE137",
         "SecureBootModel": None,
@@ -366,6 +383,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir5,1": {
+        "Marketing Name": "MacBook Air (11-inch, Mid 2012)",
         "Board ID": "Mac-66F35F19FE2A0D05",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -383,6 +401,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir5,2": {
+        "Marketing Name": "MacBook Air (13-inch, Mid 2012)",
         "Board ID": "Mac-2E6FAB96566FE58C",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -400,6 +419,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir6,1": {
+        "Marketing Name": "MacBook Air (11-inch, Mid 2013)",
         "Board ID": "Mac-35C1E88140C3E6CF",
         "FirmwareFeatures": "0xE00FE137",
         "SecureBootModel": None,
@@ -417,6 +437,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir6,2": {
+        "Marketing Name": "MacBook Air (13-inch, Mid 2013)",
         "Board ID": "Mac-7DF21CB3ED6977E5",
         "FirmwareFeatures": "0xE00FE137",
         "SecureBootModel": None,
@@ -434,6 +455,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir7,1": {
+        "Marketing Name": "MacBook Air (11-inch, Early 2015)",
         "Board ID": "Mac-9F18E312C5C2BF0B",
         "FirmwareFeatures": "0x8FF0FF576",
         "SecureBootModel": None,
@@ -451,6 +473,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir7,2": {
+        "Marketing Name": "MacBook Air (13-inch, Early 2015)",
         "Board ID": "Mac-937CB26E2E02BB01",
         "FirmwareFeatures": "0x8FF0FF576",
         "SecureBootModel": None,
@@ -468,6 +491,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir8,1": {
+        "Marketing Name": "MacBook Air (Retina, 13-inch, 2018)",
         "Board ID": "Mac-827FAC58A8FDFA22",
         "FirmwareFeatures": "0x8FD8FF42E",
         "SecureBootModel": "j140k",
@@ -521,6 +545,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir8,2": {
+        "Marketing Name": "MacBook Air (Retina, 13-inch, 2019)",
         "Board ID": "Mac-226CB3C6A851A671",
         "FirmwareFeatures": "0x8FD8FF42E",
         "SecureBootModel": "j140a",
@@ -538,6 +563,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookAir9,1": {
+        "Marketing Name": "MacBook Air (Retina, 13-inch, 2020)",
         "Board ID": "Mac-0CFF9C7C2B63DF8D",
         "FirmwareFeatures": "0x8FFAFF06E",
         "SecureBootModel": "j230k",
@@ -602,6 +628,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro1,1": {
+        "Marketing Name": "MacBook Pro (original)",
         "Board ID": "Mac-F425BEC8",
         "FirmwareFeatures": "",
         "SecureBootModel": None,
@@ -621,6 +648,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro1,2": {
+        "Marketing Name": "MacBook Pro (17-inch)",
         "Board ID": "Mac-F42DBEC8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -640,6 +668,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro2,1": {
+        "Marketing Name": "MacBook Pro (15-inch Core 2 Duo)",
         "Board ID": "Mac-F42189C8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -659,6 +688,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro2,2": {
+        "Marketing Name": "MacBook Pro (15-inch Core 2 Duo)",
         "Board ID": "Mac-F42187C8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -678,6 +708,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro3,1": {
+        "Marketing Name": "MacBook Pro (15-inch,  2.4 2.2GHz) ",
         "Board ID": "Mac-F4238BC8",
         "FirmwareFeatures": "0xC0001407",
         "SecureBootModel": None,
@@ -716,6 +747,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro4,1": {
+        "Marketing Name": "MacBook Pro (17-inch, Early 2008)",
         "Board ID": "Mac-F42C89C8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -756,6 +788,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro5,1": {
+        "Marketing Name": "MacBook Pro (15-inch, Late 2008)",
         "Board ID": "Mac-F42D86C8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -794,6 +827,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro5,2": {
+        "Marketing Name": "MacBook Pro (17-inch, Early 2009)",
         "Board ID": "Mac-F2268EC8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -813,6 +847,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro5,3": {
+        "Marketing Name": "MacBook Pro (15-inch, 2.53GHz, Mid 2009)",
         "Board ID": "Mac-F22587C8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -832,6 +867,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro5,4": {
+        "Marketing Name": "MacBook Pro (15-inch, 2.53GHz, Mid 2009)",
         "Board ID": "Mac-F22587A1",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -851,6 +887,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro5,5": {
+        "Marketing Name": "MacBook Pro (13-inch, Mid 2009)",
         "Board ID": "Mac-F2268AC8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -869,6 +906,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro6,1": {
+        "Marketing Name": "MacBook Pro (17-inch, Mid 2010)",
         "Board ID": "Mac-F22589C8",
         "FirmwareFeatures": "0xC00DE137",
         "SecureBootModel": None,
@@ -888,6 +926,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro6,2": {
+        "Marketing Name": "MacBook Pro (15-inch, Mid 2010)",
         "Board ID": "Mac-F22586C8",
         "FirmwareFeatures": "0xC00DE137",
         "SecureBootModel": None,
@@ -907,6 +946,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro7,1": {
+        "Marketing Name": "MacBook Pro (13-inch, Mid 2010)",
         "Board ID": "Mac-F222BEC8",
         "FirmwareFeatures": "0xC00DE137",
         "SecureBootModel": None,
@@ -925,6 +965,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro8,1": {
+        "Marketing Name": "MacBook Pro (13-inch, Early 2011)",
         "Board ID": "Mac-94245B3640C91C81",
         "FirmwareFeatures": "0xC00DE137",
         "SecureBootModel": None,
@@ -943,6 +984,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro8,2": {
+        "Marketing Name": "MacBook Pro (15-inch, Early 2011)",
         "Board ID": "Mac-94245A3940C91C80",
         "FirmwareFeatures": "0xC00DE137",
         "SecureBootModel": None,
@@ -962,6 +1004,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro8,3": {
+        "Marketing Name": "MacBook Pro (17-inch, Early 2011)",
         "Board ID": "Mac-942459F5819B171B",
         "FirmwareFeatures": "0xC00DE137",
         "SecureBootModel": None,
@@ -1002,6 +1045,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro9,1": {
+        "Marketing Name": "MacBook Pro (15-inch, Mid 2012)",
         "Board ID": "Mac-4B7AC7E43945597E",
         "FirmwareFeatures": "0xC00DE137",
         "SecureBootModel": None,
@@ -1021,6 +1065,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro9,2": {
+        "Marketing Name": "MacBook Pro (13-inch, Mid 2012)",
         "Board ID": "Mac-6F01561E16C75D06",
         "FirmwareFeatures": "0xC10DF577",
         "SecureBootModel": None,
@@ -1038,6 +1083,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro10,1": {
+        "Marketing Name": "MacBook Pro (Retina, Mid 2012)",
         "Board ID": "Mac-C3EC7CD22292981F",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -1057,6 +1103,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro10,2": {
+        "Marketing Name": "MacBook Pro (Retina, 13-inch, Late 2012)",
         "Board ID": "Mac-AFD8A9D944EA4843",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -1074,6 +1121,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro11,1": {
+        "Marketing Name": "MacBook Pro (Retina, 13-inch, Late 2013)",
         "Board ID": "Mac-189A3D4F975D5FFC",
         "FirmwareFeatures": "0xEB0FF577",
         "SecureBootModel": None,
@@ -1091,6 +1139,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro11,2": {
+        "Marketing Name": "MacBook Pro (Retina, 15-inch, Mid 2014)",
         "Board ID": "Mac-3CBD00234E554E41",
         "FirmwareFeatures": "0xEB0FF577",
         "SecureBootModel": None,
@@ -1108,6 +1157,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro11,3": {
+        "Marketing Name": "MacBook Pro (Retina, 15-inch, Late 2013)",
         "Board ID": "Mac-2BD1B31983FE1663",
         "FirmwareFeatures": "0xEB0FF577",
         "SecureBootModel": None,
@@ -1127,6 +1177,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro11,4": {
+        "Marketing Name": "MacBook Pro (Retina, 15-inch, Mid 2015)",
         "Board ID": "Mac-06F11FD93F0323C5",
         "FirmwareFeatures": "0x8EB0FF577",
         "SecureBootModel": None,
@@ -1144,6 +1195,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro11,5": {
+        "Marketing Name": "MacBook Pro (Retina, 15-inch, Mid 2014)",
         "Board ID": "Mac-06F11F11946D27C5",
         "FirmwareFeatures": "0x8EB0FF577",
         "SecureBootModel": None,
@@ -1163,6 +1215,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro12,1": {
+        "Marketing Name": "MacBook Pro (Retina, 13-inch, Early 2015)",
         "Board ID": "Mac-E43C1C25D4880AD6",
         "FirmwareFeatures": "0x8FD0FF576",
         "SecureBootModel": None,
@@ -1180,6 +1233,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro13,1": {
+        "Marketing Name": "MacBook Pro (13-inch, 2016, Two Thunderbolt 3 ports)",
         "Board ID": "Mac-473D31EABEB93F9B",
         "FirmwareFeatures": "0x8FC0FE137",
         "SecureBootModel": None,
@@ -1197,6 +1251,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro13,2": {
+        "Marketing Name": "MacBook Pro (13-inch, 2016, Four Thunderbolt 3 Ports) ",
         "Board ID": "Mac-66E35819EE2D0D05",
         "FirmwareFeatures": "0x8FC0FE137",
         "SecureBootModel": None,
@@ -1214,6 +1269,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro13,3": {
+        "Marketing Name": "MacBook Pro (15-inch, 2016)",
         "Board ID": "Mac-A5C67F76ED83108C",
         "FirmwareFeatures": "0x8FC0FE137",
         "SecureBootModel": None,
@@ -1233,6 +1289,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro14,1": {
+        "Marketing Name": "MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)",
         "Board ID": "Mac-B4831CEBD52A0C4C",
         "FirmwareFeatures": "0x8FF0FF57E",
         "SecureBootModel": None,
@@ -1250,6 +1307,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro14,2": {
+        "Marketing Name": "MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports) ",
         "Board ID": "Mac-CAD6701F7CEA0921",
         "FirmwareFeatures": "0x8FF0FF57E",
         "SecureBootModel": None,
@@ -1267,6 +1325,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro14,3": {
+        "Marketing Name": "MacBook Pro (15-inch, 2017)",
         "Board ID": "Mac-551B86E5744E2388",
         "FirmwareFeatures": "0x8FF0FF57E",
         "SecureBootModel": None,
@@ -1286,6 +1345,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro15,1": {
+        "Marketing Name": "MacBook Pro (15-inch, 2018)",
         "Board ID": "Mac-937A206F2EE63C01",
         "FirmwareFeatures": "0x8FD8FF426",
         "SecureBootModel": "j680",
@@ -1305,6 +1365,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro15,2": {
+        "Marketing Name": "MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)",
         "Board ID": "Mac-827FB448E656EC26",
         "FirmwareFeatures": "0x8FD8FF426",
         "SecureBootModel": "j132",
@@ -1322,6 +1383,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro15,3": {
+        "Marketing Name": "MacBook Pro (15-inch, 2019)",
         "Board ID": "Mac-1E7E29AD0135F9BC",
         "FirmwareFeatures": "0x8FD8FF426",
         "SecureBootModel": "j780",
@@ -1341,6 +1403,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro15,4": {
+        "Marketing Name": "MacBook Pro (13-inch, 2019, Two Thunderbolt 3 ports)",
         "Board ID": "Mac-53FDB3D8DB8CA971",
         "FirmwareFeatures": "0x8FD8FF426",
         "SecureBootModel": "j213",
@@ -1358,6 +1421,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro16,1": {
+        "Marketing Name": "MacBook Pro (16-inch, 2019)",
         "Board ID": "Mac-E1008331FDC96864",
         "FirmwareFeatures": "0x8FDAFF066",
         "SecureBootModel": "j152f",
@@ -1377,6 +1441,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro16,2": {
+        "Marketing Name": "MacBook Pro (13-inch, 2020, Four Thunderbolt 3 ports)",
         "Board ID": "Mac-5F9802EFE386AA28",
         "FirmwareFeatures": "0x8FFFFFF7F",
         "SecureBootModel": "j214k",
@@ -1394,6 +1459,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro16,3": {
+        "Marketing Name": "MacBook Pro (13-inch, 2020, Two Thunderbolt 3 ports)",
         "Board ID": "Mac-E7203C0F68AA0004",
         "FirmwareFeatures": "0x8FDAFF066",
         "SecureBootModel": "j223",
@@ -1411,6 +1477,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro16,4": {
+        "Marketing Name": "MacBook Pro (16-inch, 2019)",
         "Board ID": "Mac-A61BADE1FDAD7B05",
         "FirmwareFeatures": "0x8FDAFF066",
         "SecureBootModel": "j215",
@@ -1430,6 +1497,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro17,1": {
+        "Marketing Name": "MacBook Pro (13-inch, M1, 2020)",
         "Board ID": None,
         "FirmwareFeatures": None,
         "SecureBootModel": "j293",
@@ -1445,6 +1513,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro18,1": {
+        "Marketing Name": "MacBook Pro (16-inch, 2021)",
         "Board ID": None,
         "FirmwareFeatures": None,
         "SecureBootModel": "j316s",
@@ -1460,6 +1529,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro18,2": {
+        "Marketing Name": "MacBook Pro (16-inch, 2021)",
         "Board ID": None,
         "FirmwareFeatures": None,
         "SecureBootModel": "j316c",
@@ -1475,6 +1545,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro18,3": {
+        "Marketing Name": "MacBook Pro (14-inch, 2021)",
         "Board ID": None,
         "FirmwareFeatures": None,
         "SecureBootModel": "j314s",
@@ -1490,6 +1561,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro18,4": {
+        "Marketing Name": "MacBook Pro (14-inch, 2021)",
         "Board ID": None,
         "FirmwareFeatures": None,
         "SecureBootModel": "j314c",
@@ -1505,6 +1577,7 @@ smbios_dictionary = {
         ],
     },
     "Mac14,7": {
+        "Marketing Name": "MacBook Pro (13-inch, M2, 2022)",
         "Board ID": None,
         "FirmwareFeatures": None,
         "SecureBootModel": "J493AP",
@@ -1520,6 +1593,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini1,1": {
+        "Marketing Name": "Mac mini (Early 2006)",
         "Board ID": "Mac-F4208EC8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -1537,6 +1611,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini2,1": {
+        "Marketing Name": "Mac mini (Mid 2007)",
         "Board ID": "Mac-F4208EAA",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -1554,6 +1629,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini3,1": {
+        "Marketing Name": "Mac mini (Early 2009)",
         "Board ID": "Mac-F22C86C8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -1571,6 +1647,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini4,1": {
+        "Marketing Name": "Mac mini (Mid 2010)",
         "Board ID": "Mac-F2208EC8",
         "FirmwareFeatures": "0xC00C9423",
         "SecureBootModel": None,
@@ -1588,6 +1665,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini5,1": {
+        "Marketing Name": "Mac mini (Mid 2011)",
         "Board ID": "Mac-8ED6AF5B48C039E1",
         "FirmwareFeatures": "0xD00DE137",
         "SecureBootModel": None,
@@ -1604,6 +1682,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini5,2": {
+        "Marketing Name": "Mac mini (Mid 2011)",
         "Board ID": "Mac-4BC72D62AD45599E",
         "FirmwareFeatures": "0xD00DE137",
         "SecureBootModel": None,
@@ -1621,6 +1700,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini5,3": {
+        "Marketing Name": "Mac mini Server (Mid 2011)",
         "Board ID": "Mac-7BA5B2794B2CDB12",
         "FirmwareFeatures": "0xD00DE137",
         "SecureBootModel": None,
@@ -1637,6 +1717,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini6,1": {
+        "Marketing Name": "Mac mini (Late 2012)",
         "Board ID": "Mac-031AEE4D24BFF0B1",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -1653,6 +1734,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini6,2": {
+        "Marketing Name": "Mac mini Server (Late 2012)",
         "Board ID": "Mac-F65AE981FFA204ED",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -1669,6 +1751,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini7,1": {
+        "Marketing Name": "Mac mini (Late 2014)",
         "Board ID": "Mac-35C5E08120C7EEAF",
         "FirmwareFeatures": "0x8E00DE137",
         "SecureBootModel": None,
@@ -1686,6 +1769,7 @@ smbios_dictionary = {
         ],
     },
     "Macmini8,1": {
+        "Marketing Name": "Mac mini (2018)",
         "Board ID": "Mac-7BA5B2DFE22DDD8C",
         "FirmwareFeatures": "0x8FD8FF466",
         "SecureBootModel": "j174",
@@ -1716,6 +1800,7 @@ smbios_dictionary = {
         ],
     },
     "iMac4,1": {
+        "Marketing Name": "iMac (20-inch, Early 2006)",
         "Board ID": "Mac-F42786C8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -1735,6 +1820,7 @@ smbios_dictionary = {
         ],
     },
     "iMac4,2": {
+        "Marketing Name": "iMac (17-inch, Mid 2006)",
         "Board ID": "Mac-F4218EC8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -1754,6 +1840,7 @@ smbios_dictionary = {
         ],
     },
     "iMac5,1": {
+        "Marketing Name": "iMac (17-inch, Late 2006)",
         "Board ID": "Mac-F4228EC8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -1773,6 +1860,7 @@ smbios_dictionary = {
         ],
     },
     "iMac5,2": {
+        "Marketing Name": "iMac (17-inch, Late 2006 CD)",
         "Board ID": "Mac-F4218EC8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -1792,6 +1880,7 @@ smbios_dictionary = {
         ],
     },
     "iMac6,1": {
+        "Marketing Name": "iMac (24-inch, Late 2006)",
         "Board ID": "Mac-F4218FC8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -1812,6 +1901,7 @@ smbios_dictionary = {
         ],
     },
     "iMac7,1": {
+        "Marketing Name": "iMac (20-inch, Mid 2007)",
         "Board ID": "Mac-F42386C8",
         "FirmwareFeatures": "0xC0001407",
         "SecureBootModel": None,
@@ -1852,6 +1942,7 @@ smbios_dictionary = {
         ],
     },
     "iMac8,1": {
+        "Marketing Name": "iMac (20-inch, Early 2008)",
         "Board ID": "Mac-F227BEC8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -1892,6 +1983,7 @@ smbios_dictionary = {
         ],
     },
     "iMac9,1": {
+        "Marketing Name": "iMac (20-inch, Mid 2009)",
         "Board ID": "Mac-F2218FA9",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -1962,6 +2054,7 @@ smbios_dictionary = {
         ],
     },
     "iMac10,1": {
+        "Marketing Name": "iMac (27-inch, Late 2009)",
         "Board ID": "Mac-F221DCC8",
         # "Board ID": "Mac-F2268CC8",
         "FirmwareFeatures": "0xE00DE137",
@@ -2017,6 +2110,7 @@ smbios_dictionary = {
         ],
     },
     "iMac11,1": {
+        "Marketing Name": "iMac (27-inch, Late 2009)",
         "Board ID": "Mac-F2268DAE",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -2034,6 +2128,7 @@ smbios_dictionary = {
         ],
     },
     "iMac11,2": {
+        "Marketing Name": "iMac (21.5-inch, Mid 2010)",
         "Board ID": "Mac-F2238AC8",
         "FirmwareFeatures": "0xC00C9423",
         "SecureBootModel": None,
@@ -2052,6 +2147,7 @@ smbios_dictionary = {
         ],
     },
     "iMac11,3": {
+        "Marketing Name": "iMac (27-inch, Mid 2010)",
         "Board ID": "Mac-F2238BAE",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -2070,6 +2166,7 @@ smbios_dictionary = {
         ],
     },
     "iMac12,1": {
+        "Marketing Name": "iMac (21.5-inch, Mid 2011)",
         "Board ID": "Mac-942B5BF58194151B",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -2088,6 +2185,7 @@ smbios_dictionary = {
         ],
     },
     "iMac12,2": {
+        "Marketing Name": "iMac (27-inch, Mid 2011)",
         "Board ID": "Mac-942B59F58194171B",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -2126,6 +2224,7 @@ smbios_dictionary = {
         ],
     },
     "iMac13,1": {
+        "Marketing Name": "iMac (21.5-inch, Late 2012)",
         "Board ID": "Mac-00BE6ED71E35EB86",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -2144,6 +2243,7 @@ smbios_dictionary = {
         ],
     },
     "iMac13,2": {
+        "Marketing Name": "iMac (27-inch, Late 2012)",
         "Board ID": "Mac-FC02E91DDD3FA6A4",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -2162,6 +2262,7 @@ smbios_dictionary = {
         ],
     },
     "iMac13,3": {
+        "Marketing Name": "iMac (21.5-inch, Early 2013)",
         "Board ID": "Mac-7DF2A3B5E5D671ED",
         "FirmwareFeatures": "0xE00DE137",
         "SecureBootModel": None,
@@ -2179,6 +2280,7 @@ smbios_dictionary = {
         ],
     },
     "iMac14,1": {
+        "Marketing Name": "iMac (21.5-inch, Late 2013)",
         "Board ID": "Mac-031B6874CF7F642A",
         "FirmwareFeatures": "0xFB0FF577",
         "SecureBootModel": None,
@@ -2196,6 +2298,7 @@ smbios_dictionary = {
         ],
     },
     "iMac14,2": {
+        "Marketing Name": "iMac (27-inch, Late 2013)",
         "Board ID": "Mac-27ADBB7B4CEE8E61",
         "FirmwareFeatures": "0xE00FE137",
         "SecureBootModel": None,
@@ -2214,6 +2317,7 @@ smbios_dictionary = {
         ],
     },
     "iMac14,3": {
+        "Marketing Name": "iMac (21.5-inch, Late 2013)",
         "Board ID": "Mac-77EB7D7DAF985301",
         "FirmwareFeatures": "0xE00FE137",
         "SecureBootModel": None,
@@ -2232,6 +2336,7 @@ smbios_dictionary = {
         ],
     },
     "iMac14,4": {
+        "Marketing Name": "iMac (21.5-inch, Mid 2014)",
         "Board ID": "Mac-81E3E92DD6088272",
         "FirmwareFeatures": "0xF00FE137",
         "SecureBootModel": None,
@@ -2249,6 +2354,7 @@ smbios_dictionary = {
         ],
     },
     "iMac15,1": {
+        "Marketing Name": "iMac (Retina 5K, 27-inch, Mid 2015)",
         "Board ID": "Mac-42FD25EABCABB274",
         "FirmwareFeatures": "0xF80FE137",
         "SecureBootModel": None,
@@ -2287,6 +2393,7 @@ smbios_dictionary = {
         ],
     },
     "iMac16,1": {
+        "Marketing Name": "iMac (21.5-inch, Late 2015)",
         "Board ID": "Mac-A369DDC4E67F1C45",
         "FirmwareFeatures": "0x8FC0FE137",
         "SecureBootModel": None,
@@ -2304,6 +2411,7 @@ smbios_dictionary = {
         ],
     },
     "iMac16,2": {
+        "Marketing Name": "iMac (Retina 4K, 21.5-inch, Late 2015)",
         "Board ID": "Mac-FFE5EF870D7BA81A",
         "FirmwareFeatures": "0x8FC0FE137",
         "SecureBootModel": None,
@@ -2321,6 +2429,7 @@ smbios_dictionary = {
         ],
     },
     "iMac17,1": {
+        "Marketing Name": "iMac (Retina 5K, 27-inch, Late 2015)",
         "Board ID": "Mac-DB15BD556843C820",
         "FirmwareFeatures": "0x8FC0FE137",
         "SecureBootModel": None,
@@ -2381,6 +2490,7 @@ smbios_dictionary = {
         ],
     },
     "iMac18,1": {
+        "Marketing Name": "iMac (21.5-inch, 2017)",
         "Board ID": "Mac-4B682C642B45593E",
         "FirmwareFeatures": "0x8FD0FF576",
         "SecureBootModel": None,
@@ -2398,6 +2508,7 @@ smbios_dictionary = {
         ],
     },
     "iMac18,2": {
+        "Marketing Name": "iMac (Retina 4K, 21.5-inch, 2017)",
         "Board ID": "Mac-77F17D7DA9285301",
         "FirmwareFeatures": "0x8FD0FF576",
         "SecureBootModel": None,
@@ -2416,6 +2527,7 @@ smbios_dictionary = {
         ],
     },
     "iMac18,3": {
+        "Marketing Name": "iMac (Retina 5K, 27-inch, 2017)",
         "Board ID": "Mac-BE088AF8C5EB4FA2",
         "FirmwareFeatures": "0x8FD0FF576",
         "SecureBootModel": None,
@@ -2435,6 +2547,7 @@ smbios_dictionary = {
         ],
     },
     "iMac19,1": {
+        "Marketing Name": "iMac (Retina 5K, 27-inch, 2019)",
         "Board ID": "Mac-AA95B1DDAB278B95",
         "FirmwareFeatures": "0x8FD8FF576",
         "SecureBootModel": None,
@@ -2476,6 +2589,7 @@ smbios_dictionary = {
         ],
     },
     "iMac19,2": {
+        "Marketing Name": "iMac (Retina 4K, 21.5-inch, 2019)",
         "Board ID": "Mac-63001698E7A34814",
         "FirmwareFeatures": "0x8FD8FF576",
         "SecureBootModel": None,
@@ -2495,6 +2609,7 @@ smbios_dictionary = {
         ],
     },
     "iMac20,1": {
+        "Marketing Name": "iMac (Retina 5K, 27-inch, 2020)",
         "Board ID": "Mac-CFF7D910A743CAAF",
         "FirmwareFeatures": "0x8FFB3F066",
         "SecureBootModel": "j185",
@@ -2513,6 +2628,7 @@ smbios_dictionary = {
         ],
     },
     "iMac20,2": {
+        "Marketing Name": "iMac (Retina 5K, 27-inch, 2020)",
         "Board ID": "Mac-AF89B6D9451A490B",
         "FirmwareFeatures": "0x8FFB3F066",
         "SecureBootModel": "j185f",
@@ -2559,6 +2675,7 @@ smbios_dictionary = {
         ],
     },
     "iMacPro1,1": {
+        "Marketing Name": "iMac Pro (2017)",
         "Board ID": "Mac-7BA5B2D9E42DDD94",
         "FirmwareFeatures": "0xFD8FF53E",
         "SecureBootModel": "j137",
@@ -2576,6 +2693,7 @@ smbios_dictionary = {
         ],
     },
     "MacPro1,1": {
+        "Marketing Name": "Mac Pro",
         "Board ID": "Mac-F4208DC8",
         "FirmwareFeatures": "0x80000015",
         "SecureBootModel": None,
@@ -2595,6 +2713,7 @@ smbios_dictionary = {
         ],
     },
     "MacPro2,1": {
+        "Marketing Name": "Mac Pro",
         "Board ID": "Mac-F4208DA9",
         "FirmwareFeatures": "0xC0000015",
         "SecureBootModel": None,
@@ -2614,6 +2733,7 @@ smbios_dictionary = {
         ],
     },
     "MacPro3,1": {
+        "Marketing Name": "Mac Pro (Early 2008)",
         "Board ID": "Mac-F42C88C8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -2635,6 +2755,7 @@ smbios_dictionary = {
         ],
     },
     "MacPro4,1": {
+        "Marketing Name": "Mac Pro (Early 2009)",
         "Board ID": "Mac-F221BEC8",
         "FirmwareFeatures": "0xE001F537",
         "SecureBootModel": None,
@@ -2653,6 +2774,7 @@ smbios_dictionary = {
         ],
     },
     "MacPro5,1": {
+        "Marketing Name": "Mac Pro (Mid 2010)",
         "Board ID": "Mac-F221BEC8",
         "FirmwareFeatures": "0xE80FE137",
         "SecureBootModel": None,
@@ -2671,6 +2793,7 @@ smbios_dictionary = {
         ],
     },
     "MacPro6,1": {
+        "Marketing Name": "Mac Pro (Late 2013)",
         "Board ID": "Mac-F60DEB81FF30ACF6",
         "FirmwareFeatures": "0x8E90FF576",
         "SecureBootModel": None,
@@ -2687,6 +2810,7 @@ smbios_dictionary = {
         ],
     },
     "MacPro7,1": {
+        "Marketing Name": "Mac Pro (2019)",
         "Board ID": "Mac-27AD2F918AE68F61",
         "FirmwareFeatures": "0x8FDAFF066",
         "SecureBootModel": "j160",
@@ -2707,6 +2831,7 @@ smbios_dictionary = {
         ],
     },
     "Xserve1,1": {
+        "Marketing Name": "Xserve (Late 2006)",
         "Board ID": "Mac-F4208AC8",
         "FirmwareFeatures": None,
         "SecureBootModel": None,
@@ -2726,6 +2851,7 @@ smbios_dictionary = {
         ],
     },
     "Xserve2,1": {
+        "Marketing Name": "Xserve (Early 2008)",
         "Board ID": "Mac-F42289C8",
         "FirmwareFeatures": "0xC0001403",
         "SecureBootModel": None,
@@ -2745,6 +2871,7 @@ smbios_dictionary = {
         ],
     },
     "Xserve3,1": {
+        "Marketing Name": "Xserve (Early 2009)",
         "Board ID": "Mac-F223BEC8",
         "FirmwareFeatures": "0xE001F537",
         "SecureBootModel": None,
