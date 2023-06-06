@@ -17,6 +17,7 @@ SFR_SOFTWARE_UPDATE_PATH: str = "SFR/com_apple_MobileAsset_SFRSoftwareUpdate/com
 CATALOG_URL_BASE:         str = "https://swscan.apple.com/content/catalogs/others/index"
 CATALOG_URL_EXTENSION:    str = ".merged-1.sucatalog"
 CATALOG_URL_VARIANTS:     list = [
+    "14",
     "13",
     "12",
     "10.16",
