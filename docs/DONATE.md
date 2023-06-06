@@ -15,24 +15,4 @@ Additionally, hardware info dumps are greatly beneficial for us to determine wha
   * `File -> SaveAs` and open an issue on Github
   * Note: We want IOReg dumps of hardware not running on OpenCore, instead running a clean, officially supported OS by the machine
 
-If you have any legacy hardware you're willing to donate or want to buy us hardware, please contact us at the following email:
-
-* khronokernel@icloud.com
-
-Current hardware we own:
-
-| Model | CPU | GPU | Owner | Notes |
-| :--- | :--- | :--- | :--- | :--- |
-| MacBook5,1 | Penryn | 9400M | Mykola | N/A |
-| MacBook7,1 | Penryn | GT320M | Dhinak | N/A |
-| MacBook7,1 | Penryn | GT320M | Mykola | N/A |
-| MacBookPro5,3 | Penryn | 9400M + 9600M | Dhinak | Display's partially broken |
-| MacBookPro8,2 | Sandy Bridge | HD3000 | Mykola | Dead dGPU |
-| MacPro3,1 | Penryn | GTX 680 | Dhinak | N/A |
-| Macmini4,1 | Penryn | GT320M | Dhinak | N/A |
-
-Dead Hardware:
-| Model | CPU | GPU | Owner | Notes |
-| :--- | :--- | :--- | :--- | :--- |
-| MacPro3,1 | Penryn | HD5770, RX570, GT710 | Mykola | No longer powers on |
-| MacPro4,1 | Westmere | HD7950 | Mykola | Dead Northbridge on CPU Tray |
+If you have any legacy hardware you're willing to donate or want to buy us hardware, please reach out on our Discord server.
