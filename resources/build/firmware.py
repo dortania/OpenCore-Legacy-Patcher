@@ -236,7 +236,10 @@ class BuildFirmware:
             )
         ):
             logging.info("- Adding PCI Bus Enumeration Patch")
-            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "CaseySJ - Fix PCI bus enumeration")["Enabled"] = True
+            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "CaseySJ - Fix PCI bus enumeration (Ventura)")["Enabled"] = True
+            # Sonoma slightly adjusted this line specifically
+            # - https://github.com/apple-oss-distributions/IOPCIFamily/blob/main/IOPCIConfigurator.cpp#L1009
+            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Fix PCI bus enumeration (Sonoma)")["Enabled"] = True
 
         if self.constants.set_vmm_cpuid is True:
             logging.info("- Enabling VMM patch")
