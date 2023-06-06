@@ -166,6 +166,9 @@ class GenerateRootPatchSets:
             required_patches.update({"Legacy Wireless": all_hardware_patchset["Networking"]["Legacy Wireless"]})
             required_patches.update({"Legacy Wireless Extended": all_hardware_patchset["Networking"]["Legacy Wireless Extended"]})
 
+        if self.hardware_details["Networking: Modern Wireless"] is True:
+            required_patches.update({"Legacy Wireless": all_hardware_patchset["Networking"]["Modern Wireless"]})
+
         if self.hardware_details["Miscellaneous: Legacy GMUX"] is True:
             required_patches.update({"Legacy GMUX": all_hardware_patchset["Miscellaneous"]["Legacy GMUX"]})
 

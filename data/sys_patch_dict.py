@@ -1140,7 +1140,52 @@ class SystemPatchDictionary():
                             "IO80211.framework":  "12.6.2",
                         },
                     },
-                }
+                },
+                # May lord have mercy on our souls
+                # Applicable for BCM943324, BCM94331, BCM94360, BCM943602
+                "Modern Wireless": {
+                    "Display Name": "Networking: Modern Wireless",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 0
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install Reference": {
+                        "/System/Library/Extensions": {
+                            "IO80211FamilyLegacy.kext": "13.5 Beta 2",
+                            "IONetworkFamily.kext":     "13.5 Beta 2",
+                            "IOSkywalkFamily.kext":     "13.5 Beta 2",
+                        },
+                        "/usr/libexec": {
+                            "airportd":       "13.5 Beta 2",
+                            "wifianalyticsd": "13.5 Beta 2",
+                        },
+                        "/System/Library/Frameworks": {
+                            "CoreWLAN.framework": "13.5 Beta 2",
+                        },
+                        "/System/Library/PrivateFrameworks": {
+                            "CoreAnalytics.framework": "13.5 Beta 2",
+                            "CoreWiFi.framework":      "13.5 Beta 2",
+                            "IO80211.framework":       "13.5 Beta 2",
+                            "WiFiAnalytics.framework": "13.5 Beta 2",
+                            "WiFiPolicy.framework":    "13.5 Beta 2",
+                        },
+                    },
+                    "Remove Reference": {
+                        "/System/Library/Extensions": [
+                            "AppleBCMWLANBusInterfacePCIe.kext",
+                            "AppleBCMWLANBusInterfacePCIeMac.kext",
+                            "AppleBCMWLANCore.kext",
+                            "AppleBCMWLANCoreMac.kext",
+                            "IO80211Family.kext",
+                        ],
+                    },
+                },
             },
             "Brightness": {
                 "Legacy Backlight Control": {

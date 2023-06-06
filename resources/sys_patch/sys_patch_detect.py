@@ -57,6 +57,7 @@ class DetectRootPatch:
         self.brightness_legacy         = False
         self.legacy_audio              = False
         self.legacy_wifi               = False
+        self.modern_wifi               = False
         self.legacy_gmux               = False
         self.legacy_keyboard_backlight = False
         self.legacy_uhci_ohci          = False
@@ -226,6 +227,11 @@ class DetectRootPatch:
                         self.skylake_gpu = True
                         self.amfi_must_disable = True
                         self.supports_metal = True
+
+        if self.constants.detected_os >= os_data.os_data.sonoma:
+            # Currently all graphics patches require a KDK
+            self.requires_root_kc = True
+
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
             # Main concerns are for iMac12,x with Sandy iGPU and Kepler dGPU
@@ -537,6 +543,14 @@ class DetectRootPatch:
                     # Due to extracted frameworks for IO80211.framework and co, check library validation
                     self.amfi_must_disable = True
 
+        if (
+            isinstance(self.constants.computer.wifi, device_probe.Broadcom)
+            and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4360, device_probe.Broadcom.Chipsets.AirportBrcmNIC]):
+            if self.constants.detected_os > os_data.os_data.ventura:
+                self.modern_wifi = True
+                self.amfi_must_disable = True
+                self.requires_root_kc = True
+
         # if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
         if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
             # Sierra uses a legacy GMUX control method needed for dGPU switching on MacBookPro5,x
@@ -571,6 +585,7 @@ class DetectRootPatch:
             "Brightness: Legacy Backlight Control":        self.brightness_legacy,
             "Audio: Legacy Realtek":                       self.legacy_audio,
             "Networking: Legacy Wireless":                 self.legacy_wifi,
+            "Networking: Modern Wireless":                 self.modern_wifi,
             "Miscellaneous: Legacy GMUX":                  self.legacy_gmux,
             "Miscellaneous: Legacy Keyboard Backlight":    self.legacy_keyboard_backlight,
             "Miscellaneous: Legacy USB 1.1":               self.legacy_uhci_ohci,
