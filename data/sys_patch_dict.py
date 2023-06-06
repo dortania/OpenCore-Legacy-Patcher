@@ -1139,6 +1139,7 @@ class SystemPatchDictionary():
                             "CoreWiFi.framework": "12.6.2",
                             "IO80211.framework":  "12.6.2",
                             # TODO: When PatchSupportPkg has published binaries, remove comment
+                            # **({ "CoreAnalytics.framework": "13.5 Beta 2"} if self.os_major >= os_data.os_data.sonoma else {}),
                             # **({ "WiFiAnalytics.framework": "13.5 Beta 2"} if self.os_major >= os_data.os_data.sonoma else {}),
                         },
                     },
