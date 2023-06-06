@@ -579,7 +579,6 @@ class DetectRootPatch:
             "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,
             "Validation: Patching Possible":               self.verify_patch_allowed(),
             "Validation: Unpatching Possible":             self._verify_unpatch_allowed(),
-            f"Validation: Unsupported Host OS":            True if self.constants.detected_os > os_data.os_data.ventura and not Path("~/.dortania_developer").expanduser().exists() else False,
             f"Validation: SIP is enabled (Required: {self._check_sip()[2]} or higher)":  self.sip_enabled,
             f"Validation: Currently Booted SIP: ({hex(py_sip_xnu.SipXnu().get_sip_status().value)})":         self.sip_enabled,
             "Validation: SecureBootModel is enabled":      self.sbm_enabled,

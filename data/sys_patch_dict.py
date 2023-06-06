@@ -991,6 +991,52 @@ class SystemPatchDictionary():
                         },
                     },
                 },
+                # On macOS Sonoma, the IOSurface ABI changed slightly that we now get corrupted UI elements
+                # Namely, macOS wallpaper and menubar.
+                # Temporary workaround for development only, until we can figure out what's going on.
+                "Sonoma 31001 Extended": {
+                    "Display Name": "",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 0
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install Reference": {
+                        "/System/Library/Extensions": {
+                            "IOGPUFamily.kext": "13.5 Beta 2",
+                            "IOSurface.kext":   "13.5 Beta 2",
+                        },
+                    },
+                },
+                # On macOS Sonoma, the IOAcceleratorFamily2 ABI changed slightly that now Intel Metal GPUs will hard lock
+                # on rendering.
+                # Specific functions at fault are:
+                # - IOAccelResource::pageonIfNeeded()
+                # - IOAccelResource::pageoffIfNeeded()
+                # Due to these kexts sitting in the main cache, KDK is required to patch them.
+                "Sonoma Intel Extended": {
+                    "Display Name": "",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 0
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install Reference": {
+                        "/System/Library/Extensions": {
+                            "IOAcceleratorFamily2.kext": "13.5 Beta 2",
+                        },
+                    },
+                },
             },
             "Audio": {
                 "Legacy Realtek": {

@@ -64,6 +64,7 @@ class GenerateRootPatchSets:
             required_patches.update({"Big Sur OpenCL": all_hardware_patchset["Graphics"]["Big Sur OpenCL"]})
             required_patches.update({"WebKit Monterey Common": all_hardware_patchset["Graphics"]["WebKit Monterey Common"]})
             required_patches.update({"Intel Ivy Bridge": all_hardware_patchset["Graphics"]["Intel Ivy Bridge"]})
+            required_patches.update({"Sonoma Intel Extended": all_hardware_patchset["Graphics"]["Sonoma Intel Extended"]})
 
         if self.hardware_details["Graphics: Intel Haswell"] is True:
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
@@ -71,16 +72,19 @@ class GenerateRootPatchSets:
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
+            required_patches.update({"Sonoma Intel Extended": all_hardware_patchset["Graphics"]["Sonoma Intel Extended"]})
 
         if self.hardware_details["Graphics: Intel Broadwell"] is True:
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Intel Broadwell": all_hardware_patchset["Graphics"]["Intel Broadwell"]})
+            required_patches.update({"Sonoma Intel Extended": all_hardware_patchset["Graphics"]["Sonoma Intel Extended"]})
 
         if self.hardware_details["Graphics: Intel Skylake"] is True:
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Intel Skylake": all_hardware_patchset["Graphics"]["Intel Skylake"]})
+            required_patches.update({"Sonoma Intel Extended": all_hardware_patchset["Graphics"]["Sonoma Intel Extended"]})
 
         if self.hardware_details["Graphics: Nvidia Tesla"] is True:
             required_patches.update({"Non-Metal Common": all_hardware_patchset["Graphics"]["Non-Metal Common"]})
@@ -137,6 +141,7 @@ class GenerateRootPatchSets:
                 required_patches.update({"Revert GVA Downgrade": all_hardware_patchset["Graphics"]["Revert GVA Downgrade"]})
             if "AVX2" not in self.constants.computer.cpu.leafs:
                 required_patches.update({"AMD OpenCL": all_hardware_patchset["Graphics"]["AMD OpenCL"]})
+            required_patches.update({"Sonoma 31001 Extended": all_hardware_patchset["Graphics"]["Sonoma 31001 Extended"]})
 
         if self.hardware_details["Graphics: AMD Legacy Vega"] is True:
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
