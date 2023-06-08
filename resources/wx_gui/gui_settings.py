@@ -1030,7 +1030,6 @@ Hardware Information:
                             event.GetEventObject().SetValue(not event.GetEventObject().GetValue())
                             return
         if override_function is True:
-            print("Override function")
             self.settings[self._find_parent_for_key(label)][label]["override_function"](self.settings[self._find_parent_for_key(label)][label]["variable"], value, self.settings[self._find_parent_for_key(label)][label]["constants_variable"] if "constants_variable" in self.settings[self._find_parent_for_key(label)][label] else None)
             return
 

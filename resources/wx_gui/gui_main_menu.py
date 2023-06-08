@@ -220,11 +220,11 @@ class MainFrame(wx.Frame):
             pop_up.ShowModal()
 
             if pop_up.GetReturnCode() != wx.ID_YES:
-                print("Skipping OpenCore and root volume patch update...")
+                logging.info("Skipping OpenCore and root volume patch update...")
                 return
 
 
-            print("Updating OpenCore and root volume patches...")
+            logging.info("Updating OpenCore and root volume patches...")
             self.constants.update_stage = gui_support.AutoUpdateStages.CHECKING
             self.Hide()
             pos = self.GetPosition()
@@ -257,13 +257,13 @@ class MainFrame(wx.Frame):
             # Delete app
             result = subprocess.run(["rm", "-rf", "/Applications/OpenCore-Patcher.app"], capture_output=True)
             if result.returncode != 0:
-                print("Failed to delete app from /Applications")
+                logging.info("Failed to delete app from /Applications")
                 return
 
             # Create symlink
             result = subprocess.run(["ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], capture_output=True)
             if result.returncode != 0:
-                print("Failed to create symlink to /Applications")
+                logging.info("Failed to create symlink to /Applications")
                 return
 
 
