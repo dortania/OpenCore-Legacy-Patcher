@@ -253,6 +253,7 @@ class MainFrame(wx.Frame):
 
         # Check if app exists in /Applications, and is not a symlink
         if Path("/Applications/OpenCore-Patcher.app").exists() and Path("/Applications/OpenCore-Patcher.app").is_symlink() is False:
+            logging.info("Found user-installed app in /Applications, replacing with symlink")
             # Delete app
             result = subprocess.run(["rm", "-rf", "/Applications/OpenCore-Patcher.app"], capture_output=True)
             if result.returncode != 0:
