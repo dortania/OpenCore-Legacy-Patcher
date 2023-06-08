@@ -33,7 +33,6 @@
 #   'sudo ditto /Library/Developer/KDKs/<KDK Version>/System /System/Volumes/Update/mnt1/System'
 
 import plistlib
-import shutil
 import subprocess
 from pathlib import Path
 from datetime import datetime

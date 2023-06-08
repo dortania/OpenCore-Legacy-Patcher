@@ -258,7 +258,6 @@ class DetectRootPatch:
             if self.requires_root_kc is True:
                 self.missing_kdk = not self._check_kdk()
 
-        self._check_networking_support()
 
 
     def _check_networking_support(self):
@@ -272,9 +271,10 @@ class DetectRootPatch:
         On subsequent runs, we'll require networking to be enabled.
         """
 
-        if self.constants.detected_os < os_data.os_data.ventura:
+        # Increase OS check if modern wifi is detected
+        if self.constants.detected_os < os_data.os_data.ventura if self.legacy_wifi is True else os_data.os_data.sonoma:
             return
-        if self.legacy_wifi is False:
+        if self.legacy_wifi is False and self.modern_wifi is False:
             return
         if self.requires_root_kc is False:
             return
@@ -543,13 +543,13 @@ class DetectRootPatch:
                     # Due to extracted frameworks for IO80211.framework and co, check library validation
                     self.amfi_must_disable = True
 
-        if (
-            isinstance(self.constants.computer.wifi, device_probe.Broadcom)
-            and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4360, device_probe.Broadcom.Chipsets.AirportBrcmNIC]):
-            if self.constants.detected_os > os_data.os_data.ventura:
-                self.modern_wifi = True
-                self.amfi_must_disable = True
-                self.requires_root_kc = True
+        # if (
+        #     isinstance(self.constants.computer.wifi, device_probe.Broadcom)
+        #     and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4360, device_probe.Broadcom.Chipsets.AirportBrcmNIC]):
+        #     if self.constants.detected_os > os_data.os_data.ventura:
+        #         self.modern_wifi = True
+        #         self.amfi_must_disable = True
+        #         self.requires_root_kc = True
 
         # if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
         if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
@@ -566,6 +566,9 @@ class DetectRootPatch:
                     self.legacy_gmux = True
 
         self._detect_gpus()
+        # This must be performed last, as it may override previous decisions
+        # Namely, whether we allow patches requiring KDKs
+        self._check_networking_support()
 
         self.root_patch_dict = {
             "Graphics: Nvidia Tesla":                      self.nvidia_tesla,

@@ -1159,11 +1159,6 @@ class SystemPatchDictionary():
                         },
                     },
                     "Install Reference": {
-                        "/System/Library/Extensions": {
-                            "IO80211FamilyLegacy.kext": "13.5 Beta 2",
-                            "IONetworkFamily.kext":     "13.5 Beta 2",
-                            "IOSkywalkFamily.kext":     "13.5 Beta 2",
-                        },
                         "/usr/libexec": {
                             "airportd":       "13.5 Beta 2",
                             "wifianalyticsd": "13.5 Beta 2",
@@ -1178,15 +1173,6 @@ class SystemPatchDictionary():
                             "WiFiAnalytics.framework": "13.5 Beta 2",
                             "WiFiPolicy.framework":    "13.5 Beta 2",
                         },
-                    },
-                    "Remove Reference": {
-                        "/System/Library/Extensions": [
-                            "AppleBCMWLANBusInterfacePCIe.kext",
-                            "AppleBCMWLANBusInterfacePCIeMac.kext",
-                            "AppleBCMWLANCore.kext",
-                            "AppleBCMWLANCoreMac.kext",
-                            "IO80211Family.kext",
-                        ],
                     },
                 },
             },

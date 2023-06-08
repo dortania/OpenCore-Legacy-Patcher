@@ -70,6 +70,8 @@ class Constants:
         self.i210_version:             str = "1.0.0"  # CatalinaIntelI210Ethernet
         self.corecaptureelcap_version: str = "1.0.1"  # corecaptureElCap
         self.io80211elcap_version:     str = "2.0.0"  # IO80211ElCap
+        self.io80211legacy_version:    str = "1.0.0"  # IO80211FamilyLegacy (Ventura)
+        self.ioskywalk_version:        str = "1.0.0"  # IOSkywalkFamily (Ventura)
         self.bigsursdxc_version:       str = "1.0.0"  # BigSurSDXC
         self.monterey_ahci_version:    str = "1.0.0"  # CatalinaAHCI
 
@@ -417,6 +419,14 @@ class Constants:
     @property
     def io80211elcap_path(self):
         return self.payload_kexts_path / Path(f"Wifi/IO80211ElCap-v{self.io80211elcap_version}.zip")
+
+    @property
+    def io80211legacy_path(self):
+        return self.payload_kexts_path / Path(f"Wifi/IO80211FamilyLegacy-v{self.io80211legacy_version}.zip")
+
+    @property
+    def ioskywalk_path(self):
+        return self.payload_kexts_path / Path(f"Wifi/IOSkywalkFamily-v{self.ioskywalk_version}.zip")
 
     @property
     def applealc_path(self):
