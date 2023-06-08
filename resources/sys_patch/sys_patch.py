@@ -32,11 +32,13 @@
 # This is because Apple removed on-disk binaries (ref: https://github.com/dortania/OpenCore-Legacy-Patcher/issues/998)
 #   'sudo ditto /Library/Developer/KDKs/<KDK Version>/System /System/Volumes/Update/mnt1/System'
 
+import logging
 import plistlib
 import subprocess
+import applescript
+
 from pathlib import Path
 from datetime import datetime
-import logging
 
 from resources import constants, utilities, kdk_handler
 from resources.sys_patch import sys_patch_detect, sys_patch_auto, sys_patch_helpers, sys_patch_generate
@@ -863,6 +865,75 @@ class PatchSysVolume:
                 return False
 
             logging.info("- Mounted Universal-Binaries.dmg")
+            if Path(self.constants.overlay_psp_path_dmg).exists() and Path("~/.dortania_developer").expanduser().exists():
+                icon_path = str(self.constants.app_icon_path).replace("/", ":")[1:]
+                msg = "Welcome to the DortaniaInternal Program, please provided the decryption key to access internal resources. Press cancel to skip."
+                password = Path("~/.dortania_developer_key").expanduser().read_text().strip() if Path("~/.dortania_developer_key").expanduser().exists() else ""
+                for i in range(3):
+                    try:
+                        if password == "":
+                            password = applescript.AppleScript(
+                                f"""
+                                set theResult to display dialog "{msg}" default answer "" with hidden answer with title "OpenCore Legacy Patcher" with icon file "{icon_path}"
+
+                                return the text returned of theResult
+                                """
+                            ).run()
+
+                        result = subprocess.run(
+                            [
+                                "hdiutil", "attach", "-noverify", f"{self.constants.overlay_psp_path_dmg}",
+                                "-mountpoint", Path(self.constants.payload_path / Path("DortaniaInternal")),
+                                "-nobrowse",
+                                "-passphrase", password
+                            ],
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+                        )
+                        if result.returncode == 0:
+                            logging.info("- Mounted DortaniaInternal resources")
+                            result = subprocess.run(
+                                [
+                                    "ditto", f"{self.constants.payload_path / Path('DortaniaInternal')}", f"{self.constants.payload_path / Path('Universal-Binaries')}"
+                                ],
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+                            )
+                            if result.returncode == 0:
+                                return True
+
+                            logging.info("- Failed to merge DortaniaInternal resources")
+                            logging.info(f"Output: {result.stdout.decode()}")
+                            logging.info(f"Return Code: {result.returncode}")
+                            return False
+
+                        logging.info("- Failed to mount DortaniaInternal resources")
+                        logging.info(f"Output: {result.stdout.decode()}")
+                        logging.info(f"Return Code: {result.returncode}")
+
+                        if "Authentication error" not in result.stdout.decode():
+                            try:
+                                # Display that the disk image might be corrupted
+                                applescript.AppleScript(
+                                    f"""
+                                    display dialog "Failed to mount DortaniaInternal resources, please file an internal radar:\n\n{result.stdout.decode()}" with title "OpenCore Legacy Patcher" with icon file "{icon_path}"
+                                    """
+                                ).run()
+                                return False
+                            except Exception as e:
+                                pass
+                            break
+                        msg = f"Decryption failed, please try again. {2 - i} attempts remaining. "
+                        password = ""
+
+                        if i == 2:
+                            applescript.AppleScript(
+                                f"""
+                                display dialog "Failed to mount DortaniaInternal resources, too many incorrect passwords. If this continues with the correct decryption key, please file an internal radar." with title "OpenCore Legacy Patcher" with icon file "{icon_path}"
+                                """
+                            ).run()
+                            return False
+                    except Exception as e:
+                        break
+
             return True
 
         logging.info("- PatcherSupportPkg resources missing, Patcher likely corrupted!!!")

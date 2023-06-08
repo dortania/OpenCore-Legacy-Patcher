@@ -1006,7 +1006,7 @@ class SystemPatchDictionary():
                             "OS Minor": 99
                         },
                     },
-                    "Install Reference": {
+                    "Install": {
                         "/System/Library/Extensions": {
                             "IOGPUFamily.kext": "13.5 Beta 2",
                             "IOSurface.kext":   "13.5 Beta 2",
@@ -1031,7 +1031,7 @@ class SystemPatchDictionary():
                             "OS Minor": 99
                         },
                     },
-                    "Install Reference": {
+                    "Install": {
                         "/System/Library/Extensions": {
                             "IOAcceleratorFamily2.kext": "13.5 Beta 2",
                         },
@@ -1139,8 +1139,8 @@ class SystemPatchDictionary():
                             "CoreWiFi.framework": "12.6.2",
                             "IO80211.framework":  "12.6.2",
                             # TODO: When PatchSupportPkg has published binaries, remove comment
-                            # **({ "CoreAnalytics.framework": "13.5 Beta 2"} if self.os_major >= os_data.os_data.sonoma else {}),
-                            # **({ "WiFiAnalytics.framework": "13.5 Beta 2"} if self.os_major >= os_data.os_data.sonoma else {}),
+                            **({ "CoreAnalytics.framework": "13.5 Beta 2"} if self.os_major >= os_data.os_data.sonoma else {}),
+                            **({ "WiFiAnalytics.framework": "13.5 Beta 2"} if self.os_major >= os_data.os_data.sonoma else {}),
                         },
                     },
                 },
@@ -1158,7 +1158,7 @@ class SystemPatchDictionary():
                             "OS Minor": 99
                         },
                     },
-                    "Install Reference": {
+                    "Install": {
                         "/usr/libexec": {
                             "airportd":       "13.5 Beta 2",
                             "wifianalyticsd": "13.5 Beta 2",

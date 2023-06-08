@@ -543,13 +543,13 @@ class DetectRootPatch:
                     # Due to extracted frameworks for IO80211.framework and co, check library validation
                     self.amfi_must_disable = True
 
-        # if (
-        #     isinstance(self.constants.computer.wifi, device_probe.Broadcom)
-        #     and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4360, device_probe.Broadcom.Chipsets.AirportBrcmNIC]):
-        #     if self.constants.detected_os > os_data.os_data.ventura:
-        #         self.modern_wifi = True
-        #         self.amfi_must_disable = True
-        #         self.requires_root_kc = True
+        if (
+            isinstance(self.constants.computer.wifi, device_probe.Broadcom)
+            and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4360, device_probe.Broadcom.Chipsets.AirportBrcmNIC]):
+            if self.constants.detected_os > os_data.os_data.ventura:
+                self.modern_wifi = True
+                self.amfi_must_disable = True
+                self.requires_root_kc = True
 
         # if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
         if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
