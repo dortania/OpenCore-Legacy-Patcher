@@ -227,18 +227,20 @@ if [ ! -d "/Library/Application Support/Dortania" ]; then
     mkdir -p "/Library/Application Support/Dortania"
 fi
 
-# Check if '/Library/Application Support/Dortania/OpenCore-Patcher.app' exists
+# Check if 'OpenCore-Patcher.app' exists
 if [ -d "/Library/Application Support/Dortania/OpenCore-Patcher.app" ]; then
     rm -rf "/Library/Application Support/Dortania/OpenCore-Patcher.app"
+fi
+
+if [ -d "/Applications/OpenCore-Patcher.app" ]; then
+    rm -rf "/Applications/OpenCore-Patcher.app"
 fi
 
 # Move '/tmp/OpenCore-Patcher.app' to '/Library/Application Support/Dortania'
 mv "{str(self.application_path)}" "/Library/Application Support/Dortania/OpenCore-Patcher.app"
 
 # Check if '/Applications/OpenCore-Patcher.app' exists
-if [ ! -d "/Applications/OpenCore-Patcher.app" ]; then
-    ln -s "/Library/Application Support/Dortania/OpenCore-Patcher.app" "/Applications/OpenCore-Patcher.app"
-fi
+ln -s "/Library/Application Support/Dortania/OpenCore-Patcher.app" "/Applications/OpenCore-Patcher.app"
 
 # Create update.plist with info about update
 cat << EOF > "/Library/Application Support/Dortania/update.plist"
