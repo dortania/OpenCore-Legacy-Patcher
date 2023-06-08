@@ -4,6 +4,8 @@
 - Update non-Metal Binaries:
   - Improve experimental Menubar implementation stability
   - Implement reduce transparency Menubar
+- Resolve app not updating in `/Applications` after an update
+  - Work-around users manually copying app to `/Applications` instead of allowing Root Volume Patcher to create a proper alias
 - Increment Binaries:
   - PatcherSupportPkg 1.1.3 - release
 
