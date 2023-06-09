@@ -97,7 +97,7 @@ class SystemPatchDictionary():
                             "OpenGL.framework":       "10.14.3",
                             "CoreDisplay.framework": f"10.14.4-{self.os_major}",
                             "IOSurface.framework":   f"10.15.7-{self.os_major}",
-                            "QuartzCore.framework":  f"10.15.7-{self.os_major}",
+                            **({"QuartzCore.framework":  f"10.15.7-{self.os_major}"} if self.os_major < os_data.os_data.sonoma else {}),
                         },
                         "/System/Library/PrivateFrameworks": {
                             "GPUSupport.framework": "10.14.3",
