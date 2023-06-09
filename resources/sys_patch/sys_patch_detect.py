@@ -549,7 +549,6 @@ class DetectRootPatch:
             if self.constants.detected_os > os_data.os_data.ventura:
                 self.modern_wifi = True
                 self.amfi_must_disable = True
-                self.requires_root_kc = True
 
         # if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
         if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
