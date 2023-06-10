@@ -865,7 +865,7 @@ class PatchSysVolume:
                 return False
 
             logging.info("- Mounted Universal-Binaries.dmg")
-            if Path(self.constants.overlay_psp_path_dmg).exists() and Path("~/.dortania_developer").expanduser().exists():
+            if self.constants.cli_mode is False and Path(self.constants.overlay_psp_path_dmg).exists() and Path("~/.dortania_developer").expanduser().exists():
                 icon_path = str(self.constants.app_icon_path).replace("/", ":")[1:]
                 msg = "Welcome to the DortaniaInternal Program, please provided the decryption key to access internal resources. Press cancel to skip."
                 password = Path("~/.dortania_developer_key").expanduser().read_text().strip() if Path("~/.dortania_developer_key").expanduser().exists() else ""

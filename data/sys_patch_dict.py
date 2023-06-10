@@ -991,10 +991,31 @@ class SystemPatchDictionary():
                         },
                     },
                 },
+                "Sonoma 3802 Extended": {
+                    "Display Name": "",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 0
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install": {
+                        "/System/Library/Frameworks": {
+                            "Metal.framework": "12.5-3802-23",  # Patched XPC service to handle 32023 inputs inside of 'CompilerPluginInterface::CompilerPluginInterface()'
+                        },
+                        "/System/Library/PrivateFrameworks": {
+                            "MTLCompiler.framework": "13.5 Beta 2",
+                        },
+                    },
+                },
                 # On macOS Sonoma, the IOSurface ABI changed slightly that we now get corrupted UI elements
                 # Namely, macOS wallpaper and menubar.
                 # Temporary workaround for development only, until we can figure out what's going on.
-                "Sonoma 31001 Extended": {
+                "Sonoma Legacy Metal Extended": {
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
@@ -1138,7 +1159,6 @@ class SystemPatchDictionary():
                         "/System/Library/PrivateFrameworks": {
                             "CoreWiFi.framework": "12.6.2",
                             "IO80211.framework":  "12.6.2",
-                            # TODO: When PatchSupportPkg has published binaries, remove comment
                             **({ "CoreAnalytics.framework": "13.5 Beta 2"} if self.os_major >= os_data.os_data.sonoma else {}),
                             **({ "WiFiAnalytics.framework": "13.5 Beta 2"} if self.os_major >= os_data.os_data.sonoma else {}),
                         },
@@ -1162,16 +1182,18 @@ class SystemPatchDictionary():
                         "/usr/libexec": {
                             "airportd":       "13.5 Beta 2",
                             "wifianalyticsd": "13.5 Beta 2",
+                            "wifip2pd":       "13.5 Beta 2",
                         },
                         "/System/Library/Frameworks": {
                             "CoreWLAN.framework": "13.5 Beta 2",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "CoreAnalytics.framework": "13.5 Beta 2",
-                            "CoreWiFi.framework":      "13.5 Beta 2",
-                            "IO80211.framework":       "13.5 Beta 2",
-                            "WiFiAnalytics.framework": "13.5 Beta 2",
-                            "WiFiPolicy.framework":    "13.5 Beta 2",
+                            "CoreAnalytics.framework":  "13.5 Beta 2",
+                            "CoreWiFi.framework":       "13.5 Beta 2",
+                            "IO80211.framework":        "13.5 Beta 2",
+                            "WiFiAnalytics.framework":  "13.5 Beta 2",
+                            "WiFiPolicy.framework":     "13.5 Beta 2",
+                            "WiFiPeerToPeer.framework": "13.5 Beta 2",
                         },
                     },
                 },
