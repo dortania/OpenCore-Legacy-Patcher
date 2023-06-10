@@ -234,7 +234,7 @@ class RemoteInstallerCatalog:
     Parses Apple's Software Update catalog and finds all macOS installers.
     """
 
-    def __init__(self, seed_override: SeedType = SeedType.PublicRelease, os_override: int = os_data.os_data.ventura) -> None:
+    def __init__(self, seed_override: SeedType = SeedType.PublicRelease, os_override: int = os_data.os_data.sonoma) -> None:
 
         self.catalog_url: str = self._construct_catalog_url(seed_override, os_override)
 
@@ -421,8 +421,7 @@ class RemoteInstallerCatalog:
             return {}
 
         newest_apps: dict = self.available_apps.copy()
-        supported_versions = ["10.13", "10.14", "10.15", "11", "12", "13"]
-
+        supported_versions = ["10.13", "10.14", "10.15", "11", "12", "13", "14"]
 
         for version in supported_versions:
             remote_version_minor = 0
@@ -488,11 +487,6 @@ class RemoteInstallerCatalog:
                     if newest_apps[ia2]["Version"].split(".")[0] == newest_apps[ia]["Version"].split(".")[0] and newest_apps[ia2]["Variant"] not in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
                         newest_apps.pop(ia)
                         break
-
-        # Remove unsupported versions (namely 14)
-        for ia in list(newest_apps):
-            if newest_apps[ia]["Version"].split(".")[0] not in supported_versions:
-                newest_apps.pop(ia)
 
         return newest_apps
 

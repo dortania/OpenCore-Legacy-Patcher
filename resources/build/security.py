@@ -77,8 +77,3 @@ class BuildSecurity:
         if self.constants.secure_status is False:
             logging.info("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
-            if self.constants.force_vmm is True:
-                logging.info("- Forcing VMM patchset to support OTA updates")
-                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] = True
-                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Legacy")["Enabled"] = True
-                support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (2) Ventura")["Enabled"] = True

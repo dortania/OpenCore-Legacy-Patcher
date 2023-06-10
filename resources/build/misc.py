@@ -119,10 +119,8 @@ class BuildMiscellaneous:
 
         re_patch_args = []
 
-        # Resolve content caching when kern.hv_vmm_present is set
-        if support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True and self.constants.set_content_caching is True:
-            logging.info("- Fixing Content Caching support")
-            re_patch_args.append("asset")
+        if self.constants.allow_oc_everywhere is False and self.constants.serial_settings == "None":
+            re_patch_args.append("sbvmm")
 
         # Resolve CoreGraphics.framework crashing on Ivy Bridge in macOS 13.3+
         # Ref: https://github.com/acidanthera/RestrictEvents/pull/12
