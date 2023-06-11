@@ -1184,6 +1184,9 @@ class SystemPatchDictionary():
                             "wifianalyticsd": "13.5 Beta 2",
                             "wifip2pd":       "13.5 Beta 2",
                         },
+                        "/System/Library/CoreServices": {
+                            "WiFiAgent.app": "13.5 Beta 2",
+                        },
                         "/System/Library/Frameworks": {
                             "CoreWLAN.framework": "13.5 Beta 2",
                         },
