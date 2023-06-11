@@ -151,10 +151,14 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 installer_button.Centre(wx.HORIZONTAL)
                 spacer += 25
 
-                # Since installers are sorted by version, set the latest installer as the default button
-                # Note that on full display, the last installer is generally a beta
-                if show_full is False and app == list(installers.keys())[-1]:
-                    installer_button.SetDefault()
+            # Since installers are sorted by version, set the latest installer as the default button
+            # Note that on full display, the last installer is generally a beta
+            for button in reversed(dialog.GetChildren()):
+                if not isinstance(button, wx.Button):
+                    continue
+                if "Beta" not in button.GetLabel():
+                    button.SetDefault()
+                    break
         else:
             logging.error("No installers found on SUCatalog")
             installer_button = wx.StaticText(dialog, label="Failed to fetch catalog from Apple", pos=(-1, subtitle_label.GetPosition()[1] + subtitle_label.GetSize()[1] + 5))
