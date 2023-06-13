@@ -13,7 +13,6 @@ from pathlib import Path
 from resources import (
     constants,
     kdk_handler,
-    global_settings,
 )
 from resources.sys_patch import (
     sys_patch,
