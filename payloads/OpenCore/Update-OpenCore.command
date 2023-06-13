@@ -63,6 +63,7 @@ UNUSED_TOOLS = [
     "CsrUtil.efi",
     "TpmInfo.efi",
     "ListPartitions.efi",
+    "FontTester.efi",
 ]
 
 IMPORTANT_UTILITIES = [
