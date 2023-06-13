@@ -275,14 +275,6 @@ class SettingsFrame(wx.Frame):
                 "wrap_around 2": {
                     "type": "wrap_around",
                 },
-                "Content Caching": {
-                    "type": "checkbox",
-                    "value": self.constants.set_content_caching,
-                    "variable": "set_content_caching",
-                    "description": [
-                        # "Enable Content Caching.",
-                    ],
-                },
                 "APFS Trim": {
                     "type": "checkbox",
                     "value": self.constants.apfs_trim_timeout,

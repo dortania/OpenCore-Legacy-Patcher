@@ -215,7 +215,6 @@ class Constants:
         self.software_demux:         bool = False  # Enable Software Demux patch set
         self.force_vmm:              bool = False  # Force VMM patch
         self.disable_connectdrivers: bool = False  # Disable ConnectDrivers (hibernation)
-        self.set_content_caching:    bool = False  # Set Content Caching
         self.set_vmm_cpuid:          bool = False  # Set VMM bit inside CPUID
         self.disable_cat_colorsync:  bool = False  # Disable the ColorSync patch to regain Display Profiles
         self.set_alc_usage:          bool = True  #  Set AppleALC usage

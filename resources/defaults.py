@@ -56,11 +56,6 @@ class GenerateDefaults:
         General probe for data
         """
 
-        if "Book" in self.model:
-            self.constants.set_content_caching = False
-        else:
-            self.constants.set_content_caching = True
-
         if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
             # Users disabling TS2 most likely have a faulty dGPU
             # users can override this in settings
