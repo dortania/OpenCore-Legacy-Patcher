@@ -239,10 +239,10 @@ class Constants:
         """
 
         try:
-            version.parse(self.opencore_build)
-            return True
-        except version.InvalidVersion:
+            version.parse(self.patcher_version)
             return False
+        except version.InvalidVersion:
+            return True
 
     # Payload Location
 
