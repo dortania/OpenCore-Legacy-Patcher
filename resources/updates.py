@@ -3,8 +3,11 @@
 # Call check_binary_updates() to determine if any updates are available
 # Returns dict with Link and Version of the latest binary update if available
 import logging
+from typing import Optional, Union
 
-from resources import network_handler, constants
+from packaging import version
+
+from resources import constants, network_handler
 
 REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest"
 
@@ -12,48 +15,62 @@ REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/dortania/OpenCore-L
 class CheckBinaryUpdates:
     def __init__(self, global_constants: constants.Constants) -> None:
         self.constants: constants.Constants = global_constants
+        try:
+            self.binary_version = version.parse(self.constants.patcher_version)
+        except version.InvalidVersion:
+            assert self.constants.special_build is True, "Invalid version number for binary"
+            # Special builds will not have a proper version number
+            self.binary_version = version.parse("0.0.0")
 
-        self.binary_version       = self.constants.patcher_version
-        self.binary_version_array = [int(x) for x in self.binary_version.split(".")]
+        self.latest_details = None
 
-
-    def _check_if_build_newer(self, remote_version: list = None, local_version: list = None) -> bool:
+    def check_if_newer(self, version: Union[str, version.Version]) -> bool:
         """
-        Check if the remote version is newer than the local version
+        Check if the provided version is newer than the local version
 
         Parameters:
-            remote_version (list): Remote version to compare against
-            local_version (list): Local version to compare against
+            version (str): Version to compare against
 
         Returns:
-            bool: True if remote version is newer, False if not
+            bool: True if the provided version is newer, False if not
+        """
+        if self.constants.special_build is True:
+            return False
+
+        return self._check_if_build_newer(version, self.binary_version)
+
+    def _check_if_build_newer(self, first_version: Union[str, version.Version], second_version: Union[str, version.Version]) -> bool:
+        """
+        Check if the first version is newer than the second version
+
+        Parameters:
+            first_version_str (str): First version to compare against (generally local)
+            second_version_str (str): Second version to compare against (generally remote)
+
+        Returns:
+            bool: True if first version is newer, False if not
         """
 
-        if remote_version is None:
-            remote_version = self.remote_version_array
-        if local_version is None:
-            local_version = self.binary_version_array
+        if not isinstance(first_version, version.Version):
+            try:
+                first_version = version.parse(first_version)
+            except version.InvalidVersion:
+                # Special build > release build: assume special build is newer
+                return True
 
+        if not isinstance(second_version, version.Version):
+            try:
+                second_version = version.parse(second_version)
+            except version.InvalidVersion:
+                # Release build > special build: assume special build is newer
+                return False
 
-        if local_version == remote_version:
+        if first_version == second_version:
             if not self.constants.commit_info[0].startswith("refs/tags"):
                 # Check for nightly builds
                 return True
 
-        # Pad version numbers to match length (ie. 0.1.0 vs 0.1.0.1)
-        while len(remote_version) > len(local_version):
-            local_version.append(0)
-        while len(remote_version) < len(local_version):
-            remote_version.append(0)
-
-        for i in range(0, len(remote_version)):
-            if int(remote_version[i]) < int(local_version[i]):
-                break
-            elif int(remote_version[i]) > int(local_version[i]):
-                return True
-
-        return False
-
+        return first_version > second_version
 
     def _determine_local_build_type(self) -> str:
         """
@@ -63,11 +80,7 @@ class CheckBinaryUpdates:
             str: "GUI" or "TUI"
         """
 
-        if self.constants.wxpython_variant is True:
-            return "GUI"
-        else:
-            return "TUI"
-
+        return "GUI" if self.constants.wxpython_variant else "TUI"
 
     def _determine_remote_type(self, remote_name: str) -> str:
         """
@@ -87,8 +100,7 @@ class CheckBinaryUpdates:
         else:
             return "Unknown"
 
-
-    def check_binary_updates(self) -> dict:
+    def check_binary_updates(self) -> Optional[dict]:
         """
         Check if any updates are available for the OpenCore Legacy Patcher binary
 
@@ -96,9 +108,13 @@ class CheckBinaryUpdates:
             dict: Dictionary with Link and Version of the latest binary update if available
         """
 
-        return None
+        if self.constants.special_build is True:
+            # Special builds do not get updates through the updater
+            return None
 
-        available_binaries: list = {}
+        if self.latest_details:
+            # We already checked
+            return self.latest_details
 
         if not network_handler.NetworkUtilities(REPO_LATEST_RELEASE_URL).verify_network_connection():
             return None
@@ -109,26 +125,26 @@ class CheckBinaryUpdates:
         if "tag_name" not in data_set:
             return None
 
-        self.remote_version = data_set["tag_name"]
+        # The release marked as latest will always be stable, and thus, have a proper version number
+        # But if not, let's not crash the program
+        try:
+            latest_remote_version = version.parse(data_set["tag_name"])
+        except version.InvalidVersion:
+            return None
 
-        self.remote_version_array = self.remote_version.split(".")
-        self.remote_version_array = [int(x) for x in self.remote_version_array]
-
-        if self._check_if_build_newer() is False:
+        if not self._check_if_build_newer(latest_remote_version, self.binary_version):
             return None
 
         for asset in data_set["assets"]:
             logging.info(f"Found asset: {asset['name']}")
             if self._determine_remote_type(asset["name"]) == self._determine_local_build_type():
-                available_binaries.update({
-                    asset['name']: {
-                        "Name":        asset["name"],
-                        "Version":     self.remote_version,
-                        "Link":        asset["browser_download_url"],
-                        "Type":        self._determine_remote_type(asset["name"]),
-                        "Github Link": f"https://github.com/dortania/OpenCore-Legacy-Patcher/releases/{self.remote_version}"
-                    }
-                })
-                return available_binaries
+                self.latest_details = {
+                    "Name": asset["name"],
+                    "Version": latest_remote_version,
+                    "Link": asset["browser_download_url"],
+                    "Type": self._determine_remote_type(asset["name"]),
+                    "Github Link": f"https://github.com/dortania/OpenCore-Legacy-Patcher/releases/{latest_remote_version}",
+                }
+                return self.latest_details
 
         return None

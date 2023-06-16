@@ -282,22 +282,21 @@ class MainFrame(wx.Frame):
         if not dict:
             return
 
-        for entry in dict:
-            version = dict[entry]["Version"]
-            logging.info(f"New version: {version}")
-            dialog = wx.MessageDialog(
-                parent=self,
-                message=f"Current Version: {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}\nNew version: {version}\nWould you like to update?",
-                caption="Update Available for OpenCore Legacy Patcher!",
-                style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
-            )
-            dialog.SetYesNoCancelLabels("Download and install", "Ignore", "View on Github")
-            response = dialog.ShowModal()
+        version = dict["Version"]
+        logging.info(f"New version: {version}")
+        dialog = wx.MessageDialog(
+            parent=self,
+            message=f"Current Version: {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}\nNew version: {version}\nWould you like to update?",
+            caption="Update Available for OpenCore Legacy Patcher!",
+            style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
+        )
+        dialog.SetYesNoCancelLabels("Download and install", "Ignore", "View on Github")
+        response = dialog.ShowModal()
 
-            if response == wx.ID_YES:
-                wx.CallAfter(self.on_update, dict[entry]["Link"], version)
-            elif response == wx.ID_CANCEL:
-                webbrowser.open(dict[entry]["Github Link"])
+        if response == wx.ID_YES:
+            wx.CallAfter(self.on_update, dict["Link"], version)
+        elif response == wx.ID_CANCEL:
+            webbrowser.open(dict["Github Link"])
 
 
     def on_build_and_install(self, event: wx.Event = None):

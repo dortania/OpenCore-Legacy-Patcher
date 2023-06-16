@@ -4,6 +4,7 @@
 
 from pathlib import Path
 from typing import Optional
+from packaging import version
 
 from resources import device_probe
 from data import os_data
@@ -12,7 +13,7 @@ from data import os_data
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "0.6.8"  # OpenCore-Legacy-Patcher
+        self.patcher_version:                 str = "amfipass-b3"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version:     str = "1.1.3"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
@@ -230,6 +231,18 @@ class Constants:
             os_data.os_data.monterey,
             os_data.os_data.ventura,
         ]
+
+    @property
+    def special_build(self):
+        """
+        Special builds are used for testing. They do not get updates through the updater
+        """
+
+        try:
+            version.parse(self.opencore_build)
+            return True
+        except version.InvalidVersion:
+            return False
 
     # Payload Location
 
