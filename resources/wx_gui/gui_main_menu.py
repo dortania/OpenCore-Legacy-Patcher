@@ -65,7 +65,7 @@ class MainFrame(wx.Frame):
         """
 
         # Title label: OpenCore Legacy Patcher v{X.Y.Z}
-        title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher v{self.constants.patcher_version}", pos=(-1,10))
+        title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher {'' if self.constants.special_build else 'v'}{self.constants.patcher_version}", pos=(-1, 10))
         title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
         title_label.Centre(wx.HORIZONTAL)
 
