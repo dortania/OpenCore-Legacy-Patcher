@@ -13,7 +13,7 @@ class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "0.6.8"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "1.1.3"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "1.1.4"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
@@ -215,7 +215,6 @@ class Constants:
         self.disable_connectdrivers: bool = False  # Disable ConnectDrivers (hibernation)
         self.set_content_caching:    bool = False  # Set Content Caching
         self.set_vmm_cpuid:          bool = False  # Set VMM bit inside CPUID
-        self.disable_cat_colorsync:  bool = False  # Disable the ColorSync patch to regain Display Profiles
         self.set_alc_usage:          bool = True  #  Set AppleALC usage
         self.allow_3rd_party_drives: bool = True  #  Allow ThridPartyDrives quirk
         self.allow_nvme_fixing:      bool = True  #  Allow NVMe Kernel Space Patches

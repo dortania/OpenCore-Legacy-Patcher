@@ -228,10 +228,9 @@ class SystemPatchDictionary():
                     },
                 },
 
-                "Non-Metal ColorSync Workaround": {
-                    # HD3000 Macs have issues with certain ColorProfiles
-                    # This downgrade allows for proper UI rendering,
-                    # however limited to Ventura due to regression with Big Sur and Monterey
+                "Revert Non-Metal ColorSync Workaround": {
+                    # Old patch for ColorSync in Ventura on HD3000s
+                    # Proper solution has been integrated into QuartzCore
                     "Display Name": "",
                     "OS Support": {
                         "Minimum OS Support": {
@@ -239,14 +238,15 @@ class SystemPatchDictionary():
                             "OS Minor": 0
                         },
                         "Maximum OS Support": {
-                            "OS Major": self.non_metal_os_support[-1],
+                            "OS Major": os_data.os_data.ventura,
                             "OS Minor": 99
                         },
                     },
-                    "Install": {
-                        "/System/Library/Frameworks": {
-                            "ColorSync.framework": f"10.15.7-{self.os_major}",
-                        },
+                    "Remove": {
+                        "/System/Library/Frameworks/ColorSync.framework/Versions/A": [
+                            "ColorSync",
+                            "ColorSyncOld.dylib",
+                        ],
                     },
                 },
 
