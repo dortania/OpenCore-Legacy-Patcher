@@ -27,16 +27,18 @@ Metal is Apple's in-house graphics API that acts as a replacement for OpenGL/Ope
 
 | Graphics Vendor | Architecture | Series | Supports Metal |
 | :--- | :--- | :--- | :--- |
-| ATI | TeraScale 1 | HD2000 - HD4000 | <span style="color:red">No</span> |
-| ^^ | TeraScale 2 | HD5000 - HD6000 | ^^ |
-| AMD | GCN (and newer) | HD7000+ | <span style="color:green">Yes</span> |
-| NVIDIA | Tesla | 8000GT - GT300 |  <span style="color:red">No</span> |
-| ^^ | Fermi | GT400 - GT500 | ^^ |
-| ^^ | Kepler | GT600 - GT700 | <span style="color:green">Yes</span> |
-| Intel | GMA | GMA900 - GMA3000 | <span style="color:red">No</span> |
+| ATI | TeraScale 1 | HD 2XXX - HD 4XXX | <span style="color:red">No</span> |
+| ^^ | TeraScale 2 | HD 5XXX - HD 6XXX | ^^ |
+| AMD | GCN (and newer) | HD 7XXX+ | <span style="color:green">Yes</span> |
+| NVIDIA | Tesla | 8XXX - 3XX | <span style="color:red">No</span> |
+| ^^ | Fermi | 4XX - 5XX | ^^ |
+| ^^ | Kepler | 6XX - 7XX | <span style="color:green">Yes</span> |
+| ^^ | Maxwell | 8XX - 9XX | <span style="color:red">No (on 10.14 and newer)</span> |
+| ^^ | Pascal | 10XX | ^^ |
+| Intel | GMA | GMA 900 - GMA X3000 | <span style="color:red">No</span> |
 | ^^ | Iron Lake | HD series | ^^ |
-| ^^ | Sandy Bridge | HD3000 | ^^ |
-| ^^ | Ivy Bridge (and newer) | HD4000 | <span style="color:green">Yes</span> |
+| ^^ | Sandy Bridge | HD 3000 | ^^ |
+| ^^ | Ivy Bridge (and newer) | HD 4000 | <span style="color:green">Yes</span> |
 
 :::
 

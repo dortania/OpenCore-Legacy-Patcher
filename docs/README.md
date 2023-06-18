@@ -17,7 +17,7 @@ features:
 - title: Zero firmware patching
   details: Using the capabilities of the OpenCore boot manager, our protocol upgrades are done in memory and are never permanent.
 - title: Supporting more hardware
-  details: New life is breathed into your decade-old graphics card or WiFi and bluetooth chipsets.
+  details: New life is breathed into your decade-old graphics card, WiFi, and Bluetooth chipsets. Even your upgraded hardware receives benefits by unlocking exciting features like Hardware Acceleration, AirDrop, Apple Watch Unlock, Sidecar, and much more!
 - title: The newest features
   details: Unlock Sidecar, AirPlay to Mac, Night Shift, and Universal Control, even on natively supported models!
 - title: A helpful community
