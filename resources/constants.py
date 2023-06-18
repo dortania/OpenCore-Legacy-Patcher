@@ -13,7 +13,7 @@ from data import os_data
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "amfipass-b3"  # OpenCore-Legacy-Patcher
+        self.patcher_version:                 str = "amfipass-b4"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version:     str = "1.1.3"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
@@ -83,7 +83,7 @@ class Constants:
         self.btspoof_version:                str = "1.0.0"  # Bluetooth-Spoof
         self.aspp_override_version:          str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
         self.rsrhelper_version:              str = "1.0.0"  # RSRHelper
-        self.amfipass_version:               str = "1.3.0"  # AMFIPass
+        self.amfipass_version:               str = "1.3.1"  # AMFIPass
         self.amfipass_compatibility_version: str = "1.2.1"  # Minimum AMFIPass version required
 
         ## Syncretic
