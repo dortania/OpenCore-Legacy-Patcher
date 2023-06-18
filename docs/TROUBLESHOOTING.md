@@ -7,7 +7,6 @@ Here are some common errors that users may experience while using this patcher:
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
 * [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
-* [Booting with a non-flashed GPU](#booting-with-a-non-flashed-gpu)
 * [How to Boot Big Sur Recovery](#how-to-boot-big-sur-recovery)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 * [No Brightness Control](#no-brightness-control)
@@ -55,20 +54,6 @@ With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates 
 ```
 sudo pmset -a hibernatemode 0
 ```
-
-## Booting with a non-flashed GPU
-
-For Mac Pro, Xserve and iMac users with non-flashed GPUs, you can still easily boot OpenCore and view the entire boot process. To do so, make sure SIP is disabled (to allow NVRAM write access) and run the following:
-
-```sh
-sudo bless --verbose --file /Volumes/VOLNAME/EFI/OC/OpenCore.efi --folder /Volumes/VOLNAME/EFI/OC --setBoot
-```
-
-* Note 1: You will need to replace `VOLNAME` with the Volume name of your USB or hard drive with OpenCore.
-* Note 2: Once done, you can re-enable SIP.
-* Note 3: The EFI partition OpenCore was installed on must be mounted. If it's unmounted, simply rerun "Install OpenCore to drive."
-
-Once you boot OpenCore for the first time, LauncherOption will install itself as the top boot priority, making OpenCore always launch. Combined with `RequestBootVar`, all boot options must go through OpenCore, ensuring seamless usage even with OS installation and updates.
 
 ## How to Boot Big Sur Recovery
 

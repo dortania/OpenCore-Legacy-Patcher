@@ -667,18 +667,6 @@ class SettingsFrame(wx.Frame):
                 "wrap_around 1": {
                     "type": "wrap_around",
                 },
-                "Disable ColorSync Downgrade": {
-                    "type": "checkbox",
-                    "value": global_settings.GlobalEnviromentSettings().read_property("Disable_ColorSync_Downgrade") or self.constants.disable_cat_colorsync,
-                    "variable": "Disable_ColorSync_Downgrade",
-                    "constants_variable": "disable_cat_colorsync",
-                    "description": [
-                        "Disable ColorSync downgrade",
-                        "on HD3000 GPUs in Ventura and newer.",
-                        "Note: Disabling can cause UI corruption.",
-                    ],
-                    "condition": not bool(self.constants.computer.real_model not in ["MacBookAir4,1","MacBookAir4,2","MacBookPro8,1","MacBookPro8,2","MacBookPro8,3","Macmini5,1"])
-                },
                 "Non-Metal Configuration": {
                     "type": "title",
                 },

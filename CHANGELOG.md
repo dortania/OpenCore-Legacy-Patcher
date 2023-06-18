@@ -4,10 +4,12 @@
 - Update non-Metal Binaries:
   - Improve experimental Menubar implementation stability
   - Implement reduce transparency Menubar
+  - Resolve Color Profile support and Black Box rendering issues on HD 3000 Macs
+    - Drops ColorSync downgrade configuration option
 - Resolve app not updating in `/Applications` after an update
   - Work-around users manually copying app to `/Applications` instead of allowing Root Volume Patcher to create a proper alias
 - Increment Binaries:
-  - PatcherSupportPkg 1.1.3 - release
+  - PatcherSupportPkg 1.1.4 - release
 
 ## 0.6.7
 - Resolve partition buttons overlapping in Install OpenCore UI

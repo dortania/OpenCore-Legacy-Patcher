@@ -66,14 +66,6 @@ class GenerateDefaults:
                 global_settings.GlobalEnviromentSettings().write_property("MacBookPro_TeraScale_2_Accel", False)
                 self.constants.allow_ts2_accel = False
 
-        if self.model in ["MacBookAir4,1","MacBookAir4,2","MacBookPro8,1","MacBookPro8,2","MacBookPro8,3","Macmini5,1"]:
-            colorsync_status = global_settings.GlobalEnviromentSettings().read_property("Disable_ColorSync_Downgrade")
-            if colorsync_status is True:
-                self.constants.disable_cat_colorsync = True
-            else:
-                global_settings.GlobalEnviromentSettings().write_property("Disable_ColorSync_Downgrade", False)
-                self.constants.disable_cat_colorsync = False
-
         if self.model in smbios_data.smbios_dictionary:
             if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.CPUGen.skylake.value:
                 # On 2016-2017 MacBook Pros, 15" devices used a stock Samsung SSD with IONVMeController
