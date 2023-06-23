@@ -64,6 +64,7 @@ class Constants:
         self.intel_8254x_version:   str = "1.0.0"  #  AppleIntel8254XEthernet
         self.apple_usb_11_injector: str = "1.0.0"  #  AppleUSBUHCI/OHCI
         self.aicpupm_version:       str = "1.0.0"  #  AppleIntelCPUPowerManagement/Client
+        self.s3x_nvme_version:      str = "1.0.0"  #  IONVMeFamily (14.0 Beta 1, S1X and S3X classes)
 
         ## Apple - Dortania Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
@@ -525,6 +526,10 @@ class Constants:
     @property
     def kdkless_path(self):
         return self.payload_kexts_path / Path(f"Misc/KDKlessWorkaround-v{self.kdkless_version}-{self.kext_variant}.zip")
+
+    @property
+    def s3x_nvme_path(self):
+        return self.payload_kexts_path / Path(f"Misc/IOS3XeFamily-v{self.s3x_nvme_version}.zip")
 
     @property
     def plist_folder_path(self):

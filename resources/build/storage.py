@@ -129,6 +129,17 @@ class BuildStorage:
                     # https://github.com/acidanthera/NVMeFix/blob/1.0.9/NVMeFix/NVMeFix.cpp#L220-L225
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)
 
+                if (controller.vendor_id == 0x106b and controller.device_id in [0x2001, 0x2003]):
+                    # Restore S1X/S3X NVMe support removed in 14.0 Beta 2
+                    # - APPLE SSD AP0128H, AP0256H, etc
+                    # - APPLE SSD AP0128J, AP0256J, etc
+                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOS3XeFamily.kext", self.constants.s3x_nvme_version, self.constants.s3x_nvme_path)
+
+
+        # Restore S1X/S3X NVMe support removed in 14.0 Beta 2
+        if self.model in ["MacBook8,1", "MacBook9,1", "MacBook10,1", "MacBookPro13,1", "MacBookPro14,1"]:
+            support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOS3XeFamily.kext", self.constants.s3x_nvme_version, self.constants.s3x_nvme_path)
+
         # Apple RAID Card check
         if not self.constants.custom_model:
             if self.computer.storage:
