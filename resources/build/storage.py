@@ -109,6 +109,8 @@ class BuildStorage:
         if not self.constants.custom_model and self.constants.allow_nvme_fixing is True:
             nvme_devices = [i for i in self.computer.storage if isinstance(i, device_probe.NVMeController)]
             for i, controller in enumerate(nvme_devices):
+                if controller.vendor_id == 0x106b:
+                    continue
                 logging.info(f"- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}")
                 self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}"
 
@@ -129,11 +131,11 @@ class BuildStorage:
                     # https://github.com/acidanthera/NVMeFix/blob/1.0.9/NVMeFix/NVMeFix.cpp#L220-L225
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)
 
-                if (controller.vendor_id == 0x106b and controller.device_id in [0x2001, 0x2003]):
-                    # Restore S1X/S3X NVMe support removed in 14.0 Beta 2
-                    # - APPLE SSD AP0128H, AP0256H, etc
-                    # - APPLE SSD AP0128J, AP0256J, etc
-                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOS3XeFamily.kext", self.constants.s3x_nvme_version, self.constants.s3x_nvme_path)
+            if any(controller.vendor_id == 0x106b and controller.device_id in [0x2001, 0x2003] for controller in nvme_devices):
+                # Restore S1X/S3X NVMe support removed in 14.0 Beta 2
+                # - APPLE SSD AP0128H, AP0256H, etc
+                # - APPLE SSD AP0128J, AP0256J, etc
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOS3XeFamily.kext", self.constants.s3x_nvme_version, self.constants.s3x_nvme_path)
 
 
         # Restore S1X/S3X NVMe support removed in 14.0 Beta 2

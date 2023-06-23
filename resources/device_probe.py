@@ -705,9 +705,7 @@ class Computer:
             controller = NVMeController.from_ioregistry(parent)
             controller.aspm = aspm
 
-            if controller.vendor_id != 0x106B:
-                # Handle Apple Vendor ID
-                self.storage.append(controller)
+            self.storage.append(controller)
 
             ioreg.IOObjectRelease(parent)
 
