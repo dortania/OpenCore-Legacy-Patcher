@@ -8,6 +8,10 @@
     - Drops ColorSync downgrade configuration option
 - Resolve app not updating in `/Applications` after an update
   - Work-around users manually copying app to `/Applications` instead of allowing Root Volume Patcher to create a proper alias
+- Backend Changes:
+  - device_probe.py:
+    - Add USB device parsing via `IOUSBDevice` class
+    - Streamline Bluetooth device detection
 - Increment Binaries:
   - PatcherSupportPkg 1.1.4 - release
 
