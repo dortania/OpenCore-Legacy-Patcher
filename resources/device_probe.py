@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type, Union
 
 from resources import utilities, ioreg
-from data import pci_data
+from data import pci_data, usb_data
 
 
 @dataclass
@@ -595,6 +595,8 @@ class Computer:
     opencore_version: Optional[str] = None
     opencore_path: Optional[str] = None
     bluetooth_chipset: Optional[str] = None
+    internal_keyboard_type: Optional[str] = None
+    trackpad_type: Optional[str] = None
     ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
     secure_boot_model: Optional[str] = None
@@ -620,6 +622,7 @@ class Computer:
         computer.usb_device_probe()
         computer.cpu_probe()
         computer.bluetooth_probe()
+        computer.topcase_probe()
         computer.ambient_light_sensor_probe()
         computer.sata_disk_probe()
         computer.oclp_sys_patch_probe()
@@ -880,6 +883,26 @@ class Computer:
         elif any("Bluetooth" in usb_device.product_name for usb_device in self.usb_devices):
             self.bluetooth_chipset = "Generic"
 
+    def topcase_probe(self):
+        if not self.usb_devices:
+            return
+
+        for usb_device in self.usb_devices:
+            if self.internal_keyboard_type and self.trackpad_type:
+                break
+            if usb_device.vendor_id != 0x5ac:
+                continue
+
+            if usb_device.device_id in usb_data.AppleIDs.Legacy_AppleUSBTCKeyboard:
+                self.internal_keyboard_type = "Legacy"
+            elif usb_device.device_id in usb_data.AppleIDs.Modern_AppleUSBTCKeyboard:
+                self.internal_keyboard_type = "Modern"
+
+            if usb_device.device_id in usb_data.AppleIDs.AppleUSBTrackpad:
+                self.trackpad_type = "Legacy"
+            elif usb_device.device_id in usb_data.AppleIDs.AppleUSBMultiTouch:
+                self.trackpad_type = "Modern"
+        
     def sata_disk_probe(self):
         # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'
         # Determine whether SATA SSD is present and Apple-made
