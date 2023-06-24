@@ -176,14 +176,14 @@ class BuildMiscellaneous:
         """
 
         #On-device probing
-        if not self.constants.custom_model and self.computer.keyboard_type and self.computer.trackpad_type:
+        if not self.constants.custom_model and self.computer.internal_keyboard_type and self.computer.trackpad_type:
 
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBTopCase.kext", self.constants.topcase_version, self.constants.top_case_path)
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCButtons.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyEventDriver.kext")["Enabled"] = True
             
-            if self.computer.keyboard_type == "Legacy":
+            if self.computer.internal_keyboard_type == "Legacy":
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyKeyboardInjector.kext", self.constants.legacy_keyboard, self.constants.legacy_keyboard_path)
             if self.computer.trackpad_type == "Legacy":
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path)
