@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type, Union
 
 from resources import utilities, ioreg
-from data import pci_data
+from data import pci_data, usb_data
 
 
 @dataclass
@@ -595,7 +595,7 @@ class Computer:
     opencore_version: Optional[str] = None
     opencore_path: Optional[str] = None
     bluetooth_chipset: Optional[str] = None
-    keyboard_type: Optional[str] = None
+    internal_keyboard_type: Optional[str] = None
     trackpad_type: Optional[str] = None
     ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
@@ -622,8 +622,7 @@ class Computer:
         computer.usb_device_probe()
         computer.cpu_probe()
         computer.bluetooth_probe()
-        computer.keyboard_probe()
-        computer.trackpad_probe()
+        computer.topcase_probe()
         computer.ambient_light_sensor_probe()
         computer.sata_disk_probe()
         computer.oclp_sys_patch_probe()
@@ -884,33 +883,26 @@ class Computer:
         elif any("Bluetooth" in usb_device.product_name for usb_device in self.usb_devices):
             self.bluetooth_chipset = "Generic"
 
-    def keyboard_probe(self):
+    def topcase_probe(self):
         if not self.usb_devices:
             return
 
-        legacy_ids = [526,527,528,532,533,534,525,536,537,538,539,540,553,554,555] # These keyboards were stripped of their personalities after being dropped
-        modern_ids = [547,548,549,560,561,562,566,567,568,575,576,577,578,579,580,581,582,583,585,586,587,601,602,603,610,611,612,588,589,590,594,595,596] #These keyboards remained in AppleUSBTCKeyboard until the kext was removed
-        
         for usb_device in self.usb_devices:
-            if usb_device.device_id in legacy_ids and usb_device.vendor_id == 1452:
-                self.keyboard_type = "Legacy"
-            elif usb_device.device_id in modern_ids and usb_device.vendor_id == 1452:
-                self.keyboard_type = "Modern"
+            if self.internal_keyboard_type and self.trackpad_type:
+                break
+            if usb_device.vendor_id != 0x5ac:
+                continue
 
-    def trackpad_probe(self):
-        if not self.usb_devices:
-            return
-        
-        legacy_ids = [526,527,528,778,779,532,533,534,535,536,537,538,539,540,553,554,555] # Overlap with keyboard IDs as some units have unified USB topcase devices
-        modern_ids = [547,548,549,560,561,562,566,567,568,575,576,577,578,579,580,581,582,583,585,586,587,601,602,603,610,611,612,588,589,590,594,595,596]
+            if usb_device.device_id in usb_data.AppleIDs.Legacy_AppleUSBTCKeyboard:
+                self.internal_keyboard_type = "Legacy"
+            elif usb_device.device_id in usb_data.AppleIDs.Modern_AppleUSBTCKeyboard:
+                self.internal_keyboard_type = "Modern"
 
-        for usb_device in self.usb_devices:
-            if usb_device.device_id in legacy_ids and usb_device.vendor_id == 1452:
+            if usb_device.device_id in usb_data.AppleIDs.AppleUSBTrackpad:
                 self.trackpad_type = "Legacy"
-            elif usb_device.device_id in modern_ids and usb_device.vendor_id == 1452:
+            elif usb_device.device_id in usb_data.AppleIDs.AppleUSBMultiTouch:
                 self.trackpad_type = "Modern"
         
-
     def sata_disk_probe(self):
         # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'
         # Determine whether SATA SSD is present and Apple-made
