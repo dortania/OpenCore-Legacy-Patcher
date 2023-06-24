@@ -595,6 +595,8 @@ class Computer:
     opencore_version: Optional[str] = None
     opencore_path: Optional[str] = None
     bluetooth_chipset: Optional[str] = None
+    keyboard_type: Optional[str] = None
+    trackpad_type: Optional[str] = None
     ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
     secure_boot_model: Optional[str] = None
@@ -879,6 +881,31 @@ class Computer:
             self.bluetooth_chipset = "BRCM2046 Hub"
         elif any("Bluetooth" in usb_device.product_name for usb_device in self.usb_devices):
             self.bluetooth_chipset = "Generic"
+
+    def keyboard_probe(self):
+        if not self.usb_devices:
+            return
+
+        legacy_ids = ["526","527","528","532","533","534","525","536","537","538","539","540","553","554","555"] # These keyboards were stripped of their personalities after being dropped
+        modern_ids = ["547","548","549","560","561","562","566","567","568","575","576","577","578","579","580","581","582","583","585","586","587","601","602","603","610","611","612","588","589","590","594","595","596"] #These keyboards remained in AppleUSBTCKeyboard until the kext was removed
+        
+        if any(value in usb_device.product_name and usb_device.vendor_id == "1452" for value in legacy_ids for usb_device in self.usb_devices):
+            self.keyboard_type = "Legacy"
+        elif any(value in usb_device.product_name and usb_device.vendor_id == "1452" for value in modern_ids for usb_device in self.usb_devices):
+            self.keyboard_type = "Modern"
+
+    def trackpad_probe(self):
+        if not self.usb_devices:
+            return
+        
+        legacy_ids = ["526","527","528","778","779","532","533","534","535","536","537","538","539","540","553","554","555"] # Overlap with keyboard IDs as some units have unified USB topcase devices
+        modern_ids = ["547","548","549","560","561","562","566","567","568","575","576","577","578","579","580","581","582","583","585","586","587","601","602","603","610","611","612","588","589","590","594","595","596"]
+
+        if any(value in usb_device.product_name and usb_device.vendor_id == "1452" for value in legacy_ids for usb_device in self.usb_devices):
+            self.trackpad_type = "Legacy"
+        elif any(value in usb_device.product_name and usb_device.vendor_id == "1452" for value in modern_ids for usb_device in self.usb_devices):
+            self.trackpad_type = "Modern"
+        
 
     def sata_disk_probe(self):
         # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'
