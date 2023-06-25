@@ -14,6 +14,8 @@
     - Streamline Bluetooth device detection
     - Add Probing for Top Case hardware (Jazzzny)
       - Improves handling for altered hardware scenarios (i.e. MacBookPro4,1 with MacBookPro3,1 topcase)
+  - utilities.py:
+    - Fix indexing error on Device Paths (thx [@Ausdauersportler](https://github.com/Ausdauersportler))
 - Increment Binaries:
   - PatcherSupportPkg 1.1.4 - release
 
