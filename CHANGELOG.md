@@ -8,6 +8,9 @@
     - Drops ColorSync downgrade configuration option
 - Resolve app not updating in `/Applications` after an update
   - Work-around users manually copying app to `/Applications` instead of allowing Root Volume Patcher to create a proper alias
+- Add configuration for mediaanalysisd usage
+  - For systems that are the primary iCloud Photo Library host, mediaanalysisd may be unstable on large amounts of unprocessed faces
+  - Applicable to 3802-based GPUs (ie. Intel Ivy Bridge and Haswell iGPUs, Nvidia Kepler dGPUs)
 - Backend Changes:
   - device_probe.py:
     - Add USB device parsing via `IOUSBDevice` class
@@ -23,7 +26,7 @@
 - Resolve partition buttons overlapping in Install OpenCore UI
   - ex. "EFI" and additional FAT32 partitions on a single drive
 - Re-enable mediaanalysisd on Ventura
-  - Allows for Live Text support on systems with3802 GPUs
+  - Allows for Live Text support on systems with 3802 GPUs
     - ie. Intel Ivy Bridge and Haswell, Nvidia Kepler
   - Previously disabled due to high instability in Photos with Face Scanning, now resolved
 - Work-around crashing after patching with MenuBar2 implementation enabled

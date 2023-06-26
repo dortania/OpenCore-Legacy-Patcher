@@ -13,7 +13,7 @@ import packaging.version
 from pathlib import Path
 
 from resources.wx_gui import gui_about
-from resources import constants
+from resources import constants, device_probe
 from data import model_array, os_data, smbios_data
 
 
@@ -179,6 +179,26 @@ class CheckProperties:
 
         return packaging.version.parse(oclp_plist["PatcherSupportPkg"])
 
+    def host_has_3802_gpu(self) -> bool:
+        """
+        Check if either host, or override model, has a 3802 GPU
+        """
+        gpu_dict = [] if self.constants.custom_model else self.constants.computer.gpus
+        model = self.constants.custom_model if self.constants.custom_model else self.constants.computer.real_model
+        if gpu_dict == []:
+            gpu_dict = smbios_data.smbios_dictionary[model]["Stock GPUs"] if model in smbios_data.smbios_dictionary else []
+
+        for gpu in gpu_dict:
+            if not self.constants.custom_model:
+                gpu = gpu.arch
+            if gpu in [
+                device_probe.Intel.Archs.Ivy_Bridge,
+                device_probe.Intel.Archs.Haswell,
+                device_probe.NVIDIA.Archs.Kepler,
+            ]:
+                return True
+
+        return False
 
 class PayloadMount:
 

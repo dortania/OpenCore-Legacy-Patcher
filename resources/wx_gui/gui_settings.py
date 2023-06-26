@@ -394,6 +394,17 @@ class SettingsFrame(wx.Frame):
                         "for unsupported models.",
                     ],
                 },
+                "Disable mediaanalysisd service": {
+                    "type": "checkbox",
+                    "value": self.constants.disable_mediaanalysisd,
+                    "variable": "disable_mediaanalysisd",
+                    "description": [
+                        "For systems that are the primary iCloud",
+                        "Photo Library host with a 3802-based GPU,",
+                        "this may aid in prolonged idle stability.",
+                    ],
+                    "condition": gui_support.CheckProperties(self.constants).host_has_3802_gpu()
+                },
                 "wrap_around 1": {
                     "type": "wrap_around",
                 },

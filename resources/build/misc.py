@@ -106,6 +106,12 @@ class BuildMiscellaneous:
             logging.info("- Disabling memory error reporting")
             re_block_args.append("pcie")
 
+        # Resolve mediaanalysisd crashing on 3802 GPUs
+        # Applicable for systems that are the primary iCloud Photos library host, with large amounts of unprocessed faces
+        if self.constants.disable_mediaanalysisd is True:
+            logging.info("- Disabling mediaanalysisd")
+            re_block_args.append("media")
+
         return re_block_args
 
 
@@ -182,14 +188,14 @@ class BuildMiscellaneous:
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCButtons.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyEventDriver.kext")["Enabled"] = True
-            
+
             if self.computer.internal_keyboard_type == "Legacy":
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyKeyboardInjector.kext", self.constants.legacy_keyboard, self.constants.legacy_keyboard_path)
             if self.computer.trackpad_type == "Legacy":
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path)
             elif self.computer.trackpad_type == "Modern":
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBMultitouch.kext", self.constants.multitouch_version, self.constants.multitouch_path)
-        
+
         #Predefined fallback
         else:
             # Multi Touch Top Case support for macOS Ventura+
@@ -202,7 +208,7 @@ class BuildMiscellaneous:
                         support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyboard.kext")["Enabled"] = True
                         support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleUSBTopCase.kext/Contents/PlugIns/AppleUSBTCKeyEventDriver.kext")["Enabled"] = True
                         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBMultitouch.kext", self.constants.multitouch_version, self.constants.multitouch_path)
-            
+
             # Two-finger Top Case support for macOS High Sierra+
             if self.model in ["MacBook4,1", "MacBook5,2"]:
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path) # Also requires AppleUSBTopCase.kext

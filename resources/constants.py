@@ -215,6 +215,7 @@ class Constants:
         self.disable_connectdrivers: bool = False  # Disable ConnectDrivers (hibernation)
         self.set_content_caching:    bool = False  # Set Content Caching
         self.set_vmm_cpuid:          bool = False  # Set VMM bit inside CPUID
+        self.disable_mediaanalysisd: bool = False  # Set mediaanalysisd to spawn
         self.set_alc_usage:          bool = True  #  Set AppleALC usage
         self.allow_3rd_party_drives: bool = True  #  Allow ThridPartyDrives quirk
         self.allow_nvme_fixing:      bool = True  #  Allow NVMe Kernel Space Patches
