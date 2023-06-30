@@ -3,11 +3,11 @@
 Here are some common errors that users may experience while using this patcher:
 
 * [OpenCore Legacy Patcher not launching](#opencore-legacy-patcher-not-launching)
-* [Stuck on `This version of Mac OS X is not supported on this platform`](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform)
+* [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-(🚫)-prohibited-symbol)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
 * [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
-* [How to Boot Big Sur Recovery](#how-to-boot-big-sur-recovery)
+* [How to Boot Recovery through OpenCore Legacy Patcher](#how-to-boot-recovery-through-opencore-legacy-patcher)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 * [No Brightness Control](#no-brightness-control)
 * [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-Wi-Fi-on-Monterey-with-legacy-cards)
@@ -29,15 +29,19 @@ If the application won't launch (e.g. icon will bounce in the Dock), try launchi
 /Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher
 ```
 
-## Stuck on `This version of Mac OS X is not supported on this platform`
+## Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol
 
 This means macOS has detected an SMBIOS it does not support. To resolve this, ensure you're booting OpenCore **before** the macOS installer in the boot picker. Reminder that the option will be called `EFI Boot`.
 
 Once you've booted OpenCore at least once, your hardware should now auto-boot it until either an NVRAM reset occurs, or you remove the drive with OpenCore installed.
 
+However, if the 🚫 Symbol only appears after the boot process has already started (the bootscreen appears/verbose boot starts), it could mean that your USB drive has failed to pass macOS' integrity checks. To resolve this, create a new installer using a different USB drive (preferably of a different model.)
+
 ## Cannot boot macOS without the USB
 
-By default, the OpenCore Patcher won't install OpenCore onto the internal drive itself during installs. Instead, you'll need to either [manually transfer](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html) OpenCore to the internal drive's EFI or run this patcher's Option 2 again and select your internal drive.
+By default, the OpenCore Patcher won't install OpenCore onto the internal drive itself during installs. 
+
+After installing macOS, OpenCore Legacy Patcher should automatically prompt you to install OpenCore onto the internal drive. However, if it doesn't show the prompt, you'll need to either [manually transfer](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html) OpenCore to the internal drive's EFI or Build and Install again and select your internal drive.
 
 Reminder that once this is done, you'll need to select OpenCore in the boot picker again for your hardware to remember this entry and auto boot from then on.
 
@@ -55,7 +59,7 @@ With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates 
 sudo pmset -a hibernatemode 0
 ```
 
-## How to Boot Big Sur Recovery
+## How to Boot Recovery through OpenCore Legacy Patcher
 
 By default, the patcher will try to hide extra boot options such as recovery from the user. To make them appear, simply press the `Spacebar` key while inside OpenCore's Picker to list all boot options.
 
