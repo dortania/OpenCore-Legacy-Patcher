@@ -149,7 +149,7 @@ Below is a rundown of the main logic that OpenCore Legacy Patcher uses to gain n
 * GopPassThrough
   * Reason: Used for proper output on machines with UGA firmware but GOP GPU
   * Logic: Provide GOP protocol instances on top of UGA protocol instances
-  * Models: MacPro3,1, MacBook4,1 iMac7,1-8,1
+  * Models: MacPro3,1, iMac7,1-8,1
 
 :::
 

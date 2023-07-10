@@ -127,7 +127,7 @@ The following GPUs are applicable:
 The following machines shipped stock with an unsupported GPU:
 
 * iMac7,1 - iMac12,x
-* MacBook4,1 - MacBook7,1
+* MacBook5,1 - MacBook7,1
 * MacBookAir2,1 - MacBookAir4,x
 * MacBookPro4,1 - MacBookPro8,x
 * Macmini3,1 - Macmini5,x
