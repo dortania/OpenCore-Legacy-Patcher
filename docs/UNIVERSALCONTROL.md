@@ -51,7 +51,7 @@ Note: For AirPort upgrades, only the best/newest cards are listed.
 
 |   SMBIOS   | WiFi/BT version | UC OOB  | Comment |
 |------------|-----------------|------------|---------|
-| MacBook5,1 | ^^ |  ^^ | Use a Broadcom USB Bluetooth 4.0+ Dongle </span> |
+| MacBook5,1 | Wi-Fi 4 / BT 2.0 EDR |  <span style="color:red"> NO </span> | Use a Broadcom USB Bluetooth 4.0+ Dongle </span> |
 | MacBook5,2 | WiFi 4 / BT 2.1 EDR  | ^^ | Replace stock AirPort card with an mPCIE + USB Connector Adapter board with a BCM94360CS2 card  |
 | MacBook6,1 | ^^ | ^^ | Replace stock AirPort card with a BCM94331PCIEBT4CAX/BCM94331PCIEBT4 card |
 | MacBook7,1 | ^^ | ^^ | ^^ |
