@@ -64,12 +64,15 @@ Currently Zoom relies partially on Metal and so needs a small binary patch. Dosd
 * [Zoom Non-Metal Fix](http://dosdude1.com/catalina/zoomnonmetal-new.command.zip)
 
 ## Unable to grant special permissions to apps (ie. Camera Access to Zoom)
+Currently for Ventura 13.3 and newer, due to new patches required, permissions are yet again broken. Use TCCPlus in the Workaround dropdown to work around the issue.
 
-With version 0.2.5, this issue should be full resolved
+This issue is fully resolved for 13.2.1 and lower starting from 0.2.5.
 
-::: details 0.2.4 and older Work-Around
+::: details Workaround for 0.2.4, Ventura 13.3+
 
-Due to the usage of `amfi_get_out_of_my_way=1`, macOS will fail to prompt users for special permissions upon application start as well as omit the entires in System Preferences. To work around this, we recommend users install [tccplus](https://github.com/jslegendre/tccplus) to manage permissions.
+Due to the usage of amfi_get_out_of_my_way=1, macOS will fail to prompt users for special permissions upon application start as well as omit the entires in System Preferences. To work around this, we recommend users install tccplus to manage permissions.
+
+[Download TCCPlus](https://github.com/jslegendre/tccplus)
 
 Example usage with Discord and microphone permissions:
 
