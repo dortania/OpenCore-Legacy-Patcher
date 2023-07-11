@@ -164,7 +164,7 @@ Applicable models include:
 
 | Family      | Year                 | Model                         | Notes                                            |
 | :---------- | :--------------------| :---------------------------- | :----------------------------------------------- |
-| MacBook     | Mid 2010 and older   | MacBook4,1 - MacBook7,1       |                                                  |
+| MacBook     | Mid 2010 and older   | MacBook5,1 - MacBook7,1       |                                                  |
 | MacBook Air | Late 2010 and older  | MacBookAir2,1 - MacBookAir3,x |                                                  |
 | MacBook Pro | Mid 2010 and older   | MacBookPro4,1 - MacBookPro7,x | Excludes Mid 2010 15" and 17" (MacBookPro6,x)    |
 | iMac        | Late 2009 and older  | iMac7,1 - iMac10,x            | Excludes Core i5/7 27" late 2009 iMac (iMac11,1) |

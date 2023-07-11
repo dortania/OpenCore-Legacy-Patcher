@@ -12,7 +12,6 @@ body:
       label: Machine Model
       description: What model was being patched?
       options:
-        - MacBook4,1
         - MacBook5,1
         - MacBook5,2
         - MacBook6,1
