@@ -299,7 +299,7 @@ Below is an explanation of what Kexts OpenCore Legacy Patcher will inject into m
 * SimpleMSR 
   * Reason: Disables BD PROCHOT to prevent firmware throttling on Nehalem+ MacBooks
 * LegacyKeyboardInjector
-  * Reason: Fixes function keys on MacBook4,1/MacBook5,2
+  * Reason: Fixes function keys on MacBook5,2
 
 
 :::
