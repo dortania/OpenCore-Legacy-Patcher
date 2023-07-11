@@ -12,7 +12,7 @@
   - For systems that are the primary iCloud Photo Library host, mediaanalysisd may be unstable on large amounts of unprocessed faces
   - Applicable to 3802-based GPUs (ie. Intel Ivy Bridge and Haswell iGPUs, Nvidia Kepler dGPUs)
 - Remove MacBook4,1 references
-  - Machine was never properly supported on 10.9+
+  - Machine was never properly supported by OCLP
 - Backend Changes:
   - device_probe.py:
     - Add USB device parsing via `IOUSBDevice` class
