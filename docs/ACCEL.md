@@ -71,7 +71,7 @@ This issue is fully resolved for 13.2.1 and lower starting from 0.2.5.
 
 ::: details Workaround
 
-Download TCCPlus: [tccplus](https://github.com/jslegendre/tccplus)
+[Download TCCPlus](https://github.com/jslegendre/tccplus)
 
 Example usage with Discord and microphone permissions:
 
