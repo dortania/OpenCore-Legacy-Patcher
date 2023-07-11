@@ -65,11 +65,13 @@ Currently Zoom relies partially on Metal and so needs a small binary patch. Dosd
 
 ## Unable to grant special permissions to apps (ie. Camera Access to Zoom)
 Currently for Ventura 13.3 and newer, due to new patches required, permissions are yet again broken. 
-There are two ways around it, you can either use tccplus to grant permissions (found in the workaround dropdown) or try the new [AMFIPass beta build.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases/tag/amfipass-beta-test)
+There are two ways around it, you can either use tccplus to grant permissions (found in the workaround dropdown) or try the new AMFIPass beta build found in the Discord server.
 
 This issue is fully resolved for 13.2.1 and lower starting from 0.2.5.
 
-::: details Workaround
+::: details Workaround for 0.2.4, Ventura 13.3+
+
+Due to the usage of amfi_get_out_of_my_way=1, macOS will fail to prompt users for special permissions upon application start as well as omit the entires in System Preferences. To work around this, we recommend users install tccplus to manage permissions.
 
 [Download TCCPlus](https://github.com/jslegendre/tccplus)
 
