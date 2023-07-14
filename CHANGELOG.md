@@ -13,6 +13,9 @@
   - Applicable to 3802-based GPUs (ie. Intel Ivy Bridge and Haswell iGPUs, Nvidia Kepler dGPUs)
 - Remove MacBook4,1 references
   - Machine was never properly supported by OCLP
+- Restore support for Aquantia Aqtion 10GBe Ethernet for Pre-VT-d systems on 12.3 and newer
+  - i.e. MacPro5,1 with AQC107 expansion card running macOS Ventura/Monterey 12.6.x
+  - Thanks [@jazzzny](https://github.com/jazzzny)
 - Backend Changes:
   - device_probe.py:
     - Add USB device parsing via `IOUSBDevice` class
