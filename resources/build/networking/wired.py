@@ -66,6 +66,8 @@ class BuildWiredNetworking:
             
             # Pre-Ivy Bridge Aquantia Ethernet Patch
             if isinstance(controller, device_probe.Aquantia) and controller.chipset == device_probe.Aquantia.Chipsets.AppleEthernetAquantiaAqtion:
+                if not self.model in smbios_data.smbios_dictionary:
+                    continue
                 if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.ivy_bridge.value:
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleEthernetAbuantiaAqtion.kext", self.constants.aquantia_version, self.constants.aquantia_path)
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleEthernetAbuantiaAqtionFirmware.kext", self.constants.aquantiafirmware_version, self.constants.aquantiafirmware_path)
