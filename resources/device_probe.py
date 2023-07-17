@@ -259,6 +259,17 @@ class NVMeController(PCIDevice):
     aspm: Optional[int] = None
     # parent_aspm: Optional[int] = None
 
+    @classmethod
+    def from_ioregistry(cls, entry: ioreg.io_registry_entry_t, anti_spoof=True):
+        device = super().from_ioregistry(entry, anti_spoof=anti_spoof)
+
+        device.aspm: Union[int, bytes] = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(entry, "pci-aspm-default", ioreg.kCFAllocatorDefault, ioreg.kNilOptions)) or 0  # type: ignore
+        if isinstance(device.aspm, bytes):
+            device.aspm = int.from_bytes(device.aspm, byteorder="little")
+
+        return device
+
+
 @dataclass
 class EthernetController(PCIDevice):
     CLASS_CODE: ClassVar[int] = 0x020000
@@ -805,19 +816,8 @@ class Computer:
             ioreg.IOObjectRelease(device)
 
         for device in nvme_controllers:
-            parent = ioreg.IORegistryEntryGetParentEntry(device, "IOService".encode(), None)[1]
+            self.storage.append(NVMeController.from_ioregistry(device))
             ioreg.IOObjectRelease(device)
-
-            aspm: Union[int, bytes] = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(parent, "pci-aspm-default", ioreg.kCFAllocatorDefault, ioreg.kNilOptions)) or 0  # type: ignore
-            if isinstance(aspm, bytes):
-                aspm = int.from_bytes(aspm, byteorder="little")
-
-            controller = NVMeController.from_ioregistry(parent)
-            controller.aspm = aspm
-
-            self.storage.append(controller)
-
-            ioreg.IOObjectRelease(parent)
 
     def smbios_probe(self):
         # Reported model
