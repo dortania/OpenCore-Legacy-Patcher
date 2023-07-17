@@ -1657,7 +1657,7 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
-				<string>Aquantia Ethernet Patch - Core</string>
+				<string>Aquantia Ethernet Patch</string>
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
@@ -1668,24 +1668,6 @@
 				<string>AppleEthernetAbuantiaAqtion.kext</string>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleEthernetAbuantiaAqtion</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>Arch</key>
-				<string>x86_64</string>
-				<key>Comment</key>
-				<string>Aquantia Ethernet Patch - Firmware</string>
-				<key>Enabled</key>
-				<false/>
-				<key>MaxKernel</key>
-				<string></string>
-				<key>MinKernel</key>
-				<string>21.4.0</string>
-				<key>BundlePath</key>
-				<string>AppleEthernetAbuantiaAqtionFirmware.kext</string>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/AppleEthernetAbuantiaAqtionFirmware</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
