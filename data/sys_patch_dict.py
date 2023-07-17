@@ -1004,7 +1004,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Frameworks": {
-                            "MetalPerformanceShaders.framework": "13.5 Beta 2",
+                            "MetalPerformanceShaders.framework": "13.5",
                         },
                         "/System/Library/PrivateFrameworks": {
                             "MTLCompiler.framework": "14.0",
@@ -1028,8 +1028,8 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "IOGPUFamily.kext": "13.5 Beta 2",
-                            "IOSurface.kext":   "13.5 Beta 2",
+                            "IOGPUFamily.kext": "13.5",
+                            "IOSurface.kext":   "13.5",
                         },
                     },
                 },
@@ -1053,7 +1053,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "IOAcceleratorFamily2.kext": "13.5 Beta 2",
+                            "IOAcceleratorFamily2.kext": "13.5",
                         },
                     },
                 },
@@ -1158,8 +1158,8 @@ class SystemPatchDictionary():
                         "/System/Library/PrivateFrameworks": {
                             "CoreWiFi.framework": "12.6.2",
                             "IO80211.framework":  "12.6.2",
-                            **({ "CoreAnalytics.framework": "13.5 Beta 2"} if self.os_major >= os_data.os_data.sonoma else {}),
-                            **({ "WiFiAnalytics.framework": "13.5 Beta 2"} if self.os_major >= os_data.os_data.sonoma else {}),
+                            **({ "CoreAnalytics.framework": "13.5"} if self.os_major >= os_data.os_data.sonoma else {}),
+                            **({ "WiFiAnalytics.framework": "13.5"} if self.os_major >= os_data.os_data.sonoma else {}),
                         },
                     },
                 },
@@ -1179,23 +1179,23 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/usr/libexec": {
-                            "airportd":       "13.5 Beta 2",
-                            "wifianalyticsd": "13.5 Beta 2",
-                            "wifip2pd":       "13.5 Beta 2",
+                            "airportd":       "13.5",
+                            "wifianalyticsd": "13.5",
+                            "wifip2pd":       "13.5",
                         },
                         "/System/Library/CoreServices": {
-                            "WiFiAgent.app": "13.5 Beta 2",
+                            "WiFiAgent.app": "13.5",
                         },
                         "/System/Library/Frameworks": {
-                            "CoreWLAN.framework": "13.5 Beta 2",
+                            "CoreWLAN.framework": "13.5",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "CoreAnalytics.framework":  "13.5 Beta 2",
-                            "CoreWiFi.framework":       "13.5 Beta 2",
-                            "IO80211.framework":        "13.5 Beta 2",
-                            "WiFiAnalytics.framework":  "13.5 Beta 2",
-                            "WiFiPolicy.framework":     "13.5 Beta 2",
-                            "WiFiPeerToPeer.framework": "13.5 Beta 2",
+                            "CoreAnalytics.framework":  "13.5",
+                            "CoreWiFi.framework":       "13.5",
+                            "IO80211.framework":        "13.5",
+                            "WiFiAnalytics.framework":  "13.5",
+                            "WiFiPolicy.framework":     "13.5",
+                            "WiFiPeerToPeer.framework": "13.5",
                         },
                     },
                 },
