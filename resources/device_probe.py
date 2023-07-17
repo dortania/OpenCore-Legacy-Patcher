@@ -15,6 +15,10 @@ from resources import utilities, ioreg
 from data import pci_data, usb_data
 
 
+def class_code_to_bytes(class_code: int) -> bytes:
+    return class_code.to_bytes(4, byteorder="little")
+
+
 @dataclass
 class CPU:
     name: str
@@ -113,6 +117,7 @@ class USBDevice:
 @dataclass
 class PCIDevice:
     VENDOR_ID: ClassVar[int]  # Default vendor id, for subclasses.
+    CLASS_CODES: ClassVar[list[int]]  # Default class codes, for subclasses.
 
     vendor_id:  int  # The vendor ID of this PCI device
     device_id:  int  # The device ID of this PCI device
@@ -126,6 +131,13 @@ class PCIDevice:
     force_compatible:    Optional[bool] = False # 'force-compat' property
     vendor_id_unspoofed: Optional[int]  = -1    # Unspoofed vendor ID of this PCI device
     device_id_unspoofed: Optional[int]  = -1    # Unspoofed device ID of this PCI device
+
+    @classmethod
+    def class_code_matching_dict(cls) -> dict:
+        return {
+            "IOProviderClass": "IOPCIDevice",
+            "IOPropertyMatch": [{"class-code": class_code_to_bytes(class_code)} for class_code in cls.CLASS_CODES]
+        }
 
     @classmethod
     def from_ioregistry(cls, entry: ioreg.io_registry_entry_t, anti_spoof=False):
@@ -157,7 +169,7 @@ class PCIDevice:
         device = cls(vendor_id, device_id, int.from_bytes(properties["class-code"][:6], byteorder="little"), name=ioreg.io_name_t_to_str(ioreg.IORegistryEntryGetName(entry, None)[1]))
         if "model" in properties:
             model = properties["model"]
-            if type(model) is bytes:
+            if isinstance(model, bytes):
                 model = model.strip(b"\0").decode()
             device.model = model
         if "acpi-path" in properties:
@@ -172,7 +184,7 @@ class PCIDevice:
         device.populate_pci_path(entry)
         return device
 
-    def vendor_detect(self, *, inherits: ClassVar[Any] = None, classes: list = None):
+    def vendor_detect(self, *, inherits: Optional[Type["PCIDevice"]] = None, classes: Optional[list] = None):
         for i in classes or itertools.chain.from_iterable([subclass.__subclasses__() for subclass in PCIDevice.__subclasses__()]):
             if issubclass(i, inherits or object) and i.detect(self):
                 return i
@@ -180,7 +192,7 @@ class PCIDevice:
 
     @classmethod
     def detect(cls, device):
-        return device.vendor_id == cls.VENDOR_ID and ((device.class_code == cls.CLASS_CODE) if getattr(cls, "CLASS_CODE", None) else True)  # type: ignore  # pylint: disable=no-member
+        return device.vendor_id == cls.VENDOR_ID and ((device.class_code in cls.CLASS_CODES) if getattr(cls, "CLASS_CODES", None) else True) and ((device.class_code == cls.CLASS_CODE) if getattr(cls, "CLASS_CODE", None) else True)  # type: ignore  # pylint: disable=no-member
 
     def populate_pci_path(self, original_entry: ioreg.io_registry_entry_t):
         # Based off gfxutil logic, seems to work.
@@ -213,6 +225,7 @@ class PCIDevice:
 
 @dataclass
 class GPU(PCIDevice):
+    CLASS_CODES: ClassVar[list[int]] = [0x030000, 0x038000]
     arch: enum.Enum = field(init=False)  # The architecture, see subclasses.
 
     def __post_init__(self):
@@ -224,7 +237,7 @@ class GPU(PCIDevice):
 
 @dataclass
 class WirelessCard(PCIDevice):
-    CLASS_CODE: ClassVar[int] = 0x028000  # 00800200 hexswapped
+    CLASS_CODES: ClassVar[list[int]] = [0x028000]
     country_code: str = field(init=False)
     chipset: enum.Enum = field(init=False)
 
@@ -254,9 +267,11 @@ class WirelessCard(PCIDevice):
 
 @dataclass
 class NVMeController(PCIDevice):
-    CLASS_CODE: ClassVar[int] = 0x010802
-    # I don't know if this is a typo or what, but Apple controllers are 01:80:02, not 01:08:02
-    APPLE_CLASS_CODE: ClassVar[int] = 0x018002
+    CLASS_CODES: ClassVar[list[int]] = [
+        0x010802,
+        # I don't know if this is a typo or what, but Apple controllers are 01:80:02, not 01:08:02
+        0x018002
+    ]
 
     aspm: Optional[int] = None
     # parent_aspm: Optional[int] = None
@@ -274,40 +289,43 @@ class NVMeController(PCIDevice):
 
 @dataclass
 class EthernetController(PCIDevice):
-    CLASS_CODE: ClassVar[int] = 0x020000
+    CLASS_CODES: ClassVar[list[int]] = [0x020000]
 
     chipset: enum.Enum = field(init=False)
 
     def __post_init__(self):
         self.detect_chipset()
 
+    def detect_chipset(self):
+        raise NotImplementedError
+
 @dataclass
 class SATAController(PCIDevice):
-    CLASS_CODE: ClassVar[int] = 0x010601
+    CLASS_CODES: ClassVar[list[int]] = [0x010601]
 
 @dataclass
 class SASController(PCIDevice):
-    CLASS_CODE: ClassVar[int] = 0x010400
+    CLASS_CODES: ClassVar[list[int]] = [0x010400]
 
 @dataclass
 class XHCIController(PCIDevice):
-    CLASS_CODE: ClassVar[int] = 0x0c0330
+    CLASS_CODES: ClassVar[list[int]] = [0x0c0330]
 
 @dataclass
 class EHCIController(PCIDevice):
-    CLASS_CODE: ClassVar[int] = 0x0c0320
+    CLASS_CODES: ClassVar[list[int]] = [0x0c0320]
 
 @dataclass
 class OHCIController(PCIDevice):
-    CLASS_CODE: ClassVar[int] = 0x0c0310
+    CLASS_CODES: ClassVar[list[int]] = [0x0c0310]
 
 @dataclass
 class UHCIController(PCIDevice):
-    CLASS_CODE: ClassVar[int] = 0x0c0300
+    CLASS_CODES: ClassVar[list[int]] = [0x0c0300]
 
 @dataclass
 class SDXCController(PCIDevice):
-    CLASS_CODE: ClassVar[int] = 0x080501
+    CLASS_CODES: ClassVar[list[int]] = [0x080501]
 
 @dataclass
 class NVIDIA(GPU):
@@ -600,7 +618,7 @@ class Computer:
     storage: list[PCIDevice] = field(default_factory=list)
     usb_controllers: list[PCIDevice] = field(default_factory=list)
     sdxc_controller: list[PCIDevice] = field(default_factory=list)
-    ethernet: Optional[EthernetController] = field(default_factory=list)
+    ethernet: list[EthernetController] = field(default_factory=list)
     wifi: Optional[WirelessCard] = None
     cpu: Optional[CPU] = None
     usb_devices: list[USBDevice] = field(default_factory=list)
@@ -658,10 +676,10 @@ class Computer:
 
 
     def gpu_probe(self):
-        # Chain together two iterators: one for class code 00000300, the other for class code 00800300
+        # Chain together two iterators: one for class code 03:00:00, the other for class code 03:80:00
         devices = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
-                ioreg.kIOMasterPortDefault, {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex("00000300")}, {"class-code": binascii.a2b_hex("00800300")}]}, None
+                ioreg.kIOMasterPortDefault, GPU.class_code_matching_dict(), None
             )[1]
         )
 
@@ -697,7 +715,7 @@ class Computer:
         devices = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": {"class-code": binascii.a2b_hex(utilities.hexswap(hex(WirelessCard.CLASS_CODE)[2:].zfill(8)))}},
+                WirelessCard.class_code_matching_dict(),
                 None,
             )[1]
         )
@@ -719,7 +737,7 @@ class Computer:
         sdxc_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(SDXCController.CLASS_CODE)[2:].zfill(8)))}]},
+                SDXCController.class_code_matching_dict(),
                 None,
             )[1]
         )
@@ -732,21 +750,21 @@ class Computer:
         xhci_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(XHCIController.CLASS_CODE)[2:].zfill(8)))}]},
+                XHCIController.class_code_matching_dict(),
                 None,
             )[1]
         )
         ehci_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(EHCIController.CLASS_CODE)[2:].zfill(8)))}]},
+                EHCIController.class_code_matching_dict(),
                 None,
             )[1]
         )
         ohci_controllers  = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(OHCIController.CLASS_CODE)[2:].zfill(8)))}]},
+                OHCIController.class_code_matching_dict(),
                 None,
             )[1]
         )
@@ -754,7 +772,7 @@ class Computer:
         uhci_controllers  = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(UHCIController.CLASS_CODE)[2:].zfill(8)))}]},
+                UHCIController.class_code_matching_dict(),
                 None,
             )[1]
         )
@@ -775,7 +793,7 @@ class Computer:
         ethernet_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(EthernetController.CLASS_CODE)[2:].zfill(8)))}]},
+                EthernetController.class_code_matching_dict(),
                 None,
             )[1]
         )
@@ -790,14 +808,14 @@ class Computer:
         sata_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(SATAController.CLASS_CODE)[2:].zfill(8)))}]},
+                SATAController.class_code_matching_dict(),
                 None,
             )[1]
         )
         sas_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(SASController.CLASS_CODE)[2:].zfill(8)))}]},
+                SASController.class_code_matching_dict(),
                 None,
             )[1]
         )
@@ -805,7 +823,7 @@ class Computer:
         nvme_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(NVMeController.CLASS_CODE)[2:].zfill(8)))}, {"class-code": binascii.a2b_hex(utilities.hexswap(hex(NVMeController.APPLE_CLASS_CODE)[2:].zfill(8)))}]},
+                NVMeController.class_code_matching_dict(),
                 None,
             )[1]
         )
