@@ -77,8 +77,7 @@ class Constants:
         self.monterey_ahci_version:    str = "1.0.0"  # CatalinaAHCI
 
         ## Apple - Jazzzny Modified
-        self.aquantia_version: str = "1.0.0"  # AppleEthernetAbuantiaAqtion
-        self.aquantiafirmware_version: str = "1.0.0"  # AppleEthernetAbuantiaAqtionFirmware
+        self.aquantia_version: str = "1.1.0"  # AppleEthernetAbuantiaAqtion
 
         ## Dortania
         ## https://github.com/dortania
@@ -355,10 +354,6 @@ class Constants:
     @property
     def aquantia_path(self):
         return self.payload_kexts_path / Path(f"Ethernet/AppleEthernetAbuantiaAqtion-v{self.aquantia_version}.zip")
-
-    @property
-    def aquantiafirmware_path(self):
-        return self.payload_kexts_path / Path(f"Ethernet/AppleEthernetAbuantiaAqtionFirmware-v{self.aquantiafirmware_version}.zip")
 
     @property
     def i210_path(self):
