@@ -255,6 +255,8 @@ class WirelessCard(PCIDevice):
 @dataclass
 class NVMeController(PCIDevice):
     CLASS_CODE: ClassVar[int] = 0x010802
+    # I don't know if this is a typo or what, but Apple controllers are 01:80:02, not 01:08:02
+    APPLE_CLASS_CODE: ClassVar[int] = 0x018002
 
     aspm: Optional[int] = None
     # parent_aspm: Optional[int] = None
@@ -803,7 +805,7 @@ class Computer:
         nvme_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
                 ioreg.kIOMasterPortDefault,
-                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(NVMeController.CLASS_CODE)[2:].zfill(8)))}]},
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(NVMeController.CLASS_CODE)[2:].zfill(8)))}, {"class-code": binascii.a2b_hex(utilities.hexswap(hex(NVMeController.APPLE_CLASS_CODE)[2:].zfill(8)))}]},
                 None,
             )[1]
         )
