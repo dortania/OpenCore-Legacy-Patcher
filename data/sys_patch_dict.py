@@ -344,7 +344,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Frameworks": {
-                            "Metal.framework": "12.5-3802",
+                            "Metal.framework": f"12.5-3802-{self.os_major}",
                         },
                         "/System/Library/PrivateFrameworks": {
                             "MTLCompiler.framework": "12.5-3802",
@@ -372,11 +372,11 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Frameworks": {
-                            "Metal.framework": "13.2.1",
+                            "Metal.framework": f"13.2.1-{self.os_major}",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "MTLCompiler.framework": "13.2.1",
-                            "GPUCompiler.framework": "13.2.1",
+                            **({  "MTLCompiler.framework": "13.2.1" } if self.os_major == os_data.os_data.ventura else {}),
+                            **({  "GPUCompiler.framework": "13.2.1" } if self.os_major == os_data.os_data.ventura else {}),
                         },
                     },
                 },
@@ -574,7 +574,7 @@ class SystemPatchDictionary():
                             "NVDAStartup.kext":        "12.0 Beta 6",
                             "GeForceAIRPlugin.bundle": "11.0 Beta 3",
                             "GeForceGLDriver.bundle":  "11.0 Beta 3",
-                            "GeForceMTLDriver.bundle": "11.0 Beta 3" if self.os_major <= os_data.os_data.monterey else f"11.0 Beta 3-{self.os_major}",
+                            "GeForceMTLDriver.bundle": "11.0 Beta 3" if self.os_major <= os_data.os_data.monterey else f"11.0 Beta 3-22",
                             "GeForceVADriver.bundle":  "12.0 Beta 6",
                         },
                         "/System/Library/Frameworks": {
@@ -1004,10 +1004,10 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Frameworks": {
-                            "Metal.framework": "12.5-3802-23",  # Patched XPC service to handle 32023 inputs inside of 'CompilerPluginInterface::CompilerPluginInterface()'
+                            "MetalPerformanceShaders.framework": "13.5 Beta 2",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "MTLCompiler.framework": "13.5 Beta 2",
+                            "MTLCompiler.framework": "14.0",
                         },
                     },
                 },

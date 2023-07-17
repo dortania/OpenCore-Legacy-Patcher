@@ -234,15 +234,16 @@ class SysPatchHelpers:
                 - opencl-c.h
             - lib (entire directory)
 
+        Note: With macOS Sonoma, 32023 compiler is used instead and so this patch is not needed
+
         Parameters:
             mount_point: The mount point of the target volume
         """
 
-        if self.constants.detected_os < os_data.os_data.ventura:
+        if self.constants.detected_os != os_data.os_data.ventura:
             return
-        if self.constants.detected_os == os_data.os_data.ventura:
-            if self.constants.detected_os_minor < 4:
-                return
+        if self.constants.detected_os_minor < 4:
+            return
 
         LIBRARY_DIR = f"{mount_point}/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/31001/Libraries/lib/clang"
         GPU_VERSION = "31001.669"
