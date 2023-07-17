@@ -818,7 +818,6 @@ class SystemPatchDictionary():
                     "Install": {
                         "/System/Library/Extensions": {
                             "AMDRadeonX5000.kext":            "12.5",
-                            "AMDRadeonX5000HWServices.kext":  "12.5",
 
                             "AMDRadeonVADriver2.bundle":      "12.5",
                             "AMDRadeonX5000GLDriver.bundle":  "12.5",

@@ -11,6 +11,8 @@
 - Add configuration for mediaanalysisd usage
   - For systems that are the primary iCloud Photo Library host, mediaanalysisd may be unstable on large amounts of unprocessed faces
   - Applicable to 3802-based GPUs (ie. Intel Ivy Bridge and Haswell iGPUs, Nvidia Kepler dGPUs)
+- Resolve AMD Vega support on pre-AVX2 Macs in macOS Ventura
+  - Originally caused by regression from 0.6.2
 - Backend Changes:
   - device_probe.py:
     - Add USB device parsing via `IOUSBDevice` class
