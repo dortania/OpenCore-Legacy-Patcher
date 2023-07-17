@@ -76,6 +76,10 @@ class Constants:
         self.bigsursdxc_version:       str = "1.0.0"  # BigSurSDXC
         self.monterey_ahci_version:    str = "1.0.0"  # CatalinaAHCI
 
+        ## Apple - Jazzzny Modified
+        self.aquantia_version: str = "1.0.0"  # AppleEthernetAbuantiaAqtion
+        self.aquantiafirmware_version: str = "1.0.0"  # AppleEthernetAbuantiaAqtionFirmware
+
         ## Dortania
         ## https://github.com/dortania
         self.backlight_injector_version:  str = "1.1.0"  # BacklightInjector
@@ -217,6 +221,7 @@ class Constants:
         self.force_vmm:              bool = False  # Force VMM patch
         self.disable_connectdrivers: bool = False  # Disable ConnectDrivers (hibernation)
         self.set_vmm_cpuid:          bool = False  # Set VMM bit inside CPUID
+        self.disable_mediaanalysisd: bool = False  # Set mediaanalysisd to spawn
         self.set_alc_usage:          bool = True  #  Set AppleALC usage
         self.allow_3rd_party_drives: bool = True  #  Allow ThridPartyDrives quirk
         self.allow_nvme_fixing:      bool = True  #  Allow NVMe Kernel Space Patches
@@ -346,6 +351,14 @@ class Constants:
     @property
     def bcm570_path(self):
         return self.payload_kexts_path / Path(f"Ethernet/CatalinaBCM5701Ethernet-v{self.bcm570_version}.zip")
+    
+    @property
+    def aquantia_path(self):
+        return self.payload_kexts_path / Path(f"Ethernet/AppleEthernetAbuantiaAqtion-v{self.aquantia_version}.zip")
+
+    @property
+    def aquantiafirmware_path(self):
+        return self.payload_kexts_path / Path(f"Ethernet/AppleEthernetAbuantiaAqtionFirmware-v{self.aquantiafirmware_version}.zip")
 
     @property
     def i210_path(self):

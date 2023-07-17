@@ -148,7 +148,7 @@ Regarding OS support, see below:
 | MacPro3,1 | Early 2008 | <span style="color:#30BCD5"> YES </span> | - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)) <br/>- Potential boot issues with stock Bluetooth card, recommend removing to avoid kernel panics |
 | MacPro4,1 | Early 2009 | ^^ | - Everything is supported as long as GPU is Metal capable <br/> - UHCI/OHCI support in Public Beta, see current issues ([#1021](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021))|
 | MacPro5,1 | Mid 2010, Mid 2012 | ^^ | ^^ |
-| MacPro6,1 | Late 2013 | ^^ | - CPU Power Management currently unsupported<br/> - No DRM support |
+| MacPro6,1 | Late 2013 | ^^ | - DRM support is flaky |
 
 ### Xserve
 
