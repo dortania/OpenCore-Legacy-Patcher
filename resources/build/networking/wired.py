@@ -70,7 +70,6 @@ class BuildWiredNetworking:
                     continue
                 if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.ivy_bridge.value:
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleEthernetAbuantiaAqtion.kext", self.constants.aquantia_version, self.constants.aquantia_path)
-                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleEthernetAbuantiaAqtionFirmware.kext", self.constants.aquantiafirmware_version, self.constants.aquantiafirmware_path)
 
 
     def _prebuilt_assumption(self) -> None:
