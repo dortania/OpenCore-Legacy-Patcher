@@ -791,7 +791,9 @@ class Computer:
 
         nvme_controllers = ioreg.ioiterator_to_list(
             ioreg.IOServiceGetMatchingServices(
-                ioreg.kIOMasterPortDefault, {"IOProviderClass": "IONVMeController", "IOParentMatch": {"IOProviderClass": "IOPCIDevice"}, "IOPropertyMatch": {"IOClass": "IONVMeController"}}, None
+                ioreg.kIOMasterPortDefault,
+                {"IOProviderClass": "IOPCIDevice", "IOPropertyMatch": [{"class-code": binascii.a2b_hex(utilities.hexswap(hex(NVMeController.CLASS_CODE)[2:].zfill(8)))}]},
+                None,
             )[1]
         )
         for device in sata_controllers:
@@ -900,7 +902,7 @@ class Computer:
                 self.trackpad_type = "Legacy"
             elif usb_device.device_id in usb_data.AppleIDs.AppleUSBMultiTouch:
                 self.trackpad_type = "Modern"
-        
+
     def sata_disk_probe(self):
         # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'
         # Determine whether SATA SSD is present and Apple-made
