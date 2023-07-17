@@ -11,6 +11,11 @@
 - Add configuration for mediaanalysisd usage
   - For systems that are the primary iCloud Photo Library host, mediaanalysisd may be unstable on large amounts of unprocessed faces
   - Applicable to 3802-based GPUs (ie. Intel Ivy Bridge and Haswell iGPUs, Nvidia Kepler dGPUs)
+- Remove MacBook4,1 references
+  - Machine was never properly supported by OCLP
+- Restore support for Aquantia Aqtion 10GBe Ethernet for Pre-VT-d systems on 12.3 and newer
+  - i.e. MacPro5,1 with AQC107 expansion card running macOS Ventura/Monterey 12.6.x
+  - Thanks [@jazzzny](https://github.com/jazzzny)
 - Resolve AMD Vega support on pre-AVX2 Macs in macOS Ventura
   - Originally caused by regression from 0.6.2
 - Backend Changes:
