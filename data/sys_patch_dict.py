@@ -1304,7 +1304,7 @@ class SystemPatchDictionary():
                         },
                     },
                     "Install Non-Root": {
-                        "/Library/CoreMediaIO/Plug-Ins": {
+                        "/Library/CoreMediaIO/Plug-Ins/DAL": {
                             "AppleCamera.plugin":  "14.0 Beta 1"
                         },
                         "/Library/LaunchDaemons": {
