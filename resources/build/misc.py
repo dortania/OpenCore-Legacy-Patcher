@@ -237,10 +237,18 @@ class BuildMiscellaneous:
         """
         iSight Handler
         """
+        if self.model in smbios_data.smbios_dictionary:
+            if "Legacy iSight" in smbios_data.smbios_dictionary[self.model]:
+                if smbios_data.smbios_dictionary[self.model]["Legacy iSight"] is True:
+                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyUSBVideoSupport.kext", self.constants.apple_isight_version, self.constants.apple_isight_path)
 
-        if "Legacy iSight" in smbios_data.smbios_dictionary[self.model]:
-            if smbios_data.smbios_dictionary[self.model]["Legacy iSight"] is True:
-                support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyUSBVideoSupport.kext", self.constants.apple_isight_version, self.constants.apple_isight_path)
+        if not self.constants.custom_model:
+            if self.constants.computer.pcie_webcam is True:
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleCameraInterface.kext", self.constants.apple_camera_version, self.constants.apple_camera_path)
+        else:
+            if self.model.startswith("MacBook") and self.model in smbios_data.smbios_dictionary:
+                if cpu_data.CPUGen.haswell <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.kaby_lake:
+                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleCameraInterface.kext", self.constants.apple_camera_version, self.constants.apple_camera_path)
 
 
     def _usb_handling(self) -> None:

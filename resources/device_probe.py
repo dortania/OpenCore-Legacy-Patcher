@@ -630,6 +630,7 @@ class Computer:
     trackpad_type: Optional[str] = None
     ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
+    pcie_webcam: Optional[bool] = False
     secure_boot_model: Optional[str] = None
     secure_boot_policy: Optional[int] = None
     oclp_sys_version: Optional[str] = None
@@ -655,6 +656,7 @@ class Computer:
         computer.bluetooth_probe()
         computer.topcase_probe()
         computer.ambient_light_sensor_probe()
+        computer.pcie_webcam_probe()
         computer.sata_disk_probe()
         computer.oclp_sys_patch_probe()
         computer.check_rosetta()
@@ -731,6 +733,13 @@ class Computer:
         device = next(ioreg.ioiterator_to_list(ioreg.IOServiceGetMatchingServices(ioreg.kIOMasterPortDefault, ioreg.IOServiceNameMatching("ALS0".encode()), None)[1]), None)
         if device:
             self.ambient_light_sensor = True
+            ioreg.IOObjectRelease(device)
+
+    def pcie_webcam_probe(self):
+        # CMRA/14E4:1570
+        device = next(ioreg.ioiterator_to_list(ioreg.IOServiceGetMatchingServices(ioreg.kIOMasterPortDefault, ioreg.IOServiceNameMatching("CMRA".encode()), None)[1]), None)
+        if device:
+            self.pcie_webcam = True
             ioreg.IOObjectRelease(device)
 
     def sdxc_controller_probe(self):

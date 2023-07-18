@@ -1290,6 +1290,27 @@ class SystemPatchDictionary():
                             "IOUSBHostFamily.kext": "12.6.2",
                         },
                     },
-                }
+                },
+                "PCIe Web Camera": {
+                    "Display Name": "Miscellaneous: PCIe Web Camera",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 0
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install Non-Root": {
+                        "/Library/CoreMediaIO/Plug-Ins": {
+                            "AppleCamera.plugin":  "14.0 Beta 1"
+                        },
+                        "/Library/LaunchDaemons": {
+                            "com.apple.cmio.AppleCameraAssistant.plist":  "14.0 Beta 1"
+                        },
+                    },
+                },
             },
         }

@@ -13,7 +13,7 @@ class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "0.6.8"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "1.1.6"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "1.1.7"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
@@ -65,6 +65,7 @@ class Constants:
         self.apple_usb_11_injector: str = "1.0.0"  #  AppleUSBUHCI/OHCI
         self.aicpupm_version:       str = "1.0.0"  #  AppleIntelCPUPowerManagement/Client
         self.s3x_nvme_version:      str = "1.0.0"  #  IONVMeFamily (14.0 Beta 1, S1X and S3X classes)
+        self.apple_camera_version:  str = "1.0.0"  #  AppleCameraInterface (14.0 Beta 1)
 
         ## Apple - Dortania Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
@@ -538,6 +539,10 @@ class Constants:
     @property
     def s3x_nvme_path(self):
         return self.payload_kexts_path / Path(f"Misc/IOS3XeFamily-v{self.s3x_nvme_version}.zip")
+
+    @property
+    def apple_camera_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleCameraInterface-v{self.apple_camera_version}.zip")
 
     @property
     def plist_folder_path(self):
