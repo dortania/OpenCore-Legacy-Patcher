@@ -63,6 +63,13 @@ class BuildWiredNetworking:
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path)
             elif isinstance(controller, device_probe.Marvell) or isinstance(controller, device_probe.SysKonnect):
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path)
+            
+            # Pre-Ivy Bridge Aquantia Ethernet Patch
+            if isinstance(controller, device_probe.Aquantia) and controller.chipset == device_probe.Aquantia.Chipsets.AppleEthernetAquantiaAqtion:
+                if not self.model in smbios_data.smbios_dictionary:
+                    continue
+                if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.ivy_bridge.value:
+                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleEthernetAbuantiaAqtion.kext", self.constants.aquantia_version, self.constants.aquantia_path)
 
 
     def _prebuilt_assumption(self) -> None:

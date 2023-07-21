@@ -1599,6 +1599,22 @@
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Aquantia Ethernet Patch</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>21.4.0</string>
+				<key>BundlePath</key>
+				<string>AppleEthernetAbuantiaAqtion.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AppleEthernetAbuantiaAqtion</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
 		</array>
 		<key>Block</key>
 		<array/>

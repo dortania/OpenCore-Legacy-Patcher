@@ -394,6 +394,17 @@ class SettingsFrame(wx.Frame):
                         "for unsupported models.",
                     ],
                 },
+                "Disable mediaanalysisd service": {
+                    "type": "checkbox",
+                    "value": self.constants.disable_mediaanalysisd,
+                    "variable": "disable_mediaanalysisd",
+                    "description": [
+                        "For systems that are the primary iCloud",
+                        "Photo Library host with a 3802-based GPU,",
+                        "this may aid in prolonged idle stability.",
+                    ],
+                    "condition": gui_support.CheckProperties(self.constants).host_has_3802_gpu()
+                },
                 "wrap_around 1": {
                     "type": "wrap_around",
                 },
@@ -674,18 +685,6 @@ class SettingsFrame(wx.Frame):
                 },
                 "wrap_around 1": {
                     "type": "wrap_around",
-                },
-                "Disable ColorSync Downgrade": {
-                    "type": "checkbox",
-                    "value": global_settings.GlobalEnviromentSettings().read_property("Disable_ColorSync_Downgrade") or self.constants.disable_cat_colorsync,
-                    "variable": "Disable_ColorSync_Downgrade",
-                    "constants_variable": "disable_cat_colorsync",
-                    "description": [
-                        "Disable ColorSync downgrade",
-                        "on HD3000 GPUs in Ventura and newer.",
-                        "Note: Disabling can cause UI corruption.",
-                    ],
-                    "condition": not bool(self.constants.computer.real_model not in ["MacBookAir4,1","MacBookAir4,2","MacBookPro8,1","MacBookPro8,2","MacBookPro8,3","Macmini5,1"])
                 },
                 "Non-Metal Configuration": {
                     "type": "title",
@@ -1023,7 +1022,7 @@ Hardware Information:
                 if self.constants.computer.real_model in smbios_data.smbios_dictionary:
                     if self.constants.detected_os > smbios_data.smbios_dictionary[self.constants.computer.real_model]["Max OS Supported"]:
                         chassis_type = "aluminum"
-                        if self.constants.computer.real_model in ["MacBook4,1", "MacBook5,2", "MacBook6,1", "MacBook7,1"]:
+                        if self.constants.computer.real_model in ["MacBook5,2", "MacBook6,1", "MacBook7,1"]:
                             chassis_type = "plastic"
                         dlg = wx.MessageDialog(self.frame_modal, f"This model, {self.constants.computer.real_model}, does not natively support macOS {os_data.os_conversion.kernel_to_os(self.constants.detected_os)}, {os_data.os_conversion.convert_kernel_to_marketing_name(self.constants.detected_os)}. The last native OS was macOS {os_data.os_conversion.kernel_to_os(smbios_data.smbios_dictionary[self.constants.computer.real_model]['Max OS Supported'])}, {os_data.os_conversion.convert_kernel_to_marketing_name(smbios_data.smbios_dictionary[self.constants.computer.real_model]['Max OS Supported'])}\n\nToggling this option will break booting on this OS. Are you absolutely certain this is desired?\n\nYou may end up with a nice {chassis_type} brick 🧱", "Are you certain?", wx.YES_NO | wx.ICON_WARNING | wx.NO_DEFAULT)
                         if dlg.ShowModal() == wx.ID_NO:

@@ -4,16 +4,36 @@
 - Update non-Metal Binaries:
   - Improve experimental Menubar implementation stability
   - Implement reduce transparency Menubar
+  - Resolve Color Profile support and Black Box rendering issues on HD 3000 Macs
+    - Drops ColorSync downgrade configuration option
 - Resolve app not updating in `/Applications` after an update
   - Work-around users manually copying app to `/Applications` instead of allowing Root Volume Patcher to create a proper alias
+- Add configuration for mediaanalysisd usage
+  - For systems that are the primary iCloud Photo Library host, mediaanalysisd may be unstable on large amounts of unprocessed faces
+  - Applicable to 3802-based GPUs (ie. Intel Ivy Bridge and Haswell iGPUs, Nvidia Kepler dGPUs)
+- Remove MacBook4,1 references
+  - Machine was never properly supported by OCLP
+- Restore support for Aquantia Aqtion 10GBe Ethernet for Pre-VT-d systems on 12.3 and newer
+  - i.e. MacPro5,1 with AQC107 expansion card running macOS Ventura/Monterey 12.6.x
+  - Thanks [@jazzzny](https://github.com/jazzzny)
+- Resolve AMD Vega support on pre-AVX2 Macs in macOS Ventura
+  - Originally caused by regression from 0.6.2
+- Backend Changes:
+  - device_probe.py:
+    - Add USB device parsing via `IOUSBDevice` class
+    - Streamline Bluetooth device detection
+    - Add Probing for Top Case hardware (Jazzzny)
+      - Improves handling for altered hardware scenarios (i.e. MacBookPro4,1 with MacBookPro3,1 topcase)
+  - utilities.py:
+    - Fix indexing error on Device Paths (thx [@Ausdauersportler](https://github.com/Ausdauersportler))
 - Increment Binaries:
-  - PatcherSupportPkg 1.1.3 - release
+  - PatcherSupportPkg 1.1.4 - release
 
 ## 0.6.7
 - Resolve partition buttons overlapping in Install OpenCore UI
   - ex. "EFI" and additional FAT32 partitions on a single drive
 - Re-enable mediaanalysisd on Ventura
-  - Allows for Live Text support on systems with3802 GPUs
+  - Allows for Live Text support on systems with 3802 GPUs
     - ie. Intel Ivy Bridge and Haswell, Nvidia Kepler
   - Previously disabled due to high instability in Photos with Face Scanning, now resolved
 - Work-around crashing after patching with MenuBar2 implementation enabled

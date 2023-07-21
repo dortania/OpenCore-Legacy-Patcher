@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type, Union
 
 from resources import utilities, ioreg
-from data import pci_data
+from data import pci_data, usb_data
 
 
 @dataclass
@@ -20,6 +20,94 @@ class CPU:
     name: str
     flags: list[str]
     leafs: list[str]
+
+
+@dataclass
+class USBDevice:
+    vendor_id:    int
+    device_id:    int
+    device_class: int
+    device_speed: int
+    product_name: str
+    vendor_name:  Optional[str] = None
+
+    @classmethod
+    def from_ioregistry(cls, entry: ioreg.io_registry_entry_t):
+        properties: dict = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperties(entry, None, ioreg.kCFAllocatorDefault, ioreg.kNilOptions)[1])
+
+        vendor_id    = None
+        device_id    = None
+        device_class = None
+        device_speed = None
+        vendor_name  = None
+        product_name = "N/A"
+
+        if "idVendor" in properties:
+            vendor_id = properties["idVendor"]
+        if "idProduct" in properties:
+            device_id = properties["idProduct"]
+        if "bDeviceClass" in properties:
+            device_class = properties["bDeviceClass"]
+        if "kUSBProductString" in properties:
+            product_name = properties["kUSBProductString"].strip()
+        if "kUSBVendorString" in properties:
+            vendor_name = properties["kUSBVendorString"].strip()
+        if "USBSpeed" in properties:
+            device_speed = properties["USBSpeed"]
+
+        return cls(vendor_id, device_id, device_class, device_speed, product_name, vendor_name)
+
+
+    def detect(self):
+        self.detect_class()
+        self.detect_speed()
+
+
+    def detect_class(self) -> None:
+        for device_class in self.ClassCode:
+            if self.device_class == device_class.value:
+                self.device_class = device_class
+
+
+    def detect_speed(self) -> None:
+        for speed in self.Speed:
+            if self.device_speed == speed.value:
+                self.device_speed = speed
+
+    class Speed(enum.Enum):
+        LOW_SPEED        = 0x01
+        FULL_SPEED       = 0x02
+        HIGH_SPEED       = 0x03
+        SUPER_SPEED      = 0x04
+        SUPER_SPEED_PLUS = 0x05
+
+
+    class ClassCode(enum.Enum):
+        # https://www.usb.org/defined-class-codes
+        GENERIC           = 0x00
+        AUDIO             = 0x01
+        CDC_CONTROL       = 0x02
+        HID               = 0x03
+        PHYSICAL          = 0x05
+        IMAGE             = 0x06
+        PRINTER           = 0x07
+        MASS_STORAGE      = 0x08
+        HUB               = 0x09
+        CDC_DATA          = 0x0A
+        SMART_CARD        = 0x0B
+        CONTENT_SEC       = 0x0D
+        VIDEO             = 0x0E
+        PERSONAL_HEALTH   = 0x0F
+        AUDIO_VIDEO       = 0x10
+        BILLBOARD         = 0x11
+        USB_TYPE_C_BRIDGE = 0x12
+        DISPLAY_BDP       = 0x13
+        I3C               = 0x3C
+        DIAGNOSTIC        = 0xDC
+        WIRELESS          = 0xE0
+        MISCELLANEOUS     = 0xEF
+        APPLICATION       = 0xFE
+        VENDOR_SPEC       = 0xFF
 
 
 @dataclass
@@ -502,10 +590,13 @@ class Computer:
     ethernet: Optional[EthernetController] = field(default_factory=list)
     wifi: Optional[WirelessCard] = None
     cpu: Optional[CPU] = None
+    usb_devices: list[USBDevice] = field(default_factory=list)
     oclp_version: Optional[str] = None
     opencore_version: Optional[str] = None
     opencore_path: Optional[str] = None
     bluetooth_chipset: Optional[str] = None
+    internal_keyboard_type: Optional[str] = None
+    trackpad_type: Optional[str] = None
     ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
     secure_boot_model: Optional[str] = None
@@ -529,13 +620,30 @@ class Computer:
         computer.sdxc_controller_probe()
         computer.ethernet_probe()
         computer.smbios_probe()
+        computer.usb_device_probe()
         computer.cpu_probe()
         computer.bluetooth_probe()
+        computer.topcase_probe()
         computer.ambient_light_sensor_probe()
         computer.sata_disk_probe()
         computer.oclp_sys_patch_probe()
         computer.check_rosetta()
         return computer
+
+
+    def usb_device_probe(self):
+        devices = ioreg.ioiterator_to_list(
+            ioreg.IOServiceGetMatchingServices(
+                ioreg.kIOMasterPortDefault, {"IOProviderClass": "IOUSBDevice"}, None
+            )[1]
+        )
+        for device in devices:
+            properties = USBDevice.from_ioregistry(device)
+            if properties:
+                properties.detect()
+                self.usb_devices.append(properties)
+            ioreg.IOObjectRelease(device)
+
 
     def gpu_probe(self):
         # Chain together two iterators: one for class code 00000300, the other for class code 00800300
@@ -761,18 +869,41 @@ class Computer:
         return leafs
 
     def bluetooth_probe(self):
-        usb_data: str = subprocess.run("system_profiler SPUSBDataType".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
-        if "BRCM20702 Hub" in usb_data:
+        if not self.usb_devices:
+            return
+
+        # Ensure we get the "best" bluetooth chipset (if multiple are present)
+        if any("BRCM20702" in usb_device.product_name for usb_device in self.usb_devices):
             self.bluetooth_chipset = "BRCM20702 Hub"
-        elif "BCM20702A0" in usb_data or "BCM2045A0" in usb_data:
+        elif any("BCM20702A0" in usb_device.product_name or "BCM2045A0" in usb_device.product_name for usb_device in self.usb_devices):
             self.bluetooth_chipset = "3rd Party Bluetooth 4.0 Hub"
-        elif "BRCM2070 Hub" in usb_data:
+        elif any("BRCM2070 Hub" in usb_device.product_name for usb_device in self.usb_devices):
             self.bluetooth_chipset = "BRCM2070 Hub"
-        elif "BRCM2046 Hub" in usb_data:
+        elif any("BRCM2046 Hub" in usb_device.product_name for usb_device in self.usb_devices):
             self.bluetooth_chipset = "BRCM2046 Hub"
-        elif "Bluetooth" in usb_data:
+        elif any("Bluetooth" in usb_device.product_name for usb_device in self.usb_devices):
             self.bluetooth_chipset = "Generic"
 
+    def topcase_probe(self):
+        if not self.usb_devices:
+            return
+
+        for usb_device in self.usb_devices:
+            if self.internal_keyboard_type and self.trackpad_type:
+                break
+            if usb_device.vendor_id != 0x5ac:
+                continue
+
+            if usb_device.device_id in usb_data.AppleIDs.Legacy_AppleUSBTCKeyboard:
+                self.internal_keyboard_type = "Legacy"
+            elif usb_device.device_id in usb_data.AppleIDs.Modern_AppleUSBTCKeyboard:
+                self.internal_keyboard_type = "Modern"
+
+            if usb_device.device_id in usb_data.AppleIDs.AppleUSBTrackpad:
+                self.trackpad_type = "Legacy"
+            elif usb_device.device_id in usb_data.AppleIDs.AppleUSBMultiTouch:
+                self.trackpad_type = "Modern"
+        
     def sata_disk_probe(self):
         # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'
         # Determine whether SATA SSD is present and Apple-made
