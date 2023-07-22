@@ -273,7 +273,7 @@ class DetectRootPatch:
         """
 
         # Increase OS check if modern wifi is detected
-        if self.constants.detected_os < os_data.os_data.ventura if self.legacy_wifi is True else os_data.os_data.sonoma:
+        if self.constants.detected_os < (os_data.os_data.ventura if self.legacy_wifi is True else os_data.os_data.sonoma):
             return
         if self.legacy_wifi is False and self.modern_wifi is False:
             return
@@ -289,7 +289,7 @@ class DetectRootPatch:
         oclp_patch_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
         if Path(oclp_patch_path).exists():
             oclp_plist = plistlib.load(open(oclp_patch_path, "rb"))
-            if "Legacy Wireless" in oclp_plist:
+            if "Legacy Wireless" in oclp_plist or "Modern Wireless" in oclp_plist:
                 return
 
         # Due to the reliance of KDKs for most older patches, we'll allow KDK-less
@@ -311,6 +311,14 @@ class DetectRootPatch:
         self.legacy_audio              = False
         self.legacy_gmux               = False
         self.legacy_keyboard_backlight = False
+
+        # Currently all graphics patches require a KDK
+        if self.constants.detected_os >= os_data.os_data.sonoma:
+            self.kepler_gpu     = False
+            self.ivy_gpu        = False
+            self.haswell_gpu    = False
+            self.broadwell_gpu  = False
+            self.skylake_gpu    = False
 
 
     def _check_dgpu_status(self):
