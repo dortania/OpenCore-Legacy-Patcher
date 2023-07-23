@@ -1248,8 +1248,8 @@ class SystemPatchDictionary():
                         },
                     },
                 },
-                "PCIe Web Camera": {
-                    "Display Name": "Miscellaneous: PCIe Web Camera",
+                "PCIe FaceTime Camera": {
+                    "Display Name": "Miscellaneous: PCIe FaceTime Camera",
                     "OS Support": {
                         "Minimum OS Support": {
                             "OS Major": os_data.os_data.sonoma,

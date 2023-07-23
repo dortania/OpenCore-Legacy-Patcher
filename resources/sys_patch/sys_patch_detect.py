@@ -602,7 +602,7 @@ class DetectRootPatch:
             "Miscellaneous: Legacy GMUX":                  self.legacy_gmux,
             "Miscellaneous: Legacy Keyboard Backlight":    self.legacy_keyboard_backlight,
             "Miscellaneous: Legacy USB 1.1":               self.legacy_uhci_ohci,
-            "Miscellaneous: PCIe Web Camera":       self.legacy_pcie_webcam,
+            "Miscellaneous: PCIe FaceTime Camera":         self.legacy_pcie_webcam,
             "Settings: Requires AMFI exemption":           self.amfi_must_disable,
             "Settings: Supports Auxiliary Cache":          not self.requires_root_kc,
             "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,

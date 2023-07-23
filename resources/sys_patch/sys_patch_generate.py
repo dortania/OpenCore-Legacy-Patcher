@@ -179,8 +179,8 @@ class GenerateRootPatchSets:
         if self.hardware_details["Miscellaneous: Legacy USB 1.1"] is True:
             required_patches.update({"Legacy USB 1.1": all_hardware_patchset["Miscellaneous"]["Legacy USB 1.1"]})
 
-        if self.hardware_details["Miscellaneous: PCIe Web Camera"] is True:
-            required_patches.update({"PCIe Web Camera": all_hardware_patchset["Miscellaneous"]["PCIe Web Camera"]})
+        if self.hardware_details["Miscellaneous: PCIe FaceTime Camera"] is True:
+            required_patches.update({"PCIe FaceTime Camera": all_hardware_patchset["Miscellaneous"]["PCIe FaceTime Camera"]})
 
         if required_patches:
             host_os_float = float(f"{self.constants.detected_os}.{self.constants.detected_os_minor}")
