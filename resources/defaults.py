@@ -147,8 +147,11 @@ class GenerateDefaults:
         Networking specific probe
         """
 
+        is_legacy_wifi = False
+        is_modern_wifi = False
+
         if self.host_is_target:
-            if not (
+            if (
                 (
                     isinstance(self.constants.computer.wifi, device_probe.Broadcom) and
                     self.constants.computer.wifi.chipset in [
@@ -160,28 +163,53 @@ class GenerateDefaults:
                     self.constants.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40
                 )
             ):
-                return
+                is_legacy_wifi = True
+            elif (
+                (
+                    isinstance(self.constants.computer.wifi, device_probe.Broadcom) and
+                    self.constants.computer.wifi.chipset in [
+                        device_probe.Broadcom.Chipsets.AirPortBrcm4360,
+                        device_probe.Broadcom.Chipsets.AirportBrcmNIC,
+                    ]
+                )
+            ):
+                is_modern_wifi = True
 
         else:
-            if not self.model in smbios_data.smbios_dictionary:
+            print("Checking WiFi")
+            if self.model not in smbios_data.smbios_dictionary:
                 return
             if (
-                smbios_data.smbios_dictionary[self.model]["Wireless Model"] not in [
+                smbios_data.smbios_dictionary[self.model]["Wireless Model"] in [
                     device_probe.Broadcom.Chipsets.AirPortBrcm4331,
                     device_probe.Broadcom.Chipsets.AirPortBrcm43224,
-                    device_probe.Atheros.Chipsets.AirPortAtheros40
+                    device_probe.Atheros.Chipsets.AirPortAtheros40,
                 ]
             ):
-                return
+                is_legacy_wifi = True
+            elif (
+                    smbios_data.smbios_dictionary[self.model]["Wireless Model"] in [
+                    device_probe.Broadcom.Chipsets.AirPortBrcm4360,
+                    device_probe.Broadcom.Chipsets.AirportBrcmNIC,
+                ]
+            ):
+                print("Modern WiFi")
+                is_modern_wifi = True
+
+        if is_legacy_wifi is False and is_modern_wifi is False:
+            return
 
         # 12.0: Legacy Wireless chipsets require root patching
+        # 14.0: Modern Wireless chipsets require root patching
         self.constants.sip_status = False
         self.constants.secure_status = False
+        self.constants.disable_cs_lv = True
 
-        # 13.0: Enabling AirPlay to Mac patches breaks Control Center on legacy chipsets
-        # AirPlay to Mac was unsupported regardless, so we can safely disable it
-        self.constants.fu_status = True
-        self.constants.fu_arguments = " -disable_sidecar_mac"
+        if is_legacy_wifi is True:
+            # 13.0: Enabling AirPlay to Mac patches breaks Control Center on legacy chipsets
+            # AirPlay to Mac was unsupported regardless, so we can safely disable it
+            self.constants.fu_status = True
+            self.constants.fu_arguments = " -disable_sidecar_mac"
 
 
     def _misc_hardwares_probe(self) -> None:
