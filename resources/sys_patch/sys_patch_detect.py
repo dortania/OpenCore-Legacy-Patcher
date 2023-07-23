@@ -229,9 +229,17 @@ class DetectRootPatch:
                         self.amfi_must_disable = True
                         self.supports_metal = True
 
+
         if self.constants.detected_os >= os_data.os_data.sonoma:
-            # Currently all graphics patches require a KDK
-            self.requires_root_kc = True
+            if any(
+                self.kepler_gpu,
+                self.ivy_gpu,
+                self.haswell_gpu,
+                self.broadwell_gpu,
+                self.skylake_gpu,
+            ):
+                # All KDKless GPUs require a KDK in Sonoma due to IOSurface downgrade
+                self.requires_root_kc = True
 
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
