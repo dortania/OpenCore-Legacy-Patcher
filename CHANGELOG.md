@@ -27,7 +27,7 @@
   - utilities.py:
     - Fix indexing error on Device Paths (thx [@Ausdauersportler](https://github.com/Ausdauersportler))
 - Increment Binaries:
-  - PatcherSupportPkg 1.2.0 - release
+  - PatcherSupportPkg 1.2.1 - release
 
 ## 0.6.7
 - Resolve partition buttons overlapping in Install OpenCore UI

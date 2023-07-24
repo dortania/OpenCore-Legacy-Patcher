@@ -373,6 +373,7 @@ class SystemPatchDictionary():
                     "Install": {
                         "/System/Library/Frameworks": {
                             "Metal.framework": f"13.2.1-{self.os_major}",
+                            **({  "CoreImage.framework": "14.0 Beta 3" } if self.os_major >= os_data.os_data.ventura else {}),
                         },
                         "/System/Library/PrivateFrameworks": {
                             **({  "MTLCompiler.framework": "13.2.1" } if self.os_major == os_data.os_data.ventura else {}),
