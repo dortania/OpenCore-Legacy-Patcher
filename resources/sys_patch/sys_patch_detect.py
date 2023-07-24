@@ -231,13 +231,13 @@ class DetectRootPatch:
 
 
         if self.constants.detected_os >= os_data.os_data.sonoma:
-            if any(
+            if any([
                 self.kepler_gpu,
                 self.ivy_gpu,
                 self.haswell_gpu,
                 self.broadwell_gpu,
                 self.skylake_gpu,
-            ):
+            ]):
                 # All KDKless GPUs require a KDK in Sonoma due to IOSurface downgrade
                 self.requires_root_kc = True
 
