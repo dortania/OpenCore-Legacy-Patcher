@@ -204,6 +204,7 @@ class GenerateDefaults:
         self.constants.sip_status = False
         self.constants.secure_status = False
         self.constants.disable_cs_lv = True
+        self.constants.disable_amfi = True
 
         if is_legacy_wifi is True:
             # 13.0: Enabling AirPlay to Mac patches breaks Control Center on legacy chipsets
