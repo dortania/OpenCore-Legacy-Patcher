@@ -22,6 +22,8 @@
 - Disable non-Metal's Menubar 2 configuration
   - Can be manually re-enabled, however application will try to disable to prevent issues
 - Remove AppleGVA downgrade on Intel Skylake iGPUs
+- Implement AMFIPass system
+  - Removes need for disabling Library Validation and AMFI outright on all applicable systems
 - Backend Changes:
   - device_probe.py:
     - Add USB device parsing via `IOUSBDevice` class
