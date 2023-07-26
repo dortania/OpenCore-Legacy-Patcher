@@ -19,5 +19,6 @@ This patcher is made of multiple external applications from different people and
   * [SurPlus](https://github.com/reenigneorcim/SurPlus) - Syncretic
   * [VMM Patch Set](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/4a8f61a01da72b38a4b2250386cc4b497a31a839/payloads/Config/config.plist#L1222-L1281) - parrotgeek1
   * Apple Binaries - Apple Inc.
+  * All other patches - respective authors
 
-Remaining files within OpenCore Legacy Patcher are distributed under BSD-4-Clause license.
+The remaining files within the OpenCore Legacy Patcher repository are distributed under the [BSD 4-Clause license](https://github.com/dortania/OpenCore-Legacy-Patcher/blob/main/LICENSE.txt).
