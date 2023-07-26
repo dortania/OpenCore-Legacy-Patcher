@@ -13,8 +13,8 @@ from data import os_data
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "amfipass-b5"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "1.1.4"  # PatcherSupportPkg
+        self.patcher_version:                 str = "0.6.8"  # OpenCore-Legacy-Patcher
+        self.patcher_support_pkg_version:     str = "1.2.2"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
@@ -359,7 +359,7 @@ class Constants:
     @property
     def bcm570_path(self):
         return self.payload_kexts_path / Path(f"Ethernet/CatalinaBCM5701Ethernet-v{self.bcm570_version}.zip")
-    
+
     @property
     def aquantia_path(self):
         return self.payload_kexts_path / Path(f"Ethernet/AppleEthernetAbuantiaAqtion-v{self.aquantia_version}.zip")

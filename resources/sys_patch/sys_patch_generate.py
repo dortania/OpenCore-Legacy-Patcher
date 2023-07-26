@@ -78,7 +78,7 @@ class GenerateRootPatchSets:
             required_patches.update({"Intel Broadwell": all_hardware_patchset["Graphics"]["Intel Broadwell"]})
 
         if self.hardware_details["Graphics: Intel Skylake"] is True:
-            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
+            required_patches.update({"Revert GVA Downgrade": all_hardware_patchset["Graphics"]["Revert GVA Downgrade"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Intel Skylake": all_hardware_patchset["Graphics"]["Intel Skylake"]})
 
@@ -128,7 +128,9 @@ class GenerateRootPatchSets:
                 del(required_patches["AMD TeraScale 2"]["Install"]["/System/Library/Extensions"]["AMDRadeonX3000.kext"])
 
         if self.hardware_details["Graphics: AMD Legacy GCN"] is True or self.hardware_details["Graphics: AMD Legacy Polaris"] is True:
-            required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
+            if self.hardware_details["Graphics: Intel Skylake"] is False:
+                # GVA downgrade not required if Skylake is present
+                required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             if self.hardware_details["Graphics: AMD Legacy GCN"] is True:
                 required_patches.update({"AMD Legacy GCN": all_hardware_patchset["Graphics"]["AMD Legacy GCN"]})
