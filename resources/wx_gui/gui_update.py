@@ -48,10 +48,8 @@ class UpdateFrame(wx.Frame):
         if url == "" or version_label == "":
             dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
             if dict:
-                for key in dict:
-                    version_label = dict[key]["Version"]
-                    url = dict[key]["Link"]
-                    break
+                version_label = dict["Version"]
+                url = dict["Link"]
             else:
                 wx.MessageBox("Failed to get update info", "Critical Error")
                 sys.exit(1)

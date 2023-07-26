@@ -4,6 +4,7 @@
 
 from pathlib import Path
 from typing import Optional
+from packaging import version
 
 from resources import device_probe
 from data import os_data
@@ -13,7 +14,7 @@ class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "0.6.8"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "1.2.1"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "1.2.2"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
@@ -82,13 +83,15 @@ class Constants:
 
         ## Dortania
         ## https://github.com/dortania
-        self.backlight_injector_version:  str = "1.1.0"  # BacklightInjector
-        self.backlight_injectorA_version: str = "1.0.0"  # BacklightInjector (iMac9,1)
-        self.smcspoof_version:            str = "1.0.0"  # SMC-Spoof
-        self.mce_version:                 str = "1.0.0"  # AppleMCEReporterDisabler
-        self.btspoof_version:             str = "1.0.0"  # Bluetooth-Spoof
-        self.aspp_override_version:       str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
-        self.rsrhelper_version:           str = "1.0.0"  # RSRHelper
+        self.backlight_injector_version:     str = "1.1.0"  # BacklightInjector
+        self.backlight_injectorA_version:    str = "1.0.0"  # BacklightInjector (iMac9,1)
+        self.smcspoof_version:               str = "1.0.0"  # SMC-Spoof
+        self.mce_version:                    str = "1.0.0"  # AppleMCEReporterDisabler
+        self.btspoof_version:                str = "1.0.0"  # Bluetooth-Spoof
+        self.aspp_override_version:          str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
+        self.rsrhelper_version:              str = "1.0.0"  # RSRHelper
+        self.amfipass_version:               str = "1.3.1"  # AMFIPass
+        self.amfipass_compatibility_version: str = "1.2.1"  # Minimum AMFIPass version required
 
         ## Syncretic
         ## https://forums.macrumors.com/members/syncretic.1173816/
@@ -234,6 +237,18 @@ class Constants:
             os_data.os_data.monterey,
             os_data.os_data.ventura,
         ]
+
+    @property
+    def special_build(self):
+        """
+        Special builds are used for testing. They do not get updates through the updater
+        """
+
+        try:
+            version.parse(self.patcher_version)
+            return False
+        except version.InvalidVersion:
+            return True
 
     # Payload Location
 
@@ -502,6 +517,11 @@ class Constants:
     @property
     def rsrhelper_path(self):
         return self.payload_kexts_path / Path(f"Acidanthera/RSRHelper-v{self.rsrhelper_version}-{self.kext_variant}.zip")
+
+    @property
+    def amfipass_path(self):
+        # AMFIPass is release only
+        return self.payload_kexts_path / Path(f"Acidanthera/AMFIPass-v{self.amfipass_version}-RELEASE.zip")
 
     @property
     def innie_path(self):

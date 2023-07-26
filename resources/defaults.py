@@ -49,7 +49,7 @@ class GenerateDefaults:
         self._networking_probe()
         self._misc_hardwares_probe()
         self._smbios_probe()
-
+        self._check_amfipass_supported()
 
     def _general_probe(self) -> None:
         """
@@ -327,8 +327,38 @@ class GenerateDefaults:
                     # Only disable AMFI if we officially support Ventura
                     self.constants.disable_amfi = True
 
-                for key in ["Moraea_BlurBeta", "Amy.MenuBar2Beta"]:
+                for key in ["Moraea_BlurBeta"]:
                     # Enable BetaBlur if user hasn't disabled it
                     is_key_enabled = subprocess.run(["defaults", "read", "-g", key], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
                     if is_key_enabled not in ["false", "0"]:
                         subprocess.run(["defaults", "write", "-g", key, "-bool", "true"])
+
+                subprocess.run(["defaults", "write", "-g", "Amy.MenuBar2Beta", "-bool", "false"])
+
+    def _check_amfipass_supported(self) -> None:
+        """
+        Check if root volume supports AMFIPass
+
+        The basic requirements of this function are:
+        - The host is the target
+        - Root volume doesn't have adhoc signed binaries
+
+        If all of these conditions are met, it is safe to disable AMFI and CS_LV. Otherwise, for safety, leave it be.
+        """
+
+        if not self.host_is_target:
+            # Unknown whether the host is using old binaries
+            # Rebuild it once you are on the host
+            return
+
+        # Check for adhoc signed binaries
+        if self.constants.computer.oclp_sys_signed is False:
+            # Root patch with new binaries, then reboot
+            return
+
+        # Note: simply checking the authority is not enough, as the authority can be spoofed
+        # (but do we really care? this is just a simple check)
+        # Note: the cert will change
+
+        self.constants.disable_amfi = False
+        self.constants.disable_cs_lv = False

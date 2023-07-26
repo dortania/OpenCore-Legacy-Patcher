@@ -636,6 +636,7 @@ class Computer:
     oclp_sys_version: Optional[str] = None
     oclp_sys_date: Optional[str] = None
     oclp_sys_url: Optional[str] = None
+    oclp_sys_signed: Optional[bool] = False
     firmware_vendor: Optional[str] = None
     rosetta_active: Optional[bool] = False
 
@@ -956,15 +957,19 @@ class Computer:
 
     def oclp_sys_patch_probe(self):
         path = Path("/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist")
-        if path.exists():
-            sys_plist = plistlib.load(path.open("rb"))
-            if sys_plist:
-                if "OpenCore Legacy Patcher" in sys_plist:
-                    self.oclp_sys_version = sys_plist["OpenCore Legacy Patcher"]
-                if "Time Patched" in sys_plist:
-                    self.oclp_sys_date = sys_plist["Time Patched"]
-                if "Commit URL" in sys_plist:
-                    self.oclp_sys_url = sys_plist["Commit URL"]
+        if not path.exists():
+            self.oclp_sys_signed = True  # No plist, so assume root is valid
+            return
+        sys_plist = plistlib.load(path.open("rb"))
+        if sys_plist:
+            if "OpenCore Legacy Patcher" in sys_plist:
+                self.oclp_sys_version = sys_plist["OpenCore Legacy Patcher"]
+            if "Time Patched" in sys_plist:
+                self.oclp_sys_date = sys_plist["Time Patched"]
+            if "Commit URL" in sys_plist:
+                self.oclp_sys_url = sys_plist["Commit URL"]
+            if "Custom Signature" in sys_plist:
+                self.oclp_sys_signed = sys_plist["Custom Signature"]
 
     def check_rosetta(self):
         result = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()

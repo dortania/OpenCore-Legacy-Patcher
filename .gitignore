@@ -30,6 +30,7 @@ __pycache__/
 /payloads/OpenCore-Legacy-Patcher
 /payloads/InstallAssistant.pkg.integrityDataV1
 /payloads.dmg
+/Universal-Binaries.dmg
 /payloads/OpenCore-Legacy-Patcher-*.plist
 /payloads/KDK.dmg
 *.log
@@ -37,3 +38,4 @@ __pycache__/
 /payloads/KDKInfo.plist
 /payloads/update.sh
 /payloads/OpenCore-Patcher.app
+/.x86_64_venv

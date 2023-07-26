@@ -47,8 +47,7 @@ class AutomaticSysPatch:
 
         dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
         if dict:
-            for key in dict:
-                version = dict[key]["Version"]
+            version = dict["Version"]
             logging.info(f"- Found new version: {version}")
 
             app = wx.App()
@@ -64,7 +63,7 @@ class AutomaticSysPatch:
             if response == wx.ID_YES:
                 gui_entry.EntryPoint(self.constants).start(entry=gui_entry.SupportedEntryPoints.UPDATE_APP)
             elif response == wx.ID_NO:
-                webbrowser.open(dict[key]["Github Link"])
+                webbrowser.open(dict["Github Link"])
             return
 
         if utilities.check_seal() is True:
@@ -148,17 +147,21 @@ class AutomaticSysPatch:
             logging.info("- Versions match")
             return True
 
+        if self.constants.special_build is True:
+            # Version doesn't match and we're on a special build
+            # Special builds don't have good ways to compare versions
+            logging.info("- Special build detected, assuming installed is older")
+            return False
+
         # Check if installed version is newer than booted version
-        if updates.CheckBinaryUpdates(self.constants)._check_if_build_newer(
-            self.constants.computer.oclp_version.split("."), self.constants.patcher_version.split(".")
-        ) is True:
+        if updates.CheckBinaryUpdates(self.constants).check_if_newer(self.constants.computer.oclp_version):
             logging.info("- Installed version is newer than booted version")
             return True
 
         args = [
             "osascript",
             "-e",
-            f"""display dialog "OpenCore Legacy Patcher has detected that you are booting an outdated OpenCore build\n- Booted: {self.constants.computer.oclp_version}\n- Installed: {self.constants.patcher_version}\n\nWould you like to update the OpenCore bootloader?" """
+            f"""display dialog "OpenCore Legacy Patcher has detected that you are booting {'a different' if self.constants.special_build else 'an outdated'} OpenCore build\n- Booted: {self.constants.computer.oclp_version}\n- Installed: {self.constants.patcher_version}\n\nWould you like to update the OpenCore bootloader?" """
             f'with icon POSIX file "{self.constants.app_icon_path}"',
         ]
         output = subprocess.run(

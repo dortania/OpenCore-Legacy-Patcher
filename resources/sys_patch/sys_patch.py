@@ -68,7 +68,6 @@ class PatchSysVolume:
 
         self.skip_root_kmutil_requirement = self.hardware_details["Settings: Supports Auxiliary Cache"]
 
-
     def _init_pathing(self, custom_root_mount_path: Path = None, custom_data_mount_path: Path = None) -> None:
         """
         Initializes the pathing for root volume patching
@@ -494,7 +493,7 @@ class PatchSysVolume:
             oclp_plist_data = plistlib.load(Path(oclp_path).open("rb"))
             for key in oclp_plist_data:
                 if isinstance(oclp_plist_data[key], (bool, int)):
-                     continue
+                    continue
                 if "Install" not in oclp_plist_data[key]:
                     continue
                 for location in oclp_plist_data[key]["Install"]:

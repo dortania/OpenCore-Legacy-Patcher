@@ -6,6 +6,7 @@
   - Implement reduce transparency Menubar
   - Resolve Color Profile support and Black Box rendering issues on HD 3000 Macs
     - Drops ColorSync downgrade configuration option
+    - Resolves macOS 13.5 booting on HD 3000 Macs
 - Resolve app not updating in `/Applications` after an update
   - Work-around users manually copying app to `/Applications` instead of allowing Root Volume Patcher to create a proper alias
 - Add configuration for mediaanalysisd usage
@@ -18,6 +19,11 @@
   - Thanks [@jazzzny](https://github.com/jazzzny)
 - Resolve AMD Vega support on pre-AVX2 Macs in macOS Ventura
   - Originally caused by regression from 0.6.2
+- Disable non-Metal's Menubar 2 configuration
+  - Can be manually re-enabled, however application will try to disable to prevent issues
+- Remove AppleGVA downgrade on Intel Skylake iGPUs
+- Implement AMFIPass system
+  - Removes need for disabling Library Validation and AMFI outright on all applicable systems
 - Backend Changes:
   - device_probe.py:
     - Add USB device parsing via `IOUSBDevice` class
@@ -27,7 +33,7 @@
   - utilities.py:
     - Fix indexing error on Device Paths (thx [@Ausdauersportler](https://github.com/Ausdauersportler))
 - Increment Binaries:
-  - PatcherSupportPkg 1.2.1 - release
+- PatcherSupportPkg 1.2.2 - release
 
 ## 0.6.7
 - Resolve partition buttons overlapping in Install OpenCore UI
