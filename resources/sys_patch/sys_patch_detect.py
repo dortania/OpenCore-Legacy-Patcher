@@ -440,7 +440,7 @@ class DetectRootPatch:
         Base check to ensure patcher is compatible with host OS
         """
         min_os = os_data.os_data.big_sur
-        max_os = os_data.os_data.ventura
+        max_os = os_data.os_data.sonoma
         if self.constants.detected_os < min_os or self.constants.detected_os > max_os:
             return False
         return True
