@@ -66,6 +66,7 @@ class DetectRootPatch:
         self.dosdude_patched = False
         self.missing_kdk     = False
         self.has_network     = False
+        self.unsupported_os  = False
 
         self.missing_whatever_green = False
         self.missing_nv_web_nvram   = False
@@ -411,6 +412,17 @@ class DetectRootPatch:
         return utilities.check_kext_loaded("as.vit9696.WhateverGreen")
 
 
+    def _check_os_compat(self) -> bool:
+        """
+        Base check to ensure patcher is compatible with host OS
+        """
+        min_os = os_data.os_data.big_sur
+        max_os = os_data.os_data.ventura
+        if self.constants.detected_os < min_os or self.constants.detected_os > max_os:
+            return False
+        return True
+
+
     def _check_kdk(self):
         """
         Query whether Kernel Debug Kit is installed
@@ -569,7 +581,7 @@ class DetectRootPatch:
             "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,
             "Validation: Patching Possible":               self.verify_patch_allowed(),
             "Validation: Unpatching Possible":             self._verify_unpatch_allowed(),
-            f"Validation: Unsupported Host OS":            True if self.constants.detected_os > os_data.os_data.ventura and not Path("~/.dortania_developer").expanduser().exists() else False,
+            f"Validation: Unsupported Host OS":            self.unsupported_os,
             f"Validation: SIP is enabled (Required: {self._check_sip()[2]} or higher)":  self.sip_enabled,
             f"Validation: Currently Booted SIP: ({hex(py_sip_xnu.SipXnu().get_sip_status().value)})":         self.sip_enabled,
             "Validation: SecureBootModel is enabled":      self.sbm_enabled,
@@ -633,6 +645,8 @@ class DetectRootPatch:
         self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
         self.amfi_enabled = not amfi_detect.AmfiConfigurationDetection().check_config(self._get_amfi_level_needed())
 
+        self.unsupported_os = not self._check_os_compat()
+
         if self.nvidia_web is True:
             self.missing_nv_web_nvram   = not self._check_nv_web_nvram()
             self.missing_nv_web_opengl  = not self._check_nv_web_opengl()
@@ -686,10 +700,14 @@ class DetectRootPatch:
                 logging.info("\nCannot patch! Network Connection Required")
                 logging.info("Please ensure you have an active internet connection")
 
+            if self.unsupported_os is True:
+                logging.info("\nCannot patch! Unsupported Host OS")
+                logging.info("Please ensure you are running a patcher-supported OS")
+
         if any(
             [
                 # General patch checks
-                self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched,
+                self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched, self.unsupported_os,
 
                 # non-Metal specific
                 self.amfi_enabled if self.amfi_must_disable is True else False,
