@@ -28,25 +28,25 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_version: str = "0.9.2"
+        self.opencore_version: str = "0.9.3"
 
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
         self.lilu_version:               str = "1.6.6"  #      Lilu
-        self.whatevergreen_version:      str = "1.6.4"  #      WhateverGreen
-        self.whatevergreen_navi_version: str = "1.6.4-Navi"  # WhateverGreen (Navi Patch)
+        self.whatevergreen_version:      str = "1.6.5"  #      WhateverGreen
+        self.whatevergreen_navi_version: str = "1.6.5-Navi"  # WhateverGreen (Navi Patch)
         self.airportbcrmfixup_version:   str = "2.1.7"  #      AirPortBrcmFixup
         self.nvmefix_version:            str = "1.1.0"  #      NVMeFix
         self.applealc_version:           str = "1.6.3"  #      AppleALC
-        self.restrictevents_version:     str = "1.1.1"  #      RestrictEvents
-        self.featureunlock_version:      str = "1.1.4"  #      FeatureUnlock
-        self.debugenhancer_version:      str = "1.0.7"  #      DebugEnhancer
-        self.cpufriend_version:          str = "1.2.6"  #      CPUFriend
-        self.bluetool_version:           str = "2.6.6"  #      BlueToolFixup (BrcmPatchRAM)
+        self.restrictevents_version:     str = "1.1.2"  #      RestrictEvents
+        self.featureunlock_version:      str = "1.1.5"  #      FeatureUnlock
+        self.debugenhancer_version:      str = "1.0.8"  #      DebugEnhancer
+        self.cpufriend_version:          str = "1.2.7"  #      CPUFriend
+        self.bluetool_version:           str = "2.6.7"  #      BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version:          str = "2.6.1"  #      CSLVFixup
         self.autopkg_version:            str = "1.0.2"  #      AutoPkgInstaller
-        self.cryptexfixup_version:       str = "1.0.1"  #      CryptexFixup
+        self.cryptexfixup_version:       str = "1.0.2"  #      CryptexFixup
 
         ## Apple
         ## https://www.apple.com
