@@ -417,9 +417,11 @@ class PatchSysVolume:
         """
         Unmount root volume
         """
-
-        logging.info("- Unmounting Root Volume (Don't worry if this fails)")
-        utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        if self.root_mount_path:
+            logging.info("- Unmounting Root Volume (Don't worry if this fails)")
+            utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            logging.info("- Skipping Root Volume unmount")
 
 
     def _rebuild_dyld_shared_cache(self) -> None:
