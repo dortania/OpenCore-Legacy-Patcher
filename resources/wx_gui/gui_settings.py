@@ -7,6 +7,7 @@ import subprocess
 import os
 
 from pathlib import Path
+from resources.sys_patch.sys_patch import PatchSysVolume
 
 from resources.wx_gui import (
     gui_support,
@@ -1306,7 +1307,6 @@ Hardware Information:
         if os.geteuid() != 0:
             wx.MessageDialog(self.parent, "Please relaunch as Root to mount the Root Volume", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
         else:
-            from resources.sys_patch.sys_patch import PatchSysVolume
             #Don't need to pass model as we're bypassing all logic
             if PatchSysVolume("",self.constants)._mount_root_vol() == True:
                 wx.MessageDialog(self.parent, "Root Volume Mounted, remember to fix permissions before saving the Root Volume", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
@@ -1317,7 +1317,6 @@ Hardware Information:
         if os.geteuid() != 0:
             wx.MessageDialog(self.parent, "Please relaunch as Root to save changes", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
         else:
-            from resources.sys_patch.sys_patch import PatchSysVolume
             #Don't need to pass model as we're bypassing all logic
             if PatchSysVolume("",self.constants)._rebuild_root_volume() == True:
                 wx.MessageDialog(self.parent, "Root Volume saved, please reboot to apply changes", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
