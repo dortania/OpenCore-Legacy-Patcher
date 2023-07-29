@@ -858,7 +858,7 @@ class SettingsFrame(wx.Frame):
                 "wrap_around 2": {
                     "type": "wrap_around",
                 },
-                "Update Root Volume": {
+                "Save Root Volume": {
                     "type": "button",
                     "function": self.on_bless_root_vol,
                     "description": [
@@ -1309,7 +1309,7 @@ Hardware Information:
             from resources.sys_patch.sys_patch import PatchSysVolume
             #Don't need to pass model as we're bypassing all logic
             if PatchSysVolume("",self.constants)._mount_root_vol() == True:
-                wx.MessageDialog(self.parent, "Root Volume Mounted, remember to fix permissions before blessing 🙏", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
+                wx.MessageDialog(self.parent, "Root Volume Mounted, remember to fix permissions before saving the Root Volume", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
             else:
                 wx.MessageDialog(self.parent, "Root Volume Mount Failed, check terminal output", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
 
@@ -1321,7 +1321,7 @@ Hardware Information:
             #Don't need to pass model as we're bypassing all logic
             if PatchSysVolume("",self.constants)._rebuild_kernel_collection() == True:
                 if PatchSysVolume("",self.constants)._create_new_apfs_snapshot() == True:
-                    wx.MessageDialog(self.parent, "Root Volume Updated, please reboot to apply changes", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
+                    wx.MessageDialog(self.parent, "Root Volume saved, please reboot to apply changes", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
                 else:
                     wx.MessageDialog(self.parent, "Root Volume Bless Failed, check terminal output", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
             else:
