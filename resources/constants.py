@@ -43,7 +43,7 @@ class Constants:
         self.featureunlock_version:      str = "1.1.5"  #      FeatureUnlock
         self.debugenhancer_version:      str = "1.0.8"  #      DebugEnhancer
         self.cpufriend_version:          str = "1.2.7"  #      CPUFriend
-        self.bluetool_version:           str = "2.6.7"  #      BlueToolFixup (BrcmPatchRAM)
+        self.bluetool_version:           str = "2.6.8"  #      BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version:          str = "2.6.1"  #      CSLVFixup
         self.autopkg_version:            str = "1.0.2"  #      AutoPkgInstaller
         self.cryptexfixup_version:       str = "1.0.2"  #      CryptexFixup
