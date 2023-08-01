@@ -139,7 +139,7 @@ class BuildStorage:
 
 
         # Restore S1X/S3X NVMe support removed in 14.0 Beta 2
-        if self.model in ["MacBook8,1", "MacBook9,1", "MacBook10,1", "MacBookPro13,1", "MacBookPro14,1"]:
+        if self.model in ["MacBook8,1", "MacBook9,1", "MacBook10,1", "MacBookPro13,1", "MacBookPro13,2", "MacBookPro14,1", "MacBookPro14,2"]:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOS3XeFamily.kext", self.constants.s3x_nvme_version, self.constants.s3x_nvme_path)
 
         # Apple RAID Card check
