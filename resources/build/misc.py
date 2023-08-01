@@ -43,7 +43,6 @@ class BuildMiscellaneous:
         self._debug_handling()
         self._cpu_friend_handling()
         self._general_oc_handling()
-        self._t1_handling()
 
 
     def _feature_unlock_handling(self) -> None:
