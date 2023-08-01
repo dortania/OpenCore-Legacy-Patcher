@@ -67,6 +67,9 @@ class Constants:
         self.aicpupm_version:       str = "1.0.0"  #  AppleIntelCPUPowerManagement/Client
         self.s3x_nvme_version:      str = "1.0.0"  #  IONVMeFamily (14.0 Beta 1, S1X and S3X classes)
         self.apple_camera_version:  str = "1.0.0"  #  AppleCameraInterface (14.0 Beta 1)
+        self.t1_credential_version: str = "1.0.0"  #  AppleCredentialManager (13.5 - T1 support)
+        self.t1_sse_version:        str = "1.0.0"  #  AppleSSE (13.5 - T1 support)
+        self.t1_key_store_version:  str = "1.0.0"  #  AppleKeyStore (13.5 - T1 support)
 
         ## Apple - Dortania Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
@@ -429,6 +432,18 @@ class Constants:
     @property
     def top_case_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleUSBTopCase-v{self.topcase_version}.zip")
+
+    @property
+    def t1_key_store_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleKeyStore-v{self.t1_key_store_version}.zip")
+
+    @property
+    def t1_credential_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleCredentialManager-v{self.t1_credential_version}.zip")
+
+    @property
+    def t1_sse_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleSSE-v{self.t1_sse_version}.zip")
 
     @property
     def mousse_path(self):

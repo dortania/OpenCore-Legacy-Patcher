@@ -43,6 +43,7 @@ class BuildMiscellaneous:
         self._debug_handling()
         self._cpu_friend_handling()
         self._general_oc_handling()
+        self._t1_handling()
 
 
     def _feature_unlock_handling(self) -> None:
@@ -339,3 +340,21 @@ class BuildMiscellaneous:
             logging.info("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
             support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
+
+
+    def _t1_handling(self) -> None:
+        """
+        T1 Security Chip Handler
+        """
+        if self.model not in ["MacBookPro13,2", "MacBookPro13,3", "MacBookPro14,2", "MacBookPro14,3"]:
+            return
+
+        logging.info("- Enabling T1 Security Chip support")
+
+        support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleSSE")["Enabled"] = True
+        support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleCredentialManager")["Enabled"] = True
+        support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleKeyStore")["Enabled"] = True
+
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleSSE.kext", self.constants.t1_sse_version, self.constants.t1_sse_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleCredentialManager.kext", self.constants.t1_credential_version, self.constants.t1_credential_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleKeyStore.kext", self.constants.t1_key_store_version, self.constants.t1_key_store_path)
