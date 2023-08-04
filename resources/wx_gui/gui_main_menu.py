@@ -206,6 +206,20 @@ class MainFrame(wx.Frame):
             self.on_build_and_install()
             return
 
+        if self.constants.host_is_hackintosh is False:
+            self.title += " - UNSUPPORTED"
+            self.SetTitle(self.title)
+            pop_up_hack = wx.MessageDialog(
+                self,
+                f"OpenCore Legacy Patcher does not offer support for, nor guarantees the compatibility of its patchset with Hackintosh systems.\n\nPlease refrain from reporting issues to GitHub or the community Discord.",
+                "Hackintosh Detected",
+                style=wx.YES_NO | wx.ICON_EXCLAMATION
+            )
+            pop_up_hack.SetYesNoLabels("I understand", "Exit")
+            if pop_up_hack.ShowModal() == wx.ID_NO:
+                sys.exit()
+            return
+
         self._fix_local_install()
 
         if "--update_installed" in sys.argv and self.constants.has_checked_updates is False and gui_support.CheckProperties(self.constants).host_can_build():
