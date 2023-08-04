@@ -207,8 +207,7 @@ class MainFrame(wx.Frame):
             return
 
         if self.constants.host_is_hackintosh is True:
-            self.title += " - UNSUPPORTED"
-            self.SetTitle(self.title)
+            self.SetTitle(f"{self.title} - UNSUPPORTED")
             pop_up_hack = wx.MessageDialog(
                 self,
                 f"OpenCore Legacy Patcher does not offer support for, nor guarantees the compatibility of its patchset with Hackintosh systems.\n\nPlease refrain from reporting issues to GitHub or the community Discord.",
