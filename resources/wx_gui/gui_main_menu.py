@@ -206,7 +206,7 @@ class MainFrame(wx.Frame):
             self.on_build_and_install()
             return
 
-        if self.constants.host_is_hackintosh is False:
+        if self.constants.host_is_hackintosh is True:
             self.title += " - UNSUPPORTED"
             self.SetTitle(self.title)
             pop_up_hack = wx.MessageDialog(
