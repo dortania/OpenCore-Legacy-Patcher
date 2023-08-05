@@ -219,7 +219,7 @@ class MainFrame(wx.Frame):
                 "Hackintosh Detected",
                 style=wx.YES_NO | wx.ICON_EXCLAMATION
             )
-            pop_up_hack.SetYesNoLabels("I will not ask for support", "Exit")
+            pop_up_hack.SetYesNoLabels("OK", "Exit")
             if pop_up_hack.ShowModal() == wx.ID_NO:
                 sys.exit()
             return
