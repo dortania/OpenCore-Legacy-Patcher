@@ -172,6 +172,10 @@ class MainFrame(wx.Frame):
                 button.SetSize((100, -1))
                 button.Centre(wx.HORIZONTAL)
                 description_label.Centre(wx.HORIZONTAL)
+            elif button_name == "Support":
+                if self.constants.host_is_hackintosh is True:
+                    button.Disable()
+                    description_label.SetLabel("No support is provided for Hackintoshes.\nDo NOT ask for community support.")
 
             index += 1
             if index == rollover:
@@ -211,11 +215,11 @@ class MainFrame(wx.Frame):
             self.SetTitle(self.title)
             pop_up_hack = wx.MessageDialog(
                 self,
-                f"OpenCore Legacy Patcher does not offer support for, nor guarantees the compatibility of its patchset with Hackintosh systems.\n\nPlease refrain from reporting issues to GitHub or the community Discord.",
+                f"OpenCore Legacy Patcher does not offer support for, nor guarantees the compatibility of its patchset with Hackintosh systems.\n\nDO NOT report issues to GitHub or the community Discord.",
                 "Hackintosh Detected",
                 style=wx.YES_NO | wx.ICON_EXCLAMATION
             )
-            pop_up_hack.SetYesNoLabels("I understand", "Exit")
+            pop_up_hack.SetYesNoLabels("I will not ask for support", "Exit")
             if pop_up_hack.ShowModal() == wx.ID_NO:
                 sys.exit()
             return
