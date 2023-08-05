@@ -175,7 +175,7 @@ class MainFrame(wx.Frame):
             elif button_name == "Support":
                 if self.constants.host_is_hackintosh is True:
                     button.Disable()
-                    description_label.SetLabel("No support is provided for Hackintoshes.\nDo NOT ask for community support.")
+                    description_label.SetLabel("No support is provided for Hackintoshes.\nDo not ask for community support.")
 
             index += 1
             if index == rollover:
