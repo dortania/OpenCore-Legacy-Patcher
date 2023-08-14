@@ -540,6 +540,8 @@ class nvidia_ids:
         0x137a,	# GM108GLM [Quadro K620M / Quadro M500M]
         0x137b,	# GM108GLM [Quadro M520 Mobile]
         0x137d,	# GM108M [GeForce 940A]
+        0x174d, # GM108M [GeForce MX130]
+        0x174e, # GM108M [GeForce MX110]
 
         0x1380,	# GM107 [GeForce GTX 750 Ti]
         0x1381,	# GM107 [GeForce GTX 750]
@@ -567,7 +569,6 @@ class nvidia_ids:
         0x13bc,	# GM107GL [Quadro K1200]
         0x13bd,	# GM107GL [Tesla M10]
 
-        0x174d, # GM108M [GeForce MX130]
         0x17c2, # GM200 [GeForce GTX TITAN X]
 
         0x13c0,	# GM204 [GeForce GTX 980]
