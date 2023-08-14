@@ -458,12 +458,21 @@ class nvidia_ids:
         # GK106
         0x11C0,  # GK106 [GTX 660]
         0x11C2,  # GK106 [GTX 650 Ti BOOST]
+        0x11c3,  # GK106 [GTX 650 Ti OEM]	
+        0x11c4,  # GK106 [GTX 645 OEM]	
+        0x11c5,  # GK106 [GT 740]
         0x11C6,  # GK106 [GTX 650 Ti]
+        0x11C7,  # GK106 [GTX 750 Ti]
+        0x11C8,  # GK106 [GTX 650 OEM]
         0x11E0,  # GK106 [GTX 770M]
-        0x11E1,  # GTX 765M
-        0x11E2,  # GTX 765M
-        0x11FA,  # GK106 [K4000]
-        0x11FC,  # Quadro K2100M
+        0x11CB,  # GK106 [GT 740]
+        0x11E0,  # GK106M [GTX 770M]
+        0x11E1,  # GK106M [GTX 765M]
+        0x11E2,  # GK106M [GTX 765M]
+        0x11E3,  # GK106M [GTX 760M]
+        0x11E7,  # GK106M
+        0x11FA,  # GK106GL [Quadro K4000]
+        0x11FC,  # GL106GLM [Quadro K2100M]
         # GK107
         0x0FC0,  # GK107 [GT 640]
         0x0FC1,  # GK107 [GT 640]
