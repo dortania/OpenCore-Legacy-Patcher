@@ -568,6 +568,8 @@ class nvidia_ids:
         0x13bb,	# GM107GL [Quadro K620]
         0x13bc,	# GM107GL [Quadro K1200]
         0x13bd,	# GM107GL [Tesla M10]
+        0x1789, # GM107GL [GRID M3-3020]
+        0x179c, # GM107 [GeForce 940MX]
 
         0x17c2, # GM200 [GeForce GTX TITAN X]
 
@@ -695,7 +697,6 @@ class nvidia_ids:
         0x1ccd,	# GP107BM [GeForce GTX 1050 Mobile]
         0x1cfa,	# GP107GL [Quadro P2000]
         0x1cfb,	# GP107GL [Quadro P1000]
-        0x1789, # GM107GL [GRID M3-3020]
 
         0x1d01,	# GP108 [GeForce GT 1030]
         0x1d02,	# GP108 [GeForce GT 1010]
