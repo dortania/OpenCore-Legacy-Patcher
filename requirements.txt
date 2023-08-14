@@ -1,3 +1,4 @@
+# Universal builds require a universal2 build of charset-normalizer (https://pypi.org/project/charset-normalizer/#files)
 requests
 pyobjc
 wxpython
