@@ -105,8 +105,8 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Ventura 13.x**.
 | :--- | :--- | :--- | 
 | iMac (20-inch, Mid 2007)<br>iMac (24-inch, Mid 2007) | `iMac7,1` | - [Requires SSE4.1 CPU](https://lowendmac.com/2018/penryn-t9300-9500-cpu-upgrades-for-the-2007-imac/)<br>- [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)<br>- Remove stock Bluetooth to prevent panics |
 | iMac (20-inch, Early 2008)<br>iMac (24-inch, Early 2008) | `iMac8,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021) |
-| iMac (20-inch, Early 2009)<br>iMac (24-inch, Early 2009)<br>iMac (20-inch, Mid 2009) | `iMac9,1` | ^^ |
-| iMac (21.5-inch, Late 2009)<br>iMac (27-inch, Late 2009)| `iMac10,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)<br>- [Recommend upgrading to Metal GPU](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857)|
+| iMac (20-inch, Early 2009)<br>iMac (24-inch, Early 2009)<br>iMac (20-inch, Mid 2009) | `iMac9,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)<br>- [Recommend upgrading to Metal GPU](https://forums.macrumors.com/threads/2011-imac-graphics-card-upgrade.1596614/?post=17425857#post-17425857) |
+| iMac (21.5-inch, Late 2009)<br>iMac (27-inch, Late 2009)| `iMac10,1` | ^^ |
 | iMac (27-inch, Late 2009) | `iMac11,1` | ^^ |
 | iMac (21.5-inch, Mid 2010) | `iMac11,2` | ^^ |
 | iMac (27-inch, Mid 2010) | `iMac11,3` | ^^ |
