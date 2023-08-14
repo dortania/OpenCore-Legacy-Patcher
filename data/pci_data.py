@@ -567,6 +567,8 @@ class nvidia_ids:
         0x13bc,	# GM107GL [Quadro K1200]
         0x13bd,	# GM107GL [Tesla M10]
 
+        0x17c2, # GM200 [GeForce GTX TITAN X]
+
         0x13c0,	# GM204 [GeForce GTX 980]
         0x13c1,	# GM204
         0x13c2,	# GM204 [GeForce GTX 970]
