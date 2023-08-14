@@ -607,6 +607,9 @@ class nvidia_ids:
     ]
 
     pascal_ids = [
+        0x1725,
+        0x172e,
+        0x172f,
         0x15f0,	# GP100GL [Quadro GP100]
         0x15f1,	# GP100GL
         0x15f7,	# GP100GL [Tesla P100 PCIe 12GB]
