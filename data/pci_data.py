@@ -558,7 +558,9 @@ class nvidia_ids:
         0x1287,  # GK208B [GT 730]
         0x1288,  # GK208B [GT 720]
         0x1289,  # GK208 [GT 710]
+        0x128A,  # GK208B
         0x128B,  # GK208B [GT 710]
+        0x128C,  # GK208B
         0x1290,  # GK208 [GT 730M]
         0x1291,  # GK208 [GT 735M]
         0x1292,  # GK208 [GT 740M]
@@ -569,6 +571,7 @@ class nvidia_ids:
         0x1298,  # GK208M [GT 720M]
         0x1299,  # GK208BM [920M]
         0x129A,  # GK208BM [910M]
+        0x12A0,  # GK208
         0x12B9,  # GK208 [K610M]
         0x12BA,  # GK208 [K510M]
         # GK210
