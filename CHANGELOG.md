@@ -2,6 +2,8 @@
 
 ## 0.6.9
 - Resolve BCM2046 and BCM2070 support on macOS 13.3 and newer
+- Backend Changes:
+  - Enable Universal2 Build
 - Increment Binaries:
   - OpenCorePkg 0.9.3 - release
   - Lilu 1.6.6 - release
