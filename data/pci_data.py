@@ -695,6 +695,7 @@ class nvidia_ids:
         0x1ccd,	# GP107BM [GeForce GTX 1050 Mobile]
         0x1cfa,	# GP107GL [Quadro P2000]
         0x1cfb,	# GP107GL [Quadro P1000]
+        0x1789, # GM107GL [GRID M3-3020]
 
         0x1d01,	# GP108 [GeForce GT 1030]
         0x1d02,	# GP108 [GeForce GT 1010]
