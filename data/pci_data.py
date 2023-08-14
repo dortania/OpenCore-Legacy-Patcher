@@ -572,7 +572,11 @@ class nvidia_ids:
         0x179c, # GM107 [GeForce 940MX]
 
         0x17c2, # GM200 [GeForce GTX TITAN X]
-
+        0x17c8, # GM200 [GeForce GTX 980 Ti]
+        0x17f0,	# GM200GL [Quadro M6000]	
+        0x17f1, # GM200GL [Quadro M6000 24GB]	
+        0x17fd, # GM200GL [Tesla M40]
+        
         0x13c0,	# GM204 [GeForce GTX 980]
         0x13c1,	# GM204
         0x13c2,	# GM204 [GeForce GTX 970]
