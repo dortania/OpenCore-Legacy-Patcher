@@ -102,6 +102,7 @@ class SystemPatchDictionary():
                         "/System/Library/PrivateFrameworks": {
                             "GPUSupport.framework": "10.14.3",
                             "SkyLight.framework":  f"10.14.6-{self.os_major}",
+                            **({"FaceCore.framework":  f"13.5"} if self.os_major >= os_data.os_data.sonoma else {}),
                         },
                         "/System/Applications": {
                             **({ "Photo Booth.app": "11.7.9"} if self.os_major >= os_data.os_data.monterey else {}),
@@ -1109,6 +1110,8 @@ class SystemPatchDictionary():
                     "Install": {
                         "/usr/libexec": {
                             "wps": "12.6.2",
+                            "wifip2pd":       "12.6.2",
+                            "wifianalyticsd": "13.5",
                         },
                         "/System/Library/Frameworks": {
                             "CoreWLAN.framework": "12.6.2",
@@ -1116,6 +1119,7 @@ class SystemPatchDictionary():
                         "/System/Library/PrivateFrameworks": {
                             "CoreWiFi.framework": "12.6.2",
                             "IO80211.framework":  "12.6.2",
+                            "WiFiPeerToPeer.framework":  "12.6.2",
                             **({ "CoreAnalytics.framework": "13.5"} if self.os_major >= os_data.os_data.sonoma else {}),
                             **({ "WiFiAnalytics.framework": "13.5"} if self.os_major >= os_data.os_data.sonoma else {}),
                         },
