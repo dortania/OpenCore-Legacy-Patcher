@@ -766,7 +766,7 @@ class SystemPatchDictionary():
                             "AMD9000Controller.kext":        "12.5",
                             "AMD9500Controller.kext":        "12.5",
                             "AMD10000Controller.kext":       "12.5",
-                            "AMDRadeonX4000.kext":           "12.5",
+                            "AMDRadeonX4000.kext":           "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AMDRadeonX4000HWServices.kext": "12.5",
                             "AMDFramebuffer.kext":           "12.5",
                             "AMDSupport.kext":               "12.5",
@@ -795,7 +795,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMDRadeonX4000.kext":           "12.5",
+                            "AMDRadeonX4000.kext":           "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AMDRadeonX4000HWServices.kext": "12.5",
 
                             "AMDRadeonVADriver2.bundle":     "12.5",
@@ -819,7 +819,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMDRadeonX5000.kext":            "12.5",
+                            "AMDRadeonX5000.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
 
                             "AMDRadeonVADriver2.bundle":      "12.5",
                             "AMDRadeonX5000GLDriver.bundle":  "12.5",
@@ -913,8 +913,8 @@ class SystemPatchDictionary():
                             "AppleIntelHD4000GraphicsGLDriver.bundle":  "11.0 Beta 6",
                             "AppleIntelHD4000GraphicsMTLDriver.bundle": "11.0 Beta 6",
                             "AppleIntelHD4000GraphicsVADriver.bundle":  "11.3 Beta 1",
-                            "AppleIntelFramebufferCapri.kext":          "11.4",
-                            "AppleIntelHD4000Graphics.kext":            "11.4",
+                            "AppleIntelFramebufferCapri.kext":          "11.4" if self.os_major < os_data.os_data.sonoma else "11.4-23",
+                            "AppleIntelHD4000Graphics.kext":            "11.4" if self.os_major < os_data.os_data.sonoma else "11.4-23",
                             "AppleIntelIVBVA.bundle":                   "11.4",
                             "AppleIntelGraphicsShared.bundle":          "11.4", # libIGIL-Metal.dylib pulled from 11.0 Beta 6
                         },
@@ -934,8 +934,8 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelFramebufferAzul.kext":           "12.5",
-                            "AppleIntelHD5000Graphics.kext":            "12.5",
+                            "AppleIntelFramebufferAzul.kext":           "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AppleIntelHD5000Graphics.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AppleIntelHD5000GraphicsGLDriver.bundle":  "12.5",
                             "AppleIntelHD5000GraphicsMTLDriver.bundle": "12.5",
                             "AppleIntelHD5000GraphicsVADriver.bundle":  "12.5",
@@ -958,8 +958,8 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelBDWGraphics.kext":            "12.5",
-                            "AppleIntelBDWGraphicsFramebuffer.kext": "12.5",
+                            "AppleIntelBDWGraphics.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AppleIntelBDWGraphicsFramebuffer.kext": "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AppleIntelBDWGraphicsGLDriver.bundle":  "12.5",
                             "AppleIntelBDWGraphicsMTLDriver.bundle": "12.5",
                             "AppleIntelBDWGraphicsVADriver.bundle":  "12.5",
@@ -982,37 +982,13 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelSKLGraphics.kext":            "12.5",
-                            "AppleIntelSKLGraphicsFramebuffer.kext": "12.5",
+                            "AppleIntelSKLGraphics.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AppleIntelSKLGraphicsFramebuffer.kext": "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AppleIntelSKLGraphicsGLDriver.bundle":  "12.5",
                             "AppleIntelSKLGraphicsMTLDriver.bundle": "12.5",
                             "AppleIntelSKLGraphicsVADriver.bundle":  "12.5",
                             "AppleIntelSKLGraphicsVAME.bundle":      "12.5",
                             "AppleIntelGraphicsShared.bundle":       "12.5",
-                        },
-                    },
-                },
-                # On macOS Sonoma, the IOSurface ABI changed and broke support for Monterey framebuffer drivers:
-                # - Intel and Nvidia: Page Fault panics on boot
-                #   - IOAccelResource::pageonIfNeeded() in IOAcceleratorFamily2.kext
-                # - AMD: Corrupted UI elements
-                #   - Menubar, wallpaper, etc.
-                "Sonoma Legacy Metal Extended": {
-                    "Display Name": "",
-                    "OS Support": {
-                        "Minimum OS Support": {
-                            "OS Major": os_data.os_data.sonoma,
-                            "OS Minor": 0
-                        },
-                        "Maximum OS Support": {
-                            "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
-                        },
-                    },
-                    "Install": {
-                        "/System/Library/Extensions": {
-                            "IOGPUFamily.kext": "13.5",
-                            "IOSurface.kext":   "13.5",
                         },
                     },
                 },
