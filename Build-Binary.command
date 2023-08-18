@@ -3,14 +3,15 @@
 # Generate stand alone application for OpenCore-Patcher
 # Copyright (C) 2022-2023 - Mykola Grymalyuk
 
-from pathlib import Path
+import os
+import sys
 import time
 import argparse
-import os
-import subprocess
 import plistlib
-import time
-import sys
+import platform
+import subprocess
+
+from pathlib import Path
 
 from resources import constants
 
@@ -30,16 +31,50 @@ class CreateBinary:
 
     def __init__(self):
         start = time.time()
-        print("Starting build script")
+        self._set_cwd()
+        self._is_x86_64()
 
+        print("Starting build script")
         self.args = self._parse_arguments()
 
-        self._set_cwd()
+        print(f"Current Working Directory:\n- {os.getcwd()}")
 
         self._preflight_processes()
         self._build_binary()
         self._postflight_processes()
         print(f"Build script completed in {str(round(time.time() - start, 2))} seconds")
+
+
+    def _is_x86_64(self):
+        """
+        Check if invoked as x86_64
+        Some of our dependancies are not universal, so we'll create a new virtual environment and invoke as Rosetta
+        """
+
+        if platform.machine() != "arm64":
+            return
+
+        print("Detected ARM64, creating x86_64 environment")
+
+        args = sys.argv[:]
+        if "python" in args[0].lower():
+            args.pop(0)
+
+        if not Path(".x86_64_venv").exists():
+            print("Creating new venv")
+            subprocess.run(["arch", "-x86_64", sys.executable, "-m", "venv", ".x86_64_venv"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print("Installing requirements")
+            subprocess.run(["arch", "-x86_64", ".x86_64_venv/bin/pip3", "install", "-r", "requirements.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        print("Relaunching as x86_64")
+        result = subprocess.run(["arch", "-x86_64", ".x86_64_venv/bin/python3"] + args)
+
+        if result.returncode != 0:
+            if result.stdout:
+                print("STDOUT: " + result.stdout.decode("utf-8"))
+            if result.stderr:
+                print("STDERR: " + result.stderr.decode("utf-8"))
+        sys.exit(result.returncode)
 
 
     def _set_cwd(self):
@@ -48,7 +83,6 @@ class CreateBinary:
         """
 
         os.chdir(Path(__file__).resolve().parent)
-        print(f"Current Working Directory:\n- {os.getcwd()}")
 
 
     def _parse_arguments(self):

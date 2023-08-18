@@ -280,6 +280,8 @@ class PatchSysVolume:
                 if self.needs_kmutil_exemptions is True:
                     logging.info("Note: Apple will require you to open System Preferences -> Security to allow the new kernel extensions to be loaded")
                 self.constants.root_patcher_succeeded = True
+                return True
+        return False
 
 
     def _rebuild_kernel_collection(self) -> bool:
@@ -418,9 +420,11 @@ class PatchSysVolume:
         """
         Unmount root volume
         """
-
-        logging.info("- Unmounting Root Volume (Don't worry if this fails)")
-        utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        if self.root_mount_path:
+            logging.info("- Unmounting Root Volume (Don't worry if this fails)")
+            utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+        else:
+            logging.info("- Skipping Root Volume unmount")
 
 
     def _rebuild_dyld_shared_cache(self) -> None:

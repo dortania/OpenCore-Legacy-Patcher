@@ -4,8 +4,10 @@ import pprint
 import logging
 import py_sip_xnu
 import subprocess
+import os
 
 from pathlib import Path
+from resources.sys_patch.sys_patch import PatchSysVolume
 
 from resources.wx_gui import (
     gui_support,
@@ -806,6 +808,9 @@ class SettingsFrame(wx.Frame):
                 },
             },
             "Developer": {
+                "Validation": {
+                    "type": "title",
+                },
                 "Install latest nightly build 🧪": {
                     "type": "button",
                     "function": self.on_nightly,
@@ -829,6 +834,28 @@ class SettingsFrame(wx.Frame):
                     "function": self.on_export_constants,
                     "description": [
                         "Export constants.py values to a txt file.",
+                    ],
+                },
+                "Developer Root Volume Patching": {
+                    "type": "title",
+                },
+                "Mount Root Volume": {
+                    "type": "button",
+                    "function": self.on_mount_root_vol,
+                    "description": [
+                        "Life's too short to type 'sudo mount -o",
+                        "nobrowse -t apfs /dev/diskXsY",
+                        "/System/Volumes/Update/mnt1' every time.",
+                    ],
+                },
+                "wrap_around 2": {
+                    "type": "wrap_around",
+                },
+                "Save Root Volume": {
+                    "type": "button",
+                    "function": self.on_bless_root_vol,
+                    "description": [
+                        "Rebuild kernel cache and bless snapshot 🙏",
                     ],
                 },
             },
@@ -1267,3 +1294,23 @@ Hardware Information:
 
     def on_test_exception(self, event: wx.Event) -> None:
         raise Exception("Test Exception")
+    
+    def on_mount_root_vol(self, event: wx.Event) -> None:
+        if os.geteuid() != 0:
+            wx.MessageDialog(self.parent, "Please relaunch as Root to mount the Root Volume", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+        else:
+            #Don't need to pass model as we're bypassing all logic
+            if PatchSysVolume("",self.constants)._mount_root_vol() == True:
+                wx.MessageDialog(self.parent, "Root Volume Mounted, remember to fix permissions before saving the Root Volume", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
+            else:
+                wx.MessageDialog(self.parent, "Root Volume Mount Failed, check terminal output", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+
+    def on_bless_root_vol(self, event: wx.Event) -> None:
+        if os.geteuid() != 0:
+            wx.MessageDialog(self.parent, "Please relaunch as Root to save changes", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+        else:
+            #Don't need to pass model as we're bypassing all logic
+            if PatchSysVolume("",self.constants)._rebuild_root_volume() == True:
+                wx.MessageDialog(self.parent, "Root Volume saved, please reboot to apply changes", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
+            else:
+                wx.MessageDialog(self.parent, "Root Volume update Failed, check terminal output", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
