@@ -2,6 +2,7 @@ import wx
 import logging
 import threading
 import webbrowser
+import locale
 
 from pathlib import Path
 
@@ -124,9 +125,16 @@ class macOSInstallerDownloadFrame(wx.Frame):
         """
         Display available installers in frame
         """
+        icons = [
+            [wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Generic.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)),wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Generic.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(64, 64, wx.IMAGE_QUALITY_HIGH))],
+            [wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "BigSur.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)),wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "BigSur.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(64, 64, wx.IMAGE_QUALITY_HIGH))],
+            [wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Monterey.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)),wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Monterey.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(64, 64, wx.IMAGE_QUALITY_HIGH))],
+            [wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Ventura.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)),wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Ventura.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(64, 64, wx.IMAGE_QUALITY_HIGH))],
+            [wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Sonoma.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)),wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Sonoma.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(64, 64, wx.IMAGE_QUALITY_HIGH))]
+        ]
 
-        icons = [str(self.constants.icns_resource_path / "Generic.icns"),str(self.constants.icns_resource_path / "BigSur.icns"),str(self.constants.icns_resource_path / "Monterey.icns"),str(self.constants.icns_resource_path / "Ventura.icns"),str(self.constants.icns_resource_path / "Sonoma.icns")]
-
+        bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in icons]
+        
         self.frame_modal.Destroy()
         self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(460, 500))
 
@@ -138,10 +146,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         id = wx.NewIdRef()
         
         self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
-        self.osxicons = wx.ImageList(32, 32, False, 0)
-        for art in icons:
-            self.osxicons.Add(wx.Bitmap(wx.Bitmap(art, wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)))
-        self.list.SetImageList(self.osxicons, wx.IMAGE_LIST_SMALL)
+        self.list.SetSmallImages(bundles)
 
         self.list.InsertColumn(0, "Version")
         self.list.InsertColumn(1, "Size")
@@ -163,7 +168,13 @@ class macOSInstallerDownloadFrame(wx.Frame):
                     self.list.SetItemImage(index, int(installers[item]['Build'][:2])-19) # Darwin version to index conversion. i.e. Darwin 20 -> 1 -> BigSur.icns
 
                 self.list.SetItem(index, 1, utilities.human_fmt(installers[item]['Size']))
-                self.list.SetItem(index, 2, installers[item]['Date'].strftime("%d/%m/%Y"))
+
+                locale.setlocale(locale.LC_TIME, '')
+                date_string = installers[item]['Date'].strftime("%x")
+                self.list.SetItem(index, 2, date_string)
+                
+
+                
         else:
             logging.error("No installers found on SUCatalog")
             wx.MessageDialog(self.frame_modal, "Failed to download Installer Catalog from Apple", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
