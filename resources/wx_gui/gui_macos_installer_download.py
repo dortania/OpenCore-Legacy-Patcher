@@ -170,8 +170,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 self.list.SetItem(index, 1, utilities.human_fmt(installers[item]['Size']))
 
                 locale.setlocale(locale.LC_TIME, '')
-                date_string = installers[item]['Date'].strftime("%x")
-                self.list.SetItem(index, 2, date_string)
+                self.list.SetItem(index, 2, installers[item]['Date'].strftime("%x"))
                 
 
                 
