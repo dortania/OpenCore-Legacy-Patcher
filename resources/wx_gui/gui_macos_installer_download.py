@@ -157,6 +157,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
             self.frame_modal.SetSize((460, 370))
 
         if installers:
+            locale.setlocale(locale.LC_TIME, '')
             logging.info(f"Available installers on SUCatalog ({'All entries' if show_full else 'Latest only'}):")
             for item in installers:
                 extra = " Beta" if installers[item]['Variant'] in ["DeveloperSeed" , "PublicSeed"] else ""
@@ -166,10 +167,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
                     self.list.SetItemImage(index, 0)
                 else:
                     self.list.SetItemImage(index, int(installers[item]['Build'][:2])-19) # Darwin version to index conversion. i.e. Darwin 20 -> 1 -> BigSur.icns
-
                 self.list.SetItem(index, 1, utilities.human_fmt(installers[item]['Size']))
-
-                locale.setlocale(locale.LC_TIME, '')
                 self.list.SetItem(index, 2, installers[item]['Date'].strftime("%x"))
                 
 
