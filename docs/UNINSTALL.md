@@ -11,4 +11,8 @@ To remove OpenCore:
 
 2. [Reset NVRAM](https://support.apple.com/HT204063)
 
-Note that if you are on Big Sur when you remove the EFI folder, your Mac will no longer boot and show the "prohibited" symbol. Be ready to install an older version of macOS before you uninstall OpenCore.
+:::warning
+
+Note that after you remove OpenCore, your Mac will no longer boot and show the "prohibited" symbol. Be ready to install an natively-supported version of macOS before you uninstall OpenCore.
+
+* This does not apply to native to native Macs just using OpenCore to achieve features like AirPlay to Mac and Sidecar, but it is still recomended to reinstall macOS, after removing OpenCore, if using SMBIOS spoofing to enable Univeral Control.
