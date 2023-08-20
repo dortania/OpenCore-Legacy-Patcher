@@ -27,7 +27,7 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Ventura 13.x**.
 | Model Name | Identifier | Tagged Issues | 
 | :--- | :--- | :--- | 
 | MacBook (13-inch, Late 2008) | `MacBook5,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)|
-| MacBook (13-inch, Early 2009) | `MacBook5,2` |  - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)<br>- Trackpad gestures are partially broken | 
+| MacBook (13-inch, Early 2009)<br>MacBook (13-inch, Mid 2009) | `MacBook5,2` |  - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)<br>- Trackpad gestures are partially broken | 
 | MacBook (13-inch, Late 2009) | `MacBook6,1` |  - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021) | 
 | MacBook (13-inch, Mid 2010) | `MacBook7,1` | ^^ | 
 | MacBook (Retina, 12-inch, Early 2015) | `MacBook8,1` | - [Legacy Metal (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) | 
