@@ -569,7 +569,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "GeForce.kext":            "12.0 Beta 6",
+                            "GeForce.kext":            "12.0 Beta 6" if self.os_major < os_data.os_data.sonoma else "12.0 Beta 6-23",
                             "NVDAGF100Hal.kext":       "12.0 Beta 6",
                             "NVDAGK100Hal.kext":       "12.0 Beta 6",
                             "NVDAResman.kext":         "12.0 Beta 6",
