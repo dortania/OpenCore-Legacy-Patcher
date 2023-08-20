@@ -14,7 +14,7 @@ The below tables can be used to reference issues with a particular model, and se
 * [Xserve](#xserve)
 
 ::: details OpenCore Patcher application
-The patcher application requires **OS X Mavericks 10.10** or later to run.
+The patcher application requires **OS X Yosemite 10.10** or later to run.
 * **OS X El Capitan 10.11** or later is required to make macOS Ventura installers.
 
 The patcher is designed to target **macOS Big Sur 11.x to macOS Ventura 13.x**.
