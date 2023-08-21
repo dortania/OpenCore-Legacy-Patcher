@@ -373,6 +373,7 @@ class RemoteInstallerCatalog:
                 download_link = None
                 integrity     = None
                 size          = None
+                date = catalog["Products"][product]["PostDate"]
 
                 for ia_package in catalog["Products"][product]["Packages"]:
                     if "InstallAssistant.pkg" not in ia_package["URL"]:
@@ -385,6 +386,7 @@ class RemoteInstallerCatalog:
                     download_link = ia_package["URL"]
                     integrity     = ia_package["IntegrityDataURL"]
                     size          = ia_package["Size"] if ia_package["Size"] else 0
+
 
                 if any([version, build, download_link, size, integrity]) is None:
                     continue
@@ -400,10 +402,12 @@ class RemoteInstallerCatalog:
                         "Variant":   catalog_url,
                         "OS":        os_data.os_conversion.os_to_kernel(version),
                         "Models":    build_plist["MobileAssetProperties"]["SupportedDeviceModels"],
+                        "Date":      date
                     }
                 })
 
         available_apps = {k: v for k, v in sorted(available_apps.items(), key=lambda x: x[1]['Version'])}
+        
         return available_apps
 
 

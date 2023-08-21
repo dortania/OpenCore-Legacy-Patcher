@@ -14,7 +14,7 @@ class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "0.6.9"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "1.2.4"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "1.2.6"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
 

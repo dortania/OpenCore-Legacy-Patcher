@@ -66,6 +66,7 @@ class SystemPatchDictionary():
         self.macOS_12_0_B7:       float = 21.1
         self.macOS_12_4:          float = 21.5
         self.macOS_12_5:          float = 21.6
+        self.macOS_13_3:          float = 22.4
 
         self._generate_sys_patch_dict()
 
@@ -768,7 +769,7 @@ class SystemPatchDictionary():
                             "AMD10000Controller.kext":       "12.5",
                             "AMDRadeonX4000.kext":           "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AMDRadeonX4000HWServices.kext": "12.5",
-                            "AMDFramebuffer.kext":           "12.5",
+                            "AMDFramebuffer.kext":           "12.5" if self.os_float < self.macOS_13_3 else "12.5-GCN",
                             "AMDSupport.kext":               "12.5",
 
                             "AMDRadeonVADriver.bundle":      "12.5",
