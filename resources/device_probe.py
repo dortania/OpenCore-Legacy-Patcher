@@ -943,9 +943,8 @@ class Computer:
                 self.oclp_sys_signed = sys_plist["Custom Signature"]
 
     def check_rosetta(self):
-        arch = subprocess.run("uname -m".split(), stdout=subprocess.PIPE).stdout.decode()
-        kernel_ver = subprocess.run("sysctl kern.version".split(), stdout=subprocess.PIPE).stdout.decode()
-        if "arm64" not in arch and "ARM64" in kernel_ver:
+        result = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()
+        if "1" in result:
             self.rosetta_active = True
         else:
             self.rosetta_active = False
