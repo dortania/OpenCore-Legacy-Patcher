@@ -944,7 +944,7 @@ class Computer:
 
     def check_rosetta(self):
         result = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()
-        if result:
+        if "1" in result:
             self.rosetta_active = True
         else:
             self.rosetta_active = False
