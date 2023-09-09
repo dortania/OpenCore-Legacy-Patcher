@@ -36,19 +36,19 @@ class DownloadFrame(wx.Frame):
         frame = self if not frame else frame
 
         title_label = wx.StaticText(frame, label=f"Downloading: {self.item_name}", pos=(-1,5))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, self.constants.apple_font))
         title_label.Centre(wx.HORIZONTAL)
 
         label_amount = wx.StaticText(frame, label="0.00 B downloaded of 0.00B (0.00%)", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
-        label_amount.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        label_amount.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         label_amount.Centre(wx.HORIZONTAL)
 
         label_speed = wx.StaticText(frame, label="Average download speed: Unknown", pos=(-1, label_amount.GetPosition()[1] + label_amount.GetSize()[1] + 5))
-        label_speed.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        label_speed.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         label_speed.Centre(wx.HORIZONTAL)
 
         label_est_time = wx.StaticText(frame, label="Estimated time remaining: Unknown", pos=(-1, label_speed.GetPosition()[1] + label_speed.GetSize()[1] + 5))
-        label_est_time.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        label_est_time.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         label_est_time.Centre(wx.HORIZONTAL)
 
         progress_bar = wx.Gauge(frame, range=100, pos=(-1, label_est_time.GetPosition()[1] + label_est_time.GetSize()[1] + 5), size=(300, 20))

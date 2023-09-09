@@ -35,11 +35,11 @@ class HelpFrame(wx.Frame):
         frame = self if not frame else frame
 
         title_label = wx.StaticText(frame, label="Patcher Resources", pos=(-1,5))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, self.constants.apple_font))
         title_label.Centre(wx.HORIZONTAL)
 
         text_label = wx.StaticText(frame, label="Following resources are available:", pos=(-1,30))
-        text_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        text_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         text_label.Centre(wx.HORIZONTAL)
 
         buttons = {

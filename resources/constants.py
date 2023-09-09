@@ -119,6 +119,9 @@ class Constants:
         self.original_path: Path = Path(__file__).parent.parent.resolve()
         self.payload_path:  Path = self.current_path / Path("payloads")
 
+        # Font name is set properly on every launch, however fall back to Lucida Grande for compatiblity
+        self.apple_font: str = "Lucida Grande"
+
         # Patcher Settings
         ## Internal settings
         self.allow_oc_everywhere:       bool = False  # Set whether Patcher can be run on unsupported Macs

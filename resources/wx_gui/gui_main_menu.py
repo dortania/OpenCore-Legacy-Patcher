@@ -66,13 +66,13 @@ class MainFrame(wx.Frame):
 
         # Title label: OpenCore Legacy Patcher v{X.Y.Z}
         title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher {'' if self.constants.special_build else 'v'}{self.constants.patcher_version}", pos=(-1, 10))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, self.constants.apple_font))
         title_label.Centre(wx.HORIZONTAL)
 
         # Text: Model: {Build or Host Model}
         model_label = wx.StaticText(self, label=f"Model: {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1, title_label.GetPosition()[1] + 25
                                                                                                                                     ))
-        model_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        model_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         model_label.Centre(wx.HORIZONTAL)
         self.model_label = model_label
 
@@ -148,7 +148,7 @@ class MainFrame(wx.Frame):
 
             # # Text: Description
             description_label = wx.StaticText(self, label='\n'.join(button_function["description"]), pos=(button_x + 75, button.GetPosition()[1] + button.GetSize()[1] + 3))
-            description_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            description_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
             # button_y += 15
 
             for i, line in enumerate(button_function["description"]):
@@ -182,7 +182,7 @@ class MainFrame(wx.Frame):
 
         # Text: Copyright
         copy_label = wx.StaticText(self, label=self.constants.copyright_date, pos=(-1, max_height - 15))
-        copy_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        copy_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         copy_label.Centre(wx.HORIZONTAL)
 
         # Set window size

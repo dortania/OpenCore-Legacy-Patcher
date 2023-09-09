@@ -52,7 +52,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # Title: Fetching local macOS Installers
         title_label = wx.StaticText(self, label="Fetching local macOS Installers", pos=(-1,1))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, self.constants.apple_font))
         title_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
@@ -82,7 +82,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # Title: Select macOS Installer
         title_label = wx.StaticText(frame_modal, label="Select local macOS Installer", pos=(-1,5))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, self.constants.apple_font))
         title_label.Centre(wx.HORIZONTAL)
 
         # List of installers
@@ -113,7 +113,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         else:
             installer_button = wx.StaticText(frame_modal, label="No installers found in '/Applications'", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
-            installer_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            installer_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
             installer_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
@@ -139,7 +139,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # Fetching information on local disks
         title_label = wx.StaticText(self, label="Fetching information on local disks", pos=(-1,1))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, self.constants.apple_font))
         title_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
@@ -174,12 +174,12 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # Title: Select local disk
         title_label = wx.StaticText(self.frame_modal, label="Select local disk", pos=(-1,5))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, self.constants.apple_font))
         title_label.Centre(wx.HORIZONTAL)
 
         # Label: Selected USB will be erased, please backup any data
         warning_label = wx.StaticText(self.frame_modal, label="Selected USB will be erased, please backup any data", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
-        warning_label.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        warning_label.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         warning_label.Centre(wx.HORIZONTAL)
 
         # List of disks
@@ -197,7 +197,7 @@ class macOSInstallerFlashFrame(wx.Frame):
                 spacer += 25
         else:
             disk_button = wx.StaticText(self.frame_modal, label="No disks found", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
-            disk_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+            disk_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, self.constants.apple_font))
             disk_button.Centre(wx.HORIZONTAL)
 
         # Search for disks again
@@ -234,22 +234,22 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         # Title: Creating Installer: {installer_name}
         title_label = wx.StaticText(self, label=f"Creating Installer: {installer['Short Name']}", pos=(-1,1))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, self.constants.apple_font))
         title_label.Centre(wx.HORIZONTAL)
 
         # Label: Creating macOS installers can take 30min+ on slower USB drives.
         warning_label = wx.StaticText(self, label="Creating macOS installers can take 30min+ on slower USB drives.", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
-        warning_label.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        warning_label.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         warning_label.Centre(wx.HORIZONTAL)
 
         # Label: We will notify you when the installer is ready.
         warning_label = wx.StaticText(self, label="We will notify you when the installer is ready.", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
-        warning_label.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        warning_label.SetFont(wx.Font(11, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         warning_label.Centre(wx.HORIZONTAL)
 
         # Label: Bytes Written: 0 MB
         bytes_written_label = wx.StaticText(self, label="Bytes Written: 0.00 MB", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
-        bytes_written_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        bytes_written_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         bytes_written_label.Centre(wx.HORIZONTAL)
 
         # Progress bar

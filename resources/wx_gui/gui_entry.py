@@ -35,7 +35,6 @@ class EntryPoint:
 
         self.constants.gui_mode = True
 
-
     def _generate_base_data(self) -> None:
         self.app = wx.App()
         self.app.SetAppName(self.constants.patcher_name)
@@ -55,6 +54,9 @@ class EntryPoint:
 
         # Normally set by main.py, but transitions from CLI mode may not have this set
         self.constants.gui_mode = True
+
+        # Set system font for UI consistency
+        self.constants.apple_font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFaceName()
 
         self.frame: wx.Frame = entry(
             None,
