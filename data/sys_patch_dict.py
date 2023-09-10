@@ -98,7 +98,7 @@ class SystemPatchDictionary():
                             "OpenGL.framework":       "10.14.3",
                             "CoreDisplay.framework": f"10.14.4-{self.os_major}",
                             "IOSurface.framework":   f"10.15.7-{self.os_major}",
-                            **({"QuartzCore.framework":  f"10.15.7-{self.os_major}"} if self.os_major < os_data.os_data.sonoma else {}),
+                            "QuartzCore.framework":  f"10.15.7-{self.os_major}",
                         },
                         "/System/Library/PrivateFrameworks": {
                             "GPUSupport.framework": "10.14.3",
@@ -149,6 +149,8 @@ class SystemPatchDictionary():
                         **({"defaults write /Library/Preferences/.GlobalPreferences.plist ShowDate -int 1": True } if self.os_float >= self.macOS_12_4 else {}),
                         "defaults write /Library/Preferences/.GlobalPreferences.plist InternalDebugUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                         "defaults write /Library/Preferences/.GlobalPreferences.plist WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled -bool false": True,
+                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist WebKitPreferences.acceleratedDrawingEnabled -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
+                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist NSEnableAppKitMenus -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
                     },
                 },
                 "Non-Metal IOAccelerator Common": {
