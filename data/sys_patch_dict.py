@@ -149,7 +149,7 @@ class SystemPatchDictionary():
                         **({"defaults write /Library/Preferences/.GlobalPreferences.plist ShowDate -int 1": True } if self.os_float >= self.macOS_12_4 else {}),
                         "defaults write /Library/Preferences/.GlobalPreferences.plist InternalDebugUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                         "defaults write /Library/Preferences/.GlobalPreferences.plist WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled -bool false": True,
-                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist WebKitPreferences.acceleratedDrawingEnabled -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
+                        **({"defaults write ~/Library/Containers/com.apple.Safari/Data/Library/Preferences/com.apple.Safari.plist WebKitPreferences.acceleratedDrawingEnabled -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
                         **({"defaults write /Library/Preferences/.GlobalPreferences.plist NSEnableAppKitMenus -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
                     },
                 },

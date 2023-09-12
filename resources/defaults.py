@@ -333,8 +333,6 @@ class GenerateDefaults:
                     if is_key_enabled not in ["false", "0"]:
                         subprocess.run(["defaults", "write", "-g", key, "-bool", "true"])
 
-                subprocess.run(["defaults", "write", "-g", "Amy.MenuBar2Beta", "-bool", "false"])
-
     def _check_amfipass_supported(self) -> None:
         """
         Check if root volume supports AMFIPass
