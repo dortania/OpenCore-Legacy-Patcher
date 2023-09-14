@@ -203,7 +203,6 @@ class SysPatchStartFrame(wx.Frame):
         # Button: Return to Main Menu
         return_button = wx.Button(dialog, label="Return to Main Menu", pos=(10, text_box.GetPosition()[1] + text_box.GetSize()[1] + 5), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
-        return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         return_button.Centre(wx.HORIZONTAL)
         self.return_button = return_button
 

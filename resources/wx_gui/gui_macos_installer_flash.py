@@ -113,7 +113,6 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         else:
             installer_button = wx.StaticText(frame_modal, label="No installers found in '/Applications'", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
-            installer_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
             installer_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
@@ -197,7 +196,6 @@ class macOSInstallerFlashFrame(wx.Frame):
                 spacer += 25
         else:
             disk_button = wx.StaticText(self.frame_modal, label="No disks found", pos=(-1, warning_label.GetPosition()[1] + warning_label.GetSize()[1] + 5))
-            disk_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, self.constants.apple_font))
             disk_button.Centre(wx.HORIZONTAL)
 
         # Search for disks again

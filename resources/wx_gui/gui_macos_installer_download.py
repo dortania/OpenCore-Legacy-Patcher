@@ -190,7 +190,6 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select_list)
 
         self.select_button = wx.Button(self.frame_modal, label="Download", pos=(-1, -1), size=(150, -1))
-        self.select_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         self.select_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_download_installer(installers))
         self.select_button.SetToolTip("Download the selected macOS Installer.")
         self.select_button.SetDefault()
@@ -198,7 +197,6 @@ class macOSInstallerDownloadFrame(wx.Frame):
             self.select_button.Disable()
 
         self.copy_button = wx.Button(self.frame_modal, label="Copy Link", pos=(-1, -1), size=(80, -1))
-        self.copy_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
         if show_full is True:
             self.copy_button.Disable()
         self.copy_button.SetToolTip("Copy the download link of the selected macOS Installer.")
@@ -206,7 +204,6 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         return_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, -1), size=(150, -1))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
-        return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, self.constants.apple_font))
 
         self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label="Show Older/Beta Versions", pos=(-1, -1))
         if show_full is True:
