@@ -4,6 +4,9 @@
 - Resolve BCM2046 and BCM2070 support on macOS 13.3 and newer
 - Workaround 13.3+ Kernel Panic on AMD GCN GPUs playing DRM content
 - Add new macOS Installer download menu (Jazzzny)
+- Add support for Universal 2 distribution (x86_64 and ARM64)
+  - Drops Rosetta requirement on Apple Silicon Macs
+  - Note building from source will require Python 3.11 or newer and up-to-date Python modules
 - Increment Binaries:
   - OpenCorePkg 0.9.3 - release
   - Lilu 1.6.6 - release
@@ -15,6 +18,14 @@
   - BlueToolFixup 2.6.8 - rolling (2305aaa)
   - CryptexFixup 1.0.2 - release
   - PatcherSupportPkg 1.2.6 - release
+- Build Server Changes:
+  - Upgrade Python backend to 3.11.5
+  - Upgrade Python modules:
+    - requests - 2.31.0
+    - pyobjc - 9.2
+    - wxpython - 4.2.1
+    - pyinstaller - 5.13.2
+    - packaging - 23.1
 
 ## 0.6.8
 - Update non-Metal Binaries:
