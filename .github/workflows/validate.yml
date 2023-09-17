@@ -14,4 +14,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Validate
-        run: /Library/Frameworks/Python.framework/Versions/3.10/bin/python3 OpenCore-Patcher-GUI.command --validate
+        run: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 OpenCore-Patcher-GUI.command --validate
