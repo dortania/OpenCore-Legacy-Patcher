@@ -139,6 +139,8 @@ class GenerateRootPatchSets:
                 required_patches.update({"Revert GVA Downgrade": all_hardware_patchset["Graphics"]["Revert GVA Downgrade"]})
             if "AVX2" not in self.constants.computer.cpu.leafs:
                 required_patches.update({"AMD OpenCL": all_hardware_patchset["Graphics"]["AMD OpenCL"]})
+        if self.hardware_details["Graphics: AMD Legacy GCN (2017)"] is True:
+            required_patches.update({"AMD Legacy GCN v2": all_hardware_patchset["Graphics"]["AMD Legacy GCN v2"]})
 
         if self.hardware_details["Graphics: AMD Legacy Vega"] is True:
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})

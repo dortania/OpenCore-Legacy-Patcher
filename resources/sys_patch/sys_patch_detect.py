@@ -40,6 +40,7 @@ class DetectRootPatch:
         self.broadwell_gpu  = False
         self.skylake_gpu    = False
         self.legacy_gcn     = False
+        self.legacy_gcn_v2  = False
         self.legacy_polaris = False
         self.legacy_vega    = False
 
@@ -158,12 +159,20 @@ class DetectRootPatch:
                             # full compatibility (namely power states, etc)
                             # Reference: https://github.com/dortania/bugtracker/issues/292
                             # TODO: Probe framebuffer families further
-                            if self.model != "MacBookPro13,3":
+                            # Sonoma note: MacBookPro14,3 has the same issue...
+                            # iMac18,2/3 is partially affected, however currently it seems the generic framebuffer
+                            # is sufficient. Only MacBookPro14,3 needs this for dGPU handling
+                            if self.model not in ["MacBookPro13,3", "MacBookPro14,3"]:
                                 if "AVX2" in self.constants.computer.cpu.leafs:
                                     continue
                                 self.legacy_polaris = True
                             else:
-                                self.legacy_gcn = True
+                                if self.model == "MacBookPro13,3":
+                                    self.legacy_gcn = True
+                                elif self.model == "MacBookPro14,3":
+                                    if self.constants.detected_os < os_data.os_data.sonoma:
+                                        continue
+                                    self.legacy_gcn_v2 = True
                         else:
                             self.legacy_gcn = True
                         self.supports_metal = True
@@ -233,7 +242,7 @@ class DetectRootPatch:
             self.sandy_gpu = False
             self.legacy_keyboard_backlight = False
 
-        if self.legacy_gcn is True:
+        if self.legacy_gcn is True or self.legacy_gcn_v2 is True:
             # We can only support one or the other due to the nature of relying
             # on portions of the native AMD stack for Polaris and Vega
             # Thus we'll prioritize legacy GCN due to being the internal card
@@ -294,6 +303,7 @@ class DetectRootPatch:
         self.iron_gpu                  = False
         self.sandy_gpu                 = False
         self.legacy_gcn                = False
+        self.legacy_gcn_v2             = False
         self.legacy_polaris            = False
         self.legacy_vega               = False
         self.brightness_legacy         = False
@@ -589,6 +599,7 @@ class DetectRootPatch:
             "Graphics: AMD TeraScale 1":                   self.amd_ts1,
             "Graphics: AMD TeraScale 2":                   self.amd_ts2,
             "Graphics: AMD Legacy GCN":                    self.legacy_gcn,
+            "Graphics: AMD Legacy GCN (2017)":             self.legacy_gcn_v2,
             "Graphics: AMD Legacy Polaris":                self.legacy_polaris,
             "Graphics: AMD Legacy Vega":                   self.legacy_vega,
             "Graphics: Intel Ironlake":                    self.iron_gpu,

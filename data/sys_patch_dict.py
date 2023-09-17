@@ -782,6 +782,40 @@ class SystemPatchDictionary():
                         },
                     },
                 },
+
+                # For MacBookPro14,3 (and other AMD dGPUs that no longer function in Sonoma)
+                # iMac18,2/3 still function with the generic framebuffer, however if issues arise
+                # we'll downgrade them as well.
+                "AMD Legacy GCN v2": {
+                    "Display Name": "Graphics: AMD Legacy GCN (2017)",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 0
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install": {
+                        "/System/Library/Extensions": {
+                            "AMD9500Controller.kext":        "13.5.2",
+                            "AMD10000Controller.kext":       "13.5.2",
+                            "AMDRadeonX4000.kext":           "13.5.2",
+                            "AMDRadeonX4000HWServices.kext": "13.5.2",
+                            "AMDFramebuffer.kext":           "13.5.2",
+                            "AMDSupport.kext":               "13.5.2",
+
+                            "AMDRadeonVADriver.bundle":      "13.5.2",
+                            "AMDRadeonVADriver2.bundle":     "13.5.2",
+                            "AMDRadeonX4000GLDriver.bundle": "13.5.2",
+                            "AMDMTLBronzeDriver.bundle":     "13.5.2",
+                            "AMDShared.bundle":              "13.5.2",
+                        },
+                    },
+                },
+
                 # Used only for AMD Polaris with host lacking AVX2.0
                 # Note missing framebuffers are not restored (ex. 'ATY,Berbice')
                 "AMD Legacy Polaris": {

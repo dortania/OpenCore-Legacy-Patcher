@@ -7,6 +7,7 @@
 - Add support for Universal 2 distribution (x86_64 and ARM64)
   - Drops Rosetta requirement on Apple Silicon Macs
   - Note building from source will require Python 3.11 or newer and up-to-date Python modules
+- Resolve dGPU support for MacBookPro14,3 in macOS Sonoma
 - Increment Binaries:
   - OpenCorePkg 0.9.3 - release
   - Lilu 1.6.6 - release
@@ -17,7 +18,7 @@
   - CPUFriend 1.2.7 - release
   - BlueToolFixup 2.6.8 - rolling (2305aaa)
   - CryptexFixup 1.0.2 - release
-  - PatcherSupportPkg 1.2.6 - release
+  - PatcherSupportPkg 1.3.0 - release
 - Build Server Changes:
   - Upgrade Python backend to 3.11.5
   - Upgrade Python modules:
