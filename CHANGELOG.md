@@ -8,6 +8,8 @@
   - Drops Rosetta requirement on Apple Silicon Macs
   - Note building from source will require Python 3.11 or newer and up-to-date Python modules
 - Resolve dGPU support for MacBookPro14,3 in macOS Sonoma
+- Resolve USB ethernet support in macOS Sonoma
+  - For Ethernet dongles based on ECM protocol (ex. Realtek)
 - Increment Binaries:
   - OpenCorePkg 0.9.3 - release
   - Lilu 1.6.6 - release

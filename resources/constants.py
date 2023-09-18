@@ -92,6 +92,7 @@ class Constants:
         self.mce_version:                    str = "1.0.0"  # AppleMCEReporterDisabler
         self.btspoof_version:                str = "1.0.0"  # Bluetooth-Spoof
         self.aspp_override_version:          str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
+        self.ecm_override_version:           str = "1.0.0"  # AppleUSBECM Override
         self.rsrhelper_version:              str = "1.0.0"  # RSRHelper
         self.amfipass_version:               str = "1.3.1"  # AMFIPass
         self.amfipass_compatibility_version: str = "1.2.1"  # Minimum AMFIPass version required
@@ -501,6 +502,10 @@ class Constants:
     @property
     def aspp_override_path(self):
         return self.payload_kexts_path / Path(f"Misc/ASPP-Override-v{self.aspp_override_version}.zip")
+
+    @property
+    def ecm_override_path(self):
+        return self.payload_kexts_path / Path(f"Misc/ECM-Override-v{self.ecm_override_version}.zip")
 
     @property
     def nvmefix_path(self):
