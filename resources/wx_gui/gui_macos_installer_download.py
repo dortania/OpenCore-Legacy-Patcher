@@ -177,11 +177,11 @@ class macOSInstallerDownloadFrame(wx.Frame):
             wx.MessageDialog(self.frame_modal, "Failed to download Installer Catalog from Apple", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
 
         self.list.SetColumnWidth(0, 280)
-        self.list.SetColumnWidth(1, 55)
+        self.list.SetColumnWidth(1, 65)
         if show_full is True:
-            self.list.SetColumnWidth(2, 90)
+            self.list.SetColumnWidth(2, 80)
         else:
-            self.list.SetColumnWidth(2, 104) # Hack to get the highlight to fill the ListCtrl
+            self.list.SetColumnWidth(2, 94) # Hack to get the highlight to fill the ListCtrl
 
         if show_full is False:
             self.list.Select(-1)
