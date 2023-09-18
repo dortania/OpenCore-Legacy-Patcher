@@ -56,11 +56,11 @@ class SysPatchStartFrame(wx.Frame):
         logging.info("KDK missing, generating KDK download frame")
 
         header = wx.StaticText(frame, label="Downloading Kernel Debug Kit", pos=(-1,5))
-        header.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        header.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         header.Centre(wx.HORIZONTAL)
 
         subheader = wx.StaticText(frame, label="Fetching KDK database...", pos=(-1, header.GetPosition()[1] + header.GetSize()[1] + 5))
-        subheader.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        subheader.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         subheader.Centre(wx.HORIZONTAL)
 
         progress_bar = wx.Gauge(frame, range=100, pos=(-1, subheader.GetPosition()[1] + subheader.GetSize()[1] + 5), size=(250, 20))
@@ -148,13 +148,13 @@ class SysPatchStartFrame(wx.Frame):
 
         # Title
         title = wx.StaticText(dialog, label=variant, pos=(-1, 10))
-        title.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title.Centre(wx.HORIZONTAL)
 
         if variant == "Root Patching":
             # Label
             label = wx.StaticText(dialog, label="Root Patching will patch the following:", pos=(-1, title.GetPosition()[1] + 30))
-            label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
             label.Centre(wx.HORIZONTAL)
 
 
@@ -166,7 +166,7 @@ class SysPatchStartFrame(wx.Frame):
                         longest_patch = patch
 
             anchor = wx.StaticText(dialog, label=longest_patch, pos=(label.GetPosition()[0], label.GetPosition()[1] + 20))
-            anchor.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            anchor.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
             anchor.Centre(wx.HORIZONTAL)
             anchor.Hide()
 
@@ -177,7 +177,7 @@ class SysPatchStartFrame(wx.Frame):
                 if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                     logging.info(f"- {patch}")
                     patch_label = wx.StaticText(dialog, label=f"- {patch}", pos=(anchor.GetPosition()[0], label.GetPosition()[1] + 20 + i))
-                    patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+                    patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
                     i = i + 20
 
             if i == 20:
@@ -186,24 +186,24 @@ class SysPatchStartFrame(wx.Frame):
 
             elif i == 0:
                 patch_label = wx.StaticText(dialog, label="No patches to apply", pos=(label.GetPosition()[0], label.GetPosition()[1] + 20))
-                patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+                patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
                 patch_label.Centre(wx.HORIZONTAL)
         else:
             patch_label = wx.StaticText(dialog, label="Reverting to last sealed snapshot", pos=(-1, title.GetPosition()[1] + 30))
-            patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
             patch_label.Centre(wx.HORIZONTAL)
 
 
         # Text box
         text_box = wx.TextCtrl(dialog, pos=(10, patch_label.GetPosition()[1] + 30), size=(400, 400), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
-        text_box.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        text_box.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         text_box.Centre(wx.HORIZONTAL)
         self.text_box = text_box
 
         # Button: Return to Main Menu
         return_button = wx.Button(dialog, label="Return to Main Menu", pos=(10, text_box.GetPosition()[1] + text_box.GetSize()[1] + 5), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
-        return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        return_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         return_button.Centre(wx.HORIZONTAL)
         self.return_button = return_button
 

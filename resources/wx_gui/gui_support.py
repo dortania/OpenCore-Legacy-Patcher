@@ -1,20 +1,36 @@
-import wx
-import os
-import sys
-import time
+import datetime
 import logging
+import os
 import plistlib
-import threading
+import random
 import subprocess
-import applescript
-
-import packaging.version
-
+import sys
+import threading
+import time
 from pathlib import Path
 
-from resources.wx_gui import gui_about
-from resources import constants, device_probe
+import applescript
+import packaging.version
+import wx
+
 from data import model_array, os_data, smbios_data
+from resources import constants, device_probe
+from resources.wx_gui import gui_about
+
+
+def get_font_face():
+    if not get_font_face.font_face:
+        get_font_face.font_face = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT).GetFaceName() or "Lucida Grande"
+
+    return get_font_face.font_face
+
+
+get_font_face.font_face = None
+
+
+# Centralize the common options for font creation
+def font_factory(size: int, weight):
+    return wx.Font(size, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, weight, False, get_font_face())
 
 
 class AutoUpdateStages:
@@ -327,12 +343,12 @@ class RelaunchApplicationAsRoot:
 
         # Header
         header = wx.StaticText(self.frame, label="Relaunching as root", pos=(-1, 5))
-        header.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        header.SetFont(font_factory(19, wx.FONTWEIGHT_BOLD))
         header.Centre(wx.HORIZONTAL)
 
         # Add count down label
         countdown_label = wx.StaticText(self.frame, label=f"Closing old process in {timer} seconds", pos=(0, header.GetPosition().y + header.GetSize().height + 3))
-        countdown_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        countdown_label.SetFont(font_factory(13, wx.FONTWEIGHT_NORMAL))
         countdown_label.Centre(wx.HORIZONTAL)
 
         # Set size of frame

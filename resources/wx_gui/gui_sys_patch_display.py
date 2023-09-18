@@ -65,12 +65,12 @@ class SysPatchDisplayFrame(wx.Frame):
         frame = self if not frame else frame
 
         title_label = wx.StaticText(frame, label="Post-Install Menu", pos=(-1, 10))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Label: Fetching patches...
         available_label = wx.StaticText(frame, label="Fetching patches for host", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 10))
-        available_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        available_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
         available_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
@@ -118,7 +118,7 @@ class SysPatchDisplayFrame(wx.Frame):
         if not patches:
             # Prompt user with no patches found
             patch_label = wx.StaticText(frame, label="No patches required", pos=(-1, available_label.GetPosition()[1] + 20))
-            patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
             patch_label.Centre(wx.HORIZONTAL)
 
         else:
@@ -126,7 +126,7 @@ class SysPatchDisplayFrame(wx.Frame):
             i = 0
             if no_new_patches is True:
                 patch_label = wx.StaticText(frame, label="All applicable patches already installed", pos=(-1, available_label.GetPosition()[1] + 20))
-                patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
                 patch_label.Centre(wx.HORIZONTAL)
                 i = i + 20
             else:
@@ -136,7 +136,7 @@ class SysPatchDisplayFrame(wx.Frame):
                         if len(patch) > len(longest_patch):
                             longest_patch = patch
                 anchor = wx.StaticText(frame, label=longest_patch, pos=(-1, available_label.GetPosition()[1] + 20))
-                anchor.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                anchor.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
                 anchor.Centre(wx.HORIZONTAL)
                 anchor.Hide()
 
@@ -146,7 +146,7 @@ class SysPatchDisplayFrame(wx.Frame):
                         i = i + 20
                         logging.info(f"- {patch}")
                         patch_label = wx.StaticText(frame, label=f"- {patch}", pos=(anchor.GetPosition()[0], available_label.GetPosition()[1] + i))
-                        patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                        patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
 
                 if i == 20:
                     patch_label.SetLabel(patch_label.GetLabel().replace("-", ""))
@@ -155,7 +155,7 @@ class SysPatchDisplayFrame(wx.Frame):
             if patches["Validation: Patching Possible"] is False:
                 # Cannot patch due to the following reasons:
                 patch_label = wx.StaticText(frame, label="Cannot patch due to the following reasons:", pos=(-1, patch_label.GetPosition()[1] + 25))
-                patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+                patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
                 patch_label.Centre(wx.HORIZONTAL)
 
                 longest_patch = ""
@@ -170,7 +170,7 @@ class SysPatchDisplayFrame(wx.Frame):
                     if len(patch) > len(longest_patch):
                         longest_patch = patch
                 anchor = wx.StaticText(frame, label=longest_patch.split('Validation: ')[1], pos=(-1, patch_label.GetPosition()[1] + 20))
-                anchor.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                anchor.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
                 anchor.Centre(wx.HORIZONTAL)
                 anchor.Hide()
 
@@ -184,7 +184,7 @@ class SysPatchDisplayFrame(wx.Frame):
                         continue
 
                     patch_label = wx.StaticText(frame, label=f"- {patch.split('Validation: ')[1]}", pos=(anchor.GetPosition()[0], anchor.GetPosition()[1] + i))
-                    patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                    patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
                     i = i + 20
 
                 if i == 20:
@@ -199,30 +199,30 @@ class SysPatchDisplayFrame(wx.Frame):
                     patch_text = f"{self.constants.computer.oclp_sys_version}, {date}"
 
                     patch_label = wx.StaticText(frame, label="Root Volume last patched:", pos=(-1, patch_label.GetPosition().y + 25))
-                    patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+                    patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
                     patch_label.Centre(wx.HORIZONTAL)
 
                     patch_label = wx.StaticText(frame, label=patch_text, pos=(available_label.GetPosition().x - 10, patch_label.GetPosition().y + 20))
-                    patch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                    patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
                     patch_label.Centre(wx.HORIZONTAL)
 
 
         # Button: Start Root Patching
         start_button = wx.Button(frame, label="Start Root Patching", pos=(10, patch_label.GetPosition().y + 25), size=(170, 30))
         start_button.Bind(wx.EVT_BUTTON, lambda event: self.on_start_root_patching(patches))
-        start_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        start_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         start_button.Centre(wx.HORIZONTAL)
 
         # Button: Revert Root Patches
         revert_button = wx.Button(frame, label="Revert Root Patches", pos=(10, start_button.GetPosition().y + start_button.GetSize().height - 5), size=(170, 30))
         revert_button.Bind(wx.EVT_BUTTON, lambda event: self.on_revert_root_patching(patches))
-        revert_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        revert_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         revert_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
         return_button = wx.Button(frame, label="Return to Main Menu", pos=(10, revert_button.GetPosition().y + revert_button.GetSize().height), size=(150, 30))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_dismiss if self.init_with_parent else self.on_return_to_main_menu)
-        return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        return_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         return_button.Centre(wx.HORIZONTAL)
         self.return_button = return_button
 

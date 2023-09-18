@@ -66,13 +66,13 @@ class MainFrame(wx.Frame):
 
         # Title label: OpenCore Legacy Patcher v{X.Y.Z}
         title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher {'' if self.constants.special_build else 'v'}{self.constants.patcher_version}", pos=(-1, 10))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Text: Model: {Build or Host Model}
         model_label = wx.StaticText(self, label=f"Model: {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1, title_label.GetPosition()[1] + 25
                                                                                                                                     ))
-        model_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        model_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         model_label.Centre(wx.HORIZONTAL)
         self.model_label = model_label
 
@@ -143,12 +143,13 @@ class MainFrame(wx.Frame):
                 button_y += 5
 
             button = wx.Button(self, label=button_name, pos=(button_x + 70, button_y), size=(180, 30))
+            button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
             button.Bind(wx.EVT_BUTTON, lambda event, function=button_function["function"]: function(event))
             button_y += 30
 
             # # Text: Description
             description_label = wx.StaticText(self, label='\n'.join(button_function["description"]), pos=(button_x + 75, button.GetPosition()[1] + button.GetSize()[1] + 3))
-            description_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            description_label.SetFont(gui_support.font_factory(10, wx.FONTWEIGHT_NORMAL))
             # button_y += 15
 
             for i, line in enumerate(button_function["description"]):
@@ -182,7 +183,7 @@ class MainFrame(wx.Frame):
 
         # Text: Copyright
         copy_label = wx.StaticText(self, label=self.constants.copyright_date, pos=(-1, max_height - 15))
-        copy_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        copy_label.SetFont(gui_support.font_factory(10, wx.FONTWEIGHT_NORMAL))
         copy_label.Centre(wx.HORIZONTAL)
 
         # Set window size

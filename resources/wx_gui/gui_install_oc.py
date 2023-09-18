@@ -51,12 +51,12 @@ class InstallOCFrame(wx.Frame):
 
         # Title label: Install OpenCore
         title_label = wx.StaticText(self, label="Install OpenCore", pos=(-1,5))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Text: Parsing local disks...
         text_label = wx.StaticText(self, label="Fetching information on local disks...", pos=(-1,30))
-        text_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        text_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         text_label.Centre(wx.HORIZONTAL)
         self.text_label = text_label
 
@@ -104,17 +104,17 @@ class InstallOCFrame(wx.Frame):
 
         # Title label: Install OpenCore
         title_label = wx.StaticText(dialog, label="Install OpenCore", pos=(-1,5))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Text: select disk to install OpenCore onto
         text_label = wx.StaticText(dialog, label="Select disk to install OpenCore onto:", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
-        text_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        text_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         text_label.Centre(wx.HORIZONTAL)
 
         # Add note: "Missing disks? Ensure they're FAT32 or formatted as GUID/GPT"
         gpt_note = wx.StaticText(dialog, label="Missing disks? Ensure they're FAT32 or formatted as GUID/GPT", pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 5))
-        gpt_note.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        gpt_note.SetFont(gui_support.font_factory(10, wx.FONTWEIGHT_NORMAL))
         gpt_note.Centre(wx.HORIZONTAL)
 
         # Add buttons for each disk
@@ -146,15 +146,15 @@ class InstallOCFrame(wx.Frame):
             if disk_root:
                 # Add note: "Note: Blue represent the disk OpenCore is currently booted from"
                 disk_label = wx.StaticText(dialog, label="Note: Blue represent the disk OpenCore is currently booted from", pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1] + 5))
-                disk_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                disk_label.SetFont(gui_support.font_factory(10, wx.FONTWEIGHT_NORMAL))
                 disk_label.Centre(wx.HORIZONTAL)
             else:
                 disk_label = wx.StaticText(dialog, label="", pos=(-1, disk_button.GetPosition()[1] + 15))
-                disk_label.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+                disk_label.SetFont(gui_support.font_factory(10, wx.FONTWEIGHT_NORMAL))
         else:
             # Text: Failed to find any applicable disks
             disk_label = wx.StaticText(dialog, label="Failed to find any applicable disks", pos=(-1, gpt_note.GetPosition()[1] + gpt_note.GetSize()[1] + 5))
-            disk_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+            disk_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
             disk_label.Centre(wx.HORIZONTAL)
 
         # Add button: Search for disks again
@@ -190,7 +190,7 @@ class InstallOCFrame(wx.Frame):
 
         # Add text: "Volumes on {disk}"
         text_label = wx.StaticText(dialog, label=f"Volumes on {disk}", pos=(-1, 10))
-        text_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        text_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         text_label.Centre(wx.HORIZONTAL)
 
         partitions = install.tui_disk_installation(self.constants).list_partitions(disk, dataset)
@@ -237,7 +237,7 @@ class InstallOCFrame(wx.Frame):
 
         # Add text: "Installing OpenCore to {partition}"
         text_label = wx.StaticText(dialog, label=f"Installing OpenCore to {partition}", pos=(-1, 10))
-        text_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        text_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         text_label.Centre(wx.HORIZONTAL)
 
         # Read-only text box: {empty}
