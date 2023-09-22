@@ -1222,6 +1222,8 @@ class aquantia_ids:
         0x92B1,  # AQC107
         0x00C0,  # AQC113
         0x04C0,  # AQC113
+        0x94C0,  # AQC113
+        0x93C0,  # AQC113
     ]
 
 
