@@ -70,7 +70,7 @@ class UpdateFrame(wx.Frame):
 
         # Title: Preparing update
         title_label = wx.StaticText(self.frame, label="Preparing download...", pos=(-1,1))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
@@ -142,17 +142,17 @@ class UpdateFrame(wx.Frame):
 
         # Label: 0.6.6 has been installed to:
         installed_label = wx.StaticText(self.frame, label=f"{version_label} has been installed:", pos=(-1, progress_bar.GetPosition().y - 15))
-        installed_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        installed_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
         installed_label.Centre(wx.HORIZONTAL)
 
         # Label: '/Library/Application Support/Dortania'
         installed_path_label = wx.StaticText(self.frame, label='/Library/Application Support/Dortania', pos=(-1, installed_label.GetPosition().y + 20))
-        installed_path_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        installed_path_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         installed_path_label.Centre(wx.HORIZONTAL)
 
         # Label: Launching update shortly...
         launch_label = wx.StaticText(self.frame, label="Launching update shortly...", pos=(-1, installed_path_label.GetPosition().y + 30))
-        launch_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        launch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         launch_label.Centre(wx.HORIZONTAL)
 
         # Adjust frame size

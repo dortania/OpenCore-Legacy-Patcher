@@ -10,6 +10,7 @@
 - Resolve dGPU support for MacBookPro14,3 in macOS Sonoma
 - Resolve USB ethernet support in macOS Sonoma
   - For Ethernet dongles based on ECM protocol (ex. Realtek)
+- Update font handling code, fixing font issues on Yosemite and El Capitan
 - Increment Binaries:
   - OpenCorePkg 0.9.3 - release
   - Lilu 1.6.6 - release

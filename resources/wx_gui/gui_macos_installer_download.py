@@ -57,7 +57,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         frame = self if not frame else frame
 
         title_label = wx.StaticText(frame, label="Create macOS Installer", pos=(-1,5))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Button: Download macOS Installer
@@ -89,7 +89,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         # Title: Pulling installer catalog
         title_label = wx.StaticText(self, label="Pulling installer catalog", pos=(-1,5))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
@@ -140,7 +140,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         # Title: Select macOS Installer
         title_label = wx.StaticText(self.frame_modal, label="Select macOS Installer", pos=(-1,-1))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         
         # macOS Installers list
         id = wx.NewIdRef()
@@ -174,11 +174,11 @@ class macOSInstallerDownloadFrame(wx.Frame):
             wx.MessageDialog(self.frame_modal, "Failed to download Installer Catalog from Apple", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
 
         self.list.SetColumnWidth(0, 280)
-        self.list.SetColumnWidth(1, 55)
+        self.list.SetColumnWidth(1, 65)
         if show_full is True:
-            self.list.SetColumnWidth(2, 90)
+            self.list.SetColumnWidth(2, 80)
         else:
-            self.list.SetColumnWidth(2, 104) # Hack to get the highlight to fill the ListCtrl
+            self.list.SetColumnWidth(2, 94) # Hack to get the highlight to fill the ListCtrl
 
         if show_full is False:
             self.list.Select(-1)
@@ -187,7 +187,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.list.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_select_list)
 
         self.select_button = wx.Button(self.frame_modal, label="Download", pos=(-1, -1), size=(150, -1))
-        self.select_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        self.select_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         self.select_button.Bind(wx.EVT_BUTTON, lambda event, installers=installers: self.on_download_installer(installers))
         self.select_button.SetToolTip("Download the selected macOS Installer.")
         self.select_button.SetDefault()
@@ -195,7 +195,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
             self.select_button.Disable()
 
         self.copy_button = wx.Button(self.frame_modal, label="Copy Link", pos=(-1, -1), size=(80, -1))
-        self.copy_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        self.copy_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         if show_full is True:
             self.copy_button.Disable()
         self.copy_button.SetToolTip("Copy the download link of the selected macOS Installer.")
@@ -203,7 +203,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         return_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, -1), size=(150, -1))
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
-        return_button.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        return_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
 
         self.showolderversions_checkbox = wx.CheckBox(self.frame_modal, label="Show Older/Beta Versions", pos=(-1, -1))
         if show_full is True:
@@ -323,12 +323,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         # Title: Validating macOS Installer
         title_label = wx.StaticText(self, label="Validating macOS Installer", pos=(-1,5))
-        title_label.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
         # Label: Validating chunk 0 of 0
         chunk_label = wx.StaticText(self, label="Validating chunk 0 of 0", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
-        chunk_label.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        chunk_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         chunk_label.Centre(wx.HORIZONTAL)
 
         # Progress bar
