@@ -93,7 +93,14 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
   * [FixPCIeLinkrate](https://github.com/joevt/joevtApps)
 * [Jazzzny](https://github.com/Jazzzny)
   * Research and various contributions to the project
-  * Aquantia Ethernet Patch
+  * UEFI Legacy XHCI research and development
+  * NVIDIA OpenCL research and development
+  * `MacBook5,2` research and development
+    * LegacyKeyboardInjector
+  * Pre-Ivy Bridge Aquantia Ethernet Patch
+  * Non-Metal Photo Booth Patch for Monterey+
+  * WxPython GUI Development
+  * Backend Development
 * Amazing users who've graciously donate hardware:
   * [JohnD](https://forums.macrumors.com/members/johnd.53633/) - 2013 Mac Pro
   * [SpiGAndromeda](https://github.com/SpiGAndromeda) - AMD Vega 64
