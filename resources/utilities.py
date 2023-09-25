@@ -61,9 +61,9 @@ def seconds_to_readable_time(seconds) -> str:
     time = ""
 
     if seconds == 0:
-        return "Almost done"
+        return "0m "
     if seconds < 0:
-        return "Indeterminate"
+        return "Indeterminate time "
 
     years, seconds = divmod(seconds, 31536000)
     days, seconds = divmod(seconds, 86400)
@@ -80,8 +80,8 @@ def seconds_to_readable_time(seconds) -> str:
         time += f"{hours}h "
     if minutes > 0:
         time += f"{minutes}m "
-    if seconds > 0:
-        time += f"{seconds}s"
+    #if seconds > 0:
+    #    time += f"{seconds}s"
     return time
 
 

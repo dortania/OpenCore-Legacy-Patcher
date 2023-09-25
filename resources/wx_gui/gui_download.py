@@ -16,13 +16,17 @@ class DownloadFrame(wx.Frame):
     """
     Update provided frame with download stats
     """
-    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, download_obj: network_handler.DownloadObject, item_name: str) -> None:
+    def __init__(self, parent: wx.Frame, title: str, global_constants: constants.Constants, download_obj: network_handler.DownloadObject, item_name: str, download_icon = None) -> None:
         logging.info("Initializing Download Frame")
         self.constants: constants.Constants = global_constants
         self.title: str = title
         self.parent: wx.Frame = parent
         self.download_obj: network_handler.DownloadObject = download_obj
         self.item_name: str = item_name
+        if download_icon:
+            self.download_icon: str = download_icon
+        else:
+            self.download_icon: str = "/System/Library/CoreServices/Installer.app/Contents/Resources/package.icns"
 
         self.user_cancelled: bool = False
 
@@ -37,27 +41,23 @@ class DownloadFrame(wx.Frame):
         """
 
         frame = self if not frame else frame
+        icon = self.download_icon
+        icon = wx.StaticBitmap(frame, bitmap=wx.Bitmap(icon, wx.BITMAP_TYPE_ICON), pos=(-1, 20))
+        icon.SetSize((100, 100))
+        icon.Centre(wx.HORIZONTAL)
 
-        title_label = wx.StaticText(frame, label=f"Downloading: {self.item_name}", pos=(-1,5))
+        title_label = wx.StaticText(frame, label=f"Downloading: {self.item_name}", pos=(-1,icon.GetPosition()[1] + icon.GetSize()[1] + 20))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
-        label_amount = wx.StaticText(frame, label="0.00 B downloaded of 0.00B (0.00%)", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
+        progress_bar = wx.Gauge(frame, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(300, 20), style=wx.GA_PROGRESS| wx.GA_SMOOTH)
+        progress_bar.Centre(wx.HORIZONTAL)
+
+        label_amount = wx.StaticText(frame, label="Preparing download", pos=(-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1]))
         label_amount.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         label_amount.Centre(wx.HORIZONTAL)
 
-        label_speed = wx.StaticText(frame, label="Average download speed: Unknown", pos=(-1, label_amount.GetPosition()[1] + label_amount.GetSize()[1] + 5))
-        label_speed.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
-        label_speed.Centre(wx.HORIZONTAL)
-
-        label_est_time = wx.StaticText(frame, label="Estimated time remaining: Unknown", pos=(-1, label_speed.GetPosition()[1] + label_speed.GetSize()[1] + 5))
-        label_est_time.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
-        label_est_time.Centre(wx.HORIZONTAL)
-
-        progress_bar = wx.Gauge(frame, range=100, pos=(-1, label_est_time.GetPosition()[1] + label_est_time.GetSize()[1] + 5), size=(300, 20))
-        progress_bar.Centre(wx.HORIZONTAL)
-
-        return_button = wx.Button(frame, label="Return", pos=(-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 5))
+        return_button = wx.Button(frame, label="Cancel", pos=(-1, label_amount.GetPosition()[1] + label_amount.GetSize()[1] + 10))
         return_button.Bind(wx.EVT_BUTTON, lambda event: self.terminate_download())
         return_button.Centre(wx.HORIZONTAL)
 
@@ -67,31 +67,25 @@ class DownloadFrame(wx.Frame):
 
         self.download_obj.download()
         while self.download_obj.is_active():
+            
             percentage: int = self.download_obj.get_percent()
 
             if percentage == -1:
-                amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded"
+                amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded ({utilities.human_fmt(self.download_obj.get_speed())}/s)"
                 progress_bar.Pulse()
             else:
-                amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded of {utilities.human_fmt(self.download_obj.total_file_size)} ({percentage:.2f}%)"
+                amount_str = f"{utilities.seconds_to_readable_time(self.download_obj.get_time_remaining())}left - {utilities.human_fmt(self.download_obj.downloaded_file_size)} of {utilities.human_fmt(self.download_obj.total_file_size)} ({utilities.human_fmt(self.download_obj.get_speed())}/s)"
                 progress_bar.SetValue(int(percentage))
 
             label_amount.SetLabel(amount_str)
             label_amount.Centre(wx.HORIZONTAL)
-
-            label_speed.SetLabel(
-                f"Average download speed: {utilities.human_fmt(self.download_obj.get_speed())}/s"
-            )
-
-            label_est_time.SetLabel(
-                f"Estimated time remaining: {utilities.seconds_to_readable_time(self.download_obj.get_time_remaining())}"
-            )
 
             wx.Yield()
 
         if self.download_obj.download_complete is False and self.user_cancelled is False:
             wx.MessageBox(f"Download failed: \n{self.download_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
 
+        progress_bar.Destroy()
         frame.Destroy()
 
 
