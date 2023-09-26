@@ -1834,7 +1834,7 @@
 				<key>Arch</key>
 				<string>Any</string>
 				<key>Comment</key>
-				<string>Allow AppleCredentialManager Downgrade</string>
+				<string>Allow AppleKeyStore Downgrade</string>
 				<key>Enabled</key>
 				<false/>
 				<key>Identifier</key>
