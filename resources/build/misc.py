@@ -276,13 +276,13 @@ class BuildMiscellaneous:
 
         # Add UHCI/OHCI drivers
         # All Penryn Macs lack an internal USB hub to route USB 1.1 devices to the EHCI controller
-        # And MacPro4,1 and MacPro5,1 are the only post-Penryn Macs that lack an internal USB hub
+        # And MacPro4,1, MacPro5,1 and Xserve3,1 are the only post-Penryn Macs that lack an internal USB hub
         # - Ref: https://techcommunity.microsoft.com/t5/microsoft-usb-blog/reasons-to-avoid-companion-controllers/ba-p/270710
         #
         # To be paired for sys_patch_dict.py's 'Legacy USB 1.1' patchset
         if (
             smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value or \
-            self.model in ["MacPro4,1", "MacPro5,1"]
+            self.model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]
         ):
             logging.info("- Adding UHCI/OHCI USB support")
             shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
