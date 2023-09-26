@@ -568,7 +568,12 @@ class DetectRootPatch:
 
         if (
             isinstance(self.constants.computer.wifi, device_probe.Broadcom)
-            and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4360, device_probe.Broadcom.Chipsets.AirportBrcmNIC]):
+            and self.constants.computer.wifi.chipset in [
+                device_probe.Broadcom.Chipsets.AirPortBrcm4360,
+                device_probe.Broadcom.Chipsets.AirportBrcmNIC,
+                # We don't officially support this chipset, however we'll throw a bone to hackintosh users
+                device_probe.Broadcom.Chipsets.AirPortBrcmNICThirdParty,
+            ]):
             if self.constants.detected_os > os_data.os_data.ventura:
                 self.modern_wifi = True
                 self.amfi_shim_bins = True

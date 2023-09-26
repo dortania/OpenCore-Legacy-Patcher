@@ -498,6 +498,7 @@ class Broadcom(WirelessCard):
         # pylint: disable=invalid-name
         AppleBCMWLANBusInterfacePCIe = "AppleBCMWLANBusInterfacePCIe supported"
         AirportBrcmNIC = "AirportBrcmNIC supported"
+        AirPortBrcmNICThirdParty = "AirPortBrcmNICThirdParty supported"
         AirPortBrcm4360 = "AirPortBrcm4360 supported"
         AirPortBrcm4331 = "AirPortBrcm4331 supported"
         AirPortBrcm43224 = "AppleAirPortBrcm43224 supported"
@@ -510,6 +511,8 @@ class Broadcom(WirelessCard):
             self.chipset = Broadcom.Chipsets.AppleBCMWLANBusInterfacePCIe
         elif self.device_id in pci_data.broadcom_ids.AirPortBrcmNIC:
             self.chipset = Broadcom.Chipsets.AirportBrcmNIC
+        elif self.device_id in pci_data.broadcom_ids.AirPortBrcmNICThirdParty:
+            self.chipset = Broadcom.Chipsets.AirPortBrcmNICThirdParty
         elif self.device_id in pci_data.broadcom_ids.AirPortBrcm4360:
             self.chipset = Broadcom.Chipsets.AirPortBrcm4360
         elif self.device_id in pci_data.broadcom_ids.AirPortBrcm4331:
