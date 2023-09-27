@@ -44,6 +44,24 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self._generate_elements(self.frame_modal)
         self.frame_modal.ShowWindowModal()
 
+        self.icons = [[self._icon_to_bitmap(i), self._icon_to_bitmap(i, (64, 64))] for i in self.constants.icons_path]
+
+    def _icon_to_bitmap(self, icon: str, size: tuple = (32, 32)) -> wx.Bitmap:
+        """
+        Convert icon to bitmap
+        """
+        return wx.Bitmap(wx.Bitmap(icon, wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH))
+    
+    def _macos_version_to_icon(self, version: int) -> int:
+        """
+        Convert macOS version to icon
+        """
+        try:
+            self.constants.icons_path[version - 19]
+            return version - 19
+        except IndexError:
+            return 0
+
 
     def _generate_elements(self, frame: wx.Frame = None) -> None:
         """
@@ -88,7 +106,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.Centre()
 
         # Title: Pulling installer catalog
-        title_label = wx.StaticText(self, label="Pulling installer catalog", pos=(-1,5))
+        title_label = wx.StaticText(self, label="Finding Available Software", pos=(-1,5))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
@@ -125,15 +143,9 @@ class macOSInstallerDownloadFrame(wx.Frame):
         """
         Display available installers in frame
         """
-        icons = [
-            [wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Generic.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)),wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Generic.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(64, 64, wx.IMAGE_QUALITY_HIGH))],
-            [wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "BigSur.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)),wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "BigSur.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(64, 64, wx.IMAGE_QUALITY_HIGH))],
-            [wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Monterey.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)),wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Monterey.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(64, 64, wx.IMAGE_QUALITY_HIGH))],
-            [wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Ventura.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)),wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Ventura.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(64, 64, wx.IMAGE_QUALITY_HIGH))],
-            [wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Sonoma.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(32, 32, wx.IMAGE_QUALITY_HIGH)),wx.Bitmap(wx.Bitmap(str(self.constants.icns_resource_path / "Sonoma.icns"),wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(64, 64, wx.IMAGE_QUALITY_HIGH))]
-        ]
+        
 
-        bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in icons]
+        bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
         
         self.frame_modal.Destroy()
         self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(460, 500))
@@ -163,14 +175,9 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 extra = " Beta" if installers[item]['Variant'] in ["DeveloperSeed" , "PublicSeed"] else ""
                 logging.info(f"- macOS {installers[item]['Version']} ({installers[item]['Build']}):\n  - Size: {utilities.human_fmt(installers[item]['Size'])}\n  - Source: {installers[item]['Source']}\n  - Variant: {installers[item]['Variant']}\n  - Link: {installers[item]['Link']}\n")
                 index = self.list.InsertItem(self.list.GetItemCount(), f"macOS {installers[item]['Version']} {os_data.os_conversion.convert_kernel_to_marketing_name(int(installers[item]['Build'][:2]))}{extra} ({installers[item]['Build']})")
-                if int(installers[item]['Build'][:2]) > os_data.os_data.sonoma:
-                    self.list.SetItemImage(index, 0)
-                else:
-                    self.list.SetItemImage(index, int(installers[item]['Build'][:2])-19) # Darwin version to index conversion. i.e. Darwin 20 -> 1 -> BigSur.icns
+                self.list.SetItemImage(index, self._macos_version_to_icon(int(installers[item]['Build'][:2])))
                 self.list.SetItem(index, 1, utilities.human_fmt(installers[item]['Size']))
                 self.list.SetItem(index, 2, installers[item]['Date'].strftime("%x"))
-                
-
                 
         else:
             logging.error("No installers found on SUCatalog")
@@ -307,6 +314,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 global_constants=self.constants,
                 download_obj=download_obj,
                 item_name=f"macOS {list(installers.values())[selected_item]['Version']} ({list(installers.values())[selected_item]['Build']})",
+                download_icon=self.constants.icons_path[self._macos_version_to_icon(int(list(installers.values())[selected_item]['Build'][:2]))]
             )
 
             if download_obj.download_complete is False:
@@ -315,7 +323,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
             self._validate_installer(list(installers.values())[selected_item]['integrity'])
 
-
+        
     def _validate_installer(self, chunklist_link: str) -> None:
         """
         Validate macOS installer

@@ -119,6 +119,7 @@ class Constants:
         self.original_path: Path = Path(__file__).parent.parent.resolve()
         self.payload_path:  Path = self.current_path / Path("payloads")
 
+
         # Patcher Settings
         ## Internal settings
         self.allow_oc_everywhere:       bool = False  # Set whether Patcher can be run on unsupported Macs
@@ -233,6 +234,14 @@ class Constants:
             os_data.os_data.big_sur,
             os_data.os_data.monterey,
             os_data.os_data.ventura,
+        ]
+
+        self.icons_path = [
+            str(self.icon_path_macos_generic),
+            str(self.icon_path_macos_big_sur),
+            str(self.icon_path_macos_monterey),
+            str(self.icon_path_macos_ventura),
+            str(self.icon_path_macos_sonoma)
         ]
 
     @property
@@ -679,7 +688,27 @@ class Constants:
     @property
     def icon_path_ssd(self):
         return self.payload_path / Path("Icon/SSD/.VolumeIcon.icns")
-
+    
+    @property
+    def icon_path_macos_generic(self):
+        return self.payload_path / Path("Icon/AppIcons/Generic.icns")
+    
+    @property
+    def icon_path_macos_big_sur(self):
+        return self.payload_path / Path("Icon/AppIcons/BigSur.icns")
+    
+    @property
+    def icon_path_macos_monterey(self):
+        return self.payload_path / Path("Icon/AppIcons/Monterey.icns")
+    
+    @property
+    def icon_path_macos_ventura(self):
+        return self.payload_path / Path("Icon/AppIcons/Ventura.icns")
+    
+    @property
+    def icon_path_macos_sonoma(self):
+        return self.payload_path / Path("Icon/AppIcons/Sonoma.icns")
+    
     @property
     def gui_path(self):
         return self.payload_path / Path("Icon/Resources.zip")
