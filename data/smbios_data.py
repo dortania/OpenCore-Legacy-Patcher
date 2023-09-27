@@ -708,7 +708,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro3,1": {
-        "Marketing Name": "MacBook Pro (15-inch,  2.4 2.2GHz) ",
+        "Marketing Name": "MacBook Pro (15-inch,  2.4 2.2GHz)",
         "Board ID": "Mac-F4238BC8",
         "FirmwareFeatures": "0xC0001407",
         "SecureBootModel": None,
@@ -1251,7 +1251,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro13,2": {
-        "Marketing Name": "MacBook Pro (13-inch, 2016, Four Thunderbolt 3 Ports) ",
+        "Marketing Name": "MacBook Pro (13-inch, 2016, Four Thunderbolt 3 Ports)",
         "Board ID": "Mac-66E35819EE2D0D05",
         "FirmwareFeatures": "0x8FC0FE137",
         "SecureBootModel": None,
@@ -1307,7 +1307,7 @@ smbios_dictionary = {
         ],
     },
     "MacBookPro14,2": {
-        "Marketing Name": "MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports) ",
+        "Marketing Name": "MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)",
         "Board ID": "Mac-CAD6701F7CEA0921",
         "FirmwareFeatures": "0x8FF0FF57E",
         "SecureBootModel": None,
