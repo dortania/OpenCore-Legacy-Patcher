@@ -2360,6 +2360,8 @@
 			<true/>
 			<key>HideAuxiliary</key>
 			<true/>
+			<key>InstanceIdentifier</key>
+			<string></string>
 			<key>LauncherPath</key>
 			<string>Default</string>
 			<key>LauncherOption</key>
@@ -2880,6 +2882,18 @@
 				<key>Comment</key>
 				<string></string>
 				<key>Path</key>
+				<string>OpenLegacyBoot.efi</string>
+				<key>Enabled</key>
+				<false/>
+				<key>Arguments</key>
+				<string></string>
+				<key>LoadEarly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string></string>
+				<key>Path</key>
 				<string>ResetNvramEntry.efi</string>
 				<key>Enabled</key>
 				<false/>
@@ -3051,6 +3065,8 @@
 			<key>ResizeGpuBars</key>
 			<integer>-1</integer>
 			<key>ResizeUsePciRbIo</key>
+			<false/>
+			<key>ShimRetainProtocol</key>
 			<false/>
 			<key>TscSyncTimeout</key>
 			<integer>0</integer>

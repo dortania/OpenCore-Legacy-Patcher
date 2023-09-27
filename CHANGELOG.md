@@ -11,11 +11,14 @@
 - Resolve USB ethernet support in macOS Sonoma
   - For Ethernet dongles based on ECM protocol (ex. Realtek)
 - Update font handling code, fixing font issues on Yosemite and El Capitan
+- Add `OpenLegacyBoot.efi` for Macs with CSM
+  - Allows for booting CSM-based OSes (ex. Windows 7)
+  - Applicable for Ivy Bridge and older Macs (excluding MacPro6,1)
 - Increment Binaries:
-  - OpenCorePkg 0.9.3 - release
-  - Lilu 1.6.6 - release
-  - WhateverGreen 1.6.5 - release
-  - RestrictEvents 1.1.2 - release
+  - OpenCorePkg 0.9.5 - release
+  - Lilu 1.6.7 - release
+  - WhateverGreen 1.6.6 - release
+  - RestrictEvents 1.1.3 - (rolling - 0febd7e)
   - FeatureUnlock 1.1.5 - release
   - DebugEnhancer 1.0.8 - release
   - CPUFriend 1.2.7 - release
