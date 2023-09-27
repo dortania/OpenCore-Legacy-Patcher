@@ -56,10 +56,11 @@ class macOSInstallerDownloadFrame(wx.Frame):
         """
         Convert macOS version to icon
         """
-        if version < os_data.os_data.big_sur or version > os_data.os_data.sonoma:
-            return 0
-        else:
+        try:
+            self.constants.icons_path[version - 19]
             return version - 19
+        except IndexError:
+            return 0
 
 
     def _generate_elements(self, frame: wx.Frame = None) -> None:
