@@ -30,7 +30,7 @@
   - OpenCorePkg 0.9.5 - release
   - Lilu 1.6.7 - release
   - WhateverGreen 1.6.6 - release
-  - RestrictEvents 1.1.3 - (rolling - 0febd7e)
+  - RestrictEvents 1.1.3 - (rolling - 4f233dd)
   - FeatureUnlock 1.1.5 - release
   - DebugEnhancer 1.0.8 - release
   - CPUFriend 1.2.7 - release
