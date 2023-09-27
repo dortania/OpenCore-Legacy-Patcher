@@ -7,13 +7,25 @@
 - Add support for Universal 2 distribution (x86_64 and ARM64)
   - Drops Rosetta requirement on Apple Silicon Macs
   - Note building from source will require Python 3.11 or newer and up-to-date Python modules
-- Resolve dGPU support for MacBookPro14,3 in macOS Sonoma
-- Resolve USB ethernet support in macOS Sonoma
-  - For Ethernet dongles based on ECM protocol (ex. Realtek)
 - Update font handling code, fixing font issues on Yosemite and El Capitan
 - Add `OpenLegacyBoot.efi` for Macs with CSM
   - Allows for booting CSM-based OSes (ex. Windows 7)
   - Applicable for Ivy Bridge and older Macs (excluding MacPro6,1)
+- Implement basic support for macOS Sonoma:
+  - Supports same range of hardware as Ventura, in addition to:
+    - iMac18,x
+    - MacBook10,1
+    - MacBookPro14,x
+      - [T1 chip currently unsupported in Sonoma](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103)
+  - Resolved issues:
+    - Graphics Acceleration support for 3802 and non-Metal GPUs
+    - UI corruption on 31001 GPUs
+    - Wireless Networking for BCM94360, 4360, 4350, 4331 and 43224
+    - USB ethernet support for adapters based on ECM protocol (ex. Realtek)
+    - dGPU support for MacBookPro14,3
+    - S1X/S3X NVMe Drive Support
+    - PCIe-based FaceTime Camera support
+    - Bluetooth support by switching to dynamic VMM spoofing
 - Increment Binaries:
   - OpenCorePkg 0.9.5 - release
   - Lilu 1.6.7 - release
