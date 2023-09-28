@@ -205,7 +205,6 @@ class PatcherValidation:
         # Second run, flip all settings
         self.constants.verbose_debug = True
         self.constants.opencore_debug = True
-        self.constants.opencore_build = "DEBUG"
         self.constants.kext_debug = True
         self.constants.kext_variant = "DEBUG"
         self.constants.kext_debug = True

@@ -119,7 +119,6 @@ If you plan to create the USB for another machine, please select the "Change Mod
         if self.args.debug_oc:
             logging.info("- Set OpenCore DEBUG configuration")
             self.constants.opencore_debug = True
-            self.constants.opencore_build = "DEBUG"
 
         if self.args.debug_kext:
             logging.info("- Set kext DEBUG configuration")

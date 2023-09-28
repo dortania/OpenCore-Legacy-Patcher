@@ -162,7 +162,6 @@ class Constants:
         self.showpicker:     bool = True  # Show or Hide OpenCore's Boot Picker
         self.nvram_write:    bool = True  # Write to hardware NVRAM
         self.oc_timeout:      int = 5  #    Set OpenCore timeout
-        self.opencore_build:  str = "RELEASE"
 
         ## Kext Settings
         self.kext_debug:  bool = False  # Enables Lilu debug and DebugEnhancer
@@ -273,7 +272,7 @@ class Constants:
     # OpenCore
     @property
     def opencore_zip_source(self):
-        return self.payload_path / Path(f"OpenCore/OpenCore-{self.opencore_build}.zip")
+        return self.payload_path / Path(f"OpenCore/OpenCore-{'DEBUG' if self.opencore_debug is True else 'RELEASE'}.zip")
 
     @property
     def plist_template(self):
@@ -615,7 +614,7 @@ class Constants:
 
     @property
     def opencore_zip_copied(self):
-        return self.build_path / Path(f"OpenCore-{self.opencore_build}.zip")
+        return self.build_path / Path(f"OpenCore-{'DEBUG' if self.opencore_debug is True else 'RELEASE'}.zip")
 
     @property
     def oc_folder(self):
