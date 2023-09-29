@@ -71,8 +71,6 @@ class DownloadFrame(wx.Frame):
             percentage: int = round(self.download_obj.get_percent())
             if percentage == 0:
                 percentage = 1
-                
-            logging.info(f"Download progress: {percentage}%")
 
             if percentage == -1:
                 amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded ({utilities.human_fmt(self.download_obj.get_speed())}/s)"
