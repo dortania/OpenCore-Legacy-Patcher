@@ -402,6 +402,7 @@ class MainFrame(wx.Frame):
         sizer.Add(buttonsizer, 0, wx.ALIGN_RIGHT | wx.ALL, 20)
         panel.SetSizer(sizer)
         frame.Show()
+        frame.Centre()
 
     def _onWebviewNav(self, event):
         url = event.GetURL()
