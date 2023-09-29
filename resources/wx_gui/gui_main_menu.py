@@ -1,5 +1,8 @@
 # Generate GUI for main menu
 import wx
+import wx.html2
+import markdown2
+import requests
 import sys
 import logging
 import threading
@@ -271,7 +274,7 @@ class MainFrame(wx.Frame):
     def _check_for_updates(self):
         if self.constants.has_checked_updates is True:
             return
-
+        
         ignore_updates = global_settings.GlobalEnviromentSettings().read_property("IgnoreAppUpdates")
         if ignore_updates is True:
             self.constants.ignore_updates = True
@@ -285,20 +288,8 @@ class MainFrame(wx.Frame):
 
         version = dict["Version"]
         logging.info(f"New version: {version}")
-        dialog = wx.MessageDialog(
-            parent=self,
-            message=f"Current Version: {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}\nNew version: {version}\nWould you like to update?",
-            caption="Update Available for OpenCore Legacy Patcher!",
-            style=wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION
-        )
-        dialog.SetYesNoCancelLabels("Download and install", "Ignore", "View on Github")
-        response = dialog.ShowModal()
-
-        if response == wx.ID_YES:
-            wx.CallAfter(self.on_update, dict["Link"], version)
-        elif response == wx.ID_CANCEL:
-            webbrowser.open(dict["Github Link"])
-
+        
+        wx.CallAfter(self.on_update, dict["Link"], version, dict["Github Link"])
 
     def on_build_and_install(self, event: wx.Event = None):
         self.Hide()
@@ -345,7 +336,79 @@ class MainFrame(wx.Frame):
             screen_location=self.GetPosition()
         )
 
-    def on_update(self, oclp_url: str, oclp_version: str):
+    def on_update(self, oclp_url: str, oclp_version: str, oclp_github_url: str):
+
+        url = f"https://raw.githubusercontent.com/dortania/OpenCore-Legacy-Patcher/{oclp_version}/CHANGELOG.md"
+        response = requests.get(url)
+        changelog = response.text.split(f"## {self.constants.patcher_version}\n")[0]
+
+        html_markdown = markdown2.markdown(changelog)
+        html_css = """
+<style>
+    body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.5;
+    font-size: 13px;
+    margin-top: 20px;
+    background-color: rgb(238,238,238);
+    }
+    h2 {
+    line-height: 0.5;
+    padding-left: 10px;
+    }
+    a {
+        color: -apple-system-control-accent;
+    }
+    @media (prefers-color-scheme: dark) {
+        body {
+            color: #fff;
+            background-color: rgb(47,47,47);   
+        }
+        
+    }
+</style>
+"""
+        frame = wx.Frame(None, -1, title="", size=(600, 400))
+        frame.SetMinSize((600, 400))
+        frame.SetWindowStyle(wx.STAY_ON_TOP)
+        panel = wx.Panel(frame)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.AddSpacer(10)
+        self.title_text = wx.StaticText(panel, label="A new version of OpenCore Legacy Patcher is available!")
+        self.description = wx.StaticText(panel, label=f"OpenCore Legacy Patcher {oclp_version} is now available - You have {self.constants.patcher_version}. Would you like to update?")
+        self.title_text.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
+        self.description.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+        self.web_view = wx.html2.WebView.New(panel, style=wx.BORDER_SUNKEN)
+        html_code = html_css+html_markdown.replace("<a href=", "<a target='_blank' href=").replace("<h1>OpenCore Legacy Patcher changelog</h1>", "")
+        self.web_view.SetPage(html_code, "")
+        self.web_view.Bind(wx.html2.EVT_WEBVIEW_NEWWINDOW, self._onWebviewNav)
+        self.web_view.EnableContextMenu(False)
+        self.close_button = wx.Button(panel, label="Ignore")
+        self.close_button.Bind(wx.EVT_BUTTON, lambda event: frame.Close())
+        self.view_button = wx.Button(panel, label="View on GitHub")
+        self.view_button.Bind(wx.EVT_BUTTON, lambda event: (webbrowser.open(oclp_github_url), frame.Close()))
+        self.install_button = wx.Button(panel, label="Download and Install")
+        self.install_button.Bind(wx.EVT_BUTTON, lambda event: self._onUpdateChosen(frame, oclp_url, oclp_version))
+        self.install_button.SetDefault()
+
+        buttonsizer = wx.BoxSizer(wx.HORIZONTAL)
+        buttonsizer.Add(self.close_button, 0, wx.ALIGN_CENTRE | wx.RIGHT, 5)
+        buttonsizer.Add(self.view_button, 0, wx.ALIGN_CENTRE | wx.LEFT|wx.RIGHT, 5)
+        buttonsizer.Add(self.install_button, 0, wx.ALIGN_CENTRE | wx.LEFT, 5)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.title_text, 0, wx.ALIGN_CENTRE | wx.TOP, 20)
+        sizer.Add(self.description, 0, wx.ALIGN_CENTRE | wx.BOTTOM, 20)
+        sizer.Add(self.web_view, 1, wx.EXPAND | wx.LEFT|wx.RIGHT, 10)
+        sizer.Add(buttonsizer, 0, wx.ALIGN_RIGHT | wx.ALL, 20)
+        panel.SetSizer(sizer)
+        frame.Show()
+
+    def _onWebviewNav(self, event):
+        url = event.GetURL()
+        webbrowser.open(url)
+
+    def _onUpdateChosen(self, frame, oclp_url, oclp_version):
+        frame.Close()
         gui_update.UpdateFrame(
             parent=self,
             title=self.title,
