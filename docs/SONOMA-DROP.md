@@ -25,9 +25,7 @@ With v1.0.0, we'll be switching to a proper major, minor and bug fix system ([Se
 
 ## Current status
 
-OpenCore Legacy Patcher v1.0.0 will provide most functionality in Sonoma, however some challenges remain.
-
-This build includes both Legacy Metal and non-Metal patches for macOS Sonoma.
+OpenCore Legacy Patcher v1.0.0 will support Sonoma for all models normally supported by the Patcher, however some challenges remain. You can find information about them below.
 
 ## Issues
 
@@ -84,11 +82,9 @@ Sonoma has removed support for T1 chips found in most 2016 and 2017 Macs. Theref
 
 ::: warning ATTENTION: Additionally, due to Sonoma no longer caring about T1, erasing the entire drive will remove the T1 firmware and it won't be reinstalled.
 :::
+No known solution to resolve supporting, a significant amount of time will be required to understand how both the T1 stack works, as well as where the core issue lies for support.
 
 [More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103)
-
-
-No known solution to resolve supporting, a significant amount of time will be required to understand how both the T1 stack works, as well as where the core issue lies for support.
 
 ### USB 1.1 (OHCI/UHCI) Support
 
@@ -114,7 +110,7 @@ With OpenCore Legacy Patcher v0.6.0+, basic support has been implemented via Roo
 [More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)
 
 ## Graphics support
-Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues.
+This build includes both Legacy Metal and non-Metal patches for macOS Sonoma. Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues.
 
 * [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) 
 * [Legacy non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
