@@ -97,7 +97,3 @@ With OpenCore Legacy Patcher v0.6.0+, basic support has been implemented via Roo
 * MacBook7,1 and older
 * MacBookAir3,1 and older
 :::
-
- # Non-Metal
-
- This time non-Metal acceleration will be included in the build.
