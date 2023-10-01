@@ -64,7 +64,12 @@ Applicable Models:
 
 ### T1 Security chip
 
-Systems with T1 Security Chips will also face some significant challenges, specifically that Apple dropped communication support with the T1 chip through the KernelRelayHost stack. Previously kexts such as AppleSSE, AppleCredentialManager and AppleKeyStore used KernelRelayHost to speak with the T1 stub off the USB controller, however in Sonoma Apple dropped linkage to KernelRelayHost.kext. Downgrading these kexts do partially resolve communication, however ApplePay and Touch ID stacks are still unable to communicate correctly with the hardware.
+Sonoma has removed support for T1 chips found in 2016 and 2017 Macs. Therefore on aforementioned systems, the following will not function:
+
+* Enable or disable FileVault
+* Open the Password Settings window
+* Add fingerprints (if upgrading, existing fingerprints will be deleted)
+* Add cards to Apple Pay
 
 No known solution to resolve supporting, a significant amount of time will be required to understand how both the T1 stack works, as well as where the core issue lies for support.
 
