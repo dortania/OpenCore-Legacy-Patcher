@@ -28,7 +28,7 @@ class RoutePayloadDiskImage:
         """
 
         if self.constants.wxpython_variant is True and not self.constants.launcher_script:
-            logging.info("Running in Binary GUI mode, switching to tmp directory")
+            logging.info("Running in compiled binary, switching to tmp directory")
             self.temp_dir = tempfile.TemporaryDirectory()
             logging.info(f"New payloads location: {self.temp_dir.name}")
             logging.info("Creating payloads directory")
@@ -71,7 +71,7 @@ class RoutePayloadDiskImage:
         dmg_info = plistlib.loads(dmg_info.stdout)
 
 
-        for variant in ["Universal-Binaries.dmg", "payloads.dmg"]:
+        for variant in ["DortaniaInternalResources.dmg", "Universal-Binaries.dmg", "payloads.dmg"]:
             for image in dmg_info["images"]:
                 if image["image-path"].endswith(variant):
                     if unmount_all_active is False:

@@ -103,6 +103,7 @@ class SystemPatchDictionary():
                         "/System/Library/PrivateFrameworks": {
                             "GPUSupport.framework": "10.14.3",
                             "SkyLight.framework":  f"10.14.6-{self.os_major}",
+                            **({"FaceCore.framework":  f"13.5"} if self.os_major >= os_data.os_data.sonoma else {}),
                         },
                         "/System/Applications": {
                             **({ "Photo Booth.app": "11.7.9"} if self.os_major >= os_data.os_data.monterey else {}),
@@ -148,6 +149,8 @@ class SystemPatchDictionary():
                         **({"defaults write /Library/Preferences/.GlobalPreferences.plist ShowDate -int 1": True } if self.os_float >= self.macOS_12_4 else {}),
                         "defaults write /Library/Preferences/.GlobalPreferences.plist InternalDebugUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                         "defaults write /Library/Preferences/.GlobalPreferences.plist WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled -bool false": True,
+                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist WebKitPreferences.acceleratedDrawingEnabled -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
+                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist NSEnableAppKitMenus -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
                     },
                 },
                 "Non-Metal IOAccelerator Common": {
@@ -345,7 +348,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Frameworks": {
-                            "Metal.framework": "12.5-3802",
+                            "Metal.framework": f"12.5-3802-{self.os_major}",
                         },
                         "/System/Library/PrivateFrameworks": {
                             "MTLCompiler.framework": "12.5-3802",
@@ -373,11 +376,12 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Frameworks": {
-                            "Metal.framework": "13.2.1",
+                            "Metal.framework": f"13.2.1-{self.os_major}",
+                            **({  "CoreImage.framework": "14.0 Beta 3" } if self.os_major >= os_data.os_data.ventura else {}),
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "MTLCompiler.framework": "13.2.1",
-                            "GPUCompiler.framework": "13.2.1",
+                            **({  "MTLCompiler.framework": "13.2.1" } if self.os_major == os_data.os_data.ventura else {}),
+                            **({  "GPUCompiler.framework": "13.2.1" } if self.os_major == os_data.os_data.ventura else {}),
                         },
                     },
                 },
@@ -568,14 +572,14 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "GeForce.kext":            "12.0 Beta 6",
+                            "GeForce.kext":            "12.0 Beta 6" if self.os_major < os_data.os_data.sonoma else "12.0 Beta 6-23",
                             "NVDAGF100Hal.kext":       "12.0 Beta 6",
                             "NVDAGK100Hal.kext":       "12.0 Beta 6",
                             "NVDAResman.kext":         "12.0 Beta 6",
                             "NVDAStartup.kext":        "12.0 Beta 6",
                             "GeForceAIRPlugin.bundle": "11.0 Beta 3",
                             "GeForceGLDriver.bundle":  "11.0 Beta 3",
-                            "GeForceMTLDriver.bundle": "11.0 Beta 3" if self.os_major <= os_data.os_data.monterey else f"11.0 Beta 3-{self.os_major}",
+                            "GeForceMTLDriver.bundle": "11.0 Beta 3" if self.os_major <= os_data.os_data.monterey else f"11.0 Beta 3-22",
                             "GeForceVADriver.bundle":  "12.0 Beta 6",
                         },
                         "/System/Library/Frameworks": {
@@ -765,7 +769,7 @@ class SystemPatchDictionary():
                             "AMD9000Controller.kext":        "12.5",
                             "AMD9500Controller.kext":        "12.5",
                             "AMD10000Controller.kext":       "12.5",
-                            "AMDRadeonX4000.kext":           "12.5",
+                            "AMDRadeonX4000.kext":           "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AMDRadeonX4000HWServices.kext": "12.5",
                             "AMDFramebuffer.kext":           "12.5" if self.os_float < self.macOS_13_3 else "12.5-GCN",
                             "AMDSupport.kext":               "12.5",
@@ -778,6 +782,40 @@ class SystemPatchDictionary():
                         },
                     },
                 },
+
+                # For MacBookPro14,3 (and other AMD dGPUs that no longer function in Sonoma)
+                # iMac18,2/3 still function with the generic framebuffer, however if issues arise
+                # we'll downgrade them as well.
+                "AMD Legacy GCN v2": {
+                    "Display Name": "Graphics: AMD Legacy GCN (2017)",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 0
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install": {
+                        "/System/Library/Extensions": {
+                            "AMD9500Controller.kext":        "13.5.2",
+                            "AMD10000Controller.kext":       "13.5.2",
+                            "AMDRadeonX4000.kext":           "13.5.2",
+                            "AMDRadeonX4000HWServices.kext": "13.5.2",
+                            "AMDFramebuffer.kext":           "13.5.2",
+                            "AMDSupport.kext":               "13.5.2",
+
+                            "AMDRadeonVADriver.bundle":      "13.5.2",
+                            "AMDRadeonVADriver2.bundle":     "13.5.2",
+                            "AMDRadeonX4000GLDriver.bundle": "13.5.2",
+                            "AMDMTLBronzeDriver.bundle":     "13.5.2",
+                            "AMDShared.bundle":              "13.5.2",
+                        },
+                    },
+                },
+
                 # Used only for AMD Polaris with host lacking AVX2.0
                 # Note missing framebuffers are not restored (ex. 'ATY,Berbice')
                 "AMD Legacy Polaris": {
@@ -794,7 +832,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMDRadeonX4000.kext":           "12.5",
+                            "AMDRadeonX4000.kext":           "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AMDRadeonX4000HWServices.kext": "12.5",
 
                             "AMDRadeonVADriver2.bundle":     "12.5",
@@ -818,7 +856,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMDRadeonX5000.kext":            "12.5",
+                            "AMDRadeonX5000.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
 
                             "AMDRadeonVADriver2.bundle":      "12.5",
                             "AMDRadeonX5000GLDriver.bundle":  "12.5",
@@ -912,8 +950,8 @@ class SystemPatchDictionary():
                             "AppleIntelHD4000GraphicsGLDriver.bundle":  "11.0 Beta 6",
                             "AppleIntelHD4000GraphicsMTLDriver.bundle": "11.0 Beta 6",
                             "AppleIntelHD4000GraphicsVADriver.bundle":  "11.3 Beta 1",
-                            "AppleIntelFramebufferCapri.kext":          "11.4",
-                            "AppleIntelHD4000Graphics.kext":            "11.4",
+                            "AppleIntelFramebufferCapri.kext":          "11.4" if self.os_major < os_data.os_data.sonoma else "11.4-23",
+                            "AppleIntelHD4000Graphics.kext":            "11.4" if self.os_major < os_data.os_data.sonoma else "11.4-23",
                             "AppleIntelIVBVA.bundle":                   "11.4",
                             "AppleIntelGraphicsShared.bundle":          "11.4", # libIGIL-Metal.dylib pulled from 11.0 Beta 6
                         },
@@ -933,8 +971,8 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelFramebufferAzul.kext":           "12.5",
-                            "AppleIntelHD5000Graphics.kext":            "12.5",
+                            "AppleIntelFramebufferAzul.kext":           "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AppleIntelHD5000Graphics.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AppleIntelHD5000GraphicsGLDriver.bundle":  "12.5",
                             "AppleIntelHD5000GraphicsMTLDriver.bundle": "12.5",
                             "AppleIntelHD5000GraphicsVADriver.bundle":  "12.5",
@@ -957,8 +995,8 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelBDWGraphics.kext":            "12.5",
-                            "AppleIntelBDWGraphicsFramebuffer.kext": "12.5",
+                            "AppleIntelBDWGraphics.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AppleIntelBDWGraphicsFramebuffer.kext": "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AppleIntelBDWGraphicsGLDriver.bundle":  "12.5",
                             "AppleIntelBDWGraphicsMTLDriver.bundle": "12.5",
                             "AppleIntelBDWGraphicsVADriver.bundle":  "12.5",
@@ -981,8 +1019,8 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelSKLGraphics.kext":            "12.5",
-                            "AppleIntelSKLGraphicsFramebuffer.kext": "12.5",
+                            "AppleIntelSKLGraphics.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AppleIntelSKLGraphicsFramebuffer.kext": "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AppleIntelSKLGraphicsGLDriver.bundle":  "12.5",
                             "AppleIntelSKLGraphicsMTLDriver.bundle": "12.5",
                             "AppleIntelSKLGraphicsVADriver.bundle":  "12.5",
@@ -1085,6 +1123,8 @@ class SystemPatchDictionary():
                     "Install": {
                         "/usr/libexec": {
                             "wps": "12.6.2",
+                            "wifip2pd":       "12.6.2",
+                            "wifianalyticsd": "13.5",
                         },
                         "/System/Library/Frameworks": {
                             "CoreWLAN.framework": "12.6.2",
@@ -1092,9 +1132,45 @@ class SystemPatchDictionary():
                         "/System/Library/PrivateFrameworks": {
                             "CoreWiFi.framework": "12.6.2",
                             "IO80211.framework":  "12.6.2",
+                            "WiFiPeerToPeer.framework":  "12.6.2",
+                            **({ "CoreAnalytics.framework": "13.5"} if self.os_major >= os_data.os_data.sonoma else {}),
+                            **({ "WiFiAnalytics.framework": "13.5"} if self.os_major >= os_data.os_data.sonoma else {}),
                         },
                     },
-                }
+                },
+                # May lord have mercy on our souls
+                # Applicable for BCM943324, BCM94331, BCM94360, BCM943602
+                "Modern Wireless": {
+                    "Display Name": "Networking: Modern Wireless",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 0
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install": {
+                        "/usr/libexec": {
+                            "airportd":       "13.5",
+                            "wifianalyticsd": "13.5",
+                            "wifip2pd":       "13.5",
+                        },
+                        "/System/Library/Frameworks": {
+                            "CoreWLAN.framework": "13.5",
+                        },
+                        "/System/Library/PrivateFrameworks": {
+                            "CoreAnalytics.framework":  "13.5",
+                            "CoreWiFi.framework":       "13.5",
+                            "IO80211.framework":        "13.5",
+                            "WiFiAnalytics.framework":  "13.5",
+                            "WiFiPolicy.framework":     "13.5",
+                            "WiFiPeerToPeer.framework": "13.5",
+                        },
+                    },
+                },
             },
             "Brightness": {
                 "Legacy Backlight Control": {
@@ -1186,6 +1262,27 @@ class SystemPatchDictionary():
                             "IOUSBHostFamily.kext": "12.6.2",
                         },
                     },
-                }
+                },
+                "PCIe FaceTime Camera": {
+                    "Display Name": "Miscellaneous: PCIe FaceTime Camera",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 0
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install Non-Root": {
+                        "/Library/CoreMediaIO/Plug-Ins/DAL": {
+                            "AppleCamera.plugin":  "14.0 Beta 1"
+                        },
+                        "/Library/LaunchDaemons": {
+                            "com.apple.cmio.AppleCameraAssistant.plist":  "14.0 Beta 1"
+                        },
+                    },
+                },
             },
         }

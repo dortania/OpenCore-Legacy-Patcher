@@ -33,6 +33,20 @@ class BuildWiredNetworking:
         else:
             self._prebuilt_assumption()
 
+        # Always enable due to chance of hot-plugging
+        self._usb_ecm_dongles()
+
+
+    def _usb_ecm_dongles(self) -> None:
+        """
+        USB ECM Dongle Handling
+        """
+        # With Sonoma, our WiFi patches require downgrading IOSkywalk
+        # Unfortunately Apple's DriverKit stack uses IOSkywalk for ECM dongles, so we'll need force load
+        # the kernel driver to prevent a kernel panic
+        # - DriverKit: com.apple.DriverKit.AppleUserECM.dext
+        # - Kext: AppleUSBECM.kext
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("ECM-Override.kext", self.constants.ecm_override_version, self.constants.ecm_override_path)
 
     def _on_model(self) -> None:
         """
@@ -63,7 +77,7 @@ class BuildWiredNetworking:
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("nForceEthernet.kext", self.constants.nforce_version, self.constants.nforce_path)
             elif isinstance(controller, device_probe.Marvell) or isinstance(controller, device_probe.SysKonnect):
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("MarvelYukonEthernet.kext", self.constants.marvel_version, self.constants.marvel_path)
-            
+
             # Pre-Ivy Bridge Aquantia Ethernet Patch
             if isinstance(controller, device_probe.Aquantia) and controller.chipset == device_probe.Aquantia.Chipsets.AppleEthernetAquantiaAqtion:
                 if not self.model in smbios_data.smbios_dictionary:

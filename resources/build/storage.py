@@ -106,28 +106,44 @@ class BuildStorage:
                     logging.info(f"- Failed to find Device path for PCIe Storage Controller {i}, falling back to Innie")
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("Innie.kext", self.constants.innie_version, self.constants.innie_path)
 
-        if not self.constants.custom_model and self.constants.allow_nvme_fixing is True:
+        if not self.constants.custom_model:
             nvme_devices = [i for i in self.computer.storage if isinstance(i, device_probe.NVMeController)]
-            for i, controller in enumerate(nvme_devices):
-                logging.info(f"- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}")
-                self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}"
+            if self.constants.allow_nvme_fixing is True:
+                for i, controller in enumerate(nvme_devices):
+                    if controller.vendor_id == 0x106b:
+                        continue
+                    logging.info(f"- Found 3rd Party NVMe SSD ({i + 1}): {utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}")
+                    self.config["#Revision"][f"Hardware-NVMe-{i}"] = f"{utilities.friendly_hex(controller.vendor_id)}:{utilities.friendly_hex(controller.device_id)}"
 
-                # Disable Bit 0 (L0s), enable Bit 1 (L1)
-                nvme_aspm = (controller.aspm & (~0b11)) | 0b10
+                    # Disable Bit 0 (L0s), enable Bit 1 (L1)
+                    nvme_aspm = (controller.aspm & (~0b11)) | 0b10
 
-                if controller.pci_path:
-                    logging.info(f"- Found NVMe ({i}) at {controller.pci_path}")
-                    self.config["DeviceProperties"]["Add"].setdefault(controller.pci_path, {})["pci-aspm-default"] = nvme_aspm
-                    self.config["DeviceProperties"]["Add"][controller.pci_path.rpartition("/")[0]] = {"pci-aspm-default": nvme_aspm}
-                else:
-                    if "-nvmefaspm" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
-                        logging.info("- Falling back to -nvmefaspm")
-                        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -nvmefaspm"
+                    if controller.pci_path:
+                        logging.info(f"- Found NVMe ({i}) at {controller.pci_path}")
+                        self.config["DeviceProperties"]["Add"].setdefault(controller.pci_path, {})["pci-aspm-default"] = nvme_aspm
+                        self.config["DeviceProperties"]["Add"][controller.pci_path.rpartition("/")[0]] = {"pci-aspm-default": nvme_aspm}
+                    else:
+                        if "-nvmefaspm" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
+                            logging.info("- Falling back to -nvmefaspm")
+                            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -nvmefaspm"
 
-                if (controller.vendor_id != 0x144D and controller.device_id != 0xA804):
-                    # Avoid injecting NVMeFix when a native Apple NVMe drive is present
-                    # https://github.com/acidanthera/NVMeFix/blob/1.0.9/NVMeFix/NVMeFix.cpp#L220-L225
-                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)
+                    if (controller.vendor_id != 0x144D and controller.device_id != 0xA804):
+                        # Avoid injecting NVMeFix when a native Apple NVMe drive is present
+                        # https://github.com/acidanthera/NVMeFix/blob/1.0.9/NVMeFix/NVMeFix.cpp#L220-L225
+                        support.BuildSupport(self.model, self.constants, self.config).enable_kext("NVMeFix.kext", self.constants.nvmefix_version, self.constants.nvmefix_path)
+
+            if any((controller.vendor_id == 0x106b and controller.device_id in [0x2001, 0x2003]) for controller in nvme_devices):
+                # Restore S1X/S3X NVMe support removed in 14.0 Beta 2
+                # - APPLE SSD AP0128H, AP0256H, etc
+                # - APPLE SSD AP0128J, AP0256J, etc
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOS3XeFamily.kext", self.constants.s3x_nvme_version, self.constants.s3x_nvme_path)
+
+        # Restore S1X/S3X NVMe support removed in 14.0 Beta 2
+        # Apple's usage of the S1X and S3X is quite sporadic and inconsistent, so we'll try a catch all for units with NVMe drives
+        if self.constants.custom_model and self.model in smbios_data.smbios_dictionary:
+            if "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
+                if cpu_data.CPUGen.broadwell <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.kaby_lake:
+                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOS3XeFamily.kext", self.constants.s3x_nvme_version, self.constants.s3x_nvme_path)
 
         # Apple RAID Card check
         if not self.constants.custom_model:

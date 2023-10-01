@@ -1,15 +1,23 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-import sys, os, time, subprocess
+import sys, os, time, subprocess, pathlib
 sys.path.append(os.path.abspath(os.getcwd()))
 from resources import constants
 block_cipher = None
+
+datas = [
+   ('payloads.dmg', '.'),
+   ('Universal-Binaries.dmg', '.'),
+
+]
+if pathlib.Path("DortaniaInternalResources.dmg").exists():
+   datas.append(('DortaniaInternalResources.dmg', '.'))
 
 
 a = Analysis(['OpenCore-Patcher-GUI.command'],
              pathex=[],
              binaries=[],
-             datas=[('payloads.dmg', '.'), ('Universal-Binaries.dmg', '.')],
+             datas=datas,
              hiddenimports=[],
              hookspath=[],
              hooksconfig={},

@@ -8,6 +8,7 @@ SupportedSMBIOS = [
     "MacBook7,1",
     "MacBook8,1",
     "MacBook9,1",
+    "MacBook10,1",
     # MacBook Air
     "MacBookAir2,1",
     "MacBookAir3,1",
@@ -46,6 +47,9 @@ SupportedSMBIOS = [
     "MacBookPro13,1",
     "MacBookPro13,2",
     "MacBookPro13,3",
+    "MacBookPro14,1",
+    "MacBookPro14,2",
+    "MacBookPro14,3",
     # Mac Mini
     "Macmini3,1",
     "Macmini4,1",
@@ -76,6 +80,9 @@ SupportedSMBIOS = [
     "iMac16,1",
     "iMac16,2",
     "iMac17,1",
+    "iMac18,1",
+    "iMac18,2",
+    "iMac18,3",
     # Mac Pro
     "MacPro3,1",
     "MacPro4,1",

@@ -40,6 +40,7 @@ class DetectRootPatch:
         self.broadwell_gpu  = False
         self.skylake_gpu    = False
         self.legacy_gcn     = False
+        self.legacy_gcn_v2  = False
         self.legacy_polaris = False
         self.legacy_vega    = False
 
@@ -47,9 +48,11 @@ class DetectRootPatch:
         self.brightness_legacy         = False
         self.legacy_audio              = False
         self.legacy_wifi               = False
+        self.modern_wifi               = False
         self.legacy_gmux               = False
         self.legacy_keyboard_backlight = False
         self.legacy_uhci_ohci          = False
+        self.legacy_pcie_webcam        = False
 
         # Patch Requirements
         self.amfi_must_disable   = False
@@ -156,12 +159,20 @@ class DetectRootPatch:
                             # full compatibility (namely power states, etc)
                             # Reference: https://github.com/dortania/bugtracker/issues/292
                             # TODO: Probe framebuffer families further
-                            if self.model != "MacBookPro13,3":
+                            # Sonoma note: MacBookPro14,3 has the same issue...
+                            # iMac18,2/3 is partially affected, however currently it seems the generic framebuffer
+                            # is sufficient. Only MacBookPro14,3 needs this for dGPU handling
+                            if self.model not in ["MacBookPro13,3", "MacBookPro14,3"]:
                                 if "AVX2" in self.constants.computer.cpu.leafs:
                                     continue
                                 self.legacy_polaris = True
                             else:
-                                self.legacy_gcn = True
+                                if self.model == "MacBookPro13,3":
+                                    self.legacy_gcn = True
+                                elif self.model == "MacBookPro14,3":
+                                    if self.constants.detected_os < os_data.os_data.sonoma:
+                                        continue
+                                    self.legacy_gcn_v2 = True
                         else:
                             self.legacy_gcn = True
                         self.supports_metal = True
@@ -217,6 +228,9 @@ class DetectRootPatch:
                         self.skylake_gpu = True
                         self.amfi_must_disable = True
                         self.supports_metal = True
+
+
+
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
             # Main concerns are for iMac12,x with Sandy iGPU and Kepler dGPU
@@ -228,7 +242,7 @@ class DetectRootPatch:
             self.sandy_gpu = False
             self.legacy_keyboard_backlight = False
 
-        if self.legacy_gcn is True:
+        if self.legacy_gcn is True or self.legacy_gcn_v2 is True:
             # We can only support one or the other due to the nature of relying
             # on portions of the native AMD stack for Polaris and Vega
             # Thus we'll prioritize legacy GCN due to being the internal card
@@ -243,7 +257,6 @@ class DetectRootPatch:
             if self.requires_root_kc is True:
                 self.missing_kdk = not self._check_kdk()
 
-        self._check_networking_support()
 
 
     def _check_networking_support(self):
@@ -257,9 +270,10 @@ class DetectRootPatch:
         On subsequent runs, we'll require networking to be enabled.
         """
 
-        if self.constants.detected_os < os_data.os_data.ventura:
+        # Increase OS check if modern wifi is detected
+        if self.constants.detected_os < (os_data.os_data.ventura if self.legacy_wifi is True else os_data.os_data.sonoma):
             return
-        if self.legacy_wifi is False:
+        if self.legacy_wifi is False and self.modern_wifi is False:
             return
         if self.requires_root_kc is False:
             return
@@ -273,7 +287,7 @@ class DetectRootPatch:
         oclp_patch_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
         if Path(oclp_patch_path).exists():
             oclp_plist = plistlib.load(open(oclp_patch_path, "rb"))
-            if "Legacy Wireless" in oclp_plist:
+            if "Legacy Wireless" in oclp_plist or "Modern Wireless" in oclp_plist:
                 return
 
         # Due to the reliance of KDKs for most older patches, we'll allow KDK-less
@@ -289,12 +303,21 @@ class DetectRootPatch:
         self.iron_gpu                  = False
         self.sandy_gpu                 = False
         self.legacy_gcn                = False
+        self.legacy_gcn_v2             = False
         self.legacy_polaris            = False
         self.legacy_vega               = False
         self.brightness_legacy         = False
         self.legacy_audio              = False
         self.legacy_gmux               = False
         self.legacy_keyboard_backlight = False
+
+        # Currently all graphics patches require a KDK
+        if self.constants.detected_os >= os_data.os_data.sonoma:
+            self.kepler_gpu     = False
+            self.ivy_gpu        = False
+            self.haswell_gpu    = False
+            self.broadwell_gpu  = False
+            self.skylake_gpu    = False
 
 
     def _check_dgpu_status(self):
@@ -417,7 +440,7 @@ class DetectRootPatch:
         Base check to ensure patcher is compatible with host OS
         """
         min_os = os_data.os_data.big_sur
-        max_os = os_data.os_data.ventura
+        max_os = os_data.os_data.sonoma
         if self.constants.detected_os < min_os or self.constants.detected_os > max_os:
             return False
         return True
@@ -493,11 +516,11 @@ class DetectRootPatch:
             return False
 
         # If we're on a Mac, check for Penryn or older
-        # This is due to Apple implementing an internal USB hub on post-Penryn (excluding MacPro4,1 and MacPro5,1)
+        # This is due to Apple implementing an internal USB hub on post-Penryn (excluding MacPro4,1, MacPro5,1 and Xserve3,1)
         # Ref: https://techcommunity.microsoft.com/t5/microsoft-usb-blog/reasons-to-avoid-companion-controllers/ba-p/270710
         if (
             smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value or \
-            self.model in ["MacPro4,1", "MacPro5,1"]
+            self.model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]
         ):
             return True
 
@@ -514,6 +537,8 @@ class DetectRootPatch:
         """
 
         self.has_network = network_handler.NetworkUtilities().verify_network_connection()
+
+        self.legacy_pcie_webcam = self.constants.computer.pcie_webcam
 
         if self._check_uhci_ohci() is True:
             self.legacy_uhci_ohci = True
@@ -538,6 +563,20 @@ class DetectRootPatch:
                 if self.constants.detected_os >= os_data.os_data.ventura:
                     # Due to extracted frameworks for IO80211.framework and co, check library validation
                     self.amfi_must_disable = True
+                    if self.constants.detected_os > os_data.os_data.ventura:
+                        self.amfi_shim_bins = True
+
+        if (
+            isinstance(self.constants.computer.wifi, device_probe.Broadcom)
+            and self.constants.computer.wifi.chipset in [
+                device_probe.Broadcom.Chipsets.AirPortBrcm4360,
+                device_probe.Broadcom.Chipsets.AirportBrcmNIC,
+                # We don't officially support this chipset, however we'll throw a bone to hackintosh users
+                device_probe.Broadcom.Chipsets.AirPortBrcmNICThirdParty,
+            ]):
+            if self.constants.detected_os > os_data.os_data.ventura:
+                self.modern_wifi = True
+                self.amfi_shim_bins = True
 
         # if self.model in ["MacBookPro5,1", "MacBookPro5,2", "MacBookPro5,3", "MacBookPro8,2", "MacBookPro8,3"]:
         if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
@@ -554,6 +593,9 @@ class DetectRootPatch:
                     self.legacy_gmux = True
 
         self._detect_gpus()
+        # This must be performed last, as it may override previous decisions
+        # Namely, whether we allow patches requiring KDKs
+        self._check_networking_support()
 
         self.root_patch_dict = {
             "Graphics: Nvidia Tesla":                      self.nvidia_tesla,
@@ -562,6 +604,7 @@ class DetectRootPatch:
             "Graphics: AMD TeraScale 1":                   self.amd_ts1,
             "Graphics: AMD TeraScale 2":                   self.amd_ts2,
             "Graphics: AMD Legacy GCN":                    self.legacy_gcn,
+            "Graphics: AMD Legacy GCN (2017)":             self.legacy_gcn_v2,
             "Graphics: AMD Legacy Polaris":                self.legacy_polaris,
             "Graphics: AMD Legacy Vega":                   self.legacy_vega,
             "Graphics: Intel Ironlake":                    self.iron_gpu,
@@ -573,9 +616,11 @@ class DetectRootPatch:
             "Brightness: Legacy Backlight Control":        self.brightness_legacy,
             "Audio: Legacy Realtek":                       self.legacy_audio,
             "Networking: Legacy Wireless":                 self.legacy_wifi,
+            "Networking: Modern Wireless":                 self.modern_wifi,
             "Miscellaneous: Legacy GMUX":                  self.legacy_gmux,
             "Miscellaneous: Legacy Keyboard Backlight":    self.legacy_keyboard_backlight,
             "Miscellaneous: Legacy USB 1.1":               self.legacy_uhci_ohci,
+            "Miscellaneous: PCIe FaceTime Camera":         self.legacy_pcie_webcam,
             "Settings: Requires AMFI exemption":           self.amfi_must_disable,
             "Settings: Supports Auxiliary Cache":          not self.requires_root_kc,
             "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,
