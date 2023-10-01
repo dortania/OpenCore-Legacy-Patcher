@@ -243,14 +243,6 @@ class Constants:
             os_data.os_data.sonoma,
         ]
 
-        self.icons_path = [
-            str(self.icon_path_macos_generic),
-            str(self.icon_path_macos_big_sur),
-            str(self.icon_path_macos_monterey),
-            str(self.icon_path_macos_ventura),
-            str(self.icon_path_macos_sonoma)
-        ]
-
     @property
     def special_build(self):
         """
@@ -778,6 +770,16 @@ class Constants:
             return self.payload_path / Path("Icon/AppIcons")
         return Path(self.launcher_binary).parent.parent / Path("Resources")
 
+
+    @property
+    def icons_path(self):
+        return [
+            str(self.icon_path_macos_generic),
+            str(self.icon_path_macos_big_sur),
+            str(self.icon_path_macos_monterey),
+            str(self.icon_path_macos_ventura),
+            str(self.icon_path_macos_sonoma)
+        ]
 
     sbm_values = [
         "j137ap",  #  iMacPro1,1
