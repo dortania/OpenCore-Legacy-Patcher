@@ -1,9 +1,8 @@
 ![](../images/sonoma.png)
 
-*"Well here we are again, it's always such a pleasure"* 
-Apple has yet again dropped a bunch of models, continuing their journey on discontinuing Intel Macs.
+*Well here we are again, it's always such a pleasure~* 
 
-With the release of OpenCore Legacy Patcher v1.0.0, early support for macOS Sonoma has been implemented.
+Apple has yet again dropped a bunch of models, continuing their journey on discontinuing Intel Macs. With the release of OpenCore Legacy Patcher v1.0.0, early support for macOS Sonoma has been implemented.
 
 ## Newly dropped hardware
 
@@ -18,39 +17,50 @@ With the release of OpenCore Legacy Patcher v1.0.0, early support for macOS Sono
 
 ## Current status
 
-OpenCore Legacy Patcher 1.0.0 will provide most functionality in Sonoma, however some issues remain.
+OpenCore Legacy Patcher 1.0.0 will provide most functionality in Sonoma, however some challenges remain.
 
-One of these issues is Widgets on 3802 based systems freezing the system.
-Graphics cards belonging under 3802 include:
+* [Widgets freezing on 3802 systems](#widgets-freezing-on-3802-systems)
+* [T1 Security chip](t1-security-chip)
+* [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
 
-**Intel Ivy Bridge**
 
-# Applicable Models:
-MacBookAir5,x
-MacBookPro9,x
-MacBookPro10,x
-iMac13,x
-Macmini6,x
+### Widgets freezing on 3802 systems
 
-**Intel Haswell**
+Opening the widget board on 3802 based systems can freeze the system.
 
-# Applicable Models:
-MacBookAir6,x
-MacBookPro11,x
-iMac14,x
-iMac15,1 (internal, headless iGPU)
-Macmini7,1
+::: details Graphics cards belonging under 3802 include: (click to expand)
 
-**NVIDIA Kepler**
+__Intel Ivy Bridge__
 
-# Applicable Models:
-MacBookPro9,1
-MacBookPro10,1
-MacBookPro11,3
-iMac13,x
-iMac14,x
+```sh
+Applicable Models:
+- MacBookAir5,x
+- MacBookPro9,x
+- MacBookPro10,x
+- iMac13,x
+- Macmini6,x
+```
+__Intel Haswell__
 
-## Currently Unsupported/Broken Hardware in Sonoma
+```sh
+Applicable Models:
+- MacBookAir6,x
+- MacBookPro11,x
+- iMac14,x
+- iMac15,1 (internal, headless iGPU)
+- Macmini7,1
+```
+
+__NVIDIA Kepler__
+```sh
+Applicable Models:
+- MacBookPro9,1
+- MacBookPro10,1
+- MacBookPro11,3
+- iMac13,x
+- iMac14,x
+```
+::: 
 
 ### T1 Security chip
 
@@ -77,67 +87,8 @@ With OpenCore Legacy Patcher v0.6.0+, basic support has been implemented via Roo
 * Macmini3,1 and older
 * MacBook7,1 and older
 * MacBookAir3,1 and older
-* MacBookPro7,1 and older
-  * MacBookPro6,x is exempt
-* MacPro5,1 and older
-
 :::
 
-::: details Legacy Wireless Support (Resolved in v0.6.0 and newer)
+ # Non-Metal
 
-
-### Legacy Wireless Support
-
-For systems that required Root Patches in macOS Monterey to achieve Wireless support, unfortunately macOS Ventura has broken the patch set. Currently the following Wifi cards are unsupported:
-
-* Atheros: All models
-* Broadcom: BCM94328 and BCM94322
-
-The following machines shipped stock with these cards:
-
-* iMac12,x and older
-* Macmini3,1 and older
-* MacBook5,x and older
-* MacBookAir2,1 and older
-* MacBookPro7,1 and older
-  * MacBookPro6,x is exempt
-* MacPro5,1 and older
-
-
-Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported by OpenCore Legacy Patcher. Consider upgrading to these cards if possible.
-
-:::
-
-
-::: details Non-Metal Graphics Acceleration (Resolved in v0.6.0 and newer)
-
-
-### Non-Metal Graphics Acceleration
-
-Regarding non-Metal, the team is hard at work to get non-Metal working, however this is our greatest challenge since Big Sur.
-
-Apple has made significant changes to the graphics stack in order to facilitate fancy effects, and in particularly, Stage Manager. We will update you as we work on development, however, now is not the best time to ask about ETAs.
-
-The following GPUs are applicable:
-
-* NVIDIA:
-  * Tesla (8000 - 300 series)
-* AMD:
-  * TeraScale (2000 - 6000 series)
-* Intel:
-  * Iron Lake
-  * Sandy Bridge (2000 - 3000 series)
-
-
-The following machines shipped stock with an unsupported GPU:
-
-* iMac7,1 - iMac12,x
-* MacBook5,1 - MacBook7,1
-* MacBookAir2,1 - MacBookAir4,x
-* MacBookPro4,1 - MacBookPro8,x
-* Macmini3,1 - Macmini5,x
-* MacPro3,1 - MacPro5,1
-* Xserve2,1 - Xserve3,1
-
-
-:::
+ This time non-Metal acceleration will be included in the build.
