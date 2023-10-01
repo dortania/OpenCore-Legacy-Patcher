@@ -85,6 +85,7 @@ Sonoma has removed support for T1 chips found in most 2016 and 2017 Macs. Theref
 ::: warning ATTENTION: Additionally, due to Sonoma no longer caring about T1, erasing the entire drive will remove the T1 firmware and it won't be reinstalled.
 :::
 
+[More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103)
 
 
 No known solution to resolve supporting, a significant amount of time will be required to understand how both the T1 stack works, as well as where the core issue lies for support.
@@ -109,6 +110,8 @@ With OpenCore Legacy Patcher v0.6.0+, basic support has been implemented via Roo
 * MacBook7,1 and older
 * MacBookAir3,1 and older
 :::
+
+[More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)
 
 ## Graphics support
 Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues.
