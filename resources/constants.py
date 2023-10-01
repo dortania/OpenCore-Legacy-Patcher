@@ -13,7 +13,7 @@ from data import os_data
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "0.6.9"  # OpenCore-Legacy-Patcher
+        self.patcher_version:                 str = "1.0.0"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version:     str = "1.3.1"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
@@ -730,27 +730,27 @@ class Constants:
     @property
     def icon_path_ssd(self):
         return self.payload_path / Path("Icon/SSD/.VolumeIcon.icns")
-    
+
     @property
     def icon_path_macos_generic(self):
         return self.payload_path / Path("Icon/AppIcons/Generic.icns")
-    
+
     @property
     def icon_path_macos_big_sur(self):
         return self.payload_path / Path("Icon/AppIcons/BigSur.icns")
-    
+
     @property
     def icon_path_macos_monterey(self):
         return self.payload_path / Path("Icon/AppIcons/Monterey.icns")
-    
+
     @property
     def icon_path_macos_ventura(self):
         return self.payload_path / Path("Icon/AppIcons/Ventura.icns")
-    
+
     @property
     def icon_path_macos_sonoma(self):
         return self.payload_path / Path("Icon/AppIcons/Sonoma.icns")
-    
+
     @property
     def gui_path(self):
         return self.payload_path / Path("Icon/Resources.zip")
