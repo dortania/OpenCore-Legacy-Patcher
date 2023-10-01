@@ -158,12 +158,12 @@ class InstallOCFrame(wx.Frame):
             disk_label.Centre(wx.HORIZONTAL)
 
         # Add button: Search for disks again
-        search_button = wx.Button(dialog, label="Search for disks again", size=(160,30), pos=(-1, disk_label.GetPosition()[1] + disk_label.GetSize()[1] + 5))
+        search_button = wx.Button(dialog, label="Search for disks again", size=(150,30), pos=(-1, disk_label.GetPosition()[1] + disk_label.GetSize()[1] + 5))
         search_button.Centre(wx.HORIZONTAL)
         search_button.Bind(wx.EVT_BUTTON, self.on_reload_frame)
 
         # Add button: Return to main menu
-        return_button = wx.Button(dialog, label="Return to main menu", size=(160,30), pos=(-1, search_button.GetPosition()[1] + 20))
+        return_button = wx.Button(dialog, label="Return to Main Menu", size=(150,30), pos=(-1, search_button.GetPosition()[1] + 20))
         return_button.Centre(wx.HORIZONTAL)
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 
@@ -209,7 +209,7 @@ class InstallOCFrame(wx.Frame):
             spacer += 25
 
         # Add button: Return to main menu
-        return_button = wx.Button(dialog, label="Return to main menu", size=(150,30), pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]))
+        return_button = wx.Button(dialog, label="Return to Main Menu", size=(150,30), pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]))
         return_button.Centre(wx.HORIZONTAL)
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
 
@@ -246,7 +246,7 @@ class InstallOCFrame(wx.Frame):
         self.text_box = text_box
 
         # Add button: Return to main menu
-        return_button = wx.Button(dialog, label="Return to main menu", size=(200,30), pos=(-1, text_box.GetPosition()[1] + text_box.GetSize()[1] + 10))
+        return_button = wx.Button(dialog, label="Return to Main Menu", size=(150,30), pos=(-1, text_box.GetPosition()[1] + text_box.GetSize()[1] + 10))
         return_button.Centre(wx.HORIZONTAL)
         return_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         return_button.Disable()

@@ -201,12 +201,12 @@ class macOSInstallerFlashFrame(wx.Frame):
             disk_button.Centre(wx.HORIZONTAL)
 
         # Search for disks again
-        search_button = wx.Button(self.frame_modal, label="Search for disks again", pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]), size=(160, 30))
+        search_button = wx.Button(self.frame_modal, label="Search for disks again", pos=(-1, disk_button.GetPosition()[1] + disk_button.GetSize()[1]), size=(150, 30))
         search_button.Bind(wx.EVT_BUTTON, lambda event, temp=installer: self.on_select(temp))
         search_button.Centre(wx.HORIZONTAL)
 
         # Button: Return to Main Menu
-        cancel_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, search_button.GetPosition()[1] + search_button.GetSize()[1] - 10), size=(160, 30))
+        cancel_button = wx.Button(self.frame_modal, label="Return to Main Menu", pos=(-1, search_button.GetPosition()[1] + search_button.GetSize()[1] - 10), size=(150, 30))
         cancel_button.Bind(wx.EVT_BUTTON, self.on_return_to_main_menu)
         cancel_button.Centre(wx.HORIZONTAL)
 
