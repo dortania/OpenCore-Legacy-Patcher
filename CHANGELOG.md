@@ -9,9 +9,6 @@
   - Drops Rosetta requirement on Apple Silicon Macs
   - Note building from source will require Python 3.11 or newer and up-to-date Python modules
 - Update font handling code, fixing font issues on Yosemite and El Capitan
-- Add `OpenLegacyBoot.efi` for Macs with CSM
-  - Allows for booting CSM-based OSes (ex. Windows 7)
-  - Applicable for Ivy Bridge and older Macs (excluding MacPro6,1)
 - Resolve incorrect RELEASE usage of OpenCore binaries when DEBUG enabled
 - Implement basic support for macOS Sonoma:
   - Supports same range of hardware as Ventura, in addition to:
