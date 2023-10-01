@@ -64,7 +64,7 @@ Applicable Models:
 
 ### T1 Security chip
 
-Sonoma has removed support for T1 chips found in most 2016 and 2017 Macs. Therefore on aforementioned systems, the following will not function:
+Sonoma has removed support for T1 chips found in most 2016 and 2017 Macs. Therefore on these systems, the following will not function:
 
 * Enable or disable FileVault
 * Open the Password Settings window
