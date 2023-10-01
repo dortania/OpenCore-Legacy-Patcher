@@ -27,16 +27,9 @@ With v1.0.0, we'll be switching to a proper major, minor and bug fix system ([Se
 
 OpenCore Legacy Patcher v1.0.0 will provide most functionality in Sonoma, however some challenges remain.
 
-## Graphics support
+This build includes both Legacy Metal and non-Metal patches for macOS Sonoma.
 
-OpenCore Legacy Patcher v1.0.0 includes both Legacy Metal and non-Metal patches for macOS Sonoma.
-Refer to the following links for more information about Legacy Metal and non-Metal support and issues
-
-* [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) 
-* [Legacy non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
-
-
-## Other issues
+## Issues
 
 * [Widgets freezing on 3802 systems](#widgets-freezing-on-3802-systems)
 * [T1 Security chip](t1-security-chip)
@@ -116,4 +109,10 @@ With OpenCore Legacy Patcher v0.6.0+, basic support has been implemented via Roo
 * MacBook7,1 and older
 * MacBookAir3,1 and older
 :::
+
+## Graphics support
+Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues.
+
+* [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) 
+* [Legacy non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
 
