@@ -29,7 +29,7 @@ OpenCore Legacy Patcher v1.0.0 will support Sonoma for all models normally suppo
 
 ## Issues
 
-* [Widgets freezing on Intel and Haswell systems](#widgets-freezing-on-ivy-and-haswell-systems)
+* [Widgets freezing on Ivy and Haswell systems](#widgets-freezing-on-ivy-and-haswell-systems)
 * [T1 Security chip](t1-security-chip)
 * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
 
