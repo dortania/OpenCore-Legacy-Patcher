@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 1.1.0
+
 ## 1.0.0
 - Resolve BCM2046 and BCM2070 support on macOS 13.3 and newer
 - Workaround 13.3+ Kernel Panic on AMD GCN GPUs playing DRM content
