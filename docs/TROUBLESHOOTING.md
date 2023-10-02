@@ -56,7 +56,7 @@ With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates 
 
 Boot into recovery by pressing space when your disk is selected on the OCLP bootpicker (if you have it hidden, hold ESC while starting up)
 
-Note: If your disk name is something else than "Macintosh HD", make sure to change the path accordingly.
+* **Note:** If your disk name is something else than "Macintosh HD", make sure to change the path accordingly.
 
 Go into terminal and first mount the disk by typing
 ```sh
@@ -66,8 +66,18 @@ Then revert the snapshot
 ```sh
 bless --mount "/Volumes/Macintosh HD" --bootefi --last-sealed-snapshot
 ```
+After that, type the following
+```sh
+cd "/Volumes/Macintosh HD/Library/Extensions"
+```
+Then by typing `ls`, you should see bunch of .kexts. 
+* **Note:** If you only see .kexts starting with "HighPoint", you can ignore this. If other kexts are found, continue.
+
+Delete everything **except** for the ones that start with HighPoint, by using `rm -rf "kextname"`
 
 Then restart and now your system should be restored to the unpatched snapshot and should be able to boot again.
+
+
 
 ## Reboot when entering Hibernation (`Sleep Wake Failure`)
 
