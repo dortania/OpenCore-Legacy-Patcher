@@ -31,7 +31,12 @@ class GlobalEnviromentSettings:
         """
 
         if Path(self.global_settings_plist).exists():
-            plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
+            try:
+                plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
+            except Exception as e:
+                logging.error("Error: Unable to read global settings file")
+                logging.error(e)
+                return None
             if property_name in plist:
                 return plist[property_name]
         return None
@@ -43,7 +48,12 @@ class GlobalEnviromentSettings:
         """
 
         if Path(self.global_settings_plist).exists():
-            plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
+            try:
+                plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
+            except Exception as e:
+                logging.error("Error: Unable to read global settings file")
+                logging.error(e)
+                return
             plist[property_name] = property_value
             try:
                 plistlib.dump(plist, Path(self.global_settings_plist).open("wb"))
@@ -69,9 +79,14 @@ class GlobalEnviromentSettings:
         defaults_path = Path(defaults_path).expanduser()
 
         if Path(defaults_path).exists():
-            defaults_plist = plistlib.load(Path(defaults_path).open("rb"))
             # merge defaults with global settings
-            global_settings_plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
+            try:
+                defaults_plist = plistlib.load(Path(defaults_path).open("rb"))
+                global_settings_plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
+            except Exception as e:
+                logging.error("Error: Unable to read global settings file")
+                logging.error(e)
+                return
             global_settings_plist.update(defaults_plist)
             try:
                 plistlib.dump(global_settings_plist, Path(self.global_settings_plist).open("wb"))
