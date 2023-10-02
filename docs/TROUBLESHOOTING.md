@@ -71,7 +71,7 @@ After that, type the following
 cd "/Volumes/Macintosh HD/Library/Extensions"
 ```
 Then by typing `ls`, you should see bunch of .kexts. 
-* **Note:** If you only see .kexts starting with "HighPoint", you can ignore this. If other kexts are found, continue.
+* **Note:** If you only see .kexts starting with "HighPoint", you can ignore this and just restart the system. If other kexts are found, continue.
 
 Delete everything **except** for the ones that start with HighPoint, by using `rm -rf "kextname"`
 
