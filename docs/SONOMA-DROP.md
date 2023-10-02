@@ -43,7 +43,7 @@ Sonoma has removed support for T1 chips found in most 2016 and 2017 Macs. Theref
 * Add fingerprints (if upgrading, existing fingerprints will be deleted)
 * Add cards to Apple Pay
 
-:::attention
+::warning
 Additionally, due to Sonoma no longer caring about T1, erasing the entire drive will remove the T1 firmware and it won't be reinstalled.
 :::
 
