@@ -382,6 +382,7 @@ class SystemPatchDictionary():
                         "/System/Library/PrivateFrameworks": {
                             **({  "MTLCompiler.framework": "13.2.1" } if self.os_major == os_data.os_data.ventura else {}),
                             **({  "GPUCompiler.framework": "13.2.1" } if self.os_major == os_data.os_data.ventura else {}),
+                            "RenderBox.framework": "13.2.1-3802"      if self.os_major == os_data.os_data.ventura else "14.0-3802",
                         },
                     },
                 },
