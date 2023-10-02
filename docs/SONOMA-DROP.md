@@ -33,11 +33,11 @@ OpenCore Legacy Patcher v1.0.0 will support Sonoma for all models normally suppo
 * [T1 Security chip](t1-security-chip)
 * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
 
-### Widgets freezing on 3802 systems
+### Widgets freezing on Ivy and Haswell systems
 
-Opening the widget board on 3802 based systems can freeze the system.
+Opening the widget board on Intel Ivy and Haswell (3802) based systems can freeze the system.
 
-::: details Graphics cards belonging under 3802 include: (click to expand)
+::: details Models with Ivy and Haswell GPU's
 
 __Intel Ivy Bridge__
 
@@ -59,16 +59,6 @@ Applicable Models:
 - iMac15,1 (internal, headless iGPU)
 - Macmini7,1
 ```
-
-__NVIDIA Kepler__
-```sh
-Applicable Models:
-- MacBookPro9,1
-- MacBookPro10,1
-- MacBookPro11,3
-- iMac13,x
-- iMac14,x
-```
 ::: 
 
 ### T1 Security chip
@@ -88,7 +78,7 @@ No known solution to resolve supporting, a significant amount of time will be re
 
 ### USB 1.1 (OHCI/UHCI) Support
 
-For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed in macOS Ventura and naturally this continues in Sonoma. 
+For Penryn systems, pre-2013 Mac Pros and Xserve, USB 1.1 support was outright removed in macOS Ventura and naturally this continues in Sonoma. 
 While USB 1.1 may seem unimportant, it handles many important devices on your system. These include:
 
 * Keyboard and Trackpad for laptops
@@ -105,6 +95,8 @@ With OpenCore Legacy Patcher v0.6.0+, basic support has been implemented via Roo
 * Macmini3,1 and older
 * MacBook7,1 and older
 * MacBookAir3,1 and older
+* MacPro5,1 and older
+* Xserve 3,1 and older
 :::
 
 [More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)
@@ -113,5 +105,5 @@ With OpenCore Legacy Patcher v0.6.0+, basic support has been implemented via Roo
 This build includes both Legacy Metal and non-Metal patches for macOS Sonoma. Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues.
 
 * [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) 
-* [Legacy non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
+* [Non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
 
