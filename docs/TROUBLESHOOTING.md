@@ -56,11 +56,13 @@ With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates 
 
 Boot into recovery by pressing space when your disk is selected on the OCLP bootpicker (if you have it hidden, hold ESC while starting up)
 
+Note: If your disk name is something else than "Macintosh HD", make sure to change the path accordingly.
+
 Go into terminal and first mount the disk by typing
 ```sh
 mount -uw "/Volumes/Macintosh HD"
 ```
-Then revert the snapshot (if your disk name is something else than "Macintosh HD", make sure to change the path accordingly)
+Then revert the snapshot
 ```sh
 bless --mount "/Volumes/Macintosh HD" --bootefi -last-sealed-snapshot
 ```
