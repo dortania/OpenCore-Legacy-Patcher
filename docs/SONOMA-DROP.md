@@ -31,6 +31,7 @@ OpenCore Legacy Patcher v1.0.0 will support Sonoma for all models normally suppo
 
 * [T1 Security chip](t1-security-chip)
 * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
+* [Graphics support and issues](#graphics-support-and-issues)
 
 
 ### T1 Security chip
@@ -73,7 +74,7 @@ With OpenCore Legacy Patcher v0.6.0+, basic support has been implemented via Roo
 
 [More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)
 
-## Graphics support
+### Graphics support and issues
 This build includes both Legacy Metal and non-Metal patches for macOS Sonoma. Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues.
 
 * [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) 
