@@ -162,7 +162,7 @@ class PatcherValidation:
         logging.info("Mounted Universal-Binaries.dmg")
 
 
-        for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura]:
+        for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura, os_data.os_data.sonoma]:
             for i in range(0, 10):
                 self._validate_root_patch_files(supported_os, i)
         logging.info("Validating SNB Board ID patcher")
@@ -205,7 +205,6 @@ class PatcherValidation:
         # Second run, flip all settings
         self.constants.verbose_debug = True
         self.constants.opencore_debug = True
-        self.constants.opencore_build = "DEBUG"
         self.constants.kext_debug = True
         self.constants.kext_variant = "DEBUG"
         self.constants.kext_debug = True

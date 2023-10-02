@@ -1,6 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
-## 0.6.9
+## 1.1.0
+- Add error handling for corrupted patcher settings
+
+## 1.0.0
 - Resolve BCM2046 and BCM2070 support on macOS 13.3 and newer
 - Workaround 13.3+ Kernel Panic on AMD GCN GPUs playing DRM content
 - Add new macOS Installer download menu (Jazzzny)
@@ -9,17 +12,37 @@
   - Drops Rosetta requirement on Apple Silicon Macs
   - Note building from source will require Python 3.11 or newer and up-to-date Python modules
 - Update font handling code, fixing font issues on Yosemite and El Capitan
+- Resolve incorrect RELEASE usage of OpenCore binaries when DEBUG enabled
+- Add RenderBox.framework patch for 3802-based Intel GPUs on macOS 13.3 and newer
+  - Works around Weather and Widget freezing
+  - Applicable for Intel Ivy Bridge and Haswell iGPUs
+- Add macOS Sonoma support to PatcherSupportPkg validation in CI
+- Implement basic support for macOS Sonoma:
+  - Supports same range of hardware as Ventura, in addition to:
+    - iMac18,x
+    - MacBook10,1
+    - MacBookPro14,x
+      - [T1 chip currently unsupported in Sonoma](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103)
+  - Resolved issues:
+    - Graphics Acceleration support for 3802 and non-Metal GPUs
+    - UI corruption on 31001 GPUs
+    - Wireless Networking for BCM94360, 4360, 4350, 4331 and 43224
+    - USB ethernet support for adapters based on ECM protocol (ex. Realtek)
+    - dGPU support for MacBookPro14,3
+    - S1X/S3X NVMe Drive Support
+    - PCIe-based FaceTime Camera support
+    - Bluetooth support by switching to dynamic VMM spoofing
 - Increment Binaries:
   - OpenCorePkg 0.9.3 - release
-  - Lilu 1.6.6 - release
-  - WhateverGreen 1.6.5 - release
-  - RestrictEvents 1.1.2 - release
+  - Lilu 1.6.7 - release
+  - WhateverGreen 1.6.6 - release
+  - RestrictEvents 1.1.3 - (rolling - 4f233dd)
   - FeatureUnlock 1.1.5 - release
   - DebugEnhancer 1.0.8 - release
   - CPUFriend 1.2.7 - release
   - BlueToolFixup 2.6.8 - rolling (2305aaa)
   - CryptexFixup 1.0.2 - release
-  - PatcherSupportPkg 1.2.6 - release
+  - PatcherSupportPkg 1.3.2 - release
 - Build Server Changes:
   - Upgrade Python backend to 3.11.5
   - Upgrade Python modules:
@@ -62,7 +85,7 @@
   - utilities.py:
     - Fix indexing error on Device Paths (thx [@Ausdauersportler](https://github.com/Ausdauersportler))
 - Increment Binaries:
-  - PatcherSupportPkg 1.2.2 - release
+- PatcherSupportPkg 1.2.2 - release
 
 ## 0.6.7
 - Resolve partition buttons overlapping in Install OpenCore UI

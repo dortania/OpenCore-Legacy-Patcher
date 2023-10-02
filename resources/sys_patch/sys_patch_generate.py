@@ -139,6 +139,8 @@ class GenerateRootPatchSets:
                 required_patches.update({"Revert GVA Downgrade": all_hardware_patchset["Graphics"]["Revert GVA Downgrade"]})
             if "AVX2" not in self.constants.computer.cpu.leafs:
                 required_patches.update({"AMD OpenCL": all_hardware_patchset["Graphics"]["AMD OpenCL"]})
+        if self.hardware_details["Graphics: AMD Legacy GCN (2017)"] is True:
+            required_patches.update({"AMD Legacy GCN v2": all_hardware_patchset["Graphics"]["AMD Legacy GCN v2"]})
 
         if self.hardware_details["Graphics: AMD Legacy Vega"] is True:
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
@@ -163,6 +165,9 @@ class GenerateRootPatchSets:
             required_patches.update({"Legacy Wireless": all_hardware_patchset["Networking"]["Legacy Wireless"]})
             required_patches.update({"Legacy Wireless Extended": all_hardware_patchset["Networking"]["Legacy Wireless Extended"]})
 
+        if self.hardware_details["Networking: Modern Wireless"] is True:
+            required_patches.update({"Legacy Wireless": all_hardware_patchset["Networking"]["Modern Wireless"]})
+
         if self.hardware_details["Miscellaneous: Legacy GMUX"] is True:
             required_patches.update({"Legacy GMUX": all_hardware_patchset["Miscellaneous"]["Legacy GMUX"]})
 
@@ -171,6 +176,9 @@ class GenerateRootPatchSets:
 
         if self.hardware_details["Miscellaneous: Legacy USB 1.1"] is True:
             required_patches.update({"Legacy USB 1.1": all_hardware_patchset["Miscellaneous"]["Legacy USB 1.1"]})
+
+        if self.hardware_details["Miscellaneous: PCIe FaceTime Camera"] is True:
+            required_patches.update({"PCIe FaceTime Camera": all_hardware_patchset["Miscellaneous"]["PCIe FaceTime Camera"]})
 
         if required_patches:
             host_os_float = float(f"{self.constants.detected_os}.{self.constants.detected_os_minor}")

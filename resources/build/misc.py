@@ -125,10 +125,11 @@ class BuildMiscellaneous:
 
         re_patch_args = []
 
-        # Resolve content caching when kern.hv_vmm_present is set
-        if support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Reroute kern.hv_vmm_present patch (1)")["Enabled"] is True and self.constants.set_content_caching is True:
-            logging.info("- Fixing Content Caching support")
-            re_patch_args.append("asset")
+        # Alternative approach to the kern.hv_vmm_present patch
+        # Dynamically sets the property to 1 if software update/installer is detected
+        # Always enabled in installers/recovery environments
+        if self.constants.allow_oc_everywhere is False and (self.constants.serial_settings == "None" or self.constants.secure_status is False):
+            re_patch_args.append("sbvmm")
 
         # Resolve CoreGraphics.framework crashing on Ivy Bridge in macOS 13.3+
         # Ref: https://github.com/acidanthera/RestrictEvents/pull/12
@@ -236,10 +237,18 @@ class BuildMiscellaneous:
         """
         iSight Handler
         """
+        if self.model in smbios_data.smbios_dictionary:
+            if "Legacy iSight" in smbios_data.smbios_dictionary[self.model]:
+                if smbios_data.smbios_dictionary[self.model]["Legacy iSight"] is True:
+                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyUSBVideoSupport.kext", self.constants.apple_isight_version, self.constants.apple_isight_path)
 
-        if "Legacy iSight" in smbios_data.smbios_dictionary[self.model]:
-            if smbios_data.smbios_dictionary[self.model]["Legacy iSight"] is True:
-                support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyUSBVideoSupport.kext", self.constants.apple_isight_version, self.constants.apple_isight_path)
+        if not self.constants.custom_model:
+            if self.constants.computer.pcie_webcam is True:
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleCameraInterface.kext", self.constants.apple_camera_version, self.constants.apple_camera_path)
+        else:
+            if self.model.startswith("MacBook") and self.model in smbios_data.smbios_dictionary:
+                if cpu_data.CPUGen.haswell <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.kaby_lake:
+                    support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleCameraInterface.kext", self.constants.apple_camera_version, self.constants.apple_camera_path)
 
 
     def _usb_handling(self) -> None:
@@ -267,13 +276,13 @@ class BuildMiscellaneous:
 
         # Add UHCI/OHCI drivers
         # All Penryn Macs lack an internal USB hub to route USB 1.1 devices to the EHCI controller
-        # And MacPro4,1 and MacPro5,1 are the only post-Penryn Macs that lack an internal USB hub
+        # And MacPro4,1, MacPro5,1 and Xserve3,1 are the only post-Penryn Macs that lack an internal USB hub
         # - Ref: https://techcommunity.microsoft.com/t5/microsoft-usb-blog/reasons-to-avoid-companion-controllers/ba-p/270710
         #
         # To be paired for sys_patch_dict.py's 'Legacy USB 1.1' patchset
         if (
             smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value or \
-            self.model in ["MacPro4,1", "MacPro5,1"]
+            self.model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]
         ):
             logging.info("- Adding UHCI/OHCI USB support")
             shutil.copy(self.constants.apple_usb_11_injector_path, self.constants.kexts_path)
@@ -330,3 +339,21 @@ class BuildMiscellaneous:
             logging.info("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
             support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
+
+
+    def _t1_handling(self) -> None:
+        """
+        T1 Security Chip Handler
+        """
+        if self.model not in ["MacBookPro13,2", "MacBookPro13,3", "MacBookPro14,2", "MacBookPro14,3"]:
+            return
+
+        logging.info("- Enabling T1 Security Chip support")
+
+        support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleSSE")["Enabled"] = True
+        support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleCredentialManager")["Enabled"] = True
+        support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleKeyStore")["Enabled"] = True
+
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleSSE.kext", self.constants.t1_sse_version, self.constants.t1_sse_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleCredentialManager.kext", self.constants.t1_credential_version, self.constants.t1_credential_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleKeyStore.kext", self.constants.t1_key_store_version, self.constants.t1_key_store_path)

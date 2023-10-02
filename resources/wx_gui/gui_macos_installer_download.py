@@ -178,7 +178,6 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 self.list.SetItemImage(index, self._macos_version_to_icon(int(installers[item]['Build'][:2])))
                 self.list.SetItem(index, 1, utilities.human_fmt(installers[item]['Size']))
                 self.list.SetItem(index, 2, installers[item]['Date'].strftime("%x"))
-                
         else:
             logging.error("No installers found on SUCatalog")
             wx.MessageDialog(self.frame_modal, "Failed to download Installer Catalog from Apple", "Error", wx.OK | wx.ICON_ERROR).ShowModal()

@@ -93,6 +93,15 @@ module.exports = {
 
         },
         {
+            title: 'macOS Sonoma',
+            collapsable: false,
+            sidebarDepth: 1,
+            children: [
+				['SONOMA-DROP', 'macOS Sonoma Support'],
+            ]
+        },
+		  
+	{
             title: 'macOS Ventura',
             collapsable: false,
             sidebarDepth: 1,

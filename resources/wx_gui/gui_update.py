@@ -178,7 +178,6 @@ class UpdateFrame(wx.Frame):
         sys.exit(0)
 
 
-
     def _extract_update(self) -> None:
         """
         Extracts the update

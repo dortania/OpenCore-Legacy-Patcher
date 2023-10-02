@@ -418,17 +418,17 @@ class nvidia_ids:
         0x1186,  # GK104 [GTX 660 Ti]
         0x1187,  # GK104 [GTX 760]
         0x1188,  # GK104 [GTX 690]
-        0x1189,  # GK104 [GTX 670]	
-        0x118a,  # GK104GL [GRID K520]	
-        0x118b,  # GK104GL [GRID K2 GeForce USM]	
-        0x118c,  # GK104 [GRID K2 NVS USM]	
+        0x1189,  # GK104 [GTX 670]
+        0x118a,  # GK104GL [GRID K520]
+        0x118b,  # GK104GL [GRID K2 GeForce USM]
+        0x118c,  # GK104 [GRID K2 NVS USM]
         0x118d,  # GK104GL [GRID K200 vGPU]
         0x118E,  # GK104 [GTX 760 OEM]
         0x118F,  # GK104GL [Tesla K10]
-        0x1191,  # GK104 [GTX 760 Rev. 2]	
-        0x1193,	 # GK104 [GTX 760 Ti OEM]	
-        0x1194,  # GK104GL [Tesla K8]	
-        0x1195,  # GK104 [GTX 660 Rev. 2]	
+        0x1191,  # GK104 [GTX 760 Rev. 2]
+        0x1193,	 # GK104 [GTX 760 Ti OEM]
+        0x1194,  # GK104GL [Tesla K8]
+        0x1195,  # GK104 [GTX 660 Rev. 2]
         0x1198,  # GK104M [GTX 880M]
         0x1199,  # GK104M [GTX 870M]
         0x119A,  # GK104M [GTX 860M]
@@ -458,8 +458,8 @@ class nvidia_ids:
         # GK106
         0x11C0,  # GK106 [GTX 660]
         0x11C2,  # GK106 [GTX 650 Ti BOOST]
-        0x11c3,  # GK106 [GTX 650 Ti OEM]	
-        0x11c4,  # GK106 [GTX 645 OEM]	
+        0x11c3,  # GK106 [GTX 650 Ti OEM]
+        0x11c4,  # GK106 [GTX 645 OEM]
         0x11c5,  # GK106 [GT 740]
         0x11C6,  # GK106 [GTX 650 Ti]
         0x11C7,  # GK106 [GTX 750 Ti]
@@ -627,10 +627,10 @@ class nvidia_ids:
 
         0x17c2, # GM200 [GTX TITAN X]
         0x17c8, # GM200 [GTX 980 Ti]
-        0x17f0,	# GM200GL [Quadro M6000]	
-        0x17f1, # GM200GL [Quadro M6000 24GB]	
+        0x17f0,	# GM200GL [Quadro M6000]
+        0x17f1, # GM200GL [Quadro M6000 24GB]
         0x17fd, # GM200GL [Tesla M40]
-        
+
         0x13c0,	# GM204 [GTX 980]
         0x13c1,	# GM204
         0x13c2,	# GM204 [GTX 970]
@@ -1169,6 +1169,13 @@ class broadcom_ids:
         0x43BA,  # BCM43602
         0x43A3,  # BCM4350
         0x43A0,  # BCM4360
+    ]
+
+    # Not natively supported, but supported by AirportBrcmFixup
+    AirPortBrcmNICThirdParty = [
+        0x4357,  # BCM43225
+        0x43B1,  # BCM4352
+        0x43B2,  # BCM4352 (2.4 GHz)
     ]
 
     AirPortBrcm4360 = [

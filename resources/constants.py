@@ -13,8 +13,8 @@ from data import os_data
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "0.6.9"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "1.2.6"  # PatcherSupportPkg
+        self.patcher_version:                 str = "1.1.0"  # OpenCore-Legacy-Patcher
+        self.patcher_support_pkg_version:     str = "1.3.2"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
@@ -33,19 +33,19 @@ class Constants:
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
-        self.lilu_version:               str = "1.6.6"  #      Lilu
-        self.whatevergreen_version:      str = "1.6.5"  #      WhateverGreen
-        self.whatevergreen_navi_version: str = "1.6.5-Navi"  # WhateverGreen (Navi Patch)
+        self.lilu_version:               str = "1.6.7"  #      Lilu
+        self.whatevergreen_version:      str = "1.6.6"  #      WhateverGreen
+        self.whatevergreen_navi_version: str = "1.6.6-Navi"  # WhateverGreen (Navi Patch)
         self.airportbcrmfixup_version:   str = "2.1.7"  #      AirPortBrcmFixup
-        self.nvmefix_version:            str = "1.1.0"  #      NVMeFix
+        self.nvmefix_version:            str = "1.1.1"  #      NVMeFix
         self.applealc_version:           str = "1.6.3"  #      AppleALC
-        self.restrictevents_version:     str = "1.1.2"  #      RestrictEvents
+        self.restrictevents_version:     str = "1.1.3"  #      RestrictEvents
         self.featureunlock_version:      str = "1.1.5"  #      FeatureUnlock
         self.debugenhancer_version:      str = "1.0.8"  #      DebugEnhancer
         self.cpufriend_version:          str = "1.2.7"  #      CPUFriend
         self.bluetool_version:           str = "2.6.8"  #      BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version:          str = "2.6.1"  #      CSLVFixup
-        self.autopkg_version:            str = "1.0.2"  #      AutoPkgInstaller
+        self.autopkg_version:            str = "1.0.3"  #      AutoPkgInstaller
         self.cryptexfixup_version:       str = "1.0.2"  #      CryptexFixup
 
         ## Apple
@@ -65,12 +65,19 @@ class Constants:
         self.intel_8254x_version:   str = "1.0.0"  #  AppleIntel8254XEthernet
         self.apple_usb_11_injector: str = "1.0.0"  #  AppleUSBUHCI/OHCI
         self.aicpupm_version:       str = "1.0.0"  #  AppleIntelCPUPowerManagement/Client
+        self.s3x_nvme_version:      str = "1.0.0"  #  IONVMeFamily (14.0 Beta 1, S1X and S3X classes)
+        self.apple_camera_version:  str = "1.0.0"  #  AppleCameraInterface (14.0 Beta 1)
+        self.t1_credential_version: str = "1.0.0"  #  AppleCredentialManager (13.5 - T1 support)
+        self.t1_sse_version:        str = "1.0.0"  #  AppleSSE (13.5 - T1 support)
+        self.t1_key_store_version:  str = "1.0.0"  #  AppleKeyStore (13.5 - T1 support)
 
         ## Apple - Dortania Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
         self.i210_version:             str = "1.0.0"  # CatalinaIntelI210Ethernet
         self.corecaptureelcap_version: str = "1.0.1"  # corecaptureElCap
         self.io80211elcap_version:     str = "2.0.0"  # IO80211ElCap
+        self.io80211legacy_version:    str = "1.0.0"  # IO80211FamilyLegacy (Ventura)
+        self.ioskywalk_version:        str = "1.0.0"  # IOSkywalkFamily (Ventura)
         self.bigsursdxc_version:       str = "1.0.0"  # BigSurSDXC
         self.monterey_ahci_version:    str = "1.0.0"  # CatalinaAHCI
 
@@ -85,6 +92,7 @@ class Constants:
         self.mce_version:                    str = "1.0.0"  # AppleMCEReporterDisabler
         self.btspoof_version:                str = "1.0.0"  # Bluetooth-Spoof
         self.aspp_override_version:          str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
+        self.ecm_override_version:           str = "1.0.0"  # AppleUSBECM Override
         self.rsrhelper_version:              str = "1.0.0"  # RSRHelper
         self.amfipass_version:               str = "1.3.1"  # AMFIPass
         self.amfipass_compatibility_version: str = "1.2.1"  # Minimum AMFIPass version required
@@ -155,7 +163,6 @@ class Constants:
         self.showpicker:     bool = True  # Show or Hide OpenCore's Boot Picker
         self.nvram_write:    bool = True  # Write to hardware NVRAM
         self.oc_timeout:      int = 5  #    Set OpenCore timeout
-        self.opencore_build:  str = "RELEASE"
 
         ## Kext Settings
         self.kext_debug:  bool = False  # Enables Lilu debug and DebugEnhancer
@@ -220,7 +227,6 @@ class Constants:
         self.software_demux:         bool = False  # Enable Software Demux patch set
         self.force_vmm:              bool = False  # Force VMM patch
         self.disable_connectdrivers: bool = False  # Disable ConnectDrivers (hibernation)
-        self.set_content_caching:    bool = False  # Set Content Caching
         self.set_vmm_cpuid:          bool = False  # Set VMM bit inside CPUID
         self.disable_mediaanalysisd: bool = False  # Set mediaanalysisd to spawn
         self.set_alc_usage:          bool = True  #  Set AppleALC usage
@@ -234,14 +240,7 @@ class Constants:
             os_data.os_data.big_sur,
             os_data.os_data.monterey,
             os_data.os_data.ventura,
-        ]
-
-        self.icons_path = [
-            str(self.icon_path_macos_generic),
-            str(self.icon_path_macos_big_sur),
-            str(self.icon_path_macos_monterey),
-            str(self.icon_path_macos_ventura),
-            str(self.icon_path_macos_sonoma)
+            os_data.os_data.sonoma,
         ]
 
     @property
@@ -267,11 +266,14 @@ class Constants:
     def payload_local_binaries_root_path_dmg(self):
         return self.original_path / Path("Universal-Binaries.dmg")
 
+    @property
+    def overlay_psp_path_dmg(self):
+        return self.original_path / Path("DortaniaInternalResources.dmg")
 
     # OpenCore
     @property
     def opencore_zip_source(self):
-        return self.payload_path / Path(f"OpenCore/OpenCore-{self.opencore_build}.zip")
+        return self.payload_path / Path(f"OpenCore/OpenCore-{'DEBUG' if self.opencore_debug is True else 'RELEASE'}.zip")
 
     @property
     def plist_template(self):
@@ -434,6 +436,18 @@ class Constants:
         return self.payload_kexts_path / Path(f"Misc/AppleUSBTopCase-v{self.topcase_version}.zip")
 
     @property
+    def t1_key_store_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleKeyStore-v{self.t1_key_store_version}.zip")
+
+    @property
+    def t1_credential_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleCredentialManager-v{self.t1_credential_version}.zip")
+
+    @property
+    def t1_sse_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleSSE-v{self.t1_sse_version}.zip")
+
+    @property
     def mousse_path(self):
         return self.payload_kexts_path / Path(f"SSE/AAAMouSSE-v{self.mousse_version}.zip")
 
@@ -448,6 +462,14 @@ class Constants:
     @property
     def io80211elcap_path(self):
         return self.payload_kexts_path / Path(f"Wifi/IO80211ElCap-v{self.io80211elcap_version}.zip")
+
+    @property
+    def io80211legacy_path(self):
+        return self.payload_kexts_path / Path(f"Wifi/IO80211FamilyLegacy-v{self.io80211legacy_version}.zip")
+
+    @property
+    def ioskywalk_path(self):
+        return self.payload_kexts_path / Path(f"Wifi/IOSkywalkFamily-v{self.ioskywalk_version}.zip")
 
     @property
     def applealc_path(self):
@@ -480,6 +502,10 @@ class Constants:
     @property
     def aspp_override_path(self):
         return self.payload_kexts_path / Path(f"Misc/ASPP-Override-v{self.aspp_override_version}.zip")
+
+    @property
+    def ecm_override_path(self):
+        return self.payload_kexts_path / Path(f"Misc/ECM-Override-v{self.ecm_override_version}.zip")
 
     @property
     def nvmefix_path(self):
@@ -551,6 +577,14 @@ class Constants:
         return self.payload_kexts_path / Path(f"Misc/KDKlessWorkaround-v{self.kdkless_version}-{self.kext_variant}.zip")
 
     @property
+    def s3x_nvme_path(self):
+        return self.payload_kexts_path / Path(f"Misc/IOS3XeFamily-v{self.s3x_nvme_version}.zip")
+
+    @property
+    def apple_camera_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleCameraInterface-v{self.apple_camera_version}.zip")
+
+    @property
     def plist_folder_path(self):
         return self.payload_kexts_path / Path("Plists")
 
@@ -581,7 +615,7 @@ class Constants:
 
     @property
     def opencore_zip_copied(self):
-        return self.build_path / Path(f"OpenCore-{self.opencore_build}.zip")
+        return self.build_path / Path(f"OpenCore-{'DEBUG' if self.opencore_debug is True else 'RELEASE'}.zip")
 
     @property
     def oc_folder(self):
@@ -688,27 +722,27 @@ class Constants:
     @property
     def icon_path_ssd(self):
         return self.payload_path / Path("Icon/SSD/.VolumeIcon.icns")
-    
+
     @property
     def icon_path_macos_generic(self):
         return self.payload_path / Path("Icon/AppIcons/Generic.icns")
-    
+
     @property
     def icon_path_macos_big_sur(self):
         return self.payload_path / Path("Icon/AppIcons/BigSur.icns")
-    
+
     @property
     def icon_path_macos_monterey(self):
         return self.payload_path / Path("Icon/AppIcons/Monterey.icns")
-    
+
     @property
     def icon_path_macos_ventura(self):
         return self.payload_path / Path("Icon/AppIcons/Ventura.icns")
-    
+
     @property
     def icon_path_macos_sonoma(self):
         return self.payload_path / Path("Icon/AppIcons/Sonoma.icns")
-    
+
     @property
     def gui_path(self):
         return self.payload_path / Path("Icon/Resources.zip")
@@ -736,6 +770,16 @@ class Constants:
             return self.payload_path / Path("Icon/AppIcons")
         return Path(self.launcher_binary).parent.parent / Path("Resources")
 
+
+    @property
+    def icons_path(self):
+        return [
+            str(self.icon_path_macos_generic),
+            str(self.icon_path_macos_big_sur),
+            str(self.icon_path_macos_monterey),
+            str(self.icon_path_macos_ventura),
+            str(self.icon_path_macos_sonoma)
+        ]
 
     sbm_values = [
         "j137ap",  #  iMacPro1,1

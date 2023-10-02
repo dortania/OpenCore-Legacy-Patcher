@@ -84,7 +84,6 @@ class AutomaticSysPatch:
                         patch_string += f"- {patch}\n"
 
                 logging.info("- No new binaries found on Github, proceeding with patching")
-                logging.info("- No new binaries found on Github, proceeding with patching")
                 if self.constants.launcher_script is None:
                     args_string = f"'{self.constants.launcher_binary}' --gui_patch"
                 else:
