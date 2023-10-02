@@ -64,7 +64,7 @@ mount -uw "/Volumes/Macintosh HD"
 ```
 Then revert the snapshot
 ```sh
-bless --mount "/Volumes/Macintosh HD" --bootefi -last-sealed-snapshot
+bless --mount "/Volumes/Macintosh HD" --bootefi --last-sealed-snapshot
 ```
 
 Then restart and now your system should be restored to the unpatched snapshot and should be able to boot again.
