@@ -6,6 +6,7 @@ Here are some common errors that users may experience while using this patcher:
 * [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-(🚫)-prohibited-symbol)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
+* [Stuck on boot after root patching](#stuck-on-boot-after-root-patching)
 * [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
 * [How to Boot Recovery through OpenCore Legacy Patcher](#how-to-boot-recovery-through-opencore-legacy-patcher)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
@@ -50,6 +51,21 @@ Reminder that once this is done, you'll need to select OpenCore in the boot pick
 With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates work correctly and reliably with Big Sur. However this installs NVRAM variables that will confuse your Mac if not running with OpenCore. To resolve this, simply uninstall OpenCore and [reset NVRAM](https://support.apple.com/en-mide/HT201255).
 
 * Note: Machines with modified root volumes will also result in an infinite recovery loop until integrity is restored.
+
+## Stuck on boot after root patching
+
+Boot into recovery by pressing space when your disk is selected on the OCLP bootpicker (if you have it hidden, hold ESC while starting up)
+
+Go into terminal and first mount the disk by typing
+```sh
+mount -uw "/Volumes/Macintosh HD"
+```
+Then revert the snapshot (if your disk name is something else than "Macintosh HD", make sure to change the path accordingly)
+```sh
+bless --mount "/Volumes/Macintosh HD" --bootefi -last-sealed-snapshot
+```
+
+Then restart and now your system should be restored to the unpatched snapshot and should be able to boot again.
 
 ## Reboot when entering Hibernation (`Sleep Wake Failure`)
 
