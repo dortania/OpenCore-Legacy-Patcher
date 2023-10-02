@@ -13,6 +13,7 @@
 - Add RenderBox.framework patch for 3802-based Intel GPUs on macOS 13.3 and newer
   - Works around Weather and Widget freezing
   - Applicable for Intel Ivy Bridge and Haswell iGPUs
+- Add macOS Sonoma support to PatcherSupportPkg validation in CI
 - Implement basic support for macOS Sonoma:
   - Supports same range of hardware as Ventura, in addition to:
     - iMac18,x
