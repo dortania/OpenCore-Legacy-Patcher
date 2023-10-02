@@ -29,37 +29,9 @@ OpenCore Legacy Patcher v1.0.0 will support Sonoma for all models normally suppo
 
 ## Issues
 
-* [Widgets freezing on Ivy and Haswell systems](#widgets-freezing-on-ivy-and-haswell-systems)
 * [T1 Security chip](t1-security-chip)
 * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
 
-### Widgets freezing on Ivy and Haswell systems
-
-Opening the widget board on Intel Ivy and Haswell (3802) based systems can freeze the system.
-
-::: details Models with Ivy and Haswell GPU's
-
-__Intel Ivy Bridge__
-
-```sh
-Applicable Models:
-- MacBookAir5,x
-- MacBookPro9,x
-- MacBookPro10,x
-- iMac13,x
-- Macmini6,x
-```
-__Intel Haswell__
-
-```sh
-Applicable Models:
-- MacBookAir6,x
-- MacBookPro11,x
-- iMac14,x
-- iMac15,1 (internal, headless iGPU)
-- Macmini7,1
-```
-::: 
 
 ### T1 Security chip
 
