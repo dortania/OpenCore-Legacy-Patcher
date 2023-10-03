@@ -1,6 +1,10 @@
 # OpenCore Legacy Patcher changelog
 
 ## 1.1.0
+- Increment Binaries:
+  - AirportBrcmFixup 2.1.8 - release
+  - BlueToolFixup 2.6.8 - release
+  - RestrictEvents 1.1.3 - release
 
 ## 1.0.1
 - Resolve rendering issues on Intel Ivy Bridge iGPUs
