@@ -1,6 +1,13 @@
 # OpenCore Legacy Patcher changelog
 
-## 1.1.0
+## 1.0.1
+- Resolve rendering issues on Intel ivy Bridge iGPUs
+- Update non-Metal Binaries for MacOS Sonoma:
+  - Resolve unresponsive Catalyst buttons
+  - Resolve window unfocusing issues
+  - Resolve menu bar fonts not changing color automatically with Beta Menu Bar enabled
+  - Improve Lock Screen clock transparency
+- Prevent random WiFiAgent crashes
 - Add error handling for corrupted patcher settings
 - Remove CoreImage patch for 3802 GPUs on Ventura
 - Avoid listing PCIe FaceTime camera patch on pre-Sonoma OSes

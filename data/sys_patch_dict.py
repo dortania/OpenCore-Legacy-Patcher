@@ -949,7 +949,7 @@ class SystemPatchDictionary():
                     "Install": {
                         "/System/Library/Extensions": {
                             "AppleIntelHD4000GraphicsGLDriver.bundle":  "11.0 Beta 6",
-                            "AppleIntelHD4000GraphicsMTLDriver.bundle": "11.0 Beta 6",
+                            "AppleIntelHD4000GraphicsMTLDriver.bundle": "11.0 Beta 6" if self.os_major < os_data.os_data.ventura else "11.0-beta 6-22",
                             "AppleIntelHD4000GraphicsVADriver.bundle":  "11.3 Beta 1",
                             "AppleIntelFramebufferCapri.kext":          "11.4" if self.os_major < os_data.os_data.sonoma else "11.4-23",
                             "AppleIntelHD4000Graphics.kext":            "11.4" if self.os_major < os_data.os_data.sonoma else "11.4-23",
