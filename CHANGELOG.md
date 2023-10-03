@@ -1,8 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 1.0.1
-- Resolve rendering issues on Intel ivy Bridge iGPUs
-- Update non-Metal Binaries for MacOS Sonoma:
+- Resolve rendering issues on Intel Ivy Bridge iGPUs
+- Update non-Metal Binaries for macOS Sonoma:
   - Resolve unresponsive Catalyst buttons
   - Resolve window unfocusing issues
   - Resolve menu bar fonts not changing color automatically with Beta Menu Bar enabled
