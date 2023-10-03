@@ -538,7 +538,8 @@ class DetectRootPatch:
 
         self.has_network = network_handler.NetworkUtilities().verify_network_connection()
 
-        self.legacy_pcie_webcam = self.constants.computer.pcie_webcam
+        if self.constants.detected_os >= os_data.os_data.sonoma:
+            self.legacy_pcie_webcam = self.constants.computer.pcie_webcam
 
         if self._check_uhci_ohci() is True:
             self.legacy_uhci_ohci = True
