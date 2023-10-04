@@ -1,4 +1,6 @@
 # Generate GUI for main menu
+# Portions of this file Copyright (c) 2023 Jazzzny
+
 import wx
 import wx.html2
 import markdown2
@@ -338,6 +340,9 @@ class MainFrame(wx.Frame):
 
     def on_update(self, oclp_url: str, oclp_version: str, oclp_github_url: str):
 
+        ID_GITHUB = wx.NewId()
+        ID_UPDATE = wx.NewId()
+
         url = f"https://raw.githubusercontent.com/dortania/OpenCore-Legacy-Patcher/{oclp_version}/CHANGELOG.md"
         response = requests.get(url)
         changelog = response.text.split(f"## {self.constants.patcher_version}\n")[0]
@@ -368,7 +373,7 @@ class MainFrame(wx.Frame):
     }
 </style>
 """
-        frame = wx.Frame(None, -1, title="", size=(600, 400))
+        frame = wx.Dialog(None, -1, title="", size=(600, 400))
         frame.SetMinSize((600, 400))
         frame.SetWindowStyle(wx.STAY_ON_TOP)
         panel = wx.Panel(frame)
@@ -384,11 +389,11 @@ class MainFrame(wx.Frame):
         self.web_view.Bind(wx.html2.EVT_WEBVIEW_NEWWINDOW, self._onWebviewNav)
         self.web_view.EnableContextMenu(False)
         self.close_button = wx.Button(panel, label="Ignore")
-        self.close_button.Bind(wx.EVT_BUTTON, lambda event: frame.Close())
-        self.view_button = wx.Button(panel, label="View on GitHub")
-        self.view_button.Bind(wx.EVT_BUTTON, lambda event: (webbrowser.open(oclp_github_url), frame.Close()))
+        self.close_button.Bind(wx.EVT_BUTTON, lambda event: frame.EndModal(wx.ID_CANCEL))
+        self.view_button = wx.Button(panel, ID_GITHUB, label="View on GitHub")
+        self.view_button.Bind(wx.EVT_BUTTON, lambda event: frame.EndModal(ID_GITHUB))
         self.install_button = wx.Button(panel, label="Download and Install")
-        self.install_button.Bind(wx.EVT_BUTTON, lambda event: self._onUpdateChosen(frame, oclp_url, oclp_version))
+        self.install_button.Bind(wx.EVT_BUTTON, lambda event: frame.EndModal(ID_UPDATE))
         self.install_button.SetDefault()
 
         buttonsizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -401,16 +406,15 @@ class MainFrame(wx.Frame):
         sizer.Add(self.web_view, 1, wx.EXPAND | wx.LEFT|wx.RIGHT, 10)
         sizer.Add(buttonsizer, 0, wx.ALIGN_RIGHT | wx.ALL, 20)
         panel.SetSizer(sizer)
-        frame.Show()
         frame.Centre()
 
-    def _onWebviewNav(self, event):
-        url = event.GetURL()
-        webbrowser.open(url)
+        result = frame.ShowModal()
+        
 
-    def _onUpdateChosen(self, frame, oclp_url, oclp_version):
-        frame.Close()
-        gui_update.UpdateFrame(
+        if result == ID_GITHUB:
+            webbrowser.open(oclp_github_url)
+        elif result == ID_UPDATE:
+            gui_update.UpdateFrame(
             parent=self,
             title=self.title,
             global_constants=self.constants,
@@ -418,3 +422,7 @@ class MainFrame(wx.Frame):
             url=oclp_url,
             version_label=oclp_version
         )
+
+    def _onWebviewNav(self, event):
+        url = event.GetURL()
+        webbrowser.open(url)
