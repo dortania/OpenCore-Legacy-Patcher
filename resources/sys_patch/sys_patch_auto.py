@@ -60,9 +60,9 @@ class AutomaticSysPatch:
             ID_GITHUB = wx.NewId()
             ID_UPDATE = wx.NewId()
 
-            url = f"https://raw.githubusercontent.com/dortania/OpenCore-Legacy-Patcher/{version}/CHANGELOG.md"
-            response = requests.get(url)
-            changelog = response.text.split(f"## {self.constants.patcher_version}\n")[0]
+            url = "https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest"
+            response = requests.get(url).json()
+            changelog = response["body"].split("## Asset Information")[0]
 
             html_markdown = markdown2.markdown(changelog)
             html_css = """
@@ -90,8 +90,8 @@ class AutomaticSysPatch:
         }
     </style>
     """
-            frame = wx.Dialog(None, -1, title="", size=(600, 400))
-            frame.SetMinSize((600, 400))
+            frame = wx.Dialog(None, -1, title="", size=(600, 500))
+            frame.SetMinSize((600, 500))
             frame.SetWindowStyle(wx.STAY_ON_TOP)
             panel = wx.Panel(frame)
             sizer = wx.BoxSizer(wx.VERTICAL)
@@ -101,7 +101,7 @@ class AutomaticSysPatch:
             self.title_text.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
             self.description.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
             self.web_view = wx.html2.WebView.New(panel, style=wx.BORDER_SUNKEN)
-            html_code = html_css+html_markdown.replace("<a href=", "<a target='_blank' href=").replace("<h1>OpenCore Legacy Patcher changelog</h1>", "")
+            html_code = html_css+html_markdown.replace("<a href=", "<a target='_blank' href=")
             self.web_view.SetPage(html_code, "")
             self.web_view.Bind(wx.html2.EVT_WEBVIEW_NEWWINDOW, self._onWebviewNav)
             self.web_view.EnableContextMenu(False)
