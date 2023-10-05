@@ -15,9 +15,9 @@ The below tables can be used to reference issues with a particular model, and se
 
 ::: details OpenCore Patcher application
 The patcher application requires **OS X Yosemite 10.10** or later to run.
-* **OS X El Capitan 10.11** or later is required to make macOS Ventura installers.
+* **OS X El Capitan 10.11** or later is required to make installers for macOS Ventura and later.
 
-The patcher is designed to target **macOS Big Sur 11.x to macOS Ventura 13.x**.
+The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
 * Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
 :::
 
