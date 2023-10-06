@@ -17,7 +17,7 @@
 - Add error handling for corrupted patcher settings
 - Remove CoreImage patch for 3802 GPUs on Ventura
 - Avoid listing PCIe FaceTime camera patch on pre-Sonoma OSes
-  - Only cometic in Root Patching UI, however removed to avoid confusion
+  - Only cosmetic in Root Patching UI, however it has been removed to avoid confusion
 
 ## 1.0.0
 - Resolve BCM2046 and BCM2070 support on macOS 13.3 and newer

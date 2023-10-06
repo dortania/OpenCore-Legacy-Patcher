@@ -15,9 +15,9 @@ The below tables can be used to reference issues with a particular model, and se
 
 ::: details OpenCore Patcher application
 The patcher application requires **OS X Yosemite 10.10** or later to run.
-* **OS X El Capitan 10.11** or later is required to make macOS Ventura installers.
+* **OS X El Capitan 10.11** or later is required to make installers for macOS Ventura and later.
 
-The patcher is designed to target **macOS Big Sur 11.x to macOS Ventura 13.x**.
+The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
 * Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
 :::
 
@@ -32,7 +32,7 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Ventura 13.x**.
 | MacBook (13-inch, Mid 2010) | `MacBook7,1` | ^^ | 
 | MacBook (Retina, 12-inch, Early 2015) | `MacBook8,1` | - [Legacy Metal (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) | 
 | MacBook (Retina, 12-inch, Early 2016) | `MacBook9,1` | ^^ | 
-| MacBook (Retina, 12-inch, 2017) | `MacBook10,1` | Supported by Apple | 
+| MacBook (Retina, 12-inch, 2017) | `MacBook10,1` | - Supported by OpenCore Legacy Patcher | 
 
 ### MacBook Air
 
@@ -77,12 +77,12 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Ventura 13.x**.
 | MacBook Pro (Retina, 15-inch, Mid 2015) | `MacBookPro11,4`<br>`MacBookPro11,5` | ^^ | 
 | MacBook Pro (Retina, 13-inch, Early 2015) | `MacBookPro12,1` | ^^ | 
 | MacBook Pro (13-inch, 2016, 2 Thunderbolt 3 ports) | `MacBookPro13,1` | ^^ | 
-| MacBook Pro (13-inch, 2016, 4 Thunderbolt 3 ports) | `MacBookPro13,2` | ^^ | 
+| MacBook Pro (13-inch, 2016, 4 Thunderbolt 3 ports) | `MacBookPro13,2` | - [Legacy Metal (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)<br>- [T1 Support (macOS 14+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103) | 
 | MacBook Pro (15-inch, 2016) | `MacBookPro13,3` | ^^ | 
-| MacBook Pro (13-inch, 2017, 2 Thunderbolt 3 ports) | `MacBookPro14,1` | - Supported by Apple | 
-| MacBook Pro (13-inch, 2017, 4 Thunderbolt 3 ports) | `MacBookPro14,2` | ^^ | 
-| MacBook Pro (15-inch, 2017) | `MacBookPro14,3` | ^^ | 
-| MacBook Pro (13-inch, 2018, 4 Thunderbolt 3 ports)<br>MacBook Pro (13-inch, 2019, 4 Thunderbolt 3 ports) | `MacBookPro15,2` | ^^ | 
+| MacBook Pro (13-inch, 2017, 2 Thunderbolt 3 ports) | `MacBookPro14,1` | - Supported by OpenCore Legacy Patcher | 
+| MacBook Pro (13-inch, 2017, 4 Thunderbolt 3 ports) | `MacBookPro14,2` | - [T1 Support (macOS 14+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103) | 
+| MacBook Pro (15-inch, 2017) | `MacBookPro14,3` | - [Legacy Metal (macOS 14+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)<br>- [T1 Support (macOS 14+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103) | 
+| MacBook Pro (13-inch, 2018, 4 Thunderbolt 3 ports)<br>MacBook Pro (13-inch, 2019, 4 Thunderbolt 3 ports) | `MacBookPro15,2` | - Supported by Apple | 
 | MacBook Pro (15-inch, 2018)<br>MacBook Pro (15-inch, 2019) | `MacBookPro15,1` | ^^ | 
 | MacBook Pro (13-inch, 2019, 2 Thunderbolt 3 ports) | `MacBookPro15,4` | ^^ | 
 | MacBook Pro (16-inch, 2019) | `MacBookPro16,1`<br>`MacBookPro16,4` | ^^ | 
@@ -122,10 +122,10 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Ventura 13.x**.
 | iMac (21.5-inch, Late 2015) | `iMac16,1` | ^^ |
 | iMac (Retina 4K, 21.5-inch, Late 2015) | `iMac16,2` | ^^ |
 | iMac (Retina 5K, 27-inch, Late 2015) | `iMac17,1` | ^^ |
-| iMac (21.5-inch, 2017) | `iMac18,1` | - Supported by Apple |
+| iMac (21.5-inch, 2017) | `iMac18,1` | - Supported by OpenCore Legacy Patcher |
 | iMac (Retina 4K, 21.5-inch, 2017) | `iMac18,2` | ^^ |
 | iMac (Retina 5K, 27-inch, 2017) | `iMac18,3` | ^^ |
-| iMac (Retina 5K, 27-inch, 2019) | `iMac19,1` | ^^ |
+| iMac (Retina 5K, 27-inch, 2019) | `iMac19,1` | - Supported by Apple |
 | iMac (Retina 4K, 21.5-inch, 2019) | `iMac19,2` | ^^ |
 | iMac (Retina 5K, 27-inch, 2020) | `iMac20,1`<br>`iMac20,2` | ^^ |
 | iMac Pro (2017) | `iMacPro1,1` | ^^ |
