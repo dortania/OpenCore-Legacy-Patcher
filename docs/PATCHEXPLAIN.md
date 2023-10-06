@@ -345,6 +345,14 @@ Unfortunately certain on-disk patches are required to achieve full functionality
     * Replace VSLGestalt to IOLockLock or any other known symbol of the same length.
 
 * NVIDIA Web Drivers Binaries 
+  * GeForceAIRPluginWeb.bundle
+  * GeForceGLDriverWeb.bundle
+  * GeForceMTLDriverWeb.bundle
+  * GeForceVADriverWeb.bundle
+  * GeForceTeslaGAWeb.bundle
+  * GeForceTeslaGLDriverWeb.bundle
+  * GeForceTeslaVADriverWeb.bundle
+  * GPUCompiler.framework
   * GeForceWeb.kext
   * NVDAGF100HalWeb.kext
   * NVDAGK100HalWeb.kext
