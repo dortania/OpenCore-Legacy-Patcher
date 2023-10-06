@@ -999,7 +999,7 @@ class SystemPatchDictionary():
                             "AppleIntelBDWGraphics.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AppleIntelBDWGraphicsFramebuffer.kext": "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
                             "AppleIntelBDWGraphicsGLDriver.bundle":  "12.5",
-                            "AppleIntelBDWGraphicsMTLDriver.bundle": "12.5",
+                            "AppleIntelBDWGraphicsMTLDriver.bundle": "12.5" if self.os_major < os_data.os_data.ventura else "12.5-22",
                             "AppleIntelBDWGraphicsVADriver.bundle":  "12.5",
                             "AppleIntelBDWGraphicsVAME.bundle":      "12.5",
                             "AppleIntelGraphicsShared.bundle":       "12.5",

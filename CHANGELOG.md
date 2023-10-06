@@ -1,5 +1,12 @@
 # OpenCore Legacy Patcher changelog
 
+## 1.1.0
+- Resolve rendering issues on Intel Broadwell iGPUs
+- Update non-Metal Binaries for macOS Sonoma:
+  - Resolve unresponsive Weather app
+  - Resolve full screen menubar covering the app toolbar
+  - Resolve unfocused password windows
+
 ## 1.0.1
 - Resolve rendering issues on Intel Ivy Bridge iGPUs
 - Update non-Metal Binaries for macOS Sonoma:
