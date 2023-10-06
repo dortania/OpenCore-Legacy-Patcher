@@ -6,6 +6,9 @@
   - Resolve unresponsive Weather app
   - Resolve full screen menubar covering the app toolbar
   - Resolve unfocused password windows
+- Enable OpenCore Vaulting
+  - Ensures that OpenCore is not corrupted or maliciously tampered with
+  - Developers who wish to modify their EFIs can disable "OpenCore Vaulting" in Developer settings
 
 ## 1.0.1
 - Resolve rendering issues on Intel Ivy Bridge iGPUs
