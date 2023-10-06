@@ -318,187 +318,6 @@ Unfortunately certain on-disk patches are required to achieve full functionality
 
 :::
 
-::: details Legacy Wireless Patches (12.0+)
-
-Applicable for BCM94328, BCM94322 and Atheros Wifi cards
-
-### CoreServices
-
-* WiFiAgent.app
-
-### /usr/libexec
-
-* airportd
-
-:::
-
-::: details NVIDIA Kepler Graphics Acceleration Patches (12.0+)
-
-### Extensions
-
-* GeForce.kext
-* GeForceAIRPlugin.bundle
-* GeForceGLDriver.bundle
-* GeForceMTLDriver.bundle
-* GeForceVADriver.bundle
-* NVDAGF100Hal.kext
-* NVDAGK100Hal.kext
-* NVDAResman.kext
-* NVDAStartup.kext
-
-### Frameworks
-
-* OpenCL (libCLVMNVPTXPlugin.dylib, NVPTX.dylib)
-  * Reason: Re-add Kepler hardware acceleration support
-* Metal 
-  * Reason: 3802 based GPU's broken by 13.3, requiring a Metal downgrade to 13.2.1
-
-### PrivateFrameworks
-
-* MTLCompiler
-  * Reason: 3802 based GPU's broken by 13.3, requiring a MTLCompiler downgrade to 13.2.1
-* GPUCompiler
-  * Reason: 3802 based GPU's broken by 13.3, requiring a GPUCompiler downgrade to 13.2.1
-
-:::
-
-
-::: details Intel Ivy Bridge Graphics Acceleration Patches (12.0+)
-
-### Extensions
-
-* AppleIntelIVBVA.bundle
-* AppleIntelFramebufferCapri.kext
-* AppleIntelGraphicsShared.bundle
-* AppleIntelHD4000Graphics.kext
-* AppleIntelHD4000GraphicsGLDriver.bundle
-* AppleIntelHD4000GraphicsMTLDriver.bundle
-* AppleIntelHD4000GraphicsVADriver.bundle
-
-### PrivateFrameworks
-
-* AppleGVA/AppleGVACore
-  * Reason: Enable DRM support
-* MTLCompiler
-  * Reason: 3802 based GPU's broken by 13.3, requiring a MTLCompiler downgrade to 13.2.1
-* GPUCompiler
-  * Reason: 3802 based GPU's broken by 13.3, requiring a GPUCompiler downgrade to 13.2.1
-
-### Frameworks
-
-* OpenCL (libCLVMIGILPlugin.dylib)
-  * Reason: Re-add Ivy Bridge hardware acceleration support
-* WebKit (com.apple.WebProcess.sb)
-  * Reason: Re-add Ivy Bridge Safari rendering support
-* Metal 
-  * Reason:  3802 based GPU's broken by 13.3, requiring a Metal downgrade to 13.2.1
-:::
-
-::: details Intel Haswell Graphics Acceleration Patches (13.0+)
-
-### Extensions 
-
-* AppleIntelFramebufferAzul.kext
-* AppleIntelHD5000Graphics.kext
-* AppleIntelHD5000GraphicsGLDriver.bundle
-* AppleIntelHD5000GraphicsMTLDriver.bundle
-* AppleIntelHD5000GraphicsVADriver.bundle 
-* AppleIntelHSWVA.bundle
-* AppleIntelGraphicsShared.bundle
-
-### Frameworks 
-
-* Metal 
-  * Reason:  3802 based GPU's broken by 13.3, requiring a Metal downgrade to 13.2.1
-
-### PrivateFrameworks
-
-* MTLCompiler
-  * Reason: 3802 based GPU's broken by 13.3, requiring a MTLCompiler downgrade to 13.2.1
-* GPUCompiler
-  * Reason: 3802 based GPU's broken by 13.3, requiring a GPUCompiler downgrade to 13.2.1
-
-:::
-
-::: details Intel Broadwell Graphics Acceleration Patches (13.0+)
-
-### Extensions 
-
-* AppleIntelBDWGraphics.kext
-* AppleIntelBDWGraphicsFramebuffer.kext
-* AppleIntelBDWGraphicsGLDriver.bundle
-* AppleIntelBDWGraphicsMTLDriver.bundle
-* AppleIntelBDWGraphicsVADriver.bundle
-* AppleIntelBDWGraphicsVAME.bundle
-* AppleIntelGraphicsShared.bundle
-
-
-
-:::
-
-::: details Intel Skylake Graphics Acceleration Patches (13.0+)
-
-### Extensions 
-
-* AppleIntelSKLGraphics.kext
-* AppleIntelSKLGraphicsFramebuffer.kext
-* AppleIntelSKLGraphicsGLDriver.bundle
-* AppleIntelSKLGraphicsMTLDriver.bundle
-* AppleIntelSKLGraphicsVADriver.bundle
-* AppleIntelSKLGraphicsVAME.bundle
-* AppleIntelGraphicsShared.bundle
-
-
-:::
-
-::: details AMD Legacy Vega Graphics Acceleration Patches (13.0+)
-
-### Extensions
-
-* AMDRadeonX5000.kext
-* AMDRadeonVADriver2.bundle
-* AMDRadeonX5000GLDriver.bundle
-* AMDRadeonX5000MTLDriver.bundle
-* AMDRadeonX5000Shared.bundle
-* AMDShared.bundle
-
-:::
-
-::: details AMD Legacy Polaris Graphics Acceleration Patches (13.0+)
-
-### Extensions
-
-* AMDRadeonX4000.kext
-* AMDRadeonX4000HWServices.kext
-* AMDRadeonVADriver2.bundle
-* AMDRadeonX4000GLDriver.bundle
-* AMDMTLBronzeDriver.bundle
-* AMDShared.bundle
-
-:::
-
-::: details AMD Legacy GCN Graphics Acceleration Patches
-
-### Extensions
-
-* AMD7000Controller.kext
-* AMD8000Controller.kext
-* AMD9000Controller.kext
-* AMD9500Controller.kext
-* AMD10000Controller.kext
-* AMDRadeonX4000.kext
-* AMDRadeonX4000HWServices.kext
-* AMDFramebuffer.kext
-* AMDSupport.kext
-* AMDRadeonVADriver.bundle
-* AMDRadeonVADriver2.bundle
-* AMDRadeonX4000GLDriver.bundle
-* AMDMTLBronzeDriver.bundle
-* AMDShared.bundle
-
-
-
-
 ::: details non-Metal Graphics Acceleration Patches (11.0+)
 
 #### General Patches
@@ -593,5 +412,215 @@ Applicable for BCM94328, BCM94322 and Atheros Wifi cards
   * Logic: Copied from Mojave
 * SkyLight.framework
   * Logic: Copied from Mojave, heavy modifications/shims
+
+:::
+
+::: details Legacy Wireless Patches (12.0+)
+
+Applicable for BCM94328, BCM94322 and Atheros Wifi cards
+
+### CoreServices
+
+* WiFiAgent.app
+
+### /usr/libexec
+
+* airportd
+
+:::
+
+::: details NVIDIA Kepler Graphics Acceleration Patches (12.0+)
+
+### Extensions
+
+* GeForce.kext
+* GeForceAIRPlugin.bundle
+* GeForceGLDriver.bundle
+* GeForceMTLDriver.bundle
+* GeForceVADriver.bundle
+* NVDAGF100Hal.kext
+* NVDAGK100Hal.kext
+* NVDAResman.kext
+* NVDAStartup.kext
+
+### Frameworks
+
+* OpenCL (libCLVMNVPTXPlugin.dylib, NVPTX.dylib)
+  * Reason: Re-add Kepler hardware acceleration support
+* Metal 
+  * Reason: 3802 based GPU's broken by 13.3, requiring a Metal downgrade to 13.2.1
+
+### PrivateFrameworks
+
+* MTLCompiler
+  * Reason: 3802 based GPU's broken by 13.3, requiring a MTLCompiler downgrade to 13.2.1
+* GPUCompiler
+  * Reason: 3802 based GPU's broken by 13.3, requiring a GPUCompiler downgrade to 13.2.1
+
+:::
+
+
+::: details Intel Ivy Bridge Graphics Acceleration Patches (12.0+)
+
+### Extensions
+
+* AppleIntelIVBVA.bundle
+* AppleIntelFramebufferCapri.kext
+* AppleIntelGraphicsShared.bundle
+* AppleIntelHD4000Graphics.kext
+* AppleIntelHD4000GraphicsGLDriver.bundle
+* AppleIntelHD4000GraphicsMTLDriver.bundle
+* AppleIntelHD4000GraphicsVADriver.bundle
+
+### PrivateFrameworks
+
+* AppleGVA/AppleGVACore
+  * Reason: Enable DRM support
+* MTLCompiler
+  * Reason: 3802 based GPU's broken by 13.3, requiring a MTLCompiler downgrade to 13.2.1
+* GPUCompiler
+  * Reason: 3802 based GPU's broken by 13.3, requiring a GPUCompiler downgrade to 13.2.1
+
+### Frameworks
+
+* OpenCL (libCLVMIGILPlugin.dylib)
+  * Reason: Re-add Ivy Bridge hardware acceleration support
+* WebKit (com.apple.WebProcess.sb)
+  * Reason: Re-add Ivy Bridge Safari rendering support
+* Metal 
+  * Reason:  3802 based GPU's broken by 13.3, requiring a Metal downgrade to 13.2.1
+
+:::
+
+::: details Intel Haswell Graphics Acceleration Patches (13.0+)
+
+### Extensions 
+
+* AppleIntelFramebufferAzul.kext
+* AppleIntelHD5000Graphics.kext
+* AppleIntelHD5000GraphicsGLDriver.bundle
+* AppleIntelHD5000GraphicsMTLDriver.bundle
+* AppleIntelHD5000GraphicsVADriver.bundle 
+* AppleIntelHSWVA.bundle
+* AppleIntelGraphicsShared.bundle
+
+### Frameworks 
+
+* Metal 
+  * Reason:  3802 based GPU's broken by 13.3, requiring a Metal downgrade to 13.2.1
+
+### PrivateFrameworks
+
+* MTLCompiler
+  * Reason: 3802 based GPU's broken by 13.3, requiring a MTLCompiler downgrade to 13.2.1
+* GPUCompiler
+  * Reason: 3802 based GPU's broken by 13.3, requiring a GPUCompiler downgrade to 13.2.1
+
+:::
+
+::: details Intel Broadwell Graphics Acceleration Patches (13.0+)
+
+### Extensions 
+
+* AppleIntelBDWGraphics.kext
+* AppleIntelBDWGraphicsFramebuffer.kext
+* AppleIntelBDWGraphicsGLDriver.bundle
+* AppleIntelBDWGraphicsMTLDriver.bundle
+* AppleIntelBDWGraphicsVADriver.bundle
+* AppleIntelBDWGraphicsVAME.bundle
+* AppleIntelGraphicsShared.bundle
+
+:::
+
+::: details Intel Skylake Graphics Acceleration Patches (13.0+)
+
+### Extensions 
+
+* AppleIntelSKLGraphics.kext
+* AppleIntelSKLGraphicsFramebuffer.kext
+* AppleIntelSKLGraphicsGLDriver.bundle
+* AppleIntelSKLGraphicsMTLDriver.bundle
+* AppleIntelSKLGraphicsVADriver.bundle
+* AppleIntelSKLGraphicsVAME.bundle
+* AppleIntelGraphicsShared.bundle
+
+
+:::
+
+::: details AMD Legacy Vega Graphics Acceleration Patches (13.0+)
+
+### Extensions
+
+* AMDRadeonX5000.kext
+* AMDRadeonVADriver2.bundle
+* AMDRadeonX5000GLDriver.bundle
+* AMDRadeonX5000MTLDriver.bundle
+* AMDRadeonX5000Shared.bundle
+* AMDShared.bundle
+
+:::
+
+::: details AMD Legacy Polaris Graphics Acceleration Patches (13.0+)
+
+### Extensions
+
+* AMDRadeonX4000.kext
+* AMDRadeonX4000HWServices.kext
+* AMDRadeonVADriver2.bundle
+* AMDRadeonX4000GLDriver.bundle
+* AMDMTLBronzeDriver.bundle
+* AMDShared.bundle
+
+:::
+
+::: details AMD Legacy GCN Graphics Acceleration Patches
+
+### Extensions
+
+* AMD7000Controller.kext
+* AMD8000Controller.kext
+* AMD9000Controller.kext
+* AMD9500Controller.kext
+* AMD10000Controller.kext
+* AMDRadeonX4000.kext
+* AMDRadeonX4000HWServices.kext
+* AMDFramebuffer.kext
+* AMDSupport.kext
+* AMDRadeonVADriver.bundle
+* AMDRadeonVADriver2.bundle
+* AMDRadeonX4000GLDriver.bundle
+* AMDMTLBronzeDriver.bundle
+* AMDShared.bundle
+
+:::
+
+::: details Modern Wireless Patches (14.0+)
+
+### /usr/libexec
+
+* airportd
+* wifianalyticsd
+* wifip2pd
+
+### Frameworks
+* CoreWLAN.framework
+
+### PrivateFrameworks
+* CoreAnalytics.framework
+* CoreWiFi.framework
+* IO80211.framework
+* WiFiAnalytics.framework
+* WiFiPolicy.framework
+* WiFiPeerToPeer.framework
+
+:::
+
+::: details PCIe FaceTime Camera (14.0+)
+
+### CoreMediaIO/Plug-Ins/DAL
+* AppleCamera.plugin
+
+### LaunchDaemons
+* com.apple.cmio.AppleCameraAssistant.plist
 
 :::
