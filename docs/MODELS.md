@@ -32,7 +32,7 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
 | MacBook (13-inch, Mid 2010) | `MacBook7,1` | ^^ | 
 | MacBook (Retina, 12-inch, Early 2015) | `MacBook8,1` | - [Legacy Metal (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) | 
 | MacBook (Retina, 12-inch, Early 2016) | `MacBook9,1` | ^^ | 
-| MacBook (Retina, 12-inch, 2017) | `MacBook10,1` | ^^ | 
+| MacBook (Retina, 12-inch, 2017) | `MacBook10,1` | - Supported by OpenCore Legacy Patcher | 
 
 ### MacBook Air
 
@@ -79,9 +79,9 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
 | MacBook Pro (13-inch, 2016, 2 Thunderbolt 3 ports) | `MacBookPro13,1` | ^^ | 
 | MacBook Pro (13-inch, 2016, 4 Thunderbolt 3 ports) | `MacBookPro13,2` | - [Legacy Metal (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)<br>- [T1 Support (macOS 14+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103) | 
 | MacBook Pro (15-inch, 2016) | `MacBookPro13,3` | ^^ | 
-| MacBook Pro (13-inch, 2017, 2 Thunderbolt 3 ports) | `MacBookPro14,1` | - [Legacy Metal (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) | 
-| MacBook Pro (13-inch, 2017, 4 Thunderbolt 3 ports) | `MacBookPro14,2` | - [Legacy Metal (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)<br>- [T1 Support (macOS 14+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103) | 
-| MacBook Pro (15-inch, 2017) | `MacBookPro14,3` | ^^ | 
+| MacBook Pro (13-inch, 2017, 2 Thunderbolt 3 ports) | `MacBookPro14,1` | - Supported by OpenCore Legacy Patcher | 
+| MacBook Pro (13-inch, 2017, 4 Thunderbolt 3 ports) | `MacBookPro14,2` | - [T1 Support (macOS 14+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103) | 
+| MacBook Pro (15-inch, 2017) | `MacBookPro14,3` | - [Legacy Metal (macOS 14+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)<br>- [T1 Support (macOS 14+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1103) | 
 | MacBook Pro (13-inch, 2018, 4 Thunderbolt 3 ports)<br>MacBook Pro (13-inch, 2019, 4 Thunderbolt 3 ports) | `MacBookPro15,2` | - Supported by Apple | 
 | MacBook Pro (15-inch, 2018)<br>MacBook Pro (15-inch, 2019) | `MacBookPro15,1` | ^^ | 
 | MacBook Pro (13-inch, 2019, 2 Thunderbolt 3 ports) | `MacBookPro15,4` | ^^ | 
@@ -122,7 +122,7 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
 | iMac (21.5-inch, Late 2015) | `iMac16,1` | ^^ |
 | iMac (Retina 4K, 21.5-inch, Late 2015) | `iMac16,2` | ^^ |
 | iMac (Retina 5K, 27-inch, Late 2015) | `iMac17,1` | ^^ |
-| iMac (21.5-inch, 2017) | `iMac18,1` | ^^ |
+| iMac (21.5-inch, 2017) | `iMac18,1` | - Supported by OpenCore Legacy Patcher |
 | iMac (Retina 4K, 21.5-inch, 2017) | `iMac18,2` | ^^ |
 | iMac (Retina 5K, 27-inch, 2017) | `iMac18,3` | ^^ |
 | iMac (Retina 5K, 27-inch, 2019) | `iMac19,1` | - Supported by Apple |
