@@ -1,16 +1,18 @@
 #!/bin/sh
 
+# Modified by Jazzzny for OpenCore Legacy Patcher on 06.10.23.
+
 abort() {
   echo "Fatal error: ${1}!"
   exit 1
 }
 
+# shellcheck disable=SC2317
 cleanup() {
-  echo "Cleaning up keys"
   rm -rf "${KeyPath}"
 }
 
-if [ ! -x /usr/bin/dirname ] || [ ! -x /bin/chmod ] || [ ! -x /bin/mkdir ] || [ ! -x /usr/bin/openssl ] || [ ! -x /bin/rm ] || [ ! -x /usr/bin/strings ] || [ ! -x /usr/bin/grep ] || [ ! -x /usr/bin/cut ] || [ ! -x /bin/dd ] || [ ! -x /usr/bin/uuidgen ] ; then
+if [ ! -x /usr/bin/dirname ] || [ ! -x /bin/chmod ] || [ ! -x /bin/mkdir ] || [ ! -x /bin/rm ] || [ ! -x /usr/bin/grep ] || [ ! -x /usr/bin/awk ] || [ ! -x /bin/dd ] || [ ! -x /usr/bin/uuidgen ] ; then
   abort "Unix environment is broken!"
 fi
 
@@ -22,10 +24,8 @@ if [ "$OCPath" = "" ]; then
   OCPath=../../EFI/OC
 fi
 
-KeyPath="/tmp/Keys-$(/usr/bin/uuidgen)"
+KeyPath="/tmp/$(/usr/bin/uuidgen)"
 OCBin="${OCPath}/OpenCore.efi"
-RootCA="${KeyPath}/ca.pem"
-PrivKey="${KeyPath}/privatekey.cer"
 PubKey="${KeyPath}/vault.pub"
 
 if [ ! -d "${OCPath}" ]; then
@@ -58,31 +58,14 @@ fi
 
 ./create_vault.sh "${OCPath}" || abort "create_vault.sh returns errors!"
 
-if [ ! -f "${RootCA}" ]; then
-  /usr/bin/openssl genrsa -out "${RootCA}" 2048 || abort "Failed to generate CA"
-  if [ -f "${PrivKey}" ]; then
-    echo "WARNING: Private key exists without CA"
-  fi
-fi
-
-/bin/rm -fP "${PrivKey}" || abort "Failed to remove ${PrivKey}"
-echo "Issuing a new private key..."
-/usr/bin/openssl req -new -x509 -key "${RootCA}" -out "${PrivKey}" -days 1825 -subj "/C=WO/L=127.0.0.1/O=Acidanthera/OU=Acidanthera OpenCore/CN=Greetings from Acidanthera and WWHC" || abort "Failed to issue private key!"
-
-/bin/rm -fP "${PubKey}" || abort "Failed to remove ${PubKey}"
-echo "Getting public key based off private key..."
-./RsaTool -cert "${PrivKey}" > "${PubKey}" || abort "Failed to get public key"
-
-echo "Signing ${OCBin}..."
+echo "Signing OpenCore..."
 ./RsaTool -sign "${OCPath}/vault.plist" "${OCPath}/vault.sig" "${PubKey}" || abort "Failed to patch ${PubKey}"
-
-echo "Bin-patching ${OCBin}..."
-off=$(($(/usr/bin/strings -a -t d "${OCBin}" | /usr/bin/grep "=BEGIN OC VAULT=" | /usr/bin/cut -f1 -d' ') + 16))
+off=$(($(./strings -a -t d "${OCBin}" | /usr/bin/grep "=BEGIN OC VAULT=" | /usr/bin/awk '{print $1}') + 16))
 if [ "${off}" -le 16 ]; then
   abort "${OCBin} is borked"
 fi
 
 /bin/dd of="${OCBin}" if="${PubKey}" bs=1 seek="${off}" count=528 conv=notrunc || abort "Failed to bin-patch ${OCBin}"
 
-echo "All done!"
+echo "Signing complete"
 exit 0
