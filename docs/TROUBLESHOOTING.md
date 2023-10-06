@@ -68,7 +68,7 @@ bless --mount "/Volumes/Macintosh HD" --bootefi --last-sealed-snapshot
 ```
 After that, remove problematic kexts
 ```sh
-find “/Volumes/Macintosh HD/Library/Extensions” -name “*.kext” -not -name “HighPoint*” -exec rm -rf {} \;
+find “/Volumes/Macintosh HD/Library/Extensions” -name “*.kext” -not -name “HighPoint*” -not -name "SoftRAID*" -exec rm -rf {} \;
 ```
 
 Then restart and now your system should be restored to the unpatched snapshot and should be able to boot again.
