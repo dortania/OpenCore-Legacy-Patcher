@@ -836,6 +836,15 @@ class SettingsFrame(wx.Frame):
                         "Export constants.py values to a txt file.",
                     ],
                 },
+                "OpenCore Vaulting": {
+                    "type": "checkbox",
+                    "value": self.constants.vault,
+                    "variable": "vault",
+                    "description": [
+                        "Untick to disable vaulting for",
+                        "testing purposes."
+                    ],
+                },
                 "Developer Root Volume Patching": {
                     "type": "title",
                 },
