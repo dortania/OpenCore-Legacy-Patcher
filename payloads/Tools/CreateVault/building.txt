@@ -1,3 +1,0 @@
-RsaTool - Download OpenCorePkg Source Code, patch Utilities -> RsaTool -> build_libressl.sh - "10.6" to "10.9", add "-mmacosx-version-min=10.9" to Makefile CFLAGS and LDFLAGS, then build_libressl.sh and make.
-strings - (May require an older version of macOS to compile) Download binutils Source Code, CFLAGS="-mmacosx-version-min=10.9" LDFLAGS="-mmacosx-version-min=10.9" ./configure --diable-nls --prefix=$(pwd)/bin, make configure-host, then make LDFLAGS="-all-static".
-openssl - Download OpenSSL Source Code, ./config -no-shared -mmacosx-version-min=10.9, then make.
