@@ -2,12 +2,13 @@
 
 ## 1.1.0
 - Resolve rendering issues on Intel Broadwell iGPUs
+- Resolve Paravirtualized Graphics support for 3802 GPUs on macOS Sonoma
 - Update non-Metal Binaries for macOS Sonoma:
   - Resolve unresponsive Weather app
   - Resolve full screen menubar covering the app toolbar
   - Resolve unfocused password windows
 - Increment Binaries:
-  - PatcherSupportPkg 1.3.4 - release
+  - PatcherSupportPkg 1.3.5 - release
   - AirportBrcmFixup 2.1.8 - release
   - BlueToolFixup 2.6.8 - release
   - RestrictEvents 1.1.3 - release
