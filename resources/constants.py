@@ -187,7 +187,7 @@ class Constants:
         ## Security Settings
         self.sip_status:     bool = True  #  System Integrity Protection
         self.secure_status:  bool = False  # Secure Boot Model
-        self.vault:          bool = True  # EFI Vault
+        self.vault:          bool = False  # EFI Vault
         self.disable_cs_lv:  bool = False  # Disable Library validation
         self.disable_amfi:   bool = False  # Disable AMFI
 
