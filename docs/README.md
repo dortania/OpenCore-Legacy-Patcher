@@ -10,8 +10,8 @@ meta:
   content: Experience macOS just like before
 
 features:
-- title: Built with security in mind
-  details: Supporting System Integrity Protection(SIP), FileVault 2, .im4m Secure Boot and Vaulting. For many machines, you're just as secure as a supported Mac.
+# - title: Built with security in mind
+#   details: Supporting System Integrity Protection(SIP), FileVault 2, .im4m Secure Boot and Vaulting. We make an effort to ensure your system is as secure as possible.
 - title: Native OTA updates
   details: Install updates the moment they come out, with native System Preferences support, just like a supported Mac.
 - title: Zero firmware patching
@@ -22,5 +22,5 @@ features:
   details: Unlock Sidecar, AirPlay to Mac, Night Shift, and Universal Control, even on natively supported models!
 - title: A helpful community
   details: Whether it's getting started or learning the specifics, you can always find answers with our amazing community of tinkerers, developers, and dreamers.
-footer: Copyright © Dortania 2020-2022
+footer: Copyright © Dortania 2020-2023
 ---
