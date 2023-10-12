@@ -134,8 +134,8 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
 
 | Model Name | Identifier | Tagged Issues |
 | :--- | :--- | :--- | 
-| Mac Pro (Early 2008) | `MacPro3,1` | - Recommend upgrade to Metal GPU<br>- [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)<br>- Remove stock Bluetooth to prevent panics |
-| Mac Pro (Early 2009) | `MacPro4,1` | - Recommend upgrade to Metal GPU<br>- [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021) |
+| Mac Pro (Early 2008) | `MacPro3,1` | -  [Recommend upgrade to Metal GPU](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)<br>- [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)<br>- Remove stock Bluetooth to prevent panics |
+| Mac Pro (Early 2009) | `MacPro4,1` | - [Recommend upgrade to Metal GPU](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)<br>- [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021) |
 | Mac Pro (Mid 2010)<br>Mac Pro (Mid 2012) | `MacPro5,1` | ^^ |
 | Mac Pro (Late 2013) | `MacPro6,1` | - [Legacy Metal (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) |
 | Mac Pro (2019) | `MacPro7,1` | - Supported by Apple |
