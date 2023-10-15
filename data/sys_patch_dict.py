@@ -13,7 +13,7 @@ class SystemPatchDictionary():
 
 
     Patchset Schema:
-        Supports 6 types of higher level keys:
+        Supports following types of higher level keys:
         - OS Support: Supported OSes by patches
             - Minimum OS Support:  Minimum supported OS version
                 - OS Major:          Major XNU Kernel version
@@ -28,6 +28,9 @@ class SystemPatchDictionary():
             - Location:
                 - File (dict: { "File": "Source" })
         - Remove: Files to remove
+            - Location:
+                - File (array: [ "File" ])
+        - Remove Non-Root: Files to remove from data partition
             - Location:
                 - File (array: [ "File" ])
         - Processes: Additional processes to run
@@ -1287,6 +1290,7 @@ class SystemPatchDictionary():
                         },
                     },
                 },
+                # With macOS 14.1, daemon won't load if not on root volume
                 "PCIe FaceTime Camera": {
                     "Display Name": "Miscellaneous: PCIe FaceTime Camera",
                     "OS Support": {
@@ -1299,14 +1303,22 @@ class SystemPatchDictionary():
                             "OS Minor": 99
                         },
                     },
-                    "Install Non-Root": {
-                        "/Library/CoreMediaIO/Plug-Ins/DAL": {
+                    "Install": {
+                        "/System/Library/CoreMediaIO/Plug-Ins/DAL": {
                             "AppleCamera.plugin":  "14.0 Beta 1"
                         },
-                        "/Library/LaunchDaemons": {
+                        "/System/Library/LaunchDaemons": {
                             "com.apple.cmio.AppleCameraAssistant.plist":  "14.0 Beta 1"
                         },
                     },
+                    "Remove Non-Root": {
+                        "/Library/CoreMediaIO/Plug-Ins/DAL": [
+                            "AppleCamera.plugin"
+                        ],
+                        "/Library/LaunchDaemons": [
+                            "com.apple.cmio.AppleCameraAssistant.plist"
+                        ],
+                    }
                 },
             },
         }
