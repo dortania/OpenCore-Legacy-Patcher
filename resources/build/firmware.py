@@ -215,12 +215,13 @@ class BuildFirmware:
         # CSM check
         # For model support, check for GUID in firmware and as well as Bootcamp Assistant's Info.plist ('PreUEFIModels' key)
         # Ref: https://github.com/acidanthera/OpenCorePkg/blob/0.9.5/Platform/OpenLegacyBoot/OpenLegacyBoot.c#L19
-        # if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value and self.model != "MacPro6,1":
-        #     logging.info("- Enabling CSM support")
-        #     support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenLegacyBoot.efi", "UEFI", "Drivers")["Enabled"] = True
-        # else:
-        #     # Shipped alongside OpenCorePkg, so remove if unused
-        #     (self.constants.drivers_path / Path("OpenLegacyBoot.efi")).unlink()
+        if Path(self.constants.drivers_path / Path("OpenLegacyBoot.efi")).exists():
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value and self.model != "MacPro6,1":
+                logging.info("- Enabling CSM support")
+                support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenLegacyBoot.efi", "UEFI", "Drivers")["Enabled"] = True
+            else:
+                # Shipped alongside OpenCorePkg, so remove if unused
+                (self.constants.drivers_path / Path("OpenLegacyBoot.efi")).unlink()
 
     def _firmware_compatibility_handling(self) -> None:
         """
