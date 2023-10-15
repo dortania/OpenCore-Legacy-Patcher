@@ -1304,7 +1304,7 @@ class SystemPatchDictionary():
                         },
                     },
                     "Install": {
-                        "/System/Library/CoreMediaIO/Plug-Ins/DAL": {
+                        "/System/Library/Frameworks/CoreMediaIO.framework/Versions/A/Resources": {
                             "AppleCamera.plugin":  "14.0 Beta 1"
                         },
                         "/System/Library/LaunchDaemons": {
