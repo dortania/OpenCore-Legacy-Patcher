@@ -70,6 +70,7 @@ class SystemPatchDictionary():
         self.macOS_12_4:          float = 21.5
         self.macOS_12_5:          float = 21.6
         self.macOS_13_3:          float = 22.4
+        self.macOS_14_1:          float = 23.1
 
         self._generate_sys_patch_dict()
 
@@ -1346,7 +1347,8 @@ class SystemPatchDictionary():
                             "libPN548_API.dylib": "13.6"
                         },
                         "/usr/libexec": {
-                            "biometrickitd": "13.6"  # Required for Touch ID
+                            "biometrickitd": "13.6",  # Required for Touch ID
+                            **({"nfcd": "14.0"} if (self.os_float >= self.macOS_14_1) else {}), # Missing symbol ('_NFDriverEnableReaderModeDynamicBBAControl')
                         },
                     },
                 },
