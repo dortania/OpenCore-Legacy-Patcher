@@ -225,14 +225,14 @@ Spoofing to any model with native Sonoma support should work, but these are the 
 **Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Ventura as long as the other requirements are met, since they aren't blacklisted.
 
 
-| Mac by name | Native SMBIOS | Spoof SMBIOS | Tested | Tested by |
-|-------------|---------------|--------------|--------|-----------|
-| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 | <span style="color:red"> NO </span> | N/A |
-| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro15,2 | ^^ | ^^ |
-| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro15,3 | ^^ | ^^
-| iMac Late 2015 21" | iMac16,x | iMac19,2 | ^^ | ^^
-| Mac mini Late 2014  | Macmini7,x | MacMini8,1 | ^^ | N/A |
-| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 | ^^ | N/A |
+| Mac by name | Native SMBIOS | Spoof SMBIOS |
+|-------------|---------------|--------------|
+| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 |
+| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro15,2 |
+| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro15,2 |
+| iMac Late 2015 21" | iMac16,x | iMac19,2 |
+| Mac mini Late 2014  | Macmini7,x | MacMini8,1 |
+| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 |
 
 :::
 
@@ -257,14 +257,14 @@ Spoofing to any model with native Ventura support should work, but these are the
 **Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Ventura as long as the other requirements are met, since they aren't blacklisted.
 
 
-| Mac by name | Native SMBIOS | Spoof SMBIOS | Tested | Tested by |
-|-------------|---------------|--------------|--------|-----------|
-| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 | <span style="color:red"> NO </span> | N/A |
-| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro14,1 | ^^ | ^^ |
-| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro14,3 | ^^ | ^^
-| iMac Late 2015 21" | iMac16,x | iMac18,2 | ^^ | ^^
-| Mac mini Late 2014  | Macmini7,x | MacMini8,1 | ^^ | N/A |
-| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 | ^^ | N/A |
+| Mac by name | Native SMBIOS | Spoof SMBIOS |
+|-------------|---------------|--------------|
+| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 |
+| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro14,1 |
+| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro14,3 |
+| iMac Late 2015 21" | iMac16,x | iMac18,2 |
+| Mac mini Late 2014  | Macmini7,x | MacMini8,1 |
+| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 |
 
 :::
 
@@ -289,14 +289,14 @@ Any model after the list of officially blacklisted Macs should be supported, but
 **Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Monterey, as long as the other requirements are met, since they aren't blacklisted.
 
 
-| Mac by name | Native SMBIOS | Spoof SMBIOS | Tested | Tested by |
-|-------------|---------------|--------------|--------|-----------|
-| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 | <span style="color:#30BCD5"> YES </span> | Hzlph |
-| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro13,1 | ^^ | ^^ |
-| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro13,3 | ^^ | ^^
-| iMac Late 2015 21" | iMac16,x | iMac18,2 | ^^ | ^^
-| Mac mini Late 2014  | Macmini7,x | MacMini8,1 | <span style="color:red"> NO </span> | N/A |
-| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 | <span style="color:#30BCD5"> YES </span> | Crystall1nedev |
+| Mac by name | Native SMBIOS | Spoof SMBIOS |
+|-------------|---------------|--------------|
+| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 |
+| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro13,1 |
+| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro13,3 |
+| iMac Late 2015 21" | iMac16,x | iMac18,2 |
+| Mac mini Late 2014  | Macmini7,x | MacMini8,1 |
+| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 |
 
 :::
 
