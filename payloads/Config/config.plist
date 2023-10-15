@@ -1711,6 +1711,24 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
+				<string>corecrypto - T1</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>23.0.0</string>
+				<key>BundlePath</key>
+				<string>corecrypto_T1.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/corecrypto_T1</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
 				<string>AppleSSE - T1</string>
 				<key>Enabled</key>
 				<false/>

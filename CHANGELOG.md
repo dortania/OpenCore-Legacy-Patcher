@@ -9,6 +9,8 @@
   - Resolve unfocused password windows
 - Resolve USB 1.1 kernel panics on macOS 14.1
 - Resolve PCIe FaceTime camera support on macOS 14.1
+- Resolve T1 Security Chip support on macOS 14
+  - Applicable for MacBookPro13,2, MacBookPro13,3, MacBookPro14,2, MacBookPro14,3
 - Increment Binaries:
   - PatcherSupportPkg 1.3.7 - release
   - AirportBrcmFixup 2.1.8 - release

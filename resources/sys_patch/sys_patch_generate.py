@@ -181,6 +181,9 @@ class GenerateRootPatchSets:
         if self.hardware_details["Miscellaneous: PCIe FaceTime Camera"] is True:
             required_patches.update({"PCIe FaceTime Camera": all_hardware_patchset["Miscellaneous"]["PCIe FaceTime Camera"]})
 
+        if self.hardware_details["Miscellaneous: T1 Security Chip"] is True:
+            required_patches.update({"T1 Security Chip": all_hardware_patchset["Miscellaneous"]["T1 Security Chip"]})
+
         if required_patches:
             host_os_float = float(f"{self.constants.detected_os}.{self.constants.detected_os_minor}")
 

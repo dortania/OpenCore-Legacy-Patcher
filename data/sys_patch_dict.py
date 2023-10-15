@@ -1320,5 +1320,35 @@ class SystemPatchDictionary():
                         ],
                     }
                 },
+                "T1 Security Chip": {
+                    "Display Name": "Miscellaneous: T1 Security Chip",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 0
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install": {
+                        "/System/Library/Frameworks": {
+                            "LocalAuthentication.framework": "13.6"  # Required for Password Authentication (SharedUtils.framework)
+                        },
+                        "/System/Library/PrivateFrameworks": {
+                            "EmbeddedOSInstall.framework": "13.6"  # Required for biometrickitd
+                        },
+                        # Required for Apple Pay
+                        "/usr/lib": {
+                            "libNFC_Comet.dylib": "13.6",
+                            "libNFC_HAL.dylib":   "13.6",
+                            "libPN548_API.dylib": "13.6"
+                        },
+                        "/usr/libexec": {
+                            "biometrickitd": "13.6"  # Required for Touch ID
+                        },
+                    },
+                },
             },
         }
