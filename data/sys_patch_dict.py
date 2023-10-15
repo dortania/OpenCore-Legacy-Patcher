@@ -1265,6 +1265,28 @@ class SystemPatchDictionary():
                         },
                     },
                 },
+                # Injection of UHCI/OHCI causes a panic on 14.1+
+                "Legacy USB 1.1 Extended": {
+                    "Display Name": "",
+                    "OS Support": {
+                        "Minimum OS Support": {
+                            "OS Major": os_data.os_data.sonoma,
+                            "OS Minor": 1 # macOS 14.1 (XNU 23.1)
+                        },
+                        "Maximum OS Support": {
+                            "OS Major": os_data.os_data.max_os,
+                            "OS Minor": 99
+                        },
+                    },
+                    "Install": {
+                        "/System/Library/Extensions/IOUSBHostFamily.kext/Contents/PlugIns": {
+                            "AppleUSBOHCI.kext":    "12.6.2-USB",
+                            "AppleUSBOHCIPCI.kext": "12.6.2-USB",
+                            "AppleUSBUHCI.kext":    "12.6.2-USB",
+                            "AppleUSBUHCIPCI.kext": "12.6.2-USB",
+                        },
+                    },
+                },
                 "PCIe FaceTime Camera": {
                     "Display Name": "Miscellaneous: PCIe FaceTime Camera",
                     "OS Support": {

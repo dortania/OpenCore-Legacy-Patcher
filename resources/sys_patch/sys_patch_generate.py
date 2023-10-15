@@ -176,6 +176,7 @@ class GenerateRootPatchSets:
 
         if self.hardware_details["Miscellaneous: Legacy USB 1.1"] is True:
             required_patches.update({"Legacy USB 1.1": all_hardware_patchset["Miscellaneous"]["Legacy USB 1.1"]})
+            required_patches.update({"Legacy USB 1.1 Extended": all_hardware_patchset["Miscellaneous"]["Legacy USB 1.1 Extended"]})
 
         if self.hardware_details["Miscellaneous: PCIe FaceTime Camera"] is True:
             required_patches.update({"PCIe FaceTime Camera": all_hardware_patchset["Miscellaneous"]["PCIe FaceTime Camera"]})

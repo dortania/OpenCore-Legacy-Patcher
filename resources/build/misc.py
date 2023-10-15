@@ -280,6 +280,12 @@ class BuildMiscellaneous:
         # - Ref: https://techcommunity.microsoft.com/t5/microsoft-usb-blog/reasons-to-avoid-companion-controllers/ba-p/270710
         #
         # To be paired for sys_patch_dict.py's 'Legacy USB 1.1' patchset
+        #
+        # Note: With macOS 14.1, injection of these kexts causes a panic.
+        #       To avoid this, a MaxKernel is configured with XNU 23.0.0 (macOS 14.0).
+        #       Additionally sys_patch.py stack will now patches the bins onto disk for 14.1+.
+        #       Reason for keeping the dual logic is due to potential conflicts of in-cache vs injection if we start
+        #       patching pre-14.1 hosts.
         if (
             smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value or \
             self.model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]

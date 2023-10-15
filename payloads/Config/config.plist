@@ -1377,7 +1377,7 @@
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleUSBOHCI</string>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>23.0.0</string>
 				<key>MinKernel</key>
 				<string>22.0.0</string>
 				<key>PlistPath</key>
@@ -1395,7 +1395,7 @@
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleUSBOHCIPCI</string>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>23.0.0</string>
 				<key>MinKernel</key>
 				<string>22.0.0</string>
 				<key>PlistPath</key>
@@ -1413,7 +1413,7 @@
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleUSBUHCI</string>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>23.0.0</string>
 				<key>MinKernel</key>
 				<string>22.0.0</string>
 				<key>PlistPath</key>
@@ -1431,7 +1431,7 @@
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleUSBUHCIPCI</string>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>23.0.0</string>
 				<key>MinKernel</key>
 				<string>22.0.0</string>
 				<key>PlistPath</key>
