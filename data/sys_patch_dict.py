@@ -1342,13 +1342,18 @@ class SystemPatchDictionary():
                         },
                         # Required for Apple Pay
                         "/usr/lib": {
-                            "libNFC_Comet.dylib": "13.6",
-                            "libNFC_HAL.dylib":   "13.6",
-                            "libPN548_API.dylib": "13.6"
+                            "libNFC_Comet.dylib":          "13.6",
+                            "libNFC_HAL.dylib":            "13.6",
+
+                            "libnfshared.dylib":           "13.6",
+                            "libnfshared.dylibOld.dylib":  "13.6",
+                            "libnfstorage.dylib":          "13.6",
+
+                            "libPN548_API.dylib":          "13.6"
                         },
                         "/usr/libexec": {
                             "biometrickitd": "13.6",  # Required for Touch ID
-                            **({"nfcd": "14.0"} if (self.os_float >= self.macOS_14_1) else {}), # Missing symbol ('_NFDriverEnableReaderModeDynamicBBAControl')
+                            "nfcd":          "13.6",  # Required for Apple Pay
                         },
                     },
                 },

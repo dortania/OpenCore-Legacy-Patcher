@@ -12,7 +12,7 @@
 - Resolve T1 Security Chip support on macOS 14
   - Applicable for MacBookPro13,2, MacBookPro13,3, MacBookPro14,2, MacBookPro14,3
 - Increment Binaries:
-  - PatcherSupportPkg 1.4.1 - release
+  - PatcherSupportPkg 1.4.2 - release
   - AirportBrcmFixup 2.1.8 - release
   - BlueToolFixup 2.6.8 - release
   - RestrictEvents 1.1.3 - release
