@@ -44,6 +44,14 @@ If you're unsure whether you should enable SIP, leave it as-is. Systems where yo
 
 ## Applying Post Install Volume Patches
 
+:::warning 
+
+If you need to use Migration Assistant to bring over data to your new macOS install, it is **highly recommended** to avoid restoring from inside Setup Assistant and waiting to install root patches until after the transfer is complete. If root patches were automatically installed, you can use the options available in the OCLP app to remove them. 
+
+Using Migration Assistant while patches are installed can lead to an unbootable system, requiring a reinstall of macOS.
+
+:::
+
 Post Install Volume Patches, sometimes also called root patches, are patches that have to be installed to disk for some older Macs to gain back functionality.
 
 OCLP will automatically root patch your system during a first time install **if the USB install media was created within OCLP.** Users will also be prompted to install these patches after macOS updates or whenever patches are not detected on the system. We recommend rebuilding OpenCore with the latest version of OCLP to take advantage of these new features.
@@ -60,10 +68,11 @@ Users can also see whether applicable patches have been installed, date and vers
 
 If you're using OCLP v0.4.3 or earlier, or need to run the patcher manually, you can do so with the app. There is no harm in trying to run the Patcher, as without compatible hardware, nothing will be done. You can see below on whether your hardware needs root volume patching or not.
 
+There is also an option to remove root patches, which may be required in some situations, such as switching GPUs in Mac Pros or using Migration Assistant.
+
 | Listing Patches | Patching Finished |
 | :--- | :--- |
 | ![](../images/OCLP-GUI-Root-Patch.png) | ![](../images/OCLP-GUI-Root-Patch-Finished.png) |
-
 
 :::warning
 
