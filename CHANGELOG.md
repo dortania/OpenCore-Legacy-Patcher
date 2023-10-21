@@ -2,7 +2,6 @@
 
 ## 1.1.0
 - Resolve rendering issues on Intel Broadwell iGPUs
-- Resolve Paravirtualized Graphics support for 3802 GPUs on macOS Sonoma
 - Update non-Metal Binaries for macOS Sonoma:
   - Resolve unresponsive Weather app
   - Resolve full screen menubar covering the app toolbar
