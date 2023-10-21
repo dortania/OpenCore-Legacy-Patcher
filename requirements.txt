@@ -5,3 +5,4 @@ pyinstaller
 packaging
 py_sip_xnu
 py-applescript
+markdown2

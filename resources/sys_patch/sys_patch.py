@@ -665,12 +665,16 @@ class PatchSysVolume:
         self._preflight_checks(required_patches, source_files_path)
         for patch in required_patches:
             logging.info("- Installing Patchset: " + patch)
-            if "Remove" in required_patches[patch]:
-                for remove_patch_directory in required_patches[patch]["Remove"]:
-                    logging.info("- Remove Files at: " + remove_patch_directory)
-                    for remove_patch_file in required_patches[patch]["Remove"][remove_patch_directory]:
-                        destination_folder_path = str(self.mount_location) + remove_patch_directory
-                        self._remove_file(destination_folder_path, remove_patch_file)
+            for method_remove in ["Remove", "Remove Non-Root"]:
+                if method_remove in required_patches[patch]:
+                    for remove_patch_directory in required_patches[patch][method_remove]:
+                        logging.info("- Remove Files at: " + remove_patch_directory)
+                        for remove_patch_file in required_patches[patch][method_remove][remove_patch_directory]:
+                            if method_remove == "Remove":
+                                destination_folder_path = str(self.mount_location) + remove_patch_directory
+                            else:
+                                destination_folder_path = str(self.mount_location_data) + remove_patch_directory
+                            self._remove_file(destination_folder_path, remove_patch_file)
 
 
             for method_install in ["Install", "Install Non-Root"]:

@@ -634,6 +634,7 @@ class Computer:
     ambient_light_sensor: Optional[bool] = False
     third_party_sata_ssd: Optional[bool] = False
     pcie_webcam: Optional[bool] = False
+    t1_chip: Optional[bool] = False
     secure_boot_model: Optional[str] = None
     secure_boot_policy: Optional[int] = None
     oclp_sys_version: Optional[str] = None
@@ -659,6 +660,7 @@ class Computer:
         computer.cpu_probe()
         computer.bluetooth_probe()
         computer.topcase_probe()
+        computer.t1_probe()
         computer.ambient_light_sensor_probe()
         computer.pcie_webcam_probe()
         computer.sata_disk_probe()
@@ -935,6 +937,18 @@ class Computer:
                 self.trackpad_type = "Legacy"
             elif usb_device.device_id in usb_data.AppleIDs.AppleUSBMultiTouch:
                 self.trackpad_type = "Modern"
+
+    def t1_probe(self):
+        if not self.usb_devices:
+            return
+
+        for usb_device in self.usb_devices:
+            if usb_device.vendor_id != 0x5ac:
+                continue
+            if usb_device.device_id != 0x8600:
+                continue
+            self.t1_chip = True
+            break
 
     def sata_disk_probe(self):
         # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'

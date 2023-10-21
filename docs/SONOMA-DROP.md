@@ -29,10 +29,17 @@ OpenCore Legacy Patcher v1.0.0 will support Sonoma for all models normally suppo
 
 ## Issues
 
-* [T1 Security chip](t1-security-chip)
+* [Bluetooth](#bluetooth)
+* [T1 Security chip](#t1-security-chip)
 * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
 * [Graphics support and issues](#graphics-support-and-issues)
 
+
+### Bluetooth
+
+Sometimes Bluetooth may not work after boot on pre-2012 models. Running NVRAM reset can alleviate it.
+
+Dual boots may also bring the issue back even after the reset.
 
 ### T1 Security chip
 

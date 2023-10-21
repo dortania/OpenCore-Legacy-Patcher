@@ -53,6 +53,7 @@ class DetectRootPatch:
         self.legacy_keyboard_backlight = False
         self.legacy_uhci_ohci          = False
         self.legacy_pcie_webcam        = False
+        self.legacy_t1_chip            = False
 
         # Patch Requirements
         self.amfi_must_disable   = False
@@ -540,6 +541,10 @@ class DetectRootPatch:
 
         if self.constants.detected_os >= os_data.os_data.sonoma:
             self.legacy_pcie_webcam = self.constants.computer.pcie_webcam
+            self.legacy_t1_chip = self.constants.computer.t1_chip
+
+            if self.legacy_t1_chip is True:
+                self.amfi_must_disable = True
 
         if self._check_uhci_ohci() is True:
             self.legacy_uhci_ohci = True
@@ -622,6 +627,7 @@ class DetectRootPatch:
             "Miscellaneous: Legacy Keyboard Backlight":    self.legacy_keyboard_backlight,
             "Miscellaneous: Legacy USB 1.1":               self.legacy_uhci_ohci,
             "Miscellaneous: PCIe FaceTime Camera":         self.legacy_pcie_webcam,
+            "Miscellaneous: T1 Security Chip":             self.legacy_t1_chip,
             "Settings: Requires AMFI exemption":           self.amfi_must_disable,
             "Settings: Supports Auxiliary Cache":          not self.requires_root_kc,
             "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,
