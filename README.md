@@ -100,6 +100,7 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
   * Pre-Ivy Bridge Aquantia Ethernet Patch
   * Non-Metal Photo Booth Patch for Monterey+
   * GUI and Backend Development
+  * Vaulting implementation
 * Amazing users who've graciously donate hardware:
   * [JohnD](https://forums.macrumors.com/members/johnd.53633/) - 2013 Mac Pro
   * [SpiGAndromeda](https://github.com/SpiGAndromeda) - AMD Vega 64

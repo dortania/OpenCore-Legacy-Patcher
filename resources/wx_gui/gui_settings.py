@@ -277,16 +277,16 @@ class SettingsFrame(wx.Frame):
                 "wrap_around 2": {
                     "type": "wrap_around",
                 },
-                "APFS Trim": {
+                "OpenCore Vaulting": {
                     "type": "checkbox",
-                    "value": self.constants.apfs_trim_timeout,
-                    "variable": "apfs_trim_timeout",
+                    "value": self.constants.vault,
+                    "variable": "vault",
                     "description": [
-                        "Recommended for all users, however faulty",
-                        "SSDs may benefit from disabling this.",
+                        "Digitally sign OpenCore to prevent",
+                        "tampering or corruption."
                     ],
-
                 },
+                
                 "Show OpenCore Boot Picker": {
                     "type": "checkbox",
                     "value": self.constants.showpicker,
@@ -442,6 +442,16 @@ class SettingsFrame(wx.Frame):
                         "management in macOS.",
                     ],
                     "condition": not bool(self.constants.computer.third_party_sata_ssd is False and not self.constants.custom_model)
+                },
+                "APFS Trim": {
+                    "type": "checkbox",
+                    "value": self.constants.apfs_trim_timeout,
+                    "variable": "apfs_trim_timeout",
+                    "description": [
+                        "Recommended for all users, however faulty",
+                        "SSDs may benefit from disabling this.",
+                    ],
+
                 },
             },
             "Advanced": {
@@ -836,6 +846,7 @@ class SettingsFrame(wx.Frame):
                         "Export constants.py values to a txt file.",
                     ],
                 },
+                
                 "Developer Root Volume Patching": {
                     "type": "title",
                 },

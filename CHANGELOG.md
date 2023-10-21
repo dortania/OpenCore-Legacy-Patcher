@@ -11,6 +11,7 @@
 - Resolve PCIe FaceTime camera support on macOS 14.1
 - Resolve T1 Security Chip support on macOS 14
   - Applicable for MacBookPro13,2, MacBookPro13,3, MacBookPro14,2, MacBookPro14,3
+- Add support for stand alone OpenCore Vaulting without Xcode Command Line Tools (Jazzzny)
 - Increment Binaries:
   - PatcherSupportPkg 1.4.2 - release
   - AirportBrcmFixup 2.1.8 - release

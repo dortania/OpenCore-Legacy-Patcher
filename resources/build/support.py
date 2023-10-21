@@ -108,17 +108,11 @@ class BuildSupport:
         if self.constants.vault is False:
             return
 
-        if utilities.check_command_line_tools() is False:
-            # sign.command checks for the existence of '/usr/bin/strings' however does not verify whether it's executable
-            # sign.command will continue to run and create an unbootable OpenCore.efi due to the missing strings binary
-            # macOS has dummy binaries that just reroute to the actual binaries after you install Xcode's Command Line Tools
-            logging.info("- Missing Command Line tools, skipping Vault for saftey reasons")
-            logging.info("- Install via 'xcode-select --install' and rerun OCLP if you wish to vault this config")
-            return
-
-        logging.info("- Vaulting EFI")
-        subprocess.run([str(self.constants.vault_path), f"{self.constants.oc_folder}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
+        logging.info("- Vaulting EFI\n=========================================")
+        popen = subprocess.Popen([str(self.constants.vault_path), f"{self.constants.oc_folder}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+        for stdout_line in iter(popen.stdout.readline, ""):
+            logging.info(stdout_line.strip())
+        logging.info("=========================================")
 
     def validate_pathing(self) -> None:
         """

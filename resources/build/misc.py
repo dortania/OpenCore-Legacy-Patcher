@@ -342,11 +342,9 @@ class BuildMiscellaneous:
             logging.info(f"- Setting custom OpenCore picker timeout to {self.constants.oc_timeout} seconds")
             self.config["Misc"]["Boot"]["Timeout"] = self.constants.oc_timeout
 
-        if self.constants.vault is True and utilities.check_command_line_tools() is True:
+        if self.constants.vault is True:
             logging.info("- Setting Vault configuration")
             self.config["Misc"]["Security"]["Vault"] = "Secure"
-            support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenShell.efi", "Misc", "Tools")["Enabled"] = False
-
 
     def _t1_handling(self) -> None:
         """
