@@ -43,6 +43,7 @@ class BuildMiscellaneous:
         self._debug_handling()
         self._cpu_friend_handling()
         self._general_oc_handling()
+        self._t1_handling()
 
 
     def _feature_unlock_handling(self) -> None:
@@ -280,6 +281,12 @@ class BuildMiscellaneous:
         # - Ref: https://techcommunity.microsoft.com/t5/microsoft-usb-blog/reasons-to-avoid-companion-controllers/ba-p/270710
         #
         # To be paired for sys_patch_dict.py's 'Legacy USB 1.1' patchset
+        #
+        # Note: With macOS 14.1, injection of these kexts causes a panic.
+        #       To avoid this, a MaxKernel is configured with XNU 23.0.0 (macOS 14.0).
+        #       Additionally sys_patch.py stack will now patches the bins onto disk for 14.1+.
+        #       Reason for keeping the dual logic is due to potential conflicts of in-cache vs injection if we start
+        #       patching pre-14.1 hosts.
         if (
             smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value or \
             self.model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]
@@ -351,9 +358,8 @@ class BuildMiscellaneous:
         logging.info("- Enabling T1 Security Chip support")
 
         support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleSSE")["Enabled"] = True
-        support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleCredentialManager")["Enabled"] = True
         support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Block"], "Identifier", "com.apple.driver.AppleKeyStore")["Enabled"] = True
 
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("corecrypto_T1.kext", self.constants.t1_corecrypto_version, self.constants.t1_corecrypto_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleSSE.kext", self.constants.t1_sse_version, self.constants.t1_sse_path)
-        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleCredentialManager.kext", self.constants.t1_credential_version, self.constants.t1_credential_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleKeyStore.kext", self.constants.t1_key_store_version, self.constants.t1_key_store_path)

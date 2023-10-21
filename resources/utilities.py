@@ -60,7 +60,7 @@ def seconds_to_readable_time(seconds) -> str:
     seconds = int(seconds)
     time = ""
 
-    if seconds < 60:
+    if 0 <= seconds < 60:
         return "Less than a minute "
     if seconds < 0:
         return "Indeterminate time "

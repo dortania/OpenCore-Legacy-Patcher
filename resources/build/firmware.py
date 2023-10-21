@@ -215,12 +215,13 @@ class BuildFirmware:
         # CSM check
         # For model support, check for GUID in firmware and as well as Bootcamp Assistant's Info.plist ('PreUEFIModels' key)
         # Ref: https://github.com/acidanthera/OpenCorePkg/blob/0.9.5/Platform/OpenLegacyBoot/OpenLegacyBoot.c#L19
-        # if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value and self.model != "MacPro6,1":
-        #     logging.info("- Enabling CSM support")
-        #     support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenLegacyBoot.efi", "UEFI", "Drivers")["Enabled"] = True
-        # else:
-        #     # Shipped alongside OpenCorePkg, so remove if unused
-        #     (self.constants.drivers_path / Path("OpenLegacyBoot.efi")).unlink()
+        if Path(self.constants.drivers_path / Path("OpenLegacyBoot.efi")).exists():
+            if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.ivy_bridge.value and self.model != "MacPro6,1":
+                logging.info("- Enabling CSM support")
+                support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenLegacyBoot.efi", "UEFI", "Drivers")["Enabled"] = True
+            else:
+                # Shipped alongside OpenCorePkg, so remove if unused
+                (self.constants.drivers_path / Path("OpenLegacyBoot.efi")).unlink()
 
     def _firmware_compatibility_handling(self) -> None:
         """
@@ -232,7 +233,7 @@ class BuildFirmware:
         # Patches IOPCIConfigurator.cpp's IOPCIIsHotplugPort to skip configRead16/32 calls
         # Credit to CaseySJ for original discovery:
         # - Patch: https://github.com/AMD-OSX/AMD_Vanilla/pull/196
-        # - Source: https://github.com/apple-oss-distributions/IOPCIFamily/blob/main/IOPCIConfigurator.cpp#L968-L1022
+        # - Source: https://github.com/apple-oss-distributions/IOPCIFamily/blob/IOPCIFamily-583.40.1/IOPCIConfigurator.cpp#L968-L1022
         #
         # Currently all pre-Sandy Bridge Macs lacking an iGPU benefit from this patch as well as MacPro6,1
         # Otherwise some graphics hardware will fail to wake, macOS will misreport hardware as ExpressCard-based,
@@ -247,7 +248,7 @@ class BuildFirmware:
             logging.info("- Adding PCI Bus Enumeration Patch")
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "CaseySJ - Fix PCI bus enumeration (Ventura)")["Enabled"] = True
             # Sonoma slightly adjusted this line specifically
-            # - https://github.com/apple-oss-distributions/IOPCIFamily/blob/main/IOPCIConfigurator.cpp#L1009
+            # - https://github.com/apple-oss-distributions/IOPCIFamily/blob/IOPCIFamily-583.40.1/IOPCIConfigurator.cpp#L1009
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "Fix PCI bus enumeration (Sonoma)")["Enabled"] = True
 
         if self.constants.set_vmm_cpuid is True:

@@ -204,9 +204,41 @@ Before we continue, please keep in mind that SMBIOS Spoofing is an advanced feat
 
 Ventura has dropped more models which includes all of the blacklisted Macs in question, making the procedure slightly different. It is important to follow the guide for the version you're on, failing to do so is likely to cause boot issues.
 
+::: details macOS Sonoma
+
+Firstly run OpenCore Legacy Patcher. 
+
+Then go to **Settings** and **SMBIOS** tab, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model **one listed next to your native model in the table for spoofed models below.**
+
+Notice that "Allow native models" and "Allow Native Spoofs" **are NOT** enabled unlike on Monterey, this is on purpose. They are no longer relevant on Sonoma and enabling them will cause boot issues.
+
+| Main Settings view | SMBIOS settings |
+| :--- | :--- |
+| ![](../images/ventura_uc1.png) | ![](../images/ventura_uc2.png) |
+
+
+
+::: details Table for spoofed models (click to expand)
+
+Spoofing to any model with native Sonoma support should work, but these are the earliest Macs natively supported by Sonoma and thus chosen for the sake of simplicity.
+
+**Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Ventura as long as the other requirements are met, since they aren't blacklisted.
+
+
+| Mac by name | Native SMBIOS | Spoof SMBIOS |
+|-------------|---------------|--------------|
+| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 |
+| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro15,2 |
+| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro15,2 |
+| iMac Late 2015 21" | iMac16,x | iMac19,2 |
+| Mac mini Late 2014  | Macmini7,x | MacMini8,1 |
+| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 |
+
+:::
+
 ::: details macOS Ventura
 
-Firstly run the GUI version of OpenCore Legacy Patcher. 
+Firstly run OpenCore Legacy Patcher. 
 
 Then go to **Settings** and **SMBIOS** tab, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model **one listed next to your native model in the table for spoofed models below.**
 
@@ -225,20 +257,20 @@ Spoofing to any model with native Ventura support should work, but these are the
 **Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Ventura as long as the other requirements are met, since they aren't blacklisted.
 
 
-| Mac by name | Native SMBIOS | Spoof SMBIOS | Tested | Tested by |
-|-------------|---------------|--------------|--------|-----------|
-| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 | <span style="color:red"> NO </span> | N/A |
-| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro14,1 | ^^ | ^^ |
-| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro14,3 | ^^ | ^^
-| iMac Late 2015 21" | iMac16,x | iMac18,2 | ^^ | ^^
-| Mac mini Late 2014  | Macmini7,x | MacMini8,1 | <span style="color:red"> NO </span> | N/A |
-| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 | <span style="color:red"> NO </span> | N/A |
+| Mac by name | Native SMBIOS | Spoof SMBIOS |
+|-------------|---------------|--------------|
+| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 |
+| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro14,1 |
+| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro14,3 |
+| iMac Late 2015 21" | iMac16,x | iMac18,2 |
+| Mac mini Late 2014  | Macmini7,x | MacMini8,1 |
+| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 |
 
 :::
 
 ::: details macOS Monterey
 
-Firstly, run the GUI version of OpenCore Legacy Patcher. Secondly, go to **Settings** then the **App** tab and tick **Allow native models**.
+Firstly, run OpenCore Legacy Patcher. Secondly, go to **Settings** then the **App** tab and tick **Allow native models**.
 
 [](../images/OCLP-App-Allow-Native-Models.png)
 
@@ -257,14 +289,14 @@ Any model after the list of officially blacklisted Macs should be supported, but
 **Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Monterey, as long as the other requirements are met, since they aren't blacklisted.
 
 
-| Mac by name | Native SMBIOS | Spoof SMBIOS | Tested | Tested by |
-|-------------|---------------|--------------|--------|-----------|
-| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 | <span style="color:#30BCD5"> YES </span> | Hzlph |
-| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro13,1 | ^^ | ^^ |
-| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro13,3 | ^^ | ^^
-| iMac Late 2015 21" | iMac16,x | iMac18,2 | ^^ | ^^
-| Mac mini Late 2014  | Macmini7,x | MacMini8,1 | <span style="color:red"> NO </span> | N/A |
-| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 | <span style="color:#30BCD5"> YES </span> | Crystall1nedev |
+| Mac by name | Native SMBIOS | Spoof SMBIOS |
+|-------------|---------------|--------------|
+| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir8,1 |
+| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro13,1 |
+| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro13,3 |
+| iMac Late 2015 21" | iMac16,x | iMac18,2 |
+| Mac mini Late 2014  | Macmini7,x | MacMini8,1 |
+| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 |
 
 :::
 

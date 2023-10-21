@@ -13,8 +13,8 @@ from data import os_data
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "1.0.1"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "1.3.3"  # PatcherSupportPkg
+        self.patcher_version:                 str = "1.1.0"  # OpenCore-Legacy-Patcher
+        self.patcher_support_pkg_version:     str = "1.4.2"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2023 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
@@ -36,7 +36,7 @@ class Constants:
         self.lilu_version:               str = "1.6.7"  #      Lilu
         self.whatevergreen_version:      str = "1.6.6"  #      WhateverGreen
         self.whatevergreen_navi_version: str = "1.6.6-Navi"  # WhateverGreen (Navi Patch)
-        self.airportbcrmfixup_version:   str = "2.1.7"  #      AirPortBrcmFixup
+        self.airportbcrmfixup_version:   str = "2.1.8"  #      AirPortBrcmFixup
         self.nvmefix_version:            str = "1.1.1"  #      NVMeFix
         self.applealc_version:           str = "1.6.3"  #      AppleALC
         self.restrictevents_version:     str = "1.1.3"  #      RestrictEvents
@@ -67,9 +67,9 @@ class Constants:
         self.aicpupm_version:       str = "1.0.0"  #  AppleIntelCPUPowerManagement/Client
         self.s3x_nvme_version:      str = "1.0.0"  #  IONVMeFamily (14.0 Beta 1, S1X and S3X classes)
         self.apple_camera_version:  str = "1.0.0"  #  AppleCameraInterface (14.0 Beta 1)
-        self.t1_credential_version: str = "1.0.0"  #  AppleCredentialManager (13.5 - T1 support)
-        self.t1_sse_version:        str = "1.0.0"  #  AppleSSE (13.5 - T1 support)
-        self.t1_key_store_version:  str = "1.0.0"  #  AppleKeyStore (13.5 - T1 support)
+        self.t1_sse_version:        str = "1.1.0"  #  AppleSSE      (13.6 - T1 support)
+        self.t1_key_store_version:  str = "1.1.0"  #  AppleKeyStore (13.6 - T1 support)
+        self.t1_corecrypto_version: str = "1.0.0"  #  corecrypto    (13.6 - T1 support)
 
         ## Apple - Dortania Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
@@ -440,12 +440,12 @@ class Constants:
         return self.payload_kexts_path / Path(f"Misc/AppleKeyStore-v{self.t1_key_store_version}.zip")
 
     @property
-    def t1_credential_path(self):
-        return self.payload_kexts_path / Path(f"Misc/AppleCredentialManager-v{self.t1_credential_version}.zip")
-
-    @property
     def t1_sse_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleSSE-v{self.t1_sse_version}.zip")
+
+    @property
+    def t1_corecrypto_path(self):
+        return self.payload_kexts_path / Path(f"Misc/corecrypto_T1-v{self.t1_corecrypto_version}.zip")
 
     @property
     def mousse_path(self):

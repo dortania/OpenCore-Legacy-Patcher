@@ -149,7 +149,6 @@ module.exports = {
             sidebarDepth: 1,
             children: [
 				'ISSUES-HOLD',
-				'TESTED',
 				'TERMS',
 				'HOW',
 				'PATCHEXPLAIN',

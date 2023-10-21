@@ -77,6 +77,6 @@ class BuildSecurity:
         if self.constants.secure_status is False:
             logging.info("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
-            
+
         logging.info("- Enabling AMFIPass")
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AMFIPass.kext", self.constants.amfipass_version, self.constants.amfipass_path)

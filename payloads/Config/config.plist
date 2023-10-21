@@ -1377,7 +1377,7 @@
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleUSBOHCI</string>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>23.0.0</string>
 				<key>MinKernel</key>
 				<string>22.0.0</string>
 				<key>PlistPath</key>
@@ -1395,7 +1395,7 @@
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleUSBOHCIPCI</string>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>23.0.0</string>
 				<key>MinKernel</key>
 				<string>22.0.0</string>
 				<key>PlistPath</key>
@@ -1413,7 +1413,7 @@
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleUSBUHCI</string>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>23.0.0</string>
 				<key>MinKernel</key>
 				<string>22.0.0</string>
 				<key>PlistPath</key>
@@ -1431,7 +1431,7 @@
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleUSBUHCIPCI</string>
 				<key>MaxKernel</key>
-				<string></string>
+				<string>23.0.0</string>
 				<key>MinKernel</key>
 				<string>22.0.0</string>
 				<key>PlistPath</key>
@@ -1704,6 +1704,24 @@
 				<string>AMFIPass.kext</string>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AMFIPass</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
+				<string>corecrypto - T1</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>23.0.0</string>
+				<key>BundlePath</key>
+				<string>corecrypto_T1.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/corecrypto_T1</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
