@@ -50,7 +50,7 @@ class DownloadFrame(wx.Frame):
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
-        progress_bar = wx.Gauge(frame, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(300, 20))
+        progress_bar = wx.Gauge(frame, range=100, pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5), size=(300, 20), style=wx.GA_SMOOTH|wx.GA_PROGRESS)
         progress_bar.Centre(wx.HORIZONTAL)
 
         label_amount = wx.StaticText(frame, label="Preparing download", pos=(-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1]))
@@ -68,7 +68,9 @@ class DownloadFrame(wx.Frame):
         self.download_obj.download()
         while self.download_obj.is_active():
             
-            percentage: int = self.download_obj.get_percent()
+            percentage: int = round(self.download_obj.get_percent())
+            if percentage == 0:
+                percentage = 1
 
             if percentage == -1:
                 amount_str = f"{utilities.human_fmt(self.download_obj.downloaded_file_size)} downloaded ({utilities.human_fmt(self.download_obj.get_speed())}/s)"
