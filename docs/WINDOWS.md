@@ -5,21 +5,20 @@ Many older Macs do not "officially" support UEFI Windows installations, leading 
 
 ## Minimum Requirements
 
-This guide will focus on the installation of Windows 10 without using Boot Camp Assistant. Windows 11 should also work, but its quirks will not be covered.
+This guide will focus on the installation of modern Windows (10/11) without using Boot Camp Assistant.
 
 * Due to hardware and firmware limitations, UEFI Windows installations are only recommended on the following machines:
 
-  * 2015 MacBook or newer (MacBook8,x+)
-  * 2011 MacBook Air or newer (MacBookAir4,x+)
-  * 2011 MacBook Pro or newer (MacBookPro8,x+)
-  * 2011 Mac mini or newer (Macmini5,x+)
-  * 2009[^1] Mac Pro or newer (MacPro4,1+), upgraded GPU is preferred
-  * 2010 iMac or newer (iMac11,x+), upgraded GPU is preferred
-  * 2009[^2] Xserve (Xserve3,1), upgraded GPU is preferred
+  * 2015 MacBook or newer (`MacBook8,x`+)
+  * 2011 MacBook Air or newer (`MacBookAir4,x`+)
+  * 2011 MacBook Pro or newer (`MacBookPro8,x`+)
+  * 2011 Mac mini or newer (`Macmini5,x`+)
+  * 2009* Mac Pro or newer (`MacPro4,1`+), upgraded GPU is preferred
+  * 2010 iMac or newer (`iMac11,x`+), upgraded GPU is preferred
+  * 2009* Xserve (`Xserve3,1`), upgraded GPU is preferred
 
 
-[^1]: MacPro4,1 and MacPro5,1 systems experience issues with the Windows installer, follow the DISM installation section for instructions.
-[^2]: Theoretically supported, not tested. Follow DISM installation section
+*`MacPro4,1`, `MacPro5,1`, and `Xserve3,1` systems experience issues with the Windows installer, follow the DISM installation section for instructions.
 
 If your machine is not listed, UEFI Windows will likely still install, but you may face stability/driver issues.
 
@@ -87,17 +86,25 @@ The `rsync` command will take some time, so get some coffee and sit back. Once f
 
 ## Installation Process
 
-Once you reboot your machine, you should see a new boot option in the OCLP Bootpicker labelled as "EFI Boot". It may or may not have the Boot Camp icon.
+Once you reboot your machine, you should see a new boot option in the OCLP Bootpicker labelled as "EFI Boot" or "Windows". It may or may not have the Boot Camp icon.
 
 :::warning
 
-If you aren't booted into OCLP, you may see two boot options labelled "Windows" and "EFI Boot". Do not choose either of the options and boot into OCLP to continue.
+If you aren't booted into OCLP, you may see **two** boot options labelled "Windows" and "EFI Boot". Do not choose either of the options and boot into OCLP to continue.
 
 :::
+
+
 
 ### Installation: Microsoft Method
 
 Once booted into the Windows installer, proceed as you normally would on any Windows computer. If you see an error message containing “Windows could not prepare the computer to boot into the next phase of installation”, please follow the next portion of this guide (DISM Installation).
+
+::: details Installing Windows 11
+
+If you are installing Windows 11, you will need to [modify the Windows Setup](https://www.bleepingcomputer.com/news/microsoft/how-to-bypass-the-windows-11-tpm-20-requirement/) to allow installation on unsupported machines.
+
+:::
 
 ### Installation: DISM Deployment Method
 
@@ -132,7 +139,7 @@ Once `dism` finishes its thing, run `bcdboot E:\Windows`, substituting "E" for t
 
 ![](../images/DISM-7.png)
 
-Windows is now installed. It should be recognized as "EFI Boot" with a Boot Camp icon in the OCLP Bootpicker.
+Windows is now installed. It should be recognized as "EFI Boot" or "Windows" with a Boot Camp icon in the OCLP Bootpicker.
 
 :::warning
 
@@ -221,4 +228,8 @@ You can also open `Properties` on the file to change the compatibility to `Previ
 
 ### iMac12,x Bluescreen after driver installation
 
-Currently Intel's iGPU drivers for the HD 3000 series do not support UEFI booting in Windows. The recommended solution is to simply disable the iGPU: [iMac 12,1 Windows 10 Boot Loop – Fix Intel Graphics issue](https://zzq.org/?p=39)
+Intel's iGPU drivers for the HD 3000 series do not support UEFI booting in Windows. The recommended solution is to simply disable the iGPU: [iMac 12,1 Windows 10 Boot Loop – Fix Intel Graphics issue](https://zzq.org/?p=39)
+
+### NVIDIA Tesla Black Screen after driver installation
+
+The NVIDIA Tesla GPUs found in 2008-2010 Macs do not support UEFI booting in Windows. You cannot use UEFI Windows without low-level patching on these machines.
