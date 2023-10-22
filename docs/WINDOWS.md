@@ -15,7 +15,7 @@ This guide will focus on the installation of modern Windows (10/11) without usin
   * 2011 Mac mini or newer (`Macmini5,x`+)
   * 2009* Mac Pro or newer (`MacPro4,1`+), upgraded GPU is preferred
   * 2010 iMac or newer (`iMac11,x`+), upgraded GPU is preferred
-  * 2009[^2] Xserve (`Xserve3,1`), upgraded GPU is preferred
+  * 2009* Xserve (`Xserve3,1`), upgraded GPU is preferred
 
 
 *`MacPro4,1`, `MacPro5,1`, and `Xserve3,1` systems experience issues with the Windows installer, follow the DISM installation section for instructions.
