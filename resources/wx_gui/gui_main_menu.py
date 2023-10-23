@@ -70,7 +70,7 @@ class MainFrame(wx.Frame):
         """
 
         # Title label: OpenCore Legacy Patcher v{X.Y.Z}
-        title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher {'' if self.constants.special_build else 'v'}{self.constants.patcher_version}", pos=(-1, 10))
+        title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher {'' if self.constants.special_build else ''}{self.constants.patcher_version}{'-nightly' if not self.constants.commit_info[0].startswith('refs/tags') else ''}", pos=(-1, 10))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
@@ -379,7 +379,7 @@ class MainFrame(wx.Frame):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.AddSpacer(10)
         self.title_text = wx.StaticText(panel, label="A new version of OpenCore Legacy Patcher is available!")
-        self.description = wx.StaticText(panel, label=f"OpenCore Legacy Patcher {oclp_version} is now available - You have {self.constants.patcher_version}. Would you like to update?")
+        self.description = wx.StaticText(panel, label=f"OpenCore Legacy Patcher {oclp_version} is now available - You have {self.constants.patcher_version}{'-nightly' if not self.constants.commit_info[0].startswith('refs/tags') else ''}. Would you like to update?")
         self.title_text.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
         self.description.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
         self.web_view = wx.html2.WebView.New(panel, style=wx.BORDER_SUNKEN)

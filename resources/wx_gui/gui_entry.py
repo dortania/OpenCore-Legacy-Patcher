@@ -58,7 +58,7 @@ class EntryPoint:
 
         self.frame: wx.Frame = entry(
             None,
-            title=f"{self.constants.patcher_name} ({self.constants.patcher_version})",
+            title=f"{self.constants.patcher_name} {self.constants.patcher_version}{'-nightly' if not self.constants.commit_info[0].startswith('refs/tags') else ''}",
             global_constants=self.constants,
             screen_location=None,
             **({"patches": patches} if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv else {})
