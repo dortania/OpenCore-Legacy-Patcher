@@ -887,7 +887,7 @@
 				<key>Enabled</key>
 				<false/>
 				<key>MaxKernel</key>
-				<string>22.99.99</string>
+				<string></string>
 				<key>MinKernel</key>
 				<string>18.0.0</string>
 				<key>BundlePath</key>
