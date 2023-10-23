@@ -62,7 +62,12 @@ class AutomaticSysPatch:
 
             url = "https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest"
             response = requests.get(url).json()
-            changelog = response["body"].split("## Asset Information")[0]
+            try:
+                changelog = response["body"].split("## Asset Information")[0]
+            except: #if user constantly checks for updates, github will rate limit them
+                changelog = """## Unable to fetch changelog
+
+Please check the Github page for more information about this release."""
 
             html_markdown = markdown2.markdown(changelog)
             html_css = """
@@ -90,14 +95,14 @@ class AutomaticSysPatch:
         }
     </style>
     """
-            frame = wx.Dialog(None, -1, title="", size=(600, 500))
-            frame.SetMinSize((600, 500))
+            frame = wx.Dialog(None, -1, title="", size=(650, 500))
+            frame.SetMinSize((650, 500))
             frame.SetWindowStyle(wx.STAY_ON_TOP)
             panel = wx.Panel(frame)
             sizer = wx.BoxSizer(wx.VERTICAL)
             sizer.AddSpacer(10)
             self.title_text = wx.StaticText(panel, label="A new version of OpenCore Legacy Patcher is available!")
-            self.description = wx.StaticText(panel, label=f"OpenCore Legacy Patcher {version} is now available - You have {self.constants.patcher_version}{'-nightly' if not self.constants.commit_info[0].startswith('refs/tags') else ''}. Would you like to update?")
+            self.description = wx.StaticText(panel, label=f"OpenCore Legacy Patcher {version} is now available - You have {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}. Would you like to update?")
             self.title_text.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
             self.description.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
             self.web_view = wx.html2.WebView.New(panel, style=wx.BORDER_SUNKEN)
