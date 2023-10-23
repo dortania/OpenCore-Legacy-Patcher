@@ -65,8 +65,6 @@ class BuildOpenCore:
         ]:
             function(self.model, self.constants, self.config)
 
-        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -lilubetaall"
-
         # Work-around ocvalidate
         if self.constants.validate is False:
             logging.info("- Adding bootmgfw.efi BlessOverride")

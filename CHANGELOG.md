@@ -11,11 +11,14 @@
 - Resolve T1 Security Chip support on macOS 14
   - Applicable for MacBookPro13,2, MacBookPro13,3, MacBookPro14,2, MacBookPro14,3
 - Add support for stand alone OpenCore Vaulting without Xcode Command Line Tools (Jazzzny)
+- Re-allow NVMeFix for macOS 14
+- Remove `-lilubetaall` argument for machines without AppleALC
 - Increment Binaries:
   - PatcherSupportPkg 1.4.2 - release
   - AirportBrcmFixup 2.1.8 - release
   - BlueToolFixup 2.6.8 - release
   - RestrictEvents 1.1.3 - release
+  - AMFIPass 1.4.0 - release
 
 ## 1.0.1
 - Resolve rendering issues on Intel Ivy Bridge iGPUs
@@ -69,6 +72,7 @@
   - CPUFriend 1.2.7 - release
   - BlueToolFixup 2.6.8 - rolling (2305aaa)
   - CryptexFixup 1.0.2 - release
+  - NVMeFix 1.1.1 - release
   - PatcherSupportPkg 1.3.2 - release
 - Build Server Changes:
   - Upgrade Python backend to 3.11.5
