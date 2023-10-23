@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 1.2.0
+- Resolve application not existing if user dismisses an update instead of installing
+
 ## 1.1.0
 - Resolve rendering issues on Intel Broadwell iGPUs
 - Update non-Metal Binaries for macOS Sonoma:

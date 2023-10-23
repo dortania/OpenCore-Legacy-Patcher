@@ -276,7 +276,7 @@ class MainFrame(wx.Frame):
     def _check_for_updates(self):
         if self.constants.has_checked_updates is True:
             return
-        
+
         ignore_updates = global_settings.GlobalEnviromentSettings().read_property("IgnoreAppUpdates")
         if ignore_updates is True:
             self.constants.ignore_updates = True
@@ -290,7 +290,7 @@ class MainFrame(wx.Frame):
 
         version = dict["Version"]
         logging.info(f"New version: {version}")
-        
+
         wx.CallAfter(self.on_update, dict["Link"], version, dict["Github Link"])
 
     def on_build_and_install(self, event: wx.Event = None):
@@ -366,9 +366,9 @@ class MainFrame(wx.Frame):
     @media (prefers-color-scheme: dark) {
         body {
             color: #fff;
-            background-color: rgb(47,47,47);   
+            background-color: rgb(47,47,47);
         }
-        
+
     }
 </style>
 """
@@ -408,7 +408,7 @@ class MainFrame(wx.Frame):
         frame.Centre()
 
         result = frame.ShowModal()
-        
+
 
         if result == ID_GITHUB:
             webbrowser.open(oclp_github_url)
@@ -421,6 +421,8 @@ class MainFrame(wx.Frame):
             url=oclp_url,
             version_label=oclp_version
         )
+
+        frame.Destroy()
 
     def _onWebviewNav(self, event):
         url = event.GetURL()
