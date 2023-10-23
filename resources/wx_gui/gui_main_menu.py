@@ -278,17 +278,16 @@ class MainFrame(wx.Frame):
             return
 
         ignore_updates = global_settings.GlobalEnviromentSettings().read_property("IgnoreAppUpdates")
-        #if ignore_updates is True:
-        #    self.constants.ignore_updates = True
-        #    return
+        if ignore_updates is True:
+            self.constants.ignore_updates = True
+            return
 
         self.constants.ignore_updates = False
         self.constants.has_checked_updates = True
-        #dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
-        #if not dict:
-        #    return
+        dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
+        if not dict:
+            return
 
-        dict = {"Version": "1.2.0", "Link": "https://github.com/dortania/OpenCore-Legacy-Patcher/releases/tag/1.1.0", "Github Link": "https://github.com/dortania/OpenCore-Legacy-Patcher/releases/tag/1.1.0" }
         version = dict["Version"]
         logging.info(f"New version: {version}")
 
