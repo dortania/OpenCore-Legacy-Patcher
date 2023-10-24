@@ -3,6 +3,10 @@
 ## 1.2.0
 - Resolve application not existing if user dismisses an update instead of installing
 - Add support for detecting T1 Security Chips in DFU mode
+- Update non-Metal Binaries for macOS Sonoma:
+  - Resolve Photos app crash
+- Increment Binaries:
+ - PatcherSupportPkg 1.4.3 - release
 
 ## 1.1.0
 - Resolve rendering issues on Intel Broadwell iGPUs
