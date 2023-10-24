@@ -28,22 +28,24 @@ class CPU:
 
 @dataclass
 class USBDevice:
-    vendor_id:    int
-    device_id:    int
-    device_class: int
-    device_speed: int
-    product_name: str
-    vendor_name:  Optional[str] = None
+    vendor_id:     int
+    device_id:     int
+    device_class:  int
+    device_speed:  int
+    product_name:  str
+    vendor_name:   Optional[str] = None
+    serial_number: Optional[str] = None
 
     @classmethod
     def from_ioregistry(cls, entry: ioreg.io_registry_entry_t):
         properties: dict = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperties(entry, None, ioreg.kCFAllocatorDefault, ioreg.kNilOptions)[1])
 
-        vendor_id    = None
-        device_id    = None
-        device_class = None
-        device_speed = None
-        vendor_name  = None
+        vendor_id     = None
+        device_id     = None
+        device_class  = None
+        device_speed  = None
+        vendor_name   = None
+        serial_number = None
         product_name = "N/A"
 
         if "idVendor" in properties:
@@ -58,8 +60,10 @@ class USBDevice:
             vendor_name = properties["kUSBVendorString"].strip()
         if "USBSpeed" in properties:
             device_speed = properties["USBSpeed"]
+        if "kUSBSerialNumberString" in properties:
+            serial_number = properties["kUSBSerialNumberString"].strip()
 
-        return cls(vendor_id, device_id, device_class, device_speed, product_name, vendor_name)
+        return cls(vendor_id, device_id, device_class, device_speed, product_name, vendor_name, serial_number)
 
 
     def detect(self):
@@ -945,10 +949,32 @@ class Computer:
         for usb_device in self.usb_devices:
             if usb_device.vendor_id != 0x5ac:
                 continue
-            if usb_device.device_id != 0x8600:
-                continue
-            self.t1_chip = True
-            break
+            # Standard T1
+            if usb_device.device_id == 0x8600:
+                self.t1_chip = True
+                break
+            # T1 in DFU mode
+            # Note all Apple devices report the same device ID in DFU mode
+            if usb_device.device_id == 0x1281:
+                # Break down serial number into components
+                #   ex. "CPID:8002 CPRV:10 CPFM:03 SCEP:01 BDID:12 ECID:000E5C8E34600026 IBFL:3D"
+                # Is this overcomplicating T1 detection? Probably...
+                if usb_device.serial_number is None:
+                    continue
+                serial_number = usb_device.serial_number.split(" ")
+                # T1s come in 2 known flavours:
+                # - x619dev
+                #   - CPID: 0x8002
+                #   - BDID: 0x13
+                # - x619ap
+                #   - CPID: 0x8002
+                #   - BDID: 0x12
+                if "CPID:8002" not in serial_number:
+                    continue
+                if "BDID:13" not in serial_number and "BDID:12" not in serial_number:
+                    continue
+                self.t1_chip = True
+                break
 
     def sata_disk_probe(self):
         # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'
