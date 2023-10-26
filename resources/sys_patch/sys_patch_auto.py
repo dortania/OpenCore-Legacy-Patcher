@@ -346,8 +346,30 @@ Please check the Github page for more information about this release."""
             logging.info("- Skipping Auto Patcher Launch Agent, not supported when running from source")
             return
 
+        services = {
+            self.constants.auto_patch_launch_agent_path:        "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist",
+            self.constants.update_launch_daemon_path:           "/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.macos-update.plist",
+            **({ self.constants.rsr_monitor_launch_daemon_path: "/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.rsr-monitor.plist" } if self._create_rsr_monitor_daemon() else {}),
+        }
+
+        for service in services:
+            name = Path(service).name
+            logging.info(f"- Installing {name}")
+            if Path(services[service]).exists():
+                logging.info(f"  - Existing service found, removing")
+                utilities.process_status(utilities.elevated(["rm", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            # Create parent directories
+            if not Path(services[service]).parent.exists():
+                logging.info(f"  - Creating {Path(services[service]).parent} directory")
+                utilities.process_status(utilities.elevated(["mkdir", "-p", Path(services[service]).parent], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["cp", service, services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
+            # Set the permissions on the service
+            utilities.process_status(utilities.elevated(["chmod", "644", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["chown", "root:wheel", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+
         if self.constants.launcher_binary.startswith("/Library/Application Support/Dortania/"):
-            logging.info("- Skipping Auto Patcher Launch Agent, already installed")
+            logging.info("- Skipping Patcher Install, already installed")
             return
 
         # Verify our binary isn't located in '/Library/Application Support/Dortania/'
@@ -376,29 +398,6 @@ Please check the Github page for more information about this release."""
             utilities.process_status(utilities.elevated(["mv", f"/Library/Application Support/Dortania/{path}", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
         subprocess.run(["xattr", "-cr", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-
-        services = {
-            self.constants.auto_patch_launch_agent_path:        "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist",
-            self.constants.update_launch_daemon_path:           "/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.macos-update.plist",
-            **({ self.constants.rsr_monitor_launch_daemon_path: "/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.rsr-monitor.plist" } if self._create_rsr_monitor_daemon() else {}),
-        }
-
-        for service in services:
-            name = Path(service).name
-            logging.info(f"- Installing {name}")
-            if Path(services[service]).exists():
-                logging.info(f"  - Existing service found, removing")
-                utilities.process_status(utilities.elevated(["rm", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            # Create parent directories
-            if not Path(services[service]).parent.exists():
-                logging.info(f"  - Creating {Path(services[service]).parent} directory")
-                utilities.process_status(utilities.elevated(["mkdir", "-p", Path(services[service]).parent], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["cp", service, services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-
-            # Set the permissions on the service
-            utilities.process_status(utilities.elevated(["chmod", "644", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["chown", "root:wheel", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
         # Making app alias
         # Simply an easy way for users to notice the app
