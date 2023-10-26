@@ -5,6 +5,12 @@
 - Add support for detecting T1 Security Chips in DFU mode
 - Update non-Metal Binaries for macOS Sonoma:
   - Resolve Photos app crash
+- Add new Launch Daemon for clean up on macOS updates
+  - Resolves KDKless Macs failing to boot after updating from 14.0 to 14.x
+  - `/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.macos-update.plist`
+- Remove News Widget removal from Control Centre
+  - News Widget no longer crashes on 3802-based GPUs
+- Resolve i210 NIC support for macOS Sonoma
 - Increment Binaries:
  - PatcherSupportPkg 1.4.3 - release
 
