@@ -587,7 +587,7 @@ class KernelDebugKitUtilities:
         return True
 
 
-    def install_kdk_dmg(self, kdk_path: Path) -> bool:
+    def install_kdk_dmg(self, kdk_path: Path, only_install_backup: bool = False) -> bool:
         """
         Installs provided KDK disk image
 
@@ -617,9 +617,11 @@ class KernelDebugKitUtilities:
                 self._unmount_disk_image(mount_point)
                 return False
 
-            if self.install_kdk_pkg(kdk_pkg_path) is False:
-                self._unmount_disk_image(mount_point)
-                return False
+
+            if only_install_backup is False:
+                if self.install_kdk_pkg(kdk_pkg_path) is False:
+                    self._unmount_disk_image(mount_point)
+                    return False
 
             self._create_backup(kdk_pkg_path, Path(f"{kdk_path.parent}/{KDK_INFO_PLIST}"))
             self._unmount_disk_image(mount_point)
@@ -662,6 +664,9 @@ class KernelDebugKitUtilities:
         if os.getuid() != 0:
             logging.warning("Cannot create KDK backup, not running as root")
             return
+
+        if not Path(KDK_INSTALL_PATH).exists():
+            subprocess.run(["mkdir", "-p", KDK_INSTALL_PATH], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         kdk_dst_name = f"KDK_{kdk_info_dict['version']}_{kdk_info_dict['build']}.pkg"
         kdk_dst_path = Path(f"{KDK_INSTALL_PATH}/{kdk_dst_name}")
