@@ -20,4 +20,4 @@ Note that after you remove OpenCore, your Mac will no longer boot and show the "
 
 ## Uninstalling the application
 
-If you used OCLP on a native system and want to remove the application without reinstalling the OS, navigate to `/Library/Application Support/` and delete the Dortania folder.
+If you want to remove the application without reinstalling the OS, navigate to `/Library/Application Support/` and delete the Dortania folder.
