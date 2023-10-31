@@ -61,7 +61,7 @@ class InitializeLoggingSupport:
         """
 
         base_path = Path("~/Library/Logs").expanduser()
-        if not base_path.exists():
+        if not base_path.exists() or str(base_path).startswith("/var/root/"):
             # Likely in an installer environment, store in /Users/Shared
             base_path = Path("/Users/Shared")
         else:
@@ -71,7 +71,7 @@ class InitializeLoggingSupport:
                 try:
                     base_path.mkdir()
                 except Exception as e:
-                    logging.error(f"Failed to create Dortania folder: {e}")
+                    print(f"Failed to create Dortania folder: {e}")
                     base_path = Path("/Users/Shared")
 
         self.log_filepath = Path(f"{base_path}/{self.log_filename}").expanduser()
@@ -194,6 +194,7 @@ class InitializeLoggingSupport:
         logging.info('#' * str_len)
 
         logging.info("Log file set:")
+        logging.info(f"  {self.log_filepath}")
         # Display relative path to avoid disclosing user's username
         try:
             path = self.log_filepath.relative_to(Path.home())

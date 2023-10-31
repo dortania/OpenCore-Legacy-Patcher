@@ -241,6 +241,7 @@ class CreateBinary:
         whitelist_files = [
             "com.dortania.opencore-legacy-patcher.auto-patch.plist",
             "com.dortania.opencore-legacy-patcher.rsr-monitor.plist",
+            "com.dortania.opencore-legacy-patcher.macos-update.plist",
             "entitlements.plist",
             "launcher.sh",
             "OC-Patcher-TUI.icns",

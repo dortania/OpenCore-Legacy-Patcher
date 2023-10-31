@@ -1,12 +1,16 @@
-import threading
+import sys
 import time
 import logging
-import sys
+import plistlib
+import threading
+import subprocess
 
-from resources import defaults, utilities, validation, constants
-from resources.sys_patch import sys_patch, sys_patch_auto
+from pathlib import Path
+
+from data import model_array, os_data
 from resources.build import build
-from data import model_array
+from resources.sys_patch import sys_patch, sys_patch_auto
+from resources import defaults, utilities, validation, constants
 
 
 # Generic building args
@@ -39,6 +43,11 @@ class arguments:
 
         if self.args.unpatch_sys_vol:
             self._sys_unpatch_handler()
+            return
+
+        if self.args.prepare_for_update:
+            logging.info("Preparing host for macOS update")
+            self._clean_le_handler()
             return
 
         if self.args.auto_patch:
@@ -86,6 +95,46 @@ class arguments:
 
         logging.info("Set Auto patching")
         sys_patch_auto.AutomaticSysPatch(self.constants).start_auto_patch()
+
+
+    def _clean_le_handler(self) -> None:
+        """
+        Check if software update is staged
+        If so, clean /Library/Extensions
+        """
+
+        if self.constants.detected_os < os_data.os_data.sonoma:
+            logging.info("Host doesn't require cleaning, skipping")
+            return
+
+        update_config = "/System/Volumes/Update/Update.plist"
+        if not Path(update_config).exists():
+            logging.info("No update staged, skipping")
+            return
+
+        try:
+            update_staged = plistlib.load(open(update_config, "rb"))
+        except Exception as e:
+            logging.error(f"Failed to load update config: {e}")
+            return
+        if "update-asset-attributes" not in update_staged:
+            logging.info("No update staged, skipping")
+            return
+
+        logging.info("Update staged, cleaning /Library/Extensions")
+
+        for kext in Path("/Library/Extensions").glob("*.kext"):
+            if not Path(f"{kext}/Contents/Info.plist").exists():
+                continue
+            try:
+                kext_plist = plistlib.load(open(f"{kext}/Contents/Info.plist", "rb"))
+            except Exception as e:
+                logging.info(f"  - Failed to load plist for {kext.name}: {e}")
+                continue
+            if "GPUCompanionBundles" not in kext_plist:
+                continue
+            logging.info(f"  - Removing {kext.name}")
+            subprocess.run(["rm", "-rf", kext])
 
 
     def _build_handler(self) -> None:

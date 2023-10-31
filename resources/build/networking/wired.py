@@ -35,6 +35,7 @@ class BuildWiredNetworking:
 
         # Always enable due to chance of hot-plugging
         self._usb_ecm_dongles()
+        self._i210_handling()
 
 
     def _usb_ecm_dongles(self) -> None:
@@ -47,6 +48,21 @@ class BuildWiredNetworking:
         # - DriverKit: com.apple.DriverKit.AppleUserECM.dext
         # - Kext: AppleUSBECM.kext
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("ECM-Override.kext", self.constants.ecm_override_version, self.constants.ecm_override_path)
+
+
+    def _i210_handling(self) -> None:
+        """
+        PCIe i210 NIC Handling
+        """
+        # i210 NICs are broke in macOS 14 due to driver kit downgrades
+        # See ECM logic for why it's always enabled
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("CatalinaIntelI210Ethernet.kext", self.constants.i210_version, self.constants.i210_path)
+        # Ivy Bridge and newer natively support DriverKit, so set MinKernel to 23.0.0
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.CPUGen.ivy_bridge.value:
+            support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("CatalinaIntelI210Ethernet.kext")["MinKernel"] = "23.0.0"
+
 
     def _on_model(self) -> None:
         """
