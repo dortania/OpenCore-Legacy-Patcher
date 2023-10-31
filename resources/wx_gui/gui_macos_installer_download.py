@@ -56,6 +56,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
             bitmap = wx.Bitmap(wx.Bitmap(icon, wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH))
         except:
             bitmap = wx.ArtProvider.GetBitmap(wx.ART_CDROM, wx.ART_OTHER, wx.Size(size[0], size[1]))
+            logging.info(f"WARNING: Failed to load icon from file: {icon}")
 
         return bitmap
 
