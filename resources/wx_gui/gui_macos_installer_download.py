@@ -51,14 +51,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         Convert icon to bitmap
         """
 
-        # WxPython will intermittently fail to load an icon from file, load fallback from ArtProvider if this happens
-        try:
-            bitmap = wx.Bitmap(wx.Bitmap(icon, wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH))
-        except:
-            bitmap = wx.ArtProvider.GetBitmap(wx.ART_CDROM, wx.ART_OTHER, wx.Size(size[0], size[1]))
-            logging.info(f"WARNING: Failed to load icon from file: {icon}")
-
-        return bitmap
+        return wx.Bitmap(wx.Bitmap(icon, wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH))
 
     def _macos_version_to_icon(self, version: int) -> int:
         """
