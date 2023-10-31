@@ -729,23 +729,29 @@ class Constants:
 
     @property
     def icon_path_macos_generic(self):
-        return self.payload_path / Path("Icon/AppIcons/Generic.icns")
-
+        if self.launcher_script:
+                return self.payload_path / Path("Icon/AppIcons/Generic.icns")
+        return Path(self.launcher_binary).parent.parent / Path("Resources/Generic.icns")
     @property
     def icon_path_macos_big_sur(self):
-        return self.payload_path / Path("Icon/AppIcons/BigSur.icns")
-
+        if self.launcher_script:
+                return self.payload_path / Path("Icon/AppIcons/BigSur.icns")
+        return Path(self.launcher_binary).parent.parent / Path("Resources/BigSur.icns")
     @property
     def icon_path_macos_monterey(self):
-        return self.payload_path / Path("Icon/AppIcons/Monterey.icns")
-
+        if self.launcher_script:
+                return self.payload_path / Path("Icon/AppIcons/Monterey.icns")
+        return Path(self.launcher_binary).parent.parent / Path("Resources/Monterey.icns")
     @property
     def icon_path_macos_ventura(self):
-        return self.payload_path / Path("Icon/AppIcons/Ventura.icns")
-
+        if self.launcher_script:
+                return self.payload_path / Path("Icon/AppIcons/Ventura.icns")
+        return Path(self.launcher_binary).parent.parent / Path("Resources/Ventura.icns")
     @property
     def icon_path_macos_sonoma(self):
-        return self.payload_path / Path("Icon/AppIcons/Sonoma.icns")
+        if self.launcher_script:
+                return self.payload_path / Path("Icon/AppIcons/Sonoma.icns")
+        return Path(self.launcher_binary).parent.parent / Path("Resources/Sonoma.icns")
 
     @property
     def gui_path(self):
