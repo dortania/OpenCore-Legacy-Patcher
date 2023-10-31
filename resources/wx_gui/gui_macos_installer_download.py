@@ -50,8 +50,15 @@ class macOSInstallerDownloadFrame(wx.Frame):
         """
         Convert icon to bitmap
         """
-        return wx.Bitmap(wx.Bitmap(icon, wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH))
-    
+
+        # WxPython will intermittently fail to load an icon from file, load fallback from ArtProvider if this happens
+        try:
+            bitmap = wx.Bitmap(wx.Bitmap(icon, wx.BITMAP_TYPE_ICON).ConvertToImage().Rescale(size[0], size[1], wx.IMAGE_QUALITY_HIGH))
+        except:
+            bitmap = wx.ArtProvider.GetBitmap(wx.ART_CDROM, wx.ART_OTHER, wx.Size(size[0], size[1]))
+
+        return bitmap
+
     def _macos_version_to_icon(self, version: int) -> int:
         """
         Convert macOS version to icon
@@ -143,20 +150,20 @@ class macOSInstallerDownloadFrame(wx.Frame):
         """
         Display available installers in frame
         """
-        
+
 
         bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
-        
+
         self.frame_modal.Destroy()
         self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(460, 500))
 
         # Title: Select macOS Installer
         title_label = wx.StaticText(self.frame_modal, label="Select macOS Installer", pos=(-1,-1))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
-        
+
         # macOS Installers list
         id = wx.NewIdRef()
-        
+
         self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
         self.list.SetSmallImages(bundles)
 
@@ -226,7 +233,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         checkboxsizer = wx.BoxSizer(wx.HORIZONTAL)
         checkboxsizer.Add(self.showolderversions_checkbox, 0, wx.ALIGN_CENTRE | wx.RIGHT, 5)
-        
+
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.AddSpacer(10)
         sizer.Add(title_label, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
@@ -253,15 +260,15 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
             wx.MessageDialog(self.frame_modal, "Download link copied to clipboard", "", wx.OK | wx.ICON_INFORMATION).ShowModal()
 
-            
+
     def on_select_list(self, event):
         if self.list.GetSelectedItemCount() > 0:
             self.select_button.Enable()
-            self.copy_button.Enable()  
+            self.copy_button.Enable()
         else:
             self.select_button.Disable()
             self.copy_button.Disable()
-            
+
     def on_download_installer(self, installers: dict) -> None:
         """
         Download macOS installer
@@ -322,7 +329,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
             self._validate_installer(list(installers.values())[selected_item]['integrity'])
 
-        
+
     def _validate_installer(self, chunklist_link: str) -> None:
         """
         Validate macOS installer
