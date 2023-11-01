@@ -20,10 +20,27 @@ class DetectRootPatch:
     Library for querying root volume patches applicable for booted system
     """
 
-    def __init__(self, model: str, global_constants: constants.Constants):
+    def __init__(self, model: str, global_constants: constants.Constants,
+                 os_major: int = None, os_minor: int = None,
+                 os_build: str = None, os_version: str = None
+        ) -> None:
+
         self.model: str = model
 
         self.constants: constants.Constants = global_constants
+        if os_major is None:
+            os_major = self.constants.detected_os
+        if os_minor is None:
+            os_minor = self.constants.detected_os_minor
+        if os_build is None:
+            os_build = self.constants.detected_os_build
+        if os_version is None:
+            os_version = self.constants.detected_os_version
+
+        self.os_major:   int = os_major
+        self.os_minor:   int = os_minor
+        self.os_build:   str = os_build
+        self.os_version: str = os_version
 
         self.computer = self.constants.computer
 
@@ -89,7 +106,7 @@ class DetectRootPatch:
             if gpu.class_code and gpu.class_code != 0xFFFFFFFF:
                 logging.info(f"Found GPU ({i}): {utilities.friendly_hex(gpu.vendor_id)}:{utilities.friendly_hex(gpu.device_id)}")
                 if gpu.arch in [device_probe.NVIDIA.Archs.Tesla] and self.constants.force_nv_web is False:
-                    if self.constants.detected_os > non_metal_os:
+                    if self.os_major > non_metal_os:
                         self.nvidia_tesla = True
                         self.amfi_must_disable = True
                         if os_data.os_data.ventura in self.constants.legacy_accel_support:
@@ -97,24 +114,24 @@ class DetectRootPatch:
                         self.legacy_keyboard_backlight = self._check_legacy_keyboard_backlight()
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.NVIDIA.Archs.Kepler and self.constants.force_nv_web is False:
-                    if self.constants.detected_os > os_data.os_data.big_sur:
+                    if self.os_major > os_data.os_data.big_sur:
                         # Kepler drivers were dropped with Beta 7
                         # 12.0 Beta 5: 21.0.0 - 21A5304g
                         # 12.0 Beta 6: 21.1.0 - 21A5506j
                         # 12.0 Beta 7: 21.1.0 - 21A5522h
                         if (
-                            self.constants.detected_os >= os_data.os_data.ventura or
+                            self.os_major >= os_data.os_data.ventura or
                             (
-                                "21A5506j" not in self.constants.detected_os_build and
-                                self.constants.detected_os == os_data.os_data.monterey and
-                                self.constants.detected_os_minor > 0
+                                "21A5506j" not in self.os_build and
+                                self.os_major == os_data.os_data.monterey and
+                                self.os_minor > 0
                             )
                         ):
                             self.kepler_gpu = True
                             self.supports_metal = True
-                            if self.constants.detected_os >= os_data.os_data.ventura:
+                            if self.os_major >= os_data.os_data.ventura:
                                 self.amfi_must_disable = True
-                                if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
+                                if (self.os_major == os_data.os_data.ventura and self.os_minor >= 4) or self.os_major > os_data.os_data.ventura:
                                     self.amfi_shim_bins = True
                 elif gpu.arch in [
                     device_probe.NVIDIA.Archs.Fermi,
@@ -122,7 +139,7 @@ class DetectRootPatch:
                     device_probe.NVIDIA.Archs.Maxwell,
                     device_probe.NVIDIA.Archs.Pascal,
                 ]:
-                    if self.constants.detected_os > os_data.os_data.mojave:
+                    if self.os_major > os_data.os_data.mojave:
                         self.nvidia_web = True
                         self.amfi_must_disable = True
                         if os_data.os_data.ventura in self.constants.legacy_accel_support:
@@ -130,14 +147,14 @@ class DetectRootPatch:
                         self.needs_nv_web_checks = True
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_1:
-                    if self.constants.detected_os > non_metal_os:
+                    if self.os_major > non_metal_os:
                         self.amd_ts1 = True
                         self.amfi_must_disable = True
                         if os_data.os_data.ventura in self.constants.legacy_accel_support:
                             self.amfi_shim_bins = True
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_2:
-                    if self.constants.detected_os > non_metal_os:
+                    if self.os_major > non_metal_os:
                         self.amd_ts2 = True
                         self.amfi_must_disable = True
                         if os_data.os_data.ventura in self.constants.legacy_accel_support:
@@ -149,7 +166,7 @@ class DetectRootPatch:
                     device_probe.AMD.Archs.Legacy_GCN_9000,
                     device_probe.AMD.Archs.Polaris,
                 ]:
-                    if self.constants.detected_os > os_data.os_data.monterey:
+                    if self.os_major > os_data.os_data.monterey:
                         if self.constants.computer.rosetta_active is True:
                             continue
 
@@ -171,7 +188,7 @@ class DetectRootPatch:
                                 if self.model == "MacBookPro13,3":
                                     self.legacy_gcn = True
                                 elif self.model == "MacBookPro14,3":
-                                    if self.constants.detected_os < os_data.os_data.sonoma:
+                                    if self.os_major < os_data.os_data.sonoma:
                                         continue
                                     self.legacy_gcn_v2 = True
                         else:
@@ -180,7 +197,7 @@ class DetectRootPatch:
                         self.requires_root_kc = True
                         self.amfi_must_disable = True
                 elif gpu.arch == device_probe.AMD.Archs.Vega:
-                     if self.constants.detected_os > os_data.os_data.monterey:
+                     if self.os_major > os_data.os_data.monterey:
                         if "AVX2" in self.constants.computer.cpu.leafs:
                             continue
 
@@ -189,7 +206,7 @@ class DetectRootPatch:
                         self.requires_root_kc = True
                         self.amfi_must_disable = True
                 elif gpu.arch == device_probe.Intel.Archs.Iron_Lake:
-                    if self.constants.detected_os > non_metal_os:
+                    if self.os_major > non_metal_os:
                         self.iron_gpu = True
                         self.amfi_must_disable = True
                         if os_data.os_data.ventura in self.constants.legacy_accel_support:
@@ -197,7 +214,7 @@ class DetectRootPatch:
                         self.legacy_keyboard_backlight = self._check_legacy_keyboard_backlight()
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Sandy_Bridge:
-                    if self.constants.detected_os > non_metal_os:
+                    if self.os_major > non_metal_os:
                         self.sandy_gpu = True
                         self.amfi_must_disable = True
                         if os_data.os_data.ventura in self.constants.legacy_accel_support:
@@ -205,32 +222,30 @@ class DetectRootPatch:
                         self.legacy_keyboard_backlight = self._check_legacy_keyboard_backlight()
                         self.requires_root_kc = True
                 elif gpu.arch == device_probe.Intel.Archs.Ivy_Bridge:
-                    if self.constants.detected_os > os_data.os_data.big_sur:
+                    if self.os_major > os_data.os_data.big_sur:
                         self.ivy_gpu = True
-                        if self.constants.detected_os >= os_data.os_data.ventura:
+                        if self.os_major >= os_data.os_data.ventura:
                             self.amfi_must_disable = True
-                            if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
+                            if (self.os_major == os_data.os_data.ventura and self.os_minor >= 4) or self.os_major > os_data.os_data.ventura:
                                 self.amfi_shim_bins = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Haswell:
-                    if self.constants.detected_os > os_data.os_data.monterey:
+                    if self.os_major > os_data.os_data.monterey:
                         self.haswell_gpu = True
                         self.amfi_must_disable = True
-                        if (self.constants.detected_os == os_data.os_data.ventura and self.constants.detected_os_minor >= 4) or self.constants.detected_os > os_data.os_data.ventura:
+                        if (self.os_major == os_data.os_data.ventura and self.os_minor >= 4) or self.os_major > os_data.os_data.ventura:
                             self.amfi_shim_bins = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Broadwell:
-                    if self.constants.detected_os > os_data.os_data.monterey:
+                    if self.os_major > os_data.os_data.monterey:
                         self.broadwell_gpu = True
                         self.amfi_must_disable = True
                         self.supports_metal = True
                 elif gpu.arch == device_probe.Intel.Archs.Skylake:
-                    if self.constants.detected_os > os_data.os_data.monterey:
+                    if self.os_major > os_data.os_data.monterey:
                         self.skylake_gpu = True
                         self.amfi_must_disable = True
                         self.supports_metal = True
-
-
 
         if self.supports_metal is True:
             # Avoid patching Metal and non-Metal GPUs if both present, prioritize Metal GPU
@@ -251,7 +266,7 @@ class DetectRootPatch:
             self.legacy_polaris = False
             self.legacy_vega = False
 
-        if self.constants.detected_os <= os_data.os_data.monterey:
+        if self.os_major <= os_data.os_data.monterey:
             # Always assume Root KC requirement on Monterey and older
             self.requires_root_kc = True
         else:
@@ -272,7 +287,7 @@ class DetectRootPatch:
         """
 
         # Increase OS check if modern wifi is detected
-        if self.constants.detected_os < (os_data.os_data.ventura if self.legacy_wifi is True else os_data.os_data.sonoma):
+        if self.os_major < (os_data.os_data.ventura if self.legacy_wifi is True else os_data.os_data.sonoma):
             return
         if self.legacy_wifi is False and self.modern_wifi is False:
             return
@@ -313,7 +328,7 @@ class DetectRootPatch:
         self.legacy_keyboard_backlight = False
 
         # Currently all graphics patches require a KDK
-        if self.constants.detected_os >= os_data.os_data.sonoma:
+        if self.os_major >= os_data.os_data.sonoma:
             self.kepler_gpu     = False
             self.ivy_gpu        = False
             self.haswell_gpu    = False
@@ -442,7 +457,7 @@ class DetectRootPatch:
         """
         min_os = os_data.os_data.big_sur
         max_os = os_data.os_data.sonoma
-        if self.constants.detected_os < min_os or self.constants.detected_os > max_os:
+        if self.os_major < min_os or self.os_major > max_os:
             return False
         return True
 
@@ -455,7 +470,7 @@ class DetectRootPatch:
             bool: True if installed, False otherwise
         """
 
-        return kdk_handler.KernelDebugKitObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version, passive=True).kdk_already_installed
+        return kdk_handler.KernelDebugKitObject(self.constants, self.os_build, self.os_version, passive=True).kdk_already_installed
 
 
     def _check_sip(self):
@@ -466,14 +481,14 @@ class DetectRootPatch:
             tuple: (list, str, str) of SIP values, SIP hex, SIP error message
         """
 
-        if self.constants.detected_os > os_data.os_data.catalina:
+        if self.os_major > os_data.os_data.catalina:
             if self.nvidia_web is True:
                 sip = sip_data.system_integrity_protection.root_patch_sip_big_sur_3rd_part_kexts
                 sip_hex = "0xA03"
                 sip_value = (
                     f"For Hackintoshes, please set csr-active-config to '030A0000' ({sip_hex})\nFor non-OpenCore Macs, please run 'csrutil disable' and \n'csrutil authenticated-root disable' in RecoveryOS"
                 )
-            elif self.constants.detected_os >= os_data.os_data.ventura:
+            elif self.os_major >= os_data.os_data.ventura:
                 sip = sip_data.system_integrity_protection.root_patch_sip_ventura
                 sip_hex = "0x803"
                 sip_value = (
@@ -500,7 +515,7 @@ class DetectRootPatch:
             bool: True if UHCI/OHCI patches required, False otherwise
         """
 
-        if self.constants.detected_os < os_data.os_data.ventura:
+        if self.os_major < os_data.os_data.ventura:
             return False
 
         # If we're on a hackintosh, check for UHCI/OHCI controllers
@@ -539,7 +554,7 @@ class DetectRootPatch:
 
         self.has_network = network_handler.NetworkUtilities().verify_network_connection()
 
-        if self.constants.detected_os >= os_data.os_data.sonoma:
+        if self.os_major >= os_data.os_data.sonoma:
             self.legacy_pcie_webcam = self.constants.computer.pcie_webcam
             self.legacy_t1_chip = self.constants.computer.t1_chip
 
@@ -551,25 +566,25 @@ class DetectRootPatch:
             self.requires_root_kc = True
 
         if self.model in model_array.LegacyBrightness:
-            if self.constants.detected_os > os_data.os_data.catalina:
+            if self.os_major > os_data.os_data.catalina:
                 self.brightness_legacy = True
 
         if self.model in ["iMac7,1", "iMac8,1"] or (self.model in model_array.LegacyAudio and utilities.check_kext_loaded("as.vit9696.AppleALC") is False):
             # Special hack for systems with botched GOPs
             # TL;DR: No Boot Screen breaks Lilu, therefore breaking audio
-            if self.constants.detected_os > os_data.os_data.catalina:
+            if self.os_major > os_data.os_data.catalina:
                 self.legacy_audio = True
 
         if (
             isinstance(self.constants.computer.wifi, device_probe.Broadcom)
             and self.constants.computer.wifi.chipset in [device_probe.Broadcom.Chipsets.AirPortBrcm4331, device_probe.Broadcom.Chipsets.AirPortBrcm43224]
         ) or (isinstance(self.constants.computer.wifi, device_probe.Atheros) and self.constants.computer.wifi.chipset == device_probe.Atheros.Chipsets.AirPortAtheros40):
-            if self.constants.detected_os > os_data.os_data.big_sur:
+            if self.os_major > os_data.os_data.big_sur:
                 self.legacy_wifi = True
-                if self.constants.detected_os >= os_data.os_data.ventura:
+                if self.os_major >= os_data.os_data.ventura:
                     # Due to extracted frameworks for IO80211.framework and co, check library validation
                     self.amfi_must_disable = True
-                    if self.constants.detected_os > os_data.os_data.ventura:
+                    if self.os_major > os_data.os_data.ventura:
                         self.amfi_shim_bins = True
 
         if (
@@ -580,7 +595,7 @@ class DetectRootPatch:
                 # We don't officially support this chipset, however we'll throw a bone to hackintosh users
                 device_probe.Broadcom.Chipsets.AirPortBrcmNICThirdParty,
             ]):
-            if self.constants.detected_os > os_data.os_data.ventura:
+            if self.os_major > os_data.os_data.ventura:
                 self.modern_wifi = True
                 self.amfi_shim_bins = True
 
@@ -590,7 +605,7 @@ class DetectRootPatch:
             # Same method is also used for demuxed machines
             # Note that MacBookPro5,x machines are extremely unstable with this patch set, so disabled until investigated further
             # Ref: https://github.com/dortania/OpenCore-Legacy-Patcher/files/7360909/KP-b10-030.txt
-            if self.constants.detected_os > os_data.os_data.high_sierra:
+            if self.os_major > os_data.os_data.high_sierra:
                 if self.model in ["MacBookPro8,2", "MacBookPro8,3"]:
                     # Ref: https://doslabelectronics.com/Demux.html
                     if self._detect_demux() is True:
@@ -630,7 +645,7 @@ class DetectRootPatch:
             "Miscellaneous: T1 Security Chip":             self.legacy_t1_chip,
             "Settings: Requires AMFI exemption":           self.amfi_must_disable,
             "Settings: Supports Auxiliary Cache":          not self.requires_root_kc,
-            "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.constants.detected_os >= os_data.os_data.ventura.value else False,
+            "Settings: Kernel Debug Kit missing":          self.missing_kdk if self.os_major >= os_data.os_data.ventura.value else False,
             "Validation: Patching Possible":               self.verify_patch_allowed(),
             "Validation: Unpatching Possible":             self._verify_unpatch_allowed(),
             f"Validation: Unsupported Host OS":            self.unsupported_os,
@@ -644,7 +659,7 @@ class DetectRootPatch:
             "Validation: Force OpenGL property missing":   self.missing_nv_web_opengl  if self.nvidia_web is True else False,
             "Validation: Force compat property missing":   self.missing_nv_compat      if self.nvidia_web is True else False,
             "Validation: nvda_drv(_vrl) variable missing": self.missing_nv_web_nvram   if self.nvidia_web is True else False,
-            "Validation: Network Connection Required":     (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.constants.detected_os >= os_data.os_data.ventura.value) else False,
+            "Validation: Network Connection Required":     (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.os_major >= os_data.os_data.ventura.value) else False,
         }
 
         return self.root_patch_dict
@@ -661,7 +676,7 @@ class DetectRootPatch:
         if self.amfi_must_disable is False:
             return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
 
-        if self.constants.detected_os < os_data.os_data.big_sur:
+        if self.os_major < os_data.os_data.big_sur:
             return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
 
         amfipass_version = utilities.check_kext_loaded("com.dhinakg.AMFIPass")
@@ -670,7 +685,7 @@ class DetectRootPatch:
                 # If AMFIPass is loaded, our binaries will work
                 return amfi_detect.AmfiConfigDetectLevel.NO_CHECK
 
-        if self.constants.detected_os >= os_data.os_data.ventura:
+        if self.os_major >= os_data.os_data.ventura:
             if self.amfi_shim_bins is True:
                 # Currently we require AMFI outright disabled
                 # in Ventura to work with shim'd binaries
@@ -694,7 +709,7 @@ class DetectRootPatch:
         sip = sip_dict[0]
         sip_value = sip_dict[1]
 
-        self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.constants.detected_os)
+        self.sip_enabled, self.sbm_enabled, self.fv_enabled, self.dosdude_patched = utilities.patching_status(sip, self.os_major)
         self.amfi_enabled = not amfi_detect.AmfiConfigurationDetection().check_config(self._get_amfi_level_needed())
 
         self.unsupported_os = not self._check_os_compat()
@@ -748,7 +763,7 @@ class DetectRootPatch:
                     logging.info("\nCannot patch! WhateverGreen.kext missing")
                     logging.info("Please ensure WhateverGreen.kext is installed")
 
-            if (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.constants.detected_os >= os_data.os_data.ventura.value) else False:
+            if (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.os_major >= os_data.os_data.ventura.value) else False:
                 logging.info("\nCannot patch! Network Connection Required")
                 logging.info("Please ensure you have an active internet connection")
 
@@ -771,7 +786,7 @@ class DetectRootPatch:
                 self.missing_whatever_green if self.nvidia_web is True  else False,
 
                 # KDK specific
-                (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.constants.detected_os >= os_data.os_data.ventura.value) else False
+                (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.os_major >= os_data.os_data.ventura.value) else False
             ]
         ):
             return False
