@@ -3,8 +3,12 @@
 ## 1.2.0
 - Resolve application not existing if user dismisses an update instead of installing
 - Add support for detecting T1 Security Chips in DFU mode
+- Resolve macOS 14.2 coreauthd crashes on T1 Macs
+- Resolve missing NFC firmware on T1 Macs
 - Update non-Metal Binaries for macOS Sonoma:
   - Resolve Photos app crash
+  - Workaround tile window popup freezing apps by disabling the feature
+  - Workaround monochrome desktop widgets rendering issues by enforcing full color (can be disabled in OCLP settings )
 - Add new Launch Daemon for clean up on macOS updates
   - Resolves KDKless Macs failing to boot after updating from 14.0 to 14.x
   - `/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.macos-update.plist`
@@ -12,7 +16,7 @@
   - News Widget no longer crashes on 3802-based GPUs
 - Resolve i210 NIC support for macOS Sonoma
 - Increment Binaries:
- - PatcherSupportPkg 1.4.3 - release
+ - PatcherSupportPkg 1.4.4 - release
 
 ## 1.1.0
 - Resolve rendering issues on Intel Broadwell iGPUs
