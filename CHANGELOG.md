@@ -14,6 +14,7 @@
   - `/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.macos-update.plist`
 - Load UI icons from local path
   - Resolves macOS downloader crash on slower machines
+- Resolve iMac18,2 internal 4K display support
 - Remove News Widget removal from Control Centre
   - News Widget no longer crashes on 3802-based GPUs
 - Resolve i210 NIC support for macOS Sonoma

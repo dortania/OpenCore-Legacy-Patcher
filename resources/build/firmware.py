@@ -305,10 +305,10 @@ class BuildFirmware:
         whereas other drivers like ./qa_logger.efi is invoked via Device Path.
         """
 
-        if "5K Display" not in smbios_data.smbios_dictionary[self.model]:
+        if "Dual DisplayPort Display" not in smbios_data.smbios_dictionary[self.model]:
             return
 
-        logging.info("- Adding 5K Display Patch")
+        logging.info("- Adding 4K/5K Display Patch")
         # Set LauncherPath to '/boot.efi'
         # This is to ensure that only the Mac's firmware presents the boot option, but not OpenCore
         # https://github.com/acidanthera/OpenCorePkg/blob/0.7.6/Library/OcAppleBootPolicyLib/OcAppleBootPolicyLib.c#L50-L73
