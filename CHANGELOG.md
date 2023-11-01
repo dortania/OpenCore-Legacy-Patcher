@@ -8,6 +8,8 @@
 - Add new Launch Daemon for clean up on macOS updates
   - Resolves KDKless Macs failing to boot after updating from 14.0 to 14.x
   - `/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.macos-update.plist`
+- Load UI icons from local path
+  - Resolves macOS downloader crash on slower machines
 - Remove News Widget removal from Control Centre
   - News Widget no longer crashes on 3802-based GPUs
 - Resolve i210 NIC support for macOS Sonoma

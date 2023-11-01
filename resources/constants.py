@@ -708,6 +708,13 @@ class Constants:
 
     # Icons
     @property
+    def icns_resource_path(self):
+        if self.launcher_script:
+            return self.payload_path / Path("Icon/AppIcons")
+        return Path(self.launcher_binary).parent.parent / Path("Resources")
+
+
+    @property
     def app_icon_path(self):
         return self.payload_path / Path("OC-Patcher.icns")
 
@@ -729,23 +736,23 @@ class Constants:
 
     @property
     def icon_path_macos_generic(self):
-        return self.payload_path / Path("Icon/AppIcons/Generic.icns")
+        return self.icns_resource_path / Path("Generic.icns")
 
     @property
     def icon_path_macos_big_sur(self):
-        return self.payload_path / Path("Icon/AppIcons/BigSur.icns")
+        return self.icns_resource_path / Path("BigSur.icns")
 
     @property
     def icon_path_macos_monterey(self):
-        return self.payload_path / Path("Icon/AppIcons/Monterey.icns")
+        return self.icns_resource_path / Path("Monterey.icns")
 
     @property
     def icon_path_macos_ventura(self):
-        return self.payload_path / Path("Icon/AppIcons/Ventura.icns")
+        return self.icns_resource_path / Path("Ventura.icns")
 
     @property
     def icon_path_macos_sonoma(self):
-        return self.payload_path / Path("Icon/AppIcons/Sonoma.icns")
+        return self.icns_resource_path / Path("Sonoma.icns")
 
     @property
     def gui_path(self):
@@ -767,13 +774,6 @@ class Constants:
     @property
     def kdk_download_path(self):
         return self.payload_path / Path("KDK.dmg")
-
-    @property
-    def icns_resource_path(self):
-        if self.launcher_script:
-            return self.payload_path / Path("Icon/AppIcons")
-        return Path(self.launcher_binary).parent.parent / Path("Resources")
-
 
     @property
     def icons_path(self):
