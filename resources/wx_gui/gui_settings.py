@@ -755,6 +755,16 @@ class SettingsFrame(wx.Frame):
                     "override_function": self._update_system_defaults,
                     "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
                 },
+                "Disable Color Widgets Enforcement": {
+                    "type": "checkbox",
+                    "value": self._get_system_settings("Moraea_ColorWidgetDisabled"),
+                    "variable": "Moraea_ColorWidgetDisabled",
+                    "description": [
+                        "Control Color Desktop Widgets Enforcement.",
+                    ],
+                    "override_function": self._update_system_defaults,
+                    "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
+                },
             },
             "App": {
                 "General": {

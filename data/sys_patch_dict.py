@@ -155,6 +155,7 @@ class SystemPatchDictionary():
                         "defaults write /Library/Preferences/.GlobalPreferences.plist WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                         **({"defaults write /Library/Preferences/.GlobalPreferences.plist WebKitPreferences.acceleratedDrawingEnabled -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
                         **({"defaults write /Library/Preferences/.GlobalPreferences.plist NSEnableAppKitMenus -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
+                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist NSZoomButtonShowMenu -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
                     },
                 },
                 "Non-Metal IOAccelerator Common": {
@@ -1347,13 +1348,21 @@ class SystemPatchDictionary():
                             "libnfshared.dylib":           "13.6",
                             "libnfshared.dylibOld.dylib":  "13.6",
                             "libnfstorage.dylib":          "13.6",
+                            "libnfrestore.dylib":          "13.6",
 
                             "libPN548_API.dylib":          "13.6"
                         },
                         "/usr/libexec": {
-                            "biometrickitd": "13.6",  # Required for Touch ID
-                            "nfcd":          "13.6",  # Required for Apple Pay
+                            "biometrickitd":        "13.6",  # Required for Touch ID
+                            "nfcd":               "13.6",    # Required for Apple Pay
+                            "nfrestore_service":  "13.6",    # Required for Apple Pay
                         },
+                        "/usr/standalone/firmware/nfrestore/firmware/fw": {
+                            "PN549_FW_02_01_5A_rev88207.bin":         "13.6",
+                            "SN100V_FW_A3_01_01_81_rev127208.bin":    "13.6",
+                            "SN200V_FW_B1_02_01_86_rev127266.bin":    "13.6",
+                            "SN300V_FW_B0_02_01_22_rev129172.bin":    "13.6",
+                        }
                     },
                 },
             },
