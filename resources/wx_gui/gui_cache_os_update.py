@@ -64,15 +64,16 @@ class OSUpdateFrame(wx.Frame):
 
         self.frame.Show()
 
-        self.did_cancel = False
+        self.did_cancel = -1
         self._notifyUser()
 
         # Allow 10 seconds for the user to cancel the download
         # If nothing, continue
         for i in range(0, 10):
-            if self.did_cancel is True:
+            if self.did_cancel == 1:
                 self._exit()
-            time.sleep(1)
+            if self.did_cancel == -1:
+                time.sleep(1)
 
         gui_download.DownloadFrame(
             self,
@@ -178,7 +179,9 @@ class OSUpdateFrame(wx.Frame):
         if result == wx.ID_NO:
             logging.info("User cancelled OS caching")
             self.kdk_download_obj.stop()
-            self.did_cancel = True
+            self.did_cancel = 1
+        else:
+            self.did_cancel = 0
 
     def _exit(self):
         """
