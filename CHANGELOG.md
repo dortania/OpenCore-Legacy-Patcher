@@ -2,6 +2,8 @@
 
 ## 1.2.0
 - Resolve application not existing if user dismisses an update instead of installing
+- Resolve lldb crashes on extracted binaries
+  - Remove MH_DYLIB_IN_CACHE flag from binaries extracted with DSCE
 - Add support for detecting T1 Security Chips in DFU mode
 - Resolve macOS 14.2 coreauthd crashes on T1 Macs
 - Resolve missing NFC firmware on T1 Macs
@@ -29,7 +31,7 @@
   - News Widget no longer crashes on 3802-based GPUs
 - Resolve i210 NIC support for macOS Sonoma
 - Increment Binaries:
- - PatcherSupportPkg 1.4.4 - release
+  - PatcherSupportPkg 1.4.5 - release
 
 ## 1.1.0
 - Resolve rendering issues on Intel Broadwell iGPUs
