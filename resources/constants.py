@@ -279,18 +279,22 @@ class Constants:
     def plist_template(self):
         return self.payload_path / Path("Config/config.plist")
 
-    # Launch Agent
+    # Launch Services
+    @property
+    def launch_services_path(self):
+        return self.payload_path / Path("Launch Services")
+
     @property
     def auto_patch_launch_agent_path(self):
-        return self.payload_path / Path("com.dortania.opencore-legacy-patcher.auto-patch.plist")
+        return self.launch_services_path / Path("com.dortania.opencore-legacy-patcher.auto-patch.plist")
 
     @property
     def rsr_monitor_launch_daemon_path(self):
-        return self.payload_path / Path("com.dortania.opencore-legacy-patcher.rsr-monitor.plist")
+        return self.launch_services_path / Path("com.dortania.opencore-legacy-patcher.rsr-monitor.plist")
 
     @property
     def update_launch_daemon_path(self):
-        return self.payload_path / Path("com.dortania.opencore-legacy-patcher.macos-update.plist")
+        return self.launch_services_path / Path("com.dortania.opencore-legacy-patcher.macos-update.plist")
 
     # ACPI
     @property

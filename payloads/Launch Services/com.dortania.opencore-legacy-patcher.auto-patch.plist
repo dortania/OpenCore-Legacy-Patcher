@@ -13,5 +13,9 @@
 	</array>
 	<key>RunAtLoad</key>
 	<true/>
+	<key>StandardErrorPath</key>
+	<string>/var/log/OpenCore-Patcher.log</string>
+	<key>StandardOutPath</key>
+	<string>/var/log/OpenCore-Patcher.log</string>
 </dict>
 </plist>

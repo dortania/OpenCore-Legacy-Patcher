@@ -8,7 +8,7 @@
 - Update non-Metal Binaries for macOS Sonoma:
   - Resolve Photos app crash
   - Workaround tile window popup freezing apps by disabling the feature
-  - Workaround monochrome desktop widgets rendering issues by enforcing full color (can be disabled in OCLP settings )
+  - Workaround monochrome desktop widgets rendering issues by enforcing full color (can be disabled in OCLP settings)
 - Add new Launch Daemon for clean up on macOS updates
   - Resolves KDKless Macs failing to boot after updating from 14.0 to 14.x
   - `/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.macos-update.plist`
