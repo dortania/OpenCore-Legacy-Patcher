@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AssociatedBundleIdentifiers</key>
+	<string>com.dortania.opencore-legacy-patcher</string>
+	<key>Label</key>
+	<string>com.dortania.opencore-legacy-patcher.rsr-monitor</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Library/Application Support/Dortania/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher</string>
+		<string>--cache_os</string>
+	</array>
+	<key>WatchPaths</key>
+	<array>
+		<string>/System/Volumes/Update/Preflight.plist</string>
+	</array>
+</dict>
+</plist>

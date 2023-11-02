@@ -296,6 +296,10 @@ class Constants:
     def update_launch_daemon_path(self):
         return self.launch_services_path / Path("com.dortania.opencore-legacy-patcher.macos-update.plist")
 
+    @property
+    def kdk_launch_daemon_path(self):
+        return self.launch_services_path / Path("com.dortania.opencore-legacy-patcher.os-caching.plist")
+
     # ACPI
     @property
     def pci_ssdt_path(self):

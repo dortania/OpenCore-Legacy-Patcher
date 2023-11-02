@@ -11,6 +11,7 @@ from data import model_array, os_data
 from resources.build import build
 from resources.sys_patch import sys_patch, sys_patch_auto
 from resources import defaults, utilities, validation, constants
+from resources.wx_gui import gui_entry
 
 
 # Generic building args
@@ -46,8 +47,11 @@ class arguments:
             return
 
         if self.args.prepare_for_update:
-            logging.info("Preparing host for macOS update")
-            self._clean_le_handler()
+            self._prepare_for_update_handler()
+            return
+
+        if self.args.cache_os:
+            self._cache_os_handler()
             return
 
         if self.args.auto_patch:
@@ -97,31 +101,47 @@ class arguments:
         sys_patch_auto.AutomaticSysPatch(self.constants).start_auto_patch()
 
 
+    def _prepare_for_update_handler(self) -> None:
+        """
+        Prepare host for macOS update
+        """
+        logging.info("Preparing host for macOS update")
+
+        os_data = utilities.fetch_staged_update(variant="Update")
+        if os_data[0] is None:
+            logging.info("No update staged, skipping")
+            return
+
+        os_version = os_data[0]
+        os_build   = os_data[1]
+
+        logging.info(f"Preparing for update to {os_version} ({os_build})")
+
+        self._clean_le_handler()
+
+
+    def _cache_os_handler(self) -> None:
+        """
+        Fetch KDK for incoming OS
+        """
+        results = subprocess.run(["ps", "-ax"], stdout=subprocess.PIPE)
+        if results.stdout.decode("utf-8").count("OpenCore-Patcher --cache_os") > 1:
+            logging.info("Another instance of OS caching is running, exiting")
+            return
+
+        gui_entry.EntryPoint(self.constants).start(entry=gui_entry.SupportedEntryPoints.OS_CACHE)
+
+
     def _clean_le_handler(self) -> None:
         """
-        Check if software update is staged
-        If so, clean /Library/Extensions
+        Clean /Library/Extensions of problematic kexts
+        Note macOS Ventura and older do this automatically
         """
 
         if self.constants.detected_os < os_data.os_data.sonoma:
-            logging.info("Host doesn't require cleaning, skipping")
             return
 
-        update_config = "/System/Volumes/Update/Update.plist"
-        if not Path(update_config).exists():
-            logging.info("No update staged, skipping")
-            return
-
-        try:
-            update_staged = plistlib.load(open(update_config, "rb"))
-        except Exception as e:
-            logging.error(f"Failed to load update config: {e}")
-            return
-        if "update-asset-attributes" not in update_staged:
-            logging.info("No update staged, skipping")
-            return
-
-        logging.info("Update staged, cleaning /Library/Extensions")
+        logging.info("Cleaning /Library/Extensions")
 
         for kext in Path("/Library/Extensions").glob("*.kext"):
             if not Path(f"{kext}/Contents/Info.plist").exists():

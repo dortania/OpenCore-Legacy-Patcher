@@ -553,6 +553,33 @@ def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
         return subprocess.run(["sudo"] + [args[0][0]] + args[0][1:], **kwargs)
 
 
+def fetch_staged_update(variant: str = "Update") -> (str, str):
+    """
+    Check for staged macOS update
+    Supported variants:
+    - Preflight
+    - Update
+    """
+
+    os_build   = None
+    os_version = None
+
+    update_config = f"/System/Volumes/Update/{variant}.plist"
+    if not Path(update_config).exists():
+        return (None, None)
+    try:
+        update_staged = plistlib.load(open(update_config, "rb"))
+    except:
+        return (None, None)
+    if "update-asset-attributes" not in update_staged:
+        return (None, None)
+
+    os_build   = update_staged["update-asset-attributes"]["Build"]
+    os_version = update_staged["update-asset-attributes"]["OSVersion"]
+
+    return os_version, os_build
+
+
 def check_cli_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--build", help="Build OpenCore", action="store_true", required=False)
@@ -581,6 +608,7 @@ def check_cli_args():
     parser.add_argument("--patch_sys_vol", help="Patches root volume", action="store_true", required=False)
     parser.add_argument("--unpatch_sys_vol", help="Unpatches root volume, EXPERIMENTAL", action="store_true", required=False)
     parser.add_argument("--prepare_for_update", help="Prepares host for macOS update, ex. clean /Library/Extensions", action="store_true", required=False)
+    parser.add_argument("--cache_os", help="Caches patcher files (ex. KDKs) for incoming OS in Preflight.plist", action="store_true", required=False)
 
     # validation args
     parser.add_argument("--validate", help="Runs Validation Tests for CI", action="store_true", required=False)
@@ -598,7 +626,8 @@ def check_cli_args():
         args.unpatch_sys_vol or
         args.validate or
         args.auto_patch or
-        args.prepare_for_update
+        args.prepare_for_update or
+        args.cache_os
     ):
         return None
     else:

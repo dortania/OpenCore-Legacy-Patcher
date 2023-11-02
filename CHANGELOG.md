@@ -9,9 +9,19 @@
   - Resolve Photos app crash
   - Workaround tile window popup freezing apps by disabling the feature
   - Workaround monochrome desktop widgets rendering issues by enforcing full color (can be disabled in OCLP settings)
-- Add new Launch Daemon for clean up on macOS updates
-  - Resolves KDKless Macs failing to boot after updating from 14.0 to 14.x
-  - `/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.macos-update.plist`
+- Add new arguments:
+  - `--cache_os`: Cache nessasary patcher files for OS to be installed (ex. KDKs)
+  - `--prepare_for_update`: Clean up patcher files for OS to be installed (ex. /Library/Extensions)
+- Add new Launch Daemons for handling macOS updates:
+  - `macos-update.plist`:
+    - Resolves KDKless Macs failing to boot after updating from 14.0 to 14.x
+    - Adds support for KDK caching for OS to be installed
+    - Invoked when update is staged
+    - `/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.macos-update.plist`
+  - `os-caching.plist`
+    - Resolves unsupported/old KDKs from being used post-update
+    - Invoked when update is downloading
+    - `/Library/LaunchDaemons/com.dortania.opencore-legacy-patcher.os-caching.plist`
 - Load UI icons from local path
   - Resolves macOS downloader crash on slower machines
 - Resolve iMac18,2 internal 4K display support

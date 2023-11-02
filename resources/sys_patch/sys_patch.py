@@ -648,7 +648,10 @@ class PatchSysVolume:
             self._execute_patchset(sys_patch_generate.GenerateRootPatchSets(self.computer.real_model, self.constants, self.hardware_details).patchset)
 
         if self.constants.wxpython_variant is True and self.constants.detected_os >= os_data.os_data.big_sur:
-            sys_patch_auto.AutomaticSysPatch(self.constants).install_auto_patcher_launch_agent()
+            needs_daemon = False
+            if self.constants.detected_os >= os_data.os_data.ventura and self.skip_root_kmutil_requirement is False:
+                needs_daemon = True
+            sys_patch_auto.AutomaticSysPatch(self.constants).install_auto_patcher_launch_agent(kdk_caching_needed=needs_daemon)
 
         self._rebuild_root_volume()
 
