@@ -16,7 +16,7 @@ from pathlib import Path
 
 from resources import utilities, updates, global_settings, network_handler, constants
 from resources.sys_patch import sys_patch_detect
-from resources.wx_gui import gui_entry
+from resources.wx_gui import gui_entry, gui_support
 
 
 class AutomaticSysPatch:
@@ -104,8 +104,8 @@ Please check the Github page for more information about this release."""
             sizer.AddSpacer(10)
             self.title_text = wx.StaticText(panel, label="A new version of OpenCore Legacy Patcher is available!")
             self.description = wx.StaticText(panel, label=f"OpenCore Legacy Patcher {version} is now available - You have {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}. Would you like to update?")
-            self.title_text.SetFont(wx.Font(19, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, ".AppleSystemUIFont"))
-            self.description.SetFont(wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, ".AppleSystemUIFont"))
+            self.title_text.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
+            self.description.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
             self.web_view = wx.html2.WebView.New(panel, style=wx.BORDER_SUNKEN)
             html_code = html_css+html_markdown.replace("<a href=", "<a target='_blank' href=")
             self.web_view.SetPage(html_code, "")
