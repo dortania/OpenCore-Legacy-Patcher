@@ -76,7 +76,7 @@ With OpenCore Legacy Patcher v0.6.0+, basic support has been implemented via Roo
 ::: warning The following systems rely on USB 1.1
 
 * iMac10,x and older
-* Macmini3,1 and older
+* Macmini4,1 and older
 * MacBook7,1 and older
 * MacBookAir3,1 and older
 * MacPro5,1 and older
