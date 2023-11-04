@@ -9,10 +9,11 @@
 - Resolve missing NFC firmware on T1 Macs
 - Update non-Metal Binaries for macOS Sonoma:
   - Resolve Photos app crash
+  - Resolve loginwindow crashes
   - Workaround tile window popup freezing apps by disabling the feature
   - Workaround monochrome desktop widgets rendering issues by enforcing full color (can be disabled in OCLP settings)
 - Add new arguments:
-  - `--cache_os`: Cache nessasary patcher files for OS to be installed (ex. KDKs)
+  - `--cache_os`: Cache necessary patcher files for OS to be installed (ex. KDKs)
   - `--prepare_for_update`: Clean up patcher files for OS to be installed (ex. /Library/Extensions)
 - Add new Launch Daemons for handling macOS updates:
   - `macos-update.plist`:
