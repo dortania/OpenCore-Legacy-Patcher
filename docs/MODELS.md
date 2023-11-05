@@ -94,8 +94,8 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
 | Model Name | Identifier | Tagged Issues |
 | :--- | :--- | :--- |
 | Mac mini (Early 2009) | `Macmini3,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021) |
-| Mac mini (Mid 2010) | `Macmini4,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) |
-| Mac mini (Mid 2011) | `Macmini5,1`<br>`Macmini5,2`<br>`Macmini5,3` | ^^ |
+| Mac mini (Mid 2010) | `Macmini4,1` | ^^ |
+| Mac mini (Mid 2011) | `Macmini5,1`<br>`Macmini5,2`<br>`Macmini5,3` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) |
 | Mac mini (Late 2012) | `Macmini6,1`<br>`Macmini6,2` | - [Legacy Metal (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) |
 | Mac mini (Late 2014) | `Macmini7,1` | ^^ |
 | Mac mini (Late 2018) | `Macmini8,1` | - Supported by Apple |
