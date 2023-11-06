@@ -284,6 +284,8 @@
 			<false/>
 			<key>EnableWriteUnprotector</key>
 			<false/>
+			<key>FixupAppleEfiImages</key>
+			<false/>
 			<key>ForceBooterSignature</key>
 			<true/>
 			<key>ForceExitBootServices</key>
@@ -2378,8 +2380,8 @@
 			<true/>
 			<key>HideAuxiliary</key>
 			<true/>
-			<!-- <key>InstanceIdentifier</key>
-			<string></string> -->
+			<key>InstanceIdentifier</key>
+			<string></string>
 			<key>LauncherPath</key>
 			<string>Default</string>
 			<key>LauncherOption</key>
@@ -3084,8 +3086,8 @@
 			<integer>-1</integer>
 			<key>ResizeUsePciRbIo</key>
 			<false/>
-			<!-- <key>ShimRetainProtocol</key>
-			<false/> -->
+			<key>ShimRetainProtocol</key>
+			<false/>
 			<key>TscSyncTimeout</key>
 			<integer>0</integer>
 			<key>UnblockFsConnect</key>

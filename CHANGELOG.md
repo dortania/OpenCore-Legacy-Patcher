@@ -33,6 +33,7 @@
 - Resolve i210 NIC support for macOS Sonoma
 - Increment Binaries:
   - PatcherSupportPkg 1.4.5 - release
+  - OpenCorePkg 0.9.6 - release
 
 ## 1.1.0
 - Resolve rendering issues on Intel Broadwell iGPUs
