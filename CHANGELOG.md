@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 1.3.0
+
 ## 1.2.0
 - Resolve application not existing if user dismisses an update instead of installing
 - Resolve lldb crashes on extracted binaries
