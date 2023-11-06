@@ -49,7 +49,12 @@ class KernelDebugKitObject:
 
     """
 
-    def __init__(self, global_constants: constants.Constants, host_build: str, host_version: str, ignore_installed: bool = False, passive: bool = False) -> None:
+    def __init__(self, global_constants: constants.Constants,
+                 host_build: str, host_version: str,
+                 ignore_installed: bool = False, passive: bool = False,
+                 check_backups_only: bool = False
+        ) -> None:
+
         self.constants: constants.Constants = global_constants
 
         self.host_build:   str = host_build    # ex. 20A5384c
@@ -57,7 +62,8 @@ class KernelDebugKitObject:
 
         self.passive: bool = passive  # Don't perform actions requiring elevated privileges
 
-        self.ignore_installed:      bool = ignore_installed  # If True, will ignore any installed KDKs and download the latest
+        self.ignore_installed:      bool = ignore_installed   # If True, will ignore any installed KDKs and download the latest
+        self.check_backups_only:    bool = check_backups_only # If True, will only check for KDK backups, not KDKs already installed
         self.kdk_already_installed: bool = False
 
         self.kdk_installed_path: str = ""
@@ -400,18 +406,20 @@ class KernelDebugKitObject:
         if not Path(KDK_INSTALL_PATH).exists():
             return None
 
-        for kdk_folder in Path(KDK_INSTALL_PATH).iterdir():
-            if not kdk_folder.is_dir():
-                continue
-            if check_version:
-                if match not in kdk_folder.name:
+        # Installed KDKs only
+        if self.check_backups_only is False:
+            for kdk_folder in Path(KDK_INSTALL_PATH).iterdir():
+                if not kdk_folder.is_dir():
                     continue
-            else:
-                if not kdk_folder.name.endswith(f"{match}.kdk"):
-                    continue
+                if check_version:
+                    if match not in kdk_folder.name:
+                        continue
+                else:
+                    if not kdk_folder.name.endswith(f"{match}.kdk"):
+                        continue
 
-            if self._local_kdk_valid(kdk_folder):
-                return kdk_folder
+                if self._local_kdk_valid(kdk_folder):
+                    return kdk_folder
 
         # If we can't find a KDK, next check if there's a backup present
         # Check for KDK packages in the same directory as the KDK
