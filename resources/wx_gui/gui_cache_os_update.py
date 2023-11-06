@@ -43,7 +43,7 @@ class OSUpdateFrame(wx.Frame):
 
         self.kdk_obj: kdk_handler.KernelDebugKitObject = None
         def _kdk_thread_spawn():
-            self.kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.os_data[1], self.os_data[0], passive=True)
+            self.kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.os_data[1], self.os_data[0], passive=True, check_backups_only=True)
 
         kdk_thread = threading.Thread(target=_kdk_thread_spawn)
         kdk_thread.start()
