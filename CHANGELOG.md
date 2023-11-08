@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 1.3.0
+- Resolve `TeraScale 2 Acceleration` checkbox in Settings not being saved
+  - Thanks @rtd1250
 
 ## 1.2.0
 - Resolve application not existing if user dismisses an update instead of installing

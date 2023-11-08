@@ -286,7 +286,7 @@ class SettingsFrame(wx.Frame):
                         "tampering or corruption."
                     ],
                 },
-                
+
                 "Show OpenCore Boot Picker": {
                     "type": "checkbox",
                     "value": self.constants.showpicker,
@@ -685,6 +685,7 @@ class SettingsFrame(wx.Frame):
                         "By default this is disabled due to",
                         "common GPU failures on these models.",
                     ],
+                    "override_function": self._update_global_settings,
                     "condition": not bool(self.constants.computer.real_model not in ["MacBookPro8,2", "MacBookPro8,3"])
                 },
                 "wrap_around 1": {
@@ -856,7 +857,7 @@ class SettingsFrame(wx.Frame):
                         "Export constants.py values to a txt file.",
                     ],
                 },
-                
+
                 "Developer Root Volume Patching": {
                     "type": "title",
                 },
@@ -1315,7 +1316,7 @@ Hardware Information:
 
     def on_test_exception(self, event: wx.Event) -> None:
         raise Exception("Test Exception")
-    
+
     def on_mount_root_vol(self, event: wx.Event) -> None:
         if os.geteuid() != 0:
             wx.MessageDialog(self.parent, "Please relaunch as Root to mount the Root Volume", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
