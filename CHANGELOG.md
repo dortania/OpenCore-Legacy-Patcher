@@ -1,6 +1,6 @@
 # OpenCore Legacy Patcher changelog
 
-## 1.3.0
+## 1.2.1
 - Resolve `TeraScale 2 Acceleration` checkbox in Settings not being saved
   - Thanks @rtd1250
 - Resolve Auto Patcher failing to launch after updating macOS
