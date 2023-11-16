@@ -26,7 +26,7 @@ For this example, we'll assume you'll need an installer. Selecting this option w
 | :--- | :--- | :--- |
 | ![OCLP GUI Installer Download Catalog](../images/OCLP-GUI-Installer-Download-Catalog.png) | ![OCLP GUI Installer Download Listed Products](../images/OCLP-GUI-Installer-Download-Listed-Products.png) | ![](../images/OCLP-GUI-Installer-Download-Unsupported.png)
 
-Since the patcher officially supports Big Sur and newer for patching, only those entires will be shown. For ourselves, we'll select macOS 12 as that's the latest public release at the time of writing. This will download and install the macOS installer to your applications folder.
+Since the patcher officially supports Big Sur and newer for patching, only those entries will be shown. For ourselves, we'll select macOS 12 as that's the latest public release at the time of writing. This will download and install the macOS installer to your applications folder.
 
 * Note that some machines (namely 2012 and older) may not be currently supported on macOS Ventura. If you see this prompt, you'll need to use an older version of macOS.
 

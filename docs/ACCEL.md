@@ -70,7 +70,7 @@ This issue is fully resolved for 13.2.1 and lower starting from 0.2.5.
 
 ::: details Workaround for 0.2.4, Ventura 13.3+
 
-Due to the usage of amfi_get_out_of_my_way=1, macOS will fail to prompt users for special permissions upon application start as well as omit the entires in System Preferences. To work around this, we recommend users install tccplus to manage permissions.
+Due to the usage of amfi_get_out_of_my_way=1, macOS will fail to prompt users for special permissions upon application start as well as omit the entries in System Preferences. To work around this, we recommend users install tccplus to manage permissions.
 
 [Download TCCPlus](https://github.com/jslegendre/tccplus)
 
