@@ -169,6 +169,27 @@ class BuildSupport:
                 logging.info(f"- Found extra driver: {driver_file.name}")
                 raise Exception(f"Found extra driver: {driver_file.name}")
 
+        self._validate_malformed_kexts(self.constants.opencore_release_folder / Path("EFI/OC/Kexts"))
+
+
+    def _validate_malformed_kexts(self, directory: str | Path) -> None:
+        """
+        Validate Info.plist and executable pathing for kexts
+        """
+        for kext_folder in Path(directory).glob("*.kext"):
+            if not Path(kext_folder / Path("Contents/Info.plist")).exists():
+                continue
+
+            kext_data = plistlib.load(Path(kext_folder / Path("Contents/Info.plist")).open("rb"))
+            if "CFBundleExecutable" in kext_data:
+                expected_executable = Path(kext_folder / Path("Contents/MacOS") / Path(kext_data["CFBundleExecutable"]))
+                if not expected_executable.exists():
+                    logging.info(f"- Missing executable for {kext_folder.name}: Contents/MacOS/{expected_executable.name}")
+                    raise Exception(f" - Missing executable for {kext_folder.name}: Contents/MacOS/{expected_executable.name}")
+
+            if Path(kext_folder / Path("Contents/PlugIns")).exists():
+                self._validate_malformed_kexts(kext_folder / Path("Contents/PlugIns"))
+
 
     def cleanup(self) -> None:
         """

@@ -1,6 +1,12 @@
 # OpenCore Legacy Patcher changelog
 
 ## 1.3.0
+- Resolve mismatched `CFBundleExecutable` and binary name for kexts.
+  - Resolves ProperTree binary detection (Thanks @CorpNewt).
+  - Applicable extensions:
+    - corecrypto_T1.kext
+    - corecaptureElCap.kext
+    - IO80211ElCap.kext
 
 ## 1.2.1
 - Resolve `TeraScale 2 Acceleration` checkbox in Settings not being saved

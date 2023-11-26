@@ -69,13 +69,13 @@ class Constants:
         self.apple_camera_version:  str = "1.0.0"  #  AppleCameraInterface (14.0 Beta 1)
         self.t1_sse_version:        str = "1.1.0"  #  AppleSSE      (13.6 - T1 support)
         self.t1_key_store_version:  str = "1.1.0"  #  AppleKeyStore (13.6 - T1 support)
-        self.t1_corecrypto_version: str = "1.0.0"  #  corecrypto    (13.6 - T1 support)
+        self.t1_corecrypto_version: str = "1.0.1"  #  corecrypto    (13.6 - T1 support)
 
         ## Apple - Dortania Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
         self.i210_version:             str = "1.0.0"  # CatalinaIntelI210Ethernet
-        self.corecaptureelcap_version: str = "1.0.1"  # corecaptureElCap
-        self.io80211elcap_version:     str = "2.0.0"  # IO80211ElCap
+        self.corecaptureelcap_version: str = "1.0.2"  # corecaptureElCap
+        self.io80211elcap_version:     str = "2.0.1"  # IO80211ElCap
         self.io80211legacy_version:    str = "1.0.0"  # IO80211FamilyLegacy (Ventura)
         self.ioskywalk_version:        str = "1.0.0"  # IOSkywalkFamily (Ventura)
         self.bigsursdxc_version:       str = "1.0.0"  # BigSurSDXC
