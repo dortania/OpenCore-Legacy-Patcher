@@ -235,23 +235,30 @@ class SysPatchHelpers:
             - lib (entire directory)
 
         Note: With macOS Sonoma, 32023 compiler is used instead and so this patch is not needed
+              until macOS 14.2 Beta 2 with version '32023.26'.
 
         Parameters:
             mount_point: The mount point of the target volume
         """
-
-        if self.constants.detected_os != os_data.os_data.ventura:
-            return
-        if self.constants.detected_os_minor < 4:
+        if os_data.os_data.sonoma < self.constants.detected_os < os_data.os_data.ventura:
             return
 
-        LIBRARY_DIR = f"{mount_point}/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/31001/Libraries/lib/clang"
-        GPU_VERSION = "31001.669"
+        if self.constants.detected_os == os_data.os_data.ventura:
+            if self.constants.detected_os_minor < 4: # 13.3
+                return
+            BASE_VERSION = "31001"
+            GPU_VERSION = f"{BASE_VERSION}.669"
+        elif self.constants.detected_os == os_data.os_data.sonoma:
+            if self.constants.detected_os_minor < 2: # 14.2 Beta 2
+                return
+            BASE_VERSION = "32023"
+            GPU_VERSION = f"{BASE_VERSION}.26"
 
+        LIBRARY_DIR = f"{mount_point}/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/{BASE_VERSION}/Libraries/lib/clang"
         DEST_DIR = f"{LIBRARY_DIR}/{GPU_VERSION}"
 
         if not Path(DEST_DIR).exists():
-            return
+            raise Exception(f"Failed to find GPUCompiler libraries at {DEST_DIR}")
 
         for file in Path(LIBRARY_DIR).iterdir():
             if file.is_file():
@@ -260,7 +267,7 @@ class SysPatchHelpers:
                 continue
 
             # Partial match as each OS can increment the version
-            if not file.name.startswith("31001."):
+            if not file.name.startswith(f"{BASE_VERSION}."):
                 continue
 
             logging.info(f"Merging GPUCompiler.framework libraries to match binary")

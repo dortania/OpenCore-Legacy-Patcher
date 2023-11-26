@@ -7,6 +7,12 @@
     - corecrypto_T1.kext
     - corecaptureElCap.kext
     - IO80211ElCap.kext
+- Resolve 3802-GPU support for macOS 14.2 Beta 2 and newer.
+  - Applicable GPUs:
+    - Intel Ivy Bridge and Haswell iGPUs
+    - Nvidia Kepler dGPUs
+- Increment Binaries:
+  - PatcherSupportPkg 1.4.6 - release
 
 ## 1.2.1
 - Resolve `TeraScale 2 Acceleration` checkbox in Settings not being saved

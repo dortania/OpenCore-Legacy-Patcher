@@ -71,6 +71,7 @@ class SystemPatchDictionary():
         self.macOS_12_5:          float = 21.6
         self.macOS_13_3:          float = 22.4
         self.macOS_14_1:          float = 23.1
+        self.macOS_14_2:          float = 23.2
 
         self._generate_sys_patch_dict()
 
@@ -388,6 +389,11 @@ class SystemPatchDictionary():
                             **({  "MTLCompiler.framework": "13.2.1" } if self.os_major == os_data.os_data.ventura else {}),
                             **({  "GPUCompiler.framework": "13.2.1" } if self.os_major == os_data.os_data.ventura else {}),
                             "RenderBox.framework": "13.2.1-3802"      if self.os_major == os_data.os_data.ventura else "14.0-3802",
+
+                            # More issues for 3802, now with 14.2 Beta 2+...
+                            # If there is a god, they clearly despise us and legacy Macs.
+                            **({  "MTLCompiler.framework": "14.2 Beta 1" } if self.os_float >= self.macOS_14_2 else {}),
+                            **({  "GPUCompiler.framework": "14.2 Beta 1" } if self.os_float >= self.macOS_14_2 else {}),
                         },
                     },
                 },
