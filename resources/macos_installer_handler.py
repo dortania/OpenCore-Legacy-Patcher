@@ -179,13 +179,13 @@ fi
         # TODO: AllDisksAndPartitions is not supported in Snow Leopard and older
         try:
             # High Sierra and newer
-            disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            disks = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "list", "-plist", "physical"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
         except ValueError:
             # Sierra and older
-            disks = plistlib.loads(subprocess.run("diskutil list -plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            disks = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "list", "-plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
 
         for disk in disks["AllDisksAndPartitions"]:
-            disk_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            disk_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", disk["DeviceIdentifier"]], stdout=subprocess.PIPE).stdout.decode().strip().encode())
             try:
                 all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info["MediaName"], "size": disk_info["TotalSize"], "removable": disk_info["Internal"], "partitions": {}}
             except KeyError:
@@ -407,7 +407,7 @@ class RemoteInstallerCatalog:
                 })
 
         available_apps = {k: v for k, v in sorted(available_apps.items(), key=lambda x: x[1]['Version'])}
-        
+
         return available_apps
 
 

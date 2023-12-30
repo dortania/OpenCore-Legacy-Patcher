@@ -22,16 +22,16 @@ class tui_disk_installation:
         # TODO: AllDisksAndPartitions is not supported in Snow Leopard and older
         try:
             # High Sierra and newer
-            disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            disks = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "list", "-plist", "physical"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
         except ValueError:
             # Sierra and older
-            disks = plistlib.loads(subprocess.run("diskutil list -plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            disks = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "list", "-plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
         for disk in disks["AllDisksAndPartitions"]:
-            disk_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            disk_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", disk["DeviceIdentifier"]], stdout=subprocess.PIPE).stdout.decode().strip().encode())
             try:
                 all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info["MediaName"], "size": disk_info["TotalSize"], "partitions": {}}
                 for partition in disk["Partitions"]:
-                    partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {partition['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+                    partition_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", partition["DeviceIdentifier"]], stdout=subprocess.PIPE).stdout.decode().strip().encode())
                     all_disks[disk["DeviceIdentifier"]]["partitions"][partition["DeviceIdentifier"]] = {
                         "fs": partition_info.get("FilesystemType", partition_info["Content"]),
                         "type": partition_info["Content"],
@@ -102,15 +102,15 @@ class tui_disk_installation:
                     logging.info("Please disable Safe Mode and try again.")
                     return
         else:
-            result = subprocess.run(f"diskutil mount {full_disk_identifier}".split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result = subprocess.run(["/usr/sbin/diskutil", "mount", full_disk_identifier], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if result.returncode != 0:
                 logging.info("Mount failed")
                 logging.info(result.stderr.decode())
                 return
 
-        partition_info = plistlib.loads(subprocess.run(f"diskutil info -plist {full_disk_identifier}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        partition_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", full_disk_identifier], stdout=subprocess.PIPE).stdout.decode().strip().encode())
         parent_disk = partition_info["ParentWholeDisk"]
-        drive_host_info = plistlib.loads(subprocess.run(f"diskutil info -plist {parent_disk}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        drive_host_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", parent_disk], stdout=subprocess.PIPE).stdout.decode().strip().encode())
         sd_type = drive_host_info["MediaName"]
         try:
             ssd_type = drive_host_info["SolidState"]

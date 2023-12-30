@@ -108,13 +108,14 @@ def check_recovery():
 
 
 def get_disk_path():
-    root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    root_partition_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", "/"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
     root_mount_path = root_partition_info["DeviceIdentifier"]
     root_mount_path = root_mount_path[:-2] if root_mount_path.count("s") > 1 else root_mount_path
     return root_mount_path
 
+
 def check_if_root_is_apfs_snapshot():
-    root_partition_info = plistlib.loads(subprocess.run("diskutil info -plist /".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    root_partition_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", "/"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
     try:
         is_snapshotted = root_partition_info["APFSSnapshot"]
     except KeyError:
@@ -213,7 +214,7 @@ def check_oclp_boot():
 def check_monterey_wifi():
     IO80211ElCap = "com.apple.iokit.IO80211ElCap"
     CoreCaptureElCap = "com.apple.driver.corecaptureElCap"
-    loaded_kexts: str = subprocess.run("kextcache".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+    loaded_kexts: str = subprocess.run(["/usr/sbin/kextcache"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
     if IO80211ElCap in loaded_kexts and CoreCaptureElCap in loaded_kexts:
         return True
     else:
@@ -307,7 +308,7 @@ def patching_status(os_sip, os):
 
     if os > os_data.os_data.catalina and not check_filevault_skip():
         # Assume non-OCLP Macs do not have our APFS seal patch
-        fv_status: str = subprocess.run("fdesetup status".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
+        fv_status: str = subprocess.run(["/usr/bin/fdesetup", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
         if "FileVault is Off" in fv_status:
             fv_enabled = False
     else:
@@ -340,8 +341,7 @@ def cls():
 
 def check_command_line_tools():
     # Determine whether Command Line Tools exist
-    # xcode-select -p
-    xcode_select = subprocess.run("xcode-select -p".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    xcode_select = subprocess.run(["/usr/bin/xcode-select", "--print-path"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     if xcode_select.returncode == 0:
         return True
     else:
@@ -492,7 +492,7 @@ def get_free_space(disk=None):
     return free
 
 def grab_mount_point_from_disk(disk):
-    data = plistlib.loads(subprocess.run(f"diskutil info -plist {disk}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+    data = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", disk], stdout=subprocess.PIPE).stdout.decode().strip().encode())
     return data["MountPoint"]
 
 def monitor_disk_output(disk):
