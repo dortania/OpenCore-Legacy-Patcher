@@ -64,7 +64,7 @@ class GenerateMenubar:
 
         self.frame.Bind(wx.EVT_MENU, lambda event: gui_about.AboutFrame(self.constants), aboutItem)
         self.frame.Bind(wx.EVT_MENU, lambda event: RelaunchApplicationAsRoot(self.frame, self.constants).relaunch(None), relaunchItem)
-        self.frame.Bind(wx.EVT_MENU, lambda event: subprocess.run(["open", "-R", self.constants.log_filepath]), revealLogItem)
+        self.frame.Bind(wx.EVT_MENU, lambda event: subprocess.run(["/usr/bin/open", "--reveal", self.constants.log_filepath]), revealLogItem)
 
         if os.geteuid() == 0:
             relaunchItem.Enable(False)
@@ -329,7 +329,7 @@ class RelaunchApplicationAsRoot:
 
         # Relaunch as root
         args = [
-            "osascript",
+            "/usr/bin/osascript",
             "-e",
             f'''do shell script "{program_arguments}"'''
             ' with prompt "OpenCore Legacy Patcher needs administrator privileges to relaunch as admin."'

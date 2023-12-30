@@ -44,7 +44,7 @@ class OSProbe:
             str: OS version (ex. 12.0)
         """
 
-        result = subprocess.run(["sw_vers", "-productVersion"], stdout=subprocess.PIPE)
+        result = subprocess.run(["/usr/bin/sw_vers", "-productVersion"], stdout=subprocess.PIPE)
         if result.returncode != 0:
             raise RuntimeError("Failed to detect OS version")
 

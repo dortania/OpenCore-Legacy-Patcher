@@ -318,7 +318,7 @@ class SysPatchStartFrame(wx.Frame):
         if answer == wx.ID_YES:
             output =subprocess.run(
                 [
-                    "osascript", "-e",
+                    "/usr/bin/osascript", "-e",
                     'tell app "System Preferences" to activate',
                     "-e", 'tell app "System Preferences" to reveal anchor "General" of pane id "com.apple.preference.security"',
                 ],
@@ -327,7 +327,7 @@ class SysPatchStartFrame(wx.Frame):
             )
             if output.returncode != 0:
                 # Some form of fallback if unaccelerated state errors out
-                subprocess.run(["open", "-a", "System Preferences"])
+                subprocess.run(["/usr/bin/open", "-a", "System Preferences"])
             time.sleep(5)
             sys.exit(0)
 

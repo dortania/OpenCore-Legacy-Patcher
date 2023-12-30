@@ -108,10 +108,10 @@ class InstallerCreation():
         logging.info(f"Creating temporary directory at {ia_tmp}")
         # Delete all files in tmp_dir
         for file in Path(ia_tmp).glob("*"):
-            subprocess.run(["rm", "-rf", str(file)])
+            subprocess.run(["/bin/rm", "-rf", str(file)])
 
         # Copy installer to tmp (use CoW to avoid extra disk writes)
-        args = ["cp", "-cR", installer_path, ia_tmp]
+        args = ["/bin/cp", "-cR", installer_path, ia_tmp]
         if utilities.check_filesystem_type() != "apfs":
             # HFS+ disks do not support CoW
             args[1] = "-R"
@@ -179,13 +179,13 @@ fi
         # TODO: AllDisksAndPartitions is not supported in Snow Leopard and older
         try:
             # High Sierra and newer
-            disks = plistlib.loads(subprocess.run("diskutil list -plist physical".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            disks = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "list", "-plist", "physical"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
         except ValueError:
             # Sierra and older
-            disks = plistlib.loads(subprocess.run("diskutil list -plist".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            disks = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "list", "-plist"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
 
         for disk in disks["AllDisksAndPartitions"]:
-            disk_info = plistlib.loads(subprocess.run(f"diskutil info -plist {disk['DeviceIdentifier']}".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+            disk_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", disk["DeviceIdentifier"]], stdout=subprocess.PIPE).stdout.decode().strip().encode())
             try:
                 all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info["MediaName"], "size": disk_info["TotalSize"], "removable": disk_info["Internal"], "partitions": {}}
             except KeyError:
@@ -407,7 +407,7 @@ class RemoteInstallerCatalog:
                 })
 
         available_apps = {k: v for k, v in sorted(available_apps.items(), key=lambda x: x[1]['Version'])}
-        
+
         return available_apps
 
 
@@ -623,7 +623,7 @@ class LocalInstallerCatalog:
 
             output = subprocess.run(
                 [
-                    "hdiutil", "attach", "-noverify", sharedsupport_path,
+                    "/usr/bin/hdiutil", "attach", "-noverify", sharedsupport_path,
                     "-mountpoint", tmpdir,
                     "-nobrowse",
                 ],
@@ -644,6 +644,6 @@ class LocalInstallerCatalog:
                         detected_os = plist["Assets"][0]["OSVersion"]
 
             # Unmount SharedSupport.dmg
-            subprocess.run(["hdiutil", "detach", tmpdir], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess.run(["/usr/bin/hdiutil", "detach", tmpdir], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         return (detected_build, detected_os)

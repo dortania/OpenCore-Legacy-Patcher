@@ -862,7 +862,7 @@ class Computer:
         # Reported model
         entry = next(ioreg.ioiterator_to_list(ioreg.IOServiceGetMatchingServices(ioreg.kIOMasterPortDefault, ioreg.IOServiceMatching("IOPlatformExpertDevice".encode()), None)[1]))
         self.reported_model = ioreg.corefoundation_to_native(ioreg.IORegistryEntryCreateCFProperty(entry, "model", ioreg.kCFAllocatorDefault, ioreg.kNilOptions)).strip(b"\0").decode()  # type: ignore
-        translated = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()
+        translated = subprocess.run(["/usr/sbin/sysctl", "-in", "sysctl.proc_translated"], stdout=subprocess.PIPE).stdout.decode()
         if translated:
             board = "target-type"
         else:
@@ -894,14 +894,14 @@ class Computer:
 
     def cpu_probe(self):
         self.cpu = CPU(
-            subprocess.run("sysctl machdep.cpu.brand_string".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip(),
-            subprocess.run("sysctl machdep.cpu.features".split(), stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip().split(" "),
+            subprocess.run(["/usr/sbin/sysctl", "machdep.cpu.brand_string"], stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip(),
+            subprocess.run(["/usr/sbin/sysctl", "machdep.cpu.features"], stdout=subprocess.PIPE).stdout.decode().partition(": ")[2].strip().split(" "),
             self.cpu_get_leafs(),
         )
 
     def cpu_get_leafs(self):
         leafs = []
-        result = subprocess.run("sysctl machdep.cpu.leaf7_features".split(), stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        result = subprocess.run(["/usr/sbin/sysctl", "machdep.cpu.leaf7_features"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
         if result.returncode == 0:
             return result.stdout.decode().partition(": ")[2].strip().split(" ")
         return leafs
@@ -979,7 +979,7 @@ class Computer:
     def sata_disk_probe(self):
         # Get all SATA Controllers/Disks from 'system_profiler SPSerialATADataType'
         # Determine whether SATA SSD is present and Apple-made
-        sp_sata_data = plistlib.loads(subprocess.run(f"system_profiler SPSerialATADataType -xml".split(), stdout=subprocess.PIPE).stdout.decode().strip().encode())
+        sp_sata_data = plistlib.loads(subprocess.run(["/usr/sbin/system_profiler", "SPSerialATADataType", "-xml"], stdout=subprocess.PIPE).stdout.decode().strip().encode())
         for root in sp_sata_data:
             for ahci_controller in root["_items"]:
                 # Each AHCI controller will have its own entry
@@ -1015,7 +1015,7 @@ class Computer:
                 self.oclp_sys_signed = sys_plist["Custom Signature"]
 
     def check_rosetta(self):
-        result = subprocess.run("sysctl -in sysctl.proc_translated".split(), stdout=subprocess.PIPE).stdout.decode()
+        result = subprocess.run(["/usr/sbin/sysctl", "-in", "sysctl.proc_translated"], stdout=subprocess.PIPE).stdout.decode()
         if "1" in result:
             self.rosetta_active = True
         else:

@@ -261,13 +261,13 @@ class MainFrame(wx.Frame):
         if Path("/Applications/OpenCore-Patcher.app").exists() and Path("/Applications/OpenCore-Patcher.app").is_symlink() is False:
             logging.info("Found user-installed app in /Applications, replacing with symlink")
             # Delete app
-            result = subprocess.run(["rm", "-rf", "/Applications/OpenCore-Patcher.app"], capture_output=True)
+            result = subprocess.run(["/bin/rm", "-rf", "/Applications/OpenCore-Patcher.app"], capture_output=True)
             if result.returncode != 0:
                 logging.info("Failed to delete app from /Applications")
                 return
 
             # Create symlink
-            result = subprocess.run(["ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], capture_output=True)
+            result = subprocess.run(["/bin/ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], capture_output=True)
             if result.returncode != 0:
                 logging.info("Failed to create symlink to /Applications")
                 return

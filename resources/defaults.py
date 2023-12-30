@@ -329,9 +329,9 @@ class GenerateDefaults:
 
                 for key in ["Moraea_BlurBeta"]:
                     # Enable BetaBlur if user hasn't disabled it
-                    is_key_enabled = subprocess.run(["defaults", "read", "-g", key], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+                    is_key_enabled = subprocess.run(["/usr/bin/defaults", "read", "-globalDomain", key], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
                     if is_key_enabled not in ["false", "0"]:
-                        subprocess.run(["defaults", "write", "-g", key, "-bool", "true"])
+                        subprocess.run(["/usr/bin/defaults", "write", "-globalDomain", key, "-bool", "true"])
 
     def _check_amfipass_supported(self) -> None:
         """

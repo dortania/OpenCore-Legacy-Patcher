@@ -128,24 +128,24 @@ class GenerateOpenCore:
         for variant in BUILD_VARIANTS:
             print(f"Moving {variant} folder...")
             subprocess.run (
-                ["mv", f"{self.working_dir}/OpenCore-{variant}-ROOT/X64", f"{self.working_dir}/OpenCore-{variant}"],
+                ["/bin/mv", f"{self.working_dir}/OpenCore-{variant}-ROOT/X64", f"{self.working_dir}/OpenCore-{variant}"],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
             if variant == "DEBUG":
                 for utility in IMPORTANT_UTILITIES:
                     print(f"Moving {utility} from {variant} variant...")
                     subprocess.run (
-                        ["rm", "-rf", f"{self.working_dir}/{utility}"],
+                        ["/bin/rm", "-rf", f"{self.working_dir}/{utility}"],
                         stdout=subprocess.PIPE, stderr=subprocess.PIPE
                     )
                     subprocess.run (
-                        ["mv", f"{self.working_dir}/OpenCore-{variant}-ROOT/Utilities/{utility}/{utility}", f"{self.working_dir}/{utility}"],
+                        ["/bin/mv", f"{self.working_dir}/OpenCore-{variant}-ROOT/Utilities/{utility}/{utility}", f"{self.working_dir}/{utility}"],
                         stdout=subprocess.PIPE, stderr=subprocess.PIPE
                     )
 
             # Remove root folder
             subprocess.run (
-                ["rm", "-rf", f"{self.working_dir}/OpenCore-{variant}-ROOT"],
+                ["/bin/rm", "-rf", f"{self.working_dir}/OpenCore-{variant}-ROOT"],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
 
@@ -153,12 +153,12 @@ class GenerateOpenCore:
         print("Removing zip files...")
         # remove debug_zip
         subprocess.run (
-            ["rm", "-rf", self.debug_zip],
+            ["/bin/rm", "-rf", self.debug_zip],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         # remove release_zip
         subprocess.run (
-            ["rm", "-rf", self.release_zip],
+            ["/bin/rm", "-rf", self.release_zip],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
@@ -194,7 +194,7 @@ class GenerateOpenCore:
             if (self.working_dir / f"OpenCore-{variant}").exists():
                 print(f"   Deleting old {variant} variant...")
                 subprocess.run (
-                    ["rm", "-rf", f"{self.working_dir}/OpenCore-{variant}"],
+                    ["/bin/rm", "-rf", f"{self.working_dir}/OpenCore-{variant}"],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE
                 )
 
@@ -212,7 +212,7 @@ class GenerateOpenCore:
         # Create S/L/C
         print("   Creating SLC folder")
         subprocess.run (
-            ["mkdir", "-p", f"{self.working_dir}/OpenCore-{variant}/System/Library/CoreServices"],
+            ["/bin/mkdir", "-p", f"{self.working_dir}/OpenCore-{variant}/System/Library/CoreServices"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
@@ -220,21 +220,21 @@ class GenerateOpenCore:
         print("   Relocating BOOT folder to SLC")
         for file in (self.working_dir / f"OpenCore-{variant}/EFI/BOOT").iterdir():
             subprocess.run (
-                ["mv", f"{file}", f"{self.working_dir}/OpenCore-{variant}/System/Library/CoreServices"],
+                ["/bin/mv", f"{file}", f"{self.working_dir}/OpenCore-{variant}/System/Library/CoreServices"],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
 
         # Rename BOOTx64.efi to boot.efi
         print("   Renaming BOOTx64.efi to boot.efi")
         subprocess.run (
-            ["mv", f"{self.working_dir}/OpenCore-{variant}/System/Library/CoreServices/BOOTx64.efi", f"{self.working_dir}/OpenCore-{variant}/System/Library/CoreServices/boot.efi"],
+            ["/bin/mv", f"{self.working_dir}/OpenCore-{variant}/System/Library/CoreServices/BOOTx64.efi", f"{self.working_dir}/OpenCore-{variant}/System/Library/CoreServices/boot.efi"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
         # Delete BOOT folder
         print("   Deleting BOOT folder")
         subprocess.run (
-            ["rm", "-rf", f"{self.working_dir}/OpenCore-{variant}/EFI/BOOT"],
+            ["/bin/rm", "-rf", f"{self.working_dir}/OpenCore-{variant}/EFI/BOOT"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
@@ -244,7 +244,7 @@ class GenerateOpenCore:
             if Path(f"{self.working_dir}/OpenCore-{variant}/EFI/OC/Drivers/{driver}").exists():
                 print(f"      Deleting {driver}")
                 subprocess.run (
-                    ["rm", f"{self.working_dir}/OpenCore-{variant}/EFI/OC/Drivers/{driver}"],
+                    ["/bin/rm", f"{self.working_dir}/OpenCore-{variant}/EFI/OC/Drivers/{driver}"],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE
                 )
             else:
@@ -256,7 +256,7 @@ class GenerateOpenCore:
             if Path(f"{self.working_dir}/OpenCore-{variant}/EFI/OC/Tools/{tool}").exists():
                 print(f"      Deleting {tool}")
                 subprocess.run (
-                    ["rm", f"{self.working_dir}/OpenCore-{variant}/EFI/OC/Tools/{tool}"],
+                    ["/bin/rm", f"{self.working_dir}/OpenCore-{variant}/EFI/OC/Tools/{tool}"],
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE
                 )
             else:
@@ -265,21 +265,21 @@ class GenerateOpenCore:
         # Rename OpenCore-<variant> to OpenCore-Build
         print("   Renaming OpenCore folder")
         subprocess.run (
-            ["mv", f"{self.working_dir}/OpenCore-{variant}", f"{self.working_dir}/OpenCore-Build"],
+            ["/bin/mv", f"{self.working_dir}/OpenCore-{variant}", f"{self.working_dir}/OpenCore-Build"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
         # Create OpenCore-<variant>.zip
         print("   Creating OpenCore.zip")
         subprocess.run (
-            ["ditto", "-c", "-k", "--sequesterRsrc", "--keepParent", f"{self.working_dir}/OpenCore-Build", f"{self.working_dir}/OpenCore-{variant}.zip"],
+            ["/usr/bin/ditto", "-c", "-k", "--sequesterRsrc", "--keepParent", f"{self.working_dir}/OpenCore-Build", f"{self.working_dir}/OpenCore-{variant}.zip"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 
         # Delete OpenCore-Build
         print("   Deleting OpenCore-Build")
         subprocess.run (
-            ["rm", "-rf", f"{self.working_dir}/OpenCore-Build"],
+            ["/bin/rm", "-rf", f"{self.working_dir}/OpenCore-Build"],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 

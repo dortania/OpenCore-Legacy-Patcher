@@ -1110,7 +1110,7 @@ Hardware Information:
             value_type = "-bool"
 
         logging.info(f"Updating System Defaults: {variable} = {value} ({value_type})")
-        subprocess.run(["defaults", "write", "-g", variable, value_type, str(value)])
+        subprocess.run(["/usr/bin/defaults", "write", "-globalDomain", variable, value_type, str(value)])
 
 
     def _find_parent_for_key(self, key: str) -> str:
@@ -1152,7 +1152,7 @@ Hardware Information:
         if dlg.ShowModal() != wx.ID_YES:
             return
 
-        macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.constants.custom_model or self.constants.computer.real_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        macserial_output = subprocess.run([self.constants.macserial_path, "--generate", "--model", self.constants.custom_model or self.constants.computer.real_model, "--num", "1"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         macserial_output = macserial_output.stdout.decode().strip().split(" | ")
         if len(macserial_output) == 2:
             self.custom_serial_number_textbox.SetValue(macserial_output[0])
@@ -1256,7 +1256,7 @@ Hardware Information:
 
 
     def _get_system_settings(self, variable) -> bool:
-        result = subprocess.run(["defaults", "read", "-g", variable], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess.run(["/usr/bin/defaults", "read", "-globalDomain", variable], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode == 0:
             try:
                 return bool(int(result.stdout.decode().strip()))

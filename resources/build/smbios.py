@@ -288,7 +288,7 @@ class BuildSMBIOS:
         """
 
         if self.constants.custom_serial_number == "" or self.constants.custom_board_serial_number == "":
-            macserial_output = subprocess.run([self.constants.macserial_path] + f"-g -m {self.spoofed_model} -n 1".split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            macserial_output = subprocess.run([self.constants.macserial_path, "--generate", "--model", self.spoofed_model, "--num", "1"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             macserial_output = macserial_output.stdout.decode().strip().split(" | ")
             sn = macserial_output[0]
             mlb = macserial_output[1]
