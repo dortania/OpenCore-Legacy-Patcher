@@ -36,7 +36,7 @@ class RoutePayloadDiskImage:
             self._unmount_active_dmgs(unmount_all_active=False)
             output = subprocess.run(
                 [
-                    "hdiutil", "attach", "-noverify", f"{self.constants.payload_path_dmg}",
+                    "/usr/bin/hdiutil", "attach", "-noverify", f"{self.constants.payload_path_dmg}",
                     "-mountpoint", Path(self.temp_dir.name / Path("payloads")),
                     "-nobrowse",
                     "-shadow", Path(self.temp_dir.name / Path("payloads_overlay")),
@@ -67,7 +67,7 @@ class RoutePayloadDiskImage:
             unmount_all_active (bool): If True, unmount all active DMGs, otherwise only unmount our own DMG
         """
 
-        dmg_info = subprocess.run(["hdiutil", "info", "-plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        dmg_info = subprocess.run(["/usr/bin/hdiutil", "info", "-plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         dmg_info = plistlib.loads(dmg_info.stdout)
 
 
@@ -80,12 +80,12 @@ class RoutePayloadDiskImage:
                             if self.temp_dir.name in image["shadow-path"]:
                                 logging.info(f"Unmounting personal {variant}")
                                 subprocess.run(
-                                    ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
+                                    ["/usr/bin/hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
                                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT
                                 )
                     else:
                         logging.info(f"Unmounting {variant} at: {image['system-entities'][0]['dev-entry']}")
                         subprocess.run(
-                            ["hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
+                            ["/usr/bin/hdiutil", "detach", image["system-entities"][0]["dev-entry"], "-force"],
                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
                         )

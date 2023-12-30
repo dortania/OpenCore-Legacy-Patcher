@@ -185,7 +185,7 @@ class SysPatchHelpers:
         if did_find:
             with open(file_path, "wb") as f:
                 plistlib.dump(data, f, sort_keys=False)
-            subprocess.run(["killall", "NotificationCenter"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess.run(["/usr/bin/killall", "NotificationCenter"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def install_rsr_repair_binary(self):
@@ -274,6 +274,6 @@ class SysPatchHelpers:
 
             src_dir = f"{LIBRARY_DIR}/{file.name}"
             if not Path(f"{DEST_DIR}/lib").exists():
-                utilities.process_status(utilities.elevated(["cp", "-cR", f"{src_dir}/lib", f"{DEST_DIR}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["/bin/cp", "-cR", f"{src_dir}/lib", f"{DEST_DIR}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
             break

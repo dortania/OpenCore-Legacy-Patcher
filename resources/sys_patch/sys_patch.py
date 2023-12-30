@@ -209,7 +209,7 @@ class PatchSysVolume:
         if save_hid_cs is True and cs_path.exists():
             logging.info("- Backing up IOHIDEventDriver CodeSignature")
             # Note it's a folder, not a file
-            utilities.elevated(["cp", "-r", cs_path, f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["/bin/cp", "-r", cs_path, f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         logging.info(f"- Merging KDK with Root Volume: {kdk_path.name}")
         utilities.elevated(
@@ -230,9 +230,9 @@ class PatchSysVolume:
             logging.info("- Restoring IOHIDEventDriver CodeSignature")
             if not cs_path.exists():
                 logging.info("  - CodeSignature folder missing, creating")
-                utilities.elevated(["mkdir", "-p", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            utilities.elevated(["cp", "-r", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            utilities.elevated(["rm", "-rf", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                utilities.elevated(["/bin/mkdir", "-p", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["/bin/cp", "-r", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            utilities.elevated(["/bin/rm", "-rf", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _unpatch_root_vol(self):
@@ -369,7 +369,7 @@ class PatchSysVolume:
 
         if self.skip_root_kmutil_requirement is True:
             # Force rebuild the Auxiliary KC
-            result = utilities.elevated(["killall", "syspolicyd", "kernelmanagerd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = utilities.elevated(["/usr/bin/killall", "syspolicyd", "kernelmanagerd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("- Unable to remove kernel extension policy files")
                 logging.info(f"\nReason for Patch Failure ({result.returncode}):")
@@ -422,7 +422,7 @@ class PatchSysVolume:
         """
         if self.root_mount_path:
             logging.info("- Unmounting Root Volume (Don't worry if this fails)")
-            utilities.elevated(["diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            utilities.elevated(["/usr/sbin/diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
         else:
             logging.info("- Skipping Root Volume unmount")
 
@@ -457,11 +457,11 @@ class PatchSysVolume:
 
         if (Path(self.mount_application_support) / Path("SkyLightPlugins/")).exists():
             logging.info("- Found SkylightPlugins folder, removing old plugins")
-            utilities.process_status(utilities.elevated(["rm", "-Rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["mkdir", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["/bin/rm", "-Rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["/bin/mkdir", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
         else:
             logging.info("- Creating SkylightPlugins folder")
-            utilities.process_status(utilities.elevated(["mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["/bin/mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
 
     def _delete_nonmetal_enforcement(self) -> None:
@@ -471,10 +471,10 @@ class PatchSysVolume:
         """
 
         for arg in ["useMetal", "useIOP"]:
-            result = subprocess.run(["defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
+            result = subprocess.run(["/usr/bin/defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
             if result in ["0", "false", "1", "true"]:
                 logging.info(f"- Removing non-Metal Enforcement Preference: {arg}")
-                utilities.elevated(["defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
+                utilities.elevated(["/usr/bin/defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
 
 
     def _clean_auxiliary_kc(self) -> None:
@@ -516,15 +516,15 @@ class PatchSysVolume:
 
         relocation_path = "/Library/Relocated Extensions"
         if not Path(relocation_path).exists():
-            utilities.elevated(["mkdir", relocation_path])
+            utilities.elevated(["/bin/mkdir", relocation_path])
 
         for file in Path("/Library/Extensions").glob("*.kext"):
             try:
                 if datetime.fromtimestamp(file.stat().st_mtime) < datetime(2021, 10, 1):
                     logging.info(f"  - Relocating {file.name} kext to {relocation_path}")
                     if Path(relocation_path) / Path(file.name).exists():
-                        utilities.elevated(["rm", "-Rf", relocation_path / Path(file.name)])
-                    utilities.elevated(["mv", file, relocation_path])
+                        utilities.elevated(["/bin/rm", "-Rf", relocation_path / Path(file.name)])
+                    utilities.elevated(["/bin/mv", file, relocation_path])
             except:
                 # Some users have the most cursed /L*/E* folders
                 # ex. Symlinks pointing to symlinks pointing to dead files
@@ -545,8 +545,8 @@ class PatchSysVolume:
         if sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path):
             logging.info("- Writing patchset information to Root Volume")
             if Path(destination_path_file).exists():
-                utilities.process_status(utilities.elevated(["rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["cp", f"{self.constants.payload_path}/{file_name}", destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["/bin/rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["/bin/cp", f"{self.constants.payload_path}/{file_name}", destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
 
     def _add_auxkc_support(self, install_file: str, source_folder_path: str, install_patch_directory: str, destination_folder_path: str) -> str:
@@ -792,19 +792,19 @@ class PatchSysVolume:
             # Applicable for .kext, .app, .plugin, .bundle, all of which are directories
             if Path(destination_folder + "/" + file_name).exists():
                 logging.info(f"  - Found existing {file_name}, overwriting...")
-                utilities.process_status(utilities.elevated(["rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["/bin/rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
                 logging.info(f"  - Installing: {file_name}")
-            utilities.process_status(utilities.elevated(["cp", "-R", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["/bin/cp", "-R", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             self._fix_permissions(destination_folder + "/" + file_name)
         else:
             # Assume it's an individual file, replace as normal
             if Path(destination_folder + "/" + file_name).exists():
                 logging.info(f"  - Found existing {file_name}, overwriting...")
-                utilities.process_status(utilities.elevated(["rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["/bin/rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
                 logging.info(f"  - Installing: {file_name}")
-            utilities.process_status(utilities.elevated(["cp", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["/bin/cp", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             self._fix_permissions(destination_folder + "/" + file_name)
 
 
@@ -820,9 +820,9 @@ class PatchSysVolume:
         if Path(destination_folder + "/" + file_name).exists():
             logging.info(f"  - Removing: {file_name}")
             if Path(destination_folder + "/" + file_name).is_dir():
-                utilities.process_status(utilities.elevated(["rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["/bin/rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
             else:
-                utilities.process_status(utilities.elevated(["rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                utilities.process_status(utilities.elevated(["/bin/rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
 
     def _fix_permissions(self, destination_file: Path) -> None:
@@ -857,7 +857,7 @@ class PatchSysVolume:
 
             output = subprocess.run(
                 [
-                    "hdiutil", "attach", "-noverify", f"{self.constants.payload_local_binaries_root_path_dmg}",
+                    "/usr/bin/hdiutil", "attach", "-noverify", f"{self.constants.payload_local_binaries_root_path_dmg}",
                     "-mountpoint", Path(self.constants.payload_path / Path("Universal-Binaries")),
                     "-nobrowse",
                     "-shadow", Path(self.constants.payload_path / Path("Universal-Binaries_overlay")),
@@ -890,7 +890,7 @@ class PatchSysVolume:
 
                         result = subprocess.run(
                             [
-                                "hdiutil", "attach", "-noverify", f"{self.constants.overlay_psp_path_dmg}",
+                                "/usr/bin/hdiutil", "attach", "-noverify", f"{self.constants.overlay_psp_path_dmg}",
                                 "-mountpoint", Path(self.constants.payload_path / Path("DortaniaInternal")),
                                 "-nobrowse",
                                 "-passphrase", password
@@ -901,7 +901,7 @@ class PatchSysVolume:
                             logging.info("- Mounted DortaniaInternal resources")
                             result = subprocess.run(
                                 [
-                                    "ditto", f"{self.constants.payload_path / Path('DortaniaInternal')}", f"{self.constants.payload_path / Path('Universal-Binaries')}"
+                                    "/usr/bin/ditto", f"{self.constants.payload_path / Path('DortaniaInternal')}", f"{self.constants.payload_path / Path('Universal-Binaries')}"
                                 ],
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT
                             )

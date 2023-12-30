@@ -428,8 +428,8 @@ class macOSInstallerFlashFrame(wx.Frame):
         if not str(path).endswith(".zip"):
             return
         if Path(self.constants.installer_pkg_path).exists():
-            subprocess.run(["rm", self.constants.installer_pkg_path])
-        subprocess.run(["ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.installer_pkg_zip_path, self.constants.payload_path])
+            subprocess.run(["/bin/rm", self.constants.installer_pkg_path])
+        subprocess.run(["/usr/bin/ditto", "-V", "-x", "-k", "--sequesterRsrc", "--rsrc", self.constants.installer_pkg_zip_path, self.constants.payload_path])
 
 
     def _install_installer_pkg(self, disk):
@@ -448,8 +448,8 @@ class macOSInstallerFlashFrame(wx.Frame):
             logging.info("Installer unsupported, requires Big Sur or newer")
             return
 
-        subprocess.run(["mkdir", "-p", f"{path}/Library/Packages/"])
-        subprocess.run(["cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
+        subprocess.run(["/bin/mkdir", "-p", f"{path}/Library/Packages/"])
+        subprocess.run(["/bin/cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
 
         self._kdk_chainload(os_version["ProductBuildVersion"], os_version["ProductVersion"], Path(path + "/Library/Packages/"))
 
@@ -512,17 +512,17 @@ class macOSInstallerFlashFrame(wx.Frame):
         # Now that we have a KDK, extract it to get the pkg
         with tempfile.TemporaryDirectory() as mount_point:
             logging.info("Mounting KDK")
-            result = subprocess.run(["hdiutil", "attach", kdk_dmg_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = subprocess.run(["/usr/bin/hdiutil", "attach", kdk_dmg_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Failed to mount KDK")
                 logging.info(result.stdout.decode("utf-8"))
                 return
 
             logging.info("Copying KDK")
-            subprocess.run(["cp", "-r", f"{mount_point}/KernelDebugKit.pkg", kdk_pkg_path])
+            subprocess.run(["/bin/cp", "-r", f"{mount_point}/KernelDebugKit.pkg", kdk_pkg_path])
 
             logging.info("Unmounting KDK")
-            result = subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = subprocess.run(["/usr/bin/hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Failed to unmount KDK")
                 logging.info(result.stdout.decode("utf-8"))
@@ -545,7 +545,7 @@ class macOSInstallerFlashFrame(wx.Frame):
                 logging.error(f"Failed to find {dmg_path}")
                 error_message = f"Failed to find {dmg_path}"
                 return error_message
-            result = subprocess.run(["hdiutil", "verify", dmg_path],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result = subprocess.run(["/usr/bin/hdiutil", "verify", dmg_path],stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if result.returncode != 0:
                 if result.stdout:
                     logging.error(result.stdout.decode("utf-8"))

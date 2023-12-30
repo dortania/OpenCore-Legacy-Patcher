@@ -143,7 +143,7 @@ class PatcherValidation:
         logging.info("Validating Root Patch File integrity")
         output = subprocess.run(
             [
-                "hdiutil", "attach", "-noverify", f"{self.constants.payload_local_binaries_root_path_dmg}",
+                "/usr/bin/hdiutil", "attach", "-noverify", f"{self.constants.payload_local_binaries_root_path_dmg}",
                 "-mountpoint", Path(self.constants.payload_path / Path("Universal-Binaries")),
                 "-nobrowse",
                 "-shadow", Path(self.constants.payload_path / Path("Universal-Binaries_overlay")),
@@ -172,7 +172,7 @@ class PatcherValidation:
         # unmount the dmg
         output = subprocess.run(
             [
-                "hdiutil", "detach", Path(self.constants.payload_path / Path("Universal-Binaries")),
+                "/usr/bin/hdiutil", "detach", Path(self.constants.payload_path / Path("Universal-Binaries")),
                 "-force"
             ],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
@@ -187,7 +187,7 @@ class PatcherValidation:
 
         subprocess.run(
             [
-                "rm", "-f", Path(self.constants.payload_path / Path("Universal-Binaries_overlay"))
+                "/bin/rm", "-f", Path(self.constants.payload_path / Path("Universal-Binaries_overlay"))
             ],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )
@@ -222,4 +222,4 @@ class PatcherValidation:
         self._build_prebuilt()
         self._build_dumps()
 
-        subprocess.run(["rm", "-rf", self.constants.build_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess.run(["/bin/rm", "-rf", self.constants.build_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

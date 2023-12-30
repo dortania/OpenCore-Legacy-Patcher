@@ -124,7 +124,7 @@ class arguments:
         """
         Fetch KDK for incoming OS
         """
-        results = subprocess.run(["ps", "-ax"], stdout=subprocess.PIPE)
+        results = subprocess.run(["/bin/ps", "-ax"], stdout=subprocess.PIPE)
         if results.stdout.decode("utf-8").count("OpenCore-Patcher --cache_os") > 1:
             logging.info("Another instance of OS caching is running, exiting")
             return
@@ -154,7 +154,7 @@ class arguments:
             if "GPUCompanionBundles" not in kext_plist:
                 continue
             logging.info(f"  - Removing {kext.name}")
-            subprocess.run(["rm", "-rf", kext])
+            subprocess.run(["/bin/rm", "-rf", kext])
 
 
     def _build_handler(self) -> None:

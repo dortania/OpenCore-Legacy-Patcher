@@ -334,7 +334,7 @@ class KernelDebugKitObject:
         kdk_build = kdk_plist_data["ProductBuildVersion"]
 
         # Check pkg receipts for this build, will give a canonical list if all files that should be present
-        result = subprocess.run(["pkgutil", "--files", f"com.apple.pkg.KDK.{kdk_build}"], capture_output=True)
+        result = subprocess.run(["/usr/sbin/pkgutil", "--files", f"com.apple.pkg.KDK.{kdk_build}"], capture_output=True)
         if result.returncode != 0:
             # If pkg receipt is missing, we'll fallback to legacy validation
             logging.info(f"pkg receipt missing for {kdk_path.name}, falling back to legacy validation")
@@ -468,7 +468,7 @@ class KernelDebugKitObject:
             logging.warning(f"KDK does not exist: {kdk_path}")
             return
 
-        rm_args = ["rm", "-rf" if Path(kdk_path).is_dir() else "-f", kdk_path]
+        rm_args = ["/bin/rm", "-rf" if Path(kdk_path).is_dir() else "-f", kdk_path]
 
         result = utilities.elevated(rm_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
@@ -538,7 +538,7 @@ class KernelDebugKitObject:
             return False
 
         # TODO: should we use the checksum from the API?
-        result = subprocess.run(["hdiutil", "verify", self.constants.kdk_download_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result = subprocess.run(["/usr/bin/hdiutil", "verify", self.constants.kdk_download_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode != 0:
             logging.info("Error: Kernel Debug Kit checksum verification failed!")
             logging.info(f"Output: {result.stderr.decode('utf-8')}")
@@ -612,7 +612,7 @@ class KernelDebugKitUtilities:
 
         logging.info(f"Extracting downloaded KDK disk image")
         with tempfile.TemporaryDirectory() as mount_point:
-            result = subprocess.run(["hdiutil", "attach", kdk_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = subprocess.run(["/usr/bin/hdiutil", "attach", kdk_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Failed to mount KDK:")
                 logging.info(result.stdout.decode('utf-8'))
@@ -644,7 +644,7 @@ class KernelDebugKitUtilities:
         Parameters:
             mount_point (Path): Path to mount point
         """
-        subprocess.run(["hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess.run(["/usr/bin/hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _create_backup(self, kdk_path: Path, kdk_info_plist: Path) -> None:
@@ -674,7 +674,7 @@ class KernelDebugKitUtilities:
             return
 
         if not Path(KDK_INSTALL_PATH).exists():
-            subprocess.run(["mkdir", "-p", KDK_INSTALL_PATH], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess.run(["/bin/mkdir", "-p", KDK_INSTALL_PATH], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         kdk_dst_name = f"KDK_{kdk_info_dict['version']}_{kdk_info_dict['build']}.pkg"
         kdk_dst_path = Path(f"{KDK_INSTALL_PATH}/{kdk_dst_name}")
@@ -684,7 +684,7 @@ class KernelDebugKitUtilities:
             logging.info("Backup already exists, skipping")
             return
 
-        result = utilities.elevated(["cp", "-R", kdk_path, kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = utilities.elevated(["/bin/cp", "-R", kdk_path, kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info("Failed to create KDK backup:")
             logging.info(result.stdout.decode('utf-8'))

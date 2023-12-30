@@ -130,7 +130,7 @@ class InitializeLoggingSupport:
         ]
 
         for path in paths:
-            result = subprocess.run(["chmod", "777", path], capture_output=True)
+            result = subprocess.run(["/bin/chmod", "777", path], capture_output=True)
             if result.returncode != 0:
                 logging.error(f"Failed to fix log file permissions")
                 if result.stdout:
@@ -251,7 +251,7 @@ class InitializeLoggingSupport:
                 return
 
             if cant_log is True:
-                subprocess.run(["open", "--reveal", self.log_filepath])
+                subprocess.run(["/usr/bin/open", "--reveal", self.log_filepath])
                 return
 
             threading.Thread(target=analytics_handler.Analytics(self.constants).send_crash_report, args=(self.log_filepath,)).start()

@@ -126,7 +126,7 @@ class CreateBinary:
         if Path(f"./dist/OpenCore-Patcher.app").exists():
             print("Found OpenCore-Patcher.app, removing...")
             rm_output = subprocess.run(
-                ["rm", "-rf", "./dist/OpenCore-Patcher.app"],
+                ["/bin/rm", "-rf", "./dist/OpenCore-Patcher.app"],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
             if rm_output.returncode != 0:
@@ -152,11 +152,9 @@ class CreateBinary:
         print("Embedding icns...")
         for file in Path("payloads/Icon/AppIcons").glob("*.icns"):
             subprocess.run(
-                ["cp", str(file), "./dist/OpenCore-Patcher.app/Contents/Resources/"],
+                ["/bin/cp", str(file), "./dist/OpenCore-Patcher.app/Contents/Resources/"],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
-
-
 
 
     def _embed_key(self):
@@ -252,12 +250,12 @@ class CreateBinary:
                 if file.name in whitelist_folders:
                     continue
                 print(f"- Deleting {file.name}")
-                subprocess.run(["rm", "-rf", file])
+                subprocess.run(["/bin/rm", "-rf", file])
             else:
                 if file.name in whitelist_files:
                     continue
                 print(f"- Deleting {file.name}")
-                subprocess.run(["rm", "-f", file])
+                subprocess.run(["/bin/rm", "-f", file])
 
 
     def _download_resources(self):
@@ -279,7 +277,7 @@ class CreateBinary:
                     assert resource, "Resource cannot be empty"
                     assert resource not in ("/", "."), "Resource cannot be root"
                     rm_output = subprocess.run(
-                        ["rm", "-rf", f"./{resource}"],
+                        ["/bin/rm", "-rf", f"./{resource}"],
                         stdout=subprocess.PIPE, stderr=subprocess.PIPE
                     )
                     if rm_output.returncode != 0:
@@ -293,7 +291,7 @@ class CreateBinary:
 
             download_result = subprocess.run(
                 [
-                    "curl", "-LO",
+                    "/usr/bin/curl", "-LO",
                     f"https://github.com/dortania/PatcherSupportPkg/releases/download/{patcher_support_pkg_version}/{resource}"
                 ],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -322,7 +320,7 @@ class CreateBinary:
 
             print("- Removing old payloads.dmg")
             rm_output = subprocess.run(
-                ["rm", "-rf", "./payloads.dmg"],
+                ["/bin/rm", "-rf", "./payloads.dmg"],
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
             if rm_output.returncode != 0:
@@ -332,7 +330,7 @@ class CreateBinary:
 
         print("- Generating DMG...")
         dmg_output = subprocess.run([
-            'hdiutil', 'create', './payloads.dmg',
+            '/usr/bin/hdiutil', 'create', './payloads.dmg',
             '-megabytes', '32000',  # Overlays can only be as large as the disk image allows
             '-format', 'UDZO', '-ov',
             '-volname', 'OpenCore Patcher Resources (Base)',
@@ -410,7 +408,7 @@ class CreateBinary:
         path = "./dist/OpenCore-Patcher"
         print(f"- Removing {path}")
         rm_output = subprocess.run(
-            ["rm", "-rf", path],
+            ["/bin/rm", "-rf", path],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
         if rm_output.returncode != 0:

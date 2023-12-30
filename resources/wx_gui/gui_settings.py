@@ -1110,7 +1110,7 @@ Hardware Information:
             value_type = "-bool"
 
         logging.info(f"Updating System Defaults: {variable} = {value} ({value_type})")
-        subprocess.run(["defaults", "write", "-g", variable, value_type, str(value)])
+        subprocess.run(["/usr/bin/defaults", "write", "-globalDomain", variable, value_type, str(value)])
 
 
     def _find_parent_for_key(self, key: str) -> str:
@@ -1256,7 +1256,7 @@ Hardware Information:
 
 
     def _get_system_settings(self, variable) -> bool:
-        result = subprocess.run(["defaults", "read", "-g", variable], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess.run(["/usr/bin/defaults", "read", "-globalDomain", variable], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode == 0:
             try:
                 return bool(int(result.stdout.decode().strip()))

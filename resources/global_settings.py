@@ -114,7 +114,7 @@ class GlobalEnviromentSettings:
             return
 
         # Set file permission to allow any user to write to log file
-        result = subprocess.run(["chmod", "777", self.global_settings_plist], capture_output=True)
+        result = subprocess.run(["/bin/chmod", "777", self.global_settings_plist], capture_output=True)
         if result.returncode != 0:
             logging.warning("Failed to fix settings file permissions:")
             if result.stderr:

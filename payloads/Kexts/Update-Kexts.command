@@ -108,36 +108,36 @@ class GenerateKexts:
         with tempfile.TemporaryDirectory() as temp_dir:
             # Download source
             weg_source_zip = f"{temp_dir}/WhateverGreen-{self.weg_version}.zip"
-            subprocess.run(["curl", "-L", weg_source_url, "-o", weg_source_zip], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["/usr/bin/curl", "--location", weg_source_url, "--output", weg_source_zip], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
             # Unzip source
-            subprocess.run(["unzip", weg_source_zip, "-d", temp_dir], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["/usr/bin/unzip", weg_source_zip, "-d", temp_dir], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
             # Git clone MacKernelSDK into source
-            subprocess.run(["git", "clone", "https://github.com/acidanthera/MacKernelSDK", f"{temp_dir}/WhateverGreen-{self.weg_version}/MacKernelSDK"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["/usr/bin/git", "clone", "https://github.com/acidanthera/MacKernelSDK", f"{temp_dir}/WhateverGreen-{self.weg_version}/MacKernelSDK"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
             # Grab latest Lilu release, debug version
             lilu_zip = f"{temp_dir}/Lilu-{self.lilu_version}-DEBUG.zip"
-            subprocess.run(["curl", "-L", lilu_url, "-o", lilu_zip], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["/usr/bin/curl", "--location", lilu_url, "--output", lilu_zip], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
             # Unzip Lilu into WEG source
-            subprocess.run(["unzip", lilu_zip, "-d", f"{temp_dir}/WhateverGreen-{self.weg_version}"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.run(["/usr/bin/unzip", lilu_zip, "-d", f"{temp_dir}/WhateverGreen-{self.weg_version}"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
             # Apply patch
             patch_path = Path("./Acidanthera/WhateverGreen-Navi-Backlight.patch").absolute()
-            subprocess.run(["git", "apply", patch_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, cwd=f"{temp_dir}/WhateverGreen-{self.weg_version}")
+            subprocess.run(["/usr/bin/git", "apply", patch_path], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, cwd=f"{temp_dir}/WhateverGreen-{self.weg_version}")
 
             # Build WEG
             for variant in ["Release", "Debug"]:
-                subprocess.run(["xcodebuild", "-configuration", variant], cwd=f"{temp_dir}/WhateverGreen-{self.weg_version}", check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                subprocess.run(["/usr/bin/xcodebuild", "-configuration", variant], cwd=f"{temp_dir}/WhateverGreen-{self.weg_version}", check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
             # Zip Release
             for variant in ["RELEASE", "DEBUG"]:
                 dst_path = Path(f"./Acidanthera/WhateverGreen-v{self.weg_version}-Navi-{variant}.zip").absolute()
-                subprocess.run(["zip", "-r", dst_path, "WhateverGreen.kext"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, cwd=f"{temp_dir}/WhateverGreen-{self.weg_version}/build/{'Release' if variant == 'RELEASE' else 'Debug'}")
+                subprocess.run(["/usr/bin/zip", "-r", dst_path, "WhateverGreen.kext"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, cwd=f"{temp_dir}/WhateverGreen-{self.weg_version}/build/{'Release' if variant == 'RELEASE' else 'Debug'}")
                 if Path(f"./Acidanthera/WhateverGreen-v{self.weg_old}-Navi-{variant}.zip").exists():
-                    subprocess.run(["rm", f"./Acidanthera/WhateverGreen-v{self.weg_old}-Navi-{variant}.zip"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    subprocess.run(["/bin/rm", f"./Acidanthera/WhateverGreen-v{self.weg_old}-Navi-{variant}.zip"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
         self._update_constants_file("self.whatevergreen_navi_version", f"{self.weg_old}-Navi", f"{self.weg_version}-Navi")
 
@@ -212,14 +212,14 @@ class GenerateKexts:
                 zip_name = f"{override_kext_zip_name}-v{remote_version}-{variant}.zip" if override_kext_zip_name else f"{kext_name}-v{remote_version}-{variant}.zip"
 
                 if Path(f"./{kext_folder}/{zip_name.replace(f'v{remote_version}', f'v{local_version}')}").exists():
-                    subprocess.run(["rm", "-rf", f"./{kext_folder}/{zip_name.replace(f'v{remote_version}', f'v{local_version}')}"])
+                    subprocess.run(["/bin/rm", "-rf", f"./{kext_folder}/{zip_name.replace(f'v{remote_version}', f'v{local_version}')}"])
                 self._download_file(asset["browser_download_url"], f"./{kext_folder}/{zip_name}", f"{kext_name}.kext")
                 self._update_constants_file(KEXT_DICTIONARY[kext_folder][kext_name]["Constants Variable"], local_version, remote_version)
 
                 if override_kext_zip_name:
                     # rename zip file
                     os.rename(f"./{kext_folder}/{zip_name}", f"./{kext_folder}/{kext_name}-v{remote_version}-{variant}.zip")
-                    subprocess.run(["rm", "-rf", f"./{kext_folder}/{kext_name}-v{local_version}-{variant}.zip"])
+                    subprocess.run(["/bin/rm", "-rf", f"./{kext_folder}/{kext_name}-v{local_version}-{variant}.zip"])
 
 
     def _get_local_version(self, kext_folder, kext_name, variant):
@@ -247,14 +247,14 @@ class GenerateKexts:
                 f.write(download.content)
 
             # Unzip file
-            subprocess.run(["unzip", "-q", f"{temp_dir}/temp.zip", "-d", f"{temp_dir}"], check=True)
+            subprocess.run(["/usr/bin/unzip", "-q", f"{temp_dir}/temp.zip", "-d", f"{temp_dir}"], check=True)
 
             print(f"  Moving {file} to {file_path}...")
             # Zip file
-            subprocess.run(["zip", "-q", "-r", Path(file_path).name, file], cwd=f"{temp_dir}", check=True)
+            subprocess.run(["/usr/bin/zip", "-q", "-r", Path(file_path).name, file], cwd=f"{temp_dir}", check=True)
 
             # Move file
-            subprocess.run(["mv", f"{temp_dir}/{Path(file_path).name}", file_path], check=True)
+            subprocess.run(["/bin/mv", f"{temp_dir}/{Path(file_path).name}", file_path], check=True)
 
 
     def _update_constants_file(self, variable_name, old_version, new_version):
