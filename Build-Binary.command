@@ -8,7 +8,6 @@ import sys
 import time
 import argparse
 import plistlib
-import platform
 import subprocess
 
 from pathlib import Path
