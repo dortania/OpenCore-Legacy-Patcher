@@ -2,6 +2,9 @@
 
 ## 1.4.0
 - Refactor subprocess invocations
+- Resolve RecoveryOS support (Regression resolved in OpenCorePkg)
+- Increment binaries:
+  - OpenCorePkg 0.9.7 - release
 
 ## 1.3.0
 - Resolve mismatched `CFBundleExecutable` and binary name for kexts.
