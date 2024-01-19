@@ -120,7 +120,7 @@ class KernelDebugKitObject:
             logging.info("Could not fetch KDK list")
             return None
 
-        KDK_ASSET_LIST = sorted(results.json(), key=lambda x: (packaging.version.parse(x["version"]), datetime.datetime.fromisoformat(x["date"])), reverse=True)
+        KDK_ASSET_LIST = results.json()
 
         return KDK_ASSET_LIST
 
