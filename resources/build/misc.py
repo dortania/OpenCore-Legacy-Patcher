@@ -180,8 +180,16 @@ class BuildMiscellaneous:
 
     def _topcase_handling(self) -> None:
         """
-        USB Top Case Handler
+        USB/SPI Top Case Handler
         """
+
+        # macOS 14.4 Beta 1 strips SPI-based top case support for USB-C Macs pre-T2
+        if self.model.startswith("MacBook") and self.model in smbios_data.smbios_dictionary:
+            if self.model == "MacBook8,1" or (cpu_data.CPUGen.skylake <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.kaby_lake):
+                logging.info("- Enabling SPI-based top case support")
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleHSSPISupport.kext", self.constants.apple_spi_version, self.constants.apple_spi_path)
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleHSSPIHIDDriver.kext", self.constants.apple_spi_hid_version, self.constants.apple_spi_hid_path)
+
 
         #On-device probing
         if not self.constants.custom_model and self.computer.internal_keyboard_type and self.computer.trackpad_type:

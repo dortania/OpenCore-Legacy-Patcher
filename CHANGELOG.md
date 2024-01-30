@@ -3,6 +3,8 @@
 ## 1.4.0
 - Refactor subprocess invocations
 - Resolve RecoveryOS support (Regression resolved in OpenCorePkg)
+- Restore SPI Keyboard and Trackpad support for macOS 14.4 and newer
+  - Applicable for MacBook8,1, MacBookPro13,x and MacBookPro14,x
 - Increment binaries:
   - OpenCorePkg 0.9.7 - release
 

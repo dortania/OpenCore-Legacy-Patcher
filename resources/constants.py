@@ -70,6 +70,8 @@ class Constants:
         self.t1_sse_version:        str = "1.1.0"  #  AppleSSE      (13.6 - T1 support)
         self.t1_key_store_version:  str = "1.1.0"  #  AppleKeyStore (13.6 - T1 support)
         self.t1_corecrypto_version: str = "1.0.1"  #  corecrypto    (13.6 - T1 support)
+        self.apple_spi_version:     str = "1.0.0"  #  AppleHSSPISupport   (14.4 Beta 1)
+        self.apple_spi_hid_version: str = "1.0.0"  #  AppleHSSPIHIDDriver (14.4 Beta 1)
 
         ## Apple - Dortania Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
@@ -458,6 +460,14 @@ class Constants:
     @property
     def t1_corecrypto_path(self):
         return self.payload_kexts_path / Path(f"Misc/corecrypto_T1-v{self.t1_corecrypto_version}.zip")
+
+    @property
+    def apple_spi_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleHSSPISupport-v{self.apple_spi_version}.zip")
+
+    @property
+    def apple_spi_hid_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleHSSPIHIDDriver-v{self.apple_spi_hid_version}.zip")
 
     @property
     def mousse_path(self):
