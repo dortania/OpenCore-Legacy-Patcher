@@ -72,8 +72,52 @@ class SystemPatchDictionary():
         self.macOS_13_3:          float = 22.4
         self.macOS_14_1:          float = 23.1
         self.macOS_14_2:          float = 23.2
+        self.macOS_14_4:          float = 23.4
 
         self._generate_sys_patch_dict()
+
+
+    def __resolve_ivy_bridge_framebuffers(self) -> str:
+        """
+        Resolve patchset directory for Ivy Bridge framebuffers:
+        - AppleIntelFramebufferCapri.kext
+        - AppleIntelHD4000Graphics.kext
+        """
+        if self.os_major < os_data.os_data.sonoma:
+            return "11.4"
+        if self.os_float < self.macOS_14_4:
+            return "11.4-23"
+        return "11.4-23.4"
+
+
+    def __resolve_kepler_geforce_framebuffers(self) -> str:
+        """
+        Resolve patchset directory for GeForce.kext
+        """
+        if self.os_major < os_data.os_data.sonoma:
+            return "12.0 Beta 6"
+        if self.os_float < self.macOS_14_4:
+            return "12.0 Beta 6-23"
+        return "12.0 Beta 6-23.4"
+
+
+    def __resolve_monterey_framebuffers(self) -> str:
+        """
+        Resolve patchset directory for framebuffers last supported in Monterey:
+        - AppleIntelBDWGraphics.kext
+        - AppleIntelBDWGraphicsFramebuffer.kext
+        - AppleIntelFramebufferAzul.kext
+        - AppleIntelHD5000Graphics.kext
+        - AppleIntelSKLGraphics.kext
+        - AppleIntelSKLGraphicsFramebuffer.kext
+        - AMDRadeonX4000.kext
+        - AMDRadeonX5000.kext
+        """
+        if self.os_major < os_data.os_data.sonoma:
+            return "12.5"
+        if self.os_float < self.macOS_14_4:
+            return "12.5-23"
+        return "12.5-23.4"
 
 
     def _generate_sys_patch_dict(self):
@@ -584,7 +628,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "GeForce.kext":            "12.0 Beta 6" if self.os_major < os_data.os_data.sonoma else "12.0 Beta 6-23",
+                            "GeForce.kext":            self.__resolve_kepler_geforce_framebuffers(),
                             "NVDAGF100Hal.kext":       "12.0 Beta 6",
                             "NVDAGK100Hal.kext":       "12.0 Beta 6",
                             "NVDAResman.kext":         "12.0 Beta 6",
@@ -781,7 +825,7 @@ class SystemPatchDictionary():
                             "AMD9000Controller.kext":        "12.5",
                             "AMD9500Controller.kext":        "12.5",
                             "AMD10000Controller.kext":       "12.5",
-                            "AMDRadeonX4000.kext":           "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AMDRadeonX4000.kext":           self.__resolve_monterey_framebuffers(),
                             "AMDRadeonX4000HWServices.kext": "12.5",
                             "AMDFramebuffer.kext":           "12.5" if self.os_float < self.macOS_13_3 else "12.5-GCN",
                             "AMDSupport.kext":               "12.5",
@@ -844,7 +888,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMDRadeonX4000.kext":           "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AMDRadeonX4000.kext":           self.__resolve_monterey_framebuffers(),
                             "AMDRadeonX4000HWServices.kext": "12.5",
 
                             "AMDRadeonVADriver2.bundle":     "12.5",
@@ -868,7 +912,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMDRadeonX5000.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AMDRadeonX5000.kext":            self.__resolve_monterey_framebuffers(),
 
                             "AMDRadeonVADriver2.bundle":      "12.5",
                             "AMDRadeonX5000GLDriver.bundle":  "12.5",
@@ -962,8 +1006,8 @@ class SystemPatchDictionary():
                             "AppleIntelHD4000GraphicsGLDriver.bundle":  "11.0 Beta 6",
                             "AppleIntelHD4000GraphicsMTLDriver.bundle": "11.0 Beta 6" if self.os_major < os_data.os_data.ventura else "11.0-beta 6-22",
                             "AppleIntelHD4000GraphicsVADriver.bundle":  "11.3 Beta 1",
-                            "AppleIntelFramebufferCapri.kext":          "11.4" if self.os_major < os_data.os_data.sonoma else "11.4-23",
-                            "AppleIntelHD4000Graphics.kext":            "11.4" if self.os_major < os_data.os_data.sonoma else "11.4-23",
+                            "AppleIntelFramebufferCapri.kext":          self.__resolve_ivy_bridge_framebuffers(),
+                            "AppleIntelHD4000Graphics.kext":            self.__resolve_ivy_bridge_framebuffers(),
                             "AppleIntelIVBVA.bundle":                   "11.4",
                             "AppleIntelGraphicsShared.bundle":          "11.4", # libIGIL-Metal.dylib pulled from 11.0 Beta 6
                         },
@@ -983,8 +1027,8 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelFramebufferAzul.kext":           "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
-                            "AppleIntelHD5000Graphics.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AppleIntelFramebufferAzul.kext":           self.__resolve_monterey_framebuffers(),
+                            "AppleIntelHD5000Graphics.kext":            self.__resolve_monterey_framebuffers(),
                             "AppleIntelHD5000GraphicsGLDriver.bundle":  "12.5",
                             "AppleIntelHD5000GraphicsMTLDriver.bundle": "12.5",
                             "AppleIntelHD5000GraphicsVADriver.bundle":  "12.5",
@@ -1007,10 +1051,10 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelBDWGraphics.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
-                            "AppleIntelBDWGraphicsFramebuffer.kext": "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AppleIntelBDWGraphics.kext":            self.__resolve_monterey_framebuffers(),
+                            "AppleIntelBDWGraphicsFramebuffer.kext": self.__resolve_monterey_framebuffers(),
                             "AppleIntelBDWGraphicsGLDriver.bundle":  "12.5",
-                            "AppleIntelBDWGraphicsMTLDriver.bundle": "12.5" if self.os_major < os_data.os_data.ventura else "12.5-22",
+                            "AppleIntelBDWGraphicsMTLDriver.bundle": "12.5-22",
                             "AppleIntelBDWGraphicsVADriver.bundle":  "12.5",
                             "AppleIntelBDWGraphicsVAME.bundle":      "12.5",
                             "AppleIntelGraphicsShared.bundle":       "12.5",
@@ -1031,8 +1075,8 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelSKLGraphics.kext":            "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
-                            "AppleIntelSKLGraphicsFramebuffer.kext": "12.5" if self.os_major < os_data.os_data.sonoma else "12.5-23",
+                            "AppleIntelSKLGraphics.kext":            self.__resolve_monterey_framebuffers(),
+                            "AppleIntelSKLGraphicsFramebuffer.kext": self.__resolve_monterey_framebuffers(),
                             "AppleIntelSKLGraphicsGLDriver.bundle":  "12.5",
                             "AppleIntelSKLGraphicsMTLDriver.bundle": "12.5",
                             "AppleIntelSKLGraphicsVADriver.bundle":  "12.5",
@@ -1107,10 +1151,10 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/usr/libexec": {
-                            "airportd": "11.7.1",
+                            "airportd": "11.7.10" if self.os_float < self.macOS_14_4 else "11.7.10-23.4",
                         },
                         "/System/Library/CoreServices": {
-                            "WiFiAgent.app": "11.7.1",
+                            "WiFiAgent.app": "11.7.10",
                         },
                     },
                     "Install Non-Root": {
@@ -1134,19 +1178,16 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/usr/libexec": {
-                            "wps": "12.6.2",
-                            "wifip2pd":       "12.6.2",
-                            "wifianalyticsd": "13.5",
+                            "wps":      "12.7.2",
+                            "wifip2pd": "12.7.2",
                         },
                         "/System/Library/Frameworks": {
-                            "CoreWLAN.framework": "12.6.2",
+                            "CoreWLAN.framework": "12.7.2",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "CoreWiFi.framework": "12.6.2",
-                            "IO80211.framework":  "12.6.2",
-                            "WiFiPeerToPeer.framework":  "12.6.2",
-                            **({ "CoreAnalytics.framework": "13.5"} if self.os_major >= os_data.os_data.sonoma else {}),
-                            **({ "WiFiAnalytics.framework": "13.5"} if self.os_major >= os_data.os_data.sonoma else {}),
+                            "CoreWiFi.framework": "12.7.2",
+                            "IO80211.framework":  "12.7.2",
+                            "WiFiPeerToPeer.framework":  "12.7.2",
                         },
                     },
                 },
@@ -1166,20 +1207,16 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/usr/libexec": {
-                            "airportd":       "13.5",
-                            "wifianalyticsd": "13.5",
-                            "wifip2pd":       "13.5",
+                            "airportd":       "13.6.2" if self.os_float < self.macOS_14_4 else "13.6.2-23.4",
+                            "wifip2pd":       "13.6.2",
                         },
                         "/System/Library/Frameworks": {
-                            "CoreWLAN.framework": "13.5",
+                            "CoreWLAN.framework": "13.6.2",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "CoreAnalytics.framework":  "13.5",
-                            "CoreWiFi.framework":       "13.5",
-                            "IO80211.framework":        "13.5",
-                            "WiFiAnalytics.framework":  "13.5",
-                            "WiFiPolicy.framework":     "13.5",
-                            "WiFiPeerToPeer.framework": "13.5",
+                            "CoreWiFi.framework":       "13.6.2",
+                            "IO80211.framework":        "13.6.2",
+                            "WiFiPeerToPeer.framework": "13.6.2",
                         },
                     },
                 },

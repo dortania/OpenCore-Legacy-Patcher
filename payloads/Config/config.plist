@@ -1773,7 +1773,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string>23.0.0</string>
+				<string>23.4.0</string>
 				<key>BundlePath</key>
 				<string>AppleCredentialManager.kext</string>
 				<key>ExecutablePath</key>
@@ -1882,7 +1882,7 @@
 				<key>MaxKernel</key>
 				<string></string>
 				<key>MinKernel</key>
-				<string>23.0.0</string>
+				<string>23.4.0</string>
 				<key>Strategy</key>
 				<string>Exclude</string>
 			</dict>

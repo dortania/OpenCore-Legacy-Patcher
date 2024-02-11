@@ -5,6 +5,15 @@
 - Resolve RecoveryOS support (Regression resolved in OpenCorePkg)
 - Restore SPI Keyboard and Trackpad support for macOS 14.4 and newer
   - Applicable for MacBook8,1, MacBookPro13,x and MacBookPro14,x
+- Restore support for T1 on macOS 14.4 and newer
+  - Applicable for MacBookPro13,2, MacBookPro13,3, MacBookPro14,2, MacBookPro14,3
+- Restore support for legacy Metal GPUs on macOS 14.4 and newer
+  - Applicable for:
+    - Intel Ivy Bridge through Skylake
+    - Nvidia Kepler
+    - AMD legacy GCN
+- Restore support for USB 1.1 on macOS 14.4 and newer
+  - Applicable for Penryn Macs, Xserve3,1 and MacPro4,1/5,1
 - Increment binaries:
   - OpenCorePkg 0.9.7 - release
 
