@@ -14,6 +14,9 @@
     - AMD legacy GCN
 - Restore support for USB 1.1 on macOS 14.4 and newer
   - Applicable for Penryn Macs, Xserve3,1 and MacPro4,1/5,1
+- Resolve support for legacy and modern WiFi on macOS 14.4 and newer
+  - Applicable for all WiFi-equipped Macs
+  - Note with 14.4: Auto-Join may not work until you forget and rejoin the network
 - Increment binaries:
   - OpenCorePkg 0.9.7 - release
 
