@@ -1749,24 +1749,6 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
-				<string>AppleKeyStore - T1</string>
-				<key>Enabled</key>
-				<false/>
-				<key>MaxKernel</key>
-				<string></string>
-				<key>MinKernel</key>
-				<string>23.0.0</string>
-				<key>BundlePath</key>
-				<string>AppleKeyStore.kext</string>
-				<key>ExecutablePath</key>
-				<string>Contents/MacOS/AppleKeyStore</string>
-				<key>PlistPath</key>
-				<string>Contents/Info.plist</string>
-			</dict>
-			<dict>
-				<key>Arch</key>
-				<string>x86_64</string>
-				<key>Comment</key>
 				<string>AppleCredentialManager - T1</string>
 				<key>Enabled</key>
 				<false/>
@@ -1778,6 +1760,24 @@
 				<string>AppleCredentialManager.kext</string>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AppleCredentialManager</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
+				<string>AppleKeyStore - T1</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>23.0.0</string>
+				<key>BundlePath</key>
+				<string>AppleKeyStore.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/AppleKeyStore</string>
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
