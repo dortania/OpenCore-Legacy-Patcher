@@ -4,7 +4,7 @@
 - Refactor subprocess invocations
 - Resolve RecoveryOS support (Regression resolved in OpenCorePkg)
 - Restore SPI Keyboard and Trackpad support for macOS 14.4 and newer
-  - Applicable for MacBook8,1, MacBookPro13,x and MacBookPro14,x
+  - Applicable for MacBook8,1, MacBookAir7,x and MacBookPro12,1-14,x
 - Restore support for T1 on macOS 14.4 and newer
   - Applicable for MacBookPro13,2, MacBookPro13,3, MacBookPro14,2, MacBookPro14,3
 - Restore support for legacy Metal GPUs on macOS 14.4 and newer

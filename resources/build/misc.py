@@ -183,9 +183,9 @@ class BuildMiscellaneous:
         USB/SPI Top Case Handler
         """
 
-        # macOS 14.4 Beta 1 strips SPI-based top case support for USB-C Macs pre-T2
+        # macOS 14.4 Beta 1 strips SPI-based top case support for Broadwell through Kaby Lake MacBooks
         if self.model.startswith("MacBook") and self.model in smbios_data.smbios_dictionary:
-            if self.model == "MacBook8,1" or (cpu_data.CPUGen.skylake <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.kaby_lake):
+            if (cpu_data.CPUGen.broadwell <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.kaby_lake):
                 logging.info("- Enabling SPI-based top case support")
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleHSSPISupport.kext", self.constants.apple_spi_version, self.constants.apple_spi_path)
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleHSSPIHIDDriver.kext", self.constants.apple_spi_hid_version, self.constants.apple_spi_hid_path)
