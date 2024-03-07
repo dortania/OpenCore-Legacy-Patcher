@@ -27,7 +27,7 @@ from resources import (
     global_settings,
     updates
 )
-from data import os_data
+from data import os_data, css_data
 
 
 class MainFrame(wx.Frame):
@@ -352,31 +352,8 @@ class MainFrame(wx.Frame):
 
 Please check the Github page for more information about this release."""
 
-        html_markdown = markdown2.markdown(changelog)
-        html_css = """
-<style>
-    body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height: 1.5;
-    font-size: 13px;
-    margin-top: 20px;
-    background-color: rgb(238,238,238);
-    }
-    h2 {
-    line-height: 0.5;
-    }
-    a {
-        color: -apple-system-control-accent;
-    }
-    @media (prefers-color-scheme: dark) {
-        body {
-            color: #fff;
-            background-color: rgb(47,47,47);
-        }
-
-    }
-</style>
-"""
+        html_markdown = markdown2.markdown(changelog, extras=["tables"])
+        html_css = css_data.updater_css
         frame = wx.Dialog(None, -1, title="", size=(650, 500))
         frame.SetMinSize((650, 500))
         frame.SetWindowStyle(wx.STAY_ON_TOP)
@@ -388,7 +365,18 @@ Please check the Github page for more information about this release."""
         self.title_text.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         self.description.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         self.web_view = wx.html2.WebView.New(panel, style=wx.BORDER_SUNKEN)
-        html_code = html_css+html_markdown.replace("<a href=", "<a target='_blank' href=")
+        html_code = f'''
+<html>
+    <head>
+        <style>
+            {html_css}
+        </style>
+    </head>
+    <body class="markdown-body">
+        {html_markdown.replace("<a href=", "<a target='_blank' href=")}
+    </body>
+</html>
+'''
         self.web_view.SetPage(html_code, "")
         self.web_view.Bind(wx.html2.EVT_WEBVIEW_NEWWINDOW, self._onWebviewNav)
         self.web_view.EnableContextMenu(False)

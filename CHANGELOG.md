@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 1.5.0
+- Update updater implementation
+
 ## 1.4.0
 - Refactor subprocess invocations
 - Resolve RecoveryOS support (Regression resolved in OpenCorePkg)
