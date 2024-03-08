@@ -4,6 +4,8 @@
 - Update updater implementation
 - Resolve Keyboard/Trackpad support for MacBookAir6,x running macOS 14.4 and newer
   - Expands SPI Keyboard and Trackpad patch to include MacBookAir6,x
+- Publish Bluetooth NVRAM variables for BCM2046 and BCM2070 chipsets
+  - Reduces need for NVRAM reset to restore Bluetooth support in newer OSes (Thanks @ausdauersportler)
 
 ## 1.4.0
 - Refactor subprocess invocations

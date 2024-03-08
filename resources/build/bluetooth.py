@@ -2,6 +2,7 @@
 # Copyright (C) 2020-2023, Dhinak G, Mykola Grymalyuk
 
 import logging
+import binascii
 
 from resources import constants, device_probe
 from resources.build import support
@@ -45,6 +46,8 @@ class BuildBluetooth:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -btlfxallowanyaddr"
+            self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["bluetoothInternalControllerInfo"] = binascii.unhexlify("0000000000000000000000000000")
+            self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["bluetoothExternalDongleFailed"] = binascii.unhexlify("00")
         elif self.computer.bluetooth_chipset == "BRCM20702 Hub":
             # BCM94331 can include either BCM2070 or BRCM20702 v1 Bluetooth chipsets
             # Note Monterey only natively supports BRCM20702 v2 (found with BCM94360)
@@ -75,4 +78,6 @@ class BuildBluetooth:
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("BlueToolFixup.kext", self.constants.bluetool_version, self.constants.bluetool_path)
             if smbios_data.smbios_dictionary[self.model]["Bluetooth Model"] <= bluetooth_data.bluetooth_data.BRCM2070.value:
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -btlfxallowanyaddr"
+                self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["bluetoothInternalControllerInfo"] = binascii.unhexlify("0000000000000000000000000000")
+                self.config["NVRAM"]["Add"]["4D1EDE05-38C7-4A6A-9CC6-4BCCA8B38C14"]["bluetoothExternalDongleFailed"] = binascii.unhexlify("00")
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("Bluetooth-Spoof.kext", self.constants.btspoof_version, self.constants.btspoof_path)
