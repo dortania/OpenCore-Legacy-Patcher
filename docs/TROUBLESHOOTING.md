@@ -66,13 +66,13 @@ Then revert the snapshot
 ```sh
 bless --mount "/Volumes/Macintosh HD" --bootefi --last-sealed-snapshot
 ```
-After that, type the following
-```sh
-cd "/Volumes/Macintosh HD/Library/Extensions" && ls
-```
-You should now see bunch of .kexts. If you only see .kexts starting with "HighPoint" and "SoftRAID", you can ignore this and just restart the system. If other kexts are found, continue.
+Now we're going to clean the /Library/Extensions folder from offending kexts while keeping needed ones.
 
-Delete everything **except** for the ones that start with HighPoint and SoftRAID, by using `rm -rf "kextname"`
+Run the following and **make sure to type it carefully**
+
+```sh
+cd "/Volumes/Macintosh HD/Library/Extensions" && ls | grep -v "HighPoint*\|SoftRAID*" | xargs rm -rf
+```
 
 Then restart and now your system should be restored to the unpatched snapshot and should be able to boot again.
 
