@@ -1,7 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
-## 1.5.0
+## 1.4.1
 - Update updater implementation
+- Resolve Keyboard/Trackpad support for MacBookAir6,x running macOS 14.4 and newer
+  - Expands SPI Keyboard and Trackpad patch to include MacBookAir6,x
 
 ## 1.4.0
 - Refactor subprocess invocations
