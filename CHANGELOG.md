@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 1.4.2
+
 ## 1.4.1
 - Update updater implementation
 - Resolve Keyboard/Trackpad support for MacBookAir6,x running macOS 14.4 and newer
