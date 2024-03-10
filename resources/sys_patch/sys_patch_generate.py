@@ -35,7 +35,7 @@ class GenerateRootPatchSets:
             dict: Dictionary of patches to be applied from sys_patch_dict.py
         """
 
-        all_hardware_patchset: dict = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor, self.constants.legacy_accel_support).patchset_dict
+        all_hardware_patchset: dict = sys_patch_dict.SystemPatchDictionary(self.constants.detected_os, self.constants.detected_os_minor, self.constants.legacy_accel_support, self.constants.detected_os_version).patchset_dict
         required_patches:      dict = {}
 
         utilities.cls()

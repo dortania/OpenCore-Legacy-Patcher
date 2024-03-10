@@ -1,6 +1,8 @@
 # Dictionary defining patch sets used during Root Volume patching (sys_patch.py)
 # Copyright (C) 2022-2023, Mykola Grymalyuk
 
+import packaging.version
+
 from data import os_data
 
 
@@ -9,7 +11,7 @@ class SystemPatchDictionary():
     Library for generating patch sets for sys_patch.py and supporting modules
 
     Usage:
-        >>> patchsets = SystemPatchDictionary(22, 0, [20, 21, 22]).patchset_dict
+        >>> patchsets = SystemPatchDictionary(22, 0, [20, 21, 22], "13.0").patchset_dict
 
 
     Patchset Schema:
@@ -49,12 +51,13 @@ class SystemPatchDictionary():
     Note: Stubbed binaries are OS specific, thus use the 'self.os_major' variable to denounce which folder variant to use
     """
 
-    def __init__(self, os_major: int, os_minor: int, non_metal_os_support: list) -> None:
+    def __init__(self, os_major: int, os_minor: int, non_metal_os_support: list, marketing_version: str) -> None:
         """
         Parameters:
             os_major              (int): Major XNU Kernel version
             os_minor              (int): Minor XNU Kernel version
             non_metal_os_support (list): List of supported non-metal OSes (XNU Major Versions)
+            marketing_version     (str): Marketing version of the OS
 
         'non_metal_os_support' is assumed to be sorted from oldest to newest
         """
@@ -64,6 +67,9 @@ class SystemPatchDictionary():
         self.os_float:            float = float(f"{self.os_major}.{self.os_minor}")
         self.non_metal_os_support: list = non_metal_os_support
         self.patchset_dict:        dict = {}
+        self.marketing_version:     str = marketing_version
+
+        self.affected_by_cve_2024_23227: bool = self.__is_affect_by_cve_2024_23227()
 
         # XNU Kernel versions
         self.macOS_12_0_B7:       float = 21.1
@@ -118,6 +124,27 @@ class SystemPatchDictionary():
         if self.os_float < self.macOS_14_4:
             return "12.5-23"
         return "12.5-23.4"
+
+
+    def __is_affect_by_cve_2024_23227(self) -> bool:
+        """
+        CVE-2024-23227 broke our airportd patches for 12.7.4, 13.6.5 and 14.4
+
+        Note that since the XNU version's security patch level is not increment
+        """
+
+        if self.os_major > os_data.os_data.sonoma:
+            return True
+
+        parsed_version = packaging.version.parse(self.marketing_version)
+        if self.marketing_version.startswith("12"):
+            return parsed_version >= packaging.version.parse("12.7.4")
+        if self.marketing_version.startswith("13"):
+            return parsed_version >= packaging.version.parse("13.6.5")
+        if self.marketing_version.startswith("14"):
+            return parsed_version >= packaging.version.parse("14.4")
+
+        return False
 
 
     def _generate_sys_patch_dict(self):
@@ -1151,7 +1178,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/usr/libexec": {
-                            "airportd": "11.7.10" if self.os_float < self.macOS_14_4 else "11.7.10-23.4",
+                            "airportd": "11.7.10" if self.affected_by_cve_2024_23227 is False else "11.7.10-Sandbox",
                         },
                         "/System/Library/CoreServices": {
                             "WiFiAgent.app": "11.7.10",
@@ -1207,16 +1234,16 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/usr/libexec": {
-                            "airportd":       "13.6.2" if self.os_float < self.macOS_14_4 else "13.6.2-23.4",
-                            "wifip2pd":       "13.6.2",
+                            "airportd":       "13.6.5",
+                            "wifip2pd":       "13.6.5",
                         },
                         "/System/Library/Frameworks": {
-                            "CoreWLAN.framework": "13.6.2",
+                            "CoreWLAN.framework": "13.6.5",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "CoreWiFi.framework":       "13.6.2",
-                            "IO80211.framework":        "13.6.2",
-                            "WiFiPeerToPeer.framework": "13.6.2",
+                            "CoreWiFi.framework":       "13.6.5",
+                            "IO80211.framework":        "13.6.5",
+                            "WiFiPeerToPeer.framework": "13.6.5",
                         },
                     },
                 },
@@ -1308,7 +1335,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "IOUSBHostFamily.kext": "12.6.2",
+                            "IOUSBHostFamily.kext": "12.6.2" if self.os_major < self.macOS_14_4 else "12.6.2-23.4",
                         },
                     },
                 },

@@ -1,6 +1,13 @@
 # OpenCore Legacy Patcher changelog
 
 ## 1.4.2
+- Resolve Auto-Join support for Modern Wireless on macOS 14.4
+  - Applicable for BCM94360, 4360, 4350, 4331 and 43224 chipsets
+- Resolve WiFi support for Legacy Wireless on macOS 12.7.4 and 13.6.5
+  - Applicable for BCM94328, BCM94322 and Atheros chipsets
+- Resolve USB 1.1 on macOS Ventura regression from OCLP 1.4.0
+- Increment Binaries:
+  - PatcherSupportPkg 1.4.8 - release
 
 ## 1.4.1
 - Update updater implementation
