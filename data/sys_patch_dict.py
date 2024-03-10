@@ -1335,7 +1335,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "IOUSBHostFamily.kext": "12.6.2" if self.os_major < self.macOS_14_4 else "12.6.2-23.4",
+                            "IOUSBHostFamily.kext": "12.6.2" if self.os_float < self.macOS_14_4 else "12.6.2-23.4",
                         },
                     },
                 },
