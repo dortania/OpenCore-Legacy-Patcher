@@ -50,8 +50,6 @@ class BuildFirmware:
 
         if not self.model in smbios_data.smbios_dictionary:
             return
-        if not "Max OS Supported" in smbios_data.smbios_dictionary[self.model]:
-            return
 
         if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.monterey and self.model != "MacPro6,1":
             logging.info("- Enabling Boot Logo patch")
