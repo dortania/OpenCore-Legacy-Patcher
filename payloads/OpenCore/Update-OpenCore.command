@@ -48,6 +48,7 @@ UNUSED_DRIVERS = [
     "DnsDxe.efi",
     "Dhcp4Dxe.efi",
     "ArpDxe.efi",
+    "FirmwareSettingsEntry.efi",
 ]
 
 UNUSED_TOOLS = [

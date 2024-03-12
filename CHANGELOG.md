@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 1.5.0
+- Increment Binaries:
+  - OpenCorePkg 0.9.9 - release
 
 ## 1.4.2
 - Resolve Auto-Join support for Modern Wireless on macOS 14.4
