@@ -45,13 +45,13 @@ class BuildFirmware:
         Apple logo Handling
         """
 
-        # Macs that natively support Monterey (excluding MacPro6,1) won't have boot.efi draw the Apple logo.
+        # Macs that natively support Monterey (excluding MacPro6,1 and Macmini7,1) won't have boot.efi draw the Apple logo.
         # This causes a cosmetic issue when booting through OpenCore, as the Apple logo will be missing.
 
         if not self.model in smbios_data.smbios_dictionary:
             return
 
-        if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.monterey and self.model != "MacPro6,1":
+        if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.monterey and self.model not in ["MacPro6,1", "Macmini7,1"]:
             logging.info("- Enabling Boot Logo patch")
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Patch SkipLogo")["Enabled"] = True
 
