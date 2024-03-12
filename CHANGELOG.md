@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 1.5.0
+
 ## 1.4.2
 - Resolve Auto-Join support for Modern Wireless on macOS 14.4
   - Applicable for BCM94360, 4360, 4350, 4331 and 43224 chipsets
