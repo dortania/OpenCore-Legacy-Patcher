@@ -9,7 +9,7 @@ from pathlib import Path
 
 from resources import constants, generate_smbios, device_probe
 from resources.build import support
-from data import smbios_data, cpu_data
+from data import smbios_data, cpu_data, os_data
 
 
 class BuildFirmware:
@@ -38,6 +38,24 @@ class BuildFirmware:
         self._acpi_handling()
         self._firmware_driver_handling()
         self._firmware_compatibility_handling()
+        self._apple_logo_handling()
+
+    def _apple_logo_handling(self) -> None:
+        """
+        Apple logo Handling
+        """
+
+        # Macs that natively support Monterey (excluding MacPro6,1) won't have boot.efi draw the Apple logo.
+        # This causes a cosmetic issue when booting through OpenCore, as the Apple logo will be missing.
+
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+        if not "Max OS Supported" in smbios_data.smbios_dictionary[self.model]:
+            return
+
+        if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.monterey and self.model != "MacPro6,1":
+            logging.info("- Enabling Boot Logo patch")
+            support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Booter"]["Patch"], "Comment", "Patch SkipLogo")["Enabled"] = True
 
 
     def _power_management_handling(self) -> None:

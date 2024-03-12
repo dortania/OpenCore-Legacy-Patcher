@@ -1,6 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
 ## 1.5.0
+- Patch SkipLogo on Macs that natively support Monterey or newer
+  - Resolves missing Apple logo on boot screen
 - Increment Binaries:
   - OpenCorePkg 0.9.9 - release
 
