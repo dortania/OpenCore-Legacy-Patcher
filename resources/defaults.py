@@ -234,22 +234,16 @@ class GenerateDefaults:
         Graphics specific probe
         """
 
-        gpu_dict = []
+        gpu_archs = []
         if self.host_is_target:
-            gpu_dict = self.constants.computer.gpus
+            gpu_archs = [gpu.arch for gpu in self.constants.computer.gpus if gpu.class_code != 0xFFFFFFFF]
         else:
             if self.model in smbios_data.smbios_dictionary:
-                gpu_dict = smbios_data.smbios_dictionary[self.model]["Stock GPUs"]
+                gpu_archs = smbios_data.smbios_dictionary[self.model]["Stock GPUs"]
 
-        for gpu in gpu_dict:
-            if self.host_is_target:
-                if gpu.class_code:
-                    if gpu.class_code == 0xFFFFFFFF:
-                        continue
-                gpu = gpu.arch
-
+        for arch in gpu_archs:
             # Legacy Metal Logic
-            if gpu in [
+            if arch in [
                 device_probe.Intel.Archs.Ivy_Bridge,
                 device_probe.Intel.Archs.Haswell,
                 device_probe.Intel.Archs.Broadwell,
@@ -263,14 +257,14 @@ class GenerateDefaults:
                 device_probe.AMD.Archs.Vega,
                 device_probe.AMD.Archs.Navi,
             ]:
-                if gpu in [
+                if arch in [
                     device_probe.Intel.Archs.Ivy_Bridge,
                     device_probe.Intel.Archs.Haswell,
                     device_probe.NVIDIA.Archs.Kepler,
                 ]:
                     self.constants.disable_amfi = True
 
-                if gpu in [
+                if arch in [
                         device_probe.AMD.Archs.Legacy_GCN_7000,
                         device_probe.AMD.Archs.Legacy_GCN_8000,
                         device_probe.AMD.Archs.Legacy_GCN_9000,
@@ -279,7 +273,7 @@ class GenerateDefaults:
                         device_probe.AMD.Archs.Vega,
                         device_probe.AMD.Archs.Navi,
                 ]:
-                    if gpu == device_probe.AMD.Archs.Legacy_GCN_7000:
+                    if arch == device_probe.AMD.Archs.Legacy_GCN_7000:
                         # Check if we're running in Rosetta
                         if self.host_is_target:
                             if self.constants.computer.rosetta_active is True:
@@ -291,7 +285,7 @@ class GenerateDefaults:
                             self.constants.serial_settings = "Minimal"
 
                 # See if system can use the native AMD stack in Ventura
-                if gpu in [
+                if arch in [
                     device_probe.AMD.Archs.Polaris,
                     device_probe.AMD.Archs.Polaris_Spoof,
                     device_probe.AMD.Archs.Vega,
@@ -310,7 +304,7 @@ class GenerateDefaults:
                 self.constants.disable_cs_lv = True
 
             # Non-Metal Logic
-            elif gpu in [
+            elif arch in [
                 device_probe.Intel.Archs.Iron_Lake,
                 device_probe.Intel.Archs.Sandy_Bridge,
                 device_probe.NVIDIA.Archs.Tesla,

@@ -493,22 +493,20 @@ class BuildGraphicsAudio:
         This primarily occurs when installing an RSR update, where root is cleaned but AuxKC is not
         """
 
-        gpu_dict = []
+        gpu_archs = []
         if not self.constants.custom_model:
-            gpu_dict = self.constants.computer.gpus
+            gpu_archs = [gpu.arch for gpu in self.constants.computer.gpus]
         else:
-            if not self.model in smbios_data.smbios_dictionary:
+            if self.model not in smbios_data.smbios_dictionary:
                 return
-            gpu_dict = smbios_data.smbios_dictionary[self.model]["Stock GPUs"]
+            gpu_archs = smbios_data.smbios_dictionary[self.model]["Stock GPUs"]
 
         # Check if KDKless and KDK GPUs are present
         # We only want KDKless.kext if there are no KDK GPUs
         has_kdkless_gpu = False
         has_kdk_gpu = False
-        for gpu in gpu_dict:
-            if not self.constants.custom_model:
-                gpu = gpu.arch
-            if gpu in [
+        for arch in gpu_archs:
+            if arch in [
                 device_probe.Intel.Archs.Ivy_Bridge,
                 device_probe.Intel.Archs.Haswell,
                 device_probe.Intel.Archs.Broadwell,
@@ -518,7 +516,7 @@ class BuildGraphicsAudio:
                 has_kdkless_gpu = True
 
             # Non-Metal KDK
-            if gpu in [
+            if arch in [
                 device_probe.NVIDIA.Archs.Tesla,
                 device_probe.NVIDIA.Archs.Maxwell,
                 device_probe.NVIDIA.Archs.Pascal,
@@ -529,7 +527,7 @@ class BuildGraphicsAudio:
             ]:
                 has_kdk_gpu = True
 
-            if gpu in [
+            if arch in [
                 # Metal KDK (always)
                 device_probe.AMD.Archs.Legacy_GCN_7000,
                 device_probe.AMD.Archs.Legacy_GCN_8000,
@@ -537,7 +535,7 @@ class BuildGraphicsAudio:
             ]:
                 has_kdk_gpu = True
 
-            if gpu in [
+            if arch in [
                 # Metal KDK (pre-AVX2.0)
                 device_probe.AMD.Archs.Polaris,
                 device_probe.AMD.Archs.Polaris_Spoof,
@@ -560,10 +558,10 @@ class BuildGraphicsAudio:
         # Applicable for Polaris, Vega, Navi GPUs
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] > cpu_data.CPUGen.ivy_bridge.value:
             return
-        for gpu in gpu_dict:
+        for arch in gpu_archs:
             if not self.constants.custom_model:
-                gpu = gpu.arch
-            if gpu in [
+                arch = arch.arch
+            if arch in [
                 device_probe.AMD.Archs.Polaris,
                 device_probe.AMD.Archs.Polaris_Spoof,
                 device_probe.AMD.Archs.Vega,

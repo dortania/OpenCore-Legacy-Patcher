@@ -199,15 +199,19 @@ class CheckProperties:
         """
         Check if either host, or override model, has a 3802 GPU
         """
-        gpu_dict = [] if self.constants.custom_model else self.constants.computer.gpus
-        model = self.constants.custom_model if self.constants.custom_model else self.constants.computer.real_model
-        if gpu_dict == []:
-            gpu_dict = smbios_data.smbios_dictionary[model]["Stock GPUs"] if model in smbios_data.smbios_dictionary else []
 
-        for gpu in gpu_dict:
-            if not self.constants.custom_model:
-                gpu = gpu.arch
-            if gpu in [
+        gpu_archs = []
+        if self.constants.custom_model:
+            model = self.constants.custom_model
+        else:
+            model = self.constants.computer.real_model
+            gpu_archs = [gpu.arch for gpu in self.constants.computer.gpus]
+
+        if not gpu_archs:
+            gpu_archs = smbios_data.smbios_dictionary.get(model, {}).get("Stock GPUs", [])
+
+        for arch in gpu_archs:
+            if arch in [
                 device_probe.Intel.Archs.Ivy_Bridge,
                 device_probe.Intel.Archs.Haswell,
                 device_probe.NVIDIA.Archs.Kepler,
