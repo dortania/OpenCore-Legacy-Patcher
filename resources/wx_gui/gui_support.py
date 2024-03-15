@@ -205,7 +205,7 @@ class CheckProperties:
             gpu_dict = smbios_data.smbios_dictionary[model]["Stock GPUs"] if model in smbios_data.smbios_dictionary else []
 
         for gpu in gpu_dict:
-            if not self.constants.custom_model:
+            if not self.constants.custom_model and hasattr(gpu, 'arch'):
                 gpu = gpu.arch
             if gpu in [
                 device_probe.Intel.Archs.Ivy_Bridge,
