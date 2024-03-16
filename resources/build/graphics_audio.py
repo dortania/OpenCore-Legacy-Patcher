@@ -559,8 +559,6 @@ class BuildGraphicsAudio:
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] > cpu_data.CPUGen.ivy_bridge.value:
             return
         for arch in gpu_archs:
-            if not self.constants.custom_model:
-                arch = arch.arch
             if arch in [
                 device_probe.AMD.Archs.Polaris,
                 device_probe.AMD.Archs.Polaris_Spoof,
