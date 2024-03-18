@@ -1,6 +1,10 @@
 # OpenCore Legacy Patcher changelog
 
-## 1.5.0
+## 1.4.3
+- Update non-Metal Binaries for macOS Sonoma:
+  - Resolve TeraScale 2 screen recording kernel panic
+  - Resolve Dock location after changing screen resolution
+  - Resolve 14.4 loginwindow crashes
 - Patch SkipLogo on Macs that natively support Monterey or newer
   - Resolves missing Apple logo on boot screen
 - Increment Binaries:
