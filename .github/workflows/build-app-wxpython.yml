@@ -25,7 +25,7 @@ jobs:
       ANALYTICS_SITE: ${{ secrets.ANALYTICS_SITE }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Build Binary
         run: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}" --key "${{ env.ANALYTICS_KEY }}" --site "${{ env.ANALYTICS_SITE }}"
