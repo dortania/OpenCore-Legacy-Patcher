@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 1.5.0
+
 ## 1.4.3
 - Update non-Metal Binaries for macOS Sonoma:
   - Resolve TeraScale 2 screen recording kernel panic
