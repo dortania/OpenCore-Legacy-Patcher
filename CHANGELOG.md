@@ -7,6 +7,8 @@
     - Use relative imports for local libraries
   - Documentation:
     - Move images to `docs/images`
+  - Payloads:
+    - Remove redundant/unused files bundled in payloads.dmg
 
 ## 1.4.3
 - Update non-Metal Binaries for macOS Sonoma:
