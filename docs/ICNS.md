@@ -27,12 +27,12 @@ To generate custom OpenCore icons, you'll need the following:
   * ResetNVRAM — Reset NVRAM system action or tool (128x128).
   * Shell — Entry with UEFI Shell name for e.g. OpenShell (128x128).
   * Tool — Any other tool (128x128).
-  
+
 Note, for each image we recommend having one of double the size. This ensures that icons are scaled correctly since .icns support dedicated images depending on HiDPI or not.
 
 Once you have a custom image you want to use(for example, as a background), download the [latest release of OpenCorePkg](https://github.com/acidanthera/OpenCorePkg/releases) and enter the `Utilities/icnspack/` folder:
 
-![](../images/icnspack-folder.png)
+![](./images/icnspack-folder.png)
 
 Now `cd` to this folder in terminal and run the following:
 
@@ -42,7 +42,7 @@ Now `cd` to this folder in terminal and run the following:
 
 Once done, you'll see your custom icon generated in `icnspack`'s folder:
 
-![](../images/icnspack-done.png)
+![](./images/icnspack-done.png)
 
 # Custom Mac Boot Picker icons
 
@@ -59,15 +59,15 @@ To generate legacy icons, you'll need the following:
 
 Head to [developer.apple's More Downloads page](https://developer.apple.com/download/more/) and search for `Graphics Tools` that is supported by your OS(note for 10.6 and older, the app is hidden inside `Developer Tools`):
 
-![](../images/graphics-download.png)
+![](./images/graphics-download.png)
 
 Once downloaded, open the disk image and you'll find Icon Composer.app:
 
-![Graphics Open](../images/graphics-open.png)
+![Graphics Open](./images/graphics-open.png)
 
 Now run the app and simply drag the images to each section as so:
 
-![](../images/icon-SL.png)
+![](./images/icon-SL.png)
 
 Now save and export the new icns file.
 
@@ -79,7 +79,7 @@ To install, please ensure that Vault was disabled when you built OpenCore. If yo
 
 Now that you've verified that you can edit OpenCore safely, you'll need to mount the drive that OpenCore is stored on. To do this, download [MountEFI](https://github.com/corpnewt/MountEFI) and run it:
 
-![](../images/mountefi.png)
+![](./images/mountefi.png)
 
 Select the drive you installed OpenCore to and mount it.
 
@@ -90,7 +90,7 @@ Select the drive you installed OpenCore to and mount it.
 
 Head to `EFI/OC/Resources/Image/` on your drive and you'll see all the custom icons. For Background.icns, we need to ensure the file matches the theme OpenCore has set so we add the prefix `Modern` to it:
 
-![](../images/background-moved.png)
+![](./images/background-moved.png)
 
 Now reboot and you should see your updated icon(s)!
 
@@ -98,6 +98,6 @@ Now reboot and you should see your updated icon(s)!
 
 Updating the Mac Boot Picker icons is actually quite simple. On the root of your drive, simply drop the icon into the root of the drive with the name `.VolumeIcon.icns`
 
-![](../images/mac-icns-drive.png)
+![](./images/mac-icns-drive.png)
 
 Now reboot and you'll see the new icon!

@@ -40,7 +40,7 @@ However, if the 🚫 Symbol only appears after the boot process has already star
 
 ## Cannot boot macOS without the USB
 
-By default, the OpenCore Patcher won't install OpenCore onto the internal drive itself during installs. 
+By default, the OpenCore Patcher won't install OpenCore onto the internal drive itself during installs.
 
 After installing macOS, OpenCore Legacy Patcher should automatically prompt you to install OpenCore onto the internal drive. However, if it doesn't show the prompt, you'll need to either [manually transfer](https://dortania.github.io/OpenCore-Post-Install/universal/oc2hdd.html) OpenCore to the internal drive's EFI or Build and Install again and select your internal drive.
 
@@ -112,7 +112,7 @@ To work-around this, we recommend that users manually connect using the "Other" 
 
 ## No Graphics Acceleration
 
-In macOS, GPU drivers are often dropped from the OS with each major release of it. With macOS Big Sur, currently, all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and NVIDIA Kepler graphics processors. 
+In macOS, GPU drivers are often dropped from the OS with each major release of it. With macOS Big Sur, currently, all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and NVIDIA Kepler graphics processors.
 
 If you're using OCLP v0.4.4, you should have been prompted to install Root Volume patches after the first boot from installation of macOS. If you need to do this manually, you can do so within the patcher app. Once rebooted, acceleration will be re-enabled as well as brightness control for laptops.
 
@@ -126,14 +126,14 @@ Due to Apple dropping NVIDIA Kepler support in macOS Monterey, [MacBookPro11,3's
 
 If you're having trouble with DisplayPort output on Mac Pros, try enabling Minimal Spoofing in Settings -> SMBIOS Settings and rebuild/install OpenCore. This will trick macOS drivers into thinking you have a newer MacPro7,1 and resolve the issue.
 
-![](../images/OCLP-GUI-SMBIOS-Minimal.png)
+![](./images/OCLP-GUI-SMBIOS-Minimal.png)
 
 ## Volume Hash Mismatch Error in macOS Monterey
 
 A semi-common popup some users face is the "Volume Hash Mismatch" error:
 
 <p align="center">
-<img src="../images/Hash-Mismatch.png">
+<img src="./images/Hash-Mismatch.png">
 </p>
 
 What this error signifies is that the OS detects that the boot volume's hash does not match what the OS is expecting, this error is generally cosmetic and can be ignored. However if your system starts to crash spontaneously shortly after, you'll want to reinstall macOS fresh without importing any data at first.
@@ -150,7 +150,7 @@ Head into the GUI, go to Patcher Settings, and toggle the bits you need disabled
 
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
 | :--- | :--- | :--- |
-| ![](../images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](../images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](../images/OCLP-GUI-Settings-SIP-Disabled.png) |
+| ![](./images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](./images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](./images/OCLP-GUI-Settings-SIP-Disabled.png) |
 
 ## Intermediate issues with USB 1.1 and Bluetooth on MacPro3,1 - MacPro5,1
 
@@ -199,4 +199,4 @@ Applicable models include:
 | Mac Pro     | Mid 2010 and older   | MacPro3,1 - MacPro5,1         |                                                  |
 
 
-![](../images/usb11-chart.png)
+![](./images/usb11-chart.png)

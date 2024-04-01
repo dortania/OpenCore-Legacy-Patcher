@@ -1,4 +1,4 @@
-![](../images/ventura.png)
+![](./images/ventura.png)
 
 With the release of OpenCore Legacy Patcher v0.5.0 and newer, early support for macOS Ventura has been implemented for most Metal-capable Macs. This page will be used to inform users regarding current issues and will be updated as new patch sets are developed and added to our patcher.
 
@@ -24,7 +24,7 @@ Ventura's release dropped a large amount of Intel hardware, thus requiring the u
 
 ## Current status
 
-<img width="625" alt="" src="../images/OCLP-060-Initial-Support.png">
+<img width="625" alt="" src="./images/OCLP-060-Initial-Support.png">
 
 For older hardware, see below sections:
 
@@ -64,7 +64,7 @@ For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed i
 
 With OpenCore Legacy Patcher v0.6.0, basic support has been implemented via Root Volume patching. However due to this, users will need to use a USB hub for installation and post-OS updates when patches are cleaned:
 
-![](../images/usb11-chart.png)
+![](./images/usb11-chart.png)
 
 ::: warning The following systems rely on USB 1.1
 

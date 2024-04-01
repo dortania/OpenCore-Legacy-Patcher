@@ -8,7 +8,7 @@ If you haven't downloaded OpenCore Patcher yet, do so now:
 
 Next, run the `OpenCore-Patcher.app`:
 
-![](../images/OCLP-GUI-Main-Menu.png)
+![](./images/OCLP-GUI-Main-Menu.png)
 
 ::: warning
 OpenCore configurations are hardware specific.
@@ -19,7 +19,7 @@ Here we'll select Build and Install OpenCore and start building:
 
 | Start Building | Finished Building |
 | :--- | :--- |
-| ![](../images/OCLP-GUI-Build-Start.png) | ![OCLP GUI Build Finished](../images/OCLP-GUI-Build-Finished.png) |
+| ![](./images/OCLP-GUI-Build-Start.png) | ![OCLP GUI Build Finished](./images/OCLP-GUI-Build-Finished.png) |
 
 Once it finishes building, you'll want to select the Install OpenCore button:
 
@@ -28,6 +28,6 @@ Once it finishes building, you'll want to select the Install OpenCore button:
 
 | Select Drive | Select Partition |
 | :--- | :--- |
-| ![](../images/OCLP-GUI-EFI-Select-Disk.png) | ![](../images/OCLP-GUI-EFI-Select-Partition.png) |
+| ![](./images/OCLP-GUI-EFI-Select-Disk.png) | ![](./images/OCLP-GUI-EFI-Select-Partition.png) |
 
 # Once finished, head to [Booting OpenCore and macOS](./BOOT.md)

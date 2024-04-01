@@ -1,6 +1,12 @@
 # OpenCore Legacy Patcher changelog
 
 ## 1.5.0
+- Restructure project directories
+  - Python:
+    - Move logic into `opencore_legacy_patcher` directory
+    - Use relative imports for local libraries
+  - Documentation:
+    - Move images to `docs/images`
 
 ## 1.4.3
 - Update non-Metal Binaries for macOS Sonoma:
