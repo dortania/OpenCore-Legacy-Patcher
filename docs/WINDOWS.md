@@ -32,13 +32,13 @@ The following is required for installation:
 
 Open Disk Utility in macOS and format the USB Drive as ExFat with the Master Boot Record scheme:
 
-![](../images/windows-mbr-format.png)
+![](./images/windows-mbr-format.png)
 
 ### Formatting the Target Drive
 
 Next, select the drive you wish to install Windows in Disk Utility on and partition it as ExFat (If formatting the entire drive, ensure it's using the GUID Partition Table scheme):
 
-![](../images/windows-partition-1.png)
+![](./images/windows-partition-1.png)
 
 
 :::warning
@@ -55,7 +55,7 @@ Recommended size is 200MB and the partition format **must** be FAT32 for OpenCor
 * Note 2: Having different partitions for OpenCore is not required if the Windows boot files detected by the stock Bootpicker are removed. See "Removing the Windows option from the stock bootpicker" for further information.
 * Note 3: We recommend uninstalling OpenCore from the ESP/EFI Partition when you create this new OpenCore partition to avoid confusion when selecting OpenCore builds in the Mac's boot picker.
 
-![](../images/windows-partition-2.png)
+![](./images/windows-partition-2.png)
 
 ## Creating the Windows Installer
 
@@ -67,7 +67,7 @@ The latest Windows installation images can be downloaded from Microsoft using th
 
 Once the file is downloaded, mount the .iso image:
 
-![](../images/windows-iso.png)
+![](./images/windows-iso.png)
 
 Then open terminal and use the `rsync` command with the disk image set as the source and your USB drive set as the target. (Replace "CCCOMA_X64" with the mounted image's partition name, and replace "InstallWin10" with your USB Drive's name).
 
@@ -75,11 +75,11 @@ Then open terminal and use the `rsync` command with the disk image set as the so
 rsync -r -P /Volumes/CCCOMA_X64/ /Volumes/InstallWin10
 ```
 
-![](../images/rsync-progess.png)
+![](./images/rsync-progess.png)
 
 The `rsync` command will take some time, so get some coffee and sit back. Once finished, the root of the USB drive should look as follows:
 
-![](../images/windows-rsync-done.png)
+![](./images/windows-rsync-done.png)
 
 * Ensure that these folders and files are in the root of the USB drive, otherwise the USB will not boot.
 
@@ -113,31 +113,31 @@ Once booted into the Windows installer, proceed as you normally would until you 
 When you are prompted to select a drive, select your desired partition and delete it using "Delete". If you want to install Windows to an empty drive, erase every partition currently on the desired drive.
 After your drive/partition is erased, press "New" to create the Windows system partitions.
 
-![](../images/DISM-1.png)
+![](./images/DISM-1.png)
 
 You will be prompted to confirm the creation of the system partitions, press "OK".
 
-![](../images/DISM-2.png)
+![](./images/DISM-2.png)
 
 Once the partitions are created, select the main (largest) partition and press "Format". This will format the partition using the NFTS file system.
 
-![](../images/DISM-3.png)
+![](./images/DISM-3.png)
 
 After the installer formats the partition, open up the Command Prompt by pressing SHIFT + F10. Then run the `diskpart` command, and `list vol`. This will produce a list of volumes in your system, make sure to keep track of the drive letters of the main Windows partition (largest, NTFS), the EFI partition (100MB, FAT32), and the Windows installer (Usually Drive D). Run `exit` to close diskpart
 
-![](../images/DISM-4.png)
+![](./images/DISM-4.png)
 
 Now, get a list of available Windows editions by running `dism /Get-WimInfo /WimFile:D:\Sources\install.wim` (substituting D with the Installer Drive Letter). This guide will use Option 6 for Windows 10 Pro.
 
-![](../images/DISM-5.png)
+![](./images/DISM-5.png)
 
 You can now start the deployment process. Run `dism /Apply-Image /ImageFile:D:\Sources\install.wim /index:6 /ApplyDir:E:`, replacing "D" with the Installer Drive Letter, "6" with the Windows edition option, and "E" with the Windows Partition Drive Letter.
 
-![](../images/DISM-6.png)
+![](./images/DISM-6.png)
 
 Once `dism` finishes its thing, run `bcdboot E:\Windows`, substituting "E" for the drive letter of the main Windows partition to create the boot files.
 
-![](../images/DISM-7.png)
+![](./images/DISM-7.png)
 
 Windows is now installed. It should be recognized as "EFI Boot" or "Windows" with a Boot Camp icon in the OCLP Bootpicker.
 
@@ -155,11 +155,11 @@ Start up a command prompt window in the Windows Setup environment by running `cm
 
 Next, enter the EFI Folder by running `C:`, substituting "C" for the EFI Partition Drive Letter. Then run `cd EFI` to enter the EFI Partition. Then, run `rmdir Boot /S /Q` to remove the boot files that can be detected by the stock Bootpicker. The OCLP Picker will still be able to detect and boot Windows.
 
-![](../images/DISM-8.png)
+![](./images/DISM-8.png)
 
 You can verify that the `Boot` folder is removed by running the `dir` command:
 
-![](../images/DISM-9.png)
+![](./images/DISM-9.png)
 
 If, for whatever reason, you are not able to remove the boot files from the Windows setup, shut down your system, boot into macOS, mount your EFI partition with [MountEFI](https://github.com/corpnewt/MountEFI), and remove the `Boot` folder (it should have a recent file modification date, and contain `Bootx64.efi`).
 
@@ -176,11 +176,11 @@ Once Brigadier is downloaded, move it to your desktop for easy access.
 
 Open up a command prompt window as a standard user and run `cd desktop`.
 
-![](../images/BOOTCAMP-1.png)
+![](./images/BOOTCAMP-1.png)
 
 Then run `.\brigadier.exe --model=MODEL1,1`, replacing "MODEL1,1" with your machine's SMBIOS model.
 
-![](../images/BOOTCAMP-2.png)
+![](./images/BOOTCAMP-2.png)
 
 Once the Boot Camp software is downloaded, you can install it by executing `Setup.exe` or `\Drivers\Apple\BootCamp.msi` (`BootCamp64.msi` if present).
 
@@ -194,11 +194,11 @@ Once Brigadier is downloaded, move it to your desktop for easy access.
 
 Open up a command prompt window as a standard user and run `cd desktop`.
 
-![](../images/BOOTCAMP-1.png)
+![](./images/BOOTCAMP-1.png)
 
 Then run `.\brigadier.exe --model=MacPro7,1`. This will download the latest BootCamp 6 package.
 
-![](../images/BOOTCAMP-2.png)
+![](./images/BOOTCAMP-2.png)
 
 Once the Boot Camp software is downloaded, you can install Boot Camp 6 by executing `\Drivers\Apple\BootCamp.msi` in an administrator command prompt window.
 
@@ -210,7 +210,7 @@ If you built OpenCore with Moderate or higher SMBIOS spoofing, you'll get an err
 
 | Setup.exe | BootCamp.msi |
 | :--- | :--- |
-| ![](../images/windows-bootcamp-error.png) | ![](../images/windows-bootcamp-msi.png) |
+| ![](./images/windows-bootcamp-error.png) | ![](./images/windows-bootcamp-msi.png) |
 
 ::: details BootCamp.msi quirks
 

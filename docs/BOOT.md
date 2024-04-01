@@ -6,7 +6,7 @@ Reboot the machine while holding `Option` to select the EFI Boot entry with the 
 
 * This will be the Mac Boot Picker
 
-![](../images/efi-boot.png)
+![](./images/efi-boot.png)
 
 ::: details Note for Mac Pros/Xserves/iMacs with unflashed GPUs
 
@@ -27,7 +27,7 @@ Now you'll want to get a list of drive identifiers. To do so, run the following 
 diskutil list
 ```
 The command should produce a list of drives installed in your system:
-![](../images/Unflashed-Boot-1.png)
+![](./images/Unflashed-Boot-1.png)
 
 Keep track of the drive with the OCLP install. You will need the drive identifer for later.
 
@@ -37,7 +37,7 @@ Run the following command (Replace X with the drive number):
 ```sh
 diskutil mount diskXs1
 ```
-![](../images/Unflashed-Boot-2.png)
+![](./images/Unflashed-Boot-2.png)
 If everything is correct, the EFI partion should be mounted.
 
 Now you'll want to use the `bless` command to set the default boot device:
@@ -45,7 +45,7 @@ Now you'll want to use the `bless` command to set the default boot device:
 bless --mount /Volumes/EFI --setBoot --file /Volumes/EFI/System/Library/CoreServices/boot.efi
 ```
 Once the command is run, it should produce no output.
-![](../images/Unflashed-Boot-3.png)
+![](./images/Unflashed-Boot-3.png)
 
 If the command produces an output, ensure that you've typed it in correctly.
 
@@ -56,7 +56,7 @@ Now that you've loaded OpenCore, "select Install macOS":
 
 * This will be the OpenCore Picker
 
-![](../images/oc-boot.png)
+![](./images/oc-boot.png)
 
 You will soon reach the installer screen! If you enabled verbose mode when building OCLP, a lot of text will run across the screen. From there, it's just like any normal macOS install. For an example of how the boot process looks, see the following video:
 
@@ -64,7 +64,7 @@ You will soon reach the installer screen! If you enabled verbose mode when build
 
 If your Mac is looping back into the beginning of the setup after the first reboot, turn it off, start it again and hold `Option`. This time, select the option with a grey hard disk icon, it can say "macOS Installer" or the name you gave the disk during the installer process. Keep repeating this step after every reboot if necessary.
 
-![](../images/oclp-stuck-firstreboot.png)
+![](./images/oclp-stuck-firstreboot.png)
 
 
 ::: warning

@@ -6,4 +6,4 @@ OpenCore Legacy Patcher itself is actually quite a "dumb" program. It essentiall
 
 To understand a bit more of how OpenCore is able to revive older Macs in such a native-like way, we need to go over *how* OpenCore works with your Mac:
 
-![](../images/oc-explained.png)
+![](./images/oc-explained.png)

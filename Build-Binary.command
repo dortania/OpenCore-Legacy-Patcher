@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-
-# Generate stand alone application for OpenCore-Patcher
-# Copyright (C) 2022-2023 - Mykola Grymalyuk
+"""
+Build-Binary.command: Generate stand alone application for OpenCore-Patcher
+"""
 
 import os
 import sys
@@ -12,7 +12,7 @@ import subprocess
 
 from pathlib import Path
 
-from resources import constants
+from opencore_legacy_patcher import constants
 
 
 class CreateBinary:
@@ -229,7 +229,6 @@ class CreateBinary:
             "Config",
             "Drivers",
             "Icon",
-            "InstallPackage",
             "Kexts",
             "OpenCore",
             "Tools",
@@ -237,10 +236,7 @@ class CreateBinary:
         ]
 
         whitelist_files = [
-            "entitlements.plist",
-            "launcher.sh",
-            "OC-Patcher-TUI.icns",
-            "OC-Patcher.icns",
+
         ]
 
 

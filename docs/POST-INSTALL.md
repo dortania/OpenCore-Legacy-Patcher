@@ -20,7 +20,7 @@ And voila! No more USB drive required.
 
 To do this, run the OpenCore Patcher and head to Patcher Settings, then uncheck "Show OpenCore Bootpicker" on the Build tab:
 
-![](../images/OCLP-GUI-Settings-ShowPicker.png)
+![](./images/OCLP-GUI-Settings-ShowPicker.png)
 
 Once you've toggled it off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, and then you can release the "ESC" key when you see the cursor arrow at the top left.
 
@@ -34,7 +34,7 @@ Going forward with 0.6.6, SIP settings can be accessed from the Security tab sho
 
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
 | :--- | :--- | :--- |
-| ![](../images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](../images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](../images/OCLP-GUI-Settings-SIP-Disabled.png) |
+| ![](./images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](./images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](./images/OCLP-GUI-Settings-SIP-Disabled.png) |
 
 :::warning
 
@@ -44,9 +44,9 @@ If you're unsure whether you should enable SIP, leave it as-is. Systems where yo
 
 ## Applying Post Install Volume Patches
 
-:::warning 
+:::warning
 
-If you need to use Migration Assistant to bring over data to your new macOS install, it is **highly recommended** to avoid restoring from inside Setup Assistant and waiting to install root patches until after the transfer is complete. If root patches were automatically installed, you can use the options available in the OCLP app to remove them. 
+If you need to use Migration Assistant to bring over data to your new macOS install, it is **highly recommended** to avoid restoring from inside Setup Assistant and waiting to install root patches until after the transfer is complete. If root patches were automatically installed, you can use the options available in the OCLP app to remove them.
 
 Using Migration Assistant while patches are installed can lead to an unbootable system, requiring a reinstall of macOS.
 
@@ -60,7 +60,7 @@ Users can also see whether applicable patches have been installed, date and vers
 
 | Automatic install prompt | Status |
 | :--- | :--- |
-| ![](../images/OCLP-GUI-root-patch-update.png) | ![](../images/OCLP-GUI-Root-Patch-Status.png)  |
+| ![](./images/OCLP-GUI-root-patch-update.png) | ![](./images/OCLP-GUI-Root-Patch-Status.png)  |
 
 
 
@@ -72,7 +72,7 @@ There is also an option to remove root patches, which may be required in some si
 
 | Listing Patches | Patching Finished |
 | :--- | :--- |
-| ![](../images/OCLP-GUI-Root-Patch.png) | ![](../images/OCLP-GUI-Root-Patch-Finished.png) |
+| ![](./images/OCLP-GUI-Root-Patch.png) | ![](./images/OCLP-GUI-Root-Patch-Finished.png) |
 
 :::warning
 

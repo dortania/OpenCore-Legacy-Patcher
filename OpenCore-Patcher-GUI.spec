@@ -13,7 +13,7 @@ from PyInstaller.building.build_main import Analysis
 
 sys.path.append(os.path.abspath(os.getcwd()))
 
-from resources import constants
+from opencore_legacy_patcher import constants
 
 block_cipher = None
 
@@ -70,7 +70,7 @@ coll = COLLECT(exe,
 
 app = BUNDLE(coll,
              name='OpenCore-Patcher.app',
-             icon="payloads/OC-Patcher.icns",
+             icon="payloads/Icon/AppIcons/OC-Patcher.icns",
              bundle_identifier="com.dortania.opencore-legacy-patcher",
              info_plist={
                 "CFBundleName": "OpenCore Legacy Patcher",
