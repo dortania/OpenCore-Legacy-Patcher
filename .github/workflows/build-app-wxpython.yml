@@ -38,7 +38,7 @@ jobs:
       #     p12-password: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
 
       - name: Codesign Binary
-        run: 'codesign -s "${{ env.MAC_CODESIGN_IDENTITY }}" -v --force --deep --timestamp --entitlements ./payloads/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
+        run: 'codesign -s "${{ env.MAC_CODESIGN_IDENTITY }}" -v --force --deep --timestamp --entitlements ./ci_tooling/entitlements/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
 
       - name: Package Binary
         run: cd dist; ditto -c -k --sequesterRsrc --keepParent OpenCore-Patcher.app ../OpenCore-Patcher-wxPython.app.zip
@@ -47,7 +47,7 @@ jobs:
         run: xcrun notarytool submit OpenCore-Patcher-wxPython.app.zip --apple-id "${{ env.MAC_NOTARIZATION_USERNAME }}" --password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --team-id "${{ env.MAC_NOTARIZATION_TEAM_ID }}"
 
       - name: Generate support package
-        run: /usr/local/bin/packagesbuild ./payloads/InstallPackage/AutoPkg-Assets-Setup.pkgproj
+        run: /usr/local/bin/packagesbuild ./ci_tooling/autopkg/AutoPkg-Assets-Setup.pkgproj
 
       - name: Prepare App for Upload
         run: mv ./OpenCore-Patcher-wxPython.app.zip ./OpenCore-Patcher-GUI.app.zip
