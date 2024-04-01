@@ -743,19 +743,19 @@ class Constants:
 
     @property
     def icon_path_external(self):
-        return self.payload_path / Path("Icon/External/.VolumeIcon.icns")
+        return self.payload_path / Path("Icon/DriveIcons/External/.VolumeIcon.icns")
 
     @property
     def icon_path_internal(self):
-        return self.payload_path / Path("Icon/Internal/.VolumeIcon.icns")
+        return self.payload_path / Path("Icon/DriveIcons/Internal/.VolumeIcon.icns")
 
     @property
     def icon_path_sd(self):
-        return self.payload_path / Path("Icon/SD-Card/.VolumeIcon.icns")
+        return self.payload_path / Path("Icon/DriveIcons/SD-Card/.VolumeIcon.icns")
 
     @property
     def icon_path_ssd(self):
-        return self.payload_path / Path("Icon/SSD/.VolumeIcon.icns")
+        return self.payload_path / Path("Icon/DriveIcons/SSD/.VolumeIcon.icns")
 
     @property
     def icon_path_macos_generic(self):
