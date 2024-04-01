@@ -15,7 +15,7 @@ from . import support
 
 from .. import constants
 
-from ..utilities import (
+from ..support import (
     utilities,
     generate_smbios
 )

@@ -7,10 +7,11 @@ import subprocess
 
 from pathlib import Path
 
+from . import network_handler
+
 from .. import constants
 
 from ..sys_patch import sys_patch_helpers
-from ..utilities import network_handler
 from ..efi_builder import build
 
 from ..datasets import (

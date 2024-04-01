@@ -16,7 +16,7 @@ import atexit
 from typing import Union
 from pathlib import Path
 
-from ..utilities import utilities
+from . import utilities
 
 SESSION = requests.Session()
 

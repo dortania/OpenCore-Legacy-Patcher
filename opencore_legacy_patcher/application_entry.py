@@ -18,7 +18,7 @@ from .detections import (
     device_probe,
     os_probe
 )
-from .utilities import (
+from .support import (
     utilities,
     defaults,
     arguments,

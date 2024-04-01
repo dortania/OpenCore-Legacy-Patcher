@@ -15,16 +15,17 @@ import webbrowser
 
 from pathlib import Path
 
+from . import sys_patch_detect
+
 from .. import constants
 
 from ..datasets import css_data
-from ..sys_patch import sys_patch_detect
 
 from ..wx_gui import (
     gui_entry,
     gui_support
 )
-from ..utilities import (
+from ..support import (
     utilities,
     updates,
     global_settings,

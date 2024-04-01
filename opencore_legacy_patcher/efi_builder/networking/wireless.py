@@ -9,7 +9,7 @@ from .. import support
 from ... import constants
 
 from ...datasets import smbios_data
-from ...utilities import utilities
+from ...support import utilities
 from ...detections import device_probe
 
 

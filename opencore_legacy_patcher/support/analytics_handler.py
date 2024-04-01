@@ -10,7 +10,7 @@ from pathlib import Path
 
 from .. import constants
 
-from ..utilities import (
+from . import (
     network_handler,
     global_settings
 )

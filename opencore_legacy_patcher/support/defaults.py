@@ -8,7 +8,7 @@ from .. import constants
 
 from ..detections import device_probe
 
-from ..utilities import (
+from . import (
     utilities,
     generate_smbios,
     global_settings

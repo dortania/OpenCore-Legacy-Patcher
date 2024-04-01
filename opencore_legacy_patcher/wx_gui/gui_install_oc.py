@@ -10,7 +10,7 @@ import traceback
 from .. import constants
 
 from ..datasets import os_data
-from ..utilities import install
+from ..support import install
 
 from ..wx_gui import (
     gui_main_menu,

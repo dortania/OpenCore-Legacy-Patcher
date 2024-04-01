@@ -10,9 +10,9 @@ import logging
 from typing import Optional, Union
 from packaging import version
 
-from .. import constants
+from . import network_handler
 
-from ..utilities import network_handler
+from .. import constants
 
 
 REPO_LATEST_RELEASE_URL: str = "https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest"

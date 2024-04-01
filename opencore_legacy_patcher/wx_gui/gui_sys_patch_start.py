@@ -16,7 +16,7 @@ from pathlib import Path
 from .. import constants
 
 from ..datasets import os_data
-from ..utilities import kdk_handler
+from ..support import kdk_handler
 
 from ..sys_patch import (
     sys_patch,

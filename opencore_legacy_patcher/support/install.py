@@ -9,10 +9,11 @@ import applescript
 
 from pathlib import Path
 
+from . import utilities
+
 from .. import constants
 
 from ..datasets import os_data
-from ..utilities import utilities
 
 
 class tui_disk_installation:

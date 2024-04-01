@@ -15,7 +15,7 @@ from ..detections import (
     amfi_detect,
     device_probe
 )
-from ..utilities import (
+from ..support import (
     kdk_handler,
     network_handler,
     utilities

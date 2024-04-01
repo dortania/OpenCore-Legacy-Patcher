@@ -12,7 +12,7 @@ import threading
 from pathlib import Path
 
 from .. import constants
-from ..utilities import kdk_handler, utilities
+from ..support import kdk_handler, utilities
 from ..wx_gui import gui_support, gui_download
 
 

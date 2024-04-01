@@ -13,7 +13,7 @@ from pathlib import Path
 
 from ..datasets import os_data
 
-from ..utilities import (
+from . import (
     network_handler,
     utilities
 )

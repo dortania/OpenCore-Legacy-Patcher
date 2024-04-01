@@ -15,7 +15,7 @@ from .. import constants
 
 from ..datasets import os_data
 
-from ..utilities import (
+from ..support import (
     bplist,
     generate_smbios,
     utilities

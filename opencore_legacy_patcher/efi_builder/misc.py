@@ -12,7 +12,7 @@ from . import support
 
 from .. import constants
 
-from ..utilities import generate_smbios
+from ..support import generate_smbios
 from ..detections import device_probe
 
 from ..datasets import (

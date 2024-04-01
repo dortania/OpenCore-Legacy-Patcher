@@ -12,8 +12,9 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import Any, ClassVar, Optional, Type, Union
 
-from ..utilities import utilities
-from ..detections import ioreg
+from . import ioreg
+
+from ..support import utilities
 
 from ..datasets import (
     pci_data,

@@ -9,7 +9,7 @@ from .. import constants
 
 from ..wx_gui import gui_support
 
-from ..utilities import (
+from ..support import (
     network_handler,
     utilities
 )

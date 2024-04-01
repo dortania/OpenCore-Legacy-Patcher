@@ -44,10 +44,19 @@ from pathlib import Path
 from datetime import datetime
 
 from .. import constants
-from ..utilities import utilities, kdk_handler
-from ..sys_patch import sys_patch_detect, sys_patch_auto, sys_patch_helpers, sys_patch_generate
 
 from ..datasets import os_data
+
+from ..support import (
+    utilities,
+    kdk_handler
+)
+from . import (
+    sys_patch_detect,
+    sys_patch_auto,
+    sys_patch_helpers,
+    sys_patch_generate
+)
 
 
 class PatchSysVolume:

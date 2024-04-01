@@ -23,7 +23,7 @@ from ..wx_gui import (
     gui_download,
     gui_macos_installer_flash
 )
-from ..utilities import (
+from ..support import (
     macos_installer_handler,
     utilities,
     network_handler,

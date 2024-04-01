@@ -16,7 +16,7 @@ from datetime import datetime
 
 from .. import constants
 
-from ..utilities import (
+from . import (
     analytics_handler,
     global_settings
 )

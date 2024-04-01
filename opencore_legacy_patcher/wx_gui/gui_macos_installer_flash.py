@@ -21,7 +21,7 @@ from ..wx_gui import (
     gui_build,
     gui_support
 )
-from ..utilities import (
+from ..support import (
     macos_installer_handler,
     utilities,
     network_handler,

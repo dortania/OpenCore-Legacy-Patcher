@@ -20,7 +20,7 @@ from ..wx_gui import (
     gui_support,
     gui_update
 )
-from ..utilities import (
+from ..support import (
     global_settings,
     defaults,
     generate_smbios,

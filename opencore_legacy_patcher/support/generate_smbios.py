@@ -4,7 +4,7 @@ generate_smbios.py: SMBIOS generation for OpenCore Legacy Patcher
 
 import logging
 
-from ..utilities import utilities
+from . import utilities
 
 from ..datasets import (
     smbios_data,

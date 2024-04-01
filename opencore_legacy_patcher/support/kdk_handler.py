@@ -17,7 +17,7 @@ from .. import constants
 
 from ..datasets import os_data
 
-from ..utilities import (
+from . import (
     utilities,
     network_handler
 )

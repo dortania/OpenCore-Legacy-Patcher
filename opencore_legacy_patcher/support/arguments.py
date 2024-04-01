@@ -24,7 +24,7 @@ from ..sys_patch import (
     sys_patch,
     sys_patch_auto
 )
-from ..utilities import (
+from . import (
     utilities,
     defaults,
     validation

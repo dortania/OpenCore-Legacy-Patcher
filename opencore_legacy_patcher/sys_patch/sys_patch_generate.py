@@ -7,7 +7,7 @@ import logging
 from .. import constants
 
 from ..datasets import sys_patch_dict
-from ..utilities import utilities
+from ..support import utilities
 from ..detections import device_probe
 
 

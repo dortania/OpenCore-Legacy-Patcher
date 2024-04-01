@@ -4,7 +4,7 @@ amfi_detect.py: Determine AppleMobileFileIntegrity's OS configuration
 
 import enum
 
-from ..utilities import utilities
+from ..support import utilities
 from ..datasets import amfi_data
 
 

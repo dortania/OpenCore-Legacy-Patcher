@@ -17,7 +17,7 @@ from pathlib import Path
 
 from .. import constants
 
-from ..utilities import (
+from ..support import (
     global_settings,
     updates
 )
