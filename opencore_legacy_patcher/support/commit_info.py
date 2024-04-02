@@ -19,7 +19,7 @@ class ParseCommitInfo:
         self.plist_path = self._convert_binary_path_to_plist_path()
 
 
-    def _convert_binary_path_to_plist_path(self) -> str or None:
+    def _convert_binary_path_to_plist_path(self) -> str:
         """
         Resolve Info.plist path from binary path
         """

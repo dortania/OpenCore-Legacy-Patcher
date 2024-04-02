@@ -30,7 +30,7 @@ class GlobalEnviromentSettings:
         self._fix_file_permission()
 
 
-    def read_property(self, property_name: str) -> str or None:
+    def read_property(self, property_name: str) -> str:
         """
         Reads a property from the global settings file
         """
