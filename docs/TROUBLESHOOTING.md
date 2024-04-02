@@ -71,7 +71,7 @@ Now we're going to clean the /Library/Extensions folder from offending kexts whi
 Run the following and **make sure to type it carefully**
 
 ```sh
-cd "/Volumes/Macintosh HD/Library/Extensions" && ls | grep -v "HighPoint*\|SoftRAID*" | xargs rm -rf
+cd "/Volumes/Macintosh HD - Data/Library/Extensions" && ls | grep -v "HighPoint*\|SoftRAID*" | xargs rm -rf
 ```
 
 Then restart and now your system should be restored to the unpatched snapshot and should be able to boot again.
