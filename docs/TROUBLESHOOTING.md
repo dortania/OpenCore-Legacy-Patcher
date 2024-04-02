@@ -70,6 +70,10 @@ Now we're going to clean the /Library/Extensions folder from offending kexts whi
 
 Run the following and **make sure to type it carefully**
 
+::: warning
+If you have **FileVault 2 enabled**, you will need to mount the Data volume first. This can be done in Disk Utility by locating your macOS volume name, selecting its Data volume, and selecting the Mount option in the toolbar.
+:::
+
 ```sh
 cd "/Volumes/Macintosh HD - Data/Library/Extensions" && ls | grep -v "HighPoint*\|SoftRAID*" | xargs rm -rf
 ```
