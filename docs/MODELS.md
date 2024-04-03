@@ -58,7 +58,7 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
 | Model Name | Identifier | Tagged Issues |
 | :--- | :--- | :--- |
 | MacBook Pro (15-inch, Early 2008)<br>MacBook Pro (17-inch, Early 2008) | `MacBookPro4,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)|
-| MacBook Pro (15-inch, Late 2008) | `MacBookPro5,1` | ^^ |
+| MacBook Pro (15-inch, Late 2008)<br>MacBook Pro (15-inch, Early 2009) | `MacBookPro5,1` | ^^ |
 | MacBook Pro (17-inch, Early 2009)<br>MacBook Pro (17-inch, Mid 2009) | `MacBookPro5,2` | ^^ |
 | MacBook Pro (15-inch, Mid 2009) | `MacBookPro5,3`<br>`MacBookPro5,4` | ^^ |
 | MacBook Pro (13-inch, Mid 2009) | `MacBookPro5,5` | ^^ |
