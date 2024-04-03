@@ -511,15 +511,16 @@ class PatchSysVolume:
             for key in oclp_plist_data:
                 if isinstance(oclp_plist_data[key], (bool, int)):
                     continue
-                if "Install" not in oclp_plist_data[key]:
-                    continue
-                for location in oclp_plist_data[key]["Install"]:
-                    if not location.endswith("Extensions"):
+                for install_type in ["Install", "Install Non-Root"]:
+                    if install_type not in oclp_plist_data[key]:
                         continue
-                    for file in oclp_plist_data[key]["Install"][location]:
-                        if not file.endswith(".kext"):
+                    for location in oclp_plist_data[key][install_type]:
+                        if not location.endswith("Extensions"):
                             continue
-                        self._remove_file("/Library/Extensions", file)
+                        for file in oclp_plist_data[key][install_type][location]:
+                            if not file.endswith(".kext"):
+                                continue
+                            self._remove_file("/Library/Extensions", file)
 
         # Handle situations where users migrated from older OSes with a lot of garbage in /L*/E*
         # ex. Nvidia Web Drivers, NetUSB, dosdude1's patches, etc.
