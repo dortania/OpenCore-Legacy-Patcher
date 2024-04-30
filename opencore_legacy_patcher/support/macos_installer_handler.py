@@ -139,7 +139,12 @@ class InstallerCreation():
             logging.info(f"Failed to copy installer to {ia_tmp}")
             return False
 
+        # Verify code signature before executing
         createinstallmedia_path = str(Path(installer_path) / Path("Contents/Resources/createinstallmedia"))
+        if subprocess.run(["/usr/bin/codesign", "-v", "-R=anchor apple", createinstallmedia_path]).returncode != 0:
+            logging.info(f"Installer has broken code signature")
+            return False
+
         plist_path = str(Path(installer_path) / Path("Contents/Info.plist"))
         if Path(plist_path).exists():
             plist = plistlib.load(Path(plist_path).open("rb"))
