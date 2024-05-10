@@ -12,6 +12,8 @@ import logging
 
 from pathlib import Path
 
+from . import subprocess_wrapper
+
 from .. import constants
 
 
@@ -55,8 +57,7 @@ class RoutePayloadDiskImage:
                 atexit.register(self._unmount_active_dmgs, unmount_all_active=False)
             else:
                 logging.info("Failed to mount payloads.dmg")
-                logging.info(f"Output: {output.stdout.decode()}")
-                logging.info(f"Return Code: {output.returncode}")
+                subprocess_wrapper.log(output)
 
 
     def _unmount_active_dmgs(self, unmount_all_active: bool = True) -> None:

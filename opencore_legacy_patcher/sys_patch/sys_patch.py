@@ -49,7 +49,8 @@ from ..datasets import os_data
 
 from ..support import (
     utilities,
-    kdk_handler
+    kdk_handler,
+    subprocess_wrapper
 )
 from . import (
     sys_patch_detect,
@@ -126,7 +127,7 @@ class PatchSysVolume:
             else:
                 if self.root_supports_snapshot is True:
                     logging.info("- Mounting APFS Snapshot as writable")
-                    result = utilities.elevated(["/sbin/mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                    result = subprocess_wrapper.run_as_root(["/sbin/mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                     if result.returncode == 0:
                         logging.info(f"- Mounted APFS Snapshot as writable at: {self.mount_location}")
                         if Path(self.mount_extensions).exists():
@@ -136,8 +137,7 @@ class PatchSysVolume:
                             logging.info("- Root Volume appears to have unmounted unexpectedly")
                     else:
                         logging.info("- Unable to mount APFS Snapshot as writable")
-                        logging.info("Reason for mount failure:")
-                        logging.info(result.stdout.decode().strip())
+                        subprocess_wrapper.log(result)
         return False
 
 
@@ -194,7 +194,7 @@ class PatchSysVolume:
             if kdk_obj.kdk_already_installed is False:
                 # We shouldn't get here, but just in case
                 logging.warning(f"KDK was not installed, but should have been: {kdk_obj.error_msg}")
-                raise Exception("KDK was not installed, but should have been: {kdk_obj.error_msg}")
+                raise Exception(f"KDK was not installed, but should have been: {kdk_obj.error_msg}")
 
         kdk_path = Path(kdk_obj.kdk_installed_path) if kdk_obj.kdk_installed_path != "" else None
 
@@ -222,10 +222,10 @@ class PatchSysVolume:
         if save_hid_cs is True and cs_path.exists():
             logging.info("- Backing up IOHIDEventDriver CodeSignature")
             # Note it's a folder, not a file
-            utilities.elevated(["/bin/cp", "-r", cs_path, f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root(["/bin/cp", "-r", cs_path, f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         logging.info(f"- Merging KDK with Root Volume: {kdk_path.name}")
-        utilities.elevated(
+        subprocess_wrapper.run_as_root(
             # Only merge '/System/Library/Extensions'
             # 'Kernels' and 'KernelSupport' is wasted space for root patching (we don't care above dev kernels)
             ["/usr/bin/rsync", "-r", "-i", "-a", f"{kdk_path}/System/Library/Extensions/", f"{self.mount_location}/System/Library/Extensions"],
@@ -243,9 +243,9 @@ class PatchSysVolume:
             logging.info("- Restoring IOHIDEventDriver CodeSignature")
             if not cs_path.exists():
                 logging.info("  - CodeSignature folder missing, creating")
-                utilities.elevated(["/bin/mkdir", "-p", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            utilities.elevated(["/bin/cp", "-r", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            utilities.elevated(["/bin/rm", "-rf", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                subprocess_wrapper.run_as_root(["/bin/mkdir", "-p", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root(["/bin/cp", "-r", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root(["/bin/rm", "-rf", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _unpatch_root_vol(self):
@@ -257,11 +257,10 @@ class PatchSysVolume:
             logging.info("- OS version does not support snapshotting, skipping revert")
 
         logging.info("- Reverting to last signed APFS snapshot")
-        result = utilities.elevated(["/usr/sbin/bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess_wrapper.run_as_root(["/usr/sbin/bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info("- Unable to revert root volume patches")
-            logging.info("Reason for unpatch Failure:")
-            logging.info(result.stdout.decode())
+            subprocess_wrapper.log(result)
             logging.info("- Failed to revert snapshot via Apple's 'bless' command")
         else:
             self._clean_skylight_plugins()
@@ -363,7 +362,7 @@ class PatchSysVolume:
         else:
             args = ["/usr/sbin/kextcache", "-i", f"{self.mount_location}/"]
 
-        result = utilities.elevated(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess_wrapper.run_as_root(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         # kextcache notes:
         # - kextcache always returns 0, even if it fails
@@ -374,19 +373,17 @@ class PatchSysVolume:
         # - will return -10 if the volume is missing (ie. unmounted by another process)
         if result.returncode != 0 or (self.constants.detected_os < os_data.os_data.catalina and "KernelCache ID" not in result.stdout.decode()):
             logging.info("- Unable to build new kernel cache")
-            logging.info(f"\nReason for Patch Failure ({result.returncode}):")
-            logging.info(result.stdout.decode())
+            subprocess_wrapper.log(result)
             logging.info("")
             logging.info("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
             return False
 
         if self.skip_root_kmutil_requirement is True:
             # Force rebuild the Auxiliary KC
-            result = utilities.elevated(["/usr/bin/killall", "syspolicyd", "kernelmanagerd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = subprocess_wrapper.run_as_root(["/usr/bin/killall", "syspolicyd", "kernelmanagerd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("- Unable to remove kernel extension policy files")
-                logging.info(f"\nReason for Patch Failure ({result.returncode}):")
-                logging.info(result.stdout.decode())
+                subprocess_wrapper.log(result)
                 logging.info("")
                 logging.info("\nPlease reboot the machine to avoid potential issues rerunning the patcher")
                 return False
@@ -411,7 +408,7 @@ class PatchSysVolume:
 
         if self.root_supports_snapshot is True:
             logging.info("- Creating new APFS snapshot")
-            bless = utilities.elevated(
+            bless = subprocess_wrapper.run_as_root(
                 [
                     "/usr/sbin/bless",
                     "--folder", f"{self.mount_location}/System/Library/CoreServices",
@@ -420,8 +417,7 @@ class PatchSysVolume:
             )
             if bless.returncode != 0:
                 logging.info("- Unable to create new snapshot")
-                logging.info("Reason for snapshot failure:")
-                logging.info(bless.stdout.decode())
+                subprocess_wrapper.log(bless)
                 if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
                     logging.info("- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly")
                 return False
@@ -435,7 +431,7 @@ class PatchSysVolume:
         """
         if self.root_mount_path:
             logging.info("- Unmounting Root Volume (Don't worry if this fails)")
-            utilities.elevated(["/usr/sbin/diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE).stdout.decode().strip().encode()
+            subprocess_wrapper.run_as_root(["/usr/sbin/diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE)
         else:
             logging.info("- Skipping Root Volume unmount")
 
@@ -449,7 +445,7 @@ class PatchSysVolume:
         if self.constants.detected_os > os_data.os_data.catalina:
             return
         logging.info("- Rebuilding dyld shared cache")
-        utilities.process_status(utilities.elevated(["/usr/bin/update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
+        subprocess_wrapper.run_as_root_and_verify(["/usr/bin/update_dyld_shared_cache", "-root", f"{self.mount_location}/"])
 
 
     def _update_preboot_kernel_cache(self) -> None:
@@ -460,7 +456,7 @@ class PatchSysVolume:
 
         if self.constants.detected_os == os_data.os_data.catalina:
             logging.info("- Rebuilding preboot kernel cache")
-            utilities.process_status(utilities.elevated(["/usr/sbin/kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            subprocess_wrapper.run_as_root_and_verify(["/usr/sbin/kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _clean_skylight_plugins(self) -> None:
@@ -470,11 +466,11 @@ class PatchSysVolume:
 
         if (Path(self.mount_application_support) / Path("SkyLightPlugins/")).exists():
             logging.info("- Found SkylightPlugins folder, removing old plugins")
-            utilities.process_status(utilities.elevated(["/bin/rm", "-Rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["/bin/mkdir", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-Rf", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", f"{self.mount_application_support}/SkyLightPlugins"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         else:
             logging.info("- Creating SkylightPlugins folder")
-            utilities.process_status(utilities.elevated(["/bin/mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", "-p", f"{self.mount_application_support}/SkyLightPlugins/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _delete_nonmetal_enforcement(self) -> None:
@@ -487,7 +483,7 @@ class PatchSysVolume:
             result = subprocess.run(["/usr/bin/defaults", "read", "/Library/Preferences/com.apple.CoreDisplay", arg], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL).stdout.decode("utf-8").strip()
             if result in ["0", "false", "1", "true"]:
                 logging.info(f"- Removing non-Metal Enforcement Preference: {arg}")
-                utilities.elevated(["/usr/bin/defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
+                subprocess_wrapper.run_as_root(["/usr/bin/defaults", "delete", "/Library/Preferences/com.apple.CoreDisplay", arg])
 
 
     def _clean_auxiliary_kc(self) -> None:
@@ -530,15 +526,15 @@ class PatchSysVolume:
 
         relocation_path = "/Library/Relocated Extensions"
         if not Path(relocation_path).exists():
-            utilities.elevated(["/bin/mkdir", relocation_path])
+            subprocess_wrapper.run_as_root(["/bin/mkdir", relocation_path])
 
         for file in Path("/Library/Extensions").glob("*.kext"):
             try:
                 if datetime.fromtimestamp(file.stat().st_mtime) < datetime(2021, 10, 1):
                     logging.info(f"  - Relocating {file.name} kext to {relocation_path}")
                     if Path(relocation_path) / Path(file.name).exists():
-                        utilities.elevated(["/bin/rm", "-Rf", relocation_path / Path(file.name)])
-                    utilities.elevated(["/bin/mv", file, relocation_path])
+                        subprocess_wrapper.run_as_root(["/bin/rm", "-Rf", relocation_path / Path(file.name)])
+                    subprocess_wrapper.run_as_root(["/bin/mv", file, relocation_path])
             except:
                 # Some users have the most cursed /L*/E* folders
                 # ex. Symlinks pointing to symlinks pointing to dead files
@@ -559,8 +555,8 @@ class PatchSysVolume:
         if sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path):
             logging.info("- Writing patchset information to Root Volume")
             if Path(destination_path_file).exists():
-                utilities.process_status(utilities.elevated(["/bin/rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["/bin/cp", f"{self.constants.payload_path}/{file_name}", destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                subprocess_wrapper.run_as_root_and_verify(["/bin/rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root_and_verify(["/bin/cp", f"{self.constants.payload_path}/{file_name}", destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _add_auxkc_support(self, install_file: str, source_folder_path: str, install_patch_directory: str, destination_folder_path: str) -> str:
@@ -727,10 +723,10 @@ class PatchSysVolume:
                     # Instead, call elevated funtion if string's boolean is True
                     if required_patches[patch]["Processes"][process] is True:
                         logging.info(f"- Running Process as Root:\n{process}")
-                        utilities.process_status(utilities.elevated(process.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                        subprocess_wrapper.run_as_root_and_verify(process.split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                     else:
                         logging.info(f"- Running Process:\n{process}")
-                        utilities.process_status(subprocess.run(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True))
+                        subprocess_wrapper.run_and_verify(process, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         if any(x in required_patches for x in ["AMD Legacy GCN", "AMD Legacy Polaris", "AMD Legacy Vega"]):
             sys_patch_helpers.SysPatchHelpers(self.constants).disable_window_server_caching()
         if "Metal 3802 Common Extended" in required_patches:
@@ -800,25 +796,25 @@ class PatchSysVolume:
         if file_name_str.endswith(".framework"):
             # merge with rsync
             logging.info(f"  - Installing: {file_name}")
-            utilities.elevated(["/usr/bin/rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)
+            subprocess_wrapper.run_as_root(["/usr/bin/rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)
             self._fix_permissions(destination_folder + "/" + file_name)
         elif Path(source_folder + "/" + file_name_str).is_dir():
             # Applicable for .kext, .app, .plugin, .bundle, all of which are directories
             if Path(destination_folder + "/" + file_name).exists():
                 logging.info(f"  - Found existing {file_name}, overwriting...")
-                utilities.process_status(utilities.elevated(["/bin/rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             else:
                 logging.info(f"  - Installing: {file_name}")
-            utilities.process_status(utilities.elevated(["/bin/cp", "-R", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            subprocess_wrapper.run_as_root_and_verify(["/bin/cp", "-R", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             self._fix_permissions(destination_folder + "/" + file_name)
         else:
             # Assume it's an individual file, replace as normal
             if Path(destination_folder + "/" + file_name).exists():
                 logging.info(f"  - Found existing {file_name}, overwriting...")
-                utilities.process_status(utilities.elevated(["/bin/rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                subprocess_wrapper.run_as_root_and_verify(["/bin/rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             else:
                 logging.info(f"  - Installing: {file_name}")
-            utilities.process_status(utilities.elevated(["/bin/cp", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            subprocess_wrapper.run_as_root_and_verify(["/bin/cp", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             self._fix_permissions(destination_folder + "/" + file_name)
 
 
@@ -834,9 +830,9 @@ class PatchSysVolume:
         if Path(destination_folder + "/" + file_name).exists():
             logging.info(f"  - Removing: {file_name}")
             if Path(destination_folder + "/" + file_name).is_dir():
-                utilities.process_status(utilities.elevated(["/bin/rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             else:
-                utilities.process_status(utilities.elevated(["/bin/rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                subprocess_wrapper.run_as_root_and_verify(["/bin/rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _fix_permissions(self, destination_file: Path) -> None:
@@ -850,8 +846,8 @@ class PatchSysVolume:
             # Strip recursive arguments
             chmod_args.pop(1)
             chown_args.pop(1)
-        utilities.process_status(utilities.elevated(chmod_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-        utilities.process_status(utilities.elevated(chown_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        subprocess_wrapper.run_as_root_and_verify(chmod_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess_wrapper.run_as_root_and_verify(chown_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _check_files(self) -> bool:
@@ -882,8 +878,7 @@ class PatchSysVolume:
 
             if output.returncode != 0:
                 logging.info("- Failed to mount Universal-Binaries.dmg")
-                logging.info(f"Output: {output.stdout.decode()}")
-                logging.info(f"Return Code: {output.returncode}")
+                subprocess_wrapper.log(output)
                 return False
 
             logging.info("- Mounted Universal-Binaries.dmg")
@@ -923,13 +918,11 @@ class PatchSysVolume:
                                 return True
 
                             logging.info("- Failed to merge DortaniaInternal resources")
-                            logging.info(f"Output: {result.stdout.decode()}")
-                            logging.info(f"Return Code: {result.returncode}")
+                            subprocess_wrapper.log(result)
                             return False
 
                         logging.info("- Failed to mount DortaniaInternal resources")
-                        logging.info(f"Output: {result.stdout.decode()}")
-                        logging.info(f"Return Code: {result.returncode}")
+                        subprocess_wrapper.log(result)
 
                         if "Authentication error" not in result.stdout.decode():
                             try:

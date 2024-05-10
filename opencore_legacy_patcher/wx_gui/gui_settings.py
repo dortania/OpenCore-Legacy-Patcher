@@ -24,7 +24,8 @@ from ..support import (
     global_settings,
     defaults,
     generate_smbios,
-    network_handler
+    network_handler,
+    subprocess_wrapper
 )
 from ..datasets import (
     model_array,
@@ -1324,7 +1325,7 @@ Hardware Information:
         raise Exception("Test Exception")
 
     def on_mount_root_vol(self, event: wx.Event) -> None:
-        if os.geteuid() != 0:
+        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
             wx.MessageDialog(self.parent, "Please relaunch as Root to mount the Root Volume", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
         else:
             #Don't need to pass model as we're bypassing all logic
@@ -1334,7 +1335,7 @@ Hardware Information:
                 wx.MessageDialog(self.parent, "Root Volume Mount Failed, check terminal output", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
 
     def on_bless_root_vol(self, event: wx.Event) -> None:
-        if os.geteuid() != 0:
+        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
             wx.MessageDialog(self.parent, "Please relaunch as Root to save changes", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
         else:
             #Don't need to pass model as we're bypassing all logic

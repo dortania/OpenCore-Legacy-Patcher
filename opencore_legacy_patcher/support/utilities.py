@@ -41,13 +41,6 @@ def string_to_hex(input_string):
     return input_string
 
 
-def process_status(process_result):
-    if process_result.returncode != 0:
-        logging.info(f"Process failed with exit code {process_result.returncode}")
-        logging.info(f"Please report the issue on the Discord server")
-        raise Exception(f"Process result: \n{process_result.stdout.decode()}")
-
-
 def human_fmt(num):
     for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
         if abs(num) < 1000.0:
@@ -552,14 +545,6 @@ def check_boot_mode():
         return sys_plist[0]["_items"][0]["boot_mode"]
     except (KeyError, TypeError, plistlib.InvalidFileException):
         return None
-
-def elevated(*args, **kwargs) -> subprocess.CompletedProcess:
-    # When running through our GUI, we run as root, however we do not get uid 0
-    # Best to assume CLI is running as root
-    if os.getuid() == 0 or check_cli_args() is not None:
-        return subprocess.run(*args, **kwargs)
-    else:
-        return subprocess.run(["/usr/bin/sudo"] + [args[0][0]] + args[0][1:], **kwargs)
 
 
 def fetch_staged_update(variant: str = "Update") -> tuple[str, str]:

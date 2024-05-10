@@ -18,7 +18,8 @@ from ..datasets import os_data
 from ..support import (
     bplist,
     generate_smbios,
-    utilities
+    utilities,
+    subprocess_wrapper
 )
 
 
@@ -138,9 +139,9 @@ class SysPatchHelpers:
 
         logging.info("Disabling WindowServer Caching")
         # Invoke via 'bash -c' to resolve pathing
-        utilities.elevated(["bash", "-c", "rm -rf /private/var/folders/*/*/*/WindowServer/com.apple.WindowServer"])
+        subprocess_wrapper.run_as_root(["/bin/bash", "-c", "rm -rf /private/var/folders/*/*/*/WindowServer/com.apple.WindowServer"])
         # Disable writing to WindowServer folder
-        utilities.elevated(["bash", "-c", "chflags uchg /private/var/folders/*/*/*/WindowServer"])
+        subprocess_wrapper.run_as_root(["/bin/bash", "-c", "chflags uchg /private/var/folders/*/*/*/WindowServer"])
         # Reference:
         #   To reverse write lock:
         #   'chflags nouchg /private/var/folders/*/*/*/WindowServer'
@@ -219,9 +220,10 @@ class SysPatchHelpers:
             return
 
         logging.info("Installing Kernel Collection syncing utility")
-        result = utilities.elevated([self.constants.rsrrepair_userspace_path, "--install"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess_wrapper.run_as_root([self.constants.rsrrepair_userspace_path, "--install"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
-            logging.info(f"- Failed to install RSRRepair: {result.stdout.decode()}")
+            logging.info("- Failed to install RSRRepair")
+            subprocess_wrapper.log(result)
 
 
     def patch_gpu_compiler_libraries(self, mount_point: Union[str, Path]):
@@ -282,6 +284,6 @@ class SysPatchHelpers:
 
             src_dir = f"{LIBRARY_DIR}/{file.name}"
             if not Path(f"{DEST_DIR}/lib").exists():
-                utilities.process_status(utilities.elevated(["/bin/cp", "-cR", f"{src_dir}/lib", f"{DEST_DIR}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                subprocess_wrapper.run_as_root_and_verify(["/bin/cp", "-cR", f"{src_dir}/lib", f"{DEST_DIR}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
             break

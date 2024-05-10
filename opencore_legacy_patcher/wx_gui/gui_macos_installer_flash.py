@@ -26,6 +26,7 @@ from ..support import (
     utilities,
     network_handler,
     kdk_handler,
+    subprocess_wrapper
 )
 
 
@@ -525,7 +526,7 @@ class macOSInstallerFlashFrame(wx.Frame):
             result = subprocess.run(["/usr/bin/hdiutil", "attach", kdk_dmg_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Failed to mount KDK")
-                logging.info(result.stdout.decode("utf-8"))
+                subprocess_wrapper.log(result)
                 return
 
             logging.info("Copying KDK")
@@ -535,7 +536,7 @@ class macOSInstallerFlashFrame(wx.Frame):
             result = subprocess.run(["/usr/bin/hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Failed to unmount KDK")
-                logging.info(result.stdout.decode("utf-8"))
+                subprocess_wrapper.log(result)
                 return
 
         logging.info("Removing KDK Disk Image")

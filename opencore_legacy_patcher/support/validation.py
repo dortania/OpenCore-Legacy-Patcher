@@ -13,6 +13,7 @@ from .. import constants
 
 from ..sys_patch import sys_patch_helpers
 from ..efi_builder import build
+from ..support import subprocess_wrapper
 
 from ..datasets import (
     example_data,
@@ -83,7 +84,7 @@ class PatcherValidation:
             result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Error on build!")
-                logging.info(result.stdout.decode())
+                subprocess_wrapper.log(result)
                 raise Exception(f"Validation failed for predefined model: {model}")
             else:
                 logging.info(f"Validation succeeded for predefined model: {model}")
@@ -103,7 +104,7 @@ class PatcherValidation:
             result = subprocess.run([self.constants.ocvalidate_path, f"{self.constants.opencore_release_folder}/EFI/OC/config.plist"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Error on build!")
-                logging.info(result.stdout.decode())
+                subprocess_wrapper.log(result)
                 raise Exception(f"Validation failed for predefined model: {self.constants.computer.real_model}")
             else:
                 logging.info(f"Validation succeeded for predefined model: {self.constants.computer.real_model}")
@@ -178,8 +179,7 @@ class PatcherValidation:
 
             if output.returncode != 0:
                 logging.info("Failed to unmount Universal-Binaries.dmg")
-                logging.info(f"Output: {output.stdout.decode()}")
-                logging.info(f"Return Code: {output.returncode}")
+                subprocess_wrapper.log(output)
 
                 raise Exception("Failed to unmount Universal-Binaries.dmg")
 
@@ -196,8 +196,7 @@ class PatcherValidation:
 
         if output.returncode != 0:
             logging.info("Failed to mount Universal-Binaries.dmg")
-            logging.info(f"Output: {output.stdout.decode()}")
-            logging.info(f"Return Code: {output.returncode}")
+            subprocess_wrapper.log(output)
 
             raise Exception("Failed to mount Universal-Binaries.dmg")
 
@@ -226,8 +225,7 @@ class PatcherValidation:
 
         if output.returncode != 0:
             logging.info("Failed to unmount Universal-Binaries.dmg")
-            logging.info(f"Output: {output.stdout.decode()}")
-            logging.info(f"Return Code: {output.returncode}")
+            subprocess_wrapper.log(output)
 
             raise Exception("Failed to unmount Universal-Binaries.dmg")
 

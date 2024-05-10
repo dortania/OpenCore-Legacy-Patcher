@@ -9,7 +9,7 @@ import applescript
 
 from pathlib import Path
 
-from . import utilities
+from . import utilities, subprocess_wrapper
 
 from .. import constants
 
@@ -92,7 +92,7 @@ class tui_disk_installation:
     def install_opencore(self, full_disk_identifier: str):
         # TODO: Apple Script fails in Yosemite(?) and older
         logging.info(f"Mounting partition: {full_disk_identifier}")
-        if self.constants.detected_os >= os_data.os_data.el_capitan and not self.constants.recovery_status:
+        if self.constants.detected_os >= os_data.os_data.el_capitan and not self.constants.recovery_status and subprocess_wrapper.supports_privileged_helper() is False:
             try:
                 applescript.AppleScript(f'''do shell script "diskutil mount {full_disk_identifier}" with prompt "OpenCore Legacy Patcher needs administrator privileges to mount this volume." with administrator privileges without altering line endings''').run()
             except applescript.ScriptError as e:
@@ -105,10 +105,10 @@ class tui_disk_installation:
                     logging.info("Please disable Safe Mode and try again.")
                     return
         else:
-            result = subprocess.run(["/usr/sbin/diskutil", "mount", full_disk_identifier], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result = subprocess_wrapper.run_as_root(["/usr/sbin/diskutil", "mount", full_disk_identifier], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             if result.returncode != 0:
                 logging.info("Mount failed")
-                logging.info(result.stderr.decode())
+                subprocess_wrapper.log(result)
                 return
 
         partition_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", full_disk_identifier], stdout=subprocess.PIPE).stdout.decode().strip().encode())

@@ -11,6 +11,8 @@ import subprocess
 
 from pathlib import Path
 
+from . import subprocess_wrapper
+
 from .. import constants
 
 from ..wx_gui import gui_entry
@@ -172,7 +174,7 @@ class arguments:
             if "GPUCompanionBundles" not in kext_plist:
                 continue
             logging.info(f"  - Removing {kext.name}")
-            subprocess.run(["/bin/rm", "-rf", kext])
+            subprocess_wrapper.run_as_root(["/bin/rm", "-rf", kext])
 
 
     def _build_handler(self) -> None:

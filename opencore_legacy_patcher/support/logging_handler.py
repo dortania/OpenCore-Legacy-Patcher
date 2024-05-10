@@ -18,7 +18,8 @@ from .. import constants
 
 from . import (
     analytics_handler,
-    global_settings
+    global_settings,
+    subprocess_wrapper
 )
 
 
@@ -130,7 +131,7 @@ class InitializeLoggingSupport:
         This in turn breaks normal OCLP execution to write to log file
         """
 
-        if os.geteuid() != 0:
+        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
             return
 
         paths = [
@@ -139,15 +140,10 @@ class InitializeLoggingSupport:
         ]
 
         for path in paths:
-            result = subprocess.run(["/bin/chmod", "777", path], capture_output=True)
+            result = subprocess_wrapper.run_as_root(["/bin/chmod", "777", path], capture_output=True)
             if result.returncode != 0:
                 logging.error(f"Failed to fix log file permissions")
-                if result.stdout:
-                    logging.error("STDOUT:")
-                    logging.error(result.stdout.decode("utf-8"))
-                if result.stderr:
-                    logging.error("STDERR:")
-                    logging.error(result.stderr.decode("utf-8"))
+                subprocess_wrapper.log(result)
 
 
     def _initialize_logging_configuration(self, log_to_file: bool = True) -> None:

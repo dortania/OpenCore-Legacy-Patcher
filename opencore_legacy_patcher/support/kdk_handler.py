@@ -18,8 +18,8 @@ from .. import constants
 from ..datasets import os_data
 
 from . import (
-    utilities,
-    network_handler
+    network_handler,
+    subprocess_wrapper
 )
 
 KDK_INSTALL_PATH: str  = "/Library/Developer/KDKs"
@@ -464,7 +464,7 @@ class KernelDebugKitObject:
         if self.passive is True:
             return
 
-        if os.getuid() != 0:
+        if os.getuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
             logging.warning("Cannot remove KDK, not running as root")
             return
 
@@ -474,10 +474,10 @@ class KernelDebugKitObject:
 
         rm_args = ["/bin/rm", "-rf" if Path(kdk_path).is_dir() else "-f", kdk_path]
 
-        result = utilities.elevated(rm_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess_wrapper.run_as_root(rm_args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.warning(f"Failed to remove KDK: {kdk_path}")
-            logging.warning(f"{result.stdout.decode('utf-8')}")
+            subprocess_wrapper.log(result)
             return
 
         logging.info(f"Successfully removed KDK: {kdk_path}")
@@ -545,7 +545,7 @@ class KernelDebugKitObject:
         result = subprocess.run(["/usr/bin/hdiutil", "verify", self.constants.kdk_download_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode != 0:
             logging.info("Error: Kernel Debug Kit checksum verification failed!")
-            logging.info(f"Output: {result.stderr.decode('utf-8')}")
+            subprocess_wrapper.log(result)
             msg = "Kernel Debug Kit checksum verification failed, please try again.\n\nIf this continues to fail, ensure you're downloading on a stable network connection (ie. Ethernet)"
             logging.info(f"{msg}")
 
@@ -579,7 +579,7 @@ class KernelDebugKitUtilities:
             bool: True if successful, False if not
         """
 
-        if os.getuid() != 0:
+        if os.getuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
             logging.warning("Cannot install KDK, not running as root")
             return False
 
@@ -588,12 +588,10 @@ class KernelDebugKitUtilities:
 
         # TODO: Check whether enough disk space is available
 
-        result = utilities.elevated(["/usr/sbin/installer", "-pkg", kdk_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess_wrapper.run_as_root(["/usr/sbin/installer", "-pkg", kdk_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info("Failed to install KDK:")
-            logging.info(result.stdout.decode('utf-8'))
-            if result.stderr:
-                logging.info(result.stderr.decode('utf-8'))
+            subprocess_wrapper.log(result)
             return False
         return True
 
@@ -609,20 +607,19 @@ class KernelDebugKitUtilities:
             bool: True if successful, False if not
         """
 
-        if os.getuid() != 0:
+        if os.getuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
             logging.warning("Cannot install KDK, not running as root")
             return False
 
         logging.info(f"Extracting downloaded KDK disk image")
         with tempfile.TemporaryDirectory() as mount_point:
-            result = subprocess.run(["/usr/bin/hdiutil", "attach", kdk_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            result = subprocess_wrapper.run_as_root(["/usr/bin/hdiutil", "attach", kdk_path, "-mountpoint", mount_point, "-nobrowse"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             if result.returncode != 0:
                 logging.info("Failed to mount KDK:")
-                logging.info(result.stdout.decode('utf-8'))
+                subprocess_wrapper.log(result)
                 return False
 
             kdk_pkg_path = Path(f"{mount_point}/KernelDebugKit.pkg")
-
             if not kdk_pkg_path.exists():
                 logging.warning("Failed to find KDK package in DMG, likely corrupted!!!")
                 self._unmount_disk_image(mount_point)
@@ -672,12 +669,12 @@ class KernelDebugKitUtilities:
             logging.warning("Malformed KDK Info.plist provided, cannot create backup")
             return
 
-        if os.getuid() != 0:
+        if os.getuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
             logging.warning("Cannot create KDK backup, not running as root")
             return
 
         if not Path(KDK_INSTALL_PATH).exists():
-            subprocess.run(["/bin/mkdir", "-p", KDK_INSTALL_PATH], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root(["/bin/mkdir", "-p", KDK_INSTALL_PATH], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         kdk_dst_name = f"KDK_{kdk_info_dict['version']}_{kdk_info_dict['build']}.pkg"
         kdk_dst_path = Path(f"{KDK_INSTALL_PATH}/{kdk_dst_name}")
@@ -687,7 +684,7 @@ class KernelDebugKitUtilities:
             logging.info("Backup already exists, skipping")
             return
 
-        result = utilities.elevated(["/bin/cp", "-R", kdk_path, kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess_wrapper.run_as_root(["/bin/cp", "-R", kdk_path, kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info("Failed to create KDK backup:")
-            logging.info(result.stdout.decode('utf-8'))
+            subprocess_wrapper.log(result)

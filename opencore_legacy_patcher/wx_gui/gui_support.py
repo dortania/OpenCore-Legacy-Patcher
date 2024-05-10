@@ -15,10 +15,12 @@ import packaging.version
 
 from pathlib import Path
 
+from . import gui_about
+
 from .. import constants
 
-from ..wx_gui import gui_about
 from ..detections import device_probe
+from ..support import subprocess_wrapper
 
 from ..datasets import (
     model_array,
@@ -75,7 +77,7 @@ class GenerateMenubar:
         self.frame.Bind(wx.EVT_MENU, lambda event: RelaunchApplicationAsRoot(self.frame, self.constants).relaunch(None), relaunchItem)
         self.frame.Bind(wx.EVT_MENU, lambda event: subprocess.run(["/usr/bin/open", "--reveal", self.constants.log_filepath]), revealLogItem)
 
-        if os.geteuid() == 0:
+        if os.geteuid() == 0 or subprocess_wrapper.supports_privileged_helper() is True:
             relaunchItem.Enable(False)
 
 

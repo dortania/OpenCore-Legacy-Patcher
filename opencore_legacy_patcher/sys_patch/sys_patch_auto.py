@@ -29,7 +29,8 @@ from ..support import (
     utilities,
     updates,
     global_settings,
-    network_handler
+    network_handler,
+    subprocess_wrapper
 )
 
 
@@ -363,16 +364,16 @@ Please check the Github page for more information about this release."""
                     logging.info(f"  - {name} checksums match, skipping")
                     continue
                 logging.info(f"  - Existing service found, removing")
-                utilities.process_status(utilities.elevated(["/bin/rm", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                subprocess_wrapper.run_as_root_and_verify(["/bin/rm", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             # Create parent directories
             if not Path(services[service]).parent.exists():
                 logging.info(f"  - Creating {Path(services[service]).parent} directory")
-                utilities.process_status(utilities.elevated(["/bin/mkdir", "-p", Path(services[service]).parent], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["/bin/cp", service, services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+                subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", "-p", Path(services[service]).parent], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root_and_verify(["/bin/cp", service, services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
             # Set the permissions on the service
-            utilities.process_status(utilities.elevated(["/bin/chmod", "644", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
-            utilities.process_status(utilities.elevated(["/usr/sbin/chown", "root:wheel", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            subprocess_wrapper.run_as_root_and_verify(["/bin/chmod", "644", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root_and_verify(["/usr/sbin/chown", "root:wheel", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         if self.constants.launcher_binary.startswith("/Library/Application Support/Dortania/"):
             logging.info("- Skipping Patcher Install, already installed")
@@ -384,24 +385,24 @@ Please check the Github page for more information about this release."""
 
         if not Path("Library/Application Support/Dortania").exists():
             logging.info("- Creating /Library/Application Support/Dortania/")
-            utilities.process_status(utilities.elevated(["/bin/mkdir", "-p", "/Library/Application Support/Dortania"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", "-p", "/Library/Application Support/Dortania"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         logging.info("- Copying OpenCore Patcher to /Library/Application Support/Dortania/")
         if Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
             logging.info("- Deleting existing OpenCore-Patcher")
-            utilities.process_status(utilities.elevated(["/bin/rm", "-R", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-R", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         # Strip everything after OpenCore-Patcher.app
         path = str(self.constants.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
         logging.info(f"- Copying {path} to /Library/Application Support/Dortania/")
-        utilities.process_status(utilities.elevated(["/usr/bin/ditto", path, "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+        subprocess_wrapper.run_as_root_and_verify(["/usr/bin/ditto", path, "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         if not Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
             # Sometimes the binary the user launches may have a suffix (ie. OpenCore-Patcher 3.app)
             # We'll want to rename it to OpenCore-Patcher.app
             path = path.split("/")[-1]
             logging.info(f"- Renaming {path} to OpenCore-Patcher.app")
-            utilities.process_status(utilities.elevated(["/bin/mv", f"/Library/Application Support/Dortania/{path}", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            subprocess_wrapper.run_as_root_and_verify(["/bin/mv", f"/Library/Application Support/Dortania/{path}", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         subprocess.run(["/usr/bin/xattr", "-cr", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -410,7 +411,7 @@ Please check the Github page for more information about this release."""
         # If there's already an alias or exiting app, skip
         if not Path("/Applications/OpenCore-Patcher.app").exists():
             logging.info("- Making app alias")
-            utilities.process_status(utilities.elevated(["/bin/ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            subprocess_wrapper.run_as_root_and_verify(["/bin/ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _create_rsr_monitor_daemon(self) -> bool:

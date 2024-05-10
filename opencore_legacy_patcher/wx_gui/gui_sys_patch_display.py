@@ -13,6 +13,7 @@ from pathlib import Path
 from .. import constants
 
 from ..sys_patch import sys_patch_detect
+from ..support   import subprocess_wrapper
 
 from ..wx_gui import (
     gui_main_menu,
@@ -242,7 +243,7 @@ class SysPatchDisplayFrame(wx.Frame):
             revert_button.Disable()
 
         # Relaunch as root if not root
-        if os.geteuid() != 0:
+        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
             start_button.Bind(wx.EVT_BUTTON, gui_support.RelaunchApplicationAsRoot(frame, self.constants).relaunch)
             revert_button.Bind(wx.EVT_BUTTON, gui_support.RelaunchApplicationAsRoot(frame, self.constants).relaunch)
 

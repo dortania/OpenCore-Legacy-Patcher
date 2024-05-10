@@ -10,7 +10,8 @@ ie. during automated patching
 import os
 import logging
 import plistlib
-import subprocess
+
+from . import subprocess_wrapper
 
 from pathlib import Path
 
@@ -115,12 +116,11 @@ class GlobalEnviromentSettings:
         This in turn breaks normal OCLP execution to write to settings file
         """
 
-        if os.geteuid() != 0:
+        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
             return
 
         # Set file permission to allow any user to write to log file
-        result = subprocess.run(["/bin/chmod", "777", self.global_settings_plist], capture_output=True)
+        result = subprocess_wrapper.run_as_root(["/bin/chmod", "777", self.global_settings_plist], capture_output=True)
         if result.returncode != 0:
             logging.warning("Failed to fix settings file permissions:")
-            if result.stderr:
-                logging.warning(result.stderr.decode("utf-8"))
+            subprocess_wrapper.log(result)

@@ -20,7 +20,8 @@ from ..wx_gui import (
 )
 from ..support import (
     network_handler,
-    updates
+    updates,
+    subprocess_wrapper
 )
 
 
@@ -200,7 +201,8 @@ class UpdateFrame(wx.Frame):
                 ["/usr/bin/ditto", "-xk", str(self.constants.payload_path / "OpenCore-Patcher-GUI.app.zip"), str(self.constants.payload_path)], capture_output=True
             )
             if result.returncode != 0:
-                logging.error(f"Failed to extract update. Error: {result.stderr.decode('utf-8')}")
+                logging.error(f"Failed to extract update.")
+                subprocess_wrapper.log(result)
                 wx.CallAfter(self.progress_bar_animation.stop_pulse)
                 wx.CallAfter(self.progress_bar.SetValue, 0)
                 wx.CallAfter(wx.MessageBox, f"Failed to extract update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
@@ -278,7 +280,8 @@ EOF
                 logging.info("User cancelled update")
                 wx.CallAfter(wx.MessageBox, "User cancelled update", "Update Cancelled", wx.OK | wx.ICON_INFORMATION)
             else:
-                logging.critical(f"Failed to install update. Error: {result.stderr.decode('utf-8')}")
+                logging.critical("Failed to install update.")
+                subprocess_wrapper.log(result)
                 wx.CallAfter(wx.MessageBox, f"Failed to install update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
             wx.CallAfter(sys.exit, 1)
 
