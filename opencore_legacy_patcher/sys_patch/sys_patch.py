@@ -126,7 +126,7 @@ class PatchSysVolume:
             else:
                 if self.root_supports_snapshot is True:
                     logging.info("- Mounting APFS Snapshot as writable")
-                    result = utilities.elevated(["mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                    result = utilities.elevated(["/sbin/mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                     if result.returncode == 0:
                         logging.info(f"- Mounted APFS Snapshot as writable at: {self.mount_location}")
                         if Path(self.mount_extensions).exists():
@@ -228,7 +228,7 @@ class PatchSysVolume:
         utilities.elevated(
             # Only merge '/System/Library/Extensions'
             # 'Kernels' and 'KernelSupport' is wasted space for root patching (we don't care above dev kernels)
-            ["rsync", "-r", "-i", "-a", f"{kdk_path}/System/Library/Extensions/", f"{self.mount_location}/System/Library/Extensions"],
+            ["/usr/bin/rsync", "-r", "-i", "-a", f"{kdk_path}/System/Library/Extensions/", f"{self.mount_location}/System/Library/Extensions"],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT
         )
         # During reversing, we found that kmutil uses this path to determine whether the KDK was successfully merged
@@ -257,7 +257,7 @@ class PatchSysVolume:
             logging.info("- OS version does not support snapshotting, skipping revert")
 
         logging.info("- Reverting to last signed APFS snapshot")
-        result = utilities.elevated(["bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = utilities.elevated(["/usr/sbin/bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info("- Unable to revert root volume patches")
             logging.info("Reason for unpatch Failure:")
@@ -313,7 +313,7 @@ class PatchSysVolume:
         logging.info("- Rebuilding Kernel Cache (This may take some time)")
         if self.constants.detected_os > os_data.os_data.catalina:
             # Base Arguments
-            args = ["kmutil", "install"]
+            args = ["/usr/bin/kmutil", "install"]
 
             if self.skip_root_kmutil_requirement is True:
                 # Only rebuild the Auxiliary Kernel Collection
@@ -361,7 +361,7 @@ class PatchSysVolume:
                 args.append("--no-authentication")
                 args.append("--no-authorization")
         else:
-            args = ["kextcache", "-i", f"{self.mount_location}/"]
+            args = ["/usr/sbin/kextcache", "-i", f"{self.mount_location}/"]
 
         result = utilities.elevated(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
@@ -413,7 +413,7 @@ class PatchSysVolume:
             logging.info("- Creating new APFS snapshot")
             bless = utilities.elevated(
                 [
-                    "bless",
+                    "/usr/sbin/bless",
                     "--folder", f"{self.mount_location}/System/Library/CoreServices",
                     "--bootefi", "--create-snapshot"
                 ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
@@ -449,7 +449,7 @@ class PatchSysVolume:
         if self.constants.detected_os > os_data.os_data.catalina:
             return
         logging.info("- Rebuilding dyld shared cache")
-        utilities.process_status(utilities.elevated(["update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
+        utilities.process_status(utilities.elevated(["/usr/bin/update_dyld_shared_cache", "-root", f"{self.mount_location}/"]))
 
 
     def _update_preboot_kernel_cache(self) -> None:
@@ -460,7 +460,7 @@ class PatchSysVolume:
 
         if self.constants.detected_os == os_data.os_data.catalina:
             logging.info("- Rebuilding preboot kernel cache")
-            utilities.process_status(utilities.elevated(["kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
+            utilities.process_status(utilities.elevated(["/usr/sbin/kcditto"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
 
     def _clean_skylight_plugins(self) -> None:
@@ -800,7 +800,7 @@ class PatchSysVolume:
         if file_name_str.endswith(".framework"):
             # merge with rsync
             logging.info(f"  - Installing: {file_name}")
-            utilities.elevated(["rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)
+            utilities.elevated(["/usr/bin/rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)
             self._fix_permissions(destination_folder + "/" + file_name)
         elif Path(source_folder + "/" + file_name_str).is_dir():
             # Applicable for .kext, .app, .plugin, .bundle, all of which are directories
@@ -844,8 +844,8 @@ class PatchSysVolume:
         Fix file permissions for a given file or directory
         """
 
-        chmod_args = ["chmod", "-Rf", "755", destination_file]
-        chown_args = ["chown", "-Rf", "root:wheel", destination_file]
+        chmod_args = ["/bin/chmod",      "-Rf", "755", destination_file]
+        chown_args = ["/usr/sbin/chown", "-Rf", "root:wheel", destination_file]
         if not Path(destination_file).is_dir():
             # Strip recursive arguments
             chmod_args.pop(1)
