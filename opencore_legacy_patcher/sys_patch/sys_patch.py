@@ -56,7 +56,8 @@ from . import (
     sys_patch_detect,
     sys_patch_auto,
     sys_patch_helpers,
-    sys_patch_generate
+    sys_patch_generate,
+    sys_patch_mount
 )
 
 
@@ -65,7 +66,6 @@ class PatchSysVolume:
         self.model = model
         self.constants: constants.Constants = global_constants
         self.computer = self.constants.computer
-        self.root_mount_path = None
         self.root_supports_snapshot = utilities.check_if_root_is_apfs_snapshot()
         self.constants.root_patcher_succeeded = False # Reset Variable each time we start
         self.constants.needs_to_open_preferences = False
@@ -81,6 +81,9 @@ class PatchSysVolume:
         self._init_pathing(custom_root_mount_path=None, custom_data_mount_path=None)
 
         self.skip_root_kmutil_requirement = self.hardware_details["Settings: Supports Auxiliary Cache"]
+
+        self.mount_obj = sys_patch_mount.SysPatchMount(self.constants.detected_os, self.computer.rosetta_active)
+
 
     def _init_pathing(self, custom_root_mount_path: Path = None, custom_data_mount_path: Path = None) -> None:
         """
@@ -107,41 +110,23 @@ class PatchSysVolume:
 
     def _mount_root_vol(self) -> bool:
         """
-        Attempts to mount the booted APFS volume as a writable volume
-        at /System/Volumes/Update/mnt1
-
-        Manual invocation:
-            'sudo mount -o nobrowse -t apfs  /dev/diskXsY /System/Volumes/Update/mnt1'
-
-        Returns:
-            bool: True if successful, False if not
+        Mount root volume
         """
+        if self.mount_obj.mount():
+            return True
 
-        # Returns boolean if Root Volume is available
-        self.root_mount_path = utilities.get_disk_path()
-        if self.root_mount_path.startswith("disk"):
-            logging.info(f"- Found Root Volume at: {self.root_mount_path}")
-            if Path(self.mount_extensions).exists():
-                logging.info("- Root Volume is already mounted")
-                return True
-            else:
-                if self.root_supports_snapshot is True:
-                    logging.info("- Mounting APFS Snapshot as writable")
-                    result = subprocess_wrapper.run_as_root(["/sbin/mount", "-o", "nobrowse", "-t", "apfs", f"/dev/{self.root_mount_path}", self.mount_location], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                    if result.returncode == 0:
-                        logging.info(f"- Mounted APFS Snapshot as writable at: {self.mount_location}")
-                        if Path(self.mount_extensions).exists():
-                            logging.info("- Successfully mounted the Root Volume")
-                            return True
-                        else:
-                            logging.info("- Root Volume appears to have unmounted unexpectedly")
-                    else:
-                        logging.info("- Unable to mount APFS Snapshot as writable")
-                        subprocess_wrapper.log(result)
         return False
 
 
-    def _merge_kdk_with_root(self, save_hid_cs=False) -> None:
+    def _unmount_root_vol(self) -> None:
+        """
+        Unmount root volume
+        """
+        logging.info("- Unmounting root volume")
+        self.mount_obj.unmount(ignore_errors=True)
+
+
+    def _merge_kdk_with_root(self, save_hid_cs: bool = False) -> None:
         """
         Merge Kernel Debug Kit (KDK) with the root volume
         If no KDK is present, will call kdk_handler to download and install it
@@ -252,23 +237,15 @@ class PatchSysVolume:
         """
         Reverts APFS snapshot and cleans up any changes made to the root and data volume
         """
+        if self.mount_obj.revert_snapshot() is False:
+            return
 
-        if self.constants.detected_os <= os_data.os_data.big_sur or self.root_supports_snapshot is False:
-            logging.info("- OS version does not support snapshotting, skipping revert")
-
-        logging.info("- Reverting to last signed APFS snapshot")
-        result = subprocess_wrapper.run_as_root(["/usr/sbin/bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if result.returncode != 0:
-            logging.info("- Unable to revert root volume patches")
-            subprocess_wrapper.log(result)
-            logging.info("- Failed to revert snapshot via Apple's 'bless' command")
-        else:
-            self._clean_skylight_plugins()
-            self._delete_nonmetal_enforcement()
-            self._clean_auxiliary_kc()
-            self.constants.root_patcher_succeeded = True
-            logging.info("- Unpatching complete")
-            logging.info("\nPlease reboot the machine for patches to take effect")
+        self._clean_skylight_plugins()
+        self._delete_nonmetal_enforcement()
+        self._clean_auxiliary_kc()
+        self.constants.root_patcher_succeeded = True
+        logging.info("- Unpatching complete")
+        logging.info("\nPlease reboot the machine for patches to take effect")
 
 
     def _rebuild_root_volume(self) -> bool:
@@ -287,6 +264,7 @@ class PatchSysVolume:
             self._update_preboot_kernel_cache()
             self._rebuild_dyld_shared_cache()
             if self._create_new_apfs_snapshot() is True:
+                self._unmount_root_vol()
                 logging.info("- Patching complete")
                 logging.info("\nPlease reboot the machine for patches to take effect")
                 if self.needs_kmutil_exemptions is True:
@@ -405,35 +383,7 @@ class PatchSysVolume:
         Returns:
             bool: True if snapshot was created, False if not
         """
-
-        if self.root_supports_snapshot is True:
-            logging.info("- Creating new APFS snapshot")
-            bless = subprocess_wrapper.run_as_root(
-                [
-                    "/usr/sbin/bless",
-                    "--folder", f"{self.mount_location}/System/Library/CoreServices",
-                    "--bootefi", "--create-snapshot"
-                ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT
-            )
-            if bless.returncode != 0:
-                logging.info("- Unable to create new snapshot")
-                subprocess_wrapper.log(bless)
-                if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in bless.stdout.decode():
-                    logging.info("- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly")
-                return False
-            self._unmount_drive()
-        return True
-
-
-    def _unmount_drive(self) -> None:
-        """
-        Unmount root volume
-        """
-        if self.root_mount_path:
-            logging.info("- Unmounting Root Volume (Don't worry if this fails)")
-            subprocess_wrapper.run_as_root(["/usr/sbin/diskutil", "unmount", self.root_mount_path], stdout=subprocess.PIPE)
-        else:
-            logging.info("- Skipping Root Volume unmount")
+        return self.mount_obj.create_snapshot()
 
 
     def _rebuild_dyld_shared_cache(self) -> None:
