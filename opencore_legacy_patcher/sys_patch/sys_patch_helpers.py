@@ -18,7 +18,6 @@ from ..datasets import os_data
 from ..support import (
     bplist,
     generate_smbios,
-    utilities,
     subprocess_wrapper
 )
 
