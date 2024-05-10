@@ -588,14 +588,13 @@ class KernelDebugKitUtilities:
 
         # TODO: Check whether enough disk space is available
 
-        result = utilities.elevated(["installer", "-pkg", kdk_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = utilities.elevated(["/usr/sbin/installer", "-pkg", kdk_path, "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info("Failed to install KDK:")
             logging.info(result.stdout.decode('utf-8'))
             if result.stderr:
                 logging.info(result.stderr.decode('utf-8'))
             return False
-
         return True
 
 
