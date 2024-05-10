@@ -223,12 +223,12 @@ class SystemPatchDictionary():
                     },
                     "Processes": {
                         # 'When Space Allows' option introduced in 12.4 (XNU 21.5)
-                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist ShowDate -int 1": True } if self.os_float >= self.macOS_12_4 else {}),
-                        "defaults write /Library/Preferences/.GlobalPreferences.plist InternalDebugUseGPUProcessForCanvasRenderingEnabled -bool false": True,
-                        "defaults write /Library/Preferences/.GlobalPreferences.plist WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled -bool false": True,
-                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist WebKitPreferences.acceleratedDrawingEnabled -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
-                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist NSEnableAppKitMenus -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
-                        **({"defaults write /Library/Preferences/.GlobalPreferences.plist NSZoomButtonShowMenu -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
+                        **({"/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist ShowDate -int 1": True } if self.os_float >= self.macOS_12_4 else {}),
+                        "/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist InternalDebugUseGPUProcessForCanvasRenderingEnabled -bool false": True,
+                        "/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled -bool false": True,
+                        **({"/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist WebKitPreferences.acceleratedDrawingEnabled -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
+                        **({"/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist NSEnableAppKitMenus -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
+                        **({"/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist NSZoomButtonShowMenu -bool false": True} if self.os_major >= os_data.os_data.sonoma else {}),
                     },
                 },
                 "Non-Metal IOAccelerator Common": {
@@ -305,8 +305,8 @@ class SystemPatchDictionary():
                         },
                     },
                     "Processes": {
-                        "defaults write /Library/Preferences/com.apple.CoreDisplay useMetal -boolean no": True,
-                        "defaults write /Library/Preferences/com.apple.CoreDisplay useIOP -boolean no":   True,
+                        "/usr/bin/defaults write /Library/Preferences/com.apple.CoreDisplay useMetal -boolean no": True,
+                        "/usr/bin/defaults write /Library/Preferences/com.apple.CoreDisplay useIOP -boolean no":   True,
                     },
                 },
 
@@ -1319,7 +1319,7 @@ class SystemPatchDictionary():
                         },
                     },
                     "Processes": {
-                        "defaults write /Library/Preferences/.GlobalPreferences.plist Moraea_BacklightHack -bool true": True,
+                        "/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist Moraea_BacklightHack -bool true": True,
                     },
                 },
                 "Legacy USB 1.1": {
