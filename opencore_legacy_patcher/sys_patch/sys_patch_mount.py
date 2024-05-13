@@ -109,8 +109,6 @@ class SysPatchMount:
     def _unmount_root_volume(self, ignore_errors: bool = True) -> bool:
         """
         Unmount the root volume.
-
-        If applicable, create a snapshot before unmounting.
         """
         if self.xnu_major < os_data.os_data.catalina.value:
             return True
@@ -129,6 +127,8 @@ class SysPatchMount:
                 logging.error("Failed to unmount root volume")
                 subprocess_wrapper.log(result)
             return False
+
+        return True
 
 
     def create_snapshot(self) -> bool:
