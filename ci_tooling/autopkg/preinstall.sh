@@ -1,12 +1,64 @@
-#!/bin/sh
-app_path="/Library/Application Support/Dortania/OpenCore-Patcher.app"
-launch_agent_path="/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"
-if [ -d "$app_path" ]; then
-    echo "Found OpenCore-Patcher.app, removing..."
-    rm -rf "$app_path"
-fi
+#!/bin/zsh --no-rcs
+# ------------------------------------------------------
+# AutoPkg Assets Preinstall Script
+# ------------------------------------------------------
+# Remove old files, and prepare directories.
+# ------------------------------------------------------
 
-if [ -f "$launch_agent_path" ]; then
-    echo "Found launch agent, removing..."
-    rm -f "$launch_agent_path"
-fi
+
+# MARK: Variables
+# ---------------------------
+
+filesToRemove=(
+    "/Applications/OpenCore-Patcher.app"
+    "/Library/Application Support/Dortania/Update.plist"
+    "/Library/Application Support/Dortania/OpenCore-Patcher.app"
+    "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"
+)
+
+
+# MARK: Functions
+# ---------------------------
+
+function _removeFile() {
+    local currentFile=$1
+
+    if [[ ! -e $currentFile ]]; then
+        # Check if file is a symbolic link
+        if [[ -L $currentFile ]]; then
+            /bin/rm -f $currentFile
+        fi
+        return
+    fi
+
+    # Check if file is a directory
+    if [[ -d $currentFile ]]; then
+        /bin/rm -rf $currentFile
+    else
+        /bin/rm -f $currentFile
+    fi
+}
+
+function _createParentDirectory() {
+    local currentFile=$1
+
+    local parentDirectory=$(/usr/bin/dirname $currentFile)
+
+    # Check if parent directory exists
+    if [[ ! -d $parentDirectory ]]; then
+        /bin/mkdir -p $parentDirectory
+    fi
+}
+
+function _main() {
+    for file in $filesToRemove; do
+        _removeFile $file
+        _createParentDirectory $file
+    done
+}
+
+
+# MARK: Main
+# ---------------------------
+
+_main

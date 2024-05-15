@@ -12,6 +12,10 @@
 - Resolve unpatching Nvidia Web Drivers failing to clean up `/Library/Extensions`
 - Implement preflight code signature checks for macOS installer creation
   - Ensures validity of `createinstallmedia` binary before execution
+- Modularize AutoPkg's pre/postinstall scripts
+  - Adjusted to use functions for better readability
+  - Implements ZSH shebang
+  - Removes OS logging
 
 ## 1.4.3
 - Update non-Metal Binaries for macOS Sonoma:
