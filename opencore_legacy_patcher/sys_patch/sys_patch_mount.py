@@ -105,6 +105,8 @@ class SysPatchMount:
                 return None
             return "/System/Volumes/Update/mnt1"
 
+        return None
+
 
     def _unmount_root_volume(self, ignore_errors: bool = True) -> bool:
         """
@@ -116,10 +118,10 @@ class SysPatchMount:
         args = ["/sbin/umount"]
 
         if self.xnu_major == os_data.os_data.catalina.value:
-            args += ["-uw", "/"]
+            args += ["-uw", self.mount_path]
 
         if self.xnu_major >= os_data.os_data.big_sur.value:
-            args += ["/System/Volumes/Update/mnt1"]
+            args += [self.mount_path]
 
         result = subprocess_wrapper.run_as_root(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
@@ -140,9 +142,9 @@ class SysPatchMount:
 
         args = ["/usr/sbin/bless"]
         if platform.machine() == "arm64" or self.rosetta_status is True:
-            args += ["--mount", "/System/Volumes/Update/mnt1", "--create-snapshot"]
+            args += ["--mount", self.mount_path, "--create-snapshot"]
         else:
-            args += ["--folder", "/System/Volumes/Update/mnt1/System/Library/CoreServices", "--bootefi", "--create-snapshot"]
+            args += ["--folder", f"{self.mount_path}/System/Library/CoreServices", "--bootefi", "--create-snapshot"]
 
 
         result = subprocess_wrapper.run_as_root(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -164,7 +166,7 @@ class SysPatchMount:
         if self.xnu_major < os_data.os_data.big_sur.value:
             return True
 
-        result = subprocess_wrapper.run_as_root(["/usr/sbin/bless", "--mount", self.mount_location, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess_wrapper.run_as_root(["/usr/sbin/bless", "--mount", self.mount_path, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.error("Failed to revert APFS snapshot")
             subprocess_wrapper.log(result)
