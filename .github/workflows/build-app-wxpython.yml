@@ -40,11 +40,11 @@ jobs:
       - name: Build Binary
         run: >
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Suite.command
-            --application-signing-identity "${{ env.MAC_CODESIGN_IDENTITY }}"
-            --notarization-apple-id "${{ env.MAC_NOTARIZATION_USERNAME }}" --notarization-password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.MAC_NOTARIZATION_TEAM_ID }}"
-            --git-branch "${{ env.branch }}" --git-commit-url "${{ env.commiturl }}" --git-commit-date "${{ env.commitdate }}"
-            --reset-dmg-cache --reset-pyinstaller-cache
-            --analytics-key "${{ env.ANALYTICS_KEY }}" --analytics-endpoint "${{ env.ANALYTICS_SITE }}"
+          --application-signing-identity "${{ env.MAC_CODESIGN_IDENTITY }}"
+          --notarization-apple-id "${{ env.MAC_NOTARIZATION_USERNAME }}" --notarization-password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.MAC_NOTARIZATION_TEAM_ID }}"
+          --git-branch "${{ env.branch }}" --git-commit-url "${{ env.commiturl }}" --git-commit-date "${{ env.commitdate }}"
+          --reset-dmg-cache --reset-pyinstaller-cache
+          --analytics-key "${{ env.ANALYTICS_KEY }}" --analytics-endpoint "${{ env.ANALYTICS_SITE }}"
 
       - name: Generate support package
         run: /usr/local/bin/packagesbuild ./ci_tooling/autopkg/AutoPkg-Assets-Setup.pkgproj
