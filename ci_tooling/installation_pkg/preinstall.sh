@@ -1,6 +1,6 @@
 #!/bin/zsh --no-rcs
 # ------------------------------------------------------
-# AutoPkg Assets Preinstall Script
+# OpenCore Legacy Patcher PKG Preinstall Script
 # ------------------------------------------------------
 # Remove old files, and prepare directories.
 # ------------------------------------------------------
@@ -13,7 +13,6 @@ filesToRemove=(
     "/Applications/OpenCore-Patcher.app"
     "/Library/Application Support/Dortania/Update.plist"
     "/Library/Application Support/Dortania/OpenCore-Patcher.app"
-    "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"
     "/Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper"
 )
 
@@ -22,31 +21,35 @@ filesToRemove=(
 # ---------------------------
 
 function _removeFile() {
-    local currentFile=$1
+    local file=$1
 
-    if [[ ! -e $currentFile ]]; then
+    if [[ ! -e $file ]]; then
         # Check if file is a symbolic link
-        if [[ -L $currentFile ]]; then
-            /bin/rm -f $currentFile
+        if [[ -L $file ]]; then
+            echo "  Removing symbolic link: $file"
+            /bin/rm -f $file
         fi
         return
     fi
 
+    echo "  Removing file: $file"
+
     # Check if file is a directory
-    if [[ -d $currentFile ]]; then
-        /bin/rm -rf $currentFile
+    if [[ -d $file ]]; then
+        /bin/rm -rf $file
     else
-        /bin/rm -f $currentFile
+        /bin/rm -f $file
     fi
 }
 
 function _createParentDirectory() {
-    local currentFile=$1
+    local file=$1
 
-    local parentDirectory=$(/usr/bin/dirname $currentFile)
+    local parentDirectory=$(/usr/bin/dirname $file)
 
     # Check if parent directory exists
     if [[ ! -d $parentDirectory ]]; then
+        echo "  Creating parent directory: $parentDirectory"
         /bin/mkdir -p $parentDirectory
     fi
 }
@@ -62,4 +65,5 @@ function _main() {
 # MARK: Main
 # ---------------------------
 
+echo "Starting preinstall script..."
 _main

@@ -27,9 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Binary
-        run: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}" --key "${{ env.ANALYTICS_KEY }}" --site "${{ env.ANALYTICS_SITE }}"
-
       # - name: Import Certificate
       #   if: (!security find-certificate -c "${{ env.MAC_CODESIGN_IDENTITY }}")
       #   uses: apple-actions/import-codesign-certs@v2
@@ -37,20 +34,23 @@ jobs:
       #     p12-file-base64: ${{ secrets.MAC_CODESIGN_CERT }}
       #     p12-password: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
 
-      - name: Codesign Binary
-        run: 'codesign -s "${{ env.MAC_CODESIGN_IDENTITY }}" -v --force --deep --timestamp --entitlements ./ci_tooling/entitlements/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
+      - name: Install Dependencies
+        run: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install -r requirements.txt
 
-      - name: Package Binary
-        run: cd dist; ditto -c -k --sequesterRsrc --keepParent OpenCore-Patcher.app ../OpenCore-Patcher-wxPython.app.zip
-
-      - name: Notarize Binary
-        run: xcrun notarytool submit OpenCore-Patcher-wxPython.app.zip --apple-id "${{ env.MAC_NOTARIZATION_USERNAME }}" --password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --team-id "${{ env.MAC_NOTARIZATION_TEAM_ID }}"
+      - name: Build Binary
+        run: >
+          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Suite.command
+            --application-signing-identity "${{ env.MAC_CODESIGN_IDENTITY }}"
+            --notarization-apple-id "${{ env.MAC_NOTARIZATION_USERNAME }}" --notarization-password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.MAC_NOTARIZATION_TEAM_ID }}"
+            --git-branch "${{ env.branch }}" --git-commit-url "${{ env.commiturl }}" --git-commit-date "${{ env.commitdate }}"
+            --reset-dmg-cache --reset-pyinstaller-cache
+            --analytics-key "${{ env.ANALYTICS_KEY }}" --analytics-endpoint "${{ env.ANALYTICS_SITE }}"
 
       - name: Generate support package
         run: /usr/local/bin/packagesbuild ./ci_tooling/autopkg/AutoPkg-Assets-Setup.pkgproj
 
       - name: Prepare App for Upload
-        run: mv ./OpenCore-Patcher-wxPython.app.zip ./OpenCore-Patcher-GUI.app.zip
+        run: /bin/mv ./dist/OpenCore-Patcher.app.zip ./OpenCore-Patcher-GUI.app.zip
 
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v4
