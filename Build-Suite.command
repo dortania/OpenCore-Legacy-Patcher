@@ -24,38 +24,26 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description="Build OpenCore Legacy Patcher Suite")
 
-    # Code Signing Parameters
-    # - Application Signing Identity
-    # - Installer Signing Identity
+    # Signing Parameters
     parser.add_argument("--application-signing-identity", type=str, help="Application Signing Identity")
     parser.add_argument("--installer-signing-identity", type=str, help="Installer Signing Identity")
 
 
     # Notarization Parameters
-    # - Notarization Apple ID
-    # - Notarization Password
-    # - Notarization Team ID
     parser.add_argument("--notarization-apple-id", type=str, help="Notarization Apple ID", default=None)
     parser.add_argument("--notarization-password", type=str, help="Notarization Password", default=None)
     parser.add_argument("--notarization-team-id", type=str, help="Notarization Team ID", default=None)
 
     # GitHub Actions CI/CD Parameters
-    # - Git Branch
-    # - Git Commit
-    # - Git Commit Date
     parser.add_argument("--git-branch", type=str, help="Git Branch", default=None)
     parser.add_argument("--git-commit-url", type=str, help="Git Commit URL", default=None)
     parser.add_argument("--git-commit-date", type=str, help="Git Commit Date", default=None)
 
     # Local Build Parameters
-    # - Reset payloads.dmg
-    # - Clean PyInstaller Cache
     parser.add_argument("--reset-dmg-cache", action="store_true", help="Redownload PatcherSupportPkg.dmg and regenerate payloads.dmg", default=False)
     parser.add_argument("--reset-pyinstaller-cache", action="store_true", help="Clean PyInstaller Cache", default=False)
 
     # Analytics Parameters
-    # - Key
-    # - Site
     parser.add_argument("--analytics-key", type=str, help="Analytics Key", default=None)
     parser.add_argument("--analytics-endpoint", type=str, help="Analytics Endpoint", default=None)
 

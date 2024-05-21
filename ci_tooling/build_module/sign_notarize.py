@@ -1,6 +1,9 @@
 import mac_signing_buddy
+import macos_pkg_builder
 
 from pathlib import Path
+
+import macos_pkg_builder.utilities.signing
 
 
 class SignAndNotarize:
@@ -26,11 +29,17 @@ class SignAndNotarize:
             return
 
         print(f"Signing {self._path.name}")
-        mac_signing_buddy.Sign(
-            identity=self._signing_identity,
-            file=self._path,
-            **({"entitlements": self._entitlements} if self._entitlements else {}),
-        ).sign()
+        if self._path.name.endswith(".pkg"):
+            macos_pkg_builder.utilities.signing.SignPackage(
+                identity=self._signing_identity,
+                pkg=self._path,
+            ).sign()
+        else:
+            mac_signing_buddy.Sign(
+                identity=self._signing_identity,
+                file=self._path,
+                **({"entitlements": self._entitlements} if self._entitlements else {}),
+            ).sign()
 
         print(f"Notarizing {self._path.name}")
         mac_signing_buddy.Notarize(

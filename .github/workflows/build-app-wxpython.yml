@@ -13,35 +13,56 @@ jobs:
     if: github.repository_owner == 'dortania'
 
     env:
+      # GitHub Information
       branch: ${{ github.ref }}
       commiturl: ${{ github.event.head_commit.url }}${{ github.event.release.html_url }}
       commitdate: ${{ github.event.head_commit.timestamp }}${{ github.event.release.published_at }}
-      MAC_CODESIGN_IDENTITY: ${{ secrets.MAC_CODESIGN_IDENTITY }}
-      MAC_CODESIGN_CERT: ${{ secrets.MAC_CODESIGN_CERT }}
-      MAC_NOTARIZATION_USERNAME: ${{ secrets.MAC_NOTARIZATION_USERNAME }}
-      MAC_NOTARIZATION_PASSWORD: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
-      MAC_NOTARIZATION_TEAM_ID: ${{ secrets.MAC_NOTARIZATION_TEAM_ID }}
+
+      # Analytics
       ANALYTICS_KEY: ${{ secrets.ANALYTICS_KEY }}
       ANALYTICS_SITE: ${{ secrets.ANALYTICS_SITE }}
+
+      # App Signing
+      ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}
+
+      # PKG Signing
+      ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY }}
+
+      # Notarization
+      ORG_MAC_NOTARIZATION_TEAM_ID: ${{ secrets.ORG_MAC_NOTARIZATION_TEAM_ID }}
+      ORG_MAC_NOTARIZATION_APPLE_ID: ${{ secrets.ORG_MAC_NOTARIZATION_APPLE_ID }}
+      ORG_MAC_NOTARIZATION_PASSWORD: ${{ secrets.ORG_MAC_NOTARIZATION_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v4
 
-      # - name: Import Certificate
-      #   if: (!security find-certificate -c "${{ env.MAC_CODESIGN_IDENTITY }}")
-      #   uses: apple-actions/import-codesign-certs@v2
+      # - name: Import Application Signing Certificate
+      #   uses: dhinakg/import-codesign-certs@master
       #   with:
-      #     p12-file-base64: ${{ secrets.MAC_CODESIGN_CERT }}
-      #     p12-password: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
+      #     p12-file-base64: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_BASE64 }}
+      #     p12-password: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_PASSWORD }}
+
+      # - name: Import Installer Signing Certificate
+      #   uses: dhinakg/import-codesign-certs@master
+      #   with:
+      #     p12-file-base64: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_BASE64 }}
+      #     p12-password: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_PASSWORD }}
 
       - name: Install Dependencies
         run: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install -r requirements.txt
 
+      # - name: Force Universal2 charset for Python
+      #   run: |
+      #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip uninstall -y charset_normalizer
+      #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip download --platform macosx_10_9_universal2 --only-binary=:all: charset-normalizer
+      #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install charset_normalizer-*-macosx_10_9_universal2.whl
+
       - name: Build Binary
         run: >
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Suite.command
-          --application-signing-identity "${{ env.MAC_CODESIGN_IDENTITY }}"
-          --notarization-apple-id "${{ env.MAC_NOTARIZATION_USERNAME }}" --notarization-password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.MAC_NOTARIZATION_TEAM_ID }}"
+          --application-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}"
+          --installer-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY }}"
+          --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
           --git-branch "${{ env.branch }}" --git-commit-url "${{ env.commiturl }}" --git-commit-date "${{ env.commitdate }}"
           --reset-dmg-cache --reset-pyinstaller-cache
           --analytics-key "${{ env.ANALYTICS_KEY }}" --analytics-endpoint "${{ env.ANALYTICS_SITE }}"
