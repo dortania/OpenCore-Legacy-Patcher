@@ -58,11 +58,17 @@ jobs:
           name: OpenCore-Patcher.app (GUI)
           path: OpenCore-Patcher-GUI.app.zip
 
-      - name: Upload Package to Artifacts
+      - name: Upload AutoPkg Package to Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: AutoPkg-Assets.pkg
           path: ./dist/AutoPkg-Assets.pkg
+
+      - name: Upload Installation Package to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenCore-Patcher.pkg
+          path: ./dist/OpenCore-Patcher.pkg
 
       - name: Upload Binary to Release
         if: github.event_name == 'release'
@@ -73,11 +79,20 @@ jobs:
           tag: ${{ github.ref }}
           file_glob: true
 
-      - name: Upload Package to Release
+      - name: Upload AutoPkg Package to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./dist/AutoPkg-Assets.pkg
+          tag: ${{ github.ref }}
+          file_glob: true
+
+      - name: Upload Installation Package to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./dist/OpenCore-Patcher.pkg
           tag: ${{ github.ref }}
           file_glob: true
