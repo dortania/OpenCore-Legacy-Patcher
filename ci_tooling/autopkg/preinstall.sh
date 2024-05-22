@@ -43,7 +43,7 @@ function _removeFile() {
 function _createParentDirectory() {
     local currentFile=$1
 
-    local parentDirectory=$(/usr/bin/dirname $currentFile)
+    local parentDirectory="$(/usr/bin/dirname $currentFile)"
 
     # Check if parent directory exists
     if [[ ! -d $parentDirectory ]]; then

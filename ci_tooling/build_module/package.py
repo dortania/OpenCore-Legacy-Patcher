@@ -23,7 +23,7 @@ class GeneratePackage:
         """
         _welcome = ""
 
-        _welcome = "# Overview\n"
+        _welcome += "# Overview\n"
         _welcome += f"This package will install the OpenCore Legacy Patcher application (v{constants.Constants().patcher_version}) on your system."
 
         _welcome += "\n\nAdditionally, a shortcut for OpenCore Legacy Patcher will be added in the '/Applications' folder."
@@ -45,7 +45,7 @@ class GeneratePackage:
         """
         _welcome = ""
 
-        _welcome = "# Application Uninstaller\n"
+        _welcome += "# Application Uninstaller\n"
         _welcome += "This package will uninstall the OpenCore Legacy Patcher application and its Privileged Helper Tool from your system."
         _welcome += "\n\n"
         _welcome += "This will not remove any root patches or OpenCore configurations that you may have installed using OpenCore Legacy Patcher."
