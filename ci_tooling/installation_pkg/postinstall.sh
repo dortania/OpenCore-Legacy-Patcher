@@ -20,7 +20,7 @@ shimAppPath="/Applications/OpenCore-Patcher.app"
 function _setSUIDBit() {
     local binaryPath=$1
 
-    echo "  Setting SUID bit on: $binaryPath"
+    echo "Setting SUID bit on: $binaryPath"
 
     # Check if path is a directory
     if [[ -d $binaryPath ]]; then
@@ -38,16 +38,16 @@ function _createAlias() {
     if [[ -e $aliasPath ]]; then
         # Check if alias path is a symbolic link
         if [[ -L $aliasPath ]]; then
-            echo "  Removing old symbolic link: $aliasPath"
+            echo "Removing old symbolic link: $aliasPath"
             /bin/rm -f $aliasPath
         else
-            echo "  Removing old file: $aliasPath"
+            echo "Removing old file: $aliasPath"
             /bin/rm -rf $aliasPath
         fi
     fi
 
     # Create symbolic link
-    echo "  Creating symbolic link: $aliasPath"
+    echo "Creating symbolic link: $aliasPath"
     /bin/ln -s $mainPath $aliasPath
 }
 

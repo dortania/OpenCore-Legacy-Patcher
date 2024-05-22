@@ -76,12 +76,21 @@ def main() -> None:
         entitlements=Path("./ci_tooling/entitlements/entitlements.plist"),
     ).sign_and_notarize()
 
-    # Build OpenCore-Patcher.pkg
+    # Build OpenCore-Patcher.pkg and OpenCore-Patcher-Uninstaller.pkg
     package.GeneratePackage().generate()
 
     # Sign OpenCore-Patcher.pkg
     sign_notarize.SignAndNotarize(
         path=Path("dist/OpenCore-Patcher.pkg"),
+        signing_identity=args.installer_signing_identity,
+        notarization_apple_id=args.notarization_apple_id,
+        notarization_password=args.notarization_password,
+        notarization_team_id=args.notarization_team_id,
+    ).sign_and_notarize()
+
+    # Sign OpenCore-Patcher-Uninstaller.pkg
+    sign_notarize.SignAndNotarize(
+        path=Path("dist/OpenCore-Patcher-Uninstaller.pkg"),
         signing_identity=args.installer_signing_identity,
         notarization_apple_id=args.notarization_apple_id,
         notarization_password=args.notarization_password,

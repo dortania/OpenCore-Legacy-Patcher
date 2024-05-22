@@ -48,8 +48,8 @@ jobs:
       #     p12-file-base64: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_BASE64 }}
       #     p12-password: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_PASSWORD }}
 
-      - name: Install Dependencies
-        run: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install -r requirements.txt
+      # - name: Install Dependencies
+      #   run: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install -r requirements.txt
 
       # - name: Force Universal2 charset for Python
       #   run: |
@@ -91,6 +91,12 @@ jobs:
           name: OpenCore-Patcher.pkg
           path: ./dist/OpenCore-Patcher.pkg
 
+      - name: Upload Uninstaller Package to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenCore-Patcher-Uninstaller.pkg
+          path: ./dist/OpenCore-Patcher-Uninstaller.pkg
+
       - name: Upload Binary to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
@@ -115,5 +121,14 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./dist/OpenCore-Patcher.pkg
+          tag: ${{ github.ref }}
+          file_glob: true
+
+      - name: Upload Uninstaller Package to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./dist/OpenCore-Patcher-Uninstaller.pkg
           tag: ${{ github.ref }}
           file_glob: true

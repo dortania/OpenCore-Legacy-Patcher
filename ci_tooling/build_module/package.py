@@ -17,9 +17,9 @@ class GeneratePackage:
         }
 
 
-    def _generate_welcome(self) -> str:
+    def _generate_installer_welcome(self) -> str:
         """
-        Generate Welcome message for PKG
+        Generate Welcome message for installer PKG
         """
         _welcome = ""
 
@@ -39,10 +39,38 @@ class GeneratePackage:
         return _welcome
 
 
+    def _generate_uninstaller_welcome(self) -> str:
+        """
+        Generate Welcome message for uninstaller PKG
+        """
+        _welcome = ""
+
+        _welcome = "# Application Uninstaller\n"
+        _welcome += "This package will uninstall the OpenCore Legacy Patcher application and its Privileged Helper Tool from your system."
+        _welcome += "\n\n"
+        _welcome += "This will not remove any root patches or OpenCore configurations that you may have installed using OpenCore Legacy Patcher."
+        _welcome += "\n\n"
+        _welcome += f"For more information on OpenCore Legacy Patcher, see our [documentation]({constants.Constants().guide_link}) and [GitHub repository]({constants.Constants().repo_link})."
+
+        return _welcome
+
+
     def generate(self) -> None:
         """
         Generate OpenCore-Patcher.pkg
         """
+        print("Generating OpenCore-Patcher-Uninstaller.pkg")
+        assert macos_pkg_builder.Packages(
+            pkg_output="./dist/OpenCore-Patcher-Uninstaller.pkg",
+            pkg_bundle_id="com.dortania.opencore-legacy-patcher-uninstaller",
+            pkg_version=constants.Constants().patcher_version,
+            pkg_background="./ci_tooling/installation_pkg/PkgBackgroundUninstaller.png",
+            pkg_preinstall_script="./ci_tooling/installation_pkg/uninstall.sh",
+            pkg_as_distribution=True,
+            pkg_title="OpenCore Legacy Patcher Uninstaller",
+            pkg_welcome=self._generate_uninstaller_welcome(),
+        ).build() is True
+
         print("Generating OpenCore-Patcher.pkg")
         assert macos_pkg_builder.Packages(
             pkg_output="./dist/OpenCore-Patcher.pkg",
@@ -55,5 +83,5 @@ class GeneratePackage:
             pkg_postinstall_script="./ci_tooling/installation_pkg/postinstall.sh",
             pkg_file_structure=self._files,
             pkg_title="OpenCore Legacy Patcher",
-            pkg_welcome=self._generate_welcome(),
+            pkg_welcome=self._generate_installer_welcome(),
         ).build() is True
