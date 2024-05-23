@@ -4,14 +4,24 @@
 # ------------------------------------------------------
 
 
+# MARK: PackageKit Parameters
+# ---------------------------
+
+pathToScript=$0            # ex. /tmp/PKInstallSandbox.*/Scripts/*/preinstall
+pathToPackage=$1           # ex. ~/Downloads/Installer.pkg
+pathToTargetLocation=$2    # ex. '/', '/Applications', etc (depends on pkgbuild's '--install-location' argument)
+pathToTargetVolume=$3      # ex. '/', '/Volumes/MyVolume', etc
+pathToStartupDisk=$4       # ex. '/'
+
+
 # MARK: Variables
 # ---------------------------
 
 filesToRemove=(
-    "/Applications/OpenCore-Patcher.app"
-    "/Library/Application Support/Dortania/Update.plist"
-    "/Library/Application Support/Dortania/OpenCore-Patcher.app"
-    "/Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper"
+    "Applications/OpenCore-Patcher.app"
+    "Library/Application Support/Dortania/Update.plist"
+    "Library/Application Support/Dortania/OpenCore-Patcher.app"
+    "Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper"
 )
 
 
@@ -44,7 +54,7 @@ function _cleanLaunchService() {
     local domain="com.dortania.opencore-legacy-patcher"
 
     # Iterate over launch agents and daemons
-    for launchServiceVariant in "/Library/LaunchAgents" "/Library/LaunchDaemons"; do
+    for launchServiceVariant in "$pathToTargetVolume/Library/LaunchAgents" "$pathToTargetVolume/Library/LaunchDaemons"; do
         # Check if directory exists
         if [[ ! -d $launchServiceVariant ]]; then
             continue
@@ -63,7 +73,7 @@ function _cleanLaunchService() {
 function _main() {
     _cleanLaunchService
     for file in $filesToRemove; do
-        _removeFile $file
+        _removeFile "$pathToTargetVolume/$file"
     done
 }
 

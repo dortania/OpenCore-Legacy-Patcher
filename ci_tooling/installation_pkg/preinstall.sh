@@ -6,14 +6,24 @@
 # ------------------------------------------------------
 
 
+# MARK: PackageKit Parameters
+# ---------------------------
+
+pathToScript=$0            # ex. /tmp/PKInstallSandbox.*/Scripts/*/preinstall
+pathToPackage=$1           # ex. ~/Downloads/Installer.pkg
+pathToTargetLocation=$2    # ex. '/', '/Applications', etc (depends on pkgbuild's '--install-location' argument)
+pathToTargetVolume=$3      # ex. '/', '/Volumes/MyVolume', etc
+pathToStartupDisk=$4       # ex. '/'
+
+
 # MARK: Variables
 # ---------------------------
 
 filesToRemove=(
-    "/Applications/OpenCore-Patcher.app"
-    "/Library/Application Support/Dortania/Update.plist"
-    "/Library/Application Support/Dortania/OpenCore-Patcher.app"
-    "/Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper"
+    "Applications/OpenCore-Patcher.app"
+    "Library/Application Support/Dortania/Update.plist"
+    "Library/Application Support/Dortania/OpenCore-Patcher.app"
+    "Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper"
 )
 
 
@@ -56,8 +66,8 @@ function _createParentDirectory() {
 
 function _main() {
     for file in $filesToRemove; do
-        _removeFile $file
-        _createParentDirectory $file
+        _removeFile $pathToTargetVolume/$file
+        _createParentDirectory $pathToTargetVolume/$file
     done
 }
 
