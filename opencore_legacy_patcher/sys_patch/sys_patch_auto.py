@@ -406,13 +406,6 @@ Please check the Github page for more information about this release."""
 
         subprocess.run(["/usr/bin/xattr", "-cr", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        # Making app alias
-        # Simply an easy way for users to notice the app
-        # If there's already an alias or exiting app, skip
-        if not Path("/Applications/OpenCore-Patcher.app").exists():
-            logging.info("- Making app alias")
-            subprocess_wrapper.run_as_root_and_verify(["/bin/ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
 
     def _create_rsr_monitor_daemon(self) -> bool:
         # Get kext list in /Library/Extensions that have the 'GPUCompanionBundles' property
