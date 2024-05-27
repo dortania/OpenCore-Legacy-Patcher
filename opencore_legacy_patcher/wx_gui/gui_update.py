@@ -244,4 +244,4 @@ class UpdateFrame(wx.Frame):
         Launches newly installed update
         """
         logging.info("Launching update: '/Library/Application Support/Dortania/OpenCore-Patcher.app'")
-        subprocess.run(["/usr/bin/open", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "--args", "--update_installed"])
+        subprocess.Popen(["/Library/Application Support/Dortania/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher", "--update_installed"])
