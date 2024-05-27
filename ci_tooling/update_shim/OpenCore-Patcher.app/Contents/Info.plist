@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>OpenCore-Patcher</string>
 	<key>CFBundleIconFile</key>
-	<string>OC-Patcher.icns</string>
+	<string>AppIcon.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.dortania.opencore-legacy-patcher-helper</string>
 	<key>CFBundleInfoDictionaryVersion</key>
