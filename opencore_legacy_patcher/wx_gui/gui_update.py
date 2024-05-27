@@ -43,7 +43,7 @@ class UpdateFrame(wx.Frame):
 
         self.title: str = title
         self.constants: constants.Constants = global_constants
-        self.application_path = self.constants.payload_path / "OpenCore-Patcher.app"
+        self.pkg_download_path = self.constants.payload_path / "OpenCore-Patcher.pkg"
         self.screen_location: wx.Point = screen_location
         if parent:
             self.parent.Centre()
@@ -98,7 +98,8 @@ class UpdateFrame(wx.Frame):
         download_obj = None
         def _fetch_update() -> None:
             nonlocal download_obj
-            download_obj = network_handler.DownloadObject(url, self.constants.payload_path / "OpenCore-Patcher-GUI.app.zip")
+            file_name = "OpenCore-Patcher.pkg.zip" if url.endswith(".zip") else "OpenCore-Patcher.pkg"
+            download_obj = network_handler.DownloadObject(url, self.constants.payload_path / file_name)
 
         thread = threading.Thread(target=_fetch_update)
         thread.start()
@@ -189,90 +190,37 @@ class UpdateFrame(wx.Frame):
     def _extract_update(self) -> None:
         """
         Extracts the update
+
+        Logic:
+        - Distributed through GitHub Actions: Requires extraction
+        - Distributed through GitHub Releases: No extraction required
         """
-        logging.info("Extracting update")
-        if Path(self.application_path).exists():
-            subprocess.run(["/bin/rm", "-rf", str(self.application_path)])
+        # GitHub Release
+        if not self.url.endswith(".zip"):
+            return
 
-        # Some hell spawn at Github decided to double zip our Github Actions artifacts
-        # So we need to unzip it twice
-        for i in range(2):
-            result = subprocess.run(
-                ["/usr/bin/ditto", "-xk", str(self.constants.payload_path / "OpenCore-Patcher-GUI.app.zip"), str(self.constants.payload_path)], capture_output=True
-            )
-            if result.returncode != 0:
-                logging.error(f"Failed to extract update.")
-                subprocess_wrapper.log(result)
-                wx.CallAfter(self.progress_bar_animation.stop_pulse)
-                wx.CallAfter(self.progress_bar.SetValue, 0)
-                wx.CallAfter(wx.MessageBox, f"Failed to extract update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
-                wx.CallAfter(sys.exit, 1)
-                break
+        logging.info("Extracting nightly update")
+        if Path(self.pkg_download_path).exists():
+            subprocess.run(["/bin/rm", "-rf", str(self.pkg_download_path)])
 
-            if Path(self.application_path).exists():
-                break
-
-            if i == 1:
-                logging.error("Failed to extract update. Error: Update file does not exist")
-                wx.CallAfter(self.progress_bar_animation.stop_pulse)
-                wx.CallAfter(self.progress_bar.SetValue, 0)
-                wx.CallAfter(wx.MessageBox, "Failed to extract update. Error: Update file does not exist", "Critical Error!", wx.OK | wx.ICON_ERROR)
-                wx.CallAfter(sys.exit, 1)
-                break
+        result = subprocess.run(
+            ["/usr/bin/ditto", "-xk", str(self.constants.payload_path / "OpenCore-Patcher.pkg.zip"), str(self.constants.payload_path)], capture_output=True
+        )
+        if result.returncode != 0:
+            logging.error(f"Failed to extract update.")
+            subprocess_wrapper.log(result)
+            wx.CallAfter(self.progress_bar_animation.stop_pulse)
+            wx.CallAfter(self.progress_bar.SetValue, 0)
+            wx.CallAfter(wx.MessageBox, f"Failed to extract update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
+            wx.CallAfter(sys.exit, 1)
 
 
     def _install_update(self) -> None:
         """
-        Installs update to '/Library/Application Support/Dortania/OpenCore-Patcher.app'
+        Install PKG
         """
-        logging.info(f"Installing update: {self.application_path}")
-
-        # Create bash script to run as root
-        script = f"""#!/bin/bash
-# Check if '/Library/Application Support/Dortania' exists
-if [ ! -d "/Library/Application Support/Dortania" ]; then
-    mkdir -p "/Library/Application Support/Dortania"
-fi
-
-# Check if 'OpenCore-Patcher.app' exists
-if [ -d "/Library/Application Support/Dortania/OpenCore-Patcher.app" ]; then
-    rm -rf "/Library/Application Support/Dortania/OpenCore-Patcher.app"
-fi
-
-if [ -d "/Applications/OpenCore-Patcher.app" ]; then
-    rm -rf "/Applications/OpenCore-Patcher.app"
-fi
-
-# Move '/tmp/OpenCore-Patcher.app' to '/Library/Application Support/Dortania'
-mv "{str(self.application_path)}" "/Library/Application Support/Dortania/OpenCore-Patcher.app"
-
-# Check if '/Applications/OpenCore-Patcher.app' exists
-ln -s "/Library/Application Support/Dortania/OpenCore-Patcher.app" "/Applications/OpenCore-Patcher.app"
-
-# Create update.plist with info about update
-cat << EOF > "/Library/Application Support/Dortania/update.plist"
-<?xml version="1.0" encoding="UTF-8"?>
-<plist version="1.0">
-<dict>
-    <key>CFBundleShortVersionString</key>
-    <string>{self.version_label}</string>
-    <key>CFBundleVersion</key>
-    <string>{self.version_label}</string>
-    <key>InstallationDate</key>
-    <date>{datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")}</date>
-    <key>InstallationSource</key>
-    <string>{self.url}</string>
-</dict>
-</plist>
-EOF
-"""
-        # Write script to file
-        with open(self.constants.payload_path / "update.sh", "w") as f:
-            f.write(script)
-
-        # Execute script
-        args = [self.constants.oclp_helper_path, "/bin/sh", str(self.constants.payload_path / "update.sh")]
-        result = subprocess.run(args, capture_output=True)
+        logging.info(f"Installing update: {self.pkg_download_path}")
+        result = subprocess_wrapper.run_as_root(["/usr/sbin/installer", "-pkg", str(self.pkg_download_path), "-target", "/"], capture_output=True)
         if result.returncode != 0:
             wx.CallAfter(self.progress_bar_animation.stop_pulse)
             wx.CallAfter(self.progress_bar.SetValue, 0)
@@ -282,7 +230,12 @@ EOF
             else:
                 logging.critical("Failed to install update.")
                 subprocess_wrapper.log(result)
-                wx.CallAfter(wx.MessageBox, f"Failed to install update. Error: {result.stderr.decode('utf-8')}", "Critical Error!", wx.OK | wx.ICON_ERROR)
+
+                # If it fails, fall back to opening the PKG
+                logging.error("Failed to install update, attempting to open PKG")
+                subprocess.run(["/usr/bin/open", str(self.pkg_download_path)])
+
+                wx.CallAfter(wx.MessageBox, f"Failed to install update. Please try installing the OpenCore-Patcher.pkg manually or download from GitHub", "Critical Error!", wx.OK | wx.ICON_ERROR)
             wx.CallAfter(sys.exit, 1)
 
 
@@ -291,4 +244,4 @@ EOF
         Launches newly installed update
         """
         logging.info("Launching update: '/Library/Application Support/Dortania/OpenCore-Patcher.app'")
-        subprocess.Popen(["/Library/Application Support/Dortania/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher", "--update_installed"])
+        subprocess.run(["/usr/bin/open", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "--args", "--update_installed"])

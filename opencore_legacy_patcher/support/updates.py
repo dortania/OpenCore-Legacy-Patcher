@@ -78,33 +78,6 @@ class CheckBinaryUpdates:
 
         return first_version > second_version
 
-    def _determine_local_build_type(self) -> str:
-        """
-        Check if the local build is a GUI or TUI build
-
-        Returns:
-            str: "GUI" or "TUI"
-        """
-
-        return "GUI" if self.constants.wxpython_variant else "TUI"
-
-    def _determine_remote_type(self, remote_name: str) -> str:
-        """
-        Check if the remote build is a GUI or TUI build
-
-        Parameters:
-            remote_name (str): Name of the remote build
-
-        Returns:
-            str: "GUI" or "TUI"
-        """
-
-        if "TUI" in remote_name:
-            return "TUI"
-        elif "GUI" in remote_name:
-            return "GUI"
-        else:
-            return "Unknown"
 
     def check_binary_updates(self) -> Optional[dict]:
         """
@@ -143,12 +116,11 @@ class CheckBinaryUpdates:
 
         for asset in data_set["assets"]:
             logging.info(f"Found asset: {asset['name']}")
-            if self._determine_remote_type(asset["name"]) == self._determine_local_build_type():
+            if asset["name"] == "OpenCore-Patcher.pkg":
                 self.latest_details = {
                     "Name": asset["name"],
                     "Version": latest_remote_version,
                     "Link": asset["browser_download_url"],
-                    "Type": self._determine_remote_type(asset["name"]),
                     "Github Link": f"https://github.com/dortania/OpenCore-Legacy-Patcher/releases/{latest_remote_version}",
                 }
                 return self.latest_details
