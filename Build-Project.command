@@ -11,13 +11,12 @@ import plistlib
 
 from pathlib import Path
 
-from ci_tooling.build_module import (
+from ci_tooling.build_modules import (
     application,
     disk_images,
     package,
     sign_notarize,
-    shim,
-    autopkg
+    shim
 )
 
 from opencore_legacy_patcher import constants
@@ -50,13 +49,14 @@ def main() -> None:
     parser.add_argument("--reset-pyinstaller-cache", action="store_true", help="Clean PyInstaller Cache", default=False)
 
     # CI/CD Parameters for individual steps
+    # If not specified, will run all steps
     parser.add_argument("--run-as-individual-steps", action="store_true", help="CI: Run as individual steps", default=False)
-    parser.add_argument("--prepare-assets", action="store_true", help="CI: Prepare Assets", default=False)
     parser.add_argument("--prepare-application", action="store_true", help="CI: Prepare Application", default=False)
     parser.add_argument("--prepare-package", action="store_true", help="CI: Prepare Package", default=False)
 
     # CI/CD Parameters for additional steps
-    parser.add_argument("--prepare-autopkg", action="store_true", help="CI: Prepare AutoPkg Assets", default=False)
+    # If not specified, will not run additional steps
+    parser.add_argument("--prepare-assets", action="store_true", help="CI: Prepare Assets", default=False)
     parser.add_argument("--prepare-shim", action="store_true", help="CI: Prepare Update Shim", default=False)
 
     # Analytics Parameters
@@ -65,7 +65,6 @@ def main() -> None:
 
     # Help
     parser.add_argument("--help", action="store_true", help="Show this help message and exit", default=False)
-
 
     # Parse Arguments
     args = parser.parse_args()
@@ -80,7 +79,7 @@ def main() -> None:
     os.chdir(Path(__file__).resolve().parent)
 
 
-    if (args.run_as_individual_steps is False) or (args.run_as_individual_steps and args.prepare_assets):
+    if (args.prepare_assets):
         # Prepare workspace
         disk_images.GenerateDiskImages(args.reset_dmg_cache).generate()
 
@@ -137,16 +136,13 @@ def main() -> None:
             notarization_team_id=args.notarization_team_id,
         ).sign_and_notarize()
 
-    # Build AutoPkg-Assets.pkg
-    if args.prepare_autopkg:
-        # TODO: Migrate AutoPkg to Python
-        autopkg.GenerateAutoPkg().generate()
-
     # Create Update Shim
     if args.prepare_shim:
         shim.GenerateShim().generate()
         if Path("dist/OpenCore-Patcher.app").exists():
-            Path("dist/OpenCore-Patcher.app").rename("dist/OpenCore-Patcher-Core.app")
+            if Path("dist/OpenCore-Patcher (Original).app").exists():
+                Path("dist/OpenCore-Patcher (Original).app").unlink()
+            Path("dist/OpenCore-Patcher.app").rename("dist/OpenCore-Patcher (Original).app")
         Path("dist/OpenCore-Patcher (Shim).app").rename("dist/OpenCore-Patcher.app")
 
         # Update app version in Info.plist

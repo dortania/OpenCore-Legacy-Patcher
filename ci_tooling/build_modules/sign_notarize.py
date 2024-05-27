@@ -1,3 +1,7 @@
+"""
+sign_notarize.py: Sign and Notarize a file
+"""
+
 import mac_signing_buddy
 import macos_pkg_builder
 

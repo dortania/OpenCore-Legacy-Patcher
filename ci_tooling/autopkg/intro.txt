@@ -1,7 +1,0 @@
-DO NOT RUN AUTOPKG-ASSETS MANUALLY!
-
-THIS CAN BREAK YOUR SYSTEM'S INSTALL!
-
-This package should only ever be invoked by the Patcher itself, never downloaded or run by the user. Download the OpenCore-Patcher.app on the Github Repository.
-
-https://github.com/dortania/OpenCore-Legacy-Patcher/releases/

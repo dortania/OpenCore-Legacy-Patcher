@@ -1,4 +1,6 @@
-
+"""
+shim.py: Generate Update Shim
+"""
 
 from pathlib import Path
 

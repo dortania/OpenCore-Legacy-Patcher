@@ -1,3 +1,7 @@
+"""
+package.py: Generate packages (Installer, Uninstaller, AutoPkg-Assets)
+"""
+
 import macos_pkg_builder
 from opencore_legacy_patcher import constants
 
@@ -15,6 +19,10 @@ class GeneratePackage:
             "./dist/OpenCore-Patcher.app": "/Library/Application Support/Dortania/OpenCore-Patcher.app",
             "./ci_tooling/privileged_helper_tool/com.dortania.opencore-legacy-patcher.privileged-helper": "/Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper",
         }
+        self._autopkg_files = {
+            "./payloads/Launch Services/com.dortania.opencore-legacy-patcher.auto-patch.plist": "/Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist",
+        }
+        self._autopkg_files.update(self._files)
 
 
     def _generate_installer_welcome(self) -> str:
@@ -84,4 +92,19 @@ class GeneratePackage:
             pkg_file_structure=self._files,
             pkg_title="OpenCore Legacy Patcher",
             pkg_welcome=self._generate_installer_welcome(),
+        ).build() is True
+
+        print("Generating AutoPkg-Assets.pkg")
+        assert macos_pkg_builder.Packages(
+            pkg_output="./dist/AutoPkg-Assets.pkg",
+            pkg_bundle_id="com.dortania.pkg.AutoPkg-Assets",
+            pkg_version=constants.Constants().patcher_version,
+            pkg_allow_relocation=False,
+            pkg_as_distribution=True,
+            pkg_background="./ci_tooling/autopkg/PkgBackground.png",
+            pkg_preinstall_script="./ci_tooling/autopkg/preinstall.sh",
+            pkg_postinstall_script="./ci_tooling/autopkg/postinstall.sh",
+            pkg_file_structure=self._autopkg_files,
+            pkg_title="AutoPkg Assets",
+            pkg_welcome="# DO NOT RUN AUTOPKG-ASSETS MANUALLY!\n\n## THIS CAN BREAK YOUR SYSTEM'S INSTALL!\n\nThis package should only ever be invoked by the Patcher itself, never downloaded or run by the user. Download the OpenCore-Patcher.pkg on the Github Repository.\n\n[OpenCore Legacy Patcher GitHub Release](https://github.com/dortania/OpenCore-Legacy-Patcher/releases/)",
         ).build() is True

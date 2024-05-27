@@ -1,3 +1,6 @@
+"""
+disk_images.py: Fetch and generate disk images (Universal-Binaries.dmg, payloads.dmg)
+"""
 
 import subprocess
 
