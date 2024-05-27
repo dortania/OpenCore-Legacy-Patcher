@@ -152,6 +152,7 @@ def main() -> None:
         # Update app version in Info.plist
         plist_path = Path("dist/OpenCore-Patcher.app/Contents/Info.plist")
         contents = plistlib.load(plist_path.open("rb"))
+        contents["CFBundleVersion"] = constants.Constants().patcher_version
         contents["CFBundleShortVersionString"] = constants.Constants().patcher_version
         plistlib.dump(contents, plist_path.open("wb"))
 
