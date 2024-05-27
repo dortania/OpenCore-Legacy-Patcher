@@ -336,11 +336,7 @@ Please check the Github page for more information about this release."""
 
     def install_auto_patcher_launch_agent(self, kdk_caching_needed: bool = False):
         """
-        Install the Auto Patcher Launch Agent
-
-        Installs the following:
-            - OpenCore-Patcher.app in /Library/Application Support/Dortania/
-            - com.dortania.opencore-legacy-patcher.auto-patch.plist in /Library/LaunchAgents/
+        Install patcher launch services
 
         See start_auto_patch() comments for more info
         """

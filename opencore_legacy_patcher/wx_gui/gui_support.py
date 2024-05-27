@@ -66,8 +66,6 @@ class GenerateMenubar:
 
         aboutItem = fileMenu.Append(wx.ID_ABOUT, "&About OpenCore Legacy Patcher")
         fileMenu.AppendSeparator()
-        relaunchItem = fileMenu.Append(wx.ID_ANY, "&Relaunch as Root")
-        fileMenu.AppendSeparator()
         revealLogItem = fileMenu.Append(wx.ID_ANY, "&Reveal Log File")
 
         menubar.Append(fileMenu, "&File")
@@ -75,9 +73,6 @@ class GenerateMenubar:
 
         self.frame.Bind(wx.EVT_MENU, lambda event: gui_about.AboutFrame(self.constants), aboutItem)
         self.frame.Bind(wx.EVT_MENU, lambda event: subprocess.run(["/usr/bin/open", "--reveal", self.constants.log_filepath]), revealLogItem)
-
-        if os.geteuid() == 0 or subprocess_wrapper.supports_privileged_helper() is True:
-            relaunchItem.Enable(False)
 
 
 class GaugePulseCallback:

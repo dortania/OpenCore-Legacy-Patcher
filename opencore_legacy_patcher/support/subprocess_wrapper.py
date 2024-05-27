@@ -9,9 +9,6 @@ import logging
 import subprocess
 
 from pathlib import Path
-from functools import cache
-
-from . import utilities
 
 
 OCLP_PRIVILEGED_HELPER = "/Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper"
@@ -37,17 +34,6 @@ class PrivilegedHelperErrorCodes(enum.IntEnum):
     OCLP_PHT_ERROR_CATCH_ALL                   = 170
 
 
-@cache
-def supports_privileged_helper() -> bool:
-    """
-    Check if Privileged Helper Tool is supported.
-
-    When privileged helper is officially shipped, this function should always return True.
-    Something would have gone very wrong if it doesn't exist past that point.
-    """
-    return Path(OCLP_PRIVILEGED_HELPER).exists()
-
-
 def run(*args, **kwargs) -> subprocess.CompletedProcess:
     """
     Basic subprocess.run wrapper.
@@ -65,14 +51,6 @@ def run_as_root(*args, **kwargs) -> subprocess.CompletedProcess:
     # Check if first argument exists
     if not Path(args[0][0]).exists():
         raise FileNotFoundError(f"File not found: {args[0][0]}")
-
-    if supports_privileged_helper() is False:
-        # Fall back to old logic
-        # This should be removed when we start shipping the helper tool officially
-        if os.getuid() == 0 or utilities.check_cli_args() is not None:
-            return subprocess.run(*args, **kwargs)
-        else:
-            return subprocess.run(["/usr/bin/sudo"] + [args[0][0]] + args[0][1:], **kwargs)
 
     return subprocess.run([OCLP_PRIVILEGED_HELPER] + [args[0][0]] + args[0][1:], **kwargs)
 

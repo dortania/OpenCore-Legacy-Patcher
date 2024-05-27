@@ -131,9 +131,6 @@ class InitializeLoggingSupport:
         This in turn breaks normal OCLP execution to write to log file
         """
 
-        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
-            return
-
         paths = [
             self.log_filepath,        # ~/Library/Logs/Dortania/OpenCore-Patcher_{version}_{date}.log
             self.log_filepath.parent, # ~/Library/Logs/Dortania

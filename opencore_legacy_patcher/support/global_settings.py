@@ -116,9 +116,6 @@ class GlobalEnviromentSettings:
         This in turn breaks normal OCLP execution to write to settings file
         """
 
-        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
-            return
-
         # Set file permission to allow any user to write to log file
         result = subprocess_wrapper.run_as_root(["/bin/chmod", "777", self.global_settings_plist], capture_output=True)
         if result.returncode != 0:
