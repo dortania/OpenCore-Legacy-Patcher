@@ -253,8 +253,11 @@ class SysPatchDisplayFrame(wx.Frame):
             global_constants=self.constants,
             patches=patches,
         )
+        self.frame_modal.Hide()
+        self.frame_modal.Destroy()
+        self.frame.Hide()
+        self.frame.Destroy()
         frame.start_root_patching()
-        self.on_return_dismiss() if self.init_with_parent else self.on_return_to_main_menu()
 
 
     def on_revert_root_patching(self, patches: dict):
@@ -264,8 +267,11 @@ class SysPatchDisplayFrame(wx.Frame):
             global_constants=self.constants,
             patches=patches,
         )
+        self.frame_modal.Hide()
+        self.frame_modal.Destroy()
+        self.frame.Hide()
+        self.frame.Destroy()
         frame.revert_root_patching()
-        self.on_return_dismiss() if self.init_with_parent else self.on_return_to_main_menu()
 
 
     def on_return_to_main_menu(self, event: wx.Event = None):

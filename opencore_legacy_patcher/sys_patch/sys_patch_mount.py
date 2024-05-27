@@ -33,6 +33,9 @@ class SysPatchMount:
         If none, failed to mount.
         """
         result = self._mount_root_volume()
+        if result is None:
+            logging.error("Failed to mount root volume")
+            return None
         if not Path(result).exists():
             logging.error(f"Attempted to mount root volume, but failed: {result}")
             return None
