@@ -64,11 +64,8 @@ jobs:
           --installer-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY }}"
           --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
           --git-branch "${{ env.branch }}" --git-commit-url "${{ env.commiturl }}" --git-commit-date "${{ env.commitdate }}"
-          --reset-dmg-cache --reset-pyinstaller-cache
+          --reset-dmg-cache --reset-pyinstaller-cache --prepare-shim --prepare-autopkg
           --analytics-key "${{ env.ANALYTICS_KEY }}" --analytics-endpoint "${{ env.ANALYTICS_SITE }}"
-
-      - name: Generate support package
-        run: /usr/local/bin/packagesbuild ./ci_tooling/autopkg/AutoPkg-Assets-Setup.pkgproj
 
       - name: Prepare App for Upload
         run: /bin/mv ./dist/OpenCore-Patcher.app.zip ./OpenCore-Patcher-GUI.app.zip

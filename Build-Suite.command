@@ -13,7 +13,9 @@ from ci_tooling.build_module import (
     application,
     disk_images,
     package,
-    sign_notarize
+    sign_notarize,
+    shim,
+    autopkg
 )
 
 
@@ -42,6 +44,8 @@ def main() -> None:
     # Local Build Parameters
     parser.add_argument("--reset-dmg-cache", action="store_true", help="Redownload PatcherSupportPkg.dmg and regenerate payloads.dmg", default=False)
     parser.add_argument("--reset-pyinstaller-cache", action="store_true", help="Clean PyInstaller Cache", default=False)
+    parser.add_argument("--prepare-shim", action="store_true", help="Prepare Update Shim", default=False)
+    parser.add_argument("--prepare-autopkg", action="store_true", help="Prepare AutoPkg Assets", default=False)
 
     # Analytics Parameters
     parser.add_argument("--analytics-key", type=str, help="Analytics Key", default=None)
@@ -96,6 +100,25 @@ def main() -> None:
         notarization_password=args.notarization_password,
         notarization_team_id=args.notarization_team_id,
     ).sign_and_notarize()
+
+    # Build AutoPkg-Assets.pkg
+    if args.prepare_autopkg:
+        autopkg.GenerateAutoPkg().generate()
+
+    # Create Update Shim
+    if args.prepare_shim:
+        shim.GenerateShim().generate()
+        if Path("dist/OpenCore-Patcher.app").exists():
+            Path("dist/OpenCore-Patcher.app").rename("dist/OpenCore-Patcher-Core.app")
+        Path("dist/OpenCore-Patcher (Shim).app").rename("dist/OpenCore-Patcher.app")
+
+        sign_notarize.SignAndNotarize(
+            path=Path("dist/OpenCore-Patcher.app"),
+            signing_identity=args.application_signing_identity,
+            notarization_apple_id=args.notarization_apple_id,
+            notarization_password=args.notarization_password,
+            notarization_team_id=args.notarization_team_id,
+        ).sign_and_notarize()
 
 
 if __name__ == '__main__':
