@@ -7,6 +7,7 @@ import os
 import sys
 import time
 import argparse
+import plistlib
 
 from pathlib import Path
 
@@ -18,6 +19,8 @@ from ci_tooling.build_module import (
     shim,
     autopkg
 )
+
+from opencore_legacy_patcher import constants
 
 
 def main() -> None:
@@ -136,6 +139,12 @@ def main() -> None:
         if Path("dist/OpenCore-Patcher.app").exists():
             Path("dist/OpenCore-Patcher.app").rename("dist/OpenCore-Patcher-Core.app")
         Path("dist/OpenCore-Patcher (Shim).app").rename("dist/OpenCore-Patcher.app")
+
+        # Update app version in Info.plist
+        plist_path = Path("dist/OpenCore-Patcher.app/Contents/Info.plist")
+        contents = plistlib.load(plist_path.open("rb"))
+        contents["CFBundleShortVersionString"] = constants.Constants().patcher_version
+        plistlib.dump(contents, plist_path.open("wb"))
 
         sign_notarize.SignAndNotarize(
             path=Path("dist/OpenCore-Patcher.app"),
