@@ -57,15 +57,39 @@ jobs:
       #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip download --platform macosx_10_9_universal2 --only-binary=:all: charset-normalizer
       #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install charset_normalizer-*-macosx_10_9_universal2.whl
 
-      - name: Build Binary
+      - name: Prepare Assets (--prepare-assets)
+        run: >
+          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Suite.command
+          --run-as-individual-steps --prepare-assets --reset-dmg-cache
+
+      - name: Prepare Application (--prepare-application)
         run: >
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Suite.command
           --application-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}"
-          --installer-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY }}"
           --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
           --git-branch "${{ env.branch }}" --git-commit-url "${{ env.commiturl }}" --git-commit-date "${{ env.commitdate }}"
-          --reset-dmg-cache --reset-pyinstaller-cache --prepare-shim --prepare-autopkg
+          --reset-pyinstaller-cache
           --analytics-key "${{ env.ANALYTICS_KEY }}" --analytics-endpoint "${{ env.ANALYTICS_SITE }}"
+          --prepare-application
+
+      - name: Prepare Package (--prepare-package)
+        run: >
+          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Suite.command
+          --installer-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY }}"
+          --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
+          --prepare-package
+
+      - name: Prepare AutoPkg (--prepare-autopkg)
+        run: >
+          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Suite.command
+          --prepare-autopkg
+
+      - name: Prepare Update Shim (--prepare-shim)
+        run: >
+          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Suite.command
+          --application-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}"
+          --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
+          --prepare-shim
 
       - name: Prepare App for Upload
         run: /bin/mv ./dist/OpenCore-Patcher.app.zip ./OpenCore-Patcher-GUI.app.zip

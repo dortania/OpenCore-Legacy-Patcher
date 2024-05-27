@@ -4,6 +4,7 @@ Build-Suite.command: Generate OpenCore-Patcher.app and OpenCore-Patcher.pkg
 """
 
 import os
+import sys
 import time
 import argparse
 
@@ -24,7 +25,7 @@ def main() -> None:
     Parse Command Line Arguments
     """
 
-    parser = argparse.ArgumentParser(description="Build OpenCore Legacy Patcher Suite")
+    parser = argparse.ArgumentParser(description="Build OpenCore Legacy Patcher Suite", add_help=False)
 
     # Signing Parameters
     parser.add_argument("--application-signing-identity", type=str, help="Application Signing Identity")
@@ -44,65 +45,89 @@ def main() -> None:
     # Local Build Parameters
     parser.add_argument("--reset-dmg-cache", action="store_true", help="Redownload PatcherSupportPkg.dmg and regenerate payloads.dmg", default=False)
     parser.add_argument("--reset-pyinstaller-cache", action="store_true", help="Clean PyInstaller Cache", default=False)
-    parser.add_argument("--prepare-shim", action="store_true", help="Prepare Update Shim", default=False)
-    parser.add_argument("--prepare-autopkg", action="store_true", help="Prepare AutoPkg Assets", default=False)
+
+    # CI/CD Parameters for individual steps
+    parser.add_argument("--run-as-individual-steps", action="store_true", help="CI: Run as individual steps", default=False)
+    parser.add_argument("--prepare-assets", action="store_true", help="CI: Prepare Assets", default=False)
+    parser.add_argument("--prepare-application", action="store_true", help="CI: Prepare Application", default=False)
+    parser.add_argument("--prepare-package", action="store_true", help="CI: Prepare Package", default=False)
+
+    # CI/CD Parameters for additional steps
+    parser.add_argument("--prepare-autopkg", action="store_true", help="CI: Prepare AutoPkg Assets", default=False)
+    parser.add_argument("--prepare-shim", action="store_true", help="CI: Prepare Update Shim", default=False)
 
     # Analytics Parameters
     parser.add_argument("--analytics-key", type=str, help="Analytics Key", default=None)
     parser.add_argument("--analytics-endpoint", type=str, help="Analytics Endpoint", default=None)
 
+    # Help
+    parser.add_argument("--help", action="store_true", help="Show this help message and exit", default=False)
+
+
     # Parse Arguments
     args = parser.parse_args()
+
+    if args.help:
+        parser.print_help()
+        print("\n\nIf running outside of CI/CD, simply run the following command:")
+        print("$ python3 Build-Suite.command")
+        sys.exit(0)
 
     # Set 'Current Working Directory' to script directory
     os.chdir(Path(__file__).resolve().parent)
 
-    # Prepare workspace
-    disk_images.GenerateDiskImages(args.reset_dmg_cache).generate()
 
-    # Build OpenCore-Patcher.app
-    application.GenerateApplication(
-        reset_pyinstaller_cache=args.reset_pyinstaller_cache,
-        git_branch=args.git_branch,
-        git_commit_url=args.git_commit_url,
-        git_commit_date=args.git_commit_date,
-        analytics_key=args.analytics_key,
-        analytics_endpoint=args.analytics_endpoint,
-    ).generate()
+    if (args.run_as_individual_steps is False) or (args.run_as_individual_steps and args.prepare_assets):
+        # Prepare workspace
+        disk_images.GenerateDiskImages(args.reset_dmg_cache).generate()
 
-    # Sign OpenCore-Patcher.app
-    sign_notarize.SignAndNotarize(
-        path=Path("dist/OpenCore-Patcher.app"),
-        signing_identity=args.application_signing_identity,
-        notarization_apple_id=args.notarization_apple_id,
-        notarization_password=args.notarization_password,
-        notarization_team_id=args.notarization_team_id,
-        entitlements=Path("./ci_tooling/entitlements/entitlements.plist"),
-    ).sign_and_notarize()
+    if (args.run_as_individual_steps is False) or (args.run_as_individual_steps and args.prepare_application):
+        # Build OpenCore-Patcher.app
+        application.GenerateApplication(
+            reset_pyinstaller_cache=args.reset_pyinstaller_cache,
+            git_branch=args.git_branch,
+            git_commit_url=args.git_commit_url,
+            git_commit_date=args.git_commit_date,
+            analytics_key=args.analytics_key,
+            analytics_endpoint=args.analytics_endpoint,
+        ).generate()
 
-    # Build OpenCore-Patcher.pkg and OpenCore-Patcher-Uninstaller.pkg
-    package.GeneratePackage().generate()
+        # Sign OpenCore-Patcher.app
+        sign_notarize.SignAndNotarize(
+            path=Path("dist/OpenCore-Patcher.app"),
+            signing_identity=args.application_signing_identity,
+            notarization_apple_id=args.notarization_apple_id,
+            notarization_password=args.notarization_password,
+            notarization_team_id=args.notarization_team_id,
+            entitlements=Path("./ci_tooling/entitlements/entitlements.plist"),
+        ).sign_and_notarize()
 
-    # Sign OpenCore-Patcher.pkg
-    sign_notarize.SignAndNotarize(
-        path=Path("dist/OpenCore-Patcher.pkg"),
-        signing_identity=args.installer_signing_identity,
-        notarization_apple_id=args.notarization_apple_id,
-        notarization_password=args.notarization_password,
-        notarization_team_id=args.notarization_team_id,
-    ).sign_and_notarize()
 
-    # Sign OpenCore-Patcher-Uninstaller.pkg
-    sign_notarize.SignAndNotarize(
-        path=Path("dist/OpenCore-Patcher-Uninstaller.pkg"),
-        signing_identity=args.installer_signing_identity,
-        notarization_apple_id=args.notarization_apple_id,
-        notarization_password=args.notarization_password,
-        notarization_team_id=args.notarization_team_id,
-    ).sign_and_notarize()
+    if (args.run_as_individual_steps is False) or (args.run_as_individual_steps and args.prepare_package):
+        # Build OpenCore-Patcher.pkg and OpenCore-Patcher-Uninstaller.pkg
+        package.GeneratePackage().generate()
+
+        # Sign OpenCore-Patcher.pkg
+        sign_notarize.SignAndNotarize(
+            path=Path("dist/OpenCore-Patcher.pkg"),
+            signing_identity=args.installer_signing_identity,
+            notarization_apple_id=args.notarization_apple_id,
+            notarization_password=args.notarization_password,
+            notarization_team_id=args.notarization_team_id,
+        ).sign_and_notarize()
+
+        # Sign OpenCore-Patcher-Uninstaller.pkg
+        sign_notarize.SignAndNotarize(
+            path=Path("dist/OpenCore-Patcher-Uninstaller.pkg"),
+            signing_identity=args.installer_signing_identity,
+            notarization_apple_id=args.notarization_apple_id,
+            notarization_password=args.notarization_password,
+            notarization_team_id=args.notarization_team_id,
+        ).sign_and_notarize()
 
     # Build AutoPkg-Assets.pkg
     if args.prepare_autopkg:
+        # TODO: Migrate AutoPkg to Python
         autopkg.GenerateAutoPkg().generate()
 
     # Create Update Shim
