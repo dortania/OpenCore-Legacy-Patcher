@@ -71,6 +71,7 @@ jobs:
           --reset-pyinstaller-cache
           --analytics-key "${{ env.ANALYTICS_KEY }}" --analytics-endpoint "${{ env.ANALYTICS_SITE }}"
           --prepare-application
+          --run-as-individual-steps
 
       - name: Prepare Package (--prepare-package)
         run: >
@@ -78,11 +79,13 @@ jobs:
           --installer-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY }}"
           --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
           --prepare-package
+          --run-as-individual-steps
 
       - name: Prepare AutoPkg (--prepare-autopkg)
         run: >
           /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Suite.command
           --prepare-autopkg
+          --run-as-individual-steps
 
       - name: Prepare Update Shim (--prepare-shim)
         run: >
@@ -90,6 +93,7 @@ jobs:
           --application-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}"
           --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
           --prepare-shim
+          --run-as-individual-steps
 
       - name: Prepare App for Upload
         run: /bin/mv ./dist/OpenCore-Patcher.app.zip ./OpenCore-Patcher-GUI.app.zip
