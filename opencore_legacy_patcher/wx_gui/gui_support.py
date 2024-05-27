@@ -66,19 +66,13 @@ class GenerateMenubar:
 
         aboutItem = fileMenu.Append(wx.ID_ABOUT, "&About OpenCore Legacy Patcher")
         fileMenu.AppendSeparator()
-        relaunchItem = fileMenu.Append(wx.ID_ANY, "&Relaunch as Root")
-        fileMenu.AppendSeparator()
         revealLogItem = fileMenu.Append(wx.ID_ANY, "&Reveal Log File")
 
         menubar.Append(fileMenu, "&File")
         self.frame.SetMenuBar(menubar)
 
         self.frame.Bind(wx.EVT_MENU, lambda event: gui_about.AboutFrame(self.constants), aboutItem)
-        self.frame.Bind(wx.EVT_MENU, lambda event: RelaunchApplicationAsRoot(self.frame, self.constants).relaunch(None), relaunchItem)
         self.frame.Bind(wx.EVT_MENU, lambda event: subprocess.run(["/usr/bin/open", "--reveal", self.constants.log_filepath]), revealLogItem)
-
-        if os.geteuid() == 0 or subprocess_wrapper.supports_privileged_helper() is True:
-            relaunchItem.Enable(False)
 
 
 class GaugePulseCallback:
@@ -298,88 +292,3 @@ class RestartHost:
             except applescript.ScriptError as e:
                 logging.error(f"Error while trying to reboot: {e}")
             sys.exit(0)
-
-
-class RelaunchApplicationAsRoot:
-    """
-    Relaunches the application as root
-    """
-
-    def __init__(self, frame: wx.Frame, global_constants: constants.Constants) -> None:
-        self.constants = global_constants
-        self.frame: wx.Frame = frame
-
-
-    def relaunch(self, event: wx.Event):
-
-        self.dialog = wx.MessageDialog(
-            self.frame,
-            "OpenCore Legacy Patcher needs to relaunch as admin to continue. You will be prompted to enter your password.",
-            "Relaunch as root?",
-            wx.YES_NO | wx.ICON_QUESTION
-        )
-
-        # Show Dialog Box
-        if self.dialog.ShowModal() != wx.ID_YES:
-            logging.info("User cancelled relaunch")
-            return
-
-        timer: int = 5
-        program_arguments: str = ""
-
-        if event:
-            if event.GetEventObject() != wx.Menu:
-                try:
-                    if event.GetEventObject().GetLabel() in ["Start Root Patching", "Reinstall Root Patches"]:
-                        program_arguments = " --gui_patch"
-                    elif event.GetEventObject().GetLabel() == "Revert Root Patches":
-                        program_arguments = " --gui_unpatch"
-                except TypeError:
-                    pass
-
-        if self.constants.launcher_script is None:
-            program_arguments = f"'{self.constants.launcher_binary}'{program_arguments}"
-        else:
-            program_arguments = f"{self.constants.launcher_binary} {self.constants.launcher_script}{program_arguments}"
-
-        # Relaunch as root
-        args = [
-            "/usr/bin/osascript",
-            "-e",
-            f'''do shell script "{program_arguments}"'''
-            ' with prompt "OpenCore Legacy Patcher needs administrator privileges to relaunch as admin."'
-            " with administrator privileges"
-            " without altering line endings",
-        ]
-
-        self.frame.DestroyChildren()
-        self.frame.SetSize(300, 300)
-        self.frame.Centre()
-
-        # Header
-        header = wx.StaticText(self.frame, label="Relaunching as root", pos=(-1, 5))
-        header.SetFont(font_factory(19, wx.FONTWEIGHT_BOLD))
-        header.Centre(wx.HORIZONTAL)
-
-        # Add count down label
-        countdown_label = wx.StaticText(self.frame, label=f"Closing old process in {timer} seconds", pos=(0, header.GetPosition().y + header.GetSize().height + 3))
-        countdown_label.SetFont(font_factory(13, wx.FONTWEIGHT_NORMAL))
-        countdown_label.Centre(wx.HORIZONTAL)
-
-        # Set size of frame
-        self.frame.SetSize((-1, countdown_label.GetPosition().y + countdown_label.GetSize().height + 40))
-
-        wx.Yield()
-
-        logging.info(f"Relaunching as root with command: {program_arguments}")
-        subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-        while True:
-            wx.Yield()
-            countdown_label.SetLabel(f"Closing old process in {timer} seconds")
-            time.sleep(1)
-            timer -= 1
-            if timer == 0:
-                break
-
-        sys.exit(0)

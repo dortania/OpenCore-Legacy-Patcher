@@ -13,7 +13,6 @@ from pathlib import Path
 from .. import constants
 
 from ..sys_patch import sys_patch_detect
-from ..support   import subprocess_wrapper
 
 from ..wx_gui import (
     gui_main_menu,
@@ -242,11 +241,6 @@ class SysPatchDisplayFrame(wx.Frame):
         if can_unpatch is False:
             revert_button.Disable()
 
-        # Relaunch as root if not root
-        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
-            start_button.Bind(wx.EVT_BUTTON, gui_support.RelaunchApplicationAsRoot(frame, self.constants).relaunch)
-            revert_button.Bind(wx.EVT_BUTTON, gui_support.RelaunchApplicationAsRoot(frame, self.constants).relaunch)
-
         # Set frame size
         frame.SetSize((-1, return_button.GetPosition().y + return_button.GetSize().height + 15))
         frame.ShowWindowModal()
@@ -259,8 +253,11 @@ class SysPatchDisplayFrame(wx.Frame):
             global_constants=self.constants,
             patches=patches,
         )
+        self.frame_modal.Hide()
+        self.frame_modal.Destroy()
+        self.frame.Hide()
+        self.frame.Destroy()
         frame.start_root_patching()
-        self.on_return_dismiss() if self.init_with_parent else self.on_return_to_main_menu()
 
 
     def on_revert_root_patching(self, patches: dict):
@@ -270,8 +267,11 @@ class SysPatchDisplayFrame(wx.Frame):
             global_constants=self.constants,
             patches=patches,
         )
+        self.frame_modal.Hide()
+        self.frame_modal.Destroy()
+        self.frame.Hide()
+        self.frame.Destroy()
         frame.revert_root_patching()
-        self.on_return_dismiss() if self.init_with_parent else self.on_return_to_main_menu()
 
 
     def on_return_to_main_menu(self, event: wx.Event = None):

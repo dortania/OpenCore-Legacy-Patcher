@@ -61,7 +61,6 @@ class InitializeLoggingSupport:
         self._attempt_initialize_logging_configuration()
         self._start_logging()
         self._implement_custom_traceback_handler()
-        self._fix_file_permission()
         self._clean_prior_version_logs()
 
 
@@ -121,29 +120,6 @@ class InitializeLoggingSupport:
                 log.unlink()
             except Exception as e:
                 logging.error(f"Failed to delete log file: {e}")
-
-
-    def _fix_file_permission(self) -> None:
-        """
-        Fixes file permission for log file
-
-        If OCLP was invoked as root, file permission will only allow root to write to log file
-        This in turn breaks normal OCLP execution to write to log file
-        """
-
-        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
-            return
-
-        paths = [
-            self.log_filepath,        # ~/Library/Logs/Dortania/OpenCore-Patcher_{version}_{date}.log
-            self.log_filepath.parent, # ~/Library/Logs/Dortania
-        ]
-
-        for path in paths:
-            result = subprocess_wrapper.run_as_root(["/bin/chmod", "777", path], capture_output=True)
-            if result.returncode != 0:
-                logging.error(f"Failed to fix log file permissions")
-                subprocess_wrapper.log(result)
 
 
     def _initialize_logging_configuration(self, log_to_file: bool = True) -> None:

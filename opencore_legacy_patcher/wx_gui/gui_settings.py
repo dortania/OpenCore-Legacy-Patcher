@@ -1303,7 +1303,7 @@ Hardware Information:
             title=self.title,
             global_constants=self.constants,
             screen_location=self.parent.GetPosition(),
-            url=f"https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython/{branch}/OpenCore-Patcher.app%20%28GUI%29.zip",
+            url=f"https://nightly.link/dortania/OpenCore-Legacy-Patcher/workflows/build-app-wxpython/{branch}/OpenCore-Patcher.pkg.zip",
             version_label="(Nightly)"
         )
 
@@ -1325,21 +1325,15 @@ Hardware Information:
         raise Exception("Test Exception")
 
     def on_mount_root_vol(self, event: wx.Event) -> None:
-        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
-            wx.MessageDialog(self.parent, "Please relaunch as Root to mount the Root Volume", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+        #Don't need to pass model as we're bypassing all logic
+        if sys_patch.PatchSysVolume("",self.constants)._mount_root_vol() == True:
+            wx.MessageDialog(self.parent, "Root Volume Mounted, remember to fix permissions before saving the Root Volume", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
         else:
-            #Don't need to pass model as we're bypassing all logic
-            if sys_patch.PatchSysVolume("",self.constants)._mount_root_vol() == True:
-                wx.MessageDialog(self.parent, "Root Volume Mounted, remember to fix permissions before saving the Root Volume", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
-            else:
-                wx.MessageDialog(self.parent, "Root Volume Mount Failed, check terminal output", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+            wx.MessageDialog(self.parent, "Root Volume Mount Failed, check terminal output", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
 
     def on_bless_root_vol(self, event: wx.Event) -> None:
-        if os.geteuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
-            wx.MessageDialog(self.parent, "Please relaunch as Root to save changes", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+        #Don't need to pass model as we're bypassing all logic
+        if sys_patch.PatchSysVolume("",self.constants)._rebuild_root_volume() == True:
+            wx.MessageDialog(self.parent, "Root Volume saved, please reboot to apply changes", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
         else:
-            #Don't need to pass model as we're bypassing all logic
-            if sys_patch.PatchSysVolume("",self.constants)._rebuild_root_volume() == True:
-                wx.MessageDialog(self.parent, "Root Volume saved, please reboot to apply changes", "Success", wx.OK | wx.ICON_INFORMATION).ShowModal()
-            else:
-                wx.MessageDialog(self.parent, "Root Volume update Failed, check terminal output", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+            wx.MessageDialog(self.parent, "Root Volume update Failed, check terminal output", "Error", wx.OK | wx.ICON_ERROR).ShowModal()

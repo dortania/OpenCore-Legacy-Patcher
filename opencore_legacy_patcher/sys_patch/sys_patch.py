@@ -920,13 +920,16 @@ class PatchSysVolume:
             return
 
         logging.info("- Verifying whether Root Patching possible")
-        if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is True:
-            logging.info("- Patcher is capable of patching")
-            if self._check_files():
-                if self._mount_root_vol() is True:
-                    self._patch_root_vol()
-                else:
-                    logging.info("- Recommend rebooting the machine and trying to patch again")
+        if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=not self.constants.wxpython_variant) is False:
+            logging.error("- Cannot continue with patching!!!")
+            return
+
+        logging.info("- Patcher is capable of patching")
+        if self._check_files():
+            if self._mount_root_vol() is True:
+                self._patch_root_vol()
+            else:
+                logging.info("- Recommend rebooting the machine and trying to patch again")
 
 
     def start_unpatch(self) -> None:
@@ -935,8 +938,11 @@ class PatchSysVolume:
         """
 
         logging.info("- Starting Unpatch Process")
-        if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=True) is True:
-            if self._mount_root_vol() is True:
-                self._unpatch_root_vol()
-            else:
-                logging.info("- Recommend rebooting the machine and trying to patch again")
+        if sys_patch_detect.DetectRootPatch(self.computer.real_model, self.constants).verify_patch_allowed(print_errors=True) is False:
+            logging.error("- Cannot continue with unpatching!!!")
+            return
+
+        if self._mount_root_vol() is True:
+            self._unpatch_root_vol()
+        else:
+            logging.info("- Recommend rebooting the machine and trying to patch again")

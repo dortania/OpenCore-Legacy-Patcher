@@ -385,8 +385,8 @@ class macOSInstallerFlashFrame(wx.Frame):
         with open(self.constants.installer_sh_path, "r") as f:
             logging.info(f"installer.sh contents:\n{f.read()}")
 
-        args   = [self.constants.oclp_helper_path, "/bin/sh", self.constants.installer_sh_path]
-        result = subprocess.run(args, capture_output=True, text=True)
+        args   = ["/bin/sh", self.constants.installer_sh_path]
+        result = subprocess_wrapper.run_as_root(args, capture_output=True, text=True)
         output = result.stdout
         error  = result.stderr if result.stderr else ""
 

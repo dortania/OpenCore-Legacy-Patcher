@@ -218,8 +218,6 @@ class MainFrame(wx.Frame):
             self.on_build_and_install()
             return
 
-        self._fix_local_install()
-
         if "--update_installed" in sys.argv and self.constants.has_checked_updates is False and gui_support.CheckProperties(self.constants).host_can_build():
             # Notify user that the update has been installed
             self.constants.has_checked_updates = True
@@ -249,34 +247,6 @@ class MainFrame(wx.Frame):
             self.Close()
 
         threading.Thread(target=self._check_for_updates).start()
-
-
-    def _fix_local_install(self) -> None:
-        """
-        Work-around users manually copying the app to /Applications
-        We'll delete the app, and create a proper symlink
-        Note: This *shouldn't* be needed with installs after 0.6.7, but it's a good catch-all
-        """
-
-        if "--update_installed" not in sys.argv:
-            return
-        if self.constants.has_checked_updates is True:
-            return
-
-        # Check if app exists in /Applications, and is not a symlink
-        if Path("/Applications/OpenCore-Patcher.app").exists() and Path("/Applications/OpenCore-Patcher.app").is_symlink() is False:
-            logging.info("Found user-installed app in /Applications, replacing with symlink")
-            # Delete app
-            result = subprocess.run(["/bin/rm", "-rf", "/Applications/OpenCore-Patcher.app"], capture_output=True)
-            if result.returncode != 0:
-                logging.info("Failed to delete app from /Applications")
-                return
-
-            # Create symlink
-            result = subprocess.run(["/bin/ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], capture_output=True)
-            if result.returncode != 0:
-                logging.info("Failed to create symlink to /Applications")
-                return
 
 
     def _check_for_updates(self):

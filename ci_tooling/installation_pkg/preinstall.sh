@@ -1,6 +1,6 @@
 #!/bin/zsh --no-rcs
 # ------------------------------------------------------
-# AutoPkg Assets Preinstall Script
+# OpenCore Legacy Patcher PKG Preinstall Script
 # ------------------------------------------------------
 # Remove old files, and prepare directories.
 # ------------------------------------------------------
@@ -23,7 +23,6 @@ filesToRemove=(
     "Applications/OpenCore-Patcher.app"
     "Library/Application Support/Dortania/Update.plist"
     "Library/Application Support/Dortania/OpenCore-Patcher.app"
-    "Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"
     "Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper"
 )
 

@@ -15,7 +15,8 @@ from ..datasets import os_data
 
 from . import (
     network_handler,
-    utilities
+    utilities,
+    subprocess_wrapper
 )
 
 
@@ -63,16 +64,10 @@ class InstallerCreation():
         """
 
         logging.info("Extracting macOS installer from InstallAssistant.pkg")
-        try:
-            applescript.AppleScript(
-                f'''do shell script "installer -pkg {Path(download_path)}/InstallAssistant.pkg -target /"'''
-                ' with prompt "OpenCore Legacy Patcher needs administrator privileges to extract the installer."'
-                " with administrator privileges"
-                " without altering line endings",
-            ).run()
-        except Exception as e:
+        result = subprocess_wrapper.run_as_root(["/usr/sbin/installer", "-pkg", f"{Path(download_path)}/InstallAssistant.pkg", "-target", "/"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if result.returncode != 0:
             logging.info("Failed to install InstallAssistant")
-            logging.info(f"  Error Code: {e}")
+            subprocess_wrapper.log(result)
             return False
 
         logging.info("InstallAssistant installed")

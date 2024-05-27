@@ -464,10 +464,6 @@ class KernelDebugKitObject:
         if self.passive is True:
             return
 
-        if os.getuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
-            logging.warning("Cannot remove KDK, not running as root")
-            return
-
         if not Path(kdk_path).exists():
             logging.warning(f"KDK does not exist: {kdk_path}")
             return
@@ -579,10 +575,6 @@ class KernelDebugKitUtilities:
             bool: True if successful, False if not
         """
 
-        if os.getuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
-            logging.warning("Cannot install KDK, not running as root")
-            return False
-
         logging.info(f"Installing KDK package: {kdk_path.name}")
         logging.info(f"- This may take a while...")
 
@@ -606,10 +598,6 @@ class KernelDebugKitUtilities:
         Returns:
             bool: True if successful, False if not
         """
-
-        if os.getuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
-            logging.warning("Cannot install KDK, not running as root")
-            return False
 
         logging.info(f"Extracting downloaded KDK disk image")
         with tempfile.TemporaryDirectory() as mount_point:
@@ -667,10 +655,6 @@ class KernelDebugKitUtilities:
 
         if 'version' not in kdk_info_dict or 'build' not in kdk_info_dict:
             logging.warning("Malformed KDK Info.plist provided, cannot create backup")
-            return
-
-        if os.getuid() != 0 and subprocess_wrapper.supports_privileged_helper() is False:
-            logging.warning("Cannot create KDK backup, not running as root")
             return
 
         if not Path(KDK_INSTALL_PATH).exists():

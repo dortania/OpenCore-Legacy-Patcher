@@ -1,9 +1,10 @@
 #!/bin/zsh --no-rcs
 # ------------------------------------------------------
-# AutoPkg Assets Postinstall Script
+# OpenCore Legacy Patcher PKG Post Install Script
 # ------------------------------------------------------
-# Create alias for app, start patching and reboot.
+# Set SUID bit on helper tool, and create app alias.
 # ------------------------------------------------------
+
 
 # MARK: PackageKit Parameters
 # ---------------------------
@@ -21,7 +22,6 @@ pathToStartupDisk=$4       # ex. '/'
 helperPath="Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper"
 mainAppPath="Library/Application Support/Dortania/OpenCore-Patcher.app"
 shimAppPath="Applications/OpenCore-Patcher.app"
-executablePath="$mainAppPath/Contents/MacOS/OpenCore-Patcher"
 
 
 # MARK: Functions
@@ -61,38 +61,9 @@ function _createAlias() {
     /bin/ln -s $mainPath $aliasPath
 }
 
-function _startPatching() {
-    local executable=$1
-    local logPath=$(_logFile)
-
-    # Start patching
-    "$executable" "--patch_sys_vol" &> $logPath
-}
-
-function _logFile() {
-    echo "/Users/Shared/.OCLP-AutoPatcher-Log-$(/bin/date +"%Y_%m_%d_%I_%M_%p").txt"
-}
-
-function _fixSettingsFilePermission() {
-    local settingsPath="$pathToTargetVolume/Users/Shared/.com.dortania.opencore-legacy-patcher.plist"
-
-    if [[ -e $settingsPath ]]; then
-        echo "Fixing settings file permissions: $settingsPath"
-        /bin/chmod 666 $settingsPath
-    fi
-
-}
-
-function _reboot() {
-    /sbin/reboot
-}
-
 function _main() {
     _setSUIDBit "$pathToTargetVolume/$helperPath"
     _createAlias "$pathToTargetVolume/$mainAppPath" "$pathToTargetVolume/$shimAppPath"
-    _startPatching "$pathToTargetVolume/$executablePath"
-    _fixSettingsFilePermission
-    _reboot
 }
 
 

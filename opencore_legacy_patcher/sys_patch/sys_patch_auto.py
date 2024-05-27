@@ -336,11 +336,7 @@ Please check the Github page for more information about this release."""
 
     def install_auto_patcher_launch_agent(self, kdk_caching_needed: bool = False):
         """
-        Install the Auto Patcher Launch Agent
-
-        Installs the following:
-            - OpenCore-Patcher.app in /Library/Application Support/Dortania/
-            - com.dortania.opencore-legacy-patcher.auto-patch.plist in /Library/LaunchAgents/
+        Install patcher launch services
 
         See start_auto_patch() comments for more info
         """
@@ -374,44 +370,6 @@ Please check the Github page for more information about this release."""
             # Set the permissions on the service
             subprocess_wrapper.run_as_root_and_verify(["/bin/chmod", "644", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             subprocess_wrapper.run_as_root_and_verify(["/usr/sbin/chown", "root:wheel", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-        if self.constants.launcher_binary.startswith("/Library/Application Support/Dortania/"):
-            logging.info("- Skipping Patcher Install, already installed")
-            return
-
-        # Verify our binary isn't located in '/Library/Application Support/Dortania/'
-        # As we'd simply be duplicating ourselves
-        logging.info("- Installing Auto Patcher Launch Agent")
-
-        if not Path("Library/Application Support/Dortania").exists():
-            logging.info("- Creating /Library/Application Support/Dortania/")
-            subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", "-p", "/Library/Application Support/Dortania"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-        logging.info("- Copying OpenCore Patcher to /Library/Application Support/Dortania/")
-        if Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
-            logging.info("- Deleting existing OpenCore-Patcher")
-            subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-R", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-        # Strip everything after OpenCore-Patcher.app
-        path = str(self.constants.launcher_binary).split("/Contents/MacOS/OpenCore-Patcher")[0]
-        logging.info(f"- Copying {path} to /Library/Application Support/Dortania/")
-        subprocess_wrapper.run_as_root_and_verify(["/usr/bin/ditto", path, "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-        if not Path("/Library/Application Support/Dortania/OpenCore-Patcher.app").exists():
-            # Sometimes the binary the user launches may have a suffix (ie. OpenCore-Patcher 3.app)
-            # We'll want to rename it to OpenCore-Patcher.app
-            path = path.split("/")[-1]
-            logging.info(f"- Renaming {path} to OpenCore-Patcher.app")
-            subprocess_wrapper.run_as_root_and_verify(["/bin/mv", f"/Library/Application Support/Dortania/{path}", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-        subprocess.run(["/usr/bin/xattr", "-cr", "/Library/Application Support/Dortania/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        # Making app alias
-        # Simply an easy way for users to notice the app
-        # If there's already an alias or exiting app, skip
-        if not Path("/Applications/OpenCore-Patcher.app").exists():
-            logging.info("- Making app alias")
-            subprocess_wrapper.run_as_root_and_verify(["/bin/ln", "-s", "/Library/Application Support/Dortania/OpenCore-Patcher.app", "/Applications/OpenCore-Patcher.app"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _create_rsr_monitor_daemon(self) -> bool:

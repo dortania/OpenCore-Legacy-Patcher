@@ -1,8 +1,6 @@
 #!/bin/zsh --no-rcs
 # ------------------------------------------------------
-# AutoPkg Assets Preinstall Script
-# ------------------------------------------------------
-# Remove old files, and prepare directories.
+# OpenCore Legacy Patcher PKG Uninstall Script
 # ------------------------------------------------------
 
 
@@ -23,7 +21,6 @@ filesToRemove=(
     "Applications/OpenCore-Patcher.app"
     "Library/Application Support/Dortania/Update.plist"
     "Library/Application Support/Dortania/OpenCore-Patcher.app"
-    "Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"
     "Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper"
 )
 
@@ -53,22 +50,30 @@ function _removeFile() {
     fi
 }
 
-function _createParentDirectory() {
-    local file=$1
+function _cleanLaunchService() {
+    local domain="com.dortania.opencore-legacy-patcher"
 
-    local parentDirectory="$(/usr/bin/dirname $file)"
+    # Iterate over launch agents and daemons
+    for launchServiceVariant in "$pathToTargetVolume/Library/LaunchAgents" "$pathToTargetVolume/Library/LaunchDaemons"; do
+        # Check if directory exists
+        if [[ ! -d $launchServiceVariant ]]; then
+            continue
+        fi
 
-    # Check if parent directory exists
-    if [[ ! -d $parentDirectory ]]; then
-        echo "Creating parent directory: $parentDirectory"
-        /bin/mkdir -p $parentDirectory
-    fi
+        # Iterate over launch service files
+        for launchServiceFile in $(/bin/ls -1 $launchServiceVariant | /usr/bin/grep $domain); do
+            local launchServicePath="$launchServiceVariant/$launchServiceFile"
+
+            # Remove launch service file
+            _removeFile $launchServicePath
+        done
+    done
 }
 
 function _main() {
+    _cleanLaunchService
     for file in $filesToRemove; do
-        _removeFile $pathToTargetVolume/$file
-        _createParentDirectory $pathToTargetVolume/$file
+        _removeFile "$pathToTargetVolume/$file"
     done
 }
 
@@ -76,5 +81,5 @@ function _main() {
 # MARK: Main
 # ---------------------------
 
-echo "Starting preinstall script..."
+echo "Starting uninstall script..."
 _main

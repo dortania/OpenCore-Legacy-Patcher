@@ -13,44 +13,85 @@ jobs:
     if: github.repository_owner == 'dortania'
 
     env:
+      # GitHub Information
       branch: ${{ github.ref }}
       commiturl: ${{ github.event.head_commit.url }}${{ github.event.release.html_url }}
       commitdate: ${{ github.event.head_commit.timestamp }}${{ github.event.release.published_at }}
-      MAC_CODESIGN_IDENTITY: ${{ secrets.MAC_CODESIGN_IDENTITY }}
-      MAC_CODESIGN_CERT: ${{ secrets.MAC_CODESIGN_CERT }}
-      MAC_NOTARIZATION_USERNAME: ${{ secrets.MAC_NOTARIZATION_USERNAME }}
-      MAC_NOTARIZATION_PASSWORD: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
-      MAC_NOTARIZATION_TEAM_ID: ${{ secrets.MAC_NOTARIZATION_TEAM_ID }}
+
+      # Analytics
       ANALYTICS_KEY: ${{ secrets.ANALYTICS_KEY }}
       ANALYTICS_SITE: ${{ secrets.ANALYTICS_SITE }}
+
+      # App Signing
+      ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}
+
+      # PKG Signing
+      ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY }}
+
+      # Notarization
+      ORG_MAC_NOTARIZATION_TEAM_ID: ${{ secrets.ORG_MAC_NOTARIZATION_TEAM_ID }}
+      ORG_MAC_NOTARIZATION_APPLE_ID: ${{ secrets.ORG_MAC_NOTARIZATION_APPLE_ID }}
+      ORG_MAC_NOTARIZATION_PASSWORD: ${{ secrets.ORG_MAC_NOTARIZATION_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Binary
-        run: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Binary.command --reset_binaries --branch "${{ env.branch }}" --commit "${{ env.commiturl }}" --commit_date "${{ env.commitdate }}" --key "${{ env.ANALYTICS_KEY }}" --site "${{ env.ANALYTICS_SITE }}"
-
-      # - name: Import Certificate
-      #   if: (!security find-certificate -c "${{ env.MAC_CODESIGN_IDENTITY }}")
-      #   uses: apple-actions/import-codesign-certs@v2
+      # - name: Import Application Signing Certificate
+      #   uses: dhinakg/import-codesign-certs@master
       #   with:
-      #     p12-file-base64: ${{ secrets.MAC_CODESIGN_CERT }}
-      #     p12-password: ${{ secrets.MAC_NOTARIZATION_PASSWORD }}
+      #     p12-file-base64: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_BASE64 }}
+      #     p12-password: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_PASSWORD }}
 
-      - name: Codesign Binary
-        run: 'codesign -s "${{ env.MAC_CODESIGN_IDENTITY }}" -v --force --deep --timestamp --entitlements ./ci_tooling/entitlements/entitlements.plist -o runtime "dist/OpenCore-Patcher.app"'
+      # - name: Import Installer Signing Certificate
+      #   uses: dhinakg/import-codesign-certs@master
+      #   with:
+      #     p12-file-base64: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_BASE64 }}
+      #     p12-password: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_PASSWORD }}
 
-      - name: Package Binary
-        run: cd dist; ditto -c -k --sequesterRsrc --keepParent OpenCore-Patcher.app ../OpenCore-Patcher-wxPython.app.zip
+      # - name: Install Dependencies
+      #   run: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install -r requirements.txt
 
-      - name: Notarize Binary
-        run: xcrun notarytool submit OpenCore-Patcher-wxPython.app.zip --apple-id "${{ env.MAC_NOTARIZATION_USERNAME }}" --password "${{ env.MAC_NOTARIZATION_PASSWORD }}" --team-id "${{ env.MAC_NOTARIZATION_TEAM_ID }}"
+      # - name: Force Universal2 charset for Python
+      #   run: |
+      #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip uninstall -y charset_normalizer
+      #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip download --platform macosx_10_9_universal2 --only-binary=:all: charset-normalizer
+      #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install charset_normalizer-*-macosx_10_9_universal2.whl
 
-      - name: Generate support package
-        run: /usr/local/bin/packagesbuild ./ci_tooling/autopkg/AutoPkg-Assets-Setup.pkgproj
+      - name: Prepare Assets (--prepare-assets)
+        run: >
+          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          --run-as-individual-steps --reset-dmg-cache
+          --prepare-assets
+
+      - name: Prepare Application (--prepare-application)
+        run: >
+          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          --application-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}"
+          --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
+          --git-branch "${{ env.branch }}" --git-commit-url "${{ env.commiturl }}" --git-commit-date "${{ env.commitdate }}"
+          --analytics-key "${{ env.ANALYTICS_KEY }}" --analytics-endpoint "${{ env.ANALYTICS_SITE }}"
+          --reset-pyinstaller-cache
+          --run-as-individual-steps
+          --prepare-application
+
+      - name: Prepare Package (--prepare-package)
+        run: >
+          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          --installer-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY }}"
+          --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
+          --run-as-individual-steps
+          --prepare-package
+
+      - name: Prepare Update Shim (--prepare-shim)
+        run: >
+          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          --application-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}"
+          --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
+          --run-as-individual-steps
+          --prepare-shim
 
       - name: Prepare App for Upload
-        run: mv ./OpenCore-Patcher-wxPython.app.zip ./OpenCore-Patcher-GUI.app.zip
+        run: /bin/mv ./dist/OpenCore-Patcher.app.zip ./OpenCore-Patcher-GUI.app.zip
 
       - name: Upload App to Artifacts
         uses: actions/upload-artifact@v4
@@ -58,11 +99,23 @@ jobs:
           name: OpenCore-Patcher.app (GUI)
           path: OpenCore-Patcher-GUI.app.zip
 
-      - name: Upload Package to Artifacts
+      - name: Upload AutoPkg Package to Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: AutoPkg-Assets.pkg
           path: ./dist/AutoPkg-Assets.pkg
+
+      - name: Upload Installation Package to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenCore-Patcher.pkg
+          path: ./dist/OpenCore-Patcher.pkg
+
+      - name: Upload Uninstaller Package to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenCore-Patcher-Uninstaller.pkg
+          path: ./dist/OpenCore-Patcher-Uninstaller.pkg
 
       - name: Upload Binary to Release
         if: github.event_name == 'release'
@@ -73,11 +126,29 @@ jobs:
           tag: ${{ github.ref }}
           file_glob: true
 
-      - name: Upload Package to Release
+      - name: Upload AutoPkg Package to Release
         if: github.event_name == 'release'
         uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./dist/AutoPkg-Assets.pkg
+          tag: ${{ github.ref }}
+          file_glob: true
+
+      - name: Upload Installation Package to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./dist/OpenCore-Patcher.pkg
+          tag: ${{ github.ref }}
+          file_glob: true
+
+      - name: Upload Uninstaller Package to Release
+        if: github.event_name == 'release'
+        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./dist/OpenCore-Patcher-Uninstaller.pkg
           tag: ${{ github.ref }}
           file_glob: true
