@@ -92,7 +92,6 @@ def main() -> None:
             notarization_apple_id=args.notarization_apple_id,
             notarization_password=args.notarization_password,
             notarization_team_id=args.notarization_team_id,
-            entitlements=Path("./ci_tooling/entitlements/entitlements.plist"),
         ).sign_and_notarize()
 
         # Build OpenCore-Patcher.app
