@@ -28,7 +28,6 @@ class GlobalEnviromentSettings:
 
         self._generate_settings_file()
         self._convert_defaults_to_global_settings()
-        self._fix_file_permission()
 
 
     def read_property(self, property_name: str) -> str:
@@ -106,18 +105,3 @@ class GlobalEnviromentSettings:
             except Exception as e:
                 logging.error("Error: Unable to delete defaults plist")
                 logging.error(e)
-
-
-    def _fix_file_permission(self) -> None:
-        """
-        Fixes file permission for log file
-
-        If OCLP was invoked as root, file permission will only allow root to write to settings file
-        This in turn breaks normal OCLP execution to write to settings file
-        """
-
-        # Set file permission to allow any user to write to log file
-        result = subprocess_wrapper.run_as_root(["/bin/chmod", "777", self.global_settings_plist], capture_output=True)
-        if result.returncode != 0:
-            logging.warning("Failed to fix settings file permissions:")
-            subprocess_wrapper.log(result)
