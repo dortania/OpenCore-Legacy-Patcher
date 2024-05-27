@@ -85,6 +85,16 @@ def main() -> None:
         disk_images.GenerateDiskImages(args.reset_dmg_cache).generate()
 
     if (args.run_as_individual_steps is False) or (args.run_as_individual_steps and args.prepare_application):
+        # Prepare Privileged Helper Tool
+        sign_notarize.SignAndNotarize(
+            path=Path("./ci_tooling/privileged_helper_tool/com.dortania.opencore-legacy-patcher.privileged-helper"),
+            signing_identity=args.application_signing_identity,
+            notarization_apple_id=args.notarization_apple_id,
+            notarization_password=args.notarization_password,
+            notarization_team_id=args.notarization_team_id,
+            entitlements=Path("./ci_tooling/entitlements/entitlements.plist"),
+        ).sign_and_notarize()
+
         # Build OpenCore-Patcher.app
         application.GenerateApplication(
             reset_pyinstaller_cache=args.reset_pyinstaller_cache,
