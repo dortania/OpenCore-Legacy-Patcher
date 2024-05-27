@@ -63,9 +63,7 @@ pip3 install pyinstaller
 # Move into project directory
 cd ~/Developer/OpenCore-Legacy-Patcher/
 # Create the pyinstaller based Application
-# Optional Arguments
-#    '--reset_binaries':     Redownload and generate support files
-python3 Build-Binary.command
+python3 Build-Project.command
 # Open build folder
 open ./dist/
 ```

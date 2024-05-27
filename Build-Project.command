@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build-Suite.command: Generate OpenCore-Patcher.app and OpenCore-Patcher.pkg
+Build-Project.command: Generate OpenCore-Patcher.app and OpenCore-Patcher.pkg
 """
 
 import os
@@ -70,7 +70,7 @@ def main() -> None:
     if args.help:
         parser.print_help()
         print("\n\nIf running outside of CI/CD, simply run the following command:")
-        print("$ python3 Build-Suite.command")
+        print("$ python3 Build-Project.command")
         sys.exit(0)
 
     # Set 'Current Working Directory' to script directory
