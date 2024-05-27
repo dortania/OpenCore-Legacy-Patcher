@@ -73,6 +73,16 @@ function _logFile() {
     echo "/Users/Shared/.OCLP-AutoPatcher-Log-$(/bin/date +"%Y_%m_%d_%I_%M_%p").txt"
 }
 
+function _fixSettingsFilePermission() {
+    local settingsPath="$pathToTargetVolume/Users/Shared/.com.dortania.opencore-legacy-patcher.plist"
+
+    if [[ -e $settingsPath ]]; then
+        echo "Fixing settings file permissions: $settingsPath"
+        /bin/chmod 666 $settingsPath
+    fi
+
+}
+
 function _reboot() {
     /sbin/reboot
 }
@@ -81,6 +91,7 @@ function _main() {
     _setSUIDBit "$pathToTargetVolume/$helperPath"
     _createAlias "$pathToTargetVolume/$mainAppPath" "$pathToTargetVolume/$shimAppPath"
     _startPatching "$pathToTargetVolume/$executablePath"
+    _fixSettingsFilePermission
     _reboot
 }
 
