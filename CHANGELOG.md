@@ -18,6 +18,21 @@
   - Removes OS logging
 - Disable usage of `OpenLegacyBoot.efi`
   - Resolves boot issues on certain CSM-based Macs
+- Implement new PKG-based installer
+  - `OpenCore-Patcher.pkg` is now the recommended method for installation
+  - `OpenCore-Patcher-Uninstaller.pkg` is now available for uninstallation
+    - Note this only removes the application, not any patches applied
+  - `OpenCore-Patcher-GUI.app.zip` is deprecated and will be removed in future versions
+- Implement new Privileged Helper Tool
+  - Removes need for password prompts when installing patches, creating installers, etc.
+  - Installed at `/Library/PrivilegedHelperTools/com.dortania.opencore-legacy-patcher.privileged-helper`
+  - No launch services required
+  - For running from source, recompile tool with debug configuration (`make debug`)
+- Resolve OpenCore-Patcher.app window not appearing as topmost window on launch
+- Reworked CI tooling:
+  - New build script with reworked parameters: `Build-Project.command`
+  - Remove reliance on WhiteBox's Packages for AutoPkg creation
+    - Now implements `pkgbuild` and `productbuild` for package creation through `macOs-Pkg-Builder` Python module
 - Increment Binaries:
   - OpenCorePkg 1.0.0 - release
 
