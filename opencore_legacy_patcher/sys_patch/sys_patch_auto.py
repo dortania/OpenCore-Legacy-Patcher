@@ -162,10 +162,6 @@ Please check the Github page for more information about this release."""
                         patch_string += f"- {patch}\n"
 
                 logging.info("- No new binaries found on Github, proceeding with patching")
-                if self.constants.launcher_script is None:
-                    args_string = f"'{self.constants.launcher_binary}' --gui_patch"
-                else:
-                    args_string = f"{self.constants.launcher_binary} {self.constants.launcher_script} --gui_patch"
 
                 warning_str = ""
                 if network_handler.NetworkUtilities("https://api.github.com/repos/dortania/OpenCore-Legacy-Patcher/releases/latest").verify_network_connection() is False:
@@ -183,20 +179,9 @@ Please check the Github page for more information about this release."""
                     stderr=subprocess.STDOUT
                 )
                 if output.returncode == 0:
-                    args = [
-                        "/usr/bin/osascript",
-                        "-e",
-                        f'''do shell script "{args_string}"'''
-                        f' with prompt "OpenCore Legacy Patcher would like to patch your root volume"'
-                        " with administrator privileges"
-                        " without altering line endings"
-                    ]
-                    subprocess.run(
-                        args,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.STDOUT
-                    )
+                    gui_entry.EntryPoint(self.constants).start(entry=gui_entry.SupportedEntryPoints.SYS_PATCH, start_patching=True)
                 return
+
             else:
                 logging.info("- No patches detected")
         else:

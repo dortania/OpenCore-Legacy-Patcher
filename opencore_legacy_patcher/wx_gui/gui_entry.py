@@ -47,14 +47,19 @@ class EntryPoint:
         self.app = wx.App()
         self.app.SetAppName(self.constants.patcher_name)
 
+        # Reference:
+        # - https://discuss.wxpython.org/t/macos-window-opens-in-the-background-and-does-not-receive-focus/36763/10
+        NSApplication.sharedApplication()
+        NSApp().activateIgnoringOtherApps_(True)
 
-    def start(self, entry: SupportedEntryPoints = gui_main_menu.MainFrame) -> None:
+
+    def start(self, entry: SupportedEntryPoints = gui_main_menu.MainFrame, start_patching: bool = False) -> None:
         """
         Launches entry point for the wxPython GUI
         """
         self._generate_base_data()
 
-        if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv:
+        if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv or start_patching is True :
             entry = gui_sys_patch_start.SysPatchStartFrame
             patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
 
@@ -68,12 +73,12 @@ class EntryPoint:
             title=f"{self.constants.patcher_name} {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}",
             global_constants=self.constants,
             screen_location=None,
-            **({"patches": patches} if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv else {})
+            **({"patches": patches} if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv or start_patching is True else {})
         )
 
         atexit.register(self.OnCloseFrame)
 
-        if "--gui_patch" in sys.argv:
+        if "--gui_patch" in sys.argv or start_patching is True:
             self.frame.start_root_patching()
         elif "--gui_unpatch" in sys.argv:
             self.frame.revert_root_patching()
