@@ -53,10 +53,10 @@ def main() -> None:
     parser.add_argument("--run-as-individual-steps", action="store_true", help="CI: Run as individual steps", default=False)
     parser.add_argument("--prepare-application", action="store_true", help="CI: Prepare Application", default=False)
     parser.add_argument("--prepare-package", action="store_true", help="CI: Prepare Package", default=False)
+    parser.add_argument("--prepare-assets", action="store_true", help="CI: Prepare Assets", default=False)
 
     # CI/CD Parameters for additional steps
     # If not specified, will not run additional steps
-    parser.add_argument("--prepare-assets", action="store_true", help="CI: Prepare Assets", default=False)
     parser.add_argument("--prepare-shim", action="store_true", help="CI: Prepare Update Shim", default=False)
 
     # Analytics Parameters
@@ -79,7 +79,7 @@ def main() -> None:
     os.chdir(Path(__file__).resolve().parent)
 
 
-    if (args.prepare_assets):
+    if (args.run_as_individual_steps is False) or (args.run_as_individual_steps and args.prepare_assets):
         # Prepare workspace
         disk_images.GenerateDiskImages(args.reset_dmg_cache).generate()
 
