@@ -33,6 +33,8 @@
   - New build script with reworked parameters: `Build-Project.command`
   - Remove reliance on WhiteBox's Packages for AutoPkg creation
     - Now implements `pkgbuild` and `productbuild` for package creation through `macOs-Pkg-Builder` Python module
+- Implement additional sanity checks before performing root patches
+  - Checks for mismatched snapshots vs root volume macOS versions
 - Increment Binaries:
   - OpenCorePkg 1.0.0 - release
 
