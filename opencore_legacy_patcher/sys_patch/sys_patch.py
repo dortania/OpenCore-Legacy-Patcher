@@ -126,6 +126,28 @@ class PatchSysVolume:
         self.mount_obj.unmount(ignore_errors=True)
 
 
+    def _run_sanity_checks(self) -> bool:
+        """
+        Run sanity check before continuing patching
+        """
+        logging.info("- Running sanity checks before patching")
+
+        mounted_system_version = Path(self.mount_location) / "System/Library/CoreServices/SystemVersion.plist"
+
+        if not mounted_system_version.exists():
+            logging.error("- Failed to find SystemVersion.plist")
+            return False
+        
+        try:
+            mounted_data = plistlib.load(open(mounted_system_version, "rb"))
+            if mounted_data["ProductBuildVersion"] != self.constants.detected_os_build:
+                logging.error(f"- SystemVersion.plist build version mismatch: {mounted_data['ProductBuildVersion']} vs {self.constants.detected_os_build}")
+                return False
+        except:
+            logging.error("- Failed to parse SystemVersion.plist")
+            return False
+
+
     def _merge_kdk_with_root(self, save_hid_cs: bool = False) -> None:
         """
         Merge Kernel Debug Kit (KDK) with the root volume
@@ -927,7 +949,11 @@ class PatchSysVolume:
         logging.info("- Patcher is capable of patching")
         if self._check_files():
             if self._mount_root_vol() is True:
-                self._patch_root_vol()
+                if self._run_sanity_checks():
+                    self._patch_root_vol()
+                else:
+                    self._unmount_root_vol()
+                    logging.info("- Please ensure that you do not have any updates pending")
             else:
                 logging.info("- Recommend rebooting the machine and trying to patch again")
 
