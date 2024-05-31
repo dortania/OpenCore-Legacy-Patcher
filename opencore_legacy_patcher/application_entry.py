@@ -45,6 +45,20 @@ class OpenCoreLegacyPatcher:
             gui_entry.EntryPoint(self.constants).start()
 
 
+    def _fix_cwd(self) -> None:
+        """
+        In some extreme scenarios, our current working directory may disappear
+        """
+        _test_dir = None
+        try:
+            _test_dir = Path.cwd()
+            logging.info(f"Current working directory: {_test_dir}")
+        except FileNotFoundError:
+            _test_dir = Path(__file__).parent.parent.resolve()
+            os.chdir(_test_dir)
+            logging.warning(f"Current working directory was invalid, switched to: {_test_dir}")
+
+
     def _generate_base_data(self) -> None:
         """
         Generate base data required for the patcher to run
@@ -73,6 +87,7 @@ class OpenCoreLegacyPatcher:
         # Generate environment data
         self.constants.recovery_status = utilities.check_recovery()
         utilities.disable_cls()
+        self._fix_cwd()
 
         # Generate binary data
         launcher_script = None
