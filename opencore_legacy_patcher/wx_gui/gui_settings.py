@@ -62,8 +62,7 @@ class SettingsFrame(wx.Frame):
         and relies on 'self._settings()' for populating
         """
 
-        notebook = wx.Notebook(frame)
-        notebook.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+        notebook = wx.Choicebook(frame)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.AddSpacer(10)
@@ -87,10 +86,13 @@ class SettingsFrame(wx.Frame):
         if not Path("~/.dortania_developer").expanduser().exists():
             tabs.remove("Developer")
         for tab in tabs:
-            panel = wx.Panel(notebook)
-            notebook.AddPage(panel, tab)
+            scrolledWindow = wx.ScrolledWindow(notebook, -1)
+            sbSizer = wx.StaticBoxSizer(wx.StaticBox(scrolledWindow, -1), wx.VERTICAL)
+            scrolledWindow.SetSizer(sbSizer)
 
-        sizer.Add(notebook, 1, wx.EXPAND | wx.ALL, 10)
+            notebook.AddPage(scrolledWindow, tab)
+
+        sizer.Add(notebook, 1, wx.EXPAND | wx.TOP | wx.LEFT | wx.RIGHT, 10)
 
         # Add return button
         return_button = wx.Button(frame, label="Return", pos=(-1, -1), size=(100, 30))
