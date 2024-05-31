@@ -146,6 +146,8 @@ class PatchSysVolume:
         except:
             logging.error("- Failed to parse SystemVersion.plist")
             return False
+        
+        return True
 
 
     def _merge_kdk_with_root(self, save_hid_cs: bool = False) -> None:
