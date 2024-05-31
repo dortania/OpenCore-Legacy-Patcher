@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 1.6.0
+
+
 ## 1.5.0
 - Restructure project directories
   - Python:
