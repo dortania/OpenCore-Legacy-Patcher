@@ -163,7 +163,7 @@ def disable_sleep_while_running():
     logging.info("Disabling Idle Sleep")
     if sleep_process is None:
         # If sleep_process is active, we'll just keep it running
-        sleep_process = subprocess.Popen(["caffeinate", "-d", "-i", "-s"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        sleep_process = subprocess.Popen(["/usr/bin/caffeinate", "-d", "-i", "-s"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     # Ensures that if we don't properly close the process, 'atexit' will for us
     atexit.register(enable_sleep_after_running)
 
@@ -525,7 +525,7 @@ def block_os_updaters():
         "Software Update",
         "MobileSoftwareUpdate",
     ]
-    output = subprocess.check_output(["ps", "-ax"])
+    output = subprocess.check_output(["/bin/ps", "-ax"])
     lines = output.splitlines()
     for line in lines:
         entry = line.split()
