@@ -157,7 +157,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
 
         self.frame_modal.Destroy()
-        self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(460, 500))
+        self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(440, 500))
 
         # Title: Select macOS Installer
         title_label = wx.StaticText(self.frame_modal, label="Select macOS Installer", pos=(-1,-1))
@@ -175,7 +175,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         installers = self.available_installers_latest if show_full is False else self.available_installers
         if show_full is False:
-            self.frame_modal.SetSize((460, 370))
+            self.frame_modal.SetSize((440, 360))
 
         if installers:
             locale.setlocale(locale.LC_TIME, '')
@@ -239,7 +239,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.AddSpacer(10)
         sizer.Add(title_label, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
-        sizer.Add(self.list, 1, wx.EXPAND | wx.ALL, 10)
+        sizer.Add(self.list, 1, wx.EXPAND | wx.TOP | wx.BOTTOM, 10)
         sizer.Add(rectsizer, 0, wx.ALIGN_CENTRE | wx.ALL, 0)
         sizer.Add(checkboxsizer, 0, wx.ALIGN_CENTRE | wx.ALL, 15)
         sizer.Add(return_button, 0, wx.ALIGN_CENTRE | wx.BOTTOM, 15)
