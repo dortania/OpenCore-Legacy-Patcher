@@ -2,6 +2,11 @@
 
 ## 1.6.0
 - Set `AssociatedBundleIdentifiers` property in launch services as an array
+- Move to auto-generated pre/postinstall scripts for PKGs
+  - Streamlines PKG creation process, ensuring Install and AutoPKG scripts are always in sync
+- Add support for `gktool` in PKG postinstall scripts
+  - Removes Gatekeeper "verifying" prompt on first launch after PKG installation
+  - Note `gktool` is only available on macOS Sonoma and newer
 
 ## 1.5.0
 - Restructure project directories

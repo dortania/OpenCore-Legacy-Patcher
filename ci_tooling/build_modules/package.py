@@ -2,8 +2,12 @@
 package.py: Generate packages (Installer, Uninstaller, AutoPkg-Assets)
 """
 
+import tempfile
 import macos_pkg_builder
+
 from opencore_legacy_patcher import constants
+
+from .package_scripts import GenerateScripts
 
 
 class GeneratePackage:
@@ -63,48 +67,82 @@ class GeneratePackage:
         return _welcome
 
 
+    def _generate_autopkg_welcome(self) -> str:
+        """
+        Generate Welcome message for AutoPkg-Assets PKG
+        """
+        _welcome = ""
+
+        _welcome += "# DO NOT RUN AUTOPKG-ASSETS MANUALLY!\n\n"
+        _welcome += "## THIS CAN BREAK YOUR SYSTEM'S INSTALL!\n\n"
+        _welcome += "This package should only ever be invoked by the Patcher itself, never downloaded or run by the user. Download the OpenCore-Patcher.pkg on the Github Repository.\n\n"
+        _welcome += f"[OpenCore Legacy Patcher GitHub Release]({constants.Constants().repo_link})"
+
+        return _welcome
+
+
     def generate(self) -> None:
         """
         Generate OpenCore-Patcher.pkg
         """
         print("Generating OpenCore-Patcher-Uninstaller.pkg")
+        _tmp_uninstall = tempfile.NamedTemporaryFile(delete=False)
+        with open(_tmp_uninstall.name, "w") as f:
+            f.write(GenerateScripts().uninstall())
+
         assert macos_pkg_builder.Packages(
             pkg_output="./dist/OpenCore-Patcher-Uninstaller.pkg",
             pkg_bundle_id="com.dortania.opencore-legacy-patcher-uninstaller",
             pkg_version=constants.Constants().patcher_version,
-            pkg_background="./ci_tooling/installation_pkg/PkgBackgroundUninstaller.png",
-            pkg_preinstall_script="./ci_tooling/installation_pkg/uninstall.sh",
+            pkg_background="./ci_tooling/pkg_assets/PkgBackground-Uninstaller.png",
+            pkg_preinstall_script=_tmp_uninstall.name,
             pkg_as_distribution=True,
             pkg_title="OpenCore Legacy Patcher Uninstaller",
             pkg_welcome=self._generate_uninstaller_welcome(),
         ).build() is True
 
         print("Generating OpenCore-Patcher.pkg")
+
+        _tmp_pkg_preinstall = tempfile.NamedTemporaryFile(delete=False)
+        _tmp_pkg_postinstall = tempfile.NamedTemporaryFile(delete=False)
+        with open(_tmp_pkg_preinstall.name, "w") as f:
+            f.write(GenerateScripts().preinstall_pkg())
+        with open(_tmp_pkg_postinstall.name, "w") as f:
+            f.write(GenerateScripts().postinstall_pkg())
+
         assert macos_pkg_builder.Packages(
             pkg_output="./dist/OpenCore-Patcher.pkg",
             pkg_bundle_id="com.dortania.opencore-legacy-patcher",
             pkg_version=constants.Constants().patcher_version,
             pkg_allow_relocation=False,
             pkg_as_distribution=True,
-            pkg_background="./ci_tooling/installation_pkg/PkgBackground.png",
-            pkg_preinstall_script="./ci_tooling/installation_pkg/preinstall.sh",
-            pkg_postinstall_script="./ci_tooling/installation_pkg/postinstall.sh",
+            pkg_background="./ci_tooling/pkg_assets/PkgBackground-Installer.png",
+            pkg_preinstall_script=_tmp_pkg_preinstall.name,
+            pkg_postinstall_script=_tmp_pkg_postinstall.name,
             pkg_file_structure=self._files,
             pkg_title="OpenCore Legacy Patcher",
             pkg_welcome=self._generate_installer_welcome(),
         ).build() is True
 
         print("Generating AutoPkg-Assets.pkg")
+
+        _tmp_auto_pkg_preinstall = tempfile.NamedTemporaryFile(delete=False)
+        _tmp_auto_pkg_postinstall = tempfile.NamedTemporaryFile(delete=False)
+        with open(_tmp_auto_pkg_preinstall.name, "w") as f:
+            f.write(GenerateScripts().preinstall_autopkg())
+        with open(_tmp_auto_pkg_postinstall.name, "w") as f:
+            f.write(GenerateScripts().postinstall_autopkg())
+
         assert macos_pkg_builder.Packages(
             pkg_output="./dist/AutoPkg-Assets.pkg",
             pkg_bundle_id="com.dortania.pkg.AutoPkg-Assets",
             pkg_version=constants.Constants().patcher_version,
             pkg_allow_relocation=False,
             pkg_as_distribution=True,
-            pkg_background="./ci_tooling/autopkg/PkgBackground.png",
-            pkg_preinstall_script="./ci_tooling/autopkg/preinstall.sh",
-            pkg_postinstall_script="./ci_tooling/autopkg/postinstall.sh",
+            pkg_background="./ci_tooling/pkg_assets/PkgBackground-AutoPkg.png",
+            pkg_preinstall_script=_tmp_auto_pkg_preinstall.name,
+            pkg_postinstall_script=_tmp_auto_pkg_postinstall.name,
             pkg_file_structure=self._autopkg_files,
             pkg_title="AutoPkg Assets",
-            pkg_welcome="# DO NOT RUN AUTOPKG-ASSETS MANUALLY!\n\n## THIS CAN BREAK YOUR SYSTEM'S INSTALL!\n\nThis package should only ever be invoked by the Patcher itself, never downloaded or run by the user. Download the OpenCore-Patcher.pkg on the Github Repository.\n\n[OpenCore Legacy Patcher GitHub Release](https://github.com/dortania/OpenCore-Legacy-Patcher/releases/)",
+            pkg_welcome=self._generate_autopkg_welcome(),
         ).build() is True
