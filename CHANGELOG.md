@@ -1,7 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 1.6.0
-
+- Set `AssociatedBundleIdentifiers` property in launch services as an array
 
 ## 1.5.0
 - Restructure project directories
