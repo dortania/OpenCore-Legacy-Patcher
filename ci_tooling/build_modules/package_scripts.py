@@ -8,6 +8,7 @@ class ZSHFunctions:
     def __init__(self) -> None:
         pass
 
+
     def generate_standard_pkg_parameters(self) -> str:
         """
         ZSH variables for standard PackageKit parameters
@@ -308,7 +309,6 @@ class ZSHFunctions:
         return _script
 
 
-
 class GenerateScripts:
 
     def __init__(self):
@@ -324,7 +324,6 @@ class GenerateScripts:
         self.additional_auto_pkg_files = [
             "Library/LaunchAgents/com.dortania.opencore-legacy-patcher.auto-patch.plist"
         ]
-
 
 
     def __generate_shebang(self) -> str:
