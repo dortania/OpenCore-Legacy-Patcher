@@ -111,7 +111,7 @@ class SysPatchDisplayFrame(wx.Frame):
 
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
             logging.info("No applicable patches available")
-            patches = []
+            patches = {}
 
         # Check if OCLP has already applied the same patches
         no_new_patches = not self._check_if_new_patches_needed(patches) if patches else False
