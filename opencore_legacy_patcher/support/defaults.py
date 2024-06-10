@@ -115,7 +115,6 @@ class GenerateDefaults:
             # As we don't spoof on native models, we can safely ignore this
             spoof_model = self.model
 
-
         if spoof_model in smbios_data.smbios_dictionary:
             if smbios_data.smbios_dictionary[spoof_model]["SecureBootModel"] is not None:
                 if self.constants.sip_status is False:
@@ -206,10 +205,13 @@ class GenerateDefaults:
 
         # 12.0: Legacy Wireless chipsets require root patching
         # 14.0: Modern Wireless chipsets require root patching
-        self.constants.sip_status = False
-        self.constants.secure_status = False
-        self.constants.disable_cs_lv = True
-        self.constants.disable_amfi = True
+        if self.model in smbios_data.smbios_dictionary:
+            if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.sonoma:
+                self.constants.sip_status = True
+                self.constants.sip_status = False
+                self.constants.secure_status = False
+                self.constants.disable_cs_lv = True
+                self.constants.disable_amfi = True
 
         if is_legacy_wifi is True:
             # 13.0: Enabling AirPlay to Mac patches breaks Control Center on legacy chipsets

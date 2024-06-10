@@ -18,7 +18,8 @@ from ..detections import device_probe
 from ..datasets import (
     model_array,
     smbios_data,
-    cpu_data
+    cpu_data,
+    os_data
 )
 
 
@@ -64,14 +65,19 @@ xw
         if self.constants.fu_status is False:
             return
 
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+
+        if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.sonoma:
+            return
+
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
         if self.constants.fu_arguments is not None:
             logging.info(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
 
 
-    def _restrict_events_handling(self) -> None:
-        """
+    def _restrict_events_handling(self) -> None:        """
         RestrictEvents Handler
         """
 

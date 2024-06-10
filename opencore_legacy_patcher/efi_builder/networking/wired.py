@@ -10,7 +10,8 @@ from ...detections import device_probe
 
 from ...datasets import (
     smbios_data,
-    cpu_data
+    cpu_data,
+    os_data
 )
 
 
@@ -55,6 +56,11 @@ class BuildWiredNetworking:
         # the kernel driver to prevent a kernel panic
         # - DriverKit: com.apple.DriverKit.AppleUserECM.dext
         # - Kext: AppleUSBECM.kext
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+        if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.sonoma:
+            return
+
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("ECM-Override.kext", self.constants.ecm_override_version, self.constants.ecm_override_path)
 
 
@@ -65,6 +71,8 @@ class BuildWiredNetworking:
         # i210 NICs are broke in macOS 14 due to driver kit downgrades
         # See ECM logic for why it's always enabled
         if not self.model in smbios_data.smbios_dictionary:
+            return
+        if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.sonoma:
             return
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("CatalinaIntelI210Ethernet.kext", self.constants.i210_version, self.constants.i210_path)
         # Ivy Bridge and newer natively support DriverKit, so set MinKernel to 23.0.0
