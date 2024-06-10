@@ -77,7 +77,8 @@ xw
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
 
 
-    def _restrict_events_handling(self) -> None:        """
+    def _restrict_events_handling(self) -> None:
+        """
         RestrictEvents Handler
         """
 
