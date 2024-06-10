@@ -350,7 +350,8 @@ class BuildGraphicsAudio:
 
         # Due to regression in AppleALC 1.6.4+, temporarily use 1.6.3 and set override
         if support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("AppleALC.kext")["Enabled"] is True:
-            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -lilubetaall"
+            if "-lilubetaall" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"]:
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -lilubetaall"
 
 
     def _firmware_handling(self) -> None:
