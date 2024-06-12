@@ -206,7 +206,7 @@ class GenerateDefaults:
         # 12.0: Legacy Wireless chipsets require root patching
         # 14.0: Modern Wireless chipsets require root patching
         if self.model in smbios_data.smbios_dictionary:
-            if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.sonoma:
+            if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] < os_data.os_data.sonoma:
                 self.constants.sip_status = True
                 self.constants.sip_status = False
                 self.constants.secure_status = False
