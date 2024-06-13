@@ -566,6 +566,11 @@ class RemoteInstallerCatalog:
                         newest_apps.pop(ia)
                         break
 
+        # Remove EOL versions (n-3)
+        for ia in list(newest_apps):
+            if newest_apps[ia]["Version"].split('.')[0] < supported_versions[-3]:
+                newest_apps.pop(ia)
+
         return newest_apps
 
 
