@@ -334,13 +334,10 @@ class RemoteInstallerCatalog:
                 continue
             if "SharedSupport" not in catalog["Products"][product]["ExtendedMetaInfo"]["InstallAssistantPackageIdentifiers"]:
                 continue
-            if "BuildManifest" not in catalog["Products"][product]["ExtendedMetaInfo"]["InstallAssistantPackageIdentifiers"]:
-                continue
 
             for bm_package in catalog["Products"][product]["Packages"]:
-                if "Info.plist" not in bm_package["URL"]:
-                    continue
-                if "InstallInfo.plist" in bm_package["URL"]:
+
+                if Path(bm_package["URL"]).name not in ["Info.plist", "com_apple_MobileAsset_MacSoftwareUpdate.plist"]:
                     continue
 
                 try:
@@ -348,35 +345,14 @@ class RemoteInstallerCatalog:
                 except plistlib.InvalidFileException:
                     continue
 
-                if "MobileAssetProperties" not in build_plist:
-                    continue
-                if "SupportedDeviceModels" not in build_plist["MobileAssetProperties"]:
-                    continue
-                if "OSVersion" not in build_plist["MobileAssetProperties"]:
-                    continue
-                if "Build" not in build_plist["MobileAssetProperties"]:
-                    continue
+                result = {}
+                if Path(bm_package["URL"]).name == "com_apple_MobileAsset_MacSoftwareUpdate.plist":
+                    result = self._parse_mobile_asset_plist(build_plist)
+                else:
+                    result = self._legacy_parse_info_plist(build_plist)
 
-                # Ensure Apple Silicon specific Installers are not listed
-                if "VMM-x86_64" not in build_plist["MobileAssetProperties"]["SupportedDeviceModels"]:
+                if result == {}:
                     continue
-
-                version = build_plist["MobileAssetProperties"]["OSVersion"]
-                build   = build_plist["MobileAssetProperties"]["Build"]
-
-                try:
-                    catalog_url = build_plist["MobileAssetProperties"]["BridgeVersionInfo"]["CatalogURL"]
-                    if "beta" in catalog_url:
-                        catalog_url = "PublicSeed"
-                    elif "customerseed" in catalog_url:
-                        catalog_url = "CustomerSeed"
-                    elif "seed" in catalog_url:
-                        catalog_url = "DeveloperSeed"
-                    else:
-                        catalog_url = "Public"
-                except KeyError:
-                    # Assume Public if no catalog URL is found
-                    catalog_url = "Public"
 
                 download_link = None
                 integrity     = None
@@ -395,21 +371,20 @@ class RemoteInstallerCatalog:
                     integrity     = ia_package["IntegrityDataURL"]
                     size          = ia_package["Size"] if ia_package["Size"] else 0
 
-
-                if any([version, build, download_link, size, integrity]) is None:
+                if any([download_link, size, integrity]) is None:
                     continue
 
                 available_apps.update({
                     product: {
-                        "Version":   version,
-                        "Build":     build,
+                        "Version":   result["Version"],
+                        "Build":     result["Build"],
                         "Link":      download_link,
                         "Size":      size,
                         "integrity": integrity,
                         "Source":   "Apple Inc.",
-                        "Variant":   catalog_url,
-                        "OS":        os_data.os_conversion.os_to_kernel(version),
-                        "Models":    build_plist["MobileAssetProperties"]["SupportedDeviceModels"],
+                        "Variant":   result["Variant"],
+                        "OS":        result["OS"],
+                        "Models":    result["Models"],
                         "Date":      date
                     }
                 })
@@ -417,6 +392,97 @@ class RemoteInstallerCatalog:
         available_apps = {k: v for k, v in sorted(available_apps.items(), key=lambda x: x[1]['Version'])}
 
         return available_apps
+
+
+    def _legacy_parse_info_plist(self, data: dict) -> dict:
+        """
+        Legacy version of parsing for installer details through Info.plist
+        """
+
+        if "MobileAssetProperties" not in data:
+            return {}
+        if "SupportedDeviceModels" not in data["MobileAssetProperties"]:
+            return {}
+        if "OSVersion" not in data["MobileAssetProperties"]:
+            return {}
+        if "Build" not in data["MobileAssetProperties"]:
+            return {}
+
+        # Ensure Apple Silicon specific Installers are not listed
+        if "VMM-x86_64" not in data["MobileAssetProperties"]["SupportedDeviceModels"]:
+            return {}
+
+        version = data["MobileAssetProperties"]["OSVersion"]
+        build   = data["MobileAssetProperties"]["Build"]
+
+        catalog = ""
+        try:
+            catalog = data["MobileAssetProperties"]["BridgeVersionInfo"]["CatalogURL"]
+        except KeyError:
+            pass
+
+        if any([version, build]) is None:
+            return {}
+
+        return {
+            "Version":   version,
+            "Build":     build,
+            "Source":   "Apple Inc.",
+            "Variant":   self._catalog_to_variant(catalog),
+            "OS":        os_data.os_conversion.os_to_kernel(version),
+            "Models":    data["MobileAssetProperties"]["SupportedDeviceModels"],
+        }
+
+
+    def _parse_mobile_asset_plist(self, data: dict) -> dict:
+        """
+        Parses the MobileAsset plist for installer details
+
+        With macOS Sequoia beta 1, the Info.plist was missing and as such this method was introduced
+        """
+
+        for entry in data["Assets"]:
+            if "SupportedDeviceModels" not in entry:
+                continue
+            if "VMM-x86_64" not in entry["SupportedDeviceModels"]:
+                continue
+            if "OSVersion" not in entry:
+                continue
+            if "Build" not in entry:
+                continue
+
+            build       = entry["Build"]
+            version     = entry["OSVersion"]
+
+            catalog_url = ""
+            try:
+                catalog_url = entry["BridgeVersionInfo"]["CatalogURL"]
+            except KeyError:
+                pass
+
+            return {
+                "Version":   version,
+                "Build":     build,
+                "Source":   "Apple Inc.",
+                "Variant":   self._catalog_to_variant(catalog_url),
+                "OS":        os_data.os_conversion.os_to_kernel(version),
+                "Models":    entry["SupportedDeviceModels"],
+            }
+
+        return {}
+
+
+    def _catalog_to_variant(self, catalog: str) -> SeedType:
+        """
+        Converts the Catalog URL to a SeedType
+        """
+        if "beta" in catalog:
+            return SeedType.PublicSeed
+        elif "customerseed" in catalog:
+            return SeedType.CustomerSeed
+        elif "seed" in catalog:
+            return SeedType.DeveloperSeed
+        return SeedType.PublicRelease
 
 
     def _list_newest_installers_only(self) -> dict:
@@ -443,7 +509,7 @@ class RemoteInstallerCatalog:
             # First determine the largest version
             for ia in newest_apps:
                 if newest_apps[ia]["Version"].startswith(version):
-                    if newest_apps[ia]["Variant"] not in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
+                    if newest_apps[ia]["Variant"] not in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
                         remote_version = newest_apps[ia]["Version"].split(".")
                         if remote_version[0] == "10":
                             remote_version.pop(0)
@@ -460,7 +526,7 @@ class RemoteInstallerCatalog:
             # Now remove all versions that are not the largest
             for ia in list(newest_apps):
                 # Don't use Beta builds to determine latest version
-                if newest_apps[ia]["Variant"] in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
+                if newest_apps[ia]["Variant"] in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
                     continue
 
                 if newest_apps[ia]["Version"].startswith(version):
@@ -494,9 +560,9 @@ class RemoteInstallerCatalog:
 
         # Remove Betas if there's a non-beta version available
         for ia in list(newest_apps):
-            if newest_apps[ia]["Variant"] in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
+            if newest_apps[ia]["Variant"] in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
                 for ia2 in newest_apps:
-                    if newest_apps[ia2]["Version"].split(".")[0] == newest_apps[ia]["Version"].split(".")[0] and newest_apps[ia2]["Variant"] not in ["CustomerSeed", "DeveloperSeed", "PublicSeed"]:
+                    if newest_apps[ia2]["Version"].split(".")[0] == newest_apps[ia]["Version"].split(".")[0] and newest_apps[ia2]["Variant"] not in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
                         newest_apps.pop(ia)
                         break
 
