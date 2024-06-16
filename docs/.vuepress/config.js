@@ -152,6 +152,7 @@ module.exports = {
 				'TERMS',
 				'HOW',
 				'PATCHEXPLAIN',
+		    		'PROCESS',
             ]
 
         },
