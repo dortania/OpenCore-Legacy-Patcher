@@ -131,6 +131,7 @@ module.exports = {
 				'ICNS',
 				'WINDOWS',
 				'UNIVERSALCONTROL',
+		    		'PROCESS',
             ]
         },
         {
@@ -152,7 +153,6 @@ module.exports = {
 				'TERMS',
 				'HOW',
 				'PATCHEXPLAIN',
-		    		'PROCESS',
             ]
 
         },
