@@ -35,9 +35,11 @@ If the application won't launch (e.g. icon will bounce in the Dock), try launchi
 
 In some cases, a following error saying "The bless of the installer disk failed" stating the reason as "You don't have permission to save..." may appear. 
 
-<p align="center">
-<img src="./images/Error-No-Permission-To-Save.png">
-</p>
+
+<div align="center">
+             <img src="docs/images/Error-No-Permission-To-Save.png" alt="OpenCore Patcher Logo" width="256" />
+</div>
+
 
 To resolve this, you may try adding Full Disk Access permission OpenCore Legacy Patcher. To add it, first go to the settings
 
