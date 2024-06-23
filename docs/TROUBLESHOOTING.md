@@ -37,7 +37,7 @@ In some cases, a following error saying "The bless of the installer disk failed"
 
 
 <div align="center">
-             <img src="docs/images/Error-No-Permission-To-Save.png" alt="OpenCore Patcher Logo" width="256" />
+             <img src="./images/Error-No-Permission-To-Save.png" alt="NoPermissionToSave" width="256" />
 </div>
 
 
