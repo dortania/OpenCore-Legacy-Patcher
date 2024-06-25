@@ -1416,7 +1416,7 @@ class SystemPatchDictionary():
                             "LocalAuthentication.framework": "13.6"  # Required for Password Authentication (SharedUtils.framework)
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "EmbeddedOSInstall.framework": "13.6"  # Required for biometrickitd
+                            "EmbeddedOSInstall.framework": "13.6",  # Required for biometrickitd
                             **({ "NearField.framework": "14.5" } if self.os_major >= os_data.os_data.sequoia else {}),
                         },
                         # Required for Apple Pay
