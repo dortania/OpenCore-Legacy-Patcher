@@ -1246,6 +1246,9 @@ class SystemPatchDictionary():
                             "IO80211.framework":        "13.6.5",
                             "WiFiPeerToPeer.framework": "13.6.5",
                         },
+                        "/System/Library/CoreServices": {
+                            **({ "WiFiAgent.app": "14.5" } if self.os_major >= os_data.os_data.sequoia else {}),
+                        },
                     },
                 },
             },
