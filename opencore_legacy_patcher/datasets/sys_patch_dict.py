@@ -1360,6 +1360,10 @@ class SystemPatchDictionary():
                             "AppleUSBUHCI.kext":    "12.6.2-USB",
                             "AppleUSBUHCIPCI.kext": "12.6.2-USB",
                         },
+                        "/System/Library/Extensions": {
+                            **({ "AppleUSBAudio.kext": "14.5" } if self.os_major >= os_data.os_data.sequoia else {}),
+                            **({ "AppleUSBCDC.kext":   "14.5" } if self.os_major >= os_data.os_data.sequoia else {}),
+                        },
                     },
                 },
                 # With macOS 14.1, daemon won't load if not on root volume
