@@ -921,7 +921,7 @@ class SystemPatchDictionary():
 
                             "AMDRadeonVADriver2.bundle":     "12.5",
                             "AMDRadeonX4000GLDriver.bundle": "12.5",
-                            "AMDMTLBronzeDriver.bundle":     "12.5",
+                            "AMDMTLBronzeDriver.bundle":     "12.5" if self.os_major < os_data.os_data.sequoia else "12.5-24",
                             "AMDShared.bundle":              "12.5",
                         },
                     },
