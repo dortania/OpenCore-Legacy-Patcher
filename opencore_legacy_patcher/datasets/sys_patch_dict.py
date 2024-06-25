@@ -1213,9 +1213,9 @@ class SystemPatchDictionary():
                             "CoreWLAN.framework": "12.7.2",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "CoreWiFi.framework": "12.7.2",
-                            "IO80211.framework":  "12.7.2",
-                            "WiFiPeerToPeer.framework":  "12.7.2",
+                            "CoreWiFi.framework":       "12.7.2",
+                            "IO80211.framework":        "12.7.2",
+                            "WiFiPeerToPeer.framework": "12.7.2",
                         },
                     },
                 },
