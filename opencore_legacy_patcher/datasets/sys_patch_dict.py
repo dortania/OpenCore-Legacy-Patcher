@@ -1414,6 +1414,7 @@ class SystemPatchDictionary():
                         },
                         "/System/Library/PrivateFrameworks": {
                             "EmbeddedOSInstall.framework": "13.6"  # Required for biometrickitd
+                            **({ "NearField.framework": "14.5" } if self.os_major >= os_data.os_data.sequoia else {}),
                         },
                         # Required for Apple Pay
                         "/usr/lib": {
@@ -1428,7 +1429,7 @@ class SystemPatchDictionary():
                             "libPN548_API.dylib":          "13.6"
                         },
                         "/usr/libexec": {
-                            "biometrickitd":        "13.6",  # Required for Touch ID
+                            "biometrickitd":      "13.6",    # Required for Touch ID
                             "nfcd":               "13.6",    # Required for Apple Pay
                             "nfrestore_service":  "13.6",    # Required for Apple Pay
                         },
