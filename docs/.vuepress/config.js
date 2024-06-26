@@ -131,6 +131,7 @@ module.exports = {
 				'ICNS',
 				'WINDOWS',
 				'UNIVERSALCONTROL',
+		    		'PROCESS',
             ]
         },
         {
