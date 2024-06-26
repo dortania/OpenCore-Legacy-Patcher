@@ -137,7 +137,7 @@ class PatchSysVolume:
         if not mounted_system_version.exists():
             logging.error("- Failed to find SystemVersion.plist")
             return False
-        
+
         try:
             mounted_data = plistlib.load(open(mounted_system_version, "rb"))
             if mounted_data["ProductBuildVersion"] != self.constants.detected_os_build:
@@ -146,7 +146,7 @@ class PatchSysVolume:
         except:
             logging.error("- Failed to parse SystemVersion.plist")
             return False
-        
+
         return True
 
 
@@ -858,7 +858,7 @@ class PatchSysVolume:
             logging.info("- Mounted Universal-Binaries.dmg")
             if self.constants.cli_mode is False and Path(self.constants.overlay_psp_path_dmg).exists() and Path("~/.dortania_developer").expanduser().exists():
                 icon_path = str(self.constants.app_icon_path).replace("/", ":")[1:]
-                msg = "Welcome to the DortaniaInternal Program, please provided the decryption key to access internal resources. Press cancel to skip."
+                msg = "Welcome to the DortaniaInternal Program, please provide the decryption key to access internal resources. Press cancel to skip."
                 password = Path("~/.dortania_developer_key").expanduser().read_text().strip() if Path("~/.dortania_developer_key").expanduser().exists() else ""
                 for i in range(3):
                     try:
