@@ -1,6 +1,4 @@
-Copyright (c) 2020-2024, Dhinak G
-Copyright (c) 2020-2024, Mykola Grymalyuk
-Copyright (c) 2020-2024, Individual contributors
+Copyright (c) 2020-2024 Dhinak G, Mykola Grymalyuk, and individual contributors.
 
 All rights reserved.
 
