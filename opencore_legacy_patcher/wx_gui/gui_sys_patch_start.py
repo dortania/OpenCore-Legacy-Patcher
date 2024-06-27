@@ -198,7 +198,7 @@ class SysPatchStartFrame(wx.Frame):
 
 
         # Text box
-        text_box = wx.TextCtrl(dialog, pos=(10, patch_label.GetPosition()[1] + 30), size=(400, 400), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
+        text_box = wx.TextCtrl(dialog, pos=(10, patch_label.GetPosition()[1] + 30), size=(380, 400), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
         text_box.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         text_box.Centre(wx.HORIZONTAL)
         self.text_box = text_box

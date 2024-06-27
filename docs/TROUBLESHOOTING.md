@@ -3,6 +3,7 @@
 Here are some common errors that users may experience while using this patcher:
 
 * [OpenCore Legacy Patcher not launching](#opencore-legacy-patcher-not-launching)
+* ["You don't have permission to save..." error when creating USB installer](#you-dont-have-permission-to-save-error-when-creating-usb-installer)
 * [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-(🚫)-prohibited-symbol)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
@@ -29,6 +30,29 @@ If the application won't launch (e.g. icon will bounce in the Dock), try launchi
 ```sh
 /Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher
 ```
+
+## "You don't have permission to save..." error when creating USB installer
+
+In some cases, a following error saying "The bless of the installer disk failed" stating the reason as "You don't have permission to save..." may appear. 
+
+
+<div align="center">
+             <img src="./images/Error-No-Permission-To-Save.png" alt="NoPermissionToSave" width="400" />
+</div>
+
+
+To resolve this, you may try adding Full Disk Access permission OpenCore Legacy Patcher. To add it, first go to the settings
+
+* Ventura and Sonoma: Go to System Settings -> Privacy and Security -> Full Disk Access
+
+* Big Sur and Monterey: Go to System Preferences -> Security and Privacy -> Full Disk Access
+
+Enable OpenCore-Patcher in the list. If not found on the list, press the + sign to add a new entity and find OpenCore Legacy Patcher from Applications.
+
+Restart OpenCore Legacy Patcher and try creating your USB drive again.
+
+Optional: After you've created your USB drive, you can remove OpenCore Legacy Patcher from Full Disk Access again.
+
 
 ## Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol
 

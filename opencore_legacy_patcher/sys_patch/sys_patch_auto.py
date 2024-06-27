@@ -148,7 +148,7 @@ Please check the Github page for more information about this release."""
             logging.info("- Detected Snapshot seal intact, detecting patches")
             patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
             if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
-                patches = []
+                patches = {}
             if patches:
                 logging.info("- Detected applicable patches, determining whether possible to patch")
                 if patches["Validation: Patching Possible"] is False:

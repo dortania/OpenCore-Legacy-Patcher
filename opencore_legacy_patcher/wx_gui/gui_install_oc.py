@@ -252,7 +252,7 @@ class InstallOCFrame(wx.Frame):
         text_label.Centre(wx.HORIZONTAL)
 
         # Read-only text box: {empty}
-        text_box = wx.TextCtrl(dialog, value="", pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 10), size=(370, 200), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
+        text_box = wx.TextCtrl(dialog, value="", pos=(-1, text_label.GetPosition()[1] + text_label.GetSize()[1] + 10), size=(350, 200), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
         text_box.Centre(wx.HORIZONTAL)
         self.text_box = text_box
 

@@ -1,7 +1,13 @@
 # OpenCore Legacy Patcher changelog
 
 ## 1.6.0
-
+- Set `AssociatedBundleIdentifiers` property in launch services as an array
+- Move to auto-generated pre/postinstall scripts for PKGs
+  - Streamlines PKG creation process, ensuring Install and AutoPKG scripts are always in sync
+- Add support for `gktool` in PKG postinstall scripts
+  - Removes Gatekeeper "verifying" prompt on first launch after PKG installation
+  - Note `gktool` is only available on macOS Sonoma and newer
+- Resolve unpatching crash edge case when host doesn't require patches.
 
 ## 1.5.0
 - Restructure project directories

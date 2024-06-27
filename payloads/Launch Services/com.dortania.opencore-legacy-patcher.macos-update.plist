@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>AssociatedBundleIdentifiers</key>
-	<string>com.dortania.opencore-legacy-patcher</string>
+	<array>
+		<string>com.dortania.opencore-legacy-patcher</string>
+	</array>
 	<key>Label</key>
 	<string>com.dortania.opencore-legacy-patcher.macos-update</string>
 	<key>ProgramArguments</key>

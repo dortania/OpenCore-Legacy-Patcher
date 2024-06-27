@@ -78,7 +78,7 @@ class BuildFrame(wx.Frame):
         self.install_button = install_button
 
         # Read-only text box: {empty}
-        text_box = wx.TextCtrl(frame, value="", pos=(-1, install_button.GetPosition()[1] + install_button.GetSize()[1] + 10), size=(400, 350), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
+        text_box = wx.TextCtrl(frame, value="", pos=(-1, install_button.GetPosition()[1] + install_button.GetSize()[1] + 10), size=(380, 350), style=wx.TE_READONLY | wx.TE_MULTILINE | wx.TE_RICH2)
         text_box.Centre(wx.HORIZONTAL)
         self.text_box = text_box
 

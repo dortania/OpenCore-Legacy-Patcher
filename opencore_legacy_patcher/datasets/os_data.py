@@ -29,6 +29,7 @@ class os_data(enum.IntEnum):
     monterey =      21
     ventura =       22
     sonoma =        23
+    sequoia =       24
     max_os =        99
 
 
