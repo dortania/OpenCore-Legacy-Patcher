@@ -33,7 +33,7 @@ class Constants:
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
-        self.lilu_version:               str = "1.6.7"  #      Lilu
+        self.lilu_version:               str = "1.6.8"  #      Lilu
         self.whatevergreen_version:      str = "1.6.6"  #      WhateverGreen
         self.whatevergreen_navi_version: str = "1.6.6-Navi"  # WhateverGreen (Navi Patch)
         self.airportbcrmfixup_version:   str = "2.1.8"  #      AirPortBrcmFixup
@@ -98,7 +98,7 @@ class Constants:
         self.aspp_override_version:          str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
         self.ecm_override_version:           str = "1.0.0"  # AppleUSBECM Override
         self.rsrhelper_version:              str = "1.0.0"  # RSRHelper
-        self.amfipass_version:               str = "1.4.0"  # AMFIPass
+        self.amfipass_version:               str = "1.4.1"  # AMFIPass
         self.amfipass_compatibility_version: str = "1.2.1"  # Minimum AMFIPass version required
 
         ## Syncretic
