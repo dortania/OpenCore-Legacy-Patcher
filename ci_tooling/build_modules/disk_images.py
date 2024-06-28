@@ -78,6 +78,7 @@ class GenerateDiskImages:
             '-format', 'UDZO', '-ov',
             '-volname', 'OpenCore Patcher Resources (Base)',
             '-fs', 'HFS+',
+            '-layout', 'NONE',
             '-srcfolder', './payloads',
             '-passphrase', 'password', '-encryption'
         ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
