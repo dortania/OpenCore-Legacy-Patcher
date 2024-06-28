@@ -861,7 +861,7 @@ class SystemPatchDictionary():
                             "AMDRadeonVADriver.bundle":      "12.5",
                             "AMDRadeonVADriver2.bundle":     "12.5",
                             "AMDRadeonX4000GLDriver.bundle": "12.5",
-                            "AMDMTLBronzeDriver.bundle":     "12.5",
+                            "AMDMTLBronzeDriver.bundle":     "12.5" if self.os_major < os_data.os_data.sequoia else "12.5-24",
                             "AMDShared.bundle":              "12.5",
                         },
                     },
@@ -884,18 +884,10 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AMD9500Controller.kext":        "13.5.2",
-                            "AMD10000Controller.kext":       "13.5.2",
-                            "AMDRadeonX4000.kext":           "13.5.2",
-                            "AMDRadeonX4000HWServices.kext": "13.5.2",
-                            "AMDFramebuffer.kext":           "13.5.2",
-                            "AMDSupport.kext":               "13.5.2",
-
-                            "AMDRadeonVADriver.bundle":      "13.5.2",
-                            "AMDRadeonVADriver2.bundle":     "13.5.2",
-                            "AMDRadeonX4000GLDriver.bundle": "13.5.2",
-                            "AMDMTLBronzeDriver.bundle":     "13.5.2",
-                            "AMDShared.bundle":              "13.5.2",
+                            "AMD9500Controller.kext":  "13.5.2",
+                            "AMD10000Controller.kext": "13.5.2",
+                            "AMDFramebuffer.kext":     "13.5.2",
+                            "AMDSupport.kext":         "13.5.2",
                         },
                     },
                 },
@@ -921,7 +913,7 @@ class SystemPatchDictionary():
 
                             "AMDRadeonVADriver2.bundle":     "12.5",
                             "AMDRadeonX4000GLDriver.bundle": "12.5",
-                            "AMDMTLBronzeDriver.bundle":     "12.5",
+                            "AMDMTLBronzeDriver.bundle":     "12.5" if self.os_major < os_data.os_data.sequoia else "12.5-24",
                             "AMDShared.bundle":              "12.5",
                         },
                     },
@@ -1082,7 +1074,7 @@ class SystemPatchDictionary():
                             "AppleIntelBDWGraphics.kext":            self.__resolve_monterey_framebuffers(),
                             "AppleIntelBDWGraphicsFramebuffer.kext": self.__resolve_monterey_framebuffers(),
                             "AppleIntelBDWGraphicsGLDriver.bundle":  "12.5",
-                            "AppleIntelBDWGraphicsMTLDriver.bundle": "12.5-22",
+                            "AppleIntelBDWGraphicsMTLDriver.bundle": "12.5-22" if self.os_major < os_data.os_data.sequoia else "12.5-24",
                             "AppleIntelBDWGraphicsVADriver.bundle":  "12.5",
                             "AppleIntelBDWGraphicsVAME.bundle":      "12.5",
                             "AppleIntelGraphicsShared.bundle":       "12.5",
@@ -1106,7 +1098,7 @@ class SystemPatchDictionary():
                             "AppleIntelSKLGraphics.kext":            self.__resolve_monterey_framebuffers(),
                             "AppleIntelSKLGraphicsFramebuffer.kext": self.__resolve_monterey_framebuffers(),
                             "AppleIntelSKLGraphicsGLDriver.bundle":  "12.5",
-                            "AppleIntelSKLGraphicsMTLDriver.bundle": "12.5",
+                            "AppleIntelSKLGraphicsMTLDriver.bundle": "12.5" if self.os_major < os_data.os_data.sequoia else "12.5-24",
                             "AppleIntelSKLGraphicsVADriver.bundle":  "12.5",
                             "AppleIntelSKLGraphicsVAME.bundle":      "12.5",
                             "AppleIntelGraphicsShared.bundle":       "12.5",
@@ -1213,9 +1205,9 @@ class SystemPatchDictionary():
                             "CoreWLAN.framework": "12.7.2",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "CoreWiFi.framework": "12.7.2",
-                            "IO80211.framework":  "12.7.2",
-                            "WiFiPeerToPeer.framework":  "12.7.2",
+                            "CoreWiFi.framework":       "12.7.2",
+                            "IO80211.framework":        "12.7.2",
+                            "WiFiPeerToPeer.framework": "12.7.2",
                         },
                     },
                 },
@@ -1245,6 +1237,9 @@ class SystemPatchDictionary():
                             "CoreWiFi.framework":       "13.6.5",
                             "IO80211.framework":        "13.6.5",
                             "WiFiPeerToPeer.framework": "13.6.5",
+                        },
+                        "/System/Library/CoreServices": {
+                            **({ "WiFiAgent.app": "14.5" } if self.os_major >= os_data.os_data.sequoia else {}),
                         },
                     },
                 },
@@ -1360,6 +1355,10 @@ class SystemPatchDictionary():
                             "AppleUSBUHCI.kext":    "12.6.2-USB",
                             "AppleUSBUHCIPCI.kext": "12.6.2-USB",
                         },
+                        "/System/Library/Extensions": {
+                            **({ "AppleUSBAudio.kext": "14.5" } if self.os_major >= os_data.os_data.sequoia else {}),
+                            **({ "AppleUSBCDC.kext":   "14.5" } if self.os_major >= os_data.os_data.sequoia else {}),
+                        },
                     },
                 },
                 # With macOS 14.1, daemon won't load if not on root volume
@@ -1409,7 +1408,8 @@ class SystemPatchDictionary():
                             "LocalAuthentication.framework": "13.6"  # Required for Password Authentication (SharedUtils.framework)
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "EmbeddedOSInstall.framework": "13.6"  # Required for biometrickitd
+                            "EmbeddedOSInstall.framework": "13.6",  # Required for biometrickitd
+                            **({ "NearField.framework": "14.5" } if self.os_major >= os_data.os_data.sequoia else {}),
                         },
                         # Required for Apple Pay
                         "/usr/lib": {
@@ -1424,7 +1424,7 @@ class SystemPatchDictionary():
                             "libPN548_API.dylib":          "13.6"
                         },
                         "/usr/libexec": {
-                            "biometrickitd":        "13.6",  # Required for Touch ID
+                            "biometrickitd":      "13.6",    # Required for Touch ID
                             "nfcd":               "13.6",    # Required for Apple Pay
                             "nfrestore_service":  "13.6",    # Required for Apple Pay
                         },
