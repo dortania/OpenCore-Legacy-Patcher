@@ -64,6 +64,13 @@ KEXT_DICTIONARY = {
         },
     },
 
+    "Jazzzny": {
+        "TeraScaleFixup": {
+            "Repository": "https://github.com/Jazzzny/TeraScaleFixup",
+            "Constants Variable": "self.terascalefixup_version",
+        },
+    },
+
     "Misc": {
         "Innie": {
             "Repository": "https://github.com/cdf/Innie",
