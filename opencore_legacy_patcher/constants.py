@@ -594,7 +594,7 @@ class Constants:
 
     @property
     def legacy_keyboard_path(self):
-        return self.payload_kexts_path / Path(f"Jazzzny/LegacyKeyboardInjector-v{self.legacy_keyboard}.zip")
+        return self.payload_kexts_path / Path(f"Jazzzny/LegacyKeyboardInjector-v{self.legacy_keyboard_version}.zip")
 
     @property
     def terascalefixup_path(self):
