@@ -60,6 +60,7 @@ class PatcherValidation:
             example_data.MacPro.MacPro41_Modern_AMD,
             example_data.MacPro.MacPro41_51__Flashed_Modern_AMD,
             example_data.MacPro.MacPro41_51_Flashed_NVIDIA_WEB_DRIVERS,
+            example_data.MacPro.MacPro41_51__TeraScaleFixup_AMD,
         ]
 
         self.valid_dumps_native = [
