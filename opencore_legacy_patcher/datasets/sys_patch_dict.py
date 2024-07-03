@@ -1231,12 +1231,12 @@ class SystemPatchDictionary():
                             "wifip2pd":       "13.6.5",
                         },
                         "/System/Library/Frameworks": {
-                            "CoreWLAN.framework": "13.6.5",
+                            "CoreWLAN.framework": f"13.6.5-{self.os_major}",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "CoreWiFi.framework":       "13.6.5",
-                            "IO80211.framework":        "13.6.5",
-                            "WiFiPeerToPeer.framework": "13.6.5",
+                            "CoreWiFi.framework":       f"13.6.5-{self.os_major}",
+                            "IO80211.framework":        f"13.6.5-{self.os_major}",
+                            "WiFiPeerToPeer.framework": f"13.6.5-{self.os_major}",
                         },
                         "/System/Library/CoreServices": {
                             **({ "WiFiAgent.app": "14.5" } if self.os_major >= os_data.os_data.sequoia else {}),
@@ -1405,7 +1405,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Frameworks": {
-                            "LocalAuthentication.framework": "13.6"  # Required for Password Authentication (SharedUtils.framework)
+                            "LocalAuthentication.framework": f"13.6-{self.os_major}",  # Required for Password Authentication (SharedUtils.framework)
                         },
                         "/System/Library/PrivateFrameworks": {
                             "EmbeddedOSInstall.framework": "13.6",  # Required for biometrickitd
