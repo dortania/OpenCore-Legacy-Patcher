@@ -415,6 +415,8 @@ class AMD(GPU):
             self.arch = AMD.Archs.Legacy_GCN_9000
         elif self.device_id in pci_data.amd_ids.terascale_1_ids:
             self.arch = AMD.Archs.TeraScale_1
+        elif self.device_id in pci_data.amd_ids.terascale1_terascalefixup_ids:
+            self.arch = AMD.Archs.TeraScale_1
         elif self.device_id in pci_data.amd_ids.terascale_2_ids:
             self.arch = AMD.Archs.TeraScale_2
         elif self.device_id in pci_data.amd_ids.polaris_ids:

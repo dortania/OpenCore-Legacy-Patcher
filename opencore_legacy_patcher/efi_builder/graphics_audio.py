@@ -20,7 +20,8 @@ from ..datasets import (
     model_array,
     os_data,
     cpu_data,
-    video_bios_data
+    video_bios_data,
+    pci_data
 )
 
 
@@ -111,7 +112,7 @@ class BuildGraphicsAudio:
             if not support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("WhateverGreen.kext")["Enabled"] is True:
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("WhateverGreen.kext", self.constants.whatevergreen_version, self.constants.whatevergreen_path)
 
-        # Web Driver specific
+        # Web Driver and TeraScaleFixup
         if not self.constants.custom_model:
             for i, device in enumerate(self.computer.gpus):
                 if isinstance(device, device_probe.NVIDIA):
@@ -136,6 +137,12 @@ class BuildGraphicsAudio:
                             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"].update({"nvda_drv": binascii.unhexlify("31")})
                             if "nvda_drv" not in self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]:
                                 self.config["NVRAM"]["Delete"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"] += ["nvda_drv"]
+
+                if isinstance(device, device_probe.AMD):
+                    if device.device_id in pci_data.amd_ids.terascale1_terascalefixup_ids:
+                        logging.info(f"- Enabling TeraScaleFixup for GPU ({i + 1}): {utilities.friendly_hex(device.vendor_id)}:{utilities.friendly_hex(device.device_id)}")
+                        support.BuildSupport(self.model, self.constants, self.config).enable_kext("TeraScaleFixup.kext", self.constants.terascalefixup_version, self.constants.terascalefixup_path)
+
 
     def _backlight_path_detection(self) -> None:
         """

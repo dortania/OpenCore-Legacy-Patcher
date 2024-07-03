@@ -123,7 +123,8 @@ class Constants:
         self.kdkless_version: str = "1.0.0"
 
         ## Jazzzny
-        self.legacy_keyboard: str = "1.0.0"  # LegacyKeyboardInjector - Jazzzny
+        self.legacy_keyboard_version: str = "1.0.0"  # LegacyKeyboardInjector
+        self.terascalefixup_version: str = "1.0.0"  # TeraScaleFixup
 
         # Get resource path
         self.current_path:  Path = Path(__file__).parent.parent.resolve()
@@ -593,7 +594,11 @@ class Constants:
 
     @property
     def legacy_keyboard_path(self):
-        return self.payload_kexts_path / Path(f"Misc/LegacyKeyboardInjector-v{self.legacy_keyboard}.zip")
+        return self.payload_kexts_path / Path(f"Jazzzny/LegacyKeyboardInjector-v{self.legacy_keyboard}.zip")
+
+    @property
+    def terascalefixup_path(self):
+        return self.payload_kexts_path / Path(f"Jazzzny/TeraScaleFixup-v{self.terascalefixup}-{self.kext_variant}.zip")
 
     @property
     def apple_raid_path(self):

@@ -964,19 +964,34 @@ class amd_ids:
         0x9591,  # HD 3650 (mobile)
         0x9593,  # HD 3670 (mobile)
         0x9440,  # HD 4870
-        0x9442,  # HD 4850
+        # 0x9442,  # HD 4850 - This ID is present in AMDLegacySupport but not anywhere else
         0x944A,  # HD 4850 (mobile)
         0x945A,  # HD 4870 (mobile)
         0x9490,  # HD 4670
         0x949E,  # FirePro V5700
         0x9480,  # HD 4650/5165 (mobile)
-        0x9540,  # HD 4550
+        # 0x9540,  # HD 4550 - This ID is present in AMDLegacySupport but not anywhere else
         0x9541,  # Unknown
         0x954E,  # Unknown
-        0x954F,  # HD 4350/4550
+        # 0x954F,  # HD 4350/4550 - This ID is present in AMDLegacySupport but not anywhere else
         0x9552,  # HD 4330/4350/4550 (mobile)
-        0x9553,  # HD 4530/4570/545v (mobile)
+        # 0x9553,  # HD 4530/4570/545v (mobile) - This ID is present in AMDLegacySupport but not anywhere else
         0x94A0,  # HD 4830
+    ]
+
+    # Not natively supported by ATIRadeonX2000, uses https://github.com/Jazzzny/TeraScaleFixup
+    terascale1_terascalefixup_ids = [
+        0x9498,  # HD 4650
+        0x9540,  # HD 4550
+        0x954F,  # HD 4350/4550
+        0x9553,  # HD 4530/4570/545v (mobile)
+        0x9442,  # HD 4850
+        0x9441,  # HD 4870 X2
+        0x9443,  # HD 4850 X2
+        0x944C,  # HD 4830
+        0x9460,  # HD 4890
+        0x9462,  # HD 4860
+        0x94B3,  # HD 4770
     ]
 
     terascale_2_ids = [

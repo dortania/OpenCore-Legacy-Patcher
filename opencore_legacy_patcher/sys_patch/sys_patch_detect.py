@@ -25,7 +25,8 @@ from ..datasets import (
     model_array,
     os_data,
     sip_data,
-    smbios_data
+    smbios_data,
+    pci_data
 )
 
 
@@ -87,11 +88,12 @@ class DetectRootPatch:
         self.legacy_t1_chip            = False
 
         # Patch Requirements
-        self.amfi_must_disable   = False
-        self.amfi_shim_bins      = False
-        self.supports_metal      = False
-        self.needs_nv_web_checks = False
-        self.requires_root_kc    = False
+        self.amfi_must_disable    = False
+        self.amfi_shim_bins       = False
+        self.supports_metal       = False
+        self.needs_nv_web_checks  = False
+        self.requires_root_kc     = False
+        self.needs_terascalefixup = False
 
         # Validation Checks
         self.sip_enabled     = False
@@ -167,6 +169,8 @@ class DetectRootPatch:
                         if os_data.os_data.ventura in self.constants.legacy_accel_support:
                             self.amfi_shim_bins = True
                         self.requires_root_kc = True
+                        if gpu.device_id in pci_data.amd_ids.terascale1_terascalefixup_ids:
+                            self.needs_terascalefixup = True
                 elif gpu.arch == device_probe.AMD.Archs.TeraScale_2:
                     if self.os_major > non_metal_os:
                         self.amd_ts2 = True
@@ -475,6 +479,16 @@ class DetectRootPatch:
             return False
         return True
 
+    def _check_terascalefixup(self):
+        """
+        Query whether TeraScaleFixup.kext is loaded
+
+        Returns:
+            bool: True if loaded, False otherwise
+        """
+
+        return utilities.check_kext_loaded("com.jazzzny.terascalefixup")
+
 
     def _check_kdk(self):
         """
@@ -669,6 +683,7 @@ class DetectRootPatch:
             f"Validation: {'AMFI' if self.constants.host_is_hackintosh is True or self._get_amfi_level_needed() > 2 else 'Library Validation'} is enabled":                 self.amfi_enabled if self.amfi_must_disable is True else False,
             "Validation: FileVault is enabled":            self.fv_enabled,
             "Validation: System is dosdude1 patched":      self.dosdude_patched,
+            "Validation: TeraScaleFixup.kext missing":     self.missing_terascalefixup if self.needs_terascalefixup is True else False,
             "Validation: WhateverGreen.kext missing":      self.missing_whatever_green if self.nvidia_web is True else False,
             "Validation: Force OpenGL property missing":   self.missing_nv_web_opengl  if self.nvidia_web is True else False,
             "Validation: Force compat property missing":   self.missing_nv_compat      if self.nvidia_web is True else False,
@@ -734,6 +749,9 @@ class DetectRootPatch:
             self.missing_nv_compat      = not self._check_nv_compat()
             self.missing_whatever_green = not self._check_whatevergreen()
 
+        if self.needs_terascalefixup is True:
+            self.missing_terascalefixup = not self._check_terascalefixup()
+
         if print_errors is True:
             if self.sip_enabled is True:
                 logging.info("\nCannot patch! Please disable System Integrity Protection (SIP).")
@@ -776,6 +794,11 @@ class DetectRootPatch:
                 if self.missing_whatever_green is True:
                     logging.info("\nCannot patch! WhateverGreen.kext missing")
                     logging.info("Please ensure WhateverGreen.kext is installed")
+
+            if self.needs_terascalefixup is True:
+                if self.missing_terascalefixup is True:
+                    logging.info("\nCannot patch! TeraScaleFixup.kext missing")
+                    logging.info("Please ensure TeraScaleFixup.kext is installed")
 
             if (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.os_major >= os_data.os_data.ventura.value) else False:
                 logging.info("\nCannot patch! Network Connection Required")
