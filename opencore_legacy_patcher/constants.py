@@ -598,7 +598,7 @@ class Constants:
 
     @property
     def terascalefixup_path(self):
-        return self.payload_kexts_path / Path(f"Jazzzny/TeraScaleFixup-v{self.terascalefixup}-{self.kext_variant}.zip")
+        return self.payload_kexts_path / Path(f"Jazzzny/TeraScaleFixup-v{self.terascalefixup_version}-{self.kext_variant}.zip")
 
     @property
     def apple_raid_path(self):
