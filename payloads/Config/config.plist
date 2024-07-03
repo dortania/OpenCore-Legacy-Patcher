@@ -477,6 +477,24 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Comment</key>
+				<string>Non-native TeraScale GPU Patching</string>
+				<key>Enabled</key>
+				<false/>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>10.0.0</string>
+				<key>BundlePath</key>
+				<string>TeraScaleFixup.kext</string>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/TeraScaleFixup</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Comment</key>
 				<string>BCM Ethernet patch</string>
 				<key>Enabled</key>
 				<false/>
