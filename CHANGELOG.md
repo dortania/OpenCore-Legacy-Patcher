@@ -8,6 +8,8 @@
   - Removes Gatekeeper "verifying" prompt on first launch after PKG installation
   - Note `gktool` is only available on macOS Sonoma and newer
 - Resolve unpatching crash edge case when host doesn't require patches.
+- Add [TeraScaleFixup](https://github.com/Jazzzny/TeraScaleFixup) (Jazzzny)
+  - Provides support for non-natively supported TeraScale 1 GPUs
 
 ## 1.5.0
 - Restructure project directories
