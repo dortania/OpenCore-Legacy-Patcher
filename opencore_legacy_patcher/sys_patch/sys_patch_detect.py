@@ -683,7 +683,7 @@ class DetectRootPatch:
             f"Validation: {'AMFI' if self.constants.host_is_hackintosh is True or self._get_amfi_level_needed() > 2 else 'Library Validation'} is enabled":                 self.amfi_enabled if self.amfi_must_disable is True else False,
             "Validation: FileVault is enabled":            self.fv_enabled,
             "Validation: System is dosdude1 patched":      self.dosdude_patched,
-            "Validation: TeraScaleFixup.kext missing":     self.missing_terascalefixup if self.needs_terascalefixup is True else False,
+            #"Validation: TeraScaleFixup.kext missing":     self.missing_terascalefixup if self.needs_terascalefixup is True else False,
             "Validation: WhateverGreen.kext missing":      self.missing_whatever_green if self.nvidia_web is True else False,
             "Validation: Force OpenGL property missing":   self.missing_nv_web_opengl  if self.nvidia_web is True else False,
             "Validation: Force compat property missing":   self.missing_nv_compat      if self.nvidia_web is True else False,
@@ -795,10 +795,10 @@ class DetectRootPatch:
                     logging.info("\nCannot patch! WhateverGreen.kext missing")
                     logging.info("Please ensure WhateverGreen.kext is installed")
 
-            if self.needs_terascalefixup is True:
-                if self.missing_terascalefixup is True:
-                    logging.info("\nCannot patch! TeraScaleFixup.kext missing")
-                    logging.info("Please ensure TeraScaleFixup.kext is installed")
+            #if self.needs_terascalefixup is True:
+            #    if self.missing_terascalefixup is True:
+            #        logging.info("\nCannot patch! TeraScaleFixup.kext missing")
+            #        logging.info("Please ensure TeraScaleFixup.kext is installed")
 
             if (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.os_major >= os_data.os_data.ventura.value) else False:
                 logging.info("\nCannot patch! Network Connection Required")
