@@ -50,8 +50,8 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
 | MacBook Air (11-inch, Early 2015) | `MacBookAir7,1` | ^^ |
 | MacBook Air (13-inch, Early 2015)<br>MacBook Air (13-inch, 2017) | `MacBookAir7,2` | ^^ |
 | MacBook Air (Retina, 13-inch, 2018) | `MacBookAir8,1` | - Supported by Apple |
-| MacBook Air (Retina, 13-inch, 2019) | `MacBookAir9,1` | ^^ |
-| MacBook Air (Retina, 13-inch, 2020) | `MacBookAir10,1` | ^^ |
+| MacBook Air (Retina, 13-inch, 2019) | `MacBookAir8,2` | ^^ |
+| MacBook Air (Retina, 13-inch, 2020) | `MacBookAir9,1` | ^^ |
 
 ### MacBook Pro
 
