@@ -41,7 +41,7 @@ In some cases, a following error saying "The bless of the installer disk failed"
 </div>
 
 
-To resolve this, you may try adding Full Disk Access permission OpenCore Legacy Patcher. To add it, first go to the settings
+To resolve this, you may try adding Full Disk Access permission for OpenCore Legacy Patcher. To add it, first go to the settings
 
 * Ventura and Sonoma: Go to System Settings -> Privacy and Security -> Full Disk Access
 
