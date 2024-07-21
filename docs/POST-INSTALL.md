@@ -42,7 +42,7 @@ SIP settings can be accessed from the Security tab shown in the images. To chang
 | ![](./images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](./images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](./images/OCLP-GUI-Settings-SIP-Disabled.png) |
 
 
-In the cases where SIP can be enabled, manually enabling it is needed. Easiest way to check whether you can fully enable SIP is the "Post Install Root Patch" section, if that section tells your system doesn't need patches (or you don't install the patches in case you don't need WiFi on a Mac Pro with upgraded GPU) then it is safe to assume full SIP can be enabled.
+In the cases where SIP can be enabled, manually enabling it is needed. Easiest way to check whether you can fully enable SIP is the "Post Install Root Patch" section, if that section tells your system doesn't need patches (or you don't install the patches e.g. in case you don't need WiFi on a Mac Pro with upgraded GPU running Monterey) then it is safe to assume full SIP can be enabled.
 
 ### Ventura and newer
 
