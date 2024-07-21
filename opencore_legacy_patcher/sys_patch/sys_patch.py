@@ -135,13 +135,16 @@ class PatchSysVolume:
         mounted_system_version = Path(self.mount_location) / "System/Library/CoreServices/SystemVersion.plist"
 
         if not mounted_system_version.exists():
-            logging.error("- Failed to find SystemVersion.plist")
+            logging.error("- Failed to find SystemVersion.plist on mounted root volume")
             return False
 
         try:
             mounted_data = plistlib.load(open(mounted_system_version, "rb"))
             if mounted_data["ProductBuildVersion"] != self.constants.detected_os_build:
-                logging.error(f"- SystemVersion.plist build version mismatch: {mounted_data['ProductBuildVersion']} vs {self.constants.detected_os_build}")
+                logging.error(
+                    f"- SystemVersion.plist build version mismatch: found {mounted_data['ProductVersion']} ({mounted_data['ProductBuildVersion']}), expected {self.constants.detected_os_version} ({self.constants.detected_os_build})"
+                    )
+                logging.error("An update is in progress on your machine and patching cannot continue until it is cancelled or finished")
                 return False
         except:
             logging.error("- Failed to parse SystemVersion.plist")
