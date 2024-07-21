@@ -2,7 +2,6 @@
 kdk_handler.py: Module for parsing and determining best Kernel Debug Kit for host OS
 """
 
-import os
 import logging
 import plistlib
 import requests

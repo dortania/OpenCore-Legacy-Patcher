@@ -2,7 +2,6 @@
 gui_settings.py: Settings Frame for the GUI
 """
 
-import os
 import wx
 import wx.adv
 import pprint
@@ -24,8 +23,7 @@ from ..support import (
     global_settings,
     defaults,
     generate_smbios,
-    network_handler,
-    subprocess_wrapper
+    network_handler
 )
 from ..datasets import (
     model_array,

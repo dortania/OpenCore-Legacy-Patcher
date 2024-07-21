@@ -2,7 +2,6 @@
 gui_sys_patch_display.py: Display root patching menu
 """
 
-import os
 import wx
 import logging
 import plistlib

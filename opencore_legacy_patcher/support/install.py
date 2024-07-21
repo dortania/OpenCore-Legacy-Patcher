@@ -5,15 +5,12 @@ install.py: Installation of OpenCore files to ESP
 import logging
 import plistlib
 import subprocess
-import applescript
 
 from pathlib import Path
 
 from . import utilities, subprocess_wrapper
 
 from .. import constants
-
-from ..datasets import os_data
 
 
 class tui_disk_installation:

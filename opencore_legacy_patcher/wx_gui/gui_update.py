@@ -6,7 +6,6 @@ import wx
 import sys
 import time
 import logging
-import datetime
 import threading
 import subprocess
 

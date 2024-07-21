@@ -2,7 +2,6 @@
 gui_support.py: Utilities for interacting with wxPython GUI
 """
 
-import os
 import wx
 import sys
 import time
@@ -20,7 +19,6 @@ from . import gui_about
 from .. import constants
 
 from ..detections import device_probe
-from ..support import subprocess_wrapper
 
 from ..datasets import (
     model_array,
