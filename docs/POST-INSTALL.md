@@ -46,18 +46,19 @@ In the cases where SIP can be enabled, manually enabling it is needed. Easiest w
 
 **Ventura and newer**
 
-In Ventura and newer, all unsupported systems require lowered SIP due to root patching required, where data on the system volume is patched.
+All unsupported systems require lowered SIP.
 
 **Monterey**
 
-In Monterey, majority of unsupported systems from 2013 forward can enable full SIP, due to root patches not being required. 
-Pre-2012 systems, also known as "non-Metal" (includes Mac Pros without upgraded GPU), as well as NVIDIA Kepler and Intel HD 4000 GPUs will require root patching, which requires lowered SIP.
+Majority of unsupported systems from 2013 onward can enable full SIP.
+Pre-2012 systems, also known as "non-Metal" (includes Mac Pros without upgraded GPU), as well as NVIDIA Kepler and Intel HD 4000 GPUs require lowered SIP.
 
 Some systems such as Mac Pros also require root patching for stock WiFi cards but if you do not need WiFi or you plan to upgrade the card, there is no need for root patching and as such SIP can be fully enabled.
 
 **Big Sur**
 
-Majority of unsupported systems can run with full SIP enabled, as root patching is not required. Non-Metal still requires root patching and lowered SIP.
+All Metal capable systems from 2012 onward (incl. NVIDIA Kepler and Intel HD 4000) as well as Mac Pros with upgraded GPU can run with full SIP enabled. 
+Non-Metal systems still require lowered SIP.
 
 ## Applying Post Install Volume Patches
 
