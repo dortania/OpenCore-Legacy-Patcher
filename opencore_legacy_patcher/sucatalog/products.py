@@ -29,7 +29,7 @@ class CatalogProducts:
                  catalog: dict,
                  install_assistants_only: bool = True,
                  only_vmm_install_assistants: bool = True,
-                 max_install_assistant_version: CatalogVersion = CatalogVersion.SONOMA
+                 max_install_assistant_version: CatalogVersion = CatalogVersion.SEQUOIA
                 ) -> None:
         self.catalog:             dict = catalog
         self.ia_only:             bool = install_assistants_only
