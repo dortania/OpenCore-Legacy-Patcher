@@ -29,8 +29,6 @@ Once you've toggled it off, build your OpenCore EFI once again and install to yo
 
 SIP, or System Integrity Protection, needs to be lowered on systems where root patching is required to patch data on disk. This will vary between OS versions and the model in question. OCLP by default will determine the proper SIP options for the OS version and Mac model, in most cases the user has no need to touch these settings. However, this part explains how the SIP settings work in OCLP, where lowered SIP is needed and where full SIP could be enabled.
 
-In the cases where SIP can be enabled, manually enabling it is needed.
-
 :::warning
 
 If you're unsure whether you should change the SIP settings, leave them as-is. Systems where you have already ran the Post Install Root Patching cannot enable SIP without potentially breaking the current install.
@@ -43,6 +41,8 @@ SIP settings can be accessed from the Security tab shown in the images. To chang
 | :--- | :--- | :--- |
 | ![](./images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](./images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](./images/OCLP-GUI-Settings-SIP-Disabled.png) |
 
+
+In the cases where SIP can be enabled, manually enabling it is needed. Easiest way to check whether you can fully enable SIP is the "Post Install Root Patch" section, if that section tells your system doesn't need patches (or you don't install the patches in case you don't need WiFi on a Mac Pro with upgraded GPU) then it is safe to assume full SIP can be enabled.
 
 ### Ventura and newer
 
