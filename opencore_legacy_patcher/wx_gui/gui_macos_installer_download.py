@@ -10,7 +10,10 @@ import webbrowser
 
 from pathlib import Path
 
-from .. import constants
+from .. import (
+    constants,
+    sucatalog
+)
 
 from ..datasets import (
     os_data,
@@ -46,7 +49,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.available_installers = None
         self.available_installers_latest = None
 
-        self.catalog_seed: macos_installer_handler.SeedType = macos_installer_handler.SeedType.DeveloperSeed
+        self.catalog_seed: sucatalog.SeedType = sucatalog.SeedType.DeveloperSeed
 
         self.frame_modal = wx.Dialog(parent, title=title, size=(330, 200))
 
@@ -132,10 +135,16 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         # Grab installer catalog
         def _fetch_installers():
-            logging.info(f"Fetching installer catalog: {macos_installer_handler.SeedType(self.catalog_seed).name}")
-            remote_obj = macos_installer_handler.RemoteInstallerCatalog(seed_override=self.catalog_seed)
-            self.available_installers        = remote_obj.available_apps
-            self.available_installers_latest = remote_obj.available_apps_latest
+            logging.info(f"Fetching installer catalog: {sucatalog.SeedType.DeveloperSeed.name}")
+
+            sucatalog_contents = sucatalog.CatalogURL(seed=sucatalog.SeedType.DeveloperSeed).url_contents
+            if sucatalog_contents is None:
+                logging.error("Failed to download Installer Catalog from Apple")
+                return
+
+            self.available_installers        = sucatalog.CatalogProducts(sucatalog_contents).products
+            self.available_installers_latest = sucatalog.CatalogProducts(sucatalog_contents).latest_products
+
 
         thread = threading.Thread(target=_fetch_installers)
         thread.start()
@@ -157,7 +166,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
 
         self.frame_modal.Destroy()
-        self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(460, 500))
+        self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(505, 500))
 
         # Title: Select macOS Installer
         title_label = wx.StaticText(self.frame_modal, label="Select macOS Installer", pos=(-1,-1))
@@ -169,34 +178,30 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
         self.list.SetSmallImages(bundles)
 
-        self.list.InsertColumn(0, "Version")
-        self.list.InsertColumn(1, "Size")
-        self.list.InsertColumn(2, "Release Date")
+        self.list.InsertColumn(0, "Title",        width=175)
+        self.list.InsertColumn(1, "Version",      width=50)
+        self.list.InsertColumn(2, "Build",        width=75)
+        self.list.InsertColumn(3, "Size",         width=75)
+        self.list.InsertColumn(4, "Release Date", width=100)
 
         installers = self.available_installers_latest if show_full is False else self.available_installers
         if show_full is False:
-            self.frame_modal.SetSize((460, 370))
+            self.frame_modal.SetSize((490, 370))
 
         if installers:
             locale.setlocale(locale.LC_TIME, '')
             logging.info(f"Available installers on SUCatalog ({'All entries' if show_full else 'Latest only'}):")
             for item in installers:
-                extra = " Beta" if installers[item]['Variant'] in ["DeveloperSeed" , "PublicSeed"] else ""
-                logging.info(f"- macOS {installers[item]['Version']} ({installers[item]['Build']}):\n  - Size: {utilities.human_fmt(installers[item]['Size'])}\n  - Source: {installers[item]['Source']}\n  - Variant: {installers[item]['Variant']}\n  - Link: {installers[item]['Link']}\n")
-                index = self.list.InsertItem(self.list.GetItemCount(), f"macOS {installers[item]['Version']} {os_data.os_conversion.convert_kernel_to_marketing_name(int(installers[item]['Build'][:2]))}{extra} ({installers[item]['Build']})")
-                self.list.SetItemImage(index, self._macos_version_to_icon(int(installers[item]['Build'][:2])))
-                self.list.SetItem(index, 1, utilities.human_fmt(installers[item]['Size']))
-                self.list.SetItem(index, 2, installers[item]['Date'].strftime("%x"))
+                logging.info(f"- {item['Title']} ({item['Version']} - {item['Build']}):\n  - Size: {utilities.human_fmt(item['InstallAssistant']['Size'])}\n  - Link: {item['InstallAssistant']['URL']}\n")
+                index = self.list.InsertItem(self.list.GetItemCount(), f"{item['Title']}")
+                self.list.SetItemImage(index, self._macos_version_to_icon(int(item['Build'][:2])))
+                self.list.SetItem(index, 1, item['Version'])
+                self.list.SetItem(index, 2, item['Build'])
+                self.list.SetItem(index, 3, utilities.human_fmt(item['InstallAssistant']['Size']))
+                self.list.SetItem(index, 4, item['PostDate'].strftime("%x"))
         else:
             logging.error("No installers found on SUCatalog")
             wx.MessageDialog(self.frame_modal, "Failed to download Installer Catalog from Apple", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
-
-        self.list.SetColumnWidth(0, 280)
-        self.list.SetColumnWidth(1, 65)
-        if show_full is True:
-            self.list.SetColumnWidth(2, 80)
-        else:
-            self.list.SetColumnWidth(2, 94) # Hack to get the highlight to fill the ListCtrl
 
         if show_full is False:
             self.list.Select(-1)
@@ -256,7 +261,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
             if not clipboard.IsOpened():
                 clipboard.Open()
 
-            clipboard.SetData(wx.TextDataObject(list(installers.values())[selected_item]['Link']))
+            clipboard.SetData(wx.TextDataObject(installers[selected_item]['InstallAssistant']['URL']))
 
             clipboard.Close()
 
@@ -278,14 +283,15 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         selected_item = self.list.GetFirstSelected()
         if selected_item != -1:
+            selected_installer = installers[selected_item]
 
-            logging.info(f"Selected macOS {list(installers.values())[selected_item]['Version']} ({list(installers.values())[selected_item]['Build']})")
+            logging.info(f"Selected macOS {selected_installer['Version']} ({selected_installer['Build']})")
 
             # Notify user whether their model is compatible with the selected installer
             problems = []
             model = self.constants.custom_model or self.constants.computer.real_model
             if model in smbios_data.smbios_dictionary:
-                if list(installers.values())[selected_item]["OS"] >= os_data.os_data.ventura:
+                if selected_installer["InstallAssistant"]["XNUMajor"] >= os_data.os_data.ventura:
                     if smbios_data.smbios_dictionary[model]["CPU Generation"] <= cpu_data.CPUGen.penryn or model in ["MacPro4,1", "MacPro5,1", "Xserve3,1"]:
                         if model.startswith("MacBook"):
                             problems.append("Lack of internal Keyboard/Trackpad in macOS installer.")
@@ -293,7 +299,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
                             problems.append("Lack of internal Keyboard/Mouse in macOS installer.")
 
             if problems:
-                logging.warning(f"Potential issues with {model} and {list(installers.values())[selected_item]['Version']} ({list(installers.values())[selected_item]['Build']}): {problems}")
+                logging.warning(f"Potential issues with {model} and {selected_installer['Version']} ({selected_installer['Build']}): {problems}")
                 problems = "\n".join(problems)
                 dlg = wx.MessageDialog(self.frame_modal, f"Your model ({model}) may not be fully supported by this installer. You may encounter the following issues:\n\n{problems}\n\nFor more information, see associated page. Otherwise, we recommend using macOS Monterey", "Potential Issues", wx.YES_NO | wx.CANCEL | wx.ICON_WARNING)
                 dlg.SetYesNoCancelLabels("View Github Issue", "Download Anyways", "Cancel")
@@ -305,7 +311,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
                     return
 
             host_space = utilities.get_free_space()
-            needed_space = list(installers.values())[selected_item]['Size'] * 2
+            needed_space = selected_installer['InstallAssistant']['Size'] * 2
             if host_space < needed_space:
                 logging.error(f"Insufficient space to download and extract: {utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required")
                 dlg = wx.MessageDialog(self.frame_modal, f"You do not have enough free space to download and extract this installer. Please free up some space and try again\n\n{utilities.human_fmt(host_space)} available vs {utilities.human_fmt(needed_space)} required", "Insufficient Space", wx.OK | wx.ICON_WARNING)
@@ -314,22 +320,22 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
             self.frame_modal.Close()
 
-            download_obj = network_handler.DownloadObject(list(installers.values())[selected_item]['Link'], self.constants.payload_path / "InstallAssistant.pkg")
+            download_obj = network_handler.DownloadObject(selected_installer['InstallAssistant']['URL'], self.constants.payload_path / "InstallAssistant.pkg")
 
             gui_download.DownloadFrame(
                 self,
                 title=self.title,
                 global_constants=self.constants,
                 download_obj=download_obj,
-                item_name=f"macOS {list(installers.values())[selected_item]['Version']} ({list(installers.values())[selected_item]['Build']})",
-                download_icon=self.constants.icons_path[self._macos_version_to_icon(int(list(installers.values())[selected_item]['Build'][:2]))]
+                item_name=f"macOS {selected_installer['Version']} ({selected_installer['Build']})",
+                download_icon=self.constants.icons_path[self._macos_version_to_icon(selected_installer["InstallAssistant"]["XNUMajor"])]
             )
 
             if download_obj.download_complete is False:
                 self.on_return_to_main_menu()
                 return
 
-            self._validate_installer(list(installers.values())[selected_item]['integrity'])
+            self._validate_installer(selected_installer['InstallAssistant']['IntegrityDataURL'])
 
 
     def _validate_installer(self, chunklist_link: str) -> None:
