@@ -74,6 +74,7 @@ class Constants:
         self.t1_corecrypto_version: str = "1.0.1"  #  corecrypto    (13.6 - T1 support)
         self.apple_spi_version:     str = "1.0.0"  #  AppleHSSPISupport   (14.4 Beta 1)
         self.apple_spi_hid_version: str = "1.0.0"  #  AppleHSSPIHIDDriver (14.4 Beta 1)
+        self.kernel_relay_version:  str = "1.0.0"  #  KernelRelayHost (15.0 Beta 3)
 
         ## Apple - Dortania Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
@@ -479,6 +480,10 @@ class Constants:
     @property
     def apple_spi_hid_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleHSSPIHIDDriver-v{self.apple_spi_hid_version}.zip")
+
+    @property
+    def kernel_relay_path(self):
+        return self.payload_kexts_path / Path(f"Misc/KernelRelayHost-v{self.kernel_relay_version}.zip")
 
     @property
     def mousse_path(self):
