@@ -262,6 +262,10 @@ class SysPatchHelpers:
                 return
             BASE_VERSION = "32023"
             GPU_VERSION = f"{BASE_VERSION}.26"
+        else:
+            # Fall back for newer versions
+            BASE_VERSION = "32023"
+            GPU_VERSION = f"{BASE_VERSION}.26"
 
         LIBRARY_DIR = f"{mount_point}/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/{BASE_VERSION}/Libraries/lib/clang"
         DEST_DIR = f"{LIBRARY_DIR}/{GPU_VERSION}"
