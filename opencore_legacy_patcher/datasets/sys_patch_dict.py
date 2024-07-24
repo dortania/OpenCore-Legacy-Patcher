@@ -332,57 +332,6 @@ class SystemPatchDictionary():
                     },
                 },
 
-                # AMD GCN and Nvidia Kepler require Metal Downgrade in Ventura
-                # The patches are required due to struct issues in the Metal stack
-                # - AMD GCN will break on BronzeMtlDevice
-                # - See Nvidia Kepler patchset for more info
-                "Metal Common": {
-                    "Display Name": "",
-                    "OS Support": {
-                        "Minimum OS Support": {
-                            "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
-                        },
-                        "Maximum OS Support": {
-                            "OS Major": os_data.os_data.max_os,
-                            "OS Minor": 99
-                        },
-                    },
-                    "Install": {
-                        "/System/Library/Frameworks": {
-                            "Metal.framework":                   "12.5",
-                            "MetalPerformanceShaders.framework": "12.5",
-                        },
-                    },
-                },
-
-                # Temporary work-around for Kepler GPUs on Ventura
-                # We removed the reliance on Metal.framework downgrade, however the new Kepler
-                # patchset breaks with the old Metal. Thus we need to ensure stock variant is used
-                # Remove this when OCLP is merged onto mainline
-                "Revert Metal Downgrade": {
-                    "Display Name": "",
-                    "OS Support": {
-                        "Minimum OS Support": {
-                            "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 0
-                        },
-                        "Maximum OS Support": {
-                            "OS Major": os_data.os_data.ventura,
-                            "OS Minor": 99
-                        },
-                    },
-                    "Remove": {
-                        "/System/Library/Frameworks/Metal.framework/Versions/A/": [
-                            "Metal",
-                            "MetalOld.dylib",
-                        ],
-                        "/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSCore.framework/Versions/A": [
-                            "MPSCore",
-                        ],
-                    },
-                },
-
                 # Monterey has a WebKit sandboxing issue where many UI elements fail to render
                 # This patch simple replaces the sandbox profile with one supporting our GPUs
                 # Note: Neither Big Sur nor Ventura have this issue
@@ -426,7 +375,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Frameworks": {
-                            "Metal.framework": f"12.5-3802-{self.os_major}",
+                            "Metal.framework": "12.5-3802-22" if self.os_major < os_data.os_data.sonoma else "12.5-3802-23",
                         },
                         "/System/Library/PrivateFrameworks": {
                             "MTLCompiler.framework": "12.5-3802",
