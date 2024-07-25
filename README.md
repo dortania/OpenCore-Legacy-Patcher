@@ -100,8 +100,16 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
   * Pre-Ivy Bridge Aquantia Ethernet Patch
   * Non-Metal Photo Booth Patch for Monterey+
   * GUI and Backend Development
+    * Updater UI
+    * macOS Downloader UI
+    * Downloader UI
+    * USB Top Case probing
+    * Developer root patching
   * Vaulting implementation
   * macOS 15 3802 Helios Research
+  * UEFI bootx64.efi research
+  * universal2 build research
+  * Various documentation contributions
 * Amazing users who've graciously donate hardware:
   * [JohnD](https://forums.macrumors.com/members/johnd.53633/) - 2013 Mac Pro
   * [SpiGAndromeda](https://github.com/SpiGAndromeda) - AMD Vega 64
