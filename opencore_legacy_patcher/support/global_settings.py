@@ -7,11 +7,8 @@ This is to ensure compatibility when running without a user
 ie. during automated patching
 """
 
-import os
 import logging
 import plistlib
-
-from . import subprocess_wrapper
 
 from pathlib import Path
 

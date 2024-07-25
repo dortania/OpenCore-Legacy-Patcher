@@ -18,8 +18,7 @@ from .. import constants
 
 from . import (
     analytics_handler,
-    global_settings,
-    subprocess_wrapper
+    global_settings
 )
 
 

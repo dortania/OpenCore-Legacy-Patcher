@@ -11,9 +11,6 @@ import requests
 import markdown2
 import threading
 import webbrowser
-import subprocess
-
-from pathlib import Path
 
 from .. import constants
 

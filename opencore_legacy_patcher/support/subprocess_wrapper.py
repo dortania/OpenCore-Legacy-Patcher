@@ -3,7 +3,6 @@ subprocess_wrapper.py: Wrapper for subprocess module to better handle errors and
                        Additionally handles our Privileged Helper Tool
 """
 
-import os
 import enum
 import logging
 import subprocess
