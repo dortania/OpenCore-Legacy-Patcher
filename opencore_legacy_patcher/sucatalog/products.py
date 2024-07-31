@@ -232,7 +232,8 @@ class CatalogProducts:
                     continue
                 try:
                     if packaging.version.parse(installer["Version"]) < _newest_version:
-                        products_copy.pop(products_copy.index(installer))
+                        if installer in products_copy:
+                            products_copy.pop(products_copy.index(installer))
                 except packaging.version.InvalidVersion:
                     pass
 
