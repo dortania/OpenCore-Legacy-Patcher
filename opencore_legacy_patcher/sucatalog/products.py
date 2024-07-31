@@ -238,7 +238,8 @@ class CatalogProducts:
             if installer["Catalog"] in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
                 for installer_2 in products:
                     if installer_2["Version"].split(".")[0] == installer["Version"].split(".")[0] and installer_2["Catalog"] not in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
-                        products.remove(installer)
+                        if installer in products:
+                            products.remove(installer)
 
         # Remove EOL versions (older than n-3)
         for installer in products:
