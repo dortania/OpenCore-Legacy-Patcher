@@ -200,8 +200,11 @@ class CatalogProducts:
             if len(supported_versions) == 4:
                 break
 
-        # invert the list
+        # Invert the list
         supported_versions = supported_versions[::-1]
+
+        # Create duplicate product list
+        products_copy = products.copy()
 
         # Remove all but the newest version
         for version in supported_versions:
@@ -229,7 +232,7 @@ class CatalogProducts:
                     continue
                 try:
                     if packaging.version.parse(installer["Version"]) < _newest_version:
-                        products.remove(installer)
+                        products_copy.pop(products_copy.index(installer))
                 except packaging.version.InvalidVersion:
                     pass
 
@@ -238,15 +241,17 @@ class CatalogProducts:
             if installer["Catalog"] in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
                 for installer_2 in products:
                     if installer_2["Version"].split(".")[0] == installer["Version"].split(".")[0] and installer_2["Catalog"] not in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
-                        if installer in products:
-                            products.remove(installer)
+                        if installer in products_copy:
+                            products_copy.pop(products_copy.index(installer))
+
 
         # Remove EOL versions (older than n-3)
         for installer in products:
             if installer["Version"].split(".")[0] < supported_versions[-4].value:
-                products.remove(installer)
+                if installer in products_copy:
+                    products_copy.pop(products_copy.index(installer))
 
-        return products
+        return products_copy
 
 
     @cached_property
