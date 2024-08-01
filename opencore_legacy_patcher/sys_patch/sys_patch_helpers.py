@@ -14,6 +14,7 @@ from datetime import datetime
 from .. import constants
 
 from ..datasets import os_data
+from ..volume   import generate_copy_arguments
 
 from ..support import (
     generate_smbios,
@@ -232,6 +233,6 @@ class SysPatchHelpers:
 
             src_dir = f"{LIBRARY_DIR}/{file.name}"
             if not Path(f"{DEST_DIR}/lib").exists():
-                subprocess_wrapper.run_as_root_and_verify(["/bin/cp", "-cR", f"{src_dir}/lib", f"{DEST_DIR}/"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                subprocess_wrapper.run_as_root_and_verify(generate_copy_arguments(f"{src_dir}/lib", f"{DEST_DIR}/"), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
             break

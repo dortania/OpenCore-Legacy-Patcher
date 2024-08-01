@@ -15,6 +15,7 @@ from pathlib import Path
 from .. import constants
 
 from ..datasets import os_data
+from ..volume   import generate_copy_arguments
 
 from ..wx_gui import (
     gui_main_menu,
@@ -460,7 +461,7 @@ class macOSInstallerFlashFrame(wx.Frame):
             return
 
         subprocess.run(["/bin/mkdir", "-p", f"{path}/Library/Packages/"])
-        subprocess.run(["/bin/cp", "-r", self.constants.installer_pkg_path, f"{path}/Library/Packages/"])
+        subprocess.run(generate_copy_arguments(self.constants.installer_pkg_path, f"{path}/Library/Packages/"))
 
         self._kdk_chainload(os_version["ProductBuildVersion"], os_version["ProductVersion"], Path(path + "/Library/Packages/"))
 
@@ -530,7 +531,7 @@ class macOSInstallerFlashFrame(wx.Frame):
                 return
 
             logging.info("Copying KDK")
-            subprocess.run(["/bin/cp", "-r", f"{mount_point}/KernelDebugKit.pkg", kdk_pkg_path])
+            subprocess.run(generate_copy_arguments(f"{mount_point}/KernelDebugKit.pkg", kdk_pkg_path))
 
             logging.info("Unmounting KDK")
             result = subprocess.run(["/usr/bin/hdiutil", "detach", mount_point], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

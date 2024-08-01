@@ -4,6 +4,7 @@ shim.py: Generate Update Shim
 
 from pathlib import Path
 
+from opencore_legacy_patcher.volume  import generate_copy_arguments
 from opencore_legacy_patcher.support import subprocess_wrapper
 
 
@@ -25,9 +26,9 @@ class GenerateShim:
         if Path(self._shim_pkg).exists():
             Path(self._shim_pkg).unlink()
 
-        subprocess_wrapper.run_and_verify(["/bin/cp", "-R", self._build_pkg, self._shim_pkg])
+        subprocess_wrapper.run_and_verify(generate_copy_arguments(self._build_pkg, self._shim_pkg))
 
         if Path(self._output_shim).exists():
             Path(self._output_shim).unlink()
 
-        subprocess_wrapper.run_and_verify(["/bin/cp", "-R", self._shim_path, self._output_shim])
+        subprocess_wrapper.run_and_verify(generate_copy_arguments(self._shim_path, self._output_shim))
