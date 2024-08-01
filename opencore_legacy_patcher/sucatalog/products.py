@@ -237,11 +237,9 @@ class CatalogProducts:
                 except packaging.version.InvalidVersion:
                     pass
 
-        # Remove Betas if there's a non-beta version available
-        for installer in products:
-            if installer["Catalog"] in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
-                for installer_2 in products:
-                    if installer_2["Version"].split(".")[0] == installer["Version"].split(".")[0] and installer_2["Catalog"] not in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
+                # Remove beta versions if a public release is available
+                if _newest_version != packaging.version.parse("0.0.0"):
+                    if installer["Catalog"] in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
                         if installer in products_copy:
                             products_copy.pop(products_copy.index(installer))
 
