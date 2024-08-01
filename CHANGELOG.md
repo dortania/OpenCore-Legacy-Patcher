@@ -9,6 +9,9 @@
   - Note `gktool` is only available on macOS Sonoma and newer
 - Resolve unpatching crash edge case when host doesn't require patches.
 - Implement new Software Update Catalog Parser for macOS Installers
+- Implement new Copy on Write detection mechanism for all file copying operations
+  - Implemented using `getattrlist` and `VOL_CAP_INT_CLONE` flag
+  - Helps improve performance on APFS volumes
 
 ## 1.5.0
 - Restructure project directories

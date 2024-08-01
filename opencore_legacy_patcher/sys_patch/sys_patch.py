@@ -46,6 +46,7 @@ from datetime import datetime
 from .. import constants
 
 from ..datasets import os_data
+from ..volume   import generate_copy_arguments
 
 from ..support import (
     utilities,
@@ -234,7 +235,7 @@ class PatchSysVolume:
         if save_hid_cs is True and cs_path.exists():
             logging.info("- Backing up IOHIDEventDriver CodeSignature")
             # Note it's a folder, not a file
-            subprocess_wrapper.run_as_root(["/bin/cp", "-r", cs_path, f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root(generate_copy_arguments(cs_path, f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         logging.info(f"- Merging KDK with Root Volume: {kdk_path.name}")
         subprocess_wrapper.run_as_root(
@@ -256,7 +257,7 @@ class PatchSysVolume:
             if not cs_path.exists():
                 logging.info("  - CodeSignature folder missing, creating")
                 subprocess_wrapper.run_as_root(["/bin/mkdir", "-p", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            subprocess_wrapper.run_as_root(["/bin/cp", "-r", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak", cs_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root(generate_copy_arguments(f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak", cs_path), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             subprocess_wrapper.run_as_root(["/bin/rm", "-rf", f"{self.constants.payload_path}/IOHIDEventDriver_CodeSignature.bak"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
@@ -533,7 +534,7 @@ class PatchSysVolume:
             logging.info("- Writing patchset information to Root Volume")
             if Path(destination_path_file).exists():
                 subprocess_wrapper.run_as_root_and_verify(["/bin/rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            subprocess_wrapper.run_as_root_and_verify(["/bin/cp", f"{self.constants.payload_path}/{file_name}", destination_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root_and_verify(generate_copy_arguments(f"{self.constants.payload_path}/{file_name}", destination_path), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
     def _add_auxkc_support(self, install_file: str, source_folder_path: str, install_patch_directory: str, destination_folder_path: str) -> str:
@@ -782,7 +783,7 @@ class PatchSysVolume:
                 subprocess_wrapper.run_as_root_and_verify(["/bin/rm", "-R", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             else:
                 logging.info(f"  - Installing: {file_name}")
-            subprocess_wrapper.run_as_root_and_verify(["/bin/cp", "-R", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root_and_verify(generate_copy_arguments(f"{source_folder}/{file_name}", destination_folder), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             self._fix_permissions(destination_folder + "/" + file_name)
         else:
             # Assume it's an individual file, replace as normal
@@ -791,7 +792,7 @@ class PatchSysVolume:
                 subprocess_wrapper.run_as_root_and_verify(["/bin/rm", f"{destination_folder}/{file_name}"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             else:
                 logging.info(f"  - Installing: {file_name}")
-            subprocess_wrapper.run_as_root_and_verify(["/bin/cp", f"{source_folder}/{file_name}", destination_folder], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root_and_verify(generate_copy_arguments(f"{source_folder}/{file_name}", destination_folder), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             self._fix_permissions(destination_folder + "/" + file_name)
 
 

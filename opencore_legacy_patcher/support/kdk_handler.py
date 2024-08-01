@@ -15,6 +15,7 @@ from pathlib import Path
 from .. import constants
 
 from ..datasets import os_data
+from ..volume   import generate_copy_arguments
 
 from . import (
     network_handler,
@@ -667,7 +668,7 @@ class KernelDebugKitUtilities:
             logging.info("Backup already exists, skipping")
             return
 
-        result = subprocess_wrapper.run_as_root(["/bin/cp", "-R", kdk_path, kdk_dst_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        result = subprocess_wrapper.run_as_root(generate_copy_arguments(kdk_path, kdk_dst_path), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info("Failed to create KDK backup:")
             subprocess_wrapper.log(result)

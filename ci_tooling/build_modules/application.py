@@ -5,6 +5,7 @@ import subprocess
 
 from pathlib import Path
 
+from opencore_legacy_patcher.volume  import generate_copy_arguments
 from opencore_legacy_patcher.support import subprocess_wrapper
 
 
@@ -157,7 +158,7 @@ class GenerateApplication:
         print("Embedding resources")
         for file in Path("payloads/Icon/AppIcons").glob("*.icns"):
             subprocess_wrapper.run_and_verify(
-                ["/bin/cp", str(file), self._application_output / "Contents" / "Resources/"],
+                generate_copy_arguments(str(file), self._application_output / "Contents" / "Resources/"),
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
 

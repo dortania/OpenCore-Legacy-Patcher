@@ -20,6 +20,7 @@ from . import sys_patch_detect
 from .. import constants
 
 from ..datasets import css_data
+from ..volume   import generate_copy_arguments
 
 from ..wx_gui import (
     gui_entry,
@@ -350,7 +351,7 @@ Please check the Github page for more information about this release."""
             if not Path(services[service]).parent.exists():
                 logging.info(f"  - Creating {Path(services[service]).parent} directory")
                 subprocess_wrapper.run_as_root_and_verify(["/bin/mkdir", "-p", Path(services[service]).parent], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            subprocess_wrapper.run_as_root_and_verify(["/bin/cp", service, services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            subprocess_wrapper.run_as_root_and_verify(generate_copy_arguments(service, services[service]), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
             # Set the permissions on the service
             subprocess_wrapper.run_as_root_and_verify(["/bin/chmod", "644", services[service]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
