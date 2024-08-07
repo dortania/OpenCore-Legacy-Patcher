@@ -3,8 +3,8 @@
 Here are some common errors that users may experience while using this patcher:
 
 * [OpenCore Legacy Patcher not launching](#opencore-legacy-patcher-not-launching)
-* ["You don't have permission to save..." error when creating USB installer](#you-dont-have-permission-to-save-error-when-creating-usb-installer)
-* [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-(🚫)-prohibited-symbol)
+* ["You don't have permission to save..." error when creating USB installer](#you-don-t-have-permission-to-save-error-when-creating-usb-installer)
+* [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](##stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-🚫-prohibited-symbol)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
 * [Stuck on boot after root patching](#stuck-on-boot-after-root-patching)
