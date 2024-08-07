@@ -14,7 +14,7 @@ class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "1.6.0"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "1.4.9"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "1.6.2"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2024 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
@@ -33,7 +33,7 @@ class Constants:
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
-        self.lilu_version:               str = "1.6.7"  #      Lilu
+        self.lilu_version:               str = "1.6.8"  #      Lilu
         self.whatevergreen_version:      str = "1.6.6"  #      WhateverGreen
         self.whatevergreen_navi_version: str = "1.6.6-Navi"  # WhateverGreen (Navi Patch)
         self.airportbcrmfixup_version:   str = "2.1.8"  #      AirPortBrcmFixup
@@ -61,6 +61,7 @@ class Constants:
         self.apfs_zlib_v2_version:  str = "12.6"  #   NoAVXFSCompressionTypeZlib (patched with AVXpel)
         self.multitouch_version:    str = "1.0.0"  #  AppleUSBMultitouch
         self.topcase_version:       str = "1.0.0"  #  AppleUSBTopCase
+        self.topcase_inj_version:   str = "1.0.0"  #  AppleTopCaseInjector
         self.intel_82574l_version:  str = "1.0.0"  #  Intel82574L
         self.intel_8254x_version:   str = "1.0.0"  #  AppleIntel8254XEthernet
         self.apple_usb_11_injector: str = "1.0.0"  #  AppleUSBUHCI/OHCI
@@ -73,6 +74,7 @@ class Constants:
         self.t1_corecrypto_version: str = "1.0.1"  #  corecrypto    (13.6 - T1 support)
         self.apple_spi_version:     str = "1.0.0"  #  AppleHSSPISupport   (14.4 Beta 1)
         self.apple_spi_hid_version: str = "1.0.0"  #  AppleHSSPIHIDDriver (14.4 Beta 1)
+        self.kernel_relay_version:  str = "1.0.0"  #  KernelRelayHost (15.0 Beta 3)
 
         ## Apple - Dortania Modified
         self.bcm570_version:           str = "1.0.2"  # CatalinaBCM5701Ethernet
@@ -97,7 +99,7 @@ class Constants:
         self.aspp_override_version:          str = "1.0.1"  # ACPI_SMC_PlatformPlugin Override
         self.ecm_override_version:           str = "1.0.0"  # AppleUSBECM Override
         self.rsrhelper_version:              str = "1.0.0"  # RSRHelper
-        self.amfipass_version:               str = "1.4.0"  # AMFIPass
+        self.amfipass_version:               str = "1.4.1"  # AMFIPass
         self.amfipass_compatibility_version: str = "1.2.1"  # Minimum AMFIPass version required
 
         ## Syncretic
@@ -244,6 +246,7 @@ class Constants:
             os_data.os_data.monterey,
             os_data.os_data.ventura,
             os_data.os_data.sonoma,
+            os_data.os_data.sequoia,
         ]
 
     @property
@@ -451,6 +454,10 @@ class Constants:
         return self.payload_kexts_path / Path(f"Misc/AppleUSBTopCase-v{self.topcase_version}.zip")
 
     @property
+    def top_case_inj_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleTopCaseInjector-v{self.topcase_inj_version}.zip")
+
+    @property
     def t1_key_store_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleKeyStore-v{self.t1_key_store_version}.zip")
 
@@ -473,6 +480,10 @@ class Constants:
     @property
     def apple_spi_hid_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleHSSPIHIDDriver-v{self.apple_spi_hid_version}.zip")
+
+    @property
+    def kernel_relay_path(self):
+        return self.payload_kexts_path / Path(f"Misc/KernelRelayHost-v{self.kernel_relay_version}.zip")
 
     @property
     def mousse_path(self):
@@ -778,6 +789,10 @@ class Constants:
         return self.icns_resource_path / Path("Sonoma.icns")
 
     @property
+    def icon_path_macos_sequoia(self):
+        return self.icns_resource_path / Path("Sequoia.icns")
+
+    @property
     def gui_path(self):
         return self.payload_path / Path("Icon/Resources.zip")
 
@@ -805,7 +820,8 @@ class Constants:
             str(self.icon_path_macos_big_sur),
             str(self.icon_path_macos_monterey),
             str(self.icon_path_macos_ventura),
-            str(self.icon_path_macos_sonoma)
+            str(self.icon_path_macos_sonoma),
+            str(self.icon_path_macos_sequoia),
         ]
 
     sbm_values = [

@@ -18,7 +18,8 @@ from ..detections import device_probe
 from ..datasets import (
     model_array,
     smbios_data,
-    cpu_data
+    cpu_data,
+    os_data
 )
 
 
@@ -62,6 +63,12 @@ xw
         """
 
         if self.constants.fu_status is False:
+            return
+
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+
+        if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.sonoma:
             return
 
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
@@ -199,6 +206,7 @@ xw
                 logging.info("- Enabling SPI-based top case support")
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleHSSPISupport.kext", self.constants.apple_spi_version, self.constants.apple_spi_path)
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleHSSPIHIDDriver.kext", self.constants.apple_spi_hid_version, self.constants.apple_spi_hid_path)
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleTopCaseInjector.kext", self.constants.topcase_inj_version, self.constants.top_case_inj_path)
 
 
         #On-device probing
@@ -381,3 +389,4 @@ xw
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleSSE.kext", self.constants.t1_sse_version, self.constants.t1_sse_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleKeyStore.kext", self.constants.t1_key_store_version, self.constants.t1_key_store_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleCredentialManager.kext", self.constants.t1_credential_version, self.constants.t1_credential_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("KernelRelayHost.kext", self.constants.kernel_relay_version, self.constants.kernel_relay_path)
