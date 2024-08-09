@@ -5,6 +5,7 @@ install.py: Installation of OpenCore files to ESP
 import logging
 import plistlib
 import subprocess
+import re
 
 from pathlib import Path
 
