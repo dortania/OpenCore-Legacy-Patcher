@@ -29,7 +29,7 @@ class tui_disk_installation:
         for disk in disks["AllDisksAndPartitions"]:
             disk_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", disk["DeviceIdentifier"]], stdout=subprocess.PIPE).stdout.decode().strip().encode())
             try:
-                all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info["MediaName"], "size": disk_info["TotalSize"], "partitions": {}}
+                all_disks[disk["DeviceIdentifier"]] = {"identifier": disk_info["DeviceNode"], "name": disk_info.get("MediaName", "Disk"), "size": disk_info["TotalSize"], "partitions": {}}
                 for partition in disk["Partitions"]:
                     partition_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", partition["DeviceIdentifier"]], stdout=subprocess.PIPE).stdout.decode().strip().encode())
                     all_disks[disk["DeviceIdentifier"]]["partitions"][partition["DeviceIdentifier"]] = {
@@ -98,7 +98,7 @@ class tui_disk_installation:
         partition_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", full_disk_identifier], stdout=subprocess.PIPE).stdout.decode().strip().encode())
         parent_disk = partition_info["ParentWholeDisk"]
         drive_host_info = plistlib.loads(subprocess.run(["/usr/sbin/diskutil", "info", "-plist", parent_disk], stdout=subprocess.PIPE).stdout.decode().strip().encode())
-        sd_type = drive_host_info["MediaName"]
+        sd_type = drive_host_info.get("MediaName", "Disk")
         try:
             ssd_type = drive_host_info["SolidState"]
         except KeyError:
