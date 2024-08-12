@@ -41,7 +41,11 @@ import subprocess
 import applescript
 
 from pathlib import Path
-from datetime import datetime
+
+from .mount import (
+    RootVolumeMount,
+    APFSSnapshot
+)
 
 from .. import constants
 
@@ -57,7 +61,6 @@ from . import (
     sys_patch_detect,
     sys_patch_helpers,
     sys_patch_generate,
-    sys_patch_mount,
     kernelcache
 )
 from .auto_patcher import InstallAutomaticPatchingServices
@@ -84,7 +87,7 @@ class PatchSysVolume:
 
         self.skip_root_kmutil_requirement = self.hardware_details["Settings: Supports Auxiliary Cache"]
 
-        self.mount_obj = sys_patch_mount.SysPatchMount(self.constants.detected_os, self.computer.rosetta_active)
+        self.mount_obj = RootVolumeMount(self.constants.detected_os)
 
 
     def _init_pathing(self, custom_root_mount_path: Path = None, custom_data_mount_path: Path = None) -> None:
@@ -266,7 +269,8 @@ class PatchSysVolume:
         """
         Reverts APFS snapshot and cleans up any changes made to the root and data volume
         """
-        if self.mount_obj.revert_snapshot() is False:
+
+        if APFSSnapshot(self.constants.detected_os, self.mount_location).revert_snapshot() is False:
             return
 
         self._clean_skylight_plugins()
@@ -337,7 +341,7 @@ class PatchSysVolume:
         Returns:
             bool: True if snapshot was created, False if not
         """
-        return self.mount_obj.create_snapshot()
+        return APFSSnapshot(self.constants.detected_os, self.mount_location).create_snapshot()
 
 
     def _rebuild_dyld_shared_cache(self) -> None:
