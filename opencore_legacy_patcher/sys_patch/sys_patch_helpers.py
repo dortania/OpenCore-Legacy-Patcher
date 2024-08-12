@@ -134,13 +134,13 @@ class SysPatchHelpers:
         """
 
         if self.constants.detected_os < os_data.os_data.ventura:
-             return
+            return
 
         logging.info("Disabling WindowServer Caching")
         # Invoke via 'bash -c' to resolve pathing
-        subprocess_wrapper.run_as_root(["/bin/bash", "-c", "rm -rf /private/var/folders/*/*/*/WindowServer/com.apple.WindowServer"])
+        subprocess_wrapper.run_as_root(["/bin/bash", "-c", "/bin/rm -rf /private/var/folders/*/*/*/WindowServer/com.apple.WindowServer"])
         # Disable writing to WindowServer folder
-        subprocess_wrapper.run_as_root(["/bin/bash", "-c", "chflags uchg /private/var/folders/*/*/*/WindowServer"])
+        subprocess_wrapper.run_as_root(["/bin/bash", "-c", "/usr/bin/chflags uchg /private/var/folders/*/*/*/WindowServer"])
         # Reference:
         #   To reverse write lock:
         #   'chflags nouchg /private/var/folders/*/*/*/WindowServer'
