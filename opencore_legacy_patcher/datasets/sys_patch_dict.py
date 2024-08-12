@@ -91,10 +91,10 @@ class SystemPatchDictionary():
         - AppleIntelHD4000Graphics.kext
         """
         if self.os_major < os_data.os_data.sonoma:
-            return "11.4"
+            return "11.7.10"
         if self.os_float < self.macOS_14_4:
-            return "11.4-23"
-        return "11.4-23.4"
+            return "11.7.10-23"
+        return "11.7.10-23.4"
 
 
     def __resolve_kepler_geforce_framebuffers(self) -> str:
@@ -458,8 +458,8 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/PrivateFrameworks": {
-                            "AppleGVA.framework":     "10.15.7",
-                            "AppleGVACore.framework": "10.15.7",
+                            "AppleGVA.framework":     "11.7.10",
+                            "AppleGVACore.framework": "11.7.10",
                         },
                     },
                 },
@@ -972,13 +972,13 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Extensions": {
-                            "AppleIntelHD4000GraphicsGLDriver.bundle":  "11.0 Beta 6",
-                            "AppleIntelHD4000GraphicsMTLDriver.bundle": "11.0 Beta 6" if self.os_major < os_data.os_data.ventura else "11.0-beta 6-22",
-                            "AppleIntelHD4000GraphicsVADriver.bundle":  "11.3 Beta 1",
+                            "AppleIntelHD4000GraphicsGLDriver.bundle":  "11.7.10",
+                            "AppleIntelHD4000GraphicsMTLDriver.bundle": "11.7.10" if self.os_major < os_data.os_data.ventura else "11.7.10-22",
+                            "AppleIntelHD4000GraphicsVADriver.bundle":  "11.7.10",
                             "AppleIntelFramebufferCapri.kext":          self.__resolve_ivy_bridge_framebuffers(),
                             "AppleIntelHD4000Graphics.kext":            self.__resolve_ivy_bridge_framebuffers(),
-                            "AppleIntelIVBVA.bundle":                   "11.4",
-                            "AppleIntelGraphicsShared.bundle":          "11.4", # libIGIL-Metal.dylib pulled from 11.0 Beta 6
+                            "AppleIntelIVBVA.bundle":                   "11.7.10",
+                            "AppleIntelGraphicsShared.bundle":          "11.7.10", # libIGIL-Metal.dylib pulled from 11.0 Beta 6
                         },
                     },
                 },
@@ -1354,7 +1354,7 @@ class SystemPatchDictionary():
                     },
                     "Install": {
                         "/System/Library/Frameworks": {
-                            "LocalAuthentication.framework": f"13.6-{self.os_major}",  # Required for Password Authentication (SharedUtils.framework)
+                            "LocalAuthentication.framework": f"13.6-{self.os_major}"  # Required for Password Authentication (SharedUtils.framework)
                         },
                         "/System/Library/PrivateFrameworks": {
                             "EmbeddedOSInstall.framework": "13.6",  # Required for biometrickitd

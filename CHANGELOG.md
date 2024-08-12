@@ -12,6 +12,8 @@
 - Implement new Copy on Write detection mechanism for all file copying operations
   - Implemented using `getattrlist` and `VOL_CAP_INT_CLONE` flag
   - Helps improve performance on APFS volumes
+- Increment Binaries:
+  - PatcherSupportPkg 1.6.3 - release
 
 ## 1.5.0
 - Restructure project directories
