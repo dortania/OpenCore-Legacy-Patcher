@@ -20,13 +20,14 @@ from ..support import kdk_handler
 
 from ..sys_patch import (
     sys_patch,
-    sys_patch_detect
 )
 from ..wx_gui import (
     gui_main_menu,
     gui_support,
     gui_download,
 )
+
+from ..sys_patch.detections import DetectRootPatch
 
 
 
@@ -50,7 +51,7 @@ class SysPatchStartFrame(wx.Frame):
         self.Centre()
 
         if self.patches == {}:
-            self.patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            self.patches = DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
 
 
     def _kdk_download(self, frame: wx.Frame = None) -> bool:

@@ -12,7 +12,7 @@ import markdown2
 import subprocess
 import webbrowser
 
-from .. import sys_patch_detect
+from ..detections import DetectRootPatch
 
 from ... import constants
 
@@ -142,7 +142,7 @@ Please check the Github page for more information about this release."""
 
         if utilities.check_seal() is True:
             logging.info("- Detected Snapshot seal intact, detecting patches")
-            patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            patches = DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
             if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
                 patches = {}
             if patches:
