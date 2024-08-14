@@ -1,5 +1,5 @@
 """
-sys_patch_detect.py: Hardware Detection Logic for Root Patching
+detect.py: Hardware Detection Logic for Root Patching
 """
 
 import logging
@@ -9,18 +9,18 @@ import packaging.version
 
 from pathlib import Path
 
-from .. import constants
+from ... import constants
 
-from ..detections import (
+from ...detections import (
     amfi_detect,
     device_probe
 )
-from ..support import (
+from ...support import (
     kdk_handler,
     network_handler,
     utilities
 )
-from ..datasets import (
+from ...datasets import (
     cpu_data,
     model_array,
     os_data,

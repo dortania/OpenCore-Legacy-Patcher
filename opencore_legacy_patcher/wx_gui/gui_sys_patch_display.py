@@ -11,7 +11,7 @@ from pathlib import Path
 
 from .. import constants
 
-from ..sys_patch import sys_patch_detect
+from ..sys_patch.detections import DetectRootPatch
 
 from ..wx_gui import (
     gui_main_menu,
@@ -86,7 +86,7 @@ class SysPatchDisplayFrame(wx.Frame):
         patches: dict = {}
         def _fetch_patches(self) -> None:
             nonlocal patches
-            patches = sys_patch_detect.DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            patches = DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
 
         thread = threading.Thread(target=_fetch_patches, args=(self,))
         thread.start()

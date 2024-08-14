@@ -1,60 +1,26 @@
 """
-sys_patch_mount.py: Handling macOS root volume mounting and unmounting,
-                    as well as APFS snapshots for Big Sur and newer
+mount.py: Handling macOS root volume mounting and unmounting
 """
 
 import logging
 import plistlib
-import platform
 import subprocess
 
 from pathlib import Path
 
-from ..datasets import os_data
-from ..support  import subprocess_wrapper
+from .snapshot import APFSSnapshot
+
+from ...datasets import os_data
+from ...support  import subprocess_wrapper
 
 
-class SysPatchMount:
+class RootVolumeMount:
 
-    def __init__(self, xnu_major: int, rosetta_status: bool) -> None:
+    def __init__(self, xnu_major: int) -> None:
         self.xnu_major = xnu_major
-        self.rosetta_status = rosetta_status
         self.root_volume_identifier = self._fetch_root_volume_identifier()
 
         self.mount_path = None
-
-
-    def mount(self) -> str:
-        """
-        Mount the root volume.
-
-        Returns the path to the root volume.
-
-        If none, failed to mount.
-        """
-        result = self._mount_root_volume()
-        if result is None:
-            logging.error("Failed to mount root volume")
-            return None
-        if not Path(result).exists():
-            logging.error(f"Attempted to mount root volume, but failed: {result}")
-            return None
-
-        self.mount_path = result
-
-        return result
-
-
-    def unmount(self, ignore_errors: bool = True) -> bool:
-        """
-        Unmount the root volume.
-
-        Returns True if successful, False otherwise.
-
-        Note for Big Sur and newer, a snapshot is created before unmounting.
-        And that unmounting is not critical to the process.
-        """
-        return self._unmount_root_volume(ignore_errors=ignore_errors)
 
 
     def _fetch_root_volume_identifier(self) -> str:
@@ -136,43 +102,48 @@ class SysPatchMount:
         return True
 
 
+    def mount(self) -> str:
+        """
+        Mount the root volume.
+
+        Returns the path to the root volume.
+
+        If none, failed to mount.
+        """
+        result = self._mount_root_volume()
+        if result is None:
+            logging.error("Failed to mount root volume")
+            return None
+        if not Path(result).exists():
+            logging.error(f"Attempted to mount root volume, but failed: {result}")
+            return None
+
+        self.mount_path = result
+
+        return result
+
+
+    def unmount(self, ignore_errors: bool = True) -> bool:
+        """
+        Unmount the root volume.
+
+        Returns True if successful, False otherwise.
+
+        Note for Big Sur and newer, a snapshot is created before unmounting.
+        And that unmounting is not critical to the process.
+        """
+        return self._unmount_root_volume(ignore_errors=ignore_errors)
+
+
     def create_snapshot(self) -> bool:
         """
         Create APFS snapshot of the root volume.
         """
-        if self.xnu_major < os_data.os_data.big_sur.value:
-            return True
-
-        args = ["/usr/sbin/bless"]
-        if platform.machine() == "arm64" or self.rosetta_status is True:
-            args += ["--mount", self.mount_path, "--create-snapshot"]
-        else:
-            args += ["--folder", f"{self.mount_path}/System/Library/CoreServices", "--bootefi", "--create-snapshot"]
-
-
-        result = subprocess_wrapper.run_as_root(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if result.returncode != 0:
-            logging.error("Failed to create APFS snapshot")
-            subprocess_wrapper.log(result)
-            if "Can't use last-sealed-snapshot or create-snapshot on non system volume" in result.stdout.decode():
-                logging.info("- This is an APFS bug with Monterey and newer! Perform a clean installation to ensure your APFS volume is built correctly")
-
-            return False
-
-        return True
+        return APFSSnapshot(self.xnu_major, self.mount_path).create_snapshot()
 
 
     def revert_snapshot(self) -> bool:
         """
         Revert APFS snapshot of the root volume.
         """
-        if self.xnu_major < os_data.os_data.big_sur.value:
-            return True
-
-        result = subprocess_wrapper.run_as_root(["/usr/sbin/bless", "--mount", self.mount_path, "--bootefi", "--last-sealed-snapshot"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if result.returncode != 0:
-            logging.error("Failed to revert APFS snapshot")
-            subprocess_wrapper.log(result)
-            return False
-
-        return True
+        return APFSSnapshot(self.xnu_major, self.mount_path).revert_snapshot()
