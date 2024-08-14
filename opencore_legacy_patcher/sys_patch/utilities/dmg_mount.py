@@ -81,6 +81,8 @@ class PatcherSupportPkgMount:
                 if i == 2:
                     self._display_too_many_attempts()
                     return False
+                continue
+            break
 
         logging.info("- Mounted DortaniaInternal resources")
         return self._merge_dortania_internal_resources()
