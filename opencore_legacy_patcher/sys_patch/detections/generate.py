@@ -1,14 +1,14 @@
 """
-sys_patch_generate.py: Class for generating patch sets for the current host
+generate.py: Class for generating patch sets for the current host
 """
 
 import logging
 
-from .. import constants
+from ... import constants
 
-from ..datasets import sys_patch_dict
-from ..support import utilities
-from ..detections import device_probe
+from ...datasets import sys_patch_dict
+from ...support import utilities
+from ...detections import device_probe
 
 
 class GenerateRootPatchSets:

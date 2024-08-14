@@ -17,15 +17,14 @@ from .. import constants
 
 from ..wx_gui import gui_entry
 from ..efi_builder import build
+from ..sys_patch import sys_patch
+from ..sys_patch.auto_patcher import StartAutomaticPatching
 
 from ..datasets import (
     model_array,
     os_data
 )
-from ..sys_patch import (
-    sys_patch,
-    sys_patch_auto
-)
+
 from . import (
     utilities,
     defaults,
@@ -118,7 +117,7 @@ class arguments:
         """
 
         logging.info("Set Auto patching")
-        sys_patch_auto.AutomaticSysPatch(self.constants).start_auto_patch()
+        StartAutomaticPatching(self.constants).start_auto_patch()
 
 
     def _prepare_for_update_handler(self) -> None:

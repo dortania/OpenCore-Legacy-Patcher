@@ -82,7 +82,7 @@ class SysPatchHelpers:
         Generate patchset file for user reference
 
         Parameters:
-            patchset (dict): Dictionary of patchset, see sys_patch_detect.py and sys_patch_dict.py
+            patchset (dict): Dictionary of patchset, see detect.py and sys_patch_dict.py
             file_name (str): Name of the file to write to
             kdk_used (Path): Path to the KDK used, if any
 
