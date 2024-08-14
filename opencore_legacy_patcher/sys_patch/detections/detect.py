@@ -674,6 +674,7 @@ class DetectRootPatch:
             "Validation: Force compat property missing":   self.missing_nv_compat      if self.nvidia_web is True else False,
             "Validation: nvda_drv(_vrl) variable missing": self.missing_nv_web_nvram   if self.nvidia_web is True else False,
             "Validation: Network Connection Required":     (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.os_major >= os_data.os_data.ventura.value) else False,
+            f"Validation: Graphics Patches unavailable for macOS Sequoia":     not self._can_patch_3802(),
         }
 
         return self.root_patch_dict
@@ -706,6 +707,22 @@ class DetectRootPatch:
                 return amfi_detect.AmfiConfigDetectLevel.ALLOW_ALL
 
         return amfi_detect.AmfiConfigDetectLevel.LIBRARY_VALIDATION
+
+
+    def _can_patch_3802(self) -> bool:
+        """
+        3802 patches are currently very broken in Sequoia
+        Only allow patching if
+        """
+        # Check if any 3802 patches are needed
+        if self.constants.detected_os < os_data.os_data.sequoia:
+            return True
+        if any([self.kepler_gpu, self.ivy_gpu, self.haswell_gpu]):
+            if Path("~/.dortania_developer").expanduser().exists():
+                return True
+            return False
+
+        return True
 
 
     def verify_patch_allowed(self, print_errors: bool = False):
@@ -800,7 +817,10 @@ class DetectRootPatch:
                 self.missing_whatever_green if self.nvidia_web is True  else False,
 
                 # KDK specific
-                (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.os_major >= os_data.os_data.ventura.value) else False
+                (not self.has_network) if (self.requires_root_kc and self.missing_kdk and self.os_major >= os_data.os_data.ventura.value) else False,
+
+                # 3802 specific
+                not self._can_patch_3802()
             ]
         ):
             return False
