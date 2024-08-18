@@ -246,7 +246,6 @@ class Constants:
             os_data.os_data.monterey,
             os_data.os_data.ventura,
             os_data.os_data.sonoma,
-            os_data.os_data.sequoia,
         ]
 
     @property
