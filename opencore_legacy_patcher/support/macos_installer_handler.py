@@ -24,7 +24,6 @@ from ..volume import (
 
 
 APPLICATION_SEARCH_PATH:  str = "/Applications"
-SFR_SOFTWARE_UPDATE_PATH: str = "SFR/com_apple_MobileAsset_SFRSoftwareUpdate/com_apple_MobileAsset_SFRSoftwareUpdate.xml"
 
 tmp_dir = tempfile.TemporaryDirectory()
 
@@ -344,9 +343,15 @@ class LocalInstallerCatalog:
             if output.returncode != 0:
                 return (detected_build, detected_os)
 
-            ss_info = Path(SFR_SOFTWARE_UPDATE_PATH)
 
-            if Path(tmpdir / ss_info).exists():
+            ss_info_files = [
+                Path("SFR/com_apple_MobileAsset_SFRSoftwareUpdate/com_apple_MobileAsset_SFRSoftwareUpdate.xml"),
+                Path("com_apple_MobileAsset_MacSoftwareUpdate/com_apple_MobileAsset_MacSoftwareUpdate.xml")
+            ]
+
+            for ss_info in ss_info_files:
+                if not Path(tmpdir / ss_info).exists():
+                    continue
                 plist = plistlib.load((tmpdir / ss_info).open("rb"))
                 if "Assets" in plist:
                     if "Build" in plist["Assets"][0]:
