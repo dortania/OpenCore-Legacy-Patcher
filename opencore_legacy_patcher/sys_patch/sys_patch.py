@@ -391,9 +391,9 @@ class PatchSysVolume:
                             destination_folder_path = str(self.mount_location_data) + install_patch_directory
 
                         updated_destination_folder_path = kc_support_obj.add_auxkc_support(install_file, source_folder_path, install_patch_directory, destination_folder_path)
-
-                        if kc_support_obj.check_kexts_needs_authentication(install_file) is True:
-                            self.constants.needs_to_open_preferences = True
+                        if updated_destination_folder_path != destination_folder_path:
+                            if kc_support_obj.check_kexts_needs_authentication(install_file) is True:
+                                self.constants.needs_to_open_preferences = True
 
                         if destination_folder_path != updated_destination_folder_path:
                             # Update required_patches to reflect the new destination folder path
