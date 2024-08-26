@@ -719,7 +719,9 @@ class DetectRootPatch:
             return True
         if any([self.kepler_gpu, self.ivy_gpu, self.haswell_gpu]):
             if Path("~/.dortania_developer").expanduser().exists():
-                return True
+                # Temporarily hard coded
+                if Path("/Library/Application Support/Dortania/MetallibSupportPkg/15.0-24A5327a").exists():
+                    return True
             return False
 
         return True

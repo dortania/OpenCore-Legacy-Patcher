@@ -379,7 +379,11 @@ class PatchSysVolume:
                 for install_patch_directory in list(required_patches[patch][method_install]):
                     logging.info(f"- Handling Installs in: {install_patch_directory}")
                     for install_file in list(required_patches[patch][method_install][install_patch_directory]):
-                        source_folder_path = source_files_path + "/" + required_patches[patch][method_install][install_patch_directory][install_file] + install_patch_directory
+                        source_folder_path = required_patches[patch][method_install][install_patch_directory][install_file] + install_patch_directory
+                        # Check whether to source from root
+                        if not required_patches[patch][method_install][install_patch_directory][install_file].startswith("/"):
+                            source_folder_path = source_files_path + "/" + source_folder_path
+
                         if method_install == "Install":
                             destination_folder_path = str(self.mount_location) + install_patch_directory
                         else:
@@ -436,10 +440,27 @@ class PatchSysVolume:
 
         logging.info("- Running Preflight Checks before patching")
 
+        for patch in required_patches:
+            # Check if all files are present
+            for method_type in ["Install", "Install Non-Root"]:
+                if method_type not in required_patches[patch]:
+                    continue
+                for install_patch_directory in required_patches[patch][method_type]:
+                    for install_file in required_patches[patch][method_type][install_patch_directory]:
+                        source_file = required_patches[patch][method_type][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
+
+                        # Check whether to source from root
+                        if not required_patches[patch][method_type][install_patch_directory][install_file].startswith("/"):
+                            source_file = source_files_path + "/" + source_file
+                        if not Path(source_file).exists():
+                            raise Exception(f"Failed to find {source_file}")
+
         # Make sure old SkyLight plugins aren't being used
         self._clean_skylight_plugins()
+
         # Make sure non-Metal Enforcement preferences are not present
         self._delete_nonmetal_enforcement()
+
         # Make sure we clean old kexts in /L*/E* that are not in the patchset
         kernelcache.KernelCacheSupport(
             mount_location_data=self.mount_location_data,
@@ -450,17 +471,6 @@ class PatchSysVolume:
         # Make sure SNB kexts are compatible with the host
         if "Intel Sandy Bridge" in required_patches:
             sys_patch_helpers.SysPatchHelpers(self.constants).snb_board_id_patch(source_files_path)
-
-        for patch in required_patches:
-            # Check if all files are present
-            for method_type in ["Install", "Install Non-Root"]:
-                if method_type not in required_patches[patch]:
-                    continue
-                for install_patch_directory in required_patches[patch][method_type]:
-                    for install_file in required_patches[patch][method_type][install_patch_directory]:
-                        source_file = source_files_path + "/" + required_patches[patch][method_type][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
-                        if not Path(source_file).exists():
-                            raise Exception(f"Failed to find {source_file}")
 
         # Ensure KDK is properly installed
         self._merge_kdk_with_root(save_hid_cs=True if "Legacy USB 1.1" in required_patches else False)

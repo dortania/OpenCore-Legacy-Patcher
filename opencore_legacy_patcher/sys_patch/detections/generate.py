@@ -66,6 +66,7 @@ class GenerateRootPatchSets:
         if self.hardware_details["Graphics: Intel Ivy Bridge"] is True:
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
             required_patches.update({"Metal 3802 Common Extended": all_hardware_patchset["Graphics"]["Metal 3802 Common Extended"]})
+            required_patches.update({"Metal 3802 .metallibs": all_hardware_patchset["Graphics"]["Metal 3802 .metallibs"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Big Sur OpenCL": all_hardware_patchset["Graphics"]["Big Sur OpenCL"]})
@@ -75,6 +76,7 @@ class GenerateRootPatchSets:
         if self.hardware_details["Graphics: Intel Haswell"] is True:
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
             required_patches.update({"Metal 3802 Common Extended": all_hardware_patchset["Graphics"]["Metal 3802 Common Extended"]})
+            required_patches.update({"Metal 3802 .metallibs": all_hardware_patchset["Graphics"]["Metal 3802 .metallibs"]})
             required_patches.update({"Monterey GVA": all_hardware_patchset["Graphics"]["Monterey GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Intel Haswell": all_hardware_patchset["Graphics"]["Intel Haswell"]})
@@ -105,6 +107,7 @@ class GenerateRootPatchSets:
         if self.hardware_details["Graphics: Nvidia Kepler"] is True:
             required_patches.update({"Metal 3802 Common": all_hardware_patchset["Graphics"]["Metal 3802 Common"]})
             required_patches.update({"Metal 3802 Common Extended": all_hardware_patchset["Graphics"]["Metal 3802 Common Extended"]})
+            required_patches.update({"Metal 3802 .metallibs": all_hardware_patchset["Graphics"]["Metal 3802 .metallibs"]})
             required_patches.update({"Catalina GVA": all_hardware_patchset["Graphics"]["Catalina GVA"]})
             required_patches.update({"Monterey OpenCL": all_hardware_patchset["Graphics"]["Monterey OpenCL"]})
             required_patches.update({"Big Sur OpenCL": all_hardware_patchset["Graphics"]["Big Sur OpenCL"]})
