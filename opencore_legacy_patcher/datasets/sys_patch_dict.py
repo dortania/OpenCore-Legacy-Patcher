@@ -386,8 +386,8 @@ class SystemPatchDictionary():
                             "Metal.framework": "12.5-3802-22" if self.os_major < os_data.os_data.sonoma else "12.5-3802-23",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "MTLCompiler.framework": "12.7.6-3802",
-                            "GPUCompiler.framework": "12.7.6-3802",
+                            "MTLCompiler.framework": "12.5-3802",
+                            "GPUCompiler.framework": "12.5-3802",
                         },
                         "/System/Library/Sandbox/Profiles": {
                             "com.apple.mtlcompilerservice.sb": "12.5-3802",
