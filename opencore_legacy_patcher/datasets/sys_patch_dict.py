@@ -8,7 +8,7 @@ import packaging.version
 from . import os_data
 
 
-class DynamicPatchset(enum.Enum):
+class DynamicPatchset(enum.StrEnum):
     MetallibSupportPkg = "MetallibSupportPkg"
 
 
