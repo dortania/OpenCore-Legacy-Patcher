@@ -132,11 +132,8 @@ class PatcherValidation:
                     if install_type in patchset[patch_subject][patch_core]:
                         for install_directory in patchset[patch_subject][patch_core][install_type]:
                             for install_file in patchset[patch_subject][patch_core][install_type][install_directory]:
-                                try:
-                                    if patchset[patch_subject][patch_core][install_type][install_directory][install_file] in sys_patch_dict.DynamicPatchset:
-                                        continue
-                                except TypeError:
-                                    pass
+                                if patchset[patch_subject][patch_core][install_type][install_directory][install_file] in sys_patch_dict.DynamicPatchset:
+                                    continue
                                 source_file = str(self.constants.payload_local_binaries_root_path) + "/" + patchset[patch_subject][patch_core][install_type][install_directory][install_file] + install_directory + "/" + install_file
                                 if not Path(source_file).exists():
                                     logging.info(f"File not found: {source_file}")
