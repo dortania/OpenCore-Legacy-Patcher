@@ -2,6 +2,7 @@
 validation.py: Validation class for the patcher
 """
 
+import atexit
 import logging
 import subprocess
 
@@ -152,20 +153,10 @@ class PatcherValidation:
         Path(self.constants.payload_path / f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist").unlink()
 
 
-    def _validate_sys_patch(self) -> None:
+    def _unmount_dmg(self) -> None:
         """
-        Validates sys_patch modules
+        Unmounts the Universal-Binaries.dmg
         """
-
-        if not Path(self.constants.payload_local_binaries_root_path_dmg).exists():
-            dl_obj = network_handler.DownloadObject(f"https://github.com/dortania/PatcherSupportPkg/releases/download/{self.constants.patcher_support_pkg_version}/Universal-Binaries.dmg", self.constants.payload_local_binaries_root_path_dmg)
-            dl_obj.download(spawn_thread=False)
-            if dl_obj.download_complete is False:
-                logging.info("Failed to download Universal-Binaries.dmg")
-                raise Exception("Failed to download Universal-Binaries.dmg")
-
-        logging.info("Validating Root Patch File integrity")
-
         if Path(self.constants.payload_path / Path("Universal-Binaries_overlay")).exists():
             subprocess.run(
                 [
@@ -188,6 +179,23 @@ class PatcherValidation:
 
                 raise Exception("Failed to unmount Universal-Binaries.dmg")
 
+
+    def _validate_sys_patch(self) -> None:
+        """
+        Validates sys_patch modules
+        """
+
+        if not Path(self.constants.payload_local_binaries_root_path_dmg).exists():
+            dl_obj = network_handler.DownloadObject(f"https://github.com/dortania/PatcherSupportPkg/releases/download/{self.constants.patcher_support_pkg_version}/Universal-Binaries.dmg", self.constants.payload_local_binaries_root_path_dmg)
+            dl_obj.download(spawn_thread=False)
+            if dl_obj.download_complete is False:
+                logging.info("Failed to download Universal-Binaries.dmg")
+                raise Exception("Failed to download Universal-Binaries.dmg")
+
+        logging.info("Validating Root Patch File integrity")
+
+        self._unmount_dmg()
+
         output = subprocess.run(
             [
                 "/usr/bin/hdiutil", "attach", "-noverify", f"{self.constants.payload_local_binaries_root_path_dmg}",
@@ -206,7 +214,8 @@ class PatcherValidation:
             raise Exception("Failed to mount Universal-Binaries.dmg")
 
         logging.info("Mounted Universal-Binaries.dmg")
-
+        
+        atexit.register(self._unmount_dmg)
 
         for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura, os_data.os_data.sonoma]:
             for i in range(0, 10):
