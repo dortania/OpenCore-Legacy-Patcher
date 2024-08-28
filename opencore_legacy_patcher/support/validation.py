@@ -145,7 +145,7 @@ class PatcherValidation:
                                     self.active_patchset_files.append(source_file)
 
         logging.info(f"Validating against Darwin {major_kernel}.{minor_kernel}")
-        if not sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None):
+        if not sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None, None):
             raise Exception("Failed to generate patchset plist")
 
         # Remove the plist file after validation
