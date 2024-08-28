@@ -85,6 +85,7 @@ class PatchSysVolume:
         self.patch_set_dictionary = {}
         self.needs_kmutil_exemptions = False # For '/Library/Extensions' rebuilds
         self.kdk_path = None
+        self.metallib_path = None
 
         # GUI will detect hardware patches before starting PatchSysVolume()
         # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
@@ -320,7 +321,7 @@ class PatchSysVolume:
         destination_path = f"{self.mount_location}/System/Library/CoreServices"
         file_name = "OpenCore-Legacy-Patcher.plist"
         destination_path_file = f"{destination_path}/{file_name}"
-        if sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path):
+        if sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, file_name, self.kdk_path, self.metallib_path):
             logging.info("- Writing patchset information to Root Volume")
             if Path(destination_path_file).exists():
                 subprocess_wrapper.run_as_root_and_verify(["/bin/rm", destination_path_file], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -447,6 +448,7 @@ class PatchSysVolume:
         if not metallib_download_obj:
             # Already downloaded, return path
             logging.info(f"Using MetalLibSupportPkg: {metallib_obj.metallib_installed_path}")
+            self.metallib_path = metallib_obj.metallib_installed_path
             return str(metallib_obj.metallib_installed_path)
 
         metallib_download_obj.download(spawn_thread=False)
@@ -495,8 +497,11 @@ class PatchSysVolume:
                     continue
                 for install_patch_directory in required_patches[patch][method_type]:
                     for install_file in required_patches[patch][method_type][install_patch_directory]:
-                        if required_patches[patch][method_type][install_patch_directory][install_file] in sys_patch_dict.DynamicPatchset:
-                            required_patches[patch][method_type][install_patch_directory][install_file] = self._resolve_dynamic_patchset(required_patches[patch][method_type][install_patch_directory][install_file])
+                        try:
+                            if required_patches[patch][method_type][install_patch_directory][install_file] in sys_patch_dict.DynamicPatchset:
+                                required_patches[patch][method_type][install_patch_directory][install_file] = self._resolve_dynamic_patchset(required_patches[patch][method_type][install_patch_directory][install_file])
+                        except TypeError:
+                            pass
 
                         source_file = required_patches[patch][method_type][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
 
