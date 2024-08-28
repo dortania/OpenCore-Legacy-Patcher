@@ -495,8 +495,11 @@ class PatchSysVolume:
                     continue
                 for install_patch_directory in required_patches[patch][method_type]:
                     for install_file in required_patches[patch][method_type][install_patch_directory]:
-                        if required_patches[patch][method_type][install_patch_directory][install_file] in sys_patch_dict.DynamicPatchset:
-                            required_patches[patch][method_type][install_patch_directory][install_file] = self._resolve_dynamic_patchset(required_patches[patch][method_type][install_patch_directory][install_file])
+                        try:
+                            if required_patches[patch][method_type][install_patch_directory][install_file] in sys_patch_dict.DynamicPatchset:
+                                required_patches[patch][method_type][install_patch_directory][install_file] = self._resolve_dynamic_patchset(required_patches[patch][method_type][install_patch_directory][install_file])
+                        except TypeError:
+                            pass
 
                         source_file = required_patches[patch][method_type][install_patch_directory][install_file] + install_patch_directory + "/" + install_file
 
