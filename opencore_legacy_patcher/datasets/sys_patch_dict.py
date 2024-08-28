@@ -2,9 +2,14 @@
 sys_patch_dict.py: Dictionary defining patch sets used during Root Volume patching (sys_patch.py)
 """
 
+import enum
 import packaging.version
 
 from . import os_data
+
+
+class DynamicPatchset(enum.Enum):
+    MetallibSupportPkg = "MetallibSupportPkg"
 
 
 class SystemPatchDictionary():
@@ -70,8 +75,8 @@ class SystemPatchDictionary():
         self.patchset_dict:        dict = {}
         self.marketing_version:     str = marketing_version
 
-        self.affected_by_cve_2024_23227: bool = self.__is_affect_by_cve_2024_23227()
-        self.metallib_directory:          str = self.__resolve_metallibsupportpkg()
+        self.affected_by_cve_2024_23227:    bool = self.__is_affect_by_cve_2024_23227()
+        self.metallib_directory: DynamicPatchset = DynamicPatchset.MetallibSupportPkg
 
         # XNU Kernel versions
         self.macOS_12_0_B7:       float = 21.1
@@ -147,13 +152,6 @@ class SystemPatchDictionary():
             return parsed_version >= packaging.version.parse("14.4")
 
         return False
-
-
-    def __resolve_metallibsupportpkg(self) -> str:
-        """
-        Temporarily hard coded
-        """
-        return "/Library/Application Support/Dortania/MetallibSupportPkg/15.0-24A5327a"
 
 
     def _generate_sys_patch_dict(self):
@@ -803,6 +801,12 @@ class SystemPatchDictionary():
                         "/System/Applications/Freeform.app/Contents/Extensions/USDRendererExtension.appex/Contents/Resources": {
                             "default.metallib": self.metallib_directory,
                         },
+                    },
+                    "Remove": {
+                        "/System/Library/PrivateFrameworks/RenderBox.framework/Versions/A/Resources": [
+                            # For some reason Ivy Bridge can't tell the metallib lacks AIR64 support, and errors out
+                            "archive.metallib",
+                        ],
                     },
                 },
 

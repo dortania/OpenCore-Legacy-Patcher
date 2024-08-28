@@ -813,6 +813,10 @@ class Constants:
         return self.payload_path / Path("KDK.dmg")
 
     @property
+    def metallib_download_path(self):
+        return self.payload_path / Path("MetallibSupportPkg.pkg")
+
+    @property
     def icons_path(self):
         return [
             str(self.icon_path_macos_generic),
