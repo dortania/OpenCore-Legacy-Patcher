@@ -76,7 +76,6 @@ class SystemPatchDictionary():
         self.marketing_version:     str = marketing_version
 
         self.affected_by_cve_2024_23227:    bool = self.__is_affect_by_cve_2024_23227()
-        self.metallib_directory: DynamicPatchset = DynamicPatchset.MetallibSupportPkg
 
         # XNU Kernel versions
         self.macOS_12_0_B7:       float = 21.1
@@ -384,8 +383,8 @@ class SystemPatchDictionary():
                             "Metal.framework": "12.5-3802-22" if self.os_major < os_data.os_data.sonoma else "12.5-3802-23",
                         },
                         "/System/Library/PrivateFrameworks": {
-                            "MTLCompiler.framework": "12.5-3802",
-                            "GPUCompiler.framework": "12.5-3802",
+                            "MTLCompiler.framework": "12.7.6-3802",
+                            "GPUCompiler.framework": "12.7.6-3802",
                         },
                         "/System/Library/Sandbox/Profiles": {
                             "com.apple.mtlcompilerservice.sb": "12.5-3802",
@@ -464,342 +463,342 @@ class SystemPatchDictionary():
                             "ci_stdlib.metallib":                  "14.6.1",
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/VFX.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/VisionKitInternal.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/TSReading.framework/Versions/A/Resources": {
-                            "TSDDefaultMetalLibrary.metallib": self.metallib_directory,
-                            "KeynoteMetalLibrary.metallib": self.metallib_directory,
+                            "TSDDefaultMetalLibrary.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "KeynoteMetalLibrary.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/WeatherUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
-                            "ForegroundEffectShaders.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "ForegroundEffectShaders.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/AvatarKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/Tungsten.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/TextInputUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/ActivityRingsUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/ChatKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/WeatherMaps.framework/Versions/A/Resources": {
-                            "WeatherMapsMetalLib.metallib": self.metallib_directory,
+                            "WeatherMapsMetalLib.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/HomeAccessoryControlUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/PassKitUIFoundation.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/PrivateFrameworks/MediaCoreUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/Frameworks/ARKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/Frameworks/SpriteKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/Frameworks/PencilKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/Frameworks/SwiftUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/iOSSupport/System/Library/Frameworks/SceneKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Video/Plug-Ins/AppleGVAHEVCEncoder.bundle/Contents/Resources": {
-                            "AppleGVAHEVCFrameStatistics.metallib": self.metallib_directory,
+                            "AppleGVAHEVCFrameStatistics.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Video/Plug-Ins/AV1DecoderSW.bundle/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Video/Plug-Ins/AppleAVEEncoder.bundle/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/CoreServices/MTLReplayer.app/Contents/Frameworks/MTLReplayController.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/CoreImage/CIPassThrough.cifilter/Contents/Resources": {
-                            "CIPassThrough.ci.metallib": self.metallib_directory,
+                            "CIPassThrough.ci.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/CoreImage/PortraitFilters.cifilter/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
-                            "portrait_filters.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "portrait_filters.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/ScreenCaptureKitMetal/ScreenCaptureKitMetal.bundle/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/ExtensionKit/Extensions/Monterey.appex/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/ExtensionKit/Extensions/Drift.appex/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/ExtensionKit/Extensions/WallpaperMacintoshExtension.appex/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/ExtensionKit/Extensions/WallpaperSequoiaExtension.appex/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/SetupAssistantSupportUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/GESS.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/VFX.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/VisionCore.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/CMImaging.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/CoreRE.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/HDRProcessing.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/AvatarKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources": {
-                            "SkyLightShaders.air64.metallib": self.metallib_directory,
+                            "SkyLightShaders.air64.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/RenderBox.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/AppleISPEmulator.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/NeutrinoCore.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/Tungsten.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/ImageHarmonizationKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/VideoProcessing.framework/Versions/A/PlugIns/Codecs/VCPRealtimeEncoder.bundle/Contents/Resources": {
-                            "ProcessAccelerate.metallib": self.metallib_directory,
+                            "ProcessAccelerate.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/VideoProcessing.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
-                            "ProcessAccelerate.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "ProcessAccelerate.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/Portrait.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/VisualGeneration.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
-                            "NonMaxLineSuppress.ci.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "NonMaxLineSuppress.ci.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/AccelerateGPU.framework": {
-                            "GPUBLAS.metallib": self.metallib_directory,
+                            "GPUBLAS.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/AccelerateGPU.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/ShaderGraph.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/Hydra.framework/Plugins/HydraQLThumbnailExtension.appex/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/Hydra.framework/Plugins/HydraQLPreviewExtension.appex/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/Hydra.framework/Versions/C/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/SiriUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/TextRecognition.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/Leonardo.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/VectorKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/VectorKit.framework/Versions/A/Resources/metal_libraries": {
-                            "AlloyCommonLibrary.metallib": self.metallib_directory,
+                            "AlloyCommonLibrary.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/GPUToolsCapture.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/PhotoImaging.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/MetalTools.framework/Versions/A/Resources": {
-                            "MTLLegacySVICBSupport.metallib": self.metallib_directory,
-                            "MTLGPUDebugICBSupport.metallib": self.metallib_directory,
-                            "MTLGPUDebugAccelerationStructureSupport.metallib": self.metallib_directory,
-                            "MTLDebugShaders.metallib": self.metallib_directory,
-                            "MTLLegacySVAccelerationStructureSupport.metallib": self.metallib_directory,
+                            "MTLLegacySVICBSupport.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "MTLGPUDebugICBSupport.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "MTLGPUDebugAccelerationStructureSupport.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "MTLDebugShaders.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "MTLLegacySVAccelerationStructureSupport.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/AppleDepth.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/Human.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/CorePhotogrammetry.framework/Versions/A/Resources": {
-                            "ComputerVision_Tess_Kernels.metallib": self.metallib_directory,
-                            "Photogrammetry_Matching_Kernels.metallib": self.metallib_directory,
-                            "Photogrammetry_Texturing_Kernels.metallib": self.metallib_directory,
-                            "Photogrammetry_MVS_Kernels.metallib": self.metallib_directory,
-                            "Photogrammetry_Meshing_Kernels.metallib": self.metallib_directory,
+                            "ComputerVision_Tess_Kernels.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "Photogrammetry_Matching_Kernels.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "Photogrammetry_Texturing_Kernels.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "Photogrammetry_MVS_Kernels.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "Photogrammetry_Meshing_Kernels.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/HumanUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/Quagga.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/Espresso.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/CMPhoto.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/MediaAnalysis.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/AltruisticBodyPoseKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/PhotosUICore.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/MusicUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/FRC.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/H13ISPServices.framework/Versions/A/Resources": {
-                            "CalibrateRgbIr.metallib": self.metallib_directory,
+                            "CalibrateRgbIr.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/SiriUICore.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/PassKitUIFoundation.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/H16ISPServices.framework/Versions/A/Resources": {
-                            "CalibrateRgbIr.metallib": self.metallib_directory,
+                            "CalibrateRgbIr.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/CoreOCModules.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/PhotosensitivityProcessing.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/PrivateFrameworks/MediaCoreUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/Metal.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
-                            "MTLMeshShaderEmulator.metallib": self.metallib_directory,
-                            "MTLBVHBuilder.metallib": self.metallib_directory,
-                            "MTLECBE.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "MTLMeshShaderEmulator.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "MTLBVHBuilder.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "MTLECBE.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/QuartzCore.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/CoreMediaIO.framework/Versions/A/Resources/ACD.plugin/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSFunctions.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSRayIntersector.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSNeuralNetwork.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSNDArray.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSImage.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSMatrix.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/MetalFX.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/ParavirtualizedGraphics.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/SpriteKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/PencilKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/CoreDisplay.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/SwiftUICore.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/SwiftUI.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/Vision.framework/Versions/A/Resources": {
-                            "ImageFilters.metallib": self.metallib_directory,
-                            "default.metallib": self.metallib_directory,
+                            "ImageFilters.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/StickerKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/VideoToolbox.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/Frameworks/SceneKit.framework/Versions/A/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Library/VideoProcessors/CCPortrait.bundle/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
-                            "CoreImageKernels_only.ci.metallib": self.metallib_directory,
-                            "CoreImageKernels.ci.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "CoreImageKernels_only.ci.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "CoreImageKernels.ci.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Applications/Music.app/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Applications/Chess.app/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Applications/Freeform.app/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
-                            "coreimage.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
+                            "coreimage.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                         "/System/Applications/Freeform.app/Contents/Extensions/USDRendererExtension.appex/Contents/Resources": {
-                            "default.metallib": self.metallib_directory,
+                            "default.metallib": DynamicPatchset.MetallibSupportPkg,
                         },
                     },
                     "Remove": {
