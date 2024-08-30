@@ -259,7 +259,7 @@ class GenerateKexts:
 
     def _update_constants_file(self, variable_name, old_version, new_version):
         print(f"  Updating {variable_name} to {new_version}...")
-        constants_file = Path("../../resources/constants.py")
+        constants_file = Path("../../opencore_legacy_patcher/constants.py")
         if not constants_file.exists():
             raise Exception("Constants file does not exist")
         constants_file_contents = constants_file.read_text()
