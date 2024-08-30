@@ -266,7 +266,7 @@ class MetalLibraryObject:
 
         result = subprocess_wrapper.run_as_root([
             "/usr/sbin/installer", "-pkg", metallib if metallib else self.constants.metallib_download_path, "-target", "/"
-        ])
+        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if result.returncode != 0:
             subprocess_wrapper.log(result)
             return False
