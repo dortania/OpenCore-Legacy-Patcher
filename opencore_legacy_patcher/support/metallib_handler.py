@@ -205,6 +205,9 @@ class MetalLibraryObject:
         Check if a metallib is already installed
         """
 
+        if self.ignore_installed:
+            return None
+
         if not Path(METALLIB_INSTALL_PATH).exists():
             return None
 
