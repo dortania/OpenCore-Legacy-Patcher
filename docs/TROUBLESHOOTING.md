@@ -113,18 +113,20 @@ Semi-automated way:
 
 1. Open Terminal
 2. Type `sudo zsh`
-3. Type `cd "/Volumes/Macintosh HD/Library/Extensions" && ls | grep -v "HighPoint*\|SoftRAID*" | xargs rm -rf` * Make sure to rename "Macintosh HD" to what your drive name is
+3. Type `cd "/Volumes/Macintosh HD/Library/Extensions" && ls | grep -v "HighPoint*\|SoftRAID*" | xargs rm -rf`
+   * Make sure to rename "Macintosh HD" to what your drive name is
 4. Run OCLP root patcher again
    
 Manual way:
 
 1. Navigate to /Library/Extensions
-2. Delete everything **except* HighPointIOP.kext, HighPointRR.kext and SoftRAID.kext
+2. Delete everything **except** HighPointIOP.kext, HighPointRR.kext and SoftRAID.kext
 3. Run OCLP root patcher again
 
 If there is no success, navigate to "/Library/Developer/KDKs" and delete everything.
 
-If still no success, type `sudo bless --mount "/Volumes/Macintosh HD/" --bootefi --last-sealed-snapshot` * Make sure again to rename "MAchintosh HD" to what your drive name is
+If still no success, type `sudo bless --mount "/Volumes/Macintosh HD/" --bootefi --last-sealed-snapshot` 
+* Make sure again to rename "MAchintosh HD" to what your drive name is
 
 Run OCLP root patcher again.
 
