@@ -126,7 +126,7 @@ Manual way:
 If there is no success, navigate to "/Library/Developer/KDKs" and delete everything.
 
 If still no success, type `sudo bless --mount "/Volumes/Macintosh HD/" --bootefi --last-sealed-snapshot` 
-* Make sure again to rename "MAchintosh HD" to what your drive name is
+* Make sure again to rename "Macintosh HD" to what your drive name is
 
 Run OCLP root patcher again.
 
