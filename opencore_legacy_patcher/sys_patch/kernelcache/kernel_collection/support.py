@@ -8,6 +8,8 @@ import plistlib
 from pathlib  import Path
 from datetime import datetime
 
+from ...patchsets import PatchType
+
 from ....datasets import os_data
 from ....support  import subprocess_wrapper
 
@@ -127,7 +129,7 @@ class KernelCacheSupport:
             for key in oclp_plist_data:
                 if isinstance(oclp_plist_data[key], (bool, int)):
                     continue
-                for install_type in ["Install", "Install Non-Root"]:
+                for install_type in [PatchType.INSTALL_SYSTEM_VOLUME, PatchType.INSTALL_DATA_VOLUME]:
                     if install_type not in oclp_plist_data[key]:
                         continue
                     for location in oclp_plist_data[key][install_type]:

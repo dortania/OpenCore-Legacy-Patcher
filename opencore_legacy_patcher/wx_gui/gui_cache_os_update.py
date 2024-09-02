@@ -12,8 +12,10 @@ import threading
 from pathlib import Path
 
 from .. import constants
-from ..support import kdk_handler, utilities
+from ..support import kdk_handler, utilities, metallib_handler
 from ..wx_gui import gui_support, gui_download
+
+from ..sys_patch.patchsets import HardwarePatchsetDetection, HardwarePatchsetSettings
 
 
 class OSUpdateFrame(wx.Frame):
@@ -40,28 +42,67 @@ class OSUpdateFrame(wx.Frame):
         logging.info(f"Staged update found: {os_data[0]} ({os_data[1]})")
         self.os_data = os_data
 
+        # Check if we need to patch the system volume
+        results = HardwarePatchsetDetection(
+            constants=self.constants,
+            xnu_major=int(self.os_data[1][:2]),
+            xnu_minor=0, # We can't determine this from the build number
+            os_build=self.os_data[1],
+            os_version=self.os_data[0],
+        ).device_properties
+
+        if results[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] is True:
+            logging.info("KDK required")
+        if results[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED] is True:
+            # TODO: Download MetalLibSupportPkg
+            logging.info("MetallibSupportPkg required")
+
+        if not any([results[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED], results[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED]]):
+            logging.info("No additional resources required")
+            self._exit()
+
         self._generate_ui()
 
         self.kdk_obj: kdk_handler.KernelDebugKitObject = None
         def _kdk_thread_spawn():
             self.kdk_obj = kdk_handler.KernelDebugKitObject(self.constants, self.os_data[1], self.os_data[0], passive=True, check_backups_only=True)
 
-        kdk_thread = threading.Thread(target=_kdk_thread_spawn)
-        kdk_thread.start()
 
-        while kdk_thread.is_alive():
-            wx.Yield()
+        self.metallib_obj: metallib_handler.MetalLibraryObject = None
+        def _metallib_thread_spawn():
+            self.metallib_obj = metallib_handler.MetalLibraryObject(self.constants, self.os_data[1], self.os_data[0])
 
-        if self.kdk_obj.success is False:
+
+        if results[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] is True:
+            kdk_thread = threading.Thread(target=_kdk_thread_spawn)
+            kdk_thread.start()
+            while kdk_thread.is_alive():
+                wx.Yield()
+        if results[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED] is True:
+            metallib_thread = threading.Thread(target=_metallib_thread_spawn)
+            metallib_thread.start()
+            while metallib_thread.is_alive():
+                wx.Yield()
+
+
+        download_objects = {
+            # Name: xxx
+            # download_obj: xxx
+        }
+
+        if self.kdk_obj:
+            if self.kdk_obj.success is True:
+                result = self.kdk_obj.retrieve_download()
+                if result is not None:
+                    download_objects[f"KDK Build {self.kdk_obj.kdk_url_build}"] = result
+        if self.metallib_obj:
+            if self.metallib_obj.success is True:
+                result = self.metallib_obj.retrieve_download()
+                if result is not None:
+                    download_objects[f"Metallib Build {self.metallib_obj.metallib_url_build}"] = result
+
+        if len(download_objects) == 0:
             self._exit()
-
-        kdk_download_obj = self.kdk_obj.retrieve_download()
-        if not kdk_download_obj:
-            # KDK is already downloaded
-            # Return false since we didn't display anything
-            self._exit()
-
-        self.kdk_download_obj = kdk_download_obj
 
         self.frame.Show()
 
@@ -76,20 +117,34 @@ class OSUpdateFrame(wx.Frame):
             if self.did_cancel == -1:
                 time.sleep(1)
 
-        gui_download.DownloadFrame(
-            self,
-            title=self.title,
-            global_constants=self.constants,
-            download_obj=kdk_download_obj,
-            item_name=f"KDK Build {self.kdk_obj.kdk_url_build}"
-        )
-        if kdk_download_obj.download_complete is False:
-            self._exit()
+        for item in download_objects:
+            name = item
+            download_obj = download_objects[item]
+            self.download_obj = download_obj
+            gui_download.DownloadFrame(
+                self,
+                title=self.title,
+                global_constants=self.constants,
+                download_obj=download_obj,
+                item_name=name
+            )
+            if download_obj.download_complete is True:
+                if item.startswith("KDK"):
+                    self._handle_kdk(self.kdk_obj)
+                if item.startswith("Metallib"):
+                    self._handle_metallib(self.metallib_obj)
 
+        self._exit()
+
+
+    def _handle_kdk(self, kdk_obj: kdk_handler.KernelDebugKitObject) -> None:
+        """
+        Handle KDK installation
+        """
         logging.info("KDK download complete, validating with hdiutil")
         self.kdk_checksum_result = False
         def _validate_kdk_checksum_thread():
-            self.kdk_checksum_result = self.kdk_obj.validate_kdk_checksum()
+            self.kdk_checksum_result = kdk_obj.validate_kdk_checksum()
 
         kdk_checksum_thread = threading.Thread(target=_validate_kdk_checksum_thread)
         kdk_checksum_thread.start()
@@ -99,15 +154,16 @@ class OSUpdateFrame(wx.Frame):
 
         if self.kdk_checksum_result is False:
             logging.error("KDK checksum validation failed")
-            logging.error(self.kdk_obj.error_msg)
+            logging.error(kdk_obj.error_msg)
             self._exit()
+
 
         logging.info("KDK checksum validation passed")
 
         logging.info("Mounting KDK")
         if not Path(self.constants.kdk_download_path).exists():
             logging.error("KDK download path does not exist")
-            self._exit()
+            return
 
         self.kdk_install_result = False
         def _install_kdk_thread():
@@ -121,10 +177,31 @@ class OSUpdateFrame(wx.Frame):
 
         if self.kdk_install_result is False:
             logging.info("Failed to install KDK")
-            self._exit()
+            return
 
         logging.info("KDK installed successfully")
-        self._exit()
+
+
+
+    def _handle_metallib(self, metallib_obj: metallib_handler.MetalLibraryObject) -> None:
+        """
+        Handle Metallib installation
+        """
+        self.metallib_install_result = False
+        def _install_metallib_thread():
+            self.metallib_install_result = metallib_obj.install_metallib()
+
+        metallib_install_thread = threading.Thread(target=_install_metallib_thread)
+        metallib_install_thread.start()
+
+        while metallib_install_thread.is_alive():
+            wx.Yield()
+
+        if self.metallib_install_result is False:
+            logging.info("Failed to install Metallib")
+            return
+
+        logging.info("Metallib installed successfully")
 
 
     def _generate_ui(self) -> None:
@@ -179,7 +256,8 @@ class OSUpdateFrame(wx.Frame):
         result = dlg.ShowModal()
         if result == wx.ID_NO:
             logging.info("User cancelled OS caching")
-            self.kdk_download_obj.stop()
+            if hasattr(self, "download_obj"):
+                self.download_obj.stop()
             self.did_cancel = 1
         else:
             self.did_cancel = 0

@@ -306,7 +306,7 @@ xw
         # And MacPro4,1, MacPro5,1 and Xserve3,1 are the only post-Penryn Macs that lack an internal USB hub
         # - Ref: https://techcommunity.microsoft.com/t5/microsoft-usb-blog/reasons-to-avoid-companion-controllers/ba-p/270710
         #
-        # To be paired for sys_patch_dict.py's 'Legacy USB 1.1' patchset
+        # To be paired for usb11.py's 'Legacy USB 1.1' patchset
         #
         # Note: With macOS 14.1, injection of these kexts causes a panic.
         #       To avoid this, a MaxKernel is configured with XNU 23.0.0 (macOS 14.0).

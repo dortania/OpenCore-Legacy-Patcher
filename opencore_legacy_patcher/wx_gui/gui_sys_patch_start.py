@@ -30,7 +30,7 @@ from ..wx_gui import (
     gui_download,
 )
 
-from ..sys_patch.detections import DetectRootPatch
+from ..sys_patch.patchsets import HardwarePatchsetDetection, HardwarePatchsetSettings
 
 
 
@@ -54,7 +54,7 @@ class SysPatchStartFrame(wx.Frame):
         self.Centre()
 
         if self.patches == {}:
-            self.patches = DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            self.patches = HardwarePatchsetDetection(constants=self.constants).device_properties
 
 
     def _kdk_download(self, frame: wx.Frame = None) -> bool:
@@ -315,11 +315,11 @@ class SysPatchStartFrame(wx.Frame):
         while gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
             wx.Yield()
 
-        if self.patches["Settings: Kernel Debug Kit missing"] is True:
+        if self.patches[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] is True:
             if self._kdk_download(self) is False:
                 sys.exit(1)
 
-        if self.patches["Settings: MetallibSupportPkg missing"] is True:
+        if self.patches[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED] is True:
             if self._metallib_download(self) is False:
                 sys.exit(1)
 
@@ -459,7 +459,7 @@ class SysPatchStartFrame(wx.Frame):
         for patch in patches:
             if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                 # Patches should share the same name as the plist key
-                # See sys_patch_dict.py for more info
+                # See sys_patch/patchsets/base.py for more info
                 patch_installed = False
                 for key in oclp_plist_data:
                     if isinstance(oclp_plist_data[key], (bool, int)):
