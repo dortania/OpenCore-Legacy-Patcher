@@ -2,7 +2,7 @@
 intel_sandy_bridge.py: Intel Sandy Bridge detection
 """
 
-from ..base import BaseHardware, HardwareVariant
+from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclass
 
 from ...base import PatchType
 
@@ -54,6 +54,13 @@ class IntelSandyBridge(BaseHardware):
         return HardwareVariant.GRAPHICS
 
 
+    def hardware_variant_graphics_subclass(self) -> HardwareVariantGraphicsSubclass:
+        """
+        Type of hardware variant subclass
+        """
+        return HardwareVariantGraphicsSubclass.NON_METAL_GRAPHICS
+
+
     def requires_kernel_debug_kit(self) -> bool:
         """
         Requires replacing a number of kexts in the BootKC
@@ -92,7 +99,7 @@ class IntelSandyBridge(BaseHardware):
 
         if self._xnu_major not in self._constants.legacy_accel_support:
             return {**self._model_specific_patches()}
-        
+
         return {
             **NonMetal(self._xnu_major, self._xnu_minor, self._os_build).patches(),
             **HighSierraGVA(self._xnu_major, self._xnu_minor, self._os_build).patches(),

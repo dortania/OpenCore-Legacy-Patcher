@@ -2,7 +2,7 @@
 nvidia_webdriver.py: Nvidia Web Driver detection
 """
 
-from ..base import BaseHardware, HardwareVariant
+from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclass
 
 from ...base import PatchType
 
@@ -57,6 +57,13 @@ class NvidiaWebDriver(BaseHardware):
         Type of hardware variant
         """
         return HardwareVariant.GRAPHICS
+
+
+    def hardware_variant_graphics_subclass(self) -> HardwareVariantGraphicsSubclass:
+        """
+        Type of hardware variant subclass
+        """
+        return HardwareVariantGraphicsSubclass.NON_METAL_GRAPHICS
 
 
     def requires_kernel_debug_kit(self) -> bool:

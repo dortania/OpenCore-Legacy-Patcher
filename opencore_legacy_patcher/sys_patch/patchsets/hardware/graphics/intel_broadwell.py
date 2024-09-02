@@ -2,7 +2,7 @@
 intel_broadwell.py: Intel Broadwell detection
 """
 
-from ..base import BaseHardware, HardwareVariant
+from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclass
 
 from ...base import PatchType
 
@@ -43,6 +43,13 @@ class IntelBroadwell(BaseHardware):
         Type of hardware variant
         """
         return HardwareVariant.GRAPHICS
+
+
+    def hardware_variant_graphics_subclass(self) -> HardwareVariantGraphicsSubclass:
+        """
+        Type of hardware variant subclass
+        """
+        return HardwareVariantGraphicsSubclass.METAL_31001_GRAPHICS
 
 
     def native_os(self) -> bool:

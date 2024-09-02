@@ -295,7 +295,7 @@ class HardwarePatchsetDetection:
         """
         Check if Kernel Debug Kit is present
         """
-        return kdk_handler.KernelDebugKitObject(self._constants, self._os_build, self._os_version).kdk_already_installed
+        return kdk_handler.KernelDebugKitObject(self._constants, self._os_build, self._os_version, passive=True).kdk_already_installed
 
 
     def _is_cached_metallib_support_pkg_present(self) -> bool:

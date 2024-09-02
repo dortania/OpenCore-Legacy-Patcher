@@ -24,6 +24,16 @@ class HardwareVariant(StrEnum):
     MISCELLANEOUS: str = "Miscellaneous"
 
 
+class HardwareVariantGraphicsSubclass(StrEnum):
+    """
+    Graphics hardware variant subclass
+    """
+    NON_METAL_GRAPHICS:   str = "Non-Metal Graphics"
+    METAL_3802_GRAPHICS:  str = "Metal 3802 Graphics"
+    METAL_31001_GRAPHICS: str = "Metal 31001 Graphics"
+    NOT_APPLICABLE:       str = "N/A"
+
+
 class BaseHardware(BasePatchset):
 
     def __init__(self, xnu_major, xnu_minor, os_build, global_constants: Constants) -> None:
@@ -63,6 +73,13 @@ class BaseHardware(BasePatchset):
         What hardware variant is this patch set for
         """
         raise NotImplementedError
+
+
+    def hardware_variant_graphics_subclass(self) -> HardwareVariantGraphicsSubclass:
+        """
+        What subclass of graphics
+        """
+        return HardwareVariantGraphicsSubclass.NOT_APPLICABLE
 
 
     def required_amfi_level(self) -> AmfiConfigDetectLevel:

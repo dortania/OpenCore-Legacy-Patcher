@@ -4,7 +4,7 @@ amd_polaris.py: AMD Polaris detection
 
 from .amd_legacy_gcn import AMDLegacyGCN
 
-from ..base import BaseHardware, HardwareVariant
+from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclass
 
 from ...base import PatchType
 
@@ -54,6 +54,13 @@ class AMDPolaris(BaseHardware):
         Type of hardware variant
         """
         return HardwareVariant.GRAPHICS
+
+
+    def hardware_variant_graphics_subclass(self) -> HardwareVariantGraphicsSubclass:
+        """
+        Type of hardware variant subclass
+        """
+        return HardwareVariantGraphicsSubclass.METAL_31001_GRAPHICS
 
 
     def requires_kernel_debug_kit(self) -> bool:
@@ -116,7 +123,7 @@ class AMDPolaris(BaseHardware):
         """
         if self.native_os() is True:
             return {}
-        
+
         # Minimal amount of patches required for 2017 Polaris
         if self._computer.real_model in ["MacBookPro14,3"]:
             return self._model_specific_patches()

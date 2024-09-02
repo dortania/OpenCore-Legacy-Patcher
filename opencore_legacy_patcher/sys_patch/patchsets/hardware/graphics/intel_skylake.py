@@ -2,7 +2,7 @@
 intel_skylake.py: Intel Skylake detection
 """
 
-from ..base import BaseHardware, HardwareVariant
+from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclass
 
 from ...base import PatchType
 
@@ -52,6 +52,13 @@ class IntelSkylake(BaseHardware):
         return HardwareVariant.GRAPHICS
 
 
+    def hardware_variant_graphics_subclass(self) -> HardwareVariantGraphicsSubclass:
+        """
+        Type of hardware variant subclass
+        """
+        return HardwareVariantGraphicsSubclass.METAL_31001_GRAPHICS
+
+
     def _model_specific_patches(self) -> dict:
         """
         Model specific patches
@@ -79,7 +86,7 @@ class IntelSkylake(BaseHardware):
         """
         if self.native_os() is True:
             return {}
-        
+
         return {
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **self._model_specific_patches(),

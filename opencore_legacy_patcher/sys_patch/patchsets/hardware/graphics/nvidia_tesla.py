@@ -2,7 +2,7 @@
 nvidia_tesla.py: Nvidia Tesla detection
 """
 
-from ..base import BaseHardware, HardwareVariant
+from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclass
 
 from ...base import PatchType
 
@@ -53,6 +53,13 @@ class NvidiaTesla(BaseHardware):
         return HardwareVariant.GRAPHICS
 
 
+    def hardware_variant_graphics_subclass(self) -> HardwareVariantGraphicsSubclass:
+        """
+        Type of hardware variant subclass
+        """
+        return HardwareVariantGraphicsSubclass.NON_METAL_GRAPHICS
+
+
     def requires_kernel_debug_kit(self) -> bool:
         """
         Apple no longer provides standalone kexts in the base OS
@@ -88,7 +95,7 @@ class NvidiaTesla(BaseHardware):
         """
         if self.native_os() is True:
             return {}
-        
+
         if self._xnu_major not in self._constants.legacy_accel_support:
             return {**self._model_specific_patches()}
 

@@ -2,7 +2,7 @@
 intel_ivy_bridge.py: Intel Ivy Bridge detection
 """
 
-from ..base import BaseHardware, HardwareVariant
+from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclass
 
 from ...base            import PatchType
 
@@ -54,6 +54,13 @@ class IntelIvyBridge(BaseHardware):
         Type of hardware variant
         """
         return HardwareVariant.GRAPHICS
+
+
+    def hardware_variant_graphics_subclass(self) -> HardwareVariantGraphicsSubclass:
+        """
+        Type of hardware variant subclass
+        """
+        return HardwareVariantGraphicsSubclass.METAL_3802_GRAPHICS
 
 
     def requires_metallib_support_pkg(self) -> bool:
