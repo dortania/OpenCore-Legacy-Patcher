@@ -428,6 +428,7 @@ class HardwarePatchsetDetection:
         missing_metallib_support_pkg  = False
         requires_kernel_debug_kit     = False
         missing_kernel_debug_kit      = False
+        requires_network_connection   = False
         has_nvidia_web_drivers        = False
         has_metal_3802_gpu            = False
         highest_amfi_level            = amfi_detect.AmfiConfigDetectLevel.NO_CHECK
@@ -480,6 +481,8 @@ class HardwarePatchsetDetection:
         if requires_kernel_debug_kit is True:
             missing_kernel_debug_kit = not self._is_cached_kernel_debug_kit_present()
 
+        requires_network_connection = missing_metallib_support_pkg or missing_kernel_debug_kit
+
         requirements = {
             HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED:     requires_kernel_debug_kit,
             HardwarePatchsetSettings.KERNEL_DEBUG_KIT_MISSING:      missing_kernel_debug_kit,
@@ -487,7 +490,7 @@ class HardwarePatchsetDetection:
             HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_MISSING:  missing_metallib_support_pkg,
 
             HardwarePatchsetValidation.UNSUPPORTED_HOST_OS:         self._validation_check_unsupported_host_os(),
-            HardwarePatchsetValidation.MISSING_NETWORK_CONNECTION:  self._validation_check_missing_network_connection() if any([missing_metallib_support_pkg, missing_kernel_debug_kit]) else False,
+            HardwarePatchsetValidation.MISSING_NETWORK_CONNECTION:  self._validation_check_missing_network_connection() if requires_network_connection else False,
             HardwarePatchsetValidation.FILEVAULT_ENABLED:           self._validation_check_filevault_is_enabled(),
             HardwarePatchsetValidation.SIP_ENABLED:                 self._validation_check_system_integrity_protection_enabled(required_sip_configs),
             HardwarePatchsetValidation.SECURE_BOOT_MODEL_ENABLED:   self._validation_check_secure_boot_model_enabled(),
@@ -529,7 +532,7 @@ class HardwarePatchsetDetection:
         for key, value in self.device_properties.items():
             if not key.startswith("Validation:"):
                 continue
-            if key in ["Validation: Patching not possible", "Validation: Unpatching not possible"]:
+            if key in [HardwarePatchsetValidation.PATCHING_NOT_POSSIBLE, HardwarePatchsetValidation.UNPATCHING_NOT_POSSIBLE]:
                 continue
             if value is False:
                 continue
