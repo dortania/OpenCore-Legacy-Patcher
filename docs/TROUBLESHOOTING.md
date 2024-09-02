@@ -8,6 +8,7 @@ Here are some common errors that users may experience while using this patcher:
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
 * [Stuck on boot after root patching](#stuck-on-boot-after-root-patching)
+* ["Unable to resolve dependencies, error code 71" when root patching](#unable-to-resolve-dependencies-error-code-71-when-root-patching)
 * [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
 * [How to Boot Recovery through OpenCore Legacy Patcher](#how-to-boot-recovery-through-opencore-legacy-patcher)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
@@ -104,7 +105,30 @@ cd "/Volumes/Macintosh HD - Data/Library/Extensions" && ls | grep -v "HighPoint*
 
 Then restart and now your system should be restored to the unpatched snapshot and should be able to boot again.
 
+## "Unable to resolve dependencies, error code 71" when root patching
 
+If you're getting this error, it typically means you have some offending kernel extensions, to fix this you will have to clear them.
+
+Semi-automated way:
+
+1. Open Terminal
+2. Type `sudo zsh`
+3. Type `cd "/Volumes/Macintosh HD/Library/Extensions" && ls | grep -v "HighPoint*\|SoftRAID*" | xargs rm -rf`
+   * Make sure to rename "Macintosh HD" to what your drive name is
+4. Run OCLP root patcher again
+   
+Manual way:
+
+1. Navigate to /Library/Extensions
+2. Delete everything **except** HighPointIOP.kext, HighPointRR.kext and SoftRAID.kext
+3. Run OCLP root patcher again
+
+If there is no success, navigate to "/Library/Developer/KDKs" and delete everything.
+
+If still no success, type `sudo bless --mount "/Volumes/Macintosh HD/" --bootefi --last-sealed-snapshot` 
+* Make sure again to rename "Macintosh HD" to what your drive name is
+
+Run OCLP root patcher again.
 
 ## Reboot when entering Hibernation (`Sleep Wake Failure`)
 

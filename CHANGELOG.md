@@ -12,6 +12,11 @@
 - Implement new Copy on Write detection mechanism for all file copying operations
   - Implemented using `getattrlist` and `VOL_CAP_INT_CLONE` flag
   - Helps improve performance on APFS volumes
+- Increase model range for S1X/S3X patching to include Haswell Macs and `MacPro6,1`
+  - Helps avoid an issue where older machines with newer, unsupported SSDs would fail to boot
+  - Only affects building EFI from another machine
+- Resolve AMD Navi MXM GPU detection for modded iMac9,x-12,x
+  - Thanks @Ausdauersportler for the patch!
 - Increment Binaries:
   - PatcherSupportPkg 1.6.3 - release
 

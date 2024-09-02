@@ -150,9 +150,10 @@ class BuildStorage:
 
         # Restore S1X/S3X NVMe support removed in 14.0 Beta 2
         # Apple's usage of the S1X and S3X is quite sporadic and inconsistent, so we'll try a catch all for units with NVMe drives
+        # Additionally expanded to cover all Mac models with the 12+16 pin SSD layout, for older machines with newer drives
         if self.constants.custom_model and self.model in smbios_data.smbios_dictionary:
             if "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
-                if cpu_data.CPUGen.broadwell <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.kaby_lake:
+                if (cpu_data.CPUGen.haswell <= smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.kaby_lake) or self.model in [ "MacPro6,1" ]:
                     support.BuildSupport(self.model, self.constants, self.config).enable_kext("IOS3XeFamily.kext", self.constants.s3x_nvme_version, self.constants.s3x_nvme_path)
 
         # Apple RAID Card check

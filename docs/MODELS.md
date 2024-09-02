@@ -1,8 +1,24 @@
 # Supported Models
+
+### Application requirements
+The patcher application requires **OS X Yosemite 10.10** or later to run.
+* **OS X El Capitan 10.11** or later is required to make installers for macOS Ventura and later.
+
+The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
+* Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
+
+-------
+
 Any Intel-based Mac listed below can install and make use of OpenCore Legacy Patcher. To check your hardware model, open System Information and look for the `Model Identifier` key.
 * This applies even if Apple supports the model natively.
 * OpenCore Legacy Patcher does not support PowerPC- or Apple Silicon-based Macs.
 * If your model is not listed below, it is not supported by this patcher.
+
+::: warning Note
+It is **extremely recommended** to update your Mac to its latest native version before using OpenCore Legacy Patcher, to ensure you're on the highest firmware.
+:::
+
+
 
 The below tables can be used to reference issues with a particular model, and see which OS would work best on your machine.
 * [MacBook](#macbook)
@@ -12,14 +28,6 @@ The below tables can be used to reference issues with a particular model, and se
 * [iMac](#imac)
 * [Mac Pro](#mac-pro)
 * [Xserve](#xserve)
-
-::: details OpenCore Patcher application
-The patcher application requires **OS X Yosemite 10.10** or later to run.
-* **OS X El Capitan 10.11** or later is required to make installers for macOS Ventura and later.
-
-The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
-* Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
-:::
 
 
 ### MacBook

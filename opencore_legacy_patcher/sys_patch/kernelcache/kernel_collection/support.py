@@ -107,7 +107,6 @@ class KernelCacheSupport:
         return updated_install_location
 
 
-
     def clean_auxiliary_kc(self) -> None:
         """
         Clean the Auxiliary Kernel Collection
