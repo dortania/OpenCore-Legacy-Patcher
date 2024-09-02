@@ -12,7 +12,7 @@ from enum      import StrEnum
 from pathlib   import Path
 from functools import cache
 
-from .hardware.base import BaseHardware
+from .hardware.base import BaseHardware, HardwareVariantGraphicsSubclass
 
 from .hardware.graphics import (
     intel_iron_lake,
@@ -331,23 +331,109 @@ class HardwarePatchsetDetection:
         return value
 
 
+    def _strip_incompatible_hardware(self, present_hardware: list[BaseHardware]) -> list[BaseHardware]:
+        """
+        Strip out incompatible hardware. Priority is given to Metal GPUs (specifically 31001 when applicable)
+
+        Notes:
+        - Non-Metal GPUs are stripped out if any Metal GPUs are present
+        - Metal 3802 GPUs are stripped out if Metal 31001 GPUs are present on macOS Sequoia or newer
+        """
+        non_metal_gpu_present   = False
+        metal_gpu_present       = False
+        metal_3802_gpu_present  = False
+        metal_31001_gpu_present = False
+
+        for hardware in present_hardware:
+            hardware: BaseHardware
+            sub_variant = hardware.hardware_variant_graphics_subclass()
+            if sub_variant == HardwareVariantGraphicsSubclass.METAL_31001_GRAPHICS:
+                metal_31001_gpu_present = True
+            elif sub_variant == HardwareVariantGraphicsSubclass.METAL_3802_GRAPHICS:
+                metal_3802_gpu_present = True
+            elif sub_variant == HardwareVariantGraphicsSubclass.NON_METAL_GRAPHICS:
+                non_metal_gpu_present = True
+
+        metal_gpu_present = metal_31001_gpu_present or metal_3802_gpu_present
+
+        if metal_gpu_present and non_metal_gpu_present:
+            logging.error("Cannot mix Metal and Non-Metal GPUs")
+            logging.error("Stripping out Non-Metal GPUs")
+            for hardware in list(present_hardware):
+                if hardware.hardware_variant_graphics_subclass() == HardwareVariantGraphicsSubclass.NON_METAL_GRAPHICS:
+                    print(f"  Stripping out {hardware.name()}")
+                    present_hardware.remove(hardware)
+
+        if metal_3802_gpu_present and metal_31001_gpu_present and self._xnu_major >= os_data.sequoia.value:
+            logging.error("Cannot mix Metal 3802 and Metal 31001 GPUs on macOS Sequoia or newer")
+            logging.error("Stripping out Metal 3802 GPUs")
+            for hardware in list(present_hardware):
+                if hardware.hardware_variant_graphics_subclass() == HardwareVariantGraphicsSubclass.METAL_3802_GRAPHICS:
+                    logging.error(f"  Stripping out {hardware.name()}")
+                    present_hardware.remove(hardware)
+
+        return present_hardware
+
+
+    def _handle_missing_network_connection(self, requirements: dict, device_properties: dict) -> tuple[dict, dict]:
+        """
+        Sync network connection requirements
+        """
+        if self._can_patch(requirements, ignore_keys=[HardwarePatchsetValidation.MISSING_NETWORK_CONNECTION]) is False:
+            return requirements, device_properties
+        logging.info("Network connection missing, checking whether network patches are applicable")
+        if self._already_has_networking_patches() is True:
+            logging.info("Network patches are already applied, requiring network connection")
+            return requirements, device_properties
+
+        if not any([key.startswith("Networking:") for key in device_properties.keys()]):
+            logging.info("Network patches are not applicable, requiring network connection")
+            return requirements, device_properties
+
+        logging.info("Network patches are applicable, removing other patches")
+        for key in list(device_properties.keys()):
+            if key.startswith("Networking:"):
+                continue
+            device_properties.pop(key, None)
+
+        requirements[HardwarePatchsetValidation.MISSING_NETWORK_CONNECTION]  = False
+        requirements[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED]     = False
+        requirements[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_MISSING]      = False
+        requirements[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED] = False
+        requirements[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_MISSING]  = False
+
+        return requirements, device_properties
+
+
+    def _handle_sip_breakdown(self, requirements: dict, required_sip_configs: list[str]) -> dict:
+        """
+        Handle SIP breakdown
+        """
+        current_sip_status  = hex(py_sip_xnu.SipXnu().get_sip_status().value)
+        expected_sip_status = hex(self._convert_required_sip_config_to_int(required_sip_configs))
+        sip_string = f"Validation: Booted SIP: {current_sip_status} vs expected: {expected_sip_status}"
+        index = list(requirements.keys()).index(HardwarePatchsetValidation.SIP_ENABLED)
+        return dict(list(requirements.items())[:index+1] + [(sip_string, True)] + list(requirements.items())[index+1:])
+
+
     def _detect(self) -> None:
         """
         Detect patches for a given system
         """
-
+        present_hardware  = []
         device_properties = {}
-        patches = {}
+        patches           = {}
 
         requires_metallib_support_pkg = False
         missing_metallib_support_pkg  = False
         requires_kernel_debug_kit     = False
         missing_kernel_debug_kit      = False
         has_nvidia_web_drivers        = False
-        has_3802_gpu                  = False
+        has_metal_3802_gpu            = False
         highest_amfi_level            = amfi_detect.AmfiConfigDetectLevel.NO_CHECK
         required_sip_configs          = []
 
+        # First pass to find all present hardware
         for hardware in self._hardware_variants:
             item: BaseHardware = hardware(
                 xnu_major        = self._xnu_major,
@@ -362,13 +448,19 @@ class HardwarePatchsetDetection:
                     continue
             if item.native_os() is True:    # Skip if native OS
                 continue
+            present_hardware.append(item)
 
+        present_hardware = self._strip_incompatible_hardware(present_hardware)
+
+        # Second pass to gather all properties
+        for item in present_hardware:
+            item: BaseHardware
             device_properties[item.name()] = True
 
             if item.name() == "Graphics: Nvidia Web Drivers":
                 has_nvidia_web_drivers = True
-            if item.name() in ["Graphics: Nvidia Kepler", "Graphics: Intel Ivy Bridge", "Graphics: Intel Haswell"]:
-                has_3802_gpu = True
+            if item.hardware_variant_graphics_subclass() == HardwareVariantGraphicsSubclass.METAL_3802_GRAPHICS:
+                has_metal_3802_gpu = True
 
             for config in item.required_system_integrity_protection_configurations():
                 if config not in required_sip_configs:
@@ -383,12 +475,10 @@ class HardwarePatchsetDetection:
 
             patches.update(item.patches())
 
-
         if requires_metallib_support_pkg is True:
             missing_metallib_support_pkg = not self._is_cached_metallib_support_pkg_present()
         if requires_kernel_debug_kit is True:
             missing_kernel_debug_kit = not self._is_cached_kernel_debug_kit_present()
-
 
         requirements = {
             HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED:     requires_kernel_debug_kit,
@@ -406,38 +496,16 @@ class HardwarePatchsetDetection:
             HardwarePatchsetValidation.FORCE_OPENGL_MISSING:        self._validation_check_force_opengl_missing()  if has_nvidia_web_drivers is True else False,
             HardwarePatchsetValidation.FORCE_COMPAT_MISSING:        self._validation_check_force_compat_missing()  if has_nvidia_web_drivers is True else False,
             HardwarePatchsetValidation.NVDA_DRV_MISSING:            self._validation_check_nvda_drv_missing()      if has_nvidia_web_drivers is True else False,
-            HardwarePatchsetValidation.HELL_SPAWN_GPU_PRESENT:      has_3802_gpu and not self._dortania_internal_check(),
+            HardwarePatchsetValidation.HELL_SPAWN_GPU_PRESENT:      has_metal_3802_gpu and self._xnu_major >= os_data.sequoia.value and self._dortania_internal_check() is False,
         }
 
         _cant_patch   = False
         _cant_unpatch = requirements[HardwarePatchsetValidation.SIP_ENABLED]
 
         if requirements[HardwarePatchsetValidation.SIP_ENABLED] is True:
-            current_sip_status  = hex(py_sip_xnu.SipXnu().get_sip_status().value)
-            expected_sip_status = hex(self._convert_required_sip_config_to_int(required_sip_configs))
-            sip_string = f"Validation: Booted SIP: {current_sip_status} vs expected: {expected_sip_status}"
-            index = list(requirements.keys()).index(HardwarePatchsetValidation.SIP_ENABLED)
-            requirements = dict(list(requirements.items())[:index+1] + [(sip_string, True)] + list(requirements.items())[index+1:])
-
-        # If MISSING_NETWORK_CONNECTION is enabled, see whether 'Networking: Legacy Wireless' or 'Networking: Modern Wireless' is present
-        # If so, remove other patches and set PATCHING_NOT_POSSIBLE to True
+            requirements = self._handle_sip_breakdown(requirements, required_sip_configs)
         if requirements[HardwarePatchsetValidation.MISSING_NETWORK_CONNECTION] is True:
-            if self._can_patch(requirements, ignore_keys=[HardwarePatchsetValidation.MISSING_NETWORK_CONNECTION]) is True:
-                logging.info("Network connection missing, checking whether network patches are applicable")
-                if self._already_has_networking_patches() is True:
-                    logging.info("Network patches are already applied, requiring network connection")
-                else:
-                    if "Networking: Legacy Wireless" in device_properties or "Networking: Modern Wireless" in device_properties:
-                        logging.info("Network patches are applicable, removing other patches")
-                        for key in list(device_properties.keys()):
-                            if key.startswith("Networking:"):
-                                continue
-                            device_properties.pop(key, None)
-                        requirements[HardwarePatchsetValidation.MISSING_NETWORK_CONNECTION]  = False
-                        requirements[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED]     = False
-                        requirements[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_MISSING]      = False
-                        requirements[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED] = False
-                        requirements[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_MISSING]  = False
+            requirements, device_properties = self._handle_missing_network_connection(requirements, device_properties)
 
         _cant_patch = not self._can_patch(requirements)
 
