@@ -86,7 +86,6 @@ class HardwarePatchsetValidation(StrEnum):
     FORCE_OPENGL_MISSING          = "Validation: Force OpenGL property missing"
     FORCE_COMPAT_MISSING          = "Validation: Force compat property missing"
     NVDA_DRV_MISSING              = "Validation: nvda_drv(_vrl) variable missing"
-    HELL_SPAWN_GPU_PRESENT        = "Validation: Graphics Patches unavailable for macOS Sequoia"
     PATCHING_NOT_POSSIBLE         = "Validation: Patching not possible"
     UNPATCHING_NOT_POSSIBLE       = "Validation: Unpatching not possible"
 
@@ -151,6 +150,8 @@ class HardwarePatchsetDetection:
         """
         _min_os = os_data.big_sur.value
         _max_os = os_data.sequoia.value
+        if self._dortania_internal_check() is True:
+            return False
         if self._xnu_major < _min_os or self._xnu_major > _max_os:
             return True
         return False
@@ -430,7 +431,6 @@ class HardwarePatchsetDetection:
         missing_kernel_debug_kit      = False
         requires_network_connection   = False
         has_nvidia_web_drivers        = False
-        has_metal_3802_gpu            = False
         highest_amfi_level            = amfi_detect.AmfiConfigDetectLevel.NO_CHECK
         required_sip_configs          = []
 
@@ -460,8 +460,6 @@ class HardwarePatchsetDetection:
 
             if item.name() == "Graphics: Nvidia Web Drivers":
                 has_nvidia_web_drivers = True
-            if item.hardware_variant_graphics_subclass() == HardwareVariantGraphicsSubclass.METAL_3802_GRAPHICS:
-                has_metal_3802_gpu = True
 
             for config in item.required_system_integrity_protection_configurations():
                 if config not in required_sip_configs:
@@ -499,7 +497,6 @@ class HardwarePatchsetDetection:
             HardwarePatchsetValidation.FORCE_OPENGL_MISSING:        self._validation_check_force_opengl_missing()  if has_nvidia_web_drivers is True else False,
             HardwarePatchsetValidation.FORCE_COMPAT_MISSING:        self._validation_check_force_compat_missing()  if has_nvidia_web_drivers is True else False,
             HardwarePatchsetValidation.NVDA_DRV_MISSING:            self._validation_check_nvda_drv_missing()      if has_nvidia_web_drivers is True else False,
-            HardwarePatchsetValidation.HELL_SPAWN_GPU_PRESENT:      has_metal_3802_gpu and self._xnu_major >= os_data.sequoia.value and self._dortania_internal_check() is False,
         }
 
         _cant_patch   = False
