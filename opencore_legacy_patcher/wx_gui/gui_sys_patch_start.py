@@ -460,17 +460,7 @@ class SysPatchStartFrame(wx.Frame):
             if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                 # Patches should share the same name as the plist key
                 # See sys_patch/patchsets/base.py for more info
-                patch_installed = False
-                for key in oclp_plist_data:
-                    if isinstance(oclp_plist_data[key], (bool, int)):
-                        continue
-                    if "Display Name" not in oclp_plist_data[key]:
-                        continue
-                    if oclp_plist_data[key]["Display Name"] == patch:
-                        patch_installed = True
-                        break
-
-                if patch_installed is False:
+                if patch not in oclp_plist_data:
                     logging.info(f"- Patch {patch} not installed")
                     return True
 
