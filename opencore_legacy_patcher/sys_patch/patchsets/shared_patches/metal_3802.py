@@ -117,6 +117,12 @@ class LegacyMetal3802(BaseSharedPatchSet):
                         "CIPortraitBlurV3.metallib":           "14.6.1",
                         "ci_stdlib.metallib":                  "14.6.1",
                     },
+                    "/System/Library/PrivateFrameworks/PhotosUICore.framework/Versions/A/Resources": {
+                        "default.metallib": "14.6.1",
+                    },
+                    "/System/Library/PrivateFrameworks/Tungsten.framework/Versions/A/Resources": {
+                        "default.metallib": "15.0 Beta 7",
+                    },
                     "/System/iOSSupport/System/Library/PrivateFrameworks/VFX.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
                     },
@@ -243,9 +249,6 @@ class LegacyMetal3802(BaseSharedPatchSet):
                     "/System/Library/PrivateFrameworks/NeutrinoCore.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
                     },
-                    "/System/Library/PrivateFrameworks/Tungsten.framework/Versions/A/Resources": {
-                        "default.metallib": DynamicPatchset.MetallibSupportPkg,
-                    },
                     "/System/Library/PrivateFrameworks/ImageHarmonizationKit.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
                     },
@@ -338,9 +341,6 @@ class LegacyMetal3802(BaseSharedPatchSet):
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
                     },
                     "/System/Library/PrivateFrameworks/AltruisticBodyPoseKit.framework/Versions/A/Resources": {
-                        "default.metallib": DynamicPatchset.MetallibSupportPkg,
-                    },
-                    "/System/Library/PrivateFrameworks/PhotosUICore.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
                     },
                     "/System/Library/PrivateFrameworks/MusicUI.framework/Versions/A/Resources": {

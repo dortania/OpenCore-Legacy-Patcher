@@ -445,10 +445,10 @@ class HardwarePatchsetDetection:
             # During validation, don't skip missing items
             # This is to ensure we can validate all files
             if self._validation is False:
-                if item.present() is False: # Skip if not present
+                if item.present() is False:  # Skip if not present
                     continue
-            if item.native_os() is True:    # Skip if native OS
-                continue
+                if item.native_os() is True: # Skip if native OS
+                    continue
             present_hardware.append(item)
 
         present_hardware = self._strip_incompatible_hardware(present_hardware)

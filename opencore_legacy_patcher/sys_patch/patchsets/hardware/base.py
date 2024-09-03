@@ -31,6 +31,7 @@ class HardwareVariantGraphicsSubclass(StrEnum):
     NON_METAL_GRAPHICS:   str = "Non-Metal Graphics"
     METAL_3802_GRAPHICS:  str = "Metal 3802 Graphics"
     METAL_31001_GRAPHICS: str = "Metal 31001 Graphics"
+    HEADLESS_GRAPHICS:    str = "Headless Graphics"
     NOT_APPLICABLE:       str = "N/A"
 
 
