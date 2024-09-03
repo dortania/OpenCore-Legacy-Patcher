@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: Build wxPython
-    runs-on: x86_64_monterey
+    runs-on: macos-latest
     if: github.repository_owner == 'dortania'
 
     env:
@@ -24,9 +24,13 @@ jobs:
 
       # App Signing
       ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}
+      ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_BASE64: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_BASE64 }}
+      ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_PASSWORD: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_PASSWORD }}
 
       # PKG Signing
       ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY }}
+      ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_BASE64: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_BASE64 }}
+      ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_PASSWORD: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_PASSWORD }}
 
       # Notarization
       ORG_MAC_NOTARIZATION_TEAM_ID: ${{ secrets.ORG_MAC_NOTARIZATION_TEAM_ID }}
@@ -36,36 +40,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - name: Import Application Signing Certificate
-      #   uses: dhinakg/import-codesign-certs@master
-      #   with:
-      #     p12-file-base64: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_BASE64 }}
-      #     p12-password: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_PASSWORD }}
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
 
-      # - name: Import Installer Signing Certificate
-      #   uses: dhinakg/import-codesign-certs@master
-      #   with:
-      #     p12-file-base64: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_BASE64 }}
-      #     p12-password: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_PASSWORD }}
+      - name: Import Application Signing Certificate
+        uses: dhinakg/import-codesign-certs@master
+        with:
+          p12-file-base64: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_BASE64 }}
+          p12-password: ${{ secrets.ORG_MAC_DEVELOPER_ID_APPLICATION_CERT_P12_PASSWORD }}
 
-      # - name: Install Dependencies
-      #   run: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install -r requirements.txt
+      - name: Import Installer Signing Certificate
+        uses: dhinakg/import-codesign-certs@master
+        with:
+          p12-file-base64: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_BASE64 }}
+          p12-password: ${{ secrets.ORG_MAC_DEVELOPER_ID_INSTALLER_CERT_P12_PASSWORD }}
 
-      # - name: Force Universal2 charset for Python
-      #   run: |
-      #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip uninstall -y charset_normalizer
-      #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip download --platform macosx_10_9_universal2 --only-binary=:all: charset-normalizer
-      #     /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 -m pip install charset_normalizer-*-macosx_10_9_universal2.whl
+      - name: Install Dependencies
+        run: python3 -m pip install -r requirements.txt
+
+      - name: Force Universal2 charset for Python
+        run: |
+          python3 -m pip uninstall -y charset_normalizer
+          python3 -m pip download --platform macosx_10_9_universal2 --only-binary=:all: charset-normalizer
+          python3 -m pip install charset_normalizer-*-macosx_10_9_universal2.whl
 
       - name: Prepare Assets (--prepare-assets)
         run: >
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          python3 Build-Project.command
           --run-as-individual-steps --reset-dmg-cache
           --prepare-assets
 
       - name: Prepare Application (--prepare-application)
         run: >
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          python3 Build-Project.command
           --application-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}"
           --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
           --git-branch "${{ env.branch }}" --git-commit-url "${{ env.commiturl }}" --git-commit-date "${{ env.commitdate }}"
@@ -76,7 +85,7 @@ jobs:
 
       - name: Prepare Package (--prepare-package)
         run: >
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          python3 Build-Project.command
           --installer-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_INSTALLER_IDENTITY }}"
           --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
           --run-as-individual-steps
@@ -84,7 +93,7 @@ jobs:
 
       - name: Prepare Update Shim (--prepare-shim)
         run: >
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
+          python3 Build-Project.command
           --application-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}"
           --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
           --run-as-individual-steps
