@@ -2,7 +2,8 @@
 base.py: Base class for hardware patch set detection
 """
 
-from enum import StrEnum
+from enum    import StrEnum
+from pathlib import Path
 
 from ..base import BasePatchset
 
@@ -166,3 +167,10 @@ class BaseHardware(BasePatchset):
         if self._xnu_float < self.macOS_14_4:
             return "12.5-23"
         return "12.5-23.4"
+
+
+    def _dortania_internal_check(self) -> None:
+        """
+        Determine whether to unlock Dortania Developer mode
+        """
+        return Path("~/.dortania_developer").expanduser().exists()

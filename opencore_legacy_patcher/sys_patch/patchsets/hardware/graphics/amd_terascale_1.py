@@ -98,7 +98,7 @@ class AMDTeraScale1(BaseHardware):
         if self.native_os() is True:
             return {}
 
-        if self._xnu_major not in self._constants.legacy_accel_support:
+        if self._xnu_major not in self._constants.legacy_accel_support and self._dortania_internal_check() is False:
             return {
                 **AMDTeraScale(self._xnu_major, self._xnu_minor, self._os_build).patches(),
                 **self._model_specific_patches()
