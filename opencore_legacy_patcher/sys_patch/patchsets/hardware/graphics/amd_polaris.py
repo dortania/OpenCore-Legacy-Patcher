@@ -87,7 +87,7 @@ class AMDPolaris(BaseHardware):
             if self._xnu_major < os_data.sonoma.value:
                 return {}
             return {
-                "AMD Legacy Polaris (2017)": {
+                "AMD Polaris": {
                     PatchType.INSTALL_SYSTEM_VOLUME: {
                         "/System/Library/Extensions": {
                             "AMD9500Controller.kext":  "13.5.2",
@@ -102,7 +102,7 @@ class AMDPolaris(BaseHardware):
         # Assuming non-AVX2.0 CPUs
         # Note missing framebuffers are not restored (ex. 'ATY,Berbice')
         return {
-            "AMD Legacy Polaris": {
+            "AMD Polaris": {
                 PatchType.INSTALL_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AMDRadeonX4000.kext":           self._resolve_monterey_framebuffers(),

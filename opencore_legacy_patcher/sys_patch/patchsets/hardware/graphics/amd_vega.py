@@ -73,7 +73,7 @@ class AMDVega(BaseHardware):
         Model specific patches
         """
         return {
-            "AMD Legacy Vega": {
+            "AMD Vega": {
                 PatchType.INSTALL_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AMDRadeonX5000.kext":            self._resolve_monterey_framebuffers(),
@@ -104,7 +104,7 @@ class AMDVega(BaseHardware):
             return {}
 
         return {
-            "AMD Legacy Vega Extended": {
+            "AMD Vega Extended": {
                 PatchType.INSTALL_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AMDRadeonX5000HWServices.kext": "12.5",
