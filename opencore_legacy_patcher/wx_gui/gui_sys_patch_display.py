@@ -106,7 +106,7 @@ class SysPatchDisplayFrame(wx.Frame):
         available_label.Centre(wx.HORIZONTAL)
 
 
-        can_unpatch: bool = patches[HardwarePatchsetValidation.UNPATCHING_NOT_POSSIBLE]
+        can_unpatch: bool = not patches[HardwarePatchsetValidation.UNPATCHING_NOT_POSSIBLE]
 
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
             logging.info("No applicable patches available")
