@@ -189,9 +189,11 @@ Please check the Github page for more information about this release."""
         if self._determine_if_versions_match():
             self._determine_if_boot_matches()
 
+
     def _onWebviewNav(self, event):
         url = event.GetURL()
         webbrowser.open(url)
+
 
     def _determine_if_versions_match(self):
         """
