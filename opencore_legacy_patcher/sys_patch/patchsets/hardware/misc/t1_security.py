@@ -56,7 +56,7 @@ class T1SecurityChip(BaseHardware):
             "T1 Security Chip": {
                 PatchType.INSTALL_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks/LocalAuthentication.framework/Support": {
-                        "SharedUtils.framework": f"13.6-{self._xnu_major}"  # Required for Password Authentication (SharedUtils.framework)
+                        "SharedUtils.framework": f"13.6-{self._xnu_major}",  # Required for Password Authentication (SharedUtils.framework)
                         **({ "MechanismPlugins": "15.0 Beta 4" } if self._xnu_major >= os_data.sequoia else {}), # Required to add a TouchID fingerprint
                     },
                     "/System/Library/PrivateFrameworks": {
