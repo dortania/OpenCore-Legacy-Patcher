@@ -125,6 +125,9 @@ class LegacyMetal3802(BaseSharedPatchSet):
                     "/System/Library/PrivateFrameworks/Tungsten.framework/Versions/A/Resources": {
                         "default.metallib": "15.0 Beta 7",
                     },
+                    "/System/Library/PrivateFrameworks/RenderBox.framework/Versions/A/Resources": {
+                        "default.metallib": "15.0 Beta 8",
+                    },
                     "/System/iOSSupport/System/Library/PrivateFrameworks/VFX.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
                     },
@@ -241,9 +244,6 @@ class LegacyMetal3802(BaseSharedPatchSet):
                     },
                     "/System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/Resources": {
                         "SkyLightShaders.air64.metallib": DynamicPatchset.MetallibSupportPkg,
-                    },
-                    "/System/Library/PrivateFrameworks/RenderBox.framework/Versions/A/Resources": {
-                        "default.metallib": DynamicPatchset.MetallibSupportPkg,
                     },
                     "/System/Library/PrivateFrameworks/AppleISPEmulator.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,

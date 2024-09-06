@@ -141,6 +141,15 @@ class PatcherValidation:
                                     continue
                             except TypeError:
                                 pass
+
+                            # Technically there is nothing wrong with using a .framework with OVERWRITE, but it's a good indicator of a mistake
+                            if install_type in [PatchType.OVERWRITE_SYSTEM_VOLUME, PatchType.OVERWRITE_DATA_VOLUME]:
+                                if install_file.endswith(".framework"):
+                                    raise Exception(f"{install_file} used with {install_type}, are you certain this is correct?")
+                            elif install_type in [PatchType.MERGE_SYSTEM_VOLUME, PatchType.MERGE_DATA_VOLUME]:
+                                if not install_file.endswith(".framework"):
+                                    raise Exception(f"{install_file} used with {install_type}, are you certain this is correct?")
+
                             source_file = str(self.constants.payload_local_binaries_root_path) + "/" + patchset[patch_core][install_type][install_directory][install_file] + install_directory + "/" + install_file
                             if not Path(source_file).exists():
                                 logging.info(f"File not found: {source_file}")
