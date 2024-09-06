@@ -77,12 +77,12 @@ class SysPatchHelpers:
                 f.write(data)
 
 
-    def generate_patchset_plist(self, patchset: dict, file_name: str, kdk_used: Path):
+    def generate_patchset_plist(self, patchset: dict, file_name: str, kdk_used: Path, metallib_used: Path):
         """
         Generate patchset file for user reference
 
         Parameters:
-            patchset (dict): Dictionary of patchset, see detect.py and sys_patch_dict.py
+            patchset (dict): Dictionary of patchset, sys_patch/patchsets
             file_name (str): Name of the file to write to
             kdk_used (Path): Path to the KDK used, if any
 
@@ -98,12 +98,17 @@ class SysPatchHelpers:
         if kdk_used:
             kdk_string = kdk_used
 
+        metallib_used_string = "Not applicable"
+        if metallib_used:
+            metallib_used_string = metallib_used
+
         data = {
             "OpenCore Legacy Patcher": f"v{self.constants.patcher_version}",
             "PatcherSupportPkg": f"v{self.constants.patcher_support_pkg_version}",
             "Time Patched": f"{datetime.now().strftime('%B %d, %Y @ %H:%M:%S')}",
             "Commit URL": f"{self.constants.commit_info[2]}",
             "Kernel Debug Kit Used": f"{kdk_string}",
+            "Metal Library Used": f"{metallib_used_string}",
             "OS Version": f"{self.constants.detected_os}.{self.constants.detected_os_minor} ({self.constants.detected_os_build})",
             "Custom Signature": bool(Path(self.constants.payload_local_binaries_root_path / ".signed").exists()),
         }
@@ -210,6 +215,10 @@ class SysPatchHelpers:
         elif self.constants.detected_os == os_data.os_data.sonoma:
             if self.constants.detected_os_minor < 2: # 14.2 Beta 2
                 return
+            BASE_VERSION = "32023"
+            GPU_VERSION = f"{BASE_VERSION}.26"
+        else:
+            # Fall back for newer versions
             BASE_VERSION = "32023"
             GPU_VERSION = f"{BASE_VERSION}.26"
 

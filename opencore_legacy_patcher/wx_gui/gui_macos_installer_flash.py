@@ -27,6 +27,7 @@ from ..support import (
     utilities,
     network_handler,
     kdk_handler,
+    metallib_handler,
     subprocess_wrapper
 )
 
@@ -463,6 +464,8 @@ class macOSInstallerFlashFrame(wx.Frame):
         subprocess.run(["/bin/mkdir", "-p", f"{path}/Library/Packages/"])
         subprocess.run(generate_copy_arguments(self.constants.installer_pkg_path, f"{path}/Library/Packages/"))
 
+        # Chainload KDK and Metallib
+        self._chainload_metallib(os_version["ProductBuildVersion"], os_version["ProductVersion"], Path(path + "/Library/Packages/"))
         self._kdk_chainload(os_version["ProductBuildVersion"], os_version["ProductVersion"], Path(path + "/Library/Packages/"))
 
 
@@ -542,6 +545,51 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         logging.info("Removing KDK Disk Image")
         kdk_dmg_path.unlink()
+
+
+    def _chainload_metallib(self, build: str, version: str, download_dir: str):
+        """
+        Download the correct Metallib to be chainloaded in the macOS installer
+        """
+
+        metallib_pkg_path = Path(download_dir) / "MetallibSupportPkg.pkg"
+
+        if metallib_pkg_path.exists():
+            metallib_pkg_path.unlink()
+
+        logging.info("Initiating Metallib download")
+        logging.info(f"- Build: {build}")
+        logging.info(f"- Version: {version}")
+        logging.info(f"- Working Directory: {download_dir}")
+
+        metallib_obj = metallib_handler.MetalLibraryObject(self.constants, build, version, ignore_installed=True)
+        if metallib_obj.success is False:
+            logging.info("Failed to retrieve Metallib")
+            logging.info(metallib_obj.error_msg)
+            return
+
+        metallib_download_obj = metallib_obj.retrieve_download(override_path=metallib_pkg_path)
+        if metallib_download_obj is None:
+            logging.info("Failed to retrieve Metallib")
+            logging.info(metallib_obj.error_msg)
+
+        # Check remaining disk space before downloading
+        space = utilities.get_free_space(download_dir)
+        size = 100 * 1024 * 1024
+        if space < size:
+            logging.info("Not enough disk space to download and install Metallib")
+            return
+
+        metallib_download_obj.download(spawn_thread=False)
+        if metallib_download_obj.download_complete is False:
+            logging.info("Failed to download Metallib")
+            logging.info(metallib_download_obj.error_msg)
+            return
+
+        if not metallib_pkg_path.exists():
+            logging.info(f"Metallib missing: {metallib_pkg_path}")
+            return
+
 
     def _validate_installer_pkg(self, disk: str) -> bool:
         logging.info("Validating installer pkg")

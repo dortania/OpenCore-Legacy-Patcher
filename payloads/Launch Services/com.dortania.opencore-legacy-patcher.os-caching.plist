@@ -7,7 +7,7 @@
 		<string>com.dortania.opencore-legacy-patcher</string>
 	</array>
 	<key>Label</key>
-	<string>com.dortania.opencore-legacy-patcher.rsr-monitor</string>
+	<string>com.dortania.opencore-legacy-patcher.os-caching</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>/Library/Application Support/Dortania/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher</string>

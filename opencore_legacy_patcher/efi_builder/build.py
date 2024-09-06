@@ -67,6 +67,9 @@ class BuildOpenCore:
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("Lilu.kext", self.constants.lilu_version, self.constants.lilu_path)
         self.config["Kernel"]["Quirks"]["DisableLinkeditJettison"] = True
 
+        # macOS Sequoia support for Lilu plugins
+        self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -lilubetaall"
+
         # Call support functions
         for function in [
             firmware.BuildFirmware,

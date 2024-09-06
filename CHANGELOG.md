@@ -1,6 +1,6 @@
 # OpenCore Legacy Patcher changelog
 
-## 1.6.0
+## 2.0.0
 - Set `AssociatedBundleIdentifiers` property in launch services as an array
 - Move to auto-generated pre/postinstall scripts for PKGs
   - Streamlines PKG creation process, ensuring Install and AutoPKG scripts are always in sync
@@ -17,8 +17,39 @@
   - Only affects building EFI from another machine
 - Resolve AMD Navi MXM GPU detection for modded iMac9,x-12,x
   - Thanks @Ausdauersportler for the patch!
+- Implement early macOS Sequoia support:
+  - Supporting Macs with Metal-based graphics:
+    - MacBook8,1 - 10,1
+    - MacBookAir5,x - 7,x
+    - MacBookPro9,x - 14,x
+    - Macmini6,x - 7,1
+    - iMac13,x - 18,x
+      - iMac10,1 - 12,x included if Metal GPU installed.
+    - MacPro3,1 - 6,1
+      - MacPro3,1 - 5,1 require Metal GPU installed.
+      - MacPro3,1 can only boot with 4 cores max currently
+    - Xserve2,1 - 3,1
+      - Requires Metal GPU installed.
+      - Xserve2,1 can only boot with 4 cores max currently
+  - Excludes the newly dropped MacBookAir8,x series.
+    - No estimate can be given when support will be added.
+- Implement new MetallibSupportPkg system to support macOS Sequoia on Metal 3802-based GPUs.
+  - See repository for more details: [MetallibSupportPkg](https://github.com/dortania/MetallibSupportPkg).
+- Implement new Patchset Detection architecture.
+- Implement new kernel cache building architecture.
+- Resolve "Label" error in com.dortania.opencore-legacy-patcher.os-caching.plist.
+- Add macOS Sequoia icons to boot picker and GUI.
 - Increment Binaries:
   - PatcherSupportPkg 1.6.3 - release
+  - OpenCorePkg 1.0.1 - release
+  - Lilu 1.6.8 - release
+  - WhateverGreen 1.6.7 - release
+  - RestrictEvents 1.1.4 - release
+  - FeatureUnlock 1.1.6 - release
+  - DebugEnhancer 1.0.9 - release
+  - CPUFriend 1.2.8 - release
+  - AutoPkgInstaller 1.0.4 - release
+  - CryptexFixup 1.0.3 - release
 
 ## 1.5.0
 - Restructure project directories

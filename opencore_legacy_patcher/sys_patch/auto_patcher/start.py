@@ -12,7 +12,6 @@ import markdown2
 import subprocess
 import webbrowser
 
-from ..detections import DetectRootPatch
 
 from ... import constants
 
@@ -27,6 +26,10 @@ from ...support import (
     updates,
     global_settings,
     network_handler,
+)
+from ..patchsets import (
+    HardwarePatchsetDetection,
+    HardwarePatchsetValidation
 )
 
 
@@ -142,12 +145,12 @@ Please check the Github page for more information about this release."""
 
         if utilities.check_seal() is True:
             logging.info("- Detected Snapshot seal intact, detecting patches")
-            patches = DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            patches = HardwarePatchsetDetection(self.constants).device_properties
             if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
                 patches = {}
             if patches:
                 logging.info("- Detected applicable patches, determining whether possible to patch")
-                if patches["Validation: Patching Possible"] is False:
+                if patches[HardwarePatchsetValidation.PATCHING_NOT_POSSIBLE] is True:
                     logging.info("- Cannot run patching")
                     return
 
@@ -186,9 +189,11 @@ Please check the Github page for more information about this release."""
         if self._determine_if_versions_match():
             self._determine_if_boot_matches()
 
+
     def _onWebviewNav(self, event):
         url = event.GetURL()
         webbrowser.open(url)
+
 
     def _determine_if_versions_match(self):
         """

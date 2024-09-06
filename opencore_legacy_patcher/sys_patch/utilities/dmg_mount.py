@@ -81,6 +81,8 @@ class PatcherSupportPkgMount:
                 if i == 2:
                     self._display_too_many_attempts()
                     return False
+                continue
+            break
 
         logging.info("- Mounted DortaniaInternal resources")
         return self._merge_dortania_internal_resources()
@@ -114,7 +116,7 @@ class PatcherSupportPkgMount:
                 return Path("~/.dortania_developer_key").expanduser().read_text().strip()
 
         password = ""
-        msg = "Welcome to the DortaniaInternal Program, please provided the decryption key to access internal resources. Press cancel to skip."
+        msg = "Welcome to the DortaniaInternal Program, please provide the decryption key to access internal resources. Press cancel to skip."
         if attempt > 0:
             msg = f"Decryption failed, please try again. {2 - attempt} attempts remaining. "
 

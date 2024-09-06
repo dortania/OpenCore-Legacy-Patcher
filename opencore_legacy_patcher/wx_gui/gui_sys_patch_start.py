@@ -16,8 +16,11 @@ from pathlib import Path
 from .. import constants
 
 from ..datasets import os_data
-from ..support import kdk_handler
 
+from ..support import (
+    kdk_handler,
+    metallib_handler
+)
 from ..sys_patch import (
     sys_patch,
 )
@@ -27,7 +30,7 @@ from ..wx_gui import (
     gui_download,
 )
 
-from ..sys_patch.detections import DetectRootPatch
+from ..sys_patch.patchsets import HardwarePatchsetDetection, HardwarePatchsetSettings
 
 
 
@@ -51,7 +54,7 @@ class SysPatchStartFrame(wx.Frame):
         self.Centre()
 
         if self.patches == {}:
-            self.patches = DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            self.patches = HardwarePatchsetDetection(constants=self.constants).device_properties
 
 
     def _kdk_download(self, frame: wx.Frame = None) -> bool:
@@ -130,6 +133,95 @@ class SysPatchStartFrame(wx.Frame):
         progress_bar.SetValue(100)
 
         logging.info("KDK download complete")
+
+        for child in frame.GetChildren():
+            child.Destroy()
+
+        return True
+
+
+    def _metallib_download(self, frame: wx.Frame = None) -> bool:
+        frame = self if not frame else frame
+
+        logging.info("MetallibSupportPkg missing, generating Metallib download frame")
+
+        header = wx.StaticText(frame, label="Downloading Metal Libraries", pos=(-1,5))
+        header.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
+        header.Centre(wx.HORIZONTAL)
+
+        subheader = wx.StaticText(frame, label="Fetching MetallibSupportPkg database...", pos=(-1, header.GetPosition()[1] + header.GetSize()[1] + 5))
+        subheader.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+        subheader.Centre(wx.HORIZONTAL)
+
+        progress_bar = wx.Gauge(frame, range=100, pos=(-1, subheader.GetPosition()[1] + subheader.GetSize()[1] + 5), size=(250, 20))
+        progress_bar.Centre(wx.HORIZONTAL)
+
+        progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
+        progress_bar_animation.start_pulse()
+
+        # Set size of frame
+        frame.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 35))
+        frame.Show()
+
+        self.metallib_obj: metallib_handler.MetalLibraryObject = None
+        def _metallib_thread_spawn():
+            self.metallib_obj = metallib_handler.MetalLibraryObject(self.constants, self.constants.detected_os_build, self.constants.detected_os_version)
+
+        metallib_thread = threading.Thread(target=_metallib_thread_spawn)
+        metallib_thread.start()
+
+        while metallib_thread.is_alive():
+            wx.Yield()
+
+        if self.metallib_obj.success is False:
+            progress_bar_animation.stop_pulse()
+            progress_bar.SetValue(0)
+            wx.MessageBox(f"Metallib download failed: {self.metallib_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
+            return False
+
+        self.metallib_download_obj = self.metallib_obj.retrieve_download()
+        if not self.metallib_download_obj:
+            # Metallib is already downloaded
+            return True
+
+        gui_download.DownloadFrame(
+            self,
+            title=self.title,
+            global_constants=self.constants,
+            download_obj=self.metallib_download_obj,
+            item_name=f"Metallib Build {self.metallib_obj.metallib_url_build}"
+        )
+        if self.metallib_download_obj.download_complete is False:
+            return False
+
+        logging.info("Metallib download complete, installing Metallib PKG")
+
+        header.SetLabel(f"Installing Metallib: {self.metallib_obj.metallib_url_build}")
+        header.Centre(wx.HORIZONTAL)
+
+        subheader.SetLabel("Installing MetallibSupportPkg PKG...")
+        subheader.Centre(wx.HORIZONTAL)
+
+        self.result = False
+        def _install_metallib():
+            self.result = self.metallib_obj.install_metallib()
+
+        install_thread = threading.Thread(target=_install_metallib)
+        install_thread.start()
+
+        while install_thread.is_alive():
+            wx.Yield()
+
+        if self.result is False:
+            progress_bar_animation.stop_pulse()
+            progress_bar.SetValue(0)
+            wx.MessageBox(f"Metallib installation failed: {self.metallib_obj.error_msg}", "Error", wx.OK | wx.ICON_ERROR)
+            return False
+
+        progress_bar_animation.stop_pulse()
+        progress_bar.SetValue(100)
+
+        logging.info("Metallib installation complete")
 
         for child in frame.GetChildren():
             child.Destroy()
@@ -223,8 +315,12 @@ class SysPatchStartFrame(wx.Frame):
         while gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
             wx.Yield()
 
-        if self.patches["Settings: Kernel Debug Kit missing"] is True:
+        if self.patches[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] is True:
             if self._kdk_download(self) is False:
+                sys.exit(1)
+
+        if self.patches[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED] is True:
+            if self._metallib_download(self) is False:
                 sys.exit(1)
 
         self._generate_modal(self.patches, "Root Patching")
@@ -363,18 +459,8 @@ class SysPatchStartFrame(wx.Frame):
         for patch in patches:
             if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                 # Patches should share the same name as the plist key
-                # See sys_patch_dict.py for more info
-                patch_installed = False
-                for key in oclp_plist_data:
-                    if isinstance(oclp_plist_data[key], (bool, int)):
-                        continue
-                    if "Display Name" not in oclp_plist_data[key]:
-                        continue
-                    if oclp_plist_data[key]["Display Name"] == patch:
-                        patch_installed = True
-                        break
-
-                if patch_installed is False:
+                # See sys_patch/patchsets/base.py for more info
+                if patch.split(": ")[1] not in oclp_plist_data:
                     logging.info(f"- Patch {patch} not installed")
                     return True
 

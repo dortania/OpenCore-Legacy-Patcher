@@ -11,7 +11,7 @@ from pathlib import Path
 
 from .. import constants
 
-from ..sys_patch.detections import DetectRootPatch
+from ..sys_patch.patchsets import HardwarePatchsetDetection, HardwarePatchsetValidation
 
 from ..wx_gui import (
     gui_main_menu,
@@ -86,7 +86,7 @@ class SysPatchDisplayFrame(wx.Frame):
         patches: dict = {}
         def _fetch_patches(self) -> None:
             nonlocal patches
-            patches = DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            patches = HardwarePatchsetDetection(constants=self.constants).device_properties
 
         thread = threading.Thread(target=_fetch_patches, args=(self,))
         thread.start()
@@ -106,7 +106,7 @@ class SysPatchDisplayFrame(wx.Frame):
         available_label.Centre(wx.HORIZONTAL)
 
 
-        can_unpatch: bool = patches["Validation: Unpatching Possible"]
+        can_unpatch: bool = not patches[HardwarePatchsetValidation.UNPATCHING_NOT_POSSIBLE]
 
         if not any(not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True for patch in patches):
             logging.info("No applicable patches available")
@@ -152,7 +152,7 @@ class SysPatchDisplayFrame(wx.Frame):
                     patch_label.SetLabel(patch_label.GetLabel().replace("-", ""))
                     patch_label.Centre(wx.HORIZONTAL)
 
-            if patches["Validation: Patching Possible"] is False:
+            if patches[HardwarePatchsetValidation.PATCHING_NOT_POSSIBLE] is True:
                 # Cannot patch due to the following reasons:
                 patch_label = wx.StaticText(frame, label="Cannot patch due to the following reasons:", pos=(-1, patch_label.GetPosition()[1] + 25))
                 patch_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_BOLD))
@@ -164,7 +164,7 @@ class SysPatchDisplayFrame(wx.Frame):
                         continue
                     if patches[patch] is False:
                         continue
-                    if patch == "Validation: Unpatching Possible":
+                    if patch in [HardwarePatchsetValidation.PATCHING_NOT_POSSIBLE, HardwarePatchsetValidation.UNPATCHING_NOT_POSSIBLE]:
                         continue
 
                     if len(patch) > len(longest_patch):
@@ -180,7 +180,7 @@ class SysPatchDisplayFrame(wx.Frame):
                         continue
                     if patches[patch] is False:
                         continue
-                    if patch == "Validation: Unpatching Possible":
+                    if patch in [HardwarePatchsetValidation.PATCHING_NOT_POSSIBLE, HardwarePatchsetValidation.UNPATCHING_NOT_POSSIBLE]:
                         continue
 
                     patch_label = wx.StaticText(frame, label=f"- {patch.split('Validation: ')[1]}", pos=(anchor.GetPosition()[0], anchor.GetPosition()[1] + i))
@@ -231,7 +231,7 @@ class SysPatchDisplayFrame(wx.Frame):
             start_button.Disable()
         else:
             self.available_patches = True
-            if patches["Validation: Patching Possible"] is False:
+            if patches[HardwarePatchsetValidation.PATCHING_NOT_POSSIBLE] is True:
                 start_button.Disable()
             elif no_new_patches is False:
                 start_button.SetDefault()
@@ -320,18 +320,8 @@ class SysPatchDisplayFrame(wx.Frame):
         for patch in patches:
             if (not patch.startswith("Settings") and not patch.startswith("Validation") and patches[patch] is True):
                 # Patches should share the same name as the plist key
-                # See sys_patch_dict.py for more info
-                patch_installed = False
-                for key in oclp_plist_data:
-                    if isinstance(oclp_plist_data[key], (bool, int)):
-                        continue
-                    if "Display Name" not in oclp_plist_data[key]:
-                        continue
-                    if oclp_plist_data[key]["Display Name"] == patch:
-                        patch_installed = True
-                        break
-
-                if patch_installed is False:
+                # See sys_patch/patchsets/base.py for more info
+                if patch.split(": ")[1] not in oclp_plist_data:
                     logging.info(f"- Patch {patch} not installed")
                     return True
 

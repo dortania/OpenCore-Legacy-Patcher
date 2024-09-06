@@ -18,7 +18,8 @@ from ..detections import device_probe
 from ..datasets import (
     model_array,
     smbios_data,
-    cpu_data
+    cpu_data,
+    os_data
 )
 
 
@@ -62,6 +63,12 @@ xw
         """
 
         if self.constants.fu_status is False:
+            return
+
+        if not self.model in smbios_data.smbios_dictionary:
+            return
+
+        if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] >= os_data.os_data.sonoma:
             return
 
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
@@ -199,6 +206,7 @@ xw
                 logging.info("- Enabling SPI-based top case support")
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleHSSPISupport.kext", self.constants.apple_spi_version, self.constants.apple_spi_path)
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleHSSPIHIDDriver.kext", self.constants.apple_spi_hid_version, self.constants.apple_spi_hid_path)
+                support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleTopCaseInjector.kext", self.constants.topcase_inj_version, self.constants.top_case_inj_path)
 
 
         #On-device probing
@@ -298,7 +306,7 @@ xw
         # And MacPro4,1, MacPro5,1 and Xserve3,1 are the only post-Penryn Macs that lack an internal USB hub
         # - Ref: https://techcommunity.microsoft.com/t5/microsoft-usb-blog/reasons-to-avoid-companion-controllers/ba-p/270710
         #
-        # To be paired for sys_patch_dict.py's 'Legacy USB 1.1' patchset
+        # To be paired for usb11.py's 'Legacy USB 1.1' patchset
         #
         # Note: With macOS 14.1, injection of these kexts causes a panic.
         #       To avoid this, a MaxKernel is configured with XNU 23.0.0 (macOS 14.0).
@@ -381,3 +389,4 @@ xw
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleSSE.kext", self.constants.t1_sse_version, self.constants.t1_sse_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleKeyStore.kext", self.constants.t1_key_store_version, self.constants.t1_key_store_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleCredentialManager.kext", self.constants.t1_credential_version, self.constants.t1_credential_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("KernelRelayHost.kext", self.constants.kernel_relay_version, self.constants.kernel_relay_path)

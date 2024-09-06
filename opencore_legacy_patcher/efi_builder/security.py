@@ -12,6 +12,11 @@ from .. import constants
 from ..support import utilities
 from ..detections import device_probe
 
+from ..datasets import (
+    smbios_data,
+    os_data
+)
+
 
 class BuildSecurity:
     """
@@ -83,5 +88,6 @@ class BuildSecurity:
             logging.info("- Disabling SecureBootModel")
             self.config["Misc"]["Security"]["SecureBootModel"] = "Disabled"
 
-        logging.info("- Enabling AMFIPass")
-        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AMFIPass.kext", self.constants.amfipass_version, self.constants.amfipass_path)
+        if smbios_data.smbios_dictionary[self.model]["Max OS Supported"] < os_data.os_data.sonoma:
+            logging.info("- Enabling AMFIPass")
+            support.BuildSupport(self.model, self.constants, self.config).enable_kext("AMFIPass.kext", self.constants.amfipass_version, self.constants.amfipass_path)

@@ -106,6 +106,7 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
     * USB Top Case probing
     * Developer root patching
   * Vaulting implementation
+  * macOS 15 3802 Helios Research
   * UEFI bootx64.efi research
   * universal2 build research
   * Various documentation contributions

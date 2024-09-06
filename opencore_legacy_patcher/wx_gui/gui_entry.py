@@ -12,7 +12,7 @@ from Cocoa import NSApp, NSApplication
 
 from .. import constants
 
-from ..sys_patch.detections import DetectRootPatch
+from ..sys_patch.patchsets import HardwarePatchsetDetection
 
 from ..wx_gui import (
     gui_cache_os_update,
@@ -64,7 +64,7 @@ class EntryPoint:
 
         if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv or start_patching is True :
             entry = gui_sys_patch_start.SysPatchStartFrame
-            patches = DetectRootPatch(self.constants.computer.real_model, self.constants).detect_patch_set()
+            patches = HardwarePatchsetDetection(constants=self.constants).device_properties
 
         logging.info(f"Entry point set: {entry.__name__}")
 

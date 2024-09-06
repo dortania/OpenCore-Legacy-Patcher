@@ -2,6 +2,7 @@
 validation.py: Validation class for the patcher
 """
 
+import atexit
 import logging
 import subprocess
 
@@ -18,8 +19,12 @@ from ..support import subprocess_wrapper
 from ..datasets import (
     example_data,
     model_array,
-    sys_patch_dict,
     os_data
+)
+from ..sys_patch.patchsets import (
+    HardwarePatchsetDetection,
+    PatchType,
+    DynamicPatchset
 )
 
 
@@ -119,48 +124,55 @@ class PatcherValidation:
             minor_kernel (int): Minor kernel version
         """
 
-        patchset = sys_patch_dict.SystemPatchDictionary(major_kernel, minor_kernel, self.constants.legacy_accel_support, self.constants.detected_os_version).patchset_dict
-        host_os_float = float(f"{major_kernel}.{minor_kernel}")
+        patch_type_merge_exempt     = ["MechanismPlugins"]
+        patch_type_overwrite_exempt = []
 
-        for patch_subject in patchset:
-            for patch_core in patchset[patch_subject]:
-                patch_os_min_float = float(f'{patchset[patch_subject][patch_core]["OS Support"]["Minimum OS Support"]["OS Major"]}.{patchset[patch_subject][patch_core]["OS Support"]["Minimum OS Support"]["OS Minor"]}')
-                patch_os_max_float = float(f'{patchset[patch_subject][patch_core]["OS Support"]["Maximum OS Support"]["OS Major"]}.{patchset[patch_subject][patch_core]["OS Support"]["Maximum OS Support"]["OS Minor"]}')
-                if (host_os_float < patch_os_min_float or host_os_float > patch_os_max_float):
-                    continue
-                for install_type in ["Install", "Install Non-Root"]:
-                    if install_type in patchset[patch_subject][patch_core]:
-                        for install_directory in patchset[patch_subject][patch_core][install_type]:
-                            for install_file in patchset[patch_subject][patch_core][install_type][install_directory]:
-                                source_file = str(self.constants.payload_local_binaries_root_path) + "/" + patchset[patch_subject][patch_core][install_type][install_directory][install_file] + install_directory + "/" + install_file
-                                if not Path(source_file).exists():
-                                    logging.info(f"File not found: {source_file}")
-                                    raise Exception(f"Failed to find {source_file}")
-                                if self.verify_unused_files is True:
+        patchset = HardwarePatchsetDetection(self.constants, xnu_major=major_kernel, xnu_minor=minor_kernel, validation=True).patches
+
+        for patch_core in patchset:
+            # Check if any unknown PathType is present
+            for install_type in patchset[patch_core]:
+                if install_type not in PatchType:
+                    raise Exception(f"Unknown PatchType: {install_type}")
+
+            for install_type in [PatchType.OVERWRITE_SYSTEM_VOLUME, PatchType.OVERWRITE_DATA_VOLUME, PatchType.MERGE_SYSTEM_VOLUME, PatchType.MERGE_DATA_VOLUME]:
+                if install_type in patchset[patch_core]:
+                    for install_directory in patchset[patch_core][install_type]:
+                        for install_file in patchset[patch_core][install_type][install_directory]:
+                            try:
+                                if patchset[patch_core][install_type][install_directory][install_file] in DynamicPatchset:
+                                    continue
+                            except TypeError:
+                                pass
+
+                            # Technically there is nothing wrong with using a .framework with OVERWRITE, but it's a good indicator of a mistake
+                            if install_type in [PatchType.OVERWRITE_SYSTEM_VOLUME, PatchType.OVERWRITE_DATA_VOLUME]:
+                                if install_file.endswith(".framework") and install_file not in patch_type_overwrite_exempt:
+                                    raise Exception(f"{install_file} used with {install_type}, are you certain this is correct?")
+                            elif install_type in [PatchType.MERGE_SYSTEM_VOLUME, PatchType.MERGE_DATA_VOLUME]:
+                                if not install_file.endswith(".framework") and install_file not in patch_type_merge_exempt:
+                                    raise Exception(f"{install_file} used with {install_type}, are you certain this is correct?")
+
+                            source_file = str(self.constants.payload_local_binaries_root_path) + "/" + patchset[patch_core][install_type][install_directory][install_file] + install_directory + "/" + install_file
+                            if not Path(source_file).exists():
+                                logging.info(f"File not found: {source_file}")
+                                raise Exception(f"Failed to find {source_file}")
+                            if self.verify_unused_files is True:
+                                if source_file not in self.active_patchset_files:
                                     self.active_patchset_files.append(source_file)
 
         logging.info(f"Validating against Darwin {major_kernel}.{minor_kernel}")
-        if not sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None):
+        if not sys_patch_helpers.SysPatchHelpers(self.constants).generate_patchset_plist(patchset, f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist", None, None):
             raise Exception("Failed to generate patchset plist")
 
         # Remove the plist file after validation
         Path(self.constants.payload_path / f"OpenCore-Legacy-Patcher-{major_kernel}.{minor_kernel}.plist").unlink()
 
 
-    def _validate_sys_patch(self) -> None:
+    def _unmount_dmg(self) -> None:
         """
-        Validates sys_patch modules
+        Unmounts the Universal-Binaries.dmg
         """
-
-        if not Path(self.constants.payload_local_binaries_root_path_dmg).exists():
-            dl_obj = network_handler.DownloadObject(f"https://github.com/dortania/PatcherSupportPkg/releases/download/{self.constants.patcher_support_pkg_version}/Universal-Binaries.dmg", self.constants.payload_local_binaries_root_path_dmg)
-            dl_obj.download(spawn_thread=False)
-            if dl_obj.download_complete is False:
-                logging.info("Failed to download Universal-Binaries.dmg")
-                raise Exception("Failed to download Universal-Binaries.dmg")
-
-        logging.info("Validating Root Patch File integrity")
-
         if Path(self.constants.payload_path / Path("Universal-Binaries_overlay")).exists():
             subprocess.run(
                 [
@@ -183,6 +195,23 @@ class PatcherValidation:
 
                 raise Exception("Failed to unmount Universal-Binaries.dmg")
 
+
+    def _validate_sys_patch(self) -> None:
+        """
+        Validates sys_patch modules
+        """
+
+        if not Path(self.constants.payload_local_binaries_root_path_dmg).exists():
+            dl_obj = network_handler.DownloadObject(f"https://github.com/dortania/PatcherSupportPkg/releases/download/{self.constants.patcher_support_pkg_version}/Universal-Binaries.dmg", self.constants.payload_local_binaries_root_path_dmg)
+            dl_obj.download(spawn_thread=False)
+            if dl_obj.download_complete is False:
+                logging.info("Failed to download Universal-Binaries.dmg")
+                raise Exception("Failed to download Universal-Binaries.dmg")
+
+        logging.info("Validating Root Patch File integrity")
+
+        self._unmount_dmg()
+
         output = subprocess.run(
             [
                 "/usr/bin/hdiutil", "attach", "-noverify", f"{self.constants.payload_local_binaries_root_path_dmg}",
@@ -202,8 +231,9 @@ class PatcherValidation:
 
         logging.info("Mounted Universal-Binaries.dmg")
 
+        atexit.register(self._unmount_dmg)
 
-        for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura, os_data.os_data.sonoma]:
+        for supported_os in [os_data.os_data.big_sur, os_data.os_data.monterey, os_data.os_data.ventura, os_data.os_data.sonoma, os_data.os_data.sequoia]:
             for i in range(0, 10):
                 self._validate_root_patch_files(supported_os, i)
 
