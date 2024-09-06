@@ -21,18 +21,6 @@ class IntelHaswell(BaseHardware):
     def __init__(self, xnu_major, xnu_minor, os_build, global_constants: Constants) -> None:
         super().__init__(xnu_major, xnu_minor, os_build, global_constants)
 
-        self._install_framebuffer_only = False
-
-        # Special case for iMac15,1
-        if self._computer.real_model.startswith("iMac") and self._xnu_major >= os_data.sequoia.value and self._is_gpu_architecture_present(
-            [
-                device_probe.AMD.Archs.Legacy_GCN_7000,
-                device_probe.AMD.Archs.Legacy_GCN_8000,
-                device_probe.AMD.Archs.Legacy_GCN_9000,
-            ]
-        ):
-            self._install_framebuffer_only = True
-
 
     def name(self) -> str:
         """
@@ -70,8 +58,6 @@ class IntelHaswell(BaseHardware):
         """
         Type of hardware variant subclass
         """
-        if self._install_framebuffer_only is True:
-            return HardwareVariantGraphicsSubclass.HEADLESS_GRAPHICS
         return HardwareVariantGraphicsSubclass.METAL_3802_GRAPHICS
 
 
@@ -124,9 +110,6 @@ class IntelHaswell(BaseHardware):
         """
         if self.native_os() is True:
             return {}
-
-        if self._install_framebuffer_only is True:
-            return {**self._framebuffer_only_patches()}
 
         return {
             **LegacyMetal3802(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
