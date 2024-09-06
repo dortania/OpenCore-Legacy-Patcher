@@ -73,7 +73,7 @@ class IntelIronLake(BaseHardware):
         """
         return {
             "Intel Iron Lake": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleIntelHDGraphics.kext":           "10.13.6",
                         "AppleIntelHDGraphicsFB.kext":         "10.13.6",

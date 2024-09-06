@@ -32,7 +32,12 @@ class LegacyMetal3802(BaseSharedPatchSet):
 
         return {
             "Metal 3802 Common": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
+                    "/System/Library/Sandbox/Profiles": {
+                        "com.apple.mtlcompilerservice.sb": "12.5-3802",
+                    }
+                },
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
                         "Metal.framework": "12.5-3802-22" if self._xnu_major < os_data.sonoma else "12.5-3802-23",
                     },
@@ -40,9 +45,6 @@ class LegacyMetal3802(BaseSharedPatchSet):
                         "MTLCompiler.framework": "12.7.6-3802",
                         "GPUCompiler.framework": "12.7.6-3802",
                     },
-                    "/System/Library/Sandbox/Profiles": {
-                        "com.apple.mtlcompilerservice.sb": "12.5-3802",
-                    }
                 }
             }
         }
@@ -58,7 +60,7 @@ class LegacyMetal3802(BaseSharedPatchSet):
 
         return {
             "Metal 3802 Common Extended": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
                         "Metal.framework": f"13.2.1-{self._xnu_major}",
                         **({  "CoreImage.framework": "14.0 Beta 3" if self._xnu_major < os_data.sequoia.value else "14.0 Beta 3-24"} if self._xnu_major >= os_data.sonoma.value else {}),
@@ -91,7 +93,7 @@ class LegacyMetal3802(BaseSharedPatchSet):
 
         return {
             "Metal 3802 .metallibs": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSCore.framework/Versions/A/Resources": {
                         "default.metallib": "14.6.1",
                     },

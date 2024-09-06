@@ -31,7 +31,7 @@ class AMDOpenCL(BaseSharedPatchSet):
 
         return {
             "AMD OpenCL": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
                         "OpenCL.framework": "12.5 non-AVX2.0",
                         "OpenGL.framework": "12.5 non-AVX2.0",

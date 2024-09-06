@@ -62,11 +62,16 @@ class ModernWireless(BaseHardware):
 
         return {
             "Modern Wireless": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/usr/libexec": {
                         "airportd": "13.6.5",
                         "wifip2pd": "13.6.5",
                     },
+                    "/System/Library/CoreServices": {
+                        **({ "WiFiAgent.app": "14.5" } if self._xnu_major >= os_data.sequoia else {}),
+                    },
+                },
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
                         "CoreWLAN.framework": f"13.6.5-{self._xnu_major}",
                     },
@@ -75,9 +80,6 @@ class ModernWireless(BaseHardware):
                         "IO80211.framework":        f"13.6.5-{self._xnu_major}",
                         "WiFiPeerToPeer.framework": f"13.6.5-{self._xnu_major}",
                     },
-                    "/System/Library/CoreServices": {
-                        **({ "WiFiAgent.app": "14.5" } if self._xnu_major >= os_data.sequoia else {}),
-                    },
-                },
+                }
             },
         }

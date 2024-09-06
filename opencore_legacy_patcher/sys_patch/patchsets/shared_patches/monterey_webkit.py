@@ -33,12 +33,12 @@ class MontereyWebKit(BaseSharedPatchSet):
 
         return {
             "WebKit Monterey Common": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
                         "WebKit.framework":  "11.6"
                     },
                 },
-                PatchType.INSTALL_DATA_VOLUME: {
+                PatchType.MERGE_DATA_VOLUME: {
                     "/Library/Apple/System/Library/StagedFrameworks/Safari": {
                         "WebKit.framework":  "11.6"
                     },

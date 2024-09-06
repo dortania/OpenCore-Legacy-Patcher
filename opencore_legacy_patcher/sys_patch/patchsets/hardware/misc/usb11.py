@@ -77,7 +77,7 @@ class USB11Controller(BaseHardware):
         """
         return {
             "Legacy USB 1.1": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "IOUSBHostFamily.kext": "12.6.2" if self._xnu_float < self.macOS_14_4 else "12.6.2-23.4",
                     },
@@ -96,7 +96,7 @@ class USB11Controller(BaseHardware):
         return {
             # Injection of UHCI/OHCI causes a panic on 14.1+
             "Legacy USB 1.1 Extended": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions/IOUSBHostFamily.kext/Contents/PlugIns": {
                         "AppleUSBOHCI.kext":    "12.6.2-USB",
                         "AppleUSBOHCIPCI.kext": "12.6.2-USB",

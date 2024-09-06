@@ -88,7 +88,7 @@ class IntelHaswell(BaseHardware):
         """
         return {
             "Intel Haswell": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleIntelFramebufferAzul.kext":           self._resolve_monterey_framebuffers(),
                         "AppleIntelHD5000Graphics.kext":            self._resolve_monterey_framebuffers(),
@@ -109,7 +109,7 @@ class IntelHaswell(BaseHardware):
         """
         return {
             "Intel Haswell": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleIntelFramebufferAzul.kext": self._resolve_monterey_framebuffers(),
                     },

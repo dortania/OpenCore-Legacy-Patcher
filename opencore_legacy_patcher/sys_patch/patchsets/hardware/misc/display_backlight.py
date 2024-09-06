@@ -63,14 +63,16 @@ class DisplayBacklight(BaseHardware):
         """
         if self.native_os() is True:
             return {}
-        
+
         return {
             "Legacy Backlight Control": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleBacklight.kext":       "10.12.6",
                         "AppleBacklightExpert.kext": "10.12.6",
                     },
+                },
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/PrivateFrameworks": {
                         "DisplayServices.framework": "10.12.6",
                     },

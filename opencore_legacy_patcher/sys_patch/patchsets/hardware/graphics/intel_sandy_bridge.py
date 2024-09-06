@@ -76,7 +76,7 @@ class IntelSandyBridge(BaseHardware):
         """
         return {
             "Intel Sandy Bridge": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleIntelHD3000Graphics.kext":           "10.13.6",
                         "AppleIntelHD3000GraphicsGA.plugin":       "10.13.6",

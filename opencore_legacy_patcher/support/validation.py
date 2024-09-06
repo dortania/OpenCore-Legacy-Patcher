@@ -132,7 +132,7 @@ class PatcherValidation:
                 if install_type not in PatchType:
                     raise Exception(f"Unknown PatchType: {install_type}")
 
-            for install_type in [PatchType.INSTALL_SYSTEM_VOLUME, PatchType.INSTALL_DATA_VOLUME]:
+            for install_type in [PatchType.OVERWRITE_SYSTEM_VOLUME, PatchType.OVERWRITE_DATA_VOLUME, PatchType.MERGE_SYSTEM_VOLUME, PatchType.MERGE_DATA_VOLUME]:
                 if install_type in patchset[patch_core]:
                     for install_directory in patchset[patch_core][install_type]:
                         for install_file in patchset[patch_core][install_type][install_directory]:

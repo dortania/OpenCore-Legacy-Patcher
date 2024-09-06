@@ -51,10 +51,10 @@ class PCIeFaceTimeCamera(BaseHardware):
         """
         if self.native_os() is True:
             return {}
-        
+
         return {
             "PCIe FaceTime Camera": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks/CoreMediaIO.framework/Versions/A/Resources": {
                         "AppleCamera.plugin":  "14.0 Beta 1"
                     },

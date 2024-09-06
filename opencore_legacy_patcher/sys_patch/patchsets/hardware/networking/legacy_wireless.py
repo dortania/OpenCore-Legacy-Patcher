@@ -89,7 +89,7 @@ class LegacyWireless(BaseHardware):
         """
         return {
             "Legacy Wireless": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/usr/libexec": {
                         "airportd": "11.7.10" if self._affected_by_cve_2024_23227 is False else "11.7.10-Sandbox",
                     },
@@ -97,7 +97,7 @@ class LegacyWireless(BaseHardware):
                         "WiFiAgent.app": "11.7.10",
                     },
                 },
-                PatchType.INSTALL_DATA_VOLUME: {
+                PatchType.OVERWRITE_DATA_VOLUME: {
                     "/Library/Application Support/SkyLightPlugins": {
                         **({ "CoreWLAN.dylib": "SkyLightPlugins" } if self._xnu_major == os_data.monterey else {}),
                         **({ "CoreWLAN.txt": "SkyLightPlugins" } if self._xnu_major == os_data.monterey else {}),
@@ -116,11 +116,13 @@ class LegacyWireless(BaseHardware):
 
         return {
             "Legacy Wireless Extended": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/usr/libexec": {
                         "wps":      "12.7.2",
                         "wifip2pd": "12.7.2",
                     },
+                },
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
                         "CoreWLAN.framework": "12.7.2",
                     },
@@ -129,7 +131,7 @@ class LegacyWireless(BaseHardware):
                         "IO80211.framework":        "12.7.2",
                         "WiFiPeerToPeer.framework": "12.7.2",
                     },
-                },
+                }
             },
         }
 
@@ -140,7 +142,7 @@ class LegacyWireless(BaseHardware):
         """
         if self.native_os() is True:
             return {}
-        
+
         return {
             **self._base_patch(),
             **self._extended_patch(),

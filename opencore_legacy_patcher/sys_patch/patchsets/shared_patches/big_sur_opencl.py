@@ -31,7 +31,7 @@ class BigSurOpenCL(BaseSharedPatchSet):
 
         return {
             "Big Sur OpenCL": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
                         "OpenCL.framework": "11.6",
                     },

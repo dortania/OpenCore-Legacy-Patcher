@@ -32,11 +32,13 @@ class NonMetalIOAccelerator(BaseSharedPatchSet):
 
         return {
             "Non-Metal IOAccelerator Common": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "IOAcceleratorFamily2.kext":     "10.13.6",
                         "IOSurface.kext":                "10.14.6",
                     },
+                },
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
                         "IOSurface.framework": f"10.14.6-{self._xnu_major}",
                         "OpenCL.framework":     "10.13.6",

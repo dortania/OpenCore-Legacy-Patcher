@@ -86,7 +86,7 @@ class NvidiaWebDriver(BaseHardware):
         """
         return {
             "Nvidia Web Drivers": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "GeForceAIRPluginWeb.bundle":     "WebDriver-387.10.10.10.40.140",
                         "GeForceGLDriverWeb.bundle":      "WebDriver-387.10.10.10.40.140",
@@ -98,12 +98,8 @@ class NvidiaWebDriver(BaseHardware):
                         "GeForceTeslaGLDriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
                         "GeForceTeslaVADriverWeb.bundle": "WebDriver-387.10.10.10.40.140",
                     },
-                    "/System/Library/PrivateFrameworks": {
-                        # Restore OpenCL by adding missing compiler files
-                        **({ "GPUCompiler.framework": "11.6"} if self._xnu_major >= os_data.monterey else {}),
-                    },
                 },
-                PatchType.INSTALL_DATA_VOLUME: {
+                PatchType.OVERWRITE_DATA_VOLUME: {
                     "/Library/Extensions": {
                         "GeForceWeb.kext":                "WebDriver-387.10.10.10.40.140",
                         "NVDAGF100HalWeb.kext":           "WebDriver-387.10.10.10.40.140",
@@ -130,6 +126,12 @@ class NvidiaWebDriver(BaseHardware):
                     # "/Library/LaunchDaemons": {
                     #     "com.nvidia.nvroothelper.plist":  "WebDriver-387.10.10.10.40.140",
                     # },
+                },
+                PatchType.MERGE_SYSTEM_VOLUME: {
+                    "/System/Library/PrivateFrameworks": {
+                        # Restore OpenCL by adding missing compiler files
+                        **({ "GPUCompiler.framework": "11.6"} if self._xnu_major >= os_data.monterey else {}),
+                    },
                 },
                 PatchType.REMOVE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": [

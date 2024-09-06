@@ -31,7 +31,7 @@ class AMDTeraScale(BaseSharedPatchSet):
 
         return {
             "AMD TeraScale Common": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AMDFramebuffer.kext":           "10.13.6",
                         "AMDLegacyFramebuffer.kext":     "10.13.6",

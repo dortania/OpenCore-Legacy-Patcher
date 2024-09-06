@@ -7,17 +7,19 @@ import subprocess
 
 from pathlib import Path
 
+from ..patchsets.base import PatchType
+
 from ...volume  import generate_copy_arguments
 from ...support import subprocess_wrapper
 
 
-def install_new_file(source_folder: Path, destination_folder: Path, file_name: str) -> None:
+def install_new_file(source_folder: Path, destination_folder: Path, file_name: str, method: PatchType) -> None:
     """
     Installs a new file to the destination folder
 
     File handling logic:
-    - .frameworks are merged with the destination folder
-    - Other files are deleted and replaced (ex. .kexts, .apps)
+    - PatchType.MERGE_* are merged with the destination folder
+    - Other files are deleted and replaced
 
     Parameters:
         source_folder      (Path): Path to the source folder
@@ -31,7 +33,7 @@ def install_new_file(source_folder: Path, destination_folder: Path, file_name: s
         logging.info(f"  - Skipping {file_name}, cannot locate {source_folder}")
         return
 
-    if file_name_str.endswith(".framework"):
+    if method in [PatchType.MERGE_SYSTEM_VOLUME, PatchType.MERGE_DATA_VOLUME]:
         # merge with rsync
         logging.info(f"  - Installing: {file_name}")
         subprocess_wrapper.run_as_root(["/usr/bin/rsync", "-r", "-i", "-a", f"{source_folder}/{file_name}", f"{destination_folder}/"], stdout=subprocess.PIPE)

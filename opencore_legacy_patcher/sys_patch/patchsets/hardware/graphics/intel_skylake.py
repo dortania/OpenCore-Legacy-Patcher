@@ -65,7 +65,7 @@ class IntelSkylake(BaseHardware):
         """
         return {
             "Intel Skylake": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleIntelSKLGraphics.kext":            self._resolve_monterey_framebuffers(),
                         "AppleIntelSKLGraphicsFramebuffer.kext": self._resolve_monterey_framebuffers(),

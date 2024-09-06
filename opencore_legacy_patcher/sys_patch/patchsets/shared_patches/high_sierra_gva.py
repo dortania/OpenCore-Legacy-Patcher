@@ -33,7 +33,7 @@ class HighSierraGVA(BaseSharedPatchSet):
             # For GPUs last natively supported in High Sierra/Catalina
             # Restores DRM support
             "High Sierra GVA": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/PrivateFrameworks": {
                         "AppleGVA.framework":     "10.13.6",
                         "AppleGVACore.framework": "10.15.7",

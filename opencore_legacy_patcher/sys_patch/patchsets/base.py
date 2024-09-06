@@ -9,11 +9,13 @@ class PatchType(StrEnum):
     """
     Type of patch
     """
-    INSTALL_SYSTEM_VOLUME = "Install System Volume"
-    INSTALL_DATA_VOLUME   = "Install Data Volume"
-    REMOVE_SYSTEM_VOLUME  = "Remove System Volume"
-    REMOVE_DATA_VOLUME    = "Remove Data Volume"
-    EXECUTE               = "Execute"
+    OVERWRITE_SYSTEM_VOLUME = "Overwrite System Volume"
+    OVERWRITE_DATA_VOLUME   = "Overwrite Data Volume"
+    MERGE_SYSTEM_VOLUME     = "Merge System Volume"
+    MERGE_DATA_VOLUME       = "Merge Data Volume"
+    REMOVE_SYSTEM_VOLUME    = "Remove System Volume"
+    REMOVE_DATA_VOLUME      = "Remove Data Volume"
+    EXECUTE                 = "Execute"
 
 
 class DynamicPatchset(StrEnum):

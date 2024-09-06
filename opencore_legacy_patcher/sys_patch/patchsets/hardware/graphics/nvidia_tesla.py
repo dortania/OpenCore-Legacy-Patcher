@@ -73,7 +73,7 @@ class NvidiaTesla(BaseHardware):
         """
         return {
             "Nvidia Tesla": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "GeForceGA.bundle":            "10.13.6",
                         "GeForceTesla.kext":           "10.13.6",

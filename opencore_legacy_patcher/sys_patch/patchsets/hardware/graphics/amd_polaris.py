@@ -88,7 +88,7 @@ class AMDPolaris(BaseHardware):
                 return {}
             return {
                 "AMD Polaris": {
-                    PatchType.INSTALL_SYSTEM_VOLUME: {
+                    PatchType.OVERWRITE_SYSTEM_VOLUME: {
                         "/System/Library/Extensions": {
                             "AMD9500Controller.kext":  "13.5.2",
                             "AMD10000Controller.kext": "13.5.2",
@@ -103,7 +103,7 @@ class AMDPolaris(BaseHardware):
         # Note missing framebuffers are not restored (ex. 'ATY,Berbice')
         return {
             "AMD Polaris": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AMDRadeonX4000.kext":           self._resolve_monterey_framebuffers(),
                         "AMDRadeonX4000HWServices.kext": "12.5",

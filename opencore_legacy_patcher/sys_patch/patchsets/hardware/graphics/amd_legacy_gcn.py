@@ -88,7 +88,7 @@ class AMDLegacyGCN(BaseHardware):
 
         return {
             "AMD Legacy GCN": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AMD7000Controller.kext":        "12.5",
                         "AMD8000Controller.kext":        "12.5",

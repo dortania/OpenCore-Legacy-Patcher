@@ -31,7 +31,7 @@ class MontereyOpenCL(BaseSharedPatchSet):
 
         return {
             "Monterey OpenCL": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
                         "OpenCL.framework": "12.5",
                     },

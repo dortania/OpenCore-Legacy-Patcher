@@ -74,7 +74,7 @@ class AMDTeraScale1(BaseHardware):
         """
         return {
             "AMD TeraScale 1": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AMD2400Controller.kext":        "10.13.6",
                         "AMD2600Controller.kext":        "10.13.6",

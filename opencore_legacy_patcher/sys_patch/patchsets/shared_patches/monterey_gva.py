@@ -32,7 +32,7 @@ class MontereyGVA(BaseSharedPatchSet):
 
         return {
             "Monterey GVA": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/PrivateFrameworks": {
                         "AppleGVA.framework":     "12.5",
                         "AppleGVACore.framework": "12.5",

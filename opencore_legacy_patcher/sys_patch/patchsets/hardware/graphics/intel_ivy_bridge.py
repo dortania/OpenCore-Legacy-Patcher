@@ -89,7 +89,7 @@ class IntelIvyBridge(BaseHardware):
         """
         return {
             "Intel Ivy Bridge": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleIntelHD4000GraphicsGLDriver.bundle":  "11.7.10",
                         "AppleIntelHD4000GraphicsMTLDriver.bundle": "11.7.10" if self._xnu_major < os_data.ventura else "11.7.10-22",

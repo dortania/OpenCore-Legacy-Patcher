@@ -32,7 +32,7 @@ class BigSurGVA(BaseSharedPatchSet):
 
         return {
             "Big Sur GVA": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/PrivateFrameworks": {
                         "AppleGVA.framework":     "11.7.10",
                         "AppleGVACore.framework": "11.7.10",

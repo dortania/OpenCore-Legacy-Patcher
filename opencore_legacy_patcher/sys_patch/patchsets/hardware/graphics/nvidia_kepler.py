@@ -96,7 +96,7 @@ class NvidiaKepler(BaseHardware):
         """
         return {
             "Nvidia Kepler": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "GeForce.kext":            self._resolve_kepler_geforce_framebuffers(),
                         "NVDAGF100Hal.kext":       "12.0 Beta 6",
@@ -108,6 +108,8 @@ class NvidiaKepler(BaseHardware):
                         "GeForceMTLDriver.bundle": "11.0 Beta 3" if self._xnu_major <= os_data.monterey else f"11.0 Beta 3-22",
                         "GeForceVADriver.bundle":  "12.0 Beta 6",
                     },
+                },
+                PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
                         # XNU 21.6 (macOS 12.5)
                         **({ "Metal.framework": "12.5 Beta 2"} if (self._xnu_float >= self.macOS_12_5 and self._xnu_major < os_data.ventura) else {}),
@@ -115,7 +117,7 @@ class NvidiaKepler(BaseHardware):
                     "/System/Library/PrivateFrameworks": {
                         "GPUCompiler.framework": "11.6",
                     },
-                },
+                }
             },
         }
 

@@ -31,20 +31,9 @@ class NonMetal(BaseSharedPatchSet):
 
         return {
             "Non-Metal Common": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "IOSurface.kext": "10.15.7",
-                    },
-                    "/System/Library/Frameworks": {
-                        "OpenGL.framework":       "10.14.3",
-                        "CoreDisplay.framework": f"10.14.4-{self._xnu_major}",
-                        "IOSurface.framework":   f"10.15.7-{self._xnu_major}",
-                        "QuartzCore.framework":  f"10.15.7-{self._xnu_major}",
-                    },
-                    "/System/Library/PrivateFrameworks": {
-                        "GPUSupport.framework": "10.14.3",
-                        "SkyLight.framework":  f"10.14.6-{self._xnu_major}",
-                        **({"FaceCore.framework":  f"13.5"} if self._xnu_major >= os_data.sonoma else {}),
                     },
                     "/System/Applications": {
                         **({ "Photo Booth.app": "11.7.9"} if self._xnu_major >= os_data.monterey else {}),
@@ -79,10 +68,23 @@ class NonMetal(BaseSharedPatchSet):
                         "AppleAfterburner.kext",
                     ],
                 },
-                PatchType.INSTALL_DATA_VOLUME: {
+                PatchType.OVERWRITE_DATA_VOLUME: {
                     "/Library/Application Support/SkyLightPlugins": {
                         **({ "DropboxHack.dylib": "SkyLightPlugins" } if self._xnu_major >= os_data.monterey else {}),
                         **({ "DropboxHack.txt":   "SkyLightPlugins" } if self._xnu_major >= os_data.monterey else {}),
+                    },
+                },
+                PatchType.MERGE_SYSTEM_VOLUME: {
+                    "/System/Library/Frameworks": {
+                        "OpenGL.framework":       "10.14.3",
+                        "CoreDisplay.framework": f"10.14.4-{self._xnu_major}",
+                        "IOSurface.framework":   f"10.15.7-{self._xnu_major}",
+                        "QuartzCore.framework":  f"10.15.7-{self._xnu_major}",
+                    },
+                    "/System/Library/PrivateFrameworks": {
+                        "GPUSupport.framework": "10.14.3",
+                        "SkyLight.framework":  f"10.14.6-{self._xnu_major}",
+                        **({"FaceCore.framework":  f"13.5"} if self._xnu_major >= os_data.sonoma else {}),
                     },
                 },
                 PatchType.EXECUTE: {

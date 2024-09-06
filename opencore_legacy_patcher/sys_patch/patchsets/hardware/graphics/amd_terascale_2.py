@@ -75,7 +75,7 @@ class AMDTeraScale2(BaseHardware):
         """
         _base = {
             "AMD TeraScale 2": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AMD5000Controller.kext":        "10.13.6",
                         "AMD6000Controller.kext":        "10.13.6",
@@ -90,7 +90,7 @@ class AMDTeraScale2(BaseHardware):
 
         # TeraScale 2 MacBooks with faulty GPUs are highly prone to crashing with AMDRadeonX3000 attached
         if self._constants.allow_ts2_accel is False and self._constants.host_is_hackintosh is False:
-            _base["AMD TeraScale 2"][PatchType.INSTALL_SYSTEM_VOLUME]["/System/Library/Extensions"].pop("AMDRadeonX3000.kext")
+            _base["AMD TeraScale 2"][PatchType.OVERWRITE_SYSTEM_VOLUME]["/System/Library/Extensions"].pop("AMDRadeonX3000.kext")
 
         return _base
 

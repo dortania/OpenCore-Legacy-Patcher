@@ -90,7 +90,7 @@ class LegacyAudio(BaseHardware):
         """
         return {
             "Legacy Non-GOP": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleHDA.kext": "10.13.6",
                     },
@@ -105,7 +105,7 @@ class LegacyAudio(BaseHardware):
         """
         return {
             "Legacy Realtek": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleHDA.kext":      "10.11.6",
                         "IOAudioFamily.kext": "10.11.6",
@@ -130,7 +130,7 @@ class LegacyAudio(BaseHardware):
         """
         if self.native_os() is True:
             return {}
-        
+
         if self._computer.real_model in ["iMac7,1", "iMac8,1"]:
             return self._realtek_audio_patches()
         return self._missing_gop_patches()

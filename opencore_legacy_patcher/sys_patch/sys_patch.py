@@ -382,7 +382,7 @@ class PatchSysVolume:
                             remove_file(destination_folder_path, remove_patch_file)
 
 
-            for method_install in [PatchType.INSTALL_SYSTEM_VOLUME, PatchType.INSTALL_DATA_VOLUME]:
+            for method_install in [PatchType.OVERWRITE_SYSTEM_VOLUME, PatchType.OVERWRITE_DATA_VOLUME, PatchType.MERGE_SYSTEM_VOLUME, PatchType.MERGE_DATA_VOLUME]:
                 if method_install not in required_patches[patch]:
                     continue
 
@@ -394,7 +394,7 @@ class PatchSysVolume:
                         if not required_patches[patch][method_install][install_patch_directory][install_file].startswith("/"):
                             source_folder_path = source_files_path + "/" + source_folder_path
 
-                        if method_install == PatchType.INSTALL_SYSTEM_VOLUME:
+                        if method_install in [PatchType.OVERWRITE_SYSTEM_VOLUME, PatchType.MERGE_SYSTEM_VOLUME]:
                             destination_folder_path = str(self.mount_location) + install_patch_directory
                         else:
                             if install_patch_directory == "/Library/Extensions":
@@ -418,7 +418,7 @@ class PatchSysVolume:
 
                             destination_folder_path = updated_destination_folder_path
 
-                        install_new_file(source_folder_path, destination_folder_path, install_file)
+                        install_new_file(source_folder_path, destination_folder_path, install_file, method_install)
 
             if PatchType.EXECUTE in required_patches[patch]:
                 for process in required_patches[patch][PatchType.EXECUTE]:
@@ -496,7 +496,7 @@ class PatchSysVolume:
 
         for patch in required_patches:
             # Check if all files are present
-            for method_type in [PatchType.INSTALL_SYSTEM_VOLUME, PatchType.INSTALL_DATA_VOLUME]:
+            for method_type in [PatchType.OVERWRITE_SYSTEM_VOLUME, PatchType.OVERWRITE_DATA_VOLUME, PatchType.MERGE_SYSTEM_VOLUME, PatchType.MERGE_DATA_VOLUME]:
                 if method_type not in required_patches[patch]:
                     continue
                 for install_patch_directory in required_patches[patch][method_type]:

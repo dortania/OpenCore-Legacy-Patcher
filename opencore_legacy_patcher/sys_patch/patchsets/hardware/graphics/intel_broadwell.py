@@ -65,7 +65,7 @@ class IntelBroadwell(BaseHardware):
         """
         return {
             "Intel Broadwell": {
-                PatchType.INSTALL_SYSTEM_VOLUME: {
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleIntelBDWGraphics.kext":            self._resolve_monterey_framebuffers(),
                         "AppleIntelBDWGraphicsFramebuffer.kext": self._resolve_monterey_framebuffers(),
