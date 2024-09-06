@@ -33,6 +33,12 @@
       - Xserve2,1 can only boot with 4 cores max currently
   - Excludes the newly dropped MacBookAir8,x series.
     - No estimate can be given when support will be added.
+- Implement new MetallibSupportPkg system to support macOS Sequoia on Metal 3802-based GPUs.
+  - See repository for more details: [MetallibSupportPkg](https://github.com/dortania/MetallibSupportPkg).
+- Implement new Patchset Detection architecture.
+- Implement new kernel cache building architecture.
+- Resolve "Label" error in com.dortania.opencore-legacy-patcher.os-caching.plist.
+- Add macOS Sequoia icons to boot picker and GUI.
 - Increment Binaries:
   - PatcherSupportPkg 1.6.3 - release
   - OpenCorePkg 1.0.1 - release
