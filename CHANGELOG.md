@@ -39,6 +39,8 @@
 - Implement new kernel cache building architecture.
 - Resolve "Label" error in com.dortania.opencore-legacy-patcher.os-caching.plist.
 - Add macOS Sequoia icons to boot picker and GUI.
+- Resolve Memoji crashes on 3802 GPUs.
+- Resolve Photos Memories tab crash on Intel Ivy Bridge/Haswell iGPUs.
 - Increment Binaries:
   - PatcherSupportPkg 1.6.3 - release
   - OpenCorePkg 1.0.1 - release
