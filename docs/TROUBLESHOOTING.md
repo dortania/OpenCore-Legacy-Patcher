@@ -234,10 +234,14 @@ The reason for this is that the autopatcher will assume that you will be using t
 For Macs using legacy USB 1.1 controllers, OpenCore Legacy Patcher can only restore support once it has performed root volume patches. Thus to install macOS, you need to hook up a USB hub between your Mac and Keyboard/Mouse.
 
 ::: Note
+
 In macOS Sonoma, this seems to have been further weakened and some hubs may not be functional. 
-:::
 
 Alternative way is making sure to enable "Remote Login" in General -> Sharing before updating, which will enable SSH. That means you can take control using Terminal in another system by typing `ssh username@lan-ip-address` and your password. After that run Post Install Volume Patching by typing `/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --patch-sys-vol` and finally `sudo reboot`.
+
+:::
+
+
 
 * For MacBook users, you'll need to find an external keyboard/mouse in addition to the USB hub
 
