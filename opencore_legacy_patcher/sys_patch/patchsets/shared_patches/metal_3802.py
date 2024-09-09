@@ -75,6 +75,9 @@ class LegacyMetal3802(BaseSharedPatchSet):
                         **({  "MTLCompiler.framework": "14.2 Beta 1" } if self._xnu_float >= self.macOS_14_2 else {}),
                         **({  "GPUCompiler.framework": "14.2 Beta 1" } if self._xnu_float >= self.macOS_14_2 else {}),
                     },
+
+                },
+                PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/PrivateFrameworks/PhotosUICore.framework/Versions/A/Resources": {
                         **({  "default.metallib": "14.6.1" } if self._xnu_major == os_data.sonoma.value else {}),
                     },
