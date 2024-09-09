@@ -131,7 +131,6 @@ class NvidiaKepler(BaseHardware):
 
         return {
             **LegacyMetal3802(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
-            **BigSurGVA(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **BigSurOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyWebKit(self._xnu_major, self._xnu_minor, self._os_build).patches(),
