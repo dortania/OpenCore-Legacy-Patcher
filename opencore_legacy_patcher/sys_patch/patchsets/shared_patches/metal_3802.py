@@ -310,6 +310,9 @@ class LegacyMetal3802(BaseSharedPatchSet):
                     "/System/Library/PrivateFrameworks/PhotoImaging.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
                     },
+                    "/System/Library/PrivateFrameworks/PhotosUICore.framework/Versions/A/Resources": {
+                        "default.metallib": DynamicPatchset.MetallibSupportPkg,
+                    },
                     "/System/Library/PrivateFrameworks/MetalTools.framework/Versions/A/Resources": {
                         "MTLLegacySVICBSupport.metallib": DynamicPatchset.MetallibSupportPkg,
                         "MTLGPUDebugICBSupport.metallib": DynamicPatchset.MetallibSupportPkg,
