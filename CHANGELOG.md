@@ -42,7 +42,7 @@
 - Resolve Memoji crashes on 3802 GPUs.
 - Resolve Photos Memories tab crash on Intel Ivy Bridge/Haswell iGPUs.
 - Increment Binaries:
-  - PatcherSupportPkg 1.6.3 - release
+  - PatcherSupportPkg 1.7.9 - release
   - OpenCorePkg 1.0.1 - release
   - Lilu 1.6.8 - release
   - WhateverGreen 1.6.7 - release
