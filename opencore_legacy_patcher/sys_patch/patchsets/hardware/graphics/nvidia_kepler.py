@@ -7,7 +7,6 @@ from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclas
 from ...base import PatchType
 
 from ...shared_patches.metal_3802      import LegacyMetal3802
-from ...shared_patches.big_sur_gva     import BigSurGVA
 from ...shared_patches.monterey_opencl import MontereyOpenCL
 from ...shared_patches.big_sur_opencl  import BigSurOpenCL
 from ...shared_patches.monterey_webkit import MontereyWebKit
