@@ -88,7 +88,7 @@ class GraphicsMultiplexer(BaseHardware):
 
     def patches(self) -> dict:
         """
-        Patches for Legacy Backlight Control
+        Patches for Legacy GMUX Controllers
         """
         if self.native_os() is True:
             return {}
