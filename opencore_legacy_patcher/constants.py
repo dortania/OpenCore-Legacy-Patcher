@@ -14,7 +14,7 @@ class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
         self.patcher_version:                 str = "2.0.0"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "1.7.9"  # PatcherSupportPkg
+        self.patcher_support_pkg_version:     str = "1.8.0"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2024 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
@@ -246,6 +246,7 @@ class Constants:
             os_data.os_data.monterey,
             os_data.os_data.ventura,
             os_data.os_data.sonoma,
+            os_data.os_data.sequoia,
         ]
 
     @property
