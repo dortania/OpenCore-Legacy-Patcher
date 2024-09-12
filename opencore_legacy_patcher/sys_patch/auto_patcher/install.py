@@ -78,7 +78,11 @@ class InstallAutomaticPatchingServices:
 
         kexts = []
         for kext in Path("/Library/Extensions").glob("*.kext"):
-            if not Path(f"{kext}/Contents/Info.plist").exists():
+            try:
+                if not Path(f"{kext}/Contents/Info.plist").exists():
+                    continue
+            except Exception as e:
+                logging.info(f"  - Failed to check if {kext.name} is a directory: {e}")
                 continue
             try:
                 kext_plist = plistlib.load(open(f"{kext}/Contents/Info.plist", "rb"))
