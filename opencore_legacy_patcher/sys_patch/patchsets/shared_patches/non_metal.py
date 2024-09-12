@@ -94,7 +94,7 @@ class NonMetal(BaseSharedPatchSet):
                     "/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist WebKitExperimentalUseGPUProcessForCanvasRenderingEnabled -bool false": True,
                     **({"/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist WebKitPreferences.acceleratedDrawingEnabled -bool false": True} if self._xnu_major >= os_data.sonoma else {}),
                     **({"/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist NSEnableAppKitMenus -bool false": True} if self._xnu_major >= os_data.sonoma else {}),
-                    **({"/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist NSZoomButtonShowMenu -bool false": True} if self._xnu_major >= os_data.sonoma else {}),
+                    **({"/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist NSZoomButtonShowMenu -bool false": True} if self._xnu_major == os_data.sonoma else {}),
                 },
             },
         }
