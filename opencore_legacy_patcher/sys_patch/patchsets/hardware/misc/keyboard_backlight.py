@@ -63,7 +63,7 @@ class KeyboardBacklight(BaseHardware):
 
     def patches(self) -> dict:
         """
-        Patches for Legacy Backlight Control
+        Patches for Legacy Keyboard Backlight
         """
         if self.native_os() is True:
             return {}
@@ -72,22 +72,9 @@ class KeyboardBacklight(BaseHardware):
             return {}
 
         return {
-            "Legacy Backlight Control": {
-                PatchType.OVERWRITE_SYSTEM_VOLUME: {
-                    "/System/Library/Extensions": {
-                        "AppleBacklight.kext":       "10.12.6",
-                        "AppleBacklightExpert.kext": "10.12.6",
-                    },
-                },
-                PatchType.MERGE_SYSTEM_VOLUME: {
-                    "/System/Library/PrivateFrameworks": {
-                        "DisplayServices.framework": "10.12.6",
-                    },
-                },
-                PatchType.REMOVE_SYSTEM_VOLUME: {
-                    "/System/Library/Extensions/AppleGraphicsControl.kext/Contents/PlugIns": [
-                        "AGDCBacklightControl.kext",
-                    ],
-                },
+            "Legacy Keyboard Backlight": {
+                PatchType.EXECUTE: {
+                    "/usr/bin/defaults write /Library/Preferences/.GlobalPreferences.plist Moraea_BacklightHack -bool true": True,
+                }
             },
         }
