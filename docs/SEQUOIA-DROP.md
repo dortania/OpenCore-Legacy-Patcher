@@ -18,9 +18,11 @@ Unfortunately due to T2 related problems, the recently dropped MacBookAir8,x mod
 
 [More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1136)
 
-### Unsupported features
+### Non-functional features
 
-iPhone Mirroring and Apple Intelligence won't be functional on majority of patched Macs. iPhone Mirroring requires T2 for attestation and Apple Intelligence requires an NPU only found in Apple Silicon, the patcher is unable to provide a fix for these as they're hardware requirements.
+iPhone Mirroring and Apple Intelligence won't be functional on majority of patched Macs. 
+
+iPhone Mirroring requires T2 for attestation and Apple Intelligence requires an NPU only found in Apple Silicon, the patcher is unable to provide a fix for these as they're hardware requirements.
 
 ## Issues
 
