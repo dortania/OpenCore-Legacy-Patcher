@@ -71,6 +71,11 @@ class GenerateDefaults:
                 global_settings.GlobalEnviromentSettings().write_property("MacBookPro_TeraScale_2_Accel", False)
                 self.constants.allow_ts2_accel = False
 
+        if self.model in ["MacPro3,1", "Xserve2,1"]:
+            self.constants.force_quad_thread = True
+        else:
+            self.constants.force_quad_thread = False
+
         if self.model in smbios_data.smbios_dictionary:
             if smbios_data.smbios_dictionary[self.model]["CPU Generation"] >= cpu_data.CPUGen.skylake.value:
                 # On 2016-2017 MacBook Pros, 15" devices used a stock Samsung SSD with IONVMeController
@@ -197,7 +202,6 @@ class GenerateDefaults:
                     device_probe.Broadcom.Chipsets.AirportBrcmNIC,
                 ]
             ):
-                print("Modern WiFi")
                 is_modern_wifi = True
 
         if is_legacy_wifi is False and is_modern_wifi is False:

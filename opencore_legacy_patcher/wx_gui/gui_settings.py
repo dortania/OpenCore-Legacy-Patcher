@@ -48,7 +48,7 @@ class SettingsFrame(wx.Frame):
 
         self.settings = self._settings()
 
-        self.frame_modal = wx.Dialog(parent, title=title, size=(600, 675))
+        self.frame_modal = wx.Dialog(parent, title=title, size=(600, 685))
 
         self._generate_elements(self.frame_modal)
         self.frame_modal.ShowWindowModal()
@@ -314,6 +314,16 @@ class SettingsFrame(wx.Frame):
                     "min": 0,
                     "max": 60,
                 },
+                "MacPro3,1/Xserve2,1 Workaround": {
+                    "type": "checkbox",
+                    "value": self.constants.force_quad_thread,
+                    "variable": "force_quad_thread",
+                    "description": [
+                        "Limits to 4 threads max on these units.",
+                        "Required for macOS Sequoia and later.",
+                    ],
+                    "condition": (self.constants.custom_model and self.constants.custom_model in ["MacPro3,1", "Xserve2,1"]) or self.constants.computer.real_model in ["MacPro3,1", "Xserve2,1"]
+                },
                 "Debug": {
                     "type": "title",
                 },
@@ -456,7 +466,6 @@ class SettingsFrame(wx.Frame):
                         "Recommended for all users, however faulty",
                         "SSDs may benefit from disabling this.",
                     ],
-
                 },
             },
             "Advanced": {

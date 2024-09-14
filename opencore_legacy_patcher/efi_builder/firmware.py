@@ -199,6 +199,12 @@ class BuildFirmware:
             logging.info("- Adding IOHIDFamily patch")
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Identifier", "com.apple.iokit.IOHIDFamily")["Enabled"] = True
 
+        # MacPro3,1/Xserve2,1 cannot boot with more than 4 threads in Sequoia
+        # Note cpus=4 only overrides if more than 4 threads are present. So same on dual-core units
+        if self.constants.force_quad_thread is True:
+            logging.info("- Adding CPU Thread Limit Patch")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " cpus=4"
+
 
     def _firmware_driver_handling(self) -> None:
         """
