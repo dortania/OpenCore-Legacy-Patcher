@@ -92,6 +92,14 @@ module.exports = {
             ]
 
         },
+		        {
+            title: 'macOS Sequoia',
+            collapsable: false,
+            sidebarDepth: 1,
+            children: [
+				['SEQUOIA-DROP', 'macOS Sequoia Support'],
+            ]
+        },
         {
             title: 'macOS Sonoma',
             collapsable: false,
