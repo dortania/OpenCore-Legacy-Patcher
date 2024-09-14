@@ -18,7 +18,7 @@ Unfortunately due to T2 related problems, the recently dropped MacBookAir8,x mod
 
 [More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1136)
 
-### Non-functional features
+## Non-functional features
 
 iPhone Mirroring and Apple Intelligence won't be functional on majority of patched Macs. 
 
