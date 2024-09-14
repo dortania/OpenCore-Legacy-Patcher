@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 2.1.0
+
 ## 2.0.0
 - Set `AssociatedBundleIdentifiers` property in launch services as an array
 - Move to auto-generated pre/postinstall scripts for PKGs
