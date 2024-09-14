@@ -38,7 +38,7 @@ This is due to the dual socket nature of the machine, and likely some firmware/A
 
 Dual booting Sequoia and older will not be possible with all cores enabled due to reasons described before. In these cases you will be limited to 4 cores.
 
-::
+:::
 
 ### T2 security chip
 
@@ -75,9 +75,9 @@ Users will need to use a USB hub for installation and post-OS updates when patch
 However, the driver has recently been weakened starting from Sonoma, which means even some USB hubs may not work properly. 
 
 An alternative way is making sure to enable "Remote Login" in General -> Sharing before updating, which will enable SSH. 
-That means you can take control using Terminal in another system by typing ssh username@lan-ip-address and your password. 
-After that run Post Install Volume Patching by typing /Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --patch-sys-vol and finally sudo reboot.
+That means you can take control using Terminal in another system by typing `ssh username@lan-ip-address` and your password. 
 
+After that run Post Install Volume Patching by typing `/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --patch-sys-vol` and finally `sudo reboot`.
 
 
 ![](./images/usb11-chart.png)
