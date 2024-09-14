@@ -4,7 +4,7 @@
 The patcher application requires **OS X Yosemite 10.10** or later to run.
 * **OS X El Capitan 10.11** or later is required to make installers for macOS Ventura and later.
 
-The patcher is designed to target **macOS Big Sur 11.x to macOS Sonoma 14.x**.
+The patcher is designed to target **macOS Big Sur 11.x to macOS Sequoia 15.x**.
 * Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
 
 -------
@@ -57,9 +57,9 @@ The below tables can be used to reference issues with a particular model, and se
 | MacBook Air (13-inch, Mid 2013)<br>MacBook Air (13-inch, Early 2014) | `MacBookAir6,2` | ^^ |
 | MacBook Air (11-inch, Early 2015) | `MacBookAir7,1` | ^^ |
 | MacBook Air (13-inch, Early 2015)<br>MacBook Air (13-inch, 2017) | `MacBookAir7,2` | ^^ |
-| MacBook Air (Retina, 13-inch, 2018) | `MacBookAir8,1` | - Supported by Apple |
+| MacBook Air (Retina, 13-inch, 2018) | `MacBookAir8,1` | - Supported natively up to Sonoma<br>- Currently not supported on Sequoia due to T2 issues<br> |
 | MacBook Air (Retina, 13-inch, 2019) | `MacBookAir8,2` | ^^ |
-| MacBook Air (Retina, 13-inch, 2020) | `MacBookAir9,1` | ^^ |
+| MacBook Air (Retina, 13-inch, 2020) | `MacBookAir9,1` | Supported by Apple |
 
 ### MacBook Pro
 
