@@ -18,13 +18,16 @@ Unfortunately due to T2 related problems, the recently dropped MacBookAir8,x mod
 
 [More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1136)
 
+### Unsupported features
+
+iPhone Mirroring and Apple Intelligence won't be functional on majority of patched Macs. iPhone Mirroring requires T2 for attestation and Apple Intelligence requires an NPU only found in Apple Silicon, the patcher is unable to provide a fix for these as they're hardware requirements.
+
 ## Issues
 
 * [Dual socket CPUs with Mac Pros and Xserve](#dual-socket-CPUs-with-Mac-Pro-2008-and-Xserve-2008)
 * [T2 Security chip](#t2-security-chip)
 * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
 * [Graphics support and issues](#graphics-support-and-issues)
-* [Unsupported features](#unsupported-features)
 
 
 ### Dual socket CPUs with Mac Pro 2008 and Xserve 2008
@@ -100,7 +103,3 @@ This build includes both Legacy Metal and non-Metal patches for macOS Sequoia. R
 
 * [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)
 * [Non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
-
-### Unsupported features
-
-iPhone Mirroring and Apple Intelligence won't be functional on majority of patched Macs. iPhone Mirroring requires T2 for attestation and Apple Intelligence requires an NPU only found in Apple Silicon, the patcher is unable to provide a fix for these as they're hardware requirements.
