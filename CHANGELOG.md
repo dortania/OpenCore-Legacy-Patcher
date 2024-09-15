@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 2.1.0
+- Fix MacBookPro13,3 listing 'Available patches' after having installed all applicable patches
 
 ## 2.0.0
 - Set `AssociatedBundleIdentifiers` property in launch services as an array
