@@ -77,6 +77,10 @@ If your Mac is looping back into the beginning of the setup after the first rebo
 
 **T1 Macs**: When installing macOS Sonoma or newer on a T1 system, full disk wipe will remove T1 functionality (touchbar etc). Therefore when installing, only wipe the volume containing the operating system.  
 
+<div align="center">
+             <img src="./images/wipe-volume.png" alt="WipeVolume" width="800" />
+</div>
+
 [More info here](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#no-t1-functionality-after-installing-sonoma-or-newer)
 
 :::
