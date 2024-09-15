@@ -1,3 +1,5 @@
+# macOS Sequoia Support
+
 ![](./images/macos-sequoia.png)
 
 Another year, another release.

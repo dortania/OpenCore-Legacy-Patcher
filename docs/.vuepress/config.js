@@ -97,7 +97,7 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-                ['SEQUOIA-DROP', 'macOS Sequoia Support'],
+                ['SEQUOIA-DROP'],
             ]
         },
         {
@@ -105,7 +105,7 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-                ['SONOMA-DROP', 'macOS Sonoma Support'],
+                ['SONOMA-DROP'],
             ]
         },
 
@@ -114,7 +114,7 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-                ['VENTURA-DROP', 'macOS Ventura Support'],
+                ['VENTURA-DROP'],
             ]
         },
 
@@ -123,7 +123,7 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-                ['MONTEREY-DROP', 'macOS Monterey Support'],
+                ['MONTEREY-DROP'],
             ]
         },
         {
