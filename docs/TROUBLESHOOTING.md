@@ -22,7 +22,7 @@ Here are some common errors that users may experience while using this patcher:
 * [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
 * [No acceleration after a Metal GPU swap on Mac Pro](#no-acceleration-after-a-metal-gpu-swap-on-mac-pro)
 * [Keyboard, Mouse and Trackpad not working in installer or after update](#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update)
-* [No T1 functionality after installing Sonoma or newer](##no-t1-functionality-after-installing-sonoma-or-newer)
+* [No T1 functionality after installing Sonoma or newer](#no-t1-functionality-after-installing-sonoma-or-newer)
 
 
 ## OpenCore Legacy Patcher not launching
