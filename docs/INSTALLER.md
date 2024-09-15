@@ -14,16 +14,11 @@ Once downloaded, open the app and you should be greeted by the main menu.
 
 First, we'll want to select the "Create macOS Installer" button. This will present you with 2 options.
 
-For this example, we'll assume you'll need an installer. Select the "Download macOS installer" to get you a list of installers
+For this example, we'll assume you'll need an installer. Select the "Download macOS installer" to get you a list of installers. Click to download the version you want.
 
-| Main menu | Installer creation menu |
-| :--- | :--- |
-| ![OCLP GUI Installer Download Progress](./images/OCLP-GUI-Main-Menu.png) | ![OCLP GUI Installer Download Finished](./images/OCLP-GUI-Create-Installer-Menu.png) |
-
-Available installers will be listed as follows, click to download the version you want.
-<div align="center">
-             <img src="./images/OCLP-GUI-Installer-Download-Listed-Products.png" alt="ListedInstallers" width="400" />
-</div>  
+| Main menu | Installer creation menu | Available installers |
+| :--- | :--- | --- |
+| ![OCLP GUI Main Menu](./images/OCLP-GUI-Main-Menu.png) | ![OCLP GUI Installer Create Installer Menu](./images/OCLP-GUI-Create-Installer-Menu.png) | ![OCLP GUI Installer Download Listed Products](./images/OCLP-GUI-Installer-Download-Listed-Products.png) |
 
 Once the download is finished, you can proceed to write the installer onto a USB drive.
 
