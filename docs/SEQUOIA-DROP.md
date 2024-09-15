@@ -22,7 +22,7 @@ Unfortunately due to T2 related problems, the recently dropped MacBookAir8,x mod
 
 ## Non-functional features
 
-iPhone Mirroring and Apple Intelligence won't be functional on majority of patched Macs. 
+On majority of patched Macs, iPhone Mirroring and Apple Intelligence won't be functional.
 
 iPhone Mirroring requires T2 for attestation and Apple Intelligence requires an NPU only found in Apple Silicon, the patcher is unable to provide a fix for these as they're hardware requirements.
 
