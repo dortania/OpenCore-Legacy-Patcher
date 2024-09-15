@@ -10,14 +10,15 @@ Next, run the `OpenCore-Patcher.app`
 
 Here we'll select Build and Install OpenCore and start building:
 
-::: warning
-OpenCore configurations are hardware specific.
-If you're building OpenCore for a different model than you're currently running, it is absolutely necessary to select the proper model from Settings.
-:::
 
 <div align="center">
              <img src="./images/OCLP-GUI-Main-Menu.png" alt="OCLP GUI Main Menu" width="800" />
 </div>
+
+::: warning
+OpenCore configurations are hardware specific.
+If you're building OpenCore for a different model than you're currently running, it is absolutely necessary to select the proper model from Settings.
+:::
 
 
 | Start Building | Finished Building |
