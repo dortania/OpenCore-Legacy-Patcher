@@ -43,7 +43,7 @@ class NvidiaTesla(BaseHardware):
         """
         Dropped support with macOS 10.14, Mojave
         """
-        return self._xnu_major < os_data.ventura.value
+        return self._xnu_major < os_data.mojave.value
 
 
     def hardware_variant(self) -> HardwareVariant:
