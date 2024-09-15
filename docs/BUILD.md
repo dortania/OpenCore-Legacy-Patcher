@@ -6,16 +6,19 @@ If you haven't downloaded OpenCore Patcher yet, do so now:
 
 * [OpenCore Legacy Patcher Releases](https://github.com/dortania/Opencore-Legacy-Patcher/releases)
 
-Next, run the `OpenCore-Patcher.app`:
+Next, run the `OpenCore-Patcher.app`
 
-![](./images/OCLP-GUI-Main-Menu.png)
+Here we'll select Build and Install OpenCore and start building:
 
 ::: warning
 OpenCore configurations are hardware specific.
 If you're building OpenCore for a different model than you're currently running, it is absolutely necessary to select the proper model from Settings.
 :::
 
-Here we'll select Build and Install OpenCore and start building:
+<div align="center">
+             <img src="./images/OCLP-GUI-Main-Menu.png" alt="OCLP GUI Main Menu" width="800" />
+</div>
+
 
 | Start Building | Finished Building |
 | :--- | :--- |
