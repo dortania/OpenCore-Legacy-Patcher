@@ -2,7 +2,7 @@
 
 This document is centered around downloading and writing the macOS installer to a USB drive. If you're already familiar with how to do this, you can skip this section.
 
-* Note: A 32GB drive is recommended, later versions of Sonoma and Sequoia cannot fit OS and patches to a 16GB disk. 16GB drive may work for older versions.
+* Note: A 32GB drive is recommended, later versions of Sonoma and Sequoia cannot fit installer and patches to a 16GB disk. 16GB drive may work for older versions.
 
 ## Creating the installer
 
