@@ -2,7 +2,7 @@
 
 This document is centered around downloading and writing the macOS installer to a USB drive. If you're already familiar with how to do this, you can skip this section.
 
-* Note: 16GB+ USB drive will be required for the installer
+* Note: A 32GB drive is recommended, later versions of Sonoma and Sequoia cannot fit OS and patches to a 16GB disk. 16GB drive may work for older versions.
 
 ## Creating the installer
 
@@ -10,31 +10,22 @@ With OpenCore Legacy Patcher, our new GUI includes a download menu for macOS ins
 
 * [OpenCore Legacy Patcher Release Apps](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
-For this guide, we'll be using the standard OpenCore-Patcher (GUI).
+Once downloaded, open the app and you should be greeted by the main menu. 
 
-Once downloaded, open the app and you should be greeted by this menu:
+First, we'll want to select the "Create macOS Installer" button. This will present you with 2 options.
 
-![OCLP GUI Main Menu](./images/OCLP-GUI-Main-Menu.png)
+For this example, we'll assume you'll need an installer. Select the "Download macOS installer" to get you a list of installers
 
-First, we'll want to select the "Create macOS Installer" button. This will present you with 2 options:
+| Main menu | Installer creation menu |
+| :--- | :--- |
+| ![OCLP GUI Installer Download Progress](./images/OCLP-GUI-Main-Menu.png) | ![OCLP GUI Installer Download Finished](./images/OCLP-GUI-Create-Installer-Menu.png) |
 
-![](./images/OCLP-GUI-Create-Installer-Menu.png)
+Available installers will be listed as follows, click to download the version you want.
+<div align="center">
+             <img src="./images/OCLP-GUI-Installer-Download-Listed-Products.png" alt="ListedInstallers" width="400" />
+</div>  
 
-For this example, we'll assume you'll need an installer. Selecting this option will download Apple's Installer Catalogs and build a list for you to choose:
-
-| Downloading | Listed Installers | Unsupported Installer |
-| :--- | :--- | :--- |
-| ![OCLP GUI Installer Download Catalog](./images/OCLP-GUI-Installer-Download-Catalog.png) | ![OCLP GUI Installer Download Listed Products](./images/OCLP-GUI-Installer-Download-Listed-Products.png) | ![](./images/OCLP-GUI-Installer-Download-Unsupported.png)
-
-Since the patcher officially supports Big Sur and newer for patching, only those entries will be shown. For ourselves, we'll select macOS 12 as that's the latest public release at the time of writing. This will download and install the macOS installer to your applications folder.
-
-* Note that some machines (namely 2012 and older) may not be currently supported on macOS Ventura. If you see this prompt, you'll need to use an older version of macOS.
-
-| Downloading the Installer | Requesting to install | Finished Installing |
-| :--- | :--- | :--- |
-| ![OCLP GUI Installer Download Progress](./images/OCLP-GUI-Installer-Download-Progress.png) | ![OCLP GUI Installer Needs Installing](./images/OCLP-GUI-Installer-Needs-Installing.png) | ![OCLP GUI Installer Download Finished](./images/OCLP-GUI-Installer-Download-Finished.png) |
-
-Once finished, you can proceed to write the installer onto a USB drive.
+Once the download is finished, you can proceed to write the installer onto a USB drive.
 
 * Note: The entire USB drive will be formatted
 
@@ -45,7 +36,7 @@ Once finished, you can proceed to write the installer onto a USB drive.
 Now the patcher will start the installer flashing!
 
 | Flashing | Success Prompt | Finished Flashing |
-| :--- | :--- |
+| :--- | :--- | :--- |
 | ![](./images/OCLP-GUI-Installer-Flashing-Process.png) | ![](./images/OCLP-GUI-Installer-Sucess-Prompt.png) | ![](./images/OCLP-GUI-Installer-Finished-Script.png) |
 
 # Once finished, head to [Building and installing OpenCore](./BUILD.md)
