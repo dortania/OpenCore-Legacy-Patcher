@@ -21,7 +21,7 @@ jobs:
           persist-credentials: false
           submodules: 'recursive'
       - name: Install
-        run: npm install
+        run: npm install -d
         working-directory: 'docs'
       - name: Build
         run: npm run build
