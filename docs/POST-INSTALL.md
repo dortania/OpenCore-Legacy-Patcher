@@ -21,7 +21,11 @@ And voila! No more USB drive required.
 
 To do this, run the OpenCore Patcher and head to Patcher Settings, then uncheck "Show OpenCore Bootpicker" on the Build tab:
 
-![](./images/OCLP-GUI-Settings-ShowPicker.png)
+
+<div align="center">
+             <img src="./images/OCLP-GUI-Settings-ShowPicker.png" alt="GUI Settings ShowPicker" width="600" />
+</div>
+
 
 Once you've toggled it off, build your OpenCore EFI once again and install to your desired drive. Now to show the OpenCore selector, you can simply hold down the "ESC" key while clicking on EFI boot, and then you can release the "ESC" key when you see the cursor arrow at the top left.
 
@@ -92,6 +96,21 @@ There is also an option to remove root patches, which may be required in some si
 | :--- | :--- |
 | ![](./images/OCLP-GUI-Root-Patch.png) | ![](./images/OCLP-GUI-Root-Patch-Finished.png) |
 
+
+:::warning
+
+With macOS Sequoia, MetallibSupportPkg is required to be downloaded for all 3802 systems. OCLP will handle this as long as you're connected to the internet.
+
+Such systems include:
+
+NVIDIA
+ * Kepler (GTX 600 - 700 series)
+Intel
+ * Ivy Bridge (HD 4000 series)
+ * Haswell (Iris/HD 4000-5000 series)
+
+:::
+
 :::warning
 
 With macOS Ventura and Macs with AMD Legacy GCN GPUs (ie. Metal), Root Patching requires a network connection to grab Apple's Kernel Debug Kit to start root patching. If your system is unable to connect to the internet, you can manually download a KDK from Apple's site:
@@ -109,19 +128,62 @@ Machines that require this are those with AMD Metal dGPUs:
 
 Below entries represent GPUs no longer natively supported, ie. requiring root volume patching with OpenCore Legacy Patcher:
 
-:::details GPUs requiring patching in macOS Big Sur
+:::details GPUs requiring patching in different macOS versions
+
+AMD Navi (RX 5000 - 6000 series) GPUs are non-functional in Mac Pro 2008 to 2012 using Ventura and newer due to lack of AVX2 support.
+
+**Sequoia**
 
 * NVIDIA:
   * Tesla (8000 - 300 series)
+  * Kepler (600 - 800 series)
 * AMD:
   * TeraScale (2000 - 6000 series)
+  * GCN 1-3 (7000 - R9 series)
+  * Polaris (RX 4xx/5xx series, if CPU lacks AVX2)
 * Intel:
   * Iron Lake
   * Sandy Bridge (2000 - 3000 series)
+  * Ivy Bridge (4000 series)
+  * Haswell (4400, 4600, 5000 series)
+  * Broadwell (6000 series)
+  * Skylake (500 series)
 
-:::
+**Sonoma**
 
-:::details GPUs requiring patching in macOS Monterey
+* NVIDIA:
+  * Tesla (8000 - 300 series)
+  * Kepler (600 - 800 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+  * GCN 1-3 (7000 - R9 series)
+  * Polaris (RX 4xx/5xx series, if CPU lacks AVX2)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+  * Ivy Bridge (4000 series)
+  * Haswell (4400, 4600, 5000 series)
+  * Broadwell (6000 series)
+  * Skylake (500 series)
+
+**Ventura**
+
+* NVIDIA:
+  * Tesla (8000 - 300 series)
+  * Kepler (600 - 800 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+  * GCN 1-3 (7000 - R9 series)
+  * Polaris (RX 4xx/5xx series, if CPU lacks AVX2)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+  * Ivy Bridge (4000 series)
+  * Haswell (4400, 4600, 5000 series)
+  * Broadwell (6000 series)
+  * Skylake (500 series)
+
+**Monterey**
 
 * NVIDIA:
   * Tesla (8000 - 300 series)
@@ -132,6 +194,17 @@ Below entries represent GPUs no longer natively supported, ie. requiring root vo
   * Iron Lake
   * Sandy Bridge (2000 - 3000 series)
   * Ivy Bridge (4000 series)
+
+
+**Big Sur**
+
+* NVIDIA:
+  * Tesla (8000 - 300 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
 
 :::
 
@@ -141,20 +214,5 @@ Below entries represent GPUs no longer natively supported, ie. requiring root vo
   * BCM94328
   * BCM94322
 * Atheros
-
-:::
-
-:::details GPUs requiring patching in macOS Ventura
-
-* NVIDIA:
-  * Kepler (600 - 800 series)
-* AMD:
-  * GCN 1-3 (7000 - R9 series)
-  * Polaris (RX 4xx/5xx series, if CPU lacks AVX2)
-* Intel:
-  * Ivy Bridge (4000 series)
-  * Haswell (4400, 4600, 5000 series)
-  * Broadwell (6000 series)
-  * Skylake (500 series)
 
 :::
