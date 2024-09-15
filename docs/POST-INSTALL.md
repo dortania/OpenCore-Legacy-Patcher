@@ -104,10 +104,10 @@ With macOS Sequoia, MetallibSupportPkg is required to be downloaded for all 3802
 Such systems include:
 
 * NVIDIA
- * Kepler (GTX 600 - 700 series)
+    * Kepler (GTX 600 - 700 series)
 * Intel
- * Ivy Bridge (HD 4000 series)
- * Haswell (Iris/HD 4000-5000 series)
+   * Ivy Bridge (HD 4000 series)
+   * Haswell (Iris/HD 4000-5000 series)
 
 :::
 
