@@ -49,7 +49,7 @@ class NvidiaKepler(BaseHardware):
             return True
 
         if self._xnu_major == os_data.monterey:
-            if self._xnu_minor > 0:
+            if self._xnu_minor < 0:          # 12.0 Beta 8
                 return True
             if self._os_build != "21A5522h": # 12.0 Beta 7
                 return True
