@@ -6,7 +6,7 @@ This document is centered around downloading and writing the macOS installer to 
 
 ## Creating the installer
 
-With OpenCore Legacy Patcher, our new GUI includes a download menu for macOS installers. So to start off, you'll want to grab our app:
+To start off, you'll want to grab the app:
 
 * [OpenCore Legacy Patcher Release Apps](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
