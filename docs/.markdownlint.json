@@ -10,5 +10,6 @@
 	"single-title": false,
 	"ul-style": {
 		"style": "asterisk"
-	}
+	},
+	"link-fragments": false
 }

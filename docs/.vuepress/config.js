@@ -24,29 +24,29 @@ module.exports = {
     ],
     base: '/OpenCore-Legacy-Patcher/',
 
-	watch: {
-	    $page(newPage, oldPage) {
-	      if (newPage.key !== oldPage.key) {
-	        requestAnimationFrame(() => {
-	          if (this.$route.hash) {
-	            const element = document.getElementById(this.$route.hash.slice(1));
+    watch: {
+        $page(newPage, oldPage) {
+            if (newPage.key !== oldPage.key) {
+                requestAnimationFrame(() => {
+                    if (this.$route.hash) {
+                        const element = document.getElementById(this.$route.hash.slice(1));
 
-	            if (element && element.scrollIntoView) {
-	              element.scrollIntoView();
-	            }
-	          }
-	        });
-	      }
-	    }
-	  },
+                        if (element && element.scrollIntoView) {
+                            element.scrollIntoView();
+                        }
+                    }
+                });
+            }
+        }
+    },
 
-	markdown: {
-		extendMarkdown: md => {
-			md.use(require('markdown-it-multimd-table'), {
-				rowspan: true,
-			});
-		}
-	},
+    markdown: {
+        extendMarkdown: md => {
+            md.use(require('markdown-it-multimd-table'), {
+                rowspan: true,
+            });
+        }
+    },
 
     theme: 'vuepress-theme-succinct',
     globalUIComponents: [
@@ -56,10 +56,10 @@ module.exports = {
     themeConfig: {
         lastUpdated: true,
         repo: 'https://github.com/dortania/OpenCore-Legacy-Patcher/',
-		docsDir: 'docs',
-		docsBranch: 'main',
-		editLinks: true,
-		editLinkText: 'Help us improve this page!',
+        docsDir: 'docs',
+        docsBranch: 'main',
+        editLinks: true,
+        editLinkText: 'Help us improve this page!',
         logo: 'homepage.png',
 
         sidebar: [{
@@ -67,8 +67,8 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-				'START',
-				'MODELS',
+                'START',
+                'MODELS',
             ]
 
         },
@@ -78,7 +78,7 @@ module.exports = {
             sidebarDepth: 1,
             children: [
                 'INSTALLER',
-				'BUILD',
+                'BUILD',
             ]
 
         },
@@ -87,17 +87,17 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-				'BOOT',
-				'POST-INSTALL',
+                'BOOT',
+                'POST-INSTALL',
             ]
 
         },
-		        {
+        {
             title: 'macOS Sequoia',
             collapsable: false,
             sidebarDepth: 1,
             children: [
-				['SEQUOIA-DROP', 'macOS Sequoia Support'],
+                ['SEQUOIA-DROP', 'macOS Sequoia Support'],
             ]
         },
         {
@@ -105,25 +105,25 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-				['SONOMA-DROP', 'macOS Sonoma Support'],
+                ['SONOMA-DROP', 'macOS Sonoma Support'],
             ]
         },
-		  
-	{
+
+        {
             title: 'macOS Ventura',
             collapsable: false,
             sidebarDepth: 1,
             children: [
-				['VENTURA-DROP', 'macOS Ventura Support'],
+                ['VENTURA-DROP', 'macOS Ventura Support'],
             ]
-        },      
-		  
-	{
+        },
+
+        {
             title: 'macOS Monterey',
             collapsable: false,
             sidebarDepth: 1,
             children: [
-				['MONTEREY-DROP', 'macOS Monterey Support'],
+                ['MONTEREY-DROP', 'macOS Monterey Support'],
             ]
         },
         {
@@ -131,15 +131,15 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-				'ACCEL',
-				'TROUBLESHOOTING',
-				'DEBUG',
-				'UPDATE',
-				'UNINSTALL',
-				'ICNS',
-				'WINDOWS',
-				'UNIVERSALCONTROL',
-		    		'PROCESS',
+                'ACCEL',
+                'TROUBLESHOOTING',
+                'DEBUG',
+                'UPDATE',
+                'UNINSTALL',
+                'ICNS',
+                'WINDOWS',
+                'UNIVERSALCONTROL',
+                'PROCESS',
             ]
         },
         {
@@ -147,8 +147,8 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-				'DONATE',
-				'LICENSE',
+                'DONATE',
+                'LICENSE',
             ]
 
         },
@@ -157,23 +157,22 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-				'ISSUES-HOLD',
-				'TERMS',
-				'HOW',
-				'PATCHEXPLAIN',
+                'ISSUES-HOLD',
+                'TERMS',
+                'HOW',
+                'PATCHEXPLAIN',
             ]
 
         },
         ],
     },
     plugins: [
-        '@vuepress/plugin-back-to-top',
+        '@vuepress/back-to-top',
         'vuepress-plugin-smooth-scroll',
-	'vuepress-plugin-fulltext-search',
-	['flexsearch'],
-        ['vuepress-plugin-medium-zoom',
+        'vuepress-plugin-fulltext-search',
+        ['@vuepress/medium-zoom',
             {
-                selector: "img",
+                selector: ".theme-succinct-content :not(a) > img",
                 options: {
                     background: 'var(--bodyBgColor)'
                 }

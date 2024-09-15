@@ -47,3 +47,22 @@ tr
   background-color var(--sideBgColor)!important
   box-shadow 0px 0px 2px var(--bodyBgColor)
   right -12%!important
+
+
+@media (min-width: 1000px)
+  .theme-succinct-content:not(.custom)
+    max-width 70%
+
+.search-box .suggestion a .suggestion-row .page-title
+  border-color var(--borderColor) !important
+  background-color: var(--sideBgColor) !important
+
+.search-box .suggestion a .suggestion-row .suggestion-content
+  border-color var(--borderColor) !important
+
+.search-box .suggestion a .parent-page-title
+  background-color: var(--bodyBgColor) !important
+  color: var(--accentColor) !important
+
+.search-box .suggestion.focused a
+  color: var(--navItemHoverColor) !important

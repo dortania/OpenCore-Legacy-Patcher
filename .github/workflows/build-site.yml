@@ -11,26 +11,34 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'dortania'
     steps:
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '12'
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: '0'
-          persist-credentials: false
-          submodules: 'recursive'
-      - name: Install
-        run: npm install -d
-        working-directory: 'docs'
-      - name: Build
-        run: npm run build
-        working-directory: 'docs'
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main'}}
+          submodules: "recursive"
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: docs/.vuepress/dist/
-          CLEAN: true
+          node-version: "22"
+          cache: "yarn"
+          cache-dependency-path: ./yarn.lock
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: docs
+      - name: Build
+        run: yarn run build
+        working-directory: docs
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vuepress/dist/
+  deploy:
+    if: ${{ github.repository_owner == 'dortania' && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
