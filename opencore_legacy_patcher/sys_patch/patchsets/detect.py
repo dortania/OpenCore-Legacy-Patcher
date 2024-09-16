@@ -219,12 +219,12 @@ class HardwarePatchsetDetection:
         nv_on = utilities.get_nvram("boot-args", decode=True)
         if nv_on:
             if "ngfxgl=" in nv_on:
-                return True
+                return False
         for gpu in self._constants.computer.gpus:
             if isinstance(gpu, device_probe.NVIDIA):
                 if gpu.disable_metal is True:
-                    return True
-        return False
+                    return False
+        return True
 
 
     def _validation_check_force_compat_missing(self) -> bool:
@@ -234,12 +234,12 @@ class HardwarePatchsetDetection:
         nv_on = utilities.get_nvram("boot-args", decode=True)
         if nv_on:
             if "ngfxcompat=" in nv_on:
-                return True
+                return False
         for gpu in self._constants.computer.gpus:
             if isinstance(gpu, device_probe.NVIDIA):
                 if gpu.force_compatible is True:
-                    return True
-        return False
+                    return False
+        return True
 
 
     def _validation_check_nvda_drv_missing(self) -> bool:
@@ -249,11 +249,11 @@ class HardwarePatchsetDetection:
         nv_on = utilities.get_nvram("boot-args", decode=True)
         if nv_on:
             if "nvda_drv_vrl=" in nv_on:
-                return True
+                return False
         nv_on = utilities.get_nvram("nvda_drv")
         if nv_on:
-            return True
-        return False
+            return False
+        return True
 
 
     @cache
