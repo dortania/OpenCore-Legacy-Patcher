@@ -30,7 +30,7 @@ iPhone Mirroring requires T2 for attestation and Apple Intelligence requires an 
 
 * [Dual socket CPUs with Mac Pros and Xserve](#dual-socket-cpus-with-mac-pro-2008-and-xserve-2008)
 * [T2 Security chip](#t2-security-chip)
-* [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
+* [USB 1.1 (OHCI/UHCI) Support](#usb-1-1-ohci-uhci-support)
 * [Graphics support and issues](#graphics-support-and-issues)
 
 
