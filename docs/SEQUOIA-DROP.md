@@ -85,7 +85,7 @@ However, the driver has recently been weakened starting from Sonoma, which means
 An alternative way is making sure to enable "Remote Login" in General -> Sharing before updating, which will enable SSH. 
 That means you can take control using Terminal in another system by typing `ssh username@lan-ip-address` and your password. 
 
-After that run Post Install Volume Patching by typing `/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --patch-sys-vol` and finally `sudo reboot`.
+After that run Post Install Volume Patching by typing `/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --patch_sys_vol` and finally `sudo reboot`.
 
 
 ![](./images/usb11-chart.png)
