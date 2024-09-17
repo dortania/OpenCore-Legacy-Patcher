@@ -238,7 +238,7 @@ For Macs using legacy USB 1.1 controllers, OpenCore Legacy Patcher can only rest
 
 In macOS Sonoma, this seems to have been further weakened and some hubs may not be functional. 
 
-Alternative way is making sure to enable "Remote Login" in General -> Sharing before updating, which will enable SSH. That means you can take control using Terminal in another system by typing `ssh username@lan-ip-address` and your password. After that run Post Install Volume Patching by typing `/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --patch-sys-vol` and finally `sudo reboot`.
+Alternative way is making sure to enable "Remote Login" in General -> Sharing before updating, which will enable SSH. That means you can take control using Terminal in another system by typing `ssh username@lan-ip-address` and your password. After that run Post Install Volume Patching by typing `/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --patch_sys_vol` and finally `sudo reboot`.
 
 :::
 
