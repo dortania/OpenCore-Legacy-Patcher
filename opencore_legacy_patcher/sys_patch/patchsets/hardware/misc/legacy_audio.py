@@ -118,6 +118,7 @@ class LegacyAudio(BaseHardware):
                         "AppleVirtualPlatform.kext",
                         "ApplePVPanic.kext",
                         "AppleVirtIOStorage.kext",
+                        "AvpFairPlayDriver.kext",
                     ],
                 },
             },
