@@ -58,9 +58,7 @@ All unsupported systems require lowered SIP.
 
 Majority of unsupported systems from 2013 onward can enable full SIP.
 
-Pre-2012 systems, also known as "non-Metal" (includes Mac Pros without upgraded GPU), as well as NVIDIA Kepler and Intel HD 4000 GPUs require lowered SIP.
-
-Some systems such as Mac Pros also require lowered SIP for stock WiFi cards and stock GPUs (due to root patching) but if you do not need WiFi (or you plan to upgrade it) and you're running on an upgraded GPU, there is no need for root patching and as such SIP can be fully enabled.
+Pre-2012 systems, also known as "non-Metal", as well as NVIDIA Kepler and Intel HD 4000 GPUs require lowered SIP. Mac Pros also require lowered SIP for stock WiFi cards and stock GPUs (due to root patching) but if you do not need WiFi (or you plan to upgrade it) and you're running on an upgraded GPU, there is no need for root patching and as such SIP can be fully enabled.
 
 **Big Sur**
 
