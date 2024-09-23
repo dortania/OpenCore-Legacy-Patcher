@@ -6,6 +6,9 @@
 - Avoid downgrading AppleGVA stack on AMD GCN and newer GPUs
   - Resolves VTDecoderXPC crashes
   - Thanks @ausdauersportler for the catch!
+- Resolve glitched widgets on 3802-based GPUs running macOS Sequoia 15.1
+- Resolve CoreImage crashes on 3802-based GPUs running macOS Sequoia
+- Resolve missing screen capture crop borders on non-Metal GPUs running macOS Sequoia
 - Increment binaries:
   - PatcherSupportPkg 1.8.2 - release
 
