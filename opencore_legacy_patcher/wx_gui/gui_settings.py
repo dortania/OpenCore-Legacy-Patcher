@@ -23,7 +23,8 @@ from ..support import (
     global_settings,
     defaults,
     generate_smbios,
-    network_handler
+    network_handler,
+    subprocess_wrapper
 )
 from ..datasets import (
     model_array,
@@ -739,9 +740,9 @@ class SettingsFrame(wx.Frame):
                     "value": self._get_system_settings("Moraea.EnableSpinHack"),
                     "variable": "Moraea.EnableSpinHack",
                     "description": [
-                        "Note: May be more CPU intensive.",
+                        "Control beach ball cursor behaviour.",
                     ],
-                    "override_function": self._update_system_defaults,
+                    "override_function": self._update_system_defaults_root,
                     "condition": gui_support.CheckProperties(self.constants).host_is_non_metal(general_check=True)
                 },
                 "wrap_around 2": {
@@ -1125,6 +1126,19 @@ Hardware Information:
 
         logging.info(f"Updating System Defaults: {variable} = {value} ({value_type})")
         subprocess.run(["/usr/bin/defaults", "write", "-globalDomain", variable, value_type, str(value)])
+
+
+    def _update_system_defaults_root(self, variable, value, global_setting = None):
+        value_type = type(value)
+        if value_type is str:
+            value_type = "-string"
+        elif value_type is int:
+            value_type = "-int"
+        elif value_type is bool:
+            value_type = "-bool"
+
+        logging.info(f"Updating System Defaults (root): {variable} = {value} ({value_type})")
+        subprocess_wrapper.run_as_root(["/usr/bin/defaults", "write", "-globalDomain", variable, value_type, str(value)])
 
 
     def _find_parent_for_key(self, key: str) -> str:
