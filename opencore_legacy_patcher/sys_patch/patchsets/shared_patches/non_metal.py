@@ -38,6 +38,9 @@ class NonMetal(BaseSharedPatchSet):
                     "/System/Applications": {
                         **({ "Photo Booth.app": "11.7.9"} if self._xnu_major >= os_data.monterey else {}),
                     },
+                    "/usr/sbin": {
+                        **({ "screencapture": "14.7"} if self._xnu_major >= os_data.sequoia else {}),
+                    },
                 },
                 PatchType.REMOVE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": [
