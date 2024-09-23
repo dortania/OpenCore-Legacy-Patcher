@@ -3,6 +3,8 @@
 ## 2.1.0
 - Fix Nvidia Kepler patches not installing on Monterey
 - Fix `iMac7,1` and `iMac8,1` failing to apply root patches on macOS Sequoia
+- Increment binaries:
+  - PatcherSupportPkg 1.8.2 - release
 
 ## 2.0.1
 - Fix MacBookPro13,3 listing 'Available patches' after having installed all applicable patches
