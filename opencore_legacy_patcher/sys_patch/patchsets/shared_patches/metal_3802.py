@@ -2,6 +2,8 @@
 metal_3802.py: Metal 3802 patches
 """
 
+import packaging.version
+
 from .base import BaseSharedPatchSet
 
 from ..base import PatchType, DynamicPatchset
@@ -129,7 +131,7 @@ class LegacyMetal3802(BaseSharedPatchSet):
                         "default.metallib": "15.0 Beta 7",
                     },
                     "/System/Library/PrivateFrameworks/RenderBox.framework/Versions/A/Resources": {
-                        "default.metallib": "15.0 Beta 8",
+                        "default.metallib": "15.0 Beta 8" if packaging.version.parse(self._marketing_version) < packaging.version.parse("15.1") else "15.1 Beta 4",
                     },
                     "/System/iOSSupport/System/Library/PrivateFrameworks/VFX.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
