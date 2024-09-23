@@ -139,7 +139,7 @@ class AMDPolaris(BaseHardware):
                 **AMDOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             })
 
-        # Polaris and Vega GPUs still use the native GVA stack
+        # AMD GCN and newer GPUs can still use the native GVA stack
         _base.update({
             **MontereyGVA(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).revert_patches(),
         })

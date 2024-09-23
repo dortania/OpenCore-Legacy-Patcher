@@ -120,11 +120,10 @@ class AMDLegacyGCN(BaseHardware):
 
         _base = {}
 
-        if self._is_gpu_architecture_present(gpu_architectures=[device_probe.Intel.Archs.Skylake]) is False:
-            # Monterey GVA is not required for Intel Skylake iGPUs
-            _base.update({
-                **MontereyGVA(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
-            })
+        # AMD GCN and newer GPUs can still use the native GVA stack
+        _base.update({
+            **MontereyGVA(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).revert_patches(),
+        })
 
         _base.update({
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),

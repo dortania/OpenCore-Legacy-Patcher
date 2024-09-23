@@ -3,7 +3,8 @@
 ## 2.1.0
 - Fix Nvidia Kepler patches not installing on Monterey
 - Fix `iMac7,1` and `iMac8,1` failing to apply root patches on macOS Sequoia
-- Avoid downgrading AppleGVA stack on AMD Polaris and Vega GPUs
+- Avoid downgrading AppleGVA stack on AMD GCN and newer GPUs
+  - Resolves VTDecoderXPC crashes
   - Thanks @ausdauersportler for the catch!
 - Increment binaries:
   - PatcherSupportPkg 1.8.2 - release
