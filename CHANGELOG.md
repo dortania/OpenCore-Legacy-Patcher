@@ -9,8 +9,9 @@
 - Resolve glitched widgets on 3802-based GPUs running macOS Sequoia 15.1
 - Resolve CoreImage crashes on 3802-based GPUs running macOS Sequoia
 - Resolve missing screen capture crop borders on non-Metal GPUs running macOS Sequoia
+- Resolve TeraScale 2 HDCP kernel panic
 - Increment binaries:
-  - PatcherSupportPkg 1.8.2 - release
+  - PatcherSupportPkg 1.8.3 - release
 
 ## 2.0.1
 - Fix MacBookPro13,3 listing 'Available patches' after having installed all applicable patches

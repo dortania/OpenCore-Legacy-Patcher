@@ -34,7 +34,7 @@ class AMDTeraScale(BaseSharedPatchSet):
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AMDFramebuffer.kext":           "10.13.6",
-                        "AMDLegacyFramebuffer.kext":     "10.13.6",
+                        "AMDLegacyFramebuffer.kext":     "10.13.6" if self._xnu_float < self.macOS_13_3 else "10.13.6 TS2",
                         "AMDLegacySupport.kext":         "10.13.6",
                         "AMDShared.bundle":              "10.13.6",
                         "AMDSupport.kext":               "10.13.6",
