@@ -40,3 +40,24 @@ class MontereyGVA(BaseSharedPatchSet):
                 },
             },
         }
+
+
+    def revert_patches(self) -> dict:
+        """
+        Revert if patches are no longer required/misapplied
+        """
+        if self._os_requires_patches() is False:
+            return {}
+
+        return {
+            "Revert Monterey GVA": {
+                PatchType.REMOVE_SYSTEM_VOLUME: {
+                    "/System/Library/PrivateFrameworks/AppleGVA.framework/Versions/A": [
+                        "AppleGVA"
+                    ],
+                    "/System/Library/PrivateFrameworks/AppleGVACore.framework/Versions/A": [
+                        "AppleGVACore"
+                    ],
+                }
+            }
+        }

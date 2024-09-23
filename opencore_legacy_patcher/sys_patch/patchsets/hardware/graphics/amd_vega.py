@@ -122,7 +122,9 @@ class AMDVega(BaseHardware):
             return {}
 
         return {
-            **MontereyGVA(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
+            # Polaris and Vega GPUs still use the native GVA stack
+            **MontereyGVA(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).revert_patches(),
+
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **AMDOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **self._model_specific_patches(),
