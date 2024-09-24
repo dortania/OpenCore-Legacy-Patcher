@@ -6,7 +6,8 @@
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
 * [Why is my system slow?](#why-is-my-system-slow)
 * [Crashing in random places](#crashing-in-random-places)
-* [Where is iPhone Mirroring, Apple Intelligence?](#where-is-iphone-mirroring-apple-intelligence)
+* [Why isn't iPhone Mirroring working?](why-isnt-iphone-mirroring-working)
+* [Where is Apple Intelligence?](#where-is-apple-intelligence)
 
 
 ## Why are the settings not "saving"?
@@ -55,14 +56,11 @@ Be advised that by disabling FeatureUnlock, you will lose some macOS functionali
 These GPUs are typically met in systems from 2012-2015.
 
 
+## Why isn't iPhone Mirroring working?
 
-## Where is iPhone Mirroring, Apple Intelligence?
+iPhone Mirroring requires a T2 chip, which means it will not be available on OCLP patched systems. The connection fails due to failure to establish T2 attestation.
 
-### iPhone Mirroring
-
-iPhone Mirroring requires a T2 chip, which means it will not be available on OCLP patched systems.
-
-### Apple Intelligence
+## Where is Apple Intelligence?
 
 Apple Intelligence requires Neural Engine, which is only found in Apple Silicon chips.
 
