@@ -37,7 +37,7 @@ You can still manually initiate an update when you're ready to do so.
 
 This can mean many things. Firstly, newer operating systems are harder to run and can appear more slow.
 
-However, if your system is being **really** slow and you have no transparency in Dock and menubar, this typically indicates that root patches are not installed and as such there is no acceleration. Make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the Troubleshooting section for more information.
+However, if your system is being **really** slow and you have no transparency in Dock and menubar, this typically indicates that root patches are not installed and as such there is no acceleration. Make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the [Troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html) section for more information.
 
 Patches can also break if automatic updates are enabled and an update modifies the system volume, refer to [Can I use automatic updates?](#can-i-use-automatic-updates) for more information.
 
