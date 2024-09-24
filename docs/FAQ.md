@@ -29,7 +29,7 @@ If you are feeling brave and don't mind having to possibly recover your system. 
 
 Apple has recently changed the way automatic updates work and it is extremely recommended to disable automatic updates (even downloading) when using OCLP.
 
-Updates from now on modify the system volume already while downloading, which can lead to "version mismatch" error while root patching as the operating system gets into a liminal state between two versions. If this happens to you, there is a "PurgePendingUpdate" tool currently available [on the Discord server](https://discord.com/channels/417165963327176704/1037474131526029362/1255993208966742108) you can download and then run it in Terminal, to get rid of a pending update. This may be integrated into OCLP later on, however there is currently no ETA.
+Updates from now on modify the system volume already while downloading, which can lead to broken patches out of a sudden as well as a "version mismatch" error while root patching as the operating system gets into a liminal state between two versions. If this happens to you, there is a "PurgePendingUpdate" tool currently available [on the Discord server](https://discord.com/channels/417165963327176704/1037474131526029362/1255993208966742108) you can download and then run it in Terminal, to get rid of a pending update. This may be integrated into OCLP later on, however there is currently no ETA.
 
 ## Why is my system slow?
 
