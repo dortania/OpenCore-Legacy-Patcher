@@ -55,7 +55,7 @@ Be advised that by disabling FeatureUnlock, you will lose some macOS functionali
     * Ivy Bridge (3rd generation, HD 4000 series GPUs)
     * Haswell (4th generation, HD/Iris 4000-5000 series GPUs)
 
-These GPUs are typically met in systems from 2012-2014.
+These GPUs are typically met in systems from 2012-2015.
 
 
 
