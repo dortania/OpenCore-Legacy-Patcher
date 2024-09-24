@@ -4,6 +4,7 @@
 * [Can I use OTA updates?](#can-i-use-ota-updates)
 * [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
+* [Why is my system slow?](#why-is-my-system-slow)
 * [Why can't I connect to iPhone Mirroring?](#iphone-mirroring)
 * [Why is Apple Intelligence not working?](#apple-intelligence)
 
@@ -29,6 +30,14 @@ If you are feeling brave and don't mind having to possibly recover your system. 
 Apple has recently changed the way automatic updates work and it is extremely recommended to disable automatic updates (even downloading) when using OCLP.
 
 Updates from now on modify the system volume already while downloading, which can lead to "version mismatch" error while root patching as the operating system gets into a liminal state between two versions. If this happens to you, there is a "PurgePendingUpdate" tool currently available [on the Discord server](https://discord.com/channels/417165963327176704/1037474131526029362/1255993208966742108) you can download and then run it in Terminal, to get rid of a pending update. This may be integrated into OCLP later on, however there is currently no ETA.
+
+## Why is my system slow?
+
+This can mean many things. Firstly, newer operating systems are harder to run and can appear more slow.
+
+However, if your system is being **really** slow and you have no transparency in Dock and menubar, this typically indicates that root patches are not installed and as such there is no acceleration. Make sure to install root pathes to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the Troubleshooting section for more information.
+
+Patches can also break if automatic updates are enabled and an update modifies the system volume, refer to [Can I use automatic updates?](#can-i-use-automatic-updates) for more information.
 
 ## Unsupported features
 
