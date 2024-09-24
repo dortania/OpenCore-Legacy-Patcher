@@ -2,7 +2,7 @@
 
 * [Why are the settings not "saving"?](#why-are-the-settings-not-saving)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
-* [Can I upgrade to macOS betas?](#can-i-update-to-macos-betas)
+* [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Why can't I connect to iPhone Mirroring?](#why-cant-i-connect-to-iphone-mirroring)
 * [Why is Apple Intelligence not working?](#why-is-apple-intelligence-not-working)
 
@@ -19,7 +19,7 @@ You can. However it is extremely recommended to use USB drive for major OS upgra
 
 General updates are usually fine, though it is always a good idea to wait few days to see whether patches break and have to be fixed.
 
-## Can I upgrade to macOS betas?
+## Can I update to macOS betas?
 
 If you are feeling brave and don't mind having to possibly recover your system. However, be advised that no help will be given in situations where a beta was installed.
 
