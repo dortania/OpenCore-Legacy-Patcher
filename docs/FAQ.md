@@ -28,9 +28,9 @@ If you are feeling brave and don't mind having to possibly recover your system. 
 
 ## Can I use automatic updates?
 
-It is extremely recommended to disable automatic updates (even downloading) when using OCLP, as Apple has recently changed the way automatic updates work.
+It is extremely recommended to disable automatic updates (even downloading) when using OCLP, as Apple has recently changed the way automatic updates work. You can still manually initiate an update when you're ready to do so.
 
-For a related "System version mismatch" error while root patching, refer to [this troubleshooting section](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching).
+For a related "System version mismatch" error while root patching, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for troubleshooting.
 
 ## Why is my system slow?
 
@@ -38,7 +38,7 @@ This can mean many things. Firstly, newer operating systems are harder to run an
 
 However, if your system is being **really** slow and you have no transparency in Dock and menubar, this typically indicates that root patches are not installed and as such there is no acceleration. Make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the [Troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html) section for more information.
 
-Patches can also break if automatic updates are enabled and an update modifies the system volume, refer to [Can I use automatic updates?](#can-i-use-automatic-updates) for more information.
+Patches can also break if automatic updates are enabled and an update modifies the system volume, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for more information.
 
 ## Crashing in random places
 
