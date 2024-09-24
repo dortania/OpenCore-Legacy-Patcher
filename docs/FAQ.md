@@ -30,7 +30,7 @@ If you are feeling brave and don't mind having to possibly recover your system. 
 
 It is extremely recommended to disable automatic updates (even downloading) when using OCLP, as Apple has recently changed the way automatic updates work.
 
-For a related "System version mismatch" error while root patching, refer to [this troubleshooting section](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching.
+For a related "System version mismatch" error while root patching, refer to [this troubleshooting section](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching).
 
 ## Why is my system slow?
 
