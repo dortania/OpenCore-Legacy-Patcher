@@ -6,7 +6,6 @@
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
 * [Why is my system slow?](#why-is-my-system-slow)
 * [Crashing in random places](#crashing-in-random-places)
-* [Why can't I connect to iPhone Mirroring?](#iphone-mirroring)
 * [Where is iPhone Mirroring, Apple Intelligence?](#where-is-iphone-mirroring-apple-intelligence)
 
 
