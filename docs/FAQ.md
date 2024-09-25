@@ -1,7 +1,7 @@
 # FAQ
 
 * [Why are the settings "not saving"?](#why-are-the-settings-not-saving)
-* [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-USB-install-media-as-a-uninversal-installer)
+* [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-usb-install-media-as-a-universal-installer)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
 * [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
