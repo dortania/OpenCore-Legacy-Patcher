@@ -21,7 +21,7 @@ In SIP settings, booted SIP is reported in text form e.g. "0x803" but the checkb
 
 ## Can I use the same USB install media as a universal installer?
 
-You cannot. OpenCore configurations are device specific, due to different quirks needed for different systems. If you are building OpenCore for a different system that you're running, you will have to select the targeted model from Settings before building OpenCore on the USB media.
+OpenCore configurations are device specific, due to different quirks needed for different systems. If you are building OpenCore for a different system that you're running, you will have to select the targeted model from Settings before building OpenCore on the USB media.
 
 ## Can I use OTA updates?
 
