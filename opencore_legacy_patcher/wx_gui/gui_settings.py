@@ -1138,7 +1138,7 @@ Hardware Information:
             value_type = "-bool"
 
         logging.info(f"Updating System Defaults (root): {variable} = {value} ({value_type})")
-        subprocess_wrapper.run_as_root(["/usr/bin/defaults", "write", "-globalDomain", variable, value_type, str(value)])
+        subprocess_wrapper.run_as_root(["/usr/bin/defaults", "write", "/Library/Preferences/.GlobalPreferences.plist", variable, value_type, str(value)])
 
 
     def _find_parent_for_key(self, key: str) -> str:
