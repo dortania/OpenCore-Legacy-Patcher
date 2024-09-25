@@ -1,6 +1,6 @@
 # FAQ
 
-* [Why are the settings not "saving"?](#why-are-the-settings-not-saving)
+* [Why are the settings "not saving"?](#why-are-the-settings-not-saving)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
 * [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
@@ -10,7 +10,7 @@
 * [Where is Apple Intelligence?](#where-is-apple-intelligence)
 
 
-## Why are the settings not "saving"?
+## Why are the settings "not saving"?
 
 OpenCore Legacy Patcher is a config build tool and as such the user interface always reverts to safe defaults, the user interface therefore **does not** reflect the status of settings. Settings are accounted for and saved by the OpenCore building process and you will always have to build OpenCore again after settings change.
 
