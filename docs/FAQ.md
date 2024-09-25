@@ -1,6 +1,7 @@
 # FAQ
 
 * [Why are the settings "not saving"?](#why-are-the-settings-not-saving)
+* [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-USB-install-media-as-a-uninversal-installer)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
 * [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
@@ -16,6 +17,11 @@ OpenCore Legacy Patcher is a config build tool and as such the user interface al
 
 Settings are saved to a config.plist file inside your EFI partition.
 
+## Can I use the same USB install media as a universal installer?
+
+You cannot. OpenCore configurations are device specific, due to different quirks needed for different systems.
+
+If you are building OpenCore to a different system that you're running, you will have to select the targeted model from Settings.
 
 ## Can I use OTA updates?
 
