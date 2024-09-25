@@ -12,9 +12,10 @@
 
 ## Why are the settings not "saving"?
 
-OpenCore Legacy Patcher is a config build tool and as such the user interface always reverts to safe defaults, the user interface therefore **does not** reflect the status of settings. 
+OpenCore Legacy Patcher is a config build tool and as such the user interface always reverts to safe defaults, the user interface therefore **does not** reflect the status of settings. Settings are accounted for and saved by the OpenCore building process and you will always have to build OpenCore again after settings change.
 
-Settings are saved to a config.plist file inside your EFI partition when building OpenCore. You will always have to build OpenCore again after settings change.
+Settings are saved to a config.plist file inside your EFI partition.
+
 
 ## Can I use OTA updates?
 
