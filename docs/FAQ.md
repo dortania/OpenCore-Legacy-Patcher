@@ -19,9 +19,7 @@ Settings are saved to a config.plist file inside your EFI partition.
 
 ## Can I use the same USB install media as a universal installer?
 
-You cannot. OpenCore configurations are device specific, due to different quirks needed for different systems.
-
-If you are building OpenCore to a different system that you're running, you will have to select the targeted model from Settings.
+You cannot. OpenCore configurations are device specific, due to different quirks needed for different systems. If you are building OpenCore for a different system that you're running, you will have to select the targeted model from Settings before building OpenCore on the USB media.
 
 ## Can I use OTA updates?
 
