@@ -1,6 +1,6 @@
 # OpenCore Legacy Patcher changelog
 
-## 2.1.0
+## 2.0.2
 - Fix Nvidia Kepler patches not installing on Monterey
 - Fix `iMac7,1` and `iMac8,1` failing to apply root patches on macOS Sequoia
 - Avoid downgrading AppleGVA stack on AMD GCN and newer GPUs
