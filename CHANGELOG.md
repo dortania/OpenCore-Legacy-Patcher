@@ -10,6 +10,8 @@
 - Resolve CoreImage crashes on 3802-based GPUs running macOS Sequoia
 - Resolve missing screen capture crop borders on non-Metal GPUs running macOS Sequoia
 - Resolve TeraScale 2 HDCP kernel panic
+- Resolve specific Wallpaper locking up on non-Metal GPUs running macOS Sequoia
+  - Removes unsupported Metal-based wallpaper (Macintosh Wallpaper)
 - Increment binaries:
   - PatcherSupportPkg 1.8.3 - release
 

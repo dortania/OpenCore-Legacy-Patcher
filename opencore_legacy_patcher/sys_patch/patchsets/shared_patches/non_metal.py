@@ -70,6 +70,9 @@ class NonMetal(BaseSharedPatchSet):
                         "IOGPUFamily.kext",
                         "AppleAfterburner.kext",
                     ],
+                    "/System/Library/ExtensionKit/Extensions/": [
+                        "WallpaperMacintoshExtension.appex"
+                    ],
                 },
                 PatchType.OVERWRITE_DATA_VOLUME: {
                     "/Library/Application Support/SkyLightPlugins": {
