@@ -12,6 +12,8 @@
 - Resolve TeraScale 2 HDCP kernel panic
 - Resolve specific Wallpaper locking up on non-Metal GPUs running macOS Sequoia
   - Removes unsupported Metal-based wallpaper (Macintosh Wallpaper)
+- Resolve firmware upload incompatibilities on pre-2012 Macs with 2012+ Airport cards
+  - Thanks @ausdauersportler for the catch!
 - Increment binaries:
   - PatcherSupportPkg 1.8.3 - release
 
