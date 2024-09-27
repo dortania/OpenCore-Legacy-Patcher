@@ -14,6 +14,8 @@
   - Removes unsupported Metal-based wallpaper (Macintosh Wallpaper)
 - Resolve firmware upload incompatibilities on pre-2012 Macs with 2012+ Airport cards
   - Thanks @ausdauersportler for the catch!
+- Resolve `diskutil` failing to be located in the installer creation process
+  - Thanks @niklasravnsborg for the report!
 - Increment binaries:
   - PatcherSupportPkg 1.8.3 - release
 
