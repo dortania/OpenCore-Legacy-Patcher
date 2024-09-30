@@ -66,6 +66,10 @@ There are two rather common things that can cause weird crashing. First is a pro
 
 Be advised that by disabling FeatureUnlock, you will lose some macOS functionality. The features enabled by FeatureUnlock are listed [here](https://github.com/acidanthera/FeatureUnlock).
 
+| FeatureUnlock | mediaanalysisd |
+| :--- | :--- |
+| ![FeatureUnlock](./images/OCLP_FeatureUnlock_Setting.png) | ![mediaanalysisd](./images/OCLP_Disable_mediaanalysisd_Setting.png) |
+
 *3802 systems include:
 * NVIDIA
     * Kepler (600-800 series GPUs)
