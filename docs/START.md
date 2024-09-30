@@ -7,6 +7,6 @@ OpenCore is a sophisticated boot loader used to inject and patch data in memory,
 
 ## How do I get started?
 
-1. Read the [FAQ](./FAQ.md) for application requirements and other information
+1. Read the [FAQ](./FAQ.md) for application requirements and other information.
 2. Check that your model is supported from the [Supported Models](./MODELS.md) page.
 3. Once you've verified your model is supported, you can jump into the process in [Download and build macOS Installer](./INSTALLER.md)
