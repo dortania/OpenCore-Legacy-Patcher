@@ -4,7 +4,7 @@ This document is centered around downloading and writing the macOS installer to 
 
 * Note: A 32GB drive is recommended, later versions of Sonoma and Sequoia cannot fit installer and patches to a 16GB disk. 16GB drive may work for older versions.
 
-## Creating the installer
+## Downloading the installer
 
 To start off, you'll want to grab the app:
 
@@ -19,6 +19,9 @@ For this example, we'll assume you'll need an installer. Select the "Download ma
 | Main menu | Installer creation menu | Available installers |
 | :--- | :--- | --- |
 | ![OCLP GUI Main Menu](./images/OCLP-GUI-Main-Menu.png) | ![OCLP GUI Installer Create Installer Menu](./images/OCLP-GUI-Create-Installer-Menu.png) | ![OCLP GUI Installer Download Listed Products](./images/OCLP-GUI-Installer-Download-Listed-Products.png) |
+
+
+## Creating the installer
 
 Once the download is finished, you can proceed to write the installer onto a USB drive.
 
