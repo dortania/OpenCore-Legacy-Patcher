@@ -1,5 +1,7 @@
 # FAQ
 
+
+* [Application requirements](#application-requirements)
 * [Why are the settings "not saving"?](#why-are-the-settings-not-saving)
 * [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-usb-install-media-as-a-universal-installer)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
@@ -9,6 +11,15 @@
 * [Crashing in random places](#crashing-in-random-places)
 * [Why isn't iPhone Mirroring working?](#why-isn-t-iphone-mirroring-working)
 * [Where is Apple Intelligence?](#where-is-apple-intelligence)
+
+
+
+## Application requirements
+The patcher application requires **OS X Yosemite 10.10** or later to run.
+* **OS X El Capitan 10.11** or later is required to make installers for macOS Ventura and later.
+
+The patcher is designed to target **macOS Big Sur 11.x to macOS Sequoia 15.x**.
+* Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
 
 
 ## Why are the settings "not saving"?
