@@ -32,7 +32,7 @@ The below tables can be used to reference issues with a particular model, and se
 
 ### MacBook
 
-| Model Name | Identifier | Tagged Issues |
+| Model Name | Identifier | Additional info |
 | :--- | :--- | :--- |
 | MacBook (13-inch, Aluminum, Late 2008) | `MacBook5,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)|
 | MacBook (13-inch, Early 2009)<br>MacBook (13-inch, Mid 2009) | `MacBook5,2` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)<br>- Trackpad gestures are partially broken |
@@ -40,11 +40,11 @@ The below tables can be used to reference issues with a particular model, and se
 | MacBook (13-inch, Mid 2010) | `MacBook7,1` | ^^ |
 | MacBook (Retina, 12-inch, Early 2015) | `MacBook8,1` | - [Legacy Metal (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) |
 | MacBook (Retina, 12-inch, Early 2016) | `MacBook9,1` | ^^ |
-| MacBook (Retina, 12-inch, 2017) | `MacBook10,1` | - Supported by OpenCore Legacy Patcher |
+| MacBook (Retina, 12-inch, 2017) | `MacBook10,1` | - Native graphics support |
 
 ### MacBook Air
 
-| Model Name | Identifier | Tagged Issues |
+| Model Name | Identifier | Additional info |
 | :--- | :--- | :--- |
 | MacBook Air (13-inch, Late 2008)<br>MacBook Air (13-inch, Mid 2009) | `MacBookAir2,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)|
 | MacBook Air (11-inch, Late 2010) | `MacBookAir3,1` | ^^ |
@@ -63,7 +63,7 @@ The below tables can be used to reference issues with a particular model, and se
 
 ### MacBook Pro
 
-| Model Name | Identifier | Tagged Issues |
+| Model Name | Identifier | Additional info |
 | :--- | :--- | :--- |
 | MacBook Pro (15-inch, Early 2008)<br>MacBook Pro (17-inch, Early 2008) | `MacBookPro4,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)|
 | MacBook Pro (15-inch, Late 2008)<br>MacBook Pro (15-inch, Early 2009) | `MacBookPro5,1` | ^^ |
@@ -87,7 +87,7 @@ The below tables can be used to reference issues with a particular model, and se
 | MacBook Pro (13-inch, 2016, 2 Thunderbolt 3 ports) | `MacBookPro13,1` | ^^ |
 | MacBook Pro (13-inch, 2016, 4 Thunderbolt 3 ports) | `MacBookPro13,2` | ^^ |
 | MacBook Pro (15-inch, 2016) | `MacBookPro13,3` | ^^ |
-| MacBook Pro (13-inch, 2017, 2 Thunderbolt 3 ports) | `MacBookPro14,1` | - Supported by OpenCore Legacy Patcher |
+| MacBook Pro (13-inch, 2017, 2 Thunderbolt 3 ports) | `MacBookPro14,1` | - Native graphics support |
 | MacBook Pro (13-inch, 2017, 4 Thunderbolt 3 ports) | `MacBookPro14,2` | ^^ |
 | MacBook Pro (15-inch, 2017) | `MacBookPro14,3` | - [Legacy Metal (macOS 14+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008) |
 | MacBook Pro (13-inch, 2018, 4 Thunderbolt 3 ports)<br>MacBook Pro (13-inch, 2019, 4 Thunderbolt 3 ports) | `MacBookPro15,2` | - Supported by Apple |
@@ -99,7 +99,7 @@ The below tables can be used to reference issues with a particular model, and se
 
 ### Mac mini
 
-| Model Name | Identifier | Tagged Issues |
+| Model Name | Identifier | Additional info |
 | :--- | :--- | :--- |
 | Mac mini (Early 2009) | `Macmini3,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021) |
 | Mac mini (Mid 2010) | `Macmini4,1` | ^^ |
@@ -109,7 +109,7 @@ The below tables can be used to reference issues with a particular model, and se
 | Mac mini (Late 2018) | `Macmini8,1` | - Supported by Apple |
 
 ### iMac
-| Model Name | Identifier | Tagged Issues |
+| Model Name | Identifier | Additional info |
 | :--- | :--- | :--- |
 | iMac (20-inch, Mid 2007)<br>iMac (24-inch, Mid 2007) | `iMac7,1` | - [Requires SSE4.1 CPU](https://lowendmac.com/2018/penryn-t9300-9500-cpu-upgrades-for-the-2007-imac/)<br>- [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)<br>- Remove stock Bluetooth to prevent panics |
 | iMac (20-inch, Early 2008)<br>iMac (24-inch, Early 2008) | `iMac8,1` | - [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021) |
@@ -130,7 +130,7 @@ The below tables can be used to reference issues with a particular model, and se
 | iMac (21.5-inch, Late 2015) | `iMac16,1` | ^^ |
 | iMac (Retina 4K, 21.5-inch, Late 2015) | `iMac16,2` | ^^ |
 | iMac (Retina 5K, 27-inch, Late 2015) | `iMac17,1` | ^^ |
-| iMac (21.5-inch, 2017) | `iMac18,1` | - Supported by OpenCore Legacy Patcher |
+| iMac (21.5-inch, 2017) | `iMac18,1` | - Native graphics support |
 | iMac (Retina 4K, 21.5-inch, 2017) | `iMac18,2` | ^^ |
 | iMac (Retina 5K, 27-inch, 2017) | `iMac18,3` | ^^ |
 | iMac (Retina 5K, 27-inch, 2019) | `iMac19,1` | - Supported by Apple |
@@ -140,7 +140,7 @@ The below tables can be used to reference issues with a particular model, and se
 
 ### Mac Pro
 
-| Model Name | Identifier | Tagged Issues |
+| Model Name | Identifier | Additional info |
 | :--- | :--- | :--- |
 | Mac Pro (Early 2008) | `MacPro3,1` | -  [Recommend upgrade to Metal GPU](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)<br>- [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)<br>- Remove stock Bluetooth to prevent panics |
 | Mac Pro (Early 2009) | `MacPro4,1` | - [Recommend upgrade to Metal GPU](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)<br>- [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021) |
@@ -150,7 +150,7 @@ The below tables can be used to reference issues with a particular model, and se
 
 ### Xserve
 
-| Model Name | Identifier | Tagged Issues |
+| Model Name | Identifier | Additional info |
 | :--- | :--- | :--- |
 | Xserve (Early 2008) | `Xserve2,1` | - Recommend upgrade to Metal GPU<br>- [non-Metal GPU (macOS 11+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)<br>- [USB 1.1 (macOS 13+)](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)
 | Xserve (Early 2009) | `Xserve3,1` | ^^ |
