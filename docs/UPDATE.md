@@ -16,9 +16,11 @@ Latest versions of OCLP can download updates by themselves, you will get notifie
 
 ## Updating patches
 
-After the update, the application asks if you want to update OpenCore and root patches. If you do not need to change any settings, you can click "Yes" and follow the procedure. OCLP will always build with developer set default settings. 
+After the update, the application asks if you want to update OpenCore and root patches. 
 
-If you use settings that deviate from OCLP defaults, select "no" from here and do your settings, then manually build and install OpenCore to update to the latest version of the bootloader and finally install new root patches to ensure you're running on the latest fixes.
+If you do not need to change any settings, you can click "Yes" and follow the procedure. OCLP will always build with developer set default settings. 
+
+If you use settings that deviate from OCLP defaults, select "no" from here and do your settings, then manually build and install OpenCore to update to the latest version of the bootloader and finally install new root patches to ensure you're running on the latest fixes. Refer to [Why are the settings "not saving"?](https://dortania.github.io/OpenCore-Legacy-Patcher/FAQ.html#why-are-the-settings-not-saving) for explanation on why the settings have to be redone.
 
 
 <div align="center">
