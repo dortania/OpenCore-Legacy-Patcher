@@ -14,13 +14,11 @@ Latest versions of OCLP can download updates by themselves, you will get notifie
 
 ## Updating patches
 
-After the update, the application asks if you want to update OpenCore and root patches.
-    
-   * Note: OCLP will always build with developer set default settings. If you use settings that deviate from OCLP defaults, select "no" from here and then do your settings. 
+After the update, the application asks if you want to update OpenCore and root patches. If you do not need to change any settings, you can click "Yes" and follow the procedure. OCLP will always build with developer set default settings. 
+
+If you use settings that deviate from OCLP defaults, select "no" from here and do your settings, then manually build and install OpenCore to update to the latest version of the bootloader and finally install new root patches to ensure you're running on the latest fixes.
    
 ![Update successful](./images/OCLP_Update_Successful.png)
-
-If you selected "no", you will have to manually build and install OpenCore to update to the latest version of the bootloader, then install new root patches to ensure you're running on the latest fixes.
 
 
 ## Checking OCLP and OpenCore versions
