@@ -24,7 +24,7 @@ The patcher is designed to target **macOS Big Sur 11.x to macOS Sequoia 15.x**.
 
 ## How do I make sure I'm all up to date?
 
-Updating the OpenCore installation is a three step process, first the application, second the bootloader and finally root patches.
+Updating the OCLP installation is a three step process, first the application, second the bootloader and finally root patches.
 
 Refer to [Updating OpenCore and patches](https://dortania.github.io/OpenCore-Legacy-Patcher/UPDATE.html) for how to update the application and patches.
 
