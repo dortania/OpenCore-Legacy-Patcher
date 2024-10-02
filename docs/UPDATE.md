@@ -8,8 +8,10 @@ Latest versions of OCLP can download updates by themselves, you will get notifie
 
 [You can also manually download the latest release here.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
-![Update available](./images/OCLP_Update_Available.png)
 
+<div align="center">
+             <img src="./images/OCLP_Update_Available.png" alt="Update Avaialble" />
+</div>
 
 
 ## Updating patches
@@ -17,9 +19,11 @@ Latest versions of OCLP can download updates by themselves, you will get notifie
 After the update, the application asks if you want to update OpenCore and root patches. If you do not need to change any settings, you can click "Yes" and follow the procedure. OCLP will always build with developer set default settings. 
 
 If you use settings that deviate from OCLP defaults, select "no" from here and do your settings, then manually build and install OpenCore to update to the latest version of the bootloader and finally install new root patches to ensure you're running on the latest fixes.
-   
-![Update successful](./images/OCLP_Update_Successful.png)
 
+
+<div align="center">
+             <img src="./images/OCLP_Update_Successful.png" alt="Update Successful" />
+</div>
 
 ## Checking OCLP and OpenCore versions
 
