@@ -18,7 +18,7 @@ After the update, the application asks if you want to update OpenCore and root p
     
    * Note: OCLP will always build with developer set default settings. If you use settings that deviate from OCLP defaults, select "no" from here and then do your settings. 
    
-![Update successful](./images/OCLP_Update_Successful.png) | 
+![Update successful](./images/OCLP_Update_Successful.png)
 
 If you selected "no", you will have to manually build and install OpenCore to update to the latest version of the bootloader, then install new root patches to ensure you're running on the latest fixes.
 
