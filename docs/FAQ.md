@@ -2,6 +2,7 @@
 
 
 * [Application requirements](#application-requirements)
+* [How do I make sure I'm all up to date?](#how-do-I-make-sure-im-all-up-to-date)
 * [Why are the settings "not saving"?](#why-are-the-settings-not-saving)
 * [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-usb-install-media-as-a-universal-installer)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
@@ -21,6 +22,11 @@ The patcher application requires **OS X Yosemite 10.10** or later to run.
 The patcher is designed to target **macOS Big Sur 11.x to macOS Sequoia 15.x**.
 * Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
 
+## How do I make sure I'm all up to date?
+
+Updating the OpenCore installation is a three step process, first the application, second the bootloader and finally root patches.
+
+Refer to [Updating OpenCore and patches](https://dortania.github.io/OpenCore-Legacy-Patcher/UPDATE.html) for how to update the application and patches.
 
 ## Why are the settings "not saving"?
 
