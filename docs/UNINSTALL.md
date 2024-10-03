@@ -8,14 +8,6 @@ Boot a native macOS installer, go to Disk Utility and choose View -> Show All De
 
 [Reset NVRAM](https://support.apple.com/HT204063) afterwards.
 
-
-## Uninstall OCLP and patches manually
-
-* [Main application](#uninstalling-the-application)
-* [Root Patches](#reverting-root-patches)
-* [OpenCore Bootloader](#uninstalling-the-bootloader)
-
-
 ## Uninstalling the application
 
 ### Version 1.5.0 and newer
