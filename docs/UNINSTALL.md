@@ -1,6 +1,8 @@
 # Uninstall
 
-### Delete everything and revert back to native macOS
+This guide tells you different ways to uninstall OCLP and/or patches.
+
+## Delete everything and revert back to native macOS
 
 Boot a native macOS installer, go to Disk Utility and choose View -> Show All Devices. Wipe the full disk by choosing the top option on the left sidebar and start macOS installation.
 
