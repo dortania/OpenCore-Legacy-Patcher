@@ -8,6 +8,7 @@
 * [Can I use OTA updates?](#can-i-use-ota-updates)
 * [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
+* [Can I downgrade macOS while keeping data?](#can-i-downgrade-macos-while-keeping-data)
 * [Why is my system slow?](#why-is-my-system-slow)
 * [Crashing in random places](#crashing-in-random-places)
 * [Why isn't iPhone Mirroring working?](#why-isn-t-iphone-mirroring-working)
@@ -57,6 +58,10 @@ If you are feeling brave and don't mind having to possibly recover your system. 
 It is extremely recommended to disable automatic updates (even downloading) when using OCLP, as Apple has recently changed the way automatic updates work. You can still manually initiate an update when you're ready to do so.
 
 For a related "System version mismatch" error while root patching, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for troubleshooting.
+
+## Can I downgrade macOS while keeping data?
+
+macOS doesn't allow direct downgrades, as such you will have to wipe the disk in order to revert. Backup your data beforehand either via Time Machine, ASR or some other solution.
 
 ## Why is my system slow?
 
