@@ -430,6 +430,10 @@ class GenerateDefaults:
                 continue
 
             constants_key = key.replace("GUI:", "")
+
+            if plist[key] == "PYTHON_NONE_VALUE":
+                plist[key] = None
+
             if hasattr(self.constants, constants_key):
                 logging.info(f"Setting {constants_key} to {plist[key]}")
                 setattr(self.constants, constants_key, plist[key])

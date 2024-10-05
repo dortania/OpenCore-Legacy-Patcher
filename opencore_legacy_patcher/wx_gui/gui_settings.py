@@ -1106,12 +1106,14 @@ Hardware Information:
     def _update_setting(self, variable, value):
         logging.info(f"Updating Local Setting: {variable} = {value}")
         setattr(self.constants, variable, value)
-        global_settings.GlobalEnviromentSettings().write_property(f"GUI:{variable}", value)
+        tmp_value = value or "PYTHON_NONE_VALUE"
+        global_settings.GlobalEnviromentSettings().write_property(f"GUI:{variable}", tmp_value)
 
 
     def _update_global_settings(self, variable, value, global_setting = None):
         logging.info(f"Updating Global Setting: {variable} = {value}")
-        global_settings.GlobalEnviromentSettings().write_property(variable, value)
+        tmp_value = value or "PYTHON_NONE_VALUE"
+        global_settings.GlobalEnviromentSettings().write_property(variable, tmp_value)
         if global_setting is not None:
             self._update_setting(global_setting, value)
 
@@ -1161,12 +1163,12 @@ Hardware Information:
         if hex(self.sip_value) == "0x0":
             self.constants.custom_sip_value = None
             self.constants.sip_status = True
-            global_settings.GlobalEnviromentSettings().write_property("GUI:custom_sip_value", None)
+            global_settings.GlobalEnviromentSettings().write_property("GUI:custom_sip_value", "PYTHON_NONE_VALUE")
             global_settings.GlobalEnviromentSettings().write_property("GUI:sip_status", True)
         elif hex(self.sip_value) == "0x803":
             self.constants.custom_sip_value = None
             self.constants.sip_status = False
-            global_settings.GlobalEnviromentSettings().write_property("GUI:custom_sip_value", None)
+            global_settings.GlobalEnviromentSettings().write_property("GUI:custom_sip_value", "PYTHON_NONE_VALUE")
             global_settings.GlobalEnviromentSettings().write_property("GUI:sip_status", False)
         else:
             self.constants.custom_sip_value = hex(self.sip_value)
@@ -1228,7 +1230,7 @@ Hardware Information:
             self.constants.fu_status = True
             self.constants.fu_arguments = None
             global_settings.GlobalEnviromentSettings().write_property("GUI:fu_status", True)
-            global_settings.GlobalEnviromentSettings().write_property("GUI:fu_arguments", "")
+            global_settings.GlobalEnviromentSettings().write_property("GUI:fu_arguments", "PYTHON_NONE_VALUE")
             return
 
         if value == "Partial":
@@ -1243,7 +1245,7 @@ Hardware Information:
         self.constants.fu_status = False
         self.constants.fu_arguments = None
         global_settings.GlobalEnviromentSettings().write_property("GUI:fu_status", False)
-        global_settings.GlobalEnviromentSettings().write_property("GUI:fu_arguments", "")
+        global_settings.GlobalEnviromentSettings().write_property("GUI:fu_arguments", "PYTHON_NONE_VALUE")
 
 
     def _populate_graphics_override(self, panel: wx.Panel) -> None:
