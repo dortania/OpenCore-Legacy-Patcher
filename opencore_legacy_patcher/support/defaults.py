@@ -2,7 +2,11 @@
 defaults.py: Generate default data for host/target
 """
 
+import logging
+import plistlib
 import subprocess
+
+from pathlib import Path
 
 from .. import constants
 
@@ -22,19 +26,52 @@ from ..datasets import (
 
 class GenerateDefaults:
 
-    def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants) -> None:
+    def __init__(self, model: str, host_is_target: bool, global_constants: constants.Constants, ignore_settings_file: bool = False) -> None:
         self.constants: constants.Constants = global_constants
 
         self.model: str = model
 
         self.host_is_target: bool = host_is_target
+        self.ignore_settings_file: bool = ignore_settings_file
 
         # Reset Variables
         self.constants.sip_status = True
         self.constants.secure_status = False
         self.constants.disable_cs_lv = False
         self.constants.disable_amfi = False
-        self.constants.fu_status = True
+        self.constants.fu_status = False
+
+        # Reset Variables - GUI override
+        # Match constants.py for model specific settings
+        # TODO: Write a sane system for this...
+        self.constants.firewire_boot = False
+        self.constants.xhci_boot = False
+        self.constants.nvme_boot = False
+        self.constants.force_quad_thread = False
+        self.constants.enable_wake_on_wlan = False
+        self.constants.disable_tb = False
+        self.constants.dGPU_switch = False
+        self.constants.disallow_cpufriend = False
+        self.constants.disable_mediaanalysisd = False
+        self.constants.set_alc_usage = True
+        self.constants.nvram_write = True
+        self.constants.allow_nvme_fixing = True
+        self.constants.allow_3rd_party_drives = True
+        self.constants.disable_fw_throttle = False
+        self.constants.software_demux = False
+        self.constants.disable_connectdrivers = False
+        self.constants.amd_gop_injection = False
+        self.constants.nvidia_kepler_gop_injection = False
+        self.constants.disable_cs_lv = False
+        self.constants.disable_amfi = False
+        self.constants.secure_status = False
+        self.constants.serial_settings = "None"
+        self.constants.override_smbios = "Default"
+        self.constants.allow_native_spoofs = False
+        self.constants.allow_oc_everywhere = False
+        self.constants.sip_status = True
+        self.constants.custom_sip_value = None
+
 
         self.constants.fu_arguments = None
 
@@ -55,6 +92,8 @@ class GenerateDefaults:
         self._misc_hardwares_probe()
         self._smbios_probe()
         self._check_amfipass_supported()
+        self._load_gui_defaults()
+
 
     def _general_probe(self) -> None:
         """
@@ -185,7 +224,6 @@ class GenerateDefaults:
                 is_modern_wifi = True
 
         else:
-            print("Checking WiFi")
             if self.model not in smbios_data.smbios_dictionary:
                 return
             if (
@@ -217,11 +255,10 @@ class GenerateDefaults:
                 self.constants.disable_cs_lv = True
                 self.constants.disable_amfi = True
 
-        if is_legacy_wifi is True:
-            # 13.0: Enabling AirPlay to Mac patches breaks Control Center on legacy chipsets
-            # AirPlay to Mac was unsupported regardless, so we can safely disable it
-            self.constants.fu_status = True
-            self.constants.fu_arguments = " -disable_sidecar_mac"
+        # if is_legacy_wifi is True:
+        #     # 13.0: Enabling AirPlay to Mac patches breaks Control Center on legacy chipsets
+        #     # AirPlay to Mac was unsupported regardless, so we can safely disable it
+        #     self.constants.fu_arguments = " -disable_sidecar_mac"
 
 
     def _misc_hardwares_probe(self) -> None:
@@ -274,6 +311,7 @@ class GenerateDefaults:
                     device_probe.NVIDIA.Archs.Kepler,
                 ]:
                     self.constants.disable_amfi = True
+                    self.constants.disable_mediaanalysisd = True
 
                 if arch in [
                         device_probe.AMD.Archs.Legacy_GCN_7000,
@@ -365,3 +403,33 @@ class GenerateDefaults:
 
         self.constants.disable_amfi = False
         self.constants.disable_cs_lv = False
+
+
+    def _load_gui_defaults(self) -> None:
+        """
+        Load GUI defaults from global settings
+        """
+        if not self.host_is_target:
+            return
+        if self.ignore_settings_file is True:
+            return
+
+        settings_plist = global_settings.GlobalEnviromentSettings().global_settings_plist
+        if not Path(settings_plist).exists():
+            return
+
+        try:
+            plist = plistlib.load(Path(settings_plist).open("rb"))
+        except Exception as e:
+            logging.error("Error: Unable to read global settings file")
+            logging.error(e)
+            return
+
+        for key in plist:
+            if not key.startswith("GUI:"):
+                continue
+
+            constants_key = key.replace("GUI:", "")
+            if hasattr(self.constants, constants_key):
+                logging.info(f"Setting {constants_key} to {plist[key]}")
+                setattr(self.constants, constants_key, plist[key])

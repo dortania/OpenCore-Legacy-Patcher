@@ -186,8 +186,8 @@ class Constants:
         self.custom_board_serial_number: str = ""  # Set SMBIOS board serial number
 
         ## FeatureUnlock Settings
-        self.fu_status:    bool = True  # Enable FeatureUnlock
-        self.fu_arguments: str  = None  # Set FeatureUnlock arguments
+        self.fu_status:    bool = False  # Enable FeatureUnlock
+        self.fu_arguments: str  = None   # Set FeatureUnlock arguments
 
         ## Security Settings
         self.sip_status:     bool = True  #  System Integrity Protection

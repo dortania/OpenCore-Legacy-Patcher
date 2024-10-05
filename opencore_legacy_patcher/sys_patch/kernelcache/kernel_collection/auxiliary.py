@@ -40,7 +40,7 @@ class AuxiliaryKernelCollection(BaseKernelCache):
         collection to be used.
         """
 
-        print("- Forcing Auxiliary Kernel Collection usage")
+        logging.info("- Forcing Auxiliary Kernel Collection usage")
         result = subprocess_wrapper.run_as_root(["/usr/bin/killall", "syspolicyd", "kernelmanagerd"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if result.returncode != 0:
             logging.info("- Unable to kill syspolicyd and kernelmanagerd")

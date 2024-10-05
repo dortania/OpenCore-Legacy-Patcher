@@ -1106,6 +1106,7 @@ Hardware Information:
     def _update_setting(self, variable, value):
         logging.info(f"Updating Local Setting: {variable} = {value}")
         setattr(self.constants, variable, value)
+        global_settings.GlobalEnviromentSettings().write_property(f"GUI:{variable}", value)
 
 
     def _update_global_settings(self, variable, value, global_setting = None):
@@ -1160,11 +1161,16 @@ Hardware Information:
         if hex(self.sip_value) == "0x0":
             self.constants.custom_sip_value = None
             self.constants.sip_status = True
+            global_settings.GlobalEnviromentSettings().write_property("GUI:custom_sip_value", None)
+            global_settings.GlobalEnviromentSettings().write_property("GUI:sip_status", True)
         elif hex(self.sip_value) == "0x803":
             self.constants.custom_sip_value = None
             self.constants.sip_status = False
+            global_settings.GlobalEnviromentSettings().write_property("GUI:custom_sip_value", None)
+            global_settings.GlobalEnviromentSettings().write_property("GUI:sip_status", False)
         else:
             self.constants.custom_sip_value = hex(self.sip_value)
+            global_settings.GlobalEnviromentSettings().write_property("GUI:custom_sip_value", hex(self.sip_value))
 
         self.sip_configured_label.SetLabel(f"Currently configured SIP: {hex(self.sip_value)}")
 
@@ -1191,10 +1197,12 @@ Hardware Information:
 
     def on_custom_serial_number_textbox(self, event: wx.Event) -> None:
         self.constants.custom_serial_number = event.GetEventObject().GetValue()
+        global_settings.GlobalEnviromentSettings().write_property("GUI:custom_serial_number", self.constants.custom_serial_number)
 
 
     def on_custom_board_serial_number_textbox(self, event: wx.Event) -> None:
         self.constants.custom_board_serial_number = event.GetEventObject().GetValue()
+        global_settings.GlobalEnviromentSettings().write_property("GUI:custom_board_serial_number", self.constants.custom_board_serial_number)
 
 
     def _populate_fu_override(self, panel: wx.Panel) -> None:
@@ -1207,7 +1215,7 @@ Hardware Information:
         gpu_combo_box.Bind(wx.EVT_CHOICE, self.fu_selection_click)
         if self.constants.fu_status is False:
             gpu_combo_box.SetStringSelection("Disabled")
-        elif self.constants.fu_arguments is None:
+        elif self.constants.fu_arguments is None or self.constants.fu_arguments == "":
             gpu_combo_box.SetStringSelection("Enabled")
         else:
             gpu_combo_box.SetStringSelection("Partial")
@@ -1219,17 +1227,23 @@ Hardware Information:
             logging.info("Updating FU Status: Enabled")
             self.constants.fu_status = True
             self.constants.fu_arguments = None
+            global_settings.GlobalEnviromentSettings().write_property("GUI:fu_status", True)
+            global_settings.GlobalEnviromentSettings().write_property("GUI:fu_arguments", "")
             return
 
         if value == "Partial":
             logging.info("Updating FU Status: Partial")
             self.constants.fu_status = True
             self.constants.fu_arguments = " -disable_sidecar_mac"
+            global_settings.GlobalEnviromentSettings().write_property("GUI:fu_status", True)
+            global_settings.GlobalEnviromentSettings().write_property("GUI:fu_arguments", " -disable_sidecar_mac")
             return
 
         logging.info("Updating FU Status: Disabled")
         self.constants.fu_status = False
         self.constants.fu_arguments = None
+        global_settings.GlobalEnviromentSettings().write_property("GUI:fu_status", False)
+        global_settings.GlobalEnviromentSettings().write_property("GUI:fu_arguments", "")
 
 
     def _populate_graphics_override(self, panel: wx.Panel) -> None:
@@ -1269,6 +1283,9 @@ Hardware Information:
                 self.constants.imac_model = "Navi"
             else:
                 raise Exception("Unknown GPU Model")
+            global_settings.GlobalEnviromentSettings().write_property("GUI:imac_vendor", "AMD")
+            global_settings.GlobalEnviromentSettings().write_property("GUI:metal_build", True)
+            global_settings.GlobalEnviromentSettings().write_property("GUI:imac_model", self.constants.imac_model)
         elif "Nvidia" in gpu_choice:
             self.constants.imac_vendor = "Nvidia"
             self.constants.metal_build = True
@@ -1278,9 +1295,14 @@ Hardware Information:
                 self.constants.imac_model = "GT"
             else:
                 raise Exception("Unknown GPU Model")
+            global_settings.GlobalEnviromentSettings().write_property("GUI:imac_vendor", "Nvidia")
+            global_settings.GlobalEnviromentSettings().write_property("GUI:metal_build", True)
+            global_settings.GlobalEnviromentSettings().write_property("GUI:imac_model", self.constants.imac_model)
         else:
             self.constants.imac_vendor = "None"
             self.constants.metal_build = False
+            global_settings.GlobalEnviromentSettings().write_property("GUI:imac_vendor", "None")
+            global_settings.GlobalEnviromentSettings().write_property("GUI:metal_build", False)
 
 
     def _get_system_settings(self, variable) -> bool:

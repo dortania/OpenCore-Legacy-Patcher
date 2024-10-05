@@ -72,7 +72,7 @@ xw
             return
 
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("FeatureUnlock.kext", self.constants.featureunlock_version, self.constants.featureunlock_path)
-        if self.constants.fu_arguments is not None:
+        if self.constants.fu_arguments is not None and self.constants.fu_arguments != "":
             logging.info(f"- Adding additional FeatureUnlock args: {self.constants.fu_arguments}")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += self.constants.fu_arguments
 
