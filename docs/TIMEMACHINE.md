@@ -1,4 +1,4 @@
-# Restoring from Time Machine backup
+# Restoring Time Machine backup
 
 OCLP automatically installs root patches when installing from the USB drive for the first time to ensure smooth operation of the first time settings. 
 
@@ -19,9 +19,7 @@ Now you should be fully restored with Time Machine and also running with all pat
 
 ::: warning Sequoia Note
 
-Time Machine restoring seems to be currently broken on Sequoia even after uninstalling root patches, leading to a loop with "Migration Finished" window.
-
-Currently the only way is to restore on older OS and then upgrade to Sequoia.
+Time Machine restoring seems to be currently broken on Sequoia even after uninstalling root patches, leading to a loop with "Migration Finished" window. Currently the only way is to restore on older OS and then upgrade to Sequoia.
 
 :::
 
