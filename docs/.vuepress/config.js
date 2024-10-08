@@ -134,13 +134,14 @@ module.exports = {
             children: [
                 'ACCEL',
                 'TROUBLESHOOTING',
-                'DEBUG',
+		'TIMEMACHINE',
                 'UPDATE',
                 'UNINSTALL',
+                'PROCESS',
+                'DEBUG',
                 'ICNS',
                 'WINDOWS',
                 'UNIVERSALCONTROL',
-                'PROCESS',
             ]
         },
         {
