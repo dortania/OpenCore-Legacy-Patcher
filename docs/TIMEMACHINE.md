@@ -9,7 +9,7 @@ To ensure a smooth Time Machine restore, follow the steps listed under:
 1. In first time settings (Setup Assistant), do not restore the backup. Instead do all settings like you would want to start fresh.
 2. Once you reach desktop, open the OCLP application and revert root patches in the Post Install Volume Patches section.
 3. Restart your Machine
-  * Note: Your Mac will feel slow due to lack of graphics drivers and resolution may be wrong. WiFi will also be unavailable in most cases, if your backup is on a network drive, use Ethernet.
+   * Note: Your Mac will feel slow due to lack of graphics drivers and resolution may be wrong. WiFi will also be unavailable in most cases, if your backup is on a network drive, use Ethernet.
 4. Login and start Migration Assistant
 5. Go through the restoring process.
 6. Once finished, go into the OCLP app and reinstall the root patches.
