@@ -1,4 +1,4 @@
-# macOS Monterey Support
+# macOS Monterey
 
 ![](./images/macos-monterey.png)
 

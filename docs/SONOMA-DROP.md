@@ -1,4 +1,4 @@
-# macOS Sonoma Support
+# macOS Sonoma
 
 ![](./images/sonoma.png)
 

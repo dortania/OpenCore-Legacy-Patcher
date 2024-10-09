@@ -1,4 +1,4 @@
-# macOS Sequoia Support
+# macOS Sequoia
 
 ![](./images/macos-sequoia.png)
 

@@ -1,4 +1,4 @@
-# macOS Ventura Support
+# macOS Ventura
 
 ![](./images/ventura.png)
 
