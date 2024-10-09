@@ -94,50 +94,41 @@ module.exports = {
 
         },
         {
-            title: 'macOS Sequoia',
+            title: 'macOS support',
             collapsable: false,
             sidebarDepth: 1,
             children: [
                 'SEQUOIA-DROP',
+		'SONOMA-DROP',
+		'VENTURA-DROP',
+		'MONTEREY-DROP',
             ]
         },
-        {
-            title: 'macOS Sonoma',
+ {
+            title: 'Application',
             collapsable: false,
             sidebarDepth: 1,
             children: [
-                'SONOMA-DROP',
+                'UPDATE',
+                'UNINSTALL',
+                'PROCESS',
             ]
         },
-
-        {
-            title: 'macOS Ventura',
-            collapsable: false,
-            sidebarDepth: 1,
-            children: [
-                'VENTURA-DROP',
-            ]
-        },
-
-        {
-            title: 'macOS Monterey',
-            collapsable: false,
-            sidebarDepth: 1,
-            children: [
-                'MONTEREY-DROP',
-            ]
-        },
-        {
-            title: 'Misc',
+	{
+            title: 'Troubleshooting',
             collapsable: false,
             sidebarDepth: 1,
             children: [
                 'ACCEL',
                 'TROUBLESHOOTING',
+            ]
+        },	  
+        {
+            title: 'Misc',
+            collapsable: false,
+            sidebarDepth: 1,
+            children: [
 		'TIMEMACHINE',
-                'UPDATE',
-                'UNINSTALL',
-                'PROCESS',
                 'DEBUG',
                 'ICNS',
                 'WINDOWS',
