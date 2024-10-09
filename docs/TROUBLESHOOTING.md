@@ -1,4 +1,4 @@
-# Troubleshooting
+# General troubleshooting
 
 Here are some common errors that users may experience while using this patcher:
 
