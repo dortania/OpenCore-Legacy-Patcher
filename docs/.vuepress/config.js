@@ -74,21 +74,13 @@ module.exports = {
 
         },
         {
-            title: 'Setting up',
+            title: 'How to install',
             collapsable: false,
             sidebarDepth: 1,
             children: [
                 'INSTALLER',
-                'BUILD',
-            ]
-
-        },
-        {
-            title: 'Installation',
-            collapsable: false,
-            sidebarDepth: 1,
-            children: [
-                'BOOT',
+                'BUILD',                
+		'BOOT',
                 'POST-INSTALL',
             ]
 
