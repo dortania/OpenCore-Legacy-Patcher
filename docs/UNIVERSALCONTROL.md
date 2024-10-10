@@ -239,11 +239,6 @@ Spoofing to any model with native Sonoma support should work, but these are the 
 
 :::
 
-
-:::
-
-### How to spoof
-
 ::: details macOS Sonoma
 
 Firstly run OpenCore Legacy Patcher.
