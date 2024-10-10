@@ -119,8 +119,10 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
+		'TROUBLESHOOTING',
                 'ACCEL',
-                'TROUBLESHOOTING',
+		'DEBUG',
+                
             ]
         },	  
         {
@@ -129,7 +131,6 @@ module.exports = {
             sidebarDepth: 1,
             children: [
 		'TIMEMACHINE',
-                'DEBUG',
                 'ICNS',
                 'WINDOWS',
                 'UNIVERSALCONTROL',
