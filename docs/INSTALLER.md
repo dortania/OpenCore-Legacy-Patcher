@@ -1,4 +1,4 @@
-# Download and build macOS Installers
+# Creating macOS Installers
 
 This document is centered around downloading and writing the macOS installer to a USB drive. If you're already familiar with how to do this, you can skip this section.
 
