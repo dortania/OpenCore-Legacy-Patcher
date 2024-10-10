@@ -86,7 +86,7 @@ module.exports = {
 
         },
         {
-            title: 'macOS support',
+            title: 'macOS Support',
             collapsable: false,
             sidebarDepth: 1,
             children: [
