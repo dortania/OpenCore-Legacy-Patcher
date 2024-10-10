@@ -3,7 +3,11 @@
 
 Introduced in macOS 12 Monterey, Universal Control is a feature that allows a Mac to control other Macs and/or iPads, share input devices, and share files across them simultaneously. With OpenCore and FeatureUnlock, Universal Control can be unlocked for most unsupported Macs, as long as they meet the technical requirements listed on this page.
 
-* Note: The following page is primarily for tinkerers, no proper support is provided outside of Discord support (see bottom of page).
+::: warning Note
+
+These features are not actively tested and may break at any time. The following page is primarily for tinkerers, no proper support is provided outside of Discord support (see bottom of page).
+
+:::
 
 ## Enabling Universal Control
 
@@ -202,7 +206,43 @@ Before we continue, please keep in mind that SMBIOS Spoofing is an advanced feat
 
 ### How to spoof
 
-Ventura has dropped more models which includes all of the blacklisted Macs in question, making the procedure slightly different. It is important to follow the guide for the version you're on, failing to do so is likely to cause boot issues.
+
+::: details macOS Sequoia
+
+Firstly run OpenCore Legacy Patcher.
+
+Then go to **Settings** and **SMBIOS** tab, set SMBIOS Spoof Level to **Moderate**. Set SMBIOS Spoof Model **one listed next to your native model in the table for spoofed models below.**
+
+Notice that "Allow native models" and "Allow Native Spoofs" **are NOT** enabled unlike on Monterey, this is on purpose. They are no longer relevant on Sonoma and enabling them will cause boot issues.
+
+| Main Settings view | SMBIOS settings |
+| :--- | :--- |
+| ![](./images/ventura_uc1.png) | ![](./images/ventura_uc2.png) |
+
+
+
+::: details Table for spoofed models (click to expand)
+
+Spoofing to any model with native Sonoma support should work, but these are the earliest Macs natively supported by Sonoma and thus chosen for the sake of simplicity.
+
+**Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Ventura as long as the other requirements are met, since they aren't blacklisted.
+
+
+| Mac by name | Native SMBIOS | Spoof SMBIOS |
+|-------------|---------------|--------------|
+| MacBook Air Early 2015 11" / 13" | MacBookAir7,x | MacBookAir9,1 |
+| MacBook Pro Early 2015 13" | MacBookPro12,x | MacBookPro15,2 |
+| MacBook Pro Mid 2015 15" | MacBookPro11,4 / 11,5 | MacBookPro15,2 |
+| iMac Late 2015 21" | iMac16,x | iMac19,2 |
+| Mac mini Late 2014  | Macmini7,x | MacMini8,1 |
+| Mac Pro Late 2013 | MacPro6,x | MacPro7,1 |
+
+:::
+
+
+:::
+
+### How to spoof
 
 ::: details macOS Sonoma
 
