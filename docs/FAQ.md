@@ -6,8 +6,8 @@
 * [Why are the settings "not saving"?](#why-are-the-settings-not-saving)
 * [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-usb-install-media-as-a-universal-installer)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
-* [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
+* [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I downgrade macOS while keeping data?](#can-i-downgrade-macos-while-keeping-data)
 * [Why is my system slow?](#why-is-my-system-slow)
 * [Crashing in random places](#crashing-in-random-places)
@@ -49,10 +49,6 @@ You can. However it is extremely recommended to use USB drive for major OS upgra
 
 General updates are usually fine, though it is always a good idea to wait few days to see whether patches break and have to be fixed.
 
-## Can I update to macOS betas?
-
-If you are feeling brave and don't mind having to possibly recover your system. However, be advised that no help will be given in situations where a beta was installed.
-
 ## Can I use automatic updates?
 
 It is extremely recommended to disable automatic updates (even downloading) when using OCLP, as Apple has recently changed the way automatic updates work. You can still manually initiate an update when you're ready to do so.
@@ -69,6 +65,10 @@ System Settings -> General -> Software Update -> (i) button next to Automatic Up
 
 System Preferences -> Software Update -> Advanced -> Disable "Download new updates when available".
 
+
+## Can I update to macOS betas?
+
+If you are feeling brave and don't mind having to possibly recover your system. However, be advised that no help will be given in situations where a beta was installed.
 
 
 ## Can I downgrade macOS while keeping data?
