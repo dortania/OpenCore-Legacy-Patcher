@@ -189,7 +189,7 @@ Due to Apple dropping NVIDIA Kepler support in macOS Monterey, [MacBookPro11,3's
 If you're having trouble with DisplayPort output on Mac Pros, try enabling Minimal Spoofing in Settings -> SMBIOS Settings and rebuild/install OpenCore. This will trick macOS drivers into thinking you have a newer MacPro7,1 and resolve the issue.
 
 
-<div align="center">
+<div align="left">
              <img src="./images/OCLP-GUI-SMBIOS-Minimal.png" alt="GUI SMBIOS minimal" width="800" />
 </div>        
 
