@@ -39,7 +39,7 @@ If the application won't launch (e.g. icon will bounce in the Dock), try launchi
 In some cases, a following error saying "The bless of the installer disk failed" stating the reason as "You don't have permission to save..." may appear. 
 
 
-<div align="center">
+<div align="left">
              <img src="./images/Error-No-Permission-To-Save.png" alt="NoPermissionToSave" width="600" />
 </div>
 
@@ -198,7 +198,7 @@ If you're having trouble with DisplayPort output on Mac Pros, try enabling Minim
 
 A semi-common popup some users face is the "Volume Hash Mismatch" error:
 
-<p align="center">
+<p align="left">
 <img src="./images/Hash-Mismatch.png">
 </p>
 
@@ -274,7 +274,7 @@ Applicable models include:
 | Mac mini    | Mid 2011 and older   | Macmini3,1 - Macmini5,x       |                                                  |
 | Mac Pro     | Mid 2010 and older   | MacPro3,1 - MacPro5,1         |                                                  |
 
-<div align="center">
+<div align="left">
              <img src="./images/usb11-chart.png" alt="USB1.1 chart" width="800" />
 </div>
 
