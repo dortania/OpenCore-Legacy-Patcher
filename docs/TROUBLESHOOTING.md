@@ -40,7 +40,7 @@ In some cases, a following error saying "The bless of the installer disk failed"
 
 
 <div align="center">
-             <img src="./images/Error-No-Permission-To-Save.png" alt="NoPermissionToSave" width="400" />
+             <img src="./images/Error-No-Permission-To-Save.png" alt="NoPermissionToSave" width="600" />
 </div>
 
 
@@ -188,7 +188,11 @@ Due to Apple dropping NVIDIA Kepler support in macOS Monterey, [MacBookPro11,3's
 
 If you're having trouble with DisplayPort output on Mac Pros, try enabling Minimal Spoofing in Settings -> SMBIOS Settings and rebuild/install OpenCore. This will trick macOS drivers into thinking you have a newer MacPro7,1 and resolve the issue.
 
-![](./images/OCLP-GUI-SMBIOS-Minimal.png)
+
+<div align="center">
+             <img src="./images/OCLP-GUI-SMBIOS-Minimal.png" alt="GUI SMBIOS minimal" width="800" />
+</div>        
+
 
 ## Volume Hash Mismatch Error in macOS Monterey
 
@@ -270,8 +274,9 @@ Applicable models include:
 | Mac mini    | Mid 2011 and older   | Macmini3,1 - Macmini5,x       |                                                  |
 | Mac Pro     | Mid 2010 and older   | MacPro3,1 - MacPro5,1         |                                                  |
 
-
-![](./images/usb11-chart.png)
+<div align="center">
+             <img src="./images/usb11-chart.png" alt="USB1.1 chart" width="800" />
+</div>
 
 ## No T1 functionality after installing Sonoma or newer
 
