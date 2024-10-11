@@ -59,6 +59,18 @@ It is extremely recommended to disable automatic updates (even downloading) when
 
 For a related "System version mismatch" error while root patching, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for troubleshooting.
 
+### Disabling updates
+
+**macOS Ventura and newer:**
+
+System Settings -> General -> Software Update -> (i) button next to Automatic Updates -> Disable "Download new updates when available".
+
+**macOS Big Sur and Monterey:**
+
+System Preferences -> Software Update -> Advanced -> Disable "Download new updates when available".
+
+
+
 ## Can I downgrade macOS while keeping data?
 
 macOS doesn't allow direct downgrades, as such you will have to wipe the disk in order to revert. Backup your data beforehand either via Time Machine, ASR or some other solution.
