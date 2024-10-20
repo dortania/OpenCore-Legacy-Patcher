@@ -9,7 +9,7 @@ Latest versions of OCLP can download updates by themselves, you will get notifie
 [You can also manually download the latest release here.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
 
-<div align="center">
+<div align="left">
              <img src="./images/OCLP_Update_Available.png" alt="Update Avaialble" />
 </div>
 
@@ -23,7 +23,7 @@ If you do not need to change any settings, you can click "Yes" and follow the pr
 If you use settings that deviate from OCLP defaults, select "no" from here and do your settings, then manually build and install OpenCore to update to the latest version of the bootloader and finally install new root patches to ensure you're running on the latest fixes. 
 
 
-<div align="center">
+<div align="left">
              <img src="./images/OCLP_Update_Successful.png" alt="Update Successful" />
 </div>
 
@@ -38,7 +38,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:OCLP-Version
 ```
 
-<div align="center">
+<div align="left">
              <img src="./images/oclp-version.png" alt="OCLP version" width="600" />
 </div>
 
