@@ -29,7 +29,8 @@ Once the download is finished, you can proceed to write the installer onto a USB
 
 | Select Downloaded Installer | Select disk to format |
 | :--- | :--- |
-| ![](./images/OCLP-GUI-Installer-Select-Local-Installer.png) | ![](./images/OCLP-GUI-Installer-Format-USB.png) |
+| <img src="./images/OCLP-GUI-Installer-Select-Local-Installer.png" alt="Select local installer" width="600" /> | <img src="./images/OCLP-GUI-Installer-Format-USB.png" alt="Select disk to format" width="600" /> |
+
 
 Now the patcher will start the installer flashing!
 
