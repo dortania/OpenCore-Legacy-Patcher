@@ -31,7 +31,9 @@ Once you've toggled it off, build your OpenCore EFI once again and install to yo
 
 ## SIP settings
 
-SIP, or System Integrity Protection, needs to be lowered on systems where root patching is required to patch data on disk. This will vary between OS versions and the model in question. OCLP by default will determine the proper SIP options for the OS version and Mac model, in most cases the user has no need to touch these settings. However, this part explains how the SIP settings work in OCLP, where lowered SIP is needed and where full SIP could be enabled.
+SIP, or System Integrity Protection, needs to be lowered on systems where root patching is required to patch data on disk. This will vary between OS versions and the model in question. 
+
+OCLP by default will determine the proper SIP options for the OS version and Mac model, in most cases the user has no need to touch these settings.
 
 :::warning
 
@@ -39,14 +41,16 @@ If you're unsure whether you should change the SIP settings, leave them as-is. S
 
 :::
 
-::: details Configuring SIP manually (click to expand)
-
-SIP settings can be accessed from the Security tab shown in the images. To change SIP settings, make the changes here, return in main menu and rebuild OpenCore using the first option.
-
-| SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
+| SIP Enabled | SIP Lowered (OCLP default) | SIP Disabled |
 | :--- | :--- | :--- |
 | ![](./images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](./images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](./images/OCLP-GUI-Settings-SIP-Disabled.png) |
 
+
+The guide in the dropdown below explains how the SIP settings work in OCLP, where lowered SIP is needed and where full SIP could be enabled.
+
+::: details Configuring SIP manually (click to expand)
+
+SIP settings can be accessed from the Security tab shown in the images. To change SIP settings, make the changes here, return in main menu and rebuild OpenCore using the first option.
 
 In the cases where SIP can be enabled, manually enabling it is needed. 
 
