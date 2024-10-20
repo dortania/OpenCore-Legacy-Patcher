@@ -10,6 +10,7 @@
 * [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I downgrade macOS while keeping data?](#can-i-downgrade-macos-while-keeping-data)
 * [Why is my system slow?](#why-is-my-system-slow)
+* [What is Metal and non-Metal?](#what-is-metal-and-non-metal)
 * [Crashing in random places](#crashing-in-random-places)
 * [Why isn't iPhone Mirroring working?](#why-isn-t-iphone-mirroring-working)
 * [Where is Apple Intelligence?](#where-is-apple-intelligence)
@@ -81,6 +82,23 @@ However, if your system is being **really** slow and you have no transparency in
 
 Patches can also break if automatic updates are enabled and an update modifies the system volume, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for more information.
 
+## What is Metal and Non-Metal?
+
+Metal is Apple's proprietary graphics API which fully superseded OpenGL rendering of the operating system starting from macOS Mojave. When the word "Non-Metal" is used, it describes GPUs that are not Metal supported and require using OpenGL instead.
+
+GPUs that support Metal are as follows:
+
+* Intel HD 4000 series (Ivy Bridge/3rd gen) and newer
+* AMD HD 7000 series and newer (GCN 1)
+* NVIDIA GTX 600 and 700 series (Kepler)
+
+Everything older than mentioned are Non-Metal and therefore only support OpenGL. A great rule of thumb is that Macs older than 2012 are non-Metal, with the exception of systems with upgradable GPUs. Non-Metal also includes NVIDIA Maxwell (GTX 900 series) and Pascal (GTX 1000 series) when used with patched Web Drivers on newer than macOS High Sierra.
+
+Refer to the [Supported models](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) page for more information.
+
+Due to deprecation of OpenGL, many newer applications may require Metal rendering and as such will fail to run on systems with Non-Metal GPUs.
+
+
 ## Crashing in random places
 
 There are two rather common things that can cause weird crashing. First is a process called "mediaanalysisd" on 3802-based systems* and secondly FeatureUnlock. You can try disabling these settings in OCLP to try and gain higher stability. As always, install a new OpenCore build after selecting the settings and restart.
@@ -99,7 +117,6 @@ Be advised that by disabling FeatureUnlock, you will lose some macOS functionali
     * Haswell (4th generation, HD/Iris 4000-5000 series GPUs)
 
 These GPUs are typically met in systems from 2012-2015.
-
 
 ## Why isn't iPhone Mirroring working?
 
