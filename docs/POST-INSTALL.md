@@ -22,7 +22,7 @@ And voila! No more USB drive required.
 To do this, run the OpenCore Patcher and head to Patcher Settings, then uncheck "Show OpenCore Bootpicker" on the Build tab:
 
 
-<div align="center">
+<div align="left">
              <img src="./images/OCLP-GUI-Settings-ShowPicker.png" alt="GUI Settings ShowPicker" width="600" />
 </div>
 
