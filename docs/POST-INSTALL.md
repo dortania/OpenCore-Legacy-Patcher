@@ -39,6 +39,8 @@ If you're unsure whether you should change the SIP settings, leave them as-is. S
 
 :::
 
+::: details Configuring SIP manually (click to expand)
+
 SIP settings can be accessed from the Security tab shown in the images. To change SIP settings, make the changes here, return in main menu and rebuild OpenCore using the first option.
 
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
@@ -64,6 +66,8 @@ Pre-2012 systems, also known as "non-Metal", as well as NVIDIA Kepler and Intel 
 
 All Metal capable systems from 2012 onward (incl. NVIDIA Kepler and Intel HD 4000) as well as Mac Pros with upgraded GPU can run with full SIP enabled. 
 Non-Metal systems still require lowered SIP.
+
+:::
 
 ## Applying Post Install Volume Patches
 
