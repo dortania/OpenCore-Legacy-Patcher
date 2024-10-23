@@ -31,8 +31,8 @@ pip3 install -r requirements.txt
 
 If you have any installation errors, see the following troubleshooting options:
 
-* Use Python 3.10
-  * Our build server currently uses Python 3.10 for generating binaries used in releases
+* Use Python 3.11
+  * Our build server currently uses Python 3.11 for generating binaries used in releases
 * Use .whl snapshots for installing additional dependencies
 
 ## Running OpenCore Legacy Patcher
