@@ -366,7 +366,7 @@ class HardwarePatchsetDetection:
             logging.error("Stripping out Non-Metal GPUs")
             for hardware in list(present_hardware):
                 if hardware.hardware_variant_graphics_subclass() == HardwareVariantGraphicsSubclass.NON_METAL_GRAPHICS:
-                    print(f"  Stripping out {hardware.name()}")
+                    logging.info(f"  Stripping out {hardware.name()}")
                     present_hardware.remove(hardware)
 
         if metal_3802_gpu_present and metal_31001_gpu_present and self._xnu_major >= os_data.sequoia.value:

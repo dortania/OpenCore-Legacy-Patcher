@@ -55,7 +55,7 @@ class CatalogProducts:
         # Ensure Apple Silicon specific Installers are not listed
         if "VMM-x86_64" not in data["MobileAssetProperties"]["SupportedDeviceModels"]:
             if self.vmm_only:
-                return {}
+                return {"Missing VMM Support": True}
 
         version = data["MobileAssetProperties"]["OSVersion"]
         build   = data["MobileAssetProperties"]["Build"]
@@ -82,7 +82,7 @@ class CatalogProducts:
 
         With macOS Sequoia, the Info.plist is no longer present in the InstallAssistant's assets
         """
-
+        _does_support_vmm = False
         for entry in data["Assets"]:
             if "SupportedDeviceModels" not in entry:
                 continue
@@ -93,6 +93,8 @@ class CatalogProducts:
             if "VMM-x86_64" not in entry["SupportedDeviceModels"]:
                 if self.vmm_only:
                     continue
+
+            _does_support_vmm = True
 
             build   = entry["Build"]
             version = entry["OSVersion"]
@@ -108,6 +110,10 @@ class CatalogProducts:
                 "Build":   build,
                 "Catalog": CatalogURL().catalog_url_to_seed(catalog_url),
             }
+
+        if _does_support_vmm is False:
+            if self.vmm_only:
+                return {"Missing VMM Support": True}
 
         return {}
 
@@ -325,9 +331,18 @@ class CatalogProducts:
 
                         if plist_contents:
                             if Path(package["URL"]).name == "Info.plist":
-                                _product_map.update(self._legacy_parse_info_plist(plist_contents))
+                                result = self._legacy_parse_info_plist(plist_contents)
                             else:
-                                _product_map.update(self._parse_mobile_asset_plist(plist_contents))
+                                result = self._parse_mobile_asset_plist(plist_contents)
+
+                            if result == {"Missing VMM Support": True}:
+                                _product_map = {}
+                                break
+
+                            _product_map.update(result)
+
+            if _product_map == {}:
+                continue
 
             if _product_map["Version"] is not None:
                 _product_map["Title"] = self._build_installer_name(_product_map["Version"], _product_map["Catalog"])
