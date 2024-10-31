@@ -11,6 +11,10 @@
   - When switching to a different model, model-specific GUI settings will be reset
   - Note resetting saved settings not implemented yet
     - Delete `/Users/Shared/.com.dortania.opencore-legacy-patcher.plist` and restart app to reset settings
+- Resolve macOS 15.1 (24B2083) Apple Silicon installer appearing as download option
+- Resolve WhatsApp crashing on 15.1
+- Increment binaries:
+  - PatcherSupportPkg 1.8.4 - release
 
 ## 2.0.2
 - Fix Nvidia Kepler patches not installing on Monterey
