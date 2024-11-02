@@ -5,6 +5,7 @@ Here are some common errors that users may experience while using this patcher:
 * [OpenCore Legacy Patcher not launching](#opencore-legacy-patcher-not-launching)
 * ["You don't have permission to save..." error when creating USB installer](#you-don-t-have-permission-to-save-error-when-creating-usb-installer)
 * [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-🚫-prohibited-symbol)
+* [Stuck on hard disk selection with greyed out buttons in installer](#stuck-on-hard-disk-selection-with-greyed-out-buttons-in-installer)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
 * [System version mismatch error when root patching](#system-version-mismatch-error-when-root-patching)
@@ -64,6 +65,12 @@ This means macOS has detected an SMBIOS it does not support. To resolve this, en
 Once you've booted OpenCore at least once, your hardware should now auto-boot it until either an NVRAM reset occurs, or you remove the drive with OpenCore installed.
 
 However, if the 🚫 Symbol only appears after the boot process has already started (the bootscreen appears/verbose boot starts), it could mean that your USB drive has failed to pass macOS' integrity checks. To resolve this, create a new installer using a different USB drive (preferably of a different model.)
+
+## Stuck on hard disk selection with greyed out buttons in installer
+
+Switch installer language to English. If the language selector doesn't show up, [reset NVRAM](https://support.apple.com/en-mide/102603) and boot into the installer again.
+
+You can switch back to different language once macOS has installed.
 
 ## Cannot boot macOS without the USB
 
