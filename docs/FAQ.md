@@ -32,11 +32,19 @@ Refer to [Updating OpenCore and patches](https://dortania.github.io/OpenCore-Leg
 
 ## Why are the settings "not saving"?
 
+Starting with OpenCore Legacy Patcher 2.1.0, settings will now be saved under ```/Users/Shared/.com.dortania.opencore-legacy-patcher.plist```. The application will utilize this file to keep track of settings, no longer requiring a reconfiguring after each update. The user interface will reset if any model other than "Host Model" is selected, as building for a different model will require different settings.
+
+In case of issues, delete the file to revert the GUI to default settings.
+
+::: details Explainer for older versions (click to expand)
+
 OpenCore Legacy Patcher is a config build tool and as such the user interface always reverts to safe defaults, the user interface therefore **does not** reflect the status of settings. Settings are accounted for and saved by the OpenCore building process and you will always have to build OpenCore again after settings change. 
 
 Settings are saved to a config.plist file inside your EFI partition.
 
 In SIP settings, booted SIP is reported in text form e.g. "0x803" but the checkboxes **do not** reflect the applied settings. Refer to [SIP Settings](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#sip-settings) for more information.
+
+:::
 
 ## Can I use the same USB install media as a universal installer?
 
