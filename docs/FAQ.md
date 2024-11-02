@@ -11,7 +11,7 @@
 * [Can I downgrade macOS while keeping data?](#can-i-downgrade-macos-while-keeping-data)
 * [Why is my system slow?](#why-is-my-system-slow)
 * [What is Metal and non-Metal?](#what-is-metal-and-non-metal)
-* [Crashing in random places](#crashing-in-random-places)
+* [What are FeatureUnlock and mediaanalysisd?](#what-are-featureunlock-and-mediaanalysisd)
 * [Why isn't iPhone Mirroring working?](#why-isn-t-iphone-mirroring-working)
 * [Where is Apple Intelligence?](#where-is-apple-intelligence)
 
