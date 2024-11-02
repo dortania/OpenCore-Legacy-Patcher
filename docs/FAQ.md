@@ -36,6 +36,8 @@ Starting with OpenCore Legacy Patcher 2.1.0, settings will now be saved under ``
 
 In case of issues, delete the file to revert the GUI to default settings.
 
+* Note: Only settings made within OCLP are accounted for, modifications made directly into the ```config.plist``` file outside of OCLP **will continue to reset**.
+
 ::: details Explainer for older versions (click to expand)
 
 OpenCore Legacy Patcher is a config build tool and as such the user interface always reverts to safe defaults, the user interface therefore **does not** reflect the status of settings. Settings are accounted for and saved by the OpenCore building process and you will always have to build OpenCore again after settings change. 
