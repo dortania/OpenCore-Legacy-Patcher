@@ -113,15 +113,18 @@ Refer to [Supported models](https://dortania.github.io/OpenCore-Legacy-Patcher/M
 Due to deprecation of OpenGL, many newer applications may require Metal rendering and as such will fail to run on systems with Non-Metal GPUs.
 
 
-## Crashing in random places
+## What are FeatureUnlock and mediaanalysisd?
 
-There are two rather common things that can cause weird crashing. First is a process called "mediaanalysisd" on 3802-based systems* and secondly FeatureUnlock. You can try disabling these settings in OCLP to try and gain higher stability. As always, install a new OpenCore build after selecting the settings and restart.
+FeatureUnlock is an extension to enable some macOS features, such as Sidecar or Universal Control. All features enabled by FeatureUnlock are listed [here](https://github.com/acidanthera/FeatureUnlock). Medianalysisd is a macOS feature mainly utilized for face detection in Photos, as well as Live Text feature. 
 
-Be advised that by disabling FeatureUnlock, you will lose some macOS functionality. The features enabled by FeatureUnlock are listed [here](https://github.com/acidanthera/FeatureUnlock).
+These features have the potential to cause instability in many places and as such a decision has been made to disable them by default starting from OpenCore Legacy Patcher version 2.1.0. If you want to enable these features at the risk of additional instability, you can do so in the OCLP settings and rebuilding OpenCore.
 
 | FeatureUnlock | mediaanalysisd |
 | :--- | :--- |
 | ![FeatureUnlock](./images/OCLP_FeatureUnlock_Setting.png) | ![mediaanalysisd](./images/OCLP_Disable_mediaanalysisd_Setting.png) |
+
+
+::: details *3802 systems list (click to expand)
 
 *3802 systems include:
 * NVIDIA
@@ -131,6 +134,8 @@ Be advised that by disabling FeatureUnlock, you will lose some macOS functionali
     * Haswell (4th generation, HD/Iris 4000-5000 series GPUs)
 
 These GPUs are typically met in systems from 2012-2015.
+
+:::
 
 ## Why isn't iPhone Mirroring working?
 
