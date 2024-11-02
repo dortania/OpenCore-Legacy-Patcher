@@ -32,11 +32,15 @@ Refer to [Updating OpenCore and patches](https://dortania.github.io/OpenCore-Leg
 
 ## Why are the settings "not saving"?
 
-Starting with OpenCore Legacy Patcher 2.1.0, settings will now be saved under ```/Users/Shared/.com.dortania.opencore-legacy-patcher.plist```. The application will utilize this file to keep track of settings, no longer requiring a reconfiguring after each update. The user interface will reset if any model other than "Host Model" is selected, as building for a different model will require different settings.
+Starting with OpenCore Legacy Patcher 2.1.0, the status of settings in the GUI will now be saved under ```/Users/Shared/.com.dortania.opencore-legacy-patcher.plist```. The application will utilize this file to keep track of settings, no longer requiring a reconfiguring after each update. The user interface will reset if any model other than "Host Model" is selected, as building for a different model will require different settings.
 
 In case of issues, delete the file to revert the GUI to default settings.
 
-* Note: Only settings made within OCLP are accounted for, modifications made directly into the ```config.plist``` file outside of OCLP **will continue to reset**.
+::: warning
+
+Only settings made within OCLP are accounted for, modifications made directly into the ```config.plist``` file outside of OCLP **will continue to reset**. Additionally, modifying ```config.plist``` manually may lead to a state where settings showed in the GUI are not in sync compared to settings in use, due to the application not knowing whether the file has been manually modified. 
+
+:::
 
 ::: details Explainer for older versions (click to expand)
 
