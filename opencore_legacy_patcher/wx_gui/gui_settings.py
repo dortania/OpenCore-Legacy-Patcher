@@ -1115,13 +1115,17 @@ Hardware Information:
     def _update_setting(self, variable, value):
         logging.info(f"Updating Local Setting: {variable} = {value}")
         setattr(self.constants, variable, value)
-        tmp_value = value or "PYTHON_NONE_VALUE"
+        tmp_value = value
+        if tmp_value is None:
+            tmp_value = "PYTHON_NONE_VALUE"
         global_settings.GlobalEnviromentSettings().write_property(f"GUI:{variable}", tmp_value)
 
 
     def _update_global_settings(self, variable, value, global_setting = None):
         logging.info(f"Updating Global Setting: {variable} = {value}")
-        tmp_value = value or "PYTHON_NONE_VALUE"
+        tmp_value = value
+        if tmp_value is None:
+            tmp_value = "PYTHON_NONE_VALUE"
         global_settings.GlobalEnviromentSettings().write_property(variable, tmp_value)
         if global_setting is not None:
             self._update_setting(global_setting, value)

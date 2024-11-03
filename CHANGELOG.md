@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 2.1.1
+- Resolve boolean GUI settings saving incorrectly as Python's None type
+
 ## 2.1.0
 - Disable FeatureUnlock by default
   - Intended to maintain long term stability
