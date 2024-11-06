@@ -3,6 +3,13 @@
 Modern versions of Windows officially support two types of firmware: UEFI and BIOS. Users may want to boot Windows through the OCLP Bootpicker, but only UEFI Installations of Windows will show up in the OCLP Bootpicker.
 Many older Macs do not "officially" support UEFI Windows installations, leading to installation failures and strange behaviour, but OCLP can be used to prevent almost all of these issues.
 
+::: warning
+
+When booting Windows with OpenCore, it's highly recommended to create a new 200MB **MS-DOS (FAT)** partition in Disk Utility to install OpenCore in. This will prevent Windows from overwriting OpenCore with its own bootloader in the EFI partition and causing boot issues.
+
+::::
+
+
 ## Minimum Requirements
 
 This guide will focus on the installation of modern Windows (10/11) without using Boot Camp Assistant.

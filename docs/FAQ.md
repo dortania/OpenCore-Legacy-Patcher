@@ -90,7 +90,9 @@ macOS doesn't allow direct downgrades, as such you will have to wipe the disk in
 
 ## Why is my system slow?
 
-This can mean many things. Firstly, newer operating systems are harder to run and can appear more slow.
+This can mean many things. Firstly, newer operating systems are harder to run and can appear more slow. 
+
+Additionally if your macOS installation is recent, Spotlight starts creating a full disk index which can cause high CPU load, high temps and general slowness. It's recommended to keep the system running for few hours, once Spotlight has indexed the load will ease. A way to check whether it's caused by Spotlight is to open Activity Monitor, choosing "All Processes" from the "View" menu item to, then sorting by the CPU value to see if a process called ```mds_stores``` is using a lot of CPU resources.
 
 However, if your system is being **really** slow and you have no transparency in Dock and menubar, this typically indicates that root patches are not installed and as such there is no acceleration. Make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the [Troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html) section for more information.
 
@@ -115,9 +117,9 @@ Due to deprecation of OpenGL, many newer applications may require Metal renderin
 
 ## What are FeatureUnlock and mediaanalysisd?
 
-FeatureUnlock is an extension to enable some macOS features, such as Sidecar or Universal Control. All features enabled by FeatureUnlock are listed [here](https://github.com/acidanthera/FeatureUnlock). Medianalysisd is a macOS feature mainly utilized for face detection in Photos, as well as Live Text feature. 
+FeatureUnlock is an extension to enable some macOS features, such as Sidecar or Universal Control. All features enabled by FeatureUnlock are listed [here](https://github.com/acidanthera/FeatureUnlock). Medianalysisd is utilized for face detection in Photos, as well as the Live Text feature. 
 
-These features have the potential to cause instability in many places and as such a decision has been made to disable them by default starting from OpenCore Legacy Patcher version 2.1.0. Mediaanalysisd is identified to mainly affect 3802-based* systems. If you want to enable these features at the risk of additional instability, you can do so in the OCLP settings and rebuilding OpenCore.
+These features have the potential to cause instability in many places and as such a decision has been made to disable them by default (mediaanalysisd only on 3802-based* systems) starting from OpenCore Legacy Patcher version 2.1.0.  If you want to enable these features at the risk of additional instability, you can do so in the OCLP settings and rebuilding OpenCore.
 
 | FeatureUnlock | mediaanalysisd |
 | :--- | :--- |
