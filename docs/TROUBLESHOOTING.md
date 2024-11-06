@@ -94,6 +94,14 @@ Currently there is a "PurgePendingUpdate" tool available [on the Discord server]
 
 Disabling automatic macOS updates is extremely recommended once recovered, to prevent it from happening again.
 
+**macOS Ventura and newer:**
+
+System Settings -> General -> Software Update -> (i) button next to Automatic Updates -> Disable "Download new updates when available".
+
+**macOS Big Sur and Monterey:**
+
+System Preferences -> Software Update -> Advanced -> Disable "Download new updates when available".
+
 ## Stuck on boot after root patching
 
 Boot into recovery by pressing space when your disk is selected on the OCLP bootpicker (if you have it hidden, hold ESC while starting up)
