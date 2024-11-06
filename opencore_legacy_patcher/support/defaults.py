@@ -435,5 +435,14 @@ class GenerateDefaults:
                 plist[key] = None
 
             if hasattr(self.constants, constants_key):
+                # Check if type is different
+                original_type = type(getattr(self.constants, constants_key))
+                new_type = type(plist[key])
+                if original_type != new_type:
+                    logging.error(f"Global settings type mismatch for {constants_key}: {original_type} vs {new_type}")
+                    logging.error(f"Removing {key} from global settings")
+                    global_settings.GlobalEnviromentSettings().delete_property(key)
+                    continue
+
                 logging.info(f"Setting {constants_key} to {plist[key]}")
                 setattr(self.constants, constants_key, plist[key])

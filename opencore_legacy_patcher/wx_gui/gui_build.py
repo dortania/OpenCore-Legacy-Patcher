@@ -28,6 +28,8 @@ class BuildFrame(wx.Frame):
         super(BuildFrame, self).__init__(parent, title=title, size=(350, 200), style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         gui_support.GenerateMenubar(self, global_constants).generate()
 
+        self.build_successful: bool = False
+
         self.install_button: wx.Button = None
         self.text_box:     wx.TextCtrl = None
         self.frame_modal:    wx.Dialog = None
@@ -107,6 +109,18 @@ class BuildFrame(wx.Frame):
             wx.Yield()
 
         self.return_button.Enable()
+
+        # Check if config.plist was built
+        if self.build_successful is False:
+            dialog = wx.MessageDialog(
+                parent=self,
+                message="An error occurred while building OpenCore",
+                caption="Error building OpenCore",
+                style=wx.OK | wx.ICON_ERROR
+            )
+            dialog.ShowModal()
+            return
+
         dialog = wx.MessageDialog(
             parent=self,
             message=f"Would you like to install OpenCore now?",
@@ -126,9 +140,16 @@ class BuildFrame(wx.Frame):
         logger.addHandler(gui_support.ThreadHandler(self.text_box))
         try:
             build.BuildOpenCore(self.constants.custom_model or self.constants.computer.real_model, self.constants)
-        except:
+            self.build_successful = True
+        except Exception as e:
             logging.error("An internal error occurred while building:\n")
             logging.error(traceback.format_exc())
+
+            # Handle bug from 2.1.0 where None type was stored in config.plist from global settings
+            if "TypeError: unsupported type: <class 'NoneType'>" in traceback.format_exc():
+                logging.error("If you continue to see this error, delete the following file and restart the application:")
+                logging.error("Path: /Users/Shared/.com.dortania.opencore-legacy-patcher.plist")
+
         logger.removeHandler(logger.handlers[2])
 
 

@@ -44,6 +44,25 @@ class GlobalEnviromentSettings:
         return None
 
 
+    def delete_property(self, property_name: str) -> None:
+        """
+        Deletes a property from the global settings file
+        """
+        if Path(self.global_settings_plist).exists():
+            try:
+                plist = plistlib.load(Path(self.global_settings_plist).open("rb"))
+            except Exception as e:
+                logging.error("Error: Unable to read global settings file")
+                logging.error(e)
+                return
+            if property_name in plist:
+                del plist[property_name]
+                try:
+                    plistlib.dump(plist, Path(self.global_settings_plist).open("wb"))
+                except PermissionError:
+                    logging.info("Failed to write to global settings")
+
+
     def write_property(self, property_name: str, property_value) -> None:
         """
         Writes a property to the global settings file
