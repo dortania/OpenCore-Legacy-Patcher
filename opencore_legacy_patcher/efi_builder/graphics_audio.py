@@ -246,10 +246,18 @@ class BuildGraphicsAudio:
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "ATY,bin_image": binascii.unhexlify(video_bios_data.RX5500XT_64K) }
                 logging.info(f"- Adding AMD RX5500XT boot-args")
                 self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera applbkl=3"
+            elif self.computer.dgpu.device_id == 0x73FF:
+                logging.info(f"- Adding AMD RX6600M vBIOS injection")
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "ATY,bin_image": binascii.unhexlify(video_bios_data.RX6600M_64K) }
+                logging.info(f"- Adding AMD RX6600M boot-args")
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera applbkl=3"
             elif self.computer.dgpu.device_id_unspoofed == 0x6981:
                 logging.info(f"- Adding AMD WX3200 device spoofing")
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "model": "AMD Radeon Pro WX 3200", "device-id": binascii.unhexlify("FF67")}
-            else:
+             elif self.computer.dgpu.device_id_unspoofed == 0x67FF:
+                logging.info(f"- Adding AMD WX3200 device spoofing")
+                self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "model": "AMD Radeon Pro WX 3200", "device-id": binascii.unhexlify("FF67")}
+           else:
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
         else:
              self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
@@ -312,6 +320,18 @@ class BuildGraphicsAudio:
                 "enable-gva-support": 1
             }
             logging.info(f"- Adding AMD RX5500XT boot-args")
+            self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera applbkl=3"
+        elif self.constants.imac_model == "Navi23":
+            logging.info("- Adding Navi Spoofing Patches")
+            navi_backlight_path = backlight_path+"/Pci(0x0,0x0)/Pci(0x0,0x0)"
+            self.config["DeviceProperties"]["Add"][navi_backlight_path] = {
+                "ATY,bin_image": binascii.unhexlify(video_bios_data.RX6600M_64K),
+                "shikigva": 128,
+                "unfairgva": 1,
+                "rebuild-device-tree": 1,
+                "enable-gva-support": 1
+            }
+            logging.info(f"- Adding AMD RX6600M boot-args")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " agdpmod=pikera applbkl=3"
 
 

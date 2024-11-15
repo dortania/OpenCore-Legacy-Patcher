@@ -31,6 +31,7 @@ from .hardware.graphics import (
     amd_legacy_gcn,
     amd_polaris,
     amd_vega,
+    amd_navi,
 )
 from .hardware.networking import (
     legacy_wireless,
@@ -122,6 +123,7 @@ class HardwarePatchsetDetection:
             amd_legacy_gcn.AMDLegacyGCN,
             amd_polaris.AMDPolaris,
             amd_vega.AMDVega,
+            amd_navi.AMDNavi,
 
             legacy_wireless.LegacyWireless,
             modern_wireless.ModernWireless,

@@ -161,6 +161,7 @@ class BaseHardware(BasePatchset):
         - AppleIntelSKLGraphicsFramebuffer.kext
         - AMDRadeonX4000.kext
         - AMDRadeonX5000.kext
+        - AMDRadeonX6000.kext
         """
         if self._xnu_major < os_data.sonoma.value:
             return "12.5"

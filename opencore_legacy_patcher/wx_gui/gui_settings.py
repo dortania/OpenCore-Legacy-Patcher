@@ -575,6 +575,7 @@ class SettingsFrame(wx.Frame):
                         "AMD Polaris",
                         "AMD Lexa",
                         "AMD Navi",
+                        "AMD Navi23",
                     ],
                     "value": "None",
                     "variable": "",
@@ -1296,6 +1297,8 @@ Hardware Information:
                 self.constants.imac_model = "Lexa"
             elif "Navi" in gpu_choice:
                 self.constants.imac_model = "Navi"
+            elif "Navi23" in gpu_choice:
+                self.constants.imac_model = "Navi23"
             else:
                 raise Exception("Unknown GPU Model")
             global_settings.GlobalEnviromentSettings().write_property("GUI:imac_vendor", "AMD")
