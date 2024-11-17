@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 2.2.0
+
 ## 2.1.2
 - Add additional error handling for when building OpenCore errors out
   - Prevents broken EFI from being installed to disk
