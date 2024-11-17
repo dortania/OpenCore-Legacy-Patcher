@@ -74,16 +74,18 @@ class AMDNavi(BaseHardware):
         """
         return {
             "AMD Navi": {
-                PatchType.OVERWRITE_SYSTEM_VOLUME: {
-                    "AMDRadeonX6000.kext":            self._resolve_monterey_framebuffers(),
-                    "AMDRadeonX6000Framebuffer.kext": "12.5",
+                    PatchType.OVERWRITE_SYSTEM_VOLUME: {
+                    "/System/Library/Extensions": {
+                        "AMDRadeonX6000.kext":            self._resolve_monterey_framebuffers(),
+                        "AMDRadeonX6000Framebuffer.kext": "12.5",
 
-                    "AMDRadeonVADriver2.bundle":      "12.5",
-                    "AMDRadeonX6000GLDriver.bundle":  "12.5",
-                    "AMDRadeonX6000MTLDriver.bundle": "12.5" if self._xnu_major < os_data.sequoia else "12.5-24",
-                    "AMDRadeonX6000Shared.bundle":    "12.5",
+                        "AMDRadeonVADriver2.bundle":      "12.5",
+                        "AMDRadeonX6000GLDriver.bundle":  "12.5",
+                        "AMDRadeonX6000MTLDriver.bundle": "12.5" if self._xnu_major < os_data.sequoia else "12.5-24",
+                        "AMDRadeonX6000Shared.bundle":    "12.5",
 
-                    "AMDShared.bundle":               "12.5",
+                        "AMDShared.bundle":               "12.5",
+                    },
                 }
             }
         }
