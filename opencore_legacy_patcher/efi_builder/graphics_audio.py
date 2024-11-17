@@ -254,10 +254,11 @@ class BuildGraphicsAudio:
             elif self.computer.dgpu.device_id_unspoofed == 0x6981:
                 logging.info(f"- Adding AMD WX3200 device spoofing")
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "model": "AMD Radeon Pro WX 3200", "device-id": binascii.unhexlify("FF67")}
-             elif self.computer.dgpu.device_id_unspoofed == 0x67FF:
+            elif self.computer.dgpu.device_id_unspoofed == 0x67FF:
+                # we cannot detect a spoofed Lexa card and have to assume the 0x67FF is such a card and add the spoofing
                 logging.info(f"- Adding AMD WX3200 device spoofing")
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1, "model": "AMD Radeon Pro WX 3200", "device-id": binascii.unhexlify("FF67")}
-           else:
+            else:
                 self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
         else:
              self.config["DeviceProperties"]["Add"][backlight_path] = {"shikigva": 128, "unfairgva": 1, "agdpmod": "pikera", "rebuild-device-tree": 1, "enable-gva-support": 1}
