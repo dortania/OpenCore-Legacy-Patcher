@@ -7,6 +7,7 @@
 * [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-usb-install-media-as-a-universal-installer)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
+* [Why are macOS updates so large?](#why-are-macOS-updates-so-large)
 * [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I downgrade macOS while keeping data?](#can-i-downgrade-macos-while-keeping-data)
 * [Why is my system slow?](#why-is-my-system-slow)
@@ -78,6 +79,9 @@ System Settings -> General -> Software Update -> (i) button next to Automatic Up
 
 System Preferences -> Software Update -> Advanced -> Disable "Download new updates when available".
 
+## Why are macOS updates so large?
+
+macOS by default uses a sealed system volume that is unwritable. When the seal is broken, macOS thinks the volume is broken and downloads a full copy of macOS for every update to "repair" it to a known state. In order for root patching to work, this seal has to be broken since root patching by design requires on-disk file manipulation. This is also why root patches have to be reinstalled after each update.
 
 ## Can I update to macOS betas?
 
