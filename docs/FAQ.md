@@ -7,7 +7,7 @@
 * [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-usb-install-media-as-a-universal-installer)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
-* [Why are macOS updates so large?](#why-are-macOS-updates-so-large)
+* [Why are macOS updates so large?](#why-are-macos-updates-so-large)
 * [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I downgrade macOS while keeping data?](#can-i-downgrade-macos-while-keeping-data)
 * [Why is my system slow?](#why-is-my-system-slow)
