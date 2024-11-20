@@ -12,8 +12,8 @@ meta:
 features:
 # - title: Built with security in mind
 #   details: Supporting System Integrity Protection(SIP), FileVault 2, .im4m Secure Boot and Vaulting. We make an effort to ensure your system is as secure as possible.
-- title: Native OTA updates
-  details: Install updates the moment they come out, with native System Preferences support, just like a supported Mac.
+- title: Near-native OTA updates.
+  details: Install updates normally from System Settings.
 - title: Zero firmware patching
   details: Using the capabilities of the OpenCore boot manager, our protocol upgrades are done in memory and are never permanent.
 - title: Supporting more hardware
