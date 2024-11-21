@@ -82,7 +82,7 @@ You will soon reach the installer screen! If you enabled verbose mode when build
 
 
 <div align="left">
-             <img src="./images/wipe-disk.png" alt="Wipe disk" width="600" />
+             <img src="./images/wipe-disk.png" alt="Wipe disk" width="800" />
 </div>
 
 ::: warning Warning for T1 Macs
@@ -90,7 +90,7 @@ You will soon reach the installer screen! If you enabled verbose mode when build
 When installing macOS Sonoma or newer on a T1 system (2016-2017), full disk wipe will remove T1 functionality (touchbar etc). Therefore when installing, only wipe the volume containing the operating system.  
 
 <div align="left">
-             <img src="./images/wipe-volume.png" alt="WipeVolume" width="600" />
+             <img src="./images/wipe-volume.png" alt="WipeVolume" width="800" />
 </div>
 
 [More info here](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#no-t1-functionality-after-installing-sonoma-or-newer)
