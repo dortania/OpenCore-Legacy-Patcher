@@ -225,7 +225,7 @@ Notice that "Allow native models" and "Allow Native Spoofs" **are NOT** enabled 
 
 Spoofing to any model with native Sequoia support should work, but these are the earliest Macs natively supported by Sequoia and thus chosen for the sake of simplicity.
 
-**Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Ventura as long as the other requirements are met, since they aren't blacklisted.
+**Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Sequoia as long as the other requirements are met, since they aren't blacklisted.
 
 
 | Mac by name | Native SMBIOS | Spoof SMBIOS |
@@ -257,7 +257,7 @@ Notice that "Allow native models" and "Allow Native Spoofs" **are NOT** enabled 
 
 Spoofing to any model with native Sonoma support should work, but these are the earliest Macs natively supported by Sonoma and thus chosen for the sake of simplicity.
 
-**Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Ventura as long as the other requirements are met, since they aren't blacklisted.
+**Reminder:** Macs that are not listed on this table work without spoofing, including systems that do not natively support Sonoma as long as the other requirements are met, since they aren't blacklisted.
 
 
 | Mac by name | Native SMBIOS | Spoof SMBIOS |
