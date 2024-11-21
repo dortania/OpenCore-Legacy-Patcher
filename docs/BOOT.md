@@ -82,8 +82,20 @@ You will soon reach the installer screen! If you enabled verbose mode when build
 
 
 <div align="left">
-             <img src="./images/wipe-disk.png" alt="Wipe disk" width="800" />
+             <img src="./images/wipe-disk.png" alt="Wipe disk" width="600" />
 </div>
+
+::: warning Warning for T1 Macs
+
+When installing macOS Sonoma or newer on a T1 system (2016-2017), full disk wipe will remove T1 functionality (touchbar etc). Therefore when installing, only wipe the volume containing the operating system.  
+
+<div align="left">
+             <img src="./images/wipe-volume.png" alt="WipeVolume" width="600" />
+</div>
+
+[More info here](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#no-t1-functionality-after-installing-sonoma-or-newer)
+
+:::
 
 
 If your Mac is looping back into the beginning of the setup after the first reboot, turn it off, start it again and hold Option. This time (after choosing `EFI Boot` first) select the option with a grey hard disk icon in the OpenCore picker. It can either say `macOS Installer` or the name you gave the disk during the installer process. Keep repeating this step after every reboot if necessary.
@@ -96,18 +108,6 @@ If your Mac is looping back into the beginning of the setup after the first rebo
 ::: warning
 
 **MacBookPro11,3 Note**: When booting macOS Monterey, you'll need to boot into safe mode if acceleration patches are not installed yet. [Otherwise, you'll hit a black screen due to missing NVIDIA drivers.](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/522) Safe Mode can be entered by holding `Shift + Enter` when selecting macOS Monterey in OCLP's Boot Menu.
-
-:::
-
-::: warning 
-
-**T1 Macs**: When installing macOS Sonoma or newer on a T1 system, full disk wipe will remove T1 functionality (touchbar etc). Therefore when installing, only wipe the volume containing the operating system.  
-
-<div align="left">
-             <img src="./images/wipe-volume.png" alt="WipeVolume" width="800" />
-</div>
-
-[More info here](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#no-t1-functionality-after-installing-sonoma-or-newer)
 
 :::
 
