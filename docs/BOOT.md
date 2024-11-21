@@ -85,6 +85,15 @@ If your Mac is looping back into the beginning of the setup after the first rebo
 </div>
 
 
+**Important:** If you're using a brand new disk that has not been used before, choose "View -> Show all devices" in Disk Utility and format the entire disk by choosing the topmost option in the sidebar to avoid a missing internal EFI later when trying to boot OpenCore from internal disk.
+
+
+<div align="left">
+             <img src="./images/wipe-disk.png" alt="Wipe disk" width="800" />
+</div>
+
+
+
 ::: warning
 
 **MacBookPro11,3 Note**: When booting macOS Monterey, you'll need to boot into safe mode if acceleration patches are not installed yet. [Otherwise, you'll hit a black screen due to missing NVIDIA drivers.](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/522) Safe Mode can be entered by holding `Shift + Enter` when selecting macOS Monterey in OCLP's Boot Menu.
