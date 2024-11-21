@@ -78,13 +78,6 @@ You will soon reach the installer screen! If you enabled verbose mode when build
 
 * [OpenCore Legacy Patcher Boot Process](https://www.youtube.com/watch?v=AN3zsbQV_n4)
 
-If your Mac is looping back into the beginning of the setup after the first reboot, turn it off, start it again and hold Option. This time (after choosing `EFI Boot` first) select the option with a grey hard disk icon in the OpenCore picker. It can either say `macOS Installer` or the name you gave the disk during the installer process. Keep repeating this step after every reboot if necessary.
-
-<div align="left">
-             <img src="./images/oclp-stuck-firstreboot.png" alt="Stuck on first reboot" width="800" />
-</div>
-
-
 **Important:** If you're using a brand new disk that has not been used before, choose "View -> Show all devices" in Disk Utility and format the entire disk by choosing the topmost option in the sidebar to avoid a missing internal EFI later when trying to boot OpenCore from internal disk.
 
 
@@ -92,6 +85,12 @@ If your Mac is looping back into the beginning of the setup after the first rebo
              <img src="./images/wipe-disk.png" alt="Wipe disk" width="800" />
 </div>
 
+
+If your Mac is looping back into the beginning of the setup after the first reboot, turn it off, start it again and hold Option. This time (after choosing `EFI Boot` first) select the option with a grey hard disk icon in the OpenCore picker. It can either say `macOS Installer` or the name you gave the disk during the installer process. Keep repeating this step after every reboot if necessary.
+
+<div align="left">
+             <img src="./images/oclp-stuck-firstreboot.png" alt="Stuck on first reboot" width="800" />
+</div>
 
 
 ::: warning
