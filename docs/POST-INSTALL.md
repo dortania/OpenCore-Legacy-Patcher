@@ -17,6 +17,8 @@ Once you've installed macOS through OpenCore, you can boot up and go through the
 
 And voila! No more USB drive required.
 
+If you're having issues with undetected internal disk, refer to [Internal disk missing when building OpenCore](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#internal-disk-missing-when-building-opencore) for troubleshooting.
+
 ## Booting seamlessly without Boot Picker
 
 To do this, run the OpenCore Patcher and head to Patcher Settings, then uncheck "Show OpenCore Bootpicker" on the Build tab:
