@@ -8,7 +8,7 @@ Here are some common errors that users may experience while using this patcher:
 * [Stuck on hard disk selection with greyed out buttons in installer](#stuck-on-hard-disk-selection-with-greyed-out-buttons-in-installer)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
-* [Internal EFI missing when building OpenCore](#internal-efi-missing-when-building-opencore)
+* [Internal disk missing when building OpenCore](#internal-disk-missing-when-building-opencore)
 * [System version mismatch error when root patching](#system-version-mismatch-error-when-root-patching)
 * [Stuck on boot after root patching](#stuck-on-boot-after-root-patching)
 * ["Unable to resolve dependencies, error code 71" when root patching](#unable-to-resolve-dependencies-error-code-71-when-root-patching)
@@ -87,12 +87,12 @@ With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates 
 
 * Note: Machines with modified root volumes will also result in an infinite recovery loop until integrity is restored.
 
-## Internal EFI missing when building OpenCore
+## Internal disk missing when building OpenCore
 
 If you're using a brand new disk that has not been used before or was never formatted in any macOS type, you may face the following error in OCLP when trying to build on the internal disk.
 
 <div align="left">
-             <img src="./images/OCLP_Failed_to_find_applicable_disks.png" alt="Failed to find applicable disks" width="800" />
+             <img src="./images/OCLP_Failed_to_find_applicable_disks.png" alt="Failed to find applicable disks" width="600" />
 </div>
 
 There are two ways to to try and resolve this.
