@@ -1,10 +1,9 @@
 # Creating macOS Installers
 
-This document is centered around downloading and writing the macOS installer to a USB drive. If you're already familiar with how to do this, you can skip this section.
+This document is centered around downloading and writing the macOS installer to a USB drive. If you're planning to install macOS on other system, it is recommended to choose the Mac model in Settings now before proceeding, so that automatic root patching works correctly later on.
 
 * Note: A 32GB drive is recommended, later versions of Sonoma and Sequoia cannot fit installer and patches to a 16GB disk. 16GB drive may work for older versions.
 
-**Important**: If you're planning to install macOS on other system, it is recommended to choose the Mac model in Settings before proceeding, so that autopatching works correctly later on.
 
 ## Downloading the installer
 
