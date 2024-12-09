@@ -118,18 +118,18 @@ class LegacyWireless(BaseHardware):
             "Legacy Wireless Extended": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/usr/libexec": {
-                        "wps":      "12.7.2",
-                        "wifip2pd": "12.7.2",
+                        "wps":      "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
+                        "wifip2pd": "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
                     },
                 },
                 PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
-                        "CoreWLAN.framework": "12.7.2",
+                        "CoreWLAN.framework": "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
                     },
                     "/System/Library/PrivateFrameworks": {
-                        "CoreWiFi.framework":       "12.7.2",
-                        "IO80211.framework":        "12.7.2",
-                        "WiFiPeerToPeer.framework": "12.7.2",
+                        "CoreWiFi.framework":       "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
+                        "IO80211.framework":        "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
+                        "WiFiPeerToPeer.framework": "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
                     },
                 }
             },

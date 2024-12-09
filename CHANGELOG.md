@@ -1,6 +1,20 @@
 # OpenCore Legacy Patcher changelog
 
 ## 2.2.0
+- Resolved non-metal accessibility zoom on macOS Sonoma/Sequoia
+- Resolved non-metal photos app on macOS Sequoia
+- Resolved non-metal Screen Sharing on macOS Sequoia
+- Resolved non-metal inverted screenshots on macOS Sequoia
+- Improved non-metal beta menubar reliability
+- Disabled non-metal broken weather background animations on macOS Sequoia
+- Resolved non-metal safari hide distracting items crash on macOS Sequoia
+- Resolved non-metal full screen transition on macOS Sonoma/Sequoia
+- Resolved T1 Apple Pay on macOS Sequoia
+- Resolved T1 TouchID support on macOS Sequoia 15.2
+- Resolved iCloud sync problems
+- Resolved JavaScriptCore on pre-AVX Macs on macOS Sequoia 15.2/Safari 18.2
+- Increment binaries:
+  - PatcherSupportPkg 1.9.1 - release
 
 ## 2.1.2
 - Add additional error handling for when building OpenCore errors out

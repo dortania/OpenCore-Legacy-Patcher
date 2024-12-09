@@ -124,7 +124,7 @@ class PatcherValidation:
             minor_kernel (int): Minor kernel version
         """
 
-        patch_type_merge_exempt     = ["MechanismPlugins"]
+        patch_type_merge_exempt     = ["MechanismPlugins", "ModulePlugins"]
         patch_type_overwrite_exempt = []
 
         patchset = HardwarePatchsetDetection(self.constants, xnu_major=major_kernel, xnu_minor=minor_kernel, validation=True).patches

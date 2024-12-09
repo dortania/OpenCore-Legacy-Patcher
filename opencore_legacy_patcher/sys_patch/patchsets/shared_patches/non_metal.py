@@ -41,6 +41,11 @@ class NonMetal(BaseSharedPatchSet):
                     "/usr/sbin": {
                         **({ "screencapture": "14.7"} if self._xnu_major >= os_data.sequoia else {}),
                     },
+                    "/System/Library/CoreServices/RemoteManagement": {
+                        **({"ScreensharingAgent.bundle": "14.7.2"} if self._xnu_major >= os_data.sequoia else {}),
+                        **({"screensharingd.bundle":     "14.7.2"} if self._xnu_major >= os_data.sequoia else {}),
+                        **({"SSMenuAgent.app":           "14.7.2"} if self._xnu_major >= os_data.sequoia else {}),
+                    },
                 },
                 PatchType.REMOVE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": [
