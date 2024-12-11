@@ -123,9 +123,20 @@ Due to deprecation of OpenGL, many newer applications may require Metal renderin
 
 ## What are FeatureUnlock and mediaanalysisd?
 
-FeatureUnlock is an extension to enable some macOS features, such as Sidecar or Universal Control. All features enabled by FeatureUnlock are listed [here](https://github.com/acidanthera/FeatureUnlock). Medianalysisd is utilized for face detection in Photos, as well as the Live Text feature. 
+**Important:** These features have the potential to cause instability in many places and as such a decision has been made to disable them by default (mediaanalysisd only on 3802-based* systems) starting from OpenCore Legacy Patcher version 2.1.0.  If you want to enable these features at the risk of additional instability, you can do so in the OCLP settings and rebuilding OpenCore.
 
-These features have the potential to cause instability in many places and as such a decision has been made to disable them by default (mediaanalysisd only on 3802-based* systems) starting from OpenCore Legacy Patcher version 2.1.0.  If you want to enable these features at the risk of additional instability, you can do so in the OCLP settings and rebuilding OpenCore.
+FeatureUnlock is an extension to enable some macOS features, including:
+- Sidecar
+- Universal Control
+- AirPlay to Mac
+- Continuity Camera
+- NightShift (non-Metal)
+
+Further information, requirements and the models affected for FeatureUnlock features can be found here [here](https://github.com/acidanthera/FeatureUnlock). 
+
+Medianalysisd is utilized for
+- Face detection in Photos
+- Live Text
 
 | FeatureUnlock | mediaanalysisd |
 | :--- | :--- |
