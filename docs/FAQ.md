@@ -132,7 +132,7 @@ FeatureUnlock is an extension to enable some macOS features, including:
 - Continuity Camera
 - NightShift (non-Metal)
 
-Further information, requirements and the models affected for FeatureUnlock features can be found here [here](https://github.com/acidanthera/FeatureUnlock). 
+Further information, requirements and the models affected for FeatureUnlock features can be found [here](https://github.com/acidanthera/FeatureUnlock). 
 
 Medianalysisd is utilized for
 - Face detection in Photos
