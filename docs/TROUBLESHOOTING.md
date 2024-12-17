@@ -124,7 +124,7 @@ System Preferences -> Software Update -> Advanced -> Disable "Download new updat
 
 ## Stuck on boot after root patching
 
-**Important:** Applies to macOS Monterey and newer. Big Sur does not support snapshot reversion.
+**Applies to macOS Monterey and newer. Big Sur does not support snapshot reversion.**
 
 Boot into recovery by pressing space when your disk is selected on the OCLP bootpicker (if you have it hidden, hold ESC while starting up)
 
