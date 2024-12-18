@@ -8,7 +8,7 @@ Boot a native macOS installer, go to Disk Utility and choose View -> Show All De
 
 [Reset NVRAM](https://support.apple.com/HT204063) afterwards.
 
-## Partial uninstall
+## Manual methods
 
 ### Uninstalling the application
 
