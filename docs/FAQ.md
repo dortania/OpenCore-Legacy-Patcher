@@ -11,6 +11,7 @@
 * [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I downgrade macOS while keeping data?](#can-i-downgrade-macos-while-keeping-data)
 * [Why is my system slow?](#why-is-my-system-slow)
+* [Applications crashing with "illegal instruction"](#applications-crashing-with-illegal-instruction)
 * [What is Metal and non-Metal?](#what-is-metal-and-non-metal)
 * [What are FeatureUnlock and mediaanalysisd?](#what-are-featureunlock-and-mediaanalysisd)
 * [Why isn't iPhone Mirroring working?](#why-isn-t-iphone-mirroring-working)
@@ -103,6 +104,31 @@ Additionally if your macOS installation is recent, Spotlight starts creating a f
 However, if your system is being **really** slow and you have no transparency in Dock and menubar, this typically indicates that root patches are not installed and as such there is no acceleration. Make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the [Troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html) section for more information.
 
 Patches can also break if automatic updates are enabled and an update modifies the system volume, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for more information.
+
+## Applications crashing with "illegal instruction"
+
+If the crash log includes a string saying "illegal instruction", this typically means the application requires AVX or AVX2 CPU instructions. 
+
+Many applications are beginning to utilize AVX and AVX2 in newer versions because all supported Macs are expected to have them. This creates an issue for older systems where they cannot be ran on CPUs lacking such instructions. Some older Macs may need older versions of applications and cannot update to newer versions. AVX was introduced in Sandy Bridge CPU generation and AVX2 in Haswell generation.
+
+Earliest Mac models supporting AVX instruction:
+
+- Macmini5,x (2011)
+- iMac12,x (2011)
+- MacBookPro8,x (2011)
+- MacBookAir4,1 (2011)
+- MacBook8,x (2015)
+- MacPro6,1 (2013)
+
+Earliest Mac models supporting AVX2 instruction:
+
+- Macmini7,x (2014)
+- iMac14,x (2013)
+- MacBookPro11,x (2013)
+- MacBookAir6,1 (2013)
+- MacBook8,x (2015)
+- MacPro7,1 (2019)
+
 
 ## What is Metal and Non-Metal?
 
