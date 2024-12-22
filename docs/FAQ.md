@@ -111,7 +111,7 @@ If the crash log includes a string saying "illegal instruction", this typically 
 
 Since macOS Ventura, AVX2 is required from all Macs supported by it. While OCLP is able to patch macOS to boot without it, many applications are beginning to utilize AVX and AVX2 as well in newer versions because all supported Macs are expected to have them. This creates an issue for older systems where they cannot be ran on CPUs lacking such instructions. Some older Macs may need older versions of applications and cannot update to newer versions. AVX was introduced in Sandy Bridge CPU generation and AVX2 in Haswell generation.
 
-If an application still supports macOS versions older than Ventura, it may have a chance of running on them since some Macs running them natively don't support AVX2 and the app takes a different path.
+In essence, this means that some models are now aging rapidly and newer OS won't always provide support for newer applications because of hardware requirements. If an application still supports macOS versions older than Ventura, it may have a chance of running on an older OS version on the old system, since some Macs running them natively don't support AVX2 and the app takes a different path.
 
 Earliest Mac models supporting AVX instruction:
 
