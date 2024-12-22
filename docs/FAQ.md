@@ -118,7 +118,7 @@ Earliest Mac models supporting AVX instruction:
 - Macmini5,x (2011)
 - iMac12,x (2011)
 - MacBookPro8,x (2011)
-- MacBookAir4,1 (2011)
+- MacBookAir4,x (2011)
 - MacBook8,x (2015)
 - MacPro6,1 (2013)
 
@@ -127,7 +127,7 @@ Earliest Mac models supporting AVX2 instruction:
 - Macmini7,x (2014)
 - iMac14,x (2013)
 - MacBookPro11,x (2013)
-- MacBookAir6,1 (2013)
+- MacBookAir6,x (2013)
 - MacBook8,x (2015)
 - MacPro7,1 (2019)
 
