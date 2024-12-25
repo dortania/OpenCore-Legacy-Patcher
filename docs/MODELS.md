@@ -48,7 +48,7 @@ The below tables can be used to reference issues with a particular model, and se
 | MacBook Air (13-inch, Mid 2013)<br>MacBook Air (13-inch, Early 2014) | `MacBookAir6,2` | ^^ |
 | MacBook Air (11-inch, Early 2015) | `MacBookAir7,1` | ^^ |
 | MacBook Air (13-inch, Early 2015)<br>MacBook Air (13-inch, 2017) | `MacBookAir7,2` | ^^ |
-| MacBook Air (Retina, 13-inch, 2018) | `MacBookAir8,1` | - Supported natively up to Sonoma<br>- Currently not supported on Sequoia due to T2 issues<br> |
+| MacBook Air (Retina, 13-inch, 2018) | `MacBookAir8,1` | - Supported natively up to Sonoma<br>- [Currently not supported with OpenCore due to T2 issues](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1136)<br> |
 | MacBook Air (Retina, 13-inch, 2019) | `MacBookAir8,2` | ^^ |
 | MacBook Air (Retina, 13-inch, 2020) | `MacBookAir9,1` | Supported by Apple |
 
