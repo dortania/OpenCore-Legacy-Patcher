@@ -12,13 +12,7 @@ Boot a native macOS installer, go to Disk Utility and choose View -> Show All De
 
 ### Uninstalling the application
 
-**Version 1.5.0+**
-
-Version 1.5.0 and newer use a Privileged Helper Tool that requires more thorough uninstallation than previous versions. Download the uninstaller package from [the releases page.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
-
-**Version 1.4.3 and older**
-
-Navigate to `/Library/Application Support/` and delete the Dortania folder.
+To fully install the OCLP application including LaunchAgent and PrivilegedHelperTool, download the uninstaller package from [the releases page.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
 ### Reverting root patches
 
