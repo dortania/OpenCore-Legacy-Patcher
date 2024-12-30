@@ -12,7 +12,7 @@ Boot a native macOS installer, go to Disk Utility and choose View -> Show All De
 
 ### Uninstalling the application
 
-To fully install the OCLP application including LaunchAgent and PrivilegedHelperTool, download the uninstaller package from [the releases page.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
+To fully uninstall the OCLP application including LaunchAgent and PrivilegedHelperTool, download the uninstaller package from [the releases page.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
 ### Reverting root patches
 
