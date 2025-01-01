@@ -8,23 +8,17 @@ Boot a native macOS installer, go to Disk Utility and choose View -> Show All De
 
 [Reset NVRAM](https://support.apple.com/HT204063) afterwards.
 
-## Uninstalling the application
+## Manual methods
 
-### Version 1.5.0 and newer
+### Uninstalling the application
 
-Version 1.5.0 and newer use a Privileged Helper Tool that requires more thorough uninstallation than previous versions. Download the uninstaller package from [the releases page.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
+To fully uninstall the OCLP application including LaunchAgent and PrivilegedHelperTool, download the uninstaller package from [the releases page.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
-### Version 1.4.3 and older.
-
-Navigate to `/Library/Application Support/` and delete the Dortania folder.
-
-## Reverting root patches
+### Reverting root patches
 
 Open the OCLP application and go into the Post Install Root Patch menu, choose Revert Root Patches.
 
-If you're planning to revert back to native version, you don't have to do this. Root patches get wiped when you wipe the disk.
-
-## Uninstalling the bootloader
+### Uninstalling the bootloader
 
 1. Remove OpenCore either from the USB or internal drive
 

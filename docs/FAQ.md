@@ -11,6 +11,7 @@
 * [Can I update to macOS betas?](#can-i-update-to-macos-betas)
 * [Can I downgrade macOS while keeping data?](#can-i-downgrade-macos-while-keeping-data)
 * [Why is my system slow?](#why-is-my-system-slow)
+* [Applications crashing with "illegal instruction"](#applications-crashing-with-illegal-instruction)
 * [What is Metal and non-Metal?](#what-is-metal-and-non-metal)
 * [What are FeatureUnlock and mediaanalysisd?](#what-are-featureunlock-and-mediaanalysisd)
 * [Why isn't iPhone Mirroring working?](#why-isn-t-iphone-mirroring-working)
@@ -20,7 +21,8 @@
 
 ## Application requirements
 The patcher application requires **OS X Yosemite 10.10** or later to run.
-* **OS X El Capitan 10.11** or later is required to make installers for macOS Ventura and later.
+* **El Capitan 10.11** or later is required to make installers for macOS Ventura
+* **High Sierra 10.13** or later is required to make installers for macOS Sonoma and newer.
 
 The patcher is designed to target **macOS Big Sur 11.x to macOS Sequoia 15.x**.
 * Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
@@ -104,6 +106,33 @@ However, if your system is being **really** slow and you have no transparency in
 
 Patches can also break if automatic updates are enabled and an update modifies the system volume, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for more information.
 
+## Applications crashing with "illegal instruction"
+
+If the crash log includes a string saying "illegal instruction", this typically means the application requires AVX or AVX2 CPU instructions. 
+
+Since macOS Ventura, AVX2 is required from all Macs supported by it. While OCLP is able to patch macOS to boot without it, many applications are beginning to utilize AVX and AVX2 as well in newer versions because all supported Macs are expected to have them. This creates an issue for older systems where some applications cannot be ran on CPUs lacking such instructions. Some older Macs may need older versions of applications and cannot update to newer versions. AVX was introduced in Sandy Bridge CPU generation and AVX2 in Haswell generation.
+
+In essence, this means that some models are now aging rapidly and newer OS won't always provide support for newer applications because of hardware requirements. If an application still supports macOS versions older than Ventura, it may have a chance of running on an older OS version on the old system, since some Macs running them natively don't support AVX2 and the app takes a different path.
+
+Earliest Mac models supporting AVX instruction:
+
+- Macmini5,x (2011)
+- iMac12,x (2011)
+- MacBookPro8,x (2011)
+- MacBookAir4,x (2011)
+- MacBook8,x (2015)
+- MacPro6,1 (2013)
+
+Earliest Mac models supporting AVX2 instruction:
+
+- Macmini7,x (2014)
+- iMac14,x (2013)
+- MacBookPro11,x (2013)
+- MacBookAir6,x (2013)
+- MacBook8,x (2015)
+- MacPro7,1 (2019)
+
+
 ## What is Metal and Non-Metal?
 
 Metal is Apple's proprietary graphics API which fully superseded OpenGL rendering of the operating system starting from macOS Mojave. When the word "Non-Metal" is used, it describes GPUs that are not Metal supported and require using OpenGL instead.
@@ -123,9 +152,20 @@ Due to deprecation of OpenGL, many newer applications may require Metal renderin
 
 ## What are FeatureUnlock and mediaanalysisd?
 
-FeatureUnlock is an extension to enable some macOS features, such as Sidecar or Universal Control. All features enabled by FeatureUnlock are listed [here](https://github.com/acidanthera/FeatureUnlock). Medianalysisd is utilized for face detection in Photos, as well as the Live Text feature. 
+**Important:** These features have the potential to cause instability in many places and as such a decision has been made to disable them by default (mediaanalysisd only on 3802-based* systems) starting from OpenCore Legacy Patcher version 2.1.0.  If you want to enable these features at the risk of additional instability, you can do so in the OCLP settings and rebuilding OpenCore.
 
-These features have the potential to cause instability in many places and as such a decision has been made to disable them by default (mediaanalysisd only on 3802-based* systems) starting from OpenCore Legacy Patcher version 2.1.0.  If you want to enable these features at the risk of additional instability, you can do so in the OCLP settings and rebuilding OpenCore.
+FeatureUnlock is an extension to enable some macOS features, including:
+- Sidecar
+- Universal Control
+- AirPlay to Mac
+- Continuity Camera
+- NightShift (non-Metal)
+
+Further information, requirements and the models affected for FeatureUnlock features can be found [here](https://github.com/acidanthera/FeatureUnlock). 
+
+Medianalysisd is utilized for
+- Face detection in Photos
+- Live Text
 
 | FeatureUnlock | mediaanalysisd |
 | :--- | :--- |
