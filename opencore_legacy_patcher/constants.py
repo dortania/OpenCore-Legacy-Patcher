@@ -13,7 +13,7 @@ from .detections import device_probe
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "2.2.0"  # OpenCore-Legacy-Patcher
+        self.patcher_version:                 str = "2.3.0"  # OpenCore-Legacy-Patcher
         self.patcher_support_pkg_version:     str = "1.9.1"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2024 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"

@@ -200,7 +200,6 @@ class InitializeLoggingSupport:
                 return
 
             if self.constants.cli_mode is True:
-                threading.Thread(target=analytics_handler.Analytics(self.constants).send_crash_report, args=(self.log_filepath,)).start()
                 return
 
             error_msg = f"OpenCore Legacy Patcher encountered the following internal error:\n\n"
@@ -208,17 +207,7 @@ class InitializeLoggingSupport:
             if tb:
                 error_msg += f"\n\n{traceback.extract_tb(tb)[-1]}"
 
-            cant_log: bool = global_settings.GlobalEnviromentSettings().read_property("DisableCrashAndAnalyticsReporting")
-            if not isinstance(cant_log, bool):
-                cant_log = False
-
-            if self.constants.commit_info[0].startswith("refs/tags"):
-                cant_log = True
-
-            if cant_log is True:
-                error_msg += "\n\nReveal log file?"
-            else:
-                error_msg += "\n\nSend crash report to Dortania?"
+            error_msg += "\n\nReveal log file?"
 
             # Ask user if they want to send crash report
             try:
@@ -230,11 +219,7 @@ class InitializeLoggingSupport:
             if result[applescript.AEType(b'bhit')] != "Yes":
                 return
 
-            if cant_log is True:
-                subprocess.run(["/usr/bin/open", "--reveal", self.log_filepath])
-                return
-
-            threading.Thread(target=analytics_handler.Analytics(self.constants).send_crash_report, args=(self.log_filepath,)).start()
+            subprocess.run(["/usr/bin/open", "--reveal", self.log_filepath])
 
 
         def custom_thread_excepthook(args) -> None:

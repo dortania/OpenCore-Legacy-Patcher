@@ -1,5 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
+## 2.3.0
+- Disable crash analytics
+  - Disabled server side for years, removing client side
+
 ## 2.2.0
 - Resolved non-metal accessibility zoom on macOS Sonoma/Sequoia
 - Resolved non-metal photos app on macOS Sequoia
