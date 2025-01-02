@@ -7,7 +7,7 @@ Here are some common errors that users may experience while using this patcher:
 * [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-🚫-prohibited-symbol)
 * [Stuck on hard disk selection with greyed out buttons in installer](#stuck-on-hard-disk-selection-with-greyed-out-buttons-in-installer)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
-* [Infinite Recovery OS Booting](#infinite-recovery-os-reboot)
+* [Infinite Recovery OS Booting](#infinite-recovery-os-booting)
 * [Internal disk missing when building OpenCore](#internal-disk-missing-when-building-opencore)
 * [System version mismatch error when root patching](#system-version-mismatch-error-when-root-patching)
 * [Stuck on boot after root patching](#stuck-on-boot-after-root-patching)
