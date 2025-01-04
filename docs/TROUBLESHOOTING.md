@@ -320,3 +320,9 @@ Applicable models include:
 If you notice your Touchbar etc not working, this means loss of T1 functionality. 
 
 Wiping the entire disk using Disk Utility with Sonoma or newer causes the T1 firmware to be removed, which due to removed support, the macOS Sonoma+ installer will not restore. To restore T1 functionality, Ventura or older has to be reinstalled. This can be done in another volume or external disk as well, as long as the OS is booted once. After this you can wipe the old OS or unplug the external disk.
+
+To prevent this from happening in the future, only wipe the volume containing the operating system with models containing the T1 chip.
+
+<div align="left">
+             <img src="./images/wipe-volume.png" alt="WipeVolume" width="800" />
+</div>
