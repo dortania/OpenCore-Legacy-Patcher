@@ -3,6 +3,8 @@
 ## 2.3.0
 - Disable crash analytics
   - Disabled server side for years, removing client side
+- `OpenCore-Patcher-GUI.app.zip` removed from release
+  - Deprecated in 1.5.0, use `OpenCore-Patcher.pkg` for installation
 
 ## 2.2.0
 - Resolved non-metal accessibility zoom on macOS Sonoma/Sequoia

@@ -2,7 +2,7 @@ name: CI - Build wxPython
 
 on:
   push:
-    paths-ignore: 
+    paths-ignore:
       - 'docs/**'
   workflow_dispatch:
   release:
@@ -84,23 +84,6 @@ jobs:
           --run-as-individual-steps
           --prepare-package
 
-      - name: Prepare Update Shim (--prepare-shim)
-        run: >
-          /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 Build-Project.command
-          --application-signing-identity "${{ env.ORG_MAC_DEVELOPER_ID_APPLICATION_IDENTITY }}"
-          --notarization-apple-id "${{ env.ORG_MAC_NOTARIZATION_APPLE_ID }}" --notarization-password "${{ env.ORG_MAC_NOTARIZATION_PASSWORD }}" --notarization-team-id "${{ env.ORG_MAC_NOTARIZATION_TEAM_ID }}"
-          --run-as-individual-steps
-          --prepare-shim
-
-      - name: Prepare App for Upload
-        run: /bin/mv ./dist/OpenCore-Patcher.app.zip ./OpenCore-Patcher-GUI.app.zip
-
-      - name: Upload App to Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: OpenCore-Patcher.app (GUI)
-          path: OpenCore-Patcher-GUI.app.zip
-
       - name: Upload AutoPkg Package to Artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -118,15 +101,6 @@ jobs:
         with:
           name: OpenCore-Patcher-Uninstaller.pkg
           path: ./dist/OpenCore-Patcher-Uninstaller.pkg
-
-      - name: Upload Binary to Release
-        if: github.event_name == 'release'
-        uses: svenstaro/upload-release-action@e74ff71f7d8a4c4745b560a485cc5fdb9b5b999d
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: OpenCore-Patcher-GUI.app.zip
-          tag: ${{ github.ref }}
-          file_glob: true
 
       - name: Upload AutoPkg Package to Release
         if: github.event_name == 'release'
