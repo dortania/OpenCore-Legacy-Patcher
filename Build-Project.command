@@ -7,7 +7,6 @@ import os
 import sys
 import time
 import argparse
-import plistlib
 
 from pathlib import Path
 
@@ -15,11 +14,8 @@ from ci_tooling.build_modules import (
     application,
     disk_images,
     package,
-    sign_notarize,
-    shim
+    sign_notarize
 )
-
-from opencore_legacy_patcher import constants
 
 
 def main() -> None:
@@ -54,10 +50,6 @@ def main() -> None:
     parser.add_argument("--prepare-application", action="store_true", help="CI: Prepare Application", default=False)
     parser.add_argument("--prepare-package", action="store_true", help="CI: Prepare Package", default=False)
     parser.add_argument("--prepare-assets", action="store_true", help="CI: Prepare Assets", default=False)
-
-    # CI/CD Parameters for additional steps
-    # If not specified, will not run additional steps
-    parser.add_argument("--prepare-shim", action="store_true", help="CI: Prepare Update Shim", default=False)
 
     # Analytics Parameters
     parser.add_argument("--analytics-key", type=str, help="Analytics Key", default=None)
@@ -134,31 +126,6 @@ def main() -> None:
             notarization_apple_id=args.notarization_apple_id,
             notarization_password=args.notarization_password,
             notarization_team_id=args.notarization_team_id,
-        ).sign_and_notarize()
-
-    # Create Update Shim
-    if args.prepare_shim:
-        shim.GenerateShim().generate()
-        if Path("dist/OpenCore-Patcher.app").exists():
-            if Path("dist/OpenCore-Patcher (Original).app").exists():
-                Path("dist/OpenCore-Patcher (Original).app").unlink()
-            Path("dist/OpenCore-Patcher.app").rename("dist/OpenCore-Patcher (Original).app")
-        Path("dist/OpenCore-Patcher (Shim).app").rename("dist/OpenCore-Patcher.app")
-
-        # Update app version in Info.plist
-        plist_path = Path("dist/OpenCore-Patcher.app/Contents/Info.plist")
-        contents = plistlib.load(plist_path.open("rb"))
-        contents["CFBundleVersion"] = constants.Constants().patcher_version
-        contents["CFBundleShortVersionString"] = constants.Constants().patcher_version
-        plistlib.dump(contents, plist_path.open("wb"))
-
-        sign_notarize.SignAndNotarize(
-            path=Path("dist/OpenCore-Patcher.app"),
-            signing_identity=args.application_signing_identity,
-            notarization_apple_id=args.notarization_apple_id,
-            notarization_password=args.notarization_password,
-            notarization_team_id=args.notarization_team_id,
-            entitlements=Path("./ci_tooling/entitlements/entitlements.plist"),
         ).sign_and_notarize()
 
 
