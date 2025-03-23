@@ -7,6 +7,7 @@
   - Deprecated in 1.5.0, use `OpenCore-Patcher.pkg` for installation
 - Sync copyright label to 2025
 - Increment binaries:
+  - OpenCorePkg 1.0.4 - release
   - Lilu 1.7.0 - release
   - WhateverGreen 1.6.9 - release
   - AirPortBrcmFixup 2.1.9 - release
