@@ -49,6 +49,17 @@ UNUSED_DRIVERS = [
     "Dhcp4Dxe.efi",
     "ArpDxe.efi",
     "FirmwareSettingsEntry.efi",
+    "UefiPxeBcDxe.efi",
+    "RngDxe.efi",
+    "TlsDxe.efi",
+    "Udp6Dxe.efi",
+    "Hash2DxeCrypto.efi",
+    "Dhcp6Dxe.efi",
+    "Ip6Dxe.efi",
+    "Mtftp4Dxe.efi",
+    "RamDiskDxe.efi",
+    "Mtftp6Dxe.efi",
+    "OpenNetworkBoot.efi",
 ]
 
 UNUSED_TOOLS = [
