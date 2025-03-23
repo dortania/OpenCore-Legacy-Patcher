@@ -6,6 +6,18 @@
 - `OpenCore-Patcher-GUI.app.zip` removed from release
   - Deprecated in 1.5.0, use `OpenCore-Patcher.pkg` for installation
 - Sync copyright label to 2025
+- Increment binaries:
+  - Lilu 1.7.0 - release
+  - WhateverGreen 1.6.9 - release
+  - AirPortBrcmFixup 2.1.9 - release
+  - NVMeFix 1.1.2 - release
+  - RestrictEvents 1.1.5 - release
+  - FeatureUnlock 1.1.7 - release
+  - DebugEnhancer 1.1.0 - release
+  - CPUFriend 1.2.9 - release
+  - BlueToolFixup 2.6.9 - release
+  - CryptexFixup 1.0.4 - release
+
 
 ## 2.2.0
 - Resolved non-metal accessibility zoom on macOS Sonoma/Sequoia
