@@ -100,6 +100,9 @@ class PatchSysVolume:
 
         self.skip_root_kmutil_requirement = not self.hardware_details[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] if self.constants.detected_os >= os_data.os_data.ventura else False
 
+        self.requires_kdk_caching      = self.hardware_details[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] and self.constants.detected_os >= os_data.os_data.ventura
+        self.requires_metallib_caching = self.hardware_details[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED] and self.constants.detected_os >= os_data.os_data.sequoia
+
         self.mount_obj = RootVolumeMount(self.constants.detected_os)
 
 
@@ -345,7 +348,7 @@ class PatchSysVolume:
 
         if self.constants.wxpython_variant is True and self.constants.detected_os >= os_data.os_data.big_sur:
             needs_daemon = False
-            if self.constants.detected_os >= os_data.os_data.ventura and self.skip_root_kmutil_requirement is False:
+            if self.requires_kdk_caching is True or self.requires_metallib_caching is True:
                 needs_daemon = True
             InstallAutomaticPatchingServices(self.constants).install_auto_patcher_launch_agent(kdk_caching_needed=needs_daemon)
 

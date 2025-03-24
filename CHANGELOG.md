@@ -6,6 +6,7 @@
 - `OpenCore-Patcher-GUI.app.zip` removed from release
   - Deprecated in 1.5.0, use `OpenCore-Patcher.pkg` for installation
 - Sync copyright label to 2025
+- Resolve MetallibSupportPkg failing to be cached on units without Kernel Debug Kit requirements
 - Increment binaries:
   - OpenCorePkg 1.0.4 - release
   - Lilu 1.7.0 - release
