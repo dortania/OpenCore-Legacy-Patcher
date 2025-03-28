@@ -89,8 +89,9 @@ macOS by default uses a sealed system volume that is unwritable. When the seal i
 
 ## Can I update to macOS betas?
 
-If you are feeling brave and don't mind having to possibly recover your system. However, be advised that no help will be given in situations where a beta was installed.
+OCLP patch development and testing happens at the beta phase in order to target a stable release, as such it is impossible for OCLP to support betas properly and previous versions may be incompatible. Only install a beta if you know what you're doing, have your expectations in check and don't mind having to fully reset to recover your system.
 
+Be advised that no help will be given in situations where a beta was installed.
 
 ## Can I downgrade macOS while keeping data?
 
