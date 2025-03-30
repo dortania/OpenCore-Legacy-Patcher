@@ -7,6 +7,11 @@
   - Deprecated in 1.5.0, use `OpenCore-Patcher.pkg` for installation
 - Sync copyright label to 2025
 - Resolve MetallibSupportPkg failing to be cached on units without Kernel Debug Kit requirements
+- Resolve Broadwell widget rendering on macOS Sequoia
+- Resolve non-Metal crashing on macOS Big Sur and Sequoia (15.4)
+- Resolve T1 erroring on macOS Sequoia (15.4)
+- Enabled non-metal beta menubar styling globally
+  - No changes to GUI settings
 - Increment binaries:
   - OpenCorePkg 1.0.4 - release
   - Lilu 1.7.0 - release
@@ -19,7 +24,7 @@
   - CPUFriend 1.2.9 - release
   - BlueToolFixup 2.6.9 - release
   - CryptexFixup 1.0.4 - release
-
+  - PatcherSupportPkg 1.9.2 - release
 
 ## 2.2.0
 - Resolved non-metal accessibility zoom on macOS Sonoma/Sequoia
