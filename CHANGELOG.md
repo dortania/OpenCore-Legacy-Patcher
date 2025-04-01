@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 2.4.0
+
+
 ## 2.3.0
 - Disable crash analytics
   - Disabled server side for years, removing client side
