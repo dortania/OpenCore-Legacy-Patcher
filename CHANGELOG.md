@@ -1,9 +1,10 @@
 # OpenCore Legacy Patcher changelog
 
+## 2.4.0
+
 ## 2.3.1
 - Resolve error on OpenCore Vaulted configs
   - Regression from 2.3.0
-
 
 ## 2.3.0
 - Disable crash analytics
