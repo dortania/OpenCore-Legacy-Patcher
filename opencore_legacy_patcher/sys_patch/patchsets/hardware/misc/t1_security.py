@@ -84,6 +84,7 @@ class T1SecurityChip(BaseHardware):
                         "SharedUtils.framework": f"13.6-{self._xnu_major}" if self._xnu_major < os_data.sequoia else f"13.7.1-{self._xnu_major}",  # Required for Password Authentication (SharedUtils.framework)
                         **({ "MechanismPlugins": "15.0 Beta 4" } if self._xnu_major >= os_data.sequoia else {}), # Required to add a TouchID fingerprint
                         **({ "ModulePlugins": "15.1" } if self._xnu_float >= self.macOS_15_2 else {}),
+                        **({ "ModuleBase.framework": "15.2" } if self._xnu_float >= self.macOS_15_3 else {}),
                     },
                     "/System/Library/PrivateFrameworks": {
                         "EmbeddedOSInstall.framework": "13.6",  # Required for biometrickitd

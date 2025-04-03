@@ -34,3 +34,4 @@ class BasePatchset:
         self.macOS_14_2:    float = 23.2
         self.macOS_14_4:    float = 23.4
         self.macOS_15_2:    float = 24.2
+        self.macOS_15_3:    float = 24.3

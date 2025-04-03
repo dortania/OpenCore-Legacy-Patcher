@@ -1,6 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
-## 2.4.0
+## 2.3.2
+- Resolve erroring in Passwords app and Safari Autofill on T1 Macs running 15.3 or later
+- Increment binaries:
+  - PatcherSupportPkg 1.9.3 - release
 
 ## 2.3.1
 - Resolve error on OpenCore Vaulted configs
