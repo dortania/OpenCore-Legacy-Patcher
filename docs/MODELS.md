@@ -9,7 +9,9 @@ Any Intel-based Mac listed below can install and make use of OpenCore Legacy Pat
 It is **extremely recommended** to update your Mac to its latest native version before using OpenCore Legacy Patcher, to ensure you're on the highest firmware.
 :::
 
-
+::: warning 3GB+ RAM required for macOS Sonoma 14.5+ installers and macOS Sequoia
+Models with 2GB RAM will not be able to install macOS Sonoma 14.5+ and macOS Sequoia will be unable to boot. macOS Sonoma 14.5+ may be installed using a disk swap method where installation is done on another system but your mileage may vary and this is not recommended.
+:::
 
 The below tables can be used to reference issues with a particular model, and see which OS would work best on your machine.
 * [MacBook](#macbook)
