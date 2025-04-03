@@ -88,8 +88,7 @@ class SysPatchStartFrame(wx.Frame):
         kdk_thread = threading.Thread(target=_kdk_thread_spawn)
         kdk_thread.start()
 
-        while kdk_thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(kdk_thread)
 
         if self.kdk_obj.success is False:
             progress_bar_animation.stop_pulse()
@@ -170,8 +169,7 @@ class SysPatchStartFrame(wx.Frame):
         metallib_thread = threading.Thread(target=_metallib_thread_spawn)
         metallib_thread.start()
 
-        while metallib_thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(metallib_thread)
 
         if self.metallib_obj.success is False:
             progress_bar_animation.stop_pulse()
@@ -209,8 +207,7 @@ class SysPatchStartFrame(wx.Frame):
         install_thread = threading.Thread(target=_install_metallib)
         install_thread.start()
 
-        while install_thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(install_thread)
 
         if self.result is False:
             progress_bar_animation.stop_pulse()
@@ -314,6 +311,7 @@ class SysPatchStartFrame(wx.Frame):
 
         while gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
             wx.Yield()
+            time.sleep(self.constants.thread_sleep_interval)
 
         if self.patches[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] is True:
             if self._kdk_download(self) is False:
@@ -329,8 +327,7 @@ class SysPatchStartFrame(wx.Frame):
         thread = threading.Thread(target=self._start_root_patching, args=(self.patches,))
         thread.start()
 
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         self._post_patch()
         self.return_button.Enable()
@@ -356,8 +353,7 @@ class SysPatchStartFrame(wx.Frame):
         thread = threading.Thread(target=self._revert_root_patching, args=(self.patches,))
         thread.start()
 
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         self._post_patch()
         self.return_button.Enable()

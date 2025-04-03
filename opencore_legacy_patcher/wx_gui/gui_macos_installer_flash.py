@@ -88,8 +88,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         thread = threading.Thread(target=fetch_installers)
         thread.start()
 
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         frame_modal = wx.Dialog(self, title=self.title, size=(350, 200))
 
@@ -180,8 +179,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         thread = threading.Thread(target=_fetch_disks)
         thread.start()
 
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         self.frame_modal = wx.Dialog(self, title=self.title, size=(350, 200))
 
@@ -317,7 +315,9 @@ class macOSInstallerFlashFrame(wx.Frame):
             except:
                 bytes_written = 0
             wx.CallAfter(progress_bar.SetValue, bytes_written)
+
             wx.Yield()
+            time.sleep(self.constants.thread_sleep_interval)
 
         if self.result is False:
             logging.error("Failed to flash installer, cannot continue.")
@@ -370,8 +370,7 @@ class macOSInstallerFlashFrame(wx.Frame):
         thread = threading.Thread(target=prepare_script, args=(self, installer_path, disk, self.constants))
         thread.start()
 
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         return self.prepare_result
 
@@ -399,10 +398,11 @@ class macOSInstallerFlashFrame(wx.Frame):
             return False
 
         logging.info("Successfully created macOS installer")
-        while thread.is_alive():
-            # wait for download_thread to finish
-            # though highly unlikely this thread is still alive (flashing an Installer will take a while)
-            time.sleep(0.1)
+
+        # wait for download_thread to finish
+        # though highly unlikely this thread is still alive (flashing an Installer will take a while)
+        gui_support.wait_for_thread(thread)
+
         logging.info("Installing Root Patcher to drive")
         self._install_installer_pkg(disk)
 
@@ -617,8 +617,7 @@ class macOSInstallerFlashFrame(wx.Frame):
 
         thread = threading.Thread(target=_integrity_check)
         thread.start()
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         if error_message == "":
             logging.info("Installer pkg validated")

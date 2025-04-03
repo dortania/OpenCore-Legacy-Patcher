@@ -155,6 +155,8 @@ class Constants:
         self.unpack_thread                   = None  #  Determine if unpack thread finished (threading.Thread)
         self.update_stage:               int = 0  #     Determine update stage (see gui_support.py)
         self.log_filepath:              Path = None  #  Path to log file
+        self.thread_sleep_interval:    float = 0.1   #  Sleep interval between UI updates (seconds) - reduce refresh-rate to reduce CPU-usage
+        self.thread_nap_interval:      float = 0.01  #  Short Sleep interval between UI updates (seconds) - for faster UI updates of the progress bar
 
         self.commit_info: tuple = (None, None, None)  # Commit info (Branch, Commit Date, Commit URL)
 

@@ -76,13 +76,11 @@ class OSUpdateFrame(wx.Frame):
         if results[HardwarePatchsetSettings.KERNEL_DEBUG_KIT_REQUIRED] is True:
             kdk_thread = threading.Thread(target=_kdk_thread_spawn)
             kdk_thread.start()
-            while kdk_thread.is_alive():
-                wx.Yield()
+            gui_support.wait_for_thread(kdk_thread)
         if results[HardwarePatchsetSettings.METALLIB_SUPPORT_PKG_REQUIRED] is True:
             metallib_thread = threading.Thread(target=_metallib_thread_spawn)
             metallib_thread.start()
-            while metallib_thread.is_alive():
-                wx.Yield()
+            gui_support.wait_for_thread(metallib_thread)
 
 
         download_objects = {
@@ -149,8 +147,7 @@ class OSUpdateFrame(wx.Frame):
         kdk_checksum_thread = threading.Thread(target=_validate_kdk_checksum_thread)
         kdk_checksum_thread.start()
 
-        while kdk_checksum_thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(kdk_checksum_thread)
 
         if self.kdk_checksum_result is False:
             logging.error("KDK checksum validation failed")
@@ -172,8 +169,7 @@ class OSUpdateFrame(wx.Frame):
         kdk_install_thread = threading.Thread(target=_install_kdk_thread)
         kdk_install_thread.start()
 
-        while kdk_install_thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(kdk_install_thread)
 
         if self.kdk_install_result is False:
             logging.info("Failed to install KDK")
@@ -194,8 +190,7 @@ class OSUpdateFrame(wx.Frame):
         metallib_install_thread = threading.Thread(target=_install_metallib_thread)
         metallib_install_thread.start()
 
-        while metallib_install_thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(metallib_install_thread)
 
         if self.metallib_install_result is False:
             logging.info("Failed to install Metallib")

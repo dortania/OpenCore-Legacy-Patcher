@@ -130,7 +130,7 @@ class OpenCoreLegacyPatcher:
 
         if not any(x in sys.argv for x in ignore_args):
             while self.constants.unpack_thread.is_alive():
-                time.sleep(0.1)
+                time.sleep(self.constants.thread_sleep_interval)
 
         arguments.arguments(self.constants)
 

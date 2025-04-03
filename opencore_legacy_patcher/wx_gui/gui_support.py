@@ -263,6 +263,19 @@ class ThreadHandler(logging.Handler):
         wx.CallAfter(self.text_box.AppendText, self.format(record) + '\n')
 
 
+def wait_for_thread(thread: threading.Thread, sleep_interval=None):
+    """
+    Waits for a thread to finish while processing UI events at regular intervals
+    to prevent UI freezing and excessive CPU usage.
+    """
+    # Use the passed sleep_interval, or get from global_constants
+    interval = sleep_interval if sleep_interval is not None else constants.Constants().thread_sleep_interval
+
+    while thread.is_alive():
+        wx.Yield()
+        time.sleep(interval)
+
+
 class RestartHost:
     """
     Restarts the host machine
