@@ -6,6 +6,7 @@ import wx
 import logging
 import threading
 import traceback
+import time
 
 from .. import constants
 
@@ -101,12 +102,12 @@ class BuildFrame(wx.Frame):
         """
         while gui_support.PayloadMount(self.constants, self).is_unpack_finished() is False:
             wx.Yield()
+            time.sleep(self.constants.thread_sleep_interval)
 
         thread = threading.Thread(target=self._build)
         thread.start()
 
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         self.return_button.Enable()
 

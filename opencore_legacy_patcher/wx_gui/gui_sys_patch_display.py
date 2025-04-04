@@ -93,9 +93,7 @@ class SysPatchDisplayFrame(wx.Frame):
 
         frame.ShowWindowModal()
 
-        while thread.is_alive():
-            wx.Yield()
-
+        gui_support.wait_for_thread(thread)
 
         frame.Close()
 

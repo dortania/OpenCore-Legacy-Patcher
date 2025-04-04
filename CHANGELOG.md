@@ -1,5 +1,8 @@
 # OpenCore Legacy Patcher changelog
 
+## 2.4.0
+- Reduce CPU usage on main UI thread
+
 ## 2.3.2
 - Resolve erroring in Passwords app and Safari Autofill on T1 Macs running 15.4 or later
 - Increment binaries:

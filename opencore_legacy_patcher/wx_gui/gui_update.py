@@ -102,8 +102,7 @@ class UpdateFrame(wx.Frame):
 
         thread = threading.Thread(target=_fetch_update)
         thread.start()
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         gui_download.DownloadFrame(
             self.frame,
@@ -128,8 +127,7 @@ class UpdateFrame(wx.Frame):
         thread = threading.Thread(target=self._extract_update)
         thread.start()
 
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         # Title: Installing update
         title_label.SetLabel("Installing update...")
@@ -138,8 +136,7 @@ class UpdateFrame(wx.Frame):
         thread = threading.Thread(target=self._install_update)
         thread.start()
 
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         # Title: Update complete
         title_label.SetLabel("Update complete!")
@@ -170,8 +167,7 @@ class UpdateFrame(wx.Frame):
         thread = threading.Thread(target=self._launch_update)
         thread.start()
 
-        while thread.is_alive():
-            wx.Yield()
+        gui_support.wait_for_thread(thread)
 
         timer = 5
         while True:
