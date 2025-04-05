@@ -273,7 +273,7 @@ def wait_for_thread(thread: threading.Thread, sleep_interval=None):
 
     while thread.is_alive():
         wx.Yield()
-        time.sleep(interval)
+        thread.join(timeout=interval)
 
 
 class RestartHost:
