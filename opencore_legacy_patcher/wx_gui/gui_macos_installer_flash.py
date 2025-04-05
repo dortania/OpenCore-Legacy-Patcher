@@ -3,7 +3,6 @@ gui_macos_installer_flash.py: macOS Installer Flash Frame
 """
 
 import wx
-import time
 import logging
 import plistlib
 import tempfile
@@ -317,7 +316,7 @@ class macOSInstallerFlashFrame(wx.Frame):
             wx.CallAfter(progress_bar.SetValue, bytes_written)
 
             wx.Yield()
-            time.sleep(self.constants.thread_sleep_interval)
+            thread.join(timeout=self.constants.thread_sleep_interval)
 
         if self.result is False:
             logging.error("Failed to flash installer, cannot continue.")
