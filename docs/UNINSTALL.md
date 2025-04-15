@@ -8,7 +8,7 @@ This guide tells you different ways to uninstall OCLP and/or patches.
 2. Restart the computer and [Reset NVRAM.](https://support.apple.com/HT204063)
 3. Boot the computer using the installer USB drive.
 4. Go to Disk Utility and choose View -> Show All Devices.
-5. Wipe the full disk by choosing the top option on the left sidebar
+5. Wipe the full disk by choosing the top disk option on the left sidebar and selecting "Erase".
 6. Start macOS installation.
 
 ## Manual methods
@@ -18,6 +18,10 @@ Uninstalling OCLP manually is a three part process which includes the applicatio
 ### Reverting root patches
 
 Open the OCLP application and go into the Post Install Root Patch menu, choose Revert Root Patches. 
+
+### Uninstalling the application
+
+To uninstall the OCLP application including LaunchAgent and PrivilegedHelperTool, download the uninstaller package from [the releases page.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
 ### Uninstalling the bootloader
 
@@ -36,10 +40,6 @@ Note that after you remove OpenCore, your Mac will no longer boot and show the "
 
 * This does not apply to native Macs just using OpenCore to achieve features like AirPlay to Mac and Sidecar, but it is still recommended to reinstall macOS after removing OpenCore, if using SMBIOS spoofing to enable Universal Control and other features.
 :::
-
-### Uninstalling the application
-
-To uninstall the OCLP application including LaunchAgent and PrivilegedHelperTool, download the uninstaller package from [the releases page.](https://github.com/dortania/OpenCore-Legacy-Patcher/releases)
 
 
 
