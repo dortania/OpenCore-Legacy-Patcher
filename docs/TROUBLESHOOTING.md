@@ -33,7 +33,7 @@ Here are some common errors that users may experience while using this patcher:
 If the application won't launch (e.g. icon will bounce in the Dock), try launching OCLP via Terminal by typing the following command, make sure you've moved the app to `/Applications` before this.
 
 ```sh
-/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher
+/Library/Application Support/Dortania/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher
 ```
 
 ## "You don't have permission to save..." error when creating USB installer
