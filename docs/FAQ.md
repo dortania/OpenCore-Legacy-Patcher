@@ -138,17 +138,19 @@ Earliest Mac models supporting AVX2 instruction:
 
 Metal is Apple's proprietary graphics API which fully superseded OpenGL rendering of the operating system starting from macOS Mojave. When the word "Non-Metal" is used, it describes GPUs that are not Metal supported and require using OpenGL instead.
 
+A great rule of thumb is that Macs older than 2012 are non-Metal, with the exception of systems having upgradable GPUs.
+
 GPUs that support Metal are as follows:
 
 * Intel HD 4000 series (Ivy Bridge/3rd gen) and newer
 * AMD HD 7000 series and newer (GCN 1)
 * NVIDIA GTX 600 and 700 series (Kepler)
 
-Everything older than mentioned are Non-Metal and therefore only support OpenGL. A great rule of thumb is that Macs older than 2012 are non-Metal, with the exception of systems with upgradable GPUs. Non-Metal also includes NVIDIA Maxwell (GTX 900 series) and Pascal (GTX 1000 series) when used with patched Web Drivers on newer than macOS High Sierra.
+Everything older than mentioned are Non-Metal and therefore only support OpenGL. Non-Metal also includes NVIDIA Maxwell (GTX 900 series) and Pascal (GTX 1000 series) when used with patched Web Drivers on newer than macOS High Sierra.
 
-Refer to [Supported models](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) and [Working Around Non-Metal Issues](https://dortania.github.io/OpenCore-Legacy-Patcher/ACCEL.html) pages for more information.
+Due to deprecation of OpenGL, many newer applications may require Metal rendering and as such will fail to run on systems with Non-Metal GPUs. Some built-in apps like Maps and everything relying on it (such as Find My) will fail to render as well on versions later than Big Sur.
 
-Due to deprecation of OpenGL, many newer applications may require Metal rendering and as such will fail to run on systems with Non-Metal GPUs.
+Refer to [Supported models,](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) the [Non-Metal GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) and [Working Around Non-Metal Issues](https://dortania.github.io/OpenCore-Legacy-Patcher/ACCEL.html) pages for more information.
 
 
 ## What are FeatureUnlock and mediaanalysisd?
