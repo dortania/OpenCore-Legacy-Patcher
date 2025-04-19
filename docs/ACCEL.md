@@ -5,7 +5,7 @@
 * [Unable to run Zoom](#unable-to-run-zoom)
 * [Unable to grant special permissions to apps (ie. Camera Access to Zoom)](#unable-to-grant-special-permissions-to-apps-ie-camera-access-to-zoom)
 * [Keyboard Backlight broken](#keyboard-backlight-broken)
-* [Photos and Maps Apps Heavily Distorted](#photos-and-maps-apps-heavily-distorted)
+* [Photos and Maps app issues](#photos-and-maps-app-issues)
 * [Cannot press "Done" when editing a Sidebar Widget](#cannot-press-done-when-editing-a-sidebar-widget)
 * [Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey](#wake-from-sleep-heavily-distorted-on-amd-ati-from-macos-11-3-to-monterey)
 * [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
