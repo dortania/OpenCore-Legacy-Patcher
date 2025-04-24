@@ -160,7 +160,7 @@ Refer to [Supported models,](https://dortania.github.io/OpenCore-Legacy-Patcher/
 
 **Important:** These features have the potential to cause instability in many places and as such a decision has been made to disable them by default (mediaanalysisd only on 3802-based* systems) starting from OpenCore Legacy Patcher version 2.1.0.  If you want to enable these features at the risk of additional instability, you can do so in the OCLP settings and rebuilding OpenCore.
 
-* **Note:** FeatureUnlock may have issues functioning with some OS versions and systems due to race condition during system bootup. If this happens to you, try rebooting multiple times or different (older) OS versions to see if it will remedy the issue.
+FeatureUnlock may also have issues functioning with some OS versions and systems due to race condition during system bootup. If this happens to you, try rebooting multiple times or different (older) OS versions to see if it will remedy the issue.
 
 FeatureUnlock is an extension to enable some macOS features, including:
 - Sidecar
