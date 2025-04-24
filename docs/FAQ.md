@@ -140,15 +140,17 @@ Metal is Apple's proprietary graphics API which fully superseded OpenGL renderin
 
 A great rule of thumb is that Macs older than 2012 are non-Metal, with the exception of systems having upgradable GPUs.
 
-GPUs that support Metal are as follows:
+Due to deprecation of OpenGL, many newer applications may require Metal rendering and as such will fail to run on systems with Non-Metal GPUs. Some built-in apps like Maps and everything relying on it (such as Find My) will fail to render as well on versions later than Big Sur.
+
+::: details Metal supported GPUs
 
 * Intel HD 4000 series (Ivy Bridge/3rd gen) and newer
-* AMD HD 7000 series and newer (GCN 1)
+* AMD HD 7000 series (GCN 1) and newer
 * NVIDIA GTX 600 and 700 series (Kepler)
 
 Everything older than mentioned are Non-Metal and therefore only support OpenGL. Non-Metal also includes NVIDIA Maxwell (GTX 900 series) and Pascal (GTX 1000 series) when used with patched Web Drivers on newer than macOS High Sierra.
 
-Due to deprecation of OpenGL, many newer applications may require Metal rendering and as such will fail to run on systems with Non-Metal GPUs. Some built-in apps like Maps and everything relying on it (such as Find My) will fail to render as well on versions later than Big Sur.
+:::
 
 Refer to [Supported models,](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) the [Non-Metal GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) and [Working Around Non-Metal Issues](https://dortania.github.io/OpenCore-Legacy-Patcher/ACCEL.html) pages for more information.
 
