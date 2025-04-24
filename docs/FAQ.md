@@ -73,7 +73,7 @@ It is extremely recommended to disable automatic updates (even downloading) when
 
 For a related "System version mismatch" error while root patching and more information, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for troubleshooting.
 
-### Disabling updates
+::: details How to disable updates (click to expand)
 
 **macOS Ventura and newer:**
 
@@ -82,6 +82,8 @@ System Settings -> General -> Software Update -> (i) button next to Automatic Up
 **macOS Big Sur and Monterey:**
 
 System Preferences -> Software Update -> Advanced -> Disable "Download new updates when available".
+
+:::
 
 ## Why are macOS updates so large?
 
@@ -115,7 +117,7 @@ Since macOS Ventura, AVX2 is required from all Macs supported by it. While OCLP 
 
 In essence, this means that some models are now aging rapidly and newer OS won't always provide support for newer applications because of hardware requirements. If an application still supports macOS versions older than Ventura, it may have a chance of running on an older OS version on the old system, since some Macs running them natively don't support AVX2 and the app takes a different path.
 
-Earliest Mac models supporting AVX instruction:
+::: details Earliest Mac models supporting AVX instruction (click to expand)
 
 - Macmini5,x (2011)
 - iMac12,x (2011)
@@ -123,8 +125,9 @@ Earliest Mac models supporting AVX instruction:
 - MacBookAir4,x (2011)
 - MacBook8,x (2015)
 - MacPro6,1 (2013)
+:::
 
-Earliest Mac models supporting AVX2 instruction:
+::: details Earliest Mac models supporting AVX2 instruction (click to expand)
 
 - Macmini7,x (2014)
 - iMac14,x (2013)
@@ -132,7 +135,7 @@ Earliest Mac models supporting AVX2 instruction:
 - MacBookAir6,x (2013)
 - MacBook8,x (2015)
 - MacPro7,1 (2019)
-
+:::
 
 ## What is Metal and Non-Metal?
 
@@ -140,7 +143,7 @@ Metal is Apple's proprietary graphics API which fully superseded OpenGL renderin
 
 A great rule of thumb is that Macs older than 2012 are non-Metal, with the exception of systems having upgradable GPUs.
 
-::: details Metal supported GPUs
+::: details Metal supported GPUs (click to expand)
 
 * Intel HD 4000 series (Ivy Bridge/3rd gen) and newer
 * AMD HD 7000 series (GCN 1) and newer
