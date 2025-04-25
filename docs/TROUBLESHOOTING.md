@@ -284,16 +284,6 @@ The reason for this is that the autopatcher will assume that you will be using t
 
 For Macs using legacy USB 1.1 controllers, OpenCore Legacy Patcher can only restore support once it has performed root volume patches. Thus to install macOS, you need to hook up a USB hub between your Mac and Keyboard/Mouse.
 
-::: warning Note
-
-In macOS Sonoma, this seems to have been further weakened and some hubs may not be functional. 
-
-Alternative way is making sure to enable "Remote Login" in General -> Sharing before updating, which will enable SSH. That means you can take control using Terminal in another system by typing `ssh username@lan-ip-address` and your password. After that run Post Install Volume Patching by typing `/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --patch_sys_vol` and finally `sudo reboot`.
-
-:::
-
-
-
 * For MacBook users, you'll need to find an external keyboard/mouse in addition to the USB hub
 
 More information can be found here:
@@ -310,6 +300,14 @@ Applicable models include:
 | iMac        | Late 2009 and older  | iMac7,1 - iMac10,x            | Excludes Core i5/7 27" late 2009 iMac (iMac11,1) |
 | Mac mini    | Mid 2011 and older   | Macmini3,1 - Macmini5,x       |                                                  |
 | Mac Pro     | Mid 2010 and older   | MacPro3,1 - MacPro5,1         |                                                  |
+
+::: warning Note
+
+In macOS Sonoma, this seems to have been further weakened and some hubs may not be functional. 
+
+Alternative way is making sure to enable "Remote Login" in General -> Sharing before updating, which will enable SSH. That means you can take control using Terminal in another system by typing `ssh username@lan-ip-address` and your password. After that run Post Install Volume Patching by typing `/Applications/OpenCore-Patcher.app/Contents/MacOS/OpenCore-Patcher --patch_sys_vol` and finally `sudo reboot`.
+
+:::
 
 <div align="left">
              <img src="./images/usb11-chart.png" alt="USB1.1 chart" width="800" />
