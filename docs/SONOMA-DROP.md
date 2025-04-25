@@ -6,15 +6,6 @@
 
 Apple has yet again dropped a bunch of models, continuing their journey on discontinuing Intel Macs. With the release of OpenCore Legacy Patcher 1.0.0, early support for macOS Sonoma has been implemented.
 
-## Versioning
-
-With 1.0.0, we'll be switching to a proper major, minor and bug fix system ([Semantic Versioning](https://semver.org/)). This means the coming release will be version 1.0.0, and future releases plan to follow this scheme:
-
-- First digit: Major changes, including new OS support, API changes, and significant patch set changes, etc
-- Second digit: Minor changes, including incoming OS update fixes, minor patch set changes, etc
-- Third digit: Bug fixes, primarily hot fixes either due to a regression in prior release or resolving issues in already released OS updates
-
-
 ## Newly dropped hardware
 
 * MacBook10,1:       MacBook (Retina, 12-inch, 2017)

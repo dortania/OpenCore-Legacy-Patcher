@@ -27,6 +27,15 @@ The patcher application requires **OS X Yosemite 10.10** or later to run.
 The patcher is designed to target **macOS Big Sur 11.x to macOS Sequoia 15.x**.
 * Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
 
+## Application versioning
+
+Since 1.0.0, OCLP adheres to a proper versioning scheme with major, minor and bug fix system ([Semantic Versioning](https://semver.org/)).
+
+- First digit: Major changes, including new OS support, API changes, and significant patch set changes, etc
+- Second digit: Minor changes, including incoming OS update fixes, minor patch set changes, etc
+- Third digit: Bug fixes, primarily hot fixes either due to a regression in prior release or resolving issues in already released OS updates
+
+
 ## How do I make sure I'm all up to date?
 
 Updating the OCLP installation is a three step process, first the application, second the bootloader and finally root patches.
