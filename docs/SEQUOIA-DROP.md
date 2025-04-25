@@ -80,17 +80,6 @@ While USB 1.1 may seem unimportant, it handles many important devices on your sy
 
 Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
 
-::: warning The following systems rely on USB 1.1
-
-* iMac10,x and older
-* Macmini4,1 and older
-* MacBook7,1 and older
-* MacBookAir3,1 and older
-* MacPro5,1 and older
-* Xserve 3,1 and older
-:::
-
-[More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1021)
 
 ### Graphics support and issues
 This build includes both Legacy Metal and non-Metal patches for macOS Sequoia. Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues.

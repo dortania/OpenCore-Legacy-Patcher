@@ -66,19 +66,7 @@ For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed i
 
 Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
 
-::: warning The following systems rely on USB 1.1
-
-* iMac10,x and older
-* Macmini3,1 and older
-* MacBook7,1 and older
-* MacBookAir3,1 and older
-* MacBookPro7,1 and older
-  * MacBookPro6,x is exempt
-* MacPro5,1 and older
-
-:::
-
-
+### Graphics and wireless support
 
 ::: details Legacy Wireless Support (Resolved in v0.6.0 and newer)
 
