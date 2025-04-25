@@ -71,9 +71,7 @@ While USB 1.1 may seem unimportant, it handles many important devices on your sy
 * IR Receivers
 * Bluetooth
 
-With OpenCore Legacy Patcher v0.6.0+, basic support has been implemented via Root Volume patching. However due to this, users will need to use a USB hub for installation and post-OS updates when patches are cleaned:
-
-![](./images/usb11-chart.png)
+Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
 
 ::: warning The following systems rely on USB 1.1
 

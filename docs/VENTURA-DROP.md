@@ -64,9 +64,7 @@ For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed i
 * IR Receivers
 * Bluetooth
 
-With OpenCore Legacy Patcher v0.6.0, basic support has been implemented via Root Volume patching. However due to this, users will need to use a USB hub for installation and post-OS updates when patches are cleaned:
-
-![](./images/usb11-chart.png)
+Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
 
 ::: warning The following systems rely on USB 1.1
 
@@ -79,6 +77,8 @@ With OpenCore Legacy Patcher v0.6.0, basic support has been implemented via Root
 * MacPro5,1 and older
 
 :::
+
+
 
 ::: details Legacy Wireless Support (Resolved in v0.6.0 and newer)
 
