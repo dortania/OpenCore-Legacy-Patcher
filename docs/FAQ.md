@@ -2,6 +2,7 @@
 
 
 * [Application requirements](#application-requirements)
+* [Application versioning](#application-versioning)
 * [How do I make sure I'm all up to date?](#how-do-i-make-sure-i-m-all-up-to-date)
 * [Why are the settings "not saving"?](#why-are-the-settings-not-saving)
 * [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-usb-install-media-as-a-universal-installer)
