@@ -33,7 +33,6 @@ For older hardware, see below sections:
 * [Currently Unsupported/Broken Hardware in Ventura](#currently-unsupportedbroken-hardware-in-ventura)
   * [AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs](#amd-polaris-vega-and-navi-support-on-pre-2019-mac-pros-and-pre-2012-imacs)
   * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
-  * [Ethernet issue with Early 2008 Mac Pro](#ethernet-issue-with-early-2008-mac-pro)
 
 The team is doing their best to investigate and fix the aforementioned issues, however no estimated time can be provided.
 
