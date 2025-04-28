@@ -108,9 +108,7 @@ There are two ways to to try and resolve this.
 
 ## System version mismatch error when root patching
 
-Due to a change by Apple, updates now modify the system volume **already while downloading**, which can lead to broken patches out of a sudden, since the operating system gets into a liminal state between two versions.
-
-Hence while root patching, you may get an error that looks like the following: 
+Due to a change by Apple, updates now modify the system volume **already while downloading**, which can lead to broken patches out of a sudden, since the operating system gets into a liminal state between two versions. Hence while root patching, you may get an error that looks like the following: 
 
 `SystemVersion.plist build version mismatch: found 15.4 (24E247), expected 13.7.5 (22H527)`
 
@@ -123,6 +121,8 @@ There are two options to resolve it:
 2. Use an experimental "PurgePendingUpdate" tool available [on the Discord server](https://discord.com/channels/417165963327176704/1037474131526029362/1255993208966742108), download it and then run it in Terminal, to get rid of a pending update. This may be integrated into OCLP later on, however there is currently no ETA.
 
 **Disabling automatic macOS updates is extremely recommended once recovered, to prevent it from happening again.**
+
+* Note: macOS Sequoia has begun prompting to enable automatic updates from 15.4 onward after an update install has finished and isn't giving a choice to fully decline, this means you may have to keep doing it again after updating to newer versions.
 
 ::: details How to disable updates (click to expand)
 
