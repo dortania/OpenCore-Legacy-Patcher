@@ -108,11 +108,23 @@ There are two ways to to try and resolve this.
 
 ## System version mismatch error when root patching
 
-Updates from now on modify the system volume already while downloading, which can lead to broken patches out of a sudden as well as a "version mismatch" error while root patching, since the operating system gets into a liminal state between two versions. The "version mismatch" error is a safeguard preventing OCLP from patching on a system that is in a weird liminal state, to avoid leading to a very likely boot failure.
+Due to a change by Apple, updates now modify the system volume **already while downloading**, which can lead to broken patches out of a sudden, since the operating system gets into a liminal state between two versions.
 
-Currently there is a "PurgePendingUpdate" tool available [on the Discord server](https://discord.com/channels/417165963327176704/1037474131526029362/1255993208966742108) you can download and then run it in Terminal, to get rid of a pending update. This may be integrated into OCLP later on, however there is currently no ETA.
+Hence while root patching, you may get an error that looks like the following: 
 
-Disabling automatic macOS updates is extremely recommended once recovered, to prevent it from happening again.
+`SystemVersion.plist build version mismatch: found 15.4 (24E247), expected 13.7.5 (22H527)`
+
+In this example, it is telling that a version 13.7.5 (Ventura) is expected which is currently running but macOS has already staged an update to version 15.4 (Sequoia) and has already modified the filesystem to prepare for an update, including writing the new version in SystemVersion.plist where OCLP is able to read it from. The "version mismatch" error is a safeguard preventing OCLP from patching on a system that is in a weird liminal state, to avoid leading to a very likely boot failure.
+
+There are two options to resolve it:
+
+1. Reinstall macOS, you can try doing an in-place install without wiping the disk to keep your data.
+
+2. Use an experimental "PurgePendingUpdate" tool available [on the Discord server](https://discord.com/channels/417165963327176704/1037474131526029362/1255993208966742108), download it and then run it in Terminal, to get rid of a pending update. This may be integrated into OCLP later on, however there is currently no ETA.
+
+**Disabling automatic macOS updates is extremely recommended once recovered, to prevent it from happening again.**
+
+::: details How to disable updates (click to expand)
 
 **macOS Ventura and newer:**
 
@@ -121,6 +133,8 @@ System Settings -> General -> Software Update -> (i) button next to Automatic Up
 **macOS Big Sur and Monterey:**
 
 System Preferences -> Software Update -> Advanced -> Disable "Download new updates when available".
+
+:::
 
 ## Stuck on boot after root patching
 
