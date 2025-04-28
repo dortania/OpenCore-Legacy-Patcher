@@ -83,6 +83,8 @@ It is extremely recommended to disable automatic updates (even downloading) when
 
 For a related "System version mismatch" error while root patching and more information, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for troubleshooting.
 
+* Note: macOS Sequoia has begun prompting to enable automatic updates from 15.4 onward after an update install has finished and isn't giving a choice to fully decline, this means you may have to keep doing it again after updating to newer versions.
+
 ::: details How to disable updates (click to expand)
 
 **macOS Ventura and newer:**
