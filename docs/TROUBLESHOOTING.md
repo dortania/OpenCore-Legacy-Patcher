@@ -114,11 +114,14 @@ Due to a change by Apple, updates now modify the system volume **already while d
 
 In this example, it is telling that a version 13.7.5 (Ventura) is expected which is currently running but macOS has already staged an update to version 15.4 (Sequoia) and has already modified the filesystem to prepare for an update, including writing the new version in SystemVersion.plist where OCLP is able to read it from. The "version mismatch" error is a safeguard preventing OCLP from patching on a system that is in a weird liminal state, to avoid leading to a very likely boot failure.
 
-There are two options to resolve it:
+There are few options to resolve it:
 
-1. Reinstall macOS, you can try doing an in-place install without wiping the disk to keep your data.
-
-2. Use an experimental "PurgePendingUpdate" tool available [on the Discord server](https://discord.com/channels/417165963327176704/1037474131526029362/1255993208966742108), download it and then run it in Terminal, to get rid of a pending update. This may be integrated into OCLP later on, however there is currently no ETA.
+1. Update/upgrade to the version already staged.
+2. Reinstall macOS.
+   * You can try doing an in-place install without wiping the disk to keep your data but this may not be possible due to the OS being partially on newer version and it will complain about downgrade.
+4. Use an experimental "PurgePendingUpdate" tool [from the Discord server](https://discord.com/channels/417165963327176704/1253268648324235345/1257348959454625985).
+   * Download it and then run it in Terminal to get rid of a pending update, then repatch again. If "purge failed" appears, you can ignore it.
+   * This may be integrated into OCLP later on, however there is currently no ETA.
 
 **Disabling automatic macOS updates is extremely recommended once recovered, to prevent it from happening again.**
 
