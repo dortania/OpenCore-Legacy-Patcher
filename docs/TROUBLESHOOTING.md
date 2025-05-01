@@ -325,6 +325,8 @@ In macOS Sonoma, this seems to have been further weakened and some hubs may not 
 
 :::
 
+### Alternative method for Software Update
+
 Alternative way for updates is making sure to enable "Remote Login" in General -> Sharing before updating, which will enable SSH. That means you can take control using Terminal in another system and run Post Install Volume Patching. 
 
 **This only applies to updates via Software Update and is not applicable when booting to installer via USB drive.**
