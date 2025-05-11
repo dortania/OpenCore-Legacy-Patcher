@@ -3,6 +3,9 @@
 ## 2.4.0
 - Reduce CPU usage on main UI thread
   - Thanks [goneng](https://github.com/goneng) for the implementation!
+- Resolve T1 issues:
+  - coreautha crashes on macOS 14.4 or later
+  - ApplePay on macOS 15.5
 - Increment binaries:
   - PatcherSupportPkg 1.9.4 - release
 
