@@ -2,6 +2,13 @@
 
 OCLP automatically installs root patches when installing from the USB drive for the first time to ensure smooth operation of the first time settings. However, as an unfortunate side effect, doing a full restore via Time Machine breaks while root patches are installed and restoring requires a few tricks to avoid a kernel panic. Below are two different methods to restore.
 
+::: warning Warning for Sequoia
+
+Time Machine on Sequoia may not function even after uninstalling root patches, leading to a loop with "Migration Finished" window. Currently the only way is to restore on older OS and then upgrade to Sequoia.
+
+:::
+
+
 ## Method 1 - Restore with root patches installed (partial)
 
 **Warning:** Be advised that with this method, folders **other than** "Desktop", "Documents", "Applications" etc (main folders under profile) may not be restored. If you want a full restore, use method 2 below.
@@ -30,11 +37,4 @@ Now you should be restored with your user profile, applications and settings.
 6. Once finished, go into the OCLP app and reinstall the root patches.
 
 Now you should be fully restored with Time Machine and also running with all patches.
-
-
-::: warning Sequoia Note
-
-Time Machine restoring seems to be currently broken on Sequoia even after uninstalling root patches, leading to a loop with "Migration Finished" window. Currently the only way is to restore on older OS and then upgrade to Sequoia.
-
-:::
 
