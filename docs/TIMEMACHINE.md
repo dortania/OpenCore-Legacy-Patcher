@@ -2,7 +2,7 @@
 
 OCLP automatically installs root patches when installing from the USB drive for the first time to ensure smooth operation of the first time settings. However, as an unfortunate side effect, doing a full restore via Time Machine breaks while root patches are installed and restoring requires a few tricks to avoid a kernel panic. Below are two different methods to restore.
 
-### Method 1 - Restore with root patches installed (partial)
+## Method 1 - Restore with root patches installed (partial)
 
 **Warning:** Be advised that with this method, some data in places other than under your profile (Desktop, Documents etc) and applications may not be restored. If you want a full restore, use method 2 below.
 
@@ -18,7 +18,7 @@ OCLP automatically installs root patches when installing from the USB drive for 
 Now you should be restored with your user profile, applications and settings. 
 
 
-### Method 2 - Restore without root patches (full)
+## Method 2 - Restore without root patches (full)
 
 
 1. In first time settings (Setup Assistant), do not restore the backup. Instead do all settings like you would want to start fresh.
