@@ -4,7 +4,7 @@ OCLP automatically installs root patches when installing from the USB drive for 
 
 ::: warning Warning for Sequoia
 
-Time Machine on Sequoia may not function even after uninstalling root patches, leading to a loop with "Migration Finished" window. Currently the only way is to restore on older OS and then upgrade to Sequoia.
+Time Machine on Sequoia may not function even after uninstalling root patches, leading to a loop with "Migration Finished" window. If you encounter this issue, restore on older OS and then upgrade to Sequoia.
 
 :::
 
@@ -14,13 +14,12 @@ Time Machine on Sequoia may not function even after uninstalling root patches, l
 **Warning:** Be advised that with this method, folders **other than** "Desktop", "Documents", "Applications" etc (main folders under profile) may not be restored. If you want a full restore, use method 2 below.
 
 1. Start Time Machine restore either in Setup Assistant (first time settings) or Migration Assistant.
-2. When asked to select information to transfer, **uncheck** "Other files and folders".
+2. When asked to select information to transfer, **uncheck** "Other files and folders" as seen in the image below.
+3. Start transfer.
 
 <div align="left">
              <img src="./images/TimeMachine-Transfer-Uncheck.png" alt="Uncheck other files and folders" width="600" />
 </div>
-
-3. Start transfer.
 
 Now you should be restored with your user profile, applications and settings. 
 
