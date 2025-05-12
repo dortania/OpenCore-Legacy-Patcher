@@ -4,7 +4,7 @@ OCLP automatically installs root patches when installing from the USB drive for 
 
 ## Method 1 - Restore with root patches installed (partial)
 
-**Warning:** Be advised that with this method, some data in places other than under your profile (Desktop, Documents etc) and applications may not be restored. If you want a full restore, use method 2 below.
+**Warning:** Be advised that with this method, folders **other than** "Desktop", "Documents", "Applications" etc (main folders under profile) may not be restored. If you want a full restore, use method 2 below.
 
 1. Start Time Machine restore either in Setup Assistant (first time settings) or Migration Assistant.
 2. When asked to select information to transfer, **uncheck** "Other files and folders".
