@@ -7,7 +7,7 @@
   - coreautha crashes on macOS 14.4 or later
   - ApplePay on macOS 15.5
 - Increment binaries:
-  - PatcherSupportPkg 1.9.4 - release
+  - PatcherSupportPkg 1.9.5 - release
 
 ## 2.3.2
 - Resolve erroring in Passwords app and Safari Autofill on T1 Macs running 15.4 or later

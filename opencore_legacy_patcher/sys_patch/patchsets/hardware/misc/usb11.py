@@ -112,6 +112,24 @@ class USB11Controller(BaseHardware):
         }
 
 
+    def _usb_webcam_patches(self) -> dict:
+        """
+        Patches for USB 1.1 Webcam
+        """
+        if self._xnu_major < os_data.sequoia.value:
+            return {}
+
+        return {
+            "Legacy USB 1.1 Webcam": {
+                PatchType.MERGE_SYSTEM_VOLUME: {
+                    "/System/Library/Frameworks": {
+                        "IOUSBHost.framework": "14.6.1",
+                    },
+                },
+            },
+        }
+
+
     def patches(self) -> dict:
         """
         Patches for USB 1.1 Controller
@@ -122,4 +140,5 @@ class USB11Controller(BaseHardware):
         return {
             **self._base_patches(),
             **self._extended_patches(),
+            **self._usb_webcam_patches(),
         }
