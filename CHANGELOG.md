@@ -6,6 +6,7 @@
 - Resolve T1 issues:
   - coreautha crashes on macOS 14.4 or later
   - ApplePay on macOS 15.5
+- Resolve USB Camera support on USB 1.1 Macs in macOS Sequoia
 - Increment binaries:
   - PatcherSupportPkg 1.9.5 - release
 
