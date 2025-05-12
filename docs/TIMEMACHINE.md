@@ -1,10 +1,25 @@
 # Restoring Time Machine backup
 
-OCLP automatically installs root patches when installing from the USB drive for the first time to ensure smooth operation of the first time settings. 
+OCLP automatically installs root patches when installing from the USB drive for the first time to ensure smooth operation of the first time settings. However, as an unfortunate side effect, doing a full restore via Time Machine breaks while root patches are installed and restoring requires a few tricks to avoid a kernel panic. Below are two different methods to restore.
 
-However, as an unfortunate side effect, restoring via Time Machine breaks while root patches are installed and restoring a root patched machine requires a few tricks to avoid a kernel panic.
+### Method 1 - Restore with root patches installed (partial)
 
-To ensure a smooth Time Machine restore, follow the steps listed under:
+**Warning:** Be advised that with this method, some data in places other than under your profile (Desktop, Documents etc) and applications may not be restored. If you want a full restore, use method 2 below.
+
+1. Start Time Machine restore either in Setup Assistant (first time settings) or Migration Assistant.
+2. When asked to select information to transfer, **uncheck** "Other files and folders".
+
+<div align="left">
+             <img src="./images/TimeMachine-Transfer-Uncheck.png" alt="Uncheck other files and folders" width="600" />
+</div>
+
+3. Start transfer.
+
+Now you should be restored with your user profile, applications and settings. 
+
+
+### Method 2 - Restore without root patches (full)
+
 
 1. In first time settings (Setup Assistant), do not restore the backup. Instead do all settings like you would want to start fresh.
 2. Once you reach desktop, open the OCLP application and revert root patches in the Post Install Volume Patches section.
