@@ -2,6 +2,8 @@
 
 OCLP automatically installs root patches when installing from the USB drive for the first time to ensure smooth operation of the first time settings. However, as an unfortunate side effect, doing a full restore via Time Machine breaks while root patches are installed and restoring requires a few tricks to avoid a kernel panic. Below are two different methods to restore.
 
+**Method 2 is only supported on Monterey and newer. Big Sur does not support snapshot reversion.**
+
 ::: warning Warning for Sequoia
 
 Time Machine on Sequoia may not function even after uninstalling root patches, leading to a loop with "Migration Finished" window. If you encounter this issue, restore on older OS and then upgrade to Sequoia.
