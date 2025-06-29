@@ -18,8 +18,8 @@ Uninstalling OCLP manually is a three part process which includes the applicatio
 ### Reverting root patches
 
 Open the OCLP application and go into the Post Install Root Patch menu, choose Revert Root Patches. 
-   * Supported on Monterey and later. Big Sur does not support snapshot reversion and requires a reinstall.
-   * Reinstall can be done without a wipe if the macOS installer version used is the same or newer.
+
+*  **Supported on Monterey and later. Big Sur does not support snapshot reversion and requires a reinstall. Reinstall can be done without a wipe if the macOS installer version used is the same or newer.**
 
 ### Uninstalling the application
 
