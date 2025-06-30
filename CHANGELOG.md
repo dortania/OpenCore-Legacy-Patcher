@@ -1,5 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
+## 3.0.0
+
 ## 2.4.0
 - Reduce CPU usage on main UI thread
   - Thanks [goneng](https://github.com/goneng) for the implementation!
