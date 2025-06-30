@@ -323,6 +323,10 @@ class Constants:
 
     # Drivers
     @property
+    def sequoia_apfs_driver_path(self):
+        return self.payload_path / Path("Drivers/apfs_aligned.efi")
+
+    @property
     def nvme_driver_path(self):
         return self.payload_path / Path("Drivers/NvmExpressDxe.efi")
 

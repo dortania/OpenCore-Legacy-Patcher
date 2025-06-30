@@ -1,6 +1,7 @@
 # OpenCore Legacy Patcher changelog
 
 ## 3.0.0
+- Restore support for FileVault 2 on macOS 26
 
 ## 2.4.0
 - Reduce CPU usage on main UI thread
