@@ -690,8 +690,16 @@ class Constants:
         return self.kexts_path / Path("USB-Map.kext")
 
     @property
+    def map_kext_folder_tahoe(self):
+        return self.kexts_path / Path("USB-Map-Tahoe.kext")
+
+    @property
     def map_contents_folder(self):
         return self.map_kext_folder / Path("Contents")
+
+    @property
+    def map_contents_folder_tahoe(self):
+        return self.map_kext_folder_tahoe / Path("Contents")
 
     @property
     def pp_kext_folder(self):

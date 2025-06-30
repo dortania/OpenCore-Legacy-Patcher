@@ -285,19 +285,26 @@ xw
 
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
+        usb_map_tahoe_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info-Tahoe.plist")
         if (
             usb_map_path.exists()
+            and usb_map_tahoe_path.exists()
             and (self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True)
             and self.model not in ["Xserve2,1", "Dortania1,1"]
             and (
                 (self.model in model_array.Missing_USB_Map or self.model in model_array.Missing_USB_Map_Ventura)
                 or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
-            logging.info("- Adding USB-Map.kext")
+            logging.info("- Adding USB-Map.kext and USB-Map-Tahoe.kext")
             Path(self.constants.map_kext_folder).mkdir()
+            Path(self.constants.map_kext_folder_tahoe).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
+            Path(self.constants.map_contents_folder_tahoe).mkdir()
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
+            # for the tahoe, need to copy but rename to Info.plist
+            shutil.copy(usb_map_tahoe_path, self.constants.map_contents_folder_tahoe / Path("Info.plist"))
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
+            support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map-Tahoe.kext")["Enabled"] = True
             if self.model in model_array.Missing_USB_Map_Ventura and self.constants.serial_settings not in ["Moderate", "Advanced"]:
                 support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map.kext")["MinKernel"] = "22.0.0"
 
