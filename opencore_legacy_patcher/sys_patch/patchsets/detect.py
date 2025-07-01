@@ -154,7 +154,7 @@ class HardwarePatchsetDetection:
         Determine if host OS is unsupported
         """
         _min_os = os_data.big_sur.value
-        _max_os = os_data.sequoia.value
+        _max_os = os_data.tahoe.value
         if self._dortania_internal_check() is True:
             return False
         if self._xnu_major < _min_os or self._xnu_major > _max_os:
