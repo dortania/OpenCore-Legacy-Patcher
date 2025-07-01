@@ -35,7 +35,14 @@ class ModernAudio(BaseHardware):
         """
         - Everything before macOS Tahoe 26 is considered native
         """
-        return self._xnu_major < os_data.tahoe.value
+        if self._xnu_major < os_data.tahoe.value:
+            return True
+
+        # Technically, macOS Tahoe Beta 1 is also native, so return True
+        if self._os_build == "25A5279m":
+            return True
+
+        return False
 
 
     def hardware_variant(self) -> HardwareVariant:
