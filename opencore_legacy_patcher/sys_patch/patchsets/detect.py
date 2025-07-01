@@ -41,6 +41,7 @@ from .hardware.misc import (
     gmux,
     keyboard_backlight,
     legacy_audio,
+    modern_audio,
     pcie_webcam,
     t1_security,
     usb11,
@@ -127,10 +128,12 @@ class HardwarePatchsetDetection:
             legacy_wireless.LegacyWireless,
             modern_wireless.ModernWireless,
 
+            legacy_audio.LegacyAudio,
+            modern_audio.ModernAudio,
+
             display_backlight.DisplayBacklight,
             gmux.GraphicsMultiplexer,
             keyboard_backlight.KeyboardBacklight,
-            legacy_audio.LegacyAudio,
             pcie_webcam.PCIeFaceTimeCamera,
             t1_security.T1SecurityChip,
             usb11.USB11Controller,
