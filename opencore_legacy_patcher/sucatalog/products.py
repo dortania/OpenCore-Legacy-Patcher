@@ -249,6 +249,17 @@ class CatalogProducts:
                         if installer in products_copy:
                             products_copy.pop(products_copy.index(installer))
 
+        # Remove duplicates of the same version (i.e. multiple betas still in catalog), keep only latest
+        version_map = {}
+        for installer in products_copy:
+            version = installer.get("Version")
+            post_date = installer.get("PostDate")
+            if version is None:
+                continue
+            if version not in version_map or post_date > version_map[version].get("PostDate", ""):
+                version_map[version] = installer
+
+        products_copy = list(version_map.values())
 
         # Remove EOL versions (older than n-3)
         for installer in products:
