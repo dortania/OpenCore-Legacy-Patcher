@@ -146,7 +146,7 @@ class GenerateApplication:
         print("Patching LC_BUILD_VERSION")
         with open(_file, "rb") as f:
             data = f.read()
-            data = data.replace(_find, _replace, 1)
+            data = data.replace(_find, _replace)
 
         with open(_file, "wb") as f:
             f.write(data)
