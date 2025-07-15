@@ -121,6 +121,7 @@ There are few options to resolve it:
    * You can try doing an in-place install without wiping the disk to keep your data but this may not be possible due to the OS being partially on newer version and it will complain about downgrade.
 4. Use an experimental "PurgePendingUpdate" tool [from the Discord server](https://discord.com/channels/417165963327176704/1253268648324235345/1257348959454625985).
    * Download it and then run it in Terminal to get rid of a pending update, then repatch again. If "purge failed" appears, you can ignore it.
+   * Sometimes you may have to give the file an execution permission with `chmod +x` and putting the application path after the command (type or drag the file) before the tool can be ran.
    * This may be integrated into OCLP later on, however there is currently no ETA.
 
 **Disabling automatic macOS updates is extremely recommended once recovered, to prevent it from happening again.**
