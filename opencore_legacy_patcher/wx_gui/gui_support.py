@@ -169,6 +169,20 @@ class CheckProperties:
 
         return True
 
+    def host_is_solarium(self) -> bool:
+        """
+        Check if running on macOS 26, and if Solarium refresh is enabled
+        """
+
+        if self.constants.detected_os < os_data.os_data.tahoe:
+            return False
+
+        # If we are a release build, we are not Solarium for now
+        if self.constants.commit_info[0].startswith('refs/tags'):
+            return False
+
+        return True
+
 
     def host_has_cpu_gen(self, gen: int) -> bool:
         """
