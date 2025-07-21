@@ -88,6 +88,8 @@ SupportedSMBIOS = [
     "iMac18,1",
     "iMac18,2",
     "iMac18,3",
+    "iMac19,1",
+    "iMac19,2",
     # Mac Pro
     "MacPro3,1",
     "MacPro4,1",
