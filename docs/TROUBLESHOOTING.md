@@ -16,13 +16,14 @@ Here are some common errors that users may experience while using this patcher:
 * [How to Boot Recovery through OpenCore Legacy Patcher](#how-to-boot-recovery-through-opencore-legacy-patcher)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 * [No Brightness Control](#no-brightness-control)
-* [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-Wi-Fi-on-Monterey-with-legacy-cards)
+* [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-wi-fi-on-monterey-with-legacy-cards)
 * [No Graphics Acceleration](#no-graphics-acceleration)
 * [Black Screen on MacBookPro11,3 in macOS Monterey](#black-screen-on-macbookpro11-3-in-macos-monterey)
 * [No DisplayPort Output on Mac Pros with NVIDIA Kepler](#no-displayport-output-on-mac-pros-with-nvidia-kepler)
 * [Volume Hash Mismatch Error in macOS Monterey](#volume-hash-mismatch-error-in-macos-monterey)
 * [Cannot Disable SIP in recoveryOS](#cannot-disable-sip-in-recoveryos)
 * [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
+* [Secondary CPU not visible on MacPro3,1/Xserve2,1](#secondary-cpu-not-visible-on-macpro31xserve21)
 * [No acceleration after a Metal GPU swap on Mac Pro](#no-acceleration-after-a-metal-gpu-swap-on-mac-pro)
 * [Keyboard, Mouse and Trackpad not working in installer or after update](#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update)
 * [No T1 functionality after installing Sonoma or newer](#no-t1-functionality-after-installing-sonoma-or-newer)
@@ -289,6 +290,19 @@ Because of this, we recommend placing a USB 2.0/3.0 hub between your devices and
 A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this stage, a lot of heavy cryptography is performed, which can make systems appear to be stuck. In reality they are working quite hard to finish up the installation.
 
 Because this step can take a few hours or more depending on drive speeds, be patient at this stage and do not manually power off or reboot your machine as this will break the installation and require you to reinstall. If you think your system has stalled, press the Caps Lock key. If the light turns on, your system is busy and not actually frozen.
+
+## Secondary CPU not visible on MacPro3,1/Xserve2,1
+
+Starting with macOS Sequoia, OCLP has to disable the secondary CPU in these systems to avoid a panic. This also means by default, only single CPU will be usable even on older versions. To re-enable both CPUs on older versions, do the following: 
+
+1. Open Settings -> `Build` tab.
+2. Untick `MacPro3,1/Xserve2,1 Workaround`.
+3. Rebuild OpenCore.
+4. Reboot.
+
+**Dual CPUs cannot be enabled in any circumstance if Sequoia or newer is installed, even in multiboot scenarios. Doing so will make Sequoia unbootable.**
+
+[More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1136#:~:text=we%20cannot%20verify.-,MacPro3%2C1%20Dual%20Socket%20Support,-Currently%20on%20macOS)
 
 ## No acceleration after a Metal GPU swap on Mac Pro
 
