@@ -23,7 +23,7 @@ Here are some common errors that users may experience while using this patcher:
 * [Volume Hash Mismatch Error in macOS Monterey](#volume-hash-mismatch-error-in-macos-monterey)
 * [Cannot Disable SIP in recoveryOS](#cannot-disable-sip-in-recoveryos)
 * [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
-* [Secondary CPU not visible on MacPro3,1/Xserve2,1](#secondary-cpu-not-visible-on-macpro31xserve21)
+* [Secondary CPU not visible on MacPro3,1/Xserve2,1](#secondary-cpu-not-visible-on-macpro3-1-xserve2-1)
 * [No acceleration after a Metal GPU swap on Mac Pro](#no-acceleration-after-a-metal-gpu-swap-on-mac-pro)
 * [Keyboard, Mouse and Trackpad not working in installer or after update](#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update)
 * [No T1 functionality after installing Sonoma or newer](#no-t1-functionality-after-installing-sonoma-or-newer)
