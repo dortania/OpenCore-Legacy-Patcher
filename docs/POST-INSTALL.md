@@ -98,7 +98,9 @@ In the Post-Install Menu, you can see whether applicable patches have been insta
 ::: warning Important
 
 In some cases OCLP may require packages to be obtained from the internet, such as KDK or MetallibSupprtPkg if they do not already exist on the system. In these cases OCLP may only install the WiFi driver on first patch run to ensure you can connect to the internet, which means no graphics acceleration 
-after reboot. Root patching has to be ran again manually to install the rest of the required patches after internet connection is established to obtain the required packages.
+after reboot. 
+
+Root patching has to be ran again manually to install the rest of the required patches after internet connection is established to obtain the required packages. You can also utilize Ethernet, which should ensure that all patches will be installed at once.
 
 [Check the affected systems and GPUs from below.](#packages-requiring-networking)
 
@@ -122,11 +124,13 @@ You can install and revert Root Patching manually from the app.
 
 ### Packages requiring networking
 
-MetallibSupportPkg is required to be downloaded for all 3802-based systems running Sequoia or newer. OCLP will handle this as long as you're connected to the internet. If this fails, you can download it manually from the following link: 
+**MetallibSupportPkg**
 
-**Make sure the build matches exactly the OS version you're using.**
+Required for all 3802-based systems running Sequoia or newer. You can download it manually from the following link: 
 
 * [MetallibSupportPkg](https://github.com/dortania/MetallibSupportPkg/releases)
+
+**Make sure the build matches exactly the OS version you're using.**
 
 3802 based GPUs:
 
@@ -135,12 +139,14 @@ MetallibSupportPkg is required to be downloaded for all 3802-based systems runni
 * Intel
    * Ivy Bridge (HD 4000 series)
    * Haswell (Iris/HD 4000-5000 series)
+ 
+**KDK / Kernel Debug Kit**
 
-Macs with AMD Legacy GCN GPUs (ie. Metal) running Ventura or newer require Apple's Kernel Debug Kit to start root patching. If your system is unable to connect to the internet, you can manually download the KDK from the following link:
+Macs with AMD Legacy GCN GPUs (ie. Metal) running Ventura or newer require Apple's Kernel Debug Kit to start root patching. You can manually download the KDK from the following link:
 
 * [KDKSupportPkg](https://github.com/dortania/KdkSupportPkg/releases)
 
-Grab the Kernel Debug Kit whose version is closest to the OS you installed, and install it to the machine running Ventura.
+Grab the Kernel Debug Kit whose version is closest to the OS you installed and install it to the machine.
 
 Machines that require this are those with AMD Metal dGPUs:
 * 2008 - 2013 Mac Pros (MacPro3,1 - 6,1)
