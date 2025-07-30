@@ -109,7 +109,7 @@ macOS doesn't allow direct downgrades, as such you will have to wipe the disk in
 
 This can be caused by multiple things.
 
-### Lacking or broken root patches
+**Lacking or broken root patches**
 
 If your system is being **really** slow and macOS is lacking wallpaper and transparency in Dock and menubar, make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the [Troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html) section for more information. 
 
@@ -117,11 +117,11 @@ If your system is being **really** slow and macOS is lacking wallpaper and trans
 
 Patches can also break if automatic updates are enabled and an update prematurely modifies the system volume, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for more information.
 
-### Spotlight
+**Spotlight**
 
 If your macOS installation is recent, Spotlight starts creating a full disk index which can cause high CPU load, high temps and general slowness. It's recommended to keep the system running for few hours, once Spotlight has indexed the load will ease. A way to check whether it's caused by Spotlight is to open Activity Monitor, choosing "All Processes" from the "View" menu item, then sorting by the CPU value to see if a process called ```mds_stores``` is using a lot of CPU resources.
 
-### Heavier macOS versions
+**Heavier macOS versions**
 
 Newer operating systems are harder to run and can appear more slow. If this is the case, there is not a whole lot to do about it.
 
