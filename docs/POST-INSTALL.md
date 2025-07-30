@@ -89,22 +89,26 @@ These patches include things such as:
 - USB 1.1 drivers
 - Other patches for compatibility with older drivers
 
-OCLP will automatically root patch your system during a first time install **if the USB install media was created within OCLP and the proper model was selected before installer creation.** Users will also be prompted to install these patches after macOS updates or whenever patches are not detected on the system. We recommend rebuilding OpenCore with the latest version of OCLP to take advantage of these new features. 
+OCLP will automatically root patch your system if the USB install media was created within OCLP and the proper model was selected before installer creation. If you did not use OCLP to create the USB drive or autopatching failed, you will need to download OCLP manually and install root patches, since the application will be missing if autopatching wasn't successful.
 
-Users can also see whether applicable patches have been installed, date and version the system was root patched with in the Post-Install Menu.
+**Root patches will be wiped by macOS updates and have to be reinstalled after each update.** OCLP will prompt to install these patches after macOS updates or whenever patches are not detected on the system. The USB installer method can also be used to install future updates, utilizing the autopatching process and avoiding the manual patching which is required when updating through System Settings.
 
-- **Note:** In some cases OCLP may require packages to be obtained from the internet, such as KDK or MetallibSupprtPkg if they do not already exist on the system. In these cases OCLP may only install the WiFi driver on first patch run to ensure you can connect to the internet, which means no graphics acceleration 
-  after reboot. Root patching has to be ran again manually to install the rest of the required patches after internet connection is established to obtain the required packages.
+In the Post-Install Menu, you can see whether applicable patches have been installed, including the date and version the system was root patched with.
 
-   Check the affected systems and GPUs from the warnings below.
+::: warning
+
+**Important:** 
+
+In some cases OCLP may require packages to be obtained from the internet, such as KDK or MetallibSupprtPkg if they do not already exist on the system. In these cases OCLP may only install the WiFi driver on first patch run to ensure you can connect to the internet, which means no graphics acceleration 
+after reboot. Root patching has to be ran again manually to install the rest of the required patches after internet connection is established to obtain the required packages.
+
+[Check the affected systems and GPUs from below.](#packages-requiring-networking)
+
+:::
 
 :::warning
 
-If you need to use Migration Assistant to bring over data to your new macOS install, it is **highly recommended** to avoid restoring from inside Setup Assistant and waiting to install root patches until after the transfer is complete. If root patches were automatically installed, you can use the options available in the OCLP app to remove them.
-
-Using Migration Assistant while patches are installed can lead to an unbootable system, requiring a reinstall of macOS.
-
-For more information on how to restore a Time Machine backup, [refer to the guide here.](https://dortania.github.io/OpenCore-Legacy-Patcher/TIMEMACHINE.html)
+If you need to use Migration Assistant to bring over data to your new macOS install, [refer to the guide to do so here.](https://dortania.github.io/OpenCore-Legacy-Patcher/TIMEMACHINE.html)
 
 :::
 
@@ -118,11 +122,13 @@ You can install and revert Root Patching manually from the app.
 | :--- | :--- |
 | ![](./images/OCLP-GUI-Root-Patch.png) | ![](./images/OCLP-GUI-Root-Patch-Finished.png) |
 
+### Packages requiring networking
 
+With macOS Sequoia, MetallibSupportPkg is required to be downloaded for all 3802-based systems. OCLP will handle this as long as you're connected to the internet. If this fails, you can download it manually from the following link: 
 
-:::warning
+**Make sure the build matches exactly the OS version you're using.**
 
-With macOS Sequoia, MetallibSupportPkg is required to be downloaded for all 3802-based systems. OCLP will handle this as long as you're connected to the internet.
+* [MetallibSupportPkg](https://github.com/dortania/MetallibSupportPkg/releases)
 
 3802 based GPUs:
 
@@ -132,13 +138,9 @@ With macOS Sequoia, MetallibSupportPkg is required to be downloaded for all 3802
    * Ivy Bridge (HD 4000 series)
    * Haswell (Iris/HD 4000-5000 series)
 
-:::
+With macOS Ventura and Macs with AMD Legacy GCN GPUs (ie. Metal), a network connection to grab Apple's Kernel Debug Kit to start root patching. If your system is unable to connect to the internet, you can manually download the KDK from the following link:
 
-:::warning
-
-With macOS Ventura and Macs with AMD Legacy GCN GPUs (ie. Metal), Root Patching requires a network connection to grab Apple's Kernel Debug Kit to start root patching. If your system is unable to connect to the internet, you can manually download a KDK from Apple's site:
-
-* [Apple's Developer Download Page](https://developer.apple.com/download/all/?q=Kernel%20Debug%20Kit)
+* [KDKSupportPkg](https://github.com/dortania/KdkSupportPkg/releases)
 
 Grab the Kernel Debug Kit whose version is closest to the OS you installed, and install it to the machine running Ventura.
 
@@ -147,7 +149,8 @@ Machines that require this are those with AMD Metal dGPUs:
 * 2009 - 2016 iMacs (iMac10,1 - 17,1)
 * 2015 15" MacBook Pro with a dGPU (MacBookPro11,5)
 
-:::
+
+### Other information
 
 Below entries represent GPUs no longer natively supported, ie. requiring root volume patching with OpenCore Legacy Patcher:
 
