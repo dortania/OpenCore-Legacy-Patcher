@@ -95,9 +95,7 @@ OCLP will automatically root patch your system if the USB install media was crea
 
 In the Post-Install Menu, you can see whether applicable patches have been installed, including the date and version the system was root patched with.
 
-::: warning
-
-**Important:** 
+::: warning Important
 
 In some cases OCLP may require packages to be obtained from the internet, such as KDK or MetallibSupprtPkg if they do not already exist on the system. In these cases OCLP may only install the WiFi driver on first patch run to ensure you can connect to the internet, which means no graphics acceleration 
 after reboot. Root patching has to be ran again manually to install the rest of the required patches after internet connection is established to obtain the required packages.
@@ -124,7 +122,7 @@ You can install and revert Root Patching manually from the app.
 
 ### Packages requiring networking
 
-With macOS Sequoia, MetallibSupportPkg is required to be downloaded for all 3802-based systems. OCLP will handle this as long as you're connected to the internet. If this fails, you can download it manually from the following link: 
+MetallibSupportPkg is required to be downloaded for all 3802-based systems running Sequoia or newer. OCLP will handle this as long as you're connected to the internet. If this fails, you can download it manually from the following link: 
 
 **Make sure the build matches exactly the OS version you're using.**
 
@@ -138,7 +136,7 @@ With macOS Sequoia, MetallibSupportPkg is required to be downloaded for all 3802
    * Ivy Bridge (HD 4000 series)
    * Haswell (Iris/HD 4000-5000 series)
 
-With macOS Ventura and Macs with AMD Legacy GCN GPUs (ie. Metal), a network connection to grab Apple's Kernel Debug Kit to start root patching. If your system is unable to connect to the internet, you can manually download the KDK from the following link:
+Macs with AMD Legacy GCN GPUs (ie. Metal) running Ventura or newer require Apple's Kernel Debug Kit to start root patching. If your system is unable to connect to the internet, you can manually download the KDK from the following link:
 
 * [KDKSupportPkg](https://github.com/dortania/KdkSupportPkg/releases)
 
