@@ -107,8 +107,6 @@ macOS doesn't allow direct downgrades, as such you will have to wipe the disk in
 
 ## Why is my system slow?
 
-This can be caused by multiple things.
-
 **Lacking or broken root patches**
 
 If your system is being **really** slow and macOS is lacking wallpaper and transparency in Dock and menubar, make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the [Troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html) section for more information. 
