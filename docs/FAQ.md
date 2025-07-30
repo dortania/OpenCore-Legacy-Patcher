@@ -43,11 +43,13 @@ Updating the OCLP installation is a three step process, first the application, s
 
 Refer to [Updating OpenCore and patches](https://dortania.github.io/OpenCore-Legacy-Patcher/UPDATE.html) for how to update the application and patches.
 
-## Why are the settings "not saving"?
+## Where are the GUI settings saved?
 
-Starting with OpenCore Legacy Patcher 2.1.0, the status of settings in the GUI will now be saved under ```/Users/Shared/.com.dortania.opencore-legacy-patcher.plist```. The application will utilize this file to keep track of and retain settings for relaunches and application updates, no longer requiring a reconfiguring each time. The user interface will reset if any model other than "Host Model" is selected, as building for a different model will require different settings.
+In OpenCore Legacy Patcher 2.1.0 and newer, the status of settings are saved under ```/Users/Shared/.com.dortania.opencore-legacy-patcher.plist```. The application will utilize this file to keep track of and retain settings for relaunches and application updates, no longer requiring a reconfiguring each time. The user interface will reset if any model other than "Host Model" is selected, as building for a different model will require different settings.
 
 In case of issues, delete the file and restart the application to revert the GUI to default settings, then rebuild OpenCore with newly configured settings.
+
+**Ticking the options in Settings alone will not apply the settings until the "Build and Install OpenCore" process has been redone**, which rebuilds a new OpenCore with the selected settings. Applied settings are saved to a config.plist file inside your EFI partition by the building process.
 
 ::: warning
 
@@ -55,15 +57,7 @@ Only settings made within OCLP are accounted for, modifications made directly in
 
 :::
 
-::: details Explainer for older versions (click to expand)
-
-OpenCore Legacy Patcher is a config build tool and as such the user interface always reverts to safe defaults, the user interface therefore **does not** reflect the status of settings. Settings are accounted for and saved by the OpenCore building process and you will always have to build OpenCore again after settings change. 
-
-Settings are saved to a config.plist file inside your EFI partition.
-
-In SIP settings, booted SIP is reported in text form e.g. "0x803" but the checkboxes **do not** reflect the applied settings. Refer to [SIP Settings](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#sip-settings) for more information.
-
-:::
+In versions older than 2.1.0, the status of settings was not tracked. Therefore in these versions GUI will continue to reset to defaults after every launch, requiring settings to be reconfigured each time.
 
 ## Can I use the same USB install media as a universal installer?
 
@@ -113,13 +107,23 @@ macOS doesn't allow direct downgrades, as such you will have to wipe the disk in
 
 ## Why is my system slow?
 
-This can mean many things. Firstly, newer operating systems are harder to run and can appear more slow. 
+This can be caused by multiple things.
 
-Additionally if your macOS installation is recent, Spotlight starts creating a full disk index which can cause high CPU load, high temps and general slowness. It's recommended to keep the system running for few hours, once Spotlight has indexed the load will ease. A way to check whether it's caused by Spotlight is to open Activity Monitor, choosing "All Processes" from the "View" menu item, then sorting by the CPU value to see if a process called ```mds_stores``` is using a lot of CPU resources.
+### Lacking or broken root patches
 
-However, if your system is being **really** slow and you have no transparency in Dock and menubar, this typically indicates that root patches are not installed and as such there is no acceleration. Make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the [Troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html) section for more information.
+If your system is being **really** slow and macOS is lacking wallpaper and transparency in Dock and menubar, make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the [Troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html) section for more information. 
 
-Patches can also break if automatic updates are enabled and an update modifies the system volume, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for more information.
+**Root patches will be wiped by macOS updates and have to be reinstalled after an update finishes.** 
+
+Patches can also break if automatic updates are enabled and an update prematurely modifies the system volume, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for more information.
+
+### Spotlight
+
+If your macOS installation is recent, Spotlight starts creating a full disk index which can cause high CPU load, high temps and general slowness. It's recommended to keep the system running for few hours, once Spotlight has indexed the load will ease. A way to check whether it's caused by Spotlight is to open Activity Monitor, choosing "All Processes" from the "View" menu item, then sorting by the CPU value to see if a process called ```mds_stores``` is using a lot of CPU resources.
+
+### Heavier macOS versions
+
+Newer operating systems are harder to run and can appear more slow. If this is the case, there is not a whole lot to do about it.
 
 ## Applications crashing with "illegal instruction"
 
