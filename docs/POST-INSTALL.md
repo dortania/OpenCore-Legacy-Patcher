@@ -132,7 +132,7 @@ Required for Ivy Bridge, Haswell and NVIDIA Kepler based systems (3802) running 
 
 **Make sure the build matches exactly the OS version you're using.**
 
-::: details Full GPUs model list requiring MetallibSupportPkg (click to expand)
+::: details Full GPU model list requiring MetallibSupportPkg (click to expand)
 
 * NVIDIA
     * Kepler (GTX 600 - 700 series)
@@ -150,7 +150,7 @@ Macs with AMD Legacy GCN GPUs (ie. Metal) running Ventura or newer require Apple
 
 Grab the Kernel Debug Kit whose version is closest to the OS you installed and install it to the machine.
 
-:::details Macs and GPUs requiring KDK
+:::details Macs and GPUs requiring KDK (click to expand)
 
 GPUs:
 * Radeon HD 7000 series
