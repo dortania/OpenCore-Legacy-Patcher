@@ -97,7 +97,7 @@ In the Post-Install Menu, you can see whether applicable patches have been insta
 
 ::: warning Important
 
-In some cases OCLP may require packages to be obtained from the internet, such as KDK or MetallibSupprotPkg if they do not already exist on the system. In these cases OCLP may only install the WiFi driver on first patch run to ensure you can connect to the internet, which means no graphics acceleration 
+In some cases OCLP may require packages to be obtained from the internet, such as KDK or MetallibSupportPkg if they do not already exist on the system. In these cases OCLP may only install the WiFi driver on first patch run to ensure you can connect to the internet, which means no graphics acceleration 
 after reboot. 
 
 Root patching has to be ran again manually to install the rest of the required patches after internet connection is established to obtain the required packages. You can also utilize Ethernet, which should ensure that all patches will be installed at once.
