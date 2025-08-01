@@ -97,7 +97,7 @@ In the Post-Install Menu, you can see whether applicable patches have been insta
 
 ::: warning Important
 
-In some cases OCLP may require packages to be obtained from the internet, such as KDK or MetallibSupprtPkg if they do not already exist on the system. In these cases OCLP may only install the WiFi driver on first patch run to ensure you can connect to the internet, which means no graphics acceleration 
+In some cases OCLP may require packages to be obtained from the internet, such as KDK or MetallibSupprotPkg if they do not already exist on the system. In these cases OCLP may only install the WiFi driver on first patch run to ensure you can connect to the internet, which means no graphics acceleration 
 after reboot. 
 
 Root patching has to be ran again manually to install the rest of the required patches after internet connection is established to obtain the required packages. You can also utilize Ethernet, which should ensure that all patches will be installed at once.
@@ -126,19 +126,21 @@ You can install and revert Root Patching manually from the app.
 
 **MetallibSupportPkg**
 
-Required for all 3802-based systems running Sequoia or newer. You can download it manually from the following link: 
+Required for Ivy Bridge, Haswell and NVIDIA Kepler based systems (3802) running Sequoia or newer. You can download it manually from the following link: 
 
 * [MetallibSupportPkg](https://github.com/dortania/MetallibSupportPkg/releases)
 
 **Make sure the build matches exactly the OS version you're using.**
 
-3802 based GPUs:
+::: details Full GPUs model list requiring MetallibSupportPkg (click to expand)
 
 * NVIDIA
     * Kepler (GTX 600 - 700 series)
 * Intel
    * Ivy Bridge (HD 4000 series)
    * Haswell (Iris/HD 4000-5000 series)
+ 
+:::
  
 **KDK / Kernel Debug Kit**
 
@@ -148,11 +150,23 @@ Macs with AMD Legacy GCN GPUs (ie. Metal) running Ventura or newer require Apple
 
 Grab the Kernel Debug Kit whose version is closest to the OS you installed and install it to the machine.
 
-Machines that require this are those with AMD Metal dGPUs:
-* 2008 - 2013 Mac Pros (MacPro3,1 - 6,1)
-* 2009 - 2016 iMacs (iMac10,1 - 17,1)
-* 2015 15" MacBook Pro with a dGPU (MacBookPro11,5)
+:::details Macs and GPUs requiring KDK
 
+GPUs:
+* Radeon HD 7000 series
+* Radeon R9 series
+* FirePro D300/D500/D700
+
+Mac models with GCN GPUs:
+* iMac 2014 - 2015 (iMac15,1 - 17,1)
+* Mac Pro 2013 (MacPro6,1)
+* MacBook Pro 2015 15", dGPU version (MacBookPro11,5)
+
+Upgraded Macs:
+* Mac Pro 2008 - 2012 (MacPro3,1 - 5,1) if upgraded with AMD GCN GPU.
+* iMac 2009 - 2011 (iMac10,1 - 12,1) if upgraded with AMD GCN GPU.
+
+:::
 
 ### Other information
 
