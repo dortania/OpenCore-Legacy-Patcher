@@ -13,6 +13,7 @@ Here are some common errors that users may experience while using this patcher:
 * [Stuck on boot after root patching](#stuck-on-boot-after-root-patching)
 * ["Unable to resolve dependencies, error code 71" when root patching](#unable-to-resolve-dependencies-error-code-71-when-root-patching)
 * [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
+* [Installer fails with "an error occurred preparing the software update"](#installer-fails-with-an-error-occurred-preparing-the-software-update)
 * [How to Boot Recovery through OpenCore Legacy Patcher](#how-to-boot-recovery-through-opencore-legacy-patcher)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 * [No Brightness Control](#no-brightness-control)
@@ -204,6 +205,10 @@ Run OCLP root patcher again.
 sudo pmset -a hibernatemode 0
 ```
 
+## Installer fails with "an error occurred preparing the software update"
+
+This issue can be faced in the second phase of the installer with black background and Apple logo, cause of this issue is unknown. To possibly resolve this issue, keep rebooting into 'macOS Installer' (the second phase) multiple times until it ultimately goes through.
+
 ## How to Boot Recovery through OpenCore Legacy Patcher
 
 By default, the patcher will try to hide extra boot options such as recovery from the user. To make them appear, simply press the `Spacebar` key while inside OpenCore's Picker to list all boot options.
@@ -369,3 +374,4 @@ To prevent this from happening in the future, with T1 systems only wipe the volu
 <div align="left">
              <img src="./images/wipe-volume.png" alt="WipeVolume" width="800" />
 </div>
+
