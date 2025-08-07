@@ -18,7 +18,7 @@ If the application won't launch (e.g. icon will bounce in the Dock), try launchi
 
 ## Privileged Helper Tool not found
 
-OCLP needs a Privileged Helper Tool to run parts of the application as root. If you encounter this error, reinstall OCLP using the PKG installer* to fix Privileged Helper Tool. If you encounter this error, reinstall OCLP using the PKG installer to fix Privileged Helper Tool. If your system lacks WiFi connection due to lack of patches, use Ethernet. You can also use another computer to download the app and move it to a USB drive.
+OCLP needs a Privileged Helper Tool to run parts of the application as root. If you encounter this error, reinstall OCLP using the PKG installer to fix Privileged Helper Tool. If your system lacks WiFi connection due to lack of patches, use Ethernet. You can also use another computer to download the app and move it to a USB drive.
 
 
   * In OCLP 2.3.0 and newer, using PKG is the only way to install and app.zip method has been discontinued.
@@ -121,5 +121,6 @@ System Settings -> General -> Software Update -> (i) button next to Automatic Up
 System Preferences -> Software Update -> Advanced -> Disable "Download new updates when available".
 
 :::
+
 
 
