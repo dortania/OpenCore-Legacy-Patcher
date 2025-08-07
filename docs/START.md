@@ -6,10 +6,10 @@ We recommend viewing the [OpenCore Patcher Terminology Page](./TERMS.md) if you 
 
 For troubleshooting, see our troubleshooting pages below or join the [OpenCore Patcher Paradise Discord Server.](https://discord.gg/rqdPgH8xSN)
 
-- [Application troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-APP.html)
-- [Booting, installer and other troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-MISC.html)
-- [Non-Metal troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-NONMETAL.html)
-- [Hardware troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE.html)
+- [Application troubleshooting](./TROUBLESHOOT-APP.md)
+- [Booting, installer and other troubleshooting](./TROUBLESHOOT-MISC.md)
+- [Non-Metal troubleshooting](./TROUBLESHOOT-NONMETAL.md)
+- [Hardware troubleshooting](./TROUBLESHOOT-HARDWARE.md)
 
 ## How do I get started?
 
