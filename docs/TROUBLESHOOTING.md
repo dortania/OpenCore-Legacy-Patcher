@@ -1,26 +1,37 @@
 # Booting, hardware and other issues
 
+**Booting**
+
 * [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-🚫-prohibited-symbol)
 * [Stuck on hard disk selection with greyed out buttons in installer](#stuck-on-hard-disk-selection-with-greyed-out-buttons-in-installer)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-booting)
 * [Stuck on boot after root patching](#stuck-on-boot-after-root-patching)
-* [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
-* [Installer fails with "an error occurred preparing the software update"](#installer-fails-with-an-error-occurred-preparing-the-software-update)
 * [How to Boot Recovery through OpenCore Legacy Patcher](#how-to-boot-recovery-through-opencore-legacy-patcher)
+
+**Installer**
+
+* [Installer fails with "an error occurred preparing the software update"](#installer-fails-with-an-error-occurred-preparing-the-software-update)
+* [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
+
+**Hardware**
+
 * [No Brightness Control](#no-brightness-control)
 * [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-wi-fi-on-monterey-with-legacy-cards)
 * [No Graphics Acceleration](#no-graphics-acceleration)
 * [Black Screen on MacBookPro11,3 in macOS Monterey](#black-screen-on-macbookpro11-3-in-macos-monterey)
 * [No DisplayPort Output on Mac Pros with NVIDIA Kepler](#no-displayport-output-on-mac-pros-with-nvidia-kepler)
-* [Volume Hash Mismatch Error in macOS Monterey](#volume-hash-mismatch-error-in-macos-monterey)
-* [Cannot Disable SIP in recoveryOS](#cannot-disable-sip-in-recoveryos)
-* [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
 * [Secondary CPU not visible on MacPro3,1/Xserve2,1](#secondary-cpu-not-visible-on-macpro3-1-xserve2-1)
 * [No acceleration after a Metal GPU swap on Mac Pro](#no-acceleration-after-a-metal-gpu-swap-on-mac-pro)
 * [Keyboard, Mouse and Trackpad not working in installer or after update](#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update)
 * [No T1 functionality after installing Sonoma or newer](#no-t1-functionality-after-installing-sonoma-or-newer)
+
+**Other**
+
+* [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
+* [Volume Hash Mismatch Error in macOS Monterey](#volume-hash-mismatch-error-in-macos-monterey)
+* [Cannot Disable SIP in recoveryOS](#cannot-disable-sip-in-recoveryos)
 
 
 ## Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol
@@ -82,28 +93,26 @@ cd "/Volumes/Macintosh HD - Data/Library/Extensions" && ls | grep -v "HighPoint*
 
 Then restart and now your system should be restored to the unpatched snapshot and should be able to boot again.
 
+## How to Boot Recovery through OpenCore Legacy Patcher
 
-## Reboot when entering Hibernation (`Sleep Wake Failure`)
-
-[Known issue on some models](https://github.com/dortania/Opencore-Legacy-Patcher/issues/72), a temporary fix is to disable Hibernation by executing the following command in the terminal:
-
-```
-sudo pmset -a hibernatemode 0
-```
+By default, the patcher will try to hide extra boot options such as recovery from the user. To make them appear, simply press the `Spacebar` key while inside OpenCore's Picker to list all boot options.
 
 ## Installer fails with "an error occurred preparing the software update"
 
 This issue can be faced in the second phase of the installer with black background and Apple logo, cause of this issue is unknown. To possibly resolve this issue, keep rebooting into 'macOS Installer' (the second phase) multiple times until it ultimately goes through.
 
-## How to Boot Recovery through OpenCore Legacy Patcher
+## Stuck on "Less than a minute remaining..."
 
-By default, the patcher will try to hide extra boot options such as recovery from the user. To make them appear, simply press the `Spacebar` key while inside OpenCore's Picker to list all boot options.
+A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this stage, a lot of heavy cryptography is performed, which can make systems appear to be stuck. In reality they are working quite hard to finish up the installation.
+
+Because this step can take a few hours or more depending on drive speeds, be patient at this stage and do not manually power off or reboot your machine as this will break the installation and require you to reinstall. If you think your system has stalled, press the Caps Lock key. If the light turns on, your system is busy and not actually frozen.
 
 ## Stuck on "Your Mac needs a firmware update"
 
 Full error: "Your Mac needs a firmware update in order to install to this Volume. Please select a Mac OS Extended (Journaled) volume instead."
 
 This error occurs when macOS determines that the current firmware does not have full APFS support. To resolve this, when installing OpenCore, head to "Patcher Settings" and enable "Moderate SMBIOS Patching" or higher. This will ensure that the firmware reported will show support for full APFS capabilities.
+
 
 ## No Brightness Control
 
@@ -141,30 +150,6 @@ If you're having trouble with DisplayPort output on Mac Pros, try enabling Minim
 </div>        
 
 
-## Volume Hash Mismatch Error in macOS Monterey
-
-A semi-common popup some users face is the "Volume Hash Mismatch" error:
-
-<p align="left">
-<img src="./images/Hash-Mismatch.png">
-</p>
-
-What this error signifies is that the OS detects that the boot volume's hash does not match what the OS is expecting, this error is generally cosmetic and can be ignored. However if your system starts to crash spontaneously shortly after, you'll want to reinstall macOS fresh without importing any data at first.
-
-* Note that this bug affects native Macs as well and is not due to issues with unsupported Macs: [OSX Daily: “Volume Hash Mismatch” Error in MacOS Monterey](https://osxdaily.com/2021/11/10/volume-hash-mismatch-error-in-macos-monterey/)
-
-Additionally, it can help to disable FeatureUnlock in Settings -> Misc Settings as this tool can be strenuous on systems with weaker memory stability.
-
-## Cannot Disable SIP in recoveryOS
-
-With OCLP, the patcher will always overwrite the current SIP value on boot to ensure that users don't brick an installation after an NVRAM reset. However, for users wanting to disable SIP entirely, this can be done easily.
-
-Head into the GUI, go to Patcher Settings, and toggle the bits you need disabled from SIP:
-
-| SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
-| :--- | :--- | :--- |
-| ![](./images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](./images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](./images/OCLP-GUI-Settings-SIP-Disabled.png) |
-
 ## Intermediate issues with USB 1.1 and Bluetooth on MacPro3,1 - MacPro5,1
 
 For those experiencing issues with USB 1.1 devices (such as mice, keyboards and bluetooth chipsets), macOS Big Sur and newer have weakened OS-side reliability for the UHCI controller in older Mac Pros.
@@ -176,11 +161,6 @@ Because of this, we recommend placing a USB 2.0/3.0 hub between your devices and
 
 * Alternatively, you can try cold-starting the hardware and see if macOS recognizes the UHCI controller properly.
 
-## Stuck on "Less than a minute remaining..."
-
-A common area for systems to get "stuck", namely for units that are missing the `AES` CPU instruction/older mobile hardware. During this stage, a lot of heavy cryptography is performed, which can make systems appear to be stuck. In reality they are working quite hard to finish up the installation.
-
-Because this step can take a few hours or more depending on drive speeds, be patient at this stage and do not manually power off or reboot your machine as this will break the installation and require you to reinstall. If you think your system has stalled, press the Caps Lock key. If the light turns on, your system is busy and not actually frozen.
 
 ## Secondary CPU not visible on MacPro3,1/Xserve2,1
 
@@ -261,3 +241,37 @@ To prevent this from happening in the future, with T1 systems only wipe the volu
              <img src="./images/wipe-volume.png" alt="WipeVolume" width="800" />
 </div>
 
+
+
+## Reboot when entering Hibernation (`Sleep Wake Failure`)
+
+[Known issue on some models](https://github.com/dortania/Opencore-Legacy-Patcher/issues/72), a temporary fix is to disable Hibernation by executing the following command in the terminal:
+
+```
+sudo pmset -a hibernatemode 0
+```
+
+## Volume Hash Mismatch Error in macOS Monterey
+
+A semi-common popup some users face is the "Volume Hash Mismatch" error:
+
+<p align="left">
+<img src="./images/Hash-Mismatch.png">
+</p>
+
+What this error signifies is that the OS detects that the boot volume's hash does not match what the OS is expecting, this error is generally cosmetic and can be ignored. However if your system starts to crash spontaneously shortly after, you'll want to reinstall macOS fresh without importing any data at first.
+
+* Note that this bug affects native Macs as well and is not due to issues with unsupported Macs: [OSX Daily: “Volume Hash Mismatch” Error in MacOS Monterey](https://osxdaily.com/2021/11/10/volume-hash-mismatch-error-in-macos-monterey/)
+
+Additionally, it can help to disable FeatureUnlock in Settings -> Misc Settings as this tool can be strenuous on systems with weaker memory stability.
+
+
+## Cannot Disable SIP in recoveryOS
+
+With OCLP, the patcher will always overwrite the current SIP value on boot to ensure that users don't brick an installation after an NVRAM reset. However, for users wanting to disable SIP entirely, this can be done easily.
+
+Head into the GUI, go to Patcher Settings, and toggle the bits you need disabled from SIP:
+
+| SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
+| :--- | :--- | :--- |
+| ![](./images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](./images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](./images/OCLP-GUI-Settings-SIP-Disabled.png) |
