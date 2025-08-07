@@ -1,31 +1,6 @@
 # Non-Metal issues
 
-The below page is for users experiencing issues with their overall usage of macOS Big Sur and newer and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur and newer:
-
-* Intel 3rd and 4th Gen - GMA series
-
-For those unfamiliar with what is considered a non-Metal GPU, see the chart below:
-
-::: details macOS GPU Chart
-
-Metal is Apple's in-house graphics API that acts as a replacement for OpenGL/OpenCL, introduced in 2015. With the release of macOS Mojave, every system without a Metal-capable GPU was dropped.
-
-| Graphics Vendor | Architecture | Series | Supports Metal |
-| :--- | :--- | :--- | :--- |
-| ATI | TeraScale 1 | HD 2XXX - HD 4XXX | <span style="color:red">No</span> |
-| ^^ | TeraScale 2 | HD 5XXX - HD 6XXX | ^^ |
-| AMD | GCN (and newer) | HD 7XXX+ | <span style="color:green">Yes</span> |
-| NVIDIA | Tesla | 8XXX - 3XX | <span style="color:red">No</span> |
-| ^^ | Fermi | 4XX - 5XX | ^^ |
-| ^^ | Kepler | 6XX - 7XX | <span style="color:green">Yes</span> |
-| ^^ | Maxwell | 8XX - 9XX | <span style="color:red">No (on 10.14 and newer)</span> |
-| ^^ | Pascal | 10XX | ^^ |
-| Intel | GMA | GMA 900 - GMA X3000 | <span style="color:red">No</span> |
-| ^^ | Iron Lake | HD series | ^^ |
-| ^^ | Sandy Bridge | HD 3000 | ^^ |
-| ^^ | Ivy Bridge (and newer) | HD 4000 | <span style="color:green">Yes</span> |
-
-:::
+The below page is for users experiencing issues with their overall usage of macOS Big Sur and newer and the Legacy Graphics Acceleration patches. For those unfamiliar with what is considered a non-Metal GPU, see the chart in [FAQ](https://dortania.github.io/OpenCore-Legacy-Patcher/FAQ.html#what-is-metal-and-non-metal)
 
 * [Broken Background Blurs](#broken-background-blurs)
 * [Downloading older non-Metal Apps](#downloading-older-non-metal-apps)
