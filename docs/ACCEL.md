@@ -105,6 +105,10 @@ $ sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "INSERT or RE
 
 :::
 
+## Photos and Maps app issues
+
+**Starting from macOS Monterey, Maps and everything relying on it (such as Find My or 'Places' in Photos) are non-functional on non-Metal due to Metal reliance.**
+
 
 ## Cannot press "Done" when editing a Sidebar Widget
 
@@ -149,10 +153,6 @@ The following tool can be used to work-around this issue:
 ## Keyboard Backlight broken
 
 Due to forcing `hidd` into spinning up with the fallback mode enabled, this can break the OS's recognition of backlight keyboards. Thankfully the drivers themselves still do operate so applications such as [LabTick](https://www.macupdate.com/app/mac/22151/lab-tick) are able to set the brightness manually.
-
-## Photos and Maps app issues
-
-**Starting from macOS Monterey, Maps and everything relying on it (such as Find My or 'Places' in Photos) are non-functional on non-Metal due to Metal reliance.**
 
 ::: details For Big Sur (click to expand)
 
