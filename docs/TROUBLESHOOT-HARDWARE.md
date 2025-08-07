@@ -243,19 +243,13 @@ Due to the Metal Backend, the enhanced color output of these apps seems to heavi
 
 ## Wake from sleep heavily distorted on ATI/AMD TeraScale 1 from macOS 11.3 to Monterey
 
-This issue affects TeraScale 1 GPUs (ie. ATI/AMD Radeon HD2000-4000) running macOS between Big Sur 11.3 and Monterey.
-
 **Fixed for macOS Ventura starting from 0.6.6. Big Sur and Monterey will continue to exhibit the issue.**
 
-::: details For older versions (click to expand)
-
-Only known solution is to downgrade to macOS 11.2.3 or older. Additionally, logging out and logging back in can resolve the issue without requiring a reboot.
+This issue affects TeraScale 1 GPUs (ie. ATI/AMD Radeon HD2000-4000). Only known solution is to downgrade to macOS 11.2.3 or older. Additionally, logging out and logging back in can resolve the issue without requiring a reboot.
 
 In the event Apple removes 11.2.3 from their catalogue, we've provided a mirror below:
 
 * [Install macOS 11.2.3 20D91](https://archive.org/details/install-mac-os-11.2.3-20-d-91)
-
-:::
 
 ## Unable to switch GPUs on 2011 15" and 17" MacBook Pros
 
@@ -331,6 +325,7 @@ In macOS Ventura, hover states may not function correctly which results in the "
 
 
 For more information, see [ASentientBot's post](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/page-116?post=31858759#post-31858759).
+
 
 
 
