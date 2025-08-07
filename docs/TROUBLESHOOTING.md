@@ -3,7 +3,6 @@
 **Booting**
 
 * [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-🚫-prohibited-symbol)
-* [Stuck on hard disk selection with greyed out buttons in installer](#stuck-on-hard-disk-selection-with-greyed-out-buttons-in-installer)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-booting)
 * [Stuck on boot after root patching](#stuck-on-boot-after-root-patching)
@@ -11,6 +10,7 @@
 
 **Installer**
 
+* [Stuck on hard disk selection with greyed out buttons in installer](#stuck-on-hard-disk-selection-with-greyed-out-buttons-in-installer)
 * [Installer fails with "an error occurred preparing the software update"](#installer-fails-with-an-error-occurred-preparing-the-software-update)
 * [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
@@ -42,12 +42,6 @@ Once you've booted OpenCore at least once, your hardware should now auto-boot it
 
 However, if the 🚫 Symbol only appears after the boot process has already started (the bootscreen appears/verbose boot starts), it could mean that your USB drive has failed to pass macOS' integrity checks. To resolve this, create a new installer using a different USB drive (preferably of a different model.)
 
-## Stuck on hard disk selection with greyed out buttons in installer
-
-Switch installer language to English. If the language selector doesn't show up, [reset NVRAM](https://support.apple.com/en-mide/102603) and boot into the installer again.
-
-You can switch back to different language once macOS has installed.
-
 ## Cannot boot macOS without the USB
 
 By default, the OpenCore Patcher won't install OpenCore onto the internal drive itself during installs.
@@ -61,7 +55,6 @@ Reminder that once this is done, you'll need to select OpenCore in the boot pick
 With OpenCore Legacy Patcher, we rely on Apple Secure Boot to ensure OS updates work correctly and reliably with Big Sur. However this installs NVRAM variables that will confuse your Mac if not running with OpenCore. To resolve this, simply uninstall OpenCore and [reset NVRAM](https://support.apple.com/en-mide/HT201255).
 
 * Note: Machines with modified root volumes will also result in an infinite recovery loop until integrity is restored.
-
 
 ## Stuck on boot after root patching
 
@@ -96,6 +89,13 @@ Then restart and now your system should be restored to the unpatched snapshot an
 ## How to Boot Recovery through OpenCore Legacy Patcher
 
 By default, the patcher will try to hide extra boot options such as recovery from the user. To make them appear, simply press the `Spacebar` key while inside OpenCore's Picker to list all boot options.
+
+
+## Stuck on hard disk selection with greyed out buttons in installer
+
+Switch installer language to English. If the language selector doesn't show up, [reset NVRAM](https://support.apple.com/en-mide/102603) and boot into the installer again.
+
+You can switch back to different language once macOS has installed.
 
 ## Installer fails with "an error occurred preparing the software update"
 
@@ -274,4 +274,5 @@ Head into the GUI, go to Patcher Settings, and toggle the bits you need disabled
 
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
 | :--- | :--- | :--- |
+
 | ![](./images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](./images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](./images/OCLP-GUI-Settings-SIP-Disabled.png) |
