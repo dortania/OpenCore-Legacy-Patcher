@@ -1,25 +1,6 @@
 # Non-Metal Issues
 
-**Apps and OS**
-* [Broken Background Blurs](#broken-background-blurs)
-* [Downloading older non-Metal Apps](#downloading-older-non-metal-apps)
-* [Unable to run Zoom](#unable-to-run-zoom)
-* [Unable to grant special permissions to apps (ie. Camera Access to Zoom)](#unable-to-grant-special-permissions-to-apps-ie-camera-access-to-zoom)
-* [Photos and Maps app issues](#photos-and-maps-app-issues)
-* [Cannot press "Done" when editing a Sidebar Widget](#cannot-press-done-when-editing-a-sidebar-widget)
-* [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
-
-**Hardware**
-
-* [Keyboard Backlight broken](#keyboard-backlight-broken)
-* [Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey](#wake-from-sleep-heavily-distorted-on-amd-ati-from-macos-11-3-to-monterey)
-* [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
-* [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
-* [Cannot Login on 2011 15" and 17" MacBook Pros](#cannot-login-on-2011-15-and-17-macbook-pros)
-* [Black Boxes on HD3000 iGPUs](#black-boxes-on-hd3000-igpus)
-* [Cannot Pair Bluetooth Devices](#cannot-pair-bluetooth-devices)
-
-The below page is for users experiencing issues with their overall usage of macOS Big Sur / Monterey / Ventura and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur / Monterey / Ventura:
+The below page is for users experiencing issues with their overall usage of macOS Big Sur and newer and the Legacy Graphics Acceleration patches. Note that the following GPUs currently do not have acceleration support in Big Sur and newer:
 
 * Intel 3rd and 4th Gen - GMA series
 
@@ -45,6 +26,25 @@ Metal is Apple's in-house graphics API that acts as a replacement for OpenGL/Ope
 | ^^ | Ivy Bridge (and newer) | HD 4000 | <span style="color:green">Yes</span> |
 
 :::
+
+**Apps and OS**
+* [Broken Background Blurs](#broken-background-blurs)
+* [Downloading older non-Metal Apps](#downloading-older-non-metal-apps)
+* [Unable to run Zoom](#unable-to-run-zoom)
+* [Unable to grant special permissions to apps (ie. Camera Access to Zoom)](#unable-to-grant-special-permissions-to-apps-ie-camera-access-to-zoom)
+* [Photos and Maps app issues](#photos-and-maps-app-issues)
+* [Cannot press "Done" when editing a Sidebar Widget](#cannot-press-done-when-editing-a-sidebar-widget)
+* [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
+
+**Hardware**
+
+* [Keyboard Backlight broken](#keyboard-backlight-broken)
+* [Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey](#wake-from-sleep-heavily-distorted-on-amd-ati-from-macos-11-3-to-monterey)
+* [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
+* [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
+* [Cannot Login on 2011 15" and 17" MacBook Pros](#cannot-login-on-2011-15-and-17-macbook-pros)
+* [Black Boxes on HD3000 iGPUs](#black-boxes-on-hd3000-igpus)
+* [Cannot Pair Bluetooth Devices](#cannot-pair-bluetooth-devices)
 
 ## Broken Background Blurs
 
