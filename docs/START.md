@@ -2,8 +2,14 @@
 
 OpenCore is a sophisticated boot loader used to inject and patch data in memory, instead of on disk. This means that we're able to achieve a near-native experience on many unsupported Macs. 
 
-* We recommend viewing the [OpenCore Patcher Terminology Page](./TERMS.md) if you have questions.
-* For troubleshooting, join the [OpenCore Patcher Paradise Discord Server](https://discord.gg/rqdPgH8xSN) and see our [Troubleshooting Page](./TROUBLESHOOTING.md).
+We recommend viewing the [OpenCore Patcher Terminology Page](./TERMS.md) if you have questions.
+
+For troubleshooting, see our troubleshooting pages below or join the [OpenCore Patcher Paradise Discord Server.](https://discord.gg/rqdPgH8xSN)
+
+- [Application troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-APP.html)
+- [Booting, installer and other troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-MISC.html)
+- [Non-Metal troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-NONMETAL.html)
+- [Hardware troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE.html)
 
 ## How do I get started?
 
