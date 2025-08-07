@@ -179,7 +179,11 @@ AMD Navi (RX 5000 - 6000 series) GPUs are non-functional in Mac Pro 2008 to 2012
 
 :::
 
-Refer to [Supported models,](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) the [Non-Metal GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) and [Non-Metal Issues](https://dortania.github.io/OpenCore-Legacy-Patcher/ACCEL.html) pages for more information.
+Refer to the following pages for more information
+- [Supported models,](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) 
+- [Non-Metal GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
+- [Non-Metal Issues](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-NONMETAL.html)
+- [Hardware troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE)
 
 
 ## What are FeatureUnlock and mediaanalysisd?
@@ -225,5 +229,6 @@ iPhone Mirroring requires a T2 chip, which means it will not be available on OCL
 ## Where is Apple Intelligence?
 
 Apple Intelligence requires Neural Engine, which is only found in Apple Silicon chips.
+
 
 
