@@ -1,16 +1,20 @@
 # Non-Metal Issues
 
+**Apps and OS**
 * [Broken Background Blurs](#broken-background-blurs)
 * [Downloading older non-Metal Apps](#downloading-older-non-metal-apps)
 * [Unable to run Zoom](#unable-to-run-zoom)
 * [Unable to grant special permissions to apps (ie. Camera Access to Zoom)](#unable-to-grant-special-permissions-to-apps-ie-camera-access-to-zoom)
-* [Keyboard Backlight broken](#keyboard-backlight-broken)
 * [Photos and Maps app issues](#photos-and-maps-app-issues)
 * [Cannot press "Done" when editing a Sidebar Widget](#cannot-press-done-when-editing-a-sidebar-widget)
+* [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
+
+**Hardware**
+
+* [Keyboard Backlight broken](#keyboard-backlight-broken)
 * [Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey](#wake-from-sleep-heavily-distorted-on-amd-ati-from-macos-11-3-to-monterey)
 * [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
-* [Unable to allow Safari Extensions](#unable-to-allow-Safari-Extensions)
 * [Cannot Login on 2011 15" and 17" MacBook Pros](#cannot-login-on-2011-15-and-17-macbook-pros)
 * [Black Boxes on HD3000 iGPUs](#black-boxes-on-hd3000-igpus)
 * [Cannot Pair Bluetooth Devices](#cannot-pair-bluetooth-devices)
@@ -101,19 +105,6 @@ $ sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "INSERT or RE
 
 :::
 
-## Keyboard Backlight broken
-
-Due to forcing `hidd` into spinning up with the fallback mode enabled, this can break the OS's recognition of backlight keyboards. Thankfully the drivers themselves still do operate so applications such as [LabTick](https://www.macupdate.com/app/mac/22151/lab-tick) are able to set the brightness manually.
-
-## Photos and Maps app issues
-
-**Starting from macOS Monterey, Maps and everything relying on it (such as Find My or 'Places' in Photos) are non-functional on non-Metal due to Metal reliance.**
-
-::: details For Big Sur (click to expand)
-
-Due to the Metal Backend, the enhanced color output of these apps seems to heavily break overall UI usage. To work around this, [users reported](https://forums.macrumors.com/threads/macos-11-big-sur-on-unsupported-macs-thread.2242172/post-29870324) forcing the color output of their monitor from Billions to Millions of colors helped greatly. Apps easily allowing this customization are [SwitchResX](https://www.madrau.com), [ResXreme](https://macdownload.informer.com/resxtreme/) and [EasyRes](http://easyresapp.com).
-
-:::
 
 ## Cannot press "Done" when editing a Sidebar Widget
 
@@ -147,6 +138,28 @@ This will disable the dGPU and allow the iGPU to function in Big Sur. Note that 
 
 Note: This driver only provides partial support in macOS, full graphics acceleration is not currently available on displays driven by DisplayLink.
 
+## Unable to allow Safari Extensions
+
+Due to a bug in the legacy acceleration patches, users won't be able to enable Safari Extensions.
+
+The following tool can be used to work-around this issue:
+
+* [Non-Metal Safari Extensions](https://github.com/moosethegoose2213/Non-Metal-Safari-Extensions/)
+
+## Keyboard Backlight broken
+
+Due to forcing `hidd` into spinning up with the fallback mode enabled, this can break the OS's recognition of backlight keyboards. Thankfully the drivers themselves still do operate so applications such as [LabTick](https://www.macupdate.com/app/mac/22151/lab-tick) are able to set the brightness manually.
+
+## Photos and Maps app issues
+
+**Starting from macOS Monterey, Maps and everything relying on it (such as Find My or 'Places' in Photos) are non-functional on non-Metal due to Metal reliance.**
+
+::: details For Big Sur (click to expand)
+
+Due to the Metal Backend, the enhanced color output of these apps seems to heavily break overall UI usage. To work around this, [users reported](https://forums.macrumors.com/threads/macos-11-big-sur-on-unsupported-macs-thread.2242172/post-29870324) forcing the color output of their monitor from Billions to Millions of colors helped greatly. Apps easily allowing this customization are [SwitchResX](https://www.madrau.com), [ResXreme](https://macdownload.informer.com/resxtreme/) and [EasyRes](http://easyresapp.com).
+
+:::
+
 ## Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)
 
 Resolved with OpenCore Legacy Patcher v0.4.2
@@ -161,14 +174,6 @@ Applications that can set color depth are:
 * [ResXtreme](https://macdownload.informer.com/resxtreme/)
 
 :::
-
-## Unable to allow Safari Extensions
-
-Due to a bug in the legacy acceleration patches, users won't be able to enable Safari Extensions.
-
-The following tool can be used to work-around this issue:
-
-* [Non-Metal Safari Extensions](https://github.com/moosethegoose2213/Non-Metal-Safari-Extensions/)
 
 ## Cannot Login on 2011 15" and 17" MacBook Pros
 
