@@ -15,7 +15,7 @@
 
 
 * [Keyboard Backlight broken](#keyboard-backlight-broken)
-* [Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey](#wake-from-sleep-heavily-distorted-on-amd-ati-from-macos-11-3-to-monterey)
+* [Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey](#wake-from-sleep-heavily-distorted-on-ati-amd-terascale-1-from-macos-11-3-to-monterey)
 * [Unable to switch GPUs on 2011 15" and 17" MacBook Pros](#unable-to-switch-gpus-on-2011-15-and-17-macbook-pros)
 * [Erratic Colours on ATI TeraScale 2 GPUs (HD5000/HD6000)](#erratic-colours-on-ati-terascale-2-gpus-hd5000-hd6000)
 * [Cannot Login on 2011 15" and 17" MacBook Pros](#cannot-login-on-2011-15-and-17-macbook-pros)
@@ -325,6 +325,7 @@ In macOS Ventura, hover states may not function correctly which results in the "
 
 
 For more information, see [ASentientBot's post](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/page-116?post=31858759#post-31858759).
+
 
 
 
