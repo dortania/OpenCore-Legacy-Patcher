@@ -111,6 +111,7 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
+		'APPTROUBLESHOOT',
 		'TROUBLESHOOTING',
                 'ACCEL',
 		'DEBUG',
