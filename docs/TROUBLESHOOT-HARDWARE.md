@@ -1,4 +1,4 @@
-## Hardware issues
+# Hardware issues
 
 **General**
 
@@ -244,4 +244,5 @@ In macOS Ventura, hover states may not function correctly which results in the "
 
 
 For more information, see [ASentientBot's post](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/page-116?post=31858759#post-31858759).
+
 
