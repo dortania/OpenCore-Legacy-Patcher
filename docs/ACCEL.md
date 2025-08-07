@@ -1,4 +1,4 @@
-# Working Around Non-Metal Issues
+# Non-Metal Issues
 
 * [Broken Background Blurs](#broken-background-blurs)
 * [Downloading older non-Metal Apps](#downloading-older-non-metal-apps)
