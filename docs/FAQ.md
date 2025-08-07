@@ -152,17 +152,30 @@ In essence, this means that some models are now aging rapidly and newer OS won't
 
 ## What is Metal and Non-Metal?
 
-Metal is Apple's proprietary graphics API which fully superseded OpenGL rendering of the operating system starting from macOS Mojave. When the word "Non-Metal" is used, it describes GPUs that are not Metal supported and require using OpenGL instead. Due to deprecation of OpenGL, many newer applications may require Metal rendering and as such will fail to run on systems with Non-Metal GPUs. Some built-in apps like Maps and everything relying on it (such as Find My) will fail to render as well on versions later than Big Sur.
+Metal is Apple's proprietary graphics API that acts as a replacement for OpenGL/OpenCL which fully superseded OpenGL rendering of the operating system starting from macOS Mojave. When the word "Non-Metal" is used, it describes GPUs that are not Metal supported and require using OpenGL instead. Due to deprecation of OpenGL, many newer applications may require Metal rendering and as such will fail to run on systems with Non-Metal GPUs. Some built-in apps like Maps and everything relying on it (such as Find My) will fail to render as well on versions later than Big Sur.
 
 A great rule of thumb is that Macs older than 2012 are non-Metal, with the exception of systems having upgradable GPUs.
 
-::: details Metal supported GPUs (click to expand)
+::: details macOS GPU Chart
 
-* Intel HD 4000 series (Ivy Bridge/3rd gen) and newer
-* AMD HD 7000 series (GCN 1) and newer
-* NVIDIA GTX 600 and 700 series (Kepler)
+Intel GMA series is completely unsupported, even when using OpenCore Legacy Patcher. 
 
-Everything older than mentioned are Non-Metal and therefore only support OpenGL. Non-Metal also includes NVIDIA Maxwell (GTX 900 series) and Pascal (GTX 1000 series) when used with patched Web Drivers on newer than macOS High Sierra.
+AMD Navi (RX 5000 - 6000 series) GPUs are non-functional in Mac Pro 2008 to 2012 using Ventura and newer due to lack of AVX2 support.
+
+| Graphics Vendor | Architecture | Series | Supports Metal |
+| :--- | :--- | :--- | :--- |
+| ATI | TeraScale 1 | HD 2XXX - HD 4XXX | <span style="color:red">No</span> |
+| ^^ | TeraScale 2 | HD 5XXX - HD 6XXX | ^^ |
+| AMD | GCN (and newer) | HD 7XXX+ | <span style="color:green">Yes</span> |
+| NVIDIA | Tesla | 8XXX - 3XX | <span style="color:red">No</span> |
+| ^^ | Fermi | 4XX - 5XX | ^^ |
+| ^^ | Kepler | 6XX - 7XX | <span style="color:green">Yes</span> |
+| ^^ | Maxwell | 8XX - 9XX | <span style="color:red">No (on 10.14 and newer)</span> |
+| ^^ | Pascal | 10XX | ^^ |
+| Intel | GMA | GMA 900 - GMA X3000 | <span style="color:red">No</span> |
+| ^^ | Iron Lake | HD series | ^^ |
+| ^^ | Sandy Bridge | HD 3000 | ^^ |
+| ^^ | Ivy Bridge (and newer) | HD 4000 | <span style="color:green">Yes</span> |
 
 :::
 
@@ -212,4 +225,5 @@ iPhone Mirroring requires a T2 chip, which means it will not be available on OCL
 ## Where is Apple Intelligence?
 
 Apple Intelligence requires Neural Engine, which is only found in Apple Silicon chips.
+
 
