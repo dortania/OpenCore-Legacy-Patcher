@@ -40,9 +40,92 @@ To work-around this, we recommend that users manually connect using the "Other" 
 
 ## No Graphics Acceleration
 
-In macOS, GPU drivers are often dropped from the OS with each major release of it. With macOS Big Sur, currently, all non-Metal GPUs require additional patches to gain acceleration. In addition, macOS Monterey removed Graphics Drivers for both Intel Ivy Bridge and NVIDIA Kepler graphics processors.
+In macOS, GPU drivers are often dropped from the OS with each major release of it. If you're using OCLP v0.4.4 or newer, you should have been prompted to install Root Volume patches after the first boot from installation of macOS. If you need to do this manually, you can do so within the patcher app. Once rebooted, acceleration will be re-enabled as well as brightness control for laptops. 
 
-If you're using OCLP v0.4.4, you should have been prompted to install Root Volume patches after the first boot from installation of macOS. If you need to do this manually, you can do so within the patcher app. Once rebooted, acceleration will be re-enabled as well as brightness control for laptops.
+See [Applying Post Install Volume Patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) for more information.
+
+Check the list below to see what GPUs require patching in which OS versions.
+
+:::details GPUs requiring patching in different macOS versions
+
+AMD Navi (RX 5000 - 6000 series) GPUs are non-functional in Mac Pro 2008 to 2012 using Ventura and newer due to lack of AVX2 support.
+
+**Sequoia**
+
+* NVIDIA:
+  * Tesla (8000 - 300 series)
+  * Kepler (600 - 800 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+  * GCN 1-3 (7000 - R9 series)
+  * Polaris (RX 4xx/5xx series, if CPU lacks AVX2)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+  * Ivy Bridge (4000 series)
+  * Haswell (4400, 4600, 5000 series)
+  * Broadwell (6000 series)
+  * Skylake (500 series)
+
+**Sonoma**
+
+* NVIDIA:
+  * Tesla (8000 - 300 series)
+  * Kepler (600 - 800 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+  * GCN 1-3 (7000 - R9 series)
+  * Polaris (RX 4xx/5xx series, if CPU lacks AVX2)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+  * Ivy Bridge (4000 series)
+  * Haswell (4400, 4600, 5000 series)
+  * Broadwell (6000 series)
+  * Skylake (500 series)
+
+**Ventura**
+
+* NVIDIA:
+  * Tesla (8000 - 300 series)
+  * Kepler (600 - 800 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+  * GCN 1-3 (7000 - R9 series)
+  * Polaris (RX 4xx/5xx series, if CPU lacks AVX2)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+  * Ivy Bridge (4000 series)
+  * Haswell (4400, 4600, 5000 series)
+  * Broadwell (6000 series)
+  * Skylake (500 series)
+
+**Monterey**
+
+* NVIDIA:
+  * Tesla (8000 - 300 series)
+  * Kepler (600 - 800 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+  * Ivy Bridge (4000 series)
+
+
+**Big Sur**
+
+* NVIDIA:
+  * Tesla (8000 - 300 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+
+:::
+
 
 ## No DisplayPort Output on Mac Pros with NVIDIA Kepler
 
@@ -158,17 +241,21 @@ Due to the Metal Backend, the enhanced color output of these apps seems to heavi
 
 :::
 
-## Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey
+## Wake from sleep heavily distorted on ATI/AMD TeraScale 1 from macOS 11.3 to Monterey
+
+This issue affects TeraScale 1 GPUs (ie. ATI/AMD Radeon HD2000-4000) running macOS between Big Sur 11.3 and Monterey.
 
 **Fixed for macOS Ventura starting from 0.6.6. Big Sur and Monterey will continue to exhibit the issue.**
 
-For older versions, only known solution is to downgrade to macOS 11.2.3 or older. Additionally, logging out and logging back in can resolve the issue without requiring a reboot.
+::: details For older versions (click to expand)
 
-* Note, this issue should be exclusive to TeraScale 1 GPUs (ie. HD2000-4000). TeraScale 2 GPUs should not exhibit this issue.
+Only known solution is to downgrade to macOS 11.2.3 or older. Additionally, logging out and logging back in can resolve the issue without requiring a reboot.
 
 In the event Apple removes 11.2.3 from their catalogue, we've provided a mirror below:
 
 * [Install macOS 11.2.3 20D91](https://archive.org/details/install-mac-os-11.2.3-20-d-91)
+
+:::
 
 ## Unable to switch GPUs on 2011 15" and 17" MacBook Pros
 
@@ -244,5 +331,6 @@ In macOS Ventura, hover states may not function correctly which results in the "
 
 
 For more information, see [ASentientBot's post](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/page-116?post=31858759#post-31858759).
+
 
 
