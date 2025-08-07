@@ -73,6 +73,12 @@ $ sudo sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "INSERT or RE
 
 **Starting from macOS Monterey, Maps and everything relying on it (such as Find My or 'Places' in Photos) are non-functional on non-Metal due to Metal reliance.**
 
+::: details For Big Sur (click to expand)
+
+Due to the Metal Backend, the enhanced color output of these apps seems to heavily break overall UI usage. To work around this, [users reported](https://forums.macrumors.com/threads/macos-11-big-sur-on-unsupported-macs-thread.2242172/post-29870324) forcing the color output of their monitor from Billions to Millions of colors helped greatly. Apps easily allowing this customization are [SwitchResX](https://www.madrau.com), [ResXreme](https://macdownload.informer.com/resxtreme/) and [EasyRes](http://easyresapp.com).
+
+:::
+
 
 ## Cannot press "Done" when editing a Sidebar Widget
 
