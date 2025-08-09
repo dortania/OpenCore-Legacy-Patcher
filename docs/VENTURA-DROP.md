@@ -63,7 +63,7 @@ For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed i
 * IR Receivers
 * Bluetooth
 
-Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
+Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
 
 ### Graphics and wireless support
 
