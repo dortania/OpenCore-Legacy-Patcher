@@ -176,41 +176,7 @@ Below entries represent GPUs no longer natively supported, ie. requiring root vo
 
 AMD Navi (RX 5000 - 6000 series) GPUs are non-functional in Mac Pro 2008 to 2012 using Ventura and newer due to lack of AVX2 support.
 
-**Sequoia**
-
-* NVIDIA:
-  * Tesla (8000 - 300 series)
-  * Kepler (600 - 800 series)
-* AMD:
-  * TeraScale (2000 - 6000 series)
-  * GCN 1-3 (7000 - R9 series)
-  * Polaris (RX 4xx/5xx series, if CPU lacks AVX2)
-* Intel:
-  * Iron Lake
-  * Sandy Bridge (2000 - 3000 series)
-  * Ivy Bridge (4000 series)
-  * Haswell (4400, 4600, 5000 series)
-  * Broadwell (6000 series)
-  * Skylake (500 series)
-
-**Sonoma**
-
-* NVIDIA:
-  * Tesla (8000 - 300 series)
-  * Kepler (600 - 800 series)
-* AMD:
-  * TeraScale (2000 - 6000 series)
-  * GCN 1-3 (7000 - R9 series)
-  * Polaris (RX 4xx/5xx series, if CPU lacks AVX2)
-* Intel:
-  * Iron Lake
-  * Sandy Bridge (2000 - 3000 series)
-  * Ivy Bridge (4000 series)
-  * Haswell (4400, 4600, 5000 series)
-  * Broadwell (6000 series)
-  * Skylake (500 series)
-
-**Ventura**
+**Ventura/Sonoma/Sequoia**
 
 * NVIDIA:
   * Tesla (8000 - 300 series)
