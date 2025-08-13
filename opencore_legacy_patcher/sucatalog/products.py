@@ -214,9 +214,9 @@ class CatalogProducts:
 
         # Remove all but the newest version
         for version in supported_versions:
-            _newest_version = packaging.version.parse("0.0.0")
+            _latest_stable_version = packaging.version.parse("0.0.0")
 
-            # First, determine largest version
+            # First, determine largest stable version
             for installer in products:
                 if installer["Version"] is None:
                     continue
@@ -225,26 +225,28 @@ class CatalogProducts:
                 if installer["Catalog"] in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
                     continue
                 try:
-                    if packaging.version.parse(installer["Version"]) > _newest_version:
-                        _newest_version = packaging.version.parse(installer["Version"])
+                    if packaging.version.parse(installer["Version"]) > _latest_stable_version:
+                        _latest_stable_version = packaging.version.parse(installer["Version"])
                 except packaging.version.InvalidVersion:
                     pass
 
-            # Next, remove all installers that are not the newest version
+            # Next, remove all installers that are older than the largest stable version
             for installer in products:
                 if installer["Version"] is None:
                     continue
                 if not installer["Version"].startswith(version.value):
                     continue
                 try:
-                    if packaging.version.parse(installer["Version"]) < _newest_version:
+                    if packaging.version.parse(installer["Version"]) < _latest_stable_version:
                         if installer in products_copy:
                             products_copy.pop(products_copy.index(installer))
                 except packaging.version.InvalidVersion:
                     pass
 
-                # Remove beta versions if a public release is available
-                if _newest_version != packaging.version.parse("0.0.0"):
+                # If there is a largest stable version, remove all betas
+                # This is to ensure that we only keep the latest stable version where it is available
+                # but ensure we have a beta if it is the only version available (ie. macOS X.0 betas)
+                if _latest_stable_version != packaging.version.parse("0.0.0"):
                     if installer["Catalog"] in [SeedType.CustomerSeed, SeedType.DeveloperSeed, SeedType.PublicSeed]:
                         if installer in products_copy:
                             products_copy.pop(products_copy.index(installer))
