@@ -6,7 +6,7 @@
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
 * [Infinite Recovery OS Booting](#infinite-recovery-os-booting)
 * [Stuck on boot after root patching](#stuck-on-boot-after-root-patching)
-* [How to Boot Recovery through OpenCore Legacy Patcher](#how-to-boot-recovery-through-opencore-legacy-patcher)
+* [Booting Recovery through OpenCore Legacy Patcher](#booting-recovery-through-opencore-legacy-patcher)
 * [Black Screen on MacBookPro11,3 in macOS Monterey](#black-screen-on-macbookpro11-3-in-macos-monterey)
 
 **Installer**
@@ -75,9 +75,11 @@ cd "/Volumes/Macintosh HD - Data/Library/Extensions" && ls | grep -v "HighPoint*
 
 Then restart and now your system should be restored to the unpatched snapshot and should be able to boot again.
 
-## How to Boot Recovery through OpenCore Legacy Patcher
+## Booting Recovery through OpenCore Legacy Patcher
 
-By default, the patcher will try to hide extra boot options such as recovery from the user. To make them appear, simply press the `Spacebar` key while inside OpenCore's Picker to list all boot options.
+Booting into Recovery through the regular key combination (cmd+r) will result in a "no entry" screen, due to the checks detecting an unsupported Mac. 
+
+To access Recovery, you will have to boot it through OpenCore using the bootpicker. By default, the patcher will try to hide extra boot options such as recovery from the user. To make them appear, press the `Spacebar` key while inside OpenCore's bootpicker to list all boot options and select recovery for the corresponding OS version.
 
 ## Black Screen on MacBookPro11,3 in macOS Monterey
 
@@ -140,4 +142,5 @@ Head into the GUI, go to Patcher Settings, and toggle the bits you need disabled
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
 | :--- | :--- | :--- |
 | ![](./images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](./images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](./images/OCLP-GUI-Settings-SIP-Disabled.png) |
+
 
