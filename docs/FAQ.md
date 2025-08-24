@@ -130,7 +130,7 @@ In laptops, if the battery is either missing or in bad condition, macOS will thr
 
 Thermal issues can also throttle the CPU, in this case it may be recommended to repaste the system.
 
-You can use Intel Power Gadget to monitor CPU frequency, AVG and REQ should mostly match each other.
+You can use [Intel Power Gadget (Web Archive)](https://web.archive.org/web/20220701164200/https://www.intel.com/content/dam/develop/external/us/en/documents/downloads/intel-power-gadget.dmg) to monitor CPU frequency, AVG and REQ should mostly match each other.
 
 ## Applications crashing with "illegal instruction"
 
@@ -190,7 +190,7 @@ AMD Navi (RX 5000 - 6000 series) GPUs are non-functional in Mac Pro 2008 to 2012
 :::
 
 Refer to the following pages for more information
-- [Supported models,](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) 
+- [Supported models](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) 
 - [Non-Metal GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
 - [Non-Metal Issues](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-NONMETAL.html)
 - [Hardware troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE)
@@ -239,6 +239,7 @@ iPhone Mirroring requires a T2 chip, which means it will not be available on OCL
 ## Where is Apple Intelligence?
 
 Apple Intelligence requires Neural Engine, which is only found in Apple Silicon chips.
+
 
 
 
