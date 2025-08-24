@@ -122,6 +122,16 @@ If your macOS installation is recent, Spotlight starts creating a full disk inde
 
 Newer operating systems are harder to run and can appear more slow. If this is the case, there is not a whole lot to do about it.
 
+**Thermal issues or bad/missing battery**
+
+If you see ```kernel_task``` hogging a lot of CPU resources in Activity Monitor (this also requires View -> All Processes), this means the system is being throttled mostly due to the following reasons:
+
+In laptops, if the battery is either missing or in bad condition, macOS will throttle the CPU quite hard in order to stay running as the charger cannot provide enough power for peak performance. You may try disabling throttling in OCLP settings but this usually leads to unexpected shutdowns during load, when the charger runs out of power to provide. Additionally, trackpad settings will be unavailable on laptops if battery is not present.
+
+Thermal issues can also throttle the CPU, in this case it may be recommended to repaste the system.
+
+You can use Intel Power Gadget to monitor CPU frequency, AVG and REQ should mostly match each other.
+
 ## Applications crashing with "illegal instruction"
 
 If the crash log includes a string saying "illegal instruction", this typically means the application requires AVX or AVX2 CPU instructions. 
@@ -229,6 +239,7 @@ iPhone Mirroring requires a T2 chip, which means it will not be available on OCL
 ## Where is Apple Intelligence?
 
 Apple Intelligence requires Neural Engine, which is only found in Apple Silicon chips.
+
 
 
 
