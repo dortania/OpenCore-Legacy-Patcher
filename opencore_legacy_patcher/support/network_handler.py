@@ -65,17 +65,15 @@ class NetworkUtilities:
 
     def validate_link(self) -> bool:
         """
-        Check for 404 error
+        Check for error
 
         Returns:
             bool: True if link is valid, False otherwise
         """
         try:
             response = SESSION.head(self.url, timeout=5, allow_redirects=True)
-            if response.status_code == 404:
-                return False
-            else:
-                return True
+            response.raise_for_status()
+            return True
         except (
             requests.exceptions.Timeout,
             requests.exceptions.TooManyRedirects,
