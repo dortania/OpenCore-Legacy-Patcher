@@ -112,15 +112,11 @@ If you need to use Migration Assistant to bring over data to your new macOS inst
 
 :::
 
-| Automatic install prompt | Status |
-| :--- | :--- |
-| ![](./images/OCLP-GUI-root-patch-update.png) | ![](./images/OCLP-GUI-Root-Patch-Status.png)  |
+| Automatic install prompt | Status | Listing Patches | Patching Finished |
+| :--- | :--- | :--- | :--- |
+| ![](./images/OCLP-GUI-root-patch-update.png) | ![](./images/OCLP-GUI-Root-Patch-Status.png) | ![](./images/OCLP-GUI-Root-Patch.png) | ![](./images/OCLP-GUI-Root-Patch-Finished.png) |
 
 You can install and revert Root Patching manually from the app. 
-
-| Listing Patches | Patching Finished |
-| :--- | :--- |
-| ![](./images/OCLP-GUI-Root-Patch.png) | ![](./images/OCLP-GUI-Root-Patch-Finished.png) |
 
 ### Packages requiring networking
 
