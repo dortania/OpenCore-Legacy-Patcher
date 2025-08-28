@@ -46,6 +46,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.title: str = title
         self.parent: wx.Frame = parent
 
+        self.catalog_products = None
         self.available_installers = None
         self.available_installers_latest = None
 
@@ -142,8 +143,10 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 logging.error("Failed to download Installer Catalog from Apple")
                 return
 
-            self.available_installers        = sucatalog.CatalogProducts(sucatalog_contents).products
-            self.available_installers_latest = sucatalog.CatalogProducts(sucatalog_contents).latest_products
+            self.catalog_products = sucatalog.AppleDBProducts(self.constants)
+
+            self.available_installers        = self.catalog_products.products
+            self.available_installers_latest = self.catalog_products.latest_products
 
 
         thread = threading.Thread(target=_fetch_installers)
@@ -165,7 +168,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
         bundles = [wx.BitmapBundle.FromBitmaps(icon) for icon in self.icons]
 
         self.frame_modal.Destroy()
-        self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(505, 500))
+        self.frame_modal = wx.Dialog(self, title="Select macOS Installer", size=(550, 500))
 
         # Title: Select macOS Installer
         title_label = wx.StaticText(self.frame_modal, label="Select macOS Installer", pos=(-1,-1))
@@ -177,15 +180,15 @@ class macOSInstallerDownloadFrame(wx.Frame):
         self.list = wx.ListCtrl(self.frame_modal, id, style=wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_NO_HEADER | wx.BORDER_SUNKEN)
         self.list.SetSmallImages(bundles)
 
-        self.list.InsertColumn(0, "Title",        width=175)
-        self.list.InsertColumn(1, "Version",      width=50)
+        self.list.InsertColumn(0, "Title",        width=190 if show_full else 150)
+        self.list.InsertColumn(1, "Version",      width=80 if show_full else 50)
         self.list.InsertColumn(2, "Build",        width=75)
         self.list.InsertColumn(3, "Size",         width=75)
         self.list.InsertColumn(4, "Release Date", width=100)
 
         installers = self.available_installers_latest if show_full is False else self.available_installers
         if show_full is False:
-            self.frame_modal.SetSize((490, 370))
+            self.frame_modal.SetSize((480, 370))
 
         if installers:
             locale.setlocale(locale.LC_TIME, '')
@@ -319,7 +322,11 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
             self.frame_modal.Close()
 
-            download_obj = network_handler.DownloadObject(selected_installer['InstallAssistant']['URL'], self.constants.payload_path / "InstallAssistant.pkg")
+            expected_checksum, checksum_algo = self.catalog_products.checksum_for_product(selected_installer)
+
+            download_obj = network_handler.DownloadObject(
+                selected_installer["InstallAssistant"]["URL"], self.constants.payload_path / "InstallAssistant.pkg", checksum_algo=checksum_algo
+            )
 
             gui_download.DownloadFrame(
                 self,
@@ -334,24 +341,31 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 self.on_return_to_main_menu()
                 return
 
-            self._validate_installer(selected_installer['InstallAssistant']['IntegrityDataURL'])
+            self._validate_installer(expected_checksum, download_obj.checksum)
 
 
-    def _validate_installer(self, chunklist_link: str) -> None:
+    def _validate_installer(self, expected_checksum: str, calculated_checksum: str) -> None:
         """
         Validate macOS installer
         """
+
+        if expected_checksum != calculated_checksum:
+            logging.error(f"Checksum validation failed: Expected {expected_checksum}, got {calculated_checksum}")
+            wx.MessageBox(f"Checksum validation failed!\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)", "Corrupted Installer!", wx.OK | wx.ICON_ERROR)
+            self.on_return_to_main_menu()
+            return
+
         self.SetSize((300, 200))
         for child in self.GetChildren():
             child.Destroy()
 
-        # Title: Validating macOS Installer
-        title_label = wx.StaticText(self, label="Validating macOS Installer", pos=(-1,5))
+        logging.info("macOS installer validated")
+
+        title_label = wx.StaticText(self, label="Extracting macOS Installer", pos=(-1,5))
         title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
-        # Label: Validating chunk 0 of 0
-        chunk_label = wx.StaticText(self, label="Validating chunk 0 of 0", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
+        chunk_label = wx.StaticText(self, label="May take a few minutes...", pos=(-1, title_label.GetPosition()[1] + title_label.GetSize()[1] + 5))
         chunk_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         chunk_label.Centre(wx.HORIZONTAL)
 
@@ -362,39 +376,6 @@ class macOSInstallerDownloadFrame(wx.Frame):
         # Set size of frame
         self.SetSize((-1, progress_bar.GetPosition()[1] + progress_bar.GetSize()[1] + 40))
         self.Show()
-
-        chunklist_stream = network_handler.NetworkUtilities().get(chunklist_link).content
-        if chunklist_stream:
-            logging.info("Validating macOS installer")
-            utilities.disable_sleep_while_running()
-            chunk_obj = integrity_verification.ChunklistVerification(self.constants.payload_path / Path("InstallAssistant.pkg"), chunklist_stream)
-            if chunk_obj.chunks:
-                progress_bar.SetValue(chunk_obj.current_chunk)
-                progress_bar.SetRange(chunk_obj.total_chunks)
-
-                wx.App.Get().Yield()
-                chunk_obj.validate()
-
-                while chunk_obj.status == integrity_verification.ChunklistStatus.IN_PROGRESS:
-                    progress_bar.SetValue(chunk_obj.current_chunk)
-                    chunk_label.SetLabel(f"Validating chunk {chunk_obj.current_chunk} of {chunk_obj.total_chunks}")
-                    chunk_label.Centre(wx.HORIZONTAL)
-                    wx.App.Get().Yield()
-
-                if chunk_obj.status == integrity_verification.ChunklistStatus.FAILURE:
-                    logging.error(f"Chunklist validation failed: Hash mismatch on {chunk_obj.current_chunk}")
-                    wx.MessageBox(f"Chunklist validation failed: Hash mismatch on {chunk_obj.current_chunk}\n\nThis generally happens when downloading on unstable connections such as WiFi or cellular.\n\nPlease try redownloading again on a stable connection (ie. Ethernet)", "Corrupted Installer!", wx.OK | wx.ICON_ERROR)
-                    self.on_return_to_main_menu()
-                    return
-
-        logging.info("macOS installer validated")
-
-        # Extract installer
-        title_label.SetLabel("Extracting macOS Installer")
-        title_label.Centre(wx.HORIZONTAL)
-
-        chunk_label.SetLabel("May take a few minutes...")
-        chunk_label.Centre(wx.HORIZONTAL)
 
         progress_bar_animation = gui_support.GaugePulseCallback(self.constants, progress_bar)
         progress_bar_animation.start_pulse()

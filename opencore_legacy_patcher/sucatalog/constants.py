@@ -27,6 +27,7 @@ class CatalogVersion(StrEnum):
 
     Used for generating sucatalog URLs
     """
+    TAHOE:          str = "26"
     SEQUOIA:        str = "15"
     SONOMA:         str = "14"
     VENTURA:        str = "13"
