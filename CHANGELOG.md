@@ -1,5 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
+## 2.4.1
+- Switch installer source to AppleDB
+  - Resolves missing or incorrect installers showing up when downloading an installer
+
 ## 2.4.0
 - Reduce CPU usage on main UI thread
   - Thanks [goneng](https://github.com/goneng) for the implementation!
