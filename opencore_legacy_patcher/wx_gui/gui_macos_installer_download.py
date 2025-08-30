@@ -136,14 +136,12 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         # Grab installer catalog
         def _fetch_installers():
-            logging.info(f"Fetching installer catalog: {sucatalog.SeedType.DeveloperSeed.name}")
-
-            sucatalog_contents = sucatalog.CatalogURL(seed=sucatalog.SeedType.DeveloperSeed).url_contents
-            if sucatalog_contents is None:
-                logging.error("Failed to download Installer Catalog from Apple")
-                return
+            logging.info(f"Fetching AppleDB products")
 
             self.catalog_products = sucatalog.AppleDBProducts(self.constants)
+            if self.catalog_products.data is None:
+                logging.error("Failed to fetch installers from AppleDB")
+                return
 
             self.available_installers        = self.catalog_products.products
             self.available_installers_latest = self.catalog_products.latest_products
@@ -192,7 +190,7 @@ class macOSInstallerDownloadFrame(wx.Frame):
 
         if installers:
             locale.setlocale(locale.LC_TIME, '')
-            logging.info(f"Available installers on SUCatalog ({'All entries' if show_full else 'Latest only'}):")
+            logging.info(f"Available installers from AppleDB ({'All entries' if show_full else 'Latest only'}):")
             for item in installers:
                 logging.info(f"- {item['Title']} ({item['Version']} - {item['Build']}):\n  - Size: {utilities.human_fmt(item['InstallAssistant']['Size'])}\n  - Link: {item['InstallAssistant']['URL']}\n")
                 index = self.list.InsertItem(self.list.GetItemCount(), f"{item['Title']}")
@@ -202,8 +200,8 @@ class macOSInstallerDownloadFrame(wx.Frame):
                 self.list.SetItem(index, 3, utilities.human_fmt(item['InstallAssistant']['Size']))
                 self.list.SetItem(index, 4, item['PostDate'].strftime("%x"))
         else:
-            logging.error("No installers found on SUCatalog")
-            wx.MessageDialog(self.frame_modal, "Failed to download Installer Catalog from Apple", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
+            logging.error("No installers found from AppleDB")
+            wx.MessageDialog(self.frame_modal, "Failed to fetch installers from AppleDB", "Error", wx.OK | wx.ICON_ERROR).ShowModal()
 
         if show_full is False:
             self.list.Select(-1)
