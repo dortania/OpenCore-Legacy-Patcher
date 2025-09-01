@@ -120,7 +120,7 @@ You can install and revert Root Patching manually from the app.
 
 ### Packages requiring networking
 
-**MetallibSupportPkg**
+#### MetallibSupportPkg
 
 Required for Ivy Bridge, Haswell and NVIDIA Kepler based systems (3802) running Sequoia or newer. You can download it manually from the following link: 
 
@@ -138,7 +138,7 @@ Required for Ivy Bridge, Haswell and NVIDIA Kepler based systems (3802) running 
  
 :::
  
-**KDK / Kernel Debug Kit**
+#### KDK / Kernel Debug Kit
 
 Macs with AMD Legacy GCN GPUs (ie. Metal) running Ventura or newer require Apple's Kernel Debug Kit to start root patching. You can manually download the KDK from the following link:
 
