@@ -1,6 +1,6 @@
 # Booting, installer and other issues
 
-**Booting**
+#### Booting
 
 * [Stuck on `This version of Mac OS X is not supported on this platform` or (🚫) Prohibited Symbol](#stuck-on-this-version-of-mac-os-x-is-not-supported-on-this-platform-or-🚫-prohibited-symbol)
 * [Cannot boot macOS without the USB](#cannot-boot-macos-without-the-usb)
@@ -9,14 +9,14 @@
 * [Booting Recovery through OpenCore Legacy Patcher](#booting-recovery-through-opencore-legacy-patcher)
 * [Black Screen on MacBookPro11,3 in macOS Monterey](#black-screen-on-macbookpro11-3-in-macos-monterey)
 
-**Installer**
+#### Installer
 
 * [Stuck on hard disk selection with greyed out buttons in installer](#stuck-on-hard-disk-selection-with-greyed-out-buttons-in-installer)
 * [Installer fails with "an error occurred preparing the software update"](#installer-fails-with-an-error-occurred-preparing-the-software-update)
 * [Stuck on "Less than a minute remaining..."](#stuck-on-less-than-a-minute-remaining)
 * [Stuck on "Your Mac needs a firmware update"](#stuck-on-your-mac-needs-a-firmware-update)
 
-**Other**
+#### Other
 
 * [Reboot when entering Hibernation (`Sleep Wake Failure`)](#reboot-when-entering-hibernation-sleep-wake-failure)
 * [Volume Hash Mismatch Error in macOS Monterey](#volume-hash-mismatch-error-in-macos-monterey)
@@ -142,5 +142,6 @@ Head into the GUI, go to Patcher Settings, and toggle the bits you need disabled
 | SIP Enabled | SIP Lowered (Root Patching) | SIP Disabled |
 | :--- | :--- | :--- |
 | ![](./images/OCLP-GUI-Settings-SIP-Enabled.png) | ![](./images/OCLP-GUI-Settings-SIP-Root-Patch.png) | ![](./images/OCLP-GUI-Settings-SIP-Disabled.png) |
+
 
 
