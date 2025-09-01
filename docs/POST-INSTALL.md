@@ -131,7 +131,7 @@ Required for Ivy Bridge, Haswell and NVIDIA Kepler based systems (3802) running 
 ::: details Full GPU model list requiring MetallibSupportPkg (click to expand)
 
 * NVIDIA
-    * Kepler (GTX 600 - 700 series)
+    * Kepler (GTX 600 - 700 series, Quadro K-series)
 * Intel
    * Ivy Bridge (HD 4000 series)
    * Haswell (Iris/HD 4000-5000 series)
