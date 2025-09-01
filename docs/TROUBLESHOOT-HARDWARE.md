@@ -1,6 +1,6 @@
 # Hardware issues
 
-**General**
+#### General
 
 * [No Brightness Control](#no-brightness-control)
 * [Cannot connect Wi-Fi on Monterey with legacy cards](#cannot-connect-wi-fi-on-monterey-with-legacy-cards)
@@ -11,8 +11,7 @@
 * [Keyboard, Mouse and Trackpad not working in installer or after update](#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update)
 * [No T1 functionality after installing Sonoma or newer](#no-t1-functionality-after-installing-sonoma-or-newer)
 
-**Non-Metal**
-
+#### Non-Metal
 
 * [Keyboard Backlight broken](#keyboard-backlight-broken)
 * [Wake from sleep heavily distorted on AMD/ATI from macOS 11.3 to Monterey](#wake-from-sleep-heavily-distorted-on-ati-amd-terascale-1-from-macos-11-3-to-monterey)
@@ -325,6 +324,7 @@ In macOS Ventura, hover states may not function correctly which results in the "
 
 
 For more information, see [ASentientBot's post](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/page-116?post=31858759#post-31858759).
+
 
 
 
