@@ -66,9 +66,9 @@ When building OpenCore on a different system, OCLP cannot be aware of all the ha
 
 ## Can I use OTA updates?
 
-You can. However it is extremely recommended to use USB drive for major OS upgrades (such as 13 -> 14) to avoid larger issues from potentially occurring.
+You can. However it is extremely recommended to use USB drive for major OS upgrades (such as 13 -> 14) to avoid larger issues from potentially occurring. General updates are usually fine, though it is always a good idea to wait few days to see whether patches break and have to be fixed.
 
-General updates are usually fine, though it is always a good idea to wait few days to see whether patches break and have to be fixed.
+See more information about updating in [Preparing OCLP for macOS update.](https://dortania.github.io/OpenCore-Legacy-Patcher/UPDATE.html#preparing-oclp-for-macos-update)
 
 ## Can I use automatic updates?
 
@@ -239,6 +239,7 @@ iPhone Mirroring requires a T2 chip, which means it will not be available on OCL
 ## Where is Apple Intelligence?
 
 Apple Intelligence requires Neural Engine, which is only found in Apple Silicon chips.
+
 
 
 
