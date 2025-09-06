@@ -24,6 +24,8 @@ After the update, the application asks if you want to update OpenCore and root p
 
 To check what version of OpenCore bootloader and the Patcher you're currently running, open the OCLP application and navigate to `Settings -> App` and look for "Booted Information". Alternatively you can check the version from Terminal using the following commands.
 
+Check the status and version of root patches from `Post Install Volume Patch` section in the main menu.
+
 ```bash
 # OpenCore Version
 nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:opencore-version
@@ -72,4 +74,5 @@ Additionally, some systems on Sequoia require [MetallibSupportPkg](https://dorta
 
 
 :::
+
 
