@@ -36,7 +36,7 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:OCLP-Version
 
 | Version in app | Version in Terminal |  Root patch version |
 | :--- | :--- | :--- |
-| <img src="./images/OCLP_Booted_Version.png" alt="Build start" width="600" /> | <img src="./images/oclp-version.png" alt="OCLP version" width="900" /> | <img src="./images/OCLP_Root_Patch_Version.png" alt="Root Patch Version" width="600" /> |
+| <img src="./images/OCLP_Booted_Version.png" alt="Build start" width="600" /> | <img src="./images/oclp-version.png" alt="OCLP version" width="900" /> | <img src="./images/OCLP_Root_Patch_Version.png" alt="Root Patch Version" width="900" /> |
 
 
 ## Preparing OCLP for macOS update
@@ -74,5 +74,6 @@ Additionally, some systems on Sequoia require [MetallibSupportPkg](https://dorta
 
 
 :::
+
 
 
