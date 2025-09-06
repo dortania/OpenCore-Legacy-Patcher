@@ -10,14 +10,14 @@ Latest versions of OCLP can download updates by themselves, you will get notifie
 
 After the update, the application asks if you want to update OpenCore and root patches. 
 
-If you do not need to change any settings, you can click "Yes" and follow the procedure. If you want to change settings, select "No" from here and do your settings, then manually build and install OpenCore to update to the latest version of the bootloader.
+* If you do not need to change any settings, click "Yes" on the patch update question and follow the procedure to update OpenCore and root patches automatically.
+   * If you do want to change settings, select "No" and do your settings.
+   * In case you selected "No", you will have to manually build and install OpenCore and then manually install new root patches to ensure you're running on the latest OpenCore with your settings and the fixes for on-disk patches. 
 
-Finally install new root patches to ensure you're running on the latest fixes for on-disk patches. 
 
-
-| Update available | Update successful |
+| Update available | App update success, patch update question |
 | :--- | :--- |
-| <img src="./images/OCLP_Update_Available.png" alt="Update Available" width="500" /> | <img src="./images/OCLP_Update_Successful.png" alt="Update Successful" width="400" /> |
+| <img src="./images/OCLP_Update_Available.png" alt="Update Available" width="500" /> | <img src="./images/OCLP_Update_Successful.png" alt="Update Successful" width="400" /> | 
 
 
 #### Checking OCLP and OpenCore versions
@@ -32,9 +32,9 @@ nvram 4D1FDA02-38C7-4A6A-9CC6-4BCCA8B30102:OCLP-Version
 ```
 
 
-| Version in app | Version in Terminal |
-| :--- | :--- |
-| <img src="./images/OCLP_Booted_Version.png" alt="Build start" width="600" /> | <img src="./images/oclp-version.png" alt="OCLP version" width="900" /> |
+| Version in app | Version in Terminal |  Root patch version |
+| :--- | :--- | :--- |
+| <img src="./images/OCLP_Booted_Version.png" alt="Build start" width="600" /> | <img src="./images/oclp-version.png" alt="OCLP version" width="900" /> | <img src="./images/OCLP_Root_Patch_Version.png" alt="Root Patch Version" width="600" /> |
 
 
 ## Preparing OCLP for macOS update
@@ -72,3 +72,4 @@ Additionally, some systems on Sequoia require [MetallibSupportPkg](https://dorta
 
 
 :::
+
