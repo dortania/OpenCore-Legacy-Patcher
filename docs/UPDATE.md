@@ -65,13 +65,14 @@ This part is for minor updates, which are also called the "dot updates". Such as
    * You can also update root patches but this part is optional in this stage, as they will be wiped by the update.
 3. Start update from System Settings.
     * If your system requires [KDKSupportPkg](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#kdk-kernel-debug-kit), OCLP will start downloading it automatically as long as you are connected to the internet and have the [background process](https://dortania.github.io/OpenCore-Legacy-Patcher/PROCESS.html) enabled.
-5. Once installed, go into OCLP app and reinstall [root patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches).
+4. Once installed, go into OCLP app and reinstall [root patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches).
 
 ::: warning Important
 
 Some systems on Sequoia require [MetallibSupportPkg](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#metallibsupportpkg) during root patching after an update, which requires internet connection to download. If OCLP doesn't see internet connection, it will first offer a patch for WiFi only. You will have to reboot, connect to the internet and rerun root patching for the rest of the patches.
 
 :::
+
 
 
 
