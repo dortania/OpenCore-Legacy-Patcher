@@ -41,7 +41,9 @@ To work-around this, we recommend that users manually connect using the "Other" 
 
 In macOS, GPU drivers are often dropped from the OS with each major release of it. If you're using OCLP v0.4.4 or newer, you should have been prompted to install Root Volume patches after the first boot from installation of macOS. If you need to do this manually, you can do so within the patcher app. Once rebooted, acceleration will be re-enabled as well as brightness control for laptops. 
 
-See [Applying Post Install Volume Patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) for more information.
+See [Applying Post Install Volume Patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) for more information. 
+
+If you swapped a GPU from stock to a Metal GPU in a Mac Pro after installing OS, see [No acceleration after a Metal GPU swap on Mac Pro](#no-acceleration-after-a-metal-gpu-swap-on-mac-pro) for instructions.
 
 Check the list below to see what GPUs require patching in which OS versions.
 
@@ -163,11 +165,11 @@ Starting with macOS Sequoia, OCLP has to disable the secondary CPU in these syst
 
 ## No acceleration after a Metal GPU swap on Mac Pro
 
-If you finished installing macOS with the original card installed (to see bootpicker for example) and swapped your GPU to a Metal supported one, you may notice that you're missing acceleration. To fix this, open OCLP and revert root patches to get your Metal-supported GPU work again. In macOS Ventura and newer, repatching is needed after reversion.
+If you finished installing macOS with the original card installed (to see bootpicker for example) and swapped your GPU to a Metal supported one, you may notice that you're missing acceleration. 
 
-Alternatively, you can remove "AutoPkg-Assets.pkg" from /Library/Packages on the USB drive before proceeding with the installation. To see the folder, enable hidden files with `Command` + `Shift` + `.`
+To fix this, open OCLP and revert root patches to get your Metal-supported GPU work again. In macOS Ventura and newer, repatching is needed for most configurations after reversion. Reason why this happens is automatic root patching during USB install and the autopatcher assuming you will be using the original graphics card and therefore doing non-Metal patching. **Metal and non-Metal GPUs cannot be used at the same time** as Non-Metal patching completely bypasses Metal and requires removing some parts such as drivers for other cards, which causes Metal cards to not accelerate after swapping. 
 
-The reason for this is that the autopatcher will assume that you will be using the original graphics card and therefore does non-metal patching, which includes removing some drivers for other cards. This causes Metal cards to not accelerate after swapping.
+Alternatively, you can remove "AutoPkg-Assets.pkg" from /Library/Packages on the USB drive before proceeding with the installation. This package includes the assets for root patching and the system won't be autopatched if they aren't present. To see the folder, enable hidden files with `Command` + `Shift` + `.`
 
 ## Keyboard, Mouse and Trackpad not working in installer or after update
 
@@ -324,6 +326,7 @@ In macOS Ventura, hover states may not function correctly which results in the "
 
 
 For more information, see [ASentientBot's post](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/page-116?post=31858759#post-31858759).
+
 
 
 
