@@ -294,7 +294,7 @@ However, if your machine does not have the dGPU disabled via NVRAM, you'll exper
     * Press Cmd+S in OpenCore's menu when you turn the Mac on
 2. When the command line prompt appears, enter the dGPU disabler argument (at the bottom)
 3. Reboot and patched macOS should work normally
-4. If you still want to use the dGPU, run OpenCore Legacy Patcher and enable TS2 Acceleration from settings. Go to `Patcher Settings -> Developer Settings -> Set TeraScale 2 Accel`, then root patch again.
+4. If you still want to use the dGPU, run OpenCore Legacy Patcher and enable TS2 Acceleration from settings. Go to `Settings -> Root Patching -> TeraScale 2 Acceleration`, then root patch again.
 5. Either Reset NVRAM or set `gpu-power-prefs` to zeros to re-enable the dGPU
 
 ```sh
@@ -326,6 +326,7 @@ In macOS Ventura, hover states may not function correctly which results in the "
 
 
 For more information, see [ASentientBot's post](https://forums.macrumors.com/threads/macos-13-ventura-on-unsupported-macs-thread.2346881/page-116?post=31858759#post-31858759).
+
 
 
 
