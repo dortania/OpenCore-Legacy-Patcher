@@ -3,7 +3,7 @@
 * [Application requirements](#application-requirements)
 * [Application versioning](#application-versioning)
 * [How do I make sure I'm all up to date?](#how-do-i-make-sure-i-m-all-up-to-date)
-* [Why are the settings "not saving"?](#why-are-the-settings-not-saving)
+* [Where are the GUI settings saved?](#where-are-the-gui-settings-saved)
 * [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-usb-install-media-as-a-universal-installer)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
@@ -239,6 +239,7 @@ iPhone Mirroring requires a T2 chip, which means it will not be available on OCL
 ## Where is Apple Intelligence?
 
 Apple Intelligence requires Neural Engine, which is only found in Apple Silicon chips.
+
 
 
 
