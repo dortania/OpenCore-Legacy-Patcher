@@ -26,17 +26,19 @@ Ventura's release dropped a large amount of Intel hardware, thus requiring the u
 
 ## Current status
 
+OpenCore Legacy Patcher supports Ventura for the models below, however some challenges remain. You can find information about them further down on this page.
+
 <img width="625" alt="" src="./images/OCLP-060-Initial-Support.png">
 
 For older hardware, see below sections:
 
-* [Currently Unsupported/Broken Hardware in Ventura](#currently-unsupportedbroken-hardware-in-ventura)
+* [Current issues](#current-issues)
   * [AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs](#amd-polaris-vega-and-navi-support-on-pre-2019-mac-pros-and-pre-2012-imacs)
   * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
 
 The team is doing their best to investigate and fix the aforementioned issues, however no estimated time can be provided.
 
-## Currently Unsupported/Broken Hardware in Ventura
+## Current issues
 
 ### AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs
 
@@ -65,63 +67,9 @@ For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed i
 
 Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
 
-### Graphics and wireless support
+### Graphics support and issues
 
-::: details Legacy Wireless Support (Resolved in v0.6.0 and newer)
+Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues.
 
-
-### Legacy Wireless Support
-
-For systems that required Root Patches in macOS Monterey to achieve Wireless support, unfortunately macOS Ventura has broken the patch set. Currently the following Wifi cards are unsupported:
-
-* Atheros: All models
-* Broadcom: BCM94328 and BCM94322
-
-The following machines shipped stock with these cards:
-
-* iMac12,x and older
-* Macmini3,1 and older
-* MacBook5,x and older
-* MacBookAir2,1 and older
-* MacBookPro7,1 and older
-  * MacBookPro6,x is exempt
-* MacPro5,1 and older
-
-
-Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported by OpenCore Legacy Patcher. Consider upgrading to these cards if possible.
-
-:::
-
-
-::: details Non-Metal Graphics Acceleration (Resolved in v0.6.0 and newer)
-
-
-### Non-Metal Graphics Acceleration
-
-Regarding non-Metal, the team is hard at work to get non-Metal working, however this is our greatest challenge since Big Sur.
-
-Apple has made significant changes to the graphics stack in order to facilitate fancy effects, and in particularly, Stage Manager. We will update you as we work on development, however, now is not the best time to ask about ETAs.
-
-The following GPUs are applicable:
-
-* NVIDIA:
-  * Tesla (8000 - 300 series)
-* AMD:
-  * TeraScale (2000 - 6000 series)
-* Intel:
-  * Iron Lake
-  * Sandy Bridge (2000 - 3000 series)
-
-
-The following machines shipped stock with an unsupported GPU:
-
-* iMac7,1 - iMac12,x
-* MacBook5,1 - MacBook7,1
-* MacBookAir2,1 - MacBookAir4,x
-* MacBookPro4,1 - MacBookPro8,x
-* Macmini3,1 - Macmini5,x
-* MacPro3,1 - MacPro5,1
-* Xserve2,1 - Xserve3,1
-
-
-:::
+* [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)
+* [Non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
