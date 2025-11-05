@@ -14,7 +14,7 @@ This time Apple dropped surprisingly few amount of Macs. With the release of Ope
 
 ## Current status
 
-OpenCore Legacy Patcher 2.0.0 supports Sequoia for the models bekiw, however some challenges remain. You can find information about them further down this page.
+OpenCore Legacy Patcher 2.0.0 supports Sequoia for the models below, however some challenges remain. You can find information about them further down this page.
 
 <img width="625" alt="" src="./images/OCLP-200-Initial-Support.png">
 
