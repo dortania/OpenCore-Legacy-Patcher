@@ -73,3 +73,56 @@ Refer to the following links for more information about Legacy Metal and non-Met
 
 * [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)
 * [Non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
+
+### Resolved issues
+
+::: details Legacy Wireless Support (Resolved in v0.6.0 and newer)
+
+For systems that required Root Patches in macOS Monterey to achieve Wireless support, unfortunately macOS Ventura has broken the patch set. Currently the following Wifi cards are unsupported:
+
+* Atheros: All models
+* Broadcom: BCM94328 and BCM94322
+
+The following machines shipped stock with these cards:
+
+* iMac12,x and older
+* Macmini3,1 and older
+* MacBook5,x and older
+* MacBookAir2,1 and older
+* MacBookPro7,1 and older
+  * MacBookPro6,x is exempt
+* MacPro5,1 and older
+
+
+Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported by OpenCore Legacy Patcher. Consider upgrading to these cards if possible.
+
+:::
+
+
+::: details Non-Metal Graphics Acceleration (Resolved in v0.6.0 and newer)
+
+Regarding non-Metal, the team is hard at work to get non-Metal working, however this is our greatest challenge since Big Sur.
+
+Apple has made significant changes to the graphics stack in order to facilitate fancy effects, and in particularly, Stage Manager. We will update you as we work on development, however, now is not the best time to ask about ETAs.
+
+The following GPUs are applicable:
+
+* NVIDIA:
+  * Tesla (8000 - 300 series)
+* AMD:
+  * TeraScale (2000 - 6000 series)
+* Intel:
+  * Iron Lake
+  * Sandy Bridge (2000 - 3000 series)
+
+
+The following machines shipped stock with an unsupported GPU:
+
+* iMac7,1 - iMac12,x
+* MacBook5,1 - MacBook7,1
+* MacBookAir2,1 - MacBookAir4,x
+* MacBookPro4,1 - MacBookPro8,x
+* Macmini3,1 - Macmini5,x
+* MacPro3,1 - MacPro5,1
+* Xserve2,1 - Xserve3,1
+
