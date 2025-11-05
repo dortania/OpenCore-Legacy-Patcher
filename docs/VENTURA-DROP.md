@@ -26,17 +26,19 @@ Ventura's release dropped a large amount of Intel hardware, thus requiring the u
 
 ## Current status
 
+OpenCore Legacy Patcher supports Ventura for the models below, however some challenges remain. You can find information about them further down on this page.
+
 <img width="625" alt="" src="./images/OCLP-060-Initial-Support.png">
 
 For older hardware, see below sections:
 
-* [Currently Unsupported/Broken Hardware in Ventura](#currently-unsupportedbroken-hardware-in-ventura)
+* [Current issues](#current-issues)
   * [AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs](#amd-polaris-vega-and-navi-support-on-pre-2019-mac-pros-and-pre-2012-imacs)
   * [USB 1.1 (OHCI/UHCI) Support](#usb-11-ohciuhci-support)
 
 The team is doing their best to investigate and fix the aforementioned issues, however no estimated time can be provided.
 
-## Currently Unsupported/Broken Hardware in Ventura
+## Current issues
 
 ### AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs
 
@@ -65,12 +67,16 @@ For Penryn systems and pre-2013 Mac Pros, USB 1.1 support was outright removed i
 
 Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
 
-### Graphics and wireless support
+### Graphics support and issues
+
+Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues.
+
+* [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)
+* [Non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
+
+### Resolved issues
 
 ::: details Legacy Wireless Support (Resolved in v0.6.0 and newer)
-
-
-### Legacy Wireless Support
 
 For systems that required Root Patches in macOS Monterey to achieve Wireless support, unfortunately macOS Ventura has broken the patch set. Currently the following Wifi cards are unsupported:
 
@@ -94,9 +100,6 @@ Currently BCM943224, BCM94331, BCM94360 and BCM943602 are still fully supported 
 
 
 ::: details Non-Metal Graphics Acceleration (Resolved in v0.6.0 and newer)
-
-
-### Non-Metal Graphics Acceleration
 
 Regarding non-Metal, the team is hard at work to get non-Metal working, however this is our greatest challenge since Big Sur.
 
@@ -123,5 +126,3 @@ The following machines shipped stock with an unsupported GPU:
 * MacPro3,1 - MacPro5,1
 * Xserve2,1 - Xserve3,1
 
-
-:::

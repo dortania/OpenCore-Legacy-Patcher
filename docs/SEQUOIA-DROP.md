@@ -14,13 +14,13 @@ This time Apple dropped surprisingly few amount of Macs. With the release of Ope
 
 ## Current status
 
+OpenCore Legacy Patcher 2.0.0 supports Sequoia for the models bekiw, however some challenges remain. You can find information about them further down this page.
+
 <img width="625" alt="" src="./images/OCLP-200-Initial-Support.png">
 
-OpenCore Legacy Patcher 2.0.0 will support Sequoia for the models above, however some challenges remain. You can find information about them below.
+Unfortunately due to T2 related problems, the recently dropped MacBookAir8,x models cannot be supported at this time. We have made some progress on this issue, but panics are still occurring and there is still a significant amount of development work to do before T2 machines may even get to the install screen. We cannot provide any estimate on when T2 machines will be supported. 
 
-Unfortunately due to T2 related problems, the recently dropped MacBookAir8,x models cannot be supported at this time. We have made some progress on this issue, but panics are still occurring and there is still a significant amount of development work to do before T2 machines may even get to the install screen. We cannot provide any estimate on when T2 machines will be supported.
-
-[More information here](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1136)
+[More information here.](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1136)
 
 ## Non-functional features
 
