@@ -18,7 +18,9 @@ Apple has yet again dropped a bunch of models, continuing their journey on disco
 
 ## Current status
 
-OpenCore Legacy Patcher 1.0.0 will support Sonoma for all models normally supported by the Patcher, however some challenges remain. You can find information about them below.
+<img width="625" alt="" src="./images/OCLP-100-Initial-Support.png">
+
+OpenCore Legacy Patcher 1.0.0 will support Sonoma for all models normally supported above, however some challenges remain. You can find information about them below.
 
 ## Issues
 
