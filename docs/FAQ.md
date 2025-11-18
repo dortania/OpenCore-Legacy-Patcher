@@ -21,8 +21,10 @@
 
 ## Application requirements
 The patcher application requires **OS X Yosemite 10.10** or later to run.
-* **El Capitan 10.11** or later is required to make installers for macOS Ventura
-* **High Sierra 10.13** or later is required to make installers for macOS Sonoma and newer.
+
+Due to limitations with Apple's `createinstallmedia` tool used for installer creation, the following are required:
+* **El Capitan 10.11** to make installers for macOS Ventura.
+* **High Sierra 10.13** to make installers for macOS Sonoma and newer.
 
 The patcher is designed to target **macOS Big Sur 11.x to macOS Sequoia 15.x**.
 * Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
@@ -239,6 +241,7 @@ iPhone Mirroring requires a T2 chip, which means it will not be available on OCL
 ## Where is Apple Intelligence?
 
 Apple Intelligence requires Neural Engine, which is only found in Apple Silicon chips.
+
 
 
 
