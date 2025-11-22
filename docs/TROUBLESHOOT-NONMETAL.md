@@ -2,6 +2,7 @@
 
 The below page is for users experiencing issues with their overall usage of macOS Big Sur and newer and the Legacy Graphics Acceleration patches. For those unfamiliar with what is considered a non-Metal GPU, see the chart in [FAQ](https://dortania.github.io/OpenCore-Legacy-Patcher/FAQ.html#what-is-metal-and-non-metal)
 
+* [Broken Firefox and Thunderbird (HD 3000)](#broken-firefox-and-thunderbird-hd-3000)
 * [Broken Background Blurs](#broken-background-blurs)
 * [Downloading older non-Metal Apps](#downloading-older-non-metal-apps)
 * [Unable to run Zoom](#unable-to-run-zoom)
@@ -9,6 +10,13 @@ The below page is for users experiencing issues with their overall usage of macO
 * [Photos and Maps app issues](#photos-and-maps-app-issues)
 * [Cannot press "Done" when editing a Sidebar Widget](#cannot-press-done-when-editing-a-sidebar-widget)
 * [Unable to allow Safari Extensions](#unable-to-allow-safari-extensions)
+
+
+## Broken Firefox and Thunderbird (HD 3000)
+
+[Due to removal of HD 3000 support workarounds](https://hg-edge.mozilla.org/releases/mozilla-release/rev/32d4368e5a2a869bdc1f4556f020c1a6bea2a9c0), Firefox and Thunderbord on HD 3000 are now broken. This may lead to system freezes and other erratic behavior on system with this GPU.
+
+As a workaround, hardware acceleration has to be disabled. If your system is locking up in normal mode, boot into Safe Mode by holding `Shift` on boot and disable hardware acceleration for Firefox and Thunderbird wherever applicable.
 
 ## Broken Background Blurs
 
