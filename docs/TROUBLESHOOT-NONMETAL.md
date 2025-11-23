@@ -14,7 +14,7 @@ The below page is for users experiencing issues with their overall usage of macO
 
 ## Broken Firefox and Thunderbird (HD 3000)
 
-[Due to removal of HD 3000 support workarounds](https://hg-edge.mozilla.org/releases/mozilla-release/rev/32d4368e5a2a869bdc1f4556f020c1a6bea2a9c0), Firefox and Thunderbird on HD 3000 are now broken. This may lead to system freezes and other erratic behavior on system with this GPU.
+[Due to removal of HD 3000 support workarounds](https://hg-edge.mozilla.org/releases/mozilla-release/rev/32d4368e5a2a869bdc1f4556f020c1a6bea2a9c0) in Firefox v145, Firefox and Thunderbird on HD 3000 are now broken. This may lead to system freezes and other erratic behavior on systems with this GPU.
 
 As a workaround, hardware acceleration has to be disabled. If your system is locking up in normal mode, boot into Safe Mode by holding `Shift` on boot and disable hardware acceleration for Firefox and Thunderbird wherever applicable.
 
