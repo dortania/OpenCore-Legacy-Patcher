@@ -13,7 +13,7 @@ import enum
 import hashlib
 import atexit
 
-from typing import Union
+from typing import Optional, Union
 from pathlib import Path
 
 from . import utilities
@@ -65,17 +65,15 @@ class NetworkUtilities:
 
     def validate_link(self) -> bool:
         """
-        Check for 404 error
+        Check for error
 
         Returns:
             bool: True if link is valid, False otherwise
         """
         try:
             response = SESSION.head(self.url, timeout=5, allow_redirects=True)
-            if response.status_code == 404:
-                return False
-            else:
-                return True
+            response.raise_for_status()
+            return True
         except (
             requests.exceptions.Timeout,
             requests.exceptions.TooManyRedirects,
@@ -162,7 +160,7 @@ class DownloadObject:
 
     """
 
-    def __init__(self, url: str, path: str) -> None:
+    def __init__(self, url: str, path: str, checksum_algo: Optional["hashlib._Hash"] = None) -> None:
         self.url:       str = url
         self.status:    str = DownloadStatus.INACTIVE
         self.error_msg: str = ""
@@ -181,10 +179,8 @@ class DownloadObject:
 
         self.active_thread: threading.Thread = None
 
-        self.should_checksum: bool = False
-
         self.checksum = None
-        self._checksum_storage: hash = None
+        self._checksum_storage: Optional[hashlib._Hash] = checksum_algo
 
         if self.has_network:
             self._populate_file_size()
@@ -194,7 +190,7 @@ class DownloadObject:
         self.stop()
 
 
-    def download(self, display_progress: bool = False, spawn_thread: bool = True, verify_checksum: bool = False) -> None:
+    def download(self, display_progress: bool = False, spawn_thread: bool = True) -> None:
         """
         Download the file
 
@@ -204,7 +200,7 @@ class DownloadObject:
         Parameters:
             display_progress (bool): Display progress in console
             spawn_thread (bool): Spawn a thread to download the file, otherwise download in the current thread
-            verify_checksum (bool): Calculate checksum of downloaded file if True
+            verify_checksum (Optional[hashlib._Hash]): Checksum algorithm to use for verifying the download, optional
 
         """
         self.status = DownloadStatus.DOWNLOADING
@@ -213,12 +209,10 @@ class DownloadObject:
             if self.active_thread:
                 logging.error("Download already in progress")
                 return
-            self.should_checksum = verify_checksum
             self.active_thread = threading.Thread(target=self._download, args=(display_progress,))
             self.active_thread.start()
             return
 
-        self.should_checksum = verify_checksum
         self._download(display_progress)
 
 
@@ -235,15 +229,14 @@ class DownloadObject:
         """
 
         if verify_checksum:
-            self.should_checksum = True
-            self.checksum = hashlib.sha256()
+            self._checksum_storage = hashlib.sha256()
 
         self.download(spawn_thread=False)
 
         if not self.download_complete:
             return False
 
-        return self.checksum.hexdigest() if self.checksum else True
+        return self._checksum_storage.hexdigest() if self._checksum_storage else True
 
 
     def _get_filename(self) -> str:
@@ -283,7 +276,8 @@ class DownloadObject:
         Parameters:
             chunk (bytes): Chunk to update checksum with
         """
-        self._checksum_storage.update(chunk)
+        if self._checksum_storage:
+            self._checksum_storage.update(chunk)
 
 
     def _prepare_working_directory(self, path: Path) -> bool:
@@ -353,7 +347,7 @@ class DownloadObject:
                     if chunk:
                         file.write(chunk)
                         self.downloaded_file_size += len(chunk)
-                        if self.should_checksum:
+                        if self._checksum_storage:
                             self._update_checksum(chunk)
                         if display_progress and i % 100:
                             # Don't use logging here, as we'll be spamming the log file
@@ -368,6 +362,9 @@ class DownloadObject:
                 logging.info(f"- Time elapsed: {(time.time() - self.start_time):.2f} seconds")
                 logging.info(f"- Speed: {utilities.human_fmt(self.downloaded_file_size / (time.time() - self.start_time))}/s")
                 logging.info(f"- Location: {self.filepath}")
+                if self._checksum_storage:
+                    self.checksum = self._checksum_storage.hexdigest()
+                    logging.info(f"Checksum: {self.checksum}")
         except Exception as e:
             self.error = True
             self.error_msg = str(e)

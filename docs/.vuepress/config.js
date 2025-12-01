@@ -111,8 +111,10 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-		'TROUBLESHOOTING',
-                'ACCEL',
+		'TROUBLESHOOT-APP',
+		'TROUBLESHOOT-MISC',
+                'TROUBLESHOOT-NONMETAL',
+		'TROUBLESHOOT-HARDWARE',
 		'DEBUG',
                 
             ]

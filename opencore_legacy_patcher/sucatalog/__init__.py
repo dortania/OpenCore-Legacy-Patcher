@@ -109,3 +109,4 @@ By default, `CatalogProducts` will only return InstallAssistants. To get all pro
 from .url       import CatalogURL
 from .constants import CatalogVersion, SeedType
 from .products  import CatalogProducts
+from .products_appledb import AppleDBProducts

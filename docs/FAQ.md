@@ -1,10 +1,9 @@
 # FAQ
 
-
 * [Application requirements](#application-requirements)
 * [Application versioning](#application-versioning)
 * [How do I make sure I'm all up to date?](#how-do-i-make-sure-i-m-all-up-to-date)
-* [Why are the settings "not saving"?](#why-are-the-settings-not-saving)
+* [Where are the GUI settings saved?](#where-are-the-gui-settings-saved)
 * [Can I use the same USB install media as a universal installer?](#can-i-use-the-same-usb-install-media-as-a-universal-installer)
 * [Can I use OTA updates?](#can-i-use-ota-updates)
 * [Can I use automatic updates?](#can-i-use-automatic-updates)
@@ -22,8 +21,10 @@
 
 ## Application requirements
 The patcher application requires **OS X Yosemite 10.10** or later to run.
-* **El Capitan 10.11** or later is required to make installers for macOS Ventura
-* **High Sierra 10.13** or later is required to make installers for macOS Sonoma and newer.
+
+Due to limitations with Apple's `createinstallmedia` tool used for installer creation, the following are required:
+* **El Capitan 10.11** to make installers for macOS Ventura.
+* **High Sierra 10.13** to make installers for macOS Sonoma and newer.
 
 The patcher is designed to target **macOS Big Sur 11.x to macOS Sequoia 15.x**.
 * Other versions may work, albeit in a broken state. No support is provided for any version outside of the above.
@@ -43,11 +44,13 @@ Updating the OCLP installation is a three step process, first the application, s
 
 Refer to [Updating OpenCore and patches](https://dortania.github.io/OpenCore-Legacy-Patcher/UPDATE.html) for how to update the application and patches.
 
-## Why are the settings "not saving"?
+## Where are the GUI settings saved?
 
-Starting with OpenCore Legacy Patcher 2.1.0, the status of settings in the GUI will now be saved under ```/Users/Shared/.com.dortania.opencore-legacy-patcher.plist```. The application will utilize this file to keep track of and retain settings for relaunches and application updates, no longer requiring a reconfiguring each time. The user interface will reset if any model other than "Host Model" is selected, as building for a different model will require different settings.
+In OpenCore Legacy Patcher 2.1.0 and newer, the status of settings are saved under ```/Users/Shared/.com.dortania.opencore-legacy-patcher.plist```. The application will utilize this file to keep track of and retain settings for relaunches and application updates, no longer requiring a reconfiguring each time. The user interface will reset if any model other than "Host Model" is selected, as building for a different model will require different settings.
 
 In case of issues, delete the file and restart the application to revert the GUI to default settings, then rebuild OpenCore with newly configured settings.
+
+**Ticking the options in Settings alone will not apply the settings until the "Build and Install OpenCore" process has been redone**, which rebuilds a new OpenCore with the selected settings. Applied settings are saved to a config.plist file inside your EFI partition by the building process.
 
 ::: warning
 
@@ -55,15 +58,7 @@ Only settings made within OCLP are accounted for, modifications made directly in
 
 :::
 
-::: details Explainer for older versions (click to expand)
-
-OpenCore Legacy Patcher is a config build tool and as such the user interface always reverts to safe defaults, the user interface therefore **does not** reflect the status of settings. Settings are accounted for and saved by the OpenCore building process and you will always have to build OpenCore again after settings change. 
-
-Settings are saved to a config.plist file inside your EFI partition.
-
-In SIP settings, booted SIP is reported in text form e.g. "0x803" but the checkboxes **do not** reflect the applied settings. Refer to [SIP Settings](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#sip-settings) for more information.
-
-:::
+In versions older than 2.1.0, the status of settings was not tracked. Therefore in these versions GUI will continue to reset to defaults after every launch, requiring settings to be reconfigured each time.
 
 ## Can I use the same USB install media as a universal installer?
 
@@ -73,15 +68,15 @@ When building OpenCore on a different system, OCLP cannot be aware of all the ha
 
 ## Can I use OTA updates?
 
-You can. However it is extremely recommended to use USB drive for major OS upgrades (such as 13 -> 14) to avoid larger issues from potentially occurring.
+You can. However it is extremely recommended to use USB drive for major OS upgrades (such as 13 -> 14) to avoid larger issues from potentially occurring. General updates are usually fine, though it is always a good idea to wait few days to see whether patches break and have to be fixed.
 
-General updates are usually fine, though it is always a good idea to wait few days to see whether patches break and have to be fixed.
+See more information about updating in [Preparing OCLP for macOS update.](https://dortania.github.io/OpenCore-Legacy-Patcher/UPDATE.html#preparing-oclp-for-macos-update)
 
 ## Can I use automatic updates?
 
 It is extremely recommended to disable automatic updates (even downloading) when using OCLP, as Apple has recently changed the way automatic updates work. Updates are now getting staged during the download process and are already modifying the system volume, which can lead to broken system out of nowhere since the operating system gets into a liminal state between two versions. You can still manually initiate an update when you're ready to do so. 
 
-For a related "System version mismatch" error while root patching and more information, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for troubleshooting.
+For a related "System version mismatch" error while root patching and more information, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-APP.html#system-version-mismatch-error-when-root-patching) for troubleshooting.
 
 * Note: macOS Sequoia has begun prompting to enable automatic updates from 15.4 onward after an update install has finished and isn't giving a choice to fully decline, this means you may have to keep doing it again after updating to newer versions.
 
@@ -113,13 +108,31 @@ macOS doesn't allow direct downgrades, as such you will have to wipe the disk in
 
 ## Why is my system slow?
 
-This can mean many things. Firstly, newer operating systems are harder to run and can appear more slow. 
+#### Lacking or broken root patches
 
-Additionally if your macOS installation is recent, Spotlight starts creating a full disk index which can cause high CPU load, high temps and general slowness. It's recommended to keep the system running for few hours, once Spotlight has indexed the load will ease. A way to check whether it's caused by Spotlight is to open Activity Monitor, choosing "All Processes" from the "View" menu item, then sorting by the CPU value to see if a process called ```mds_stores``` is using a lot of CPU resources.
+If your system is being **really** slow and macOS is lacking wallpaper and transparency in Dock and menubar, make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) section for more information. 
 
-However, if your system is being **really** slow and you have no transparency in Dock and menubar, this typically indicates that root patches are not installed and as such there is no acceleration. Make sure to install root patches to get proper drivers and functionality. Refer to [Applying post install volume patches](https://dortania.github.io/OpenCore-Legacy-Patcher/POST-INSTALL.html#applying-post-install-volume-patches) and the [Troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html) section for more information.
+**Root patches will be wiped by macOS updates and have to be reinstalled after an update finishes.** 
 
-Patches can also break if automatic updates are enabled and an update modifies the system volume, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#system-version-mismatch-error-when-root-patching) for more information.
+Patches can also break if automatic updates are enabled and an update prematurely modifies the system volume, refer to [System version mismatch error when root patching](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-APP.html#system-version-mismatch-error-when-root-patching) for more information.
+
+#### Spotlight
+
+If your macOS installation is recent, Spotlight starts creating a full disk index which can cause high CPU load, high temps and general slowness. It's recommended to keep the system running for few hours, once Spotlight has indexed the load will ease. A way to check whether it's caused by Spotlight is to open Activity Monitor, choosing "All Processes" from the "View" menu item, then sorting by the CPU value to see if a process called ```mds_stores``` is using a lot of CPU resources.
+
+#### Heavier macOS versions
+
+Newer operating systems are harder to run and can appear more slow. If this is the case, there is not a whole lot to do about it.
+
+#### Thermal issues or bad/missing battery
+
+If you see ```kernel_task``` hogging a lot of CPU resources in Activity Monitor (this also requires View -> All Processes), this means the system is being throttled mostly due to the following reasons:
+
+In laptops, if the battery is either missing or in bad condition, macOS will throttle the CPU quite hard in order to stay running as the charger cannot provide enough power for peak performance. You may try disabling throttling in OCLP settings but this usually leads to unexpected shutdowns during load, when the charger runs out of power to provide. Additionally, trackpad settings will be unavailable on laptops if battery is not present.
+
+Thermal issues can also throttle the CPU, in this case it may be recommended to repaste the system.
+
+You can use [Intel Power Gadget (Web Archive)](https://web.archive.org/web/20220701164200/https://www.intel.com/content/dam/develop/external/us/en/documents/downloads/intel-power-gadget.dmg) to monitor CPU frequency, AVG and REQ should mostly match each other.
 
 ## Applications crashing with "illegal instruction"
 
@@ -151,21 +164,38 @@ In essence, this means that some models are now aging rapidly and newer OS won't
 
 ## What is Metal and Non-Metal?
 
-Metal is Apple's proprietary graphics API which fully superseded OpenGL rendering of the operating system starting from macOS Mojave. When the word "Non-Metal" is used, it describes GPUs that are not Metal supported and require using OpenGL instead. Due to deprecation of OpenGL, many newer applications may require Metal rendering and as such will fail to run on systems with Non-Metal GPUs. Some built-in apps like Maps and everything relying on it (such as Find My) will fail to render as well on versions later than Big Sur.
+Metal is Apple's proprietary graphics API that acts as a replacement for OpenGL/OpenCL which fully superseded OpenGL rendering of the operating system starting from macOS Mojave. When the word "Non-Metal" is used, it describes GPUs that are not Metal supported and require using OpenGL instead. Due to deprecation of OpenGL, many newer applications may require Metal rendering and as such will fail to run on systems with Non-Metal GPUs. Some built-in apps like Maps and everything relying on it (such as Find My) will fail to render as well on versions later than Big Sur.
 
 A great rule of thumb is that Macs older than 2012 are non-Metal, with the exception of systems having upgradable GPUs.
 
-::: details Metal supported GPUs (click to expand)
+::: details macOS GPU Chart
 
-* Intel HD 4000 series (Ivy Bridge/3rd gen) and newer
-* AMD HD 7000 series (GCN 1) and newer
-* NVIDIA GTX 600 and 700 series (Kepler)
+Intel GMA series is completely unsupported, even when using OpenCore Legacy Patcher. 
 
-Everything older than mentioned are Non-Metal and therefore only support OpenGL. Non-Metal also includes NVIDIA Maxwell (GTX 900 series) and Pascal (GTX 1000 series) when used with patched Web Drivers on newer than macOS High Sierra.
+AMD Navi (RX 5000 - 6000 series) GPUs are non-functional in Mac Pro 2008 to 2012 using Ventura and newer due to lack of AVX2 support.
+
+| Graphics Vendor | Architecture | Series | Supports Metal |
+| :--- | :--- | :--- | :--- |
+| ATI | TeraScale 1 | HD 2XXX - HD 4XXX | <span style="color:red">No</span> |
+| ^^ | TeraScale 2 | HD 5XXX - HD 6XXX | ^^ |
+| AMD | GCN (and newer) | HD 7XXX+ | <span style="color:green">Yes</span> |
+| NVIDIA | Tesla | 8XXX - 3XX | <span style="color:red">No</span> |
+| ^^ | Fermi | 4XX - 5XX | ^^ |
+| ^^ | Kepler | 6XX - 7XX | <span style="color:green">Yes</span> |
+| ^^ | Maxwell | 8XX - 9XX | <span style="color:red">No (on 10.14 and newer)</span> |
+| ^^ | Pascal | 10XX | ^^ |
+| Intel | GMA | GMA 900 - GMA X3000 | <span style="color:red">No</span> |
+| ^^ | Iron Lake | HD series | ^^ |
+| ^^ | Sandy Bridge | HD 3000 | ^^ |
+| ^^ | Ivy Bridge (and newer) | HD 4000 | <span style="color:green">Yes</span> |
 
 :::
 
-Refer to [Supported models,](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) the [Non-Metal GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108) and [Working Around Non-Metal Issues](https://dortania.github.io/OpenCore-Legacy-Patcher/ACCEL.html) pages for more information.
+Refer to the following pages for more information
+- [Supported models](https://dortania.github.io/OpenCore-Legacy-Patcher/MODELS.html) 
+- [Non-Metal GitHub issue](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
+- [Non-Metal Issues](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-NONMETAL.html)
+- [Hardware troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE)
 
 
 ## What are FeatureUnlock and mediaanalysisd?
@@ -211,4 +241,13 @@ iPhone Mirroring requires a T2 chip, which means it will not be available on OCL
 ## Where is Apple Intelligence?
 
 Apple Intelligence requires Neural Engine, which is only found in Apple Silicon chips.
+
+
+
+
+
+
+
+
+
 

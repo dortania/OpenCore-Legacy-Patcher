@@ -18,7 +18,9 @@ Apple has yet again dropped a bunch of models, continuing their journey on disco
 
 ## Current status
 
-OpenCore Legacy Patcher 1.0.0 will support Sonoma for all models normally supported by the Patcher, however some challenges remain. You can find information about them below.
+OpenCore Legacy Patcher 1.0.0 supports Sonoma for all models below, however some challenges remain. You can find information about them further down on this page.
+
+<img width="625" alt="" src="./images/OCLP-100-Initial-Support.png">
 
 ## Issues
 
@@ -36,7 +38,9 @@ Dual boots may also bring the issue back even after the reset.
 
 ### T1 Security chip
 
-::: details Support for the T1 Security chip (Resolved in 1.1.0 and newer)
+**Resolved in 1.1.0 and newer, original explainer below**
+
+::: details Support for the T1 Security chip 
 
 Sonoma has removed support for T1 chips found in most 2016 and 2017 Macs. Therefore on these systems, the following will not function:
 
@@ -50,7 +54,7 @@ Sonoma has removed support for T1 chips found in most 2016 and 2017 Macs. Theref
 :::
 
 ::: warning
-Note that erasing the entire drive will remove the T1 firmware and it won't be reinstalled.
+Note that erasing the entire drive will remove the T1 firmware and it won't be reinstalled. Refer to [troubleshooting](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE.html#no-t1-functionality-after-installing-sonoma-or-newer) for more information.
 :::
 
 ### USB 1.1 (OHCI/UHCI) Support
@@ -62,7 +66,7 @@ While USB 1.1 may seem unimportant, it handles many important devices on your sy
 * IR Receivers
 * Bluetooth
 
-Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
+Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
 
 ### Graphics support and issues
 This build includes both Legacy Metal and non-Metal patches for macOS Sonoma. Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues.

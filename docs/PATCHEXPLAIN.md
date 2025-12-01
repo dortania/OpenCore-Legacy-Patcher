@@ -496,12 +496,13 @@ Applicable for BCM94328, BCM94322 and Atheros Wifi cards
 * AMDMTLBronzeDriver.bundle
 * AMDShared.bundle
 
+:::
 
 
 
 ::: details non-Metal Graphics Acceleration Patches (11.0+)
 
-#### General Patches
+### General Patches
 
 * IOSurface.kext
   * Reason: Fixes immediate logout on login
@@ -509,7 +510,7 @@ Applicable for BCM94328, BCM94322 and Atheros Wifi cards
   * Note: For AMD and Intel, additional `addMemoryRegion/removeMemoryRegion` patch added changing the first conditional jump to non conditional jump
     * At Offset `0xdb52` and `0xdbc6`, replace following bytes with `0xeb`
 
-#### Dropped Acceleration Binaries
+### Dropped Acceleration Binaries
 
 * NVIDIA Binaries
   * GeForceGA.bundle
