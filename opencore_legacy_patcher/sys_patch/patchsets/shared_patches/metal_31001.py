@@ -35,7 +35,7 @@ class LegacyMetal31001(BaseSharedPatchSet):
             "Metal 31001 Common": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/PrivateFrameworks/RenderBox.framework/Versions/A/Resources": {
-                        "default.metallib": "RenderBox-{self._xnu_major}",
+                        **({ "default.metallib": f"RenderBox-{self._xnu_major}" }),
                     }
                 },
             }
