@@ -44,6 +44,12 @@ class ModernAudio(BaseHardware):
 
         return False
 
+    def requires_kernel_debug_kit(self) -> bool:
+        """
+        Apple no longer provides standalone kexts in the base OS
+        """
+        return True
+
 
     def hardware_variant(self) -> HardwareVariant:
         """
