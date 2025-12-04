@@ -31,8 +31,18 @@ class LegacyMetal31001(BaseSharedPatchSet):
         if self._os_requires_patches() is False:
             return {}
 
+        # Currently no common patches; here for future-proofing.
+        return {}
+
+    def _patches_metal_31001_metallibs(self) -> dict:
+        """
+        Metallib patches for Metal 31001 GPUs
+        """
+        if self._os_requires_patches() is False:
+            return {}
+
         return {
-            "Metal 31001 Common": {
+            "Metal 31001 Metallibs": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/PrivateFrameworks/RenderBox.framework/Versions/A/Resources": {
                         **({ "default.metallib": f"RenderBox-{self._xnu_major}" }),
@@ -41,10 +51,21 @@ class LegacyMetal31001(BaseSharedPatchSet):
             }
         }
 
+
     def patches(self) -> dict:
         """
         Dictionary of patches
         """
-        return {
+        _base = {
             **self._patches_metal_31001_common(),
         }
+
+        if self._is_gpu_architecture_present(
+            [
+                device_probe.Intel.Archs.Broadwell,
+                device_probe.Intel.Archs.Skylake,
+            ]
+        ) is True:
+            _base.update(self._patches_metal_31001_metallibs())
+
+        return _base
