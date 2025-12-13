@@ -355,6 +355,7 @@ xw
 
         logging.info("- Adding OpenCanopy GUI")
         shutil.copy(self.constants.gui_path, self.constants.oc_folder)
+        shutil.copy(self.constants.apfs_driver_path, self.constants.drivers_path)
         support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenCanopy.efi", "UEFI", "Drivers")["Enabled"] = True
         support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenRuntime.efi", "UEFI", "Drivers")["Enabled"] = True
         support.BuildSupport(self.model, self.constants, self.config).get_efi_binary_by_path("OpenLinuxBoot.efi", "UEFI", "Drivers")["Enabled"] = True

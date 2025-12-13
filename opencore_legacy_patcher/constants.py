@@ -355,6 +355,10 @@ class Constants:
         return self.payload_path / Path("Drivers/FixPCIeLinkRate.efi")
 
     @property
+    def apfs_driver_path(self):
+        return self.payload_path / Path("Drivers/apfs_aligned.efi")
+
+    @property
     def installer_sh_path(self):
         return self.payload_path / Path("Installer.sh")
 
