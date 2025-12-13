@@ -2842,7 +2842,7 @@
 		<key>APFS</key>
 		<dict>
 			<key>EnableJumpstart</key>
-			<true/>
+			<false/>
 			<key>GlobalConnect</key>
 			<false/>
 			<key>HideVerbose</key>
@@ -3051,6 +3051,18 @@
 				<string>FixPCIeLinkRate.efi</string>
 				<key>Enabled</key>
 				<false/>
+				<key>Arguments</key>
+				<string></string>
+				<key>LoadEarly</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>Comment</key>
+				<string></string>
+				<key>Path</key>
+				<string>apfs_aligned.efi</string>
+				<key>Enabled</key>
+				<true/>
 				<key>Arguments</key>
 				<string></string>
 				<key>LoadEarly</key>
