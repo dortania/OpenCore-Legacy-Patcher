@@ -4,12 +4,16 @@ This guide tells you different ways to uninstall OCLP and/or patches.
 
 ## Delete everything and revert back to native macOS
 
-1. Create a USB drive with the latest officially supported macOS installer.
-2. Restart the computer and [Reset NVRAM.](https://support.apple.com/HT204063)
-3. Boot the computer using the installer USB drive.
+1. Create a USB drive with the latest officially supported macOS installer or alternatively [on most Macs](https://apple.stackexchange.com/questions/383985/which-macs-support-macos-internet-recovery) use Internet Recovery.
+   * Hold `cmd` + `Option (Alt)` + `R` for Internet Recovery.
+   * If doing Internet Recovery, skip step 2.
+   * Caution: Internet Recovery may not always install the latest officially supported OS version.
+3. Restart and boot the computer using the installer USB drive by holding `Option (Alt)`.
 4. Go to Disk Utility and choose View -> Show All Devices.
 5. Wipe the full disk by choosing the top disk option on the left sidebar and selecting "Erase".
 6. Start macOS installation.
+7. Once finished, restart once more and [Reset NVRAM](https://support.apple.com/HT204063) to ensure a fully clean and stock system.
+
 
 ## Manual methods
 
