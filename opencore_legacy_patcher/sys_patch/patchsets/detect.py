@@ -194,6 +194,8 @@ class HardwarePatchsetDetection:
         if not Path(oclp_patch_path).exists():
             return self._is_root_volume_dirty()
         
+        oclp_plist = plistlib.load(open(oclp_patch_path, "rb"))
+        
         if self._constants.computer.oclp_sys_url != self._constants.commit_info[2]:
             logging.error(f"Installed patches are from different commit, unpatching is required")
             return True
