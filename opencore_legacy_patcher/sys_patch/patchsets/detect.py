@@ -193,18 +193,17 @@ class HardwarePatchsetDetection:
         oclp_patch_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
         if not Path(oclp_patch_path).exists():
             return self._is_root_volume_dirty()
-        
+
         oclp_plist = plistlib.load(open(oclp_patch_path, "rb"))
-        
+
         if self._constants.computer.oclp_sys_url != self._constants.commit_info[2]:
-            logging.error(f"Installed patches are from different commit, unpatching is required")
+            logging.error("Installed patches are from different commit, unpatching is required")
             return True
-        
-        wireless_keys = [
-            "Legacy Wireless", 
-            "Modern Wireless"
-        ]
-        metadata_keys = [
+
+        wireless_keys = {"Legacy Wireless", "Modern Wireless"}
+
+        # Keep in sync with generate_patchset_plist
+        metadata_keys = {
             "OpenCore Legacy Patcher",
             "PatcherSupportPkg",
             "Time Patched",
@@ -212,14 +211,14 @@ class HardwarePatchsetDetection:
             "Kernel Debug Kit Used",
             "Metal Library Used",
             "OS Version",
-            "Custom Signature"
-        ]
+            "Custom Signature",
+        }
 
-        for key in oclp_plist:
-            if key not in wireless_keys and key not in metadata_keys:
-                logging.error(f"Patch already installed: {key}, unpatching is required")
-                return True
-        
+        existing_patches = set(oclp_plist) - wireless_keys - metadata_keys
+        if existing_patches:
+            logging.error(f"Patch(es) already installed: {', '.join(existing_patches)}, unpatching is required")
+            return True
+
         return False
 
 
