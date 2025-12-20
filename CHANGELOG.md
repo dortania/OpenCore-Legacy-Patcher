@@ -1,5 +1,10 @@
 # OpenCore Legacy Patcher changelog
 
+## 2.5.0
+- Disable repatching a dirty root volume
+  - Prevents issues if existing patches are partially overwritten
+  - Thanks @crystall1nedev!
+
 ## 2.4.1
 - Switch installer source to AppleDB
   - Resolves missing or incorrect installers showing up when downloading an installer
