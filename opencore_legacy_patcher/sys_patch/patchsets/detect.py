@@ -200,7 +200,7 @@ class HardwarePatchsetDetection:
             logging.error("Installed patches are from different commit, unpatching is required")
             return True
 
-        wireless_keys = {"Legacy Wireless", "Modern Wireless"}
+        wireless_keys = {"Legacy Wireless", "Modern Wireless Common"}
 
         # Keep in sync with generate_patchset_plist
         metadata_keys = {

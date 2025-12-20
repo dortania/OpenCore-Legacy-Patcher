@@ -56,7 +56,7 @@ class ModernWireless(BaseHardware):
         """
         Extended modern wireless patches
         """
-        if self.native_os() is True:
+        if self._xnu_major > os_data.sonoma:
             return {}
 
         return {
@@ -82,9 +82,6 @@ class ModernWireless(BaseHardware):
         """
         Common modern wireless patches
         """
-        if self.native_os() is True:
-            return {}
-
         return {
             "Modern Wireless Common": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
@@ -105,14 +102,12 @@ class ModernWireless(BaseHardware):
         """
         Dictionary of patches
         """
+        if self.native_os() is True:
+            return {}
 
-        _base = {
+        return {
             **self._patches_modern_wireless_common(),
+            **self._patches_modern_wireless_common_extended(),
         }
-
-        if self._xnu_major == os_data.sonoma:
-            _base.update({
-                **self._patches_modern_wireless_common_extended(),
-            })
 
         return _base
