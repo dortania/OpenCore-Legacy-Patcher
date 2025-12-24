@@ -4,6 +4,9 @@
 - Disable repatching a dirty root volume
   - Prevents issues if existing patches are partially overwritten
   - Thanks @crystall1nedev!
+- Add slimmed down patchset for Modern Wireless for macOS Sequoia
+- Increment binaries:
+  - PatcherSupportPkg 1.9.6 - release
 
 ## 2.4.1
 - Switch installer source to AppleDB
