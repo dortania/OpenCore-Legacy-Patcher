@@ -6,7 +6,7 @@ from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclas
 
 from ...base import PatchType
 
-from ...shared_patches.metal_31001     import LegacyMetal31001
+from ...shared_patches.renderbox       import RenderBox
 from ...shared_patches.monterey_gva    import MontereyGVA
 from ...shared_patches.monterey_opencl import MontereyOpenCL
 from ...shared_patches.amd_opencl      import AMDOpenCL
@@ -119,9 +119,8 @@ class AMDLegacyGCN(BaseHardware):
         if self.native_os() is True:
             return {}
 
-        _base = {
-            **LegacyMetal31001(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
-        }
+        # Placeholder, don't remove
+        _base = {}
 
         # AMD GCN and newer GPUs can still use the native GVA stack
         _base.update({

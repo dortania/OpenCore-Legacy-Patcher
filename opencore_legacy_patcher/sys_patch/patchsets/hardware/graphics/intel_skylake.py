@@ -6,7 +6,7 @@ from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclas
 
 from ...base import PatchType
 
-from ...shared_patches.metal_31001     import LegacyMetal31001
+from ...shared_patches.renderbox       import RenderBox
 from ...shared_patches.monterey_opencl import MontereyOpenCL
 
 from .....constants  import Constants
@@ -89,7 +89,7 @@ class IntelSkylake(BaseHardware):
             return {}
 
         return {
-            **LegacyMetal31001(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
+            **RenderBox(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **self._model_specific_patches(),
         }
