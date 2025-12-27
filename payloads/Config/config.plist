@@ -2031,6 +2031,36 @@
 				<integer>0</integer>
 			</dict>
 			<dict>
+                <key>Arch</key>
+                <string>x86_64</string>
+                <key>Base</key>
+                <string>__ZN11IOHIDDevice12didTerminateEP9IOServicejPb</string>
+                <key>Comment</key>
+                <string>Fix IOHIDFamily USB topcase panic</string>
+                <key>Count</key>
+                <integer>0</integer>
+                <key>Enabled</key>
+                <false/>
+                <key>Find</key>
+                <data></data>
+                <key>Identifier</key>
+                <string>com.apple.iokit.IOHIDFamily</string>
+                <key>Limit</key>
+                <integer>0</integer>
+                <key>Mask</key>
+                <data></data>
+                <key>MaxKernel</key>
+                <string></string>
+                <key>MinKernel</key>
+                <string>25.0.0</string>
+                <key>Replace</key>
+                <data>uAEAAADD</data>
+                <key>ReplaceMask</key>
+                <data></data>
+                <key>Skip</key>
+                <integer>0</integer>
+            </dict>
+			<dict>
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>Base</key>
