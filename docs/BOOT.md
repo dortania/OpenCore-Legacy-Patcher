@@ -93,7 +93,7 @@ When installing macOS Sonoma or newer on a T1 system (2016-2017), full disk wipe
              <img src="./images/wipe-volume.png" alt="WipeVolume" width="800" />
 </div>
 
-[More info here](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOTING.html#no-t1-functionality-after-installing-sonoma-or-newer)
+[More info here](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE.html#no-t1-functionality-after-installing-sonoma-or-newer)
 
 :::
 
