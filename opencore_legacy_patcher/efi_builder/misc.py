@@ -155,6 +155,11 @@ xw
             logging.info("- Fixing CoreGraphics support on Ivy Bridge")
             re_patch_args.append("f16c")
 
+        # Patch AVX hardcoding in JavaScriptCore
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.sandy_bridge.value:
+            logging.info("- Fixing AVX hardcoding in JavaScriptCore")
+            re_patch_args.append("jsc")
+
         return re_patch_args
 
 

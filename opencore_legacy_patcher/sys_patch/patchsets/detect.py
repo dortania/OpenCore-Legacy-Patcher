@@ -135,7 +135,6 @@ class HardwarePatchsetDetection:
             pcie_webcam.PCIeFaceTimeCamera,
             t1_security.T1SecurityChip,
             usb11.USB11Controller,
-            cpu_missing_avx.CPUMissingAVX,
         ]
 
         self.device_properties = None
