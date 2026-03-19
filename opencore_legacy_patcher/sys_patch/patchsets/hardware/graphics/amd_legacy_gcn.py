@@ -118,6 +118,7 @@ class AMDLegacyGCN(BaseHardware):
         if self.native_os() is True:
             return {}
 
+        # Placeholder, don't remove
         _base = {}
 
         # AMD GCN and newer GPUs can still use the native GVA stack
