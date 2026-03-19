@@ -33,7 +33,7 @@ class Constants:
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
-        self.lilu_version:               str = "1.7.0"  #      Lilu
+        self.lilu_version:               str = "1.7.1"  #      Lilu
         self.whatevergreen_version:      str = "1.6.9"  #      WhateverGreen
         self.whatevergreen_navi_version: str = "1.6.9-Navi"  # WhateverGreen (Navi Patch)
         self.airportbcrmfixup_version:   str = "2.1.9"  #      AirPortBrcmFixup
