@@ -44,7 +44,6 @@ from .hardware.misc import (
     pcie_webcam,
     t1_security,
     usb11,
-    cpu_missing_avx,
 )
 
 from ... import constants
