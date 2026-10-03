@@ -41,11 +41,11 @@ class LegacyMetal3802(BaseSharedPatchSet):
                 },
                 PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
-                        "Metal.framework": "12.5-3802-22" if self._xnu_major < os_data.sonoma else "12.5-3802-23",
+                        "Metal.framework": "13.2.1-25" if self._xnu_major >= os_data.tahoe else "12.5-3802-22" if self._xnu_major < os_data.sonoma else "12.5-3802-23",
                     },
                     "/System/Library/PrivateFrameworks": {
-                        "MTLCompiler.framework": "12.7.6-3802",
-                        "GPUCompiler.framework": "12.7.6-3802",
+                        "MTLCompiler.framework": "13.6-25" if self._xnu_major >= os_data.tahoe else "12.7.6-3802",
+                        "GPUCompiler.framework": "13.2.1-25" if self._xnu_major >= os_data.tahoe else "12.7.6-3802",
                     },
                 }
             }
@@ -57,7 +57,7 @@ class LegacyMetal3802(BaseSharedPatchSet):
         Support for 3802 GPUs were broken with 13.3+
         Downgrades 31001 stack to 13.2.1, however nukes AMFI support
         """
-        if self._xnu_float < self.macOS_13_3:
+        if self._xnu_float < self.macOS_13_3 or self._xnu_major >= os_data.tahoe:
             return {}
 
         return {
@@ -128,10 +128,10 @@ class LegacyMetal3802(BaseSharedPatchSet):
                         "ci_stdlib.metallib":                  "14.6.1",
                     },
                     "/System/Library/PrivateFrameworks/Tungsten.framework/Versions/A/Resources": {
-                        "default.metallib": "15.0 Beta 7",
+                        "default.metallib": "26.0-3802" if self._xnu_major >= os_data.tahoe else "15.0 Beta 7",
                     },
                     "/System/Library/PrivateFrameworks/RenderBox.framework/Versions/A/Resources": {
-                        "default.metallib": "15.0 Beta 8" if packaging.version.parse(self._marketing_version) < packaging.version.parse("15.1") else "15.1 Beta 4",
+                        "default.metallib": "26.0-3802" if self._xnu_major >= os_data.tahoe else "15.0 Beta 8" if packaging.version.parse(self._marketing_version) < packaging.version.parse("15.1") else "15.1 Beta 4",
                     },
                     "/System/iOSSupport/System/Library/PrivateFrameworks/VFX.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
@@ -230,7 +230,7 @@ class LegacyMetal3802(BaseSharedPatchSet):
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
                     },
                     "/System/Library/PrivateFrameworks/VFX.framework/Versions/A/Resources": {
-                        "default.metallib": DynamicPatchset.MetallibSupportPkg,
+                        "default.metallib": "26.0-3802" if self._xnu_major >= os_data.tahoe else DynamicPatchset.MetallibSupportPkg,
                     },
                     "/System/Library/PrivateFrameworks/VisionCore.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
@@ -301,10 +301,10 @@ class LegacyMetal3802(BaseSharedPatchSet):
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,
                     },
                     "/System/Library/PrivateFrameworks/VectorKit.framework/Versions/A/Resources": {
-                        "default.metallib": DynamicPatchset.MetallibSupportPkg,
+                        "default.metallib": "26.0-3802" if self._xnu_major >= os_data.tahoe else DynamicPatchset.MetallibSupportPkg,
                     },
                     "/System/Library/PrivateFrameworks/VectorKit.framework/Versions/A/Resources/metal_libraries": {
-                        "AlloyCommonLibrary.metallib": DynamicPatchset.MetallibSupportPkg,
+                        "AlloyCommonLibrary.metallib": "26.0-3802" if self._xnu_major >= os_data.tahoe else DynamicPatchset.MetallibSupportPkg,
                     },
                     "/System/Library/PrivateFrameworks/GPUToolsCapture.framework/Versions/A/Resources": {
                         "default.metallib": DynamicPatchset.MetallibSupportPkg,

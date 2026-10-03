@@ -9,6 +9,7 @@ from ...base import PatchType
 from ...shared_patches.metal_3802      import LegacyMetal3802
 from ...shared_patches.monterey_gva    import MontereyGVA
 from ...shared_patches.monterey_opencl import MontereyOpenCL
+from ...shared_patches.tahoe_graphics  import TahoeGraphics
 
 from .....constants  import Constants
 from .....detections import device_probe
@@ -115,6 +116,8 @@ class IntelHaswell(BaseHardware):
             **LegacyMetal3802(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyGVA(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
+            **TahoeGraphics(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
+            **TahoeGraphics(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).camera_patches(),
             **self._model_specific_patches(),
 
         }
