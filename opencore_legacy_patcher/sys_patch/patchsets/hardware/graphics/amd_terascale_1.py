@@ -7,7 +7,6 @@ from ..base import BaseHardware, HardwareVariant, HardwareVariantGraphicsSubclas
 from ...base import PatchType
 
 from ...shared_patches.non_metal       import NonMetal
-from ...shared_patches.monterey_webkit import MontereyWebKit
 from ...shared_patches.amd_terascale   import AMDTeraScale
 
 from .....constants  import Constants
@@ -106,7 +105,6 @@ class AMDTeraScale1(BaseHardware):
 
         return {
             **NonMetal(self._xnu_major, self._xnu_minor, self._os_build).patches(),
-            **MontereyWebKit(self._xnu_major, self._xnu_minor, self._os_build).patches(),
             **AMDTeraScale(self._xnu_major, self._xnu_minor, self._os_build).patches(),
             **self._model_specific_patches(),
         }

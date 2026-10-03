@@ -97,12 +97,6 @@ class LegacyWireless(BaseHardware):
                         "WiFiAgent.app": "11.7.10",
                     },
                 },
-                PatchType.OVERWRITE_DATA_VOLUME: {
-                    "/Library/Application Support/SkyLightPlugins": {
-                        **({ "CoreWLAN.dylib": "SkyLightPlugins" } if self._xnu_major == os_data.monterey else {}),
-                        **({ "CoreWLAN.txt": "SkyLightPlugins" } if self._xnu_major == os_data.monterey else {}),
-                    },
-                },
             },
         }
 
