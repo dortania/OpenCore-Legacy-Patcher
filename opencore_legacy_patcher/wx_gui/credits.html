@@ -1,13 +1,391 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" class="{{MODE}}">
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="color-scheme" content="light dark">
+        <title>Credits</title>
         <style>
-            :root { color-scheme: light dark; }
-            body { font-family: -apple-system; font-size: 13px; -webkit-user-select: none;}
-            h1 { font-size: 22px; margin-bottom: 0; }
+            :root {
+                color-scheme: light dark;
+                background: Canvas;
+                color: CanvasText;
+                font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                font-size: 13px;
+            }
+            * { box-sizing: border-box; }
+            body { margin: 0; overflow: hidden; }
+            a { color: inherit; text-decoration: none; }
+            a:hover { text-decoration: underline; }
+            a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 4px; }
+            .icon-definitions { position: absolute; width: 0; height: 0; overflow: hidden; }
+            .credits-container {
+                position: relative;
+                height: 100vh;
+                overflow: hidden;
+                -webkit-mask-image: linear-gradient(transparent, black 24px, black calc(100% - 24px), transparent);
+            }
+            .credits-scroll {
+                position: absolute;
+                top: 0;
+                width: 100%;
+                padding: 0 28px 72px;
+                text-align: center;
+                will-change: transform;
+            }
+            .intro {
+                margin: 0 auto 50vh;
+                animation: fadeInIntro 1s ease-out both;
+            }
+            @keyframes fadeInIntro {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .intro { animation: none; }
+            }
+            .description, .scroll-hint, .finish { display: none; }
+            .welcome .description, .welcome .scroll-hint, .welcome .finish { display: block; }
+            .welcome .intro { max-width: 560px; }
+            .welcome .credit { margin-bottom: 24px; }
+            .description { max-width: 480px; margin: 20px auto 0; font-size: 14px; line-height: 1.65; }
+            .scroll-hint { margin: 18px 0 0; font-size: 12px; opacity: 0.65; }
+            .finish { margin-top: 28px; }
+            .finish button {
+                padding: 6px 24px;
+                border: 1px solid ButtonBorder;
+                border-radius: 6px;
+                background: ButtonFace;
+                color: ButtonText;
+                font: inherit;
+                cursor: pointer;
+            }
+            .logo { display: block; width: 128px; height: 128px; margin: 0 auto 18px; }
+            h1 { margin: 0; font-size: 28px; font-weight: 600; line-height: 1.4; }
+            .section-title { margin: 56px 0 32px; font-size: 17px; font-weight: 600; }
+            .intro + .section-title { margin-top: 0; }
+            .credit { max-width: 420px; margin: 0 auto 40px; }
+            .credit h2 { margin: 0 0 10px; font-size: 17px; line-height: 1.4; }
+            .person { display: inline-flex; align-items: center; gap: 12px; text-align: left; }
+            .person strong { font-weight: 600; }
+            .avatar { position: relative; display: inline-flex; flex: 0 0 36px; width: 36px; height: 36px; }
+            .avatar svg { width: 36px; height: 36px; padding: 6px; fill: currentColor; opacity: 0.55; }
+            .avatar img { position: absolute; inset: 0; border-radius: 50%; }
+            .avatar img[hidden] { display: none; }
+            .contributions { font-size: 13px; line-height: 1.65; }
+            .contributions ul { margin: 0; padding: 0; list-style: none; }
+            .contributions li, .contributions p { margin: 0 0 8px; }
+            .contributions li > ul { margin: 4px 0 12px; opacity: 0.7; font-size: 12px; }
+            .contributions code { font-family: inherit; }
+            .contributions a { text-decoration: underline; text-underline-offset: 2px; }
+            .donor-thanks { max-width: 380px; margin: 0 auto 40px; font-size: 13px; line-height: 1.65; }
+            .closing { margin: 72px 0 0; font-size: 20px; font-weight: 600; }
         </style>
     </head>
     <body>
-        <h1>Credits</h1>
+        <svg class="icon-definitions" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <symbol id="github-icon" viewBox="0 0 24 24"><path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.79-1.33-3.79-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.72 1.16 1.72 1.16 1 .1.74 2.24 3.28 1.02.1-.73.39-1.23.71-1.51-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.23 1.16-3.02-.12-.28-.5-1.43.11-2.97 0 0 .95-.3 3.09 1.15a10.76 10.76 0 0 1 5.62 0c2.15-1.46 3.09-1.15 3.09-1.15.62 1.54.23 2.69.11 2.97.73.79 1.16 1.79 1.16 3.02 0 4.32-2.64 5.28-5.15 5.56.4.35.76 1.03.76 2.08v3.03c0 .3.2.65.77.54A11.25 11.25 0 0 0 12 .75Z"></path></symbol>
+        </svg>
+        <main class="credits-container" tabindex="0" aria-label="Credits. Hover to pause, scroll to browse, or press Space to pause.">
+            <div class="credits-scroll" id="credits-roll">
+                <header class="intro">
+                    <img class="logo" src="data:image/png;base64,{{LOGO}}" alt="OpenCore Legacy Patcher logo" width="128" height="128">
+                    <h1>OpenCore Legacy Patcher {{VERSION}}</h1>
+                    <p class="description">OpenCore Legacy Patcher lets you run newer versions of macOS on older Macs, restoring support for graphics, Wi-Fi, and other hardware. This project is made possible by the contributors and communities below.</p>
+                    <p class="scroll-hint">Scroll down to begin ↓</p>
+                </header>
+                <h2 class="section-title">Contributors</h2>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/Acidanthera"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/Acidanthera.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>Acidanthera</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>OpenCorePkg, as well as many of the core kexts and tools</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/DhinakG"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/DhinakG.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>DhinakG</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Main co-author</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/Khronokernel"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/Khronokernel.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>Khronokernel</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Main co-author</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/Ausdauersportler"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/Ausdauersportler.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>Ausdauersportler</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>iMacs Metal GPUs Upgrade Patch set and documentation</li>
+<li>Great amounts of help with debugging, and code suggestions</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/vit9696"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/vit9696.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>vit9696</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Endless amount of help troubleshooting, determining fixes and writing patches</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/covasedu"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/covasedu.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>EduCovas</strong></a></h2>
+                    <div class="contributions"><ul>
+<li><a href="https://github.com/moraea/non-metal-frameworks">non-Metal patch set</a> for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs</li>
+<li><a href="https://github.com/moraea/misc-patches/tree/main/3802-Metal-15">3802 Metal patch set</a> and <a href="https://github.com/dortania/MetallibSupportPkg">MetallibSupportPkg</a> for nVidia Kepler and Intel Core 3rd/4th Generation GPUs</li>
+<li>Metal bundle patches and shims for <a href="https://github.com/moraea/misc-patches/tree/main/Kepler%2013%2B">nVidia Kepler</a>, <a href="https://github.com/moraea/misc-patches/tree/main/GCN%2013%2B">AMD GCN 1 - 4</a>, and <a href="https://github.com/moraea/misc-patches/tree/main/vega%2013%2B">AMD GCN 5 (Vega)</a></li>
+<li><a href="https://github.com/moraea/misc-patches/tree/main/Sonoma%2014.4%20IOSurface">IOSurface offset patches</a> for nVidia Kepler, AMD GCN 1 - 5, and Intel Core 3rd - 6th Generation GPUs</li>
+<li><a href="https://github.com/moraea/unsupported-wifi-patches">legacy Wi-Fi patch set</a> restores functionality for Wi-Fi cards in all 2007 - 2017 models</li>
+<li><a href="https://github.com/moraea/misc-patches/tree/main/T1-Patch">T1 patch set</a> restores Touch ID, Apple Pay, and other secure functionality in 2016 - 2017 models</li>
+<li>AppleGVA downgrade for accelerated video decoding on 2012 - 2016 models</li>
+<li>OpenCL and OpenGL downgrade for AMD GCN</li>
+<li><a href="https://github.com/moraea/misc-patches/tree/main/IOUSBHostFamily-14.4">USB 1 patch</a></li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/moosethegoose2213"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/moosethegoose2213.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>ASentientHedgehog</strong></a></h2>
+                    <div class="contributions"><ul>
+<li><a href="https://github.com/moraea/non-metal-frameworks">non-Metal patch set</a> for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/ASentientBot"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/ASentientBot.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>ASentientBot</strong></a></h2>
+                    <div class="contributions"><ul>
+<li><a href="https://github.com/moraea/non-metal-frameworks">non-Metal patch set</a> for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs</li>
+<li><a href="https://github.com/moraea/misc-patches/tree/main/sequoia%2031001%20interposer">Metal bundle interposer</a> for AMD GCN 1 - 5 and Intel Core 5th/6th Generation GPUs</li>
+<li><a href="https://github.com/moraea/dsce">dsce</a> and <a href="https://github.com/moraea/moraea-common">shared code</a> used by some other patches</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/cdf"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/cdf.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>cdf</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Mac Pro on OpenCore Patch set and documentation</li>
+<li><a href="https://github.com/cdf/Innie">Innie</a> and <a href="https://github.com/cdf/NightShiftEnabler">NightShiftEnabler</a></li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://forums.macrumors.com/members/syncretic.1173816/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>Syncretic</strong></a></h2>
+                    <div class="contributions"><ul>
+<li><a href="https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/">AAAMouSSE</a>, <a href="https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/post-28447707">telemetrap</a> and <a href="https://github.com/reenigneorcim/SurPlus">SurPlus</a></li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/dosdude1"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/dosdude1.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>dosdude1</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Main author of the <a href="https://github.com/dortania/OCLP-GUI">original GUI</a></li>
+<li>Development of previous patchers, laying out much of what needs to be patched</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/parrotgeek1"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/parrotgeek1.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>parrotgeek1</strong></a></h2>
+                    <div class="contributions"><ul>
+<li><a href="https://github.com/dortania/OpenCore-Legacy-Patcher/blob/4a8f61a01da72b38a4b2250386cc4b497a31a839/payloads/Config/config.plist#L1222-L1281">VMM Patch Set</a></li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/BarryKN"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/BarryKN.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>BarryKN</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Development of previous patchers, laying out much of what needs to be patched</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/mariobrostech"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/mariobrostech.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>mario_bros_tech</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Catalyst that started OpenCore Legacy Patcher</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://discord.gg/rqdPgH8xSN"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>Unsupported Mac Discord</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Catalyst that started OpenCore Legacy Patcher</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/arter97/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/arter97.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>arter97</strong></a></h2>
+                    <div class="contributions"><ul>
+<li><a href="https://github.com/arter97/SimpleMSR/">SimpleMSR</a> to disable firmware throttling in Nehalem+ MacBooks without batteries</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://mrmacintosh.com"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>Mr.Macintosh</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Endless hours helping architect and troubleshoot many portions of the project</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/flagersgit"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/flagersgit.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>flagers</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Aid with Nvidia Web Driver research and development</li>
+<li><a href="https://github.com/moraea/non-metal-frameworks">non-Metal patch set</a> for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs</li>
+<li><a href="https://github.com/moraea/misc-patches/tree/main/sequoia%2031001%20interposer">Metal bundle interposer</a> for AMD GCN 1 - 5 and Intel Core 5th/6th Generation GPUs</li>
+<li>LegacyRVPL, SnapshotIsKill, etc. to aid in rapid testing and development</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/joevt"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/joevt.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>joevt</strong></a></h2>
+                    <div class="contributions"><ul>
+<li><a href="https://github.com/joevt/joevtApps">FixPCIeLinkrate</a></li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/Jazzzny"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/Jazzzny.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>Jazzzny</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Research and various contributions to the project</li>
+<li>UEFI Legacy XHCI research and development</li>
+<li>NVIDIA OpenCL research and development</li>
+<li><code>MacBook5,2</code> research and development
+<li>LegacyKeyboardInjector</li>
+<li>Pre-Ivy Bridge Aquantia Ethernet Patch</li>
+<li>Non-Metal Photo Booth Patch for Monterey+</li>
+<li>GUI and Backend Development
+<li>Updater UI</li>
+<li>macOS Downloader UI</li>
+<li>Downloader UI</li>
+<li>USB Top Case probing</li>
+<li>Developer root patching</li>
+<li>Vaulting implementation</li>
+<li>macOS 15 3802 Helios Research</li>
+<li>UEFI bootx64.efi research</li>
+<li>universal2 build research</li>
+<li>Various documentation contributions</li>
+</ul></div>
+                </article>
+                <h2 class="section-title">Hardware donors</h2>
+                <article class="credit">
+                    <h2><a class="person" href="https://forums.macrumors.com/members/johnd.53633/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>JohnD</strong></a></h2>
+                    <div class="contributions"><p>2013 Mac Pro</p></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/SpiGAndromeda"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/SpiGAndromeda.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>SpiGAndromeda</strong></a></h2>
+                    <div class="contributions"><p>AMD Vega 64</p></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/turbomacs"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/turbomacs.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>turbomacs</strong></a></h2>
+                    <div class="contributions"><p>2014 5k iMac</p></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://forums.macrumors.com/members/vinaypundith.1212357/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>vinaypundith</strong></a></h2>
+                    <div class="contributions"><p>MacBook7,1</p></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/ThatStella7922"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/ThatStella7922.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>ThatStella7922</strong></a></h2>
+                    <div class="contributions"><p>2017 13&quot; MacBook Pro (A1708)</p></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/search?q=zephar&amp;type=users"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>zephar</strong></a></h2>
+                    <div class="contributions"><p>2008 Mac Pro</p></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://github.com/search?q=jazo97&amp;type=users"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>jazo97</strong></a></h2>
+                    <div class="contributions"><p>2011 15&quot; MacBook Pro</p></div>
+                </article>
+                <p class="donor-thanks">And others — <a href="https://github.com/dortania/OpenCore-Legacy-Patcher">reach out if we forgot you!</a></p>
+                <h2 class="section-title">With thanks to</h2>
+                <article class="credit">
+                    <h2><a class="person" href="https://forums.macrumors.com/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>MacRumors</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Endless testing and reporting issues</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://discord.gg/rqdPgH8xSN"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>Unsupported Mac Communities</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>Endless testing and reporting issues</li>
+</ul></div>
+                </article>
+                <article class="credit">
+                    <h2><a class="person" href="https://www.apple.com/macos/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>Apple</strong></a></h2>
+                    <div class="contributions"><ul>
+<li>for macOS and many of the kexts, frameworks and other binaries we reimplemented into newer OSes</li>
+</ul></div>
+                </article>
+                <p class="closing">Thank you.</p>
+                <div class="finish"><button id="welcome-close" type="button">Continue</button></div>
+            </div>
+        </main>
+        <script>
+            const viewport = document.querySelector('.credits-container');
+            const roll = document.getElementById('credits-roll');
+            const intro = document.querySelector('.intro');
+            const welcome = document.documentElement.classList.contains('welcome');
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            let position = (viewport.clientHeight - intro.offsetHeight) / 2;
+            let previousTime = null;
+            let openingHoldUntil = performance.now() + 2000;
+            let holdUntil = 0;
+            let hovering = false;
+            let focused = false;
+            let paused = welcome || reducedMotion;
+
+            intro.addEventListener('animationend', () => {
+                openingHoldUntil = performance.now() + 1000;
+            });
+
+            function draw() {
+                roll.style.transform = `translateY(${position}px)`;
+            }
+
+            function browse(distance) {
+                position = Math.max(viewport.clientHeight - roll.offsetHeight - 24, Math.min(viewport.clientHeight / 2, position - distance));
+                holdUntil = performance.now() + 2500;
+                draw();
+            }
+
+            function animate(time) {
+                const elapsed = previousTime === null ? 0 : Math.min(time - previousTime, 100);
+                previousTime = time;
+                if (!welcome && !paused && !hovering && !focused && time >= openingHoldUntil && time >= holdUntil) {
+                    position -= elapsed * 0.030;
+                    if (position + roll.offsetHeight < 0) {
+                        position = (viewport.clientHeight - intro.offsetHeight) / 2;
+                        holdUntil = time + 1500;
+                    }
+                    draw();
+                }
+                if (!welcome) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            viewport.addEventListener('mouseenter', () => { hovering = true; });
+            viewport.addEventListener('mouseleave', () => {
+                hovering = false;
+                holdUntil = performance.now() + 150;
+            });
+            viewport.addEventListener('wheel', event => {
+                event.preventDefault();
+                browse(event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.clientHeight : 1));
+            }, { passive: false });
+            viewport.addEventListener('focusin', event => {
+                focused = event.target.matches('a, button');
+                if (focused) {
+                    const bounds = event.target.getBoundingClientRect();
+                    if (bounds.top < 24 || bounds.bottom > viewport.clientHeight - 24) {
+                        browse(bounds.top - viewport.clientHeight / 2);
+                    }
+                }
+            });
+            viewport.addEventListener('focusout', () => { focused = false; });
+            document.addEventListener('keydown', event => {
+                if (event.code === 'Space' && event.target.tagName !== 'BUTTON') {
+                    event.preventDefault();
+                    if (welcome) {
+                        browse((event.shiftKey ? -1 : 1) * viewport.clientHeight * 0.8);
+                    } else {
+                        paused = !paused;
+                    }
+                } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    browse(event.key === 'ArrowDown' ? 48 : -48);
+                }
+            });
+            document.getElementById('welcome-close').addEventListener('click', () => {
+                if (welcome) {
+                    window.location.href = 'oclp://welcome/close';
+                }
+            });
+            draw();
+            if (!welcome) {
+                requestAnimationFrame(animate);
+            }
+        </script>
     </body>
 </html>
