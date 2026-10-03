@@ -84,6 +84,8 @@ class Constants:
         self.io80211elcap_version:     str = "2.0.1"  # IO80211ElCap
         self.io80211legacy_version:    str = "1.0.0"  # IO80211FamilyLegacy (Ventura)
         self.ioskywalk_version:        str = "1.2.0"  # IOSkywalkFamily (Ventura)
+        self.airport_atheros_tahoe_version: str = "1.0.0"
+        self.airport_brcmnic_tahoe_version: str = "1.0.0"
         self.bigsursdxc_version:       str = "1.0.0"  # BigSurSDXC
         self.monterey_ahci_version:    str = "1.0.0"  # CatalinaAHCI
 
@@ -525,6 +527,14 @@ class Constants:
     @property
     def ioskywalk_path(self):
         return self.payload_kexts_path / Path(f"Wifi/IOSkywalkFamily-v{self.ioskywalk_version}.zip")
+
+    @property
+    def airport_atheros_tahoe_path(self):
+        return self.payload_kexts_path / Path(f"Wifi/AirPortAtheros40-Tahoe-v{self.airport_atheros_tahoe_version}.zip")
+
+    @property
+    def airport_brcmnic_tahoe_path(self):
+        return self.payload_kexts_path / Path(f"Wifi/AirPortBrcmNIC-Tahoe-v{self.airport_brcmnic_tahoe_version}.zip")
 
     @property
     def applealc_path(self):
