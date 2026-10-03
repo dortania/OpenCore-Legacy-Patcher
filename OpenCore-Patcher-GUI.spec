@@ -20,6 +20,7 @@ block_cipher = None
 datas = [
    ('payloads.dmg', '.'),
    ('Universal-Binaries.dmg', '.'),
+   ('opencore_legacy_patcher/wx_gui/credits.html', 'opencore_legacy_patcher/wx_gui'),
 ]
 
 if Path("DortaniaInternalResources.dmg").exists():

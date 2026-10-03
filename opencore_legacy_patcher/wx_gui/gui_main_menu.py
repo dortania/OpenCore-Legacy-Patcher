@@ -12,6 +12,8 @@ import markdown2
 import threading
 import webbrowser
 
+from pathlib import Path
+
 from .. import constants
 
 from ..support import (
@@ -187,7 +189,12 @@ class MainFrame(wx.Frame):
                     button.Disable()
             elif button_name == "⚙️ Settings":
                 button.SetSize((100, -1))
-                button.Centre(wx.HORIZONTAL)
+                credits_button = wx.Button(self, label="Credits", pos=(-1, button.GetPosition()[1]), size=(100, 30))
+                credits_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+                credits_button.Bind(wx.EVT_BUTTON, self.on_credits)
+                button_x_position = (self.GetClientSize()[0] - button.GetSize()[0] - credits_button.GetSize()[0] - 12) // 2
+                button.SetPosition((button_x_position, button.GetPosition()[1]))
+                credits_button.SetPosition((button_x_position + button.GetSize()[0] + 12, button.GetPosition()[1]))
                 description_label.Centre(wx.HORIZONTAL)
 
             index += 1
@@ -310,6 +317,26 @@ class MainFrame(wx.Frame):
             global_constants=self.constants,
             screen_location=self.GetPosition()
         )
+
+
+    def on_credits(self, event: wx.Event = None):
+        dialog = wx.Dialog(self, title="Credits", size=(550, 450), style=wx.DEFAULT_DIALOG_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        web_view = wx.html2.WebView.New(dialog)
+        web_view.EnableContextMenu(False)
+        html_path = Path(__file__).with_name("credits.html")
+        web_view.SetPage(html_path.read_text(encoding="utf-8"), html_path.as_uri())
+        close_button = wx.Button(dialog, wx.ID_CLOSE, label="Close")
+        close_button.Bind(wx.EVT_BUTTON, lambda event: dialog.Close())
+        close_button.SetDefault()
+        dialog.SetEscapeId(wx.ID_CLOSE)
+        dialog.Bind(wx.EVT_CLOSE, lambda event: dialog.Destroy())
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(web_view, 1, wx.EXPAND | wx.ALL, 10)
+        sizer.Add(close_button, 0, wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+        dialog.SetSizer(sizer)
+        dialog.CentreOnParent()
+        dialog.ShowWindowModal()
+
 
     def on_help(self, event: wx.Event = None):
         gui_help.HelpFrame(
