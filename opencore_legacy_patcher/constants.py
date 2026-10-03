@@ -13,8 +13,8 @@ from .detections import device_probe
 class Constants:
     def __init__(self) -> None:
         # Patcher Versioning
-        self.patcher_version:                 str = "2.5.1"  # OpenCore-Legacy-Patcher
-        self.patcher_support_pkg_version:     str = "1.9.7"  # PatcherSupportPkg
+        self.patcher_version:                 str = "3.0.0"  # OpenCore-Legacy-Patcher
+        self.patcher_support_pkg_version:     str = "2.0.0"  # PatcherSupportPkg
         self.copyright_date:                  str = "Copyright © 2020-2026 Dortania"
         self.patcher_name:                    str = "OpenCore Legacy Patcher"
 
@@ -28,7 +28,7 @@ class Constants:
 
         # OpenCore Versioning
         # https://github.com/acidanthera/OpenCorePkg
-        self.opencore_version: str = "1.0.4"
+        self.opencore_version: str = "1.0.5"
 
         # Kext Versioning
         ## Acidanthera
@@ -322,6 +322,10 @@ class Constants:
         return self.payload_path / Path("ACPI/SSDT-DGPU.aml")
 
     # Drivers
+    @property
+    def sequoia_apfs_driver_path(self):
+        return self.payload_path / Path("Drivers/apfs_aligned.efi")
+
     @property
     def nvme_driver_path(self):
         return self.payload_path / Path("Drivers/NvmExpressDxe.efi")
@@ -686,8 +690,16 @@ class Constants:
         return self.kexts_path / Path("USB-Map.kext")
 
     @property
+    def map_kext_folder_tahoe(self):
+        return self.kexts_path / Path("USB-Map-Tahoe.kext")
+
+    @property
     def map_contents_folder(self):
         return self.map_kext_folder / Path("Contents")
+
+    @property
+    def map_contents_folder_tahoe(self):
+        return self.map_kext_folder_tahoe / Path("Contents")
 
     @property
     def pp_kext_folder(self):
@@ -795,6 +807,10 @@ class Constants:
         return self.icns_resource_path / Path("Sequoia.icns")
 
     @property
+    def icon_path_macos_tahoe(self):
+        return self.icns_resource_path / Path("Tahoe.icns")
+
+    @property
     def gui_path(self):
         return self.payload_path / Path("Icon/Resources.zip")
 
@@ -828,6 +844,7 @@ class Constants:
             str(self.icon_path_macos_ventura),
             str(self.icon_path_macos_sonoma),
             str(self.icon_path_macos_sequoia),
+            str(self.icon_path_macos_tahoe),
         ]
 
     sbm_values = [

@@ -1,5 +1,12 @@
 # OpenCore Legacy Patcher changelog
 
+## 3.0.0
+- Restore support for FileVault 2 on macOS 26
+- Add USB mappings for macOS 26
+- Adopt Liquid Glass-conformant app icon
+- Increment Binaries:
+  - OpenCorePkg 1.0.5 - rolling (f03819e)
+
 ## 2.5.1 
 - Fix "Root Volume Dirty" appearing after unpatching
 - Reword "Root Volume Dirty" to be clearer for users

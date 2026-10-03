@@ -67,6 +67,24 @@ class BuildSMBIOS:
             logging.info("- Adding -no_compat_check")
             self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -no_compat_check"
 
+    def _strip_usb_map(self, map_path, model, spoofed_model, serial_settings):
+        config = plistlib.load(Path(map_path).open("rb"))
+        for entry in list(config["IOKitPersonalities_x86_64"]):
+            if not entry.startswith(model):
+                config["IOKitPersonalities_x86_64"].pop(entry)
+            else:
+                try:
+                    config["IOKitPersonalities_x86_64"][entry]["model"] = spoofed_model
+                    if serial_settings in ["Minimal", "None"]:
+                        if config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "EH01":
+                            config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] = "EHC1"
+                        if config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "EH02":
+                            config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] = "EHC2"
+                        if config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "SHC1":
+                            config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] = "XHC1"
+                except KeyError:
+                    continue
+        plistlib.dump(config, Path(map_path).open("wb"), sort_keys=True)
 
     def set_smbios(self) -> None:
         """
@@ -142,24 +160,10 @@ class BuildSMBIOS:
             and ((self.model in model_array.Missing_USB_Map or self.model in model_array.Missing_USB_Map_Ventura) or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
             new_map_ls = Path(self.constants.map_contents_folder) / Path("Info.plist")
-            map_config = plistlib.load(Path(new_map_ls).open("rb"))
-            # Strip unused USB maps
-            for entry in list(map_config["IOKitPersonalities_x86_64"]):
-                if not entry.startswith(self.model):
-                    map_config["IOKitPersonalities_x86_64"].pop(entry)
-                else:
-                    try:
-                        map_config["IOKitPersonalities_x86_64"][entry]["model"] = self.spoofed_model
-                        if self.constants.serial_settings in ["Minimal", "None"]:
-                            if map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "EH01":
-                                map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] = "EHC1"
-                            if map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "EH02":
-                                map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] = "EHC2"
-                            if map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] == "SHC1":
-                                map_config["IOKitPersonalities_x86_64"][entry]["IONameMatch"] = "XHC1"
-                    except KeyError:
-                        continue
-            plistlib.dump(map_config, Path(new_map_ls).open("wb"), sort_keys=True)
+            new_map_ls_tahoe = Path(self.constants.map_contents_folder_tahoe) / Path("Info.plist")
+            self._strip_usb_map(new_map_ls, self.model, self.spoofed_model, self.constants.serial_settings)
+            self._strip_usb_map(new_map_ls_tahoe, self.model, self.spoofed_model, self.constants.serial_settings)
+
         if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
             # Adjust CPU Friend Data to correct SMBIOS
             new_cpu_ls = Path(self.constants.pp_contents_folder) / Path("Info.plist")
