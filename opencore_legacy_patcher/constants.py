@@ -277,7 +277,12 @@ class Constants:
 
     @property
     def overlay_psp_path_dmg(self):
-        return self.original_path / Path("DortaniaInternalResources.dmg")
+        overlay_path = self.original_path / Path("DortaniaInternalResources.dmg")
+        if not overlay_path.is_file() and Path("~/.dortania_developer").expanduser().exists():
+            home_overlay_path = Path("~/DortaniaInternalResources.dmg").expanduser()
+            if home_overlay_path.is_file():
+                return home_overlay_path
+        return overlay_path
 
     # OpenCore
     @property
