@@ -68,7 +68,7 @@ class IntelIvyBridge(BaseHardware):
         """
         New compiler format introduced in macOS 15, Sequoia
         """
-        return self._xnu_major >= os_data.sequoia.value
+        return os_data.sequoia.value <= self._xnu_major < os_data.tahoe.value
 
 
     def _resolve_ivy_bridge_framebuffers(self) -> str:
