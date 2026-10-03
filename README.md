@@ -80,8 +80,6 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
 * [ASentientHedgehog](https://github.com/moosethegoose2213)
   * [non-Metal patch set](https://github.com/moraea/non-metal-frameworks) for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs
 * [ASentientBot](https://github.com/ASentientBot)
-  * [non-Metal patch set](https://github.com/moraea/non-metal-frameworks) for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs
-  * [Metal bundle interposer](https://github.com/moraea/misc-patches/tree/main/sequoia%2031001%20interposer) for AMD GCN 1 - 5 and Intel Core 5th/6th Generation GPUs
   * [dsce](https://github.com/moraea/dsce) and [shared code](https://github.com/moraea/moraea-common) used by some other patches
 * [cdf](https://github.com/cdf)
   * Mac Pro on OpenCore Patch set and documentation
