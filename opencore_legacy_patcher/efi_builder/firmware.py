@@ -154,6 +154,12 @@ class BuildFirmware:
         if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
             return
 
+        # for Tahoe to boot reliably
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value:
+            if "-nomt_core" not in self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"].split():
+                logging.info("- Adding -nomt_core boot-arg")
+                self.config["NVRAM"]["Add"]["7C436110-AB2A-4BBB-A880-FE41995C9F82"]["boot-args"] += " -nomt_core"
+
         # SSE4,1 support (ie. Penryn)
         # Required for macOS Mojave and newer
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value:
