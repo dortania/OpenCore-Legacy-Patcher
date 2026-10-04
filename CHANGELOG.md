@@ -1,6 +1,9 @@
 # OpenCore Legacy Patcher changelog
 
 ## 3.0.0
+- Implement macOS Tahoe support
+- Implement improve wireless patches
+- Implement improved non-Metal patches on all operating systems
 - Restore support for FileVault 2 on macOS 26
 - Add USB mappings for macOS 26
 - Adopt Liquid Glass-conformant app icon
