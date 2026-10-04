@@ -68,6 +68,7 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
 * [vit9696](https://github.com/vit9696)
   * Endless amount of help troubleshooting, determining fixes and writing patches
 * [EduCovas](https://github.com/covasedu)
+  * macOS Tahoe patch set
   * [non-Metal patch set](https://github.com/moraea/non-metal-frameworks) for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs
   * [3802 Metal patch set](https://github.com/moraea/misc-patches/tree/main/3802-Metal-15) and [MetallibSupportPkg](https://github.com/dortania/MetallibSupportPkg) for nVidia Kepler and Intel Core 3rd/4th Generation GPUs
   * Metal bundle patches and shims for [nVidia Kepler](https://github.com/moraea/misc-patches/tree/main/Kepler%2013%2B), [AMD GCN 1 - 4](https://github.com/moraea/misc-patches/tree/main/GCN%2013%2B), and [AMD GCN 5 (Vega)](https://github.com/moraea/misc-patches/tree/main/vega%2013%2B)
@@ -80,6 +81,8 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
 * [ASentientHedgehog](https://github.com/moosethegoose2213)
   * [non-Metal patch set](https://github.com/moraea/non-metal-frameworks) for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs
 * [ASentientBot](https://github.com/ASentientBot)
+  * macOS Tahoe patch set
+  * 3802 MTLCompiler, 31001 MTLCompiler, T1, WiFi patch sets
   * [dsce](https://github.com/moraea/dsce) and [shared code](https://github.com/moraea/moraea-common) used by some other patches
 * [cdf](https://github.com/cdf)
   * Mac Pro on OpenCore Patch set and documentation
@@ -125,6 +128,8 @@ To run the project from source, see here: [Build and run from source](./SOURCE.m
   * UEFI bootx64.efi research
   * universal2 build research
   * Various documentation contributions
+* [crystall1nedev](https://github.com/crystall1nedev)
+  * Various patcher and PatcherSupportPkg contributions
 * Amazing users who've graciously donate hardware:
   * [JohnD](https://forums.macrumors.com/members/johnd.53633/) - 2013 Mac Pro
   * [SpiGAndromeda](https://github.com/SpiGAndromeda) - AMD Vega 64
