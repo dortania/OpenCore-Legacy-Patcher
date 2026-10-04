@@ -2,7 +2,7 @@
 
 ## 3.0.0
 - Implement macOS Tahoe support (EduCovas & ASentientBot)
-- Implement improve wireless patches (EduCovas)
+- Implement improved wireless patches (EduCovas)
 - Implement improved non-Metal patches on all operating systems (EduCovas)
 - Restore support for FileVault 2 on macOS 26
 - Add USB mappings for macOS 26
