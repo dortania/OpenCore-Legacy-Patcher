@@ -20,6 +20,7 @@ block_cipher = None
 datas = [
    ('payloads.dmg', '.'),
    ('Universal-Binaries.dmg', '.'),
+   ('opencore_legacy_patcher/wx_gui/credits.html', 'opencore_legacy_patcher/wx_gui'),
 ]
 
 if Path("DortaniaInternalResources.dmg").exists():
@@ -83,4 +84,5 @@ app = BUNDLE(coll,
                 "Build Date": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
                 "BuildMachineOSBuild": subprocess.run(["/usr/bin/sw_vers", "-buildVersion"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode().strip(),
                 "NSPrincipalClass": "NSApplication",
+                "CFBundleIconName": "oclp",
              })

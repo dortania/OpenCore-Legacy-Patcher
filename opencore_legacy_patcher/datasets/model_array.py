@@ -26,6 +26,7 @@ SupportedSMBIOS = [
     "MacBookAir7,2",
     # "MacBookAir8,1",
     # "MacBookAir8,2",
+    # "MacBookAir9,1",
     # MacBook Pro
     "MacBookPro4,1",
     "MacBookPro5,1",
@@ -55,6 +56,11 @@ SupportedSMBIOS = [
     "MacBookPro14,1",
     "MacBookPro14,2",
     "MacBookPro14,3",
+    # "MacBookPro15,1",
+    # "MacBookPro15,2",
+    # "MacBookPro15,3",
+    # "MacBookPro15,4",
+    # "MacBookPro16,3",
     # Mac Mini
     "Macmini3,1",
     "Macmini4,1",
@@ -64,6 +70,7 @@ SupportedSMBIOS = [
     "Macmini6,1",
     "Macmini6,2",
     "Macmini7,1",
+    # "Macmini8,1",
     # iMac
     "iMac7,1",
     "iMac8,1",
@@ -88,6 +95,8 @@ SupportedSMBIOS = [
     "iMac18,1",
     "iMac18,2",
     "iMac18,3",
+    "iMac19,1",
+    "iMac19,2",
     # Mac Pro
     "MacPro3,1",
     "MacPro4,1",
@@ -96,6 +105,8 @@ SupportedSMBIOS = [
     # Xserve
     "Xserve2,1",
     "Xserve3,1",
+    # iMac Pro
+    # "iMacPro1,1",
 ]
 
 # Audio

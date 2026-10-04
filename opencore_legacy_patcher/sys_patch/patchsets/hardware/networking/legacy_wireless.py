@@ -91,16 +91,10 @@ class LegacyWireless(BaseHardware):
             "Legacy Wireless": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/usr/libexec": {
-                        "airportd": "11.7.10" if self._affected_by_cve_2024_23227 is False else "11.7.10-Sandbox",
+                        "airportd": "11.7.10" if self._affected_by_cve_2024_23227() is False else "11.7.10-Sandbox",
                     },
                     "/System/Library/CoreServices": {
                         "WiFiAgent.app": "11.7.10",
-                    },
-                },
-                PatchType.OVERWRITE_DATA_VOLUME: {
-                    "/Library/Application Support/SkyLightPlugins": {
-                        **({ "CoreWLAN.dylib": "SkyLightPlugins" } if self._xnu_major == os_data.monterey else {}),
-                        **({ "CoreWLAN.txt": "SkyLightPlugins" } if self._xnu_major == os_data.monterey else {}),
                     },
                 },
             },
@@ -114,22 +108,25 @@ class LegacyWireless(BaseHardware):
         if self._xnu_major < os_data.ventura:
             return {}
 
+        binary_version = "12.7.2" if self._xnu_major < os_data.sequoia or self._xnu_major >= os_data.tahoe else f"12.7.2-{self._xnu_major}"
+        framework_version = "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}"
+
         return {
             "Legacy Wireless Extended": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/usr/libexec": {
-                        "wps":      "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
-                        "wifip2pd": "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
+                        "wps":      binary_version,
+                        "wifip2pd": binary_version,
                     },
                 },
                 PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
-                        "CoreWLAN.framework": "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
+                        "CoreWLAN.framework": framework_version,
                     },
                     "/System/Library/PrivateFrameworks": {
-                        "CoreWiFi.framework":       "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
-                        "IO80211.framework":        "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
-                        "WiFiPeerToPeer.framework": "12.7.2" if self._xnu_major < os_data.sequoia else f"12.7.2-{self._xnu_major}",
+                        "CoreWiFi.framework":       framework_version,
+                        "IO80211.framework":        framework_version,
+                        "WiFiPeerToPeer.framework": framework_version,
                     },
                 }
             },

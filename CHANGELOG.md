@@ -1,5 +1,15 @@
 # OpenCore Legacy Patcher changelog
 
+## 3.0.0
+- Implement macOS Tahoe support (EduCovas & ASentientBot)
+- Implement improve wireless patches (EduCovas)
+- Implement improved non-Metal patches on all operating systems (EduCovas)
+- Restore support for FileVault 2 on macOS 26
+- Add USB mappings for macOS 26
+- Adopt Liquid Glass-conformant app icon
+- Increment Binaries:
+  - OpenCorePkg 1.0.5 - release
+
 ## 2.5.1 
 - Fix "Root Volume Dirty" appearing after unpatching
 - Reword "Root Volume Dirty" to be clearer for users

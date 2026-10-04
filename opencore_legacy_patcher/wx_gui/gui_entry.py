@@ -11,6 +11,7 @@ from Cocoa import NSApp, NSApplication
 
 
 from .. import constants
+from ..support import global_settings
 
 from ..sys_patch.patchsets import HardwarePatchsetDetection
 
@@ -60,6 +61,9 @@ class EntryPoint:
         """
         Launches entry point for the wxPython GUI
         """
+        if "--reset_first_launch" in sys.argv:
+            global_settings.GlobalEnviromentSettings().delete_property("FirstLaunchWelcomeShown")
+
         self._generate_base_data()
 
         if "--gui_patch" in sys.argv or "--gui_unpatch" in sys.argv or start_patching is True :

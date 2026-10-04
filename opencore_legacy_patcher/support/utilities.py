@@ -612,6 +612,7 @@ def check_cli_args():
     parser.add_argument("--gui_unpatch", help="Starts GUI in Root Unpatcher", action="store_true", required=False)
     parser.add_argument("--auto_patch", help="Check if patches are needed and prompt user", action="store_true", required=False)
     parser.add_argument("--update_installed", help="Prompt user to finish updating via GUI", action="store_true", required=False)
+    parser.add_argument("--reset_first_launch", help="Reset first launch status and show the welcome modal", action="store_true", required=False)
 
     args = parser.parse_args()
     if not (

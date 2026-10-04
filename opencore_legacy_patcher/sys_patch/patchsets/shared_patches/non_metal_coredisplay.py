@@ -33,7 +33,7 @@ class NonMetalCoreDisplay(BaseSharedPatchSet):
             "Non-Metal CoreDisplay Common": {
                 PatchType.MERGE_SYSTEM_VOLUME: {
                     "/System/Library/Frameworks": {
-                        "CoreDisplay.framework": f"10.13.6-{self._xnu_major}",
+                        "CoreDisplay.framework": f"10.14.4-{self._xnu_major}",
                     },
                 },
             },

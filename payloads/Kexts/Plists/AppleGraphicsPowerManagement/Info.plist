@@ -8599,6 +8599,68 @@
 						<integer>16</integer>
 					</dict>
 				</dict>
+				<key>iMac19,1</key>
+				<dict>
+					<key>GFX0</key>
+					<dict>
+						<key>AGDCEnabled</key>
+						<integer>1</integer>
+						<key>Heuristic</key>
+						<dict>
+							<key>ID</key>
+							<integer>-1</integer>
+						</dict>
+						<key>control-id</key>
+						<integer>17</integer>
+						<key>max-power-state</key>
+						<integer>15</integer>
+						<key>min-power-state</key>
+						<integer>0</integer>
+					</dict>
+					<key>IGPU</key>
+					<dict>
+						<key>Heuristic</key>
+						<dict>
+							<key>EnableOverride</key>
+							<integer>0</integer>
+							<key>ID</key>
+							<integer>2</integer>
+						</dict>
+						<key>control-id</key>
+						<integer>16</integer>
+					</dict>
+				</dict>
+				<key>iMac19,2</key>
+				<dict>
+					<key>GFX0</key>
+					<dict>
+						<key>AGDCEnabled</key>
+						<integer>1</integer>
+						<key>Heuristic</key>
+						<dict>
+							<key>ID</key>
+							<integer>-1</integer>
+						</dict>
+						<key>control-id</key>
+						<integer>17</integer>
+						<key>max-power-state</key>
+						<integer>15</integer>
+						<key>min-power-state</key>
+						<integer>0</integer>
+					</dict>
+					<key>IGPU</key>
+					<dict>
+						<key>Heuristic</key>
+						<dict>
+							<key>EnableOverride</key>
+							<integer>0</integer>
+							<key>ID</key>
+							<integer>2</integer>
+						</dict>
+						<key>control-id</key>
+						<integer>16</integer>
+					</dict>
+				</dict>
 			</dict>
 		</dict>
 	</dict>

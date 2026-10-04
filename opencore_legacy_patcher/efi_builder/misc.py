@@ -290,19 +290,26 @@ xw
 
         # USB Map
         usb_map_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info.plist")
+        usb_map_tahoe_path = Path(self.constants.plist_folder_path) / Path("AppleUSBMaps/Info-Tahoe.plist")
         if (
             usb_map_path.exists()
+            and usb_map_tahoe_path.exists()
             and (self.constants.allow_oc_everywhere is False or self.constants.allow_native_spoofs is True)
             and self.model not in ["Xserve2,1", "Dortania1,1"]
             and (
                 (self.model in model_array.Missing_USB_Map or self.model in model_array.Missing_USB_Map_Ventura)
                 or self.constants.serial_settings in ["Moderate", "Advanced"])
         ):
-            logging.info("- Adding USB-Map.kext")
+            logging.info("- Adding USB-Map.kext and USB-Map-Tahoe.kext")
             Path(self.constants.map_kext_folder).mkdir()
+            Path(self.constants.map_kext_folder_tahoe).mkdir()
             Path(self.constants.map_contents_folder).mkdir()
+            Path(self.constants.map_contents_folder_tahoe).mkdir()
             shutil.copy(usb_map_path, self.constants.map_contents_folder)
+            # for the tahoe, need to copy but rename to Info.plist
+            shutil.copy(usb_map_tahoe_path, self.constants.map_contents_folder_tahoe / Path("Info.plist"))
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map.kext")["Enabled"] = True
+            support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map-Tahoe.kext")["Enabled"] = True
             if self.model in model_array.Missing_USB_Map_Ventura and self.constants.serial_settings not in ["Moderate", "Advanced"]:
                 support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map.kext")["MinKernel"] = "22.0.0"
 
@@ -328,6 +335,9 @@ xw
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBOHCIPCI.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCI.kext")["Enabled"] = True
             support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB1.1-Injector.kext/Contents/PlugIns/AppleUSBUHCIPCI.kext")["Enabled"] = True
+
+            # Also remove MaxKernel from the USB-Map.kext, as USB stack will be downgraded after root patching
+            support.BuildSupport(self.model, self.constants, self.config).get_kext_by_bundle_path("USB-Map.kext")["MaxKernel"] = ""
 
 
     def _debug_handling(self) -> None:
@@ -393,5 +403,6 @@ xw
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("corecrypto_T1.kext", self.constants.t1_corecrypto_version, self.constants.t1_corecrypto_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleSSE.kext", self.constants.t1_sse_version, self.constants.t1_sse_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleKeyStore.kext", self.constants.t1_key_store_version, self.constants.t1_key_store_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleKeyStore-Tahoe.kext", self.constants.t1_key_store_tahoe_version, self.constants.t1_key_store_tahoe_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleCredentialManager.kext", self.constants.t1_credential_version, self.constants.t1_credential_path)
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("KernelRelayHost.kext", self.constants.kernel_relay_version, self.constants.kernel_relay_path)

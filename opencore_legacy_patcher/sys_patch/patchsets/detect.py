@@ -31,6 +31,7 @@ from .hardware.graphics import (
     amd_legacy_gcn,
     amd_polaris,
     amd_vega,
+    amd_navi,
 )
 from .hardware.networking import (
     legacy_wireless,
@@ -39,8 +40,8 @@ from .hardware.networking import (
 from .hardware.misc import (
     display_backlight,
     gmux,
-    keyboard_backlight,
     legacy_audio,
+    modern_audio,
     pcie_webcam,
     t1_security,
     usb11,
@@ -123,14 +124,16 @@ class HardwarePatchsetDetection:
             amd_legacy_gcn.AMDLegacyGCN,
             amd_polaris.AMDPolaris,
             amd_vega.AMDVega,
+            amd_navi.AMDNavi,
 
             legacy_wireless.LegacyWireless,
             modern_wireless.ModernWireless,
 
+            legacy_audio.LegacyAudio,
+            modern_audio.ModernAudio,
+
             display_backlight.DisplayBacklight,
             gmux.GraphicsMultiplexer,
-            keyboard_backlight.KeyboardBacklight,
-            legacy_audio.LegacyAudio,
             pcie_webcam.PCIeFaceTimeCamera,
             t1_security.T1SecurityChip,
             usb11.USB11Controller,

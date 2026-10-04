@@ -12,6 +12,11 @@ import markdown2
 import threading
 import webbrowser
 
+from pathlib import Path
+from base64 import b64encode
+from html import escape
+from io import BytesIO
+
 from .. import constants
 
 from ..support import (
@@ -53,7 +58,10 @@ class MainFrame(wx.Frame):
         self.Show()
 
 
-        self._preflight_checks()
+        if global_settings.GlobalEnviromentSettings().read_property("FirstLaunchWelcomeShown") is not True:
+            wx.CallAfter(self._show_credits, True)
+        else:
+            self._preflight_checks()
 
 
     def _generate_elements(self) -> None:
@@ -72,14 +80,22 @@ class MainFrame(wx.Frame):
           - Text:        Copyright
         """
 
+        # Logo
+        logo = wx.StaticBitmap(self, bitmap=wx.Bitmap(str(self.constants.icns_resource_path / "OC-Patcher.icns"), wx.BITMAP_TYPE_ICON), pos=(-1, 0), size=(128, 128))
+        logo.Centre(wx.HORIZONTAL)
+
         # Title label: OpenCore Legacy Patcher v{X.Y.Z}
-        title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher {'' if self.constants.special_build else ''}{self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}", pos=(-1, 10))
-        title_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
+        title_label = wx.StaticText(self, label=f"OpenCore Legacy Patcher", pos=(-1, 128))
+        title_label.SetFont(gui_support.font_factory(25, wx.FONTWEIGHT_BOLD))
         title_label.Centre(wx.HORIZONTAL)
 
+        version_label = wx.StaticText(self, label=f"Version {self.constants.patcher_version}{' (Nightly)' if not self.constants.commit_info[0].startswith('refs/tags') else ''}", pos=(-1, title_label.GetPosition()[1] + 32))
+        version_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+        version_label.Centre(wx.HORIZONTAL)
+        version_label.SetForegroundColour(wx.Colour(128, 128, 128))
+
         # Text: Model: {Build or Host Model}
-        model_label = wx.StaticText(self, label=f"Model: {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1, title_label.GetPosition()[1] + 25
-                                                                                                                                    ))
+        model_label = wx.StaticText(self, label=f"Model: {self.constants.custom_model or self.constants.computer.real_model}", pos=(-1, version_label.GetPosition()[1] + 30))
         model_label.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
         model_label.Centre(wx.HORIZONTAL)
         self.model_label = model_label
@@ -179,7 +195,12 @@ class MainFrame(wx.Frame):
                     button.Disable()
             elif button_name == "⚙️ Settings":
                 button.SetSize((100, -1))
-                button.Centre(wx.HORIZONTAL)
+                credits_button = wx.Button(self, label="Credits", pos=(-1, button.GetPosition()[1]), size=(100, 30))
+                credits_button.SetFont(gui_support.font_factory(13, wx.FONTWEIGHT_NORMAL))
+                credits_button.Bind(wx.EVT_BUTTON, self.on_credits)
+                button_x_position = (self.GetClientSize()[0] - button.GetSize()[0] - credits_button.GetSize()[0] - 12) // 2
+                button.SetPosition((button_x_position, button.GetPosition()[1]))
+                credits_button.SetPosition((button_x_position + button.GetSize()[0] + 12, button.GetPosition()[1]))
                 description_label.Centre(wx.HORIZONTAL)
 
             index += 1
@@ -302,6 +323,60 @@ class MainFrame(wx.Frame):
             global_constants=self.constants,
             screen_location=self.GetPosition()
         )
+
+
+    def on_credits(self, event: wx.Event = None):
+        self._show_credits()
+
+
+    def _show_credits(self, first_launch: bool = False):
+        style = wx.DEFAULT_DIALOG_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
+        if first_launch:
+            style &= ~wx.CLOSE_BOX
+        dialog = wx.Dialog(self, title="Welcome" if first_launch else "Credits", size=(700, 600), style=style)
+        web_view = wx.html2.WebView.New(dialog)
+        web_view.EnableContextMenu(False)
+        html_path = Path(__file__).with_name("credits.html")
+        logo = wx.Bitmap(str(self.constants.icns_resource_path / "OC-Patcher.icns"), wx.BITMAP_TYPE_ICON).ConvertToImage()
+        logo_stream = BytesIO()
+        logo.SaveFile(logo_stream, wx.BITMAP_TYPE_PNG)
+        page = html_path.read_text(encoding="utf-8")
+        page = page.replace("{{LOGO}}", b64encode(logo_stream.getvalue()).decode("ascii"))
+        page = page.replace("{{VERSION}}", escape(self.constants.patcher_version))
+        page = page.replace("{{MODE}}", "welcome" if first_launch else "credits")
+        web_view.SetPage(page, html_path.as_uri())
+
+        def on_navigation(event):
+            if first_launch and event.GetURL() == "oclp://welcome/close":
+                event.Veto()
+                global_settings.GlobalEnviromentSettings().write_property("FirstLaunchWelcomeShown", True)
+                wx.CallAfter(dialog.Close)
+            elif event.GetURL().startswith(("https://", "http://")):
+                event.Veto()
+                webbrowser.open(event.GetURL())
+
+        def on_close(event):
+            dialog.Destroy()
+            if first_launch and self:
+                wx.CallAfter(self._preflight_checks)
+
+        web_view.Bind(wx.html2.EVT_WEBVIEW_NAVIGATING, on_navigation)
+        web_view.Bind(wx.html2.EVT_WEBVIEW_NEWWINDOW, on_navigation)
+        dialog.Bind(wx.EVT_CLOSE, on_close)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(web_view, 1, wx.EXPAND | wx.ALL, 10)
+        if first_launch:
+            dialog.SetEscapeId(wx.ID_NONE)
+        else:
+            close_button = wx.Button(dialog, wx.ID_CLOSE, label="Close")
+            close_button.Bind(wx.EVT_BUTTON, lambda event: dialog.Close())
+            close_button.SetDefault()
+            dialog.SetEscapeId(wx.ID_CLOSE)
+            sizer.Add(close_button, 0, wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+        dialog.SetSizer(sizer)
+        dialog.CentreOnParent()
+        dialog.ShowWindowModal()
+
 
     def on_help(self, event: wx.Event = None):
         gui_help.HelpFrame(
