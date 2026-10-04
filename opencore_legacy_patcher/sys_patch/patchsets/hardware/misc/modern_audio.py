@@ -8,6 +8,7 @@ from ...base import PatchType
 
 from .....constants import Constants
 
+from .....datasets import smbios_data
 from .....datasets.os_data import os_data
 
 
@@ -25,10 +26,8 @@ class ModernAudio(BaseHardware):
 
 
     def present(self) -> bool:
-        """
-        AppleHDA was outright removed in macOS 26, so this patch set is always present if OS requires it
-        """
-        return True
+        model_data = smbios_data.smbios_dictionary.get(self._computer.real_model)
+        return model_data is not None and model_data.get("SecureBootModel", "Default") is None
 
 
     def native_os(self) -> bool:
@@ -50,6 +49,10 @@ class ModernAudio(BaseHardware):
         Type of hardware variant
         """
         return HardwareVariant.MISCELLANEOUS
+
+
+    def requires_kernel_debug_kit(self) -> bool:
+        return self._xnu_major >= os_data.tahoe.value
 
 
     def _modern_audio_patches(self) -> dict:
