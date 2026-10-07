@@ -8,41 +8,61 @@
         <style>
             :root {
                 color-scheme: light dark;
+                background: #ffffff;
                 background: Canvas;
+                color: #000000;
                 color: CanvasText;
-                font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, sans-serif;
                 font-size: 13px;
             }
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    background: #1e1e1e;
+                    background: Canvas;
+                    color: #ffffff;
+                    color: CanvasText;
+                }
+            }
             * { box-sizing: border-box; }
+            html, body { height: 100%; }
             body { margin: 0; overflow: hidden; }
             a { color: inherit; text-decoration: none; }
             a:hover { text-decoration: underline; }
-            a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 4px; }
+            a:focus { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 4px; }
             .icon-definitions { position: absolute; width: 0; height: 0; overflow: hidden; }
             .credits-container {
                 position: relative;
-                height: 100vh;
-                overflow: hidden;
+                height: 100%;
+                overflow-x: hidden;
+                overflow-y: auto;
+                -webkit-mask-image: -webkit-linear-gradient(transparent, black 24px, black calc(100% - 24px), transparent);
                 -webkit-mask-image: linear-gradient(transparent, black 24px, black calc(100% - 24px), transparent);
             }
+            .credits-container.enhanced { overflow: hidden; }
             .credits-scroll {
-                position: absolute;
+                position: relative;
                 top: 0;
                 width: 100%;
                 padding: 0 28px 72px;
                 text-align: center;
                 will-change: transform;
             }
+            .enhanced .credits-scroll { position: absolute; }
             .intro {
                 margin: 0 auto 50vh;
+                -webkit-animation: fadeInIntro 1s ease-out both;
                 animation: fadeInIntro 1s ease-out both;
+            }
+            @-webkit-keyframes fadeInIntro {
+                from { opacity: 0; }
+                to { opacity: 1; }
             }
             @keyframes fadeInIntro {
                 from { opacity: 0; }
                 to { opacity: 1; }
             }
             @media (prefers-reduced-motion: reduce) {
-                .intro { animation: none; }
+                .intro { -webkit-animation: none; animation: none; }
             }
             .description, .scroll-hint, .finish { display: none; }
             .welcome .description, .welcome .scroll-hint, .welcome .finish { display: block; }
@@ -53,6 +73,7 @@
             .finish { margin-top: 28px; }
             .finish button {
                 padding: 1px 24px;
+                -webkit-appearance: button;
                 appearance: button;
                 font: inherit;
                 -webkit-user-select: none;
@@ -63,11 +84,11 @@
             .intro + .section-title { margin-top: 0; }
             .credit { max-width: 420px; margin: 0 auto 40px; }
             .credit h2 { margin: 0 0 10px; font-size: 17px; line-height: 1.4; }
-            .person { display: inline-flex; align-items: center; gap: 12px; text-align: left; }
+            .person { display: -webkit-inline-flex; display: inline-flex; -webkit-align-items: center; align-items: center; text-align: left; }
             .person strong { font-weight: 600; }
-            .avatar { position: relative; display: inline-flex; flex: 0 0 36px; width: 36px; height: 36px; }
+            .avatar { position: relative; display: -webkit-inline-flex; display: inline-flex; -webkit-flex: 0 0 36px; flex: 0 0 36px; width: 36px; height: 36px; margin-right: 12px; }
             .avatar svg { width: 36px; height: 36px; padding: 6px; fill: currentColor; opacity: 0.55; }
-            .avatar img { position: absolute; inset: 0; border-radius: 50%; }
+            .avatar img { position: absolute; top: 0; right: 0; bottom: 0; left: 0; border-radius: 50%; }
             .avatar img[hidden] { display: none; }
             .contributions { font-size: 13px; line-height: 1.65; }
             .contributions ul { margin: 0; padding: 0; list-style: none; }
@@ -93,38 +114,38 @@
                 </header>
                 <h2 class="section-title">Contributors</h2>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/Acidanthera"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/Acidanthera.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>Acidanthera</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/Acidanthera"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/Acidanthera.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>Acidanthera</strong></a></h2>
                     <div class="contributions"><ul>
 <li>OpenCorePkg, as well as many of the core kexts and tools</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/DhinakG"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/DhinakG.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>DhinakG</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/DhinakG"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/DhinakG.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>DhinakG</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Main co-author</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/Khronokernel"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/Khronokernel.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>Khronokernel</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/Khronokernel"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/Khronokernel.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>Khronokernel</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Main co-author</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/Ausdauersportler"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/Ausdauersportler.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>Ausdauersportler</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/Ausdauersportler"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/Ausdauersportler.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>Ausdauersportler</strong></a></h2>
                     <div class="contributions"><ul>
 <li>iMacs Metal GPUs Upgrade Patch set and documentation</li>
 <li>Great amounts of help with debugging, and code suggestions</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/vit9696"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/vit9696.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>vit9696</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/vit9696"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/vit9696.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>vit9696</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Endless amount of help troubleshooting, determining fixes and writing patches</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/covasedu"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/covasedu.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>EduCovas</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/covasedu"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/covasedu.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>EduCovas</strong></a></h2>
                     <div class="contributions"><ul>
 <li>macOS Tahoe patch set</li>
 <li><a href="https://github.com/moraea/non-metal-frameworks">non-Metal patch set</a> for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs</li>
@@ -139,13 +160,13 @@
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/moosethegoose2213"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/moosethegoose2213.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>ASentientHedgehog</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/moosethegoose2213"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/moosethegoose2213.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>ASentientHedgehog</strong></a></h2>
                     <div class="contributions"><ul>
 <li><a href="https://github.com/moraea/non-metal-frameworks">non-Metal patch set</a> for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/ASentientBot"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/ASentientBot.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>ASentientBot</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/ASentientBot"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/ASentientBot.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>ASentientBot</strong></a></h2>
                     <div class="contributions"><ul>
 <li>macOS Tahoe patch set</li>
 <li>3802 MTLCompiler, 31001 MTLCompiler, T1, WiFi patch sets</li>
@@ -153,63 +174,63 @@
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/cdf"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/cdf.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>cdf</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/cdf"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/cdf.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>cdf</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Mac Pro on OpenCore Patch set and documentation</li>
 <li><a href="https://github.com/cdf/Innie">Innie</a> and <a href="https://github.com/cdf/NightShiftEnabler">NightShiftEnabler</a></li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://forums.macrumors.com/members/syncretic.1173816/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>Syncretic</strong></a></h2>
+                    <h2><a class="person" href="https://forums.macrumors.com/members/syncretic.1173816/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg></span><strong>Syncretic</strong></a></h2>
                     <div class="contributions"><ul>
 <li><a href="https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/">AAAMouSSE</a>, <a href="https://forums.macrumors.com/threads/mp3-1-others-sse-4-2-emulation-to-enable-amd-metal-driver.2206682/post-28447707">telemetrap</a> and <a href="https://github.com/reenigneorcim/SurPlus">SurPlus</a></li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/dosdude1"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/dosdude1.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>dosdude1</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/dosdude1"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/dosdude1.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>dosdude1</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Main author of the <a href="https://github.com/dortania/OCLP-GUI">original GUI</a></li>
 <li>Development of previous patchers, laying out much of what needs to be patched</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/parrotgeek1"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/parrotgeek1.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>parrotgeek1</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/parrotgeek1"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/parrotgeek1.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>parrotgeek1</strong></a></h2>
                     <div class="contributions"><ul>
 <li><a href="https://github.com/dortania/OpenCore-Legacy-Patcher/blob/4a8f61a01da72b38a4b2250386cc4b497a31a839/payloads/Config/config.plist#L1222-L1281">VMM Patch Set</a></li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/BarryKN"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/BarryKN.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>BarryKN</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/BarryKN"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/BarryKN.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>BarryKN</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Development of previous patchers, laying out much of what needs to be patched</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/mariobrostech"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/mariobrostech.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>mario_bros_tech</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/mariobrostech"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/mariobrostech.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>mario_bros_tech</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Catalyst that started OpenCore Legacy Patcher</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://discord.gg/rqdPgH8xSN"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>Unsupported Mac Discord</strong></a></h2>
+                    <h2><a class="person" href="https://discord.gg/rqdPgH8xSN"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg></span><strong>Unsupported Mac Discord</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Catalyst that started OpenCore Legacy Patcher</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/arter97/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/arter97.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>arter97</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/arter97/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/arter97.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>arter97</strong></a></h2>
                     <div class="contributions"><ul>
 <li><a href="https://github.com/arter97/SimpleMSR/">SimpleMSR</a> to disable firmware throttling in Nehalem+ MacBooks without batteries</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://mrmacintosh.com"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>Mr.Macintosh</strong></a></h2>
+                    <h2><a class="person" href="https://mrmacintosh.com"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg></span><strong>Mr.Macintosh</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Endless hours helping architect and troubleshoot many portions of the project</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/flagersgit"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/flagersgit.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>flagers</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/flagersgit"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/flagersgit.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>flagers</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Aid with Nvidia Web Driver research and development</li>
 <li><a href="https://github.com/moraea/non-metal-frameworks">non-Metal patch set</a> for nVidia Tesla/Fermi/Maxwell/Pascal, AMD TeraScale 1/2, and Intel Core 1st/2nd Generation GPUs</li>
@@ -218,13 +239,13 @@
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/joevt"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/joevt.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>joevt</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/joevt"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/joevt.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>joevt</strong></a></h2>
                     <div class="contributions"><ul>
 <li><a href="https://github.com/joevt/joevtApps">FixPCIeLinkrate</a></li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/Jazzzny"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/Jazzzny.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>Jazzzny</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/Jazzzny"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/Jazzzny.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>Jazzzny</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Research and various contributions to the project</li>
 <li>UEFI Legacy XHCI research and development</li>
@@ -247,56 +268,56 @@
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/crystall1nedev"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/crystall1nedev.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>crystall1nedev</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/crystall1nedev"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/crystall1nedev.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>crystall1nedev</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Various patcher and PatcherSupportPkg contributions</li>
 </ul></div>
                 </article>
                 <h2 class="section-title">Hardware donors</h2>
                 <article class="credit">
-                    <h2><a class="person" href="https://forums.macrumors.com/members/johnd.53633/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>JohnD</strong></a></h2>
+                    <h2><a class="person" href="https://forums.macrumors.com/members/johnd.53633/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg></span><strong>JohnD</strong></a></h2>
                     <div class="contributions"><p>2013 Mac Pro</p></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/SpiGAndromeda"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/SpiGAndromeda.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>SpiGAndromeda</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/SpiGAndromeda"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/SpiGAndromeda.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>SpiGAndromeda</strong></a></h2>
                     <div class="contributions"><p>AMD Vega 64</p></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/turbomacs"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/turbomacs.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>turbomacs</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/turbomacs"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/turbomacs.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>turbomacs</strong></a></h2>
                     <div class="contributions"><p>2014 5k iMac</p></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://forums.macrumors.com/members/vinaypundith.1212357/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>vinaypundith</strong></a></h2>
+                    <h2><a class="person" href="https://forums.macrumors.com/members/vinaypundith.1212357/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg></span><strong>vinaypundith</strong></a></h2>
                     <div class="contributions"><p>MacBook7,1</p></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/ThatStella7922"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg><img src="https://github.com/ThatStella7922.png?size=80" alt="" width="36" height="36" onerror="this.hidden = true"></span><strong>ThatStella7922</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/ThatStella7922"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg><img src="https://github.com/ThatStella7922.png?size=80" alt="" width="36" height="36" onerror="this.style.display = 'none'"></span><strong>ThatStella7922</strong></a></h2>
                     <div class="contributions"><p>2017 13&quot; MacBook Pro (A1708)</p></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/search?q=zephar&amp;type=users"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>zephar</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/search?q=zephar&amp;type=users"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg></span><strong>zephar</strong></a></h2>
                     <div class="contributions"><p>2008 Mac Pro</p></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://github.com/search?q=jazo97&amp;type=users"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>jazo97</strong></a></h2>
+                    <h2><a class="person" href="https://github.com/search?q=jazo97&amp;type=users"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg></span><strong>jazo97</strong></a></h2>
                     <div class="contributions"><p>2011 15&quot; MacBook Pro</p></div>
                 </article>
                 <p class="donor-thanks">And others — <a href="https://github.com/dortania/OpenCore-Legacy-Patcher">reach out if we forgot you!</a></p>
                 <h2 class="section-title">With thanks to</h2>
                 <article class="credit">
-                    <h2><a class="person" href="https://forums.macrumors.com/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>MacRumors</strong></a></h2>
+                    <h2><a class="person" href="https://forums.macrumors.com/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg></span><strong>MacRumors</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Endless testing and reporting issues</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://discord.gg/rqdPgH8xSN"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>Unsupported Mac Communities</strong></a></h2>
+                    <h2><a class="person" href="https://discord.gg/rqdPgH8xSN"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg></span><strong>Unsupported Mac Communities</strong></a></h2>
                     <div class="contributions"><ul>
 <li>Endless testing and reporting issues</li>
 </ul></div>
                 </article>
                 <article class="credit">
-                    <h2><a class="person" href="https://www.apple.com/macos/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#github-icon"></use></svg></span><strong>Apple</strong></a></h2>
+                    <h2><a class="person" href="https://www.apple.com/macos/"><span class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns:xlink="http://www.w3.org/1999/xlink"><use href="#github-icon" xlink:href="#github-icon"></use></svg></span><strong>Apple</strong></a></h2>
                     <div class="contributions"><ul>
 <li>for macOS and many of the kexts, frameworks and other binaries we reimplemented into newer OSes</li>
 </ul></div>
@@ -306,35 +327,54 @@
             </div>
         </main>
         <script>
-            const viewport = document.querySelector('.credits-container');
-            const roll = document.getElementById('credits-roll');
-            const intro = document.querySelector('.intro');
-            const welcome = document.documentElement.classList.contains('welcome');
-            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            let position = (viewport.clientHeight - intro.offsetHeight) / 2;
-            let previousTime = null;
-            let openingHoldUntil = performance.now() + 2000;
-            let holdUntil = 0;
-            let hovering = false;
-            let focused = false;
-            let paused = welcome || reducedMotion;
+            var viewport = document.querySelector('.credits-container');
+            var roll = document.getElementById('credits-roll');
+            var intro = document.querySelector('.intro');
+            var welcome = document.documentElement.classList.contains('welcome');
+            var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var position = (viewport.clientHeight - intro.offsetHeight) / 2;
+            var previousTime = null;
+            var openingHoldUntil = now() + 2000;
+            var holdUntil = 0;
+            var hovering = false;
+            var focused = false;
+            var paused = welcome || reducedMotion;
+            var requestFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame;
 
-            intro.addEventListener('animationend', () => {
-                openingHoldUntil = performance.now() + 1000;
-            });
+            function now() {
+                return window.performance && window.performance.now ? window.performance.now() : Date.now();
+            }
+
+            function scheduleFrame() {
+                if (requestFrame) {
+                    requestFrame.call(window, animate);
+                } else {
+                    window.setTimeout(animate, 16);
+                }
+            }
+
+            function finishIntro() {
+                openingHoldUntil = now() + 1000;
+            }
+
+            intro.addEventListener('animationend', finishIntro, false);
+            intro.addEventListener('webkitAnimationEnd', finishIntro, false);
 
             function draw() {
-                roll.style.transform = `translateY(${position}px)`;
+                var transform = 'translateY(' + position + 'px)';
+                roll.style.webkitTransform = transform;
+                roll.style.transform = transform;
             }
 
             function browse(distance) {
                 position = Math.max(viewport.clientHeight - roll.offsetHeight - 24, Math.min(viewport.clientHeight / 2, position - distance));
-                holdUntil = performance.now() + 2500;
+                holdUntil = now() + 2500;
                 draw();
             }
 
-            function animate(time) {
-                const elapsed = previousTime === null ? 0 : Math.min(time - previousTime, 100);
+            function animate() {
+                var time = now();
+                var elapsed = previousTime === null ? 0 : Math.min(time - previousTime, 100);
                 previousTime = time;
                 if (!welcome && !paused && !hovering && !focused && time >= openingHoldUntil && time >= holdUntil) {
                     position -= elapsed * 0.030;
@@ -345,50 +385,67 @@
                     draw();
                 }
                 if (!welcome) {
-                    requestAnimationFrame(animate);
+                    scheduleFrame();
                 }
             }
 
-            viewport.addEventListener('mouseenter', () => { hovering = true; });
-            viewport.addEventListener('mouseleave', () => {
+            viewport.addEventListener('mouseenter', function () { hovering = true; }, false);
+            viewport.addEventListener('mouseleave', function () {
                 hovering = false;
-                holdUntil = performance.now() + 150;
-            });
-            viewport.addEventListener('wheel', event => {
+                holdUntil = now() + 150;
+            }, false);
+
+            function onWheel(event) {
+                var distance;
+                if (typeof event.deltaY === 'number') {
+                    distance = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.clientHeight : 1);
+                } else {
+                    distance = -(event.wheelDeltaY || event.wheelDelta || 0) / 3;
+                }
+                if (!distance) {
+                    return;
+                }
                 event.preventDefault();
-                browse(event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.clientHeight : 1));
-            }, { passive: false });
-            viewport.addEventListener('focusin', event => {
-                focused = event.target.matches('a, button');
+                browse(distance);
+            }
+
+            viewport.addEventListener('onwheel' in viewport ? 'wheel' : 'mousewheel', onWheel, false);
+            viewport.addEventListener('focusin', function (event) {
+                focused = event.target.tagName === 'A' || event.target.tagName === 'BUTTON';
                 if (focused) {
-                    const bounds = event.target.getBoundingClientRect();
+                    var bounds = event.target.getBoundingClientRect();
                     if (bounds.top < 24 || bounds.bottom > viewport.clientHeight - 24) {
                         browse(bounds.top - viewport.clientHeight / 2);
                     }
                 }
-            });
-            viewport.addEventListener('focusout', () => { focused = false; });
-            document.addEventListener('keydown', event => {
-                if (event.code === 'Space' && event.target.tagName !== 'BUTTON') {
+            }, false);
+            viewport.addEventListener('focusout', function () { focused = false; }, false);
+            document.addEventListener('keydown', function (event) {
+                var key = event.keyCode || event.which;
+                if (key === 32 && event.target.tagName !== 'BUTTON') {
                     event.preventDefault();
                     if (welcome) {
                         browse((event.shiftKey ? -1 : 1) * viewport.clientHeight * 0.8);
                     } else {
                         paused = !paused;
                     }
-                } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                } else if (key === 40 || key === 38) {
                     event.preventDefault();
-                    browse(event.key === 'ArrowDown' ? 48 : -48);
+                    browse(key === 40 ? 48 : -48);
+                } else if (key === 34 || key === 33) {
+                    event.preventDefault();
+                    browse((key === 34 ? 1 : -1) * viewport.clientHeight * 0.8);
                 }
-            });
-            document.getElementById('welcome-close').addEventListener('click', () => {
+            }, false);
+            document.getElementById('welcome-close').addEventListener('click', function () {
                 if (welcome) {
                     window.location.href = 'oclp://welcome/close';
                 }
-            });
+            }, false);
             draw();
+            viewport.classList.add('enhanced');
             if (!welcome) {
-                requestAnimationFrame(animate);
+                scheduleFrame();
             }
         </script>
     </body>
