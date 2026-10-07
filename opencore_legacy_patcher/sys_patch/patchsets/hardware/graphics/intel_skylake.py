@@ -70,7 +70,7 @@ class IntelSkylake(BaseHardware):
                         "AppleIntelSKLGraphics.kext":            self._resolve_monterey_framebuffers(),
                         "AppleIntelSKLGraphicsFramebuffer.kext": self._resolve_monterey_framebuffers(),
                         "AppleIntelSKLGraphicsGLDriver.bundle":  "12.5",
-                        "AppleIntelSKLGraphicsMTLDriver.bundle": "12.5" if self._xnu_major < os_data.sequoia else "12.5-24",
+                        "AppleIntelSKLGraphicsMTLDriver.bundle": "12.5-25" if self._xnu_major >= os_data.tahoe else "12.5" if self._xnu_major < os_data.sequoia else "12.5-24",
                         "AppleIntelSKLGraphicsVADriver.bundle":  "12.5",
                         "AppleIntelSKLGraphicsVAME.bundle":      "12.5",
                         "AppleIntelGraphicsShared.bundle":       "12.5",
