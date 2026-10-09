@@ -64,12 +64,12 @@ KEXT_DICTIONARY = {
         },
     },
 
-    "Misc": {
-        "Innie": {
-            "Repository": "https://github.com/cdf/Innie",
-            "Constants Variable": "self.innie_version",
-        },
-    },
+    #"Misc": {
+    #    "Innie": {
+    #        "Repository": "https://github.com/cdf/Innie",
+    #        "Constants Variable": "self.innie_version",
+    #    },
+    #},
 }
 
 

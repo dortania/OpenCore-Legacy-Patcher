@@ -33,20 +33,20 @@ class Constants:
         # Kext Versioning
         ## Acidanthera
         ## https://github.com/acidanthera
-        self.lilu_version:               str = "1.7.1"  #      Lilu
-        self.whatevergreen_version:      str = "1.6.9"  #      WhateverGreen
+        self.lilu_version:               str = "1.7.2"  #      Lilu
+        self.whatevergreen_version:      str = "1.7.1"  #      WhateverGreen
         self.whatevergreen_navi_version: str = "1.6.9-Navi"  # WhateverGreen (Navi Patch)
-        self.airportbcrmfixup_version:   str = "2.1.9"  #      AirPortBrcmFixup
-        self.nvmefix_version:            str = "1.1.2"  #      NVMeFix
+        self.airportbcrmfixup_version:   str = "2.2.1"  #      AirPortBrcmFixup
+        self.nvmefix_version:            str = "1.1.3"  #      NVMeFix
         self.applealc_version:           str = "1.6.3"  #      AppleALC
         self.restrictevents_version:     str = "1.1.7"  #      RestrictEvents
-        self.featureunlock_version:      str = "1.1.7"  #      FeatureUnlock
-        self.debugenhancer_version:      str = "1.1.0"  #      DebugEnhancer
-        self.cpufriend_version:          str = "1.2.9"  #      CPUFriend
-        self.bluetool_version:           str = "2.6.9"  #      BlueToolFixup (BrcmPatchRAM)
+        self.featureunlock_version:      str = "1.1.8"  #      FeatureUnlock
+        self.debugenhancer_version:      str = "1.1.1"  #      DebugEnhancer
+        self.cpufriend_version:          str = "1.3.0"  #      CPUFriend
+        self.bluetool_version:           str = "2.7.2"  #      BlueToolFixup (BrcmPatchRAM)
         self.cslvfixup_version:          str = "2.6.1"  #      CSLVFixup
         self.autopkg_version:            str = "1.0.4"  #      AutoPkgInstaller
-        self.cryptexfixup_version:       str = "1.0.4"  #      CryptexFixup
+        self.cryptexfixup_version:       str = "1.0.5"  #      CryptexFixup
 
         ## Apple
         ## https://www.apple.com
