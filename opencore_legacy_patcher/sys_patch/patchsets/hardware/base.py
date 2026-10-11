@@ -169,6 +169,32 @@ class BaseHardware(BasePatchset):
         return "12.5-23.4"
 
 
+    def _resolve_gcn_skylake_metal_drivers(self) -> str | None:
+        if self._xnu_major < os_data.ventura.value or self._computer.rosetta_active:
+            return None
+        if self._is_gpu_architecture_present([device_probe.Intel.Archs.Skylake]) is False:
+            return None
+        if self._is_gpu_architecture_present([
+            device_probe.Intel.Archs.Ivy_Bridge,
+            device_probe.Intel.Archs.Haswell,
+            device_probe.NVIDIA.Archs.Kepler,
+        ]):
+            return None
+
+        gcn_present = self._is_gpu_architecture_present([
+            device_probe.AMD.Archs.Legacy_GCN_7000,
+            device_probe.AMD.Archs.Legacy_GCN_8000,
+            device_probe.AMD.Archs.Legacy_GCN_9000,
+        ])
+        polaris_present = self._is_gpu_architecture_present([device_probe.AMD.Archs.Polaris]) and (
+            self._computer.real_model == "MacBookPro13,3" or "AVX2" not in self._computer.cpu.leafs
+        )
+        if not (gcn_present or polaris_present):
+            return None
+
+        return f"12.5-GCN-SKL-{min(self._xnu_major, os_data.tahoe.value)}"
+
+
     def _dortania_internal_check(self) -> None:
         """
         Determine whether to unlock Dortania Developer mode

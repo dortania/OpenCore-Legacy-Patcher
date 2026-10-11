@@ -87,6 +87,8 @@ class AMDLegacyGCN(BaseHardware):
             if self._xnu_major >= os_data.sequoia:
                 bronze_bundle_source = "12.5-25" if self._xnu_major >= os_data.tahoe else "12.5-24"
 
+        bronze_bundle_source = self._resolve_gcn_skylake_metal_drivers() or bronze_bundle_source
+
         return {
             "AMD Legacy GCN": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {

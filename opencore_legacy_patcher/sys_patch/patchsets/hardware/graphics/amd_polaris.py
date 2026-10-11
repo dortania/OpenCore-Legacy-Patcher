@@ -104,6 +104,10 @@ class AMDPolaris(BaseHardware):
 
         # Assuming non-AVX2.0 CPUs
         # Note missing framebuffers are not restored (ex. 'ATY,Berbice')
+        metal_driver_source = self._resolve_gcn_skylake_metal_drivers() or (
+            "12.5-25" if self._xnu_major >= os_data.tahoe else "12.5" if self._xnu_major < os_data.sequoia else "12.5-24"
+        )
+
         return {
             "AMD Polaris": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
@@ -112,7 +116,7 @@ class AMDPolaris(BaseHardware):
                         "AMDRadeonX4000HWServices.kext": "12.5",
                         "AMDRadeonVADriver2.bundle":     "12.5",
                         "AMDRadeonX4000GLDriver.bundle": "12.5",
-                        "AMDMTLBronzeDriver.bundle":     "12.5-25" if self._xnu_major >= os_data.tahoe else "12.5" if self._xnu_major < os_data.sequoia else "12.5-24",
+                        "AMDMTLBronzeDriver.bundle":     metal_driver_source,
                         "AMDShared.bundle":              "12.5-GCN-25" if self._xnu_major >= os_data.tahoe else "12.5",
                     },
                 },
