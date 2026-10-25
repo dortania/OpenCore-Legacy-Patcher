@@ -79,7 +79,6 @@ SupportedSMBIOS = [
     # "Macmini8,1",
     # iMac
     "iMac5,1",
-    "iMac5,2",
     "iMac6,1",
     "iMac7,1",
     "iMac8,1",
