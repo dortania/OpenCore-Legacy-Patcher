@@ -43,6 +43,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
         "Screen Size": 13,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Legacy iSight": True,
         "Stock GPUs": [
@@ -64,6 +65,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
         "Screen Size": 13,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Legacy iSight": True,
         "Stock GPUs": [
@@ -292,6 +294,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "Screen Size": 13,
+        "32-bit EFI": True,
         "Ethernet Chipset": None,
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_X3100
@@ -649,6 +652,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
         "Screen Size": 15,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
@@ -669,6 +673,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
         "Screen Size": 17,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
@@ -689,6 +694,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
         "Screen Size": 17,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
@@ -709,6 +715,7 @@ smbios_dictionary = {
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
         "Screen Size": 15,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.AMD.Archs.R500
@@ -1612,6 +1619,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.snow_leopard,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950
@@ -1630,6 +1638,7 @@ smbios_dictionary = {
         "Max OS Supported": os_data.os_data.lion,
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Stock GPUs": [
             device_probe.Intel.Archs.GMA_950
@@ -1820,6 +1829,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Legacy iSight": True,
         "Stock GPUs": [
@@ -1840,6 +1850,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Atheros.Chipsets.AirPortAtheros40,
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Legacy iSight": True,
         "Stock GPUs": [
@@ -1860,6 +1871,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Legacy iSight": True,
         "Stock GPUs": [
@@ -1880,6 +1892,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Legacy iSight": True,
         "Stock GPUs": [
@@ -1900,6 +1913,7 @@ smbios_dictionary = {
         "Wireless Model": device_probe.Broadcom.Chipsets.AirPortBrcm43224,
         "Bluetooth Model": bluetooth_data.bluetooth_data.BRCM2046,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Marvell",
         "Legacy iSight": True,
         "Stock GPUs": [
@@ -2715,6 +2729,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
         "Socketed GPUs": "PCIe",
         "Stock GPUs": [
@@ -2735,6 +2750,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.APPLE_CSR,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
         "Socketed GPUs": "PCIe",
         "Stock GPUs": [
@@ -2853,6 +2869,7 @@ smbios_dictionary = {
         "Wireless Model": None,
         "Bluetooth Model": bluetooth_data.bluetooth_data.NonApplicable,
         "UGA Graphics": True,
+        "32-bit EFI": True,
         "Ethernet Chipset": "Intel 80003ES2LAN",
         "Socketed GPUs": "PCIe",
         "Stock GPUs": [

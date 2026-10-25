@@ -134,15 +134,23 @@ class tui_disk_installation:
         subprocess.run(["/bin/cp", "-r", self.constants.opencore_release_folder / Path("EFI/OC"), mount_path / Path("EFI/OC")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         subprocess.run(["/bin/cp", "-r", self.constants.opencore_release_folder / Path("System"), mount_path / Path("System")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+        thunk_path = self.constants.opencore_release_folder / Path("EFI/64on32")
+        if thunk_path.exists():
+            logging.info("Copying 32-bit EFI thunk onto EFI partition")
+            if (mount_path / Path("EFI/64on32")).exists():
+                subprocess.run(["/bin/rm", "-rf", mount_path / Path("EFI/64on32")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["/bin/cp", "-r", thunk_path, mount_path / Path("EFI/64on32")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
         if Path(self.constants.opencore_release_folder / Path("boot.efi")).exists():
             subprocess.run(["/bin/cp", self.constants.opencore_release_folder / Path("boot.efi"), mount_path / Path("boot.efi")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if self.constants.boot_efi is True:
-            logging.info("Converting Bootstrap to BOOTx64.efi")
+            boot_filename = "BOOTIA32.EFI" if thunk_path.exists() else "BOOTx64.efi"
+            logging.info(f"Converting Bootstrap to {boot_filename}")
             if (mount_path / Path("EFI/BOOT")).exists():
                 subprocess.run(["/bin/rm", "-rf", mount_path / Path("EFI/BOOT")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             Path(mount_path / Path("EFI/BOOT")).mkdir()
-            subprocess.run(["/bin/mv", mount_path / Path("System/Library/CoreServices/boot.efi"), mount_path / Path("EFI/BOOT/BOOTx64.efi")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subprocess.run(["/bin/mv", mount_path / Path("System/Library/CoreServices/boot.efi"), mount_path / Path("EFI/BOOT") / boot_filename], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             subprocess.run(["/bin/rm", "-rf", mount_path / Path("System")], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         if self._determine_sd_card(sd_type) is True:

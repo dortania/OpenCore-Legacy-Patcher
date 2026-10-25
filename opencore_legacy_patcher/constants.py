@@ -296,6 +296,10 @@ class Constants:
     def plist_template(self):
         return self.payload_path / Path("Config/config.plist")
 
+    @property
+    def efi_thunk_zip_source(self):
+        return self.payload_path / Path("OpenCore/64on32.zip")
+
     # Launch Services
     @property
     def launch_services_path(self):

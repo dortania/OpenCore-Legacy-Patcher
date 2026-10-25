@@ -5,6 +5,7 @@ firmware.py: Class for handling CPU and Firmware Patches, invocation from build.
 import shutil
 import logging
 import binascii
+import zipfile
 
 from pathlib import Path
 
@@ -49,6 +50,19 @@ class BuildFirmware:
         self._firmware_driver_handling()
         self._firmware_compatibility_handling()
         self._apple_logo_handling()
+        self._efi_thunk_handling()
+
+
+    def _efi_thunk_handling(self) -> None:
+        if smbios_data.smbios_dictionary.get(self.model, {}).get("32-bit EFI", False) is False:
+            return
+
+        logging.info("- Adding 32-bit EFI thunk support")
+        with zipfile.ZipFile(self.constants.efi_thunk_zip_source) as zip_file:
+            zip_file.extract("EFI/64on32/Bridge64.efi", self.constants.opencore_release_folder)
+            boot_path = self.constants.opencore_release_folder / Path("System/Library/CoreServices/boot.efi")
+            boot_path.write_bytes(zip_file.read("EFI/BOOT/BOOTIA32.EFI"))
+
 
     def _apple_logo_handling(self) -> None:
         """
@@ -153,6 +167,13 @@ class BuildFirmware:
             return
         if not "CPU Generation" in smbios_data.smbios_dictionary[self.model]:
             return
+
+        if smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.penryn.value:
+            logging.info("- Adding pre-SSE4.1 CPU emulation")
+            self.config["Kernel"]["Emulate"]["Cpuid1Data"] = binascii.unhexlify("76060100000000000000000000000000")
+            self.config["Kernel"]["Emulate"]["Cpuid1Mask"] = binascii.unhexlify("ffffffff000000000000000000000000")
+            self.config["Kernel"]["Emulate"]["MinKernel"] = "16.0.0"
+            self.config["Kernel"]["Emulate"]["MaxKernel"] = ""
 
         # for Tahoe to boot reliably
         if smbios_data.smbios_dictionary[self.model]["CPU Generation"] <= cpu_data.CPUGen.penryn.value:
@@ -303,8 +324,10 @@ class BuildFirmware:
 
         if self.constants.set_vmm_cpuid is True:
             logging.info("- Enabling VMM patch")
-            self.config["Kernel"]["Emulate"]["Cpuid1Data"] = binascii.unhexlify("00000000000000000000008000000000")
-            self.config["Kernel"]["Emulate"]["Cpuid1Mask"] = binascii.unhexlify("00000000000000000000008000000000")
+            for key in ["Cpuid1Data", "Cpuid1Mask"]:
+                cpuid = bytearray(self.config["Kernel"]["Emulate"][key].ljust(16, b"\x00"))
+                cpuid[11] |= 0x80
+                self.config["Kernel"]["Emulate"][key] = bytes(cpuid)
 
         if (
             self.model.startswith("MacBook")
