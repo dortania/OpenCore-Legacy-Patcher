@@ -60,6 +60,27 @@ class NonMetal(BaseSharedPatchSet):
                     "/System/Library/Frameworks/QuartzCore.framework/Versions/A": {
                         **({"QuartzCore": f"{skylight_version}-{self._xnu_major}"} if self._xnu_major >= os_data.big_sur else {}),
                     },
+                    "/System/Library/Screen Savers": {
+                        **({
+                            "Drift.saver": "10.15.6-19" if self._xnu_major == os_data.catalina else "11.7-20",
+                        } if os_data.catalina <= self._xnu_major <= os_data.ventura else {}),
+                        **({
+                            "Hello.saver":    "12.7-21",
+                            "Monterey.saver": "12.7-21",
+                        } if os_data.monterey <= self._xnu_major <= os_data.ventura else {}),
+                    },
+                    "/System/Library/ExtensionKit/Extensions": {
+                        **({ "Ventura.appex": "13.7-22" } if self._xnu_major >= os_data.ventura else {}),
+                        **({
+                            "Drift.appex":    "14.8-23",
+                            "Hello.appex":    "14.8-23",
+                            "Monterey.appex": "14.8-23",
+                        } if self._xnu_major >= os_data.sonoma else {}),
+                        **({
+                            "WallpaperMacintoshExtension.appex": "26.7-25" if self._xnu_major >= os_data.tahoe else "15.8-24",
+                            "WallpaperSequoiaExtension.appex":   "26.7-25" if self._xnu_major >= os_data.tahoe else "15.8-24",
+                        } if self._xnu_major >= os_data.sequoia else {}),
+                    },
                 },
                 PatchType.REMOVE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": [
@@ -88,9 +109,6 @@ class NonMetal(BaseSharedPatchSet):
                         "IOAcceleratorFamily2.kext",
                         "IOGPUFamily.kext",
                         "AppleAfterburner.kext",
-                    ],
-                    "/System/Library/ExtensionKit/Extensions/": [
-                        "WallpaperMacintoshExtension.appex"
                     ],
                 },
                 PatchType.MERGE_SYSTEM_VOLUME: {
