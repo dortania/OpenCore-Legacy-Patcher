@@ -20,7 +20,7 @@ macOS Sequoia and newer
 ### USB 1.1 (OHCI/UHCI) Support
 
 
-For Penryn systems, pre-2013 Mac Pros and Xserve, USB 1.1 support was outright removed in macOS Ventura, therefore this applies all the way to Tahoe.
+For Penryn systems, pre-2013 Mac Pros and Xserve, USB 1.1 support was outright removed in macOS Ventura, therefore this applies all the way to Sequoia.
 While USB 1.1 may seem unimportant, it handles many important devices on your system. These include:
 
 * Keyboard and Trackpad for laptops
@@ -66,7 +66,7 @@ Following GPUs are applicable:
 ### Dual socket CPUs with Mac Pro 2008 and Xserve 2008
 
 
-Booting Sequoia or Tahoe on Mac Pro 2008 (MacPro3,1) or Xserve 2008 (Xserve2,1) with more than 4 cores will cause them to panic. OpenCore Legacy Patcher will automatically disable additional cores.
+Booting Sequoia on Mac Pro 2008 (MacPro3,1) or Xserve 2008 (Xserve2,1) with more than 4 cores will cause them to panic. OpenCore Legacy Patcher will automatically disable additional cores.
 
 This is due to the dual socket nature of the machine, and likely some firmware/ACPI table incompatibility.
 
@@ -74,7 +74,7 @@ This is due to the dual socket nature of the machine, and likely some firmware/A
 
 ::: warning Note
 
-Dual booting Sequoia/Tahoe and older will not be possible with all cores enabled due to reasons described before. In these cases you will be limited to 4 cores.
+Dual booting Sequoia and older will not be possible with all cores enabled due to reasons described before. In these cases you will be limited to 4 cores.
 
 :::
 
