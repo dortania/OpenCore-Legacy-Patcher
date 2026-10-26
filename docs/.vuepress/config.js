@@ -90,12 +90,21 @@ module.exports = {
             collapsable: false,
             sidebarDepth: 1,
             children: [
-                'SEQUOIA-DROP',
+		'SEQUOIA-DROP',
 		'SONOMA-DROP',
 		'VENTURA-DROP',
 		'MONTEREY-DROP',
             ]
         },
+        {
+            title: 'Ongoing macOS issues',
+            collapsable: false,
+            sidebarDepth: 1,
+            children: [
+            'ONGOING-ISSUES',
+            ]
+        },
+
  {
             title: 'Application',
             collapsable: false,
