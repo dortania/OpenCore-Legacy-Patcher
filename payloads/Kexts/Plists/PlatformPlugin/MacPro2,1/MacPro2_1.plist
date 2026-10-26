@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>IOPlatformThermalProfile</key>
+    <dict>
+      <key>CStateDict</key>
+      <dict>
+        <key>MacPro2,1</key>
+        <string>CSD1</string>
+        <key>CSD1</key>
+        <dict>
+          <key>C1</key>
+          <dict>
+            <key>enable</key>
+            <true/>
+            <key>flags</key>
+            <integer>16777216</integer>
+            <key>hint_code</key>
+            <integer>0</integer>
+            <key>snoop</key>
+            <integer>80000</integer>
+          </dict>
+        </dict>
+      </dict>
+    </dict>
+  </dict>
+</plist>

@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>IOPlatformThermalProfile</key>
+    <dict>
+      <key>ConfigArray</key>
+      <array>
+        <dict>
+          <key>enabler</key>
+          <true/>
+          <key>EmbeddedBattery</key>
+          <true/>
+          <key>WWEN</key>
+          <true/>
+          <key>model</key>
+          <string>MacBookAir1,1</string>
+        </dict>
+      </array>
+      <key>CStateDict</key>
+      <dict>
+        <key>MacBookAir1,1</key>
+        <string>CSD2</string>
+        <key>CSD2</key>
+        <dict>
+          <key>C5Add</key>
+          <dict>
+            <key>enable</key>
+            <true/>
+            <key>exit_reg</key>
+            <dict>
+              <key>desc</key>
+              <string>C5_EXIT</string>
+              <key>offset</key>
+              <integer>168</integer>
+              <key>regFlags</key>
+              <integer>134217728</integer>
+              <key>type</key>
+              <integer>1</integer>
+              <key>width</key>
+              <integer>32</integer>
+            </dict>
+            <key>level_reg</key>
+            <dict>
+              <key>desc</key>
+              <string>C5_LVL</string>
+              <key>offset</key>
+              <integer>23</integer>
+              <key>regFlags</key>
+              <integer>134217728</integer>
+              <key>type</key>
+              <integer>2</integer>
+              <key>width</key>
+              <integer>32</integer>
+            </dict>
+            <key>primRes</key>
+            <dict>
+              <key>ConvM</key>
+              <integer>1000</integer>
+              <key>ConvN</key>
+              <integer>279365</integer>
+              <key>desc</key>
+              <string>C3_RES</string>
+              <key>maskCntr</key>
+              <integer>16777215</integer>
+              <key>offset</key>
+              <integer>84</integer>
+              <key>regFlags</key>
+              <integer>134494208</integer>
+              <key>shiftCState</key>
+              <integer>3</integer>
+              <key>type</key>
+              <integer>2</integer>
+              <key>width</key>
+              <integer>32</integer>
+            </dict>
+            <key>secRes</key>
+            <dict>
+              <key>ConvM</key>
+              <integer>1000</integer>
+              <key>ConvN</key>
+              <integer>279365</integer>
+              <key>desc</key>
+              <string>C5_RES</string>
+              <key>maskCntr</key>
+              <integer>16777215</integer>
+              <key>offset</key>
+              <integer>88</integer>
+              <key>regFlags</key>
+              <integer>134494208</integer>
+              <key>shiftCState</key>
+              <integer>5</integer>
+              <key>type</key>
+              <integer>2</integer>
+              <key>width</key>
+              <integer>32</integer>
+            </dict>
+            <key>snoop</key>
+            <integer>55000</integer>
+          </dict>
+        </dict>
+      </dict>
+      <key>ControlArray</key>
+      <array>
+        <dict>
+          <key>Desc-Key</key>
+          <string>CPU_PLIMIT</string>
+          <key>IOClass</key>
+          <string>AppleSMCControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>10</integer>
+          <key>location</key>
+          <string>cpu plimit</string>
+          <key>type</key>
+          <string>smc</string>
+        </dict>
+        <dict>
+          <key>Desc-Key</key>
+          <string>CPU_STATE</string>
+          <key>IOClass</key>
+          <string>AppleSMCControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>13</integer>
+          <key>location</key>
+          <string>cpu state</string>
+          <key>type</key>
+          <string>smc</string>
+        </dict>
+        <dict>
+          <key>Desc-Key</key>
+          <string>GPU_PLIMIT</string>
+          <key>IOClass</key>
+          <string>AppleSMCControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>11</integer>
+          <key>location</key>
+          <string>gpu plimit</string>
+          <key>type</key>
+          <string>smc</string>
+        </dict>
+        <dict>
+          <key>Desc-Key</key>
+          <string>GPU_STATE</string>
+          <key>IOClass</key>
+          <string>AppleSMCControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>14</integer>
+          <key>location</key>
+          <string>gpu state</string>
+          <key>type</key>
+          <string>smc</string>
+        </dict>
+        <dict>
+          <key>Desc-Key</key>
+          <string>MEM_PLIMIT</string>
+          <key>IOClass</key>
+          <string>AppleSMCControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>12</integer>
+          <key>location</key>
+          <string>mem plimit</string>
+          <key>type</key>
+          <string>smc</string>
+        </dict>
+        <dict>
+          <key>Desc-Key</key>
+          <string>IDLE_PLIMIT</string>
+          <key>IOClass</key>
+          <string>AppleSMCControl</string>
+          <key>control-flags</key>
+          <integer>2</integer>
+          <key>control-id</key>
+          <integer>15</integer>
+          <key>location</key>
+          <string>idle limit</string>
+          <key>type</key>
+          <string>smc</string>
+        </dict>
+      </array>
+      <key>CreationDate</key>
+      <string>Wed May 27 14:32:59 PDT 2009</string>
+      <key>CtrlLoopArray</key>
+      <array>
+        <dict>
+          <key>Description</key>
+          <string>SMC_CPU_Control_Loop</string>
+          <key>IOClass</key>
+          <string>ACPI_SMC_CtrlLoop</string>
+          <key>PLimitClass</key>
+          <array>
+            <string>CPU</string>
+          </array>
+          <key>MetaStateArray</key>
+          <array>
+            <dict>
+              <key>Description</key>
+              <string>Normal</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>Reduced Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User Low Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User High Power</string>
+            </dict>
+          </array>
+          <key>StepDataDict</key>
+          <dict>
+            <key>MacBookAir1,1</key>
+            <array>
+              <dict>
+                <key>num-states</key>
+                <integer>4</integer>
+                <key>program</key>
+                <string>SP2</string>
+              </dict>
+              <dict>
+                <key>num-states</key>
+                <integer>5</integer>
+                <key>program</key>
+                <string>SP3</string>
+              </dict>
+            </array>
+            <key>SP2</key>
+            <data>
+xgYAAAAAAQIEAAACAgAAVQBuAHMAcABlAGMAaQBmAGkAZQBkDAAH/wcAACEAAAACAAAB//8A/wD/
+AP8A/wD/AAYAAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wAL
+DwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD
+/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/
+AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsP
+AAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/
+AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8B
+AAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8A
+AP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8A
+Cw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEA
+A/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA
+/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wAL
+DwAA/wEAA/8ACw8AAP8BAAP/AAsKAAABCgAAAQAAAAEAAAD1AAEFAAABAAAF/wABAAAAAQAAAAEG
+AAACAAAABAEAAIAAwwC3AC4ANAALAAAAAgAAAAEAAAABAAAAAgAAAAICAAACBgAAAQAAAAEAAAD1
+AAEFAAADAAAF/wADAgAAAwYAAAkAAAAEAAAAVAAkBQAABAAABf8AAwAAAAEAAAAEBAAAgAAAAAoK
+AAAIAAAABQAAAAgAAAAFAAAAAwAAAAIAAAAFBgAABwAAAAEAAAD1AAEFAAAGAAAF/wADAAAAAwAA
+AAYGAAACAAAABAAAAKAADwUAAAcEAAAHAAAAAwAAAAQAAAAHBgAACAoAAAMAAAX/AAQCAAAIBgAA
+AQAAAAEAAADoAAMFAAAJAAAF/wAFAgAACQYAAAIAAAAEAAAANAAhBQAADQAAAAoAAAANAAAACgAA
+AAUAAAABAAAACgYAAAcAAAABAAAA9QABBQAACwAABf8ABQAAAAIAAAALBgAAAgAAAAQAAACgAA8F
+AAAMBAAADAAAAAUAAAADAAAADAYAAAgKAAAJAAAF/wAGAgAADQYAAAEAAAABAAAA6AADBQAADgAA
+Bf8ABwIAAA4GAAACAAAABAAAAFgAGwUAABIAAAAPAAAAEgAAAA8AAAAHAAAAAQAAAA8GAAAHAAAA
+AQAAAPUAAQUAABAAAAX/AAcAAAACAAAAEAYAAAIAAAAEAAAAoAAPBQAAEQQAABEAAAAHAAAAAwAA
+ABEGAAAICgAADgAABf8ACAIAABIGAAABAAAAAQAAAOgAAwUAABMAAAX/AAkCAAATBgAAAgAAAAQA
+AAD8AAgFAAAXAAAAFAAAABcAAAAUAAAACQAAAAEAAAAUBgAABwAAAAEAAAD1AAEFAAAVAAAF/wAJ
+AAAAAgAAABUGAAACAAAABAAAAKAADwUAABYEAAAWAAAACQAAAAMAAAAWBgAACAoAABMAAAX/AAoC
+AAAXBgAAAQAAAAEAAADoAAMFAAAYAAAF/wALAgAAGAYAAAIAAAAEAAAAKAAKBQAAHAAAABkAAAAc
+AAAAGQAAAAsAAAABAAAAGQYAAAcAAAABAAAA9QABBQAAGgAABf8ACwAAAAIAAAAaBgAAAgAAAAQA
+AACgAA8FAAAbBAAAGwAAAAsAAAADAAAAGwYAAAgKAAAYAAAF/wAMAgAAHAYAAAEAAAABAAAA9AAB
+BQAAHQAABf8ADQIAAB0GAAACAAAABAEAAIAAwwC3AC4ANAALAAAAHQAAAB4AAAAdAAAAHgAAAA0A
+AAABAAAAHgYAAAcAAAABAAAA9QABBQAAHwAABf8ADQAAAAIAAAAfBgAAAgAAAAQAAACgAA8FAAAg
+BAAAIAAAAA0AAAADAAAAIAYAAAgKAAAdAAAF/w==
+</data>
+            <key>SP3</key>
+            <data>
+xgYAAAAAAQIEAAACAgAAVQBuAHMAcABlAGMAaQBmAGkAZQBkDAAH/wcAACEAAAACAAAB//8A/wD/
+AP8A/wD/AAYAAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wAL
+DwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD
+/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/
+AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsP
+AAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/
+AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8B
+AAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8A
+AP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8A
+Cw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEA
+A/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA
+/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wALDwAA/wEAA/8ACw8AAP8BAAP/AAsPAAD/AQAD/wAL
+DwAA/wEAA/8ACw8AAP8BAAP/AAsKAAABCgAAAQAAAAEAAAD1AAEFAAABAAAF/wABAAAAAQAAAAEG
+AAACAAAABAEAAIAAwwC3AC4ANAALAAAAAgAAAAEAAAABAAAAAgAAAAICAAACBgAAAQAAAAEAAAD1
+AAEFAAADAAAF/wADAgAAAwYAAAkAAAAEAAAAfAAVBQAABAAABf8AAwAAAAEAAAAEBAAAgAAAAAoK
+AAAIAAAABQAAAAgAAAAFAAAAAwAAAAIAAAAFBgAABwAAAAEAAAD1AAEFAAAGAAAF/wADAAAAAwAA
+AAYGAAACAAAABAAAAKAADwUAAAcEAAAHAAAAAwAAAAQAAAAHBgAACAoAAAMAAAX/AAQCAAAIBgAA
+AQAAAAEAAADoAAMFAAAJAAAF/wAFAgAACQYAAAIAAAAEAAAAXAASBQAADQAAAAoAAAANAAAACgAA
+AAUAAAABAAAACgYAAAcAAAABAAAA9QABBQAACwAABf8ABQAAAAIAAAALBgAAAgAAAAQAAACgAA8F
+AAAMBAAADAAAAAUAAAADAAAADAYAAAgKAAAJAAAF/wAGAgAADQYAAAEAAAABAAAA6AADBQAADgAA
+Bf8ABwIAAA4GAAACAAAABAAAAFwAEgUAABIAAAAPAAAAEgAAAA8AAAAHAAAAAQAAAA8GAAAHAAAA
+AQAAAPUAAQUAABAAAAX/AAcAAAACAAAAEAYAAAIAAAAEAAAAoAAPBQAAEQQAABEAAAAHAAAAAwAA
+ABEGAAAICgAADgAABf8ACAIAABIGAAABAAAAAQAAAOgAAwUAABMAAAX/AAkCAAATBgAAAgAAAAQA
+AAD8AAgFAAAXAAAAFAAAABcAAAAUAAAACQAAAAEAAAAUBgAABwAAAAEAAAD1AAEFAAAVAAAF/wAJ
+AAAAAgAAABUGAAACAAAABAAAAKAADwUAABYEAAAWAAAACQAAAAMAAAAWBgAACAoAABMAAAX/AAoC
+AAAXBgAAAQAAAAEAAADoAAMFAAAYAAAF/wALAgAAGAYAAAIAAAAEAAAAKAAKBQAAHAAAABkAAAAc
+AAAAGQAAAAsAAAABAAAAGQYAAAcAAAABAAAA9QABBQAAGgAABf8ACwAAAAIAAAAaBgAAAgAAAAQA
+AACgAA8FAAAbBAAAGwAAAAsAAAADAAAAGwYAAAgKAAAYAAAF/wAMAgAAHAYAAAEAAAABAAAA9AAB
+BQAAHQAABf8ADQIAAB0GAAACAAAABAEAAIAAwwC3AC4ANAALAAAAHQAAAB4AAAAdAAAAHgAAAA0A
+AAABAAAAHgYAAAcAAAABAAAA9QABBQAAHwAABf8ADQAAAAIAAAAfBgAAAgAAAAQAAACgAA8FAAAg
+BAAAIAAAAA0AAAADAAAAIAYAAAgKAAAdAAAF/w==
+</data>
+          </dict>
+          <key>ctrlloop-id</key>
+          <integer>0</integer>
+          <key>is-state-driven</key>
+          <integer>1</integer>
+        </dict>
+        <dict>
+          <key>Description</key>
+          <string>SMC_GPU_sensor_Control_Loop</string>
+          <key>GPUPowerMgmtFloorArray</key>
+          <array>
+            <integer>1</integer>
+          </array>
+          <key>GPUThresholdDict</key>
+          <dict>
+            <key>MacBookAir1,1</key>
+            <string>TA1</string>
+            <key>TA1</key>
+            <array>
+              <dict>
+                <key>high-threshold</key>
+                <integer>22</integer>
+                <key>low-threshold</key>
+                <integer>0</integer>
+              </dict>
+              <dict>
+                <key>high-threshold</key>
+                <integer>30</integer>
+                <key>low-threshold</key>
+                <integer>23</integer>
+              </dict>
+              <dict>
+                <key>high-threshold</key>
+                <integer>90</integer>
+                <key>low-threshold</key>
+                <integer>31</integer>
+              </dict>
+              <dict>
+                <key>high-threshold</key>
+                <integer>100</integer>
+                <key>low-threshold</key>
+                <integer>91</integer>
+              </dict>
+            </array>
+          </dict>
+          <key>IOClass</key>
+          <string>ACPI_SMC_CtrlLoop</string>
+          <key>PLimitClass</key>
+          <array>
+            <string>GPU</string>
+          </array>
+          <key>MetaStateArray</key>
+          <array>
+            <dict>
+              <key>Description</key>
+              <string>Normal</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>Reduced Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User Low Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User High Power</string>
+            </dict>
+          </array>
+          <key>SensorIDArray</key>
+          <array>
+            <integer>6</integer>
+          </array>
+          <key>ctrlloop-id</key>
+          <integer>1</integer>
+          <key>is-state-driven</key>
+          <integer>1</integer>
+        </dict>
+        <dict>
+          <key>Description</key>
+          <string>SMC_Memory_Control_Loop</string>
+          <key>IOClass</key>
+          <string>ACPI_SMC_CtrlLoop</string>
+          <key>PLimitClass</key>
+          <array>
+            <string>Mem</string>
+          </array>
+          <key>MCHThrottleDict</key>
+          <dict>
+            <key>MacBookAir1,1</key>
+            <string>MT3</string>
+            <key>MT3</key>
+            <array>
+              <dict>
+                <key>DTC_WAB</key>
+                <integer>32</integer>
+                <key>DTC_WAT</key>
+                <integer>0</integer>
+                <key>GTC_WAB</key>
+                <integer>0</integer>
+                <key>GTC_WAT</key>
+                <integer>15</integer>
+              </dict>
+              <dict>
+                <key>DTC_WAB</key>
+                <integer>32</integer>
+                <key>DTC_WAT</key>
+                <integer>0</integer>
+                <key>GTC_WAB</key>
+                <integer>0</integer>
+                <key>GTC_WAT</key>
+                <integer>15</integer>
+              </dict>
+              <dict>
+                <key>DTC_WAB</key>
+                <integer>32</integer>
+                <key>DTC_WAT</key>
+                <integer>0</integer>
+                <key>GTC_WAB</key>
+                <integer>0</integer>
+                <key>GTC_WAT</key>
+                <integer>15</integer>
+              </dict>
+              <dict>
+                <key>DTC_WAB</key>
+                <integer>32</integer>
+                <key>DTC_WAT</key>
+                <integer>0</integer>
+                <key>GTC_WAB</key>
+                <integer>0</integer>
+                <key>GTC_WAT</key>
+                <integer>15</integer>
+              </dict>
+            </array>
+          </dict>
+          <key>MetaStateArray</key>
+          <array>
+            <dict>
+              <key>Description</key>
+              <string>Normal</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>Reduced Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User Low Power</string>
+            </dict>
+            <dict>
+              <key>Description</key>
+              <string>User High Power</string>
+            </dict>
+          </array>
+          <key>ctrlloop-id</key>
+          <integer>2</integer>
+          <key>is-state-driven</key>
+          <integer>1</integer>
+        </dict>
+      </array>
+      <key>SensorArray</key>
+      <array>
+        <dict>
+          <key>Desc-Key</key>
+          <string>GPU</string>
+          <key>IOClass</key>
+          <string>IOPlatformSensor</string>
+          <key>sensor-id</key>
+          <integer>6</integer>
+        </dict>
+      </array>
+    </dict>
+  </dict>
+</plist>

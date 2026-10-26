@@ -168,7 +168,7 @@ xw
         CPUFriend Handler
         """
 
-        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
+        if self.constants.allow_oc_everywhere is False and self.model not in model_array.NoCPUFriendData and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
             support.BuildSupport(self.model, self.constants, self.config).enable_kext("CPUFriend.kext", self.constants.cpufriend_version, self.constants.cpufriend_path)
 
             # CPUFriendDataProvider handling

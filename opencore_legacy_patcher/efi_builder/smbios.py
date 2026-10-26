@@ -150,7 +150,7 @@ class BuildSMBIOS:
                 map_path = self.constants.kexts_path / bundle_name / "Contents/Info.plist"
                 self._patch_usb_map(map_path, self.spoofed_model, self.constants.serial_settings)
 
-        if self.constants.allow_oc_everywhere is False and self.model not in ["iMac7,1", "Xserve2,1", "Dortania1,1"] and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
+        if self.constants.allow_oc_everywhere is False and self.model not in model_array.NoCPUFriendData and self.constants.disallow_cpufriend is False and self.constants.serial_settings != "None":
             # Adjust CPU Friend Data to correct SMBIOS
             new_cpu_ls = Path(self.constants.pp_contents_folder) / Path("Info.plist")
             cpu_config = plistlib.load(Path(new_cpu_ls).open("rb"))
