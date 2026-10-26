@@ -53,12 +53,14 @@ class Constants:
         self.marvel_version:        str = "1.0.1"  #  MarvelYukonEthernet
         self.nforce_version:        str = "1.0.1"  #  nForceEthernet
         self.piixata_version:       str = "1.0.1"  #  AppleIntelPIIXATA
+        self.piixata_monterey_version: str = "1.0.0"
         self.fw_kext:               str = "1.0.1"  #  IOFireWireFamily
         self.apple_trackpad:        str = "1.0.1"  #  AppleUSBTrackpad
         self.apple_isight_version:  str = "1.0.0"  #  AppleiSight
         self.apple_raid_version:    str = "1.0.0"  #  AppleRAIDCard
         self.apfs_zlib_version:     str = "12.3.1"  # NoAVXFSCompressionTypeZlib
         self.apfs_zlib_v2_version:  str = "12.6"  #   NoAVXFSCompressionTypeZlib (patched with AVXpel)
+        self.apfs_zlib_tahoe_version: str = "26.7"
         self.multitouch_version:    str = "1.0.0"  #  AppleUSBMultitouch
         self.topcase_version:       str = "1.0.0"  #  AppleUSBTopCase
         self.topcase_inj_version:   str = "1.0.0"  #  AppleTopCaseInjector
@@ -84,7 +86,7 @@ class Constants:
         self.io80211elcap_version:     str = "2.0.1"  # IO80211ElCap
         self.io80211legacy_version:    str = "1.0.0"  # IO80211FamilyLegacy (Ventura)
         self.ioskywalk_version:        str = "1.2.0"  # IOSkywalkFamily (Ventura)
-        self.airport_atheros_tahoe_version: str = "1.0.0"
+        self.airport_atheros_tahoe_version: str = "1.0.1"
         self.airport_brcmnic_tahoe_version: str = "1.0.0"
         self.bigsursdxc_version:       str = "1.0.0"  # BigSurSDXC
         self.monterey_ahci_version:    str = "1.0.0"  # CatalinaAHCI
@@ -461,6 +463,10 @@ class Constants:
         return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-AVXpel-v{self.apfs_zlib_v2_version}.zip")
 
     @property
+    def apfs_zlib_tahoe_path(self):
+        return self.payload_kexts_path / Path(f"Misc/NoAVXFSCompressionTypeZlib-AVXpel-Tahoe-v{self.apfs_zlib_tahoe_version}.zip")
+
+    @property
     def multitouch_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleUSBMultitouch-v{self.multitouch_version}.zip")
 
@@ -543,6 +549,10 @@ class Constants:
     @property
     def piixata_path(self):
         return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-v{self.piixata_version}.zip")
+
+    @property
+    def piixata_monterey_path(self):
+        return self.payload_kexts_path / Path(f"Misc/AppleIntelPIIXATA-Monterey-v{self.piixata_monterey_version}.zip")
 
     @property
     def backlight_injector_path(self):

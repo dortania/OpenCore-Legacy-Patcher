@@ -98,6 +98,7 @@ class BuildStorage:
             return
 
         support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleIntelPIIXATA.kext", self.constants.piixata_version, self.constants.piixata_path)
+        support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleIntelPIIXATA-Monterey.kext", self.constants.piixata_monterey_version, self.constants.piixata_monterey_path)
 
 
     def _pcie_handling(self) -> None:
