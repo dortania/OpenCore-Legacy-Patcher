@@ -1,5 +1,6 @@
 # Ongoing issues with different macOS versions
 
+Here are some longstanding issues with different macOS versions. Make sure to also check the [GitHub issues page](https://github.com/dortania/OpenCore-Legacy-Patcher/issues) for more information.
 
 macOS Ventura and newer
 
@@ -12,6 +13,8 @@ macOS Sequoia and newer
 
 * [Dual socket CPUs with Mac Pros and Xserve](#dual-socket-cpus-with-mac-pro-2008-and-xserve-2008)
 * [T2 Security chip](#t2-security-chip)
+
+---
 
 
 ### USB 1.1 (OHCI/UHCI) Support
@@ -33,12 +36,13 @@ Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-P
 Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues on different macOS versions.
 
 * [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)
+* [Non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
 
 
 ### AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs
 
 
-For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMac9,1-12,2), [AVX2.0 supportis required in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura or newer officially with these GPUs.
+For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMac9,1-12,2), [AVX2.0 support is required in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura or newer officially with these GPUs.
 
 
 * CPUs supporting AVX2.0 are Haswell or newer, which no pre-2019 Mac Pros can be upgraded with.
