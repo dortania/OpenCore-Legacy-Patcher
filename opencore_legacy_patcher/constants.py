@@ -679,6 +679,14 @@ class Constants:
     def fw_bus_path(self):
         return self.payload_kexts_path / Path(f"FireWire/IOFireWireSerialBusProtocolTransport-v{self.fw_kext}.zip")
 
+    @property
+    def usb_maps_path(self):
+        return self.plist_folder_path / Path("USBMaps")
+
+    @property
+    def usb_map_template_path(self):
+        return self.plist_folder_path / Path("USB-Map.kext")
+
     # Build Location
     @property
     def build_path(self):
@@ -715,22 +723,6 @@ class Constants:
     @property
     def resources_path(self):
         return self.oc_folder / Path("Resources")
-
-    @property
-    def map_kext_folder(self):
-        return self.kexts_path / Path("USB-Map.kext")
-
-    @property
-    def map_kext_folder_tahoe(self):
-        return self.kexts_path / Path("USB-Map-Tahoe.kext")
-
-    @property
-    def map_contents_folder(self):
-        return self.map_kext_folder / Path("Contents")
-
-    @property
-    def map_contents_folder_tahoe(self):
-        return self.map_kext_folder_tahoe / Path("Contents")
 
     @property
     def pp_kext_folder(self):

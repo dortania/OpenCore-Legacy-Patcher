@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IOKitPersonalities_x86_64</key>
+	<dict>
+		<key>Xserve2,1</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
+			<key>IOClass</key>
+			<string>AppleUSBHostMergeProperties</string>
+			<key>IOProviderClass</key>
+			<string>AppleUSBHostResources</string>
+			<key>IOProviderMergeProperties</key>
+			<dict>
+				<key>kUSBSleepPortCurrentLimit</key>
+				<integer>1000</integer>
+				<key>kUSBSleepPowerSupply</key>
+				<integer>2000</integer>
+				<key>kUSBWakePortCurrentLimit</key>
+				<integer>1500</integer>
+				<key>kUSBWakePowerSupply</key>
+				<integer>2500</integer>
+			</dict>
+			<key>model</key>
+			<string>Xserve2,1</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

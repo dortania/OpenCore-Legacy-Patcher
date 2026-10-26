@@ -13,6 +13,7 @@ OCLP-GUI.command
 /.vscode
 __pycache__/
 *.kext
+!/payloads/Kexts/Plists/USB-Map.kext/
 *.py[cod]
 *$py.class
 /docs/.vuepress/dist
