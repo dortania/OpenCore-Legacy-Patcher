@@ -38,7 +38,7 @@ class AMDNavi(BaseHardware):
             gpu_architectures=[
                 device_probe.AMD.Archs.Navi
             ]
-        ) and "AVX2" not in self._computer.cpu.leafs and self._dortania_internal_check() is True
+        ) and "AVX2" not in self._computer.cpu.leafs
 
 
     def native_os(self) -> bool:
