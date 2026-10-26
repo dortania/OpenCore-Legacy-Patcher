@@ -1,5 +1,6 @@
 # Ongoing issues with different macOS versions
 
+Here are some longstanding issues with different macOS versions. Make sure to also check the [GitHub issues page](https://github.com/dortania/OpenCore-Legacy-Patcher/issues) for more information.
 
 macOS Ventura and newer
 
@@ -13,11 +14,13 @@ macOS Sequoia and newer
 * [Dual socket CPUs with Mac Pros and Xserve](#dual-socket-cpus-with-mac-pro-2008-and-xserve-2008)
 * [T2 Security chip](#t2-security-chip)
 
+---
+
 
 ### USB 1.1 (OHCI/UHCI) Support
 
 
-For Penryn systems, pre-2013 Mac Pros and Xserve, USB 1.1 support was outright removed in macOS Ventura, therefore this applies all the way to Tahoe.
+For Penryn systems, pre-2013 Mac Pros and Xserve, USB 1.1 support was outright removed in macOS Ventura, therefore this applies all the way to Sequoia.
 While USB 1.1 may seem unimportant, it handles many important devices on your system. These include:
 
 * Keyboard and Trackpad for laptops
@@ -33,12 +36,13 @@ Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-P
 Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues on different macOS versions.
 
 * [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)
+* [Non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
 
 
 ### AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs
 
 
-For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMac9,1-12,2), [AVX2.0 supportis required in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura or newer officially with these GPUs.
+For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMac9,1-12,2), [AVX2.0 support is required in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura or newer officially with these GPUs.
 
 
 * CPUs supporting AVX2.0 are Haswell or newer, which no pre-2019 Mac Pros can be upgraded with.
@@ -62,7 +66,7 @@ Following GPUs are applicable:
 ### Dual socket CPUs with Mac Pro 2008 and Xserve 2008
 
 
-Booting Sequoia or Tahoe on Mac Pro 2008 (MacPro3,1) or Xserve 2008 (Xserve2,1) with more than 4 cores will cause them to panic. OpenCore Legacy Patcher will automatically disable additional cores.
+Booting Sequoia on Mac Pro 2008 (MacPro3,1) or Xserve 2008 (Xserve2,1) with more than 4 cores will cause them to panic. OpenCore Legacy Patcher will automatically disable additional cores.
 
 This is due to the dual socket nature of the machine, and likely some firmware/ACPI table incompatibility.
 
@@ -70,7 +74,7 @@ This is due to the dual socket nature of the machine, and likely some firmware/A
 
 ::: warning Note
 
-Dual booting Sequoia/Tahoe and older will not be possible with all cores enabled due to reasons described before. In these cases you will be limited to 4 cores.
+Dual booting Sequoia and older will not be possible with all cores enabled due to reasons described before. In these cases you will be limited to 4 cores.
 
 :::
 
