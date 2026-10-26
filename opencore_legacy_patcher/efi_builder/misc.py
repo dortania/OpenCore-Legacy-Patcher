@@ -248,7 +248,7 @@ xw
                         support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "IOHIDFamily USB topcase panic")["Enabled"] = True
 
             # Two-finger Top Case support for macOS High Sierra+
-            if self.model == "MacBook5,2":
+            if self.model in ["MacBook4,1", "MacBook5,2"]:
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("AppleUSBTrackpad.kext", self.constants.apple_trackpad, self.constants.apple_trackpad_path) # Also requires AppleUSBTopCase.kext
                 support.BuildSupport(self.model, self.constants, self.config).enable_kext("LegacyKeyboardInjector.kext", self.constants.legacy_keyboard, self.constants.legacy_keyboard_path) # Inject legacy personalities into AppleUSBTCKeyboard and AppleUSBTCKeyEventDriver
                 

@@ -5,6 +5,7 @@ model_array.py: Datasets for different models
 
 SupportedSMBIOS = [
     # MacBook
+    "MacBook4,1",
     "MacBook5,1",
     "MacBook5,2",
     "MacBook6,1",
@@ -112,6 +113,7 @@ SupportedSMBIOS = [
 # Audio
 
 LegacyAudio = [
+    "MacBook4,1",
     "MacBook5,1",
     "MacBook5,2",
     "MacBook6,1",
@@ -196,6 +198,7 @@ ModernGPU = [
 ]
 
 LegacyGPU = [
+    "MacBook4,1",  # Intel X3100
     "MacBook5,1",  # Nvidia 9000
     "MacBook5,2",  # Nvidia 9000
     "MacBook6,1",  # Nvidia 9000
@@ -235,6 +238,7 @@ LegacyGPU = [
 ]
 
 LegacyBrightness = [
+    "MacBook4,1",
     "MacBook5,2",
     "iMac7,1",
     "iMac8,1",

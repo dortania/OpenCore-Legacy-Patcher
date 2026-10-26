@@ -29,6 +29,7 @@ class DisplayBacklight(BaseHardware):
         Targeting Legacy Backlight Controllers
         """
         return self._computer.real_model in [
+            "MacBook4,1",
             "MacBook5,2",
             "iMac7,1",
             "iMac8,1",

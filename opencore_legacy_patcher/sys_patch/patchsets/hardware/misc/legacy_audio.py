@@ -30,7 +30,8 @@ class LegacyAudio(BaseHardware):
         Targeting Realtek Audio and machines without AppleALC
         """
         return self._computer.real_model in ["iMac7,1", "iMac8,1"] or (
-        self._computer.real_model in ["MacBook5,1",
+        self._computer.real_model in ["MacBook4,1",
+                                      "MacBook5,1",
                                       "MacBook5,2",
                                       "MacBook6,1",
                                       "MacBook7,1",
