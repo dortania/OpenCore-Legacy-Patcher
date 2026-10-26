@@ -15,6 +15,7 @@ from functools import cache
 from .hardware.base import BaseHardware, HardwareVariantGraphicsSubclass
 
 from .hardware.graphics import (
+    intel_gma_x3100,
     intel_iron_lake,
     intel_sandy_bridge,
     intel_ivy_bridge,
@@ -108,6 +109,7 @@ class HardwarePatchsetDetection:
         self._validation = validation
 
         self._hardware_variants = [
+            intel_gma_x3100.IntelGMAX3100,
             intel_iron_lake.IntelIronLake,
             intel_sandy_bridge.IntelSandyBridge,
             intel_ivy_bridge.IntelIvyBridge,

@@ -353,6 +353,7 @@ class GenerateDefaults:
 
             # Non-Metal Logic
             elif arch in [
+                device_probe.Intel.Archs.GMA_X3100,
                 device_probe.Intel.Archs.Iron_Lake,
                 device_probe.Intel.Archs.Sandy_Bridge,
                 device_probe.NVIDIA.Archs.Tesla,
