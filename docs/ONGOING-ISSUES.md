@@ -2,12 +2,14 @@
 
 Here are some longstanding issues with different macOS versions. Make sure to also check the [GitHub issues page](https://github.com/dortania/OpenCore-Legacy-Patcher/issues) for more information.
 
+General
+
+* [Graphics support and issues](#graphics-support-and-issues)
+
 macOS Ventura and newer
 
 * [USB 1.1 (OHCI/UHCI) Support](#usb-1-1-ohci-uhci-support)
-* [Graphics support and issues](#graphics-support-and-issues)
 * [AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs](#amd-polaris-vega-and-navi-support-on-pre-2019-mac-pros-and-pre-2012-imacs)
-
 
 macOS Sequoia and newer
 
@@ -15,6 +17,15 @@ macOS Sequoia and newer
 * [T2 Security chip](#t2-security-chip)
 
 ---
+
+
+### Graphics support and issues
+
+
+Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues on different macOS versions.
+
+* [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)
+* [Non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
 
 
 ### USB 1.1 (OHCI/UHCI) Support
@@ -28,15 +39,6 @@ While USB 1.1 may seem unimportant, it handles many important devices on your sy
 * Bluetooth
 
 Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-Patcher/TROUBLESHOOT-HARDWARE.html#keyboard-mouse-and-trackpad-not-working-in-installer-or-after-update) on how to workaround this issue.
-
-
-### Graphics support and issues
-
-
-Refer to the following links for more information about Legacy Metal and non-Metal support and their respective issues on different macOS versions.
-
-* [Legacy Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/1008)
-* [Non-Metal](https://github.com/dortania/OpenCore-Legacy-Patcher/issues/108)
 
 
 ### AMD Polaris, Vega and Navi support on pre-2019 Mac Pros and pre-2012 iMacs
