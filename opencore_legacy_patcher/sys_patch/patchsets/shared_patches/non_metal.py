@@ -57,6 +57,9 @@ class NonMetal(BaseSharedPatchSet):
                         "SkyLight":         f"{skylight_version}-{self._xnu_major}",
                         "SkyLightOriginal": f"{skylight_version}-{self._xnu_major}",
                     },
+                    "/System/Library/Frameworks/QuartzCore.framework/Versions/A": {
+                        **({"QuartzCore": f"{skylight_version}-{self._xnu_major}"} if self._xnu_major >= os_data.big_sur else {}),
+                    },
                 },
                 PatchType.REMOVE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": [
