@@ -292,7 +292,11 @@ class BuildFirmware:
             (
                 smbios_data.smbios_dictionary[self.model]["CPU Generation"] < cpu_data.CPUGen.sandy_bridge.value and \
                 not self.model.startswith("MacBook")
+            ) or
+            (
+                smbios_data.smbios_dictionary[self.model]["Max OS Supported"] < os_data.os_data.el_capitan.value
             )
+
         ):
             logging.info("- Adding PCI Bus Enumeration Patch")
             support.BuildSupport(self.model, self.constants, self.config).get_item_by_kv(self.config["Kernel"]["Patch"], "Comment", "CaseySJ - Fix PCI bus enumeration (Ventura)")["Enabled"] = True
