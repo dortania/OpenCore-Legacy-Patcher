@@ -103,56 +103,6 @@
 			<key>model</key>
 			<string>MacBookPro8,1</string>
 		</dict>
-		<key>MacBookPro8,1-InternalHub</key>
-		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>com.apple.driver.AppleUSBHostMergeProperties</string>
-			<key>IOClass</key>
-			<string>AppleUSBHostMergeProperties</string>
-			<key>IOProviderClass</key>
-			<string>AppleUSB20InternalHub</string>
-			<key>IOProviderMergeProperties</key>
-			<dict>
-				<key>port-count</key>
-				<data>
-				AwAAAA==
-				</data>
-				<key>ports</key>
-				<dict>
-					<key>PRT1</key>
-					<dict>
-						<key>port</key>
-						<data>
-						AQAAAA==
-						</data>
-						<key>portType</key>
-						<integer>2</integer>
-					</dict>
-					<key>PRT2</key>
-					<dict>
-						<key>port</key>
-						<data>
-						AgAAAA==
-						</data>
-						<key>portType</key>
-						<integer>2</integer>
-					</dict>
-					<key>PRT3</key>
-					<dict>
-						<key>port</key>
-						<data>
-						AwAAAA==
-						</data>
-						<key>portType</key>
-						<integer>0</integer>
-					</dict>
-				</dict>
-			</dict>
-			<key>locationID</key>
-			<integer>4195352576</integer>
-			<key>model</key>
-			<string>MacBookPro8,1</string>
-		</dict>
 	</dict>
 </dict>
 </plist>
