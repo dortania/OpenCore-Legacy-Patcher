@@ -274,6 +274,24 @@
 						BgAAAA==
 						</data>
 					</dict>
+					<key>PRT7</key>
+					<dict>
+						<key>UsbConnector</key>
+						<integer>255</integer>
+						<key>port</key>
+						<data>
+						BwAAAA==
+						</data>
+					</dict>
+					<key>PRT8</key>
+					<dict>
+						<key>UsbConnector</key>
+						<integer>255</integer>
+						<key>port</key>
+						<data>
+						CAAAAA==
+						</data>
+					</dict>
 				</dict>
 			</dict>
 			<key>model</key>

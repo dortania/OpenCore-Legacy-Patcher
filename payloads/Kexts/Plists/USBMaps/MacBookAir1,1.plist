@@ -67,6 +67,15 @@
 						AQAAAA==
 						</data>
 					</dict>
+					<key>PRT2</key>
+					<dict>
+						<key>UsbConnector</key>
+						<integer>255</integer>
+						<key>port</key>
+						<data>
+						AgAAAA==
+						</data>
+					</dict>
 					<key>PRT4</key>
 					<dict>
 						<key>UsbConnector</key>
@@ -74,6 +83,24 @@
 						<key>port</key>
 						<data>
 						BAAAAA==
+						</data>
+					</dict>
+					<key>PRT5</key>
+					<dict>
+						<key>UsbConnector</key>
+						<integer>255</integer>
+						<key>port</key>
+						<data>
+						BQAAAA==
+						</data>
+					</dict>
+					<key>PRT6</key>
+					<dict>
+						<key>UsbConnector</key>
+						<integer>255</integer>
+						<key>port</key>
+						<data>
+						BgAAAA==
 						</data>
 					</dict>
 				</dict>
