@@ -46,12 +46,9 @@ Refer to [the troubleshooting page](https://dortania.github.io/OpenCore-Legacy-P
 
 For users with 2008 to 2013 Mac Pros (MacPro3,1-6,1) and 2009 to 2011 iMacs (iMac9,1-12,2), [AVX2.0 support is required in the CPU](https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions_2) for native graphics acceleration. Thus while your GPU may be natively supported, you cannot run Ventura or newer officially with these GPUs.
 
-
 * CPUs supporting AVX2.0 are Haswell or newer, which no pre-2019 Mac Pros can be upgraded with.
 
-
-
-Currently at this time, OpenCore Legacy Patcher only supports patching the AMD Polaris and Vega Graphics stack to no longer require AVX2.0. We're recently received an AMD RX 6600 donation, so hopefully in the future the project can support AMD Navi with pre-Haswell Macs. However, no time estimates can be given.
+Currently at this time, OpenCore Legacy Patcher 2.5.x only supports patching the AMD Polaris and Vega Graphics stack to no longer require AVX2.0.
 
 
 Following GPUs are applicable:
