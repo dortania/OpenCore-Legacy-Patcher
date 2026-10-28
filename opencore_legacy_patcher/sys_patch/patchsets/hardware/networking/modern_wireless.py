@@ -52,6 +52,11 @@ class ModernWireless(BaseHardware):
         """
         return HardwareVariant.NETWORKING
 
+
+    def unpatch_required(self) -> str | None:
+        return "2.4.0"
+
+
     def _patches_modern_wireless_common_extended(self) -> dict:
         """
         Extended modern wireless patches

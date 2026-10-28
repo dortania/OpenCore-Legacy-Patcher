@@ -60,6 +60,10 @@ class LegacyWireless(BaseHardware):
         return HardwareVariant.NETWORKING
 
 
+    def unpatch_required(self) -> str | None:
+        return "2.4.0"
+
+
     def _affected_by_cve_2024_23227(self) -> bool:
         """
         CVE-2024-23227 broke our airportd patches for 12.7.4, 13.6.5 and 14.4

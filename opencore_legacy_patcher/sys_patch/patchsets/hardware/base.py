@@ -114,6 +114,10 @@ class BaseHardware(BasePatchset):
         return False
 
 
+    def unpatch_required(self) -> str | None:
+        return None
+
+
     def required_system_integrity_protection_configurations(self) -> list[str]:
         """
         List of required SIP configurations for the patch set

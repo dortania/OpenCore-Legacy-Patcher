@@ -189,39 +189,27 @@ class HardwarePatchsetDetection:
         return "FileVault is Off" not in subprocess.run(["/usr/bin/fdesetup", "status"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout.decode()
 
     
-    def _validation_check_repatching_not_possible(self) -> bool:
+    def _validation_check_repatching_not_possible(self, present_hardware: list[BaseHardware]) -> bool:
         """
         Determine if repatching is not allowed
         """
-        oclp_patch_path = "/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist"
-        if not Path(oclp_patch_path).exists():
-            return False
+        oclp_patch_path = Path("/System/Library/CoreServices/OpenCore-Legacy-Patcher.plist")
         try:
-            oclp_plist = plistlib.load(open(oclp_patch_path, "rb"))
-        except Exception as e:
+            with oclp_patch_path.open("rb") as patch_file:
+                oclp_plist = plistlib.load(patch_file)
+            installed_version = packaging.version.parse(oclp_plist["OpenCore Legacy Patcher"])
+        except Exception:
             return False
 
-        if self._constants.computer.oclp_sys_url != self._constants.commit_info[2]:
-            logging.error("Installed patches are from different commit, unpatching is required")
-            return True
-
-        wireless_keys = {"Legacy Wireless", "Modern Wireless Common"}
-
-        # Keep in sync with generate_patchset_plist
-        metadata_keys = {
-            "OpenCore Legacy Patcher",
-            "PatcherSupportPkg",
-            "Time Patched",
-            "Commit URL",
-            "Kernel Debug Kit Used",
-            "Metal Library Used",
-            "OS Version",
-            "Custom Signature",
-        }
-
-        existing_patches = set(oclp_plist) - wireless_keys - metadata_keys
-        if existing_patches:
-            logging.error(f"Patch(es) already installed: {', '.join(existing_patches)}, unpatching is required")
+        for hardware in present_hardware:
+            unpatch_version = hardware.unpatch_required()
+            if unpatch_version is None:
+                continue
+            if installed_version > packaging.version.parse(unpatch_version):
+                continue
+            if not oclp_plist.keys() & hardware.patches().keys():
+                continue
+            logging.error(f"{hardware.name()} patches installed by OCLP {installed_version} require unpatching before repatching (last affected version: {unpatch_version})")
             return True
 
         return False
@@ -542,7 +530,7 @@ class HardwarePatchsetDetection:
             HardwarePatchsetValidation.SIP_ENABLED:                 self._validation_check_system_integrity_protection_enabled(required_sip_configs),
             HardwarePatchsetValidation.SECURE_BOOT_MODEL_ENABLED:   self._validation_check_secure_boot_model_enabled(),
             HardwarePatchsetValidation.AMFI_ENABLED:                self._validation_check_amfi_enabled(highest_amfi_level),
-            HardwarePatchsetValidation.REPATCHING_NOT_SUPPORTED:    self._validation_check_repatching_not_possible(),
+            HardwarePatchsetValidation.REPATCHING_NOT_SUPPORTED:    self._validation_check_repatching_not_possible(present_hardware),
             HardwarePatchsetValidation.WHATEVERGREEN_MISSING:       self._validation_check_whatevergreen_missing() if has_nvidia_web_drivers is True else False,
             HardwarePatchsetValidation.FORCE_OPENGL_MISSING:        self._validation_check_force_opengl_missing()  if has_nvidia_web_drivers is True else False,
             HardwarePatchsetValidation.FORCE_COMPAT_MISSING:        self._validation_check_force_compat_missing()  if has_nvidia_web_drivers is True else False,
