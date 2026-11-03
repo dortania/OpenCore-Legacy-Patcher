@@ -1,14 +1,40 @@
 # OpenCore Legacy Patcher changelog
 
 ## 3.0.0
-- Implement macOS Tahoe support (EduCovas & ASentientBot)
+- Implement macOS 26 Tahoe support (EduCovas & ASentientBot)
+  - Non-Metal GPU acceleration patches for macOS 26 
+  - 3802-based Metal GPU acceleration patches for macOS 26
+  - 31001-based Metal GPU acceleration patches for macOS 26
+  - Legacy wireless (Atheros & legacy Broadcom) patches for macOS 26
+  - Modern wireless (modern Broadcom) patches for macOS 26
+  - T1 coprocessor patches for macOS 26
+  - Update USB mappings for macOS 26 (Jazzzny)
+  - Restore FileVault support on macOS 26 (Jazzzny)
+  - Fix Penryn booting on macOS 26.4+
+  - Fix AppleUSBTopCase-related kernel panic on macOS 26
 - Implement improved wireless patches (EduCovas)
 - Implement improved non-Metal patches on all operating systems (EduCovas)
-- Restore support for FileVault 2 on macOS 26
-- Add USB mappings for macOS 26
-- Adopt Liquid Glass-conformant app icon
+- Reintroduce support for MacBook4,1 (Jazzzny)
+  - Implement Intel GMA X3100 GPU acceleration patches for all operating systems (EduCovas)
+  - Add missing ASPP and AGPM data (Jazzzny)
+- Fix MacPro3,1/Xserve2,1 Dual CPU panic on macOS 15+ (Jazzzny)
+- Refactor USB mapping logic (Jazzzny)
+- Adopt Liquid Glass-conformant app icon (Jazzzny)
+- Various GUI improvements (Jazzzny)
+  - Added new first-launch experience
+  - Added new credits menu
 - Increment Binaries:
-  - OpenCorePkg 1.0.5 - release
+  - OpenCorePkg 1.0.6 - release
+  - AirPortBrcmFixup 2.2.1 - release
+  - BlueToolFixup 2.7.1 - release
+  - CPUFriend 1.3.0 - release
+  - CryptexFixup 1.0.5 - release
+  - DebugEnhancer 1.1.1 - release
+  - FeatureUnlock 1.1.8 - release
+  - Lilu 1.7.2 - release
+  - NVMeFix 1.1.3 - release
+  - WhateverGreen 1.7.1 - release
+  - PatcherSupportPkg 2.0.5 - release
 
 ## 2.5.1 
 - Fix "Root Volume Dirty" appearing after unpatching
