@@ -761,6 +761,10 @@ class Constants:
         return self.payload_path / Path("OpenCore/macserial")
 
     @property
+    def disklabel_path(self):
+        return self.payload_path / Path("OpenCore/disklabel")
+
+    @property
     def vault_path(self):
         return self.payload_path / Path("Tools/CreateVault/sign.command")
 

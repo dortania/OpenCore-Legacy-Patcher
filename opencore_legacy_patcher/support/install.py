@@ -158,6 +158,19 @@ class disk_installation:
             logging.info("Adding Internal Drive icon")
             subprocess.run(["/bin/cp", self.constants.icon_path_internal, mount_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+        logging.info("Adding boot picker label")
+        subprocess.run(
+        [
+            self.constants.disklabel_path,
+            "-e",
+            f"OCLP {self.constants.patcher_version} ({"SSD" if ssd_type else "USB" if disk_type == "USB" else "SD Card" if self._determine_sd_card(sd_type) else "HDD"})",
+            mount_path / Path("System/Library/CoreServices/.disk_label"),
+            mount_path / Path("System/Library/CoreServices/.disk_label_2x"),
+        ],
+        check=True,
+    )
+
+
         logging.info("Cleaning install location")
         if not self.constants.recovery_status:
             logging.info("Unmounting EFI partition")
