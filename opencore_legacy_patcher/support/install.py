@@ -163,7 +163,7 @@ class disk_installation:
         [
             self.constants.disklabel_path,
             "-e",
-            f"OCLP {self.constants.patcher_version} ({'SSD' if ssd_type else 'USB' if disk_type == 'USB' else 'SD Card' if self._determine_sd_card(sd_type) else 'HDD'})",
+            f"OCLP {self.constants.patcher_version}{' Nightly' if not self.constants.commit_info[0].startswith('refs/tags') else ''} ({'SSD' if ssd_type else 'USB' if disk_type == 'USB' else 'SD Card' if self._determine_sd_card(sd_type) else 'HDD'})",
             mount_path / Path("System/Library/CoreServices/.disk_label"),
             mount_path / Path("System/Library/CoreServices/.disk_label_2x"),
         ],
