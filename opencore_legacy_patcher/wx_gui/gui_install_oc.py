@@ -86,7 +86,7 @@ class InstallOCFrame(wx.Frame):
         """
         Fetch information on local disks
         """
-        self.available_disks = install.tui_disk_installation(self.constants).list_disks()
+        self.available_disks = install.disk_installation(self.constants).list_disks()
 
         # Need to clean up output on pre-Sierra
         # Disk images are mixed in with regular disks (ex. payloads.dmg)
@@ -202,7 +202,7 @@ class InstallOCFrame(wx.Frame):
         text_label.SetFont(gui_support.font_factory(19, wx.FONTWEIGHT_BOLD))
         text_label.Centre(wx.HORIZONTAL)
 
-        partitions = install.tui_disk_installation(self.constants).list_partitions(disk, dataset)
+        partitions = install.disk_installation(self.constants).list_partitions(disk, dataset)
         items = len(partitions)
         longest_label = max((len(partitions[partition]['partition']) + len(partitions[partition]['name']) + len(str(partitions[partition]['size']))) for partition in partitions)
         longest_label = longest_label * 10
@@ -325,7 +325,7 @@ class InstallOCFrame(wx.Frame):
         logger = logging.getLogger()
         logger.addHandler(gui_support.ThreadHandler(self.text_box))
         try:
-            self.result = install.tui_disk_installation(self.constants).install_opencore(partition)
+            self.result = install.disk_installation(self.constants).install_opencore(partition)
         except:
             logging.error("An internal error occurred while installing:\n")
             logging.error(traceback.format_exc())

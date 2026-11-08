@@ -50,7 +50,7 @@ class StartAutomaticPatching:
         New users may not realize OS updates remove our patches, so we try and run when nessasary
 
         Conditions for running:
-            - Verify running GUI (TUI users can write their own scripts)
+            - Verify running GUI
             - Verify the Snapshot Seal is intact (if not, assume user is running patches)
             - Verify this model needs patching (if not, assume user upgraded hardware and OCLP was not removed)
             - Verify there are no updates for OCLP (ensure we have the latest patch sets)
@@ -60,9 +60,6 @@ class StartAutomaticPatching:
         """
 
         logging.info("- Starting Automatic Patching")
-        if self.constants.wxpython_variant is False:
-            logging.info("- Auto Patch option is not supported on TUI, please use GUI")
-            return
 
         dict = updates.CheckBinaryUpdates(self.constants).check_binary_updates()
         if dict:

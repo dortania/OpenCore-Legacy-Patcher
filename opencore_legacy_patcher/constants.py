@@ -141,7 +141,7 @@ class Constants:
         # Patcher Settings
         ## Internal settings
         self.allow_oc_everywhere:       bool = False  # Set whether Patcher can be run on unsupported Macs
-        self.gui_mode:                  bool = False  # Determine whether running in a GUI or TUI
+        self.gui_mode:                  bool = False  # Determine whether running in a GUI
         self.cli_mode:                  bool = True  #  Determine if running in CLI mode
         self.validate:                  bool = False  # Enable validation testing for CI
         self.recovery_status:           bool = False  # Detect if booted into RecoveryOS

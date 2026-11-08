@@ -91,8 +91,6 @@ class PatchSysVolume:
         self.kdk_path = None
         self.metallib_path = None
 
-        # GUI will detect hardware patches before starting PatchSysVolume()
-        # However the TUI will not, so allow for data to be passed in manually avoiding multiple calls
         if hardware_details is None:
             hardware_details = HardwarePatchsetDetection(self.constants).device_properties
         self.hardware_details = hardware_details

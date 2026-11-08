@@ -14,7 +14,7 @@ from . import utilities, subprocess_wrapper
 from .. import constants
 
 
-class tui_disk_installation:
+class disk_installation:
     def __init__(self, versions):
         self.constants: constants.Constants = versions
 
