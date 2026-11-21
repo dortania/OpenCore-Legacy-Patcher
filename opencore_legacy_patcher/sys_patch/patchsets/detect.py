@@ -366,7 +366,6 @@ class HardwarePatchsetDetection:
         - Non-Metal GPUs are stripped out if any Metal GPUs are present
         - Metal 3802 GPUs are stripped out if Metal 31001 GPUs are present on macOS Sequoia or newer
           - Exception is made for "Graphics: AMD Legacy GCN" on Sequoia or newer
-          - Special handling is done in amd_legacy_gcn.py
         """
         non_metal_gpu_present   = False
         metal_gpu_present       = False
