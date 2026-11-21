@@ -466,8 +466,6 @@ class PatchSysVolume:
 
         if any(x in required_patches for x in ["AMD Legacy GCN", "AMD Legacy Polaris", "AMD Legacy Vega"]):
             sys_patch_helpers.SysPatchHelpers(self.constants).disable_window_server_caching()
-        if "Metal 3802 Common Extended" in required_patches:
-            sys_patch_helpers.SysPatchHelpers(self.constants).patch_gpu_compiler_libraries(mount_point=self.mount_location)
 
         self._write_patchset(required_patches)
 
