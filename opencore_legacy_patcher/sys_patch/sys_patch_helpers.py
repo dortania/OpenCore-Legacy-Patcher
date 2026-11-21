@@ -7,14 +7,12 @@ import logging
 import plistlib
 import subprocess
 
-from typing import Union
 from pathlib import Path
 from datetime import datetime
 
 from .. import constants
 
 from ..datasets import os_data
-from ..volume   import generate_copy_arguments
 
 from ..support import (
     generate_smbios,
@@ -178,70 +176,3 @@ class SysPatchHelpers:
         if result.returncode != 0:
             logging.info("- Failed to install RSRRepair")
             subprocess_wrapper.log(result)
-
-
-    def patch_gpu_compiler_libraries(self, mount_point: Union[str, Path]):
-        """
-        Fix GPUCompiler.framework's libraries to resolve linking issues
-
-        On 13.3 with 3802 GPUs, OCLP will downgrade GPUCompiler to resolve
-        graphics support. However the binary hardcodes the library names,
-        and thus we need to adjust the libraries to match (31001.669)
-
-        Important portions of the library will be downgraded to 31001.669,
-        and the remaining bins will be copied over (via CoW to reduce waste)
-
-        Primary folders to merge:
-        - 31001.XXX: (current OS version)
-            - include:
-                - module.modulemap
-                - opencl-c.h
-            - lib (entire directory)
-
-        Note: With macOS Sonoma, 32023 compiler is used instead and so this patch is not needed
-              until macOS 14.2 Beta 2 with version '32023.26'.
-
-        Parameters:
-            mount_point: The mount point of the target volume
-        """
-        if os_data.os_data.sonoma < self.constants.detected_os < os_data.os_data.ventura:
-            return
-
-        if self.constants.detected_os == os_data.os_data.ventura:
-            if self.constants.detected_os_minor < 4: # 13.3
-                return
-            BASE_VERSION = "31001"
-            GPU_VERSION = f"{BASE_VERSION}.669"
-        elif self.constants.detected_os == os_data.os_data.sonoma:
-            if self.constants.detected_os_minor < 2: # 14.2 Beta 2
-                return
-            BASE_VERSION = "32023"
-            GPU_VERSION = f"{BASE_VERSION}.26"
-        else:
-            # Fall back for newer versions
-            BASE_VERSION = "32023"
-            GPU_VERSION = f"{BASE_VERSION}.26"
-
-        LIBRARY_DIR = f"{mount_point}/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/{BASE_VERSION}/Libraries/lib/clang"
-        DEST_DIR = f"{LIBRARY_DIR}/{GPU_VERSION}"
-
-        if not Path(DEST_DIR).exists():
-            raise Exception(f"Failed to find GPUCompiler libraries at {DEST_DIR}")
-
-        for file in Path(LIBRARY_DIR).iterdir():
-            if file.is_file():
-                continue
-            if file.name == GPU_VERSION:
-                continue
-
-            # Partial match as each OS can increment the version
-            if not file.name.startswith(f"{BASE_VERSION}."):
-                continue
-
-            logging.info(f"Merging GPUCompiler.framework libraries to match binary")
-
-            src_dir = f"{LIBRARY_DIR}/{file.name}"
-            if not Path(f"{DEST_DIR}/lib").exists():
-                subprocess_wrapper.run_as_root_and_verify(generate_copy_arguments(f"{src_dir}/lib", f"{DEST_DIR}/"), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-            break

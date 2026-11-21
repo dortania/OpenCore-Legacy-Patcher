@@ -8,9 +8,6 @@ from ...base import PatchType
 
 from ...shared_patches.metal_3802      import LegacyMetal3802
 from ...shared_patches.monterey_opencl import MontereyOpenCL
-from ...shared_patches.tahoe_graphics  import TahoeGraphics
-from ...shared_patches.big_sur_opencl  import BigSurOpenCL
-from ...shared_patches.monterey_webkit import MontereyWebKit
 
 from .....constants  import Constants
 from .....detections import device_probe
@@ -71,13 +68,6 @@ class NvidiaKepler(BaseHardware):
         return HardwareVariantGraphicsSubclass.METAL_3802_GRAPHICS
 
 
-    def requires_metallib_support_pkg(self) -> bool:
-        """
-        New compiler format introduced in macOS 15, Sequoia
-        """
-        return os_data.sequoia.value <= self._xnu_major < os_data.tahoe.value
-
-
     def _resolve_kepler_geforce_framebuffers(self) -> str:
         """
         Resolve patchset directory for GeForce.kext
@@ -93,6 +83,19 @@ class NvidiaKepler(BaseHardware):
         """
         Model specific patches
         """
+        if self._xnu_major == os_data.monterey.value:
+            air_plugin = "12.0 Beta 6"
+            # 12.5 moved the private fields accessed by the beta 6 driver
+            metal_driver = "12.0 Beta 6-21" if self._xnu_float >= self.macOS_12_5 else "12.0 Beta 6"
+        else:
+            # fix the sequoia wallpaper
+            air_plugin = "12.0 Beta 6-3802-24" if self._xnu_major == os_data.sequoia.value else "12.0 Beta 6-3802"
+            metal_driver = {
+                # fields moved again
+                os_data.sequoia.value: "12.0 Beta 6-3802-24",
+                os_data.tahoe.value: "12.0 Beta 6-3802-25",
+            }.get(self._xnu_major, "12.0 Beta 6-3802")
+
         return {
             "Nvidia Kepler": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
@@ -100,44 +103,23 @@ class NvidiaKepler(BaseHardware):
                         "/System/Library/Sandbox/Profiles": {
                             "nsattributedstringagent.sb": "26.0-25G229",
                         },
-                    } if self._xnu_major >= os_data.tahoe else {}),
+                    } if self._xnu_major >= os_data.sequoia.value else {}), # readd missing properties to fix nsattributedstringagent crashing
                     "/System/Library/Extensions": {
                         "GeForce.kext":            self._resolve_kepler_geforce_framebuffers(),
                         "NVDAGF100Hal.kext":       "12.0 Beta 6",
                         "NVDAGK100Hal.kext":       "12.0 Beta 6",
                         "NVDAResman.kext":         "12.0 Beta 6",
                         "NVDAStartup.kext":        "12.0 Beta 6",
-                        "GeForceAIRPlugin.bundle": "11.0 Beta 3",
-                        "GeForceGLDriver.bundle":  "11.0 Beta 3",
-                        "GeForceMTLDriver.bundle": "11.0 Beta 3" if self._xnu_major <= os_data.monterey else f"11.0 Beta 3-22",
+                        "GeForceAIRPlugin.bundle": air_plugin,
+                        "GeForceGLDriver.bundle":  "12.0 Beta 6",
+                        "GeForceMTLDriver.bundle": metal_driver,
                         "GeForceVADriver.bundle":  "12.0 Beta 6",
                     },
                 },
                 PatchType.MERGE_SYSTEM_VOLUME: {
-                    "/System/Library/Frameworks": {
-                        **({ "ImageIO.framework": "26.0-25G229" } if self._xnu_major >= os_data.tahoe else {}),
-                        # XNU 21.6 (macOS 12.5)
-                        **({ "Metal.framework": "12.5 Beta 2"} if (self._xnu_float >= self.macOS_12_5 and self._xnu_major < os_data.ventura) else {}),
-                    },
-                    "/System/Library/PrivateFrameworks": {
-                        **({ "CMPhoto.framework": "26.0-25G229" } if self._xnu_major >= os_data.tahoe else {}),
-                        "GPUCompiler.framework": "13.2.1-25" if self._xnu_major >= os_data.tahoe else "11.6",
-                    },
-                }
-            },
-        }
-
-
-    def _mixed_gpu_patches(self) -> dict:
-        if self._xnu_major < os_data.tahoe or self._is_gpu_architecture_present([device_probe.Intel.Archs.Haswell]) is False:
-            return {}
-
-        return {
-            "Nvidia Kepler OpenCL": {
-                PatchType.MERGE_SYSTEM_VOLUME: {
-                    "/System/Library/Frameworks": {
-                        "OpenCL.framework": "12.5",
-                    },
+                    # restore removed opencl compiler files
+                    "/System/Library/Frameworks/OpenCL.framework/Versions": {"A": "12.0 Beta 6"},
+                    "/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions": {"A": "12.0 Beta 6"},
                 },
             },
         }
@@ -153,9 +135,5 @@ class NvidiaKepler(BaseHardware):
         return {
             **LegacyMetal3802(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
-            **BigSurOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
-            **MontereyWebKit(self._xnu_major, self._xnu_minor, self._os_build).patches(),
-            **TahoeGraphics(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **self._model_specific_patches(),
-            **self._mixed_gpu_patches(),
         }
