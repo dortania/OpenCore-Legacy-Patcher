@@ -2,6 +2,8 @@
 metal_3802.py: Metal 3802 patches
 """
 
+import packaging.version
+
 from .base import BaseSharedPatchSet
 
 from ..base import PatchType
@@ -20,6 +22,18 @@ class LegacyMetal3802(BaseSharedPatchSet):
 
     def _os_requires_patches(self) -> bool:
         return self._xnu_major in self._SERVICE_PAYLOADS
+    
+
+    def requires_unpatch(self, oclp_plist: dict) -> bool:
+        if not oclp_plist.keys():
+             return False
+         
+        installed_version = packaging.version.parse(oclp_plist["OpenCore Legacy Patcher"])
+
+        if installed_version < packaging.version.parse("3.0.0"): 
+            return True
+
+        return False
 
     def patches(self) -> dict:
         if not self._os_requires_patches():
