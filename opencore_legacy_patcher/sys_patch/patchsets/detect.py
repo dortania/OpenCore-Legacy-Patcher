@@ -202,15 +202,9 @@ class HardwarePatchsetDetection:
             return False
 
         for hardware in present_hardware:
-            unpatch_version = hardware.unpatch_required()
-            if unpatch_version is None:
-                continue
-            if installed_version > packaging.version.parse(unpatch_version):
-                continue
-            if not oclp_plist.keys() & hardware.patches().keys():
-                continue
-            logging.error(f"{hardware.name()} patches installed by OCLP {installed_version} require unpatching before repatching (last affected version: {unpatch_version})")
-            return True
+            if hardware.requires_unpatch(oclp_plist):
+                logging.error(f"{hardware.name()} patches installed by OCLP {installed_version} require unpatching before repatching")
+                return True
 
         return False
 

@@ -114,8 +114,12 @@ class BaseHardware(BasePatchset):
         return False
 
 
-    def unpatch_required(self) -> str | None:
-        return None
+    def requires_unpatch(self, oclp_plist: dict) -> bool:
+        """
+        Whether patch set has changed substantially, requiring
+        reversion of snapshot to restore original files
+        """
+        return False
 
 
     def required_system_integrity_protection_configurations(self) -> list[str]:

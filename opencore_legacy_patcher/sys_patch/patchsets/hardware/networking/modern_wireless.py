@@ -2,6 +2,8 @@
 modern_wireless.py: Modern Wireless detection
 """
 
+import packaging.version
+
 from ..base import BaseHardware, HardwareVariant
 
 from ...base import PatchType
@@ -53,8 +55,16 @@ class ModernWireless(BaseHardware):
         return HardwareVariant.NETWORKING
 
 
-    def unpatch_required(self) -> str | None:
-        return "2.4.0"
+    def requires_unpatch(self, oclp_plist: dict) -> bool:
+        if not oclp_plist.keys():
+             return False
+         
+        installed_version = packaging.version.parse(oclp_plist["OpenCore Legacy Patcher"])
+
+        if installed_version <= packaging.version.parse("2.4.0"): 
+            return True
+
+        return False
 
 
     def _patches_modern_wireless_common_extended(self) -> dict:
