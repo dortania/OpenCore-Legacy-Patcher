@@ -2511,35 +2511,51 @@
 				<integer>0</integer>
 			</dict>
 			<dict>
-                <key>Arch</key>
-                <string>x86_64</string>
-                <key>Base</key>
-                <string>__ZN11IOHIDDevice12didTerminateEP9IOServicejPb</string>
-                <key>Comment</key>
-                <string>IOHIDFamily USB topcase panic</string>
-                <key>Count</key>
-                <integer>0</integer>
-                <key>Enabled</key>
-                <false/>
-                <key>Find</key>
-                <data></data>
-                <key>Identifier</key>
-                <string>com.apple.iokit.IOHIDFamily</string>
-                <key>Limit</key>
-                <integer>0</integer>
-                <key>Mask</key>
-                <data></data>
-                <key>MaxKernel</key>
-                <string></string>
-                <key>MinKernel</key>
-                <string>25.0.0</string>
-                <key>Replace</key>
-                <data>uAEAAADD</data>
-                <key>ReplaceMask</key>
-                <data></data>
-                <key>Skip</key>
-                <integer>0</integer>
-            </dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>Base</key>
+				<string>__ZN11IOHIDDevice12didTerminateEP9IOServicejPb</string>
+				<key>Comment</key>
+				<string>IOHIDFamily USB topcase panic</string>
+				<key>Count</key>
+				<integer>1</integer>
+				<key>Enabled</key>
+				<false/>
+				<key>Find</key>
+				<data>
+				VUiJ5UFXQVZBVFNIictBidZJifdJifxIi4fIAAAASIt4SOgAAAAASYuEJMgAAAD2QGgB
+				dBGxAYiIsAAAAESJsLQAAACIC0iLeEjoAAAAAEiLBQAAAABMiedMif5EifJIidlbQVxB
+				XkFfXf+gGAQAAAAAAAAAAAAAAAAAAA==
+				</data>
+				<key>Identifier</key>
+				<string>com.apple.iokit.IOHIDFamily</string>
+				<key>Limit</key>
+				<integer>124</integer>
+				<key>Mask</key>
+				<data>
+				//////////////////////////////////////////////8AAAAA////////////////
+				////////////////////////////////AAAAAP///wAAAAD/////////////////////
+				/////////////////////////////w==
+				</data>
+				<key>MaxKernel</key>
+				<string>25.99.99</string>
+				<key>MinKernel</key>
+				<string>25.0.0</string>
+				<key>Replace</key>
+				<data>
+				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA61CQkAAAAAAAAAAAAAAAAAAAAAAA
+				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+				AAAAAAAAAAAAAEiFwHTaSIt4SOunkA==
+				</data>
+				<key>ReplaceMask</key>
+				<data>
+				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wAAAAAAAAAAAAAAAAAAAAAA
+				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+				AAAAAAAAAAAAAP///////////////w==
+				</data>
+				<key>Skip</key>
+				<integer>0</integer>
+			</dict>
 			<dict>
 				<key>Arch</key>
 				<string>x86_64</string>
