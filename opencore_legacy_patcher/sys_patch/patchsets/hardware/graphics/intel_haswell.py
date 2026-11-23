@@ -99,7 +99,6 @@ class IntelHaswell(BaseHardware):
             **LegacyMetal3802(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyGVA(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
-            **TahoeGraphics(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).camera_patches(),
             **self._model_specific_patches(),
 
         }

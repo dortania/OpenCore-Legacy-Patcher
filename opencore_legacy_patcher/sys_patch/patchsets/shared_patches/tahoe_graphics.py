@@ -24,23 +24,3 @@ class TahoeGraphics(BaseSharedPatchSet):
                 },
             },
         }
-
-
-    def camera_patches(self) -> dict:
-        if self._os_requires_patches() is False:
-            return {}
-
-        return {
-            "Tahoe Camera": {
-                PatchType.OVERWRITE_SYSTEM_VOLUME: {
-                    "/System/Library/LaunchDaemons": {
-                        "com.apple.cmio.AppleCameraAssistant.plist": "14.0 Beta 1",
-                    },
-                },
-                PatchType.MERGE_SYSTEM_VOLUME: {
-                    "/System/Library/Frameworks": {
-                        "CoreMediaIO.framework": "14.0 Beta 1",
-                    },
-                },
-            },
-        }
