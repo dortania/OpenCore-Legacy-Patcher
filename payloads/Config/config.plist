@@ -2525,17 +2525,17 @@
 				<data>
 				VUiJ5UFXQVZBVFNIictBidZJifdJifxIi4fIAAAASIt4SOgAAAAASYuEJMgAAAD2QGgB
 				dBGxAYiIsAAAAESJsLQAAACIC0iLeEjoAAAAAEiLBQAAAABMiedMif5EifJIidlbQVxB
-				XkFfXf+gGAQAAAAAAAAAAAAAAAAAAA==
+				XkFfXf+gGAQAAA==
 				</data>
 				<key>Identifier</key>
 				<string>com.apple.iokit.IOHIDFamily</string>
 				<key>Limit</key>
-				<integer>124</integer>
+				<integer>112</integer>
 				<key>Mask</key>
 				<data>
 				//////////////////////////////////////////////8AAAAA////////////////
 				////////////////////////////////AAAAAP///wAAAAD/////////////////////
-				/////////////////////////////w==
+				/////////////w==
 				</data>
 				<key>MaxKernel</key>
 				<string>25.99.99</string>
@@ -2543,15 +2543,15 @@
 				<string>25.0.0</string>
 				<key>Replace</key>
 				<data>
-				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA61CQkAAAAAAAAAAAAAAAAAAAAAAA
+				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAADrNpCQkJCQAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-				AAAAAAAAAAAAAEiFwHTaSIt4SOunkA==
+				AAAAAAAAAAAAAA==
 				</data>
 				<key>ReplaceMask</key>
 				<data>
-				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wAAAAAAAAAAAAAAAAAAAAAA
+				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////////AAAAAAAAAAAAAAAAAAAAAAAAAAAA
 				AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-				AAAAAAAAAAAAAP///////////////w==
+				AAAAAAAAAAAAAA==
 				</data>
 				<key>Skip</key>
 				<integer>0</integer>
