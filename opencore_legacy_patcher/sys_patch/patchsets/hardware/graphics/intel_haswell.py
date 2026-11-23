@@ -62,43 +62,26 @@ class IntelHaswell(BaseHardware):
         return HardwareVariantGraphicsSubclass.METAL_3802_GRAPHICS
 
 
-    def requires_metallib_support_pkg(self) -> bool:
-        """
-        New compiler format introduced in macOS 15, Sequoia
-        """
-        return os_data.sequoia.value <= self._xnu_major < os_data.tahoe.value
-
-
     def _model_specific_patches(self) -> dict:
         """
         Model specific patches
         """
+        framebuffer = "12.7.6" if self._xnu_major == os_data.ventura.value else "12.7.6-23.4"
+        if self._xnu_major == os_data.sonoma.value and self._xnu_float < self.macOS_14_4:
+            framebuffer = "12.7.6-23"
+        graphics_kext = "12.7.6-22" if self._xnu_major == os_data.ventura.value else framebuffer
+        metal_driver = "12.7.6-3802-24" if self._xnu_major >= os_data.sequoia.value else "12.7.6-3802"
         return {
             "Intel Haswell": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
-                        "AppleIntelFramebufferAzul.kext":           self._resolve_monterey_framebuffers(),
-                        "AppleIntelHD5000Graphics.kext":            self._resolve_monterey_framebuffers(),
-                        "AppleIntelHD5000GraphicsGLDriver.bundle":  "12.5",
-                        "AppleIntelHD5000GraphicsMTLDriver.bundle": "12.5",
-                        "AppleIntelHD5000GraphicsVADriver.bundle":  "12.5",
-                        "AppleIntelHSWVA.bundle":                   "12.5",
-                        "AppleIntelGraphicsShared.bundle":          "12.5",
-                    },
-                },
-            },
-        }
-
-
-    def _framebuffer_only_patches(self) -> dict:
-        """
-        Framebuffer only patches
-        """
-        return {
-            "Intel Haswell": {
-                PatchType.OVERWRITE_SYSTEM_VOLUME: {
-                    "/System/Library/Extensions": {
-                        "AppleIntelFramebufferAzul.kext": self._resolve_monterey_framebuffers(),
+                        "AppleIntelFramebufferAzul.kext":           framebuffer,
+                        "AppleIntelHD5000Graphics.kext":            graphics_kext,
+                        "AppleIntelHD5000GraphicsGLDriver.bundle":  "12.7.6",
+                        "AppleIntelHD5000GraphicsMTLDriver.bundle": metal_driver,
+                        "AppleIntelHD5000GraphicsVADriver.bundle":  "12.7.6",
+                        "AppleIntelHSWVA.bundle":                   "12.7.6",
+                        "AppleIntelGraphicsShared.bundle":          "12.7.6",
                     },
                 },
             },
@@ -116,7 +99,6 @@ class IntelHaswell(BaseHardware):
             **LegacyMetal3802(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyGVA(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
-            **TahoeGraphics(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **TahoeGraphics(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).camera_patches(),
             **self._model_specific_patches(),
 

@@ -9,7 +9,6 @@ from ...base            import PatchType
 from ...shared_patches.metal_3802      import LegacyMetal3802
 from ...shared_patches.big_sur_gva     import BigSurGVA
 from ...shared_patches.monterey_opencl import MontereyOpenCL
-from ...shared_patches.tahoe_graphics  import TahoeGraphics
 from ...shared_patches.big_sur_opencl  import BigSurOpenCL
 from ...shared_patches.monterey_webkit import MontereyWebKit
 
@@ -64,13 +63,6 @@ class IntelIvyBridge(BaseHardware):
         return HardwareVariantGraphicsSubclass.METAL_3802_GRAPHICS
 
 
-    def requires_metallib_support_pkg(self) -> bool:
-        """
-        New compiler format introduced in macOS 15, Sequoia
-        """
-        return os_data.sequoia.value <= self._xnu_major < os_data.tahoe.value
-
-
     def _resolve_ivy_bridge_framebuffers(self) -> str:
         """
         Resolve patchset directory for Ivy Bridge framebuffers:
@@ -88,15 +80,20 @@ class IntelIvyBridge(BaseHardware):
         """
         Model specific patches
         """
+        metal_driver = "11.7.10-3802-21"
+        framebuffer = self._resolve_ivy_bridge_framebuffers()
+        if self._xnu_major >= os_data.ventura.value:
+            metal_driver = "11.7.10-3802-24" if self._xnu_major >= os_data.sequoia.value else "11.7.10-3802"
+
         return {
             "Intel Ivy Bridge": {
                 PatchType.OVERWRITE_SYSTEM_VOLUME: {
                     "/System/Library/Extensions": {
                         "AppleIntelHD4000GraphicsGLDriver.bundle":  "11.7.10",
-                        "AppleIntelHD4000GraphicsMTLDriver.bundle": "11.7.10" if self._xnu_major < os_data.ventura or self._xnu_major >= os_data.tahoe else "11.7.10-22",
+                        "AppleIntelHD4000GraphicsMTLDriver.bundle": metal_driver,
                         "AppleIntelHD4000GraphicsVADriver.bundle":  "11.7.10",
-                        "AppleIntelFramebufferCapri.kext":          self._resolve_ivy_bridge_framebuffers(),
-                        "AppleIntelHD4000Graphics.kext":            self._resolve_ivy_bridge_framebuffers(),
+                        "AppleIntelFramebufferCapri.kext":          framebuffer,
+                        "AppleIntelHD4000Graphics.kext":            framebuffer.replace("11.7.10", "11.7.10-3802", 1),
                         "AppleIntelIVBVA.bundle":                   "11.7.10",
                         "AppleIntelGraphicsShared.bundle":          "11.7.10", # libIGIL-Metal.dylib pulled from 11.0 Beta 6
                     },
@@ -118,6 +115,5 @@ class IntelIvyBridge(BaseHardware):
             **MontereyOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **BigSurOpenCL(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **MontereyWebKit(self._xnu_major, self._xnu_minor, self._os_build).patches(),
-            **TahoeGraphics(self._xnu_major, self._xnu_minor, self._constants.detected_os_version).patches(),
             **self._model_specific_patches(),
         }

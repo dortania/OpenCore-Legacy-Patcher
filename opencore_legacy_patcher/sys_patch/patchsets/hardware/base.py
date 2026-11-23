@@ -182,12 +182,6 @@ class BaseHardware(BasePatchset):
             return None
         if self._is_gpu_architecture_present([device_probe.Intel.Archs.Skylake]) is False:
             return None
-        if self._is_gpu_architecture_present([
-            device_probe.Intel.Archs.Ivy_Bridge,
-            device_probe.Intel.Archs.Haswell,
-            device_probe.NVIDIA.Archs.Kepler,
-        ]):
-            return None
 
         gcn_present = self._is_gpu_architecture_present([
             device_probe.AMD.Archs.Legacy_GCN_7000,
