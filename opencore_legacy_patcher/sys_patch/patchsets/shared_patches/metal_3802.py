@@ -33,6 +33,9 @@ class LegacyMetal3802(BaseSharedPatchSet):
         if installed_version < packaging.version.parse("3.0.0"): 
             return True
 
+        if "Metal 3802 .metallibs Tahoe" in oclp_plist:
+            return True
+
         return False
 
     def patches(self) -> dict:
